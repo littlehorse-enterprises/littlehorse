@@ -11,7 +11,7 @@ type Props = {
 }
 export const Thread: FC<Props> = ({ name, spec }) => {
   return (
-    <div className="mb-4 rounded border-2 border-slate-100 p-2">
+    <div className="mb-4 rounded border-2 border-slate-100 p-2 hover:bg-gray-100 ">
       <Accordion type="single" collapsible>
         <AccordionItem value="thread">
           <AccordionTrigger>

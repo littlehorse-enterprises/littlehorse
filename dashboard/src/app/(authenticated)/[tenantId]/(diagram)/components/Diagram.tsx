@@ -15,60 +15,37 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { LHStatus, NodeRun, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
-import { ReadonlyURLSearchParams, useParams, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
 import 'reactflow/dist/base.css'
-import { ThreadProvider, ThreadType } from '../context'
+import { DiagramProvider, NodeInContext, ThreadType } from '../context'
 import edgeTypes from './EdgeTypes'
 import { extractEdges } from './EdgeTypes/extractEdges'
 import { Layouter } from './Layouter'
 import nodeTypes from './NodeTypes'
 import { extractNodes } from './NodeTypes/extractNodes'
+import { Sidebar } from './Sidebar'
 import { ThreadPanel } from './ThreadPanel'
 
 type Props = {
   wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
-  nodeRuns?: NodeRun[]
   spec: WfSpec
-}
-
-const isValidThreadRunNumberForCurrentWfRun = (threadRunNumber: number, wfRun: WfRun) => {
-  return !isNaN(threadRunNumber) && threadRunNumber >= 0 && wfRun && threadRunNumber <= wfRun.greatestThreadrunNumber
-}
-
-const determineDefaultThreadRun = (
-  currentThread: string,
-  wfRun: (WfRun & { threadRuns: ThreadRunWithNodeRuns[] }) | undefined,
-  threadRunNumberFromRedirection: number,
-  spec: WfSpec
-) => {
-  let threadToShowByDefault = { name: currentThread, number: wfRun?.greatestThreadrunNumber || 0 }
-
-  if (wfRun && isValidThreadRunNumberForCurrentWfRun(threadRunNumberFromRedirection, wfRun)) {
-    const threadRunName = wfRun
-      ? wfRun.threadRuns[threadRunNumberFromRedirection].threadSpecName
-      : spec.entrypointThreadName
-    threadToShowByDefault = { name: threadRunName, number: threadRunNumberFromRedirection }
-  }
-  return threadToShowByDefault
 }
 
 export const Diagram: FC<Props> = ({ spec, wfRun }) => {
-  const tenantId = useParams().tenantId as string
+  const { tenantId } = useWhoAmI()
   const currentThread = wfRun
     ? wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName
     : spec.entrypointThreadName
 
-  const searchParams: ReadonlyURLSearchParams = useSearchParams()
-  const threadRunNumberFromRedirection = Number(searchParams.get('threadRunNumber'))
-  const nodeRunNameToBeHighlighted = searchParams.get('nodeRunName')!
-
-  const threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
-
-  const [thread, setThread] = useState<ThreadType>(threadToShowByDefault)
+  const [thread, setThread] = useState<ThreadType>({
+    name: currentThread,
+    number: wfRun ? wfRun.greatestThreadrunNumber : 0,
+  })
+  const [node, setNode] = useState<NodeInContext>(undefined)
 
   const threadSpec = useMemo(() => {
     if (thread === undefined) return spec.threadSpecs[spec.entrypointThreadName]
@@ -106,7 +83,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
           : ''
 
   return (
-    <ThreadProvider value={{ thread, setThread }}>
+    <DiagramProvider value={{ thread, setThread, selectedNode: node, setSelectedNode: setNode }}>
       <div className="flex justify-between gap-3">
         <ThreadPanel spec={spec} wfRun={wfRun} />
         {wfRun && (
@@ -161,22 +138,24 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
           </div>
         )}
       </div>
-      <div className="mb-4 min-h-[800px] min-w-full rounded border-2 border-slate-100 bg-slate-50 shadow-inner">
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          nodesConnectable={false}
-          elementsSelectable
-          minZoom={0.3}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          snapToGrid={true}
-          className="min-h-[800px] min-w-full bg-slate-50"
-        >
-          <Controls />
-        </ReactFlow>
-        <Layouter nodeRuns={threadNodeRuns} nodeRunNameToBeHighlighted={nodeRunNameToBeHighlighted} />
+      <div className="grid min-h-[600px] grid-cols-[1fr_330px]">
+        <div className="mb-4 flex-1 rounded border-2 border-slate-100 bg-slate-50 shadow-inner">
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodesConnectable={false}
+            elementsSelectable
+            minZoom={0.3}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            snapToGrid={true}
+          >
+            <Controls />
+          </ReactFlow>
+          <Layouter nodeRuns={threadNodeRuns} />
+        </div>
+        <Sidebar showNodeRun={wfRun !== undefined} />
       </div>
-    </ThreadProvider>
+    </DiagramProvider>
   )
 }
