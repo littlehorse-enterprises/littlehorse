@@ -49,5 +49,4 @@ class StoreableTest {
                 + getableType.getNumber() + "/" + restOfPrefix + "/";
         assertThat(result).isEqualTo(expected);
     }
-
 }
