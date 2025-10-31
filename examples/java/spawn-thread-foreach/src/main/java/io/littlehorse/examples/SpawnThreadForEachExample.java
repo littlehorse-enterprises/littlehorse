@@ -62,7 +62,6 @@ public class SpawnThreadForEachExample {
     }
 
     public static LHTaskWorker getTaskWorker(LHConfig config) {
-    public static LHTaskWorker getTaskWorker(LHConfig config) {
         SpawnThreadForEachWorker executable = new SpawnThreadForEachWorker();
         LHTaskWorker worker = new LHTaskWorker(executable, "task-executor", config);
 
