@@ -3,7 +3,6 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -31,13 +30,13 @@ public class ChildThreadExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-child-thread", wf -> {
-            WfRunVariable parentVar = wf.addVariable("parent-var", VariableType.INT);
+            WfRunVariable parentVar = wf.declareInt("parent-var");
 
             wf.mutate(parentVar, VariableMutationType.ASSIGN, wf.execute("parent-task-1", parentVar));
 
             SpawnedThread childThread = wf.spawnThread(
                     child -> { // this is the child workflow thread
-                        WfRunVariable childVar = child.addVariable("child-var", VariableType.INT);
+                        WfRunVariable childVar = child.declareInt("child-var");
                         child.execute("child-task", childVar);
                     },
                     "spawned-thread",
