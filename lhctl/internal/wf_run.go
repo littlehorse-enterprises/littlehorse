@@ -3,7 +3,6 @@ package internal
 import (
 	"log"
 	"strconv"
-	"strings"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
@@ -48,8 +47,6 @@ Required arguments:
 
 Optional flags:
 - [--wfSpecName] - Filter children by workflow spec name
-- [--show-full-tree] - Use full object scan for complete tree discovery (cannot be used with --status)
-- [--levels] - Limit search depth (only with --show-full-tree)
 - [--status] - Status of child WfRuns to search for (cannot be used with --show-full-tree)
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
@@ -70,22 +67,6 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
-		showFullTree, _ := cmd.Flags().GetBool("show-full-tree")
-		levels, _ := cmd.Flags().GetInt("levels")
-
-		if levels != -1 {
-			if !showFullTree {
-				log.Fatal("--levels flag can only be used with --show-full-tree")
-			}
-			if levels <= 0 {
-				log.Fatal("--levels flag must be positive")
-			}
-		}
-
-		if showFullTree && status != nil {
-			log.Fatal("--status flag cannot be used with --show-full-tree")
-		}
-
 		search := &lhproto.SearchWfRunRequest{
 			Bookmark:      bookmark,
 			Limit:         &limit,
@@ -97,17 +78,9 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 			search.WfSpecName = wfSpecName
 		}
 
-		if showFullTree {
-			search.ShowFullTree = &showFullTree
-		}
-
 		resp, err := getGlobalClient(cmd).SearchWfRun(requestContext(cmd), search)
 		if err != nil {
 			log.Fatal("Failed to search WfRuns:", err)
-		}
-
-		if showFullTree && levels != -1 {
-			resp = filterWfRunsByLevels(resp, parentId, levels)
 		}
 
 		littlehorse.PrintResp(resp, err)
@@ -423,45 +396,4 @@ func init() {
 
 	stopWfRunCmd.Flags().Int32("threadRunNumber", 0, "Specific thread run to stop")
 	resumeWfRunCmd.Flags().Int32("threadRunNumber", 0, "Specific thread run to stop")
-}
-
-func filterWfRunsByLevels(resp *lhproto.WfRunIdList, rootParentId string, maxLevels int) *lhproto.WfRunIdList {
-	if maxLevels <= 0 {
-		return &lhproto.WfRunIdList{Results: []*lhproto.WfRunId{}}
-	}
-
-	filteredTree := &lhproto.WfRunIdList{Results: []*lhproto.WfRunId{}}
-
-	for _, wfRun := range resp.Results {
-		depth := calculateDepthFromRoot(wfRun, rootParentId)
-		if depth > 0 && depth <= maxLevels {
-			filteredTree.Results = append(filteredTree.Results, wfRun)
-		}
-	}
-
-	return filteredTree
-}
-
-func calculateDepthFromRoot(wfRun *lhproto.WfRunId, rootParentId string) int {
-	if wfRun.ParentWfRunId == nil {
-		return 0
-	}
-
-	currentParentId := rootParentId
-	if separatorIndex := strings.LastIndex(rootParentId, "_"); separatorIndex != -1 {
-		currentParentId = rootParentId[separatorIndex+1:]
-	}
-
-	depth := 1
-	current := wfRun.ParentWfRunId
-
-	for current != nil {
-		if current.Id == currentParentId {
-			return depth
-		}
-		depth++
-		current = current.ParentWfRunId
-	}
-
-	return 0
 }

@@ -81,6 +81,11 @@ public class ExternalEventIdModel extends CoreObjectId<ExternalEventId, External
         return GetableClassEnum.EXTERNAL_EVENT;
     }
 
+    @Override
+    public Optional<WfRunIdModel> getGroupingWfRunId() {
+        return Optional.of(wfRunId);
+    }
+
     public String getExternalEventDefName() {
         return externalEventDefId.getName();
     }

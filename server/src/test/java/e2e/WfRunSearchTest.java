@@ -338,58 +338,6 @@ public class WfRunSearchTest {
                 .allSatisfy(foundId -> Assertions.assertThat(foundId.getId()).isEqualTo(childId.getId()));
     }
 
-    @Test
-    void searchByParentIdShouReturnGrandChild() {
-
-        WfRunId parentId = workflowVerifier
-                .prepareRun(getSearchableVariableWf())
-                .waitForStatus(COMPLETED)
-                .start();
-        WfRunId childId = WfRunId.newBuilder()
-                .setId("child-id")
-                .setParentWfRunId(parentId)
-                .build();
-        workflowVerifier.prepareRun(getChildWorkflow()).waitForStatus(COMPLETED).start(childId);
-        WfRunId childI2 = WfRunId.newBuilder()
-                .setId("child-id-2")
-                .setParentWfRunId(parentId)
-                .build();
-        workflowVerifier.prepareRun(getChildWorkflow()).waitForStatus(COMPLETED).start(childI2);
-        WfRunId grandChild2 = WfRunId.newBuilder()
-                .setId("grand-child-id-2")
-                .setParentWfRunId(childI2)
-                .build();
-        workflowVerifier
-                .prepareRun(getGrandChildWorkflow())
-                .waitForStatus(COMPLETED)
-                .start(grandChild2);
-
-        SearchResultCaptor<WfRunIdList> captor = SearchResultCaptor.of(WfRunIdList.class);
-        WfRunId grandChildId = WfRunId.newBuilder()
-                .setId("grand-child-id")
-                .setParentWfRunId(childId)
-                .build();
-        Function<TestExecutionContext, SearchWfRunRequest> parentSearch = context -> SearchWfRunRequest.newBuilder()
-                .setParentWfRunId(parentId)
-                .setShowFullTree(true)
-                .build();
-        Function<TestExecutionContext, SearchWfRunRequest> childSearch = context -> SearchWfRunRequest.newBuilder()
-                .setParentWfRunId(childId)
-                .setShowFullTree(true)
-                .build();
-        workflowVerifier
-                .prepareRun(getGrandChildWorkflow())
-                .waitForStatus(COMPLETED)
-                .doSearch(SearchWfRunRequest.class, captor.capture(), parentSearch)
-                .doSearch(SearchWfRunRequest.class, captor.capture(), childSearch)
-                .start(grandChildId);
-
-        WfRunIdList parentSearchResult = captor.getValue().get();
-        WfRunIdList childSearchResult = captor.getValue().get();
-        Assertions.assertThat(parentSearchResult.getResultsList()).hasSize(4);
-        Assertions.assertThat(childSearchResult.getResultsList()).hasSize(1);
-    }
-
     @LHWorkflow("complex-workflow")
     public Workflow getEqualsWorkflowImpl() {
         return new WorkflowImpl("complex-workflow", thread -> {

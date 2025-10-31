@@ -75,7 +75,7 @@ var listNodeRunCmd = &cobra.Command{
 Lists all NodeRun's for a given WfRun Id.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		threadRunNumber, _ := cmd.Flags().GetInt32("thread-run-number")
+		threadRunNumber, _ := cmd.Flags().GetInt32("threadRunNumber")
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 		wfRunIdStr := args[0]

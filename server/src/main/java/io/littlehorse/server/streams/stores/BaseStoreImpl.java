@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.stores;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
@@ -42,5 +43,13 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
             metadataCache.evictCache(fullKey);
         }
         nativeStore.delete(fullKey);
+
+        String legacyKey = LHUtil.toLegacyFormat(fullKey);
+        if (legacyKey != null) {
+            if (metadataCache != null) {
+                metadataCache.evictCache(legacyKey);
+            }
+            nativeStore.delete(legacyKey);
+        }
     }
 }
