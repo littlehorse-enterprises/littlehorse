@@ -50,7 +50,6 @@ public class SearchWfRunRequestModel
     private Date earliestStart;
     private Date latestStart;
     private WfRunIdModel parentWfRunId;
-    private Boolean showFullTree;
 
     // not from proto
     private ExecutionContext executionContext;
@@ -84,7 +83,6 @@ public class SearchWfRunRequestModel
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
         if (p.hasParentWfRunId())
             parentWfRunId = LHSerializable.fromProto(p.getParentWfRunId(), WfRunIdModel.class, context);
-        if (p.hasShowFullTree()) showFullTree = p.getShowFullTree();
 
         for (VariableMatch vm : p.getVariableFiltersList()) {
             variableMatches.add(LHSerializable.fromProto(vm, VariableMatchModel.class, context));
@@ -111,7 +109,6 @@ public class SearchWfRunRequestModel
         if (earliestStart != null) out.setEarliestStart(LHUtil.fromDate(earliestStart));
         if (latestStart != null) out.setLatestStart(LHUtil.fromDate(latestStart));
         if (parentWfRunId != null) out.setParentWfRunId(parentWfRunId.toProto());
-        if (showFullTree != null) out.setShowFullTree(showFullTree);
 
         for (VariableMatchModel vmm : variableMatches) {
             out.addVariableFilters(vmm.toProto());
@@ -178,14 +175,6 @@ public class SearchWfRunRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        boolean hasName = wfSpecName != null && !wfSpecName.isEmpty();
-
-        if (!hasName && parentWfRunId != null && showFullTree != null && showFullTree) {
-            String parentId = parentWfRunId.toString();
-            String partitionKey = parentWfRunId.getPartitionKey().orElse(parentId);
-            return new ObjectIdScanBoundaryStrategy(partitionKey, parentId + "_", parentId + "_~");
-        }
-
         return new TagScanBoundaryStrategy(
                 searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
     }
