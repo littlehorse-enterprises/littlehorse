@@ -3,7 +3,6 @@ import { FC } from 'react'
 import { LabelContent } from '../Components'
 
 export const ExternalEventRunNode: FC<{ node: ExternalEventNodeRun }> = ({ node }) => {
-  console.log("testin", node)
   return (
     <div>
       <LabelContent label="Node Type" content="External event "></LabelContent>
