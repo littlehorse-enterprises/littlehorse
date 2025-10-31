@@ -3,10 +3,11 @@ import { FC } from 'react'
 import { LabelContent } from '../Components'
 
 export const ExternalEventRunNode: FC<{ node: ExternalEventNodeRun }> = ({ node }) => {
+  console.log("testin", node)
   return (
     <div>
       <LabelContent label="Node Type" content="External event "></LabelContent>
-      <LabelContent label="External event definition ID" content={`${node.externalEventDefId}`}></LabelContent>
+      <LabelContent label="External event definition ID" content={`${node.externalEventDefId?.name}`}></LabelContent>
       <LabelContent label="Event  Time" content={`${node.eventTime}`}></LabelContent>
       <LabelContent label="External  event ID" content={`${node.externalEventId}`}></LabelContent>
       <LabelContent label="Time Out" content={`${node.timedOut}`}></LabelContent>

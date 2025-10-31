@@ -15,8 +15,8 @@ export const SelectedNodeRun = ({
   nodeName: string
 }) => {
   return (
-    <div className='flex items-center justify-between mb-2 ml-1'>
-      <div className="text-blue-500"> {nodeName}</div>
+    <div className='flex items-center justify-between mb-2 ml-1 '>
+      <div className="text-blue-500 truncate"> {nodeName}</div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="  px-2  drop-shadow-none">
