@@ -41,6 +41,9 @@ public class WfRunDeletionTest {
     @LHWorkflow("delete-wfrun")
     public Workflow basicExternalEvent;
 
+    @LHWorkflow("lots-of-tasks")
+    public Workflow lotsOfTasks;
+
     private LittleHorseBlockingStub client;
     private WorkflowVerifier verifier;
 
@@ -48,7 +51,10 @@ public class WfRunDeletionTest {
     public Workflow getBasicExternalEventWorkflow() {
         return Workflow.newWorkflow("delete-wfrun", wf -> {
             wf.waitForEvent(COMPLETE_WFRUN_EVT);
-            wf.execute("pedro-task-test");
+            for (int i = 0; i < 5; i++) {
+                // Lots of tasks so that we need to do phased deletion.
+                wf.execute("pedro-task-test");
+            }
         });
     }
 
