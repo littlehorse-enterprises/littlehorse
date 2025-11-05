@@ -11,8 +11,9 @@
   "exports": {
     ".": "./dist/index.js",
     "./proto": {
-      "default": "./dist/proto/index.js",
-      "types": "./dist/proto/index.d.ts"
+      "import": "./dist/proto/index.js",
+      "types": "./dist/proto/index.d.ts",
+      "default": "./dist/proto/index.js"
     }
   },
   "files": [
