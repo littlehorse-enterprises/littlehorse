@@ -92,16 +92,16 @@ describe('wfRunIdFromList', () => {
     const ids = ['parent', 'child']
 
     expect(wfRunIdFromList(ids)).toEqual({
-      id: 'child',
-      parentWfRunId: { id: 'parent', parentWfRunId: undefined },
+      id: 'parent',
+      parentWfRunId: { id: 'child', parentWfRunId: undefined },
     })
   })
 
   it('should return wfRunId for grant-parent/parent/child', async () => {
     const ids = ['grand-parent', 'parent', 'child']
     expect(wfRunIdFromList(ids)).toEqual({
-      id: 'child',
-      parentWfRunId: { id: 'parent', parentWfRunId: { id: 'grand-parent', parentWfRunId: undefined } },
+      id: 'grand-parent',
+      parentWfRunId: { id: 'parent', parentWfRunId: { id: 'child', parentWfRunId: undefined } },
     })
   })
 })
