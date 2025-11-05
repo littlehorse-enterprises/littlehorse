@@ -16,14 +16,3 @@ export const wfRunStatusColor: { [key in WfRun['status']]: string } = {
   EXCEPTION: 'bg-red-200',
   UNRECOGNIZED: 'bg-gray-200',
 }
-
-export const wfRunStatusColorText : { [key in WfRun['status']]: string } = {
-  STARTING: 'teal-600',
-  RUNNING: 'blue-600',
-  COMPLETED: 'green-600',
-  HALTING: 'orange-600',
-  HALTED: 'gray-600',
-  ERROR: 'yellow-600',
-  EXCEPTION: 'red-600',
-  UNRECOGNIZED: 'gray-600',
-}

@@ -22,24 +22,29 @@ export const Failures: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
     <div>
       {failures.map((failure, index) => {
         return (
-          <div>
-            <Accordion type="single" collapsible>
-              <AccordionItem value={`action-${index}`}>
-                <AccordionTrigger>
-                  <div>{failure.failureName}</div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <NodeStatus status={(failure.wasProperlyHandled ? 'COMPLETED' : 'ERROR') as LHStatus}></NodeStatus>
-                  <LabelContent label="content" content={failure.content}></LabelContent>
+          <Accordion type="single" collapsible>
+            <AccordionItem value={`action-${index}`}>
+              <AccordionTrigger>
+                <div className="ml-2">{failure.failureName}</div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className='mt-1'>
+                    <NodeStatus status={(failure.wasProperlyHandled ? 'COMPLETED' : 'ERROR') as LHStatus}></NodeStatus>
+                </div>
+                <div className="ml-2 my-1">
+                  <div className="mb-2 border-b-2 pb-2">Message</div>
+                  <div>{`${failure.message}`}</div>
+                </div>
+                {failure.content && <LabelContent label="content" content={`${failure.content}`}></LabelContent>}
+                {failure.failureHandlerThreadrunId && (
                   <LabelContent
                     label="Thread ID to Handle the Failure"
-                    content={failure.failureHandlerThreadrunId}
+                    content={`${failure.failureHandlerThreadrunId}`}
                   ></LabelContent>
-                  <div>{`${failure.message}`}</div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         )
       })}
     </div>
