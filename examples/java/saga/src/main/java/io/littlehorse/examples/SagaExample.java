@@ -3,7 +3,6 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -31,8 +30,8 @@ public class SagaExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-saga", wf -> {
-            WfRunVariable flightConfirmationNumber = wf.addVariable("flight-confirmation-number", VariableType.STR);
-            WfRunVariable hotelConfirmationNumber = wf.addVariable("hotel-confirmation-number", VariableType.STR);
+            WfRunVariable flightConfirmationNumber = wf.declareStr("flight-confirmation-number");
+            WfRunVariable hotelConfirmationNumber = wf.declareStr("hotel-confirmation-number");
 
             SpawnedThread sagaThread = wf.spawnThread(
                     bookFlightAndHotel(flightConfirmationNumber, hotelConfirmationNumber), "example-saga", null);

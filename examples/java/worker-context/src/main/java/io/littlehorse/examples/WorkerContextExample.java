@@ -2,7 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -21,7 +20,7 @@ public class WorkerContextExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-worker-context", wf -> {
-            WfRunVariable theName = wf.addVariable("request-time", VariableType.INT);
+            WfRunVariable theName = wf.declareInt("request-time");
             wf.execute("task", theName);
         });
     }

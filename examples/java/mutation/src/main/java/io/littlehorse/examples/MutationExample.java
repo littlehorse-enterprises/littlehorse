@@ -3,7 +3,6 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -22,7 +21,7 @@ public class MutationExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-mutation", wf -> {
-            WfRunVariable theName = wf.addVariable("name", VariableType.STR);
+            WfRunVariable theName = wf.declareStr("name");
             // We pass the name of the person and receive if it is spider-man or not
             NodeOutput output = wf.execute("spider-bite", theName);
 

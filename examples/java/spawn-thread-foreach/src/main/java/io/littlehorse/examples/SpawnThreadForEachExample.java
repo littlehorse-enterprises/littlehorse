@@ -2,7 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -23,15 +22,14 @@ public class SpawnThreadForEachExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("spawn-parallel-threads-from-json-arr-variable", wf -> {
-            WfRunVariable approvalChain = wf.addVariable("approval-chain", VariableType.JSON_OBJ);
+            WfRunVariable approvalChain = wf.declareJsonObj("approval-chain");
             SpawnedThreads spawnedThreads = wf.spawnThreadForEach(
                     approvalChain.jsonPath("$.approvals"),
                     "spawn-threads",
                     innerThread -> {
                         // It is mandatory to use ThreadBuilder.HANDLER_INPUT_VAR at the moment.
-                        innerThread.addVariable("not-used-variable", VariableType.INT);
-                        WfRunVariable inputVariable =
-                                innerThread.addVariable(WorkflowThread.HANDLER_INPUT_VAR, VariableType.JSON_OBJ);
+                        innerThread.declareInt("not-used-variable");
+                        WfRunVariable inputVariable = innerThread.declareJsonObj(WorkflowThread.HANDLER_INPUT_VAR);
                         innerThread.execute("task-executor", inputVariable.jsonPath("$.user"));
                     },
                     Map.of("not-used-variable", 1234));
