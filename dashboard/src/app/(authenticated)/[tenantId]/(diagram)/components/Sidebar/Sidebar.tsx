@@ -35,10 +35,8 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
         <>
           {showNodeRun && (
             <SelectedNodeRun
-              nodeName={selectedNode.id}
               nodeRunIndex={nodeRunIndex}
               setNodeRunIndex={setNodeRunIndex}
-              arrayRunNodeLength={selectedNode.data.nodeRunsList.length} /// fix types any is not a right one
             />
           )}
           <Tabs value={currentTab} onValueChange={value => setCurrentTab(value)} className="w-full">

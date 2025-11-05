@@ -2,21 +2,28 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from '@/components/ui/button'
 import { ChevronDown } from 'lucide-react'
 import { Dispatch, SetStateAction } from 'react'
+import { useDiagram } from '../../../hooks/useDiagram'
 
 export const SelectedNodeRun = ({
   nodeRunIndex,
   setNodeRunIndex,
-  arrayRunNodeLength,
-  nodeName
 }: {
   nodeRunIndex: number
   setNodeRunIndex: Dispatch<SetStateAction<number>>
-  arrayRunNodeLength: number
-  nodeName: string
 }) => {
+  const { selectedNode } = useDiagram()
+
+  if (!selectedNode) {
+    return null
+  }
+  if (!('nodeRunsList' in selectedNode.data)) {
+    return null
+  }
+
+  const arrayRunNodeLength = selectedNode.data.nodeRunsList.length
   return (
-    <div className='flex items-center justify-between mb-2 ml-1 '>
-      <div className="text-blue-500 truncate"> {nodeName}</div>
+    <div className="mb-2 ml-1 flex items-center justify-between ">
+      <div className="truncate text-blue-500"> {selectedNode.id}</div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="  px-2  drop-shadow-none">
