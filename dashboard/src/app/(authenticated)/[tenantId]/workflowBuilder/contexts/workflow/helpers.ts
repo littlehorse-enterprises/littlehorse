@@ -22,6 +22,7 @@ function createNode(nodeType: NodeType, taskName?: string, varName?: string): No
   return node;
 }
 
+// TODO: move this to utils
 function createVariableDef(varName: string): ThreadVarDef {
   return {
     varDef: {
