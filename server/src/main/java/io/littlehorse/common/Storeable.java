@@ -16,7 +16,6 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
     public String getFullStoreKey() {
         if (getGroupingWfRunId().isPresent()) {
             if (!(this instanceof StoredGetable)) {
-                // TODO: We'lll have to be fancy for the WfRunStoredInventory
                 throw new NotImplementedException();
             }
             StoredGetable sg = (StoredGetable) this;
