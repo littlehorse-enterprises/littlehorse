@@ -107,8 +107,21 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
             CompactionOptionsUniversal cou = new CompactionOptionsUniversal();
             cou.setAllowTrivialMove(true);
-            cou.setMinMergeWidth(2); // Default
-            cou.setMaxSizeAmplificationPercent(35); // Decreases read amp, encourages more aggressive compaction
+
+            // Default 2, higher means fewer + larger compactions and overall lower WA. TODO: tune this
+            // carefully in conjunction with the level 0 file num compaction trigger.
+            cou.setMinMergeWidth(2);
+
+            // Allow compacting files that are within 20% the size of the sorted run. Encourages larger
+            // and more efficient compactions to reduce write amplification.
+            cou.setSizeRatio(20);
+
+            // Default is 100. Reducing this causes more WA (bad), doesn't affect RA (also sad), but it
+            // does reduce disk usage. For now, we care more about throughput and stability, so we are
+            // willing to pay for more disk. If needed we may make this a configurable option in the
+            // future.
+            cou.setMaxSizeAmplificationPercent(100);
+
             options.setCompactionOptionsUniversal(cou);
             cou.close();
 
