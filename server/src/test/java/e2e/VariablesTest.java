@@ -1,9 +1,16 @@
 package e2e;
 
+import static org.junit.Assert.assertEquals;
+
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
+import io.littlehorse.sdk.common.proto.VariableId;
+import io.littlehorse.sdk.common.proto.VariableIdList;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -18,9 +25,13 @@ import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import io.littlehorse.test.internal.TestExecutionContext;
+import io.littlehorse.test.internal.step.SearchResultCaptor;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Function;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +50,7 @@ public class VariablesTest {
     @LHWorkflow("assign-null-wf")
     private Workflow assignNullWorkflow;
 
+    private LittleHorseBlockingStub client;
     private WorkflowVerifier workflowVerifier;
 
     @Test
@@ -150,6 +162,29 @@ public class VariablesTest {
                 .start();
     }
 
+    @Test
+    void shouldFindWfRunSearchedOnJsonObjField() {
+        SearchResultCaptor<VariableIdList> captor = SearchResultCaptor.of(VariableIdList.class);
+        Function<TestExecutionContext, SearchVariableRequest> searchProvider = (context) -> {
+            return SearchVariableRequest.newBuilder()
+                    .setWfSpecName("wf-run-id")
+                    .setValue(LHLibUtil.objToVarVal("asdf"))
+                    .setVarName("my-json-blob_$.someField")
+                    .build();
+        };
+
+        WfRunId result = workflowVerifier
+                .prepareRun(wfRunIdWf, Arg.of("my-json-blob", Map.of("someField", "asdf")))
+                .waitForStatus(LHStatus.COMPLETED)
+                .doSearch(SearchVariableRequest.class, captor.capture(), searchProvider)
+                .start();
+
+        List<VariableId> results = captor.getValue().get().getResultsList().stream()
+                .filter(id -> id.getWfRunId().getId().equals(result.getId()))
+                .toList();
+        assertEquals(1, results.size());
+    }
+
     @LHWorkflow("assign-null-wf")
     public Workflow assignNullVariable() {
         return new WorkflowImpl("assign-null-wf", thread -> {
@@ -189,6 +224,7 @@ public class VariablesTest {
         return new WorkflowImpl("wf-run-id", thread -> {
             WfRunVariable valueAVariable = thread.addVariable("wfrun-a", VariableType.WF_RUN_ID)
                     .withDefault(WfRunId.newBuilder().setId("default-id").build());
+            thread.declareJsonObj("my-json-blob").searchableOn("$.someField", VariableType.STR);
             TaskNodeOutput output = thread.execute("print-wf-run-id", valueAVariable);
             thread.execute("print-wf-run-id", output);
         });
