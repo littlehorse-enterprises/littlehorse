@@ -11,6 +11,7 @@ import { FC } from 'react'
 import { VariableAssignment } from '../../Components'
 import '../node.css'
 import { ActionTask } from './ActionTask'
+
 export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
   const { userTaskDefName, userGroup, userId, notes, onCancellationExceptionName, userTaskDefVersion, actions } = node
   if (!node) return
@@ -25,7 +26,6 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
           <div>
             <div className="flex items-center gap-1">
               <small className="node-title">User Group </small>
-              {/* <InfoIcon size={16} color="gray" />   TODO: add information about the variable*/}
             </div>
             <VariableAssignment variableAssigment={userGroup} />
           </div>
@@ -44,7 +44,6 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
           <div>
             <div className="flex items-center gap-1">
               <small className="node-title">User Task Definition Version</small>
-              {/* <InfoIcon size={16} color="gray" /> */}
             </div>
             <p>{userTaskDefVersion}</p>
           </div>
@@ -53,7 +52,6 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
           <div>
             <div className="flex items-center gap-1">
               <small className="node-title">Notes </small>
-              {/* <InfoIcon size={16} color="gray" /> */}
             </div>
             <VariableAssignment variableAssigment={notes} />
           </div>
@@ -62,7 +60,6 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
           <div>
             <div className="flex items-center gap-1">
               <small className="node-title">Cancel Exception </small>
-              {/* <InfoIcon size={16} color="gray" /> */}
             </div>
             <VariableAssignment variableAssigment={onCancellationExceptionName} />
           </div>

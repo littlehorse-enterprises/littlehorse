@@ -8,7 +8,7 @@ import "./node.css"
 export const ThrowEventNode: FC<{ node: ThrowEventNodeProto }> = ({ node }) => {
   const { eventDefId, content } = node
 
-  if (!eventDefId) return <></>
+  if (!eventDefId) return null
 
   return (
     <div className="flex max-w-full flex-1 flex-col">

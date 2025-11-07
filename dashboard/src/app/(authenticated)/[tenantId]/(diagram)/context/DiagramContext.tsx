@@ -16,8 +16,6 @@ export type NodeInContext =
   | Node<NodeProto & { nodeRunsList: NodeRun[] }, NodeType>
   | undefined
 
-
-// export type NodeRunType = WfRun
 type DiagramContextType = {
   thread: ThreadType
   setThread: Dispatch<SetStateAction<ThreadType>>

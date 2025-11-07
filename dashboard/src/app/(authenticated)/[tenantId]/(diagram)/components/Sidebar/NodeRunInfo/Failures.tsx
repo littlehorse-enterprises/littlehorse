@@ -4,7 +4,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { NodeStatus } from './NodeStatus'
 import { LabelContent } from '../Components'
 import { LHStatus } from 'littlehorse-client/proto'
-import { Textarea } from '@/components/ui/textarea'
+
 export const Failures: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
   const { selectedNode } = useDiagram()
 
@@ -28,10 +28,10 @@ export const Failures: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
                 <div className="ml-2">{failure.failureName}</div>
               </AccordionTrigger>
               <AccordionContent>
-                <div className='mt-1'>
-                    <NodeStatus status={(failure.wasProperlyHandled ? 'COMPLETED' : 'ERROR') as LHStatus}></NodeStatus>
+                <div className="mt-1">
+                  <NodeStatus status={(failure.wasProperlyHandled ? 'COMPLETED' : 'ERROR') as LHStatus}></NodeStatus>
                 </div>
-                <div className="ml-2 my-1">
+                <div className="my-1 ml-2">
                   <div className="mb-2 border-b-2 pb-2">Message</div>
                   <div>{`${failure.message}`}</div>
                 </div>

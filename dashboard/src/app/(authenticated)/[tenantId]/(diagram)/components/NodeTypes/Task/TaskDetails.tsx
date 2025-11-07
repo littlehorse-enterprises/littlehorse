@@ -24,7 +24,7 @@ export const TaskDetails: FC<NodeProps<'task', TaskNode>> = ({ data }) => {
 
   taskRunData?.attempts.sort((a, b) => new Date(b.startTime ?? 0).getTime() - new Date(a.startTime ?? 0).getTime())
 
-  return <></>
+  return null
 }
 
 export const TaskLink: FC<{ taskToExecute: NonNullable<TaskNode['taskToExecute']> }> = ({ taskToExecute }) => {
