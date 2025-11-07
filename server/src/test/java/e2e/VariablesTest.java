@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableId;
+import io.littlehorse.sdk.common.proto.VariableIdList;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -24,10 +25,13 @@ import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import io.littlehorse.test.internal.TestExecutionContext;
+import io.littlehorse.test.internal.step.SearchResultCaptor;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Function;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -160,19 +164,22 @@ public class VariablesTest {
 
     @Test
     void shouldFindWfRunSearchedOnJsonObjField() {
+        SearchResultCaptor<VariableIdList> captor = SearchResultCaptor.of(VariableIdList.class);
+        Function<TestExecutionContext, SearchVariableRequest> searchProvider = (context) -> {
+            return SearchVariableRequest.newBuilder()
+                    .setWfSpecName("wf-run-id")
+                    .setValue(LHLibUtil.objToVarVal("asdf"))
+                    .setVarName("my-json-blob_$.someField")
+                    .build();
+        };
+
         WfRunId result = workflowVerifier
                 .prepareRun(wfRunIdWf, Arg.of("my-json-blob", Map.of("someField", "asdf")))
                 .waitForStatus(LHStatus.COMPLETED)
+                .doSearch(SearchVariableRequest.class, captor.capture(), searchProvider)
                 .start();
 
-        List<VariableId> results = client
-                .searchVariable(SearchVariableRequest.newBuilder()
-                        .setWfSpecName("wf-run-id")
-                        .setValue(LHLibUtil.objToVarVal("asdf"))
-                        .setVarName("my-json-blob_$.someField")
-                        .build())
-                .getResultsList()
-                .stream()
+        List<VariableId> results = captor.getValue().get().getResultsList().stream()
                 .filter(id -> id.getWfRunId().getId().equals(result.getId()))
                 .toList();
         assertEquals(1, results.size());
