@@ -221,7 +221,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
 
         TagStorageType indexType = TagStorageType.LOCAL;
 
-        if (!threadVarDef.isSearchable()) {
+        if (!threadVarDef.isSearchable() && threadVarDef.getJsonIndexes().isEmpty()) {
             return List.of();
         }
 
