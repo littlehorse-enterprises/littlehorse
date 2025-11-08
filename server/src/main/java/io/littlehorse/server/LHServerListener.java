@@ -143,7 +143,6 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -171,7 +170,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final CoreStoreProvider coreStoreProvider;
     private final String listenerName;
     private final CommandSender commandSender;
-    private final Duration successDurationTimeout;
     private final AsyncWaiters asyncWaiters;
     private final LHInternalClient lhInternalClient;
 
@@ -205,8 +203,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         this.internalComms = internalComms;
         this.listenerName = listenerConfig.getName();
         this.contextKey = contextKey;
-        this.successDurationTimeout =
-                Duration.ofMillis(serverConfig.getStreamsSessionTimeout()).plusSeconds(10);
 
         this.grpcListener = null;
 
@@ -1147,16 +1143,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             AbstractCommand<AC> command, StreamObserver<RC> responseObserver, Class<RC> responseCls) {
         command.setCommandId(LHUtil.generateGuid());
         RequestExecutionContext requestContext = requestContext();
-        Future<Message> futureResponse = commandSender.doSend(
+        Future<RC> futureResponse = commandSender.doSend(
                 command,
                 responseCls,
                 requestContext.authorization().principalId(),
                 requestContext.authorization().tenantId(),
                 requestContext);
         try {
-            Message response =
-                    futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
-            responseObserver.onNext((RC) response);
+            RC response = futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
+            responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (InterruptedException e) {
             responseObserver.onError(new StatusRuntimeException(
