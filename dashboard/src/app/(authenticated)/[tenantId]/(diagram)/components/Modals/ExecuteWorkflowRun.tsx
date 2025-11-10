@@ -94,7 +94,6 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
     delete values.parentWfRunId
     if (!wfSpec.id || (wfSpec.parentWfSpec && !parentWfRunId)) return
     const variables = formatVariablesPayload(values)
-    console.log(variables)
 
     try {
       const wfRun = await runWfSpec({
