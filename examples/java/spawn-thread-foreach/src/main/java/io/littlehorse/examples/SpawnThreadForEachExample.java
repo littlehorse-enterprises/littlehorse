@@ -1,7 +1,11 @@
 package io.littlehorse.examples;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -12,6 +16,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -88,5 +95,24 @@ public class SpawnThreadForEachExample {
 
         // Run the worker
         worker.start();
+
+        RunWfRequest build = RunWfRequest.newBuilder().setWfSpecName("spawn-parallel-threads-from-json-arr-variable")
+                .putVariables("approval-chain", bigJson()).build();
+
+        WfRun wfRun = client.runWf(build);
+        System.out.println("Wfrun executed: " + wfRun.getId());
+
+    }
+
+    private static VariableValue bigJson() {
+        Map<String, Object> outer = new HashMap<>();
+        outer.put("description", "bazzilion threadruns");
+
+        List<Map<String, String>> jsons = new ArrayList<>();
+        for (int i = 0; i < 20_000; i++) {
+            jsons.add(Map.of("user", "user-" + i));
+        }
+        outer.put("approvals", jsons);
+        return LHLibUtil.objToVarVal(outer);
     }
 }
