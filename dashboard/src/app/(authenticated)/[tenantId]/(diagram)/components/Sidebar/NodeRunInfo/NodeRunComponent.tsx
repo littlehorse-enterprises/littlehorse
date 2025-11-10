@@ -9,6 +9,7 @@ import { ThrowEventRunNode } from './ThrowEventRunNode'
 import { OctagonAlert } from 'lucide-react'
 import { StartThreadRunNode } from './StartThreadRunNode'
 import { TaskRunNode } from './TaskRunNode'
+import { ChildWFNodeRun } from './ChildWFNodeRun'
 
 export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
   const { selectedNode } = useDiagram()
@@ -22,6 +23,7 @@ export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex })
   }
 
   const nodeRun = selectedNode.data.nodeRunsList[nodeRunIndex]
+  console.log("NodeRunComponent nodeRun:", nodeRun)
 
   const { $case, value } = nodeRun.nodeType!
   if ($case === 'task') return <TaskRunNode node={value} />
@@ -32,6 +34,7 @@ export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex })
   if ($case === 'startThread') return <StartThreadRunNode node={value} />
   if ($case === 'startMultipleThreads') return <StartMultipleThreadRunNode node={value} />
   if ($case === 'throwEvent') return <ThrowEventRunNode node={value} />
+  if ($case === 'runChildWf') return <ChildWFNodeRun node={value} />
 
   return (
     <div className="mt-2 flex justify-center">
