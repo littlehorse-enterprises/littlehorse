@@ -19,6 +19,7 @@ import io.littlehorse.server.listener.MTLSConfig;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.listener.TLSConfig;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.topology.core.LHProductionExceptionHandler;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -48,7 +49,6 @@ import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.rocksdb.Cache;
 import org.rocksdb.LRUCache;
@@ -1011,7 +1011,7 @@ public class LHServerConfig extends ConfigBase {
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
         props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
-        props.put("default.production.exception.handler", DefaultProductionExceptionHandler.class);
+        props.put("default.production.exception.handler", LHProductionExceptionHandler.class);
         props.put("default.value.serde", Serdes.StringSerde.class.getName());
         props.put("default.key.serde", Serdes.StringSerde.class.getName());
 
