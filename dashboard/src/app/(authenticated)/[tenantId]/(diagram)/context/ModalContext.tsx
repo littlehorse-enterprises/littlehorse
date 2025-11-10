@@ -5,15 +5,6 @@ import { Modals, ModalType } from '../components/Modals'
 export type Modal<T = any> = {
   type: ModalType
   data: T
-  nodeRun?: NodeRun
-  userTaskNode?: UserTaskNode
-}
-
-export type NodeRuns = {
-  nodeRunsList: [NodeRun]
-  taskNode?: TaskNode
-  nodeRun?: NodeRun
-  userTaskNode?: UserTaskNode
 }
 
 type ModalContextType = {

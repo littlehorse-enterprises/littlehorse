@@ -6,10 +6,7 @@ import { Edge, Node, useReactFlow, useStore } from 'reactflow'
 // used to calculate the width of the
 export const EDGE_WIDTH = 200
 
-export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: string }> = ({
-  nodeRuns,
-  nodeRunNameToBeHighlighted,
-}) => {
+export const Layouter: FC<{ nodeRuns?: NodeRun[] }> = ({ nodeRuns }) => {
   const nodes = useStore(store => store.getNodes())
   const edges = useStore(store => store.edges)
   const setNodes = useStore(store => store.setNodes)
@@ -32,18 +29,20 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: s
 
       const layoutedNodes = nodes.map(node => {
         const nodeWithPosition = dagreGraph.node(node.id)
-        const nodeRun = nodeRuns?.find(nodeRun => {
-          return nodeRun.nodeName === node.id
-        })
-        const nodeRunsList = nodeRuns?.filter(nodeRun => {
-          return nodeRun.nodeName === node.id
-        })
-        const fade = nodeRuns !== undefined && nodeRun === undefined
-        const nodeNeedsToBeHighlighted = node.id === nodeRunNameToBeHighlighted
+        const nodeRunsList = nodeRuns
+          ?.filter(nodeRun => {
+            return nodeRun.nodeName === node.id
+          })
+          .sort((a, b) => {
+            const aPos = a.id?.position ?? 0
+            const bPos = b.id?.position ?? 0
+            return bPos - aPos
+          })
+        const fade = nodeRunsList !== undefined && nodeRunsList.length === 0
 
         return {
           ...node,
-          data: { ...node.data, nodeRun, fade, nodeNeedsToBeHighlighted, nodeRunsList },
+          data: { ...node.data, fade, nodeRunsList },
           position: { x: nodeWithPosition.x - node.width! / 2, y: nodeWithPosition.y - node.height! / 2 },
           layouted: true,
         }
@@ -52,7 +51,7 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: s
       setNodes(layoutedNodes)
       fitView()
     },
-    [fitView, nodeRuns, setNodes, nodeRunNameToBeHighlighted]
+    [fitView, nodeRuns, setNodes]
   )
 
   useEffect(() => {
