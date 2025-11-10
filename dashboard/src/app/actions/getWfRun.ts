@@ -14,7 +14,6 @@ export type ThreadRunWithNodeRuns = ThreadRun & { nodeRuns: NodeRun[] }
 export type WfRunResponse = {
   wfRun: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
   wfSpec: WfSpec
-  nodeRuns: NodeRun[]
   variables: Variable[]
 }
 export const getWfRun = async ({ wfRunId, tenantId }: Props): Promise<WfRunResponse> => {
@@ -37,7 +36,7 @@ export const getWfRun = async ({ wfRunId, tenantId }: Props): Promise<WfRunRespo
   )
 
   const threadRuns = wfRun.threadRuns.map(threadRun => mergeThreadRunsWithNodeRuns(threadRun, nodeRuns))
-  return { wfRun: { ...wfRun, threadRuns }, wfSpec, nodeRuns, variables: [...variables, ...inheritedVariables] }
+  return { wfRun: { ...wfRun, threadRuns }, wfSpec, variables: [...variables, ...inheritedVariables] }
 }
 
 const mergeThreadRunsWithNodeRuns = (threadRun: ThreadRun, nodeRuns: NodeRun[]): ThreadRunWithNodeRuns => {
