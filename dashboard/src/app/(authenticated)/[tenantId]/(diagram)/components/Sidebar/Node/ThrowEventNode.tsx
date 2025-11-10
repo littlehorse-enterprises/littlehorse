@@ -3,7 +3,7 @@ import { ThrowEventNode as ThrowEventNodeProto } from 'littlehorse-client/proto'
 import { LinkIcon } from 'lucide-react'
 import { FC } from 'react'
 import { VariableAssignment } from '../Components'
-import "./node.css"
+import './node.css'
 
 export const ThrowEventNode: FC<{ node: ThrowEventNodeProto }> = ({ node }) => {
   const { eventDefId, content } = node

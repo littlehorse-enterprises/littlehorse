@@ -1,7 +1,7 @@
 import { ExitNode as ExitNodeProto } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { VariableAssignment } from '../Components'
-import "./node.css"
+import './node.css'
 export const ExitNode: FC<{ node: ExitNodeProto }> = ({ node }) => {
   const { result } = node
 
@@ -24,7 +24,7 @@ const FailureDetails: FC<{
   return (
     <>
       <p className="node-title">Failure</p>
-      <p className="flex-grow truncate px-2 bg-black font-mono text-gray-200">{failureName}</p>
+      <p className="flex-grow truncate bg-black px-2 font-mono text-gray-200">{failureName}</p>
       <p className="node-title">Message</p>
       <p className="line-clamp-2 truncate text-wrap border bg-black px-2 font-mono text-gray-200">{message}</p>
       {content && (

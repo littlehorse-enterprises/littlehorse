@@ -5,7 +5,7 @@ import { FC } from 'react'
 import { getTaskName } from '../../NodeTypes/Task/TaskDetails'
 import { VariableAssignment } from '../Components'
 import { TaskNodeMetric } from '../Components/TaskNodeMetric'
-import "./node.css"
+import './node.css'
 
 export const TaskNode: FC<{ node: TaskNodeProto }> = ({ node }) => {
   const { taskToExecute, exponentialBackoff, retries, timeoutSeconds, variables } = node

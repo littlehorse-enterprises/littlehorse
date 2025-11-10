@@ -3,7 +3,7 @@ import { ScanIcon } from 'lucide-react'
 import { FC } from 'react'
 import { useDiagram } from '../../../hooks/useDiagram'
 import { VariableAssignment } from '../Components'
-import "./node.css"
+import './node.css'
 
 export const StartThreadNode: FC<{ node: StartThreadNodeProto }> = ({ node }) => {
   const { setThread } = useDiagram()
@@ -26,7 +26,7 @@ export const StartThreadNode: FC<{ node: StartThreadNodeProto }> = ({ node }) =>
           <small className="node-title">Inputs</small>
           {Object.entries(variables).map(([key, value]) => (
             <div key={JSON.stringify(value)} className="flex">
-              <span className="bg-gray-200 px-2 truncate flex-1 font-mono">{key}</span>
+              <span className="flex-1 truncate bg-gray-200 px-2 font-mono">{key}</span>
               <VariableAssignment variableAssigment={value} />
             </div>
           ))}

@@ -1,9 +1,8 @@
 import { utcToLocalDateTime } from '@/app/utils'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
-export const NodeVariable = ({ label, text="", type = "text" }: { label: string; text?: string, type?:string }) => {
-
-  if (type === "date") {
+export const NodeVariable = ({ label, text = '', type = 'text' }: { label: string; text?: string; type?: string }) => {
+  if (type === 'date') {
     text = utcToLocalDateTime(text)
   }
   return (

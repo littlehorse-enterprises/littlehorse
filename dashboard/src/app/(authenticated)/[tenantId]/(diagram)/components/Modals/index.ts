@@ -13,7 +13,7 @@ export const ModalComponents = {
   edge: Edge,
   workflowRun: ExecuteWorkflowRun,
   variableAssignment: VariableAssignmentModal,
-  mutation: MutationModal
+  mutation: MutationModal,
 } as const
 
 export type ModalType = keyof typeof ModalComponents

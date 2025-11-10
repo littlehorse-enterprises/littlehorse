@@ -3,7 +3,7 @@ import { ExternalEventNode as ExternalEventNodeProto } from 'littlehorse-client/
 import { LinkIcon } from 'lucide-react'
 import { FC } from 'react'
 import { VariableAssignment } from '../Components'
-import "./node.css"
+import './node.css'
 
 export const ExternalEventNode: FC<{ node: ExternalEventNodeProto }> = ({ node }) => {
   const { externalEventDefId, timeoutSeconds, correlationKey } = node

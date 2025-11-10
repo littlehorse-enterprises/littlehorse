@@ -15,7 +15,7 @@ const Node: FC<NodeProps<'startThread', StartThreadNode>> = ({ data }) => {
       <SelectedNode />
       <Fade fade={fade} status={nodeRun?.status}>
         <div className="flex">
-          <div className="cursor-pointer relative grid h-8 w-8 place-items-center">
+          <div className="relative grid h-8 w-8 cursor-pointer place-items-center">
             <PlusIcon className="z-10 h-4 w-4 fill-gray-500" />
             <div className="absolute inset-0 bg-gray-400 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>
             <div className="absolute inset-[2px] bg-gray-200 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>

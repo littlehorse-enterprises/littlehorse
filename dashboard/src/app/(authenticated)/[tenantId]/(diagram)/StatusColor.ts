@@ -1,4 +1,4 @@
-import { WfRun, WfSpec } from "littlehorse-client/proto";
+import { WfRun, WfSpec } from 'littlehorse-client/proto'
 
 export const wfSpecStatusColor: { [key in WfSpec['status']]: string } = {
   ARCHIVED: 'bg-gray-200',

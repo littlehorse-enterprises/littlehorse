@@ -8,7 +8,7 @@ export const StartMultipleThreadRunNode: FC<{ node: StartMultipleThreadsRun }> =
       <LabelContent label="Node Type" content="Start multiple threads "></LabelContent>
       <LabelContent label="Thread spec name" content={node.threadSpecName}></LabelContent>
       {node.childThreadIds.map(thread => {
-        return <div className='text-blue-500 ml-1'>{thread}</div>
+        return <div className="ml-1 text-blue-500">{thread}</div>
       })}
     </div>
   )

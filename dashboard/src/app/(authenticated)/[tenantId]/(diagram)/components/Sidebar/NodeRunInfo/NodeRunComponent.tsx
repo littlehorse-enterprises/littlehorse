@@ -34,7 +34,7 @@ export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex })
   if ($case === 'throwEvent') return <ThrowEventRunNode node={value} />
 
   return (
-    <div className="flex justify-center mt-2">
+    <div className="mt-2 flex justify-center">
       <div>
         <div className="flex justify-center">
           <OctagonAlert className="lex justify-center" />

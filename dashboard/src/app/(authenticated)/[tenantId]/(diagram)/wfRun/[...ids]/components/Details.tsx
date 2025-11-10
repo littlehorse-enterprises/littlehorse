@@ -8,7 +8,6 @@ import { wfRunStatusColor } from '../../../StatusColor'
 
 type DetailsProps = WfRun
 
-
 export const Details: FC<DetailsProps> = ({ id, status, wfSpecId, startTime }) => {
   if (!id || !wfSpecId) return null
 

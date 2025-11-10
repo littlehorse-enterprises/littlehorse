@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { useModal } from '../../../../hooks/useModal'
 import { TaskNode as TaskNodeComponent } from '../TaskNode'
 
-export const ActionTask: FC< UTActionTrigger_UTATask> = ({ task, mutations }) => {
+export const ActionTask: FC<UTActionTrigger_UTATask> = ({ task, mutations }) => {
   const { setShowModal, setModal } = useModal()
 
   const onClick = (data: VariableMutation) => {

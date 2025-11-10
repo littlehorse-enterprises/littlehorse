@@ -8,7 +8,7 @@ export const SleepRunNode: FC<{ node: SleepNodeRun }> = ({ node }) => {
     <div>
       <LabelContent label="Node Type" content="Sleep"></LabelContent>
       <LabelContent label="Maturation Time" content={utcToLocalDateTime(`${node.maturationTime}`)}></LabelContent>
-      <LabelContent label="Maturation status" content={node.matured? "Ready": "No ready yet"}></LabelContent>
+      <LabelContent label="Maturation status" content={node.matured ? 'Ready' : 'No ready yet'}></LabelContent>
     </div>
   )
 }

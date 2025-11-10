@@ -8,7 +8,14 @@ type Props = PropsWithChildren & {
   collapsible?: boolean
   icon: React.ElementType
 }
-export const SidebarSection: FC<Props> = ({ children, title, icon, collapsible = false, collapsed = false, level = 0 }) => {
+export const SidebarSection: FC<Props> = ({
+  children,
+  title,
+  icon,
+  collapsible = false,
+  collapsed = false,
+  level = 0,
+}) => {
   const [open, setOpen] = useState(collapsed)
 
   const IconSymbol = open ? ChevronDown : ChevronUp
@@ -21,7 +28,7 @@ export const SidebarSection: FC<Props> = ({ children, title, icon, collapsible =
   }, [collapsible, open, setOpen])
 
   return (
-    <div className={`flex flex-col pl-${level * 4} ${level > 0 ? 'border-l border-gray-700 ml-2' : ''} pb-2`}>
+    <div className={`flex flex-col pl-${level * 4} ${level > 0 ? 'ml-2 border-l border-gray-700' : ''} pb-2`}>
       <div className="flex cursor-pointer items-center gap-2 pt-2" onClick={handleOpen}>
         {collapsible && <IconSymbol className="h-4 w-4 flex-none" />}
         <Icon className="h-4 w-4 flex-none" />

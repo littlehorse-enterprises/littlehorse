@@ -33,12 +33,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
     <aside className="flex max-w-full flex-col pl-4">
       {isValidNode && selectedNode && (
         <>
-          {showNodeRun && (
-            <SelectedNodeRun
-              nodeRunIndex={nodeRunIndex}
-              setNodeRunIndex={setNodeRunIndex}
-            />
-          )}
+          {showNodeRun && <SelectedNodeRun nodeRunIndex={nodeRunIndex} setNodeRunIndex={setNodeRunIndex} />}
           <Tabs value={currentTab} onValueChange={value => setCurrentTab(value)} className="w-full">
             <TabsList className="w-full">
               <TabsTrigger className="flex-1" value="overview">
@@ -47,9 +42,11 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
               <TabsTrigger className="flex-1" value="node">
                 Node
               </TabsTrigger>
-              {showNodeRun && <TabsTrigger className="flex-1" value="failures">
-                Failures
-              </TabsTrigger>}
+              {showNodeRun && (
+                <TabsTrigger className="flex-1" value="failures">
+                  Failures
+                </TabsTrigger>
+              )}
             </TabsList>
             <TabsContent value="overview">
               {showNodeRun ? <NodeRunInfo nodeRunIndex={nodeRunIndex} /> : <NodeInfo />}
@@ -57,9 +54,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
             <TabsContent value="node">
               {showNodeRun ? <NodeRunComponent nodeRunIndex={nodeRunIndex} /> : <Node />}
             </TabsContent>
-            <TabsContent value="failures">
-              {showNodeRun && <Failures nodeRunIndex={nodeRunIndex}  />}
-            </TabsContent>
+            <TabsContent value="failures">{showNodeRun && <Failures nodeRunIndex={nodeRunIndex} />}</TabsContent>
           </Tabs>
         </>
       )}
