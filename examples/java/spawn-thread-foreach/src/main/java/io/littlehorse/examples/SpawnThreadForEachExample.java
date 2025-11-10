@@ -96,23 +96,6 @@ public class SpawnThreadForEachExample {
         // Run the worker
         worker.start();
 
-        RunWfRequest build = RunWfRequest.newBuilder().setWfSpecName("spawn-parallel-threads-from-json-arr-variable")
-                .putVariables("approval-chain", bigJson()).build();
-
-        WfRun wfRun = client.runWf(build);
-        System.out.println("Wfrun executed: " + wfRun.getId());
-
     }
 
-    private static VariableValue bigJson() {
-        Map<String, Object> outer = new HashMap<>();
-        outer.put("description", "bazzilion threadruns");
-
-        List<Map<String, String>> jsons = new ArrayList<>();
-        for (int i = 0; i < 20_000; i++) {
-            jsons.add(Map.of("user", "user-" + i));
-        }
-        outer.put("approvals", jsons);
-        return LHLibUtil.objToVarVal(outer);
-    }
 }
