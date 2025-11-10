@@ -90,5 +90,26 @@ public class PollThreadTest {
         assertThat(delegatedObserver.isCompleted()).isTrue();
     }
 
+    @Test
+    public void shouldClosePollThreadOnRuntimeException() {
+        delegatedObserver.setObserver(new StreamObserver<PollTaskRequest>() {
+            @Override
+            public void onNext(PollTaskRequest value) {
+                throw new RuntimeException("kaboom!");
+            }
+
+            @Override
+            public void onError(Throwable t) {}
+
+            @Override
+            public void onCompleted() {}
+        });
+        pollThread.start();
+        Awaitility.await().until(() -> !pollThread.isAlive());
+        verify(taskExecutor, never()).doTask(any(), any(), any(), any(), any());
+        assertThat(pollThread.isRunning()).isFalse();
+        assertThat(delegatedObserver.isCompleted()).isTrue();
+    }
+
     public void myTaskMethod() {}
 }
