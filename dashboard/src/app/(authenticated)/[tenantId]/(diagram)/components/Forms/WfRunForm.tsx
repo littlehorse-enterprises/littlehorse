@@ -1,11 +1,11 @@
+import { VariableTypeToFieldComponent } from '@/app/utils'
 import { Input } from '@/components/ui/input'
 import { ThreadVarDef, VariableType, WfRunVariableAccessLevel, WfSpec } from 'littlehorse-client/proto'
-import { forwardRef, HTMLInputTypeAttribute, useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { VariableLabel } from './components/BaseFormField'
 import FormField from './components/FormField'
-import { SelectBool } from './components/SelectBool'
-import { getVariableCaseFromTypeDef } from '@/app/utils'
+import FormLabel from './components/FormLabel'
+import { StructDefGroup } from './components/StructDefGroup'
 
 export type FormValues = {
   [key: string]: unknown
@@ -19,9 +19,8 @@ interface WfRunFormProps {
 
 export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVariables, wfSpec, onSubmit }, ref) => {
   const methods = useForm<FormValues>()
-  const { register, handleSubmit, formState } = methods
 
-  // Sorted by required first
+  // sorted by required first
   const sortedVariables = useMemo(
     () =>
       wfSpecVariables.sort((a, b) => {
@@ -33,49 +32,55 @@ export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVa
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} ref={ref} className="space-y-4">
-        <FormField label={'Custom WfRun Id'} as={Input} id="customWfRunId" type="text" />
-        {wfSpec.parentWfSpec && <FormField label={'Parent WfRun Id'} as={Input} id="parentWfRunId" />}
+      <form onSubmit={methods.handleSubmit(onSubmit)} ref={ref} className="space-y-4">
+        <FormField
+          label={'Custom WfRun Id'}
+          as={Input}
+          id="customWfRunId"
+          type="text"
+          variableType={VariableType.STR}
+        />
+        {wfSpec.parentWfSpec && (
+          <FormField label={'Parent WfRun Id'} as={Input} id="parentWfRunId" variableType={VariableType.STR} />
+        )}
 
         {sortedVariables.map((variable: ThreadVarDef) => {
+          if (!variable.varDef) return null
+
           const name = variable.varDef?.name
           if (!name) return null
 
-          const definedType = variable.varDef?.typeDef?.definedType
-          if (!definedType || definedType?.$case === 'structDefId') return null
+          const definedType = variable.varDef.typeDef?.definedType
+          if (!definedType) return null
 
-          // todo : make sure this is corret & works with deprecated proto
-          const { type, component } = TypeMap[definedType.value]
+          if (variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR) {
+            return <FormLabel label={name} accessLevel={variable.accessLevel} required={variable.required} />
+          }
 
-          return variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR ? (
-            <VariableLabel key={name} {...variable} />
-          ) : (
-            <FormField
-              label={name}
-              as={component}
-              id={name}
-              type={type}
-              required={variable.required}
-              accessLevel={variable.accessLevel}
-              variableType={}
-            />
-          )
+          if (definedType.$case === 'primitiveType') {
+            const { type, component } = VariableTypeToFieldComponent[definedType.value]
+
+            return (
+              <FormField
+                key={name}
+                label={name}
+                as={component}
+                id={name}
+                type={type}
+                protoRequired={variable.required}
+                accessLevel={variable.accessLevel}
+                variableType={definedType.value}
+              />
+            )
+          }
+
+          if (definedType.$case === 'structDefId') {
+            return (
+              <StructDefGroup key={name} structDefId={definedType.value} name={name} required={variable.required} />
+            )
+          }
         })}
       </form>
     </FormProvider>
   )
 })
-
-// todo : move this out
-const TypeMap = {
-  [VariableType.JSON_OBJ]: { type: 'text', component: Input },
-  [VariableType.JSON_ARR]: { type: 'text', component: Input },
-  [VariableType.DOUBLE]: { type: 'number', component: Input },
-  [VariableType.BOOL]: { type: 'checkbox', component: SelectBool },
-  [VariableType.STR]: { type: 'text', component: Input },
-  [VariableType.INT]: { type: 'number', component: Input },
-  [VariableType.BYTES]: { type: 'text', component: Input },
-  [VariableType.WF_RUN_ID]: { type: 'text', component: Input },
-  [VariableType.TIMESTAMP]: { type: 'text', component: Input },
-  [VariableType.UNRECOGNIZED]: { type: 'text', component: Input },
-} as const satisfies Record<keyof typeof VariableType, { type: HTMLInputTypeAttribute; component: React.ElementType }>

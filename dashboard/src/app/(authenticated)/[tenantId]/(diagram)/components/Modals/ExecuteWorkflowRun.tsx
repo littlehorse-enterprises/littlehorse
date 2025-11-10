@@ -18,7 +18,9 @@ import { useModal } from '../../hooks/useModal'
 import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
 import { FormValues, WfRunForm } from '../Forms/WfRunForm'
 
-export const DOT_REPLACEMENT_PATTERN = '*-/:DOT_REPLACE:'
+export const DOT_REPLACEMENT_PATTERN = '*-/:DOT_REPLACE_PATTERN'
+export const STRUCT_FIELD_DATA_SEPARATOR_PATTERN = '*-/:FIELD_DATA_SEPARATOR_PATTERN'
+export const STRUCT_PATH_SEPARATOR = '*-/:STRUCT_PATH_SEPARATOR_PATTERN'
 
 export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
   const { showModal, setShowModal } = useModal()
@@ -52,6 +54,78 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
         return acc
       }
 
+      if (key.includes(STRUCT_FIELD_DATA_SEPARATOR_PATTERN)) {
+        const [fieldName, variableCase, nestedStructPath, structDefName, structDefVersion] = key.split(
+          STRUCT_FIELD_DATA_SEPARATOR_PATTERN
+        )
+        const structPath = nestedStructPath.split(STRUCT_PATH_SEPARATOR)
+
+        const topLevelPath = structPath[0]
+        if (acc[topLevelPath] === undefined) {
+          acc[topLevelPath] = {
+            value: {
+              $case: 'struct',
+              value: {
+                structDefId: {
+                  name: structDefName,
+                  version: parseInt(structDefVersion),
+                },
+                struct: {
+                  fields: {},
+                },
+              },
+            },
+          } satisfies VariableValue
+        }
+
+        const topLevelValue = acc[topLevelPath].value
+        if (topLevelValue?.$case !== 'struct' || !topLevelValue.value.struct?.fields) return acc
+
+        let currentFields = topLevelValue.value.struct.fields
+
+        for (let i = 1; i < structPath.length; i++) {
+          const nestedStructName = structPath[i]
+
+          if (!currentFields[nestedStructName]) {
+            currentFields[nestedStructName] = {
+              value: {
+                value: {
+                  $case: 'struct',
+                  value: {
+                    structDefId: {
+                      name: structDefName,
+                      version: parseInt(structDefVersion),
+                    },
+                    struct: {
+                      fields: {},
+                    },
+                  },
+                },
+              },
+            }
+          }
+
+          const nestedField = currentFields[nestedStructName]?.value
+          if (nestedField?.value?.$case === 'struct' && nestedField.value.value.struct?.fields) {
+            currentFields = nestedField.value.value.struct.fields
+          } else {
+            return acc
+          }
+        }
+
+        currentFields[fieldName] = {
+          value: {
+            value: {
+              // typecast necessary here
+              $case: variableCase as any,
+              value: values[key] as any,
+            },
+          },
+        }
+
+        return acc
+      }
+
       acc[transformedKey] = VariableValue.fromJSON({ [matchVariableType(transformedKey)]: values[key] })
       return acc
     }, {})
@@ -72,7 +146,8 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
     delete values.customWfRunId
     delete values.parentWfRunId
     if (!wfSpec.id || (wfSpec.parentWfSpec && !parentWfRunId)) return
-    const variables = formatVariablesPayload(values)
+    let variables = formatVariablesPayload(values)
+    console.log(variables)
 
     try {
       const wfRun = await runWfSpec({
