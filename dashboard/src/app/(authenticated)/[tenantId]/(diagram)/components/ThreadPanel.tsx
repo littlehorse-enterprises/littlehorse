@@ -2,12 +2,12 @@ import { WfRun, WfSpec } from 'littlehorse-client/proto'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, useMemo } from 'react'
+import { useDiagram } from '../hooks/useDiagram'
 import { useReplaceQueryValue } from '../hooks/useReplaceQueryValue'
 import { useScrollbar } from '../hooks/useScrollbar'
-import { useThread } from '../hooks/useThread'
 
 export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }) => {
-  const { thread, setThread } = useThread()
+  const { thread, setThread } = useDiagram()
   const threads = useMemo(() => extractThreads(spec, wfRun), [spec, wfRun])
   const { scroll, itemsRef, containerRef, maxScroll, scrollLeft, scrollRight } = useScrollbar()
   const router = useRouter()

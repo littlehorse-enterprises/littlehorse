@@ -10,7 +10,7 @@ This example does the following:
 To run this example, you can do the following:
 
 ```
-gradle example-await-workflow-event:run --args '<delay-milliseconds> <timeout-milliseconds> <workflow-sleep>'
+./gradlew  example-await-workflow-event:run --args '<delay-milliseconds> <timeout-milliseconds> <workflow-sleep>'
 ```
 
 The arguments are as follows:
@@ -26,7 +26,7 @@ The arguments are as follows:
 In this case, we send the `rpc AwaitWorkflowEvent` _after_ the `WorkflowEvent` has been registered. You can test it as follows:
 
 ```
-gradle example-await-workflow-event:run --args '3000 1000 1'
+./gradlew example-await-workflow-event:run --args '3000 1000 1'
 ```
 
 #### RPC Arrives First
@@ -34,7 +34,7 @@ gradle example-await-workflow-event:run --args '3000 1000 1'
 In this case, the `rpc AwaitWorkflowEvent` arrives at the server _before_ the `WorkflowEvent` has been registered, and it blocks until the `WorkflowEvent` is thrown.
 
 ```
-gradle example-await-workflow-event:run --args '500 5000 1'
+./gradlew example-await-workflow-event:run --args '500 5000 1'
 ```
 
 #### Timeout
@@ -42,5 +42,5 @@ gradle example-await-workflow-event:run --args '500 5000 1'
 In this case, the `WorkflowEvent` does not arrive before the timeout, which causes a `DEADLINE_EXCEEDED` exception to be thrown.
 
 ```
-gradle example-await-workflow-event:run --args '0 500 2'
+./gradlew example-await-workflow-event:run --args '0 500 2'
 ```

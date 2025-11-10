@@ -1,96 +1,28 @@
-import { getVariable } from '@/app/utils'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { StartMultipleThreadsNode as StartMultipleThreadsNodeProto } from 'littlehorse-client/proto'
 import { PlusIcon } from 'lucide-react'
-import { FC, memo, useState } from 'react'
+import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
-import { useThread } from '../../hooks/useThread'
-import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 import { Fade } from './Fade'
-import { NodeDetails } from './NodeDetails'
+import { SelectedNode } from './SelectedNode'
 
 const Node: FC<NodeProps<'startMultipleThreads', StartMultipleThreadsNodeProto>> = ({ data }) => {
-  const { fade, nodeRun } = data
-  const { setThread } = useThread()
-  const [isOpen, setIsOpen] = useState(false)
-  const variables = Object.entries(data.variables)
+  const { fade, nodeRunsList } = data
+  const nodeRun = nodeRunsList?.[0]
+
   return (
     <>
-      <NodeDetails nodeRunList={data.nodeRunsList}>
-        <DiagramDataGroup label="StartMultipleThreads">
-          <div className="flex items-center gap-1 text-nowrap">
-            {data.nodeRun === undefined ? (
-              <button
-                className="block whitespace-nowrap text-blue-500 hover:underline"
-                onClick={() => setThread({ name: data.threadSpecName || '', number: 0 })}
-              >
-                {data.threadSpecName}
-              </button>
-            ) : (
-              <div>{data.threadSpecName}</div>
-            )}
-          </div>
-          <div className="">
-            <span className="font-bold">Iterable:</span> {getVariable(data.iterable!)}
-          </div>
-          {variables.length > 0 && (
-            <div className="mt-2">
-              <h2 className="font-bold">Variables</h2>
-              <ul>
-                {variables.map(([name, value]) => (
-                  <li key={name}>
-                    {`{${name}}`} {getVariable(value)}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {nodeRun && nodeRun.nodeType?.$case === 'startMultipleThreads' && (
-            <div className="mt-2">
-              <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    View Thread List
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Thread Runs</DialogTitle>
-                  </DialogHeader>
-                  <div className="max-h-[300px] overflow-y-auto">
-                    <ul className="space-y-2">
-                      {nodeRun.nodeType.value.childThreadIds.map(number => (
-                        <li key={number}>
-                          <button
-                            className="w-full text-left text-blue-500 hover:underline"
-                            onClick={() => {
-                              setThread({ name: data.threadSpecName || '', number })
-                              setIsOpen(false)
-                            }}
-                          >
-                            {nodeRun.threadSpecName}-{number}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </div>
-          )}
-        </DiagramDataGroup>
-      </NodeDetails>
+      <SelectedNode />
       <Fade fade={fade} status={nodeRun?.status}>
-        <div className="relative cursor-pointer">
-          <div className="ml-1 flex h-6 w-6 rotate-45 items-center justify-center border-[2px] border-gray-500 bg-gray-200">
-            <PlusIcon className="h-5 w-5 rotate-45 fill-gray-500" />
+        <div className="flex">
+          <div className="cursor-pointer1 relative grid h-8 w-8 place-items-center">
+            <PlusIcon className="z-10 h-4 w-4 fill-gray-500" />
+            <div className="absolute inset-0 bg-gray-400 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>
+            <div className="absolute inset-[2px] bg-gray-200 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>
           </div>
+          <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
+          <Handle type="source" position={Position.Right} id="source-0" className="bg-transparent" />
         </div>
-        <Handle type="source" position={Position.Right} className="bg-transparent" />
-        <Handle type="target" position={Position.Left} className="bg-transparent" />
       </Fade>
     </>
   )
