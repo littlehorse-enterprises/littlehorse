@@ -2,12 +2,12 @@ import { getStructDef } from '@/app/actions/getStructDef'
 import { getVariableCaseFromType, VariableTypeToFieldComponent } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 import { FieldGroup } from '@/components/ui/field'
-import { StructDefId } from 'littlehorse-client/proto'
+import { StructDefId, VariableType } from 'littlehorse-client/proto'
 import { useParams } from 'next/navigation'
-import { createContext, FC, useContext, useEffect, useMemo, useState } from 'react'
-import { useFormContext } from 'react-hook-form'
+import { createContext, FC, HTMLInputTypeAttribute, useContext, useEffect, useMemo, useState } from 'react'
+import { useFormContext, useWatch } from 'react-hook-form'
 import useSWR from 'swr'
-import { STRUCT_FIELD_DATA_SEPARATOR_PATTERN, STRUCT_PATH_SEPARATOR } from '../../Modals/ExecuteWorkflowRun'
+import { STRUCT_FORM_FIELD_PREFIX, useStructFormContext, VariableCase } from '../context/StructFormContext'
 import { FormValues } from '../WfRunForm'
 import FormField from './FormField'
 import FormLabel from './FormLabel'
@@ -17,24 +17,106 @@ const StructDefParentContext = createContext<{ parentDisabled: boolean; nestedSt
   nestedStructPath: [],
 })
 
+interface StructPrimitiveFieldProps {
+  fieldName: string
+  label: string
+  component: React.ElementType
+  type: HTMLInputTypeAttribute | undefined
+  variableType: VariableType
+  variableCase: VariableCase
+  structPath: string[]
+  structDefId: StructDefId
+  protoRequired: boolean
+  formRequired: boolean
+  disabled: boolean
+}
+
+const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
+  fieldName,
+  label,
+  component,
+  type,
+  variableType,
+  variableCase,
+  structPath,
+  structDefId,
+  protoRequired,
+  formRequired,
+  disabled,
+}) => {
+  const structForm = useStructFormContext()
+  const { control, setValue } = useFormContext<FormValues>()
+  const fieldId = useMemo(() => [STRUCT_FORM_FIELD_PREFIX, ...structPath, fieldName].join('.'), [structPath, fieldName])
+  const value = useWatch({ name: fieldId, control })
+
+  useEffect(() => {
+    if (disabled) {
+      if (value !== undefined) {
+        setValue(fieldId, undefined)
+      }
+      structForm.clearFieldValue(structPath, fieldName)
+      return
+    }
+
+    if (value === undefined || value === null || (typeof value === 'string' && value === '')) {
+      structForm.clearFieldValue(structPath, fieldName)
+      return
+    }
+
+    structForm.setPrimitiveFieldValue(structPath, structDefId, fieldName, variableCase, value)
+  }, [disabled, fieldId, fieldName, structDefId, structForm, structPath, value, variableCase, setValue])
+
+  return (
+    <FormField
+      label={label}
+      as={component}
+      id={fieldId}
+      type={type}
+      protoRequired={protoRequired}
+      formRequired={formRequired}
+      variableType={variableType}
+      disabled={disabled}
+    />
+  )
+}
+
 export const StructDefGroup: FC<{ structDefId: StructDefId; name: string; required: boolean }> = ({
   structDefId,
   name: structName,
   required,
 }) => {
   const tenantId = useParams().tenantId as string
-  const { register, formState } = useFormContext<FormValues>()
+  const { unregister } = useFormContext<FormValues>()
   const { parentDisabled, nestedStructPath } = useContext(StructDefParentContext)
+  const structForm = useStructFormContext()
   const [isDisabled, setIsDisabled] = useState(parentDisabled)
 
   useEffect(() => {
     setIsDisabled(parentDisabled)
   }, [parentDisabled])
 
-  const fullStructPath = useMemo(
-    () => [...nestedStructPath, structName].join(STRUCT_PATH_SEPARATOR),
-    [structName, nestedStructPath]
-  )
+  const currentStructPath = useMemo(() => [...nestedStructPath, structName], [structName, nestedStructPath])
+
+  useEffect(() => {
+    const fieldPrefix = [STRUCT_FORM_FIELD_PREFIX, ...currentStructPath].join('.')
+
+    if (isDisabled) {
+      structForm.unregisterStructPath(currentStructPath)
+      unregister(fieldPrefix)
+
+      return () => {
+        structForm.unregisterStructPath(currentStructPath)
+        unregister(fieldPrefix)
+      }
+    }
+
+    structForm.registerStructPath(currentStructPath, structDefId)
+
+    return () => {
+      structForm.unregisterStructPath(currentStructPath)
+      unregister(fieldPrefix)
+    }
+  }, [currentStructPath, isDisabled, structDefId, structForm, unregister])
 
   const {
     data: structDef,
@@ -76,17 +158,18 @@ export const StructDefGroup: FC<{ structDefId: StructDefId; name: string; requir
             const variableCase = getVariableCaseFromType(variableType)
 
             return (
-              <FormField
+              <StructPrimitiveField
                 key={name}
+                fieldName={name}
                 label={name}
-                as={component}
-                id={[name, variableCase, fullStructPath, structDefId.name, structDefId.version].join(
-                  STRUCT_FIELD_DATA_SEPARATOR_PATTERN
-                )}
+                component={component}
                 type={type}
                 protoRequired={!defaultValue}
                 formRequired={!isDisabled}
                 variableType={variableType}
+                variableCase={variableCase as VariableCase}
+                structPath={currentStructPath}
+                structDefId={structDefId}
                 disabled={parentDisabled || isDisabled}
               />
             )
@@ -96,7 +179,7 @@ export const StructDefGroup: FC<{ structDefId: StructDefId; name: string; requir
                 key={definedType.value.name}
                 value={{
                   parentDisabled: parentDisabled || isDisabled,
-                  nestedStructPath: [fullStructPath],
+                  nestedStructPath: currentStructPath,
                 }}
               >
                 <StructDefGroup structDefId={definedType.value} name={name} required={!defaultValue} />
