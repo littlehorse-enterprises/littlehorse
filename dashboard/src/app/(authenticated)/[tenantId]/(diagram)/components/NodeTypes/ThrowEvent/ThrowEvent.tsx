@@ -1,45 +1,23 @@
 import { ThrowEventNode } from 'littlehorse-client/proto'
-import { CircleArrowOutUpRightIcon, ExternalLinkIcon } from 'lucide-react'
+import { CircleArrowOutUpRightIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
 
-import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { Fade } from '../Fade'
-import { NodeDetails } from '../NodeDetails'
-
-import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
+import { SelectedNode } from '../SelectedNode'
 
 const Node: FC<NodeProps<'throwEvent', ThrowEventNode>> = ({ data }) => {
-  const { fade, nodeNeedsToBeHighlighted, nodeRun, eventDefId } = data
+  const { fade, eventDefId, nodeRunsList } = data
   if (!eventDefId) return null
+  const nodeRun = nodeRunsList?.[0]
+
   return (
     <>
-      <NodeDetails nodeRunList={data.nodeRunsList}>
-        <DiagramDataGroup label={nodeRun ? 'WorkflowEvent' : 'WorkflowEventDef'}>
-          <div>
-            <div>
-              <div className="flex items-center gap-1 text-nowrap">
-                <LinkWithTenant
-                  className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
-                  target="_blank"
-                  href={`/workflowEventDef/${eventDefId.name}`}
-                >
-                  {eventDefId.name} <ExternalLinkIcon className="h-4 w-4" />
-                </LinkWithTenant>
-              </div>
-            </div>
-          </div>
-        </DiagramDataGroup>
-      </NodeDetails>
-      <Fade fade={fade} status={data.nodeRun?.status}>
+      <SelectedNode />
+      <Fade fade={fade} status={nodeRun?.status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">
-          <div
-            className={
-              'items-center-justify-center flex rounded-full border-[1px] border-purple-500 bg-purple-200 p-[1px] text-xs' +
-              (nodeNeedsToBeHighlighted ? ' shadow-lg shadow-purple-500' : '')
-            }
-          >
+          <div className="items-center-justify-center flex rounded-full border-[1px] border-purple-500 bg-purple-200 p-[1px] text-xs">
             <div className="items-center-justify-center flex rounded-full border-[1px] border-purple-500 bg-purple-200 p-2 text-xs">
               <CircleArrowOutUpRightIcon className="h-4 w-4 fill-transparent stroke-purple-500" />
             </div>

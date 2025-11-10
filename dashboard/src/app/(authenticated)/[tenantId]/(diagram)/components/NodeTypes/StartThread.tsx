@@ -1,54 +1,28 @@
-import { getVariable } from '@/app/utils'
+import { StartThreadNode } from 'littlehorse-client/proto'
 import { PlusIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
-import { useThread } from '../../hooks/useThread'
-import { NodeRunsList } from '../NodeRunsList'
 import { Fade } from './Fade'
-import { NodeDetails } from './NodeDetails'
-import { StartThreadNode } from 'littlehorse-client/proto'
+import { SelectedNode } from './SelectedNode'
 
 const Node: FC<NodeProps<'startThread', StartThreadNode>> = ({ data }) => {
   const { fade, nodeRunsList } = data
-  const { setThread } = useThread()
+  const nodeRun = nodeRunsList?.[0]
 
-  const variables = Object.entries(data.variables)
   return (
     <>
-      <NodeDetails nodeRunList={nodeRunsList}>
-        <div className="flex items-center gap-1 text-nowrap">
-          <h3 className="font-bold">StartThread</h3>
-          <button
-            className="whitespace-nowrap text-blue-500 hover:underline"
-            onClick={() => setThread({ name: data.threadSpecName || '', number: 0 })}
-          >
-            {data.threadSpecName}
-          </button>
-        </div>
-        {variables.length > 0 && (
-          <div className="mt-2">
-            <h2 className="font-bold">Variables</h2>
-            <ul>
-              {variables.map(([name, value]) => (
-                <li key={name}>
-                  {`{${name}}`} = {getVariable(value)}
-                </li>
-              ))}
-            </ul>
+      <SelectedNode />
+      <Fade fade={fade} status={nodeRun?.status}>
+        <div className="flex">
+          <div className="relative grid h-8 w-8 cursor-pointer place-items-center">
+            <PlusIcon className="z-10 h-4 w-4 fill-gray-500" />
+            <div className="absolute inset-0 bg-gray-400 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>
+            <div className="absolute inset-[2px] bg-gray-200 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>
           </div>
-        )}
-        <NodeRunsList nodeRuns={nodeRunsList} />
-      </NodeDetails>
-
-      <Fade fade={fade} status={data.nodeRun?.status}>
-        <div className="relative cursor-pointer">
-          <div className="ml-1 flex h-6 w-6 rotate-45 items-center justify-center border-[2px] border-gray-500 bg-gray-200">
-            <PlusIcon className="h-5 w-5 rotate-45 fill-gray-500" />
-          </div>
+          <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
+          <Handle type="source" position={Position.Right} id="source-0" className="bg-transparent" />
         </div>
-        <Handle type="source" position={Position.Right} className="bg-transparent" />
-        <Handle type="target" position={Position.Left} className="bg-transparent" />
       </Fade>
     </>
   )

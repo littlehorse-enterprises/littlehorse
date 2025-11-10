@@ -49,12 +49,10 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
                 options.setInfoLogLevel(InfoLogLevel.DEBUG_LEVEL);
                 break;
             case "DEBUG":
-                // The second lowest level in LH is "DEBUG", so we set it to the
-                // second-lowest level in RocksDB (INFO)
-                options.setInfoLogLevel(InfoLogLevel.INFO_LEVEL);
+                options.setInfoLogLevel(InfoLogLevel.DEBUG_LEVEL);
                 break;
             default:
-                options.setInfoLogLevel(InfoLogLevel.WARN_LEVEL);
+                options.setInfoLogLevel(InfoLogLevel.INFO_LEVEL);
         }
 
         BlockBasedTableConfigWithAccessibleCache tableConfig =
