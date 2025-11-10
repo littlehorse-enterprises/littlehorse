@@ -76,7 +76,13 @@ export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVa
 
           if (definedType.$case === 'structDefId') {
             return (
-              <StructDefGroup key={name} structDefId={definedType.value} name={name} required={variable.required} />
+              <StructDefGroup
+                key={name}
+                structDefId={definedType.value}
+                name={name}
+                required={variable.required}
+                defaultValue={variable.varDef?.defaultValue}
+              />
             )
           }
         })}

@@ -2,7 +2,7 @@ import { getStructDef } from '@/app/actions/getStructDef'
 import { getVariableCaseFromType, VariableTypeToFieldComponent } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 import { FieldGroup } from '@/components/ui/field'
-import { StructDefId, VariableType } from 'littlehorse-client/proto'
+import { StructDefId, StructField, VariableType, VariableValue } from 'littlehorse-client/proto'
 import { useParams } from 'next/navigation'
 import { createContext, FC, HTMLInputTypeAttribute, useContext, useEffect, useMemo, useState } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
@@ -29,6 +29,7 @@ interface StructPrimitiveFieldProps {
   protoRequired: boolean
   formRequired: boolean
   disabled: boolean
+  defaultValue?: VariableValue
 }
 
 const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
@@ -43,11 +44,40 @@ const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
   protoRequired,
   formRequired,
   disabled,
+  defaultValue,
 }) => {
   const structForm = useStructFormContext()
   const { control, setValue } = useFormContext<FormValues>()
   const fieldId = useMemo(() => [STRUCT_FORM_FIELD_PREFIX, ...structPath, fieldName].join('.'), [structPath, fieldName])
   const value = useWatch({ name: fieldId, control })
+
+  const defaultFormValue = useMemo(() => {
+    const union = defaultValue?.value
+    if (!union) return undefined
+
+    switch (union.$case) {
+      case 'bool':
+        return union.value ? 'true' : 'false'
+      case 'int':
+      case 'double':
+        return union.value
+      case 'str':
+      case 'jsonObj':
+      case 'jsonArr':
+        return union.value
+      default:
+        return undefined
+    }
+  }, [defaultValue])
+
+  useEffect(() => {
+    if (!disabled) {
+      const hasValue = value !== undefined && value !== null && (typeof value !== 'string' || value.trim().length > 0)
+      if (!hasValue && defaultFormValue !== undefined) {
+        setValue(fieldId, defaultFormValue, { shouldDirty: false })
+      }
+    }
+  }, [defaultFormValue, disabled, fieldId, setValue, value])
 
   useEffect(() => {
     if (disabled) {
@@ -80,11 +110,14 @@ const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
   )
 }
 
-export const StructDefGroup: FC<{ structDefId: StructDefId; name: string; required: boolean }> = ({
-  structDefId,
-  name: structName,
-  required,
-}) => {
+type StructDefGroupProps = {
+  structDefId: StructDefId
+  name: string
+  required: boolean
+  defaultValue?: VariableValue
+}
+
+export const StructDefGroup: FC<StructDefGroupProps> = ({ structDefId, name: structName, required, defaultValue }) => {
   const tenantId = useParams().tenantId as string
   const { unregister } = useFormContext<FormValues>()
   const { parentDisabled, nestedStructPath } = useContext(StructDefParentContext)
@@ -118,6 +151,12 @@ export const StructDefGroup: FC<{ structDefId: StructDefId; name: string; requir
     }
   }, [currentStructPath, isDisabled, structDefId, structForm, unregister])
 
+  const defaultStructFieldValues = useMemo<Record<string, StructField>>(() => {
+    const union = defaultValue?.value
+    if (!union || union.$case !== 'struct' || !union.value.struct?.fields) return {}
+    return union.value.struct.fields
+  }, [defaultValue])
+
   const {
     data: structDef,
     error,
@@ -146,47 +185,59 @@ export const StructDefGroup: FC<{ structDefId: StructDefId; name: string; requir
         </div>
       </div>
       <div className="flex flex-col gap-4 p-3">
-        {Object.entries(structDef?.structDef?.fields ?? {}).map(([name, { fieldType, defaultValue }]) => {
-          const definedType = fieldType?.definedType
-          if (!definedType) return
+        {Object.entries(structDef?.structDef?.fields ?? {}).map(
+          ([name, { fieldType, defaultValue: structFieldDefault }]) => {
+            const definedType = fieldType?.definedType
+            if (!definedType) return
 
-          if (definedType.$case === 'primitiveType') {
-            const variableType = definedType.value
-            if (!variableType) return
+            const inheritedDefaultValue = defaultStructFieldValues[name]?.value
+            const effectiveDefaultValue = inheritedDefaultValue ?? structFieldDefault
+            const hasDefaultValue = Boolean(effectiveDefaultValue)
 
-            const { type, component } = VariableTypeToFieldComponent[variableType]
-            const variableCase = getVariableCaseFromType(variableType)
+            if (definedType.$case === 'primitiveType') {
+              const variableType = definedType.value
+              if (!variableType) return
 
-            return (
-              <StructPrimitiveField
-                key={name}
-                fieldName={name}
-                label={name}
-                component={component}
-                type={type}
-                protoRequired={!defaultValue}
-                formRequired={!isDisabled}
-                variableType={variableType}
-                variableCase={variableCase as VariableCase}
-                structPath={currentStructPath}
-                structDefId={structDefId}
-                disabled={parentDisabled || isDisabled}
-              />
-            )
-          } else if (definedType.$case === 'structDefId') {
-            return (
-              <StructDefParentContext.Provider
-                key={definedType.value.name}
-                value={{
-                  parentDisabled: parentDisabled || isDisabled,
-                  nestedStructPath: currentStructPath,
-                }}
-              >
-                <StructDefGroup structDefId={definedType.value} name={name} required={!defaultValue} />
-              </StructDefParentContext.Provider>
-            )
+              const { type, component } = VariableTypeToFieldComponent[variableType]
+              const variableCase = getVariableCaseFromType(variableType)
+
+              return (
+                <StructPrimitiveField
+                  key={name}
+                  fieldName={name}
+                  label={name}
+                  component={component}
+                  type={type}
+                  protoRequired={!hasDefaultValue}
+                  formRequired={!isDisabled}
+                  variableType={variableType}
+                  variableCase={variableCase as VariableCase}
+                  structPath={currentStructPath}
+                  structDefId={structDefId}
+                  disabled={parentDisabled || isDisabled}
+                  defaultValue={effectiveDefaultValue}
+                />
+              )
+            } else if (definedType.$case === 'structDefId') {
+              return (
+                <StructDefParentContext.Provider
+                  key={definedType.value.name}
+                  value={{
+                    parentDisabled: parentDisabled || isDisabled,
+                    nestedStructPath: currentStructPath,
+                  }}
+                >
+                  <StructDefGroup
+                    structDefId={definedType.value}
+                    name={name}
+                    required={!hasDefaultValue}
+                    defaultValue={effectiveDefaultValue}
+                  />
+                </StructDefParentContext.Provider>
+              )
+            }
           }
-        })}
+        )}
       </div>
     </FieldGroup>
   )

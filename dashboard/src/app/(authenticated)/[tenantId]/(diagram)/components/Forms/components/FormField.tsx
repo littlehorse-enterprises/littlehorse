@@ -45,7 +45,6 @@ const FormField: FC<FormFieldProps> = ({
         className={cn(errors[id] && 'border-destructive', 'w-fit')}
         type={type}
         disabled={disabled}
-        defaultValue={3}
       />
 
       {errors[id] && (
