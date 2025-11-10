@@ -23,7 +23,6 @@ export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex })
   }
 
   const nodeRun = selectedNode.data.nodeRunsList[nodeRunIndex]
-  console.log("NodeRunComponent nodeRun:", nodeRun)
 
   const { $case, value } = nodeRun.nodeType!
   if ($case === 'task') return <TaskRunNode node={value} />
