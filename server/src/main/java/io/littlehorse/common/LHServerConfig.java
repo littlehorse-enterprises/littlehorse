@@ -1136,7 +1136,7 @@ public class LHServerConfig extends ConfigBase {
                     rateLimit,
                     RateLimiter.DEFAULT_REFILL_PERIOD_MICROS,
                     RateLimiter.DEFAULT_FAIRNESS,
-                    limitReads ? RateLimiterMode.WRITES_ONLY : RateLimiterMode.ALL_IO);
+                    limitReads ? RateLimiterMode.ALL_IO : RateLimiterMode.WRITES_ONLY);
         }
     }
 
