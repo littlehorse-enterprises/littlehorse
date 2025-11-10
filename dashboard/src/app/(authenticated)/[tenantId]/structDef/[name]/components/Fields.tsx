@@ -21,9 +21,7 @@ export const Fields: FC<Props> = ({ fields }) => {
         return (
           <div key={name} className="mb-1 flex items-center gap-1">
             <span className="rounded bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{name}</span>
-            <TypeDisplay
-              definedType={fieldType}
-            />
+            <TypeDisplay definedType={fieldType} />
             {isRequired && <span className="rounded bg-orange-300 p-1 text-xs">Required</span>}
             {fieldDef.fieldType.masked && <span className="rounded bg-red-100 p-1 text-xs">Masked</span>}
             {fieldDef.defaultValue && (

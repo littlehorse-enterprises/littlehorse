@@ -10,7 +10,11 @@
   "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
-    "./proto": "./dist/proto/index.js"
+    "./proto": {
+      "import": "./dist/proto/index.js",
+      "types": "./dist/proto/index.d.ts",
+      "default": "./dist/proto/index.js"
+    }
   },
   "files": [
     "/dist"
