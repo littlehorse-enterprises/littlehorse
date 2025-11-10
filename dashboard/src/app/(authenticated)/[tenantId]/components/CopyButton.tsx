@@ -1,8 +1,8 @@
 'use client'
-import { FC, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Check, Copy } from 'lucide-react'
 import { cn } from '@/components/utils'
+import { CheckIcon, CopyIcon } from 'lucide-react'
+import { FC, useState } from 'react'
 
 interface CopyButtonProps {
   value: string
@@ -21,9 +21,9 @@ export const CopyButton: FC<CopyButtonProps> = ({ value, className }) => {
         setCopied(true)
         setTimeout(() => setCopied(false), 1000)
       }}
-      className={cn(className)}
+      className={cn(className, 'cursor-pointer')}
     >
-      {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+      {copied ? <CheckIcon className="h-4 w-4 text-green-500" /> : <CopyIcon className="h-4 w-4" />}
     </Button>
   )
 }
