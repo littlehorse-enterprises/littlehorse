@@ -13,8 +13,8 @@ import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTa
 import io.littlehorse.common.model.corecommand.subcommand.DeleteCorrelatedEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
+import io.littlehorse.common.model.corecommand.subcommand.InternalDeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutCorrelatedEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
@@ -57,7 +57,7 @@ public class CommandModel extends AbstractCommand<Command> {
     public StopWfRunRequestModel stopWfRun;
     public ResumeWfRunRequestModel resumeWfRun;
     public SleepNodeMaturedModel sleepNodeMatured;
-    public DeleteWfRunRequestModel deleteWfRun;
+    public InternalDeleteWfRunRequestModel deleteWfRun;
     public ExternalEventTimeoutModel externalEventTimeout;
     public TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat;
     public DeleteExternalEventRequestModel deleteExternalEvent;
@@ -239,7 +239,7 @@ public class CommandModel extends AbstractCommand<Command> {
                 sleepNodeMatured = SleepNodeMaturedModel.fromProto(p.getSleepNodeMatured(), context);
                 break;
             case DELETE_WF_RUN:
-                deleteWfRun = DeleteWfRunRequestModel.fromProto(p.getDeleteWfRun(), context);
+                deleteWfRun = InternalDeleteWfRunRequestModel.fromProto(p.getDeleteWfRun(), context);
                 break;
             case EXTERNAL_EVENT_TIMEOUT:
                 externalEventTimeout = ExternalEventTimeoutModel.fromProto(p.getExternalEventTimeout(), context);
@@ -425,9 +425,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(SleepNodeMaturedModel.class)) {
             type = CommandCase.SLEEP_NODE_MATURED;
             sleepNodeMatured = (SleepNodeMaturedModel) cmd;
-        } else if (cls.equals(DeleteWfRunRequestModel.class)) {
+        } else if (cls.equals(InternalDeleteWfRunRequestModel.class)) {
             type = CommandCase.DELETE_WF_RUN;
-            deleteWfRun = (DeleteWfRunRequestModel) cmd;
+            deleteWfRun = (InternalDeleteWfRunRequestModel) cmd;
         } else if (cls.equals(ExternalEventTimeoutModel.class)) {
             type = CommandCase.EXTERNAL_EVENT_TIMEOUT;
             externalEventTimeout = (ExternalEventTimeoutModel) cmd;
