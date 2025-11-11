@@ -10,7 +10,6 @@ import { Failures } from './NodeRunInfo/Failures'
 
 export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
   const { selectedNode } = useDiagram()
-
   const [currentTab, setCurrentTab] = useState('overview')
   const [nodeRunIndex, setNodeRunIndex] = useState<number>(0)
 
@@ -40,7 +39,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
                 Overview
               </TabsTrigger>
               <TabsTrigger className="flex-1" value="node">
-                Node
+                Node {showNodeRun ? 'Run' : 'Spec'}
               </TabsTrigger>
               {showNodeRun && (
                 <TabsTrigger className="flex-1" value="failures">

@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.ListExternalEventsRequest;
 import io.littlehorse.sdk.common.proto.ListNodeRunsRequest;
 import io.littlehorse.sdk.common.proto.ListTaskRunsRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -19,6 +20,8 @@ import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
+import io.littlehorse.sdk.common.util.Arg;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
@@ -29,6 +32,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
@@ -47,8 +51,13 @@ public class WfRunDeletionTest {
     @LHWorkflow("delete-wfrun")
     public Workflow getBasicExternalEventWorkflow() {
         return Workflow.newWorkflow("delete-wfrun", wf -> {
+            WfRunVariable tasksToExecute = wf.declareInt("tasks-to-execute").withDefault(1);
             wf.waitForEvent(COMPLETE_WFRUN_EVT);
-            wf.execute("pedro-task-test");
+            wf.doWhile(tasksToExecute.isGreaterThan(0), loop -> {
+                // Lots of tasks so that we need to do phased deletion.
+                loop.execute("pedro-task-test");
+                tasksToExecute.assign(tasksToExecute.subtract(1));
+            });
         });
     }
 
@@ -210,6 +219,56 @@ public class WfRunDeletionTest {
                     return null;
                 }))
                 .isTrue();
+    }
+
+    @Test
+    void canDeleteLotsOfTasks() {
+        WfRunId result = verifier.prepareRun(basicExternalEvent, Arg.of("tasks-to-execute", 10))
+                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
+                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
+                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
+                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
+                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
+                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
+                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
+                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
+                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
+                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
+                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
+                .waitForStatus(LHStatus.COMPLETED)
+                .start();
+
+        assertThat(client.listNodeRuns(ListNodeRunsRequest.newBuilder()
+                                .setWfRunId(result)
+                                .build())
+                        .getResultsCount())
+                .isGreaterThan(10);
+        assertThat(client.listExternalEvents(ListExternalEventsRequest.newBuilder()
+                                .setWfRunId(result)
+                                .build())
+                        .getResultsCount())
+                .isGreaterThan(10);
+
+        client.deleteWfRun(DeleteWfRunRequest.newBuilder().setId(result).build());
+
+        // We need to wait since deletion is async
+        Awaitility.await().until(() -> {
+            return LHTestExceptionUtil.throwsNotFound(() -> {
+                client.getWfRun(result);
+                return null;
+            });
+        });
+
+        assertThat(client.listNodeRuns(ListNodeRunsRequest.newBuilder()
+                                .setWfRunId(result)
+                                .build())
+                        .getResultsCount())
+                .isEqualTo(0);
+        assertThat(client.listExternalEvents(ListExternalEventsRequest.newBuilder()
+                                .setWfRunId(result)
+                                .build())
+                        .getResultsCount())
+                .isEqualTo(0);
     }
 
     @LHTaskMethod("pedro-task-test")
