@@ -3,26 +3,15 @@ package io.littlehorse.common;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
-// import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.server.streams.store.StoredGetable;
 import java.util.Optional;
-import org.apache.commons.lang3.NotImplementedException;
 
 public abstract class Storeable<T extends Message> extends LHSerializable<T> {
 
     public static final String GROUPED_WF_RUN_PREFIX = "wrg";
 
     public String getFullStoreKey() {
-        if (getGroupingWfRunId().isPresent()) {
-            if (!(this instanceof StoredGetable)) {
-                throw new NotImplementedException();
-            }
-            StoredGetable sg = (StoredGetable) this;
-            return getGroupedFullStoreKey(getGroupingWfRunId().get(), getType(), sg.getObjectType(), getStoreKey());
-        } else {
-            return getFullStoreKey(getType(), getStoreKey());
-        }
+        return getFullStoreKey(getType(), getStoreKey());
     }
 
     public static String getSubstorePrefix(StoreableType storeableType) {
