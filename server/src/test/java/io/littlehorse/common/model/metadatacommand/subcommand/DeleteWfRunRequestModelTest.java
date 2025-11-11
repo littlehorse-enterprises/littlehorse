@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.model.corecommand.subcommand.InternalDeleteWfRunRequestModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -57,6 +58,8 @@ public class DeleteWfRunRequestModelTest {
         DeleteWfRunRequest request = DeleteWfRunRequest.newBuilder()
                 .setId(WfRunId.newBuilder().setId(wfRun.getObjectId().getId()))
                 .build();
-        return Command.newBuilder().setDeleteWfRun(request).build();
+        return Command.newBuilder()
+                .setDeleteWfRun(new InternalDeleteWfRunRequestModel(request).toProto())
+                .build();
     }
 }
