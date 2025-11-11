@@ -109,7 +109,7 @@ public class PollThreadTest {
         } catch (Exception ignored) {
         }
         verify(taskExecutor, never()).doTask(any(), any(), any(), any(), any());
-        assertThat(pollThread.isRunning()).isFalse();
+        Awaitility.await().ignoreExceptions().until(() -> !pollThread.isRunning());
         assertThat(delegatedObserver.isCompleted()).isTrue();
     }
 
