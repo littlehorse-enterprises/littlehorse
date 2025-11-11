@@ -14,17 +14,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
-
-import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.wfsdk.SpawnedThreads;
-import io.littlehorse.sdk.wfsdk.WfRunVariable;
-import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.WorkflowThread;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.worker.LHTaskWorker;
-
 /*
  * In this example you will see how to spawn multiples threads base on a INPUT json array.
  */

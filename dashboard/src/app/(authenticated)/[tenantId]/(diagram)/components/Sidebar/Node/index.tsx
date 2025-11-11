@@ -9,12 +9,12 @@ import { WaitForThreadsNode } from './WaitForThreadsNode'
 import { SleepNode } from './SleepNode'
 import { WaitForCondition } from './WaitForConditionNode'
 import { UserTaskNode } from './UserTaskNode/UserTaskNode'
+import { ChildWFNode } from './ChildWFNode'
 
 export const Node: FC = () => {
   const { selectedNode } = useDiagram()
 
   if (!selectedNode || !selectedNode.data.node) return
-
   const { $case, value } = selectedNode.data.node
 
   if ($case === 'task') return <TaskNode node={value} />
@@ -26,6 +26,7 @@ export const Node: FC = () => {
   if ($case === 'sleep') return <SleepNode node={value} />
   if ($case === 'waitForCondition') return <WaitForCondition node={value} />
   if ($case === 'userTask') return <UserTaskNode node={value} />
+  if ($case === 'runChildWf') return <ChildWFNode node={value} />
 
   return <></>
 }

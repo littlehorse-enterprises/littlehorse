@@ -88,6 +88,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String SESSION_TIMEOUT_KEY = "LHS_STREAMS_SESSION_TIMEOUT";
     public static final String KAFKA_STATE_DIR_KEY = "LHS_STATE_DIR";
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
+    public static final String PRODUCER_MAX_REQUEST_SIZE = "LHS_PRODUCER_MAX_REQUEST_SIZE";
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHS_STREAMS_NUM_STANDBY_REPLICAS";
     public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
     public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
@@ -780,6 +781,7 @@ public class LHServerConfig extends ConfigBase {
                 org.apache.kafka.common.serialization.StringSerializer.class);
         conf.put(ProducerConfig.ACKS_CONFIG, "all");
         conf.put(ProducerConfig.LINGER_MS_CONFIG, getOrSetDefault(LINGER_MS_KEY, "0"));
+        conf.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, getProducerMaxRequestSize());
         addKafkaSecuritySettings(conf);
         return conf;
     }
@@ -1012,6 +1014,7 @@ public class LHServerConfig extends ConfigBase {
         props.put("probing.rebalance.interval.ms", 60 * 1000);
         props.put("metrics.recording.level", getServerMetricLevel());
         props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), getStreamsSessionTimeout());
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.MAX_REQUEST_SIZE_CONFIG), getProducerMaxRequestSize());
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
         props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
@@ -1069,6 +1072,10 @@ public class LHServerConfig extends ConfigBase {
         //
         // We use a 60-second default timeout.
         return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "60000"));
+    }
+
+    public int getProducerMaxRequestSize() {
+        return Integer.parseInt(getOrSetDefault(LHServerConfig.PRODUCER_MAX_REQUEST_SIZE, "1048576"));
     }
 
     public int getStreamsStateCleanupDelayMs() {
