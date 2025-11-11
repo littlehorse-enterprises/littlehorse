@@ -75,7 +75,7 @@ public class LHProcessingExceptionHandler {
             }
         } catch (RecordTooLargeException rtle) {
             // Log and continue. This will include a record-dropped metric
-            log.error("Record dropped: ", rtle);
+            log.warn("Record dropped: ", rtle);
         } catch (KafkaException ke) {
             // Time to notify kafka streams that something went wrong (i.e InvalidEpochException during commit)
             throw ke;
