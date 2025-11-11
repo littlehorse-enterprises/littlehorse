@@ -1,11 +1,9 @@
-import { VariableTypeToFieldComponent } from '@/app/utils'
 import { Input } from '@/components/ui/input'
-import { ThreadVarDef, VariableType, WfRunVariableAccessLevel, WfSpec } from 'littlehorse-client/proto'
+import { ThreadVarDef, VariableType, WfSpec } from 'littlehorse-client/proto'
 import { forwardRef, useMemo } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import FormField from './components/FormField'
-import FormLabel from './components/FormLabel'
-import { StructDefGroup } from './components/StructDefGroup'
+import VariableFormField from './components/VariableFormField'
 
 export type FormValues = {
   [key: string]: unknown
@@ -44,48 +42,9 @@ export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVa
           <FormField label={'Parent WfRun Id'} as={Input} id="parentWfRunId" variableType={VariableType.STR} />
         )}
 
-        {sortedVariables.map((variable: ThreadVarDef) => {
-          if (!variable.varDef) return null
-
-          const name = variable.varDef?.name
-          if (!name) return null
-
-          const definedType = variable.varDef.typeDef?.definedType
-          if (!definedType) return null
-
-          if (variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR) {
-            return <FormLabel label={name} accessLevel={variable.accessLevel} required={variable.required} />
-          }
-
-          if (definedType.$case === 'primitiveType') {
-            const { type, component } = VariableTypeToFieldComponent[definedType.value]
-
-            return (
-              <FormField
-                key={name}
-                label={name}
-                as={component}
-                id={name}
-                type={type}
-                protoRequired={variable.required}
-                accessLevel={variable.accessLevel}
-                variableType={definedType.value}
-              />
-            )
-          }
-
-          if (definedType.$case === 'structDefId') {
-            return (
-              <StructDefGroup
-                key={name}
-                structDefId={definedType.value}
-                name={name}
-                required={variable.required}
-                defaultValue={variable.varDef?.defaultValue}
-              />
-            )
-          }
-        })}
+        {sortedVariables.map((variable: ThreadVarDef, index) => (
+          <VariableFormField key={variable.varDef?.name ?? `variable-${index}`} variable={variable} />
+        ))}
       </form>
     </FormProvider>
   )

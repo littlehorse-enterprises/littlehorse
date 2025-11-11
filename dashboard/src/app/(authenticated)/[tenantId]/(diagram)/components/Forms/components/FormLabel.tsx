@@ -19,17 +19,17 @@ const FormLabel: FC<FormLabelProps> = ({ label, variableType, structDefId, acces
       <p className="font-semibold">{label}</p>
       <div className="space-x-2">
         {variableType && (
-          <span className={cn('rounded bg-blue-300 p-1 text-xs')}>
+          <span className={'rounded bg-blue-300 p-1 text-xs'}>
             {VARIABLE_CASE_LABELS[getVariableCaseFromType(variableType)]}
           </span>
         )}
         {structDefId && (
           <LinkWithTenant
-            className={cn('rounded bg-blue-300 p-1 text-xs underline')}
+            className={'rounded bg-blue-300 p-1 text-xs underline'}
             href={`/structDef/${structDefId.name}/${structDefId.version}`}
           >{`Struct<${structDefId.name},${structDefId.version}>`}</LinkWithTenant>
         )}
-        {accessLevel && <span className={cn('rounded bg-green-300 p-1 text-xs')}>{accessLevels[accessLevel]}</span>}
+        {accessLevel && <span className={'rounded bg-green-300 p-1 text-xs'}>{accessLevels[accessLevel]}</span>}
         <span className={cn('rounded p-1 text-xs', { 'bg-red-300': required, 'bg-gray-300': !required })}>
           {required ? 'Required' : 'Optional'}
         </span>
