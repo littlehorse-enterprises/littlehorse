@@ -147,7 +147,9 @@ public class ServerTopology {
                 sinkValueSerializer, // value serializer
                 CORE_PROCESSOR); // parent name
         StoreBuilder<KeyValueStore<String, Bytes>> coreStoreBuilder = Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(CORE_STORE), Serdes.String(), new BoundedBytesSerde());
+                Stores.persistentKeyValueStore(CORE_STORE),
+                Serdes.String(),
+                new BoundedBytesSerde(config.getProducerMaxRequestSize()));
         topo.addStateStore(coreStoreBuilder, CORE_PROCESSOR);
 
         // Metadata Global Store
