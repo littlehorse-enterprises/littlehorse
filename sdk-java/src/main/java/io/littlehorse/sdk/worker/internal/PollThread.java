@@ -40,6 +40,7 @@ public class PollThread extends Thread implements Closeable {
             log.debug("Thread interrupted");
         } finally {
             log.debug(String.format("Thread %s stopped", getName()));
+            close();
         }
     }
 
