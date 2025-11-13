@@ -1,7 +1,5 @@
 package io.littlehorse.common.model.getable.core.variable;
 
-import java.util.Arrays;
-
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
@@ -12,6 +10,7 @@ import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
+import java.util.Arrays;
 import lombok.Getter;
 
 @Getter
@@ -66,6 +65,7 @@ public class StructModel extends LHSerializable<Struct> implements Comparable<St
     public int compareTo(StructModel o) {
         if (o == null) return -1;
 
-        return Arrays.compare(this.toProto().build().toByteArray(), o.toProto().build().toByteArray());
+        return Arrays.compare(
+                this.toProto().build().toByteArray(), o.toProto().build().toByteArray());
     }
 }

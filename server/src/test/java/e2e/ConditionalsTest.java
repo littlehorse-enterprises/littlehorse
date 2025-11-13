@@ -2,6 +2,7 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.*;
 
+import e2e.Struct.Car;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -24,8 +25,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import e2e.Struct.Car;
 
 @LHTest
 public class ConditionalsTest {
