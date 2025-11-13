@@ -72,4 +72,9 @@ public class UserTaskRunIdModel extends CoreObjectId<UserTaskRunId, UserTaskRun,
     public GetableClassEnum getType() {
         return GetableClassEnum.USER_TASK_RUN;
     }
+
+    @Override
+    public Optional<WfRunIdModel> getGroupingWfRunId() {
+        return Optional.of(wfRunId);
+    }
 }
