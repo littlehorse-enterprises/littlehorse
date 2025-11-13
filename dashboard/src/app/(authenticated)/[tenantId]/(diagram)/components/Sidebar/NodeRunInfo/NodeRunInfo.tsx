@@ -23,7 +23,7 @@ export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
       <NodeVariable label="Workflow Spec :" text={nodeRun.wfSpecId?.name ?? 'N/A'} />
       <NodeVariable label="Threat name :" text={nodeRun.threadSpecName} />
       <NodeVariable label="Started :" text={nodeRun.arrivalTime} type={'date'} />
-      <NodeVariable label="Finished :" text={nodeRun.endTime} type={'date'} />
+      {nodeRun.status !== 'RUNNING' && <NodeVariable label="Finished :" text={nodeRun.endTime} type={'date'} />}
     </div>
   )
 }

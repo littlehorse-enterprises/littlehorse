@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
+
 /*
  * In this example you will see how to spawn multiples threads base on a INPUT json array.
  */

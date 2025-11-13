@@ -1,4 +1,4 @@
-## Running Child Workflow example
+## Running Hierarchical Workflow example
 
 
 This is a basic example of two `WfSpec`s, `parent` and `child`, in which the `child` `WfSpec` uses a `Variable` defined from the `parent`.
@@ -7,7 +7,7 @@ First, run the application. This creates both `WfSpec`'s and registers a Task Wo
 
 ```
 poetry shell
-python -m child_workflow
+python -m hierarchical_workflow
 ```
 
 In another terminal, use `lhctl` to run the parent workflow:
