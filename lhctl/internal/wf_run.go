@@ -396,35 +396,6 @@ var searchScheduledWfsCmd = &cobra.Command{
 	},
 }
 
-func init() {
-	getCmd.AddCommand(getWfRunCmd)
-	getCmd.AddCommand(getScheduledWfRun)
-	searchCmd.AddCommand(searchWfRunCmd)
-	searchWfRunCmd.AddCommand(searchWfRunByParentCmd)
-	stopCmd.AddCommand(stopWfRunCmd)
-	resumeCmd.AddCommand(resumeWfRunCmd)
-	deleteCmd.AddCommand(deleteWfRunCmd)
-	deleteCmd.AddCommand(deleteScheduledWfRun)
-	scheduleCmd.AddCommand(scheduleWfCmd)
-	searchCmd.AddCommand(searchScheduledWfsCmd)
-
-	searchWfRunCmd.Flags().String("status", "", "Status of WfRuns to search for")
-	searchWfRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for wfRuns that started no more than this number of minutes ago")
-	searchWfRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for wfRuns that started at least this number of minutes ago")
-
-	searchWfRunByParentCmd.Flags().String("wfSpecName", "", "Filter children by workflow spec name")
-	searchWfRunByParentCmd.Flags().String("status", "", "Status of child WfRuns to search for")
-	searchWfRunByParentCmd.Flags().Bool("show-full-tree", false, "Use full object scan for complete tree discovery")
-	searchWfRunByParentCmd.Flags().Int("levels", -1, "Limit search depth when using --show-full-tree (only applicable with --show-full-tree)")
-
-	scheduleWfCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
-	scheduleWfCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
-	scheduleWfCmd.Flags().String("id", "", "")
-
-	stopWfRunCmd.Flags().Int32("threadRunNumber", 0, "Specific thread run to stop")
-	resumeWfRunCmd.Flags().Int32("threadRunNumber", 0, "Specific thread run to stop")
-}
-
 func filterWfRunsByLevels(resp *lhproto.WfRunIdList, rootParentId string, maxLevels int) *lhproto.WfRunIdList {
 	if maxLevels <= 0 {
 		return &lhproto.WfRunIdList{Results: []*lhproto.WfRunId{}}
@@ -464,4 +435,33 @@ func calculateDepthFromRoot(wfRun *lhproto.WfRunId, rootParentId string) int {
 	}
 
 	return 0
+}
+
+func init() {
+	getCmd.AddCommand(getWfRunCmd)
+	getCmd.AddCommand(getScheduledWfRun)
+	searchCmd.AddCommand(searchWfRunCmd)
+	searchWfRunCmd.AddCommand(searchWfRunByParentCmd)
+	stopCmd.AddCommand(stopWfRunCmd)
+	resumeCmd.AddCommand(resumeWfRunCmd)
+	deleteCmd.AddCommand(deleteWfRunCmd)
+	deleteCmd.AddCommand(deleteScheduledWfRun)
+	scheduleCmd.AddCommand(scheduleWfCmd)
+	searchCmd.AddCommand(searchScheduledWfsCmd)
+
+	searchWfRunCmd.Flags().String("status", "", "Status of WfRuns to search for")
+	searchWfRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for wfRuns that started no more than this number of minutes ago")
+	searchWfRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for wfRuns that started at least this number of minutes ago")
+
+	searchWfRunByParentCmd.Flags().String("wfSpecName", "", "Filter children by workflow spec name")
+	searchWfRunByParentCmd.Flags().String("status", "", "Status of child WfRuns to search for")
+	searchWfRunByParentCmd.Flags().Bool("show-full-tree", false, "Use full object scan for complete tree discovery")
+	searchWfRunByParentCmd.Flags().Int("levels", -1, "Limit search depth when using --show-full-tree (only applicable with --show-full-tree)")
+
+	scheduleWfCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
+	scheduleWfCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
+	scheduleWfCmd.Flags().String("id", "", "")
+
+	stopWfRunCmd.Flags().Int32("threadRunNumber", 0, "Specific thread run to stop")
+	resumeWfRunCmd.Flags().Int32("threadRunNumber", 0, "Specific thread run to stop")
 }
