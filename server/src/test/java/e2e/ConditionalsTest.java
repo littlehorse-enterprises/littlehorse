@@ -4,11 +4,13 @@ import static org.assertj.core.api.Assertions.*;
 
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -23,11 +25,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import e2e.Struct.Car;
+
 @LHTest
 public class ConditionalsTest {
+    private LittleHorseBlockingStub client;
 
     @LHWorkflow("test-conditionals-equals-workflow")
     private Workflow workflowEquals;
+
+    @LHWorkflow("test-conditionals-struct-equals-workflow")
+    private Workflow workflowStructEquals;
 
     @LHWorkflow("test-conditionals-not-equals-workflow")
     private Workflow workflowNotEquals;
@@ -100,6 +108,27 @@ public class ConditionalsTest {
                     Arguments.of(Map.of("lhs", 2, "rhs", 2), true),
                     Arguments.of(Map.of("lhs", "hi", "rhs", "hi"), true),
                     Arguments.of(Map.of("lhs", 1.0, "rhs", 2.0), false));
+        }
+
+        @ParameterizedTest
+        @MethodSource("provideStructEqualsWorkflowSuccessArguments")
+        void shouldCompleteStructEqualsWorkflowWithConditionals(Car car1, Car car2, boolean expectedOutput) {
+            client.putStructDef(new LHStructDefType(Car.class).toPutStructDefRequest());
+
+            workflowVerifier
+                    .prepareRun(workflowStructEquals, Arg.of("struct-a", car1), Arg.of("struct-b", car2))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(true))
+                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(expectedOutput))
+                    .start();
+        }
+
+        private static Stream<Arguments> provideStructEqualsWorkflowSuccessArguments() {
+            return Stream.of(
+                    Arguments.of(new Car("Honda", "Civic", 20000000), new Car("Honda", "Civic", 20000000), true),
+                    Arguments.of(new Car("Tesla", "Model X", 15000), new Car("Honda", "Civic", 20000000), false));
         }
     }
 
@@ -450,6 +479,27 @@ public class ConditionalsTest {
 
             thread.doIfElse(
                     thread.condition(input.jsonPath("$.lhs"), Comparator.EQUALS, input.jsonPath("$.rhs")),
+                    ifBlock -> {
+                        ifBlock.execute("ag-one");
+                    },
+                    elseBlock -> {
+                        elseBlock.execute("ag-two");
+                    });
+        });
+    }
+
+    @LHWorkflow("test-conditionals-struct-equals-workflow")
+    public Workflow getStructEqualsWorkflowImpl() {
+        return new WorkflowImpl("test-conditionals-struct-equals-workflow", thread -> {
+            WfRunVariable structA = thread.declareStruct("struct-a", Car.class);
+            WfRunVariable structB = thread.declareStruct("struct-b", Car.class);
+
+            // So that the run request succeeds even on workflows where we want
+            // a crash.
+            thread.execute("ag-one");
+
+            thread.doIfElse(
+                    thread.condition(structA, Comparator.EQUALS, structB),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
