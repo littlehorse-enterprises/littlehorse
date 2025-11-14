@@ -12,8 +12,8 @@ import { getTaskRun } from './getTaskRun'
 export const TaskDetails: FC<NodeProps<'task', TaskNode>> = ({ data }) => {
   const { nodeRunsList } = data
   const [nodeRunsIndex, setNodeRunsIndex] = useState(0)
-  const [taskAttemptIndex, setTaskAttemptIndex] = useState(0)
   const tenantId = useParams().tenantId as string
+
   const { data: taskRunData } = useQuery({
     queryKey: ['taskRun', tenantId, nodeRunsIndex],
     queryFn: async () => {
