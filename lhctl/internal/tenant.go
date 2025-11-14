@@ -9,15 +9,24 @@ import (
 
 var putTenantCmd = &cobra.Command{
 	Use:   "tenant <id>",
-	Short: "Create a Tenant. Currently, updating Tenants is not supported.",
+	Short: "Create or update a Tenant.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		littlehorse.PrintResp(getGlobalClient(cmd).PutTenant(
-			requestContext(cmd),
-			&lhproto.PutTenantRequest{
-				Id: args[0],
-			},
-		))
+		putTenantReq := &lhproto.PutTenantRequest{
+			Id: args[0],
+		}
+
+		if cmd.Flag("all-entity-events").Changed {
+			putTenantReq.OutputTopicConfig = &lhproto.OutputTopicConfig{
+				DefaultRecordingLevel: lhproto.OutputTopicConfig_ALL_ENTITY_EVENTS,
+			}
+		} else if cmd.Flag("no-entity-events").Changed {
+			putTenantReq.OutputTopicConfig = &lhproto.OutputTopicConfig{
+				DefaultRecordingLevel: lhproto.OutputTopicConfig_NO_ENTITY_EVENTS,
+			}
+		}
+		littlehorse.PrintResp(getGlobalClient(cmd).PutTenant(requestContext(cmd), putTenantReq))
+
 	},
 }
 
@@ -54,6 +63,9 @@ var getTenantCmd = &cobra.Command{
 
 func init() {
 	putCmd.AddCommand(putTenantCmd)
+	putTenantCmd.Flags().Bool("all-entity-events", false, "If set, the output topic will be enabled for this Tenant for all eligible entities.")
+	putTenantCmd.Flags().Bool("no-entity-events", false, "If set, the output topic will be enabled for this Tenant, but only for explicitly-enabled entities.")
+	putTenantCmd.MarkFlagsMutuallyExclusive("all-entity-events", "no-entity-events")
 	searchCmd.AddCommand(searchTenantCmd)
 	getCmd.AddCommand(getTenantCmd)
 }

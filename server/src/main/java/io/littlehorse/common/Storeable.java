@@ -1,10 +1,14 @@
 package io.littlehorse.common;
 
 import com.google.protobuf.Message;
-// import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.StoreableType;
+import java.util.Optional;
 
 public abstract class Storeable<T extends Message> extends LHSerializable<T> {
+
+    public static final String GROUPED_WF_RUN_PREFIX = "wrg";
 
     public String getFullStoreKey() {
         return getFullStoreKey(getType(), getStoreKey());
@@ -18,12 +22,24 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
         return fullStoreKey.substring(fullStoreKey.indexOf('/') + 1);
     }
 
-    public static String getSubstorePrefix(Class<? extends Storeable<?>> cls) {
-        return getSubstorePrefix(getStoreableType(cls));
-    }
-
     public static String getFullStoreKey(StoreableType type, String storeKey) {
         return getSubstorePrefix(type) + storeKey;
+    }
+
+    public static String getGroupedFullStoreKey(
+            WfRunIdModel wfRunId, StoreableType type, GetableClassEnum getableType, String storeKey) {
+        return GROUPED_WF_RUN_PREFIX + "/" + wfRunId + "/" + type.getNumber() + "/" + getableType.getNumber() + "/"
+                + storeKey;
+    }
+
+    public static String getGroupedGetableStorePrefix(
+            String wfRunId, StoreableType type, GetableClassEnum getableType) {
+        return GROUPED_WF_RUN_PREFIX + "/" + wfRunId + "/" + type.getNumber() + "/" + getableType.getNumber() + "/";
+    }
+
+    public static String getGroupedGetableStorePrefix(
+            String wfRunId, StoreableType type, GetableClassEnum getableType, String restOfPrefix) {
+        return getGroupedGetableStorePrefix(wfRunId, type, getableType) + restOfPrefix + "/";
     }
 
     public static String getFullStoreKey(Class<? extends Storeable<?>> cls, String storeKey) {
@@ -33,6 +49,10 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
     public abstract String getStoreKey();
 
     public abstract StoreableType getType();
+
+    public Optional<WfRunIdModel> getGroupingWfRunId() {
+        return Optional.empty();
+    }
 
     public static StoreableType getStoreableType(Class<? extends Storeable<?>> cls) {
         switch (cls.getSimpleName()) {

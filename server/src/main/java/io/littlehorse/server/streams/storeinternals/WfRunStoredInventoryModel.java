@@ -53,7 +53,7 @@ public class WfRunStoredInventoryModel extends Storeable<WfRunStoredInventory> {
 
     @Override
     public String getStoreKey() {
-        return wfRunId.getStoreableKey();
+        return wfRunId.getStoreableKey(StoreableType.WFRUN_STORED_INVENTORY);
     }
 
     @Override
