@@ -8,6 +8,7 @@ import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutMo
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
+import io.littlehorse.common.model.getable.core.nodeoutput.NodeOutputModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -29,8 +30,10 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefMod
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.NodeOutputIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.util.LHUtil;
@@ -835,13 +838,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 break;
             case NODE_OUTPUT:
                 String nodeReferenceName = assn.getNodeOutputReference().getNodeName();
-                NodeRunModel referencedNodeRun = getMostRecentNodeRun(nodeReferenceName);
-                Optional<VariableValueModel> output = referencedNodeRun.getOutput(processorContext);
+                Optional<VariableValueModel> output = getNodeOutput(nodeReferenceName, processorContext);
                 if (output.isEmpty()) {
                     throw new LHVarSubError(
                             null,
-                            "Specified node " + nodeReferenceName + " of type " + referencedNodeRun.getType()
-                                    + ", number " + referencedNodeRun.getId().getPosition() + " has no output.");
+                            "Specified node " + nodeReferenceName + " has no output.");
                 }
                 val = output.get();
                 break;
@@ -878,6 +879,32 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             out.setThreadRun(this);
         }
         return out;
+    }
+
+    /**
+     * Gets the most recent output for a node with the given name. This method provides
+     * optimized performance by first checking for persisted NodeOutput entities before
+     * falling back to iteration through NodeRuns.
+     * 
+     * @param nodeName the name of the node whose output to retrieve
+     * @param processorContext the processor context
+     * @return the node output if found, empty otherwise
+     * @throws LHVarSubError if no output is found for the specified node
+     */
+    private Optional<VariableValueModel> getNodeOutput(String nodeName, CoreProcessorContext processorContext) throws LHVarSubError {
+        NodeOutputIdModel nodeOutputId = new NodeOutputIdModel(wfRun.getId(), number, nodeName);
+        NodeOutputModel nodeOutput = processorContext.getableManager().get(nodeOutputId);
+        
+        if (nodeOutput != null) {
+            return Optional.of(nodeOutput.getValue());
+        }
+        try {
+            NodeRunModel referencedNodeRun = getMostRecentNodeRun(nodeName);
+            return referencedNodeRun.getOutput(processorContext);
+        } catch (LHVarSubError e) {
+            // No node run found, return empty
+            return Optional.empty();
+        }
     }
 
     public NodeRunModel getMostRecentNodeRun(String nodeName) throws LHVarSubError {

@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.getable.core.nodeoutput.NodeOutputModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -26,6 +27,7 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsR
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.EdgeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
+import io.littlehorse.common.model.getable.objectId.NodeOutputIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -502,6 +504,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                     .castOnSupport(CoreProcessorContext.class)
                     .currentCommand()
                     .getTime();
+            
+            // Persist the node output for future NodeOutputReference lookups
+            persistNodeOutput(processorContext);
         }
         return completed;
     }
@@ -671,5 +676,30 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 LHErrorType.VAR_SUB_ERROR.toString());
         failures.add(invalidWfSpecFailure);
         throw new NodeFailureException(invalidWfSpecFailure);
+    }
+
+    /**
+     * Persists the node output to RocksDB for future NodeOutputReference lookups.
+     * This allows node outputs to be retrieved even after NodeRuns are deleted.
+     */
+    private void persistNodeOutput(CoreProcessorContext processorContext) {
+        Optional<VariableValueModel> output = getSubNodeRun().getOutput(processorContext);
+        if (output.isPresent()) {
+            NodeOutputIdModel nodeOutputId = new NodeOutputIdModel(
+                id.getWfRunId(),
+                id.getThreadRunNumber(), 
+                nodeName
+            );
+            
+            NodeOutputModel nodeOutput = new NodeOutputModel(
+                nodeOutputId,
+                output.get(),
+                wfSpecId,
+                id.getPosition()
+            );
+            
+            // Store the NodeOutput entity in RocksDB
+            processorContext.getableManager().put(nodeOutput);
+        }
     }
 }

@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "object_id.proto";
+import "variable.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+// Represents a persistently stored node output that can be retrieved even after
+// the NodeRun is deleted. This improves NodeOutputReference performance and supports
+// node retention policies.
+message NodeOutput {
+  // The ID of this NodeOutput.
+  NodeOutputId id = 1;
+
+  // The output value from the node execution.
+  VariableValue value = 2;
+
+  // The time when this output was created (when the NodeRun completed).
+  google.protobuf.Timestamp created_at = 3;
+
+  // The WfSpecId at the time this output was created.
+  WfSpecId wf_spec_id = 4;
+
+  // The node position in the thread where this output was generated.
+  int32 node_run_position = 5;
+}
+
+// ID for a NodeOutput entity.
+message NodeOutputId {
+  // The WfRun that contains the node that produced this output.
+  WfRunId wf_run_id = 1;
+
+  // The ThreadRun number within the WfRun.
+  int32 thread_run_number = 2;
+
+  // The name of the node that produced this output.
+  string node_name = 3;
+}
