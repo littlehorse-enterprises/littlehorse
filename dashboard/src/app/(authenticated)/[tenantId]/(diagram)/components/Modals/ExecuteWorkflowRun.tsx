@@ -11,14 +11,13 @@ import {
 } from '@/components/ui/dialog'
 import { RunWfRequest, ThreadVarDef, VariableValue, WfRunVariableAccessLevel, WfSpec } from 'littlehorse-client/proto'
 import { useParams, useRouter } from 'next/navigation'
-import { FC, useMemo, useRef } from 'react'
+import { FC, useCallback, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
 import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
 import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
+import { DOT_REPLACEMENT_PATTERN, StructFormContextValue, StructFormProvider } from '../Forms/context/StructFormContext'
 import { FormValues, WfRunForm } from '../Forms/WfRunForm'
-
-export const DOT_REPLACEMENT_PATTERN = '*-/:DOT_REPLACE:'
 
 export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
   const { showModal, setShowModal } = useModal()
@@ -38,33 +37,55 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
     )
   }, [wfSpec])
 
-  const formatVariablesPayload = (values: FormValues) => {
-    const transformedObj = Object.keys(values).reduce((acc: RunWfRequest['variables'], key) => {
-      if (values[key] === undefined) return acc
-      const transformedKey = key.replace(DOT_REPLACEMENT_PATTERN, '.')
+  const structFormContextRef = useRef<StructFormContextValue | null>(null)
 
-      if (
-        wfSpecVariables.some(
-          variable =>
-            variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR && variable.varDef?.name === transformedKey
-        )
-      ) {
-        return acc
+  const matchVariableType = useCallback(
+    (key: string) => {
+      const variable = wfSpecVariables.find((variable: ThreadVarDef) => variable.varDef?.name === key)
+      if (!variable || !variable.varDef) return ''
+
+      return getVariableDefType(variable.varDef)
+    },
+    [wfSpecVariables]
+  )
+
+  const formatVariablesPayload = useCallback(
+    (values: FormValues) => {
+      const { structValues: _ignoredStructValues, ...primitiveValues } = values as FormValues & {
+        structValues?: Record<string, unknown>
       }
 
-      acc[transformedKey] = VariableValue.fromJSON({ [matchVariableType(transformedKey)]: values[key] })
-      return acc
-    }, {})
+      const structVariablesSource = structFormContextRef.current?.getStructVariables() ?? {}
+      const structVariables = Object.entries(structVariablesSource).reduce(
+        (acc, [key, value]) => {
+          acc[key.split(DOT_REPLACEMENT_PATTERN).join('.')] = value
+          return acc
+        },
+        {} as RunWfRequest['variables']
+      )
 
-    return transformedObj
-  }
+      const transformedObj = Object.keys(primitiveValues).reduce((acc: RunWfRequest['variables'], key) => {
+        if (primitiveValues[key] === undefined) return acc
+        const transformedKey = key.split(DOT_REPLACEMENT_PATTERN).join('.')
 
-  const matchVariableType = (key: string) => {
-    const variable = wfSpecVariables.find((variable: ThreadVarDef) => variable.varDef?.name === key)
-    if (!variable || !variable.varDef) return ''
+        if (
+          wfSpecVariables.some(
+            variable =>
+              variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR &&
+              variable.varDef?.name === transformedKey
+          )
+        ) {
+          return acc
+        }
 
-    return getVariableDefType(variable.varDef)
-  }
+        acc[transformedKey] = VariableValue.fromJSON({ [matchVariableType(transformedKey)]: primitiveValues[key] })
+        return acc
+      }, structVariables)
+
+      return transformedObj
+    },
+    [matchVariableType, wfSpecVariables]
+  )
 
   const handleFormSubmit = async (values: FormValues) => {
     const customWfRunId = values.customWfRunId as string
@@ -107,7 +128,9 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
           </DialogDescription>
         </DialogHeader>
 
-        <WfRunForm wfSpecVariables={wfSpecVariables} wfSpec={wfSpec} onSubmit={handleFormSubmit} ref={formRef} />
+        <StructFormProvider contextRef={structFormContextRef}>
+          <WfRunForm wfSpecVariables={wfSpecVariables} wfSpec={wfSpec} onSubmit={handleFormSubmit} ref={formRef} />
+        </StructFormProvider>
 
         <DialogFooter>
           <DialogClose className="mr-4">Cancel</DialogClose>

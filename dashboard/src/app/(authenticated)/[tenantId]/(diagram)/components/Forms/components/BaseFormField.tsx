@@ -6,7 +6,7 @@ import { CircleAlert } from 'lucide-react'
 import { FC, ReactNode } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { accessLevels } from '../../../wfSpec/[...props]/components/Variables'
-import { DOT_REPLACEMENT_PATTERN } from '../../Modals/ExecuteWorkflowRun'
+import { DOT_REPLACEMENT_PATTERN } from '../context/StructFormContext'
 
 type BaseFormFieldProps = FormFieldProp & {
   children: ReactNode

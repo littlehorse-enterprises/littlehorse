@@ -1,75 +1,50 @@
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { ThreadVarDef, WfRunVariableAccessLevel, WfSpec } from 'littlehorse-client/proto'
-import { forwardRef } from 'react'
+import { ThreadVarDef, VariableType, WfSpec } from 'littlehorse-client/proto'
+import { forwardRef, useMemo } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { VariableLabel } from './components/BaseFormField'
-import { FormFields } from './components/FormFields'
+import FormField from './components/FormField'
+import VariableFormField from './components/VariableFormField'
 
 export type FormValues = {
   [key: string]: unknown
 }
 
-type Prop = {
+interface WfRunFormProps {
   wfSpecVariables: ThreadVarDef[]
   wfSpec: WfSpec
   onSubmit: (data: FormValues) => void
 }
 
-export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, wfSpec, onSubmit }, ref) => {
-  console.log('wfSpecVariables', wfSpecVariables)
-  console.log('wfSpec', wfSpec)
+export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVariables, wfSpec, onSubmit }, ref) => {
   const methods = useForm<FormValues>()
-  const { register, handleSubmit, formState } = methods
 
-  const onSubmitForm = async (data: FormValues) => {
-    onSubmit(data)
-  }
-
-  // Sort variables so required fields come first
-  const sortedVariables = wfSpecVariables.sort((a, b) => {
-    if (a.required === b.required) return 0
-    return a.required ? -1 : 1
-  })
+  // sorted by required first
+  const sortedVariables = useMemo(
+    () =>
+      wfSpecVariables.sort((a, b) => {
+        if (a.required === b.required) return 0
+        return a.required ? -1 : 1
+      }),
+    [wfSpecVariables]
+  )
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmitForm)} ref={ref} className="space-y-4">
-        <div>
-          <Label htmlFor="customWfRunId" className="mb-2 flex items-center gap-2">
-            Custom WfRun Id
-            <span className="rounded bg-gray-300 p-1 text-xs">Optional</span>
-          </Label>
-          <Input type="text" id="customWfRunId" {...register('customWfRunId')} placeholder="Enter string value" />
-        </div>
+      <form onSubmit={methods.handleSubmit(onSubmit)} ref={ref} className="space-y-4">
+        <FormField
+          label={'Custom WfRun Id'}
+          as={Input}
+          id="customWfRunId"
+          type="text"
+          variableType={VariableType.STR}
+        />
         {wfSpec.parentWfSpec && (
-          <div>
-            <Label htmlFor="customWfRunId" className="mb-2 flex items-center gap-2">
-              Parent WfRun Id
-              <span className="rounded bg-gray-300 p-1 text-xs">Required</span>
-            </Label>
-            <Input
-              type="text"
-              id="customWfRunId"
-              {...register('parentWfRunId')}
-              placeholder="Enter string value"
-              required
-            />
-          </div>
+          <FormField label={'Parent WfRun Id'} as={Input} id="parentWfRunId" variableType={VariableType.STR} />
         )}
-        {!!sortedVariables.length &&
-          sortedVariables.map((variable: ThreadVarDef) =>
-            variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR ? (
-              <VariableLabel key={JSON.stringify(variable)} {...variable} />
-            ) : (
-              <FormFields
-                key={JSON.stringify(variable)}
-                variables={variable}
-                register={register}
-                formState={formState}
-              />
-            )
-          )}
+
+        {sortedVariables.map((variable: ThreadVarDef, index) => (
+          <VariableFormField key={variable.varDef?.name ?? `variable-${index}`} variable={variable} />
+        ))}
       </form>
     </FormProvider>
   )
