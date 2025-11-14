@@ -2,27 +2,37 @@
   font-size: 0.75em;
   color: #94a3b8;
 }
-.node-status--starting {
+.node-status--starting,
+.task-status--TASK_SCHEDULED {
   color: #009689;
 }
-.node-status--running {
+.node-status--running,
+.task-status--TASK_RUNNING,
+.task-status--TASK_PENDING {
   color: #2563eb;
 }
-.node-status--completed {
+.node-status--completed,
+.task-status--TASK_SUCCESS {
   color: #16a34a;
 }
-.node-status--halting {
+.node-status--halting,
+.task-status--TASK_FAILED,
+.task-status--TASK_OUTPUT_SERDE_ERROR,
+.task-status--TASK_INPUT_VAR_SUB_ERROR {
   color: #ea580c;
 }
 .node-status--halted {
   color: #4b5563;
 }
-.node-status--error {
+.node-status--error,
+.task-status--TASK_TIMEOUT {
   color: #ca8a04;
 }
-.node-status--exception {
+.node-status--exception,
+.task-status--TASK_EXCEPTION {
   color: #dc2626;
 }
-.node-status--unrecognized {
+.node-status--unrecognized,
+.task-status--UNRECOGNIZED {
   color: #4b5563;
 }

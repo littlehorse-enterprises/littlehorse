@@ -18,12 +18,12 @@ export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
   return (
     <div className="ml-1 flex max-w-full flex-1 flex-col">
       {nodeRun.status && <NodeStatus status={nodeRun.status} />}
-      <NodeVariable label="Node Run ID:" text={`${nodeRun.id?.position}`} />
-      <NodeVariable label="Workflow Spec ID:" text={nodeRun.id?.wfRunId?.id} />
-      <NodeVariable label="Workflow Spec :" text={nodeRun.wfSpecId?.name ?? 'N/A'} />
-      <NodeVariable label="Threat name :" text={nodeRun.threadSpecName} />
-      <NodeVariable label="Started :" text={nodeRun.arrivalTime} type={'date'} />
-      {nodeRun.status !== 'RUNNING' && <NodeVariable label="Finished :" text={nodeRun.endTime} type={'date'} />}
+      <NodeVariable label="position:" text={`${nodeRun.id?.position}`} />
+      <NodeVariable label="wfRunId:" text={nodeRun.id?.wfRunId?.id} />
+      <NodeVariable label="wfSpecId:" text={nodeRun.wfSpecId?.name ?? 'N/A'} />
+      <NodeVariable label="threadSpecName:" text={nodeRun.threadSpecName} />
+      <NodeVariable label="arrivalTime:" text={nodeRun.arrivalTime} type={'date'} />
+      {nodeRun.endTime !== 'RUNNING' && <NodeVariable label="endTime:" text={nodeRun.endTime} type={'date'} />}
     </div>
   )
 }
