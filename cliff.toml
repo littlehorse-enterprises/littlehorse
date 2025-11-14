@@ -6,10 +6,10 @@ body = """
 {% else %}\
     ## [unreleased]
 {% endif %}\
-{% for group, commits in commits | group_by(attribute="group") %}
+{% for group, commits in commits | group_by(attribute="scope") %}
     ### {{ group | striptags | trim | upper_first }}
     {% for commit in commits %}
-        - {% if commit.scope %}*({{ commit.scope }})* {% endif %}\
+        - *{{ commit.group }}* \
             {% if commit.breaking %}[**breaking**] {% endif %}\
             {{ commit.message | upper_first }}\
     {% endfor %}
@@ -24,14 +24,14 @@ filter_unconventional = true
 split_commits = false
 
 commit_parsers = [
-  { message = "^feat", group = "Features" },
-  { message = "^fix", group = "Bug Fixes" },
+  { message = "^feat", group = "Feature" },
+  { message = "^fix", group = "Bug Fix" },
   { message = "^doc", group = "Documentation" },
   { message = "^perf", group = "Performance" },
   { message = "^refactor", group = "Refactor" },
   { message = "^style", group = "Styling" },
   { message = "^test", group = "Testing" },
-  { message = "^chore|^ci", group = "Miscellaneous Tasks" },
+  { message = "^chore|^ci", group = "Miscellaneous Task" },
   { body = ".*security", group = "Security" },
   { message = "^revert", group = "Revert" },
 ]
@@ -40,4 +40,3 @@ protect_breaking_commits = false
 filter_commits = false
 topo_order = false
 sort_commits = "oldest"
-
