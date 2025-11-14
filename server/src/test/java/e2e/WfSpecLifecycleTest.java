@@ -3,6 +3,7 @@ package e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import e2e.Struct.UnknownStructDef;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.AllowedUpdateType;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -17,6 +18,18 @@ import org.junit.jupiter.api.Test;
 public class WfSpecLifecycleTest {
 
     private LittleHorseBlockingStub client;
+
+    @Test
+    void shouldRejectPutWfSpecRequestWithInvalidStructDef() {
+        Workflow originalWorkflow = Workflow.newWorkflow("sample", wf -> {
+            wf.declareStruct("my-struct", UnknownStructDef.class).required();
+        });
+
+        assertThatThrownBy(() -> {
+                    client.putWfSpec(originalWorkflow.compileWorkflow());
+                })
+                .hasMessageContaining("refers to non-existent StructDef");
+    }
 
     @Nested
     class AllowAllUpdates {
