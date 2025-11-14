@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@LHStructDef(name = "address")
+@LHStructDef("address")
 public class Address {
     private int houseNumber;
     private String street;

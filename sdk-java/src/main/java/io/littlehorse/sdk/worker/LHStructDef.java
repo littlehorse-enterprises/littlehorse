@@ -17,7 +17,7 @@ public @interface LHStructDef {
      *
      * @return the StructDef name.
      */
-    String name();
+    String value();
 
     String description() default "";
 }

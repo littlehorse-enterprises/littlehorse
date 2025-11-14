@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 public class LHStructDefTypeTest {
 
-    @LHStructDef(name = "book")
+    @LHStructDef("book")
     @Getter
     class Book {
         public String title;
@@ -23,7 +23,7 @@ public class LHStructDefTypeTest {
         public Author author;
     }
 
-    @LHStructDef(name = "authorFieldsOnly")
+    @LHStructDef("authorFieldsOnly")
     class AuthorFieldsOnly {
         public String name;
         public int age;
@@ -33,7 +33,7 @@ public class LHStructDefTypeTest {
         public WfRunId wfRunId;
     }
 
-    @LHStructDef(name = "author")
+    @LHStructDef("author")
     @Getter
     class Author {
         public String name;
@@ -44,7 +44,7 @@ public class LHStructDefTypeTest {
         public WfRunId wfRunId;
     }
 
-    @LHStructDef(name = "library")
+    @LHStructDef("library")
     class Library {
         public String name;
 
@@ -60,7 +60,7 @@ public class LHStructDefTypeTest {
     }
 
     @Getter
-    @LHStructDef(name = "maskedValueDemo")
+    @LHStructDef("maskedValueDemo")
     class MaskedValueDemo {
         public String maskedValue;
 
@@ -70,7 +70,7 @@ public class LHStructDefTypeTest {
         }
     }
 
-    @LHStructDef(name = "named-field-demo")
+    @LHStructDef("named-field-demo")
     class NamedFieldDemo {
         public int inferredFieldName;
 

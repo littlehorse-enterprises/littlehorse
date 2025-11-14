@@ -40,7 +40,7 @@ public class LHTaskSignatureTest {
         public void personTask(Person person) {}
     }
 
-    @LHStructDef(name = "car")
+    @LHStructDef("car")
     @Getter
     class Car {
         String model;
@@ -50,14 +50,14 @@ public class LHTaskSignatureTest {
         Garage garage;
     }
 
-    @LHStructDef(name = "person")
+    @LHStructDef("person")
     @Getter
     class Person {
         String name;
         int age = 10;
     }
 
-    @LHStructDef(name = "garage")
+    @LHStructDef("garage")
     @Getter
     class Garage {
         String address;

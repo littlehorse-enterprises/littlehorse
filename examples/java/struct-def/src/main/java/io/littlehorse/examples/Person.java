@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@LHStructDef(name = "person")
+@LHStructDef("person")
 public class Person {
     private String firstName;
     private String lastName;
