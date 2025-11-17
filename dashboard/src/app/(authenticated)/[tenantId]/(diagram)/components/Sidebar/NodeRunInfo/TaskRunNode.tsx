@@ -14,13 +14,10 @@ export const TaskRunNode: FC<{ node: TaskNodeRun }> = ({ node }) => {
   const [attemptIndex, setAttemptIndex] = useState(0)
 
   const key = taskRunId ? ['taskRun', tenantId, taskRunId.taskGuid] : null
-  const { data: nodeTask } = useSWR<TaskRun | undefined>(
-    key,
-    async () => {
-      if (!taskRunId) return undefined
-      return getTaskRun({ tenantId, ...taskRunId })
-    }
-  )
+  const { data: nodeTask } = useSWR<TaskRun | undefined>(key, async () => {
+    if (!taskRunId) return undefined
+    return getTaskRun({ tenantId, ...taskRunId })
+  })
   return (
     <div className="ml-1 flex max-w-full flex-1 flex-col">
       {nodeTask?.status && <NodeStatus status={nodeTask.status} type="task" />}
@@ -46,9 +43,13 @@ export const TaskRunNode: FC<{ node: TaskNodeRun }> = ({ node }) => {
       {nodeTask?.exponentialBackoff && (
         <NodeVariable label="multiplier:" text={`${nodeTask?.exponentialBackoff.multiplier}`} />
       )}
-      {nodeTask && <InputVariables variables={nodeTask.inputVariables} />}
       {nodeTask?.attempts && (
         <Attempts attempts={nodeTask?.attempts} attemptIndex={attemptIndex} setAttemptIndex={setAttemptIndex} />
+      )}
+      {nodeTask && (
+        <div className='ml-1'>
+          <InputVariables variables={nodeTask.inputVariables} />
+        </div>
       )}
     </div>
   )

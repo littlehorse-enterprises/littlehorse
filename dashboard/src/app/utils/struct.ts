@@ -1,4 +1,4 @@
-import { Struct, VariableValue } from 'littlehorse-client/proto'
+import { Struct, TaskAttempt, VariableValue } from 'littlehorse-client/proto'
 import { getVariableValue } from './variables'
 
 export const structToJSONString = (struct: Struct): string => {
@@ -30,20 +30,13 @@ export const getAttemptOutput = (output: VariableValue | undefined): string => {
   return String(getVariableValue(output))
 }
 
-export const getAttemptResult = (
-  result:
-    | { $case: 'output'; value: VariableValue }
-    | { $case: 'error'; value: any }
-    | { $case: 'exception'; value: any }
-    | undefined
-): string => {
+export const getAttemptResult = (result: Partial<TaskAttempt>['result']): string => {
   if (!result) return 'No Output'
 
   if (result.$case === 'output') {
     return getAttemptOutput(result.value)
   }
 
-  // For error/exception, prefer a message property if present, otherwise fallback to JSON
   const val = result.value
-  return (val && (val.message ?? val.msg ?? val.toString())) || JSON.stringify(val) || 'No Output'
+  return (val && (val.message ?? val.toString())) || JSON.stringify(val) || 'No Output'
 }

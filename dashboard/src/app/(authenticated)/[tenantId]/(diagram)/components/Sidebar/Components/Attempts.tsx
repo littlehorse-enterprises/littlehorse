@@ -5,7 +5,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from '@/components/ui/button'
 import { Dispatch, SetStateAction } from 'react'
 import { ChevronDown } from 'lucide-react'
-import { getVariableValue } from '@/app/utils'
 import { getAttemptOutput, getAttemptResult } from '@/app/utils/struct'
 
 export const Attempts = ({
@@ -20,12 +19,12 @@ export const Attempts = ({
   const attempt = attempts[0]
   const attemptLength = attempts.length
   return (
-    <div className="ml-1 mt-2 ">
+    <div className="ml-1 mt-1 ">
       <div className="flex items-center justify-between">
         <p className=" text-sm font-bold ">Attempts</p>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="  px-2  drop-shadow-none">
+          <DropdownMenuTrigger className='my-1' asChild>
+            <Button variant="outline" className="  px-2  my-0 drop-shadow-none">
               {`${attemptIndex + 1}`}
               <ChevronDown className="w-4" />
             </Button>
