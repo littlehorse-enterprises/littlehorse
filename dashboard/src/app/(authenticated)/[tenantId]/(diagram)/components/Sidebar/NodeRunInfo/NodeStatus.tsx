@@ -1,9 +1,10 @@
 import { LHStatus, TaskStatus } from 'littlehorse-client/proto'
 import '../Node/node.css'
-import { wfRunStatus } from '../../../StatusColor'
+import { taskStatus, wfRunStatus } from '../../../StatusColor'
 
-export const NodeStatus = ({ status }: { status: LHStatus | TaskStatus }) => {
-  const { color, Icon, textColor } = wfRunStatus[status]
+export const NodeStatus = ({ status, type="workflow" }: { status: LHStatus | TaskStatus; type?: 'workflow' | 'task' }) => {
+  const { color, Icon, textColor } =
+    type === 'workflow' ? wfRunStatus[status as LHStatus] : taskStatus[status as TaskStatus]
 
   return (
     <div className="ml-1 mt-2 flex items-center gap-2">

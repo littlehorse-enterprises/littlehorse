@@ -20,7 +20,7 @@ export const TaskRunNode: FC<{ node: TaskNodeRun }> = ({ node }) => {
   })
   return (
     <div className="ml-1 flex max-w-full flex-1 flex-col">
-      {nodeTask?.status && <NodeStatus status={nodeTask.status} />}
+      {nodeTask?.status && <NodeStatus status={nodeTask.status} type="task" />}
       <NodeVariable label="Node Type:" text="Task" />
 
       <NodeVariable label="taskGuid:" text={node.taskRunId?.taskGuid} />
