@@ -31,10 +31,6 @@ export const TypeDisplay: FC<Props> = ({ definedType }) => {
   }
 
   if (definedType?.$case === 'primitiveType') {
-    return (
-      <TypeBadge>
-        {VARIABLE_TYPES[getVariableCaseFromType(definedType.value)]}
-      </TypeBadge>
-    )
+    return <TypeBadge>{VARIABLE_TYPES[getVariableCaseFromType(definedType.value)]}</TypeBadge>
   }
 }

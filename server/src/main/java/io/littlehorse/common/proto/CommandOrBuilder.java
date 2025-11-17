@@ -148,19 +148,19 @@ public interface CommandOrBuilder extends
   io.littlehorse.common.proto.SleepNodeMaturedPbOrBuilder getSleepNodeMaturedOrBuilder();
 
   /**
-   * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 11;</code>
+   * <code>.littlehorse.InternalDeleteWfRunRequest delete_wf_run = 11;</code>
    * @return Whether the deleteWfRun field is set.
    */
   boolean hasDeleteWfRun();
   /**
-   * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 11;</code>
+   * <code>.littlehorse.InternalDeleteWfRunRequest delete_wf_run = 11;</code>
    * @return The deleteWfRun.
    */
-  io.littlehorse.sdk.common.proto.DeleteWfRunRequest getDeleteWfRun();
+  io.littlehorse.common.proto.InternalDeleteWfRunRequest getDeleteWfRun();
   /**
-   * <code>.littlehorse.DeleteWfRunRequest delete_wf_run = 11;</code>
+   * <code>.littlehorse.InternalDeleteWfRunRequest delete_wf_run = 11;</code>
    */
-  io.littlehorse.sdk.common.proto.DeleteWfRunRequestOrBuilder getDeleteWfRunOrBuilder();
+  io.littlehorse.common.proto.InternalDeleteWfRunRequestOrBuilder getDeleteWfRunOrBuilder();
 
   /**
    * <code>.littlehorse.ExternalEventNodeTimeoutPb external_event_timeout = 12;</code>

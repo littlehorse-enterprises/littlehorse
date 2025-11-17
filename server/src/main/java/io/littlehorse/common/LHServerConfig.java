@@ -53,6 +53,7 @@ import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.rocksdb.Cache;
 import org.rocksdb.LRUCache;
 import org.rocksdb.RateLimiter;
+import org.rocksdb.RateLimiterMode;
 import org.rocksdb.RocksDB;
 import org.rocksdb.WriteBufferManager;
 
@@ -83,9 +84,11 @@ public class LHServerConfig extends ConfigBase {
     public static final String ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_MEMTABLE_BYTES";
     public static final String ROCKSDB_USE_DIRECT_IO_KEY = "LHS_ROCKSDB_USE_DIRECT_IO";
     public static final String ROCKSDB_RATE_LIMIT_BYTES_KEY = "LHS_ROCKSDB_RATE_LIMIT_BYTES";
+    public static final String ROCKSDB_RATE_LIMIT_INCLUDE_READS_KEY = "LHS_ROCKSDB_RATE_LIMIT_INCLUDE_READS";
     public static final String SESSION_TIMEOUT_KEY = "LHS_STREAMS_SESSION_TIMEOUT";
     public static final String KAFKA_STATE_DIR_KEY = "LHS_STATE_DIR";
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
+    public static final String PRODUCER_MAX_REQUEST_SIZE = "LHS_PRODUCER_MAX_REQUEST_SIZE";
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHS_STREAMS_NUM_STANDBY_REPLICAS";
     public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
     public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
@@ -144,7 +147,9 @@ public class LHServerConfig extends ConfigBase {
     private Map<String, AuthorizationProtocol> listenersAuthorizationMap;
 
     // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
-    public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS";
+    public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS"; // TODO: Remove me
+    // useful for testing and might be useful for certain incidents
+    public static final String X_MAX_DELETES_PER_COMMAND_KEY = "LHS_X_MAX_DELETES_PER_COMMAND";
 
     // Instance configs
     private String lhsMetricsLevel;
@@ -776,6 +781,7 @@ public class LHServerConfig extends ConfigBase {
                 org.apache.kafka.common.serialization.StringSerializer.class);
         conf.put(ProducerConfig.ACKS_CONFIG, "all");
         conf.put(ProducerConfig.LINGER_MS_CONFIG, getOrSetDefault(LINGER_MS_KEY, "0"));
+        conf.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, getProducerMaxRequestSize());
         addKafkaSecuritySettings(conf);
         return conf;
     }
@@ -1008,6 +1014,7 @@ public class LHServerConfig extends ConfigBase {
         props.put("probing.rebalance.interval.ms", 60 * 1000);
         props.put("metrics.recording.level", getServerMetricLevel());
         props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), getStreamsSessionTimeout());
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.MAX_REQUEST_SIZE_CONFIG), getProducerMaxRequestSize());
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
         props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
@@ -1067,6 +1074,10 @@ public class LHServerConfig extends ConfigBase {
         return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "60000"));
     }
 
+    public int getProducerMaxRequestSize() {
+        return Integer.parseInt(getOrSetDefault(LHServerConfig.PRODUCER_MAX_REQUEST_SIZE, "1048576"));
+    }
+
     public int getStreamsStateCleanupDelayMs() {
         // 20 minutes before cleaning up
         return Integer.valueOf(getOrSetDefault(LHServerConfig.STATE_CLEANUP_DELAY_MS_KEY, "1200000"));
@@ -1074,6 +1085,10 @@ public class LHServerConfig extends ConfigBase {
 
     public boolean areStructDefsEnabled() {
         return Boolean.valueOf(getOrSetDefault(LHServerConfig.X_ENABLE_STRUCT_DEFS_KEY, "false"));
+    }
+
+    public int getMaxDeletesPerCommand() {
+        return Integer.valueOf(getOrSetDefault(X_MAX_DELETES_PER_COMMAND_KEY, "1000"));
     }
 
     public String getRackId() {
@@ -1128,8 +1143,13 @@ public class LHServerConfig extends ConfigBase {
         }
 
         long rateLimit = Long.valueOf(getOrSetDefault(ROCKSDB_RATE_LIMIT_BYTES_KEY, "-1"));
+        boolean limitReads = Boolean.valueOf(getOrSetDefault(ROCKSDB_RATE_LIMIT_INCLUDE_READS_KEY, "false"));
         if (rateLimit > 0) {
-            this.globalRocksdbRateLimiter = new RateLimiter(rateLimit);
+            this.globalRocksdbRateLimiter = new RateLimiter(
+                    rateLimit,
+                    RateLimiter.DEFAULT_REFILL_PERIOD_MICROS,
+                    RateLimiter.DEFAULT_FAIRNESS,
+                    limitReads ? RateLimiterMode.ALL_IO : RateLimiterMode.WRITES_ONLY);
         }
     }
 

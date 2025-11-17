@@ -114,7 +114,8 @@ public class GetableManager extends ReadOnlyGetableManager {
     }
 
     private WfRunStoredInventoryModel getOrCreateStoredInventory(WfRunIdModel wfRunId) {
-        WfRunStoredInventoryModel result = store.get(wfRunId.getStoreableKey(), WfRunStoredInventoryModel.class);
+        WfRunStoredInventoryModel result = store.get(
+                wfRunId.getStoreableKey(StoreableType.WFRUN_STORED_INVENTORY), WfRunStoredInventoryModel.class);
         if (result == null) {
             result = new WfRunStoredInventoryModel();
             result.setWfRunId(wfRunId);
@@ -181,13 +182,19 @@ public class GetableManager extends ReadOnlyGetableManager {
         }
     }
 
-    public void deleteAllExternalEventsFor(WfRunIdModel wfRunId) {
-        log.trace("Deleting all ExternalEvents for WfRun {}", wfRunId);
+    public boolean tryToDeleteAllExternalEventsFor(WfRunIdModel wfRunId, int maxDeletesInOneCommand) {
+        log.trace("Deleting a bunch of ExternalEvents for WfRun {}", wfRunId);
 
+        int deletedEvents = 0;
         WfRunStoredInventoryModel inventory = getOrCreateStoredInventory(wfRunId);
         for (ExternalEventIdModel externalEventId : inventory.getExternalEventIds()) {
             delete(externalEventId);
+            if (deletedEvents++ >= maxDeletesInOneCommand
+                    && !inventory.getExternalEventIds().isEmpty()) {
+                return false;
+            }
         }
+        return true;
     }
 
     private <U extends Message, T extends CoreGetable<U>> Optional<OutputTopicRecordModel> processEntity(

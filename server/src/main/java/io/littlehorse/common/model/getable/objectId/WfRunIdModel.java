@@ -44,6 +44,11 @@ public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
     }
 
     @Override
+    public Optional<WfRunIdModel> getGroupingWfRunId() {
+        return Optional.of(this);
+    }
+
+    @Override
     public void initFrom(Message proto, ExecutionContext context) {
         WfRunId p = (WfRunId) proto;
         id = p.getId();

@@ -1,5 +1,5 @@
 import { WfRunId } from 'littlehorse-client/proto'
-import { flattenWfRunId, wfRunIdFromFlattenedId, wfRunIdToPath } from '.'
+import { flattenWfRunId, wfRunIdFromFlattenedId, wfRunIdFromList, wfRunIdToPath } from '.'
 
 describe('wfRunIdToPath', () => {
   it('should return reverse relationship', () => {
@@ -84,5 +84,24 @@ describe('flattenWfRunId', () => {
       },
     }
     expect(flattenWfRunId(wfRunId)).toEqual('great-grandparent_grandparent_parent_child')
+  })
+})
+
+describe('wfRunIdFromList', () => {
+  it('should return id for parent/child', async () => {
+    const ids = ['parent', 'child']
+
+    expect(wfRunIdFromList(ids)).toEqual({
+      id: 'child',
+      parentWfRunId: { id: 'parent', parentWfRunId: undefined },
+    })
+  })
+
+  it('should return wfRunId for grant-parent/parent/child', async () => {
+    const ids = ['grand-parent', 'parent', 'child']
+    expect(wfRunIdFromList(ids)).toEqual({
+      id: 'child',
+      parentWfRunId: { id: 'parent', parentWfRunId: { id: 'grand-parent', parentWfRunId: undefined } },
+    })
   })
 })
