@@ -896,10 +896,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         NodeOutputModel nodeOutput = processorContext.getableManager().get(nodeOutputId);
         
         if (nodeOutput != null) {
+            System.out.println("Found NodeOutput for node " + nodeName + " in ThreadRun " + number);
             return Optional.of(nodeOutput.getValue());
         }
         try {
             NodeRunModel referencedNodeRun = getMostRecentNodeRun(nodeName);
+            System.out.println("NodeOutput not found for node " + nodeName + " in ThreadRun " + number + ", looking for NodeRun");
             return referencedNodeRun.getOutput(processorContext);
         } catch (LHVarSubError e) {
             // No node run found, return empty
