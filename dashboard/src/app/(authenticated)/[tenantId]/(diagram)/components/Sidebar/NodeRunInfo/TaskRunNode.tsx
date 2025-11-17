@@ -1,29 +1,26 @@
 import { TaskNodeRun, TaskRun } from 'littlehorse-client/proto'
-import { FC, useLayoutEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { NodeVariable } from './NodeVariable'
 import { InputVariables } from '../Components'
 import { Attempts } from '../Components/Attempts'
 import { NodeStatus } from './NodeStatus'
+import useSWR from 'swr'
 
 export const TaskRunNode: FC<{ node: TaskNodeRun }> = ({ node }) => {
   const taskRunId = node.taskRunId
   const { tenantId } = useWhoAmI()
-  const [nodeTask, setNodeTask] = useState<TaskRun>()
   const [attemptIndex, setAttemptIndex] = useState(0)
-  useLayoutEffect(() => {
-    const fetchTaskRun = async () => {
-      if (taskRunId) {
-        try {
-          const taskRunData = await getTaskRun({ tenantId, ...taskRunId })
-          setNodeTask(taskRunData)
-        } catch (error) {}
-      }
-    }
 
-    fetchTaskRun()
-  }, [tenantId, taskRunId])
+  const key = taskRunId ? ['taskRun', tenantId, taskRunId.taskGuid] : null
+  const { data: nodeTask } = useSWR<TaskRun | undefined>(
+    key,
+    async () => {
+      if (!taskRunId) return undefined
+      return getTaskRun({ tenantId, ...taskRunId })
+    }
+  )
   return (
     <div className="ml-1 flex max-w-full flex-1 flex-col">
       {nodeTask?.status && <NodeStatus status={nodeTask.status} type="task" />}
