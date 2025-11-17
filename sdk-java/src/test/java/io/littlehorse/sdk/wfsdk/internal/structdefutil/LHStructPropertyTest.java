@@ -15,7 +15,7 @@ import java.beans.PropertyDescriptor;
 import org.junit.jupiter.api.Test;
 
 public class LHStructPropertyTest {
-    @LHStructDef(name = "library")
+    @LHStructDef("library")
     class Library {
         public String name;
         public String[] books;
