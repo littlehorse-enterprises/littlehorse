@@ -6,6 +6,7 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.nodeoutput.NodeOutputModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.CheckpointModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -26,6 +27,7 @@ import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.NodeOutputIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
@@ -113,6 +115,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.CORRELATED_EVENT;
         } else if (cls.equals(CheckpointModel.class)) {
             return GetableClassEnum.CHECKPOINT;
+        } else if (cls.equals(NodeOutputModel.class)) {
+            return GetableClassEnum.NODE_OUTPUT;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -162,6 +166,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CorrelatedEventModel.class;
             case CHECKPOINT:
                 return CheckpointModel.class;
+            case NODE_OUTPUT:
+                return NodeOutputModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -212,6 +218,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CorrelatedEventIdModel.class;
             case CHECKPOINT:
                 return CheckpointIdModel.class;
+            case NODE_OUTPUT:
+                return NodeOutputIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");
