@@ -23,8 +23,8 @@ export const Attempts = ({
       <div className="flex items-center justify-between">
         <p className=" text-sm font-bold ">Attempts</p>
         <DropdownMenu>
-          <DropdownMenuTrigger className='my-1' asChild>
-            <Button variant="outline" className="  px-2  my-0 drop-shadow-none">
+          <DropdownMenuTrigger className="my-1" asChild>
+            <Button variant="outline" className="  my-0  px-2 drop-shadow-none">
               {`${attemptIndex + 1}`}
               <ChevronDown className="w-4" />
             </Button>

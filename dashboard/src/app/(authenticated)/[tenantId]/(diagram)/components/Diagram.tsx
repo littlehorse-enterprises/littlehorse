@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { LHStatus, NodeRun, WfRun, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'

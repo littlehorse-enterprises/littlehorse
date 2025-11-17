@@ -15,7 +15,7 @@ import { FC, useMemo, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite'
 import { PaginatedWfRunResponseList, searchWfRun } from '../../../wfSpec/[...props]/actions/searchWfRun'
 import { WfRunsHeader } from '../../../wfSpec/[...props]/components/WfRunsHeader'
-import { wfRunStatusColor } from '../../../StatusColor'
+import { wfRunStatus } from '../../../StatusColor'
 
 type ChildWfRunsKey = ['childWfRuns', LHStatus | 'ALL', string, number, StartTimeWindow, string | undefined, WfRunId]
 
@@ -85,7 +85,7 @@ export const ChildWorkflows: FC<{ parentWfRunId: WfRunId; spec: WfSpec }> = ({ p
                     return (
                       <SelectionLink key={wfRun.wfRun.id.id} href={`/wfRun/${wfRunIdToPath(wfRun.wfRun.id)}`}>
                         <p>{wfRun.wfRun.id.id}</p>
-                        <span className={cn('ml-2 rounded px-2', wfRunStatusColor[wfRun.wfRun.status])}>
+                        <span className={cn('ml-2 rounded px-2', wfRunStatus[wfRun.wfRun.status].backgroundColor)}>
                           {`${wfRun.wfRun.status ?? ''}`}
                         </span>
                         <span className="ml-2 rounded bg-gray-200 px-2">
