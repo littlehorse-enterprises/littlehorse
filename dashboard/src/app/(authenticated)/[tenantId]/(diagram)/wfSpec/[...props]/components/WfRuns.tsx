@@ -13,7 +13,7 @@ import { FC, Fragment, useMemo, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite'
 import { PaginatedWfRunResponseList, searchWfRun } from '../actions/searchWfRun'
 import { WfRunsHeader } from './WfRunsHeader'
-import { wfRunStatusColor } from '../../../StatusColor'
+import { wfRunStatus } from '../../../StatusColor'
 
 type WfRunsKey = [
   'wfRun',
@@ -86,7 +86,7 @@ export const WfRuns: FC<WfSpec> = spec => {
                 return (
                   <SelectionLink key={wfRun.wfRun.id.id} href={`/wfRun/${wfRunIdToPath(wfRun.wfRun.id)}`}>
                     <p>{wfRun.wfRun.id.id}</p>
-                    <span className={cn('ml-2 rounded px-2', wfRunStatusColor[wfRun.wfRun.status])}>
+                    <span className={cn('ml-2 rounded px-2', wfRunStatus[wfRun.wfRun.status].color)}>
                       {`${wfRun.wfRun.status ?? ''}`}
                     </span>
                     <span className="ml-2 rounded bg-gray-200 px-2">
