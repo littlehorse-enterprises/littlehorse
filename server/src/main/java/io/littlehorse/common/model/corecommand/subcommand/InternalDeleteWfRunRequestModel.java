@@ -14,6 +14,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.common.model.getable.objectId.NodeOutputIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.InternalDeleteWfRunRequest;
@@ -128,6 +129,11 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
 
                 // Delete the NodeRun
                 manager.delete(nodeRun.getObjectId());
+
+                // Delete the NodeOutput if it exists
+                NodeOutputIdModel nodeOutputId = new NodeOutputIdModel(
+                        wfRunId, thread.getNumber(), nodeRun.getNodeName());
+                manager.delete(nodeOutputId);
 
                 if (thingsDone >= maxDeletesInOneCommand) {
                     log.debug("Not done deleting nodeRuns for {}", wfRunId);

@@ -66,6 +66,11 @@ public class NodeOutputIdModel extends CoreObjectId<NodeOutputId, NodeOutput, No
     }
 
     @Override
+    public Optional<WfRunIdModel> getGroupingWfRunId() {
+        return Optional.of(wfRunId);
+    }
+
+    @Override
     public void initFromString(String storeKey) {
         String[] tokens = storeKey.split("/");
         if (tokens.length != 3) {
