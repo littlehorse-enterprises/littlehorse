@@ -45,13 +45,13 @@ public class LHStructDefType extends LHClassType {
     public TypeDefinition getTypeDefinition() {
         return TypeDefinition.newBuilder()
                 .setStructDefId(StructDefId.newBuilder()
-                        .setName(this.getStructDefAnnotation().name())
+                        .setName(this.getStructDefAnnotation().value())
                         .build())
                 .build();
     }
 
     public StructDefId getStructDefId() {
-        String structName = this.getStructDefAnnotation().name();
+        String structName = this.getStructDefAnnotation().value();
 
         return StructDefId.newBuilder().setName(structName).build();
     }
@@ -62,7 +62,7 @@ public class LHStructDefType extends LHClassType {
 
     public PutStructDefRequest toPutStructDefRequest() {
         return PutStructDefRequest.newBuilder()
-                .setName(this.getStructDefAnnotation().name())
+                .setName(this.getStructDefAnnotation().value())
                 .setDescription(this.getStructDefAnnotation().description())
                 .setStructDef(this.getInlineStructDef())
                 .build();
@@ -72,7 +72,7 @@ public class LHStructDefType extends LHClassType {
         LHStructDef annotation = this.getStructDefAnnotation();
 
         StructDef.Builder structDef = StructDef.newBuilder();
-        structDef.setId(StructDefId.newBuilder().setName(annotation.name()));
+        structDef.setId(StructDefId.newBuilder().setName(annotation.value()));
         structDef.setDescription(annotation.description());
         structDef.setStructDef(this.getInlineStructDef());
 
