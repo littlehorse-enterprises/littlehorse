@@ -15,17 +15,22 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.Closeable;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
+import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.processor.StandbyUpdateListener;
 import org.apache.kafka.streams.processor.StateRestoreListener;
 import org.apache.kafka.streams.processor.TaskId;
+import org.apache.kafka.streams.state.QueryableStoreTypes;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
 public class HealthService implements Closeable, StateRestoreListener, StandbyUpdateListener {
@@ -76,6 +81,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         statusServer.handle(config.getStatusPath(), ContentType.JSON, this::getStatus);
         statusServer.handle(config.getDiskUsagePath(), ContentType.JSON, this::getDiskUsage);
         statusServer.handle(config.getStandbyStatusPath(), ContentType.JSON, this::getStandbyStatus);
+        statusServer.handle("/dump-store", ContentType.TEXT, this::dumpStore);
 
         coreStreams.setStandbyUpdateListener(this);
         coreStreams.setGlobalStateRestoreListener(this);
@@ -141,6 +147,18 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         } else {
             throw new LHHttpException("Core topology is not ready to receive traffic");
         }
+    }
+
+    public String dumpStore() {
+        ArrayList<String> result = new ArrayList<>();
+        ReadOnlyKeyValueStore<String, Bytes> store = coreStreams.store(
+                StoreQueryParameters.fromNameAndType("core-store", QueryableStoreTypes.keyValueStore()));
+        var iterator = store.all();
+        while (iterator.hasNext()) {
+            result.add(iterator.next().key);
+        }
+        result.sort((a, b) -> a.compareTo(b));
+        return String.join("\n", result);
     }
 
     private String getLiveness() {
