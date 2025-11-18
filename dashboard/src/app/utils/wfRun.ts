@@ -25,7 +25,7 @@ export const wfRunIdToPath = (wfRunId: WfRunId) => {
 export const wfRunIdFromList = (ids: string[]): WfRunId => {
   if (ids.length === 0) throw new Error('ids are empty')
 
-  return ids.reverse().reduce<WfRunId | undefined>((parentWfRunId, id) => ({ id, parentWfRunId }), undefined) as WfRunId
+  return ids.reduce<WfRunId | undefined>((parentWfRunId, id) => ({ id, parentWfRunId }), undefined) as WfRunId
 }
 
 /**

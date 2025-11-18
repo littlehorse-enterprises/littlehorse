@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@LHStructDef(name = "car")
+@LHStructDef("car")
 public class ParkingTicketReport {
     private String vehicleMake;
     private String vehicleModel;

@@ -22,7 +22,7 @@ def get_config() -> LHConfig:
 
 def get_parent_wf() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
-        the_name = wf.add_variable("input-name", VariableType.STR)
+        the_name = wf.add_variable("input-name", VariableType.STR, access_level="PUBLIC_VAR")
         wf.execute("greet", the_name)
 
     return Workflow("parent-wf", my_entrypoint)

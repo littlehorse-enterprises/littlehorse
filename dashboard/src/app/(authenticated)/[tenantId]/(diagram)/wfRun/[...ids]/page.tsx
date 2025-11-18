@@ -1,10 +1,9 @@
 import { getWfRun } from '@/app/actions/getWfRun'
+import { wfRunIdFromList } from '@/app/utils'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ClientError, Status } from 'nice-grpc-common'
 import { WfRun } from './components/WfRun'
-import { WfRunId } from 'littlehorse-client/proto'
-import { wfRunIdFromList } from '@/app/utils'
 
 type Props = { params: { ids: string[]; tenantId: string } }
 

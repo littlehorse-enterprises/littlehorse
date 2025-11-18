@@ -60,11 +60,23 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
 
     @Override
     public String getStoreKey() {
-        return StoredGetable.getStoreKey(storedObject.getObjectId());
+        ObjectIdModel<?, ?, ?> objectId = storedObject.getObjectId();
+        if (objectId.getGroupingWfRunId().isPresent()) {
+            return StoredGetable.getGroupedFullStoreKey(
+                    objectId.getGroupingWfRunId().get(),
+                    getType(),
+                    objectId.getType(),
+                    objectId.getRestOfKeyAfterWfRunId());
+        } else {
+            return StoredGetable.getStoreKey(storedObject.getObjectId());
+        }
     }
 
     public static String getStoreKey(ObjectIdModel<?, ?, ?> id) {
-        return id.getType().getNumber() + "/" + id.toString();
+        if (id.getGroupingWfRunId().isEmpty()) {
+            return id.getType().getNumber() + "/" + id.toString();
+        }
+        return id.getType().getNumber() + "/" + id.getRestOfKeyAfterWfRunId();
     }
 
     @SuppressWarnings("unchecked")
@@ -78,6 +90,14 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
     }
 
     public static String getRocksDBKey(String key, GetableClassEnum objType) {
-        return objType.getNumber() + "/" + key;
+        // Weird but needed for the new format
+        var parts = key.split("/");
+        String wfRun = parts[0];
+        if (parts.length > 1) {
+            String restOfPrefix = parts[1];
+            return Storeable.getGroupedGetableStorePrefix(wfRun, StoreableType.STORED_GETABLE, objType, restOfPrefix);
+        } else {
+            return Storeable.getGroupedGetableStorePrefix(wfRun, StoreableType.STORED_GETABLE, objType);
+        }
     }
 }
