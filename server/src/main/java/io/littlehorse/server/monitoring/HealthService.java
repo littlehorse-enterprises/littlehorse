@@ -1,7 +1,9 @@
 package io.littlehorse.server.monitoring;
 
 import com.google.gson.Gson;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.monitoring.health.InProgressRestoration;
 import io.littlehorse.server.monitoring.health.ServerHealthState;
 import io.littlehorse.server.monitoring.http.ContentType;
@@ -49,12 +51,8 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
 
-    public HealthService(
-            LHServerConfig config,
-            KafkaStreams coreStreams,
-            KafkaStreams timerStreams,
-            TaskQueueManager taskQueueManager,
-            MetadataCache metadataCache,
+    public HealthService(LHServerConfig config, KafkaStreams coreStreams, KafkaStreams timerStreams,
+            TaskQueueManager taskQueueManager, MetadataCache metadataCache,
             BackendInternalComms internalComms) {
         this.prom = new PrometheusMetricExporter(config);
         this.statusServer = new StatusServer();
@@ -62,25 +60,22 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         this.numberOfPartitionPerTopic = config.partitionsByTopic();
 
         this.coreState = new InstanceState(coreStreams, internalComms);
-        this.prom.bind(
-                coreStreams,
-                timerStreams,
-                taskQueueManager,
-                metadataCache,
-                new StandbyMetrics(standbyStores, config.getLHInstanceName()),
-                coreState);
+        this.prom.bind(coreStreams, timerStreams, taskQueueManager, metadataCache,
+                new StandbyMetrics(standbyStores, config.getLHInstanceName()), coreState);
 
         this.coreStreams = coreStreams;
         this.timerStreams = timerStreams;
 
         this.config = config;
         this.restorations = new ConcurrentHashMap<>();
-        statusServer.handle(config.getPrometheusExporterPath(), ContentType.TEXT, () -> prom.handleRequest());
+        statusServer.handle(config.getPrometheusExporterPath(), ContentType.TEXT,
+                () -> prom.handleRequest());
         statusServer.handle(config.getLivenessPath(), ContentType.TEXT, this::getLiveness);
         statusServer.handle(config.getReadinessPath(), ContentType.TEXT, this::getReadiness);
         statusServer.handle(config.getStatusPath(), ContentType.JSON, this::getStatus);
         statusServer.handle(config.getDiskUsagePath(), ContentType.JSON, this::getDiskUsage);
-        statusServer.handle(config.getStandbyStatusPath(), ContentType.JSON, this::getStandbyStatus);
+        statusServer.handle(config.getStandbyStatusPath(), ContentType.JSON,
+                this::getStandbyStatus);
         statusServer.handle("/dump-store", ContentType.TEXT, this::dumpStore);
 
         coreStreams.setStandbyUpdateListener(this);
@@ -105,13 +100,16 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
     }
 
     @Override
-    public void onRestoreStart(TopicPartition tp, String storeName, long startingOffset, long endingOffset) {
+    public void onRestoreStart(TopicPartition tp, String storeName, long startingOffset,
+            long endingOffset) {
         log.debug("Starting restoration for store {} partition {}", storeName, tp.partition());
-        restorations.put(tp, new InProgressRestoration(tp, storeName, startingOffset, endingOffset, config));
+        restorations.put(tp,
+                new InProgressRestoration(tp, storeName, startingOffset, endingOffset, config));
     }
 
     @Override
-    public void onBatchRestored(TopicPartition tp, String storeName, long batchEndOffset, long numRestored) {
+    public void onBatchRestored(TopicPartition tp, String storeName, long batchEndOffset,
+            long numRestored) {
         restorations.get(tp).onBatchRestored(batchEndOffset, numRestored);
     }
 
@@ -151,11 +149,16 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     public String dumpStore() {
         ArrayList<String> result = new ArrayList<>();
-        ReadOnlyKeyValueStore<String, Bytes> store = coreStreams.store(
-                StoreQueryParameters.fromNameAndType("core-store", QueryableStoreTypes.keyValueStore()));
+        ReadOnlyKeyValueStore<String, Bytes> store = coreStreams.store(StoreQueryParameters
+                .fromNameAndType("core-store", QueryableStoreTypes.keyValueStore()));
         var iterator = store.all();
         while (iterator.hasNext()) {
-            result.add(iterator.next().key);
+            var curriterator = iterator.next();
+            var r = curriterator.key;
+            // if (curriterator.key.contains("/21/"))
+            //     r += " -> " + curriterator.value.toString();
+
+                result.add(r);
         }
         result.sort((a, b) -> a.compareTo(b));
         return String.join("\n", result);
@@ -185,8 +188,8 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     private String getStatus() {
         try {
-            ServerHealthState result =
-                    new ServerHealthState(config, coreStreams, timerStreams, restorations, standbyStores);
+            ServerHealthState result = new ServerHealthState(config, coreStreams, timerStreams,
+                    restorations, standbyStores);
             return gson.toJson(result);
         } catch (Exception exn) {
             throw new RuntimeException(exn);
@@ -194,7 +197,8 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
     }
 
     private String getDiskUsage() {
-        return gson.toJson(Map.of("diskUsageBytes", FileUtils.sizeOfDirectory(new File(config.getStateDirectory()))));
+        return gson.toJson(Map.of("diskUsageBytes",
+                FileUtils.sizeOfDirectory(new File(config.getStateDirectory()))));
     }
 
     @Override
@@ -204,39 +208,31 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
     }
 
     @Override
-    public void onUpdateStart(TopicPartition topicPartition, String storeName, long startingOffset) {
-        StandbyStoresOnInstance instanceStore = standbyStores.getOrDefault(
-                storeName,
-                new StandbyStoresOnInstance(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
+    public void onUpdateStart(TopicPartition topicPartition, String storeName,
+            long startingOffset) {
+        StandbyStoresOnInstance instanceStore =
+                standbyStores.getOrDefault(storeName, new StandbyStoresOnInstance(storeName,
+                        numberOfPartitionPerTopic.get(topicPartition.topic())));
         instanceStore.recordOffsets(topicPartition, startingOffset, -1);
         standbyStores.put(storeName, instanceStore);
     }
 
     @Override
-    public void onBatchLoaded(
-            TopicPartition topicPartition,
-            String storeName,
-            TaskId taskId,
-            long batchEndOffset,
-            long batchSize,
-            long currentEndOffset) {
-        StandbyStoresOnInstance instanceStore = standbyStores.getOrDefault(
-                storeName,
-                new StandbyStoresOnInstance(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
+    public void onBatchLoaded(TopicPartition topicPartition, String storeName, TaskId taskId,
+            long batchEndOffset, long batchSize, long currentEndOffset) {
+        StandbyStoresOnInstance instanceStore =
+                standbyStores.getOrDefault(storeName, new StandbyStoresOnInstance(storeName,
+                        numberOfPartitionPerTopic.get(topicPartition.topic())));
         instanceStore.recordOffsets(topicPartition, batchEndOffset, currentEndOffset);
         standbyStores.put(storeName, instanceStore);
     }
 
     @Override
-    public void onUpdateSuspended(
-            TopicPartition topicPartition,
-            String storeName,
-            long storeOffset,
-            long currentEndOffset,
-            SuspendReason reason) {
-        StandbyStoresOnInstance instanceStore = standbyStores.getOrDefault(
-                storeName,
-                new StandbyStoresOnInstance(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
+    public void onUpdateSuspended(TopicPartition topicPartition, String storeName, long storeOffset,
+            long currentEndOffset, SuspendReason reason) {
+        StandbyStoresOnInstance instanceStore =
+                standbyStores.getOrDefault(storeName, new StandbyStoresOnInstance(storeName,
+                        numberOfPartitionPerTopic.get(topicPartition.topic())));
         instanceStore.suspendPartition(topicPartition, storeOffset, currentEndOffset, reason);
         standbyStores.put(storeName, instanceStore);
     }

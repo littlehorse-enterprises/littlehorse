@@ -131,8 +131,8 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
                 manager.delete(nodeRun.getObjectId());
 
                 // Delete the NodeOutput if it exists
-                NodeOutputIdModel nodeOutputId = new NodeOutputIdModel(
-                        wfRunId, thread.getNumber(), nodeRun.getNodeName());
+                NodeOutputIdModel nodeOutputId =
+                        new NodeOutputIdModel(wfRunId, thread.getNumber(), nodeRun.getNodeName());
                 manager.delete(nodeOutputId);
 
                 if (thingsDone >= maxDeletesInOneCommand) {

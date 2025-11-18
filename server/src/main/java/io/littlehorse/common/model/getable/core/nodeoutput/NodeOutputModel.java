@@ -20,9 +20,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Represents a persistently stored node output that can be retrieved even after
- * the NodeRun is deleted. This improves NodeOutputReference performance and supports
- * node retention policies.
+ * Represents a persistently stored node output value.
+ * Node outputs are stored separately from NodeRuns.
  */
 @Getter
 @Setter
@@ -36,7 +35,8 @@ public class NodeOutputModel extends CoreGetable<NodeOutput> {
 
     public NodeOutputModel() {}
 
-    public NodeOutputModel(NodeOutputIdModel id, VariableValueModel value, WfSpecIdModel wfSpecId, int nodeRunPosition) {
+    public NodeOutputModel(
+            NodeOutputIdModel id, VariableValueModel value, WfSpecIdModel wfSpecId, int nodeRunPosition) {
         this.id = id;
         this.value = value;
         this.wfSpecId = wfSpecId;

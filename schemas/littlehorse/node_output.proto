@@ -11,9 +11,7 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
-// Represents a persistently stored node output that can be retrieved even after
-// the NodeRun is deleted. This improves NodeOutputReference performance and supports
-// node retention policies.
+// Represents a persistently stored node output
 message NodeOutput {
   // The ID of this NodeOutput.
   NodeOutputId id = 1;

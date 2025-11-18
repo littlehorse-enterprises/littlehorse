@@ -36,20 +36,24 @@ public class ExternalEventExample {
         return new WorkflowImpl("example-external-event", wf -> {
             WfRunVariable name = wf.declareStr("name").searchable();
 
-           wf.execute("ask-for-name");
-
+            var a = wf.execute("ask-for-name");
             wf.mutate(name, VariableMutationType.ASSIGN, wf.waitForEvent("name-event"));
-            var output =  wf.execute("greet", name);
-            wf.waitForEvent("name-event");
-            wf.execute("greet", output);
+            var output = wf.execute("greet", name);
+            var b = wf.waitForEvent("name-event");
+            wf.execute("greet", a);
+            wf.execute("greet", b);
             SpawnedThread childThread = wf.spawnThread(child -> { // this is the child workflow
                                                                   // thread
                 WfRunVariable childVar = child.addVariable("child-var", VariableType.STR);
-                child.execute("greet", childVar);
+                var c = child.execute("greet", childVar);
+                var d = child.execute("greet", c);
+                child.execute("greet", d);
+                child.complete(d);
             }, "spawned-thread", Map.of("child-var", name));
-            wf.waitForThreads(SpawnedThreads.of(childThread));
+             wf.waitForThreads(SpawnedThreads.of(childThread));
 
             wf.waitForEvent("name-event");
+            wf.execute("greet", b);
             wf.execute("greet", output);
         });
     }

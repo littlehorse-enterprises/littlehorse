@@ -504,9 +504,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                     .castOnSupport(CoreProcessorContext.class)
                     .currentCommand()
                     .getTime();
-            
-            // Persist the node output for future NodeOutputReference lookups
-            persistNodeOutput(processorContext);
+            storeNodeOutput(processorContext);
         }
         return completed;
     }
@@ -678,27 +676,11 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         throw new NodeFailureException(invalidWfSpecFailure);
     }
 
-    /**
-     * Persists the node output to RocksDB for future NodeOutputReference lookups.
-     * This allows node outputs to be retrieved even after NodeRuns are deleted.
-     */
-    private void persistNodeOutput(CoreProcessorContext processorContext) {
+    public void storeNodeOutput(CoreProcessorContext processorContext) {
         Optional<VariableValueModel> output = getSubNodeRun().getOutput(processorContext);
         if (output.isPresent()) {
-            NodeOutputIdModel nodeOutputId = new NodeOutputIdModel(
-                id.getWfRunId(),
-                id.getThreadRunNumber(), 
-                nodeName
-            );
-            
-            NodeOutputModel nodeOutput = new NodeOutputModel(
-                nodeOutputId,
-                output.get(),
-                wfSpecId,
-                id.getPosition()
-            );
-            
-            // Store the NodeOutput entity in RocksDB
+            NodeOutputIdModel nodeOutputId = new NodeOutputIdModel(id.getWfRunId(), id.getThreadRunNumber(), nodeName);
+            NodeOutputModel nodeOutput = new NodeOutputModel(nodeOutputId, output.get(), wfSpecId, id.getPosition());
             processorContext.getableManager().put(nodeOutput);
         }
     }
