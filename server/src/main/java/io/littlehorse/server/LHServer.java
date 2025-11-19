@@ -1,14 +1,20 @@
 package io.littlehorse.server;
 
 import io.grpc.Context;
+import io.grpc.Status;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
+import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.auth.RequestAuthorizer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.interceptors.RequestBlocker;
@@ -31,9 +37,11 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BiFunction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
@@ -139,7 +147,26 @@ public class LHServer {
      * the GRPC Context.
      */
     public void tryToReturnTaskToClient(TaskRunIdModel taskToClaim, PollTaskRequestObserver client) {
-        commandSender.tryToClaimTaskAndReturnToClient(taskToClaim, client);
+        CommandModel taskClaim = new CommandModel(new TaskClaimEventModel(taskToClaim, client));
+        taskClaim.setCommandId(LHUtil.generateGuid());
+
+        BiFunction<PollTaskResponse, Throwable, Void> completeTaskClaim = (taskClaimResponse, exception) -> {
+            if (exception != null) {
+                client.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording task claim to Kafka"));
+            }
+            PollTaskResponse result = (PollTaskResponse) taskClaimResponse;
+            client.getResponseObserver().onNext(result);
+            return null;
+        };
+
+        CompletableFuture<PollTaskResponse> future = commandSender.doSend(
+                taskClaim,
+                PollTaskResponse.class,
+                client.getPrincipalId(),
+                client.getTenantId(),
+                client.getRequestContext());
+
+        future.handleAsync(completeTaskClaim, networkThreadpool);
     }
 
     public void onTaskScheduled(

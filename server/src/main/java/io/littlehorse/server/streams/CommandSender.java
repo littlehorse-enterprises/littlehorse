@@ -12,18 +12,13 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
-import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
-import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
-import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
-import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -77,19 +72,19 @@ public class CommandSender {
      * Note that this is not a GRPC method that @Override's a super method and takes in
      * a protobuf + StreamObserver.
      */
-    public CompletableFuture<Message> doSend(
+    public <T extends Message> CompletableFuture<T> doSend(
             AbstractCommand<?> command,
-            Class<?> responseCls,
+            Class<T> responseCls,
             PrincipalIdModel principalId,
             TenantIdModel tenantId,
             RequestExecutionContext context) {
         return doSend(commandProducer, command, responseCls, principalId, tenantId, context);
     }
 
-    private CompletableFuture<Message> doSend(
+    private <T extends Message> CompletableFuture<T> doSend(
             LHProducer producer,
             AbstractCommand<?> command,
-            Class<?> responseCls,
+            Class<T> responseCls,
             PrincipalIdModel principalId,
             TenantIdModel tenantId,
             RequestExecutionContext context) {
@@ -107,27 +102,6 @@ public class CommandSender {
             log.error(exn.getMessage(), exn);
             throw new RuntimeException("Not possible");
         }
-    }
-
-    public void tryToClaimTaskAndReturnToClient(TaskRunIdModel taskToClaim, PollTaskRequestObserver client) {
-        CommandModel taskClaim = new CommandModel(new TaskClaimEventModel(taskToClaim, client));
-        taskClaim.setCommandId(LHUtil.generateGuid());
-        BiFunction<Message, Throwable, PollTaskResponse> completeTaskClaim = (taskClaimResponse, exception) -> {
-            if (exception != null) {
-                client.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording task claim to Kafka"));
-            }
-            PollTaskResponse result = (PollTaskResponse) taskClaimResponse;
-            client.getResponseObserver().onNext(result);
-            return result;
-        };
-        doSend(
-                        taskClaimProducer,
-                        taskClaim,
-                        PollTaskResponse.class,
-                        client.getPrincipalId(),
-                        client.getTenantId(),
-                        client.getRequestContext())
-                .handleAsync(completeTaskClaim, networkThreadpool);
     }
 
     public CompletableFuture<RecordMetadata> reportTaskAndDontWaitForResponse(
@@ -154,8 +128,8 @@ public class CommandSender {
                 .handleAsync(completeReportTask, networkThreadpool);
     }
 
-    private CompletableFuture<Message> waitForCommand(
-            AbstractCommand<?> command, Class<?> responseCls, RequestExecutionContext context) {
+    private <T extends Message> CompletableFuture<T> waitForCommand(
+            AbstractCommand<?> command, Class<T> responseCls, RequestExecutionContext context) {
         String storeName =
                 switch (command.getStore()) {
                     case CORE -> ServerTopology.CORE_STORE;
@@ -169,7 +143,7 @@ public class CommandSender {
             return CompletableFuture.completedFuture(null);
         }
         if (meta.activeHost().equals(thisHost)) {
-            return asyncWaiters.getOrRegisterFuture(commandId.get(), Message.class, new CompletableFuture<>());
+            return asyncWaiters.getOrRegisterFuture(commandId.get(), responseCls, new CompletableFuture<>());
         } else {
             WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
                     .setCommandId(commandId.get())
@@ -178,7 +152,7 @@ public class CommandSender {
             LHInternalsGrpc.LHInternalsFutureStub internalClient = internalComms.getInternalFutureClient(
                     meta.activeHost(), InternalCallCredentials.forContext(context));
             ListenableFuture<WaitForCommandResponse> futureResponse = internalClient.waitForCommand(req);
-            CompletableFuture<Message> out = new CompletableFuture<>();
+            CompletableFuture<T> out = new CompletableFuture<>();
             futureResponse.addListener(
                     () -> {
                         try {
