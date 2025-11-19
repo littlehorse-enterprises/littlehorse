@@ -1,3 +1,4 @@
+
 import { LHStatus, TaskStatus, WfSpec } from 'littlehorse-client/proto'
 import {
   BugIcon,
@@ -18,8 +19,7 @@ export type Pin = {
     } & React.RefAttributes<SVGSVGElement>
   >
 }
-
-export const wfSpecStatusColor: { [key in WfSpec['status']]: string } = {
+export const WF_SPEC_STATUS_COLOR: { [key in WfSpec['status']]: string } = {
   ARCHIVED: 'bg-gray-200',
   ACTIVE: 'bg-blue-200',
   TERMINATING: 'bg-yellow-200',

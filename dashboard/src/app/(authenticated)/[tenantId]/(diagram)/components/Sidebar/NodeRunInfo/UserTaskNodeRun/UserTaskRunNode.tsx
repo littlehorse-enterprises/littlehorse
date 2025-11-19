@@ -1,0 +1,46 @@
+import { UserTaskNodeRun, UserTaskRun } from 'littlehorse-client/proto'
+import { FC } from 'react'
+import { NodeVariable } from '../NodeVariable'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
+import useSWR from 'swr'
+import { getUserTaskRun } from '../../../NodeTypes/UserTask/getUserTaskRun'
+import { Events } from './Events'
+
+export const UserTaskRunNode: FC<{ node: UserTaskNodeRun }> = ({ node }) => {
+  const { userTaskRunId } = node
+
+  const { tenantId } = useWhoAmI()
+
+  const key = userTaskRunId ? ['userTaskRun', tenantId, userTaskRunId.userTaskGuid] : null
+  const {
+    data: nodeTask
+  } = useSWR<UserTaskRun | undefined>(key, async () => {
+    if (!userTaskRunId) return undefined
+    return getUserTaskRun({ tenantId, ...userTaskRunId })
+  })
+  const resultsArray = Object.entries(nodeTask?.results || {})
+  return (
+    <div>
+      <NodeVariable label="Node Type:" text="User task" />
+      <NodeVariable label="wfRunId:" text={node.userTaskRunId?.wfRunId?.id} />
+      <NodeVariable label="userTaskGuid:" text={node.userTaskRunId?.userTaskGuid} />
+      <NodeVariable label="user_task_def_id:" text={nodeTask?.userTaskDefId?.name} />
+      <NodeVariable label="user_group:" text={nodeTask?.userGroup} />
+      {nodeTask?.userId && <NodeVariable label="user_id:" text={nodeTask?.userId} />}
+      {nodeTask?.notes && <NodeVariable label="notes:" text={nodeTask?.notes} />}
+      <NodeVariable label="scheduled_time:" text={nodeTask?.scheduledTime} type="date" />
+      <NodeVariable label="position:" text={`${nodeTask?.nodeRunId?.position}`} />
+      <NodeVariable label="threadRunNumber:" text={`${nodeTask?.nodeRunId?.threadRunNumber}`} />
+      <NodeVariable label="epoch:" text={`${nodeTask?.epoch}`} />
+      {resultsArray.length > 0 && (
+        <div>
+          <h4 className="mt-2 font-semibold">Results:</h4>
+          {resultsArray.map(([key, value]) => (
+            <NodeVariable key={key} label={` ${key}:`} text={JSON.stringify(value)} />
+          ))}
+        </div>
+      )}
+      {Events(nodeTask?.events ?? [])}
+    </div>
+  )
+}
