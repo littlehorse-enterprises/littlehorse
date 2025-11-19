@@ -25,9 +25,9 @@ export const wfSpecStatusColor: { [key in WfSpec['status']]: string } = {
   TERMINATING: 'bg-yellow-200',
   UNRECOGNIZED: 'bg-red-200',
 }
-type wfRunStatusProp = Record<LHStatus, { backgroundColor: string; textColor: string } & (Pin | undefined)>
-type taskStatusProp = Record<TaskStatus, { backgroundColor: string; textColor: string } & (Pin | undefined)>
-export const wfRunStatus: wfRunStatusProp = {
+type WFRunStatusProp = Record<LHStatus, { backgroundColor: string; textColor: string } & Pin>
+type TaskStatusProp = Record<TaskStatus, { backgroundColor: string; textColor: string } & Pin>
+export const WF_RUN_STATUS: WFRunStatusProp = {
   [LHStatus.STARTING]: {
     color: 'blue',
     textColor: 'text-teal-600',
@@ -77,7 +77,7 @@ export const wfRunStatus: wfRunStatusProp = {
     Icon: BugIcon,
   },
 }
-export const taskStatus: taskStatusProp = {
+export const TASK_STATUS: TaskStatusProp = {
   [TaskStatus.TASK_SCHEDULED]: {
     color: 'blue',
     textColor: 'text-teal-600',
