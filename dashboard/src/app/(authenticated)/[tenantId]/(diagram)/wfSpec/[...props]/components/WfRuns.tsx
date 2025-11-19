@@ -13,7 +13,7 @@ import { FC, Fragment, useMemo, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite'
 import { PaginatedWfRunResponseList, searchWfRun } from '../actions/searchWfRun'
 import { WfRunsHeader } from './WfRunsHeader'
-import { WF_RUN_STATUS } from '../../../StatusColor'
+import { WF_RUN_STATUS } from '../../../components/Sidebar/Components/StatusColor'
 
 type WfRunsKey = [
   'wfRun',
