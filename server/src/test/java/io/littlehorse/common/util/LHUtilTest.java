@@ -138,11 +138,11 @@ class LHUtilTest {
 
     @Test
     void objToStringShouldSerializeNulls() {
+        String expectedStr = "{\"key1\":null}";
+
         Map<String, Object> someMap = new HashMap<>();
         someMap.put("key1", null);
-        String expectedStr = LHUtil.objToString(someMap);
-
-        String actualStr = "{\"key1\":null}";
+        String actualStr = LHUtil.objToString(someMap);
 
         Assertions.assertThat(expectedStr).isEqualTo(actualStr);
     }
