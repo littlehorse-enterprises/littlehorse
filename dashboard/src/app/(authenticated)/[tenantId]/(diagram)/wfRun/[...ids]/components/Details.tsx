@@ -4,7 +4,7 @@ import { flattenWfRunId, formatDate, wfRunIdToPath } from '@/app/utils'
 import { WfRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { CopyToClipboard } from './CopyToClipboard'
-import { WF_RUN_STATUS } from '../../../StatusColor'
+import { WF_RUN_STATUS } from '../../../components/Sidebar/Components/StatusColor'
 
 type DetailsProps = WfRun
 
