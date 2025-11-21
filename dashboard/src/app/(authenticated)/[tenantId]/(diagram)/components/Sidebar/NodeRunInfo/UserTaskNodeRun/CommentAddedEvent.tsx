@@ -7,8 +7,8 @@ export const CommentAddedEvent = ({ event, time }: { event: UserTaskEvent_UTECom
   return (
     <>
       {time && (
-       <div className="ml-1 flex justify-between">
-          <span className="font-bold  text-xs text-slate-500">Comment added </span>
+        <div className="ml-1 flex justify-between">
+          <span className="text-xs  font-bold text-slate-500">Comment added </span>
           <span className="text-xs text-slate-500">{formatDateReadable(time)}</span>
         </div>
       )}

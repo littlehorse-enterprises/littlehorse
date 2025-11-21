@@ -5,19 +5,18 @@ import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import useSWR from 'swr'
 import { getUserTaskRun } from '../../../NodeTypes/UserTask/getUserTaskRun'
 import { Events } from './Events'
+import { Results } from '../../Components/Results'
 
 export const UserTaskRunNode: FC<{ node: UserTaskNodeRun }> = ({ node }) => {
   const { userTaskRunId } = node
-
   const { tenantId } = useWhoAmI()
 
   const key = userTaskRunId ? ['userTaskRun', tenantId, userTaskRunId.userTaskGuid] : null
-  const {
-    data: nodeTask
-  } = useSWR<UserTaskRun | undefined>(key, async () => {
+  const { data: nodeTask } = useSWR<UserTaskRun | undefined>(key, async () => {
     if (!userTaskRunId) return undefined
     return getUserTaskRun({ tenantId, ...userTaskRunId })
   })
+
   const resultsArray = Object.entries(nodeTask?.results || {})
   return (
     <div>
@@ -32,14 +31,7 @@ export const UserTaskRunNode: FC<{ node: UserTaskNodeRun }> = ({ node }) => {
       <NodeVariable label="position:" text={`${nodeTask?.nodeRunId?.position}`} />
       <NodeVariable label="threadRunNumber:" text={`${nodeTask?.nodeRunId?.threadRunNumber}`} />
       <NodeVariable label="epoch:" text={`${nodeTask?.epoch}`} />
-      {resultsArray.length > 0 && (
-        <div>
-          <h4 className="mt-2 font-semibold">Results:</h4>
-          {resultsArray.map(([key, value]) => (
-            <NodeVariable key={key} label={` ${key}:`} text={JSON.stringify(value)} />
-          ))}
-        </div>
-      )}
+      {resultsArray.length > 0 && <Results variables={resultsArray} classTitle="font-bold" />}
       {Events(nodeTask?.events ?? [])}
     </div>
   )

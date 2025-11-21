@@ -7,7 +7,7 @@ export const TaskExecutedEvent = ({ event, time }: { event: UserTaskEvent_UTETas
     <>
       {time && (
         <div className="ml-1 flex justify-between">
-          <p className="font-bold mr-1 text-xs text-slate-500">Executed </p>
+          <p className="mr-1 text-xs font-bold text-slate-500">Executed </p>
           <p className="text-xs text-slate-500">{formatDateReadable(time)}</p>
         </div>
       )}

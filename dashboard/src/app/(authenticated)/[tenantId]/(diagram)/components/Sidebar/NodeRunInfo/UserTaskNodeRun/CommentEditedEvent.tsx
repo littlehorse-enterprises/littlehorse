@@ -8,8 +8,8 @@ export const CommentEditedEvent = ({ event, time }: { event: UserTaskEvent_UTECo
   return (
     <>
       {time && (
-      <div className="ml-1 flex justify-between">
-          <span className="font-bold mr-1 text-xs text-slate-500">Comment edited </span>
+        <div className="ml-1 flex justify-between">
+          <span className="mr-1 text-xs font-bold text-slate-500">Comment edited </span>
           <span className="text-xs text-slate-500">{formatDateReadable(time)}</span>
         </div>
       )}
