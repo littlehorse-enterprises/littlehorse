@@ -1,12 +1,4 @@
-import {
-  UserTaskEvent,
-  UserTaskEvent_UTECancelled,
-  UserTaskEvent_UTECommentDeleted,
-  UserTaskEvent_UTECommented,
-  UserTaskEvent_UTECompleted,
-  UserTaskEvent_UTESaved,
-  UserTaskEvent_UTETaskExecuted,
-} from 'littlehorse-client/proto'
+import { UserTaskEvent } from 'littlehorse-client/proto'
 import { AssignEvent } from './AssignEvent'
 import { TaskExecutedEvent } from './TaskExecutedEvent'
 import { CancelledEvent } from './CancelledEvent'
@@ -19,7 +11,6 @@ import { TimelineItem } from './TimeLineEvent'
 import { DoneEvent } from './DoneEvent'
 
 export const Events = (events: UserTaskEvent[]) => {
-
   const sortedEvents = [...events].sort((a, b) => getEventTime(b) - getEventTime(a))
 
   const renderEvent = (userTask: UserTaskEvent, index: number) => {
@@ -28,7 +19,7 @@ export const Events = (events: UserTaskEvent[]) => {
       case 'taskExecuted':
         return <TaskExecutedEvent event={event.value} time={time} />
       case 'assigned':
-        return <AssignEvent event={event.value} time={time}/>
+        return <AssignEvent event={event.value} time={time} />
       case 'cancelled':
         return <CancelledEvent event={event.value} time={time} />
       case 'saved':
@@ -47,11 +38,10 @@ export const Events = (events: UserTaskEvent[]) => {
   }
 
   return (
-    // todo  calcualte stpace
-    <div className=' overflow-y-auto max-h-24'>
+    <div className="ml-1  mt-1 ">
       <div className=" mb-1 text-sm font-bold ">Events</div>
 
-      <div className="container mx-auto max-h-[80vh] max-w-2xl overflow-y-scroll px-2 py-2">
+      <div className="container mx-auto  max-w-2xl  px-2 py-2">
         {sortedEvents.map((event, index) => (
           <TimelineItem
             key={index}

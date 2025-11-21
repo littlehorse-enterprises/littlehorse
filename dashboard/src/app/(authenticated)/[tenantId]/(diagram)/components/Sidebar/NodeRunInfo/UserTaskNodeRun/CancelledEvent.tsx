@@ -6,8 +6,8 @@ export const CancelledEvent = ({ event, time }: { event: UserTaskEvent_UTECancel
   return (
     <>
       {time && (
-       <div className="ml-1 flex justify-between">
-          <p className="font-bold mr-1 text-xs text-slate-500">Cancelled </p>
+        <div className="ml-1 flex justify-between">
+          <p className="mr-1 text-xs font-bold text-slate-500">Cancelled </p>
           <p className="text-xs text-slate-500">{formatDateReadable(time)}</p>
         </div>
       )}

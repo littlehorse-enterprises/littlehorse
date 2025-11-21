@@ -1,4 +1,3 @@
-
 import { LHStatus, TaskStatus, WfSpec } from 'littlehorse-client/proto'
 import {
   BugIcon,
