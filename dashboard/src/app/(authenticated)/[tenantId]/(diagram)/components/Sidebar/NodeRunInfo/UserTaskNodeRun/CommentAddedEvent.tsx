@@ -14,7 +14,7 @@ export const CommentAddedEvent = ({ event, time }: { event: UserTaskEvent_UTECom
       )}
       <div className="ml-1  truncate text-xs text-slate-400">
         <div>
-          {userCommentId} has been edited by {userId}
+          {userCommentId} has been added by {userId}
         </div>
         <div>comment: {comment}</div>
       </div>

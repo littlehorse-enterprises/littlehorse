@@ -10,7 +10,7 @@ import { CommentDeletedEvent } from './CommentDeletedEvent'
 import { TimelineItem } from './TimeLineEvent'
 import { DoneEvent } from './DoneEvent'
 
-export const Events = (events: UserTaskEvent[]) => {
+export const Events = ({ events }: { events: UserTaskEvent[] }) => {
   const sortedEvents = [...events].sort((a, b) => getEventTime(b) - getEventTime(a))
 
   const renderEvent = (userTask: UserTaskEvent, index: number) => {

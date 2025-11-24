@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-type TimelineItemProps = {
+export type TimelineItemProps = {
   dotColor?: string
   children: ReactNode
   isLast: boolean

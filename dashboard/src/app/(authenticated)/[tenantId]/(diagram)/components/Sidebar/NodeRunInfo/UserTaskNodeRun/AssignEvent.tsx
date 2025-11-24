@@ -3,7 +3,6 @@ import { UserTaskEvent_UTEAssigned } from 'littlehorse-client/proto'
 import { MoveRight } from 'lucide-react'
 
 export const AssignEvent = ({ event, time }: { event: UserTaskEvent_UTEAssigned; time?: string }) => {
-  console.log(event)
   const textValidation = (text: string | undefined) => {
     if (text) return text
     return <p>No assigned</p>

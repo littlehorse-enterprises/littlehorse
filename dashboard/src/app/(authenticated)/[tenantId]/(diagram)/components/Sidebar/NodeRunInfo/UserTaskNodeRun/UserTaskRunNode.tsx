@@ -32,7 +32,7 @@ export const UserTaskRunNode: FC<{ node: UserTaskNodeRun }> = ({ node }) => {
       <NodeVariable label="threadRunNumber:" text={`${nodeTask?.nodeRunId?.threadRunNumber}`} />
       <NodeVariable label="epoch:" text={`${nodeTask?.epoch}`} />
       {resultsArray.length > 0 && <Results variables={resultsArray} classTitle="font-bold" />}
-      {Events(nodeTask?.events ?? [])}
+      {nodeTask?.events && <Events events={nodeTask.events} />}
     </div>
   )
 }
