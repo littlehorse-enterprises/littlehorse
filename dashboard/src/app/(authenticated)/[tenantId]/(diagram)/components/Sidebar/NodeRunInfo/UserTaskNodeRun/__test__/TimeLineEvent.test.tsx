@@ -4,8 +4,6 @@ import '@testing-library/jest-dom'
 import { TimelineItem } from '../TimeLineEvent'
 
 describe('TimelineItem', () => {
-
-
   test('renders default dot color (bg-blue-500)', () => {
     const { container } = render(
       <TimelineItem isLast={false}>

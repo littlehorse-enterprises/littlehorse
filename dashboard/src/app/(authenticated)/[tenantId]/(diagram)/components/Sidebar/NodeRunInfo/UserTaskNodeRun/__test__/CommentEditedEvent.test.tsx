@@ -21,6 +21,4 @@ describe('CommentEditedEvent', () => {
     expect(screen.getByText('123124 has been edited by Alice')).toBeInTheDocument()
     expect(screen.getByText('comment: This is a new comment')).toBeInTheDocument()
   })
-
-
 })
