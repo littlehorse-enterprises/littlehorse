@@ -40,6 +40,7 @@ public class LHUtil {
 
     public static final Gson LH_GSON = new GsonBuilder()
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .serializeNulls()
             .create();
 
     public static Timestamp fromDate(Date date) {
