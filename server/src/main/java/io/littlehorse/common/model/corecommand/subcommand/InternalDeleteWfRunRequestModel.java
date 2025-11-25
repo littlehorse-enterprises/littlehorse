@@ -14,9 +14,11 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
-import io.littlehorse.common.model.getable.objectId.NodeOutputIdModel;
+import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.InternalDeleteWfRunRequest;
 import io.littlehorse.common.proto.InternalDeleteWfRunRequest.DeleteWfRunBookmark;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
@@ -131,9 +133,8 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
                 manager.delete(nodeRun.getObjectId());
 
                 // Delete the NodeOutput if it exists
-                NodeOutputIdModel nodeOutputId =
-                        new NodeOutputIdModel(wfRunId, thread.getNumber(), nodeRun.getNodeName());
-                manager.delete(nodeOutputId);
+                String storeKey = Storeable.getGroupedFullStoreKey(wfRunId, StoreableType.STORED_GETABLE, GetableClassEnum.NODE_OUTPUT, thread.getNumber() + "/" + nodeRun.getNodeName());
+                ((CoreProcessorContext) ctx).getCoreStore().delete(storeKey, StoreableType.STORED_GETABLE);
 
                 if (thingsDone >= maxDeletesInOneCommand) {
                     log.debug("Not done deleting nodeRuns for {}", wfRunId);

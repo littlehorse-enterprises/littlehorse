@@ -74,6 +74,8 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.CORRELATION_MARKER;
             case "TaskQueueHintModel":
                 return StoreableType.TASK_QUEUE_HINT;
+            case "NodeOutputModel":
+                return StoreableType.STORED_GETABLE;
         }
         throw new IllegalArgumentException("Unrecognized Storeable class: " + cls);
     }

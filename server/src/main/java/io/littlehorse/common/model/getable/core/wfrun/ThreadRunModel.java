@@ -7,7 +7,10 @@ import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.core.nodeoutput.NodeOutputModel;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
@@ -30,7 +33,6 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefMod
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
-import io.littlehorse.common.model.getable.objectId.NodeOutputIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -889,13 +891,19 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * @throws LHVarSubError if no output is found for the specified node
      */
     private Optional<VariableValueModel> getNodeOutput(String nodeName, CoreProcessorContext processorContext)
-            throws LHVarSubError {
-        NodeOutputIdModel nodeOutputId = new NodeOutputIdModel(wfRun.getId(), number, nodeName);
-        NodeOutputModel nodeOutput = processorContext.getableManager().get(nodeOutputId);
-
-        if (nodeOutput != null) {
-            System.out.println("Found NodeOutput for node " + nodeName + " in ThreadRun " + number);
-            return Optional.of(nodeOutput.getValue());
+    throws LHVarSubError {
+        System.out.println("Looking for NodeOutput for node " + nodeName + " in ThreadRun " + number);
+        CoreProcessorContext ctx = processorContext.castOnSupport(CoreProcessorContext.class);
+        System.out.println("Context is " + (ctx == null ? "null" : "not null"));
+        if (ctx != null) {
+            System.out.println("Looking up store key for NodeOutput");
+            String storeKey = Storeable.getGroupedFullStoreKey(wfRun.getId(), StoreableType.STORED_GETABLE, GetableClassEnum.NODE_OUTPUT, number + "/" + nodeName);
+            System.out.println("Store key is " + storeKey);
+            NodeOutputModel nodeOutput = ctx.getCoreStore().get(storeKey, NodeOutputModel.class);
+            if (nodeOutput != null) {
+                System.out.println("Found NodeOutput for node " + nodeName + " in ThreadRun " + number);
+                return Optional.of(nodeOutput.getValue());
+            }
         }
         try {
             NodeRunModel referencedNodeRun = getMostRecentNodeRun(nodeName);

@@ -27,7 +27,6 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsR
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.EdgeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
-import io.littlehorse.common.model.getable.objectId.NodeOutputIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -679,9 +678,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public void storeNodeOutput(CoreProcessorContext processorContext) {
         Optional<VariableValueModel> output = getSubNodeRun().getOutput(processorContext);
         if (output.isPresent()) {
-            NodeOutputIdModel nodeOutputId = new NodeOutputIdModel(id.getWfRunId(), id.getThreadRunNumber(), nodeName);
-            NodeOutputModel nodeOutput = new NodeOutputModel(nodeOutputId, output.get(), wfSpecId, id.getPosition());
-            processorContext.getableManager().put(nodeOutput);
+            NodeOutputModel nodeOutput = new NodeOutputModel(
+                    id.getWfRunId(), id.getThreadRunNumber(), nodeName, output.get(), id.getPosition());
+            processorContext.getCoreStore().put(nodeOutput);
         }
     }
 }

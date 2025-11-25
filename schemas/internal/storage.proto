@@ -39,6 +39,7 @@ enum StoreableType {
     WFRUN_STORED_INVENTORY = 9;
     CORRELATION_MARKER = 10;
     TASK_QUEUE_HINT = 11;
+    NODE_OUTPUT = 12;
 }
 
 enum GetableClassEnum {
@@ -63,7 +64,7 @@ enum GetableClassEnum {
     STRUCT_DEF = 18;
     CORRELATED_EVENT = 19;
     CHECKPOINT = 20;
-    NODE_OUTPUT = 21;
+    // NODE_OUTPUT = 21;
 }
 
 message AttributePb {
