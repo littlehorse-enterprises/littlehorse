@@ -7,9 +7,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Represents a persistently stored node output that can be retrieved even after
- * the NodeRun is deleted. This improves NodeOutputReference performance and supports
- * node retention policies.
+ * Represents a persistently stored node output
  * </pre>
  *
  * Protobuf type {@code littlehorse.NodeOutput}
@@ -440,9 +438,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Represents a persistently stored node output that can be retrieved even after
-   * the NodeRun is deleted. This improves NodeOutputReference performance and supports
-   * node retention policies.
+   * Represents a persistently stored node output
    * </pre>
    *
    * Protobuf type {@code littlehorse.NodeOutput}

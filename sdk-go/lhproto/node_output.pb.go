@@ -21,9 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Represents a persistently stored node output that can be retrieved even after
-// the NodeRun is deleted. This improves NodeOutputReference performance and supports
-// node retention policies.
+// Represents a persistently stored node output
 type NodeOutput struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

@@ -2,11 +2,12 @@ package io.littlehorse.common.model.getable.core.nodeoutput;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
-import io.littlehorse.common.model.getable.objectId.NodeOutputIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.NodeOutput;
@@ -25,9 +26,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class NodeOutputModel extends CoreGetable<NodeOutput> {
+public class NodeOutputModel extends Storeable<NodeOutput> {
 
-    private NodeOutputIdModel id;
     private VariableValueModel value;
     private Date createdAt;
     private WfSpecIdModel wfSpecId;
@@ -52,7 +52,6 @@ public class NodeOutputModel extends CoreGetable<NodeOutput> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         NodeOutput p = (NodeOutput) proto;
-        id = LHSerializable.fromProto(p.getId(), NodeOutputIdModel.class, context);
         value = VariableValueModel.fromProto(p.getValue(), context);
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
@@ -62,7 +61,6 @@ public class NodeOutputModel extends CoreGetable<NodeOutput> {
     @Override
     public NodeOutput.Builder toProto() {
         NodeOutput.Builder builder = NodeOutput.newBuilder()
-                .setId(id.toProto())
                 .setValue(value.toProto())
                 .setCreatedAt(LHUtil.fromDate(createdAt))
                 .setWfSpecId(wfSpecId.toProto())
@@ -70,25 +68,14 @@ public class NodeOutputModel extends CoreGetable<NodeOutput> {
         return builder;
     }
 
+
     @Override
-    public NodeOutputIdModel getObjectId() {
-        return id;
+    public String getStoreKey() {
+        return "";
     }
 
     @Override
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    @Override
-    public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        // No special indexing needed for NodeOutput entities
-        return List.of();
-    }
-
-    @Override
-    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
-        // No indexed fields for NodeOutput entities
-        return List.of();
+    public StoreableType getType() {
+        return null;
     }
 }
