@@ -5,7 +5,7 @@ export const OutputModal = ({ label, message = '' }: { label: string; message?: 
   const { setModal, setShowModal } = useModal()
   const onClick = useCallback(() => {
     if (!message) return
-    setModal({ type: 'output', data: {message,label:"Output"} })
+    setModal({ type: 'output', data: { message, label: 'Output' } })
     setShowModal(true)
   }, [message, setModal, setShowModal])
   return (
@@ -14,7 +14,7 @@ export const OutputModal = ({ label, message = '' }: { label: string; message?: 
       <div className=" flex items-center justify-between">
         <div className="truncate  text-xs text-slate-400 ">{message}</div>
         <div>
-          <Expand className=" text-gray-500 hover:text-gray-700 cursor-pointer" size={14} onClick={onClick} />
+          <Expand className=" cursor-pointer text-gray-500 hover:text-gray-700" size={14} onClick={onClick} />
         </div>
       </div>
     </div>

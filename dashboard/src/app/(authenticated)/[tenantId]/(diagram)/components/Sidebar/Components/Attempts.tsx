@@ -39,7 +39,7 @@ export const Attempts = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      {attempt.status && <NodeStatus status={attempt.status}   type="task" />}
+      {attempt.status && <NodeStatus status={attempt.status} type="task" />}
       <NodeVariable label="scheduleTime:" text={`${attempt.scheduleTime}`} type="date" />
       <NodeVariable label="startTime:" text={`${attempt.startTime}`} type="date" />
       <NodeVariable label="endTime:" text={`${attempt.endTime}`} type="date" />
