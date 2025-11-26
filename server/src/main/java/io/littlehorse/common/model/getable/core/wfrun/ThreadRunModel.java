@@ -2,15 +2,13 @@ package io.littlehorse.common.model.getable.core.wfrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.Storeable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
-import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.core.nodeoutput.NodeOutputModel;
-import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
@@ -37,6 +35,7 @@ import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -542,6 +541,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 return false;
             }
 
+            storeNodeOutput(currentNR);
+
             if (currentNR.getType() == NodeTypeCase.EXIT) {
                 // Then we're done!
                 setStatus(LHStatus.COMPLETED);
@@ -556,6 +557,28 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         return true;
+    }
+
+    /**
+     * Stores the output of a NodeRun only if needed by other nodes in the ThreadSpec.
+     *
+     * @param nodeRun Node run
+     */
+    public void storeNodeOutput(NodeRunModel nodeRun) {
+        Optional<VariableValueModel> outputOpt = nodeRun.getSubNodeRun().getOutput(processorContext);
+        if (outputOpt.isEmpty()) {
+            return;
+        }
+        if (!getThreadSpec().getRequiredNodeNames().contains(nodeRun.getNodeName())) {
+            return;
+        }
+        NodeOutputModel nodeOutput = new NodeOutputModel(
+                nodeRun.getId().getWfRunId(),
+                nodeRun.getId().getThreadRunNumber(),
+                nodeRun.getNodeName(),
+                outputOpt.get(),
+                nodeRun.getId().getPosition());
+        processorContext.getCoreStore().put(nodeOutput);
     }
 
     /**
@@ -891,15 +914,16 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * @throws LHVarSubError if no output is found for the specified node
      */
     private Optional<VariableValueModel> getNodeOutput(String nodeName, CoreProcessorContext processorContext)
-    throws LHVarSubError {
+            throws LHVarSubError {
         System.out.println("Looking for NodeOutput for node " + nodeName + " in ThreadRun " + number);
         CoreProcessorContext ctx = processorContext.castOnSupport(CoreProcessorContext.class);
         System.out.println("Context is " + (ctx == null ? "null" : "not null"));
         if (ctx != null) {
             System.out.println("Looking up store key for NodeOutput");
-            String groupedKey = Storeable.getGroupedFullStoreKey(wfRun.getId(), StoreableType.NODE_OUTPUT, number + "/" + nodeName);
-//            String storeKey = Storeable.getFullStoreKey(StoreableType.NODE_OUTPUT, groupedKey);
-//            System.out.println("Store key is " + storeKey);
+            String groupedKey =
+                    Storeable.getGroupedFullStoreKey(wfRun.getId(), StoreableType.NODE_OUTPUT, number + "/" + nodeName);
+            //            String storeKey = Storeable.getFullStoreKey(StoreableType.NODE_OUTPUT, groupedKey);
+            //            System.out.println("Store key is " + storeKey);
             NodeOutputModel nodeOutput = ctx.getCoreStore().get(groupedKey, NodeOutputModel.class);
             if (nodeOutput != null) {
                 System.out.println("Found NodeOutput for node " + nodeName + " in ThreadRun " + number);

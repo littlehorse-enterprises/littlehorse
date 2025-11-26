@@ -5,7 +5,6 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
-import io.littlehorse.common.model.getable.core.nodeoutput.NodeOutputModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -503,7 +502,6 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                     .castOnSupport(CoreProcessorContext.class)
                     .currentCommand()
                     .getTime();
-            storeNodeOutput(processorContext);
         }
         return completed;
     }
@@ -673,14 +671,5 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 LHErrorType.VAR_SUB_ERROR.toString());
         failures.add(invalidWfSpecFailure);
         throw new NodeFailureException(invalidWfSpecFailure);
-    }
-
-    public void storeNodeOutput(CoreProcessorContext processorContext) {
-        Optional<VariableValueModel> output = getSubNodeRun().getOutput(processorContext);
-        if (output.isPresent()) {
-            NodeOutputModel nodeOutput = new NodeOutputModel(
-                    id.getWfRunId(), id.getThreadRunNumber(), nodeName, output.get(), id.getPosition());
-            processorContext.getCoreStore().put(nodeOutput);
-        }
     }
 }

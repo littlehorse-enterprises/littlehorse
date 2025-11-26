@@ -31,10 +31,9 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
         return GROUPED_WF_RUN_PREFIX + "/" + wfRunId + "/" + type.getNumber() + "/" + getableType.getNumber() + "/"
                 + storeKey;
     }
-    public static String getGroupedFullStoreKey(
-            WfRunIdModel wfRunId, StoreableType type, String storeKey) {
-        return GROUPED_WF_RUN_PREFIX + "/" + wfRunId + "/" + type.getNumber() + "/" 
-                + storeKey;
+
+    public static String getGroupedFullStoreKey(WfRunIdModel wfRunId, StoreableType type, String storeKey) {
+        return GROUPED_WF_RUN_PREFIX + "/" + wfRunId + "/" + type.getNumber() + "/" + storeKey;
     }
 
     public static String getGroupedGetableStorePrefix(

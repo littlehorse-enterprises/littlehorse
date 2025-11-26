@@ -4,15 +4,12 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
-import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.NodeOutput;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-
 import java.util.Date;
 import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,11 +34,10 @@ public class NodeOutputModel extends Storeable<NodeOutput> {
 
     private Date createdAt;
 
-    public NodeOutputModel() {
-    }
+    public NodeOutputModel() {}
 
-    public NodeOutputModel(WfRunIdModel wfRunId, int threadRunNumber, String nodeName, VariableValueModel value,
-                           int nodeRunPosition) {
+    public NodeOutputModel(
+            WfRunIdModel wfRunId, int threadRunNumber, String nodeName, VariableValueModel value, int nodeRunPosition) {
         this.wfRunId = wfRunId;
         this.threadRunNumber = threadRunNumber;
         this.nodeName = nodeName;
@@ -91,5 +87,4 @@ public class NodeOutputModel extends Storeable<NodeOutput> {
     public Optional<WfRunIdModel> getGroupingWfRunId() {
         return Optional.ofNullable(wfRunId);
     }
-
 }
