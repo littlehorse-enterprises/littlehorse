@@ -1,8 +1,14 @@
 import { LHStatus, TaskStatus } from 'littlehorse-client/proto'
 import '../Node/node.css'
-import { TASK_STATUS, WF_RUN_STATUS  } from '../../../StatusColor'
+import { TASK_STATUS, WF_RUN_STATUS } from '../../../StatusColor'
 
-export const NodeStatus = ({ status, type="workflow" }: { status: LHStatus | TaskStatus; type?: 'workflow' | 'task' }) => {
+export const NodeStatus = ({
+  status,
+  type = 'workflow',
+}: {
+  status: LHStatus | TaskStatus
+  type?: 'workflow' | 'task'
+}) => {
   const { color, Icon, textColor } =
     type === 'workflow' ? WF_RUN_STATUS[status as LHStatus] : TASK_STATUS[status as TaskStatus]
 
