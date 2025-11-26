@@ -46,7 +46,7 @@ public class StatusRangeModel extends LHSerializable<Aggregator.StatusRange> {
     }
 
     @Override
-    public Class<? extends GeneratedMessageV3> getProtoBaseClass() {
+    public Class<Aggregator.StatusRange> getProtoBaseClass() {
         return Aggregator.StatusRange.class;
     }
 }

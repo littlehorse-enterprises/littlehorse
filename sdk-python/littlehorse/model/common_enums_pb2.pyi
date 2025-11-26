@@ -63,14 +63,14 @@ class LHErrorType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     INTERNAL_ERROR: _ClassVar[LHErrorType]
 
 class AggregationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     COUNT: _ClassVar[AggregationType]
     AVG: _ClassVar[AggregationType]
     RATIO: _ClassVar[AggregationType]
     LATENCY: _ClassVar[AggregationType]
 
 class UserTaskRunStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     UNASSIGNED: _ClassVar[UserTaskRunStatus]
     ASSIGNED: _ClassVar[UserTaskRunStatus]
     DONE: _ClassVar[UserTaskRunStatus]

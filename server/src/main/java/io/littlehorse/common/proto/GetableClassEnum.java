@@ -95,6 +95,18 @@ public enum GetableClassEnum
    * <code>CHECKPOINT = 20;</code>
    */
   CHECKPOINT(20),
+  /**
+   * <code>METRIC = 21;</code>
+   */
+  METRIC(21),
+  /**
+   * <code>PARTITION_METRIC = 22;</code>
+   */
+  PARTITION_METRIC(22),
+  /**
+   * <code>METRIC_SPEC = 23;</code>
+   */
+  METRIC_SPEC(23),
   UNRECOGNIZED(-1),
   ;
 
@@ -191,6 +203,18 @@ public enum GetableClassEnum
    * <code>CHECKPOINT = 20;</code>
    */
   public static final int CHECKPOINT_VALUE = 20;
+  /**
+   * <code>METRIC = 21;</code>
+   */
+  public static final int METRIC_VALUE = 21;
+  /**
+   * <code>PARTITION_METRIC = 22;</code>
+   */
+  public static final int PARTITION_METRIC_VALUE = 22;
+  /**
+   * <code>METRIC_SPEC = 23;</code>
+   */
+  public static final int METRIC_SPEC_VALUE = 23;
 
 
   public final int getNumber() {
@@ -238,6 +262,9 @@ public enum GetableClassEnum
       case 18: return STRUCT_DEF;
       case 19: return CORRELATED_EVENT;
       case 20: return CHECKPOINT;
+      case 21: return METRIC;
+      case 22: return PARTITION_METRIC;
+      case 23: return METRIC_SPEC;
       default: return null;
     }
   }

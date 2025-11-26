@@ -179,7 +179,7 @@ class ScheduledWfRunId(_message.Message):
     def __init__(self, id: _Optional[str] = ...) -> None: ...
 
 class NodeReference(_message.Message):
-    __slots__ = ["thread_spec", "node_type", "node_position"]
+    __slots__ = ("thread_spec", "node_type", "node_position")
     THREAD_SPEC_FIELD_NUMBER: _ClassVar[int]
     NODE_TYPE_FIELD_NUMBER: _ClassVar[int]
     NODE_POSITION_FIELD_NUMBER: _ClassVar[int]
@@ -189,7 +189,7 @@ class NodeReference(_message.Message):
     def __init__(self, thread_spec: _Optional[_Union[ThreadSpecReference, _Mapping]] = ..., node_type: _Optional[str] = ..., node_position: _Optional[int] = ...) -> None: ...
 
 class ThreadSpecReference(_message.Message):
-    __slots__ = ["wf_spec_id", "thread_number"]
+    __slots__ = ("wf_spec_id", "thread_number")
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     THREAD_NUMBER_FIELD_NUMBER: _ClassVar[int]
     wf_spec_id: WfSpecId
@@ -197,7 +197,7 @@ class ThreadSpecReference(_message.Message):
     def __init__(self, wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., thread_number: _Optional[int] = ...) -> None: ...
 
 class MetricSpecId(_message.Message):
-    __slots__ = ["node", "wf_spec_id", "thread_spec"]
+    __slots__ = ("node", "wf_spec_id", "thread_spec")
     NODE_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     THREAD_SPEC_FIELD_NUMBER: _ClassVar[int]
@@ -207,7 +207,7 @@ class MetricSpecId(_message.Message):
     def __init__(self, node: _Optional[_Union[NodeReference, _Mapping]] = ..., wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., thread_spec: _Optional[_Union[ThreadSpecReference, _Mapping]] = ...) -> None: ...
 
 class MetricId(_message.Message):
-    __slots__ = ["metric_spec_id", "window_length", "window_start", "aggregation_type"]
+    __slots__ = ("metric_spec_id", "window_length", "window_start", "aggregation_type")
     METRIC_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
     WINDOW_START_FIELD_NUMBER: _ClassVar[int]
@@ -216,4 +216,4 @@ class MetricId(_message.Message):
     window_length: _duration_pb2.Duration
     window_start: _timestamp_pb2.Timestamp
     aggregation_type: _common_enums_pb2.AggregationType
-    def __init__(self, metric_spec_id: _Optional[_Union[MetricSpecId, _Mapping]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ..., window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., aggregation_type: _Optional[_Union[_common_enums_pb2.AggregationType, str]] = ...) -> None: ...
+    def __init__(self, metric_spec_id: _Optional[_Union[MetricSpecId, _Mapping]] = ..., window_length: _Optional[_Union[datetime.timedelta, _duration_pb2.Duration, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., aggregation_type: _Optional[_Union[_common_enums_pb2.AggregationType, str]] = ...) -> None: ...

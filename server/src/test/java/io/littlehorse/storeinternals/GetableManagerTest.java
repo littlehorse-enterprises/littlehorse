@@ -356,10 +356,7 @@ public class GetableManagerTest {
     void storeNodeRun(NodeRunModel nodeRunModel,  String expectedStoreKey) {
         when(executionContext.getableUpdates()).thenReturn(getableUpdates);
 
-        List<String> expectedLocalTagKeys = expectedTagKeys.stream()
-                .filter(stringTagStorageTypePbPair -> stringTagStorageTypePbPair.getValue() == TagStorageType.LOCAL)
-                .map(Pair::getKey)
-                .toList();
+        List<String> expectedLocalTagKeys = List.of();
         List<String> expectedRemoteStoreKeys = List.of();
 
         getableManager.put(nodeRunModel);

@@ -23,7 +23,7 @@ public class RatioModel extends LHSerializable<Aggregator.Ratio> {
     }
 
     @Override
-    public Class<? extends GeneratedMessageV3> getProtoBaseClass() {
+    public Class<Aggregator.Ratio> getProtoBaseClass() {
         return Aggregator.Ratio.class;
     }
 }

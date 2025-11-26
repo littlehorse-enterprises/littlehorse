@@ -23,7 +23,7 @@ public class LatencyModel extends LHSerializable<Aggregator.Latency> {
     }
 
     @Override
-    public Class<? extends GeneratedMessageV3> getProtoBaseClass() {
+    public Class<Aggregator.Latency> getProtoBaseClass() {
         return Aggregator.Latency.class;
     }
 }
