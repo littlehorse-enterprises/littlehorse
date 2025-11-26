@@ -74,7 +74,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         server1Config.createKafkaTopic(outputTopics.getLeft());
         server1Config.createKafkaTopic(outputTopics.getRight());
 
-        TimeUnit.SECONDS.sleep(4);
+        TimeUnit.SECONDS.sleep(3);
 
         // run the server in another thread
         server1 = new LHServer(server1Config);
