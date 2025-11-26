@@ -17,7 +17,6 @@ import io.grpc.ServerInterceptors;
 import io.grpc.ServerMethodDefinition;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.Status;
-import io.grpc.internal.NoopServerCall;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
@@ -269,7 +268,7 @@ public class RequestAuthorizerTest {
                 (ServerMethodDefinition<Object, Object>) Iterables.get(intercept.getMethods(), 0);
         final int numberOfRequests = 10_000;
         Consumer<String> submitCall = principalId -> {
-            ServerCall<Object, Object> stubCall = new NoopServerCall<>() {
+            ServerCall<Object, Object> stubCall = new NoopServerCall<Object, Object>() {
                 @Override
                 public MethodDescriptor<Object, Object> getMethodDescriptor() {
                     return mockCall.getMethodDescriptor();
@@ -329,9 +328,51 @@ public class RequestAuthorizerTest {
                 String principalId =
                         contextKey.get().authorization().principalId().toString();
                 assertThat(principalId).isEqualTo(headers.get(LHServerInterceptor.CLIENT_ID));
-                return new NoopServerCall.NoopServerCallListener<>();
+                return new NoopServerCallListener<>();
             });
         }
         return definitionBuilder.build();
+    }
+
+    // Custom no-op implementations to replace removed gRPC internal classes
+    private static class NoopServerCall<ReqT, RespT> extends ServerCall<ReqT, RespT> {
+        @Override
+        public void request(int numMessages) {}
+
+        @Override
+        public void sendHeaders(Metadata headers) {}
+
+        @Override
+        public void sendMessage(RespT message) {}
+
+        @Override
+        public void close(Status status, Metadata trailers) {}
+
+        @Override
+        public boolean isCancelled() {
+            return false;
+        }
+
+        @Override
+        public MethodDescriptor<ReqT, RespT> getMethodDescriptor() {
+            return null;
+        }
+    }
+
+    private static class NoopServerCallListener<ReqT> extends ServerCall.Listener<ReqT> {
+        @Override
+        public void onMessage(ReqT message) {}
+
+        @Override
+        public void onHalfClose() {}
+
+        @Override
+        public void onCancel() {}
+
+        @Override
+        public void onComplete() {}
+
+        @Override
+        public void onReady() {}
     }
 }

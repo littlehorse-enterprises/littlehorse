@@ -16,6 +16,7 @@ import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.Storeable;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -24,6 +25,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +41,7 @@ public class LHUtil {
 
     public static final Gson LH_GSON = new GsonBuilder()
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .serializeNulls()
             .create();
 
     public static Timestamp fromDate(Date date) {
@@ -54,6 +58,16 @@ public class LHUtil {
         }
 
         return out;
+    }
+
+    public static Optional<Timestamp> timestampFromString(String stringDate) {
+        if (stringDate == null) return Optional.empty();
+        try {
+            Instant instant = Instant.parse(stringDate);
+            return Optional.of(fromDate(Date.from(instant)));
+        } catch (DateTimeParseException exn) {
+            return Optional.empty();
+        }
     }
 
     public static StatusRuntimeException toGrpcError(Throwable exn) {
@@ -106,6 +120,12 @@ public class LHUtil {
 
     public static String toLhDbFormat(Date date) {
         return date == null ? "null" : String.valueOf(date.getTime());
+    }
+
+    public static String toLhDbFormat(Timestamp timestamp) {
+        return timestamp == null
+                ? "null"
+                : String.valueOf(timestamp.getSeconds() * 1000 + timestamp.getNanos() / 1_000_000);
     }
 
     public static Date getWindowStart(Date time, MetricsWindowLength type) {
@@ -199,6 +219,7 @@ public class LHUtil {
         }
         return str;
     }
+
     /**
      * TODO: THis needs more thought. We want the double to be searchable both
      * positive and
@@ -330,5 +351,45 @@ public class LHUtil {
         return ExecutionTime.forCron(parsedQuartzCronExpression)
                 .nextExecution(ZonedDateTime.ofInstant(dateAt.toInstant(), ZoneId.systemDefault()))
                 .map(zonedDateTime -> Date.from(zonedDateTime.toInstant()));
+    }
+
+    /**
+     * Converts a grouped-format storeKey to its legacy format.
+     * Returns null if not a grouped-format key.
+     * Should be deleted once legacy format is fully deprecated.
+     */
+    public static String toLegacyFormat(String fullStoreKey) {
+        final String wfRunGroupedPrefix = "/" + Storeable.GROUPED_WF_RUN_PREFIX + "/";
+        if (!fullStoreKey.contains(wfRunGroupedPrefix)) {
+            return null;
+        }
+        final String[] parts = fullStoreKey.split("/");
+        if (parts.length < 6) {
+            return null;
+        }
+        final String prefix = parts[2];
+        if (!prefix.equals(Storeable.GROUPED_WF_RUN_PREFIX)) {
+            return null;
+        }
+
+        final String tenantId = parts[0];
+        final String wfRunId = parts[3];
+        final String storeableType = parts[4];
+        final String getableType = parts[5];
+
+        StringBuilder legacyKey = new StringBuilder()
+                .append(tenantId)
+                .append("/")
+                .append(storeableType)
+                .append("/")
+                .append(getableType)
+                .append("/")
+                .append(wfRunId);
+
+        if (parts.length > 6) {
+            String restOfKey = String.join("/", Arrays.copyOfRange(parts, 6, parts.length));
+            legacyKey.append("/").append(restOfKey);
+        }
+        return legacyKey.toString();
     }
 }

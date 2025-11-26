@@ -28,12 +28,8 @@ public class UserTaskRunIdModel extends CoreObjectId<UserTaskRunId, UserTaskRun,
         this.userTaskGuid = guid;
     }
 
-    public UserTaskRunIdModel(WfRunIdModel wfRunId) {
-        this(wfRunId, LHUtil.generateGuid());
-    }
-
-    public UserTaskRunIdModel(String wfRunId) {
-        this(new WfRunIdModel(wfRunId));
+    public UserTaskRunIdModel(NodeRunIdModel nodeRunId) {
+        this(nodeRunId.getWfRunId(), nodeRunId.getThreadRunNumber() + "-" + nodeRunId.getPosition());
     }
 
     @Override
@@ -75,5 +71,10 @@ public class UserTaskRunIdModel extends CoreObjectId<UserTaskRunId, UserTaskRun,
     @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.USER_TASK_RUN;
+    }
+
+    @Override
+    public Optional<WfRunIdModel> getGroupingWfRunId() {
+        return Optional.of(wfRunId);
     }
 }

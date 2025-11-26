@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 
 public class ChildThreadWorker {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        ChildThreadWorker.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(ChildThreadWorker.class);
 
     @LHTaskMethod("parent-task-1")
     public int parentTask1(int input) {

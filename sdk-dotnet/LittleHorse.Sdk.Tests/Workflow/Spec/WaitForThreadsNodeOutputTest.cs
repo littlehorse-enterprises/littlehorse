@@ -124,7 +124,7 @@ public class WaitForThreadsNodeOutputTest
             VarDef = new VariableDef
             {
                 Name = "2-child-thread-START_THREAD",
-                TypeDef = new TypeDefinition { Type = VariableType.Int }
+                TypeDef = new TypeDefinition { PrimitiveType = VariableType.Int }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -249,7 +249,7 @@ public class WaitForThreadsNodeOutputTest
                 Name = "2-child-thread-START_THREAD",
                 TypeDef = new TypeDefinition
                 {
-                    Type = VariableType.Int
+                    PrimitiveType = VariableType.Int
                 }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
@@ -373,7 +373,7 @@ public class WaitForThreadsNodeOutputTest
             VarDef = new VariableDef
             {
                 Name = "2-child-thread-START_THREAD",
-                TypeDef = new TypeDefinition { Type = VariableType.Int }
+                TypeDef = new TypeDefinition { PrimitiveType = VariableType.Int }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -496,7 +496,7 @@ public class WaitForThreadsNodeOutputTest
             VarDef = new VariableDef
             {
                 Name = "2-child-thread-START_THREAD",
-                TypeDef = new TypeDefinition { Type = VariableType.Int }
+                TypeDef = new TypeDefinition { PrimitiveType = VariableType.Int }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };
@@ -618,7 +618,7 @@ public class WaitForThreadsNodeOutputTest
             VarDef = new VariableDef
             {
                 Name = "2-child-thread-START_THREAD",
-                TypeDef = new TypeDefinition { Type = VariableType.Int }
+                TypeDef = new TypeDefinition { PrimitiveType = VariableType.Int }
             },
             AccessLevel = WfRunVariableAccessLevel.PrivateVar
         };

@@ -75,7 +75,7 @@ var listNodeRunCmd = &cobra.Command{
 Lists all NodeRun's for a given WfRun Id.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		threadRunNumber, _ := cmd.Flags().GetInt32("thread-run-number")
+		threadRunNumber, _ := cmd.Flags().GetInt32("threadRunNumber")
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 		wfRunIdStr := args[0]
@@ -131,13 +131,7 @@ for NodeRuns waiting on a specific type of external event.
 `,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		nodeTypeStr, statusStr := args[0], args[1]
-
-		nodeTypeInt, ok := lhproto.SearchNodeRunRequest_NodeType_value[nodeTypeStr]
-		if !ok {
-			log.Fatal("Invalid value for nodeType: " + nodeTypeStr + ". See lhctl search nodeRun --help")
-		}
-
+		externalEventDefName, statusStr := args[0], args[1]
 		statusInt, ok := lhproto.LHStatus_value[statusStr]
 		if !ok {
 			log.Fatal("Invalid value for status: " + statusStr + ". See lhctl search nodeRun --help")
@@ -145,7 +139,6 @@ for NodeRuns waiting on a specific type of external event.
 
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
-		externalEventDefName, _ := cmd.Flags().GetString("externalEventDefName")
 
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
@@ -154,21 +147,13 @@ for NodeRuns waiting on a specific type of external event.
 			LatestStart:   latest,
 			Bookmark:      bookmark,
 			Limit:         &limit,
-			NodeType:      lhproto.SearchNodeRunRequest_NodeType(nodeTypeInt),
 			Status:        lhproto.LHStatus(statusInt),
-		}
-
-		if externalEventDefName != "" {
-			if nodeTypeStr != "EXTERNAL_EVENT" {
-				log.Fatal("externalEventDefName can only be specified when nodeType is EXTERNAL_EVENT")
-			}
-			search.ExternalEventDef = &lhproto.ExternalEventDefId{
+			ExternalEventDef: &lhproto.ExternalEventDefId{
 				Name: externalEventDefName,
-			}
+			},
 		}
 
 		littlehorse.PrintResp(getGlobalClient(cmd).SearchNodeRun(requestContext(cmd), search))
-
 	},
 }
 
@@ -204,6 +189,5 @@ func init() {
 
 	searchNodeRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for nodeRuns that started no more than this number of minutes ago")
 	searchNodeRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for nodeRuns that started at least this number of minutes ago")
-	searchNodeRunCmd.Flags().String("externalEventDefName", "", "When nodeType is EXTERNAL_EVENT, filter by ExternalEventDef name")
 	listNodeRunCmd.Flags().Int32("threadRunNumber", -1, "Filter by ThreadRun Number")
 }

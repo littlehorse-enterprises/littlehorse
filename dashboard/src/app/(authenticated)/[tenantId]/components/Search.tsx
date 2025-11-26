@@ -7,7 +7,14 @@ import useSWRInfinite from 'swr/infinite'
 import { SearchFooter } from './SearchFooter'
 import { SearchHeader } from './SearchHeader'
 import { SearchResponse, search } from './searchAction'
-import { ExternalEventDefTable, TaskDefTable, UserTaskDefTable, WfSpecTable, WorkflowEventDefTable } from './tables'
+import {
+  ExternalEventDefTable,
+  StructDefTable,
+  TaskDefTable,
+  UserTaskDefTable,
+  WfSpecTable,
+  WorkflowEventDefTable,
+} from './tables'
 
 export const Search: FC = () => {
   const [prefix, setPrefix] = useState<string | undefined>()
@@ -43,6 +50,7 @@ export const Search: FC = () => {
           {type === 'UserTaskDef' && <UserTaskDefTable pages={data} />}
           {type === 'ExternalEventDef' && <ExternalEventDefTable pages={data} />}
           {type === 'WorkflowEventDef' && <WorkflowEventDefTable pages={data} />}
+          {type === 'StructDef' && <StructDefTable pages={data} />}
         </div>
       )}
       <SearchFooter

@@ -139,7 +139,6 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
             } else if (childThreadRun.getStatus() == LHStatus.EXCEPTION
                     || childThreadRun.getStatus() == LHStatus.ERROR) {
-
                 FailureModel latestFailure =
                         childThreadRun.getCurrentNodeRun().getLatestFailure().get();
 
@@ -226,7 +225,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
         // If this fails, then it means that we have an invalid WfSpec.
         try {
-            handlerSpec.validateStartVariables(vars);
+            handlerSpec.validateStartVariables(vars, processorContext.metadataManager());
         } catch (LHValidationException exn) {
             throw new NodeFailureException(new FailureModel(
                     "Failure Handler spec %s for thread %d rejected input variables: %s"

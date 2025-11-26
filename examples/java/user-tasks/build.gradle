@@ -1,12 +1,23 @@
 plugins {
     id 'application'
+    id 'com.diffplug.spotless'
 }
 
-sourceCompatibility=17
-targetCompatibility=17
+java {
+    sourceCompatibility=JavaVersion.VERSION_25
+    targetCompatibility=JavaVersion.VERSION_25
+}
 
 repositories {
     mavenCentral()
+    mavenLocal()
+}
+
+spotless {
+    java {
+        target('**/*.java')
+        palantirJavaFormat()
+    }
 }
 
 dependencies {

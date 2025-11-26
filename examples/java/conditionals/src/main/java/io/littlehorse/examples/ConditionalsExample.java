@@ -2,13 +2,11 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,45 +23,30 @@ import org.slf4j.LoggerFactory;
  */
 public class ConditionalsExample {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        ConditionalsExample.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(ConditionalsExample.class);
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "example-conditionals",
-            wf -> {
-                WfRunVariable foo = wf.addVariable("foo", VariableType.JSON_OBJ);
+        return new WorkflowImpl("example-conditionals", wf -> {
+            WfRunVariable foo = wf.declareJsonObj("foo");
 
-                wf.execute("task-a");
+            wf.execute("task-a");
 
-                wf.doIf(
-                    wf.condition(
-                        foo.jsonPath("$.bar"),
-                        Comparator.GREATER_THAN,
-                        10
-                    ),
-                    ifHandler -> {
+            wf.doIf(wf.condition(foo.jsonPath("$.bar"), Comparator.GREATER_THAN, 10), ifHandler -> {
                         ifHandler.execute("task-b");
-                    }
-                ).doElse(
-                    elseHandler -> {
+                    })
+                    .doElse(elseHandler -> {
                         elseHandler.execute("task-c");
-                    }
-                );
+                    });
 
-                wf.execute("task-d");
-            }
-        );
+            wf.execute("task-d");
+        });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;
@@ -72,23 +55,17 @@ public class ConditionalsExample {
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         ConditionalsTaskWorker executable = new ConditionalsTaskWorker();
         List<LHTaskWorker> workers = List.of(
-            new LHTaskWorker(executable, "task-a", config),
-            new LHTaskWorker(executable, "task-b", config),
-            new LHTaskWorker(executable, "task-c", config),
-            new LHTaskWorker(executable, "task-d", config)
-        );
+                new LHTaskWorker(executable, "task-a", config),
+                new LHTaskWorker(executable, "task-b", config),
+                new LHTaskWorker(executable, "task-c", config),
+                new LHTaskWorker(executable, "task-d", config));
 
         // Gracefully shutdown
-        Runtime
-            .getRuntime()
-            .addShutdownHook(
-                new Thread(() ->
-                    workers.forEach(worker -> {
-                        log.debug("Closing {}", worker.getTaskDefName());
-                        worker.close();
-                    })
-                )
-            );
+        Runtime.getRuntime()
+                .addShutdownHook(new Thread(() -> workers.forEach(worker -> {
+                    log.debug("Closing {}", worker.getTaskDefName());
+                    worker.close();
+                })));
         return workers;
     }
 

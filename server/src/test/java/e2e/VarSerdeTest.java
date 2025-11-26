@@ -35,4 +35,17 @@ public class VarSerdeTest {
                 .setOutput(VariableValue.newBuilder().setJsonArr("Test").build())
                 .build());
     }
+
+    @Test
+    public void shouldAcceptUtcTimestampVariableInReportTask() {
+        client.reportTask(ReportTaskRun.newBuilder()
+                .setTaskRunId(TestUtil.taskRunId().toProto())
+                .setTime(LHLibUtil.fromDate(new Date()))
+                .setStatus(TaskStatus.TASK_SUCCESS)
+                .setAttemptNumber(0)
+                .setOutput(VariableValue.newBuilder()
+                        .setUtcTimestamp(LHLibUtil.fromDate(new Date()))
+                        .build())
+                .build());
+    }
 }

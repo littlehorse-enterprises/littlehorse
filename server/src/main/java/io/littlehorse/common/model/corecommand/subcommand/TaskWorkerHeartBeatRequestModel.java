@@ -4,6 +4,8 @@ import static io.littlehorse.common.LHConstants.MAX_TASK_WORKER_INACTIVITY;
 
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -99,7 +101,15 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         // (taskWorker.hosts)
         Set<LHHostInfo> yourHosts = new HashSet<>();
         for (HostModel hostInfo : taskWorker.hosts) {
-            yourHosts.add(executionContext.getAdvertisedHost(hostInfo, listenerName));
+            try {
+                yourHosts.add(executionContext.getAdvertisedHost(hostInfo, listenerName));
+            } catch (StatusRuntimeException exn) {
+                if (exn.getStatus().getCode() == Code.UNAVAILABLE) {
+                    log.debug("Unable to contact server {}: ", exn.getStatus().getDescription());
+                } else {
+                    throw exn;
+                }
+            }
         }
         return prepareReply(yourHosts);
     }

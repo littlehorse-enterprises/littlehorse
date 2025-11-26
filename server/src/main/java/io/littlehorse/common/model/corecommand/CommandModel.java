@@ -13,8 +13,8 @@ import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTa
 import io.littlehorse.common.model.corecommand.subcommand.DeleteCorrelatedEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
+import io.littlehorse.common.model.corecommand.subcommand.InternalDeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutCorrelatedEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
@@ -26,7 +26,7 @@ import io.littlehorse.common.model.corecommand.subcommand.ScheduleWfRequestModel
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
-import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
+import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.model.corecommand.subcommand.UpdateCorrelationMarkerModel;
@@ -51,13 +51,13 @@ public class CommandModel extends AbstractCommand<Command> {
 
     public CommandCase type;
     public ReportTaskRunModel reportTaskRun;
-    public TaskClaimEvent taskClaimEvent;
+    public TaskClaimEventModel taskClaimEvent;
     public PutExternalEventRequestModel putExternalEventRequest;
     public RunWfRequestModel runWf;
     public StopWfRunRequestModel stopWfRun;
     public ResumeWfRunRequestModel resumeWfRun;
     public SleepNodeMaturedModel sleepNodeMatured;
-    public DeleteWfRunRequestModel deleteWfRun;
+    public InternalDeleteWfRunRequestModel deleteWfRun;
     public ExternalEventTimeoutModel externalEventTimeout;
     public TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat;
     public DeleteExternalEventRequestModel deleteExternalEvent;
@@ -80,6 +80,7 @@ public class CommandModel extends AbstractCommand<Command> {
     private PutCorrelatedEventRequestModel putCorrelatedEvent;
     private UpdateCorrelationMarkerModel updateCorrellationMarker;
     private DeleteCorrelatedEventRequestModel deleteCorrelatedEvent;
+    private PutCheckpointRequestModel putCheckpoint;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;
@@ -196,6 +197,9 @@ public class CommandModel extends AbstractCommand<Command> {
             case DELETE_CORRELATED_EVENT:
                 out.setDeleteCorrelatedEvent(deleteCorrelatedEvent.toProto());
                 break;
+            case PUT_CHECKPOINT:
+                out.setPutCheckpoint(putCheckpoint.toProto());
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -217,7 +221,7 @@ public class CommandModel extends AbstractCommand<Command> {
                 reportTaskRun = ReportTaskRunModel.fromProto(p.getReportTaskRun(), context);
                 break;
             case TASK_CLAIM_EVENT:
-                taskClaimEvent = TaskClaimEvent.fromProto(p.getTaskClaimEvent(), context);
+                taskClaimEvent = TaskClaimEventModel.fromProto(p.getTaskClaimEvent(), context);
                 break;
             case PUT_EXTERNAL_EVENT:
                 putExternalEventRequest = PutExternalEventRequestModel.fromProto(p.getPutExternalEvent(), context);
@@ -235,7 +239,7 @@ public class CommandModel extends AbstractCommand<Command> {
                 sleepNodeMatured = SleepNodeMaturedModel.fromProto(p.getSleepNodeMatured(), context);
                 break;
             case DELETE_WF_RUN:
-                deleteWfRun = DeleteWfRunRequestModel.fromProto(p.getDeleteWfRun(), context);
+                deleteWfRun = InternalDeleteWfRunRequestModel.fromProto(p.getDeleteWfRun(), context);
                 break;
             case EXTERNAL_EVENT_TIMEOUT:
                 externalEventTimeout = ExternalEventTimeoutModel.fromProto(p.getExternalEventTimeout(), context);
@@ -320,6 +324,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 deleteCorrelatedEvent = LHSerializable.fromProto(
                         p.getDeleteCorrelatedEvent(), DeleteCorrelatedEventRequestModel.class, context);
                 break;
+            case PUT_CHECKPOINT:
+                putCheckpoint =
+                        LHSerializable.fromProto(p.getPutCheckpoint(), PutCheckpointRequestModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -387,6 +395,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return updateCorrellationMarker;
             case DELETE_CORRELATED_EVENT:
                 return deleteCorrelatedEvent;
+            case PUT_CHECKPOINT:
+                return putCheckpoint;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -403,9 +413,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(ReportTaskRunModel.class)) {
             type = CommandCase.REPORT_TASK_RUN;
             reportTaskRun = (ReportTaskRunModel) cmd;
-        } else if (cls.equals(TaskClaimEvent.class)) {
+        } else if (cls.equals(TaskClaimEventModel.class)) {
             type = CommandCase.TASK_CLAIM_EVENT;
-            taskClaimEvent = (TaskClaimEvent) cmd;
+            taskClaimEvent = (TaskClaimEventModel) cmd;
         } else if (cls.equals(StopWfRunRequestModel.class)) {
             type = CommandCase.STOP_WF_RUN;
             stopWfRun = (StopWfRunRequestModel) cmd;
@@ -415,9 +425,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(SleepNodeMaturedModel.class)) {
             type = CommandCase.SLEEP_NODE_MATURED;
             sleepNodeMatured = (SleepNodeMaturedModel) cmd;
-        } else if (cls.equals(DeleteWfRunRequestModel.class)) {
+        } else if (cls.equals(InternalDeleteWfRunRequestModel.class)) {
             type = CommandCase.DELETE_WF_RUN;
-            deleteWfRun = (DeleteWfRunRequestModel) cmd;
+            deleteWfRun = (InternalDeleteWfRunRequestModel) cmd;
         } else if (cls.equals(ExternalEventTimeoutModel.class)) {
             type = CommandCase.EXTERNAL_EVENT_TIMEOUT;
             externalEventTimeout = (ExternalEventTimeoutModel) cmd;
@@ -484,6 +494,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(DeleteCorrelatedEventRequestModel.class)) {
             type = CommandCase.DELETE_CORRELATED_EVENT;
             deleteCorrelatedEvent = (DeleteCorrelatedEventRequestModel) cmd;
+        } else if (cls.equals(PutCheckpointRequestModel.class)) {
+            type = CommandCase.PUT_CHECKPOINT;
+            putCheckpoint = (PutCheckpointRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

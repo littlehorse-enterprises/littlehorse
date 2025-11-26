@@ -31,7 +31,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
     }
 
     public void setup() throws Exception {
-        kafka = new KafkaContainer(DockerImageName.parse("apache/kafka-native:3.8.0"));
+        kafka = new KafkaContainer(DockerImageName.parse("apache/kafka-native:4.1.0"));
         kafka.withCreateContainerCmdModifier(cmd -> {
             cmd.getHostConfig().withMemory(1024L * 1024L * 1024L * 1); // 1 GB for Kafka
         });
@@ -102,6 +102,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, String.valueOf(1024L * 1024L * 100));
         serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 100));
         serverProperties.put(LHServerConfig.X_ENABLE_STRUCT_DEFS_KEY, "true");
+        serverProperties.put(LHServerConfig.X_MAX_DELETES_PER_COMMAND_KEY, "10"); // To test wfrun deletion iteration
         return serverProperties;
     }
 

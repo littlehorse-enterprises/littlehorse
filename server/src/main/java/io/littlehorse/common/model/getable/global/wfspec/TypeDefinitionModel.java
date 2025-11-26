@@ -1,9 +1,15 @@
 package io.littlehorse.common.model.getable.global.wfspec;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
+import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BytesReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.DoubleReturnTypeStrategy;
@@ -11,36 +17,64 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Int
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonArrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonObjReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.LHTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.NullReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StrReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StructReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.TimestampReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
+import io.littlehorse.common.util.TypeCastingUtils;
+import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @EqualsAndHashCode(callSuper = false)
 public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     private boolean masked;
-    private VariableType type;
 
-    public TypeDefinitionModel() {}
+    private DefinedTypeCase definedTypeCase;
 
-    public TypeDefinitionModel(VariableType type) {
-        // TODO: determine whether this should be refactored to fail when type == Struct.
-        this.type = type;
+    private VariableType primitiveType;
+    private StructDefIdModel structDefId;
+
+    public TypeDefinitionModel() {
+        this.definedTypeCase = DefinedTypeCase.DEFINEDTYPE_NOT_SET;
+    }
+
+    public TypeDefinitionModel(StructDefIdModel structDefId) {
+        this.definedTypeCase = DefinedTypeCase.STRUCT_DEF_ID;
+        this.structDefId = Objects.requireNonNull(structDefId);
+        this.masked = false;
+    }
+
+    public TypeDefinitionModel(StructDefIdModel structDefId, boolean masked) {
+        this.definedTypeCase = DefinedTypeCase.STRUCT_DEF_ID;
+        this.structDefId = Objects.requireNonNull(structDefId);
+        this.masked = masked;
+    }
+
+    public TypeDefinitionModel(VariableType primitiveType) {
+        this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
+        this.primitiveType = Objects.requireNonNull(primitiveType);
         this.masked = false;
     }
 
     public TypeDefinitionModel(VariableType type, boolean masked) {
-        this.type = type;
+        this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
+        this.primitiveType = Objects.requireNonNull(type);
         this.masked = masked;
     }
 
@@ -51,8 +85,20 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     @Override
     public TypeDefinition.Builder toProto() {
-        TypeDefinition.Builder out =
-                TypeDefinition.newBuilder().setMasked(masked).setType(type);
+        TypeDefinition.Builder out = TypeDefinition.newBuilder().setMasked(masked);
+
+        switch (definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                out.setPrimitiveType(primitiveType);
+                break;
+            case STRUCT_DEF_ID:
+                out.setStructDefId(structDefId.toProto());
+                break;
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                break;
+        }
+
         return out;
     }
 
@@ -60,7 +106,25 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public void initFrom(Message proto, ExecutionContext ctx) {
         TypeDefinition p = (TypeDefinition) proto;
         this.masked = p.getMasked();
-        this.type = p.getType();
+
+        this.definedTypeCase = p.getDefinedTypeCase();
+
+        switch (definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                this.primitiveType = p.getPrimitiveType();
+                break;
+            case STRUCT_DEF_ID:
+                this.structDefId = StructDefIdModel.fromProto(p.getStructDefId(), ctx);
+                break;
+            case DEFINEDTYPE_NOT_SET:
+                this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
+                this.primitiveType = VariableType.JSON_OBJ;
+                break;
+        }
+    }
+
+    public boolean isNull() {
+        return this.definedTypeCase == DefinedTypeCase.DEFINEDTYPE_NOT_SET;
     }
 
     public Optional<TypeDefinitionModel> resolveTypeAfterMutationWith(
@@ -70,25 +134,37 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     public LHTypeStrategy getTypeStrategy() {
-        // TODO: Support StructDefs
-        switch (type) {
-            case INT:
-                return new IntReturnTypeStrategy();
-            case DOUBLE:
-                return new DoubleReturnTypeStrategy();
-            case STR:
-                return new StrReturnTypeStrategy();
-            case BOOL:
-                return new BoolReturnTypeStrategy();
-            case WF_RUN_ID:
-                return new WfRunIdReturnTypeStrategy();
-            case BYTES:
-                return new BytesReturnTypeStrategy();
-            case JSON_ARR:
-                return new JsonArrReturnTypeStrategy();
-            case JSON_OBJ:
-                return new JsonObjReturnTypeStrategy();
-            case UNRECOGNIZED:
+        if (this.isNull()) {
+            return new NullReturnTypeStrategy();
+        }
+
+        switch (this.definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                switch (primitiveType) {
+                    case INT:
+                        return new IntReturnTypeStrategy();
+                    case DOUBLE:
+                        return new DoubleReturnTypeStrategy();
+                    case STR:
+                        return new StrReturnTypeStrategy();
+                    case BOOL:
+                        return new BoolReturnTypeStrategy();
+                    case WF_RUN_ID:
+                        return new WfRunIdReturnTypeStrategy();
+                    case BYTES:
+                        return new BytesReturnTypeStrategy();
+                    case JSON_ARR:
+                        return new JsonArrReturnTypeStrategy();
+                    case JSON_OBJ:
+                        return new JsonObjReturnTypeStrategy();
+                    case TIMESTAMP:
+                        return new TimestampReturnTypeStrategy();
+                    case UNRECOGNIZED:
+                }
+                break;
+            case STRUCT_DEF_ID:
+                return new StructReturnTypeStrategy(this.structDefId);
+            default:
         }
         throw new IllegalStateException();
     }
@@ -98,12 +174,15 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      * can be serialized to a string easily.
      */
     public boolean isPrimitive() {
+        if (this.primitiveType == null) return false;
+
         // TODO: Extend this when adding Struct and StructDef.
-        switch (type) {
+        switch (primitiveType) {
             case INT:
             case BOOL:
             case DOUBLE:
             case WF_RUN_ID:
+            case TIMESTAMP:
             case STR:
                 return true;
             case JSON_OBJ:
@@ -121,33 +200,146 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     public boolean isJson() {
-        return type == VariableType.JSON_ARR || type == VariableType.JSON_OBJ;
+        if (definedTypeCase != DefinedTypeCase.PRIMITIVE_TYPE) return false;
+        return primitiveType == VariableType.JSON_ARR || primitiveType == VariableType.JSON_OBJ;
+    }
+
+    /**
+     * Gets the nested type in this TypeDefinition according to an LHPath
+     * @param lhPath an LHPath to a nested type
+     * @param metadataManager a metadata manager for fetching additional StructDefs
+     * @return an Optional with you
+     * @throws InvalidExpressionException
+     */
+    public Optional<TypeDefinitionModel> getNestedType(LHPathModel lhPath, ReadOnlyMetadataManager metadataManager)
+            throws InvalidExpressionException {
+        TypeDefinitionModel currentTypeDef = this;
+
+        for (Selector selector : lhPath.getPath()) {
+            switch (currentTypeDef.getDefinedTypeCase()) {
+                case PRIMITIVE_TYPE:
+                    switch (currentTypeDef.getPrimitiveType()) {
+                        case JSON_ARR:
+                        case JSON_OBJ:
+                            return Optional.empty();
+                        default:
+                            throw new InvalidExpressionException(String.format(
+                                    "Failed fetching LHPath to '%s' on Type '%s'",
+                                    lhPath.toJsonPathStr(), currentTypeDef));
+                    }
+                case STRUCT_DEF_ID:
+                    StructDefModel structDef =
+                            new WfService(metadataManager).getStructDef(currentTypeDef.getStructDefId());
+
+                    if (structDef == null) {
+                        throw new InvalidExpressionException("StructDef not found: " + currentTypeDef);
+                    }
+
+                    Map<String, StructFieldDefModel> fieldDefs =
+                            structDef.getStructDef().getFields();
+
+                    if (!fieldDefs.containsKey(selector.getKey())) {
+                        throw new InvalidExpressionException(String.format(
+                                "could not find field '%s' on type %s", selector.getKey(), currentTypeDef));
+                    }
+
+                    currentTypeDef = fieldDefs.get(selector.getKey()).getFieldType();
+                    break;
+                case DEFINEDTYPE_NOT_SET:
+                    break;
+            }
+        }
+
+        return Optional.of(currentTypeDef);
     }
 
     /**
      * Returns true if the VariableValueModel matches this type.
+     * @throws StructValidationException
      */
-    public boolean isCompatibleWith(VariableValueModel value) {
-        // TODO: Extend this when we add StructDef's and Structs.
-        return value.getType() == type;
+    public boolean isCompatibleWith(VariableValueModel value, ReadOnlyMetadataManager readOnlyMetadataManager) {
+        if (value.getValueType() == ValueCase.STRUCT) {
+            try {
+                value.getStruct().validateAgainstStructDefId(readOnlyMetadataManager);
+            } catch (StructValidationException e) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        String.format("Provided Struct incompatible with type %s: %s", this, e.getMessage()));
+            }
+        }
+
+        TypeDefinitionModel other = value.getTypeDefinition();
+
+        if (this.getDefinedTypeCase() != other.getDefinedTypeCase()) {
+            return false;
+        }
+
+        switch (this.getDefinedTypeCase()) {
+            case PRIMITIVE_TYPE:
+                return TypeCastingUtils.canBeType(other.getPrimitiveType(), this.primitiveType);
+            case STRUCT_DEF_ID:
+                return this.structDefId.equals(other.getStructDefId());
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                break;
+        }
+
+        return false;
     }
 
     /**
-     * Returns true if the other type is compatible with this type. Note that it requires
-     * exact match for now. In the future we'll support casting.
+     * Returns true if this type can be assigned from the other type, without casting.
      */
     public boolean isCompatibleWith(TypeDefinitionModel other) {
-        if (type == VariableType.INT || type == VariableType.DOUBLE) {
-            return other.getType() == VariableType.INT || other.getType() == VariableType.DOUBLE;
+        if (this.isNull() || other.isNull()) {
+            return true;
         }
-        return this.getType().equals(other.getType());
+
+        if (this.getDefinedTypeCase() != other.getDefinedTypeCase()) {
+            return false;
+        }
+
+        switch (this.getDefinedTypeCase()) {
+            case PRIMITIVE_TYPE:
+                return TypeCastingUtils.canBeType(this.primitiveType, other.getPrimitiveType());
+            case STRUCT_DEF_ID:
+                return this.getStructDefId().equals(other.getStructDefId());
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                break;
+        }
+
+        return false;
     }
 
     @Override
     public String toString() {
-        // TODO: when we have Structs, print out structdefid
-        String result = type.toString();
+        String result = "";
+
+        switch (this.definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                result = primitiveType.toString();
+                break;
+            case STRUCT_DEF_ID:
+                result = String.format("Struct<%s,v%d>", structDefId.getName(), structDefId.getVersion());
+                break;
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                result = this.definedTypeCase.toString();
+                break;
+        }
         if (masked) result += " MASKED";
         return result;
+    }
+
+    /**
+     * Performs casting of a VariableValueModel to this type.
+     *
+     * @param sourceValue The value to cast
+     * @return A new VariableValueModel with the target type, or the original if no casting is needed
+     * @throws IllegalArgumentException if casting is not supported for this type combination
+     */
+    public VariableValueModel applyCast(VariableValueModel sourceValue) {
+        return TypeCastingUtils.applyCast(sourceValue, this.primitiveType);
     }
 }

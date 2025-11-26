@@ -22,6 +22,9 @@ export const search = async ({ type, tenantId, bookmark, limit, prefix }: Search
 
   let results
   switch (type) {
+    case 'StructDef':
+      results = await genericSearch(request, client.searchStructDef)
+      break
     case 'TaskDef':
       results = await genericSearch(request, client.searchTaskDef)
       break
@@ -82,4 +85,14 @@ type WorkflowEventDefList = SearchResult & {
   results: Pick<WfSpecIdList, 'results'>
 }
 
-export type SearchResponse = WfSpecList | TaskDefList | UserTaskDefList | ExternalEventDefList | WorkflowEventDefList
+export type StructDefList = SearchResult & {
+  type: 'StructDef'
+  results: Pick<WfSpecIdList, 'results'>
+}
+export type SearchResponse =
+  | WfSpecList
+  | TaskDefList
+  | UserTaskDefList
+  | ExternalEventDefList
+  | WorkflowEventDefList
+  | StructDefList

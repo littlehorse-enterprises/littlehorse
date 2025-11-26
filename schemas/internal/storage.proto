@@ -20,14 +20,25 @@ enum StoreableType {
     SCHEDULED_TASK = 1;
     WF_METRIC_UPDATE = 2;
     TASK_METRIC_UPDATE = 3;
-    LH_TIMER = 4;
+
+    // LHTimer is not a `Storeable` in the sense that it's not stored in thhe
+    // corer store.
+    // LH_TIMER = 4;
+    reserved 4;
+
     TAG = 5;
+
     PARTITION_METRICS = 6;
-    METRIC_WINDOW = 7;
+
+    // METRIC_WINDOW no longer exists.
+    // METRIC_WINDOW = 7;
+    reserved 7;
+
     INITIALIZATION_LOG = 8;
     WFRUN_STORED_INVENTORY = 9;
     CORRELATION_MARKER = 10;
-    METRIC_PARTITION_INVENTORY = 11;
+    TASK_QUEUE_HINT = 11;
+    METRIC_PARTITION_INVENTORY = 12;
 }
 
 enum GetableClassEnum {
@@ -51,9 +62,10 @@ enum GetableClassEnum {
     SCHEDULED_WF_RUN = 17;
     STRUCT_DEF = 18;
     CORRELATED_EVENT = 19;
-    METRIC = 20;
-    PARTITION_METRIC = 21;
-    METRIC_SPEC = 22;
+    CHECKPOINT = 20;
+    METRIC = 21;
+    PARTITION_METRIC = 22;
+    METRIC_SPEC = 23;
 }
 
 message AttributePb {
@@ -124,4 +136,10 @@ message EventCorrelationMarker {
 
   // Correlation key
   string correlation_key = 3;
+}
+
+// Used to avoid this problem during task queue rehydration:
+// https://github.com/facebook/rocksdb/wiki/Implement-Queue-Service-Using-RocksDB
+message TaskQueueHint {
+  google.protobuf.Timestamp last_processed_timestamp = 1;
 }

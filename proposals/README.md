@@ -34,4 +34,4 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 006 | [`UserTaskEvent` Completed](./006-add-user-task-event-completed.md) | Jake Rose | [#904](https://github.com/littlehorse-enterprises/littlehorse/issues/904) |
 | 007 | [`ExternalEvent`s `wfspec` and `wfRun` validations](./007-extending-external-event-validations.md) | Jake Rose | [#588](https://github.com/littlehorse-enterprises/littlehorse/issues/588) |
 | 008 | [Type casting](./008-type-casting.md) | Christian Caicedo | [#1543](https://github.com/littlehorse-enterprises/littlehorse/issues/1543)|
- 
+| 009 | [Checkpointed Tasks](./009-checkpointed-task-run.md) | Colt McNealy | [#1765](https://github.com/littlehorse-enterprises/littlehorse/issues/1765) |

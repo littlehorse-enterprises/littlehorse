@@ -3,13 +3,11 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
-import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -20,6 +18,7 @@ import java.nio.file.Path;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
 /*
  * This is a simple example, which does two things:
  * 1. Declare an "input-name" variable of type String
@@ -28,23 +27,18 @@ import java.util.concurrent.TimeUnit;
 public class AwaitWorkflowEventExample {
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "await-wf-event",
-            wf -> {
-                WfRunVariable sleepTime = wf.addVariable("sleep-time", VariableType.INT).required();
-                wf.sleepSeconds(sleepTime);
-                wf.throwEvent("sleep-done", "hello there!");
-            }
-        );
+        return new WorkflowImpl("await-wf-event", wf -> {
+            WfRunVariable sleepTime = wf.declareInt("sleep-time").required();
+            wf.sleepSeconds(sleepTime);
+            wf.throwEvent("sleep-done", "hello there!");
+        });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;
@@ -59,9 +53,8 @@ public class AwaitWorkflowEventExample {
         // New workflow
         Workflow workflow = getWorkflow();
 
-        client.putWorkflowEventDef(PutWorkflowEventDefRequest.newBuilder()
-                .setName("sleep-done")
-                .build());
+        client.putWorkflowEventDef(
+                PutWorkflowEventDefRequest.newBuilder().setName("sleep-done").build());
 
         // Register a workflow
         workflow.registerWfSpec(config.getBlockingStub());

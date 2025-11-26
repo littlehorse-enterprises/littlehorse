@@ -96,6 +96,8 @@ public class GetableManager extends ReadOnlyGetableManager {
         // the
         // store, we need to store the TagsCache in the buffer. Therefore, we still
         // have to call get().
+        boolean alreadyExists =
+                uncommittedChanges.containsKey(getable.getObjectId().getStoreableKey());
 
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> previousValue =
@@ -105,13 +107,23 @@ public class GetableManager extends ReadOnlyGetableManager {
 
         @SuppressWarnings("unchecked")
         GetableToStore<U, T> toPut = new GetableToStore<>(previousValue, (Class<T>) getable.getClass());
+        GetableToStore<U, T> toPut;
+        if (alreadyExists) {
+            @SuppressWarnings("unchecked")
+            StoredGetable<U, T> previousValue =
+                    (StoredGetable<U, T>) store.get(getable.getObjectId().getStoreableKey(), StoredGetable.class);
+            toPut = new GetableToStore<>(previousValue, (Class<T>) getable.getClass());
+        } else {
+            toPut = new GetableToStore<>((Class<T>) getable.getClass());
+        }
 
         toPut.setObjectToStore(getable);
         uncommittedChanges.put(getable.getObjectId().getStoreableKey(), toPut);
     }
 
     private WfRunStoredInventoryModel getOrCreateStoredInventory(WfRunIdModel wfRunId) {
-        WfRunStoredInventoryModel result = store.get(wfRunId.getStoreableKey(), WfRunStoredInventoryModel.class);
+        WfRunStoredInventoryModel result = store.get(
+                wfRunId.getStoreableKey(StoreableType.WFRUN_STORED_INVENTORY), WfRunStoredInventoryModel.class);
         if (result == null) {
             result = new WfRunStoredInventoryModel();
             result.setWfRunId(wfRunId);
@@ -178,13 +190,19 @@ public class GetableManager extends ReadOnlyGetableManager {
         }
     }
 
-    public void deleteAllExternalEventsFor(WfRunIdModel wfRunId) {
-        log.trace("Deleting all ExternalEvents for WfRun {}", wfRunId);
+    public boolean tryToDeleteAllExternalEventsFor(WfRunIdModel wfRunId, int maxDeletesInOneCommand) {
+        log.trace("Deleting a bunch of ExternalEvents for WfRun {}", wfRunId);
 
+        int deletedEvents = 0;
         WfRunStoredInventoryModel inventory = getOrCreateStoredInventory(wfRunId);
         for (ExternalEventIdModel externalEventId : inventory.getExternalEventIds()) {
             delete(externalEventId);
+            if (deletedEvents++ >= maxDeletesInOneCommand
+                    && !inventory.getExternalEventIds().isEmpty()) {
+                return false;
+            }
         }
+        return true;
     }
 
     private <U extends Message, T extends CoreGetable<U>> Optional<OutputTopicRecordModel> processEntity(

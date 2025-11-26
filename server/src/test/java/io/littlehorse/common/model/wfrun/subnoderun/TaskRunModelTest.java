@@ -7,8 +7,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.littlehorse.common.AuthorizationContext;
-import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
+import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -38,7 +39,8 @@ public class TaskRunModelTest {
                 .setWfRunId(WfRunId.newBuilder().setId("my-wf"))
                 .build();
         TaskRun taskRunProto = TaskRun.newBuilder()
-                .setId(new TaskRunIdModel(new WfRunIdModel("asdf"), processorContext).toProto())
+                .setId(new TaskRunIdModel(new NodeRunIdModel(new WfRunIdModel("asdf"), 0, 1), processorContext)
+                        .toProto())
                 .addAttempts(TaskAttempt.newBuilder().setStatus(TaskStatus.TASK_PENDING))
                 .setSource(TaskRunSource.newBuilder()
                         .setTaskNode(TaskNodeReference.newBuilder().setNodeRunId(nodeRunId)))
@@ -55,7 +57,7 @@ public class TaskRunModelTest {
         taskRun.dispatchTaskToQueue();
         verify(processorContext.getTaskManager()).scheduleTask(any());
 
-        TaskClaimEvent taskClaimEvent = new TaskClaimEvent();
+        TaskClaimEventModel taskClaimEvent = new TaskClaimEventModel();
         // act
         taskRun.onTaskAttemptStarted(taskClaimEvent);
 

@@ -4,11 +4,11 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -16,6 +16,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.sdk.common.proto.VariableIdList;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -24,7 +25,6 @@ import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
-import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
@@ -99,44 +99,8 @@ public class SearchVariableRequestModel
     }
 
     private Optional<TagStorageType> getStorageTypeFromVariableIndexConfiguration() {
-        return new VariableModel()
-                .getIndexConfigurations().stream()
-                        // Filter matching configuration
-                        .filter(getableIndexConfiguration ->
-                                getableIndexConfiguration.searchAttributesMatch(searchAttributesString()))
-                        .map(GetableIndex::getTagStorageType)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .findFirst();
-    }
-
-    private TagStorageType indexTypeForSearchFromWfSpec() {
-        WfSpecModel spec = service.getWfSpec(wfSpecName, wfSpecMajorVersion, wfSpecRevision);
-
-        if (spec == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn't find WfSpec %s".formatted(wfSpecName));
-        }
-
-        ThreadVarDefModel varDef = spec.getAllVariables().get(varName);
-        if (varDef == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Provided WfSpec has no variable named " + varName);
-        }
-
-        if (!varDef.isSearchable()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Provided variable has no index");
-        }
-
-        // ONLY do this check if the Variable is a PRIMITIVE type.
-        // TODO: Extend this when implementing Struct and StructDef.
-        TypeDefinitionModel varType = varDef.getVarDef().getTypeDef();
-        if (isTypeSearchable(varType.getType()) && !varType.isCompatibleWith(value)) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT,
-                    "Specified Variable has type " + varDef.getVarDef().getTypeDef());
-        }
-
-        // Currently, all tags are LOCAL
-        return TagStorageType.LOCAL;
+        // right now, we do not have remote tags.
+        return Optional.of(TagStorageType.LOCAL);
     }
 
     public List<Attribute> getSearchAttributes() throws LHApiException {
@@ -157,11 +121,58 @@ public class SearchVariableRequestModel
 
     @Override
     public TagStorageType indexTypeForSearch() {
-        return getStorageTypeFromVariableIndexConfiguration().orElseGet(() -> {
-            TagStorageType result = indexTypeForSearchFromWfSpec();
-            log.trace("Doing a {} search", result);
-            return result;
-        });
+        // Do some validations here.
+        WfSpecModel spec = service.getWfSpec(wfSpecName, wfSpecMajorVersion, wfSpecRevision);
+
+        if (spec == null) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn't find WfSpec %s".formatted(wfSpecName));
+        }
+
+        if (varName.contains("_$")) {
+            String jsonPath = varName.substring(varName.indexOf("_$") + 1);
+            String actualVariableName = varName.substring(0, varName.indexOf("_$"));
+            ThreadVarDefModel varDef = spec.getAllVariables().get(actualVariableName);
+            if (varDef == null) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "Provided WfSpec has no variable named " + actualVariableName);
+            }
+
+            VariableType primitiveType = varDef.getVarDef().getTypeDef().getPrimitiveType();
+            if (primitiveType != VariableType.JSON_ARR && primitiveType != VariableType.JSON_OBJ) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Specified variable " + actualVariableName + " is not of type JSON_OBJ or JSON_ARR");
+            }
+
+            Optional<JsonIndexModel> jsonIndex = varDef.getJsonIndexes().stream()
+                    .filter(index -> index.getFieldPath().equals(jsonPath))
+                    .findFirst();
+            if (jsonIndex.isEmpty()) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Variable " + actualVariableName + " has no indexed field " + jsonPath);
+            }
+        } else {
+            ThreadVarDefModel varDef = spec.getAllVariables().get(varName);
+            if (varDef == null) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, "Provided WfSpec has no variable named " + varName);
+            }
+
+            if (!varDef.isSearchable()) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, "Provided variable has no index");
+            }
+
+            // ONLY do this check if the Variable is a PRIMITIVE type.
+            // TODO: Extend this when implementing Struct and StructDef.
+            TypeDefinitionModel varType = varDef.getVarDef().getTypeDef();
+            if (isTypeSearchable(varType) && !varType.isCompatibleWith(value, null)) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Specified Variable has type " + varDef.getVarDef().getTypeDef());
+            }
+        }
+
+        return TagStorageType.LOCAL;
     }
 
     @Override
@@ -193,8 +204,10 @@ public class SearchVariableRequestModel
         return List.of("name", "value", "wfSpecName", "wfSpecVersion");
     }
 
-    private static boolean isTypeSearchable(VariableType type) {
-        switch (type) {
+    private static boolean isTypeSearchable(TypeDefinitionModel type) {
+        if (type.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) return false;
+
+        switch (type.getPrimitiveType()) {
             case INT:
             case BOOL:
             case DOUBLE:

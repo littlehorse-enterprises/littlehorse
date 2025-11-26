@@ -5,8 +5,11 @@ import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.JsonIndex;
+import io.littlehorse.sdk.common.proto.LHPath.Selector;
+import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -14,51 +17,86 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter(AccessLevel.PROTECTED)
 class WfRunVariableImpl implements WfRunVariable {
 
     public String name;
-    public VariableType type;
+    public TypeDefinition typeDef;
     private VariableValue defaultValue;
     private boolean required;
     private boolean searchable;
-    private boolean masked;
-    private Object typeOrDefaultVal;
     private List<JsonIndex> jsonIndexes = new ArrayList<>();
     private WfRunVariableAccessLevel accessLevel;
 
-    public String jsonPath;
+    private String jsonPath;
+    private List<Selector> lhPath;
 
     private final WorkflowThreadImpl parent;
 
-    public WfRunVariableImpl(String name, Object typeOrDefaultVal, WorkflowThreadImpl parent) {
-        this.name = name;
+    private WfRunVariableImpl(String name, WorkflowThreadImpl parent) {
+        this.name = Objects.requireNonNull(name, "Name cannot be null.");
         this.parent = Objects.requireNonNull(parent, "Parent thread cannot be null.");
 
+        // As per GH Issue #582, the default is now PRIVATE_VAR.
+        this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
+
+        this.lhPath = new ArrayList<>();
+    }
+
+    public static WfRunVariableImpl createPrimitiveVar(
+            String name, Object typeOrDefaultVal, WorkflowThreadImpl parent) {
         if (typeOrDefaultVal == null) {
             throw new IllegalArgumentException(
                     "The 'typeOrDefaultVal' argument must be either a VariableType or a default value, but a null value was provided.");
         }
-        this.typeOrDefaultVal = typeOrDefaultVal;
-
-        // As per GH Issue #582, the default is now PRIVATE_VAR.
-        this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
-        initializeType();
+        WfRunVariableImpl wfRunVar = new WfRunVariableImpl(name, parent);
+        wfRunVar.initializeAsPrimitive(typeOrDefaultVal);
+        return wfRunVar;
     }
 
-    private void initializeType() {
+    public static WfRunVariableImpl createStructDefVar(String name, LHStructDefType clazz, WorkflowThreadImpl parent) {
+        WfRunVariableImpl wfRunVar = new WfRunVariableImpl(name, parent);
+        wfRunVar.initializeAsStructDef(clazz);
+        return wfRunVar;
+    }
+
+    public static WfRunVariableImpl createStructDefVar(String name, String structDefName, WorkflowThreadImpl parent) {
+        WfRunVariableImpl wfRunVar = new WfRunVariableImpl(name, parent);
+        wfRunVar.initializeAsStructDef(structDefName);
+        return wfRunVar;
+    }
+
+    private void initializeAsPrimitive(Object typeOrDefaultVal) {
         if (typeOrDefaultVal instanceof VariableType) {
-            this.type = (VariableType) typeOrDefaultVal;
+            VariableType variableType = (VariableType) typeOrDefaultVal;
+            this.typeDef =
+                    TypeDefinition.newBuilder().setPrimitiveType(variableType).build();
         } else {
             setDefaultValue(typeOrDefaultVal);
-            this.type = LHLibUtil.fromValueCase(defaultValue.getValueCase());
+            this.typeDef = TypeDefinition.newBuilder()
+                    .setPrimitiveType(LHLibUtil.fromValueCase(defaultValue.getValueCase()))
+                    .build();
         }
+    }
+
+    private void initializeAsStructDef(String structDefName) {
+        this.typeDef = TypeDefinition.newBuilder()
+                .setStructDefId(StructDefId.newBuilder().setName(structDefName))
+                .build();
+    }
+
+    private void initializeAsStructDef(LHStructDefType structClass) {
+        this.typeDef = structClass.getTypeDefinition();
     }
 
     @Override
@@ -72,11 +110,48 @@ class WfRunVariableImpl implements WfRunVariable {
         if (jsonPath != null) {
             throw new LHMisconfigurationException("Cannot use jsonpath() twice on same var!");
         }
-        if (!type.equals(VariableType.JSON_OBJ) && !type.equals(VariableType.JSON_ARR)) {
-            throw new LHMisconfigurationException(String.format("JsonPath not allowed in a %s variable", type.name()));
+        if (typeDef.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
+            throw new LHMisconfigurationException(
+                    String.format("JsonPath not allowed in a %s variable", typeDef.getDefinedTypeCase()));
         }
-        WfRunVariableImpl out = new WfRunVariableImpl(name, typeOrDefaultVal, parent);
-        out.jsonPath = path;
+        if (!typeDef.getPrimitiveType().equals(VariableType.JSON_OBJ)
+                && !typeDef.getPrimitiveType().equals(VariableType.JSON_ARR)) {
+            throw new LHMisconfigurationException(String.format(
+                    "JsonPath not allowed in a %s variable",
+                    typeDef.getPrimitiveType().name()));
+        }
+        WfRunVariableImpl out = this.clone();
+        out.setJsonPath(path);
+        return out;
+    }
+
+    @Override
+    public WfRunVariableImpl get(String field) {
+        if (jsonPath != null) {
+            throw new LHMisconfigurationException("Cannot use jsonPath() and get() on same var!");
+        }
+        if (typeDef.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
+                && (typeDef.getPrimitiveType() != VariableType.JSON_OBJ
+                        && typeDef.getPrimitiveType() != VariableType.JSON_ARR)) {
+            throw new LHMisconfigurationException("Can only use get() on JSON_OBJ, JSON_ARR, or Struct variables");
+        }
+        WfRunVariableImpl out = this.clone();
+        out.getLhPath().add(Selector.newBuilder().setKey(field).build());
+        return out;
+    }
+
+    @Override
+    public WfRunVariableImpl get(int index) {
+        if (jsonPath != null) {
+            throw new LHMisconfigurationException("Cannot use jsonPath() and get() on same var!");
+        }
+        if (typeDef.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
+                && (typeDef.getPrimitiveType() != VariableType.JSON_OBJ
+                        && typeDef.getPrimitiveType() != VariableType.JSON_ARR)) {
+            throw new LHMisconfigurationException("Can only use get() on JSON_OBJ, JSON_ARR, or Struct variables");
+        }
+        WfRunVariableImpl out = this.clone();
+        out.getLhPath().add(Selector.newBuilder().setIndex(index).build());
         return out;
     }
 
@@ -88,7 +163,7 @@ class WfRunVariableImpl implements WfRunVariable {
 
     @Override
     public WfRunVariable masked() {
-        this.masked = true;
+        this.typeDef = typeDef.toBuilder().setMasked(true).build();
         return this;
     }
 
@@ -102,8 +177,8 @@ class WfRunVariableImpl implements WfRunVariable {
     public WfRunVariable withDefault(Object defaultVal) {
         setDefaultValue(defaultVal);
 
-        if (!LHLibUtil.fromValueCase(defaultValue.getValueCase()).equals(type)) {
-            throw new IllegalArgumentException("Default value type does not match LH variable type " + type);
+        if (!LHLibUtil.fromValueCase(defaultValue.getValueCase()).equals(typeDef.getPrimitiveType())) {
+            throw new IllegalArgumentException("Default value type does not match LH variable type " + typeDef);
         }
 
         return this;
@@ -122,7 +197,8 @@ class WfRunVariableImpl implements WfRunVariable {
         if (!fieldPath.startsWith("$.")) {
             throw new LHMisconfigurationException(String.format("Invalid JsonPath: %s", fieldPath));
         }
-        if (!type.equals(VariableType.JSON_OBJ) && !type.equals(VariableType.JSON_ARR)) {
+        if (!typeDef.getPrimitiveType().equals(VariableType.JSON_OBJ)
+                && !typeDef.getPrimitiveType().equals(VariableType.JSON_ARR)) {
             throw new LHMisconfigurationException(String.format("Non-Json %s variable contains jsonIndex", name));
         }
         this.jsonIndexes.add(JsonIndex.newBuilder()
@@ -241,9 +317,8 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     public ThreadVarDef getSpec() {
-        VariableDef.Builder varDef = VariableDef.newBuilder()
-                .setTypeDef(TypeDefinition.newBuilder().setMasked(masked).setType(this.getType()))
-                .setName(this.getName());
+        VariableDef.Builder varDef =
+                VariableDef.newBuilder().setTypeDef(typeDef).setName(this.getName());
 
         if (this.defaultValue != null) {
             varDef.setDefaultValue(defaultValue);
@@ -266,5 +341,28 @@ class WfRunVariableImpl implements WfRunVariable {
     @Override
     public WfRunVariable asInherited() {
         return this.withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
+    }
+
+    @Override
+    public LHExpression castTo(VariableType targetType) {
+        return new CastExpressionImpl(this, targetType);
+    }
+
+    public WfRunVariableImpl clone() {
+        WfRunVariableImpl out = new WfRunVariableImpl(this.getName(), this.getParent());
+        out.setDefaultValue(this.getDefaultValue());
+        out.setRequired(this.isRequired());
+        out.setSearchable(this.isSearchable());
+        out.setJsonIndexes(new ArrayList<>(this.getJsonIndexes()));
+        out.setAccessLevel(this.getAccessLevel());
+        out.setTypeDef(this.getTypeDef());
+
+        if (jsonPath != null) {
+            out.setJsonPath(this.getJsonPath());
+        } else if (lhPath != null) {
+            out.setLhPath(new ArrayList<>(lhPath));
+        }
+
+        return out;
     }
 }

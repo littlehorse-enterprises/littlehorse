@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
+import io.littlehorse.common.exceptions.validation.InvalidMutationException;
 import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -19,9 +20,11 @@ import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
+import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -154,27 +157,48 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             for (int i = 0; i < variables.size(); i++) {
                 VariableDefModel taskDefVar = taskDef.getInputVars().get(i);
                 VariableAssignmentModel assn = variables.get(i);
-
                 try {
-                    Optional<TypeDefinitionModel> typeDef = assn.resolveType(
+                    Optional<TypeDefinitionModel> sourceVariableTypeOpt = assn.getSourceType(
                             ctx.metadataManager(),
                             node.getThreadSpec().getWfSpec(),
                             node.getThreadSpec().getName());
-                    if (typeDef.isPresent() && !typeDef.get().isCompatibleWith(taskDefVar.getTypeDef())) {
-                        throw new InvalidNodeException(
-                                "Task input variable with name " + taskDefVar.getName() + " at position " + i
-                                        + " expects type " + taskDefVar.getTypeDef() + " but is type " + typeDef.get(),
-                                node);
+                    VariableType sourceVariableType = sourceVariableTypeOpt
+                            .map(TypeDefinitionModel::getPrimitiveType)
+                            .orElse(null);
+                    VariableType taskInputType = taskDefVar.getTypeDef().getPrimitiveType();
+
+                    if (assn.getTargetType() != null) {
+                        // If explicit cast, validate the cast itself (original type -> cast target)
+                        VariableType castTargetType = assn.getTargetType().getPrimitiveType();
+                        if (!TypeCastingUtils.canCastTo(sourceVariableType, castTargetType)) {
+                            throw new InvalidNodeException(
+                                    "Cannot cast from " + sourceVariableType + " to " + castTargetType
+                                            + ". This conversion is not supported.",
+                                    node);
+                        }
+                        TypeCastingUtils.validateTypeCompatibility(sourceVariableType, castTargetType);
+                        // After cast, source becomes castTargetType, and we verify if it could be assigned to the task
+                        // input
+                        sourceVariableType = castTargetType;
+                        if (!TypeCastingUtils.canBeType(sourceVariableType, taskInputType)) {
+                            throw new InvalidNodeException(
+                                    "Cannot assign " + sourceVariableType + " to " + taskInputType + ".", node);
+                        }
+
+                    } else {
+                        // No explicit cast, only allow assignment if possible without cast
+                        if (!TypeCastingUtils.canBeType(sourceVariableType, taskInputType)) {
+                            throw new InvalidNodeException(
+                                    "Cannot assign " + sourceVariableType + " to " + taskInputType
+                                            + " without explicit casting.",
+                                    node);
+                        }
                     }
-                } catch (InvalidExpressionException exn) {
+
+                } catch (InvalidExpressionException | InvalidMutationException | IllegalArgumentException exception) {
                     throw new InvalidNodeException(
-                            "Task input variable with name " + taskDefVar.getName() + " at position " + i
-                                    + " could not resolve type: " + exn.getMessage(),
-                            node);
-                }
-                if (!assn.canBeType(taskDefVar.getTypeDef(), this.node.getThreadSpec())) {
-                    throw new InvalidNodeException(
-                            "Input variable " + i + " needs to be " + taskDefVar.getTypeDef() + " but cannot be!",
+                            "Task input variable with name " + taskDefVar.getName() + " at position " + i + ": "
+                                    + exception.getMessage(),
                             node);
                 }
             }
@@ -252,7 +276,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             } else {
                 throw new LHVarSubError(null, "Variable " + varName + " is unassigned.");
             }
-            out.add(requiredVarDef.assignValue(val));
+            out.add(requiredVarDef.assignValue(val, processorContext.metadataManager()));
         }
 
         return out;

@@ -24,7 +24,9 @@ import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
 @LHTest
@@ -47,6 +49,9 @@ public class CorrelatedEventTest {
 
     @LHWorkflow("multi-thread-correlation")
     public Workflow multiThreadCorrelation;
+
+    @LHWorkflow("correlated-event-with-ttl")
+    public Workflow correlationWithTtl;
 
     @LHWorkflow("correlated-event-with-deletion")
     public Workflow getWfWithDeletion() {
@@ -74,6 +79,23 @@ public class CorrelatedEventTest {
                     .timeout(1)
                     .withCorrelatedEventConfig(CorrelatedEventConfig.newBuilder()
                             .setDeleteAfterFirstCorrelation(false)
+                            .build());
+            eventResult.assign(output);
+        });
+    }
+
+    @LHWorkflow("correlated-event-with-ttl")
+    public Workflow getWfWithTTL() {
+        return Workflow.newWorkflow("correlated-event-with-ttl", wf -> {
+            WfRunVariable key = wf.declareStr("key").required();
+            WfRunVariable eventResult = wf.declareInt("event-result");
+            ExternalEventNodeOutput output = wf.waitForEvent("correlated-with-ttl")
+                    .registeredAs(Integer.class)
+                    .withCorrelationId(key)
+                    .timeout(1)
+                    .withCorrelatedEventConfig(CorrelatedEventConfig.newBuilder()
+                            .setDeleteAfterFirstCorrelation(false)
+                            .setTtlSeconds(1)
                             .build());
             eventResult.assign(output);
         });
@@ -243,7 +265,7 @@ public class CorrelatedEventTest {
         // the CorrelationMarker in the public API, we can't use Awaitility.
         //
         // If this test becomes flaky we can remove the test and replace with unit tests.
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         // Now put a CorrelatedEvent, and ensure that there is no ExternalEvent created.
         CorrelatedEvent result = client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
@@ -279,5 +301,39 @@ public class CorrelatedEventTest {
 
         // If the WfRun cleanup worked, then we don't have any events created.
         Assertions.assertThat(result.getExternalEventsCount()).isZero();
+    }
+
+    @Test
+    void ttlSecondsShouldDeleteCorrelatedEvent() {
+        String randomStr = LHUtil.generateGuid();
+
+        // Force the registration of the event
+        verifier.prepareRun(correlationWithTtl, Arg.of("key", randomStr)).start();
+
+        ExternalEventDefId evtId =
+                ExternalEventDefId.newBuilder().setName("correlated-with-ttl").build();
+
+        client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
+                .setExternalEventDefId(evtId)
+                .setKey(randomStr)
+                .setContent(LHLibUtil.objToVarVal(12345))
+                .build());
+
+        CorrelatedEventId id = CorrelatedEventId.newBuilder()
+                .setExternalEventDefId(evtId)
+                .setKey(randomStr)
+                .build();
+        // Should work at first
+        client.getCorrelatedEvent(id);
+
+        // Should delete
+        Awaitility.await().atMost(4, TimeUnit.SECONDS).until(() -> {
+            try {
+                client.getCorrelatedEvent(id);
+                return false;
+            } catch (StatusRuntimeException exn) {
+                return exn.getStatus().getCode() == Code.NOT_FOUND;
+            }
+        });
     }
 }

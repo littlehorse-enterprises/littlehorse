@@ -4,15 +4,17 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.MetadataGetable;
+import io.littlehorse.common.model.getable.core.variable.InlineStructModel;
+import io.littlehorse.common.model.getable.core.variable.StructModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructDef;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -34,13 +36,7 @@ public class StructDefModel extends MetadataGetable<StructDef> {
     @Setter
     public Date createdAt;
 
-    private MetadataProcessorContext executionContext;
-
     public StructDefModel() {}
-
-    public StructDefModel(MetadataProcessorContext executionContext) {
-        this.executionContext = executionContext;
-    }
 
     public static StructDefModel fromProto(StructDef proto, ExecutionContext context) {
         StructDefModel out = new StructDefModel();
@@ -60,6 +56,14 @@ public class StructDefModel extends MetadataGetable<StructDef> {
         }
 
         return out;
+    }
+
+    public void validateAgainst(StructModel struct, ReadOnlyMetadataManager metadataManager)
+            throws StructValidationException {
+        InlineStructDefModel inlineStructDef = this.structDef;
+        InlineStructModel inlineStruct = struct.getInlineStruct();
+
+        inlineStructDef.validateAgainst(inlineStruct, metadataManager);
     }
 
     @Override

@@ -24,7 +24,7 @@ public class WfSpecUtilTest {
             ThreadVarDef.Builder variable = ThreadVarDef.newBuilder()
                     .setVarDef(VariableDef.newBuilder()
                             .setName("variable")
-                            .setTypeDef(TypeDefinition.newBuilder().setType(VariableType.STR)));
+                            .setTypeDef(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR)));
             WfSpec originalSpec = WfSpec.newBuilder()
                     .setId(WfSpecId.newBuilder()
                             .setName(name)
@@ -120,7 +120,7 @@ public class WfSpecUtilTest {
                     .addFrozenVariables(ThreadVarDef.newBuilder()
                             .setVarDef(VariableDef.newBuilder()
                                     .setName("variable")
-                                    .setTypeDef(TypeDefinition.newBuilder().setType(VariableType.STR))))
+                                    .setTypeDef(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))))
                     .setEntrypointThreadName(entrypointThreadName)
                     .build();
             WfSpec copySpec = WfSpec.newBuilder()
@@ -131,7 +131,7 @@ public class WfSpecUtilTest {
                     .addFrozenVariables(ThreadVarDef.newBuilder()
                             .setVarDef(VariableDef.newBuilder()
                                     .setName("variable-2")
-                                    .setTypeDef(TypeDefinition.newBuilder().setType(VariableType.STR))))
+                                    .setTypeDef(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))))
                     .setCreatedAt(LHUtil.fromDate(new java.util.Date()))
                     .setEntrypointThreadName(entrypointThreadNameCopy)
                     .build();
@@ -152,7 +152,7 @@ public class WfSpecUtilTest {
             ThreadVarDef.Builder variable = ThreadVarDef.newBuilder()
                     .setVarDef(VariableDef.newBuilder()
                             .setName("variable")
-                            .setTypeDef(TypeDefinition.newBuilder().setType(VariableType.STR)))
+                            .setTypeDef(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR)))
                     .setRequired(true);
             ThreadSpec threadSpec =
                     ThreadSpec.newBuilder().addVariableDefs(variable).build();
@@ -178,7 +178,7 @@ public class WfSpecUtilTest {
             WfSpecModel original = WfSpecModel.fromProto(originalSpec, null);
             WfSpecModel copy = WfSpecModel.fromProto(copySpec, null);
 
-            assertThat(WfSpecUtil.hasBreakingChanges(original, copy)).isFalse();
+            assertThat(WfSpecUtil.hasBreakingChanges(original, copy, null)).isFalse();
         }
     }
 
@@ -189,7 +189,7 @@ public class WfSpecUtilTest {
         ThreadVarDef.Builder variable = ThreadVarDef.newBuilder()
                 .setVarDef(VariableDef.newBuilder()
                         .setName("variable")
-                        .setTypeDef(TypeDefinition.newBuilder().setType(VariableType.STR)));
+                        .setTypeDef(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR)));
         ThreadSpec threadSpec = ThreadSpec.newBuilder()
                 .addVariableDefs(variable.setRequired(true))
                 .build();
@@ -212,6 +212,6 @@ public class WfSpecUtilTest {
         WfSpecModel original = WfSpecModel.fromProto(originalSpec, null);
         WfSpecModel copy = WfSpecModel.fromProto(copySpec, null);
 
-        assertThat(WfSpecUtil.hasBreakingChanges(original, copy)).isTrue();
+        assertThat(WfSpecUtil.hasBreakingChanges(original, copy, null)).isTrue();
     }
 }

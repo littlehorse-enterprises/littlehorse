@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id "com.gradleup.shadow" version "9.1.0"
     id 'java'
     id 'maven-publish'
     id 'signing'
@@ -8,8 +8,8 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 task javadocJar(type: Jar) {
@@ -18,7 +18,8 @@ task javadocJar(type: Jar) {
 }
 
 def defaultJvmArgs = [
-    '-XX:+UseZGC'
+    '-XX:+UseZGC',
+    '-Dlog4j.shutdownHookEnabled=false'
 ]
 
 
@@ -99,8 +100,8 @@ dependencies {
     // Test tools
     testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation 'org.junit-pioneer:junit-pioneer:2.0.0'
-    testImplementation 'org.mockito:mockito-core:5.11.0'
-    testImplementation 'org.mockito:mockito-junit-jupiter:5.11.0'
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     testImplementation 'net.datafaker:datafaker:1.9.0'
     testImplementation "io.grpc:grpc-testing:${grpcVersion}"
 
@@ -157,16 +158,6 @@ compileJava {
     options.compilerArgs << '-parameters'
 }
 
-shadowJar {
-    mergeServiceFiles()
-    manifest {
-        attributes(
-            'Main-Class': 'io.littlehorse.App',
-            'JVM-Args': defaultJvmArgs.join(' ')
-        )
-    }
-}
-
 test {
     useJUnitPlatform()
     filter {
@@ -180,7 +171,7 @@ test {
     jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
 }
 
-task e2e(type: Test, dependsOn: compileJava){
+task e2e(type: Test, dependsOn: [compileJava]){
     useJUnitPlatform()
     filter {
         includeTestsMatching "e2e.**"
@@ -191,6 +182,8 @@ task e2e(type: Test, dependsOn: compileJava){
         exceptionFormat = 'full'
     }
     jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '-Xms8192m', '-Xmx8192m', '-Xss2m', '-XX:+UseParallelGC', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+    classpath = sourceSets.test.runtimeClasspath
+    testClassesDirs = sourceSets.test.output.classesDirs
 
     // // Enables parallelism on the e2e tests
     // maxParallelForks = 2
@@ -224,6 +217,15 @@ task testJar(type: Jar) {
     duplicatesStrategy(DuplicatesStrategy.INCLUDE)
 }
 
+shadowJar {
+    mergeServiceFiles()
+    manifest {
+        attributes(
+            'Main-Class': 'io.littlehorse.App',
+            'JVM-Args': defaultJvmArgs.join(' ')
+        )
+    }
+}
 
 task staticVersion {
     doFirst {

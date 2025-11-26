@@ -1,11 +1,25 @@
 import {
+  TypeDefinition,
   VariableAssignment,
   VariableDef,
   VariableMutationType,
   VariableType,
   VariableValue,
 } from 'littlehorse-client/proto'
+import { structFromJSONString, structToJSONString } from './struct'
 import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
+import { lhPathToString } from './lhPath'
+
+export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): NonNullable<VariableValue['value']>['$case'] => {
+  switch (typeDef.definedType?.$case) {
+    case 'primitiveType':
+      return getVariableCaseFromType(typeDef.definedType.value)
+    case 'structDefId':
+      return 'struct'
+    default:
+      throw new Error('Unknown variable type.')
+  }
+}
 
 /**
  * Maps VariableValue cases to their human-readable display names.
@@ -20,6 +34,8 @@ export const VARIABLE_CASE_LABELS: Record<NonNullable<VariableValue['value']>['$
   jsonArr: 'JSON Array',
   bytes: 'Bytes',
   wfRunId: 'WfRunId',
+  struct: 'Struct',
+  utcTimestamp: 'UTC Timestamp',
 }
 
 /**
@@ -39,12 +55,11 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
     case 'formatString':
       return getValueFromFormatString(variable.source)
     case 'literalValue':
-      if (Object.keys(variable.source.value).length === 0) return 'null'
       return getVariableValue(variable.source.value)
     case 'nodeOutput':
       return variable.source.value.nodeName
     case 'variableName':
-      return getValueFromVariableName(variable.source, variable.jsonPath)
+      return getValueFromVariableName(variable.source, variable.path)
     default:
       return ''
   }
@@ -58,13 +73,15 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
  * @returns A string representation of the value.
  */
 export const getVariableValue = ({ value }: VariableValue): string => {
-  if (!value) return ''
+  if (!value || Object.keys(value).length === 0) return 'NULL'
 
   switch (value.$case) {
     case 'bytes':
       return '[bytes]'
     case 'wfRunId':
       return flattenWfRunId(value.value)
+    case 'struct':
+      return structToJSONString(value.value)
     default:
       return value.value.toString()
   }
@@ -115,7 +132,11 @@ export const getTypedVariableValue = (
                   ? { bytes: Buffer.from(value) }
                   : type === 'wfRunId'
                     ? { wfRunId: wfRunIdFromFlattenedId(value) }
-                    : undefined
+                    : type === 'struct'
+                      ? { struct: structFromJSONString(value) }
+                      : type === 'utcTimestamp'
+                        ? { utcTimestamp: new Date(value) }
+                        : undefined
   return VariableValue.fromJSON(variable)
 }
 
@@ -127,8 +148,16 @@ export const getTypedVariableValue = (
  * determines which typing strategy a Variable uses.
  */
 export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableValue['value']>['$case'] => {
-  if (varDef.typeDef) {
-    return getVariableCaseFromType(varDef.typeDef.type)
+  if (varDef.typeDef && varDef.typeDef.definedType) {
+    const { $case, value } = varDef.typeDef.definedType
+    switch ($case) {
+      case 'primitiveType':
+        return getVariableCaseFromType(value)
+      case 'structDefId':
+        return 'struct'
+      default:
+        throw new Error('Unknown variable type.')
+    }
   } else if (varDef.type) {
     return getVariableCaseFromType(varDef.type)
   }
@@ -160,6 +189,8 @@ export const getVariableCaseFromType = (type: VariableType): NonNullable<Variabl
       return 'wfRunId'
     case VariableType.BYTES:
       return 'bytes'
+    case VariableType.TIMESTAMP:
+      return 'utcTimestamp'
     default:
       throw new Error(`Unknown variable type: ${type}`)
   }
@@ -167,10 +198,12 @@ export const getVariableCaseFromType = (type: VariableType): NonNullable<Variabl
 
 const getValueFromVariableName = (
   { value }: Extract<VariableAssignment['source'], { $case: 'variableName' }>,
-  jsonPath?: string
+  path?: Extract<VariableAssignment['path'], {}>
 ): string => {
   if (!value) return ''
-  if (jsonPath) return `{${jsonPath.replace('$', value)}}`
+
+  if (path?.$case == 'jsonPath') return `{${path.value.replace('$', value)}}`
+  if (path?.$case == 'lhPath') return `{${lhPathToString(path.value).replace('$', value)}}`
   return `{${value}}`
 }
 

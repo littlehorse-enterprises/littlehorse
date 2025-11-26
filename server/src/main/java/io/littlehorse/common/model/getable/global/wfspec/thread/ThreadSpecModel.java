@@ -24,6 +24,7 @@ import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
@@ -52,7 +53,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     public List<InterruptDefModel> interruptDefs;
 
     private ThreadRetentionPolicyModel retentionPolicy;
-    private ExecutionContext executionContext;
 
     public ThreadSpecModel() {
         nodes = new HashMap<>();
@@ -114,7 +114,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             retentionPolicy =
                     LHSerializable.fromProto(proto.getRetentionPolicy(), ThreadRetentionPolicyModel.class, context);
         }
-        this.executionContext = context;
     }
 
     // Below is Implementation
@@ -280,6 +279,24 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         validateExitNodeReturnTypes(ctx);
     }
 
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        // Exit node validation requires that every ExitNode returns the same type, so we only need one.
+        try {
+            Optional<ExitNodeModel> nonErrorExitNode = nodes.values().stream()
+                    .filter(node -> node.getType() == NodeCase.EXIT)
+                    // ignore nodes that throw exceptions
+                    .filter(node -> node.getExitNode().getResultCase() != ResultCase.FAILURE_DEF)
+                    .map(NodeModel::getExitNode)
+                    .findFirst();
+
+            if (nonErrorExitNode.isEmpty()) return Optional.of(new ReturnTypeModel());
+            return nonErrorExitNode.get().getOutputType(manager);
+        } catch (InvalidExpressionException exn) {
+            throw new IllegalStateException(
+                    "Should not be possible to catch this during this method as it should have been validated");
+        }
+    }
+
     private void validateExitNodeReturnTypes(MetadataProcessorContext ctx) throws InvalidThreadSpecException {
         List<ExitNodeModel> exitNodes = nodes.values().stream()
                 .filter(node -> node.getType() == NodeCase.EXIT)
@@ -358,7 +375,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     }
 
     // TODO: check input variables.
-    public void validateStartVariables(Map<String, VariableValueModel> inputVariables)
+    public void validateStartVariables(
+            Map<String, VariableValueModel> inputVariables, ReadOnlyMetadataManager metadataManager)
             throws InvalidThreadSpecException {
         for (Map.Entry<String, ThreadVarDefModel> e : getInputVariableDefs().entrySet()) {
             String varName = e.getKey();
@@ -376,7 +394,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 continue;
             }
             try {
-                varDef.validateValue(inputVariableValue);
+                varDef.validateValue(inputVariableValue, metadataManager);
             } catch (InvalidVariableDefException exn) {
                 throw new InvalidThreadSpecException(this, exn);
             }
@@ -420,6 +438,12 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
 
     public void validateStartVariablesByType(Map<String, VariableAssignmentModel> vars)
             throws InvalidThreadSpecException {
+        validateStartVariablesByType(vars, this);
+    }
+
+    public void validateStartVariablesByType(
+            Map<String, VariableAssignmentModel> vars, ThreadSpecModel variableAssignorThread)
+            throws InvalidThreadSpecException {
         Map<String, ThreadVarDefModel> inputVarDefs = getInputVariableDefs();
 
         for (Map.Entry<String, ThreadVarDefModel> e : inputVarDefs.entrySet()) {
@@ -429,7 +453,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 continue;
             }
 
-            if (!assn.canBeType(e.getValue().getVarDef().getTypeDef(), this)) {
+            if (!assn.canBeType(e.getValue().getVarDef().getTypeDef(), variableAssignorThread)) {
                 throw new InvalidThreadSpecException(
                         this,
                         "Var " + e.getKey() + " should be "
@@ -438,9 +462,17 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         }
 
         for (Map.Entry<String, VariableAssignmentModel> e : vars.entrySet()) {
-            if (localGetVarDef(e.getKey()) == null) {
+            if (this.localGetVarDef(e.getKey()) == null) {
                 throw new InvalidThreadSpecException(
-                        this, "Var " + e.getKey() + " provided but not needed for thread " + name);
+                        variableAssignorThread, "Var " + e.getKey() + " provided but not needed for thread " + name);
+            }
+        }
+
+        for (ThreadVarDefModel tvdm : getRequiredVarDefs()) {
+            if (!vars.containsKey(tvdm.getVarDef().getName())) {
+                throw new InvalidThreadSpecException(
+                        variableAssignorThread,
+                        "Missing required variable " + tvdm.getVarDef().getName());
             }
         }
     }

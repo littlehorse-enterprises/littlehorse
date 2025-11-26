@@ -1,14 +1,12 @@
 package io.littlehorse.server.streams.taskqueue;
 
-import io.littlehorse.common.model.ScheduledTaskModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
@@ -25,7 +23,6 @@ public class OneTaskQueue {
     private final String taskDefName;
 
     private final TaskQueueManager parent;
-    private final int capacity;
 
     @Getter
     private final TenantIdModel tenantId;
@@ -34,12 +31,10 @@ public class OneTaskQueue {
     private final Queue<PollTaskRequestObserver> hungryClients = new LinkedList<>();
     private final String instanceName;
     private final LinkedHashSet<QueueItem> pendingTasks;
-    private final AtomicLong numberOfInMemoryTasks = new AtomicLong(0);
 
-    public OneTaskQueue(String taskDefName, TaskQueueManager parent, int capacity, TenantIdModel tenantId) {
+    public OneTaskQueue(String taskDefName, TaskQueueManager parent, TenantIdModel tenantId) {
         this.taskDefName = taskDefName;
         this.parent = parent;
-        this.capacity = capacity;
         this.tenantId = tenantId;
         this.instanceName = parent.getBackend().getInstanceName();
         this.pendingTasks = new LinkedHashSet<>();
@@ -88,7 +83,7 @@ public class OneTaskQueue {
      *                        that was just
      *                        scheduled.
      */
-    public void onTaskScheduled(TaskId taskId, ScheduledTaskModel scheduledTask) {
+    public void onTaskScheduled(TaskId taskId, TaskRunIdModel scheduledTask) {
         // There's two cases here:
         // 1. There are clients waiting for requests, in which case we know that
         // the pendingTaskIds queue/list must be empty.
@@ -97,7 +92,7 @@ public class OneTaskQueue {
         log.trace(
                 "Instance {}: Task scheduled for wfRun {}, queue is empty? {}",
                 instanceName,
-                LHLibUtil.getWfRunId(scheduledTask.getSource().toProto()),
+                scheduledTask.getWfRunId(),
                 hungryClients.isEmpty());
 
         PollTaskRequestObserver luckyClient = synchronizedBlock(() -> {
@@ -134,13 +129,13 @@ public class OneTaskQueue {
             return pendingTasks.removeFirst();
         });
         if (nextItem != null) {
-            parent.itsAMatch(nextItem.resolveTask(requestContext), requestObserver);
+            parent.itsAMatch(nextItem.taskRunId, requestObserver);
         }
     }
 
     public void drainPartition(TaskId partitionToDrain) {
         synchronizedBlock(() -> {
-            pendingTasks.removeIf(queueItem -> queueItem.taskId.equals(partitionToDrain));
+            pendingTasks.removeIf(queueItem -> queueItem.streamsTaskId.equals(partitionToDrain));
         });
     }
 
@@ -149,44 +144,24 @@ public class OneTaskQueue {
     }
 
     private class QueueItem {
-        private final TaskId taskId;
-        private final ScheduledTaskModel scheduledTask;
-        private final String scheduledTaskStoreKey;
+        private final TaskId streamsTaskId;
+        private final TaskRunIdModel taskRunId;
 
-        public QueueItem(TaskId streamsTaskId, ScheduledTaskModel scheduledTask) {
-            this.taskId = streamsTaskId;
-            if (numberOfInMemoryTasks.get() > capacity) {
-                this.scheduledTask = null;
-            } else {
-                this.scheduledTask = scheduledTask;
-                numberOfInMemoryTasks.incrementAndGet();
-            }
-            this.scheduledTaskStoreKey = scheduledTask.getTaskRunId().toString();
-        }
-
-        private ScheduledTaskModel resolveTask(RequestExecutionContext context) {
-            if (scheduledTask != null) {
-                numberOfInMemoryTasks.decrementAndGet();
-                return scheduledTask;
-            } else {
-                ScheduledTaskModel task = context.getableManager(taskId).getScheduledTask(scheduledTaskStoreKey);
-                if (task == null) {
-                    throw new RuntimeException("Unable to find scheduled task for " + scheduledTaskStoreKey);
-                }
-                return task;
-            }
+        public QueueItem(TaskId streamsTaskId, TaskRunIdModel taskRunId) {
+            this.streamsTaskId = streamsTaskId;
+            this.taskRunId = taskRunId;
         }
 
         @Override
         public boolean equals(Object o) {
             if (o == null || getClass() != o.getClass()) return false;
             QueueItem queueItem = (QueueItem) o;
-            return Objects.equals(scheduledTaskStoreKey, queueItem.scheduledTaskStoreKey);
+            return Objects.equals(taskRunId, queueItem.taskRunId);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(scheduledTaskStoreKey);
+            return Objects.hashCode(taskRunId);
         }
     }
 

@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.EdgeCondition;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -124,11 +125,16 @@ class Comparer {
     public static boolean contains(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
         // Can only do for Str, Arr, and Obj
 
-        if (left.getType() == VariableType.STR) {
+        // TODO: Decide how to support StructDefs
+        if (left.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
+            throw new LHVarSubError(null, "Can't perform contains on " + left.getTypeDefinition());
+        }
+
+        if (left.getTypeDefinition().getPrimitiveType() == VariableType.STR) {
             String rStr = right.asStr().getStrVal();
 
             return left.asStr().getStrVal().contains(rStr);
-        } else if (left.getType() == VariableType.JSON_ARR) {
+        } else if (left.getTypeDefinition().getPrimitiveType() == VariableType.JSON_ARR) {
             Object rObj = right.getVal();
             List<Object> lhs = left.asArr().getJsonArrVal();
 
@@ -138,10 +144,11 @@ class Comparer {
                 }
             }
             return false;
-        } else if (left.getType() == VariableType.JSON_OBJ) {
+        } else if (left.getTypeDefinition().getPrimitiveType() == VariableType.JSON_OBJ) {
             return left.asObj().getJsonObjVal().containsKey(right.asStr().getStrVal());
         } else {
-            throw new LHVarSubError(null, "Can't do CONTAINS on " + left.getType());
+            throw new LHVarSubError(
+                    null, "Can't do CONTAINS on " + left.getTypeDefinition().getPrimitiveType());
         }
     }
 }

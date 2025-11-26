@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
@@ -62,11 +63,11 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
     }
 
     /**
-     * Returns true if the provided value's type exactly matches this ReturnType.
+     * Returns true if the provided value's type is compatible with this ReturnType without casting.
      */
-    public boolean isCompatibleWith(VariableValueModel value) {
+    public boolean isCompatibleWith(VariableValueModel value, ReadOnlyMetadataManager metadataManager) {
         if (returnType != null) {
-            return returnType.isCompatibleWith(value);
+            return returnType.isCompatibleWith(value, metadataManager);
         }
         return value.isEmpty();
     }

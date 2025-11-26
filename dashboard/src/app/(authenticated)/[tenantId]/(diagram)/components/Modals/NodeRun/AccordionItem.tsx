@@ -2,8 +2,8 @@ import * as AccordionRedux from '@radix-ui/react-accordion'
 import { NodeRun, UserTaskNode } from 'littlehorse-client/proto'
 import { ChevronDownIcon } from 'lucide-react'
 import { FC } from 'react'
-import { statusColors } from '../../../wfRun/[...ids]/components/Details'
 import { AccordionComponents } from './AccordionContent'
+import {  WF_RUN_STATUS } from '../../../StatusColor'
 
 export const AccordionItem: FC<{ nodeRun: NodeRun; userTaskNode?: UserTaskNode }> = ({ nodeRun, userTaskNode }) => {
   if (!nodeRun.nodeType) return null
@@ -21,7 +21,7 @@ export const AccordionItem: FC<{ nodeRun: NodeRun; userTaskNode?: UserTaskNode }
                 </div>
               </div>
               <div className="flex ">
-                <span className={`ml-2 rounded px-2 ${statusColors[nodeRun.status]}`}>{`${nodeRun.status}`}</span>
+                <span className={`ml-2 rounded px-2 ${WF_RUN_STATUS[nodeRun.status].color}`}>{`${nodeRun.status}`}</span>
               </div>
             </div>
           </div>

@@ -133,7 +133,7 @@ public class CoreProcessorContext implements ExecutionContext {
         return currentTaskManager;
     }
 
-    public void maybeCorrelateEventPedros(CorrelatedEventModel event) {
+    public void maybeCorrelateEventToWfRuns(CorrelatedEventModel event) {
         EventCorrelationMarkerModel marker = getCorrelationMarkerManager()
                 .getMarker(event.getId().getKey(), event.getId().getExternalEventDefId());
 
@@ -147,7 +147,7 @@ public class CoreProcessorContext implements ExecutionContext {
         }
     }
 
-    public void maybeCorrelateEventPedros(EventCorrelationMarkerModel marker) {
+    public void maybeCorrelateEventToWfRuns(EventCorrelationMarkerModel marker) {
         CorrelatedEventModel candidate =
                 getableManager().get(new CorrelatedEventIdModel(marker.getCorrelationKey(), marker.getEventDefId()));
         if (candidate != null) {
@@ -179,7 +179,7 @@ public class CoreProcessorContext implements ExecutionContext {
             command.time = new Date();
 
             LHTimer timer = new LHTimer(command);
-            timer.key = command.getPartitionKey();
+            timer.partitionKey = command.getPartitionKey();
             timer.setMaturationTime(command.time);
 
             getTaskManager().forwardTimer(timer);
@@ -231,7 +231,7 @@ public class CoreProcessorContext implements ExecutionContext {
         if (service != null) {
             return service;
         }
-        service = new WfService(this.metadataManager, metadataCache, this);
+        service = new WfService(this.metadataManager);
         return service;
     }
 

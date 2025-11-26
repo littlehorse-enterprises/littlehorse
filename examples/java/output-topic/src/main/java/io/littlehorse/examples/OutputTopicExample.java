@@ -2,17 +2,15 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig;
 import io.littlehorse.sdk.common.proto.OutputTopicRecord;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
-import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,12 +18,12 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
-
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.Serdes;
+
 /*
  * This is a simple example, which does two things:
  * 1. Declare an "input-name" variable of type String
@@ -34,28 +32,23 @@ import org.apache.kafka.common.serialization.Serdes;
 public class OutputTopicExample {
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "output-topic",
-            wf -> {
-                WfRunVariable theName = wf.addVariable("input-name", VariableType.STR).searchable().asPublic();
-                WfRunVariable ignoredGreeting = wf.declareStr("ignored");
-                WfRunVariable publicGreeting = wf.declareStr("public-greeting").asPublic();
+        return new WorkflowImpl("output-topic", wf -> {
+            WfRunVariable theName = wf.declareStr("input-name").searchable().asPublic();
+            WfRunVariable ignoredGreeting = wf.declareStr("ignored");
+            WfRunVariable publicGreeting = wf.declareStr("public-greeting").asPublic();
 
-                NodeOutput result = wf.execute("greet", theName);
+            NodeOutput result = wf.execute("greet", theName);
 
-                ignoredGreeting.assign(result);
-                publicGreeting.assign(result);
-            }
-        );
+            ignoredGreeting.assign(result);
+            publicGreeting.assign(result);
+        });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;
@@ -76,7 +69,10 @@ public class OutputTopicExample {
         LHConfig config = new LHConfig(props);
 
         LittleHorseBlockingStub client = config.getBlockingStub();
-        client.putTenant(PutTenantRequest.newBuilder().setId("default").setOutputTopicConfig(OutputTopicConfig.newBuilder()).build());
+        client.putTenant(PutTenantRequest.newBuilder()
+                .setId("default")
+                .setOutputTopicConfig(OutputTopicConfig.newBuilder())
+                .build());
 
         // Allow output topic creation
         Thread.sleep(5000);
@@ -95,7 +91,9 @@ public class OutputTopicExample {
         kafkaProps.put("group.id", "obiwan");
         kafkaProps.put("auto.offset.reset", "earliest");
         kafkaProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, OutputTopicRecordDeserializer.class);
-        kafkaProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, Serdes.String().deserializer().getClass());
+        kafkaProps.put(
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+                Serdes.String().deserializer().getClass());
 
         KafkaConsumer<String, OutputTopicRecord> consumer = new KafkaConsumer<>(kafkaProps);
 

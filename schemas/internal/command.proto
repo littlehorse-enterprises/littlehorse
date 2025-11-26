@@ -30,7 +30,7 @@ message Command {
         StopWfRunRequest stop_wf_run = 8;
         ResumeWfRunRequest resume_wf_run = 9;
         SleepNodeMaturedPb sleep_node_matured = 10;
-        DeleteWfRunRequest delete_wf_run = 11;
+        InternalDeleteWfRunRequest delete_wf_run = 11;
         ExternalEventNodeTimeoutPb external_event_timeout = 12;
         TaskWorkerHeartBeatRequest task_worker_heart_beat = 13;
         DeleteExternalEventRequest delete_external_event = 14;
@@ -53,6 +53,7 @@ message Command {
         PutUserTaskRunCommentRequest put_user_task_run_comment = 31;
         EditUserTaskRunCommentRequest edit_user_task_run_comment = 32;
         DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 33;
+        PutCheckpointRequest put_checkpoint = 34;
     }
 }
 
@@ -103,7 +104,9 @@ message MetadataCommand {
 
         DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;
         PutStructDefRequest put_struct_def = 17;
-        PutMetricSpecRequest put_metric = 18;
+
+        DeleteStructDefRequest delete_struct_def = 18;
+        PutMetricSpecRequest put_metric = 19;
     }
 }
 
@@ -138,6 +141,19 @@ message WfMetricUpdate {
     int64 total_completed = 7;
     int64 total_errored = 8;
     int64 total_started = 9;
+}
+
+// Deletes a WfRun.
+message InternalDeleteWfRunRequest {
+  // The ID of the WfRun to delete.
+  WfRunId id = 1;
+
+  optional DeleteWfRunBookmark bookmark = 2;
+
+  message DeleteWfRunBookmark {
+    int32 last_thread_run_number = 1;
+    int32 last_node_run_position = 2;
+  }
 }
 
 message PartitionMetrics {
@@ -270,11 +286,14 @@ message DeadlineReassignUserTask {
 // anyways.
 message LHTimerPb {
     google.protobuf.Timestamp maturation_time = 1;
-    string key = 2;
+    string partition_key = 2;
     string topic = 3;
     bytes payload = 4;
     optional TenantId tenant_id = 5; // default if not set
     optional PrincipalId principal_id = 6; // anonymous if not set
+
+    // optional for backwards compatibility
+    optional string store_key = 7;
 }
 
 message DeleteTaskWorkerGroupRequest {

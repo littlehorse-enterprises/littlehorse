@@ -276,6 +276,19 @@ service LittleHorse {
   // this rpc manually.
   rpc ReportTask(ReportTaskRun) returns (google.protobuf.Empty) {}
 
+  // Used internally by Task Workers to create a `Checkpoint` during the execution of
+  // a `TaskRun`.
+  //
+  // Creates a checkpoint. If the associated `TaskRun` is not found, it returns
+  // `INVALID_ARGUMENT`. If the associated `TaskRun` is found but is not in a valid
+  // state (i.e. the `TASK_ATTEMPT` related to this request is not `TASK_RUNNING`),
+  // then the request returns code `OK` and a `STOP_TASK` value for the field
+  // `flow_control_continue_type`.
+  rpc PutCheckpoint(PutCheckpointRequest) returns (PutCheckpointResponse) {}
+
+  // Gets a Checkpoint.
+  rpc GetCheckpoint(CheckpointId) returns (Checkpoint) {}
+
   // Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
   rpc StopWfRun(StopWfRunRequest) returns (google.protobuf.Empty) {}
   // Resumes a WfRun or a specific ThreadRun of a WfRun.
@@ -824,28 +837,6 @@ message TaskRunIdList {
 
 // Search for NodeRun's by certain criteria.
 message SearchNodeRunRequest {
-  // This enum denotes the type of a NodeRun.
-  enum NodeType {
-    // TASK node schedules a TaskRun
-    TASK = 0;
-    // EXTERNAL_EVENT blocks the ThreadRun until a specified ExternalEvent arrives
-    EXTERNAL_EVENT = 1;
-    // ENTRYPOINT kicks off a ThreadRun
-    ENTRYPOINT = 2;
-    // EXIT completes a ThreadRun
-    EXIT = 3;
-    // START_THREAD creates a Child ThreadRun
-    START_THREAD = 4;
-    // WAIT_THREADS waits for one or more child ThreadRuns to complete
-    WAIT_THREADS = 5;
-    // SLEEP makes the ThreadRun sleep for a specified time
-    SLEEP = 6;
-    // USER_TASK creates a UserTaskRun and blocks until the UserTaskRun is completed.
-    USER_TASK = 7;
-    // START_MULTIPLE_THREADS iterates over a list and starts a Child Thread for each item
-    START_MULTIPLE_THREADS = 8;
-  }
-
   // Bookmark for cursor-based pagination; pass if applicable.
   optional bytes bookmark = 1;
 
@@ -858,16 +849,15 @@ message SearchNodeRunRequest {
   // Only return NodeRun's created before this time.
   optional google.protobuf.Timestamp latest_start = 4;
 
-  // Specifies the type of NodeRun to search for.
-  NodeType node_type = 5;
+  // Reserved from previous capability to search by node type
+  reserved 5;
 
   // Specifies the status of NodeRun to search for.
   LHStatus status = 6;
 
   // Specifies the ExternalEventDefId to filter NodeRuns waiting on ExternalEvents.
   // Only valid if `node_type` is set to `EXTERNAL_EVENT`.
-  optional ExternalEventDefId external_event_def = 7;
-
+  ExternalEventDefId external_event_def = 7;
 }
 
 // List of NodeRun Id's.
@@ -1350,6 +1340,45 @@ message PollTaskRequest {
   optional string task_worker_version = 3;
 }
 
+// Message to create a Checkpoint.
+message PutCheckpointRequest {
+  // The id of the `TaskRun` that this `Checkpoint` is associated with.
+  TaskRunId task_run_id = 1;
+
+  // The `TaskAttempt` that this checkpoint originates from. This is used to fence
+  // zombies. If the checkpointed `TaskAttempt` is not `TASK_RUNNING`, the RPC will
+  // return a `STOP_TASK` response.
+  int32 task_attempt = 2;
+
+  // The value of the checkpoint.
+  VariableValue value = 3;
+
+  // Any user-friendly logs which can be used for debugging.
+  optional string logs = 4;
+}
+
+// The response for creating a Checkpoint. Used internally by the Task Worker.
+message PutCheckpointResponse {
+  // Enum used to affect control flow of the Task Worker to either allow it to continue
+  // executing the Task or to stop execution. Execution may be stopped for several reasons
+  // including fencing zombies and also allowing to enforce limits on total Checkpoints
+  // for a TaskRun.
+  enum FlowControlContinue {
+    // Continue executing the TaskRun.
+    CONTINUE_TASK = 0;
+    // Stopp executing the TaskRun.
+    STOP_TASK = 1;
+  }
+
+  // Instructions to the Task Worker SDK determining whether to continue or stop
+  // execution of the task.
+  FlowControlContinue flow_control_continue_type = 1;
+
+  // The checkpoint (if created).
+  optional Checkpoint created_checkpoint = 2;
+}
+
+
 // Message sent by server to Task Worker SDK specifying a specific TaskRun to be executed.
 // This is used and handled internally by the Task Worker SDK.
 message ScheduledTask {
@@ -1371,6 +1400,9 @@ message ScheduledTask {
   // 1. A TASK node
   // 2. A reminder task scheduled by a trigger on a User Task.
   TaskRunSource source = 6;
+
+  // The total number of checkpoints previously created by prior `TaskAttempt`s.
+  int32 total_observed_checkpoints = 7;
 }
 
 // Response from the server for PollTaskRequest.
@@ -1409,6 +1441,10 @@ message ReportTaskRun {
     // Business exception
     LHTaskException exception = 8;
   }
+
+  // The checkpoint_number is used primarily as an epoch to allow resetting timeouts after
+  // each checkpoint.
+  int32 total_checkpoints = 9;
 }
 
 // Message to HALT a WfRun.

@@ -43,6 +43,7 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.metrics.GetableStatusUpdate;
@@ -82,7 +83,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public Integer parentThreadId;
 
     public List<ThreadHaltReasonModel> haltReasons = new ArrayList<>();
-    public ExternalEventIdModel interruptTriggerId;
+    private ExternalEventIdModel interruptTriggerId;
     public FailureBeingHandledModel failureBeingHandled;
     public List<Integer> handledFailedChildren = new ArrayList<>();
     private VariableValueModel output;
@@ -375,7 +376,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         pi.externalEventId = trigger.getObjectId();
         pi.interruptedThreadId = number;
         pi.handlerSpecName = idef.handlerSpecName;
-
         wfRun.pendingInterrupts.add(pi);
     }
 
@@ -470,7 +470,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         getCurrentNodeRun().maybeHalt(processorContext);
-        maybeFinishHaltingProcess();
+        boolean halted = maybeFinishHaltingProcess();
+        if (number == 0 && halted && !reason.isTransitioningHaltState()) {
+            wfRun.transitionTo(LHStatus.HALTED);
+        }
     }
 
     public void setStatus(LHStatus status) {
@@ -728,19 +731,15 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             }
         }
         this.errorMessage = failure.message;
-        this.status = failure.getStatus();
+        setStatus(failure.getStatus());
         this.endTime = time;
 
         if (interruptTriggerId != null) {
             // then we're an interrupt thread and need to fail the parent. Parent is guaranteed to
             // to be not-null in this case
-            getParent()
-                    .failWithoutGrace(
-                            new FailureModel(
-                                    "Interrupt thread with id " + number + " failed!",
-                                    failure.getFailureName(),
-                                    failure.getContent()), // propagate failure content
-                            time);
+            FailureModel interruptFail = new FailureModel(
+                    "Interrupt thread with id " + number + " failed!", failure.getFailureName(), failure.getContent());
+            getParent().failWithoutGrace(interruptFail, time, interruptTriggerId);
         } else if (failureBeingHandled != null) {
             // Then it's a FailureHandler thread, so we want the parent ThreadRun to fail without
             // grace.
@@ -748,6 +747,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         wfRun.handleThreadStatus(number, new Date(), status);
+    }
+
+    private void failWithoutGrace(FailureModel failure, Date time, ExternalEventIdModel failedInterruptEventId) {
+        getCurrentNodeRun().fail(new NodeFailureException(failure));
+        failWithoutGrace(failure, time);
     }
 
     public void activateNode(NodeModel node) throws NodeFailureException {
@@ -806,9 +810,18 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 // first, assign the format string
                 VariableValueModel formatStringVarVal =
                         assignVariable(assn.getFormatString().getFormat(), txnCache);
-                if (formatStringVarVal.getType() != VariableType.STR) {
+                // TODO: Decide how to support StructDefs
+                if (formatStringVarVal.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
                     throw new LHVarSubError(
-                            null, "Format String template isn't a STR; it's a " + formatStringVarVal.getType());
+                            null,
+                            "Format String template isn't a primitive; it's a "
+                                    + formatStringVarVal.getTypeDefinition());
+                }
+                if (formatStringVarVal.getTypeDefinition().getPrimitiveType() != VariableType.STR) {
+                    throw new LHVarSubError(
+                            null,
+                            "Format String template isn't a STR; it's a "
+                                    + formatStringVarVal.getTypeDefinition().getPrimitiveType());
                 }
 
                 List<Object> formatArgs = new ArrayList<>();
@@ -848,10 +861,17 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");
         }
 
-        if (assn.getJsonPath() != null) {
-            val = val.jsonPath(assn.getJsonPath());
+        switch (assn.getPathCase()) {
+            case JSON_PATH:
+                val = val.jsonPath(assn.getJsonPath());
+                break;
+            case LH_PATH:
+                val = val.get(assn.getLhPath());
+                break;
+            case PATH_NOT_SET:
         }
 
+        val = assn.applyCast(val);
         return val;
     }
 

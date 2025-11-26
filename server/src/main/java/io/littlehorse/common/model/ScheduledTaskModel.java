@@ -3,6 +3,7 @@ package io.littlehorse.common.model;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunSourceModel;
 import io.littlehorse.common.model.getable.core.taskrun.UserTaskTriggerReferenceModel;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
@@ -25,9 +26,15 @@ import lombok.Setter;
 @Setter
 public class ScheduledTaskModel extends Storeable<ScheduledTask> {
 
+    // For compatibility we use "a" as a prefix since it is the first ASCII
+    // character. This guarantees that the start of the iteration doesn't ignore
+    // any previous keys.
+    public static final String STORE_KEY_PREFIX_FOR_COMPATIBILITY = "a/";
+
     private TaskRunIdModel taskRunId;
     private TaskDefIdModel taskDefId;
     private int attemptNumber;
+    private int totalCheckpoints;
 
     private List<VarNameAndValModel> variables;
     private Date createdAt;
@@ -54,14 +61,7 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         this.attemptNumber = 0;
 
         // This is just the wfRunId.
-        this.taskRunId = new TaskRunIdModel(userTaskRun.getNodeRunId().getWfRunId(), processorContext);
-    }
-
-    @Override
-    public String getStoreKey() {
-        // Note: only one ScheduledTask can be active at once for a
-        // TaskRun, so we don't need to worry about the attemptNumber.
-        return taskRunId.toString();
+        this.taskRunId = new TaskRunIdModel(userTaskRun);
     }
 
     @Override
@@ -71,7 +71,8 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
                 .setTaskDefId(taskDefId.toProto())
                 .setAttemptNumber(attemptNumber)
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
-                .setSource(source.toProto());
+                .setSource(source.toProto())
+                .setTotalObservedCheckpoints(totalCheckpoints);
         for (VarNameAndValModel v : variables) {
             out.addVariables(v.toProto());
         }
@@ -84,18 +85,13 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         return ScheduledTask.class;
     }
 
-    public static ScheduledTaskModel fromProto(ScheduledTask p, ExecutionContext context) {
-        ScheduledTaskModel out = new ScheduledTaskModel();
-        out.initFrom(p, context);
-        return out;
-    }
-
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         ScheduledTask p = (ScheduledTask) proto;
         taskRunId = LHSerializable.fromProto(p.getTaskRunId(), TaskRunIdModel.class, context);
         taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         attemptNumber = p.getAttemptNumber();
+        this.totalCheckpoints = p.getTotalObservedCheckpoints();
 
         for (VarNameAndVal v : p.getVariablesList()) {
             variables.add(LHSerializable.fromProto(v, VarNameAndValModel.class, context));
@@ -111,5 +107,31 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
     @Override
     public StoreableType getType() {
         return StoreableType.SCHEDULED_TASK;
+    }
+
+    @Override
+    public String getStoreKey() {
+        return ScheduledTaskModel.getScheduledTaskKey(taskRunId, createdAt);
+    }
+
+    public static ScheduledTaskModel fromProto(ScheduledTask p, ExecutionContext context) {
+        ScheduledTaskModel out = new ScheduledTaskModel();
+        out.initFrom(p, context);
+        return out;
+    }
+
+    public static String getLegacyKey(TaskRunModel taskRun) {
+        return taskRun.getId().toString();
+    }
+
+    public static String getScheduledTaskKey(TaskRunModel taskRun) {
+        return getScheduledTaskKey(taskRun.getId(), taskRun.getLatestAttempt().getScheduleTime());
+    }
+
+    public static String getScheduledTaskKey(TaskRunIdModel taskRunId, Date taskAttemptCreatedAt) {
+        // Note: only one ScheduledTask can be active at once for a
+        // TaskRun, so we don't need to worry about the attemptNumber.
+        return STORE_KEY_PREFIX_FOR_COMPATIBILITY + LHUtil.toLhDbFormat(taskAttemptCreatedAt) + "/"
+                + taskRunId.toString();
     }
 }

@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.taskrun.TaskAttemptModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskNodeReferenceModel;
@@ -15,6 +16,7 @@ import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
+import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.sdk.common.proto.LHErrorType;
@@ -22,6 +24,7 @@ import io.littlehorse.sdk.common.proto.TaskNodeRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -121,7 +124,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         // Create a TaskRun
         TaskNodeReferenceModel source = new TaskNodeReferenceModel(nodeRun.getObjectId(), nodeRun.getWfSpecId());
 
-        this.taskRunId = new TaskRunIdModel(nodeRun.getId().getWfRunId(), processorContext);
+        this.taskRunId = new TaskRunIdModel(nodeRun.getId(), processorContext);
         TaskRunModel task = new TaskRunModel(
                 inputVariables,
                 new TaskRunSourceModel(source, processorContext),
@@ -158,7 +161,16 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     }
 
     @Override
-    public Optional<TaskRunIdModel> getCreatedSubGetableId() {
-        return Optional.ofNullable(taskRunId);
+    public List<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableIds(CoreProcessorContext context) {
+        List<CoreObjectId<?, ?, ?>> out = new ArrayList<>();
+        out.add((CoreObjectId<?, ?, ?>) taskRunId);
+
+        TaskRunModel taskRun = context.getableManager().get(taskRunId);
+        if (taskRun != null) {
+            for (int i = 0; i < taskRun.getTotalCheckpoints(); i++) {
+                out.add(new CheckpointIdModel(taskRunId, i));
+            }
+        }
+        return out;
     }
 }

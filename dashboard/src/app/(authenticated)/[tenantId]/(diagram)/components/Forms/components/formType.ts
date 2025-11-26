@@ -11,6 +11,8 @@ export const FormComponent: Record<keyof typeof VARIABLE_TYPES, FC<React.Compone
   jsonArr: FormTextarea,
   bytes: FormInput,
   wfRunId: FormTextarea,
+  utcTimestamp: FormInput,
+  struct: FormTextarea,
 } as const
 
 export type FormFieldType = keyof typeof FormComponent

@@ -1,7 +1,8 @@
-import { getVariableDefType, getVariableValue } from '@/app/utils'
+import { getVariableValue } from '@/app/utils'
 import { ThreadVarDef, Variable, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { OverflowText } from '../../../../components/OverflowText'
+import { TypeDisplay } from '../../../../components/TypeDisplay'
 
 type VariablesProps = {
   variableDefs: ThreadVarDef[]
@@ -19,12 +20,12 @@ export const Variables: FC<VariablesProps> = ({ variableDefs, variables }) => {
   if (variableDefs.length === 0) return <></>
 
   return (
-    <div className="">
+    <div>
       <h2 className="text-md mb-2 font-bold">Variables</h2>
       {variableDefs.map(variable => (
         <div key={variable.varDef?.name} className="mb-1 flex items-center gap-1">
           <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{variable.varDef?.name}</span>
-          <span className="rounded bg-yellow-100 p-1 text-xs">{getVariableDefType(variable.varDef!)}</span>
+          <TypeDisplay definedType={variable.varDef?.typeDef?.definedType} />
           {variable.required && <span className="rounded bg-orange-300 p-1 text-xs">Required</span>}
           {variable.searchable && <span className="rounded bg-blue-300 p-1 text-xs">Searchable</span>}
           {variable.accessLevel && <span className="rounded bg-blue-300 p-1 text-xs">{variable.accessLevel}</span>}

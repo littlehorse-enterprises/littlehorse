@@ -63,7 +63,7 @@ public class WfRunVariableTest
 
 
         var varDef = new VariableDef
-            { TypeDef = new TypeDefinition { Type = expectedType }, Name = wfRunVariable.Name };
+            { TypeDef = new TypeDefinition { PrimitiveType = expectedType }, Name = wfRunVariable.Name };
         var expectedVarDef = new ThreadVarDef
         {
             VarDef = varDef,
@@ -125,7 +125,7 @@ public class WfRunVariableTest
         var actualVarDef = testVar.Compile();
         
         var varDef = new VariableDef
-            { TypeDef = new TypeDefinition { Type = VariableType.JsonObj }, Name = variableName };
+            { TypeDef = new TypeDefinition { PrimitiveType = VariableType.JsonObj }, Name = variableName };
         var expectedVarDef = new ThreadVarDef
         {
             VarDef = varDef,
@@ -149,7 +149,7 @@ public class WfRunVariableTest
         var actualVarDef = testVar.Compile();
         
         var varDef = new VariableDef
-            { TypeDef = new TypeDefinition { Type = VariableType.Str }, Name = variableName };
+            { TypeDef = new TypeDefinition { PrimitiveType = VariableType.Str }, Name = variableName };
         var expectedVarDef = new ThreadVarDef
         {
             VarDef = varDef,
@@ -169,7 +169,7 @@ public class WfRunVariableTest
         var actualVarDef = testVar.Compile();
         
         var varDef = new VariableDef
-            { TypeDef = new TypeDefinition { Type = VariableType.Str }, Name = variableName };
+            { TypeDef = new TypeDefinition { PrimitiveType = VariableType.Str }, Name = variableName };
         var expectedVarDef = new ThreadVarDef
         {
             VarDef = varDef,
@@ -189,7 +189,7 @@ public class WfRunVariableTest
         var actualVarDef = testVar.Compile();
         
         var varDef = new VariableDef
-            { TypeDef = new TypeDefinition { Type = VariableType.Str }, Name = variableName };
+            { TypeDef = new TypeDefinition { PrimitiveType = VariableType.Str }, Name = variableName };
         var expectedVarDef = new ThreadVarDef
         {
             VarDef = varDef,

@@ -25,6 +25,7 @@ import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.taskrun.CheckpointModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
@@ -39,6 +40,7 @@ import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
@@ -539,7 +541,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ValidateStructDefEvolutionRequestModel reqModel =
                 LHSerializable.fromProto(req, ValidateStructDefEvolutionRequestModel.class, requestContext());
 
-        ctx.onNext(reqModel.validate(requestContext()));
+        ctx.onNext(reqModel.validate(requestContext().metadataManager()));
         ctx.onCompleted();
     }
 
@@ -765,7 +767,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.WRITE_METADATA)
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.RUN)
     public void reportTask(ReportTaskRun req, StreamObserver<Empty> ctx) {
         // There is no need to wait for the ReportTaskRun to actually be processed, because
         // we would just return a google.protobuf.Empty anyways. All we need to do is wait for
@@ -773,7 +775,24 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext());
         TenantIdModel tenantId = requestContext().authorization().tenantId();
         PrincipalIdModel principalId = requestContext().authorization().principalId();
-        commandSender.doSend(reqModel, ctx, principalId, tenantId);
+        commandSender.reportTaskAndDontWaitForResponse(reqModel, ctx, principalId, tenantId);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.RUN)
+    public void putCheckpoint(PutCheckpointRequest req, StreamObserver<PutCheckpointResponse> observer) {
+        PutCheckpointRequestModel reqModel =
+                LHSerializable.fromProto(req, PutCheckpointRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), observer, PutCheckpointResponse.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.READ)
+    public void getCheckpoint(CheckpointId req, StreamObserver<Checkpoint> observer) {
+        CheckpointIdModel id = LHSerializable.fromProto(req, CheckpointIdModel.class, requestContext());
+        CheckpointModel checkpoint = internalComms.getObject(id, CheckpointModel.class, requestContext());
+        observer.onNext(checkpoint.toProto().build());
+        observer.onCompleted();
     }
 
     @Override
@@ -1090,8 +1109,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
     public void deleteWfRun(DeleteWfRunRequest req, StreamObserver<Empty> ctx) {
-        DeleteWfRunRequestModel reqModel =
-                LHSerializable.fromProto(req, DeleteWfRunRequestModel.class, requestContext());
+        InternalDeleteWfRunRequestModel reqModel = new InternalDeleteWfRunRequestModel(req);
         processCommand(new CommandModel(reqModel), ctx, Empty.class);
     }
 

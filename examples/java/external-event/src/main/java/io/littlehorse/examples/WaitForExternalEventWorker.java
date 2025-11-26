@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 
 public class WaitForExternalEventWorker {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        WaitForExternalEventWorker.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(WaitForExternalEventWorker.class);
 
     @LHTaskMethod("ask-for-name")
     public String askForName() {

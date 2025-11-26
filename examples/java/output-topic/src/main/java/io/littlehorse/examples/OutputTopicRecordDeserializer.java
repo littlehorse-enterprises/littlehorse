@@ -1,12 +1,10 @@
 package io.littlehorse.examples;
 
-import org.apache.kafka.common.serialization.Deserializer;
-
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
-
 import io.littlehorse.sdk.common.proto.MetadataOutputTopicRecord;
 import io.littlehorse.sdk.common.proto.OutputTopicRecord;
+import org.apache.kafka.common.serialization.Deserializer;
 
 public class OutputTopicRecordDeserializer implements Deserializer<Message> {
 
@@ -15,14 +13,14 @@ public class OutputTopicRecordDeserializer implements Deserializer<Message> {
         if (topic.contains("execution")) {
             try {
                 return OutputTopicRecord.parseFrom(data);
-            } catch(InvalidProtocolBufferException exn) {
+            } catch (InvalidProtocolBufferException exn) {
                 exn.printStackTrace();
                 return null;
             }
         } else {
             try {
                 return MetadataOutputTopicRecord.parseFrom(data);
-            } catch(InvalidProtocolBufferException exn) {
+            } catch (InvalidProtocolBufferException exn) {
                 exn.printStackTrace();
                 return null;
             }

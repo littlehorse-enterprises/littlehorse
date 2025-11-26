@@ -9,6 +9,7 @@ import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.common.util.serde.ProtobufDeserializer;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.streams.store.BoundedBytesSerde;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.processors.CommandProcessor;
@@ -149,7 +150,9 @@ public class ServerTopology {
                 sinkValueSerializer, // value serializer
                 CORE_PROCESSOR); // parent name
         StoreBuilder<KeyValueStore<String, Bytes>> coreStoreBuilder = Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(CORE_STORE), Serdes.String(), Serdes.Bytes());
+                Stores.persistentKeyValueStore(CORE_STORE),
+                Serdes.String(),
+                new BoundedBytesSerde(config.getProducerMaxRequestSize()));
         topo.addStateStore(coreStoreBuilder, CORE_PROCESSOR);
 
         // Metadata Global Store

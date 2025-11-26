@@ -1,0 +1,70 @@
+package io.littlehorse.common.model.getable.global.wfspec.variable;
+
+import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
+import io.littlehorse.sdk.common.proto.LHPath;
+import io.littlehorse.sdk.common.proto.LHPath.Selector;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import lombok.Getter;
+
+public class LHPathModel extends LHSerializable<LHPath> {
+
+    @Getter
+    private List<Selector> path;
+
+    public LHPathModel() {}
+
+    public LHPathModel(List<Selector> path) {
+        this.path = new ArrayList<>(path);
+    }
+
+    @Override
+    public LHPath.Builder toProto() {
+        LHPath.Builder out = LHPath.newBuilder();
+        out.addAllPath(path);
+        return out;
+    }
+
+    @Override
+    public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
+        LHPath p = (LHPath) proto;
+        this.path = Collections.unmodifiableList(p.getPathList());
+    }
+
+    @Override
+    public Class<LHPath> getProtoBaseClass() {
+        return LHPath.class;
+    }
+
+    public static LHPathModel fromProto(LHPath proto, ExecutionContext context) {
+        LHPathModel out = new LHPathModel();
+        out.initFrom(proto, context);
+        return out;
+    }
+
+    /**
+     * Converts this LHPath to a JSONPath String.
+     * @return a JSONPath String.
+     */
+    public String toJsonPathStr() {
+        StringBuilder pathBuilder = new StringBuilder("$");
+
+        for (Selector selector : path) {
+            switch (selector.getSelectorTypeCase()) {
+                case INDEX:
+                    pathBuilder.append(String.format("[%d]", selector.getIndex()));
+                    break;
+                case KEY:
+                    pathBuilder.append("." + selector.getKey());
+                    break;
+                case SELECTORTYPE_NOT_SET:
+            }
+        }
+
+        return pathBuilder.toString();
+    }
+}

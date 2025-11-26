@@ -21,10 +21,11 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
 
     public Date maturationTime;
     public String topic;
-    public String key;
+    public String partitionKey;
     public byte[] payload;
     private TenantIdModel tenantId;
     private PrincipalIdModel principalId;
+    private String storeKeyInternal;
 
     public LHTimer() {}
 
@@ -34,7 +35,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
             throw new IllegalArgumentException("Command's time was null!");
         }
         payload = command.toProto().build().toByteArray();
-        key = command.getPartitionKey();
+        partitionKey = command.getPartitionKey();
         if (command.hasResponse()) {
             throw new IllegalArgumentException("Timer commands cannot have a response");
         }
@@ -45,7 +46,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
         LHTimerPb p = (LHTimerPb) proto;
         maturationTime = LHUtil.fromProtoTs(p.getMaturationTime());
         topic = p.getTopic();
-        key = p.getKey();
+        partitionKey = p.getPartitionKey();
         payload = p.getPayload().toByteArray();
 
         if (p.hasPrincipalId()) {
@@ -62,21 +63,34 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
             // TODO: not all timers will belong to a tenant. This logic should change to
             tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
         }
+
+        if (p.hasStoreKey()) {
+            this.storeKeyInternal = p.getStoreKey();
+        } else {
+            // This is what we used in the past. It is left here for backwards compatibility
+            // for timers that were created before we optimized the key structure
+            storeKeyInternal =
+                    LHUtil.toLhDbFormat(maturationTime) + "_" + topic + "_" + partitionKey + "/tenant_" + tenantId;
+        }
     }
 
     public LHTimerPb.Builder toProto() {
         LHTimerPb.Builder out = LHTimerPb.newBuilder()
                 .setMaturationTime(LHUtil.fromDate(maturationTime))
-                .setKey(key)
+                .setPartitionKey(partitionKey)
                 .setTopic(topic)
                 .setPayload(ByteString.copyFrom(payload))
+                .setStoreKey(getStoreKey())
                 .setPrincipalId(principalId.toProto()) // TODO: allow nulls
                 .setTenantId(tenantId.toProto()); // TODO: Allow nulls
         return out;
     }
 
     public String getStoreKey() {
-        return LHUtil.toLhDbFormat(maturationTime) + "_" + topic + "_" + key + "/tenant_" + tenantId;
+        if (storeKeyInternal == null) {
+            storeKeyInternal = LHUtil.toLhDbFormat(maturationTime) + "_" + LHUtil.generateGuid();
+        }
+        return storeKeyInternal;
     }
 
     @Override

@@ -9,18 +9,15 @@ public class ProcessedText {
 
     @Override
     public String toString() {
-        return (
-            "ProcessedText{" +
-            "text='" +
-            text +
-            '\'' +
-            ", sentimentScore=" +
-            sentimentScore +
-            ", addLength=" +
-            addLength +
-            ", userId=" +
-            userId +
-            '}'
-        );
+        return ("ProcessedText{" + "text='"
+                + text
+                + '\''
+                + ", sentimentScore="
+                + sentimentScore
+                + ", addLength="
+                + addLength
+                + ", userId="
+                + userId
+                + '}');
     }
 }

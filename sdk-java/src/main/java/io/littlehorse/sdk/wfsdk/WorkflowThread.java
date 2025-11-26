@@ -61,6 +61,22 @@ public interface WorkflowThread {
     TaskNodeOutput execute(LHFormatString taskName, Serializable... args);
 
     /**
+     * Adds a RUN_CHILD_WF node to the ThreadSpec, starts a child WfRun and waits for it to complete.
+     * @param wfSpecName is the name of the WfSpec we will run.
+     * @param inputs are the inputs that we will pass into the entrypoint ThreadRun.
+     * @return a SpawnedChildWf which allows us to later wait for the child WfRun.
+     */
+    SpawnedChildWf runWf(String wfSpecName, Map<String, Serializable> inputs);
+
+    /**
+     * Adds a WAIT_FOR_CHILD_WF node which waits for a specified WfRun to complete and
+     * returns its output. As of 0.15 the SpawnedChildWf must come from the same ThreadSpec.
+     * @param childToWaitFor is a handle to the child WfRun to wait for.
+     * @return a NodeOutput that logically represents the output of the child WfRun.
+     */
+    NodeOutput waitForChildWf(SpawnedChildWf childToWaitFor);
+
+    /**
      * Adds a User Task Node, and assigns it to a specific user
      *
      * @param userTaskDefName is the UserTaskDef to assign.
@@ -138,6 +154,13 @@ public interface WorkflowThread {
     WfRunVariable declareBytes(String name);
 
     /**
+     * Creates a variable of type TIMESTAMP in the ThreadSpec.
+     * @param name is the name of the variable.
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareTimestamp(String name);
+
+    /**
      * Creates a variable of type JSON_ARR in the ThreadSpec.
      * @param name is the name of the variable.
      * @return a WfRunVariable.
@@ -157,6 +180,23 @@ public interface WorkflowThread {
      * @return a WfRunVariable.
      */
     WfRunVariable declareBool(String name);
+
+    /**
+     * Creates a Struct variable based on your Struct clazz parameter.
+     * @param name is the name of the variable.
+     * @param clazz is the Struct class that defines your StructDef.
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareStruct(String name, Class<?> clazz);
+
+    /**
+     * Creates an Array based on a Java class parameter.
+     * @param name is the name of the variable.
+     * @param elementType is the Java class matching the type of elements stored in your Array.
+     * @return a WfRunVariable.
+     */
+    // TODO: Complete Array's implementation
+    // WfRunVariable declareArray(String name, Class<?> elementType);
 
     /**
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.

@@ -9,7 +9,6 @@ rootProject.name = 'littlehorse'
 include(
         'server',
         'sdk-java',
-        'e2e-tests',
         'test-utils',
         'test-utils-container',
         'canary'
@@ -18,8 +17,10 @@ include(
 [
         'await-workflow-event',
         'basic',
+        'checkpoint-tasks',
         'child-thread',
-        'child-workflow',
+        'hierarchical-workflow',
+        'run-child-workflow',
         'conditionals-while',
         'conditionals',
         'correlated-event',
@@ -34,13 +35,14 @@ include(
         'parallel-approval',
         'run-wf',
         'saga',
-        'shared-variables',
+        'casting',
         'spawn-thread-foreach',
+        'struct-def',
+        'timestamp',
         'user-tasks',
         'variables',
-        'wf-versions',
+        'wait-for-condition',
         'worker-context',
-        'workflow-events'
 ].each { example ->
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/java/$example")

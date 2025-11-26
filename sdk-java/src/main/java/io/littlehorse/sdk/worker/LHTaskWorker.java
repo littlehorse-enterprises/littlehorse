@@ -6,9 +6,15 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.PutStructDefRequest;
+import io.littlehorse.sdk.common.proto.StructDef;
+import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest;
+import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import io.littlehorse.sdk.worker.internal.LHLivenessController;
@@ -53,6 +59,7 @@ public class LHTaskWorker implements Closeable {
     private String taskDefName;
     private String lhTaskMethodAnnotationValue;
     private LittleHorseBlockingStub grpcClient;
+    private TaskDefBuilder tdb;
 
     /**
      * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
@@ -70,6 +77,7 @@ public class LHTaskWorker implements Closeable {
         this.taskDefName = taskDefName;
         this.lhTaskMethodAnnotationValue = taskDefName;
         this.grpcClient = config.getBlockingStub();
+        this.tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
     }
 
     /**
@@ -95,6 +103,8 @@ public class LHTaskWorker implements Closeable {
         this.taskDefName = replacePlaceholdersInTaskDefName(taskDefNameTemplate, valuesForPlaceholders);
         this.lhTaskMethodAnnotationValue = taskDefNameTemplate;
         this.grpcClient = config.getBlockingStub();
+
+        this.tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
     }
 
     public LHTaskWorker(
@@ -105,6 +115,7 @@ public class LHTaskWorker implements Closeable {
             LHServerConnectionManager manager) {
         this(executable, taskDefName, config, valuesForPlaceHolders);
         this.manager = manager;
+        this.tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
     }
 
     /**
@@ -153,9 +164,99 @@ public class LHTaskWorker implements Closeable {
      * recommended for production (in production you should manually use the PutTaskDef).
      */
     public void registerTaskDef() {
-        TaskDefBuilder tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
+        validateStructDefs(StructDefCompatibilityType.NO_SCHEMA_UPDATES);
+
         TaskDef result = grpcClient.putTaskDef(tdb.toPutTaskDefRequest());
         log.info("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
+    }
+
+    /**
+     * Validates StructDef classes used in your Task Definitions against StructDefs on the server.
+     *
+     * @param compatibilityType The server will validate the given StructDef schema against
+     *                          the existing StructDef schema based on this compatibility type.
+     */
+    public void validateStructDefs(StructDefCompatibilityType compatibilityType) {
+        if (tdb.getStructDefDependencies().isEmpty()) return;
+
+        for (LHStructDefType lhStructDefType : tdb.getStructDefDependencies()) {
+            validateStructDef(lhStructDefType, compatibilityType);
+        }
+    }
+
+    /**
+     * Validates whether or not you can evolve your StructDef with the selected compatibility type
+     *
+     * @param structClass       The class for your StructDef
+     * @param compatibilityType The server will validate the given StructDef schemas against
+     *                          their existing StructDef schemas based on this compatibility type.
+     */
+    public void validateStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass);
+
+        validateStructDef(lhStructDefType, compatibilityType);
+    }
+
+    private void validateStructDef(LHStructDefType lhStructDefType, StructDefCompatibilityType compatibilityType) {
+        StructDef structDef = lhStructDefType.toStructDef();
+
+        ValidateStructDefEvolutionRequest.Builder validateStructDefRequest =
+                ValidateStructDefEvolutionRequest.newBuilder();
+        validateStructDefRequest.setStructDefId(structDef.getId());
+        validateStructDefRequest.setStructDef(structDef.getStructDef());
+        validateStructDefRequest.setCompatibilityType(compatibilityType);
+
+        ValidateStructDefEvolutionResponse resp =
+                grpcClient.validateStructDefEvolution(validateStructDefRequest.build());
+
+        if (!resp.getIsValid()) {
+            throw new IllegalArgumentException(String.format(
+                    "Unable to evolve StructDef %s using StructDefCompatibilityType %s",
+                    structDef.getId().getName(), compatibilityType));
+        }
+    }
+
+    private void registerStructDef(LHStructDefType lhStructDefType, StructDefCompatibilityType compatibilityType) {
+        StructDef structDef = lhStructDefType.toStructDef();
+        PutStructDefRequest.Builder putStructDefRequest = PutStructDefRequest.newBuilder();
+        putStructDefRequest.setName(structDef.getId().getName());
+        putStructDefRequest.setDescription(structDef.getDescription());
+        putStructDefRequest.setStructDef(structDef.getStructDef());
+        putStructDefRequest.setAllowedUpdates(compatibilityType);
+
+        grpcClient.putStructDef(putStructDefRequest.build());
+    }
+
+    /**
+     * Registers a single StructDef based on the StructDef class
+     *
+     * Note: If your StructDef depends on other StructDefs, ensure you register them
+     * in the right order. This method does not handle registering StructDef dependencies.
+     *
+     * @param structClass       The class for your StructDef
+     * @param compatibilityType The server will try to register the given StructDef
+     *                          according to this compatibility type.
+     */
+    public void registerStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass);
+
+        registerStructDef(lhStructDefType, compatibilityType);
+    }
+
+    /**
+     * Validates StructDef classes used in your Task Definitions against StructDefs on the server.
+     *
+     * @param compatibilityType The server will try to register the given StructDefs
+     *                          according to this compatibility type.
+     */
+    public void registerStructDefs(StructDefCompatibilityType compatibilityType) {
+        List<LHStructDefType> lhStructDefTypes = tdb.getStructDefDependencies();
+
+        if (lhStructDefTypes.isEmpty()) return;
+
+        for (LHStructDefType lhStructDefType : lhStructDefTypes) {
+            registerStructDef(lhStructDefType, compatibilityType);
+        }
     }
 
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {
@@ -226,6 +327,7 @@ public class LHTaskWorker implements Closeable {
      * Starts polling for and executing tasks.
      */
     public void start() {
+        log.info("Starting task worker for TaskDef {}", taskDefName);
         createManager();
         manager.start();
     }

@@ -4,7 +4,9 @@ import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,6 +127,35 @@ public class LHLibUtilTest {
         Assertions.assertThat(varVal.getJsonObj())
                 .isEqualTo(
                         "{\"title\":\"Frankenstein\",\"soldUnits\":3000000,\"cost\":9.99,\"genres\":[\"Classic\",\"Horror\",\"Science Fiction\"],\"isBestseller\":true,\"additionalAttributes\":{\"Published Year\":\"1818\",\"ISBN\":\"9780141439471\",\"Author\":\"Mary Shelley\"}}");
+    }
+
+    @Test
+    void objToVarValFromInstantSetsUtcTimestamp() {
+        Instant now = Instant.now();
+        VariableValue val = LHLibUtil.objToVarVal(now);
+        Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.UTC_TIMESTAMP);
+        Assertions.assertThat(val.getUtcTimestamp().getSeconds()).isEqualTo(now.getEpochSecond());
+    }
+
+    @Test
+    void objToVarValFromDateSetsUtcTimestamp() {
+        Date currentDate = new Date();
+        VariableValue val = LHLibUtil.objToVarVal(currentDate);
+        Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.UTC_TIMESTAMP);
+        Assertions.assertThat(val.getUtcTimestamp().getSeconds()).isEqualTo(currentDate.getTime() / 1000);
+    }
+
+    @Test
+    void gsonInstantAndDateSerializeDeserialize() {
+        Instant now = Instant.parse("2020-01-02T03:04:05.123Z");
+        String instantJson = LHLibUtil.LH_GSON.toJson(now);
+        Instant parsed = LHLibUtil.LH_GSON.fromJson(instantJson, Instant.class);
+        Assertions.assertThat(parsed).isEqualTo(now);
+
+        Date currentDate = Date.from(now);
+        String dateJson = LHLibUtil.LH_GSON.toJson(currentDate);
+        Date parsedDate = LHLibUtil.LH_GSON.fromJson(dateJson, Date.class);
+        Assertions.assertThat(parsedDate.getTime()).isEqualTo(currentDate.getTime());
     }
 
     private Book getTestBook() {

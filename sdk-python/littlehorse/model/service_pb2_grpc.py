@@ -374,6 +374,16 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.ReportTaskRun.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
+        self.PutCheckpoint = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutCheckpoint',
+                request_serializer=service__pb2.PutCheckpointRequest.SerializeToString,
+                response_deserializer=service__pb2.PutCheckpointResponse.FromString,
+                _registered_method=True)
+        self.GetCheckpoint = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetCheckpoint',
+                request_serializer=object__id__pb2.CheckpointId.SerializeToString,
+                response_deserializer=task__run__pb2.Checkpoint.FromString,
+                _registered_method=True)
         self.StopWfRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/StopWfRun',
                 request_serializer=service__pb2.StopWfRunRequest.SerializeToString,
@@ -1011,6 +1021,27 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def PutCheckpoint(self, request, context):
+        """Used internally by Task Workers to create a `Checkpoint` during the execution of
+        a `TaskRun`.
+
+        Creates a checkpoint. If the associated `TaskRun` is not found, it returns
+        `INVALID_ARGUMENT`. If the associated `TaskRun` is found but is not in a valid
+        state (i.e. the `TASK_ATTEMPT` related to this request is not `TASK_RUNNING`),
+        then the request returns code `OK` and a `STOP_TASK` value for the field
+        `flow_control_continue_type`.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetCheckpoint(self, request, context):
+        """Gets a Checkpoint.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def StopWfRun(self, request, context):
         """Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
         """
@@ -1523,6 +1554,16 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.ReportTask,
                     request_deserializer=service__pb2.ReportTaskRun.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'PutCheckpoint': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutCheckpoint,
+                    request_deserializer=service__pb2.PutCheckpointRequest.FromString,
+                    response_serializer=service__pb2.PutCheckpointResponse.SerializeToString,
+            ),
+            'GetCheckpoint': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetCheckpoint,
+                    request_deserializer=object__id__pb2.CheckpointId.FromString,
+                    response_serializer=task__run__pb2.Checkpoint.SerializeToString,
             ),
             'StopWfRun': grpc.unary_unary_rpc_method_handler(
                     servicer.StopWfRun,
@@ -3405,6 +3446,60 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/ReportTask',
             service__pb2.ReportTaskRun.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PutCheckpoint(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutCheckpoint',
+            service__pb2.PutCheckpointRequest.SerializeToString,
+            service__pb2.PutCheckpointResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetCheckpoint(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetCheckpoint',
+            object__id__pb2.CheckpointId.SerializeToString,
+            task__run__pb2.Checkpoint.FromString,
             options,
             channel_credentials,
             insecure,

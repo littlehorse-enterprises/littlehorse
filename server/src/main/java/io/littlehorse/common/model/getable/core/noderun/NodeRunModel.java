@@ -13,12 +13,14 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.EntrypointRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExitRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNodeRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.RunChildWfNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.SleepNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartMultipleThreadsRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.TaskNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ThrowEventNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForChildWfNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForConditionNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForThreadsRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -83,6 +85,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     private UserTaskNodeRunModel userTaskRun;
     private ThrowEventNodeRunModel throwEventNodeRun;
     private WaitForConditionNodeRunModel waitForConditionNodeRun;
+    private RunChildWfNodeRunModel runChildWfNodeRun;
+    private WaitForChildWfNodeRunModel waitForChildWfNodeRun;
 
     private ExecutionContext executionContext;
 
@@ -159,6 +163,14 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 waitForConditionNodeRun = LHSerializable.fromProto(
                         proto.getWaitForCondition(), WaitForConditionNodeRunModel.class, context);
                 break;
+            case RUN_CHILD_WF:
+                this.runChildWfNodeRun =
+                        LHSerializable.fromProto(proto.getRunChildWf(), RunChildWfNodeRunModel.class, context);
+                break;
+            case WAIT_FOR_CHILD_WF:
+                this.waitForChildWfNodeRun =
+                        LHSerializable.fromProto(proto.getWaitForChildWf(), WaitForChildWfNodeRunModel.class, context);
+                break;
             case NODETYPE_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -180,22 +192,15 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        GetableIndex<? extends AbstractGetable<?>> basicIndex = new GetableIndex<>(
-                List.of(
-                        Pair.of("status", GetableIndex.ValueType.SINGLE),
-                        Pair.of("type", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageType.LOCAL));
-
         if (externalEventRun != null && externalEventRun.getExternalEventDefId() != null) {
             GetableIndex<? extends AbstractGetable<?>> externalEventIndex = new GetableIndex<>(
                     List.of(
                             Pair.of("status", GetableIndex.ValueType.SINGLE),
-                            Pair.of("type", GetableIndex.ValueType.SINGLE),
                             Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
                     Optional.of(TagStorageType.LOCAL));
-            return List.of(basicIndex, externalEventIndex);
+            return List.of(externalEventIndex);
         }
-        return List.of(basicIndex);
+        return List.of();
     }
 
     @Override
@@ -203,9 +208,6 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         switch (key) {
             case "status" -> {
                 return List.of(new IndexedField(key, this.getStatus().toString(), TagStorageType.LOCAL));
-            }
-            case "type" -> {
-                return List.of(new IndexedField(key, this.getType().toString(), TagStorageType.LOCAL));
             }
             case "extEvtDefName" -> {
                 if (externalEventRun != null && externalEventRun.getExternalEventDefId() != null) {
@@ -267,6 +269,12 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             case WAIT_FOR_CONDITION:
                 out.setWaitForCondition(waitForConditionNodeRun.toProto());
                 break;
+            case RUN_CHILD_WF:
+                out.setRunChildWf(runChildWfNodeRun.toProto());
+                break;
+            case WAIT_FOR_CHILD_WF:
+                out.setWaitForChildWf(waitForChildWfNodeRun.toProto());
+                break;
             case NODETYPE_NOT_SET:
         }
 
@@ -316,6 +324,10 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 return throwEventNodeRun;
             case WAIT_FOR_CONDITION:
                 return waitForConditionNodeRun;
+            case RUN_CHILD_WF:
+                return runChildWfNodeRun;
+            case WAIT_FOR_CHILD_WF:
+                return waitForChildWfNodeRun;
             case NODETYPE_NOT_SET:
         }
         throw new RuntimeException("Not possible");
@@ -365,6 +377,12 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         } else if (cls.equals(WaitForConditionNodeRunModel.class)) {
             type = NodeTypeCase.WAIT_FOR_CONDITION;
             waitForConditionNodeRun = (WaitForConditionNodeRunModel) subNodeRun;
+        } else if (cls.equals(RunChildWfNodeRunModel.class)) {
+            type = NodeTypeCase.RUN_CHILD_WF;
+            this.runChildWfNodeRun = (RunChildWfNodeRunModel) subNodeRun;
+        } else if (cls.equals(WaitForChildWfNodeRunModel.class)) {
+            type = NodeTypeCase.WAIT_FOR_CHILD_WF;
+            this.waitForChildWfNodeRun = (WaitForChildWfNodeRunModel) subNodeRun;
         } else {
             throw new RuntimeException("Didn't recognize " + subNodeRun.getClass());
         }
@@ -506,13 +524,17 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         try {
-            getSubNodeRun().arrive(time, processorContext);
             setStatus(LHStatus.RUNNING);
+            getSubNodeRun().arrive(time, processorContext);
         } catch (NodeFailureException exn) {
-            failures.add(exn.getFailure());
-            setStatus(exn.getFailure().getStatus());
+            fail(exn);
             throw exn;
         }
+    }
+
+    public void fail(NodeFailureException exn) {
+        failures.add(exn.getFailure());
+        setStatus(exn.getFailure().getStatus());
     }
 
     /**

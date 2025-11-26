@@ -14,8 +14,8 @@ import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
-import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
+import io.littlehorse.common.model.corecommand.subcommand.InternalDeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
@@ -387,7 +387,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
             ThreadRunModel interruptor =
                     startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars, ThreadType.INTERRUPT);
-            interruptor.interruptTriggerId = pi.externalEventId;
+            interruptor.setInterruptTriggerId(pi.externalEventId);
 
             if (interruptor.status == LHStatus.ERROR) {
                 putFailureOnThreadRun(
@@ -659,10 +659,10 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
             if (terminationTime != null) {
                 LHTimer timer = new LHTimer();
-                timer.key = id.getPartitionKey().get();
+                timer.partitionKey = id.getPartitionKey().get();
                 timer.maturationTime = terminationTime;
-                DeleteWfRunRequestModel deleteWfRun = new DeleteWfRunRequestModel();
-                deleteWfRun.wfRunId = id;
+                InternalDeleteWfRunRequestModel deleteWfRun = new InternalDeleteWfRunRequestModel();
+                deleteWfRun.setWfRunId(id);
 
                 CommandModel deleteWfRunCmd = new CommandModel();
                 deleteWfRunCmd.setSubCommand(deleteWfRun);
@@ -708,6 +708,17 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             } else {
                 // The WfRun's status must always match the entrypoint ThreadRun.
                 transitionTo(newStatus);
+            }
+        }
+
+        if (endTime != null) {
+            // wake up parent if parent exists
+            if (id.getParentWfRunId() != null) {
+                WfRunModel parent = executionContext
+                        .castOnSupport(CoreProcessorContext.class)
+                        .getableManager()
+                        .get(id.getParentWfRunId());
+                if (parent != null) parent.advance(time);
             }
         }
 

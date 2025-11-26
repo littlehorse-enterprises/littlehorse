@@ -11,9 +11,11 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -25,15 +27,18 @@ import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -240,7 +245,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         }
 
         if (oldVersion.isPresent()) {
-            checkCompatibilityAndSetVersion(oldVersion.get());
+            checkCompatibilityAndSetVersion(oldVersion.get(), ctx.metadataManager());
         }
 
         if (parentWfSpec != null) {
@@ -343,6 +348,16 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                                         .formatted(varName, tspec.getName(), varToThreadSpec.get(varName)));
                     }
                 }
+                if (vd.getTypeDef().getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID) {
+                    WfService wfService = new WfService(ctx.metadataManager());
+                    StructDefIdModel structDefId = vd.getTypeDef().getStructDefId();
+                    StructDefModel structDef = wfService.getStructDef(structDefId.getName(), null);
+                    if (structDef == null) {
+                        throw new InvalidWfSpecException(
+                                "Var name %s defined in thread %s refers to non-existent StructDef %s"
+                                        .formatted(varName, tspec.getName(), structDefId.getName()));
+                    }
+                }
                 varToThreadSpec.put(varName, tspec.getName());
             }
         }
@@ -371,6 +386,10 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         }
     }
 
+    public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
+        return getEntrypointThread().getOutputType(manager);
+    }
+
     /**
      * Returns a ThreadVarDef for every PUBLIC_VAR variable in the WfSpec (all threads).
      */
@@ -380,7 +399,8 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                 .toList();
     }
 
-    private void checkCompatibilityAndSetVersion(WfSpecModel old) throws InvalidWfSpecException {
+    private void checkCompatibilityAndSetVersion(WfSpecModel old, ReadOnlyMetadataManager manager)
+            throws InvalidWfSpecException {
         // First, for every previously-frozen variable, we need to check that either:
         // - the variable isn't included, or
         // - the variable has the same type.
@@ -409,7 +429,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
             }
         }
 
-        if (WfSpecUtil.hasBreakingChanges(this, old)) {
+        if (WfSpecUtil.hasBreakingChanges(this, old, manager)) {
             id.setMajorVersion(old.getId().getMajorVersion() + 1);
             id.setRevision(0);
         } else {

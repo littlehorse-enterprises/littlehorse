@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.taskqueue;
 
-import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -20,12 +20,9 @@ public class TaskQueueManager {
     @Getter
     private LHServer backend;
 
-    private final int individualQueueConfiguredCapacity;
-
-    public TaskQueueManager(LHServer backend, int individualQueueConfiguredCapacity) {
+    public TaskQueueManager(LHServer backend) {
         this.taskQueues = new ConcurrentHashMap<>();
         this.backend = backend;
-        this.individualQueueConfiguredCapacity = individualQueueConfiguredCapacity;
     }
 
     public void onPollRequest(
@@ -38,7 +35,7 @@ public class TaskQueueManager {
     }
 
     public void onTaskScheduled(
-            TaskId streamsTaskId, TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask, TenantIdModel tenantId) {
+            TaskId streamsTaskId, TaskDefIdModel taskDef, TaskRunIdModel scheduledTask, TenantIdModel tenantId) {
         getSubQueue(new TenantTaskName(tenantId, taskDef.getName())).onTaskScheduled(streamsTaskId, scheduledTask);
     }
 
@@ -46,15 +43,14 @@ public class TaskQueueManager {
         taskQueues.values().forEach(oneTaskQueue -> oneTaskQueue.drainPartition(partitionToDrain));
     }
 
-    public void itsAMatch(ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient) {
-        backend.returnTaskToClient(scheduledTask, luckyClient);
+    public void itsAMatch(TaskRunIdModel taskRunId, PollTaskRequestObserver luckyClient) {
+        backend.tryToReturnTaskToClient(taskRunId, luckyClient);
     }
 
     private OneTaskQueue getSubQueue(TenantTaskName tenantTask) {
         return taskQueues.computeIfAbsent(
                 tenantTask,
-                taskToCreate -> new OneTaskQueue(
-                        taskToCreate.taskDefName(), this, individualQueueConfiguredCapacity, taskToCreate.tenantId()));
+                taskToCreate -> new OneTaskQueue(taskToCreate.taskDefName(), this, taskToCreate.tenantId()));
     }
 
     public Collection<OneTaskQueue> all() {

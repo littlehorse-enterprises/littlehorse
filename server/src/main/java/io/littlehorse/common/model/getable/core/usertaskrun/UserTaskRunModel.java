@@ -36,6 +36,7 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
@@ -103,7 +104,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             CoreProcessorContext processorContext) {
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRunModel.getObjectId();
-        this.id = new UserTaskRunIdModel(nodeRunId.getWfRunId());
+        this.id = new UserTaskRunIdModel(nodeRunId);
         this.scheduledTime = new Date();
         this.epoch = 0;
         this.userTaskNode = userTaskNode;
@@ -399,15 +400,26 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
 
         for (Map.Entry<String, VariableValueModel> field : event.getResults().entrySet()) {
             UserTaskFieldModel userTaskFieldFromTaskDef = userTaskFieldsGroupedByName.get(field.getKey());
+            // TODO: Support StructDefs
+            if (field.getValue().getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Field [name = %s, type = %s] has non-primitive TypeDefinition and is unsupported for a UserTask schema."
+                                .formatted(
+                                        field.getKey(),
+                                        field.getValue().getTypeDefinition().getPrimitiveType()));
+            }
             boolean isUndefined = userTaskFieldFromTaskDef == null
                     || !userTaskFieldFromTaskDef
                             .getType()
-                            .equals(field.getValue().getType());
+                            .equals(field.getValue().getTypeDefinition().getPrimitiveType());
             if (isUndefined) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
                         "Field [name = %s, type = %s] is not defined in UserTask schema or has different type"
-                                .formatted(field.getKey(), field.getValue().getType()));
+                                .formatted(
+                                        field.getKey(),
+                                        field.getValue().getTypeDefinition().getPrimitiveType()));
             }
             results.put(field.getKey(), field.getValue());
         }

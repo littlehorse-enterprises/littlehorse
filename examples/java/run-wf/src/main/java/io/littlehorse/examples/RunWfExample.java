@@ -4,12 +4,10 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -36,22 +34,17 @@ public class RunWfExample {
     private static final Logger log = LoggerFactory.getLogger(RunWfExample.class);
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(
-            "example-run-wf",
-            wf -> {
-                WfRunVariable n = wf.addVariable("n", VariableType.INT);
-                wf.execute("execution-number", n);
-            }
-        );
+        return new WorkflowImpl("example-run-wf", wf -> {
+            WfRunVariable n = wf.declareInt("n");
+            wf.execute("execution-number", n);
+        });
     }
 
     public static Properties getConfigProps() throws IOException {
         Properties props = new Properties();
-        File configPath = Path.of(
-            System.getProperty("user.home"),
-            ".config/littlehorse.config"
-        ).toFile();
-        if(configPath.exists()){
+        File configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config")
+                .toFile();
+        if (configPath.exists()) {
             props.load(new FileInputStream(configPath));
         }
         return props;
@@ -59,11 +52,7 @@ public class RunWfExample {
 
     public static LHTaskWorker getTaskWorker(LHConfig config) {
         MyWorker executable = new MyWorker();
-        LHTaskWorker worker = new LHTaskWorker(
-            executable,
-            "execution-number",
-            config
-        );
+        LHTaskWorker worker = new LHTaskWorker(executable, "execution-number", config);
 
         // Gracefully shutdown
         Runtime.getRuntime().addShutdownHook(new Thread(worker::close));
@@ -91,28 +80,25 @@ public class RunWfExample {
         // In another thread
         Timer timer = new Timer(true);
         timer.scheduleAtFixedRate(
-            new TimerTask() {
-                int n = 1;
+                new TimerTask() {
+                    int n = 1;
 
-                @Override
-                public void run() {
-                    log.debug("Requesting wf run execution, n = {}", n);
-                    try {
-                        client.runWf(
-                            RunWfRequest.newBuilder()
-                                .setWfSpecName("example-run-wf")
-                                .putVariables("n", LHLibUtil.objToVarVal(n))
-                                .build()
-                        );
-                    } catch (Exception e) {
-                        log.error("Error when calling the API", e);
+                    @Override
+                    public void run() {
+                        log.debug("Requesting wf run execution, n = {}", n);
+                        try {
+                            client.runWf(RunWfRequest.newBuilder()
+                                    .setWfSpecName("example-run-wf")
+                                    .putVariables("n", LHLibUtil.objToVarVal(n))
+                                    .build());
+                        } catch (Exception e) {
+                            log.error("Error when calling the API", e);
+                        }
+                        n++;
                     }
-                    n++;
-                }
-            },
-            1000,
-            1500
-        );
+                },
+                1000,
+                1500);
 
         // Run the worker
         worker.start();

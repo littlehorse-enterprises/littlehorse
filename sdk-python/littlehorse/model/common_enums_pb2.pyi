@@ -5,7 +5,7 @@ from typing import ClassVar as _ClassVar
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class LHStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     STARTING: _ClassVar[LHStatus]
     RUNNING: _ClassVar[LHStatus]
     COMPLETED: _ClassVar[LHStatus]
@@ -15,13 +15,13 @@ class LHStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     EXCEPTION: _ClassVar[LHStatus]
 
 class MetadataStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     ACTIVE: _ClassVar[MetadataStatus]
     ARCHIVED: _ClassVar[MetadataStatus]
     TERMINATING: _ClassVar[MetadataStatus]
 
 class TaskStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     TASK_SCHEDULED: _ClassVar[TaskStatus]
     TASK_RUNNING: _ClassVar[TaskStatus]
     TASK_SUCCESS: _ClassVar[TaskStatus]
@@ -33,13 +33,13 @@ class TaskStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     TASK_PENDING: _ClassVar[TaskStatus]
 
 class MetricsWindowLength(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     MINUTES_5: _ClassVar[MetricsWindowLength]
     HOURS_2: _ClassVar[MetricsWindowLength]
     DAYS_1: _ClassVar[MetricsWindowLength]
 
 class VariableType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     JSON_OBJ: _ClassVar[VariableType]
     JSON_ARR: _ClassVar[VariableType]
     DOUBLE: _ClassVar[VariableType]
@@ -48,9 +48,10 @@ class VariableType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     INT: _ClassVar[VariableType]
     BYTES: _ClassVar[VariableType]
     WF_RUN_ID: _ClassVar[VariableType]
+    TIMESTAMP: _ClassVar[VariableType]
 
 class LHErrorType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     CHILD_FAILURE: _ClassVar[LHErrorType]
     VAR_SUB_ERROR: _ClassVar[LHErrorType]
     VAR_MUTATION_ERROR: _ClassVar[LHErrorType]
@@ -104,6 +105,7 @@ STR: VariableType
 INT: VariableType
 BYTES: VariableType
 WF_RUN_ID: VariableType
+TIMESTAMP: VariableType
 CHILD_FAILURE: LHErrorType
 VAR_SUB_ERROR: LHErrorType
 VAR_MUTATION_ERROR: LHErrorType

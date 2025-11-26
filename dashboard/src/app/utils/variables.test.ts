@@ -1,5 +1,18 @@
-import { VariableAssignment, VariableDef, VariableMutationType, VariableType } from 'littlehorse-client/proto'
-import { getTypedVariableValue, getVariable, getVariableDefType } from './variables'
+import {
+  TypeDefinition,
+  VariableAssignment,
+  VariableDef,
+  VariableMutationType,
+  VariableType,
+  VariableValue,
+} from 'littlehorse-client/proto'
+import {
+  getTypedVariableValue,
+  getVariable,
+  getVariableCaseFromTypeDef,
+  getVariableDefType,
+  getVariableValue,
+} from './variables'
 
 describe('getVariable', () => {
   it('should return from literalValue str', () => {
@@ -44,7 +57,10 @@ describe('getVariable', () => {
 
   it('should return variableName with jsonPath', () => {
     const variable: VariableAssignment = {
-      jsonPath: '$.path',
+      path: {
+        $case: 'jsonPath',
+        value: '$.path',
+      },
       source: {
         $case: 'variableName',
         value: 'variable',
@@ -283,7 +299,7 @@ describe('getVariable', () => {
         value: {},
       },
     }
-    expect(getVariable(variable)).toEqual('null')
+    expect(getVariable(variable)).toEqual('NULL')
   })
 })
 
@@ -364,12 +380,54 @@ describe('getVariableDefType', () => {
     const variableDef: VariableDef = {
       name: 'testVariable',
       typeDef: {
-        type: VariableType.STR,
+        definedType: {
+          $case: 'primitiveType',
+          value: VariableType.STR,
+        },
         masked: false,
       },
     }
 
     const type = getVariableDefType(variableDef)
     expect(type).toEqual('str')
+  })
+})
+
+describe('getVariableCaseFromTypeDef', () => {
+  it('should return primitive type case', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'primitiveType',
+        value: VariableType.STR,
+      },
+      masked: false,
+    }
+
+    expect(getVariableCaseFromTypeDef(typeDef)).toEqual('str')
+  })
+
+  it('should return struct for structDefId', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'structDefId',
+        value: {
+          // minimal stub; fields are not used by the function
+        } as any,
+      },
+      masked: false,
+    }
+
+    expect(getVariableCaseFromTypeDef(typeDef)).toEqual('struct')
+  })
+
+  it('should throw on unknown type', () => {
+    const typeDef = {} as TypeDefinition
+    expect(() => getVariableCaseFromTypeDef(typeDef)).toThrow('Unknown variable type.')
+  })
+})
+
+describe('getVariableValue', () => {
+  it('should return NULL for empty value', () => {
+    expect(getVariableValue({ value: {} } as VariableValue)).toEqual('NULL')
   })
 })

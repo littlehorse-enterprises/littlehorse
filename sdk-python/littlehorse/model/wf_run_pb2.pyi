@@ -1,3 +1,5 @@
+import datetime
+
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
@@ -6,12 +8,13 @@ from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from collections.abc import Iterable as _Iterable, Mapping as _Mapping
+from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class ThreadType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     ENTRYPOINT: _ClassVar[ThreadType]
     CHILD: _ClassVar[ThreadType]
     INTERRUPT: _ClassVar[ThreadType]
@@ -22,7 +25,7 @@ INTERRUPT: ThreadType
 FAILURE_HANDLER: ThreadType
 
 class WfRun(_message.Message):
-    __slots__ = ["id", "wf_spec_id", "old_wf_spec_versions", "status", "greatest_threadrun_number", "start_time", "end_time", "thread_runs", "pending_interrupts", "pending_failures"]
+    __slots__ = ("id", "wf_spec_id", "old_wf_spec_versions", "status", "greatest_threadrun_number", "start_time", "end_time", "thread_runs", "pending_interrupts", "pending_failures")
     ID_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     OLD_WF_SPEC_VERSIONS_FIELD_NUMBER: _ClassVar[int]
@@ -43,10 +46,10 @@ class WfRun(_message.Message):
     thread_runs: _containers.RepeatedCompositeFieldContainer[ThreadRun]
     pending_interrupts: _containers.RepeatedCompositeFieldContainer[PendingInterrupt]
     pending_failures: _containers.RepeatedCompositeFieldContainer[PendingFailureHandler]
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., old_wf_spec_versions: _Optional[_Iterable[_Union[_object_id_pb2.WfSpecId, _Mapping]]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., greatest_threadrun_number: _Optional[int] = ..., start_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_runs: _Optional[_Iterable[_Union[ThreadRun, _Mapping]]] = ..., pending_interrupts: _Optional[_Iterable[_Union[PendingInterrupt, _Mapping]]] = ..., pending_failures: _Optional[_Iterable[_Union[PendingFailureHandler, _Mapping]]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., old_wf_spec_versions: _Optional[_Iterable[_Union[_object_id_pb2.WfSpecId, _Mapping]]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., greatest_threadrun_number: _Optional[int] = ..., start_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., thread_runs: _Optional[_Iterable[_Union[ThreadRun, _Mapping]]] = ..., pending_interrupts: _Optional[_Iterable[_Union[PendingInterrupt, _Mapping]]] = ..., pending_failures: _Optional[_Iterable[_Union[PendingFailureHandler, _Mapping]]] = ...) -> None: ...
 
 class ThreadRun(_message.Message):
-    __slots__ = ["wf_spec_id", "number", "status", "thread_spec_name", "start_time", "end_time", "error_message", "child_thread_ids", "parent_thread_id", "halt_reasons", "interrupt_trigger_id", "failure_being_handled", "current_node_position", "handled_failed_children", "type", "output"]
+    __slots__ = ("wf_spec_id", "number", "status", "thread_spec_name", "start_time", "end_time", "error_message", "child_thread_ids", "parent_thread_id", "halt_reasons", "interrupt_trigger_id", "failure_being_handled", "current_node_position", "handled_failed_children", "type", "output")
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     NUMBER_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
@@ -79,10 +82,10 @@ class ThreadRun(_message.Message):
     handled_failed_children: _containers.RepeatedScalarFieldContainer[int]
     type: ThreadType
     output: _variable_pb2.VariableValue
-    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., number: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_spec_name: _Optional[str] = ..., start_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., error_message: _Optional[str] = ..., child_thread_ids: _Optional[_Iterable[int]] = ..., parent_thread_id: _Optional[int] = ..., halt_reasons: _Optional[_Iterable[_Union[ThreadHaltReason, _Mapping]]] = ..., interrupt_trigger_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., failure_being_handled: _Optional[_Union[FailureBeingHandled, _Mapping]] = ..., current_node_position: _Optional[int] = ..., handled_failed_children: _Optional[_Iterable[int]] = ..., type: _Optional[_Union[ThreadType, str]] = ..., output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., number: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_spec_name: _Optional[str] = ..., start_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., error_message: _Optional[str] = ..., child_thread_ids: _Optional[_Iterable[int]] = ..., parent_thread_id: _Optional[int] = ..., halt_reasons: _Optional[_Iterable[_Union[ThreadHaltReason, _Mapping]]] = ..., interrupt_trigger_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., failure_being_handled: _Optional[_Union[FailureBeingHandled, _Mapping]] = ..., current_node_position: _Optional[int] = ..., handled_failed_children: _Optional[_Iterable[int]] = ..., type: _Optional[_Union[ThreadType, str]] = ..., output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
 class FailureBeingHandled(_message.Message):
-    __slots__ = ["thread_run_number", "node_run_position", "failure_number"]
+    __slots__ = ("thread_run_number", "node_run_position", "failure_number")
     THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
     NODE_RUN_POSITION_FIELD_NUMBER: _ClassVar[int]
     FAILURE_NUMBER_FIELD_NUMBER: _ClassVar[int]
@@ -92,7 +95,7 @@ class FailureBeingHandled(_message.Message):
     def __init__(self, thread_run_number: _Optional[int] = ..., node_run_position: _Optional[int] = ..., failure_number: _Optional[int] = ...) -> None: ...
 
 class PendingInterrupt(_message.Message):
-    __slots__ = ["external_event_id", "handler_spec_name", "interrupted_thread_id"]
+    __slots__ = ("external_event_id", "handler_spec_name", "interrupted_thread_id")
     EXTERNAL_EVENT_ID_FIELD_NUMBER: _ClassVar[int]
     HANDLER_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
     INTERRUPTED_THREAD_ID_FIELD_NUMBER: _ClassVar[int]
@@ -102,7 +105,7 @@ class PendingInterrupt(_message.Message):
     def __init__(self, external_event_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., handler_spec_name: _Optional[str] = ..., interrupted_thread_id: _Optional[int] = ...) -> None: ...
 
 class PendingFailureHandler(_message.Message):
-    __slots__ = ["failed_thread_run", "handler_spec_name"]
+    __slots__ = ("failed_thread_run", "handler_spec_name")
     FAILED_THREAD_RUN_FIELD_NUMBER: _ClassVar[int]
     HANDLER_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
     failed_thread_run: int
@@ -110,43 +113,43 @@ class PendingFailureHandler(_message.Message):
     def __init__(self, failed_thread_run: _Optional[int] = ..., handler_spec_name: _Optional[str] = ...) -> None: ...
 
 class PendingInterruptHaltReason(_message.Message):
-    __slots__ = ["external_event_id"]
+    __slots__ = ("external_event_id",)
     EXTERNAL_EVENT_ID_FIELD_NUMBER: _ClassVar[int]
     external_event_id: _object_id_pb2.ExternalEventId
     def __init__(self, external_event_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ...) -> None: ...
 
 class PendingFailureHandlerHaltReason(_message.Message):
-    __slots__ = ["node_run_position"]
+    __slots__ = ("node_run_position",)
     NODE_RUN_POSITION_FIELD_NUMBER: _ClassVar[int]
     node_run_position: int
     def __init__(self, node_run_position: _Optional[int] = ...) -> None: ...
 
 class HandlingFailureHaltReason(_message.Message):
-    __slots__ = ["handler_thread_id"]
+    __slots__ = ("handler_thread_id",)
     HANDLER_THREAD_ID_FIELD_NUMBER: _ClassVar[int]
     handler_thread_id: int
     def __init__(self, handler_thread_id: _Optional[int] = ...) -> None: ...
 
 class ParentHalted(_message.Message):
-    __slots__ = ["parent_thread_id"]
+    __slots__ = ("parent_thread_id",)
     PARENT_THREAD_ID_FIELD_NUMBER: _ClassVar[int]
     parent_thread_id: int
     def __init__(self, parent_thread_id: _Optional[int] = ...) -> None: ...
 
 class Interrupted(_message.Message):
-    __slots__ = ["interrupt_thread_id"]
+    __slots__ = ("interrupt_thread_id",)
     INTERRUPT_THREAD_ID_FIELD_NUMBER: _ClassVar[int]
     interrupt_thread_id: int
     def __init__(self, interrupt_thread_id: _Optional[int] = ...) -> None: ...
 
 class ManualHalt(_message.Message):
-    __slots__ = ["meaning_of_life"]
+    __slots__ = ("meaning_of_life",)
     MEANING_OF_LIFE_FIELD_NUMBER: _ClassVar[int]
     meaning_of_life: bool
-    def __init__(self, meaning_of_life: bool = ...) -> None: ...
+    def __init__(self, meaning_of_life: _Optional[bool] = ...) -> None: ...
 
 class ThreadHaltReason(_message.Message):
-    __slots__ = ["parent_halted", "interrupted", "pending_interrupt", "pending_failure", "handling_failure", "manual_halt"]
+    __slots__ = ("parent_halted", "interrupted", "pending_interrupt", "pending_failure", "handling_failure", "manual_halt")
     PARENT_HALTED_FIELD_NUMBER: _ClassVar[int]
     INTERRUPTED_FIELD_NUMBER: _ClassVar[int]
     PENDING_INTERRUPT_FIELD_NUMBER: _ClassVar[int]

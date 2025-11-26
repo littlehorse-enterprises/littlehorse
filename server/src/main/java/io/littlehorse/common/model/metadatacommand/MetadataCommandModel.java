@@ -6,6 +6,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
@@ -52,6 +53,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private DeletePrincipalRequestModel deletePrincipal;
     private PutTenantRequestModel putTenant;
     private PutWorkflowEventDefRequestModel putWorkflowEventDef;
+    private DeleteStructDefRequestModel deleteStructDef;
     private PutMetricSpecRequestModel putMetric;
 
     public MetadataCommandModel() {
@@ -122,6 +124,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case WORKFLOW_EVENT_DEF:
                 out.setWorkflowEventDef(putWorkflowEventDef.toProto());
                 break;
+            case DELETE_STRUCT_DEF:
+                out.setDeleteStructDef(deleteStructDef.toProto());
+                break;
             case PUT_METRIC:
                 out.setPutMetric(putMetric.toProto());
                 break;
@@ -191,6 +196,10 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 putWorkflowEventDef = LHSerializable.fromProto(
                         p.getWorkflowEventDef(), PutWorkflowEventDefRequestModel.class, context);
                 break;
+            case DELETE_STRUCT_DEF:
+                deleteStructDef =
+                        LHSerializable.fromProto(p.getDeleteStructDef(), DeleteStructDefRequestModel.class, context);
+                break;
             case PUT_METRIC:
                 putMetric = LHSerializable.fromProto(p.getPutMetric(), PutMetricSpecRequestModel.class, context);
                 break;
@@ -229,6 +238,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return putTenant;
             case WORKFLOW_EVENT_DEF:
                 return putWorkflowEventDef;
+            case DELETE_STRUCT_DEF:
+                return deleteStructDef;
             case PUT_METRIC:
                 return putMetric;
             case METADATACOMMAND_NOT_SET:
@@ -280,6 +291,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(PutWorkflowEventDefRequestModel.class)) {
             type = MetadataCommandCase.WORKFLOW_EVENT_DEF;
             putWorkflowEventDef = (PutWorkflowEventDefRequestModel) cmd;
+        } else if (cls.equals(DeleteStructDefRequestModel.class)) {
+            type = MetadataCommandCase.DELETE_STRUCT_DEF;
+            deleteStructDef = (DeleteStructDefRequestModel) cmd;
         } else if (cls.equals(PutMetricSpecRequestModel.class)) {
             type = MetadataCommandCase.PUT_METRIC;
             putMetric = (PutMetricSpecRequestModel) cmd;

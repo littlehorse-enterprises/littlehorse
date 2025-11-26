@@ -86,7 +86,11 @@ public final class ServerFilterRules {
             deny("kafka_consumer"),
             deny("kafka_admin"));
 
-    public static final List<ServerFilterRule> TRACE_RULES = List.of();
+    // Allow everything except metrics that can report negative values as it breaks the exporter
+    public static final List<ServerFilterRule> TRACE_RULES = List.of(
+            deny("kafka_consumer_"), // preferred-read-replica reports -1 if reading from leader
+            deny("kafka_stream_state_number_open_files") // Reports -1
+            );
 
     public static ServerFilterRule accept(String prefix) {
         return new ServerFilterRule(prefix, MeterFilterReply.ACCEPT);
