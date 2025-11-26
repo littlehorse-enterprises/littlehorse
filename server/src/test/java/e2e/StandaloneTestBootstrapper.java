@@ -1,8 +1,14 @@
 package e2e;
 
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
+import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.TestBootstrapper;
@@ -10,7 +16,9 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.awaitility.Awaitility;
 import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -38,6 +46,18 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         kafka.start();
         workerConfig = new LHConfig(testClientProperties());
         startServers();
+
+        // Enable the output topic by default.
+        Awaitility.await().ignoreException(StatusRuntimeException.class).until(() -> {
+            LittleHorseBlockingStub client = workerConfig.getBlockingStub();
+            client.putTenant(PutTenantRequest.newBuilder()
+                    .setId(workerConfig.getTenantId().getId())
+                    .setOutputTopicConfig(OutputTopicConfig.newBuilder()
+                            .setDefaultRecordingLevel(OutputTopicRecordingLevel.ALL_ENTITY_EVENTS)
+                            .build())
+                    .build());
+            return true;
+        });
     }
 
     private void startServers() throws Exception {
@@ -47,6 +67,12 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         for (NewTopic topic : server1Config.getAllTopics()) {
             server1Config.createKafkaTopic(topic);
         }
+
+        // Create output topic because it's gonna be enabled
+        Pair<NewTopic, NewTopic> outputTopics = server1Config.getOutputTopicsFor(
+                new TenantModel(workerConfig.getTenantId().getId()));
+        server1Config.createKafkaTopic(outputTopics.getLeft());
+        server1Config.createKafkaTopic(outputTopics.getRight());
 
         TimeUnit.SECONDS.sleep(3);
 
