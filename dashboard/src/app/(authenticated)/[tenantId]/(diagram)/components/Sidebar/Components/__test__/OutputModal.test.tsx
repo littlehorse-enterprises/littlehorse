@@ -9,7 +9,7 @@ jest.mock('../../../../hooks/useModal', () => ({
 }))
 
 jest.mock('lucide-react', () => ({
-  Expand: (props: any) => <svg data-testid="expand" {...props} />,
+  Expand: (props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => <svg data-testid="expand" {...props} />,
 }))
 
 describe('OutputModal', () => {
@@ -20,9 +20,11 @@ describe('OutputModal', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockedUseModal.mockReturnValue({
-      setModal,
-      setShowModal,
-    } as any)
+        setModal,
+        setShowModal,
+        modal: null,
+        showModal: false
+    } )
   })
 
   it('renders label and message', () => {
