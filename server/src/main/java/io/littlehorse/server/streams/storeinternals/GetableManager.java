@@ -99,6 +99,9 @@ public class GetableManager extends ReadOnlyGetableManager {
         boolean alreadyExists =
                 uncommittedChanges.containsKey(getable.getObjectId().getStoreableKey());
 
+        ctx.getableUpdates().add(getable.updates());
+
+        @SuppressWarnings("unchecked")
         GetableToStore<U, T> toPut;
         if (alreadyExists) {
             @SuppressWarnings("unchecked")

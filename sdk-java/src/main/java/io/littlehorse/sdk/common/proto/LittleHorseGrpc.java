@@ -229,6 +229,37 @@ public final class LittleHorseGrpc {
     return getPutWfSpecMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricSpecRequest,
+      io.littlehorse.sdk.common.proto.MetricSpec> getPutMetricSpecMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PutMetricSpec",
+      requestType = io.littlehorse.sdk.common.proto.PutMetricSpecRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricSpec.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricSpecRequest,
+      io.littlehorse.sdk.common.proto.MetricSpec> getPutMetricSpecMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricSpecRequest, io.littlehorse.sdk.common.proto.MetricSpec> getPutMetricSpecMethod;
+    if ((getPutMetricSpecMethod = LittleHorseGrpc.getPutMetricSpecMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getPutMetricSpecMethod = LittleHorseGrpc.getPutMetricSpecMethod) == null) {
+          LittleHorseGrpc.getPutMetricSpecMethod = getPutMetricSpecMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutMetricSpecRequest, io.littlehorse.sdk.common.proto.MetricSpec>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutMetricSpec"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutMetricSpecRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricSpec.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutMetricSpec"))
+              .build();
+        }
+      }
+    }
+    return getPutMetricSpecMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfSpecId,
       io.littlehorse.sdk.common.proto.WfSpec> getGetWfSpecMethod;
 
@@ -2771,6 +2802,68 @@ public final class LittleHorseGrpc {
     return getGetServerVersionMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricSpecRequest,
+      io.littlehorse.sdk.common.proto.MetricSpecList> getListMetricSpecsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ListMetricSpecs",
+      requestType = io.littlehorse.sdk.common.proto.ListMetricSpecRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricSpecList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricSpecRequest,
+      io.littlehorse.sdk.common.proto.MetricSpecList> getListMetricSpecsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricSpecRequest, io.littlehorse.sdk.common.proto.MetricSpecList> getListMetricSpecsMethod;
+    if ((getListMetricSpecsMethod = LittleHorseGrpc.getListMetricSpecsMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getListMetricSpecsMethod = LittleHorseGrpc.getListMetricSpecsMethod) == null) {
+          LittleHorseGrpc.getListMetricSpecsMethod = getListMetricSpecsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListMetricSpecRequest, io.littlehorse.sdk.common.proto.MetricSpecList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListMetricSpecs"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ListMetricSpecRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricSpecList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListMetricSpecs"))
+              .build();
+        }
+      }
+    }
+    return getListMetricSpecsMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricsRequest,
+      io.littlehorse.sdk.common.proto.MetricList> getListMetricsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ListMetrics",
+      requestType = io.littlehorse.sdk.common.proto.ListMetricsRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricsRequest,
+      io.littlehorse.sdk.common.proto.MetricList> getListMetricsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricsRequest, io.littlehorse.sdk.common.proto.MetricList> getListMetricsMethod;
+    if ((getListMetricsMethod = LittleHorseGrpc.getListMetricsMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getListMetricsMethod = LittleHorseGrpc.getListMetricsMethod) == null) {
+          LittleHorseGrpc.getListMetricsMethod = getListMetricsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListMetricsRequest, io.littlehorse.sdk.common.proto.MetricList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListMetrics"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ListMetricsRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListMetrics"))
+              .build();
+        }
+      }
+    }
+    return getListMetricsMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -2902,6 +2995,16 @@ public final class LittleHorseGrpc {
     default void putWfSpec(io.littlehorse.sdk.common.proto.PutWfSpecRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutWfSpecMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Creates a new metric spec
+     * </pre>
+     */
+    default void putMetricSpec(io.littlehorse.sdk.common.proto.PutMetricSpecRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpec> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutMetricSpecMethod(), responseObserver);
     }
 
     /**
@@ -3144,7 +3247,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edits userComment with the correlated userCommentId 
+     * Edits userComment with the correlated userCommentId
      * </pre>
      */
     default void editUserTaskRunComment(io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest request,
@@ -3775,6 +3878,23 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.LittleHorseVersion> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetServerVersionMethod(), responseObserver);
     }
+
+    /**
+     */
+    default void listMetricSpecs(io.littlehorse.sdk.common.proto.ListMetricSpecRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpecList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListMetricSpecsMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List the latest metrics for a given MetricSpecId
+     * </pre>
+     */
+    default void listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListMetricsMethod(), responseObserver);
+    }
   }
 
   /**
@@ -3879,6 +3999,17 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getPutWfSpecMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Creates a new metric spec
+     * </pre>
+     */
+    public void putMetricSpec(io.littlehorse.sdk.common.proto.PutMetricSpecRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpec> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPutMetricSpecMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -4142,7 +4273,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edits userComment with the correlated userCommentId 
+     * Edits userComment with the correlated userCommentId
      * </pre>
      */
     public void editUserTaskRunComment(io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest request,
@@ -4834,6 +4965,25 @@ public final class LittleHorseGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void listMetricSpecs(io.littlehorse.sdk.common.proto.ListMetricSpecRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpecList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getListMetricSpecsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List the latest metrics for a given MetricSpecId
+     * </pre>
+     */
+    public void listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getListMetricsMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -4920,6 +5070,16 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.WfSpec putWfSpec(io.littlehorse.sdk.common.proto.PutWfSpecRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
           getChannel(), getPutWfSpecMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a new metric spec
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricSpec putMetricSpec(io.littlehorse.sdk.common.proto.PutMetricSpecRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getPutMetricSpecMethod(), getCallOptions(), request);
     }
 
     /**
@@ -5162,7 +5322,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edits userComment with the correlated userCommentId 
+     * Edits userComment with the correlated userCommentId
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRun editUserTaskRunComment(io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest request) throws io.grpc.StatusException {
@@ -5795,6 +5955,23 @@ public final class LittleHorseGrpc {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
           getChannel(), getGetServerVersionMethod(), getCallOptions(), request);
     }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.MetricSpecList listMetricSpecs(io.littlehorse.sdk.common.proto.ListMetricSpecRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getListMetricSpecsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * List the latest metrics for a given MetricSpecId
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricList listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getListMetricsMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -5881,6 +6058,16 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.WfSpec putWfSpec(io.littlehorse.sdk.common.proto.PutWfSpecRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getPutWfSpecMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a new metric spec
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricSpec putMetricSpec(io.littlehorse.sdk.common.proto.PutMetricSpecRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutMetricSpecMethod(), getCallOptions(), request);
     }
 
     /**
@@ -6123,7 +6310,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edits userComment with the correlated userCommentId 
+     * Edits userComment with the correlated userCommentId
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRun editUserTaskRunComment(io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest request) {
@@ -6743,6 +6930,23 @@ public final class LittleHorseGrpc {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetServerVersionMethod(), getCallOptions(), request);
     }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.MetricSpecList listMetricSpecs(io.littlehorse.sdk.common.proto.ListMetricSpecRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListMetricSpecsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * List the latest metrics for a given MetricSpecId
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricList listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListMetricsMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -6836,6 +7040,17 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.PutWfSpecRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getPutWfSpecMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a new metric spec
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricSpec> putMetricSpec(
+        io.littlehorse.sdk.common.proto.PutMetricSpecRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPutMetricSpecMethod(), getCallOptions()), request);
     }
 
     /**
@@ -7099,7 +7314,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edits userComment with the correlated userCommentId 
+     * Edits userComment with the correlated userCommentId
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskRun> editUserTaskRunComment(
@@ -7779,6 +7994,25 @@ public final class LittleHorseGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricSpecList> listMetricSpecs(
+        io.littlehorse.sdk.common.proto.ListMetricSpecRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getListMetricSpecsMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * List the latest metrics for a given MetricSpecId
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricList> listMetrics(
+        io.littlehorse.sdk.common.proto.ListMetricsRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getListMetricsMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PUT_TASK_DEF = 0;
@@ -7788,88 +8022,91 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_EXTERNAL_EVENT_DEF = 4;
   private static final int METHODID_PUT_WORKFLOW_EVENT_DEF = 5;
   private static final int METHODID_PUT_WF_SPEC = 6;
-  private static final int METHODID_GET_WF_SPEC = 7;
-  private static final int METHODID_GET_LATEST_WF_SPEC = 8;
-  private static final int METHODID_MIGRATE_WF_SPEC = 9;
-  private static final int METHODID_PUT_STRUCT_DEF = 10;
-  private static final int METHODID_GET_STRUCT_DEF = 11;
-  private static final int METHODID_VALIDATE_STRUCT_DEF_EVOLUTION = 12;
-  private static final int METHODID_PUT_USER_TASK_DEF = 13;
-  private static final int METHODID_GET_USER_TASK_DEF = 14;
-  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 15;
-  private static final int METHODID_RUN_WF = 16;
-  private static final int METHODID_SCHEDULE_WF = 17;
-  private static final int METHODID_SEARCH_SCHEDULED_WF_RUN = 18;
-  private static final int METHODID_GET_SCHEDULED_WF_RUN = 19;
-  private static final int METHODID_GET_WF_RUN = 20;
-  private static final int METHODID_GET_USER_TASK_RUN = 21;
-  private static final int METHODID_ASSIGN_USER_TASK_RUN = 22;
-  private static final int METHODID_COMPLETE_USER_TASK_RUN = 23;
-  private static final int METHODID_CANCEL_USER_TASK_RUN = 24;
-  private static final int METHODID_SAVE_USER_TASK_RUN_PROGRESS = 25;
-  private static final int METHODID_LIST_USER_TASK_RUNS = 26;
-  private static final int METHODID_PUT_USER_TASK_RUN_COMMENT = 27;
-  private static final int METHODID_EDIT_USER_TASK_RUN_COMMENT = 28;
-  private static final int METHODID_DELETE_USER_TASK_RUN_COMMENT = 29;
-  private static final int METHODID_GET_NODE_RUN = 30;
-  private static final int METHODID_LIST_NODE_RUNS = 31;
-  private static final int METHODID_GET_TASK_RUN = 32;
-  private static final int METHODID_LIST_TASK_RUNS = 33;
-  private static final int METHODID_GET_VARIABLE = 34;
-  private static final int METHODID_LIST_VARIABLES = 35;
-  private static final int METHODID_PUT_EXTERNAL_EVENT = 36;
-  private static final int METHODID_PUT_CORRELATED_EVENT = 37;
-  private static final int METHODID_GET_EXTERNAL_EVENT = 38;
-  private static final int METHODID_GET_CORRELATED_EVENT = 39;
-  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 40;
-  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 41;
-  private static final int METHODID_GET_WORKFLOW_EVENT = 42;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 43;
-  private static final int METHODID_LIST_WORKFLOW_EVENTS = 44;
-  private static final int METHODID_SEARCH_WF_RUN = 45;
-  private static final int METHODID_SEARCH_CORRELATED_EVENT = 46;
-  private static final int METHODID_SEARCH_NODE_RUN = 47;
-  private static final int METHODID_SEARCH_TASK_RUN = 48;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 49;
-  private static final int METHODID_SEARCH_VARIABLE = 50;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 51;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 52;
-  private static final int METHODID_SEARCH_TASK_DEF = 53;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 54;
-  private static final int METHODID_SEARCH_WF_SPEC = 55;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 56;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 57;
-  private static final int METHODID_SEARCH_TENANT = 58;
-  private static final int METHODID_SEARCH_PRINCIPAL = 59;
-  private static final int METHODID_SEARCH_STRUCT_DEF = 60;
-  private static final int METHODID_REGISTER_TASK_WORKER = 61;
-  private static final int METHODID_REPORT_TASK = 62;
-  private static final int METHODID_PUT_CHECKPOINT = 63;
-  private static final int METHODID_GET_CHECKPOINT = 64;
-  private static final int METHODID_STOP_WF_RUN = 65;
-  private static final int METHODID_RESUME_WF_RUN = 66;
-  private static final int METHODID_RESCUE_THREAD_RUN = 67;
-  private static final int METHODID_DELETE_WF_RUN = 68;
-  private static final int METHODID_DELETE_TASK_DEF = 69;
-  private static final int METHODID_DELETE_STRUCT_DEF = 70;
-  private static final int METHODID_DELETE_WF_SPEC = 71;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 72;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 73;
-  private static final int METHODID_DELETE_CORRELATED_EVENT = 74;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 75;
-  private static final int METHODID_DELETE_PRINCIPAL = 76;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 77;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 78;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 79;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 80;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 81;
-  private static final int METHODID_PUT_TENANT = 82;
-  private static final int METHODID_GET_TENANT = 83;
-  private static final int METHODID_PUT_PRINCIPAL = 84;
-  private static final int METHODID_GET_PRINCIPAL = 85;
-  private static final int METHODID_WHOAMI = 86;
-  private static final int METHODID_GET_SERVER_VERSION = 87;
-  private static final int METHODID_POLL_TASK = 88;
+  private static final int METHODID_PUT_METRIC_SPEC = 7;
+  private static final int METHODID_GET_WF_SPEC = 8;
+  private static final int METHODID_GET_LATEST_WF_SPEC = 9;
+  private static final int METHODID_MIGRATE_WF_SPEC = 10;
+  private static final int METHODID_PUT_STRUCT_DEF = 11;
+  private static final int METHODID_GET_STRUCT_DEF = 12;
+  private static final int METHODID_VALIDATE_STRUCT_DEF_EVOLUTION = 13;
+  private static final int METHODID_PUT_USER_TASK_DEF = 14;
+  private static final int METHODID_GET_USER_TASK_DEF = 15;
+  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 16;
+  private static final int METHODID_RUN_WF = 17;
+  private static final int METHODID_SCHEDULE_WF = 18;
+  private static final int METHODID_SEARCH_SCHEDULED_WF_RUN = 19;
+  private static final int METHODID_GET_SCHEDULED_WF_RUN = 20;
+  private static final int METHODID_GET_WF_RUN = 21;
+  private static final int METHODID_GET_USER_TASK_RUN = 22;
+  private static final int METHODID_ASSIGN_USER_TASK_RUN = 23;
+  private static final int METHODID_COMPLETE_USER_TASK_RUN = 24;
+  private static final int METHODID_CANCEL_USER_TASK_RUN = 25;
+  private static final int METHODID_SAVE_USER_TASK_RUN_PROGRESS = 26;
+  private static final int METHODID_LIST_USER_TASK_RUNS = 27;
+  private static final int METHODID_PUT_USER_TASK_RUN_COMMENT = 28;
+  private static final int METHODID_EDIT_USER_TASK_RUN_COMMENT = 29;
+  private static final int METHODID_DELETE_USER_TASK_RUN_COMMENT = 30;
+  private static final int METHODID_GET_NODE_RUN = 31;
+  private static final int METHODID_LIST_NODE_RUNS = 32;
+  private static final int METHODID_GET_TASK_RUN = 33;
+  private static final int METHODID_LIST_TASK_RUNS = 34;
+  private static final int METHODID_GET_VARIABLE = 35;
+  private static final int METHODID_LIST_VARIABLES = 36;
+  private static final int METHODID_PUT_EXTERNAL_EVENT = 37;
+  private static final int METHODID_PUT_CORRELATED_EVENT = 38;
+  private static final int METHODID_GET_EXTERNAL_EVENT = 39;
+  private static final int METHODID_GET_CORRELATED_EVENT = 40;
+  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 41;
+  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 42;
+  private static final int METHODID_GET_WORKFLOW_EVENT = 43;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 44;
+  private static final int METHODID_LIST_WORKFLOW_EVENTS = 45;
+  private static final int METHODID_SEARCH_WF_RUN = 46;
+  private static final int METHODID_SEARCH_CORRELATED_EVENT = 47;
+  private static final int METHODID_SEARCH_NODE_RUN = 48;
+  private static final int METHODID_SEARCH_TASK_RUN = 49;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 50;
+  private static final int METHODID_SEARCH_VARIABLE = 51;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 52;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 53;
+  private static final int METHODID_SEARCH_TASK_DEF = 54;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 55;
+  private static final int METHODID_SEARCH_WF_SPEC = 56;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 57;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 58;
+  private static final int METHODID_SEARCH_TENANT = 59;
+  private static final int METHODID_SEARCH_PRINCIPAL = 60;
+  private static final int METHODID_SEARCH_STRUCT_DEF = 61;
+  private static final int METHODID_REGISTER_TASK_WORKER = 62;
+  private static final int METHODID_REPORT_TASK = 63;
+  private static final int METHODID_PUT_CHECKPOINT = 64;
+  private static final int METHODID_GET_CHECKPOINT = 65;
+  private static final int METHODID_STOP_WF_RUN = 66;
+  private static final int METHODID_RESUME_WF_RUN = 67;
+  private static final int METHODID_RESCUE_THREAD_RUN = 68;
+  private static final int METHODID_DELETE_WF_RUN = 69;
+  private static final int METHODID_DELETE_TASK_DEF = 70;
+  private static final int METHODID_DELETE_STRUCT_DEF = 71;
+  private static final int METHODID_DELETE_WF_SPEC = 72;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 73;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 74;
+  private static final int METHODID_DELETE_CORRELATED_EVENT = 75;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 76;
+  private static final int METHODID_DELETE_PRINCIPAL = 77;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 78;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 79;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 80;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 81;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 82;
+  private static final int METHODID_PUT_TENANT = 83;
+  private static final int METHODID_GET_TENANT = 84;
+  private static final int METHODID_PUT_PRINCIPAL = 85;
+  private static final int METHODID_GET_PRINCIPAL = 86;
+  private static final int METHODID_WHOAMI = 87;
+  private static final int METHODID_GET_SERVER_VERSION = 88;
+  private static final int METHODID_LIST_METRIC_SPECS = 89;
+  private static final int METHODID_LIST_METRICS = 90;
+  private static final int METHODID_POLL_TASK = 91;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -7915,6 +8152,10 @@ public final class LittleHorseGrpc {
         case METHODID_PUT_WF_SPEC:
           serviceImpl.putWfSpec((io.littlehorse.sdk.common.proto.PutWfSpecRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec>) responseObserver);
+          break;
+        case METHODID_PUT_METRIC_SPEC:
+          serviceImpl.putMetricSpec((io.littlehorse.sdk.common.proto.PutMetricSpecRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpec>) responseObserver);
           break;
         case METHODID_GET_WF_SPEC:
           serviceImpl.getWfSpec((io.littlehorse.sdk.common.proto.WfSpecId) request,
@@ -8240,6 +8481,14 @@ public final class LittleHorseGrpc {
           serviceImpl.getServerVersion((com.google.protobuf.Empty) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.LittleHorseVersion>) responseObserver);
           break;
+        case METHODID_LIST_METRIC_SPECS:
+          serviceImpl.listMetricSpecs((io.littlehorse.sdk.common.proto.ListMetricSpecRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpecList>) responseObserver);
+          break;
+        case METHODID_LIST_METRICS:
+          serviceImpl.listMetrics((io.littlehorse.sdk.common.proto.ListMetricsRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricList>) responseObserver);
+          break;
         default:
           throw new AssertionError();
       }
@@ -8310,6 +8559,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.PutWfSpecRequest,
               io.littlehorse.sdk.common.proto.WfSpec>(
                 service, METHODID_PUT_WF_SPEC)))
+        .addMethod(
+          getPutMetricSpecMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.PutMetricSpecRequest,
+              io.littlehorse.sdk.common.proto.MetricSpec>(
+                service, METHODID_PUT_METRIC_SPEC)))
         .addMethod(
           getGetWfSpecMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -8884,6 +9140,20 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty,
               io.littlehorse.sdk.common.proto.LittleHorseVersion>(
                 service, METHODID_GET_SERVER_VERSION)))
+        .addMethod(
+          getListMetricSpecsMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.ListMetricSpecRequest,
+              io.littlehorse.sdk.common.proto.MetricSpecList>(
+                service, METHODID_LIST_METRIC_SPECS)))
+        .addMethod(
+          getListMetricsMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.ListMetricsRequest,
+              io.littlehorse.sdk.common.proto.MetricList>(
+                service, METHODID_LIST_METRICS)))
         .build();
   }
 
@@ -8939,6 +9209,7 @@ public final class LittleHorseGrpc {
               .addMethod(getGetExternalEventDefMethod())
               .addMethod(getPutWorkflowEventDefMethod())
               .addMethod(getPutWfSpecMethod())
+              .addMethod(getPutMetricSpecMethod())
               .addMethod(getGetWfSpecMethod())
               .addMethod(getGetLatestWfSpecMethod())
               .addMethod(getMigrateWfSpecMethod())
@@ -9021,6 +9292,8 @@ public final class LittleHorseGrpc {
               .addMethod(getGetPrincipalMethod())
               .addMethod(getWhoamiMethod())
               .addMethod(getGetServerVersionMethod())
+              .addMethod(getListMetricSpecsMethod())
+              .addMethod(getListMetricsMethod())
               .build();
         }
       }

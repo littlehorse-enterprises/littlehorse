@@ -279,5 +279,20 @@ public interface MetadataCommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.DeleteStructDefRequestOrBuilder getDeleteStructDefOrBuilder();
 
+  /**
+   * <code>.littlehorse.PutMetricSpecRequest put_metric = 19;</code>
+   * @return Whether the putMetric field is set.
+   */
+  boolean hasPutMetric();
+  /**
+   * <code>.littlehorse.PutMetricSpecRequest put_metric = 19;</code>
+   * @return The putMetric.
+   */
+  io.littlehorse.sdk.common.proto.PutMetricSpecRequest getPutMetric();
+  /**
+   * <code>.littlehorse.PutMetricSpecRequest put_metric = 19;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutMetricSpecRequestOrBuilder getPutMetricOrBuilder();
+
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

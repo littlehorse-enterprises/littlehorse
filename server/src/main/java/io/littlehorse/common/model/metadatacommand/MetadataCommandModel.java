@@ -12,6 +12,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefR
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutMetricSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
@@ -53,6 +54,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private PutTenantRequestModel putTenant;
     private PutWorkflowEventDefRequestModel putWorkflowEventDef;
     private DeleteStructDefRequestModel deleteStructDef;
+    private PutMetricSpecRequestModel putMetric;
 
     public MetadataCommandModel() {
         super();
@@ -125,6 +127,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case DELETE_STRUCT_DEF:
                 out.setDeleteStructDef(deleteStructDef.toProto());
                 break;
+            case PUT_METRIC:
+                out.setPutMetric(putMetric.toProto());
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -195,6 +200,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 deleteStructDef =
                         LHSerializable.fromProto(p.getDeleteStructDef(), DeleteStructDefRequestModel.class, context);
                 break;
+            case PUT_METRIC:
+                putMetric = LHSerializable.fromProto(p.getPutMetric(), PutMetricSpecRequestModel.class, context);
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -232,6 +240,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return putWorkflowEventDef;
             case DELETE_STRUCT_DEF:
                 return deleteStructDef;
+            case PUT_METRIC:
+                return putMetric;
             case METADATACOMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -284,6 +294,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(DeleteStructDefRequestModel.class)) {
             type = MetadataCommandCase.DELETE_STRUCT_DEF;
             deleteStructDef = (DeleteStructDefRequestModel) cmd;
+        } else if (cls.equals(PutMetricSpecRequestModel.class)) {
+            type = MetadataCommandCase.PUT_METRIC;
+            putMetric = (PutMetricSpecRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

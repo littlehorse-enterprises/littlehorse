@@ -17,6 +17,8 @@ import littlehorse.model.struct_def_pb2 as _struct_def_pb2
 import littlehorse.model.acls_pb2 as _acls_pb2
 import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
 import littlehorse.model.scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
+import littlehorse.model.metrics_pb2 as _metrics_pb2
+from google.protobuf import duration_pb2 as _duration_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -70,6 +72,20 @@ class PutWfSpecRequest(_message.Message):
     parent_wf_spec: _wf_spec_pb2.WfSpec.ParentWfSpecReference
     allowed_updates: AllowedUpdateType
     def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ..., parent_wf_spec: _Optional[_Union[_wf_spec_pb2.WfSpec.ParentWfSpecReference, _Mapping]] = ..., allowed_updates: _Optional[_Union[AllowedUpdateType, str]] = ...) -> None: ...
+
+class PutMetricSpecRequest(_message.Message):
+    __slots__ = ("aggregation_type", "node", "wf_spec_id", "thread_spec", "window_length")
+    AGGREGATION_TYPE_FIELD_NUMBER: _ClassVar[int]
+    NODE_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
+    THREAD_SPEC_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
+    aggregation_type: _common_enums_pb2.AggregationType
+    node: _object_id_pb2.NodeReference
+    wf_spec_id: _object_id_pb2.WfSpecId
+    thread_spec: _object_id_pb2.ThreadSpecReference
+    window_length: _duration_pb2.Duration
+    def __init__(self, aggregation_type: _Optional[_Union[_common_enums_pb2.AggregationType, str]] = ..., node: _Optional[_Union[_object_id_pb2.NodeReference, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., thread_spec: _Optional[_Union[_object_id_pb2.ThreadSpecReference, _Mapping]] = ..., window_length: _Optional[_Union[datetime.timedelta, _duration_pb2.Duration, _Mapping]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
     __slots__ = ("name", "input_vars", "return_type")
@@ -409,13 +425,13 @@ class SearchUserTaskRunRequest(_message.Message):
     LATEST_START_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
-    status: _user_tasks_pb2.UserTaskRunStatus
+    status: _common_enums_pb2.UserTaskRunStatus
     user_task_def_name: str
     user_id: str
     user_group: str
     earliest_start: _timestamp_pb2.Timestamp
     latest_start: _timestamp_pb2.Timestamp
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., status: _Optional[_Union[_user_tasks_pb2.UserTaskRunStatus, str]] = ..., user_task_def_name: _Optional[str] = ..., user_id: _Optional[str] = ..., user_group: _Optional[str] = ..., earliest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.UserTaskRunStatus, str]] = ..., user_task_def_name: _Optional[str] = ..., user_id: _Optional[str] = ..., user_group: _Optional[str] = ..., earliest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class UserTaskRunIdList(_message.Message):
     __slots__ = ("results", "bookmark")
@@ -1047,3 +1063,33 @@ class LittleHorseVersion(_message.Message):
     patch_version: int
     pre_release_identifier: str
     def __init__(self, major_version: _Optional[int] = ..., minor_version: _Optional[int] = ..., patch_version: _Optional[int] = ..., pre_release_identifier: _Optional[str] = ...) -> None: ...
+
+class ListMetricSpecRequest(_message.Message):
+    __slots__ = ("wf_spec_id", "thread_spec_reference")
+    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
+    THREAD_SPEC_REFERENCE_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_id: _object_id_pb2.WfSpecId
+    thread_spec_reference: _object_id_pb2.ThreadSpecReference
+    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., thread_spec_reference: _Optional[_Union[_object_id_pb2.ThreadSpecReference, _Mapping]] = ...) -> None: ...
+
+class MetricSpecList(_message.Message):
+    __slots__ = ("results",)
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_metrics_pb2.MetricSpec]
+    def __init__(self, results: _Optional[_Iterable[_Union[_metrics_pb2.MetricSpec, _Mapping]]] = ...) -> None: ...
+
+class MetricList(_message.Message):
+    __slots__ = ("results",)
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_metrics_pb2.Metric]
+    def __init__(self, results: _Optional[_Iterable[_Union[_metrics_pb2.Metric, _Mapping]]] = ...) -> None: ...
+
+class ListMetricsRequest(_message.Message):
+    __slots__ = ("metric_spec_id", "window_length", "aggregation_type")
+    METRIC_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
+    AGGREGATION_TYPE_FIELD_NUMBER: _ClassVar[int]
+    metric_spec_id: _object_id_pb2.MetricSpecId
+    window_length: _duration_pb2.Duration
+    aggregation_type: _common_enums_pb2.AggregationType
+    def __init__(self, metric_spec_id: _Optional[_Union[_object_id_pb2.MetricSpecId, _Mapping]] = ..., window_length: _Optional[_Union[datetime.timedelta, _duration_pb2.Duration, _Mapping]] = ..., aggregation_type: _Optional[_Union[_common_enums_pb2.AggregationType, str]] = ...) -> None: ...

@@ -585,3 +585,130 @@ export function lHErrorTypeToNumber(object: LHErrorType): number {
       return -1;
   }
 }
+
+export enum AggregationType {
+  COUNT = "COUNT",
+  AVG = "AVG",
+  RATIO = "RATIO",
+  LATENCY = "LATENCY",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function aggregationTypeFromJSON(object: any): AggregationType {
+  switch (object) {
+    case 0:
+    case "COUNT":
+      return AggregationType.COUNT;
+    case 1:
+    case "AVG":
+      return AggregationType.AVG;
+    case 2:
+    case "RATIO":
+      return AggregationType.RATIO;
+    case 3:
+    case "LATENCY":
+      return AggregationType.LATENCY;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return AggregationType.UNRECOGNIZED;
+  }
+}
+
+export function aggregationTypeToJSON(object: AggregationType): string {
+  switch (object) {
+    case AggregationType.COUNT:
+      return "COUNT";
+    case AggregationType.AVG:
+      return "AVG";
+    case AggregationType.RATIO:
+      return "RATIO";
+    case AggregationType.LATENCY:
+      return "LATENCY";
+    case AggregationType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function aggregationTypeToNumber(object: AggregationType): number {
+  switch (object) {
+    case AggregationType.COUNT:
+      return 0;
+    case AggregationType.AVG:
+      return 1;
+    case AggregationType.RATIO:
+      return 2;
+    case AggregationType.LATENCY:
+      return 3;
+    case AggregationType.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
+/** The status that a UserTaskRun can be in. */
+export enum UserTaskRunStatus {
+  /** UNASSIGNED - Not assigned to a specific user yet. */
+  UNASSIGNED = "UNASSIGNED",
+  /** ASSIGNED - Assigned to a specific user, but not completed or cancelled yet. */
+  ASSIGNED = "ASSIGNED",
+  /** DONE - Done. */
+  DONE = "DONE",
+  /** CANCELLED - Cancelled. */
+  CANCELLED = "CANCELLED",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function userTaskRunStatusFromJSON(object: any): UserTaskRunStatus {
+  switch (object) {
+    case 0:
+    case "UNASSIGNED":
+      return UserTaskRunStatus.UNASSIGNED;
+    case 1:
+    case "ASSIGNED":
+      return UserTaskRunStatus.ASSIGNED;
+    case 3:
+    case "DONE":
+      return UserTaskRunStatus.DONE;
+    case 4:
+    case "CANCELLED":
+      return UserTaskRunStatus.CANCELLED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return UserTaskRunStatus.UNRECOGNIZED;
+  }
+}
+
+export function userTaskRunStatusToJSON(object: UserTaskRunStatus): string {
+  switch (object) {
+    case UserTaskRunStatus.UNASSIGNED:
+      return "UNASSIGNED";
+    case UserTaskRunStatus.ASSIGNED:
+      return "ASSIGNED";
+    case UserTaskRunStatus.DONE:
+      return "DONE";
+    case UserTaskRunStatus.CANCELLED:
+      return "CANCELLED";
+    case UserTaskRunStatus.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function userTaskRunStatusToNumber(object: UserTaskRunStatus): number {
+  switch (object) {
+    case UserTaskRunStatus.UNASSIGNED:
+      return 0;
+    case UserTaskRunStatus.ASSIGNED:
+      return 1;
+    case UserTaskRunStatus.DONE:
+      return 3;
+    case UserTaskRunStatus.CANCELLED:
+      return 4;
+    case UserTaskRunStatus.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
