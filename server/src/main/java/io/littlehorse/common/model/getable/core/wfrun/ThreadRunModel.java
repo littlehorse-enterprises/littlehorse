@@ -915,25 +915,17 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
     private Optional<VariableValueModel> getNodeOutput(String nodeName, CoreProcessorContext processorContext)
             throws LHVarSubError {
-        System.out.println("Looking for NodeOutput for node " + nodeName + " in ThreadRun " + number);
         CoreProcessorContext ctx = processorContext.castOnSupport(CoreProcessorContext.class);
-        System.out.println("Context is " + (ctx == null ? "null" : "not null"));
         if (ctx != null) {
-            System.out.println("Looking up store key for NodeOutput");
-            String groupedKey =
+            String nodeOutputStoreKey =
                     Storeable.getGroupedFullStoreKey(wfRun.getId(), StoreableType.NODE_OUTPUT, number + "/" + nodeName);
-            //            String storeKey = Storeable.getFullStoreKey(StoreableType.NODE_OUTPUT, groupedKey);
-            //            System.out.println("Store key is " + storeKey);
-            NodeOutputModel nodeOutput = ctx.getCoreStore().get(groupedKey, NodeOutputModel.class);
+            NodeOutputModel nodeOutput = ctx.getCoreStore().get(nodeOutputStoreKey, NodeOutputModel.class);
             if (nodeOutput != null) {
-                System.out.println("Found NodeOutput for node " + nodeName + " in ThreadRun " + number);
                 return Optional.of(nodeOutput.getValue());
             }
         }
         try {
             NodeRunModel referencedNodeRun = getMostRecentNodeRun(nodeName);
-            System.out.println(
-                    "NodeOutput not found for node " + nodeName + " in ThreadRun " + number + ", looking for NodeRun");
             return referencedNodeRun.getOutput(processorContext);
         } catch (LHVarSubError e) {
             // No node run found, return empty

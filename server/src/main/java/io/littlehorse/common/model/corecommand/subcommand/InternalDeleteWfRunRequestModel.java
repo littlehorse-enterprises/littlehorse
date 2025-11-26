@@ -27,6 +27,7 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -91,6 +92,7 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
         int thingsDone = 0;
         int startingThread;
         int startingNodeRun;
+        Set<String> nodeOutputStoreKeys = new java.util.HashSet<>();
         if (bookmark == null) {
             startingThread = 0;
             startingNodeRun = 0;
@@ -103,6 +105,13 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
                 threadRunNumber < wfRun.getThreadRunsUseMeCarefully().size();
                 threadRunNumber++) {
             ThreadRunModel thread = wfRun.getThreadRunsUseMeCarefully().get(threadRunNumber);
+
+            thread.getThreadSpec().getRequiredNodeNames().forEach(nodeName -> {
+                String storeKey = Storeable.getGroupedFullStoreKey(
+                        wfRunId, StoreableType.NODE_OUTPUT, thread.getNumber() + "/" + nodeName);
+                nodeOutputStoreKeys.add(storeKey);
+            });
+
             for (int nodeRunPosition = startingNodeRun;
                     nodeRunPosition <= thread.getCurrentNodePosition();
                     nodeRunPosition++) {
@@ -131,11 +140,6 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
                 // Delete the NodeRun
                 manager.delete(nodeRun.getObjectId());
 
-                // Delete the NodeOutput if it exists
-                String storeKey = Storeable.getGroupedFullStoreKey(
-                        wfRunId, StoreableType.NODE_OUTPUT, thread.getNumber() + "/" + nodeRun.getNodeName());
-                ((CoreProcessorContext) ctx).getCoreStore().delete(storeKey, StoreableType.NODE_OUTPUT);
-
                 if (thingsDone >= maxDeletesInOneCommand) {
                     log.debug("Not done deleting nodeRuns for {}", wfRunId);
                     DeleteWfRunBookmark.Builder result = DeleteWfRunBookmark.newBuilder()
@@ -158,6 +162,7 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
             }
         }
 
+        manager.deleteNodeOutputs(nodeOutputStoreKeys);
         boolean deletedAllEvents = manager.tryToDeleteAllExternalEventsFor(wfRunId, maxDeletesInOneCommand);
         if (!deletedAllEvents) {
             log.debug("Not done deleting external events for {}", wfRunId);
