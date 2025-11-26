@@ -33,7 +33,6 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
-import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
@@ -51,8 +50,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
-
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -353,7 +350,7 @@ public class GetableManagerTest {
 
     @ParameterizedTest
     @MethodSource("provideNodeRunObjects")
-    void storeNodeRun(NodeRunModel nodeRunModel,  String expectedStoreKey) {
+    void storeNodeRun(NodeRunModel nodeRunModel, String expectedStoreKey) {
         when(executionContext.getableUpdates()).thenReturn(getableUpdates);
 
         List<String> expectedLocalTagKeys = List.of();

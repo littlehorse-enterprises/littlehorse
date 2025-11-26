@@ -33,8 +33,8 @@ public class WfRunStatusUpdate extends GetableStatusUpdate {
         return switch (aggregationType) {
             case COUNT -> 1;
             case AVG, RATIO, LATENCY -> 0;
-            case UNRECOGNIZED -> throw new IllegalArgumentException(
-                    "Unrecognized aggregation type: " + aggregationType);
+            case UNRECOGNIZED ->
+                throw new IllegalArgumentException("Unrecognized aggregation type: " + aggregationType);
         };
     }
 }

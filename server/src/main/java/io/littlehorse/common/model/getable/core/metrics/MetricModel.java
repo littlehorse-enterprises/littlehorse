@@ -106,8 +106,10 @@ public class MetricModel extends RepartitionedGetable<Metric> {
 
     private void sumPartitionValues() {
         switch (metricRunId.getAggregationType()) {
-            case COUNT -> count =
-                    valuePerPartition.values().stream().mapToLong(Math::round).sum();
+            case COUNT ->
+                count = valuePerPartition.values().stream()
+                        .mapToLong(Math::round)
+                        .sum();
             case LATENCY -> {
                 double latency = valuePerPartition.values().stream()
                         .mapToLong(Math::round)

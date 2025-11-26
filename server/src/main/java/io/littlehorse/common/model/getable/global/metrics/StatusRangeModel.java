@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.getable.global.metrics;
 
-import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeException;

@@ -75,8 +75,8 @@ public class MetricSpecIdModel extends MetadataId<MetricSpecId, MetricSpec, Metr
     public String toString() {
         return switch (referenceCase) {
             case WF_SPEC_ID -> LHUtil.getCompositeId(String.valueOf(referenceCase.getNumber()), wfSpecId.toString());
-            case THREAD_SPEC -> LHUtil.getCompositeId(
-                    String.valueOf(referenceCase.getNumber()), threadSpecReference.toString());
+            case THREAD_SPEC ->
+                LHUtil.getCompositeId(String.valueOf(referenceCase.getNumber()), threadSpecReference.toString());
             case NODE -> LHUtil.getCompositeId(String.valueOf(referenceCase.getNumber()), nodeReference.toString());
             default -> throw new IllegalStateException("Unexpected value: " + referenceCase);
         };
