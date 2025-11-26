@@ -114,8 +114,6 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.CORRELATED_EVENT;
         } else if (cls.equals(CheckpointModel.class)) {
             return GetableClassEnum.CHECKPOINT;
-        } else if (cls.equals(NodeOutputModel.class)) {
-            return GetableClassEnum.NODE_OUTPUT;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }

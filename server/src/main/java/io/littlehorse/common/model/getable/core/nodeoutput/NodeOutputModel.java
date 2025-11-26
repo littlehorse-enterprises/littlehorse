@@ -9,8 +9,10 @@ import io.littlehorse.common.proto.NodeOutput;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+
 import java.util.Date;
 import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,10 +37,11 @@ public class NodeOutputModel extends Storeable<NodeOutput> {
 
     private Date createdAt;
 
-    public NodeOutputModel() {}
+    public NodeOutputModel() {
+    }
 
     public NodeOutputModel(WfRunIdModel wfRunId, int threadRunNumber, String nodeName, VariableValueModel value,
-            int nodeRunPosition) {
+                           int nodeRunPosition) {
         this.wfRunId = wfRunId;
         this.threadRunNumber = threadRunNumber;
         this.nodeName = nodeName;
@@ -76,16 +79,12 @@ public class NodeOutputModel extends Storeable<NodeOutput> {
     @Override
     public String getStoreKey() {
         String rest = threadRunNumber + "/" + nodeName;
-        if (wfRunId != null) {
-            return Storeable.getGroupedFullStoreKey(
-                    wfRunId, getType(), GetableClassEnum.NODE_OUTPUT, rest);
-        }
-        return Storeable.getFullStoreKey(getType(), rest);
+        return Storeable.getGroupedFullStoreKey(wfRunId, getType(), rest);
     }
 
     @Override
     public StoreableType getType() {
-        return StoreableType.WFRUN_STORED_INVENTORY;
+        return StoreableType.NODE_OUTPUT;
     }
 
     @Override

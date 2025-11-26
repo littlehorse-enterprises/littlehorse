@@ -897,9 +897,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         System.out.println("Context is " + (ctx == null ? "null" : "not null"));
         if (ctx != null) {
             System.out.println("Looking up store key for NodeOutput");
-            String storeKey = Storeable.getGroupedFullStoreKey(wfRun.getId(), StoreableType.STORED_GETABLE, GetableClassEnum.NODE_OUTPUT, number + "/" + nodeName);
-            System.out.println("Store key is " + storeKey);
-            NodeOutputModel nodeOutput = ctx.getCoreStore().get(storeKey, NodeOutputModel.class);
+            String groupedKey = Storeable.getGroupedFullStoreKey(wfRun.getId(), StoreableType.NODE_OUTPUT, number + "/" + nodeName);
+//            String storeKey = Storeable.getFullStoreKey(StoreableType.NODE_OUTPUT, groupedKey);
+//            System.out.println("Store key is " + storeKey);
+            NodeOutputModel nodeOutput = ctx.getCoreStore().get(groupedKey, NodeOutputModel.class);
             if (nodeOutput != null) {
                 System.out.println("Found NodeOutput for node " + nodeName + " in ThreadRun " + number);
                 return Optional.of(nodeOutput.getValue());

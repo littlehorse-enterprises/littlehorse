@@ -133,8 +133,8 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
                 manager.delete(nodeRun.getObjectId());
 
                 // Delete the NodeOutput if it exists
-                String storeKey = Storeable.getGroupedFullStoreKey(wfRunId, StoreableType.STORED_GETABLE, GetableClassEnum.NODE_OUTPUT, thread.getNumber() + "/" + nodeRun.getNodeName());
-                ((CoreProcessorContext) ctx).getCoreStore().delete(storeKey, StoreableType.STORED_GETABLE);
+                String storeKey = Storeable.getGroupedFullStoreKey(wfRunId, StoreableType.NODE_OUTPUT, thread.getNumber() + "/" + nodeRun.getNodeName());
+                ((CoreProcessorContext) ctx).getCoreStore().delete(storeKey, StoreableType.NODE_OUTPUT);
 
                 if (thingsDone >= maxDeletesInOneCommand) {
                     log.debug("Not done deleting nodeRuns for {}", wfRunId);
