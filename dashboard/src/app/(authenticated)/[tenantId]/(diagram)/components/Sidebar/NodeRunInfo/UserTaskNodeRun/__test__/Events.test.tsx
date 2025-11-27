@@ -42,7 +42,7 @@ jest.mock('../DoneEvent', () => ({
 }))
 
 jest.mock('../TimeLineEvent', () => ({
-  TimelineItem: ({ children, dotColor, isLast }: TimelineItemProps) => (
+  TimeLineEvent: ({ children, dotColor, isLast }: TimelineItemProps) => (
     <div data-testid="TimelineItem" data-dotcolor={dotColor} data-islast={String(isLast)}>
       {children}
     </div>

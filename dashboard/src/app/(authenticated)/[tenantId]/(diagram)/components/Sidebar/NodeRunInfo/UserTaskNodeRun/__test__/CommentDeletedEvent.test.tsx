@@ -18,7 +18,7 @@ describe('CommentDeletedEvent', () => {
 
     render(<CommentDeletedEvent event={{ userCommentId: 'comment-1', userId: 'user-1' } as any} time={time} />)
     expect(formatDateReadable).toHaveBeenCalledWith(time)
-    expect(screen.getByText(/Comment added/i)).toBeInTheDocument()
+    expect(screen.getByText(/Comment Deleted/i)).toBeInTheDocument()
     expect(screen.getByText('Formatted Date')).toBeInTheDocument()
     expect(screen.getByText(/comment-1 has been deleted by user-1/i)).toBeInTheDocument()
   })

@@ -7,7 +7,7 @@ import { getEventTime } from '@/app/utils'
 import { CommentAddedEvent } from './CommentAddedEvent'
 import { CommentEditedEvent } from './CommentEditedEvent'
 import { CommentDeletedEvent } from './CommentDeletedEvent'
-import { TimelineItem } from './TimeLineEvent'
+import { TimeLineEvent } from './TimeLineEvent'
 import { DoneEvent } from './DoneEvent'
 
 export const Events = ({ events }: { events: UserTaskEvent[] }) => {
@@ -43,7 +43,7 @@ export const Events = ({ events }: { events: UserTaskEvent[] }) => {
 
       <div className="container mx-auto  max-w-2xl  px-2 py-2">
         {sortedEvents.map((event, index) => (
-          <TimelineItem
+          <TimeLineEvent
             key={index}
             dotColor={event.event?.$case === 'completed' ? 'bg-green-500' : 'bg-blue-500'}
             isLast={index === sortedEvents.length - 1}
@@ -51,7 +51,7 @@ export const Events = ({ events }: { events: UserTaskEvent[] }) => {
             <div className="w-full" key={index}>
               {renderEvent(event, index)}
             </div>
-          </TimelineItem>
+          </TimeLineEvent>
         ))}
       </div>
     </div>

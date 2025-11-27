@@ -13,7 +13,7 @@ export const SavedEvent = ({ event, time }: { event: UserTaskEvent_UTESaved; tim
           <p className="text-xs text-slate-500">{formatDateReadable(time)}</p>
         </div>
       )}
-      <div className="ml-1  truncate text-xs text-slate-400">It has saved by {event.userId}</div>
+      <div className="ml-1  truncate text-xs text-slate-400">Saved by {event.userId}</div>
       <div>{resultsArray.length > 0 && <Results variables={resultsArray} classTitle="font-bold text-slate-500" />}</div>
     </>
   )

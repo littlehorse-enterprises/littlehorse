@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { FC, RefObject, useMemo, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { useDiagram } from '../../hooks/useDiagram'
 import { NodeInfo } from './NodeInfo/NodeInfo'
 import { Node } from './Node'

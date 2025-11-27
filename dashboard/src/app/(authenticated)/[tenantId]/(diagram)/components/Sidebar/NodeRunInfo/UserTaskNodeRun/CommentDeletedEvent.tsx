@@ -8,7 +8,7 @@ export const CommentDeletedEvent = ({ event, time }: { event: UserTaskEvent_UTEC
     <>
       {time && (
         <div className="ml-1 flex justify-between">
-          <p className="mr-1 text-xs font-bold text-slate-500">Comment added </p>
+          <p className="mr-1 text-xs font-bold text-slate-500">Comment Deleted </p>
           <p className="text-xs text-slate-500">{formatDateReadable(time)}</p>
         </div>
       )}

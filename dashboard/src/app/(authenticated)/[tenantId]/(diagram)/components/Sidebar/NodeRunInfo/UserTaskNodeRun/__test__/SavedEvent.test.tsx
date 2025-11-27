@@ -22,7 +22,7 @@ describe('SavedEvent', () => {
     render(<SavedEvent event={event} time="2020-01-01T00:00:00Z" />)
 
     expect(screen.getByText('FORMATTED_DATE')).toBeInTheDocument()
-    expect(screen.getByText(/It has saved by alice/)).toBeInTheDocument()
+    expect(screen.getByText(/Saved by alice/)).toBeInTheDocument()
   })
 
   it('renders Results when event.results has entries', () => {

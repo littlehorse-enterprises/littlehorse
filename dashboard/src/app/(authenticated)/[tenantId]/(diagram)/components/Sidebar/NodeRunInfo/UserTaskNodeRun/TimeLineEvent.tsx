@@ -6,7 +6,7 @@ export type TimelineItemProps = {
   isLast: boolean
 }
 
-export const TimelineItem = ({ dotColor = 'bg-blue-500', children, isLast }: TimelineItemProps) => {
+export const TimeLineEvent = ({ dotColor = 'bg-blue-500', children, isLast }: TimelineItemProps) => {
   return (
     <div className="relative  pb-2 pl-2 ">
       {!isLast && (
