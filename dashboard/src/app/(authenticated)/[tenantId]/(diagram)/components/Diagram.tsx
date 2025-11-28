@@ -81,7 +81,6 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
         : wfRun?.status === LHStatus.ERROR
           ? 'Rescue'
           : ''
-
   return (
     <DiagramProvider value={{ thread, setThread, selectedNode: node, setSelectedNode: setNode }}>
       <div className="flex justify-between gap-3">

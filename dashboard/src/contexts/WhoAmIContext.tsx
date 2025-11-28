@@ -3,7 +3,7 @@
 import { DefaultSession } from 'next-auth'
 import { FC, PropsWithChildren, createContext, useContext } from 'react'
 
-type ContextProps = {
+export type ContextProps = {
   user: DefaultSession['user']
   tenantId: string
   tenants: string[]

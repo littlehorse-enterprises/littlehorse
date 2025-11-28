@@ -27,9 +27,9 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
       }
     }
   }, [selectedNode, showNodeRun])
-
+  const maxHeightClass = `max-h-[600px]`
   return (
-    <aside className="flex max-w-full flex-col pl-4">
+    <aside className={`overflow-y flex max-w-full flex-col pl-4 ${maxHeightClass} overflow-y-auto `}>
       {isValidNode && selectedNode && (
         <>
           {showNodeRun && <SelectedNodeRun nodeRunIndex={nodeRunIndex} setNodeRunIndex={setNodeRunIndex} />}
