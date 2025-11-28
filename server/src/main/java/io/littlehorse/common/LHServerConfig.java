@@ -1075,7 +1075,7 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public int getProducerMaxRequestSize() {
-        return Integer.parseInt(getOrSetDefault(LHServerConfig.PRODUCER_MAX_REQUEST_SIZE, "1048576"));
+        return Integer.parseInt(getOrSetDefault(LHServerConfig.PRODUCER_MAX_REQUEST_SIZE, "1047000"));
     }
 
     public int getStreamsStateCleanupDelayMs() {
