@@ -1,5 +1,5 @@
 export * from './ChildWFNodeRun'
-export * from './ExternalEventRunNode'
+export * from './ExternalEventNodeRun/ExternalEventNodeRun'
 export * from './Failures'
 export * from './TaskRunNode'
 export * from './NodeRunComponent'

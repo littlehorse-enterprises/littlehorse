@@ -1,14 +1,13 @@
 import { SleepNodeRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
-import { LabelContent } from '../Components'
-import { utcToLocalDateTime } from '@/app/utils'
+import { NodeVariable } from './NodeVariable'
 
 export const SleepRunNode: FC<{ node: SleepNodeRun }> = ({ node }) => {
   return (
     <div>
-      <LabelContent label="Node Type" content="Sleep"></LabelContent>
-      <LabelContent label="Maturation Time" content={utcToLocalDateTime(`${node.maturationTime}`)}></LabelContent>
-      <LabelContent label="Maturation status" content={node.matured ? 'Ready' : 'No ready yet'}></LabelContent>
+      <NodeVariable label="Node Type:" text="Sleep" />
+      <NodeVariable label="maturationTime:" text={node.maturationTime} type="date" />
+      <NodeVariable label="matured:" text={node.matured ? 'Yes' : 'No'} />
     </div>
   )
 }

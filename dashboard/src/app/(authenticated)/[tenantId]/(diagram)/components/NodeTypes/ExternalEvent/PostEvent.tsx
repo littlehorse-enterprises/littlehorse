@@ -13,7 +13,6 @@ import {
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { VariableValue } from 'littlehorse-client/proto'
-import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { getValidation } from '../../Forms/components/validation'

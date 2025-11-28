@@ -29,7 +29,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
   }, [selectedNode, showNodeRun])
   const maxHeightClass = `max-h-[600px]`
   return (
-    <aside className={`overflow-y flex max-w-full flex-col pl-4 ${maxHeightClass} overflow-y-auto `}>
+    <aside className={`overflow-y flex max-w-full flex-col overflow-x-hidden pl-4 ${maxHeightClass} overflow-y-auto `}>
       {isValidNode && selectedNode && (
         <>
           {showNodeRun && <SelectedNodeRun nodeRunIndex={nodeRunIndex} setNodeRunIndex={setNodeRunIndex} />}
@@ -39,7 +39,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
                 Overview
               </TabsTrigger>
               <TabsTrigger className="flex-1" value="node">
-                Node {showNodeRun ? 'Run' : 'Spec'}
+                Node {showNodeRun && 'Run'}
               </TabsTrigger>
               {showNodeRun && (
                 <TabsTrigger className="flex-1" value="failures">
