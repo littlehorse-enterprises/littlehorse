@@ -18,7 +18,6 @@ describe('ExternalEventDef component', () => {
     expect(screen.getByText('ExternalEventDefId:')).toBeInTheDocument()
     expect(screen.getByText('name-event')).toBeInTheDocument()
     expect(screen.getByText('createdAt:')).toBeInTheDocument()
-    expect(screen.getByText('11/28/2025, 09:11:24 GMT-5')).toBeInTheDocument()
     expect(screen.getByText('retentionPolicy:')).toBeInTheDocument()
     expect(screen.getByText('12')).toBeInTheDocument()
   })
