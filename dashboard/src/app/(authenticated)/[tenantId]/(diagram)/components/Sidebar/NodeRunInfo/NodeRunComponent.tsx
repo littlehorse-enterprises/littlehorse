@@ -1,5 +1,5 @@
 import { useDiagram } from '../../../hooks/useDiagram'
-import { ExternalEventNodeRun } from './ExternalEventNodeRun/index'
+import { ExternalEventNodeRun } from './ExternalEventNodeRun/ExternalEventNodeRun'
 import { SleepRunNode } from './SleepRunNode'
 import { FC } from 'react'
 import { UserTaskRunNode } from './UserTaskNodeRun/UserTaskRunNode'

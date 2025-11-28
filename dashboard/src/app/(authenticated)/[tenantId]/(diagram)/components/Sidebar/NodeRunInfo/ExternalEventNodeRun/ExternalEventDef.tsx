@@ -3,7 +3,6 @@ import { NodeVariable } from '../NodeVariable'
 import { TypeDisplay } from '@/app/(authenticated)/[tenantId]/components/TypeDisplay'
 
 export const ExternalEventDef = ({ event }: { event: ExternalEventDefProto }) => {
-  console.log(event, 'external event def data')
   return (
     <>
       <div className="my-2 flex w-full items-center">
