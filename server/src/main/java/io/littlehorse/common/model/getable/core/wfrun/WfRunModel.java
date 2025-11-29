@@ -34,6 +34,7 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.PendingFailureHandler;
@@ -461,12 +462,26 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         nodeRun.maybeHalt(processorContext);
     }
 
+    private int numAdvancesInThisCommand = 0;
+
     public void advance(Date time) {
         boolean statusChanged = true;
         // We repeatedly advance each thread until we have a run wherein the entire
         // WfRun is static, meaning that there are no more advances that can be made
         // without another Command coming in.
         while (statusChanged) {
+            if (++numAdvancesInThisCommand > LHConstants.MAX_STACK_FRAMES_PER_COMMAND) {
+                putFailureOnThreadRun(
+                        getThreadRun(0),
+                        new FailureModel(
+                                LHErrorType.INTERNAL_ERROR.toString(),
+                                "Your WfSpec had a stack overflow error in a tight loop."),
+                        time,
+                        null);
+                transitionTo(LHStatus.ERROR);
+                break;
+            }
+
             statusChanged = startXnHandlersAndInterrupts(time);
             // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
             for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
