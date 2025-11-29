@@ -68,7 +68,7 @@ public class LHConstants {
     public static final String PARTITION_METRICS_KEY = "partitionMetrics";
 
     public static final Duration MAX_INCOMING_REQUEST_IDLE_TIME = Duration.ofSeconds(60);
-    public static final int MAX_STACK_FRAMES_PER_COMMAND = 25;
+    public static final int MAX_STACK_FRAMES_PER_COMMAND = 512;
 
     public static final String STRING_MASK = "*****";
 }

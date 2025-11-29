@@ -470,22 +470,23 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         // WfRun is static, meaning that there are no more advances that can be made
         // without another Command coming in.
         while (statusChanged) {
+            if (++numAdvancesInThisCommand > LHConstants.MAX_STACK_FRAMES_PER_COMMAND) {
+                putFailureOnThreadRun(
+                        getThreadRun(0),
+                        new FailureModel(
+                                LHErrorType.INTERNAL_ERROR.toString(),
+                                "Your WfSpec had a stack overflow error in a tight loop."),
+                        time,
+                        null);
+                transitionTo(LHStatus.ERROR);
+                break;
+            }
+
             statusChanged = startXnHandlersAndInterrupts(time);
             // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
             for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
                 ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
                 statusChanged = thread.advance(time) || statusChanged;
-                if (++numAdvancesInThisCommand > LHConstants.MAX_STACK_FRAMES_PER_COMMAND) {
-                    putFailureOnThreadRun(
-                            thread,
-                            new FailureModel(
-                                    LHErrorType.INTERNAL_ERROR.toString(),
-                                    "Your WfSpec had a stack overflow error in a tight loop."),
-                            time,
-                            null);
-                    transitionTo(LHStatus.ERROR);
-                    break;
-                }
             }
         }
 
