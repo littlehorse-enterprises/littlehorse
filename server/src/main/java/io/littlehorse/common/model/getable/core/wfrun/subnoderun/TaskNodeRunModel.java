@@ -143,7 +143,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         if (taskRun.getStatus() != TaskStatus.TASK_SUCCESS) {
             throw new IllegalStateException("somehow called getOutput() on taskRun that's not done yet");
         }
-        return Optional.ofNullable(taskRun.getLatestAttempt().getOutput());
+        return Optional.of(taskRun.getLatestAttempt().getOutput());
     }
 
     @Override

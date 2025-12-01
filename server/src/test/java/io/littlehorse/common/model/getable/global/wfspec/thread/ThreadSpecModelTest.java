@@ -2,7 +2,6 @@ package io.littlehorse.common.model.getable.global.wfspec.thread;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.StartThreadNodeModel;
