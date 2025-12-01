@@ -3,7 +3,7 @@ import { NodeRun, UserTaskNode } from 'littlehorse-client/proto'
 import { ChevronDownIcon } from 'lucide-react'
 import { FC } from 'react'
 import { AccordionComponents } from './AccordionContent'
-import { WF_RUN_STATUS } from '../../../StatusColor'
+import { WF_RUN_STATUS } from '../../Sidebar/Components/StatusColor'
 
 export const AccordionItem: FC<{ nodeRun: NodeRun; userTaskNode?: UserTaskNode }> = ({ nodeRun, userTaskNode }) => {
   if (!nodeRun.nodeType) return null

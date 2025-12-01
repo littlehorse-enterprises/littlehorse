@@ -1,8 +1,8 @@
 import { useDiagram } from '../../../hooks/useDiagram'
-import { ExternalEventRunNode } from './ExternalEventRunNode'
+import { ExternalEventNodeRun } from './ExternalEventNodeRun/ExternalEventNodeRun'
 import { SleepRunNode } from './SleepRunNode'
 import { FC } from 'react'
-import { UserTaskRunNode } from './UserTaskRunNode'
+import { UserTaskRunNode } from './UserTaskNodeRun/UserTaskRunNode'
 import { WaitForThreadsNodeRun } from './WaitForThreadNodeRun'
 import { StartMultipleThreadRunNode } from './StartMultipleThreadRunNode'
 import { ThrowEventRunNode } from './ThrowEventRunNode'
@@ -26,7 +26,7 @@ export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex })
 
   const { $case, value } = nodeRun.nodeType!
   if ($case === 'task') return <TaskRunNode node={value} />
-  if ($case === 'externalEvent') return <ExternalEventRunNode node={value} />
+  if ($case === 'externalEvent') return <ExternalEventNodeRun node={value} />
   if ($case === 'userTask') return <UserTaskRunNode node={value} />
   if ($case === 'sleep') return <SleepRunNode node={value} />
   if ($case === 'waitForThreads') return <WaitForThreadsNodeRun node={value} />

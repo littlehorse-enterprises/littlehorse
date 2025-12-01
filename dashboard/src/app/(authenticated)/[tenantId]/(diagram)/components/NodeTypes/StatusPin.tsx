@@ -1,7 +1,7 @@
 import { LHStatus } from 'littlehorse-client/proto'
 
 import React, { FC } from 'react'
-import { WF_RUN_STATUS } from '../../StatusColor'
+import { WF_RUN_STATUS } from '../Sidebar/Components/StatusColor'
 
 export const StatusPin: FC<{ status?: LHStatus }> = ({ status }) => {
   if (!status) return <></>
