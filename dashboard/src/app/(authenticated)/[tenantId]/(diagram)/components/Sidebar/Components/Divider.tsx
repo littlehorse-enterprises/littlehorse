@@ -1,4 +1,4 @@
-export const Divider = ({ title }:{title:string}) => {
+export const Divider = ({ title }: { title: string }) => {
   return (
     <div className="my-2 flex w-full items-center">
       <div className="h-px flex-grow bg-gray-300"></div>
