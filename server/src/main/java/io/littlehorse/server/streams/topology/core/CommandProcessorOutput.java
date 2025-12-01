@@ -11,6 +11,7 @@ import org.apache.kafka.streams.processor.api.Record;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.Objects;
 
 @Getter
 public class CommandProcessorOutput {
@@ -27,8 +28,9 @@ public class CommandProcessorOutput {
         this.tenantId = tenantId;
     }
 
-    public static CommandProcessorOutput timer(Command commandToExecute, Date maturationTime) {
-        return new CommandProcessorOutput(commandToExecute, null, maturationTime, null);
+    public static CommandProcessorOutput timer(Command commandToExecute, String partitionKey, Date maturationTime) {
+        Objects.requireNonNull(commandToExecute);
+        return new CommandProcessorOutput(commandToExecute, partitionKey, maturationTime, null);
     }
 
     public static CommandProcessorOutput repartition(LHSerializable<?> commandToExecute, String partitionKey) {

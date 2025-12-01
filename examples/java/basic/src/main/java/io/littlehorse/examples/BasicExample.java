@@ -20,6 +20,7 @@ public class BasicExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-basic", wf -> {
+            wf.sleepSeconds(1);
             WfRunVariable theName = wf.declareStr("input-name").searchable();
             wf.execute("greet", theName);
         });

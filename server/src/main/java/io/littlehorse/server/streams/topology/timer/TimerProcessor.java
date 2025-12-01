@@ -9,6 +9,7 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
+import java.util.Objects;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
@@ -63,7 +64,7 @@ public class TimerProcessor implements Processor<String, CommandProcessorOutput,
             throw new IllegalArgumentException("Output is not a timer record");
         }
 
-        LHTimer timer = new LHTimer((Command) commandProcessorOutput.getCommand(), commandProcessorOutput.getMaturationTime());
+        LHTimer timer = new LHTimer((Command) commandProcessorOutput.getCommand(), commandProcessorOutput.getPartitionKey(), commandProcessorOutput.getMaturationTime());
         log.trace("Processing timer {}, task {}", timer.partitionKey, context.taskId());
 
 
@@ -92,16 +93,13 @@ public class TimerProcessor implements Processor<String, CommandProcessorOutput,
 
     private void sendOneTimer(LHTimer timer) {
         Headers metadata = HeadersUtil.metadataHeadersFor(timer.getTenantId(), timer.getPrincipalId());
-        try {
-            Command cmd = Command.parseFrom(timer.getPayload());
-            // Now we gotta forward the timer.
-            Record<String, Command> toSend =
-                    new Record<>(timer.partitionKey, cmd, timer.maturationTime.getTime(), metadata);
-            log.trace("Forwarding timer on task {}. should punctuate: {}. value: {} ", taskId, shouldPunctuate, toSend);
-            context.forward(toSend);
-        } catch (InvalidProtocolBufferException e) {
-            throw new RuntimeException(e);
-        }
+        Command cmd = timer.getCommand();
+        // Now we gotta forward the timer.
+        Objects.requireNonNull(cmd);
+        Record<String, Command> toSend =
+                new Record<>(timer.partitionKey, cmd, timer.maturationTime.getTime(), metadata);
+        log.trace("Forwarding timer on task {}. should punctuate: {}. value: {} ", taskId, shouldPunctuate, toSend);
+        context.forward(toSend);
 
 
     }

@@ -13,6 +13,8 @@ import io.littlehorse.common.proto.LHTimerPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
+import java.util.Objects;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,9 +44,11 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
         }
     }
 
-    public LHTimer(Command commandToExecute, Date maturationTime) {
-        this.command = commandToExecute;
+    public LHTimer(CommandModel commandToExecute, String partitionKey, Date maturationTime) {
+        Objects.requireNonNull(commandToExecute);
+        this.command = commandToExecute.toProto().build();
         this.maturationTime = maturationTime;
+        this.partitionKey = partitionKey;
     }
 
     @Override
@@ -85,6 +89,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
 
     public LHTimerPb.Builder toProto() {
         LHTimerPb.Builder out = LHTimerPb.newBuilder()
+                .setPartitionKey(partitionKey)
                 .setMaturationTime(LHUtil.fromDate(maturationTime));
         if (command != null) out.setCommand(command);
         return out;
