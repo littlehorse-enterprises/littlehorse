@@ -41,6 +41,7 @@ import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.PunctuationType;
+import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -49,14 +50,14 @@ import org.apache.kafka.streams.state.KeyValueStore;
 @Slf4j
 public class CommandProcessor implements Processor<String, Command, String, CommandProcessorOutput> {
 
-    private ProcessorContext<String, CommandProcessorOutput> ctx;
+    protected ProcessorContext<String, CommandProcessorOutput> ctx;
     private final LHServerConfig config;
     private final LHServer server;
     private final MetadataCache metadataCache;
     private final TaskQueueManager globalTaskQueueManager;
 
-    private KeyValueStore<String, Bytes> nativeStore;
-    private KeyValueStore<String, Bytes> globalStore;
+    protected KeyValueStore<String, Bytes> nativeStore;
+    protected KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
     private final AsyncWaiters asyncWaiters;
 
@@ -95,6 +96,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void processHelper(final Record<String, Command> commandRecord) {
         CoreProcessorContext executionContext = buildExecutionContext(commandRecord);
         CommandModel command = executionContext.currentCommand();
+        TaskId taskId = ctx.taskId();
+        log.trace("Processing timer command on task {}, class {}", taskId, command.getSubCommand().getClass().getSimpleName());
         log.trace(
                 "{} Processing command of type {} with commandId {} with partition key {}",
                 config.getLHInstanceName(),
@@ -194,20 +197,9 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void forwardMetricSubcommand(RepartitionSubCommand repartitionSubCommand) {
         RepartitionCommand repartitionCommand =
                 new RepartitionCommand(repartitionSubCommand, new Date(), repartitionSubCommand.getPartitionKey());
-        CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.partitionKey = repartitionSubCommand.getPartitionKey();
-        cpo.topic = this.config.getRepartitionTopicName();
-        cpo.payload = repartitionCommand;
-        Record<String, CommandProcessorOutput> out = new Record<>(
-                cpo.partitionKey,
-                cpo,
-                System.currentTimeMillis(),
-                // NOT SURE IF THIS SHOULD BE DEFAULT/ANONYMOUS.
-                // I think we should mark it as "cluster-scoped" and by the "internal system" not any external
-                // principal.
-                HeadersUtil.metadataHeadersFor(
-                        new TenantIdModel(LHConstants.DEFAULT_TENANT),
-                        new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
-        this.ctx.forward(out);
+        CommandProcessorOutput cpo = CommandProcessorOutput.repartition(repartitionCommand, repartitionSubCommand.getPartitionKey());
+        this.ctx.forward(cpo.toRecord(HeadersUtil.metadataHeadersFor(
+                new TenantIdModel(LHConstants.DEFAULT_TENANT),
+                new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL))));
     }
 }

@@ -83,7 +83,15 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object partitionKey_ = "";
   /**
-   * <code>string partition_key = 2;</code>
+   * <code>optional string partition_key = 2;</code>
+   * @return Whether the partitionKey field is set.
+   */
+  @java.lang.Override
+  public boolean hasPartitionKey() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>optional string partition_key = 2;</code>
    * @return The partitionKey.
    */
   @java.lang.Override
@@ -100,7 +108,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string partition_key = 2;</code>
+   * <code>optional string partition_key = 2;</code>
    * @return The bytes for partitionKey.
    */
   @java.lang.Override
@@ -122,7 +130,15 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object topic_ = "";
   /**
-   * <code>string topic = 3;</code>
+   * <code>optional string topic = 3;</code>
+   * @return Whether the topic field is set.
+   */
+  @java.lang.Override
+  public boolean hasTopic() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <code>optional string topic = 3;</code>
    * @return The topic.
    */
   @java.lang.Override
@@ -139,7 +155,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string topic = 3;</code>
+   * <code>optional string topic = 3;</code>
    * @return The bytes for topic.
    */
   @java.lang.Override
@@ -160,7 +176,15 @@ private static final long serialVersionUID = 0L;
   public static final int PAYLOAD_FIELD_NUMBER = 4;
   private com.google.protobuf.ByteString payload_ = com.google.protobuf.ByteString.EMPTY;
   /**
-   * <code>bytes payload = 4;</code>
+   * <code>optional bytes payload = 4;</code>
+   * @return Whether the payload field is set.
+   */
+  @java.lang.Override
+  public boolean hasPayload() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <code>optional bytes payload = 4;</code>
    * @return The payload.
    */
   @java.lang.Override
@@ -180,7 +204,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasTenantId() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000010) != 0);
   }
   /**
    * <pre>
@@ -218,7 +242,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasPrincipalId() {
-    return ((bitField0_ & 0x00000004) != 0);
+    return ((bitField0_ & 0x00000020) != 0);
   }
   /**
    * <pre>
@@ -257,7 +281,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasStoreKey() {
-    return ((bitField0_ & 0x00000008) != 0);
+    return ((bitField0_ & 0x00000040) != 0);
   }
   /**
    * <pre>
@@ -303,6 +327,32 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int COMMAND_FIELD_NUMBER = 8;
+  private io.littlehorse.common.proto.Command command_;
+  /**
+   * <code>optional .littlehorse.Command command = 8;</code>
+   * @return Whether the command field is set.
+   */
+  @java.lang.Override
+  public boolean hasCommand() {
+    return ((bitField0_ & 0x00000080) != 0);
+  }
+  /**
+   * <code>optional .littlehorse.Command command = 8;</code>
+   * @return The command.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.Command getCommand() {
+    return command_ == null ? io.littlehorse.common.proto.Command.getDefaultInstance() : command_;
+  }
+  /**
+   * <code>optional .littlehorse.Command command = 8;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.CommandOrBuilder getCommandOrBuilder() {
+    return command_ == null ? io.littlehorse.common.proto.Command.getDefaultInstance() : command_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -320,23 +370,26 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(1, getMaturationTime());
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(partitionKey_)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 2, partitionKey_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(topic_)) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 3, topic_);
     }
-    if (!payload_.isEmpty()) {
+    if (((bitField0_ & 0x00000008) != 0)) {
       output.writeBytes(4, payload_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000010) != 0)) {
       output.writeMessage(5, getTenantId());
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
+    if (((bitField0_ & 0x00000020) != 0)) {
       output.writeMessage(6, getPrincipalId());
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
+    if (((bitField0_ & 0x00000040) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 7, storeKey_);
+    }
+    if (((bitField0_ & 0x00000080) != 0)) {
+      output.writeMessage(8, getCommand());
     }
     getUnknownFields().writeTo(output);
   }
@@ -351,26 +404,30 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getMaturationTime());
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(partitionKey_)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(2, partitionKey_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(topic_)) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(3, topic_);
     }
-    if (!payload_.isEmpty()) {
+    if (((bitField0_ & 0x00000008) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(4, payload_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000010) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getTenantId());
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
+    if (((bitField0_ & 0x00000020) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, getPrincipalId());
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
+    if (((bitField0_ & 0x00000040) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(7, storeKey_);
+    }
+    if (((bitField0_ & 0x00000080) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(8, getCommand());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -392,12 +449,21 @@ private static final long serialVersionUID = 0L;
       if (!getMaturationTime()
           .equals(other.getMaturationTime())) return false;
     }
-    if (!getPartitionKey()
-        .equals(other.getPartitionKey())) return false;
-    if (!getTopic()
-        .equals(other.getTopic())) return false;
-    if (!getPayload()
-        .equals(other.getPayload())) return false;
+    if (hasPartitionKey() != other.hasPartitionKey()) return false;
+    if (hasPartitionKey()) {
+      if (!getPartitionKey()
+          .equals(other.getPartitionKey())) return false;
+    }
+    if (hasTopic() != other.hasTopic()) return false;
+    if (hasTopic()) {
+      if (!getTopic()
+          .equals(other.getTopic())) return false;
+    }
+    if (hasPayload() != other.hasPayload()) return false;
+    if (hasPayload()) {
+      if (!getPayload()
+          .equals(other.getPayload())) return false;
+    }
     if (hasTenantId() != other.hasTenantId()) return false;
     if (hasTenantId()) {
       if (!getTenantId()
@@ -412,6 +478,11 @@ private static final long serialVersionUID = 0L;
     if (hasStoreKey()) {
       if (!getStoreKey()
           .equals(other.getStoreKey())) return false;
+    }
+    if (hasCommand() != other.hasCommand()) return false;
+    if (hasCommand()) {
+      if (!getCommand()
+          .equals(other.getCommand())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -428,12 +499,18 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + MATURATION_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getMaturationTime().hashCode();
     }
-    hash = (37 * hash) + PARTITION_KEY_FIELD_NUMBER;
-    hash = (53 * hash) + getPartitionKey().hashCode();
-    hash = (37 * hash) + TOPIC_FIELD_NUMBER;
-    hash = (53 * hash) + getTopic().hashCode();
-    hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
-    hash = (53 * hash) + getPayload().hashCode();
+    if (hasPartitionKey()) {
+      hash = (37 * hash) + PARTITION_KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPartitionKey().hashCode();
+    }
+    if (hasTopic()) {
+      hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+      hash = (53 * hash) + getTopic().hashCode();
+    }
+    if (hasPayload()) {
+      hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
+      hash = (53 * hash) + getPayload().hashCode();
+    }
     if (hasTenantId()) {
       hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
       hash = (53 * hash) + getTenantId().hashCode();
@@ -445,6 +522,10 @@ private static final long serialVersionUID = 0L;
     if (hasStoreKey()) {
       hash = (37 * hash) + STORE_KEY_FIELD_NUMBER;
       hash = (53 * hash) + getStoreKey().hashCode();
+    }
+    if (hasCommand()) {
+      hash = (37 * hash) + COMMAND_FIELD_NUMBER;
+      hash = (53 * hash) + getCommand().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -584,6 +665,7 @@ private static final long serialVersionUID = 0L;
         internalGetMaturationTimeFieldBuilder();
         internalGetTenantIdFieldBuilder();
         internalGetPrincipalIdFieldBuilder();
+        internalGetCommandFieldBuilder();
       }
     }
     @java.lang.Override
@@ -609,6 +691,11 @@ private static final long serialVersionUID = 0L;
         principalIdBuilder_ = null;
       }
       storeKey_ = "";
+      command_ = null;
+      if (commandBuilder_ != null) {
+        commandBuilder_.dispose();
+        commandBuilder_ = null;
+      }
       return this;
     }
 
@@ -651,28 +738,37 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.partitionKey_ = partitionKey_;
+        to_bitField0_ |= 0x00000002;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.topic_ = topic_;
+        to_bitField0_ |= 0x00000004;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.payload_ = payload_;
+        to_bitField0_ |= 0x00000008;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
         result.tenantId_ = tenantIdBuilder_ == null
             ? tenantId_
             : tenantIdBuilder_.build();
-        to_bitField0_ |= 0x00000002;
+        to_bitField0_ |= 0x00000010;
       }
       if (((from_bitField0_ & 0x00000020) != 0)) {
         result.principalId_ = principalIdBuilder_ == null
             ? principalId_
             : principalIdBuilder_.build();
-        to_bitField0_ |= 0x00000004;
+        to_bitField0_ |= 0x00000020;
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
         result.storeKey_ = storeKey_;
-        to_bitField0_ |= 0x00000008;
+        to_bitField0_ |= 0x00000040;
+      }
+      if (((from_bitField0_ & 0x00000080) != 0)) {
+        result.command_ = commandBuilder_ == null
+            ? command_
+            : commandBuilder_.build();
+        to_bitField0_ |= 0x00000080;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -692,17 +788,17 @@ private static final long serialVersionUID = 0L;
       if (other.hasMaturationTime()) {
         mergeMaturationTime(other.getMaturationTime());
       }
-      if (!other.getPartitionKey().isEmpty()) {
+      if (other.hasPartitionKey()) {
         partitionKey_ = other.partitionKey_;
         bitField0_ |= 0x00000002;
         onChanged();
       }
-      if (!other.getTopic().isEmpty()) {
+      if (other.hasTopic()) {
         topic_ = other.topic_;
         bitField0_ |= 0x00000004;
         onChanged();
       }
-      if (!other.getPayload().isEmpty()) {
+      if (other.hasPayload()) {
         setPayload(other.getPayload());
       }
       if (other.hasTenantId()) {
@@ -715,6 +811,9 @@ private static final long serialVersionUID = 0L;
         storeKey_ = other.storeKey_;
         bitField0_ |= 0x00000040;
         onChanged();
+      }
+      if (other.hasCommand()) {
+        mergeCommand(other.getCommand());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -783,6 +882,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000040;
               break;
             } // case 58
+            case 66: {
+              input.readMessage(
+                  internalGetCommandFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000080;
+              break;
+            } // case 66
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -923,7 +1029,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object partitionKey_ = "";
     /**
-     * <code>string partition_key = 2;</code>
+     * <code>optional string partition_key = 2;</code>
+     * @return Whether the partitionKey field is set.
+     */
+    public boolean hasPartitionKey() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional string partition_key = 2;</code>
      * @return The partitionKey.
      */
     public java.lang.String getPartitionKey() {
@@ -939,7 +1052,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string partition_key = 2;</code>
+     * <code>optional string partition_key = 2;</code>
      * @return The bytes for partitionKey.
      */
     public com.google.protobuf.ByteString
@@ -956,7 +1069,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string partition_key = 2;</code>
+     * <code>optional string partition_key = 2;</code>
      * @param value The partitionKey to set.
      * @return This builder for chaining.
      */
@@ -969,7 +1082,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string partition_key = 2;</code>
+     * <code>optional string partition_key = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearPartitionKey() {
@@ -979,7 +1092,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string partition_key = 2;</code>
+     * <code>optional string partition_key = 2;</code>
      * @param value The bytes for partitionKey to set.
      * @return This builder for chaining.
      */
@@ -995,7 +1108,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object topic_ = "";
     /**
-     * <code>string topic = 3;</code>
+     * <code>optional string topic = 3;</code>
+     * @return Whether the topic field is set.
+     */
+    public boolean hasTopic() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional string topic = 3;</code>
      * @return The topic.
      */
     public java.lang.String getTopic() {
@@ -1011,7 +1131,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string topic = 3;</code>
+     * <code>optional string topic = 3;</code>
      * @return The bytes for topic.
      */
     public com.google.protobuf.ByteString
@@ -1028,7 +1148,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string topic = 3;</code>
+     * <code>optional string topic = 3;</code>
      * @param value The topic to set.
      * @return This builder for chaining.
      */
@@ -1041,7 +1161,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string topic = 3;</code>
+     * <code>optional string topic = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearTopic() {
@@ -1051,7 +1171,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string topic = 3;</code>
+     * <code>optional string topic = 3;</code>
      * @param value The bytes for topic to set.
      * @return This builder for chaining.
      */
@@ -1067,7 +1187,15 @@ private static final long serialVersionUID = 0L;
 
     private com.google.protobuf.ByteString payload_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <code>bytes payload = 4;</code>
+     * <code>optional bytes payload = 4;</code>
+     * @return Whether the payload field is set.
+     */
+    @java.lang.Override
+    public boolean hasPayload() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional bytes payload = 4;</code>
      * @return The payload.
      */
     @java.lang.Override
@@ -1075,7 +1203,7 @@ private static final long serialVersionUID = 0L;
       return payload_;
     }
     /**
-     * <code>bytes payload = 4;</code>
+     * <code>optional bytes payload = 4;</code>
      * @param value The payload to set.
      * @return This builder for chaining.
      */
@@ -1087,7 +1215,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>bytes payload = 4;</code>
+     * <code>optional bytes payload = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearPayload() {
@@ -1512,6 +1640,127 @@ private static final long serialVersionUID = 0L;
       bitField0_ |= 0x00000040;
       onChanged();
       return this;
+    }
+
+    private io.littlehorse.common.proto.Command command_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.Command, io.littlehorse.common.proto.Command.Builder, io.littlehorse.common.proto.CommandOrBuilder> commandBuilder_;
+    /**
+     * <code>optional .littlehorse.Command command = 8;</code>
+     * @return Whether the command field is set.
+     */
+    public boolean hasCommand() {
+      return ((bitField0_ & 0x00000080) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.Command command = 8;</code>
+     * @return The command.
+     */
+    public io.littlehorse.common.proto.Command getCommand() {
+      if (commandBuilder_ == null) {
+        return command_ == null ? io.littlehorse.common.proto.Command.getDefaultInstance() : command_;
+      } else {
+        return commandBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .littlehorse.Command command = 8;</code>
+     */
+    public Builder setCommand(io.littlehorse.common.proto.Command value) {
+      if (commandBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+      } else {
+        commandBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.Command command = 8;</code>
+     */
+    public Builder setCommand(
+        io.littlehorse.common.proto.Command.Builder builderForValue) {
+      if (commandBuilder_ == null) {
+        command_ = builderForValue.build();
+      } else {
+        commandBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.Command command = 8;</code>
+     */
+    public Builder mergeCommand(io.littlehorse.common.proto.Command value) {
+      if (commandBuilder_ == null) {
+        if (((bitField0_ & 0x00000080) != 0) &&
+          command_ != null &&
+          command_ != io.littlehorse.common.proto.Command.getDefaultInstance()) {
+          getCommandBuilder().mergeFrom(value);
+        } else {
+          command_ = value;
+        }
+      } else {
+        commandBuilder_.mergeFrom(value);
+      }
+      if (command_ != null) {
+        bitField0_ |= 0x00000080;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.Command command = 8;</code>
+     */
+    public Builder clearCommand() {
+      bitField0_ = (bitField0_ & ~0x00000080);
+      command_ = null;
+      if (commandBuilder_ != null) {
+        commandBuilder_.dispose();
+        commandBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.Command command = 8;</code>
+     */
+    public io.littlehorse.common.proto.Command.Builder getCommandBuilder() {
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return internalGetCommandFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .littlehorse.Command command = 8;</code>
+     */
+    public io.littlehorse.common.proto.CommandOrBuilder getCommandOrBuilder() {
+      if (commandBuilder_ != null) {
+        return commandBuilder_.getMessageOrBuilder();
+      } else {
+        return command_ == null ?
+            io.littlehorse.common.proto.Command.getDefaultInstance() : command_;
+      }
+    }
+    /**
+     * <code>optional .littlehorse.Command command = 8;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.Command, io.littlehorse.common.proto.Command.Builder, io.littlehorse.common.proto.CommandOrBuilder> 
+        internalGetCommandFieldBuilder() {
+      if (commandBuilder_ == null) {
+        commandBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.common.proto.Command, io.littlehorse.common.proto.Command.Builder, io.littlehorse.common.proto.CommandOrBuilder>(
+                getCommand(),
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      return commandBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.LHTimerPb)

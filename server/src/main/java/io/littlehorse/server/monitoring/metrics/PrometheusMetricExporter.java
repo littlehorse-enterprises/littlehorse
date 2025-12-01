@@ -41,15 +41,13 @@ public class PrometheusMetricExporter implements Closeable {
 
     public void bind(
             KafkaStreams coreStreams,
-            KafkaStreams timerStreams,
             TaskQueueManager taskQueueManager,
             MetadataCache metadataCache,
             StandbyMetrics standbyMetrics,
             InstanceState coreState) {
 
         this.kafkaStreamsMeters = List.of(
-                new KafkaStreamsMetrics(coreStreams, Tags.of("topology", "core")),
-                new KafkaStreamsMetrics(timerStreams, Tags.of("topology", "timer")));
+                new KafkaStreamsMetrics(coreStreams, Tags.of("topology", "core")));
 
         for (KafkaStreamsMetrics ksm : kafkaStreamsMeters) {
             ksm.bindTo(prometheusRegistry);

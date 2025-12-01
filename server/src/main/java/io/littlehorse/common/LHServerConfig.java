@@ -261,7 +261,7 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public static String getTimerStoreChangelogTopic(String clusterId) {
-        return (clusterId + "-timer-" + ServerTopology.TIMER_STORE + "-changelog");
+        return (clusterId + "-core-" + ServerTopology.TIMER_STORE + "-changelog");
     }
 
     public static String getMetadataStoreChangelogTopic(String clusterId) {

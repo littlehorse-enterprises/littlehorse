@@ -250,6 +250,7 @@ public class WfRunDeletionTest {
                 .isGreaterThan(10);
 
         client.deleteWfRun(DeleteWfRunRequest.newBuilder().setId(result).build());
+        System.out.println(result);
 
         // We need to wait since deletion is async
         Awaitility.await().until(() -> {

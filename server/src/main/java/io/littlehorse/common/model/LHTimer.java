@@ -8,6 +8,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.LHTimerPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -26,6 +27,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
     private TenantIdModel tenantId;
     private PrincipalIdModel principalId;
     private String storeKeyInternal;
+    private Command command;
 
     public LHTimer() {}
 
@@ -34,11 +36,15 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
         if (maturationTime == null) {
             throw new IllegalArgumentException("Command's time was null!");
         }
-        payload = command.toProto().build().toByteArray();
         partitionKey = command.getPartitionKey();
         if (command.hasResponse()) {
             throw new IllegalArgumentException("Timer commands cannot have a response");
         }
+    }
+
+    public LHTimer(Command commandToExecute, Date maturationTime) {
+        this.command = commandToExecute;
+        this.maturationTime = maturationTime;
     }
 
     @Override
@@ -48,6 +54,9 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
         topic = p.getTopic();
         partitionKey = p.getPartitionKey();
         payload = p.getPayload().toByteArray();
+        if (p.hasCommand()) {
+            command = p.getCommand();
+        }
 
         if (p.hasPrincipalId()) {
             principalId = LHSerializable.fromProto(p.getPrincipalId(), PrincipalIdModel.class, context);
@@ -76,13 +85,8 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
 
     public LHTimerPb.Builder toProto() {
         LHTimerPb.Builder out = LHTimerPb.newBuilder()
-                .setMaturationTime(LHUtil.fromDate(maturationTime))
-                .setPartitionKey(partitionKey)
-                .setTopic(topic)
-                .setPayload(ByteString.copyFrom(payload))
-                .setStoreKey(getStoreKey())
-                .setPrincipalId(principalId.toProto()) // TODO: allow nulls
-                .setTenantId(tenantId.toProto()); // TODO: Allow nulls
+                .setMaturationTime(LHUtil.fromDate(maturationTime));
+        if (command != null) out.setCommand(command);
         return out;
     }
 

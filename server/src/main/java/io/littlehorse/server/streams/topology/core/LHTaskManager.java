@@ -5,6 +5,7 @@ import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.TaskQueueHintModel;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -126,7 +127,7 @@ public class LHTaskManager {
         timer.setTenantId(authContext.tenantId());
         timer.setPrincipalId(authContext.principalId());
         timer.topic = commandTopicName;
-        CommandProcessorOutput output = new CommandProcessorOutput(timerTopicName, timer, timer.partitionKey);
+        CommandProcessorOutput output = CommandProcessorOutput.timer(timer.getCommand(), timer.getMaturationTime());
         Headers headers = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
         log.trace("forwarding lh timer: {}", timer);
         processorContext.forward(new Record<>(timer.partitionKey, output, System.currentTimeMillis(), headers));

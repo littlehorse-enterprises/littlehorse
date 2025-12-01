@@ -13,6 +13,8 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.processors.CommandProcessor;
 import io.littlehorse.server.streams.topology.core.processors.MetadataGlobalStoreProcessor;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
+import io.littlehorse.server.streams.topology.core.processors.PassThroughProcessor;
+import io.littlehorse.server.streams.topology.core.processors.TimerCommandProcessor;
 import io.littlehorse.server.streams.topology.timer.TimerProcessor;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -22,6 +24,7 @@ import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.processor.TopicNameExtractor;
+import org.apache.kafka.streams.processor.internals.StaticTopicNameExtractor;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
@@ -59,6 +62,8 @@ public class ServerTopology {
 
     public static final String TIMER_SOURCE = "timer-source";
     public static final String TIMER_PROCESSOR = "timer-processor";
+    public static final String TIMER_PROCESSOR_2 = "timer-processor-2";
+    public static final String TIMER_COMMAND_PROCESSOR = "timer-command-processor";
     public static final String NEW_TIMER_SINK = "new-timer-sink";
     public static final String MATURED_TIMER_SINK = "matured-timer-sink";
     public static final String TIMER_STORE = "timer-store";
@@ -67,6 +72,8 @@ public class ServerTopology {
     public static final String CORE_STORE = "core-store";
     public static final String CORE_PROCESSOR = "core-processor";
     public static final String CORE_PROCESSOR_SINK = "core-repartition-sink";
+    public static final String PASS_THROUGH_CORE_PROCESSOR = "pass-through-processor-core";
+    public static final String PASS_THROUGH_TIMER_PROCESSOR = "pass-through-processor-timer";
     public static final String CORE_REPARTITION_SOURCE = "core-repartition-source";
     public static final String CORE_REPARTITION_STORE = "core-repartition-store";
     public static final String CORE_REPARTITION_PROCESSOR = "core-repartition-processor";
@@ -92,17 +99,9 @@ public class ServerTopology {
             AsyncWaiters asyncWaiters) {
         Topology topo = new Topology();
 
-        Serializer<Object> sinkValueSerializer = (topic, output) -> {
-            CommandProcessorOutput cpo = (CommandProcessorOutput) output;
-            if (cpo.payload == null) {
-                return null;
-            }
-
-            return cpo.payload.toBytes();
+        Serializer<CommandProcessorOutput> sinkValueSerializer = (topic, output) -> {
+            return output.getCommand().toByteArray();
         };
-
-        TopicNameExtractor<String, Object> sinkTopicNameExtractor =
-                (key, coreServerOutput, ctx) -> ((CommandProcessorOutput) coreServerOutput).topic;
 
         // Metadata sub-topology.
         // NOTE: the METADATA_STORE has an internal Kafka Streams changelog topic. We just use
@@ -123,7 +122,7 @@ public class ServerTopology {
                 Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());
         topo.addSink(
                 METADATA_PROCESSOR_SINK,
-                sinkTopicNameExtractor, // topic extractor
+                new StaticTopicNameExtractor<>(METADATA_SOURCE), // topic extractor
                 Serdes.String().serializer(), // key serializer
                 sinkValueSerializer, // value serializer
                 METADATA_PROCESSOR); // parent name
@@ -134,23 +133,27 @@ public class ServerTopology {
                 CORE_SOURCE, // source name
                 Serdes.String().deserializer(), // key deserializer
                 new ProtobufDeserializer<>(Command.parser()), // value deserializer
-                config.getCoreCmdTopicName() // source topic
+                config.getCoreCmdTopicName(),
+                    config.getRepartitionTopicName() // source topic
                 );
         topo.addProcessor(
                 CORE_PROCESSOR,
                 () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager, asyncWaiters),
                 CORE_SOURCE);
-        topo.addSink(
-                CORE_PROCESSOR_SINK,
-                sinkTopicNameExtractor, // topic extractor
-                Serdes.String().serializer(), // key serializer
-                sinkValueSerializer, // value serializer
-                CORE_PROCESSOR); // parent name
+        topo.addProcessor(TIMER_PROCESSOR, ()-> new TimerProcessor(true), CORE_PROCESSOR);
+        topo.addProcessor(TIMER_COMMAND_PROCESSOR, () -> new TimerCommandProcessor(config, server, metadataCache, globalTaskQueueManager, asyncWaiters), TIMER_PROCESSOR);
+        topo.addProcessor(TIMER_PROCESSOR_2, ()-> new TimerProcessor(false), TIMER_COMMAND_PROCESSOR);
+
+        Serde<LHTimer> timerSerde = new LHSerde<>(LHTimer.class);
+        StoreBuilder<KeyValueStore<String, LHTimer>> timerStoreBuilder =
+                Stores.keyValueStoreBuilder(Stores.persistentKeyValueStore(TIMER_STORE), Serdes.String(), timerSerde);
+
+        topo.addStateStore(timerStoreBuilder, TIMER_PROCESSOR, TIMER_PROCESSOR_2);
         StoreBuilder<KeyValueStore<String, Bytes>> coreStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(CORE_STORE),
                 Serdes.String(),
                 new BoundedBytesSerde(config.getProducerMaxRequestSize()));
-        topo.addStateStore(coreStoreBuilder, CORE_PROCESSOR);
+        topo.addStateStore(coreStoreBuilder, CORE_PROCESSOR, TIMER_COMMAND_PROCESSOR);
 
         // Metadata Global Store
         StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder = Stores.keyValueStoreBuilder(
@@ -182,7 +185,7 @@ public class ServerTopology {
         topo.addProcessor(
                 TIMER_PROCESSOR,
                 () -> {
-                    return new TimerProcessor();
+                    return new TimerProcessor(true);
                 },
                 TIMER_SOURCE);
 

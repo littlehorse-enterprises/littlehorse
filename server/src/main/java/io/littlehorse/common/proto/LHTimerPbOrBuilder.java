@@ -26,31 +26,46 @@ public interface LHTimerPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getMaturationTimeOrBuilder();
 
   /**
-   * <code>string partition_key = 2;</code>
+   * <code>optional string partition_key = 2;</code>
+   * @return Whether the partitionKey field is set.
+   */
+  boolean hasPartitionKey();
+  /**
+   * <code>optional string partition_key = 2;</code>
    * @return The partitionKey.
    */
   java.lang.String getPartitionKey();
   /**
-   * <code>string partition_key = 2;</code>
+   * <code>optional string partition_key = 2;</code>
    * @return The bytes for partitionKey.
    */
   com.google.protobuf.ByteString
       getPartitionKeyBytes();
 
   /**
-   * <code>string topic = 3;</code>
+   * <code>optional string topic = 3;</code>
+   * @return Whether the topic field is set.
+   */
+  boolean hasTopic();
+  /**
+   * <code>optional string topic = 3;</code>
    * @return The topic.
    */
   java.lang.String getTopic();
   /**
-   * <code>string topic = 3;</code>
+   * <code>optional string topic = 3;</code>
    * @return The bytes for topic.
    */
   com.google.protobuf.ByteString
       getTopicBytes();
 
   /**
-   * <code>bytes payload = 4;</code>
+   * <code>optional bytes payload = 4;</code>
+   * @return Whether the payload field is set.
+   */
+  boolean hasPayload();
+  /**
+   * <code>optional bytes payload = 4;</code>
    * @return The payload.
    */
   com.google.protobuf.ByteString getPayload();
@@ -137,4 +152,19 @@ public interface LHTimerPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getStoreKeyBytes();
+
+  /**
+   * <code>optional .littlehorse.Command command = 8;</code>
+   * @return Whether the command field is set.
+   */
+  boolean hasCommand();
+  /**
+   * <code>optional .littlehorse.Command command = 8;</code>
+   * @return The command.
+   */
+  io.littlehorse.common.proto.Command getCommand();
+  /**
+   * <code>optional .littlehorse.Command command = 8;</code>
+   */
+  io.littlehorse.common.proto.CommandOrBuilder getCommandOrBuilder();
 }

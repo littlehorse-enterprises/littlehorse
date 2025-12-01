@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @LHTest
@@ -124,6 +125,7 @@ public class CorrelatedEventTest {
                 .start();
 
         String key = LHUtil.generateGuid();
+        System.out.println(key);
         CorrelatedEvent event = client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()
                 .setContent(LHLibUtil.objToVarVal(137L))
                 .setKey(key)

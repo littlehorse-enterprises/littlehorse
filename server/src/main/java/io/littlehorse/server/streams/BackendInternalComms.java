@@ -136,7 +136,6 @@ public class BackendInternalComms implements Closeable {
     public BackendInternalComms(
             LHServerConfig config,
             KafkaStreams coreStreams,
-            KafkaStreams timerStreams,
             MetadataCache metadataCache,
             Context.Key<RequestExecutionContext> contextKey,
             CoreStoreProvider coreStoreProvider,

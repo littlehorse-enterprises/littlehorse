@@ -44,7 +44,6 @@ public class ServerHealthState {
     public ServerHealthState(
             LHServerConfig config,
             KafkaStreams coreStreams,
-            KafkaStreams timerStreams,
             Map<TopicPartition, InProgressRestoration> restorations,
             Map<String, StandbyStoresOnInstance> standbyTasks) {
 
@@ -67,11 +66,6 @@ public class ServerHealthState {
                 .map(coreTask -> new ActiveTaskState(coreTask, restorations, config))
                 .toList());
 
-        this.timerActiveTasks.addAll(timerStreams.metadataForLocalThreads().stream()
-                .flatMap(thread -> thread.activeTasks().stream())
-                .map(timerTask -> new ActiveTaskState(timerTask, restorations, config))
-                .toList());
-
         this.coreStandbyTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.standbyTasks().stream())
                 .filter(standbyTask -> fromTask(standbyTask, config) == LHProcessorType.CORE)
@@ -91,16 +85,7 @@ public class ServerHealthState {
                 .map(Optional::get)
                 .toList());
 
-        this.timerStandbyTasks.addAll(timerStreams.metadataForLocalThreads().stream()
-                .flatMap(thread -> thread.standbyTasks().stream())
-                .filter(timerTask -> !timerTask.topicPartitions().isEmpty())
-                .map(timerTask -> createStandbyState(LHProcessorType.TIMER.getStoreName(), standbyTasks, timerTask))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList());
-
         this.coreState = coreStreams.state();
-        this.timerState = timerStreams.state();
     }
 
     public static LHProcessorType fromTask(TaskMetadata task, LHServerConfig config) {

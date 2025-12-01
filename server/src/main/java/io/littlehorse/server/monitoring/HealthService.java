@@ -39,15 +39,12 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
     private final Map<String, Integer> numberOfPartitionPerTopic;
     private InstanceState coreState;
     private final Map<String, StandbyStoresOnInstance> standbyStores = new ConcurrentHashMap<>();
-    private State timerState;
 
     private KafkaStreams coreStreams;
-    private KafkaStreams timerStreams;
 
     public HealthService(
             LHServerConfig config,
             KafkaStreams coreStreams,
-            KafkaStreams timerStreams,
             TaskQueueManager taskQueueManager,
             MetadataCache metadataCache,
             BackendInternalComms internalComms) {
@@ -59,14 +56,12 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         this.coreState = new InstanceState(coreStreams, internalComms);
         this.prom.bind(
                 coreStreams,
-                timerStreams,
                 taskQueueManager,
                 metadataCache,
                 new StandbyMetrics(standbyStores, config.getLHInstanceName()),
                 coreState);
 
         this.coreStreams = coreStreams;
-        this.timerStreams = timerStreams;
 
         this.config = config;
         this.restorations = new ConcurrentHashMap<>();
@@ -79,14 +74,8 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
         coreStreams.setStandbyUpdateListener(this);
         coreStreams.setGlobalStateRestoreListener(this);
-        timerStreams.setGlobalStateRestoreListener(this);
-        timerStreams.setStandbyUpdateListener(this);
 
         coreStreams.setStateListener(coreState);
-        timerStreams.setStateListener((newState, oldState) -> {
-            log.debug("New state for timer topology: {}", newState);
-            timerState = newState;
-        });
     }
 
     public void start() {
@@ -158,17 +147,17 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             return false;
         };
 
-        if (isAlive.test(coreState.getCurrentState()) && isAlive.test(timerState)) {
+        if (isAlive.test(coreState.getCurrentState())) {
             return "OK!";
         } else {
-            throw new LHHttpException("Core topology or Timer Topology has an error");
+            throw new LHHttpException("Core Topology has an error");
         }
     }
 
     private String getStatus() {
         try {
             ServerHealthState result =
-                    new ServerHealthState(config, coreStreams, timerStreams, restorations, standbyStores);
+                    new ServerHealthState(config, coreStreams, restorations, standbyStores);
             return gson.toJson(result);
         } catch (Exception exn) {
             throw new RuntimeException(exn);

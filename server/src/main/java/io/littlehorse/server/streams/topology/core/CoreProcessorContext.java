@@ -39,7 +39,9 @@ import java.util.List;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
@@ -73,6 +75,8 @@ public class CoreProcessorContext implements ExecutionContext {
     private GetableUpdates getableUpdates;
     private MetricsUpdater metricsAggregator;
     private final TenantIdModel tenantId;
+    public final TaskId taskId;
+    public final String partitionKey;
 
     public CoreProcessorContext(
             Command currentCommand,
@@ -82,6 +86,7 @@ public class CoreProcessorContext implements ExecutionContext {
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
             LHServer server) {
+        this.taskId = processorContext.taskId();
 
         this.processorContext = processorContext;
         this.metadataCache = metadataCache;
@@ -103,6 +108,7 @@ public class CoreProcessorContext implements ExecutionContext {
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
         this.eventsToThrow = new ArrayList<>();
+        this.partitionKey = this.currentCommand.getPartitionKey();
     }
 
     /**
@@ -127,8 +133,10 @@ public class CoreProcessorContext implements ExecutionContext {
         EventCorrelationMarkerModel marker = getCorrelationMarkerManager()
                 .getMarker(event.getId().getKey(), event.getId().getExternalEventDefId());
 
-        log.trace(
-                "marker with key {} and event id {} is {}",
+        log.info(
+                "on task {} with partition key {} ---- marker with key {} and event id {} is {}",
+                taskId,
+                partitionKey,
                 event.getId().getKey(),
                 event.getId().getExternalEventDefId(),
                 marker);
@@ -261,11 +269,8 @@ public class CoreProcessorContext implements ExecutionContext {
     }
 
     public void forward(OutputTopicRecordModel thingToSend) {
-        String topic = config.getExecutionOutputTopicName(authorization().tenantId());
-        CommandProcessorOutput toForward =
-                new CommandProcessorOutput(topic, thingToSend, thingToSend.getPartitionKey());
-        processorContext.forward(new Record<>(
-                toForward.partitionKey, toForward, currentCommand.getTime().getTime()));
+        CommandProcessorOutput toForward = CommandProcessorOutput.outputRecord(thingToSend, partitionKey, authContext.tenantId());
+        processorContext.forward(toForward.toRecord(new RecordHeaders()));
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.Set;
 public class LHConstants {
 
     // Other various constants used by code
-    public static final Duration TIMER_PUNCTUATOR_INTERVAL = Duration.ofMillis(500);
+    public static final Duration TIMER_PUNCTUATOR_INTERVAL = Duration.ofMillis(10);
     public static final String EXT_EVT_HANDLER_VAR = "INPUT";
 
     // Make all global metadata use the same partition key so that they're processed

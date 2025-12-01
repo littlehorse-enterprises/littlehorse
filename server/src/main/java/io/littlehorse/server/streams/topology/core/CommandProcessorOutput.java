@@ -1,22 +1,50 @@
 package io.littlehorse.server.streams.topology.core;
 
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
+import io.littlehorse.common.proto.Command;
 import lombok.Getter;
-import lombok.Setter;
+import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.streams.processor.api.Record;
 
-@Setter
+import java.time.Duration;
+import java.util.Date;
+
 @Getter
-public class CommandProcessorOutput implements Forwardable {
+public class CommandProcessorOutput {
 
-    public String topic;
-    public LHSerializable<?> payload;
-    public String partitionKey;
+    private final Message command;
+    private final String partitionKey;
+    private final Date maturationTime;
+    private final TenantIdModel tenantId;
 
-    public CommandProcessorOutput() {}
-
-    public CommandProcessorOutput(String topic, LHSerializable<?> payload, String partitionKey) {
-        this.topic = topic;
-        this.payload = payload;
+    private CommandProcessorOutput(Message command, String partitionKey, Date maturationTime, TenantIdModel tenantId) {
+        this.command = command;
         this.partitionKey = partitionKey;
+        this.maturationTime = maturationTime;
+        this.tenantId = tenantId;
     }
+
+    public static CommandProcessorOutput timer(Command commandToExecute, Date maturationTime) {
+        return new CommandProcessorOutput(commandToExecute, null, maturationTime, null);
+    }
+
+    public static CommandProcessorOutput repartition(LHSerializable<?> commandToExecute, String partitionKey) {
+        return new CommandProcessorOutput(commandToExecute.toProto().build(), partitionKey, null, null);
+    }
+
+    public static CommandProcessorOutput outputRecord(OutputTopicRecordModel thingToSend, String partitionKey, TenantIdModel tenant) {
+        return new CommandProcessorOutput(thingToSend.toProto().build(), partitionKey, null, tenant);
+    }
+
+    public Record<String, CommandProcessorOutput> toRecord(Headers metadata) {
+        return new Record<>(partitionKey, this, System.currentTimeMillis(), metadata);
+    }
+
+    public boolean isTimer() {
+        return maturationTime != null;
+    }
+
 }

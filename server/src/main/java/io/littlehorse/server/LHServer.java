@@ -47,7 +47,6 @@ public class LHServer {
     private TaskQueueManager taskQueueManager;
 
     private KafkaStreams coreStreams;
-    private KafkaStreams timerStreams;
 
     private BackendInternalComms internalComms;
     private HealthService healthService;
@@ -74,29 +73,23 @@ public class LHServer {
         // Kafka Streams Setup
         if (config.getLHInstanceId().isPresent()) {
             overrideStreamsProcessId("core");
-            overrideStreamsProcessId("timer");
         }
         this.coreStreams = new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager, asyncWaiters),
                 config.getCoreStreamsConfig());
-        this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
 
         coreStreams.setUncaughtExceptionHandler(throwable -> {
-            log.error("Uncaught exception for " + throwable.getMessage());
-            return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
-        });
-        timerStreams.setUncaughtExceptionHandler(throwable -> {
             log.error("Uncaught exception for " + throwable.getMessage());
             return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
         });
 
         coreStoreProvider = new CoreStoreProvider(this.coreStreams);
         this.internalComms = new BackendInternalComms(
-                config, coreStreams, timerStreams, metadataCache, contextKey, coreStoreProvider, asyncWaiters);
+                config, coreStreams, metadataCache, contextKey, coreStoreProvider, asyncWaiters);
 
         // Health Server Setup
         this.healthService =
-                new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache, internalComms);
+                new HealthService(config, coreStreams, taskQueueManager, metadataCache, internalComms);
         this.commandSender = new CommandSender(
                 internalComms,
                 networkThreadpool,
@@ -175,7 +168,6 @@ public class LHServer {
 
     public void start() throws IOException {
         coreStreams.start();
-        timerStreams.start();
         internalComms.start();
         for (LHServerListener listener : listeners) {
             listener.start();
@@ -185,14 +177,7 @@ public class LHServer {
 
     public void close() {
 
-        CountDownLatch streamLatch = new CountDownLatch(2);
-        new Thread(() -> {
-                    log.info("Closing timer Kafka Streams");
-                    timerStreams.close();
-                    streamLatch.countDown();
-                    log.info("Done closing timer Kafka Streams");
-                })
-                .start();
+        CountDownLatch streamLatch = new CountDownLatch(1);
 
         new Thread(() -> {
                     log.info("Closing core Kafka Streams");

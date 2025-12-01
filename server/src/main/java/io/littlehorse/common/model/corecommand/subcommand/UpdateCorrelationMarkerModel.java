@@ -69,7 +69,7 @@ public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelati
                 throw new IllegalStateException("Unrecognized Correlation Marker Action");
         }
         manager.saveCorrelationMarker(marker);
-        log.trace("Saved correleation marker {}", marker);
+        log.info("Saved correleation marker on task {} with partition key {},  {}", context.taskId, context.partitionKey , marker);
         context.maybeCorrelateEventToWfRuns(marker);
 
         return Empty.getDefaultInstance();

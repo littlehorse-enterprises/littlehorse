@@ -289,7 +289,7 @@ public class GetableManagerTest {
         return mockProcessorContext.forwarded().stream()
                 .map(MockProcessorContext.CapturedForward::record)
                 .map(Record::value)
-                .map(CommandProcessorOutput::getPayload)
+                .map(CommandProcessorOutput::getCommand)
                 .map(lhSerializable -> (RepartitionCommand) lhSerializable)
                 .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof CreateRemoteTag)
                 .toList();

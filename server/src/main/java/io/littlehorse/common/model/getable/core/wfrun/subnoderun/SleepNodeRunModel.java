@@ -18,8 +18,10 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
+@Slf4j
 public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
 
     private Date maturationTime;

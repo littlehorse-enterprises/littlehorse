@@ -99,17 +99,6 @@ public class UserTaskRunModelStorageManagerTest {
                 false);
     }
 
-    private List<String> storedRemoteTagPrefixStoreKeys() {
-        return mockProcessorContext.forwarded().stream()
-                .map(MockProcessorContext.CapturedForward::record)
-                .map(Record::value)
-                .map(CommandProcessorOutput::getPayload)
-                .map(lhSerializable -> (RepartitionCommand) lhSerializable)
-                .map(RepartitionCommand::getSubCommand)
-                .filter(subCommand -> subCommand instanceof CreateRemoteTag)
-                .map(RepartitionSubCommand::getPartitionKey)
-                .toList();
-    }
 
     private List<String> storedTagPrefixStoreKeys() {
         return storedTags().stream()

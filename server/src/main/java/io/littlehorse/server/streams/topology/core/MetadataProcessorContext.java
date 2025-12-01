@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -86,33 +87,18 @@ public class MetadataProcessorContext implements ExecutionContext {
 
     public void forward(CoreSubCommand<?> coreCommand) {
         CommandModel commandModel = new CommandModel(coreCommand, new Date());
-        CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.partitionKey = coreCommand.getPartitionKey();
-        cpo.topic = this.lhConfig.getCoreCmdTopicName();
-        cpo.payload = commandModel;
+        CommandProcessorOutput cpo = CommandProcessorOutput.repartition(commandModel, coreCommand.getPartitionKey());
         TenantIdModel tenantId = authorization().tenantId();
         PrincipalIdModel principalId = authorization().principalId();
-
-        Record<String, CommandProcessorOutput> out = new Record<>(
-                cpo.partitionKey,
-                cpo,
-                System.currentTimeMillis(),
-                HeadersUtil.metadataHeadersFor(tenantId, principalId));
-
-        this.processorContext.forward(out);
+        this.processorContext.forward(cpo.toRecord(HeadersUtil.metadataHeadersFor(tenantId, principalId)));
     }
 
     private void maybeForwardMetadataGetableToOutputTopic(TenantIdModel tenantId, MetadataGetable<?> getable) {
         TenantModel tenant = metadataManager.get(tenantId);
         if (tenant.getOutputTopicConfig() == null) return;
-
-        CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.topic = lhConfig.getMetadataOutputTopicName(tenantId);
-        cpo.payload = new MetadataOutputTopicRecordModel(getable);
-        cpo.partitionKey = "not-the-droids-you-are-looking-for";
-
-        Record<String, CommandProcessorOutput> out = new Record<>(cpo.partitionKey, cpo, System.currentTimeMillis());
-        this.processorContext.forward(out);
+        final String partitionKey = "not-the-droids-you-are-looking-for";
+        CommandProcessorOutput cpo = CommandProcessorOutput.repartition(new MetadataOutputTopicRecordModel(getable), partitionKey);
+        this.processorContext.forward(cpo.toRecord(new RecordHeaders()));
     }
 
     public void maybeCreateOutputTopics(TenantModel tenant) {

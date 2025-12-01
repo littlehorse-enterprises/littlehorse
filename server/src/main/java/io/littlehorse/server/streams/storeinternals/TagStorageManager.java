@@ -82,26 +82,16 @@ public class TagStorageManager {
         RemoveRemoteTag command = new RemoveRemoteTag(tagStoreKey, tagAttributeString);
         Headers metadata = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
         RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), tagStoreKey);
-        CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.partitionKey = tagAttributeString;
-        cpo.topic = this.lhConfig.getRepartitionTopicName();
-        cpo.payload = repartitionCommand;
-        Record<String, CommandProcessorOutput> out =
-                new Record<>(tagAttributeString, cpo, System.currentTimeMillis(), metadata);
-        this.context.forward(out);
+        CommandProcessorOutput cpo = CommandProcessorOutput.repartition(repartitionCommand, tagAttributeString);
+        this.context.forward(cpo.toRecord(metadata));
     }
 
     private void sendRepartitionCommandForCreateRemoteTag(Tag tag) {
         CreateRemoteTag command = new CreateRemoteTag(tag);
         Headers metadata = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
         String partitionKey = tag.getPartitionKey();
-        CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.setPartitionKey(partitionKey);
-        cpo.setTopic(this.lhConfig.getRepartitionTopicName());
         RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), partitionKey);
-        cpo.setPayload(repartitionCommand);
-        Record<String, CommandProcessorOutput> out =
-                new Record<>(partitionKey, cpo, System.currentTimeMillis(), metadata);
-        this.context.forward(out);
+        CommandProcessorOutput cpo = CommandProcessorOutput.repartition(repartitionCommand, partitionKey);
+        this.context.forward(cpo.toRecord(metadata));
     }
 }
