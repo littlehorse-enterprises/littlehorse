@@ -5,7 +5,7 @@ import { StartMultipleThreadsRun } from 'littlehorse-client/proto'
 
 describe('StartMultipleThreadRunNode', () => {
   test('renders node type label and threadSpecName text', () => {
-    const node:StartMultipleThreadsRun = {
+    const node: StartMultipleThreadsRun = {
       threadSpecName: 'my-spec',
       childThreadIds: [12, 123],
     }
@@ -17,7 +17,7 @@ describe('StartMultipleThreadRunNode', () => {
   })
 
   test('renders each childThreadId as a blue text element', () => {
-    const node:StartMultipleThreadsRun   = {
+    const node: StartMultipleThreadsRun = {
       threadSpecName: 'spec-1',
       childThreadIds: [12, 123, 456],
     }
@@ -30,7 +30,7 @@ describe('StartMultipleThreadRunNode', () => {
   })
 
   test('handles empty childThreadIds without errors', () => {
-    const node:StartMultipleThreadsRun = {
+    const node: StartMultipleThreadsRun = {
       threadSpecName: 'empty-spec',
       childThreadIds: [],
     }
