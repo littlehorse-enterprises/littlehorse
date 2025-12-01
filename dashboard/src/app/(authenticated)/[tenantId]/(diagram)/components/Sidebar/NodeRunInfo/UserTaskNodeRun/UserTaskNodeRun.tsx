@@ -1,4 +1,4 @@
-import { UserTaskNodeRun, UserTaskRun } from 'littlehorse-client/proto'
+import { UserTaskNodeRun as UserTaskNodeRunProto, UserTaskRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { NodeVariable } from '../../Components/NodeVariable'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
@@ -7,7 +7,7 @@ import { getUserTaskRun } from '../../../NodeTypes/UserTask/getUserTaskRun'
 import { Events } from './Events'
 import { Results } from '../../Components/Results'
 
-export const UserTaskRunNode: FC<{ node: UserTaskNodeRun }> = ({ node }) => {
+export const UserTaskNodeRun: FC<{ node: UserTaskNodeRunProto }> = ({ node }) => {
   const { userTaskRunId } = node
   const { tenantId } = useWhoAmI()
 

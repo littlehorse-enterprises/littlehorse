@@ -1,4 +1,4 @@
-import { ThrowEventNodeRun, WorkflowEvent } from 'littlehorse-client/proto'
+import { ThrowEventNodeRun as ThrowEventNodeRunProto, WorkflowEvent } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { NodeVariable } from '../Components/NodeVariable'
 import useSWR from 'swr'
@@ -7,7 +7,7 @@ import { getWorkflowEvent } from '../../NodeTypes/ThrowEvent/getWorkflowEvent'
 import { getVariableValue } from '@/app/utils'
 import { VARIABLE_TYPES } from '@/app/constants'
 
-export const ThrowEventRunNode: FC<{ node: ThrowEventNodeRun }> = ({ node }) => {
+export const ThrowEventNodeRun: FC<{ node: ThrowEventNodeRunProto }> = ({ node }) => {
   const { tenantId } = useWhoAmI()
 
   const throwEventId = node.workflowEventId

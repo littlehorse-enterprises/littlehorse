@@ -2,7 +2,7 @@ import { StartMultipleThreadsRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { NodeVariable } from '../Components/NodeVariable'
 
-export const StartMultipleThreadRunNode: FC<{ node: StartMultipleThreadsRun }> = ({ node }) => {
+export const StartMultipleThreadNodeRun: FC<{ node: StartMultipleThreadsRun }> = ({ node }) => {
   return (
     <div>
       <NodeVariable label="Node Type" text="Start multiple threads "></NodeVariable>

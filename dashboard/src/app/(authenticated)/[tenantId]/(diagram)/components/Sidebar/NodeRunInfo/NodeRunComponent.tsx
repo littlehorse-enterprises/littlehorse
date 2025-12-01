@@ -2,13 +2,13 @@ import { useDiagram } from '../../../hooks/useDiagram'
 import { ExternalEventNodeRun } from './ExternalEventNodeRun/ExternalEventNodeRun'
 import { SleepNodeRun } from './SleepNodeRun'
 import { FC } from 'react'
-import { UserTaskRunNode } from './UserTaskNodeRun/UserTaskRunNode'
+import { UserTaskNodeRun } from './UserTaskNodeRun/UserTaskNodeRun'
 import { WaitForThreadsNodeRun } from './WaitForThreadNodeRun'
-import { StartMultipleThreadRunNode } from './StartMultipleThreadRunNode'
-import { ThrowEventRunNode } from './ThrowEventRunNode'
+import { StartMultipleThreadNodeRun } from './StartMultipleThreadNodeRun'
+import { ThrowEventNodeRun } from './ThrowEventNodeRun'
 import { OctagonAlert } from 'lucide-react'
-import { StartThreadRunNode } from './StartThreadRunNode'
-import { TaskRunNode } from './TaskRunNode'
+import { StartThreadNodeRun } from './StartThreadNodeRun'
+import { TaskNodeRun } from './TaskNodeRun'
 import { ChildWFNodeRun } from './ChildWFNodeRun'
 
 export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
@@ -25,14 +25,14 @@ export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex })
   const nodeRun = selectedNode.data.nodeRunsList[nodeRunIndex]
 
   const { $case, value } = nodeRun.nodeType!
-  if ($case === 'task') return <TaskRunNode node={value} />
+  if ($case === 'task') return <TaskNodeRun node={value} />
   if ($case === 'externalEvent') return <ExternalEventNodeRun node={value} />
-  if ($case === 'userTask') return <UserTaskRunNode node={value} />
+  if ($case === 'userTask') return <UserTaskNodeRun node={value} />
   if ($case === 'sleep') return <SleepNodeRun node={value} />
   if ($case === 'waitForThreads') return <WaitForThreadsNodeRun node={value} />
-  if ($case === 'startThread') return <StartThreadRunNode node={value} />
-  if ($case === 'startMultipleThreads') return <StartMultipleThreadRunNode node={value} />
-  if ($case === 'throwEvent') return <ThrowEventRunNode node={value} />
+  if ($case === 'startThread') return <StartThreadNodeRun node={value} />
+  if ($case === 'startMultipleThreads') return <StartMultipleThreadNodeRun node={value} />
+  if ($case === 'throwEvent') return <ThrowEventNodeRun node={value} />
   if ($case === 'runChildWf') return <ChildWFNodeRun node={value} />
 
   return (

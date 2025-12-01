@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React from 'react'
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { NodeRunComponent } from '../NodeRunComponent'
@@ -8,21 +8,21 @@ import {
   RunChildWfNodeRun,
   SleepNodeRun,
   StartMultipleThreadsRun,
-  StartThreadRun,
+  StartThreadRun as StartThreadRunProto,
   TaskNodeRun,
   ThrowEventNodeRun,
   UserTaskNodeRun,
   WaitForThreadsRun,
 } from 'littlehorse-client/proto'
 
-jest.mock('../TaskRunNode', () => ({
-  TaskRunNode: ({}: { node: TaskNodeRun }) => <div data-testid="TaskRunNode">Task</div>,
+jest.mock('../TaskNodeRun', () => ({
+  TaskNodeRun: ({}: { node: TaskNodeRun }) => <div data-testid="TaskNodeRun">Task</div>,
 }))
 jest.mock('../ExternalEventNodeRun/ExternalEventNodeRun', () => ({
   ExternalEventNodeRun: ({}: { node: ExternalEventNodeRun }) => <div data-testid="ExternalEventNodeRun">External</div>,
 }))
-jest.mock('../UserTaskNodeRun/UserTaskRunNode', () => ({
-  UserTaskRunNode: ({}: { node: UserTaskNodeRun }) => <div data-testid="UserTaskRunNode">User</div>,
+jest.mock('../UserTaskNodeRun/UserTaskNodeRun', () => ({
+  UserTaskNodeRun: ({}: { node: UserTaskNodeRun }) => <div data-testid="UserTaskNodeRun">User</div>,
 }))
 jest.mock('../SleepNodeRun', () => ({
   SleepNodeRun: ({}: { node: SleepNodeRun }) => <div data-testid="SleepNodeRun">Sleep</div>,
@@ -32,18 +32,18 @@ jest.mock('../WaitForThreadNodeRun', () => ({
     <div data-testid="WaitForThreadsNodeRun">Wait</div>
   ),
 }))
-jest.mock('../StartThreadRunNode', () => ({
-  StartThreadRunNode: ({}: { node: { node: StartThreadRun } }) => (
-    <div data-testid="StartThreadRunNode">StartThreadRunNode</div>
+jest.mock('../StartThreadNodeRun', () => ({
+  StartThreadNodeRun: ({}: { node: { node: StartThreadRunProto } }) => (
+    <div data-testid="StartThreadNodeRun">StartThreadNodeRun</div>
   ),
 }))
-jest.mock('../StartMultipleThreadRunNode', () => ({
-  StartMultipleThreadRunNode: ({}: { node: StartMultipleThreadsRun }) => (
-    <div data-testid="StartMultipleThreadRunNode">StartMultipleThreadRunNode</div>
+jest.mock('../StartMultipleThreadNodeRun', () => ({
+  StartMultipleThreadNodeRun: ({}: { node: StartMultipleThreadsRun }) => (
+    <div data-testid="StartMultipleThreadNodeRun">StartMultipleThreadNodeRun</div>
   ),
 }))
-jest.mock('../ThrowEventRunNode', () => ({
-  ThrowEventRunNode: ({}: { node: ThrowEventNodeRun }) => <div data-testid="ThrowEventRunNode">ThrowEventRunNode</div>,
+jest.mock('../ThrowEventNodeRun', () => ({
+  ThrowEventNodeRun: ({}: { node: ThrowEventNodeRun }) => <div data-testid="ThrowEventNodeRun">ThrowEventNodeRun</div>,
 }))
 jest.mock('../ChildWFNodeRun', () => ({
   ChildWFNodeRun: ({}: { node: RunChildWfNodeRun }) => <div data-testid="ChildWFNodeRun">ChildWFNodeRun</div>,
@@ -75,14 +75,14 @@ describe('NodeRunComponent', () => {
   })
 
   const cases: Array<[string, string]> = [
-    ['task', 'TaskRunNode'],
+    ['task', 'TaskNodeRun'],
     ['externalEvent', 'ExternalEventNodeRun'],
-    ['userTask', 'UserTaskRunNode'],
+    ['userTask', 'UserTaskNodeRun'],
     ['sleep', 'SleepNodeRun'],
     ['waitForThreads', 'WaitForThreadsNodeRun'],
-    ['startThread', 'StartThreadRunNode'],
-    ['startMultipleThreads', 'StartMultipleThreadRunNode'],
-    ['throwEvent', 'ThrowEventRunNode'],
+    ['startThread', 'StartThreadNodeRun'],
+    ['startMultipleThreads', 'StartMultipleThreadNodeRun'],
+    ['throwEvent', 'ThrowEventNodeRun'],
     ['runChildWf', 'ChildWFNodeRun'],
   ]
 
