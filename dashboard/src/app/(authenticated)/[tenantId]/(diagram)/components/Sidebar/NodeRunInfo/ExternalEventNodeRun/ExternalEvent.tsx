@@ -2,17 +2,14 @@ import { ExternalEvent as ExternalEventProto } from 'littlehorse-client/proto'
 import { NodeVariable } from '../NodeVariable'
 import { getVariableValue } from '@/app/utils'
 import { VARIABLE_TYPES } from '@/app/constants'
+import { Divider } from '../../Components/Divider'
 
 export const ExternalEvent = ({ event }: { event: ExternalEventProto }) => {
   const variable = event.content
   const variableType = variable?.value?.$case
   return (
     <>
-      <div className="my-2 flex w-full items-center">
-        <div className="h-px flex-grow bg-gray-300"></div>
-        <p className="node-title mx-4">ExternalEvent</p>
-        <div className="h-px flex-grow bg-gray-300"></div>
-      </div>
+      <Divider title="ExternalEvent" />
       <NodeVariable label="externalEventId:" text={`${event.id?.externalEventDefId?.name}`} />
       <NodeVariable label="guid:" text={`${event.id?.guid}`} />
       <NodeVariable label="wfRunId:" text={`${event.id?.wfRunId?.id}`} />

@@ -1,15 +1,12 @@
 import { ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client/proto'
 import { NodeVariable } from '../NodeVariable'
 import { TypeDisplay } from '@/app/(authenticated)/[tenantId]/components/TypeDisplay'
+import { Divider } from '../../Components/Divider'
 
 export const ExternalEventDef = ({ event }: { event: ExternalEventDefProto }) => {
   return (
     <>
-      <div className="my-2 flex w-full items-center">
-        <div className="h-px flex-grow bg-gray-300"></div>
-        <p className="node-title mx-4">ExternalEventDef</p>
-        <div className="h-px flex-grow bg-gray-300"></div>
-      </div>
+      <Divider title="ExternalEventDef" />
       <NodeVariable label="ExternalEventDefId:" text={`${event?.id?.name}`} />
       <NodeVariable label="createdAt:" text={`${event?.createdAt}`} type="date" />
       {event.retentionPolicy && Object.keys(event.retentionPolicy).length > 0 && (
