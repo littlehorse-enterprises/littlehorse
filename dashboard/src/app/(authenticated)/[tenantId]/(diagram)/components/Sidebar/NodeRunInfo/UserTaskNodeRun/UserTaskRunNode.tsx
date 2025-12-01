@@ -1,6 +1,6 @@
 import { UserTaskNodeRun, UserTaskRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
-import { NodeVariable } from '../NodeVariable'
+import { NodeVariable } from '../../Components/NodeVariable'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import useSWR from 'swr'
 import { getUserTaskRun } from '../../../NodeTypes/UserTask/getUserTaskRun'

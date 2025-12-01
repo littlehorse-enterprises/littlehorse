@@ -1,5 +1,5 @@
 import { ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client/proto'
-import { NodeVariable } from '../NodeVariable'
+import { NodeVariable } from '../../Components/NodeVariable'
 import { TypeDisplay } from '@/app/(authenticated)/[tenantId]/components/TypeDisplay'
 import { Divider } from '../../Components/Divider'
 

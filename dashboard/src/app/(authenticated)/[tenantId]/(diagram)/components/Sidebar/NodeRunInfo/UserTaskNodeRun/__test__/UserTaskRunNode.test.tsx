@@ -31,7 +31,7 @@ jest.mock('../../../../NodeTypes/UserTask/getUserTaskRun', () => {
   }
 })
 
-jest.mock('../../NodeVariable', () => {
+jest.mock('../../../Components/NodeVariable', () => {
   return {
     NodeVariable: ({ label, text }: { label: string; text: string }) =>
       React.createElement('div', { 'data-testid': `nodevar-${label}` }, `${label} ${text}`),

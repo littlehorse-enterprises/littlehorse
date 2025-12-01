@@ -1,13 +1,14 @@
 import { StartThreadRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { LabelContent } from '../Components'
+import { NodeVariable } from '../Components/NodeVariable'
 
 export const StartThreadRunNode: FC<{ node: StartThreadRun }> = ({ node }) => {
   return (
     <div>
-      <LabelContent label="Node Type" content="Start Thread"></LabelContent>
-      <LabelContent label="Thread id of the child " content={`${node.childThreadId}`}></LabelContent>
-      <LabelContent label="Thread Spec Name" content={`${node.threadSpecName}`}></LabelContent>
+      <NodeVariable label="Node Type:" text="Start Thread" />
+      <NodeVariable label="childThreadId:" text={`${node.childThreadId}`} />
+      <NodeVariable label="threadSpecName:" text={`${node.threadSpecName}`} />
     </div>
   )
 }

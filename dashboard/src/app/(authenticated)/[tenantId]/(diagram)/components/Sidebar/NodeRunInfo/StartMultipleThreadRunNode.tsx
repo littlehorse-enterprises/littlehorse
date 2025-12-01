@@ -1,12 +1,12 @@
 import { StartMultipleThreadsRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
-import { LabelContent } from '../Components'
+import { NodeVariable } from '../Components/NodeVariable'
 
 export const StartMultipleThreadRunNode: FC<{ node: StartMultipleThreadsRun }> = ({ node }) => {
   return (
     <div>
-      <LabelContent label="Node Type" content="Start multiple threads "></LabelContent>
-      <LabelContent label="Thread spec name" content={node.threadSpecName}></LabelContent>
+      <NodeVariable label="Node Type" text="Start multiple threads "></NodeVariable>
+      <NodeVariable label="threadSpecName:" text={node.threadSpecName}></NodeVariable>
       {node.childThreadIds.map(thread => {
         return <div className="ml-1 text-blue-500">{thread}</div>
       })}
