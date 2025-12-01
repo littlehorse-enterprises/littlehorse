@@ -6,6 +6,7 @@ import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { getWorkflowEvent } from '../../NodeTypes/ThrowEvent/getWorkflowEvent'
 import { getVariableValue } from '@/app/utils'
 import { VARIABLE_TYPES } from '@/app/constants'
+import { Divider } from '../Components/Divider'
 
 export const ThrowEventNodeRun: FC<{ node: ThrowEventNodeRunProto }> = ({ node }) => {
   const { tenantId } = useWhoAmI()
@@ -23,7 +24,8 @@ export const ThrowEventNodeRun: FC<{ node: ThrowEventNodeRunProto }> = ({ node }
       <NodeVariable label="Node Type" text="Throw event"></NodeVariable>
       <NodeVariable label="workflowEventId" text={node.workflowEventId?.wfRunId?.id}></NodeVariable>
       <NodeVariable label="workflowEventDefId" text={node.workflowEventId?.workflowEventDefId?.name}></NodeVariable>
-      <NodeVariable label="workflowEventDefId" text={nodeThrowEvent?.createdAt}></NodeVariable>
+      <Divider title="Workflow Event Details"></Divider>
+      <NodeVariable label="createdAt" text={nodeThrowEvent?.createdAt} type="date"></NodeVariable>
       <NodeVariable label="position" text={`${nodeThrowEvent?.nodeRunId?.position}`}></NodeVariable>
       <NodeVariable label="threadRunNumber" text={`${nodeThrowEvent?.nodeRunId?.threadRunNumber}`}></NodeVariable>
       {variable && (
