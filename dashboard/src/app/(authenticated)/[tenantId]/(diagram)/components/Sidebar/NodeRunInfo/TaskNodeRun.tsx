@@ -1,5 +1,5 @@
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { Checkpoint, TaskNodeRun, TaskRun } from 'littlehorse-client/proto'
+import { Checkpoint, TaskNodeRun as TaskNodeRunProto, TaskRun } from 'littlehorse-client/proto'
 import { FC, useState } from 'react'
 import useSWR from 'swr'
 import { getCheckpoints } from '../../NodeTypes/Task/getCheckpoints'
@@ -7,10 +7,10 @@ import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
 import { InputVariables } from '../Components'
 import { Attempts } from '../Components/Attempts'
 import { Checkpoints } from '../Components/Checkpoints'
+import { NodeVariable } from '../Components/NodeVariable'
 import { NodeStatus } from './NodeStatus'
-import { NodeVariable } from './NodeVariable'
 
-export const TaskRunNode: FC<{ node: TaskNodeRun }> = ({ node }) => {
+export const TaskNodeRun: FC<{ node: TaskNodeRunProto }> = ({ node }) => {
   const taskRunId = node.taskRunId
   const { tenantId } = useWhoAmI()
   const [attemptIndex, setAttemptIndex] = useState(0)
