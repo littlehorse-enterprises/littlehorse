@@ -24,6 +24,7 @@ import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -236,6 +237,20 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         }
         if (dynamicTask != null) {
             out.addAll(dynamicTask.getRequiredWfRunVarNames());
+        }
+        return out;
+    }
+
+    @Override
+    public Set<String> getNeededNodeNames() {
+        Set<String> out = new HashSet<>();
+        for (VariableAssignmentModel assignment : variables) {
+            if (assignment.getRhsSourceType() == SourceCase.NODE_OUTPUT) {
+                out.add(assignment.getNodeOutputReference().getNodeName());
+            }
+        }
+        if (dynamicTask != null && dynamicTask.getRhsSourceType() == SourceCase.NODE_OUTPUT) {
+            out.add(dynamicTask.getNodeOutputReference().getNodeName());
         }
         return out;
     }
