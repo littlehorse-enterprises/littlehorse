@@ -1,3 +1,5 @@
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import {
   TypeDefinition,
   VariableAssignment,
@@ -6,9 +8,11 @@ import {
   VariableType,
   VariableValue,
 } from 'littlehorse-client/proto'
+import { HTMLInputTypeAttribute } from 'react'
+import { SelectBool } from '../(authenticated)/[tenantId]/(diagram)/components/Forms/components/SelectBool'
+import { lhPathToString } from './lhPath'
 import { structFromJSONString, structToJSONString } from './struct'
 import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
-import { lhPathToString } from './lhPath'
 
 export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): NonNullable<VariableValue['value']>['$case'] => {
   switch (typeDef.definedType?.$case) {
@@ -255,3 +259,16 @@ const formatVariableExpression = (
       : `${getVariable(lhs!, depth + 1)} ${getExpressionSymbol(operation)} ${getVariable(rhs!, depth + 1)}` // Arithmetic operations
   return depth > 0 ? `(${result})` : result
 }
+
+export const VariableTypeToFieldComponent = {
+  [VariableType.JSON_OBJ]: { type: 'textarea', component: Textarea },
+  [VariableType.JSON_ARR]: { type: 'textarea', component: Textarea },
+  [VariableType.DOUBLE]: { type: 'number', component: Input },
+  [VariableType.BOOL]: { type: 'checkbox', component: SelectBool },
+  [VariableType.STR]: { type: 'text', component: Input },
+  [VariableType.INT]: { type: 'number', component: Input },
+  [VariableType.BYTES]: { type: 'text', component: Input },
+  [VariableType.WF_RUN_ID]: { type: 'text', component: Input },
+  [VariableType.TIMESTAMP]: { type: 'number', component: Input },
+  [VariableType.UNRECOGNIZED]: { type: 'text', component: Input },
+} as const satisfies Record<keyof typeof VariableType, { type: HTMLInputTypeAttribute; component: React.ElementType }>
