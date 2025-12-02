@@ -1,14 +1,14 @@
-import { TaskNodeRun, TaskRun } from 'littlehorse-client/proto'
+import { TaskNodeRun as TaskNodeRunProto, TaskRun } from 'littlehorse-client/proto'
 import { FC, useState } from 'react'
 import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { NodeVariable } from './NodeVariable'
+import { NodeVariable } from '../Components/NodeVariable'
 import { InputVariables } from '../Components'
 import { Attempts } from '../Components/Attempts'
 import { NodeStatus } from './NodeStatus'
 import useSWR from 'swr'
 
-export const TaskRunNode: FC<{ node: TaskNodeRun }> = ({ node }) => {
+export const TaskNodeRun: FC<{ node: TaskNodeRunProto }> = ({ node }) => {
   const taskRunId = node.taskRunId
   const { tenantId } = useWhoAmI()
   const [attemptIndex, setAttemptIndex] = useState(0)

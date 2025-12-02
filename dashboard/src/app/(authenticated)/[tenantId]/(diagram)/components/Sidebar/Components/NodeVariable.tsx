@@ -39,7 +39,7 @@ export const NodeVariable = ({
               <TooltipTrigger asChild>
                 <button
                   onClick={handleCopy}
-                  className={` inline-flex h-6 w-6 items-center justify-center rounded transition-colors hover:bg-gray-100 ${className}`}
+                  className={` inline-flex h-6 items-center justify-center rounded transition-colors hover:bg-gray-100 ${className}`}
                 >
                   {copied ? (
                     <Check className="h-4 w-4 text-green-500" />
