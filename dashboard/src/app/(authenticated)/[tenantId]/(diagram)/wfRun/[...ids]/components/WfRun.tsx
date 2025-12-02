@@ -7,7 +7,6 @@ import { Separator } from '@/components/ui/separator'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { FC, useMemo } from 'react'
 import useSWR from 'swr'
-import { useDiagram } from '../../../hooks/useDiagram'
 import { ChildWorkflows } from './ChildWorkflows'
 import { Details } from './Details'
 import { Variables } from './Variables'
@@ -15,7 +14,6 @@ import { Variables } from './Variables'
 export const WfRun: FC<WfRunResponse> = wfRunData => {
   const { tenantId } = useWhoAmI()
   const wfRunId = wfRunData.wfRun.id
-  const { thread } = useDiagram()
   if (!wfRunId) return
 
   const { data } = useSWR(
