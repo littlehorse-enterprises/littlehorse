@@ -1,12 +1,14 @@
-import { TaskNodeRun, TaskRun } from 'littlehorse-client/proto'
-import { FC, useState } from 'react'
-import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { NodeVariable } from './NodeVariable'
+import { Checkpoint, TaskNodeRun, TaskRun } from 'littlehorse-client/proto'
+import { FC, useState } from 'react'
+import useSWR from 'swr'
+import { getCheckpoints } from '../../NodeTypes/Task/getCheckpoints'
+import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
 import { InputVariables } from '../Components'
 import { Attempts } from '../Components/Attempts'
+import { Checkpoints } from '../Components/Checkpoints'
 import { NodeStatus } from './NodeStatus'
-import useSWR from 'swr'
+import { NodeVariable } from './NodeVariable'
 
 export const TaskRunNode: FC<{ node: TaskNodeRun }> = ({ node }) => {
   const taskRunId = node.taskRunId
@@ -18,6 +20,16 @@ export const TaskRunNode: FC<{ node: TaskNodeRun }> = ({ node }) => {
     if (!taskRunId) return undefined
     return getTaskRun({ tenantId, ...taskRunId })
   })
+
+  const checkpointsKey =
+    taskRunId && nodeTask?.totalCheckpoints
+      ? ['checkpoints', tenantId, taskRunId.taskGuid, nodeTask.totalCheckpoints]
+      : null
+  const { data: checkpoints } = useSWR<Checkpoint[]>(checkpointsKey, async () => {
+    if (!taskRunId || !nodeTask?.totalCheckpoints) return []
+    return getCheckpoints({ tenantId, taskRunId, totalCheckpoints: nodeTask.totalCheckpoints })
+  })
+
   return (
     <div className="ml-1 flex max-w-full flex-1 flex-col">
       {nodeTask?.status && <NodeStatus status={nodeTask.status} type="task" />}
@@ -34,6 +46,7 @@ export const TaskRunNode: FC<{ node: TaskNodeRun }> = ({ node }) => {
       <NodeVariable label="scheduledAt:" text={nodeTask?.scheduledAt} type="date" />
       <NodeVariable label="timeoutSeconds:" text={`${nodeTask?.timeoutSeconds}`} />
       <NodeVariable label="totalCheckpoints:" text={`${nodeTask?.totalCheckpoints}`} />
+      {checkpoints && checkpoints.length > 0 && <Checkpoints checkpoints={checkpoints} />}
       {nodeTask?.exponentialBackoff && (
         <NodeVariable label="baseIntervalMs:" text={`${nodeTask?.exponentialBackoff.baseIntervalMs}`} />
       )}
