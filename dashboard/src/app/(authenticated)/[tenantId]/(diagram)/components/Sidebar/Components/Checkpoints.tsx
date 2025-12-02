@@ -1,7 +1,7 @@
 import { getVariableValue } from '@/app/utils'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Checkpoint } from 'littlehorse-client/proto'
-import { NodeVariable } from '../NodeRunInfo/NodeVariable'
+import { NodeVariable } from './NodeVariable'
 
 export const Checkpoints = ({ checkpoints }: { checkpoints: Checkpoint[] }) => {
   if (!checkpoints.length) return null
