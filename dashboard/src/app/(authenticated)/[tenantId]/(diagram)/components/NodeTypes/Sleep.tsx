@@ -2,9 +2,9 @@ import { SleepNode } from 'littlehorse-client/proto'
 import { ClockIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
-import { NodeProps } from '..'
-import { Fade } from '../Fade'
-import { SelectedNode } from '../SelectedNode'
+import { NodeProps } from '.'
+import { Fade } from './Fade'
+import { SelectedNode } from './SelectedNode'
 
 const Node: FC<NodeProps<'sleep', SleepNode>> = ({ data }) => {
   const { fade, nodeRunsList } = data
