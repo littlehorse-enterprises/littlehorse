@@ -11,13 +11,14 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.LHTimerPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class LHTimer extends LHSerializable<LHTimerPb> {
+public class LHTimer extends LHSerializable<LHTimerPb> implements Forwardable {
 
     public Date maturationTime;
     public String topic;
