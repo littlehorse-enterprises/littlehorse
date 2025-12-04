@@ -27,6 +27,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> implements Forwardable {
     private TenantIdModel tenantId;
     private PrincipalIdModel principalId;
     private String storeKeyInternal;
+    private boolean isRepartition;
 
     public LHTimer() {}
 
@@ -40,6 +41,12 @@ public class LHTimer extends LHSerializable<LHTimerPb> implements Forwardable {
         if (command.hasResponse()) {
             throw new IllegalArgumentException("Timer commands cannot have a response");
         }
+        isRepartition = false;
+    }
+
+    public LHTimer(CommandModel command, boolean isRepartition) {
+        this(command);
+        this.isRepartition = isRepartition;
     }
 
     @Override
@@ -49,6 +56,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> implements Forwardable {
         topic = p.getTopic();
         partitionKey = p.getPartitionKey();
         payload = p.getPayload().toByteArray();
+        isRepartition = p.getIsRepartition();
 
         if (p.hasPrincipalId()) {
             principalId = LHSerializable.fromProto(p.getPrincipalId(), PrincipalIdModel.class, context);
@@ -82,6 +90,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> implements Forwardable {
                 .setTopic(topic)
                 .setPayload(ByteString.copyFrom(payload))
                 .setStoreKey(getStoreKey())
+                .setIsRepartition(isRepartition)
                 .setPrincipalId(principalId.toProto()) // TODO: allow nulls
                 .setTenantId(tenantId.toProto()); // TODO: Allow nulls
         return out;

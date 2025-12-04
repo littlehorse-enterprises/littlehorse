@@ -54,12 +54,14 @@ public class ServerTopologyV2 {
     public static final String TIMER_PROCESSOR_NAME = ServerTopology.TIMER_PROCESSOR;
     public static final String OUTPUT_TOPIC_PROCESSOR_NAME = "output-topic-processor";
     public static final String ROUTER_PROCESSOR_NAME = "router-processor";
+    public static final String REPARTITION_PASSTHROUGH_PROCESSOR = "passthrough-repartition-processor";
     public static final String[] COMMAND_SOURCE_NAMES =
             new String[] {CORE_COMMAND_SOURCE_NAME, REPARTITION_SOURCE_NAME};
 
     private final ProcessorSupplier<String, Command, String, CommandProcessorOutput> commandProcessorSupplier;
     private final ProcessorSupplier<String, CommandProcessorOutput, String, Forwardable> routerProcessorSupplier;
     private final ProcessorSupplier<String, LHTimer, String, LHTimer> timerProcessorSupplier;
+    private final ProcessorSupplier<String, Forwardable, String, Forwardable> passthroughRepartitionProcessor;
 
     public ServerTopologyV2(
             LHServerConfig config,
@@ -69,8 +71,9 @@ public class ServerTopologyV2 {
             AsyncWaiters asyncWaiters) {
         this.commandProcessorSupplier =
                 () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager, asyncWaiters);
-        this.routerProcessorSupplier = ProcessorOutputRouter::new;
+        this.routerProcessorSupplier = ProcessorOutputRouter::createCommandProcessorRouter;
         this.timerProcessorSupplier = TimerProcessor::new;
+        this.passthroughRepartitionProcessor = ProcessorOutputRouter::pas
     }
 
     public Topology build() {

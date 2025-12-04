@@ -39,6 +39,9 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
 
     public void process(final Record<String, LHTimer> record) {
         LHTimer timer = record.value();
+        if (timer.isRepartition()) {
+            context.forward(record);
+        }
 
         // If the timer is already matured, no sense in putting it into the store. Just forward now.
         if (timer.maturationTime.getTime() <= System.currentTimeMillis()) {
