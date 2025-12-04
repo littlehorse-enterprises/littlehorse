@@ -72,6 +72,16 @@ public class ServerTopologyV2 {
     private final StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder;
     private final MetadataCache metadataCache;
     private StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder;
+    private final TopicNameExtractor<String, Object> sinkTopicNameExtractor =
+            (key, coreServerOutput, ctx) -> ((CommandProcessorOutput) coreServerOutput).topic;
+    private final Serializer<Object> sinkValueSerializer = (topic, output) -> {
+        CommandProcessorOutput cpo = (CommandProcessorOutput) output;
+        if (cpo.payload == null) {
+            return null;
+        }
+
+        return cpo.payload.toBytes();
+    };
 
     public ServerTopologyV2(
             LHServerConfig config,
@@ -107,6 +117,22 @@ public class ServerTopologyV2 {
 
     public Topology build() {
         final Topology serverTopology = new Topology();
+
+        serverTopology.addSource(
+                METADATA_SOURCE_NAME, // source name
+                Serdes.String().deserializer(), // key deserializer
+                new ProtobufDeserializer<>(MetadataCommand.parser()), // value deserializer
+                metadataTopic);
+        serverTopology.addProcessor(METADATA_PROCESSOR_NAME, metadataProcessorSupplier, METADATA_SOURCE_NAME);
+        serverTopology.addStateStore(metadataStoreBuilder, METADATA_PROCESSOR_NAME);
+
+        serverTopology.addSink(
+                METADATA_PROCESSOR_SINK_NAME,
+                sinkTopicNameExtractor, // topic extractor
+                Serdes.String().serializer(), // key serializer
+                sinkValueSerializer, // value serializer
+                METADATA_PROCESSOR_NAME); // parent name
+
         serverTopology.addSource(
                 CORE_COMMAND_SOURCE_NAME,
                 Serdes.String().deserializer(),
@@ -131,16 +157,6 @@ public class ServerTopologyV2 {
                 timerWithoutForwardProcessorSupplier,
                 TIMER_COMMAND_PROCESSOR_NAME);
 
-        TopicNameExtractor<String, Object> sinkTopicNameExtractor =
-                (key, coreServerOutput, ctx) -> ((CommandProcessorOutput) coreServerOutput).topic;
-        Serializer<Object> sinkValueSerializer = (topic, output) -> {
-            CommandProcessorOutput cpo = (CommandProcessorOutput) output;
-            if (cpo.payload == null) {
-                return null;
-            }
-
-            return cpo.payload.toBytes();
-        };
         serverTopology.addSink(
                 REPARTITION_SINK_NAME,
                 repartitionTopic,
@@ -171,20 +187,6 @@ public class ServerTopologyV2 {
                 GLOBAL_METADATA_PROCESSOR_NAME,
                 () -> new MetadataGlobalStoreProcessor(metadataCache));
 
-        serverTopology.addSource(
-                METADATA_SOURCE_NAME, // source name
-                Serdes.String().deserializer(), // key deserializer
-                new ProtobufDeserializer<>(MetadataCommand.parser()), // value deserializer
-                metadataTopic);
-        serverTopology.addProcessor(METADATA_PROCESSOR_NAME, metadataProcessorSupplier, METADATA_SOURCE_NAME);
-        serverTopology.addStateStore(metadataStoreBuilder, METADATA_PROCESSOR_NAME);
-
-        serverTopology.addSink(
-                METADATA_PROCESSOR_SINK_NAME,
-                sinkTopicNameExtractor, // topic extractor
-                Serdes.String().serializer(), // key serializer
-                sinkValueSerializer, // value serializer
-                METADATA_PROCESSOR_NAME); // parent name
         return serverTopology;
     }
 }
