@@ -3,7 +3,6 @@ package io.littlehorse.server.streams.topology.timer;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
 import org.apache.kafka.common.header.Headers;
@@ -22,25 +21,42 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
     private KeyValueStore<String, LHTimer> timerStore;
     private Cancellable punctuator;
     private String lastSeenKey;
+    private final String storeName;
+
+    private final boolean forwardTimers;
+
+    public TimerProcessor(boolean forwardTimers, String storeName) {
+        this.forwardTimers = forwardTimers;
+        this.storeName = storeName;
+    }
 
     public void init(final ProcessorContext<String, LHTimer> context) {
         this.context = context;
-        timerStore = context.getStateStore(ServerTopology.TIMER_STORE);
-        this.punctuator = context.schedule(
-                LHConstants.TIMER_PUNCTUATOR_INTERVAL, PunctuationType.WALL_CLOCK_TIME, this::clearTimers);
+        timerStore = context.getStateStore(storeName);
+        if (forwardTimers) {
+            this.punctuator = context.schedule(
+                    LHConstants.TIMER_PUNCTUATOR_INTERVAL, PunctuationType.WALL_CLOCK_TIME, this::clearTimers);
 
-        this.lastSeenKey = "0000000000";
+            this.lastSeenKey = "0000000000";
+        }
     }
 
     @Override
     public void close() {
-        punctuator.cancel();
+        if (punctuator != null) {
+            punctuator.cancel();
+        }
     }
 
     public void process(final Record<String, LHTimer> record) {
         LHTimer timer = record.value();
+        if (!forwardTimers) {
+            timerStore.put(timer.getStoreKey(), timer);
+            return;
+        }
         if (timer.isRepartition()) {
             context.forward(record);
+            return;
         }
 
         // If the timer is already matured, no sense in putting it into the store. Just forward now.

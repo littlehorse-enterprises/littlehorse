@@ -6,32 +6,32 @@ import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.server.streams.ServerTopologyV2;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.Forwardable;
+import java.util.function.BiConsumer;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
-import java.util.function.BiConsumer;
+public class ProcessorOutputRouter<KIn, VIn, KOut, VOut> implements Processor<KIn, VIn, KOut, VOut> {
 
-public class ProcessorOutputRouter<KIn, VIn, KOut, VOut> implements Processor<String, CommandProcessorOutput, String, Forwardable> {
+    private ProcessorContext<KOut, VOut> context;
+    private final BiConsumer<ProcessorContext<KOut, VOut>, Record<KIn, VIn>> processor;
 
-    private ProcessorContext<String, Forwardable> context;
-    private BiConsumer<ProcessorContext<String, Forwardable>, Record<String, CommandProcessorOutput>> processor;
-
-    private ProcessorOutputRouter(BiConsumer<ProcessorContext<String, Forwardable>, Record<String, CommandProcessorOutput>> processor) {
+    private ProcessorOutputRouter(BiConsumer<ProcessorContext<KOut, VOut>, Record<KIn, VIn>> processor) {
         this.processor = processor;
     }
 
     @Override
-    public void init(ProcessorContext<String, Forwardable> context) {
+    public void init(ProcessorContext<KOut, VOut> context) {
         this.context = context;
     }
 
     @Override
-    public void process(Record<String, CommandProcessorOutput> record) {
+    public void process(Record<KIn, VIn> record) {
         processor.accept(context, record);
     }
 
-    public static ProcessorOutputRouter<String, CommandProcessorOutput, String, Forwardable> createCommandProcessorRouter() {
+    public static ProcessorOutputRouter<String, CommandProcessorOutput, String, Forwardable>
+            createCommandProcessorRouter() {
         return new ProcessorOutputRouter<>(ProcessorOutputRouter::processCommandProcessorOutput);
     }
 
@@ -39,11 +39,12 @@ public class ProcessorOutputRouter<KIn, VIn, KOut, VOut> implements Processor<St
         return new ProcessorOutputRouter<>(ProcessorOutputRouter::processPassThrough);
     }
 
-    public static ProcessorOutputRouter createTimerProcessorRouter() {
-
+    public static ProcessorOutputRouter<String, LHTimer, String, LHSerializable<?>> createTimerProcessorRouter() {
+        return new ProcessorOutputRouter<>(ProcessorOutputRouter::processTimerProcessorOutput);
     }
 
-    private static void processCommandProcessorOutput(ProcessorContext<String, Forwardable> context, Record<String, CommandProcessorOutput> record) {
+    private static void processCommandProcessorOutput(
+            ProcessorContext<String, Forwardable> context, Record<String, CommandProcessorOutput> record) {
         CommandProcessorOutput processorOutput = record.value();
         LHSerializable<?> payload = processorOutput.getPayload();
         if (payload instanceof LHTimer) {
@@ -56,14 +57,18 @@ public class ProcessorOutputRouter<KIn, VIn, KOut, VOut> implements Processor<St
         }
     }
 
-    private static void processTimerProcessorOutput(ProcessorContext<String, Forwardable> context, Record<String, CommandProcessorOutput> record) {
-        LHTimer timer = (LHTimer) record.value().payload;
+    private static void processTimerProcessorOutput(
+            ProcessorContext<String, LHSerializable<?>> context, Record<String, LHTimer> record) {
+        LHTimer timer = record.value();
         if (timer.isRepartition()) {
-            context.forward(record);
+            context.forward(record, ServerTopologyV2.REPARTITION_PASSTHROUGH_PROCESSOR);
+        } else {
+            context.forward(record, ServerTopologyV2.TIMER_COMMAND_PROCESSOR_NAME);
         }
     }
 
-    private static void processPassThrough(ProcessorContext<String, Forwardable> context, Record<String, Forwardable> record) {
+    private static void processPassThrough(
+            ProcessorContext<String, Forwardable> context, Record<String, Forwardable> record) {
         context.forward(record);
     }
 }
