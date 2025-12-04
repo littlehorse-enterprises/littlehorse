@@ -87,6 +87,9 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     public List<PendingFailureHandlerModel> pendingFailures = new ArrayList<>();
     private ExecutionContext executionContext;
 
+    // Not in proto
+    private int numAdvancesInThisCommand = 0;
+
     public WfRunModel() {}
 
     public WfRunModel(CoreProcessorContext processorContext) {
@@ -462,8 +465,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         nodeRun.maybeHalt(processorContext);
     }
 
-    private int numAdvancesInThisCommand = 0;
-
     public void advance(Date time) {
         boolean statusChanged = true;
         // We repeatedly advance each thread until we have a run wherein the entire
@@ -475,7 +476,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                         getThreadRun(0),
                         new FailureModel(
                                 LHErrorType.INTERNAL_ERROR.toString(),
-                                "Your WfSpec had a stack overflow error in a tight loop."),
+                                "Your WfSpec had a tight loop and exceeded the maximum iterations in one command."),
                         time,
                         null);
                 transitionTo(LHStatus.ERROR);
