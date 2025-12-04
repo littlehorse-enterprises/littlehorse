@@ -31,7 +31,7 @@ import org.apache.kafka.streams.state.Stores;
 
 /**
  * The ServerTopologyV2 class is responsible for constructing storied architecture concerning the
- server's topology architecture of dependencies in operations and configurations on peripher function models injection server topology concepts.
+ * server's topology architecture of dependencies in operations and configurations on peripher function models injection server topology concepts.
  */
 public class ServerTopologyV2 {
 
@@ -42,6 +42,7 @@ public class ServerTopologyV2 {
     public static final String METADATA_PROCESSOR_NAME = ServerTopology.METADATA_PROCESSOR;
     public static final String METADATA_STORE_NAME = ServerTopology.METADATA_STORE;
     public static final String METADATA_PROCESSOR_SINK_NAME = ServerTopology.METADATA_PROCESSOR_SINK;
+    public static final String REPARTITION_SINK_NAME = "repartition-sink";
     public static final String TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME = "timer-processor-router-processor";
     public static final String TIMER_COMMAND_PROCESSOR_NAME = "timer-command-processor";
     public static final String OUTPUT_TOPIC_PROCESSOR_NAME = "output-topic-processor";
@@ -104,8 +105,6 @@ public class ServerTopologyV2 {
         this.metadataCache = metadataCache;
     }
 
-
-
     public Topology build() {
         final Topology serverTopology = new Topology();
         serverTopology.addSource(
@@ -116,7 +115,8 @@ public class ServerTopologyV2 {
                 repartitionTopic);
         serverTopology.addProcessor(COMMAND_PROCESSOR_NAME, commandProcessorSupplier, CORE_COMMAND_SOURCE_NAME);
         serverTopology.addProcessor(ROUTER_PROCESSOR_NAME, routerProcessorSupplier, COMMAND_PROCESSOR_NAME);
-        serverTopology.addProcessor(OUTPUTTOPIC_PASSTHROUGH_PROCESSOR, passthroughRepartitionProcessor, ROUTER_PROCESSOR_NAME);
+        serverTopology.addProcessor(
+                OUTPUTTOPIC_PASSTHROUGH_PROCESSOR, passthroughRepartitionProcessor, ROUTER_PROCESSOR_NAME);
         serverTopology.addProcessor(TIMER_PROCESSOR_NAME, timerProcessorSupplier, ROUTER_PROCESSOR_NAME);
         serverTopology.addProcessor(
                 TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME, timerProcessorRouterSupplier, TIMER_PROCESSOR_NAME);
@@ -141,9 +141,19 @@ public class ServerTopologyV2 {
 
             return cpo.payload.toBytes();
         };
+        serverTopology.addSink(
+                REPARTITION_SINK_NAME,
+                repartitionTopic,
+                Serdes.String().serializer(),
+                sinkValueSerializer,
+                REPARTITION_PASSTHROUGH_PROCESSOR);
 
-        serverTopology.addSink(OUTPUTTOPIC_SINK_NAME, sinkTopicNameExtractor, Serdes.String().serializer(), // key serializer
-                sinkValueSerializer, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR);
+        serverTopology.addSink(
+                OUTPUTTOPIC_SINK_NAME,
+                sinkTopicNameExtractor,
+                Serdes.String().serializer(), // key serializer
+                sinkValueSerializer,
+                OUTPUTTOPIC_PASSTHROUGH_PROCESSOR);
 
         serverTopology.addStateStore(
                 coreStoreBuilder,
@@ -165,14 +175,9 @@ public class ServerTopologyV2 {
                 METADATA_SOURCE_NAME, // source name
                 Serdes.String().deserializer(), // key deserializer
                 new ProtobufDeserializer<>(MetadataCommand.parser()), // value deserializer
-                metadataTopic
-        );
-        serverTopology.addProcessor(
-                METADATA_PROCESSOR_NAME,
-                metadataProcessorSupplier,
-                METADATA_SOURCE_NAME);
+                metadataTopic);
+        serverTopology.addProcessor(METADATA_PROCESSOR_NAME, metadataProcessorSupplier, METADATA_SOURCE_NAME);
         serverTopology.addStateStore(metadataStoreBuilder, METADATA_PROCESSOR_NAME);
-
 
         serverTopology.addSink(
                 METADATA_PROCESSOR_SINK_NAME,
