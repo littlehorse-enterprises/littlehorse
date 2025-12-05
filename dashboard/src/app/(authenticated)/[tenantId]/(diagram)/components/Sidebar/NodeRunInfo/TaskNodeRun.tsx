@@ -7,8 +7,8 @@ import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
 import { InputVariables } from '../Components'
 import { Attempts } from '../Components/Attempts'
 import { Checkpoints } from '../Components/Checkpoints'
+import { NodeStatus } from '../Components/NodeStatus'
 import { NodeVariable } from '../Components/NodeVariable'
-import { NodeStatus } from './NodeStatus'
 
 export const TaskNodeRun: FC<{ node: TaskNodeRunProto }> = ({ node }) => {
   const taskRunId = node.taskRunId

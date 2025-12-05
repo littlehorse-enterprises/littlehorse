@@ -1,9 +1,9 @@
 import { Node } from 'littlehorse-client/proto'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
-import { NodeProps } from '..'
-import { Fade } from '../Fade'
-import { SelectedNode } from '../SelectedNode'
+import { NodeProps } from '.'
+import { Fade } from './Fade'
+import { SelectedNode } from './SelectedNode'
 
 const NopNode: FC<NodeProps<'entrypoint', Node>> = props => {
   const { data } = props

@@ -5,7 +5,7 @@ import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
 import { Fade } from '../Fade'
 import { SelectedNode } from '../SelectedNode'
-import { getTaskName } from './TaskDetails'
+import { getVariable } from '@/app/utils'
 
 const Node: FC<NodeProps<'task', TaskNode>> = node => {
   const { fade, nodeRunsList, taskToExecute } = node.data
@@ -33,3 +33,11 @@ const Node: FC<NodeProps<'task', TaskNode>> = node => {
 }
 
 export const Task = memo(Node)
+
+export const getTaskName = (task: TaskNode['taskToExecute']): string => {
+  if (!task) return ''
+
+  if (task.$case === 'taskDefId') return task.value.name
+  if (task.$case === 'dynamicTask') return getVariable(task.value)
+  return ''
+}
