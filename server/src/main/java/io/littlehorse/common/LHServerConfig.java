@@ -147,7 +147,7 @@ public class LHServerConfig extends ConfigBase {
     private Map<String, AuthorizationProtocol> listenersAuthorizationMap;
 
     // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
-    public static final String X_ENABLE_STRUCT_DEFS_KEY = "LHS_X_ENABLE_STRUCT_DEFS"; // TODO: Remove me
+
     // useful for testing and might be useful for certain incidents
     public static final String X_MAX_DELETES_PER_COMMAND_KEY = "LHS_X_MAX_DELETES_PER_COMMAND";
 
@@ -1081,10 +1081,6 @@ public class LHServerConfig extends ConfigBase {
     public int getStreamsStateCleanupDelayMs() {
         // 20 minutes before cleaning up
         return Integer.valueOf(getOrSetDefault(LHServerConfig.STATE_CLEANUP_DELAY_MS_KEY, "1200000"));
-    }
-
-    public boolean areStructDefsEnabled() {
-        return Boolean.valueOf(getOrSetDefault(LHServerConfig.X_ENABLE_STRUCT_DEFS_KEY, "false"));
     }
 
     public int getMaxDeletesPerCommand() {
