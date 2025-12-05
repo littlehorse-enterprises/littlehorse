@@ -14,6 +14,7 @@ import { TaskRun, TaskStatus } from 'littlehorse-client/proto'
 jest.mock('swr', () => ({ __esModule: true, default: jest.fn() }))
 jest.mock('@/contexts/WhoAmIContext', () => ({ useWhoAmI: jest.fn() }))
 jest.mock('../../../NodeTypes/Task/getTaskRun', () => ({ getTaskRun: jest.fn() }))
+jest.mock('../../../NodeTypes/Task/getCheckpoints', () => ({ getCheckpoints: jest.fn() }))
 
 jest.mock('../../Components/NodeVariable', () => ({
   NodeVariable: ({ label, text, type }: any) => (
@@ -113,7 +114,7 @@ describe('TaskNodeRun', () => {
       totalCheckpoints: 0,
     }
 
-    useSWRMock.mockReturnValueOnce({ data: nodeTask } as any)
+    useSWRMock.mockReturnValueOnce({ data: nodeTask } as any).mockReturnValueOnce({ data: [] } as any)
 
     render(<TaskNodeRun node={{ taskRunId: { taskGuid: 'tg-1' } } as any} />)
 

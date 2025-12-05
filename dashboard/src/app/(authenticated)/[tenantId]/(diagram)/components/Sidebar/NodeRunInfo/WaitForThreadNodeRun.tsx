@@ -9,7 +9,7 @@ export const WaitForThreadsNodeRun: FC<{ node: WaitForThreadsRun }> = ({ node })
     <div>
       {node.threads.map((thread, index) => {
         return (
-          <div>
+          <div key={index}>
             <Accordion type="single" collapsible>
               <AccordionItem value={`action-${index}`}>
                 <AccordionTrigger>
