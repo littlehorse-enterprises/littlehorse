@@ -6,6 +6,7 @@ import io.littlehorse.server.monitoring.StandbyTopicPartitionMetrics;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import lombok.Data;
@@ -105,10 +106,12 @@ public class ServerHealthState {
 
     public static LHProcessorType fromTask(TaskMetadata task, LHServerConfig config) {
         Set<TopicPartition> topics = task.topicPartitions();
-        if (topics.size() != 1) {
-            throw new IllegalStateException("Impossible. All LH processors have only one input topic");
-        }
-        return fromTopic(topics.stream().findFirst().get().topic(), config);
+        return topics.stream()
+                .map(TopicPartition::topic)
+                .map(t -> fromTopic(t, config))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElseThrow();
     }
 
     private Optional<StandbyTaskState> createStandbyState(
@@ -141,6 +144,6 @@ public class ServerHealthState {
         if (truncated.contains("timer")) {
             return LHProcessorType.TIMER;
         }
-        throw new IllegalArgumentException("Unrecognized topic " + topic);
+        return null;
     }
 }
