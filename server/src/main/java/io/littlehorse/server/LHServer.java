@@ -17,6 +17,7 @@ import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.ServerTopologyV2;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
@@ -36,6 +37,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.processor.TaskId;
 import org.apache.logging.log4j.LogManager;
@@ -76,9 +78,10 @@ public class LHServer {
             overrideStreamsProcessId("core");
             overrideStreamsProcessId("timer");
         }
-        this.coreStreams = new KafkaStreams(
-                ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager, asyncWaiters),
-                config.getCoreStreamsConfig());
+        //        Topology coreTopology = ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager,
+        // asyncWaiters);
+        Topology coreTopology = new ServerTopologyV2(config, this, metadataCache, taskQueueManager, asyncWaiters);
+        this.coreStreams = new KafkaStreams(coreTopology, config.getCoreStreamsConfig());
         this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
 
         coreStreams.setUncaughtExceptionHandler(throwable -> {

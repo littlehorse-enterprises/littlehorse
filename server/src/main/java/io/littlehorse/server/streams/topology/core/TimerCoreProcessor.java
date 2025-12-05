@@ -1,12 +1,15 @@
 package io.littlehorse.server.streams.topology.timer;
 
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.ServerTopologyV2;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.processor.Cancellable;
 import org.apache.kafka.streams.processor.PunctuationType;
@@ -16,22 +19,23 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-public class TimerProcessor implements Processor<String, LHTimer, String, LHTimer> {
+@Slf4j
+public class TimerCoreProcessor implements Processor<String, LHTimer, String, LHTimer> {
 
     private ProcessorContext<String, LHTimer> context;
-    private KeyValueStore<String, LHTimer> timerStore;
+    private KeyValueStore<String, Bytes> timerStore;
     private Cancellable punctuator;
     private String lastSeenKey;
 
     private final boolean forwardTimers;
 
-    public TimerProcessor(boolean forwardTimers) {
+    public TimerCoreProcessor(boolean forwardTimers) {
         this.forwardTimers = forwardTimers;
     }
 
     public void init(final ProcessorContext<String, LHTimer> context) {
         this.context = context;
-        timerStore = context.getStateStore(ServerTopology.TIMER_STORE);
+        timerStore = context.getStateStore(ServerTopologyV2.CORE_STORE_NAME);
         if (forwardTimers) {
             this.punctuator = context.schedule(
                     LHConstants.TIMER_PUNCTUATOR_INTERVAL, PunctuationType.WALL_CLOCK_TIME, this::clearTimers);
@@ -69,10 +73,10 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
     private void clearTimers(long timestamp) {
         String end = LHUtil.toLhDbFormat(new Date(timestamp));
 
-        try (KeyValueIterator<String, LHTimer> iter = timerStore.range(lastSeenKey, end)) {
+        try (KeyValueIterator<String, Bytes> iter = timerStore.range(lastSeenKey, end)) {
             while (iter.hasNext()) {
-                KeyValue<String, LHTimer> entry = iter.next();
-                sendOneTimer(entry.value);
+                KeyValue<String, Bytes> entry = iter.next();
+                sendOneTimer(LHSerializable.fromBytes(entry.value.get(), LHTimer.class, null));
                 timerStore.delete(entry.key);
             }
         }
@@ -88,6 +92,6 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
     }
 
     protected void storeOneTimer(LHTimer timer) {
-        timerStore.put(timer.getStoreKey(), timer);
+        timerStore.put(timer.getStoreKey(), new Bytes(timer.toBytes()));
     }
 }
