@@ -1,8 +1,8 @@
-import { SleepNodeRun } from 'littlehorse-client/proto'
+import { SleepNodeRun as SleepNodeRunProto } from 'littlehorse-client/proto'
 import { FC } from 'react'
-import { NodeVariable } from './NodeVariable'
+import { NodeVariable } from '../Components/NodeVariable'
 
-export const SleepRunNode: FC<{ node: SleepNodeRun }> = ({ node }) => {
+export const SleepNodeRun: FC<{ node: SleepNodeRunProto }> = ({ node }) => {
   return (
     <div>
       <NodeVariable label="Node Type:" text="Sleep" />

@@ -1,5 +1,5 @@
 import { ExternalEvent as ExternalEventProto } from 'littlehorse-client/proto'
-import { NodeVariable } from '../NodeVariable'
+import { NodeVariable } from '../../Components/NodeVariable'
 import { getVariableValue } from '@/app/utils'
 import { VARIABLE_TYPES } from '@/app/constants'
 import { Divider } from '../../Components/Divider'

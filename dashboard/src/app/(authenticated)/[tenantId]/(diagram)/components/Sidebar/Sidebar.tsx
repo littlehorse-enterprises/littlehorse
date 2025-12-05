@@ -28,6 +28,23 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
     }
   }, [selectedNode, showNodeRun])
   const maxHeightClass = `max-h-[600px]`
+  const hasFailures = useMemo(() => {
+    if (!showNodeRun) return false
+    if (!selectedNode) {
+      return false
+    }
+    if (!('nodeRunsList' in selectedNode.data)) {
+      return false
+    }
+    const nodeRun = selectedNode.data.nodeRunsList[nodeRunIndex]
+    return nodeRun.failures.length > 0
+  }, [selectedNode, nodeRunIndex])
+
+  const nodeType = useMemo(() => {
+    if (!selectedNode || !selectedNode.data.node) return ''
+
+    return selectedNode.data.node.$case || ''
+  }, [selectedNode, nodeRunIndex])
   return (
     <aside className={`overflow-y flex max-w-full flex-col overflow-x-hidden pl-4 ${maxHeightClass} overflow-y-auto `}>
       {isValidNode && selectedNode && (
@@ -39,9 +56,9 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
                 Overview
               </TabsTrigger>
               <TabsTrigger className="flex-1" value="node">
-                Node {showNodeRun && 'Run'}
+                Node {nodeType}
               </TabsTrigger>
-              {showNodeRun && (
+              {showNodeRun && hasFailures && (
                 <TabsTrigger className="flex-1" value="failures">
                   Failures
                 </TabsTrigger>

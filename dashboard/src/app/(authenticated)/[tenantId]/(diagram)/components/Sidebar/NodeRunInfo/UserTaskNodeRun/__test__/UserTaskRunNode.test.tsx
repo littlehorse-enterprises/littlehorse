@@ -3,10 +3,10 @@ import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import useSWR, { MutatorOptions } from 'swr'
 import { ContextProps, useWhoAmI } from '@/contexts/WhoAmIContext'
-import { UserTaskRunNode } from '../UserTaskRunNode'
+import { UserTaskNodeRun } from '../UserTaskNodeRun'
 import {
   UserTaskEvent_UTETaskExecuted,
-  UserTaskNodeRun,
+  UserTaskNodeRun as UserTaskNodeRunProto,
   UserTaskRun,
   UserTaskRunStatus,
   VariableValue,
@@ -31,7 +31,7 @@ jest.mock('../../../../NodeTypes/UserTask/getUserTaskRun', () => {
   }
 })
 
-jest.mock('../../NodeVariable', () => {
+jest.mock('../../../Components/NodeVariable', () => {
   return {
     NodeVariable: ({ label, text }: { label: string; text: string }) =>
       React.createElement('div', { 'data-testid': `nodevar-${label}` }, `${label} ${text}`),
@@ -122,9 +122,9 @@ describe('UserTaskRunNode', () => {
         wfRunId: { id: 'wf-2' },
         userTaskGuid: 'guid-2',
       },
-    } as UserTaskNodeRun
+    } as UserTaskNodeRunProto
 
-    render(<UserTaskRunNode node={node} />)
+    render(<UserTaskNodeRun node={node} />)
 
     expect(screen.getByTestId('nodevar-user_task_def_id:')).toHaveTextContent('user_task_def_id: def-name')
     expect(screen.getByTestId('nodevar-user_group:')).toHaveTextContent('user_group: group-1')
