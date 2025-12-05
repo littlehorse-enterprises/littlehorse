@@ -2,10 +2,10 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { TaskNode as TaskNodeProto } from 'littlehorse-client/proto'
 import { LinkIcon } from 'lucide-react'
 import { FC } from 'react'
-import { getTaskName } from '../../NodeTypes/Task/TaskDetails'
 import { VariableAssignment } from '../Components'
 import { TaskNodeMetric } from '../Components/TaskNodeMetric'
 import './node.css'
+import { getTaskName } from '../../NodeTypes/Task'
 
 export const TaskNode: FC<{ node: TaskNodeProto }> = ({ node }) => {
   const { taskToExecute, exponentialBackoff, retries, timeoutSeconds, variables } = node

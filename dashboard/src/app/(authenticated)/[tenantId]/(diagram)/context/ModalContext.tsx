@@ -1,4 +1,3 @@
-import { NodeRun, TaskNode, UserTaskNode } from 'littlehorse-client/proto'
 import { createContext, Dispatch, FC, ProviderProps, SetStateAction } from 'react'
 import { Modals, ModalType } from '../components/Modals'
 
