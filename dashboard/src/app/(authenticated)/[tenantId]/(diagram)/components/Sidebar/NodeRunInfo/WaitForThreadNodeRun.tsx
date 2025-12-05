@@ -1,6 +1,6 @@
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { WaitForThreadsRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { NodeStatus } from '../Components/NodeStatus'
 import { NodeVariable } from '../Components/NodeVariable'
 

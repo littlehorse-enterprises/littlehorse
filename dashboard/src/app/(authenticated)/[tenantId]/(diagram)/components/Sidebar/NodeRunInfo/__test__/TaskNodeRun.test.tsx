@@ -1,10 +1,9 @@
-import React from 'react'
-import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import useSWR from 'swr'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { TaskNodeRun } from '../TaskNodeRun'
+import '@testing-library/jest-dom'
+import { render, screen } from '@testing-library/react'
 import { TaskRun, TaskStatus } from 'littlehorse-client/proto'
+import useSWR from 'swr'
+import { TaskNodeRun } from '../TaskNodeRun'
 
 /**
  * @jest-environment jsdom
