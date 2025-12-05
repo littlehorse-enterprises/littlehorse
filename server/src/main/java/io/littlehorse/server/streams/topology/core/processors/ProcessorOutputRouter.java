@@ -1,8 +1,10 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
+import io.littlehorse.common.proto.Command;
 import io.littlehorse.server.streams.ServerTopologyV2;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.Forwardable;
@@ -31,39 +33,50 @@ public class ProcessorOutputRouter<KIn, VIn, KOut, VOut> implements Processor<KI
     }
 
     public static ProcessorOutputRouter<String, CommandProcessorOutput, String, Forwardable>
-            createCommandProcessorRouter() {
-        return new ProcessorOutputRouter<>(ProcessorOutputRouter::processCommandProcessorOutput);
+            createCommandProcessorRouter(String timerProcessorName, String outputTopicProcessorName) {
+        return new ProcessorOutputRouter<>((c, s) -> ProcessorOutputRouter.processCommandProcessorOutput(
+                c, s, timerProcessorName, outputTopicProcessorName));
     }
 
     public static ProcessorOutputRouter<String, Forwardable, String, Forwardable> createPassthroughRepartitionRouter() {
         return new ProcessorOutputRouter<>(ProcessorOutputRouter::processPassThrough);
     }
 
-    public static ProcessorOutputRouter<String, LHTimer, String, LHSerializable<?>> createTimerProcessorRouter() {
+    public static ProcessorOutputRouter<String, LHTimer, String, Object> createTimerProcessorRouter() {
         return new ProcessorOutputRouter<>(ProcessorOutputRouter::processTimerProcessorOutput);
     }
 
     private static void processCommandProcessorOutput(
-            ProcessorContext<String, Forwardable> context, Record<String, CommandProcessorOutput> record) {
+            ProcessorContext<String, Forwardable> context,
+            Record<String, CommandProcessorOutput> record,
+            String timerProcessorName,
+            String outputTopicProcessorName) {
         CommandProcessorOutput processorOutput = record.value();
         LHSerializable<?> payload = processorOutput.getPayload();
         if (payload instanceof LHTimer) {
             Record<String, LHTimer> timerRecord = record.withValue((LHTimer) payload);
-            context.forward(timerRecord, ServerTopologyV2.TIMER_PROCESSOR_NAME);
+            context.forward(timerRecord, timerProcessorName);
         } else if (payload instanceof OutputTopicRecordModel) {
-            context.forward(record, ServerTopologyV2.OUTPUT_TOPIC_PROCESSOR_NAME);
+            context.forward(record, outputTopicProcessorName);
         } else {
             throw new IllegalArgumentException("Unknown payload type: " + payload.getClass());
         }
     }
 
     private static void processTimerProcessorOutput(
-            ProcessorContext<String, LHSerializable<?>> context, Record<String, LHTimer> record) {
-        LHTimer timer = record.value();
-        if (timer.isRepartition()) {
-            context.forward(record, ServerTopologyV2.REPARTITION_PASSTHROUGH_PROCESSOR);
-        } else {
-            context.forward(record, ServerTopologyV2.TIMER_COMMAND_PROCESSOR_NAME);
+            ProcessorContext<String, Object> context, Record<String, LHTimer> record) {
+        try {
+            LHTimer timer = record.value();
+            Record<String, Command> nextRecord = record.withValue(Command.parseFrom(timer.getPayload()));
+            if (timer.isRepartition()) {
+                context.forward(
+                        nextRecord.withKey(timer.getPartitionKey()),
+                        ServerTopologyV2.REPARTITION_PASSTHROUGH_PROCESSOR);
+            } else {
+                context.forward(nextRecord, ServerTopologyV2.TIMER_COMMAND_PROCESSOR_NAME);
+            }
+        } catch (InvalidProtocolBufferException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -25,19 +25,16 @@ public class ServerTopologyV2Test {
     private final TaskQueueManager globalTaskQueueManager = mock();
     private final AsyncWaiters asyncWaiters = mock();
 
-    private ServerTopologyV2 serverTopology;
-
     @BeforeEach
     public void setup() {
         when(config.getCoreCmdTopicName()).thenReturn("core-cmd-topic");
         when(config.getRepartitionTopicName()).thenReturn("repartition-topic");
         when(config.getMetadataCmdTopicName()).thenReturn("metadata-topic");
-        serverTopology = new ServerTopologyV2(config, server, metadataCache, globalTaskQueueManager, asyncWaiters);
     }
 
     @Test
     public void shouldCreateValidTopology() {
-        Topology topology = serverTopology.build();
+        Topology topology = new ServerTopologyV2(config, server, metadataCache, globalTaskQueueManager, asyncWaiters);
         TopologyTestDriver driver = new TopologyTestDriver(topology);
         driver.close();
         System.out.println(topology.describe().toString());
@@ -45,7 +42,8 @@ public class ServerTopologyV2Test {
 
     @Test
     public void shouldBeCompatibleWithV1Topology() {
-        TopologyDescription topology = serverTopology.build().describe();
+        TopologyDescription topology =
+                new ServerTopologyV2(config, server, metadataCache, globalTaskQueueManager, asyncWaiters).describe();
         TopologyDescription topologyV1 = ServerTopology.initCoreTopology(
                         config, server, metadataCache, globalTaskQueueManager, asyncWaiters)
                 .describe();
