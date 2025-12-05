@@ -1,6 +1,6 @@
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { WaitForThreadsRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { NodeStatus } from '../Components/NodeStatus'
 import { NodeVariable } from '../Components/NodeVariable'
 
@@ -9,7 +9,7 @@ export const WaitForThreadsNodeRun: FC<{ node: WaitForThreadsRun }> = ({ node })
     <div>
       {node.threads.map((thread, index) => {
         return (
-          <div>
+          <div key={index}>
             <Accordion type="single" collapsible>
               <AccordionItem value={`action-${index}`}>
                 <AccordionTrigger>
