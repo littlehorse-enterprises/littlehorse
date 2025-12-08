@@ -37,7 +37,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
       return false
     }
     const nodeRun = selectedNode.data.nodeRunsList[nodeRunIndex]
-    return nodeRun.failures.length > 0
+    return nodeRun?.failures?.length > 0
   }, [selectedNode, nodeRunIndex])
 
   const nodeType = useMemo(() => {

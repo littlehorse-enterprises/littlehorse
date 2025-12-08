@@ -24,7 +24,7 @@ import 'reactflow/dist/base.css'
 import { DiagramProvider, NodeInContext, ThreadType } from '../context'
 import edgeTypes from './EdgeTypes'
 import { extractEdges } from './EdgeTypes/extractEdges'
-import { Layouter } from './Layouter'
+import { LayoutManager } from './LayoutManager'
 import nodeTypes from './NodeTypes'
 import { extractNodes } from './NodeTypes/extractNodes'
 import { Sidebar } from './Sidebar'
@@ -143,7 +143,9 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
             nodes={nodes}
             edges={edges}
             nodesConnectable={false}
+            nodesDraggable={false}
             elementsSelectable
+            onlyRenderVisibleElements={true}
             minZoom={0.3}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
@@ -151,7 +153,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
           >
             <Controls />
           </ReactFlow>
-          <Layouter nodeRuns={threadNodeRuns} />
+          <LayoutManager nodeRuns={threadNodeRuns} />
         </div>
         <Sidebar showNodeRun={wfRun !== undefined} />
       </div>
