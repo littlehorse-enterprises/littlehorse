@@ -188,11 +188,14 @@ public class WorkerContext {
     }
 
     private <T> T saveCheckpoint(CheckpointableFunction<T> runnable, Class<T> clazz) {
-        T result = runnable.run();
+        CheckpointContext checkpointContext = new CheckpointContext();
+        T result = runnable.run(checkpointContext);
+
         PutCheckpointResponse response = client.putCheckpoint(PutCheckpointRequest.newBuilder()
                 .setTaskAttempt(scheduledTask.getAttemptNumber())
                 .setTaskRunId(scheduledTask.getTaskRunId())
                 .setValue(LHLibUtil.objToVarVal(result))
+                .setLogs(checkpointContext.getLogOutput())
                 .build());
 
         checkpointsSoFarInThisRun++;

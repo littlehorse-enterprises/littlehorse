@@ -95,7 +95,7 @@ public class CheckpointedTaskTest {
         if (updateExecutions) executionsAtLocation0++;
 
         String result = context.executeAndCheckpoint(
-                () -> {
+                checkpoint -> {
                     if (updateExecutions) executionsInCheckpoint1++;
                     return "hello from first checkpoint";
                 },
@@ -108,7 +108,7 @@ public class CheckpointedTaskTest {
         }
 
         result += context.executeAndCheckpoint(
-                () -> {
+                checkpoint -> {
                     if (updateExecutions) executionsInCheckpoint2++;
                     return " and the second checkpoint";
                 },

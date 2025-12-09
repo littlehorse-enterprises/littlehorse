@@ -1,3 +1,4 @@
+import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { utcToLocalDateTime } from '@/app/utils'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Check, Copy } from 'lucide-react'
@@ -7,11 +8,13 @@ export const NodeVariable = ({
   label,
   text = '',
   type = 'text',
+  link = '',
   className = '',
 }: {
   label: string
   text?: string
   type?: string
+  link?: string
   className?: string
 }) => {
   if (type === 'date') {
@@ -33,13 +36,19 @@ export const NodeVariable = ({
       <div className=" text-sm font-bold">{label}</div>
       <div className="truncate  text-xs text-slate-400">
         <div className="flex justify-between">
-          <div className="truncate"> {text}</div>
+          {type === 'link' ? (
+            <LinkWithTenant href={link} className="truncate text-blue-500 ">
+              {text}
+            </LinkWithTenant>
+          ) : (
+            <div className="truncate"> {text}</div>
+          )}
           <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
                   onClick={handleCopy}
-                  className={` inline-flex h-6 w-6 items-center justify-center rounded transition-colors hover:bg-gray-100 ${className}`}
+                  className={` inline-flex h-6 items-center justify-center rounded transition-colors hover:bg-gray-100 ${className}`}
                 >
                   {copied ? (
                     <Check className="h-4 w-4 text-green-500" />
