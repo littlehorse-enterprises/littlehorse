@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.RunChildWfNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -100,6 +101,17 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
         Set<String> out = new HashSet<>();
         for (VariableAssignmentModel assn : inputs.values()) {
             out.addAll(assn.getRequiredWfRunVarNames());
+        }
+        return out;
+    }
+
+    @Override
+    public Set<String> getNeededNodeNames() {
+        Set<String> out = new HashSet<>();
+        for (VariableAssignmentModel assignment : inputs.values()) {
+            if (assignment.getRhsSourceType() == SourceCase.NODE_OUTPUT) {
+                out.add(assignment.getNodeOutputReference().getNodeName());
+            }
         }
         return out;
     }

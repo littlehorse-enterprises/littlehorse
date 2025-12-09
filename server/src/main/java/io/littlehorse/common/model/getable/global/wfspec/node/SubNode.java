@@ -41,4 +41,9 @@ public abstract class SubNode<T extends Message> extends LHSerializable<T> {
     public Set<String> getNeededVariableNames() {
         return new HashSet<>();
     }
+
+    // Can be overriden
+    public Set<String> getNeededNodeNames() {
+        return new HashSet<>();
+    }
 }
