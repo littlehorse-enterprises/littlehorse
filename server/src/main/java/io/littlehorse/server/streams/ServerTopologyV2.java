@@ -96,7 +96,7 @@ public class ServerTopologyV2 extends Topology {
         this.routerProcessorSupplier = () -> ProcessorOutputRouter.createCommandProcessorRouter(
                 TIMER_PROCESSOR_NAME, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR);
         this.routerProcessorTimer2Supplier = () -> ProcessorOutputRouter.createCommandProcessorRouter(
-                TIMER_WITHOUT_FORWARD_PROCESSOR_NAME, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR + "-2");
+                TIMER_WITHOUT_FORWARD_PROCESSOR_NAME, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR );
         this.timerProcessorSupplier = () -> new TimerCoreProcessor(true);
         this.passthroughRepartitionProcessor = ProcessorOutputRouter::createPassthroughRepartitionRouter;
         this.timerProcessorRouterSupplier = ProcessorOutputRouter::createTimerProcessorRouter;
@@ -153,16 +153,16 @@ public class ServerTopologyV2 extends Topology {
         serverTopology.addProcessor(
                 TIMER_COMMAND_PROCESSOR_NAME, timerCommandProcessorSupplier, TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME);
         serverTopology.addProcessor(
+                ROUTER_PROCESSOR_NAME + "-2", routerProcessorTimer2Supplier, TIMER_COMMAND_PROCESSOR_NAME);
+        serverTopology.addProcessor(
                 OUTPUTTOPIC_PASSTHROUGH_PROCESSOR,
                 passthroughRepartitionProcessor,
                 ROUTER_PROCESSOR_NAME,
-                TIMER_COMMAND_PROCESSOR_NAME);
-        serverTopology.addProcessor(
-                ROUTER_PROCESSOR_NAME + "-2", routerProcessorTimer2Supplier, TIMER_COMMAND_PROCESSOR_NAME);
-        serverTopology.addProcessor(
-                OUTPUTTOPIC_PASSTHROUGH_PROCESSOR + "-2",
-                passthroughRepartitionProcessor,
-                ROUTER_PROCESSOR_NAME + "-2");
+                ROUTER_PROCESSOR_NAME+"-2");
+//        serverTopology.addProcessor(
+//                OUTPUTTOPIC_PASSTHROUGH_PROCESSOR + "-2",
+//                passthroughRepartitionProcessor,
+//                ROUTER_PROCESSOR_NAME + "-2");
         serverTopology.addProcessor(
                 REPARTITION_PASSTHROUGH_PROCESSOR,
                 passthroughRepartitionProcessor,
@@ -184,8 +184,7 @@ public class ServerTopologyV2 extends Topology {
                 sinkTopicNameExtractor,
                 Serdes.String().serializer(), // key serializer
                 sinkValueSerializer,
-                OUTPUTTOPIC_PASSTHROUGH_PROCESSOR,
-                OUTPUTTOPIC_PASSTHROUGH_PROCESSOR + "-2");
+                OUTPUTTOPIC_PASSTHROUGH_PROCESSOR);
 
         serverTopology.addStateStore(
                 coreStoreBuilder,
