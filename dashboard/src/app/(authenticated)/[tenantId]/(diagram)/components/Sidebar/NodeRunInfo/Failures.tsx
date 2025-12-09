@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { useDiagram } from '../../../hooks/useDiagram'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { NodeStatus } from './NodeStatus'
+import { NodeStatus } from '../Components/NodeStatus'
 import { LabelContent } from '../Components'
 import { LHStatus } from 'littlehorse-client/proto'
 

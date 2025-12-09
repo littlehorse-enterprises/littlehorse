@@ -1,5 +1,5 @@
 import { TaskAttempt } from 'littlehorse-client/proto'
-import { NodeStatus } from '../NodeRunInfo/NodeStatus'
+import { NodeStatus } from './NodeStatus'
 import { NodeVariable } from './NodeVariable'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
