@@ -1,9 +1,10 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.sdk.worker.WorkerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.WorkerContext;
 
 public class CheckpointTaskWorker {
 
@@ -15,7 +16,8 @@ public class CheckpointTaskWorker {
         System.out.println("Hello from task worker on attempt " + attemptNumber + " before the checkpoint");
 
         String result = context.executeAndCheckpoint(
-                () -> {
+                (checkpointContext) -> {
+                    checkpointContext.log("test log");
                     System.out.println(
                             "Hello from task worker on attempt " + attemptNumber + " in the first checkpoint");
                     return "hello " + name + " from first checkpoint";
@@ -29,7 +31,7 @@ public class CheckpointTaskWorker {
         }
 
         result += context.executeAndCheckpoint(
-                () -> {
+                (_) -> {
                     System.out.println("Hi from inside the second checkpoint");
                     return " and the second checkpoint";
                 },
