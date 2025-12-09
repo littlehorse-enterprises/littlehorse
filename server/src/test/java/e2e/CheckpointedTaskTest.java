@@ -3,8 +3,6 @@ package e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 
-import org.junit.jupiter.api.Test;
-
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.CheckpointId;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
@@ -22,6 +20,7 @@ import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import org.junit.jupiter.api.Test;
 
 @LHTest
 public class CheckpointedTaskTest {
@@ -96,7 +95,7 @@ public class CheckpointedTaskTest {
         if (updateExecutions) executionsAtLocation0++;
 
         String result = context.executeAndCheckpoint(
-                (_) -> {
+                checkpoint -> {
                     if (updateExecutions) executionsInCheckpoint1++;
                     return "hello from first checkpoint";
                 },
@@ -109,7 +108,7 @@ public class CheckpointedTaskTest {
         }
 
         result += context.executeAndCheckpoint(
-                (_) -> {
+                checkpoint -> {
                     if (updateExecutions) executionsInCheckpoint2++;
                     return " and the second checkpoint";
                 },
