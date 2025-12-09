@@ -4,16 +4,6 @@
 
 This example will show you how to define a `StructDef` and use it in a workflow.
 
-### Setting your environment
-
-`StructDef`s are unreleased and experimental, therefore you must enable them on your LittleHorse Server before you can make any RPC calls involving them.
-
-You can enable `StructDef`s by setting the following environment variable in your LittleHorse Server environment:
-
-```
-LHS_X_ENABLE_STRUCT_DEFS=true
-```
-
 ### Generating the `StructDef`
 
 #### StructDef Classes

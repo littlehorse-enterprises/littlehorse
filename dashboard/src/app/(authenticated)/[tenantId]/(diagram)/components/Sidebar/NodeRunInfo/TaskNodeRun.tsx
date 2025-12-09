@@ -5,7 +5,7 @@ import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { NodeVariable } from '../Components/NodeVariable'
 import { InputVariables } from '../Components'
 import { Attempts } from '../Components/Attempts'
-import { NodeStatus } from './NodeStatus'
+import { NodeStatus } from '../Components/NodeStatus'
 import useSWR from 'swr'
 
 export const TaskNodeRun: FC<{ node: TaskNodeRunProto }> = ({ node }) => {
@@ -18,6 +18,7 @@ export const TaskNodeRun: FC<{ node: TaskNodeRunProto }> = ({ node }) => {
     if (!taskRunId) return undefined
     return getTaskRun({ tenantId, ...taskRunId })
   })
+
   return (
     <div className="ml-1 flex max-w-full flex-1 flex-col">
       {nodeTask?.status && <NodeStatus status={nodeTask.status} type="task" />}

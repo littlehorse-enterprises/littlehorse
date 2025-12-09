@@ -1,7 +1,7 @@
 import { WaitForThreadsRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { NodeStatus } from './NodeStatus'
+import { NodeStatus } from '../Components/NodeStatus'
 import { NodeVariable } from '../Components/NodeVariable'
 
 export const WaitForThreadsNodeRun: FC<{ node: WaitForThreadsRun }> = ({ node }) => {
@@ -17,7 +17,7 @@ export const WaitForThreadsNodeRun: FC<{ node: WaitForThreadsRun }> = ({ node })
                 </AccordionTrigger>
                 <AccordionContent>
                   <NodeStatus status={thread.threadStatus}></NodeStatus>
-                  <NodeVariable label="Node Type" text="Thread"></NodeVariable>
+                  <NodeVariable label="Node Type:" text="Thread"></NodeVariable>
                   <NodeVariable label="threadEndTime:" text={thread.threadEndTime}></NodeVariable>
                   <NodeVariable label="waitingStatus:" text={thread.waitingStatus}></NodeVariable>
                   <NodeVariable

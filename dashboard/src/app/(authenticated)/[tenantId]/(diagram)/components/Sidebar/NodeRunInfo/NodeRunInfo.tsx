@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { useDiagram } from '../../../hooks/useDiagram'
-import { NodeStatus } from './NodeStatus'
+import { NodeStatus } from '../Components/NodeStatus'
 import { NodeVariable } from '../Components/NodeVariable'
 
 export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
