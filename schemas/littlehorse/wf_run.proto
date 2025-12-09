@@ -138,6 +138,10 @@ message ThreadRun {
   optional VariableValue output = 16;
 }
 
+message ArchivedThreadRun {
+  ThreadRun thread_run = 1;
+}
+
 // Points to the Failure that is currently being handled in the ThreadRun.
 message FailureBeingHandled {
   // The thread run number.

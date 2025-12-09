@@ -61,6 +61,7 @@ enum GetableClassEnum {
     STRUCT_DEF = 18;
     CORRELATED_EVENT = 19;
     CHECKPOINT = 20;
+    ARCHIVED_THREAD_RUN = 21;
 }
 
 message AttributePb {
