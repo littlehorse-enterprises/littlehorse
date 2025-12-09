@@ -17,7 +17,7 @@ public class CheckpointTaskWorker {
 
         String result = context.executeAndCheckpoint(
                 (checkpointContext) -> {
-                    checkpointContext.log("test log");
+                    checkpointContext.log("this is a checkpoint log");
                     System.out.println(
                             "Hello from task worker on attempt " + attemptNumber + " in the first checkpoint");
                     return "hello " + name + " from first checkpoint";
