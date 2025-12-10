@@ -1,8 +1,10 @@
-package io.littlehorse.server.streams.topology.timer;
+package io.littlehorse.server.streams.topology.core;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.ServerTopologyV2;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -20,9 +22,9 @@ import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
-public class TimerCoreProcessor implements Processor<String, LHTimer, String, LHTimer> {
+public class TimerCoreProcessor implements Processor<String, LHTimer, String, Object> {
 
-    private ProcessorContext<String, LHTimer> context;
+    private ProcessorContext<String, Object> context;
     private KeyValueStore<String, Bytes> timerStore;
     private Cancellable punctuator;
     private String lastSeenKey;
@@ -33,7 +35,8 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, LH
         this.forwardTimers = forwardTimers;
     }
 
-    public void init(final ProcessorContext<String, LHTimer> context) {
+    @Override
+    public void init(final ProcessorContext<String, Object> context) {
         this.context = context;
         timerStore = context.getStateStore(ServerTopologyV2.CORE_STORE_NAME);
         if (forwardTimers) {
@@ -51,23 +54,15 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, LH
         }
     }
 
+    @Override
     public void process(final Record<String, LHTimer> record) {
         LHTimer timer = record.value();
-        if (!forwardTimers) {
+        boolean isMatured = timer.maturationTime.getTime() <= System.currentTimeMillis();
+        if (!forwardTimers || !isMatured) {
             storeOneTimer(timer);
             return;
         }
-        if (timer.isRepartition()) {
-            context.forward(record);
-            return;
-        }
-
-        // If the timer is already matured, no sense in putting it into the store. Just forward now.
-        if (timer.maturationTime.getTime() <= System.currentTimeMillis()) {
-            sendOneTimer(timer);
-        } else {
-            storeOneTimer(timer);
-        }
+        sendOneTimer(timer);
     }
 
     private void clearTimers(long timestamp) {
@@ -88,10 +83,31 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, LH
         // Now we gotta forward the timer.
         Record<String, LHTimer> toSend =
                 new Record<String, LHTimer>(timer.partitionKey, timer, timer.maturationTime.getTime(), metadata);
-        context.forward(toSend);
+        routeRecord(toSend);
     }
 
     protected void storeOneTimer(LHTimer timer) {
         timerStore.put(timer.getStoreKey(), new Bytes(timer.toBytes()));
+    }
+
+    protected void routeRecord(Record<String, LHTimer> record) {
+        try {
+            LHTimer timer = record.value();
+            Record<String, Command> nextRecord = record.withValue(Command.parseFrom(timer.getPayload()));
+
+            if (timer.isRepartition()) {
+                context.forward(
+                        nextRecord.withKey(timer.getPartitionKey()),
+                        ServerTopologyV2.REPARTITION_PASSTHROUGH_PROCESSOR);
+            } else {
+                context.forward(nextRecord, ServerTopologyV2.TIMER_COMMAND_PROCESSOR_NAME);
+            }
+        } catch (InvalidProtocolBufferException e) {
+            throw new RuntimeException("Failed to parse Command from LHTimer payload", e);
+        }
+    }
+
+    protected void routeToRepartition(Record<String, LHTimer> record) {
+        routeRecord(record);
     }
 }
