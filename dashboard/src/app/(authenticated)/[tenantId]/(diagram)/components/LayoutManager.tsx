@@ -56,7 +56,18 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[] }> = ({ nodeRuns }) => {
               return bPos - aPos
             })
           const fade = nodeRunsList !== undefined && nodeRunsList.length === 0
+          if (node.type === 'cycle' && elkNode?.x !== undefined) {
+            const initialNode = laidOutGraph.children?.find(n => n.id === node.data.outgoingEdges[0].sinkNodeName)
+            const cycleNodeX = elkNode.x - initialNode?.x!
+            elkNode.x = (initialNode?.x! + cycleNodeX) / 2
+          }
 
+          if (node.type === 'exit') {
+            const initialNode = laidOutGraph.children?.find(n => n.id.includes('ENTRYPOINT'))
+            if (elkNode && initialNode?.y !== undefined && elkNode.y !== initialNode.y) {
+              elkNode.y = initialNode.y
+            }
+          }
           return {
             ...node,
             data: { ...node.data, fade, nodeRunsList },
