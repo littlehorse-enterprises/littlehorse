@@ -154,6 +154,7 @@ public class ServerTopologyV2 extends Topology {
         serverTopology.addProcessor(
                 OUTPUTTOPIC_PASSTHROUGH_PROCESSOR,
                 passthroughRepartitionProcessor,
+                TIMER_COMMAND_PROCESSOR_NAME,
                 ROUTER_PROCESSOR_NAME,
                 ROUTER_PROCESSOR_NAME + "-2");
         serverTopology.addProcessor(
