@@ -11,13 +11,14 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.LHTimerPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class LHTimer extends LHSerializable<LHTimerPb> {
+public class LHTimer extends LHSerializable<LHTimerPb> implements Forwardable {
 
     public Date maturationTime;
     public String topic;
@@ -26,6 +27,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
     private TenantIdModel tenantId;
     private PrincipalIdModel principalId;
     private String storeKeyInternal;
+    private boolean isRepartition;
 
     public LHTimer() {}
 
@@ -39,6 +41,12 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
         if (command.hasResponse()) {
             throw new IllegalArgumentException("Timer commands cannot have a response");
         }
+        isRepartition = false;
+    }
+
+    public LHTimer(CommandModel command, boolean isRepartition) {
+        this(command);
+        this.isRepartition = isRepartition;
     }
 
     @Override
@@ -48,6 +56,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
         topic = p.getTopic();
         partitionKey = p.getPartitionKey();
         payload = p.getPayload().toByteArray();
+        isRepartition = p.getIsRepartition();
 
         if (p.hasPrincipalId()) {
             principalId = LHSerializable.fromProto(p.getPrincipalId(), PrincipalIdModel.class, context);
@@ -81,6 +90,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
                 .setTopic(topic)
                 .setPayload(ByteString.copyFrom(payload))
                 .setStoreKey(getStoreKey())
+                .setIsRepartition(isRepartition)
                 .setPrincipalId(principalId.toProto()) // TODO: allow nulls
                 .setTenantId(tenantId.toProto()); // TODO: Allow nulls
         return out;

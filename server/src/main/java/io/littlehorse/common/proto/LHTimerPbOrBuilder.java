@@ -137,4 +137,15 @@ public interface LHTimerPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getStoreKeyBytes();
+
+  /**
+   * <code>optional bool is_repartition = 8;</code>
+   * @return Whether the isRepartition field is set.
+   */
+  boolean hasIsRepartition();
+  /**
+   * <code>optional bool is_repartition = 8;</code>
+   * @return The isRepartition.
+   */
+  boolean getIsRepartition();
 }

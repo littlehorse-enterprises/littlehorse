@@ -57,7 +57,7 @@ public class TimerProcessorTest {
     @BeforeEach
     public void setup() {
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
-        processor = new TimerProcessor();
+        processor = new TimerProcessor(true);
         processor.init(mockProcessorContext);
         Assertions.assertThat(mockProcessorContext.scheduledPunctuators()).hasSize(1);
         scheduledPunctuator = mockProcessorContext.scheduledPunctuators().get(0);
