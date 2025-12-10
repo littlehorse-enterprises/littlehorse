@@ -4,8 +4,12 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.validation.InvalidEdgeException;
+import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel.LHComparisonRule;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel.LHTypeComparisonRules;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.util.LHUtil;
@@ -17,6 +21,7 @@ import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
@@ -56,7 +61,40 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
 
     public void validate(NodeModel source, ReadOnlyMetadataManager manager, ThreadSpecModel threadSpec)
             throws InvalidEdgeException {
-        // TODO (#1458): after we support using VariableAssignment, make sure that the resolveType() is BOOL.
+        // TODO (#1458): after we support using VariableAssignment, make sure that the
+        // resolveType() is BOOL.
+        try {
+            Optional<TypeDefinitionModel> lhsTypeOptional = left.resolveType(manager, threadSpec.getWfSpec(),
+                    threadSpec.getName());
+            Optional<TypeDefinitionModel> rhsTypeOptional = left.resolveType(manager, threadSpec.getWfSpec(),
+                    threadSpec.getName());
+
+            if (lhsTypeOptional.isPresent() && rhsTypeOptional.isPresent()) {
+                TypeDefinitionModel lhsType = lhsTypeOptional.get();
+                TypeDefinitionModel rhsType = rhsTypeOptional.get();
+        
+                
+                LHComparisonRule rule = TypeDefinitionModel.getRuleFromComparator(comparator);
+
+                if (!rhsType.getComparisonRules().contains(rule)) {
+                    throw new InvalidEdgeException(String.format("You cannot compare RHS type %s using Comparator %s", lhsType, comparator), edge);
+                }
+                if (rule == LHComparisonRule.IDENTITY && !lhsType.equals(rhsType)) {
+                    throw new InvalidEdgeException(String.format("You can only compare LHS type %s with its own type, but RHS type provided was %s", lhsType, rhsType), edge);
+                }
+                if (rule == LHComparisonRule.INCLUDES && (lhsType.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE || lhsType.getPrimitiveType() != VariableType.STR)) {
+                    throw new InvalidEdgeException(String.format("You cannot use LHS type %s with Comparator %s", lhsType, comparator), edge);
+                }
+            } else {
+                // TODO: Consider if types are not present
+
+                // JSON_OBJ.get('field') vs JSON_OBJ.get('field')
+                // Optional.of() vs Optional.of()
+            }
+        } catch (InvalidExpressionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public Set<String> getRequiredVariableNames() {
@@ -69,9 +107,11 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
 
     /**
      * Given a ThreadRunModel representing a ThreadRun in a WfRun, returns true if
-     * the represented EdgeCondition is satisfied by the variables in that ThreadRun.
+     * the represented EdgeCondition is satisfied by the variables in that
+     * ThreadRun.
+     * 
      * @param threadRun is the ThreadRunModel representing the ThreadRun to evaluate
-     * against.
+     *                  against.
      * @return true if the condition is satisfied.
      * @throws LHVarSubError if there is a problem getting variables.
      */
@@ -99,8 +139,10 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
             case UNRECOGNIZED:
         }
 
-        // This is impossible; it means that we added a new value to the Comparator proto
-        // without updating the LH Server to handle it. So we can throw an IllegalStateException.
+        // This is impossible; it means that we added a new value to the Comparator
+        // proto
+        // without updating the LH Server to handle it. So we can throw an
+        // IllegalStateException.
         throw new IllegalStateException("Unknown value for Comparator enum %d".formatted(comparator.getNumber()));
     }
 }
@@ -109,9 +151,12 @@ class Comparer {
 
     public static int compare(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
         try {
-            if (left.getVal() == null && right.getVal() != null) return -1;
-            if (right.getVal() == null && left.getVal() != null) return 1;
-            if (right.getVal() == null && left.getVal() == null) return 0;
+            if (left.getVal() == null && right.getVal() != null)
+                return -1;
+            if (right.getVal() == null && left.getVal() != null)
+                return 1;
+            if (right.getVal() == null && left.getVal() == null)
+                return 0;
 
             @SuppressWarnings("all")
             int result = ((Comparable) left.getVal()).compareTo((Comparable) right.getVal());
