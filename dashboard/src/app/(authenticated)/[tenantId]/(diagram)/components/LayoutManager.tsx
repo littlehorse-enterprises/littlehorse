@@ -19,13 +19,13 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[] }> = ({ nodeRuns }) => {
         layoutOptions: {
           'elk.algorithm': 'layered',
           'elk.direction': 'RIGHT',
-          'elk.spacing.nodeNode': '100',
+          'elk.spacing.nodeNode': '150',
           'elk.layered.spacing.nodeNodeBetweenLayers': '150',
           'elk.spacing.edgeEdge': '30',
           'elk.spacing.edgeNode': '30',
           'elk.edgeRouting': 'ORTHOGONAL',
-          'elk.layered.nodePlacement.strategy': 'SIMPLE',
-          'elk.layered.cycleBreaking.strategy': 'GREEDY',
+          'elk.layered.nodePlacement.strategy': 'BRANDES_KOEPF',
+          'elk.layered.cycleBreaking.strategy': 'DEPTH_FIRST',
           'elk.padding': '[top=50,left=50,bottom=50,right=50]',
           'elk.separateConnectedComponents': 'false',
           'org.eclipse.elk.layered.mergeEdges': 'false',
@@ -44,6 +44,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[] }> = ({ nodeRuns }) => {
 
       try {
         const laidOutGraph = await elk.layout(elkGraph)
+
 
         // Layout the original workflow nodes
         const laidOutNodes = nodes.map(node => {
@@ -78,7 +79,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[] }> = ({ nodeRuns }) => {
             isLaidOut: true,
           }
         })
-
+console.log(laidOutNodes)
         setNodes(laidOutNodes)
         setEdges(edges)
         setTimeout(() => fitView(), 10)

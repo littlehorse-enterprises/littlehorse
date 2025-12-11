@@ -72,7 +72,6 @@ const getCycleNodes = (threadSpec: WfSpec['threadSpecs'][string]) => {
               return edgeItem.sinkNodeName !== nodeId
             }
           )
-          console.log(edge)
           if (!threadSpec.nodes[nodeId].outgoingEdges.some(e => e.sinkNodeName === cycleNodeId)) {
             threadSpec.nodes[nodeId].outgoingEdges.push({
               sinkNodeName: cycleNodeId,
@@ -105,6 +104,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
     return spec.threadSpecs[thread.name]
   }, [spec, thread])
   getCycleNodes(threadSpec)
+  console.log(threadSpec)
   const [edges, setEdges] = useEdgesState(extractEdges(threadSpec))
   const [nodes, setNodes] = useNodesState(extractNodes(threadSpec))
 
