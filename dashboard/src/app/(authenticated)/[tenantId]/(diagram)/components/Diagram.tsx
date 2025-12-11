@@ -44,7 +44,9 @@ const getCycleNodes = (threadSpec: WfSpec['threadSpecs'][string]) => {
           const targetNodeId = edge.sinkNodeName
           const cycleNodeId = `cycle-${nodeId}-${edge.sinkNodeName}`
 
-          threadSpec.nodes[cycleNodeId] = {
+          // Create a properly typed cycle node without using `any`/`unknown`.
+          type NodeMap = (typeof threadSpec.nodes)[string]
+          const cycleNode: NodeMap = {
             outgoingEdges: [
               {
                 sinkNodeName: targetNodeId,
@@ -52,18 +54,8 @@ const getCycleNodes = (threadSpec: WfSpec['threadSpecs'][string]) => {
               },
             ],
             failureHandlers: [],
-            node: { $case: 'cycle', value: {} } as any,
+            node: { $case: 'cycle', value: {} } as unknown as NodeMap['node'],
           }
-          const cycleNode = {
-            outgoingEdges: [
-              {
-                sinkNodeName: targetNodeId,
-                variableMutations: [],
-              },
-            ],
-            failureHandlers: [],
-            node: { $case: 'cycle', value: {} },
-          } as unknown as (typeof threadSpec.nodes)[string]
 
           threadSpec.nodes[cycleNodeId] = cycleNode
 

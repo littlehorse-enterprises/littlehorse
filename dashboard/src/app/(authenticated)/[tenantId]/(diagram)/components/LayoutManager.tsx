@@ -20,13 +20,17 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[] }> = ({ nodeRuns }) => {
           'elk.algorithm': 'layered',
           'elk.direction': 'RIGHT',
           'elk.spacing.nodeNode': '150',
-          'elk.layered.spacing.nodeNodeBetweenLayers': '150',
-          'elk.spacing.edgeEdge': '30',
-          'elk.spacing.edgeNode': '30',
+          'elk.layered.spacing.nodeNodeBetweenLayers': '200',
+          'elk.spacing.edgeEdge': '100',
+          'elk.spacing.edgeNode': '50',
           'elk.edgeRouting': 'ORTHOGONAL',
-          'elk.layered.nodePlacement.strategy': 'BRANDES_KOEPF',
+          'elk.layered.nodePlacement.strategy': 'LINEAR_SEGMENTS',
           'elk.layered.cycleBreaking.strategy': 'DEPTH_FIRST',
-          'elk.padding': '[top=50,left=50,bottom=50,right=50]',
+          'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES',
+          'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
+          'elk.layered.unnecessaryBendpoints': 'true',
+          'elk.layered.compaction.postCompaction.strategy': 'EDGE_LENGTH',
+          'elk.padding': '[top=100,left=100,bottom=100,right=100]',
           'elk.separateConnectedComponents': 'false',
           'org.eclipse.elk.layered.mergeEdges': 'false',
         },
@@ -44,8 +48,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[] }> = ({ nodeRuns }) => {
 
       try {
         const laidOutGraph = await elk.layout(elkGraph)
-
-
+        const hasCycles = nodes.some(node => node.type === 'cycle')
         // Layout the original workflow nodes
         const laidOutNodes = nodes.map(node => {
           const elkNode = laidOutGraph.children?.find(n => n.id === node.id)
@@ -63,7 +66,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[] }> = ({ nodeRuns }) => {
             elkNode.x = (initialNode?.x! + cycleNodeX) / 2
           }
 
-          if (node.type === 'exit') {
+          if (node.type === 'exit' && hasCycles) {
             const initialNode = laidOutGraph.children?.find(n => n.id.includes('ENTRYPOINT'))
             if (elkNode && initialNode?.y !== undefined && elkNode.y !== initialNode.y) {
               elkNode.y = initialNode.y
@@ -79,7 +82,6 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[] }> = ({ nodeRuns }) => {
             isLaidOut: true,
           }
         })
-console.log(laidOutNodes)
         setNodes(laidOutNodes)
         setEdges(edges)
         setTimeout(() => fitView(), 10)
