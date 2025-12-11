@@ -16,6 +16,10 @@ const config: Config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
+  // Transform ES modules from node_modules (like jose)
+  transformIgnorePatterns: [
+    'node_modules/(?!(jose|@panva|oidc-token-hash|oauth4webapi|preact-render-to-string|nanoid)/)',
+  ],
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
