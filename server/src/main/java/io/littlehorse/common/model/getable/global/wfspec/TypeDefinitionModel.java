@@ -23,8 +23,8 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Str
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.TimestampReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
+import io.littlehorse.common.util.LHUtil.LHComparisonRule;
 import io.littlehorse.common.util.TypeCastingUtils;
-import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
@@ -133,30 +133,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             VariableMutationType operation, TypeDefinitionModel rhs, ReadOnlyMetadataManager manager)
             throws InvalidExpressionException {
         return getTypeStrategy().resolveOperation(manager, operation, rhs.getTypeStrategy());
-    }
-
-    public enum LHComparisonRule {
-        IDENTITY,
-        MAGNITUDE,
-        INCLUDES,
-    }
-
-    public static LHComparisonRule getRuleFromComparator(Comparator comparator) {
-        switch (comparator) {
-            case EQUALS:
-            case NOT_EQUALS:
-                return LHComparisonRule.IDENTITY;
-            case GREATER_THAN:
-            case GREATER_THAN_EQ:
-            case LESS_THAN:
-            case LESS_THAN_EQ:
-                return LHComparisonRule.MAGNITUDE;
-            case IN:
-            case NOT_IN:
-                return LHComparisonRule.INCLUDES;
-            case UNRECOGNIZED:
-        }
-        return null;
     }
 
     public List<LHComparisonRule> getComparisonRules() {

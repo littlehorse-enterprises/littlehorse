@@ -8,10 +8,10 @@ import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
-import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel.LHComparisonRule;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.common.util.LHUtil.LHComparisonRule;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.EdgeCondition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
@@ -75,7 +75,7 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
                 TypeDefinitionModel lhsType = lhsTypeOptional.get();
                 TypeDefinitionModel rhsType = rhsTypeOptional.get();
 
-                LHComparisonRule rule = TypeDefinitionModel.getRuleFromComparator(comparator);
+                LHComparisonRule rule = LHUtil.getRuleFromComparator(comparator);
 
                 if (!rhsType.getComparisonRules().contains(rule)) {
                     throw new InvalidEdgeException(
@@ -87,10 +87,7 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
                         && (!lhsType.getComparisonRules().contains(LHComparisonRule.MAGNITUDE)
                                 || !rhsType.getComparisonRules().contains(LHComparisonRule.MAGNITUDE))) {
                     throw new InvalidEdgeException(
-                            String.format(
-                                    "You can not compare %s with %s",
-                                    lhsType, rhsType),
-                            edge);
+                            String.format("You can not compare %s with %s", lhsType, rhsType), edge);
                 }
                 if (rule == LHComparisonRule.INCLUDES
                         && (lhsType.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE
