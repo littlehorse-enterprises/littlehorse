@@ -34,7 +34,6 @@ import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -144,18 +143,18 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     public static LHComparisonRule getRuleFromComparator(Comparator comparator) {
         switch (comparator) {
-          case EQUALS:
-          case NOT_EQUALS:
-            return LHComparisonRule.IDENTITY;
-          case GREATER_THAN:
-          case GREATER_THAN_EQ:
-          case LESS_THAN:
-          case LESS_THAN_EQ:
-            return LHComparisonRule.MAGNITUDE;
-          case IN:
-          case NOT_IN:
-            return LHComparisonRule.INCLUDES;
-          case UNRECOGNIZED:
+            case EQUALS:
+            case NOT_EQUALS:
+                return LHComparisonRule.IDENTITY;
+            case GREATER_THAN:
+            case GREATER_THAN_EQ:
+            case LESS_THAN:
+            case LESS_THAN_EQ:
+                return LHComparisonRule.MAGNITUDE;
+            case IN:
+            case NOT_IN:
+                return LHComparisonRule.INCLUDES;
+            case UNRECOGNIZED:
         }
         return null;
     }
