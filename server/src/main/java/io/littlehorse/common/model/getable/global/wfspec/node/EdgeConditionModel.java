@@ -102,7 +102,7 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
 
             if (!typesEqual && (!lhsTypeIsComparable || !rhsTypeIsComparable)) {
                 return Optional.of(
-                        String.format("You can only compare LHS type %s with its own type", lhsType, rhsType));
+                        String.format("You can only compare LHS type %s with its own type, but tried to compare it to %s", lhsType, rhsType));
             }
         }
 
