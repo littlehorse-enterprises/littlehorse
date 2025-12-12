@@ -37,7 +37,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
       return false
     }
     const nodeRun = selectedNode.data.nodeRunsList[nodeRunIndex]
-    return nodeRun.failures.length > 0
+    return nodeRun?.failures?.length > 0
   }, [selectedNode, nodeRunIndex])
 
   const nodeType = useMemo(() => {
@@ -47,7 +47,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
   }, [selectedNode, nodeRunIndex])
   return (
     <aside className={`overflow-y flex max-w-full flex-col overflow-x-hidden pl-4 ${maxHeightClass} overflow-y-auto `}>
-      {isValidNode && selectedNode && (
+      {isValidNode && selectedNode && (selectedNode as { type?: string }).type !== 'cycle' && (
         <>
           {showNodeRun && <SelectedNodeRun nodeRunIndex={nodeRunIndex} setNodeRunIndex={setNodeRunIndex} />}
           <Tabs value={currentTab} onValueChange={value => setCurrentTab(value)} className="w-full">
