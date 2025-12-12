@@ -46,6 +46,7 @@ public class EdgeConditionModelTest {
                 Arguments.of(VariableType.JSON_ARR, Comparator.EQUALS, VariableType.JSON_ARR, true),
                 Arguments.of(VariableType.JSON_ARR, Comparator.LESS_THAN, VariableType.JSON_ARR, false),
                 Arguments.of(VariableType.JSON_OBJ, Comparator.LESS_THAN, VariableType.JSON_ARR, false),
+                Arguments.of(VariableType.STR, Comparator.EQUALS, null, true),
                 Arguments.of(new StructDefIdModel(), Comparator.EQUALS, new StructDefIdModel(), true),
                 Arguments.of(new StructDefIdModel("car", 0), Comparator.EQUALS, new StructDefIdModel("car", 0), true),
                 Arguments.of(

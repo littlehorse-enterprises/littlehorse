@@ -156,6 +156,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case STRUCT_DEF_ID:
                 return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES);
+            case DEFINEDTYPE_NOT_SET:
+                return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES, LHComparisonRule.MAGNITUDE);
             default:
         }
         return List.of();
