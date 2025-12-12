@@ -101,8 +101,9 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
             boolean rhsTypeIsComparable = rhsType.getComparisonRules().contains(LHComparisonRule.MAGNITUDE);
 
             if (!typesEqual && (!lhsTypeIsComparable || !rhsTypeIsComparable)) {
-                return Optional.of(
-                        String.format("You can only compare LHS type %s with its own type, but tried to compare it to %s", lhsType, rhsType));
+                return Optional.of(String.format(
+                        "You can only compare LHS type %s with its own type, but tried to compare it to %s",
+                        lhsType, rhsType));
             }
         }
 
