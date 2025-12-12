@@ -74,8 +74,7 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
         }
 
         // Could be JSON_OBJ or JSON_ARR internal value that we can't refer the type of
-        if (lhsTypeOptional.isEmpty() || rhsTypeOptional.isEmpty())
-            return;
+        if (lhsTypeOptional.isEmpty() || rhsTypeOptional.isEmpty()) return;
 
         TypeDefinitionModel lhsType = lhsTypeOptional.get();
         TypeDefinitionModel rhsType = rhsTypeOptional.get();
@@ -87,25 +86,26 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
         }
     }
 
-    public static Optional<String> checkTypeComparisonIncompatibility(TypeDefinitionModel lhsType,
-            Comparator comparator, TypeDefinitionModel rhsType) {
+    public static Optional<String> checkTypeComparisonIncompatibility(
+            TypeDefinitionModel lhsType, Comparator comparator, TypeDefinitionModel rhsType) {
         LHComparisonRule rule = LHUtil.getRuleFromComparator(comparator);
 
         if (!rhsType.getComparisonRules().contains(rule)) {
-            return Optional
-                    .of(String.format("You cannot compare RHS type %s using Comparator %s", lhsType, comparator));
+            return Optional.of(
+                    String.format("You cannot compare RHS type %s using Comparator %s", lhsType, comparator));
         }
         if (rule == LHComparisonRule.IDENTITY) {
             boolean typesEqual = lhsType.equals(rhsType);
 
             boolean lhsTypeIsComparable = lhsType.getComparisonRules().contains(LHComparisonRule.MAGNITUDE);
             boolean rhsTypeIsComparable = rhsType.getComparisonRules().contains(LHComparisonRule.MAGNITUDE);
-            
+
             if (!typesEqual && (!lhsTypeIsComparable || !rhsTypeIsComparable)) {
-                return Optional.of(String.format("You can only compare LHS type %s with its own type", lhsType, rhsType));
+                return Optional.of(
+                        String.format("You can only compare LHS type %s with its own type", lhsType, rhsType));
             }
         }
-        
+
         if (rule == LHComparisonRule.INCLUDES) {
             boolean rhsSupportsIncludes = rhsType.getComparisonRules().contains(LHComparisonRule.INCLUDES);
 
@@ -113,8 +113,10 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
                 return Optional.of(String.format("You cannot use LHS type %s with Comparator %s", lhsType, comparator));
             }
 
-            boolean isJsonArr = (rhsType.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE && rhsType.getPrimitiveType() == VariableType.JSON_ARR);
-            boolean lhsIsString = (lhsType.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE && lhsType.getPrimitiveType() == VariableType.STR);
+            boolean isJsonArr = (rhsType.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
+                    && rhsType.getPrimitiveType() == VariableType.JSON_ARR);
+            boolean lhsIsString = (lhsType.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
+                    && lhsType.getPrimitiveType() == VariableType.STR);
 
             if (!isJsonArr && !lhsIsString) {
                 return Optional.of(String.format("You cannot use LHS type %s with Comparator %s", lhsType, comparator));
@@ -177,12 +179,9 @@ class Comparer {
 
     public static int compare(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
         try {
-            if (left.getVal() == null && right.getVal() != null)
-                return -1;
-            if (right.getVal() == null && left.getVal() != null)
-                return 1;
-            if (right.getVal() == null && left.getVal() == null)
-                return 0;
+            if (left.getVal() == null && right.getVal() != null) return -1;
+            if (right.getVal() == null && left.getVal() != null) return 1;
+            if (right.getVal() == null && left.getVal() == null) return 0;
 
             @SuppressWarnings("all")
             int result = ((Comparable) left.getVal()).compareTo((Comparable) right.getVal());
