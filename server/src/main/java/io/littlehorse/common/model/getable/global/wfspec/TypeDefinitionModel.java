@@ -23,6 +23,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Str
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.TimestampReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.WfRunIdReturnTypeStrategy;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
+import io.littlehorse.common.util.LHUtil.LHComparisonRule;
 import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -33,6 +34,7 @@ import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -131,6 +133,34 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             VariableMutationType operation, TypeDefinitionModel rhs, ReadOnlyMetadataManager manager)
             throws InvalidExpressionException {
         return getTypeStrategy().resolveOperation(manager, operation, rhs.getTypeStrategy());
+    }
+
+    public List<LHComparisonRule> getComparisonRules() {
+        switch (this.definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                switch (primitiveType) {
+                    case INT:
+                    case DOUBLE:
+                    case STR:
+                    case BOOL:
+                    case TIMESTAMP:
+                        return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.MAGNITUDE);
+                    case WF_RUN_ID:
+                    case BYTES:
+                        return List.of(LHComparisonRule.IDENTITY);
+                    case JSON_ARR:
+                    case JSON_OBJ:
+                        return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES);
+                    case UNRECOGNIZED:
+                }
+                break;
+            case STRUCT_DEF_ID:
+                return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES);
+            case DEFINEDTYPE_NOT_SET:
+                return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES, LHComparisonRule.MAGNITUDE);
+            default:
+        }
+        return List.of();
     }
 
     public LHTypeStrategy getTypeStrategy() {
