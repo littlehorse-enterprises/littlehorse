@@ -63,48 +63,64 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
         // TODO (#1458): after we support using VariableAssignment, make sure that the
         // resolveType() is BOOL.
 
-        // timestamp == bool
+        Optional<TypeDefinitionModel> lhsTypeOptional = Optional.empty();
+        Optional<TypeDefinitionModel> rhsTypeOptional = Optional.empty();
 
         try {
-            Optional<TypeDefinitionModel> lhsTypeOptional =
-                    left.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
-            Optional<TypeDefinitionModel> rhsTypeOptional =
-                    right.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
-
-            if (lhsTypeOptional.isPresent() && rhsTypeOptional.isPresent()) {
-                TypeDefinitionModel lhsType = lhsTypeOptional.get();
-                TypeDefinitionModel rhsType = rhsTypeOptional.get();
-
-                LHComparisonRule rule = LHUtil.getRuleFromComparator(comparator);
-
-                if (!rhsType.getComparisonRules().contains(rule)) {
-                    throw new InvalidEdgeException(
-                            String.format("You cannot compare RHS type %s using Comparator %s", lhsType, comparator),
-                            edge);
-                }
-                if (rule == LHComparisonRule.IDENTITY
-                        && !lhsType.equals(rhsType)
-                        && (!lhsType.getComparisonRules().contains(LHComparisonRule.MAGNITUDE)
-                                || !rhsType.getComparisonRules().contains(LHComparisonRule.MAGNITUDE))) {
-                    throw new InvalidEdgeException(
-                            String.format("You can not compare %s with %s", lhsType, rhsType), edge);
-                }
-                if (rule == LHComparisonRule.INCLUDES
-                        && (lhsType.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE
-                                || lhsType.getPrimitiveType() != VariableType.STR)) {
-                    throw new InvalidEdgeException(
-                            String.format("You cannot use LHS type %s with Comparator %s", lhsType, comparator), edge);
-                }
-            } else {
-                // TODO: Consider if types are not present
-
-                // JSON_OBJ.get('field') vs JSON_OBJ.get('field')
-                // Optional.of() vs Optional.of()
-            }
+            lhsTypeOptional = left.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
+            rhsTypeOptional = right.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
         } catch (InvalidExpressionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new InvalidEdgeException("Unable to resolve type of VariableAssignment:" + e.getMessage(), edge);
         }
+
+        // Could be JSON_OBJ or JSON_ARR internal value that we can't refer the type of
+        if (lhsTypeOptional.isEmpty() || rhsTypeOptional.isEmpty())
+            return;
+
+        TypeDefinitionModel lhsType = lhsTypeOptional.get();
+        TypeDefinitionModel rhsType = rhsTypeOptional.get();
+
+        Optional<String> errorMessage = checkTypeComparisonIncompatibility(lhsType, comparator, rhsType);
+
+        if (errorMessage.isPresent()) {
+            throw new InvalidEdgeException(errorMessage.get(), edge);
+        }
+    }
+
+    public static Optional<String> checkTypeComparisonIncompatibility(TypeDefinitionModel lhsType,
+            Comparator comparator, TypeDefinitionModel rhsType) {
+        LHComparisonRule rule = LHUtil.getRuleFromComparator(comparator);
+
+        if (!rhsType.getComparisonRules().contains(rule)) {
+            return Optional
+                    .of(String.format("You cannot compare RHS type %s using Comparator %s", lhsType, comparator));
+        }
+        if (rule == LHComparisonRule.IDENTITY) {
+            boolean typesEqual = lhsType.equals(rhsType);
+
+            boolean lhsTypeIsComparable = lhsType.getComparisonRules().contains(LHComparisonRule.MAGNITUDE);
+            boolean rhsTypeIsComparable = rhsType.getComparisonRules().contains(LHComparisonRule.MAGNITUDE);
+            
+            if (!typesEqual && (!lhsTypeIsComparable || !rhsTypeIsComparable)) {
+                return Optional.of(String.format("You can only compare LHS type %s with its own type", lhsType, rhsType));
+            }
+        }
+        
+        if (rule == LHComparisonRule.INCLUDES) {
+            boolean rhsSupportsIncludes = rhsType.getComparisonRules().contains(LHComparisonRule.INCLUDES);
+
+            if (!rhsSupportsIncludes) {
+                return Optional.of(String.format("You cannot use LHS type %s with Comparator %s", lhsType, comparator));
+            }
+
+            boolean isJsonArr = (rhsType.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE && rhsType.getPrimitiveType() == VariableType.JSON_ARR);
+            boolean lhsIsString = (lhsType.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE && lhsType.getPrimitiveType() == VariableType.STR);
+
+            if (!isJsonArr && !lhsIsString) {
+                return Optional.of(String.format("You cannot use LHS type %s with Comparator %s", lhsType, comparator));
+            }
+        }
+        return Optional.empty();
     }
 
     public Set<String> getRequiredVariableNames() {
@@ -161,9 +177,12 @@ class Comparer {
 
     public static int compare(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
         try {
-            if (left.getVal() == null && right.getVal() != null) return -1;
-            if (right.getVal() == null && left.getVal() != null) return 1;
-            if (right.getVal() == null && left.getVal() == null) return 0;
+            if (left.getVal() == null && right.getVal() != null)
+                return -1;
+            if (right.getVal() == null && left.getVal() != null)
+                return 1;
+            if (right.getVal() == null && left.getVal() == null)
+                return 0;
 
             @SuppressWarnings("all")
             int result = ((Comparable) left.getVal()).compareTo((Comparable) right.getVal());
