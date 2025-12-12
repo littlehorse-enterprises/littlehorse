@@ -92,7 +92,7 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
 
         if (!rhsType.getComparisonRules().contains(rule)) {
             return Optional.of(
-                    String.format("You cannot compare RHS type %s using Comparator %s", lhsType, comparator));
+                    String.format("You cannot compare RHS type %s using Comparator %s", rhsType, comparator));
         }
         if (rule == LHComparisonRule.IDENTITY) {
             boolean typesEqual = lhsType.equals(rhsType);
