@@ -256,7 +256,7 @@ func (m *serverConnectionManager) start() {
 			}
 		}
 
-		time.Sleep(time.Duration(time.Second * 8))
+		time.Sleep(time.Duration(time.Second * 60))
 	}
 
 }
