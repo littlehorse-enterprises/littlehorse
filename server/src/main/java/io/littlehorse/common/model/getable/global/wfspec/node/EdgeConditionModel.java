@@ -90,6 +90,11 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
             TypeDefinitionModel lhsType, Comparator comparator, TypeDefinitionModel rhsType) {
         LHComparisonRule rule = LHUtil.getRuleFromComparator(comparator);
 
+        // All types can be compared agaisnt NULL
+        if (rhsType.getDefinedTypeCase() == DefinedTypeCase.DEFINEDTYPE_NOT_SET) {
+            return Optional.empty();
+        }
+
         if (!rhsType.getComparisonRules().contains(rule)) {
             return Optional.of(
                     String.format("You cannot compare RHS type %s using Comparator %s", rhsType, comparator));
