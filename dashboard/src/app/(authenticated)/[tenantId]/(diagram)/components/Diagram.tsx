@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useLayoutEffect, useMemo, useState } from 'react'
 import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
 import 'reactflow/dist/base.css'
 import { DiagramProvider, NodeInContext, ThreadType } from '../context'
@@ -93,30 +93,25 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
 
   const threadSpec = useMemo(() => {
     if (thread === undefined) return spec.threadSpecs[spec.entrypointThreadName]
-    return spec.threadSpecs[thread.name]
-  }, [spec, thread])
-  getCycleNodes(threadSpec)
-  console.log(threadSpec)
+    const threadSpec = spec.threadSpecs[thread.name]
+    getCycleNodes(threadSpec)
+    return threadSpec
+  }, [spec, thread.name])
+
   const [edges, setEdges] = useEdgesState(extractEdges(threadSpec))
   const [nodes, setNodes] = useNodesState(extractNodes(threadSpec))
 
   const threadNodeRuns = useMemo(() => {
     if (!wfRun) return
     return wfRun.threadRuns[thread.number].nodeRuns
-  }, [thread, wfRun])
+  }, [thread.number, wfRun])
 
-  const updateGraph = useCallback(() => {
-    const { name } = thread
-    const threadSpec = spec.threadSpecs[name]
+  useLayoutEffect(() => {
     const nodes = extractNodes(threadSpec)
     const edges = extractEdges(threadSpec)
     setNodes(nodes)
     setEdges(edges)
-  }, [spec.threadSpecs, thread, setNodes, setEdges])
-
-  useEffect(() => {
-    updateGraph()
-  }, [updateGraph])
+  }, [thread.name, setNodes, setEdges])
 
   const verb =
     wfRun?.status === LHStatus.RUNNING
