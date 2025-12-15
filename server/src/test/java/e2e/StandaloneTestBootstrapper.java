@@ -129,6 +129,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 100));
         serverProperties.put(LHServerConfig.X_ENABLE_STRUCT_DEFS_KEY, "true");
         serverProperties.put(LHServerConfig.X_MAX_DELETES_PER_COMMAND_KEY, "10"); // To test wfrun deletion iteration
+        serverProperties.put(LHServerConfig.X_ENABLE_TIMER_STREAMS_KEY, "true");
         return serverProperties;
     }
 
