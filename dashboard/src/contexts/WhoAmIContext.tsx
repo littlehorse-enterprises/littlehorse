@@ -16,12 +16,11 @@ const Context = createContext<ContextProps>({
   tenants: [],
 })
 
-type WhoAmIContextProps = Omit<ContextProps, 'tenantId'> & { tenantId?: string }
+type WhoAmIContextProps = ContextProps
 
-export const WhoAmIContext: FC<PropsWithChildren<WhoAmIContextProps>> = ({ children, user, tenants, tenantId: initialTenantId }) => {
+export const WhoAmIContext: FC<PropsWithChildren<WhoAmIContextProps>> = ({ children, user, tenants, tenantId }) => {
   const params = useParams()
-  const currentTenantId = (params?.tenantId as string) || initialTenantId || 'default'
-
+  const currentTenantId = (params.tenantId as string) || tenantId || 'default'
   const value = useMemo(
     () => ({ user, tenants, tenantId: currentTenantId }),
     [user, tenants, currentTenantId]
