@@ -188,7 +188,7 @@ public class LHStructDefType extends LHClassType {
                 .filter((PropertyDescriptor pd) -> !"class".equals(pd.getName()))
 
                 // Convert to our domain LHStructProperty class
-                .map((PropertyDescriptor pd) -> new LHStructProperty(pd))
+                .map((PropertyDescriptor pd) -> new LHStructProperty(pd, this))
 
                 // Property descriptors with the LHStructIgnore annotation should be skipped
                 .filter((LHStructProperty property) -> !property.isIgnored())
