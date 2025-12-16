@@ -85,8 +85,10 @@ public class LHStructPropertyTest {
         PropertyDescriptor pd = new PropertyDescriptor("stringWithDefault", Library.class);
         LHStructProperty stringWithDefaultProperty = new LHStructProperty(pd, new LHStructDefType(Library.class));
 
-        VariableValue expectedPropertyValue = VariableValue.newBuilder().setStr("hello").build();
-        VariableValue actualPropertyValue = stringWithDefaultProperty.getDefaultValue().get();
+        VariableValue expectedPropertyValue =
+                VariableValue.newBuilder().setStr("hello").build();
+        VariableValue actualPropertyValue =
+                stringWithDefaultProperty.getDefaultValue().get();
 
         assertThat(expectedPropertyValue).isEqualTo(actualPropertyValue);
     }

@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
-import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.LHStructField;
 import io.littlehorse.sdk.worker.LHStructIgnore;
@@ -13,7 +12,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import java.util.Optional;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -83,9 +81,7 @@ public class LHStructProperty {
                 .setMasked(this.isMasked())
                 .build();
 
-        StructFieldDef.Builder fieldDef =
-                StructFieldDef.newBuilder()
-                    .setFieldType(typeDef);
+        StructFieldDef.Builder fieldDef = StructFieldDef.newBuilder().setFieldType(typeDef);
 
         Optional<VariableValue> defaultValue = this.getDefaultValue();
         if (defaultValue.isPresent()) {
@@ -101,7 +97,9 @@ public class LHStructProperty {
 
             return Optional.ofNullable(getValueFrom(defaultInstance));
         } catch (Exception e) {
-            log.warn(String.format("Unable to retrieve default value for Struct Property %s. Blank constructor may not be visible.", this));
+            log.warn(String.format(
+                    "Unable to retrieve default value for Struct Property %s. Blank constructor may not be visible.",
+                    this));
             return Optional.empty();
         }
     }

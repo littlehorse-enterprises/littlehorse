@@ -7,54 +7,53 @@ import io.littlehorse.sdk.worker.LHStructIgnore;
 
 @LHStructDef("library")
 class Library {
-  public String name;
-  public String[] books = null;
-  public int ignoredField;
-  public WfRunId maskedField;
-  public String stringWithDefault = "hello";
+    public String name;
+    public String[] books = null;
+    public int ignoredField;
+    public WfRunId maskedField;
+    public String stringWithDefault = "hello";
 
-  public Library() {
-  }
+    public Library() {}
 
-  public String getName() {
-    return this.name;
-  }
+    public String getName() {
+        return this.name;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public String[] getBooks() {
-    return this.books;
-  }
+    public String[] getBooks() {
+        return this.books;
+    }
 
-  public void setBooks(String[] books) {
-    this.books = books;
-  }
+    public void setBooks(String[] books) {
+        this.books = books;
+    }
 
-  @LHStructIgnore
-  public int getIgnoredField() {
-    return this.ignoredField;
-  }
+    @LHStructIgnore
+    public int getIgnoredField() {
+        return this.ignoredField;
+    }
 
-  public void setIgnoredField(int val) {
-    this.ignoredField = val;
-  }
+    public void setIgnoredField(int val) {
+        this.ignoredField = val;
+    }
 
-  @LHStructField(masked = true)
-  public WfRunId getMaskedField() {
-    return this.maskedField;
-  }
+    @LHStructField(masked = true)
+    public WfRunId getMaskedField() {
+        return this.maskedField;
+    }
 
-  public void setMaskedField(WfRunId val) {
-    this.maskedField = val;
-  }
+    public void setMaskedField(WfRunId val) {
+        this.maskedField = val;
+    }
 
-  public String getStringWithDefault() {
-    return this.stringWithDefault;
-  }
+    public String getStringWithDefault() {
+        return this.stringWithDefault;
+    }
 
-  public void setStringWithDefault(String val) {
-    this.stringWithDefault = val;
-  }
+    public void setStringWithDefault(String val) {
+        this.stringWithDefault = val;
+    }
 }
