@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "object_id.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+
+
+// metadata object representing actions to take during a wfRun 
+// migration
+message WfRunMigrationPlan {
+    // Name and id
+    MigrationPlanId id = 1;
+
+    // When the MigrationPlan was created.
+    google.protobuf.Timestamp created_at = 2; 
+
+    // Name of old thread -> How to migrate thread
+    MigrationPlan migration_plan = 3 ;
+}
+
+message MigrationPlan { 
+    map<string, ThreadMigrationPlan> thread_migrations = 1;
+}
+
+// How to migrate a thread 
+message ThreadMigrationPlan {
+    // Name of the new thread we are migrating to
+    string new_thread_name = 1;
+    // name of curNode - > how to migrate curNode to new WfRun
+    map<string, NodeMigrationPlan> node_migrations  = 2;
+}
+
+//  How to migrate Node 
+message NodeMigrationPlan {
+
+    // Currently just migrate to node with this name 
+    string new_node = 1;
+}
+
+

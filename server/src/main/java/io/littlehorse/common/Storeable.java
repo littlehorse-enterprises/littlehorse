@@ -58,8 +58,8 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
         switch (cls.getSimpleName()) {
             case "StoredGetable":
                 return StoreableType.STORED_GETABLE;
-            case "LHTimer":
-                return StoreableType.LH_TIMER;
+            //case "LHTimer":
+                //return StoreableType.LH_TIMER;
             case "Tag":
                 return StoreableType.TAG;
             case "ScheduledTaskModel":
@@ -68,8 +68,8 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.TASK_METRIC_UPDATE;
             case "PartitionMetricsModel":
                 return StoreableType.PARTITION_METRICS;
-            case "MetricWindowModel":
-                return StoreableType.METRIC_WINDOW;
+            //case "MetricWindowModel":
+            //    return StoreableType.METRIC_WINDOW;
             case "InitializationLogModel":
                 return StoreableType.INITIALIZATION_LOG;
             case "WfRunStoredInventoryModel":

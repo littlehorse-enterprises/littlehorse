@@ -70,6 +70,7 @@ private static final long serialVersionUID = 0L;
     DELETE_WORKFLOW_EVENT_DEF(16),
     PUT_STRUCT_DEF(17),
     DELETE_STRUCT_DEF(18),
+    PUT_MIGRATION_PLAN(19),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -102,6 +103,7 @@ private static final long serialVersionUID = 0L;
         case 16: return DELETE_WORKFLOW_EVENT_DEF;
         case 17: return PUT_STRUCT_DEF;
         case 18: return DELETE_STRUCT_DEF;
+        case 19: return PUT_MIGRATION_PLAN;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -667,6 +669,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.DeleteStructDefRequest.getDefaultInstance();
   }
 
+  public static final int PUT_MIGRATION_PLAN_FIELD_NUMBER = 19;
+  /**
+   * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+   * @return Whether the putMigrationPlan field is set.
+   */
+  @java.lang.Override
+  public boolean hasPutMigrationPlan() {
+    return metadataCommandCase_ == 19;
+  }
+  /**
+   * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+   * @return The putMigrationPlan.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutMigrationPlanRequest getPutMigrationPlan() {
+    if (metadataCommandCase_ == 19) {
+       return (io.littlehorse.sdk.common.proto.PutMigrationPlanRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutMigrationPlanRequestOrBuilder getPutMigrationPlanOrBuilder() {
+    if (metadataCommandCase_ == 19) {
+       return (io.littlehorse.sdk.common.proto.PutMigrationPlanRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -731,6 +764,9 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 18) {
       output.writeMessage(18, (io.littlehorse.sdk.common.proto.DeleteStructDefRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 19) {
+      output.writeMessage(19, (io.littlehorse.sdk.common.proto.PutMigrationPlanRequest) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -807,6 +843,10 @@ private static final long serialVersionUID = 0L;
     if (metadataCommandCase_ == 18) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(18, (io.littlehorse.sdk.common.proto.DeleteStructDefRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 19) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(19, (io.littlehorse.sdk.common.proto.PutMigrationPlanRequest) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -895,6 +935,10 @@ private static final long serialVersionUID = 0L;
         if (!getDeleteStructDef()
             .equals(other.getDeleteStructDef())) return false;
         break;
+      case 19:
+        if (!getPutMigrationPlan()
+            .equals(other.getPutMigrationPlan())) return false;
+        break;
       case 0:
       default:
     }
@@ -977,6 +1021,10 @@ private static final long serialVersionUID = 0L;
       case 18:
         hash = (37 * hash) + DELETE_STRUCT_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getDeleteStructDef().hashCode();
+        break;
+      case 19:
+        hash = (37 * hash) + PUT_MIGRATION_PLAN_FIELD_NUMBER;
+        hash = (53 * hash) + getPutMigrationPlan().hashCode();
         break;
       case 0:
       default:
@@ -1173,6 +1221,9 @@ private static final long serialVersionUID = 0L;
       if (deleteStructDefBuilder_ != null) {
         deleteStructDefBuilder_.clear();
       }
+      if (putMigrationPlanBuilder_ != null) {
+        putMigrationPlanBuilder_.clear();
+      }
       metadataCommandCase_ = 0;
       metadataCommand_ = null;
       return this;
@@ -1286,6 +1337,10 @@ private static final long serialVersionUID = 0L;
           deleteStructDefBuilder_ != null) {
         result.metadataCommand_ = deleteStructDefBuilder_.build();
       }
+      if (metadataCommandCase_ == 19 &&
+          putMigrationPlanBuilder_ != null) {
+        result.metadataCommand_ = putMigrationPlanBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -1367,6 +1422,10 @@ private static final long serialVersionUID = 0L;
         }
         case DELETE_STRUCT_DEF: {
           mergeDeleteStructDef(other.getDeleteStructDef());
+          break;
+        }
+        case PUT_MIGRATION_PLAN: {
+          mergePutMigrationPlan(other.getPutMigrationPlan());
           break;
         }
         case METADATACOMMAND_NOT_SET: {
@@ -1516,6 +1575,13 @@ private static final long serialVersionUID = 0L;
               metadataCommandCase_ = 18;
               break;
             } // case 146
+            case 154: {
+              input.readMessage(
+                  internalGetPutMigrationPlanFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 19;
+              break;
+            } // case 154
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3912,6 +3978,148 @@ private static final long serialVersionUID = 0L;
       metadataCommandCase_ = 18;
       onChanged();
       return deleteStructDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.PutMigrationPlanRequest, io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.Builder, io.littlehorse.sdk.common.proto.PutMigrationPlanRequestOrBuilder> putMigrationPlanBuilder_;
+    /**
+     * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+     * @return Whether the putMigrationPlan field is set.
+     */
+    @java.lang.Override
+    public boolean hasPutMigrationPlan() {
+      return metadataCommandCase_ == 19;
+    }
+    /**
+     * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+     * @return The putMigrationPlan.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutMigrationPlanRequest getPutMigrationPlan() {
+      if (putMigrationPlanBuilder_ == null) {
+        if (metadataCommandCase_ == 19) {
+          return (io.littlehorse.sdk.common.proto.PutMigrationPlanRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 19) {
+          return putMigrationPlanBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+     */
+    public Builder setPutMigrationPlan(io.littlehorse.sdk.common.proto.PutMigrationPlanRequest value) {
+      if (putMigrationPlanBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        putMigrationPlanBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 19;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+     */
+    public Builder setPutMigrationPlan(
+        io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.Builder builderForValue) {
+      if (putMigrationPlanBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        putMigrationPlanBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 19;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+     */
+    public Builder mergePutMigrationPlan(io.littlehorse.sdk.common.proto.PutMigrationPlanRequest value) {
+      if (putMigrationPlanBuilder_ == null) {
+        if (metadataCommandCase_ == 19 &&
+            metadataCommand_ != io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.newBuilder((io.littlehorse.sdk.common.proto.PutMigrationPlanRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 19) {
+          putMigrationPlanBuilder_.mergeFrom(value);
+        } else {
+          putMigrationPlanBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 19;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+     */
+    public Builder clearPutMigrationPlan() {
+      if (putMigrationPlanBuilder_ == null) {
+        if (metadataCommandCase_ == 19) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 19) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        putMigrationPlanBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.Builder getPutMigrationPlanBuilder() {
+      return internalGetPutMigrationPlanFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutMigrationPlanRequestOrBuilder getPutMigrationPlanOrBuilder() {
+      if ((metadataCommandCase_ == 19) && (putMigrationPlanBuilder_ != null)) {
+        return putMigrationPlanBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 19) {
+          return (io.littlehorse.sdk.common.proto.PutMigrationPlanRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.PutMigrationPlanRequest, io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.Builder, io.littlehorse.sdk.common.proto.PutMigrationPlanRequestOrBuilder> 
+        internalGetPutMigrationPlanFieldBuilder() {
+      if (putMigrationPlanBuilder_ == null) {
+        if (!(metadataCommandCase_ == 19)) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.getDefaultInstance();
+        }
+        putMigrationPlanBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.PutMigrationPlanRequest, io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.Builder, io.littlehorse.sdk.common.proto.PutMigrationPlanRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutMigrationPlanRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 19;
+      onChanged();
+      return putMigrationPlanBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetadataCommand)

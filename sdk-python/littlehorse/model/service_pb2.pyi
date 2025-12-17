@@ -17,6 +17,7 @@ import littlehorse.model.struct_def_pb2 as _struct_def_pb2
 import littlehorse.model.acls_pb2 as _acls_pb2
 import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
 import littlehorse.model.scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
+import littlehorse.model.wf_run_migration_pb2 as _wf_run_migration_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -778,6 +779,26 @@ class PutCheckpointResponse(_message.Message):
     flow_control_continue_type: PutCheckpointResponse.FlowControlContinue
     created_checkpoint: _task_run_pb2.Checkpoint
     def __init__(self, flow_control_continue_type: _Optional[_Union[PutCheckpointResponse.FlowControlContinue, str]] = ..., created_checkpoint: _Optional[_Union[_task_run_pb2.Checkpoint, _Mapping]] = ...) -> None: ...
+
+class PutMigrationPlanRequest(_message.Message):
+    __slots__ = ("name", "migration_plan")
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    MIGRATION_PLAN_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    migration_plan: _wf_run_migration_pb2.MigrationPlan
+    def __init__(self, name: _Optional[str] = ..., migration_plan: _Optional[_Union[_wf_run_migration_pb2.MigrationPlan, _Mapping]] = ...) -> None: ...
+
+class MigrateWfRunRequest(_message.Message):
+    __slots__ = ("migration_plan_id", "wf_run_id", "revision_number", "major_version_number")
+    MIGRATION_PLAN_ID_FIELD_NUMBER: _ClassVar[int]
+    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    REVISION_NUMBER_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_NUMBER_FIELD_NUMBER: _ClassVar[int]
+    migration_plan_id: _object_id_pb2.MigrationPlanId
+    wf_run_id: _object_id_pb2.WfRunId
+    revision_number: int
+    major_version_number: int
+    def __init__(self, migration_plan_id: _Optional[_Union[_object_id_pb2.MigrationPlanId, _Mapping]] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., revision_number: _Optional[int] = ..., major_version_number: _Optional[int] = ...) -> None: ...
 
 class ScheduledTask(_message.Message):
     __slots__ = ("task_run_id", "task_def_id", "attempt_number", "variables", "created_at", "source", "total_observed_checkpoints")

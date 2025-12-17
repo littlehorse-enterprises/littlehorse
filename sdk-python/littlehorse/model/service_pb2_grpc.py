@@ -15,6 +15,7 @@ import littlehorse.model.task_def_pb2 as task__def__pb2
 import littlehorse.model.task_run_pb2 as task__run__pb2
 import littlehorse.model.user_tasks_pb2 as user__tasks__pb2
 import littlehorse.model.variable_pb2 as variable__pb2
+import littlehorse.model.wf_run_migration_pb2 as wf__run__migration__pb2
 import littlehorse.model.wf_run_pb2 as wf__run__pb2
 import littlehorse.model.wf_spec_pb2 as wf__spec__pb2
 import littlehorse.model.workflow_event_pb2 as workflow__event__pb2
@@ -377,6 +378,21 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/GetCheckpoint',
                 request_serializer=object__id__pb2.CheckpointId.SerializeToString,
                 response_deserializer=task__run__pb2.Checkpoint.FromString,
+                _registered_method=True)
+        self.PutMigrationPlan = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutMigrationPlan',
+                request_serializer=service__pb2.PutMigrationPlanRequest.SerializeToString,
+                response_deserializer=wf__run__migration__pb2.WfRunMigrationPlan.FromString,
+                _registered_method=True)
+        self.MigrateWfRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/MigrateWfRun',
+                request_serializer=service__pb2.MigrateWfRunRequest.SerializeToString,
+                response_deserializer=object__id__pb2.WfRunId.FromString,
+                _registered_method=True)
+        self.getMigrationPlan = channel.unary_unary(
+                '/littlehorse.LittleHorse/getMigrationPlan',
+                request_serializer=object__id__pb2.MigrationPlanId.SerializeToString,
+                response_deserializer=wf__run__migration__pb2.WfRunMigrationPlan.FromString,
                 _registered_method=True)
         self.StopWfRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/StopWfRun',
@@ -1019,9 +1035,28 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def StopWfRun(self, request, context):
-        """Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+    def PutMigrationPlan(self, request, context):
+        """Register migration plan as metadata on server
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def MigrateWfRun(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def getMigrationPlan(self, request, context):
+        """Get Migration Plan
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StopWfRun(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -1523,6 +1558,21 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.GetCheckpoint,
                     request_deserializer=object__id__pb2.CheckpointId.FromString,
                     response_serializer=task__run__pb2.Checkpoint.SerializeToString,
+            ),
+            'PutMigrationPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutMigrationPlan,
+                    request_deserializer=service__pb2.PutMigrationPlanRequest.FromString,
+                    response_serializer=wf__run__migration__pb2.WfRunMigrationPlan.SerializeToString,
+            ),
+            'MigrateWfRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.MigrateWfRun,
+                    request_deserializer=service__pb2.MigrateWfRunRequest.FromString,
+                    response_serializer=object__id__pb2.WfRunId.SerializeToString,
+            ),
+            'getMigrationPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.getMigrationPlan,
+                    request_deserializer=object__id__pb2.MigrationPlanId.FromString,
+                    response_serializer=wf__run__migration__pb2.WfRunMigrationPlan.SerializeToString,
             ),
             'StopWfRun': grpc.unary_unary_rpc_method_handler(
                     servicer.StopWfRun,
@@ -3422,6 +3472,87 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/GetCheckpoint',
             object__id__pb2.CheckpointId.SerializeToString,
             task__run__pb2.Checkpoint.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PutMigrationPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutMigrationPlan',
+            service__pb2.PutMigrationPlanRequest.SerializeToString,
+            wf__run__migration__pb2.WfRunMigrationPlan.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def MigrateWfRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/MigrateWfRun',
+            service__pb2.MigrateWfRunRequest.SerializeToString,
+            object__id__pb2.WfRunId.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def getMigrationPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/getMigrationPlan',
+            object__id__pb2.MigrationPlanId.SerializeToString,
+            wf__run__migration__pb2.WfRunMigrationPlan.FromString,
             options,
             channel_credentials,
             insecure,

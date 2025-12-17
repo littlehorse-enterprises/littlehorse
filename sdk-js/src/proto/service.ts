@@ -39,6 +39,7 @@ import {
   CorrelatedEventId,
   ExternalEventDefId,
   ExternalEventId,
+  MigrationPlanId,
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
@@ -77,6 +78,7 @@ import {
 } from "./user_tasks";
 import { Variable, VariableValue } from "./variable";
 import { WfRun } from "./wf_run";
+import { MigrationPlan, WfRunMigrationPlan } from "./wf_run_migration";
 import {
   ThreadSpec,
   WfSpec,
@@ -1386,6 +1388,25 @@ export function putCheckpointResponse_FlowControlContinueToNumber(
     default:
       return -1;
   }
+}
+
+export interface PutMigrationPlanRequest {
+  name: string;
+  migrationPlan: MigrationPlan | undefined;
+}
+
+export interface MigrateWfRunRequest {
+  /** Migration Plan to use */
+  migrationPlanId:
+    | MigrationPlanId
+    | undefined;
+  /** WfRun to Migrate */
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** What version to migrate to */
+  revisionNumber: number;
+  majorVersionNumber: number;
 }
 
 /**
@@ -8671,6 +8692,190 @@ export const PutCheckpointResponse = {
   },
 };
 
+function createBasePutMigrationPlanRequest(): PutMigrationPlanRequest {
+  return { name: "", migrationPlan: undefined };
+}
+
+export const PutMigrationPlanRequest = {
+  encode(message: PutMigrationPlanRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.migrationPlan !== undefined) {
+      MigrationPlan.encode(message.migrationPlan, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutMigrationPlanRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutMigrationPlanRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.migrationPlan = MigrationPlan.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PutMigrationPlanRequest {
+    return {
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      migrationPlan: isSet(object.migrationPlan) ? MigrationPlan.fromJSON(object.migrationPlan) : undefined,
+    };
+  },
+
+  toJSON(message: PutMigrationPlanRequest): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.migrationPlan !== undefined) {
+      obj.migrationPlan = MigrationPlan.toJSON(message.migrationPlan);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<PutMigrationPlanRequest>): PutMigrationPlanRequest {
+    return PutMigrationPlanRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutMigrationPlanRequest>): PutMigrationPlanRequest {
+    const message = createBasePutMigrationPlanRequest();
+    message.name = object.name ?? "";
+    message.migrationPlan = (object.migrationPlan !== undefined && object.migrationPlan !== null)
+      ? MigrationPlan.fromPartial(object.migrationPlan)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseMigrateWfRunRequest(): MigrateWfRunRequest {
+  return { migrationPlanId: undefined, wfRunId: undefined, revisionNumber: 0, majorVersionNumber: 0 };
+}
+
+export const MigrateWfRunRequest = {
+  encode(message: MigrateWfRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.migrationPlanId !== undefined) {
+      MigrationPlanId.encode(message.migrationPlanId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.revisionNumber !== 0) {
+      writer.uint32(24).int32(message.revisionNumber);
+    }
+    if (message.majorVersionNumber !== 0) {
+      writer.uint32(32).int32(message.majorVersionNumber);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MigrateWfRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMigrateWfRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.migrationPlanId = MigrationPlanId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.revisionNumber = reader.int32();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.majorVersionNumber = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MigrateWfRunRequest {
+    return {
+      migrationPlanId: isSet(object.migrationPlanId) ? MigrationPlanId.fromJSON(object.migrationPlanId) : undefined,
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
+      revisionNumber: isSet(object.revisionNumber) ? globalThis.Number(object.revisionNumber) : 0,
+      majorVersionNumber: isSet(object.majorVersionNumber) ? globalThis.Number(object.majorVersionNumber) : 0,
+    };
+  },
+
+  toJSON(message: MigrateWfRunRequest): unknown {
+    const obj: any = {};
+    if (message.migrationPlanId !== undefined) {
+      obj.migrationPlanId = MigrationPlanId.toJSON(message.migrationPlanId);
+    }
+    if (message.wfRunId !== undefined) {
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
+    }
+    if (message.revisionNumber !== 0) {
+      obj.revisionNumber = Math.round(message.revisionNumber);
+    }
+    if (message.majorVersionNumber !== 0) {
+      obj.majorVersionNumber = Math.round(message.majorVersionNumber);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MigrateWfRunRequest>): MigrateWfRunRequest {
+    return MigrateWfRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MigrateWfRunRequest>): MigrateWfRunRequest {
+    const message = createBaseMigrateWfRunRequest();
+    message.migrationPlanId = (object.migrationPlanId !== undefined && object.migrationPlanId !== null)
+      ? MigrationPlanId.fromPartial(object.migrationPlanId)
+      : undefined;
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
+    message.revisionNumber = object.revisionNumber ?? 0;
+    message.majorVersionNumber = object.majorVersionNumber ?? 0;
+    return message;
+  },
+};
+
 function createBaseScheduledTask(): ScheduledTask {
   return {
     taskRunId: undefined,
@@ -11890,7 +12095,32 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state. */
+    /** Register migration plan as metadata on server */
+    putMigrationPlan: {
+      name: "PutMigrationPlan",
+      requestType: PutMigrationPlanRequest,
+      requestStream: false,
+      responseType: WfRunMigrationPlan,
+      responseStream: false,
+      options: {},
+    },
+    migrateWfRun: {
+      name: "MigrateWfRun",
+      requestType: MigrateWfRunRequest,
+      requestStream: false,
+      responseType: WfRunId,
+      responseStream: false,
+      options: {},
+    },
+    /** Get Migration Plan */
+    getMigrationPlan: {
+      name: "getMigrationPlan",
+      requestType: MigrationPlanId,
+      requestStream: false,
+      responseType: WfRunMigrationPlan,
+      responseStream: false,
+      options: {},
+    },
     stopWfRun: {
       name: "StopWfRun",
       requestType: StopWfRunRequest,
@@ -12472,7 +12702,17 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<PutCheckpointResponse>>;
   /** Gets a Checkpoint. */
   getCheckpoint(request: CheckpointId, context: CallContext & CallContextExt): Promise<DeepPartial<Checkpoint>>;
-  /** Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state. */
+  /** Register migration plan as metadata on server */
+  putMigrationPlan(
+    request: PutMigrationPlanRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WfRunMigrationPlan>>;
+  migrateWfRun(request: MigrateWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfRunId>>;
+  /** Get Migration Plan */
+  getMigrationPlan(
+    request: MigrationPlanId,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WfRunMigrationPlan>>;
   stopWfRun(request: StopWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Resumes a WfRun or a specific ThreadRun of a WfRun. */
   resumeWfRun(request: ResumeWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
@@ -12928,7 +13168,17 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   ): Promise<PutCheckpointResponse>;
   /** Gets a Checkpoint. */
   getCheckpoint(request: DeepPartial<CheckpointId>, options?: CallOptions & CallOptionsExt): Promise<Checkpoint>;
-  /** Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state. */
+  /** Register migration plan as metadata on server */
+  putMigrationPlan(
+    request: DeepPartial<PutMigrationPlanRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WfRunMigrationPlan>;
+  migrateWfRun(request: DeepPartial<MigrateWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<WfRunId>;
+  /** Get Migration Plan */
+  getMigrationPlan(
+    request: DeepPartial<MigrationPlanId>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WfRunMigrationPlan>;
   stopWfRun(request: DeepPartial<StopWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Resumes a WfRun or a specific ThreadRun of a WfRun. */
   resumeWfRun(request: DeepPartial<ResumeWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;

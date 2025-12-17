@@ -1264,6 +1264,100 @@ func (x *ScheduledWfRunId) GetId() string {
 	return ""
 }
 
+type MigrationPlanId struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (x *MigrationPlanId) Reset() {
+	*x = MigrationPlanId{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_object_id_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MigrationPlanId) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MigrationPlanId) ProtoMessage() {}
+
+func (x *MigrationPlanId) ProtoReflect() protoreflect.Message {
+	mi := &file_object_id_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MigrationPlanId.ProtoReflect.Descriptor instead.
+func (*MigrationPlanId) Descriptor() ([]byte, []int) {
+	return file_object_id_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *MigrationPlanId) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type WfRunMigrationId struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *WfRunMigrationId) Reset() {
+	*x = WfRunMigrationId{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_object_id_proto_msgTypes[22]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WfRunMigrationId) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WfRunMigrationId) ProtoMessage() {}
+
+func (x *WfRunMigrationId) ProtoReflect() protoreflect.Message {
+	mi := &file_object_id_proto_msgTypes[22]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WfRunMigrationId.ProtoReflect.Descriptor instead.
+func (*WfRunMigrationId) Descriptor() ([]byte, []int) {
+	return file_object_id_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *WfRunMigrationId) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 var File_object_id_proto protoreflect.FileDescriptor
 
 var file_object_id_proto_rawDesc = []byte{
@@ -1402,12 +1496,17 @@ var file_object_id_proto_rawDesc = []byte{
 	0x74, 0x49, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x02, 0x69, 0x64, 0x22, 0x22, 0x0a, 0x10, 0x53, 0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65, 0x64,
 	0x57, 0x66, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69,
-	0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f,
-	0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b,
-	0x6c, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65,
-	0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
-	0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x25, 0x0a, 0x0f, 0x4d, 0x69, 0x67, 0x72, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x50, 0x6c, 0x61, 0x6e, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x22,
+	0x0a, 0x10, 0x57, 0x66, 0x52, 0x75, 0x6e, 0x4d, 0x69, 0x67, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x49, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
+	0x69, 0x64, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
+	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b, 0x6c, 0x68, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65,
+	0x2e, 0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1422,7 +1521,7 @@ func file_object_id_proto_rawDescGZIP() []byte {
 	return file_object_id_proto_rawDescData
 }
 
-var file_object_id_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
+var file_object_id_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
 var file_object_id_proto_goTypes = []interface{}{
 	(*WfSpecId)(nil),              // 0: littlehorse.WfSpecId
 	(*TaskDefId)(nil),             // 1: littlehorse.TaskDefId
@@ -1445,8 +1544,10 @@ var file_object_id_proto_goTypes = []interface{}{
 	(*PrincipalId)(nil),           // 18: littlehorse.PrincipalId
 	(*TenantId)(nil),              // 19: littlehorse.TenantId
 	(*ScheduledWfRunId)(nil),      // 20: littlehorse.ScheduledWfRunId
-	(*timestamppb.Timestamp)(nil), // 21: google.protobuf.Timestamp
-	(MetricsWindowLength)(0),      // 22: littlehorse.MetricsWindowLength
+	(*MigrationPlanId)(nil),       // 21: littlehorse.MigrationPlanId
+	(*WfRunMigrationId)(nil),      // 22: littlehorse.WfRunMigrationId
+	(*timestamppb.Timestamp)(nil), // 23: google.protobuf.Timestamp
+	(MetricsWindowLength)(0),      // 24: littlehorse.MetricsWindowLength
 }
 var file_object_id_proto_depIdxs = []int32{
 	1,  // 0: littlehorse.TaskWorkerGroupId.task_def_id:type_name -> littlehorse.TaskDefId
@@ -1461,11 +1562,11 @@ var file_object_id_proto_depIdxs = []int32{
 	10, // 9: littlehorse.TaskRunId.wf_run_id:type_name -> littlehorse.WfRunId
 	13, // 10: littlehorse.CheckpointId.task_run:type_name -> littlehorse.TaskRunId
 	10, // 11: littlehorse.UserTaskRunId.wf_run_id:type_name -> littlehorse.WfRunId
-	21, // 12: littlehorse.TaskDefMetricsId.window_start:type_name -> google.protobuf.Timestamp
-	22, // 13: littlehorse.TaskDefMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
+	23, // 12: littlehorse.TaskDefMetricsId.window_start:type_name -> google.protobuf.Timestamp
+	24, // 13: littlehorse.TaskDefMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
 	1,  // 14: littlehorse.TaskDefMetricsId.task_def_id:type_name -> littlehorse.TaskDefId
-	21, // 15: littlehorse.WfSpecMetricsId.window_start:type_name -> google.protobuf.Timestamp
-	22, // 16: littlehorse.WfSpecMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
+	23, // 15: littlehorse.WfSpecMetricsId.window_start:type_name -> google.protobuf.Timestamp
+	24, // 16: littlehorse.WfSpecMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
 	0,  // 17: littlehorse.WfSpecMetricsId.wf_spec_id:type_name -> littlehorse.WfSpecId
 	18, // [18:18] is the sub-list for method output_type
 	18, // [18:18] is the sub-list for method input_type
@@ -1733,6 +1834,30 @@ func file_object_id_proto_init() {
 				return nil
 			}
 		}
+		file_object_id_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MigrationPlanId); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_object_id_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*WfRunMigrationId); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_object_id_proto_msgTypes[10].OneofWrappers = []interface{}{}
 	type x struct{}
@@ -1741,7 +1866,7 @@ func file_object_id_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_object_id_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   21,
+			NumMessages:   23,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
