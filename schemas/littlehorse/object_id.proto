@@ -222,3 +222,8 @@ message TenantId {
 message ScheduledWfRunId {
   string id = 1;
 }
+
+message ArchivedThreadRunId {
+  WfRunId wf_run_id = 1;
+  int32 thread_run_number = 2;
+}

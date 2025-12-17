@@ -131,6 +131,11 @@ public final class ObjectId extends com.google.protobuf.GeneratedFile {
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_ScheduledWfRunId_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_ArchivedThreadRunId_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_ArchivedThreadRunId_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -183,9 +188,11 @@ public final class ObjectId extends com.google.protobuf.GeneratedFile {
       "icsWindowLength\022)\n\nwf_spec_id\030\003 \001(\0132\025.li" +
       "ttlehorse.WfSpecId\"\031\n\013PrincipalId\022\n\n\002id\030" +
       "\001 \001(\t\"\026\n\010TenantId\022\n\n\002id\030\001 \001(\t\"\036\n\020Schedul" +
-      "edWfRunId\022\n\n\002id\030\001 \001(\tBM\n\037io.littlehorse." +
-      "sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHo" +
-      "rse.Sdk.Common.Protob\006proto3"
+      "edWfRunId\022\n\n\002id\030\001 \001(\t\"Y\n\023ArchivedThreadR" +
+      "unId\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehorse.Wf" +
+      "RunId\022\031\n\021thread_run_number\030\002 \001(\005BM\n\037io.l" +
+      "ittlehorse.sdk.common.protoP\001Z\t.;lhproto" +
+      "\252\002\034LittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -319,6 +326,12 @@ public final class ObjectId extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ScheduledWfRunId_descriptor,
         new java.lang.String[] { "Id", });
+    internal_static_littlehorse_ArchivedThreadRunId_descriptor =
+      getDescriptor().getMessageTypes().get(21);
+    internal_static_littlehorse_ArchivedThreadRunId_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_ArchivedThreadRunId_descriptor,
+        new java.lang.String[] { "WfRunId", "ThreadRunNumber", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();

@@ -255,6 +255,11 @@ export interface ScheduledWfRunId {
   id: string;
 }
 
+export interface ArchivedThreadRunId {
+  wfRunId: WfRunId | undefined;
+  threadRunNumber: number;
+}
+
 function createBaseWfSpecId(): WfSpecId {
   return { name: "", majorVersion: 0, revision: 0 };
 }
@@ -1829,6 +1834,82 @@ export const ScheduledWfRunId = {
   fromPartial(object: DeepPartial<ScheduledWfRunId>): ScheduledWfRunId {
     const message = createBaseScheduledWfRunId();
     message.id = object.id ?? "";
+    return message;
+  },
+};
+
+function createBaseArchivedThreadRunId(): ArchivedThreadRunId {
+  return { wfRunId: undefined, threadRunNumber: 0 };
+}
+
+export const ArchivedThreadRunId = {
+  encode(message: ArchivedThreadRunId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.threadRunNumber !== 0) {
+      writer.uint32(16).int32(message.threadRunNumber);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ArchivedThreadRunId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseArchivedThreadRunId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.threadRunNumber = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ArchivedThreadRunId {
+    return {
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
+      threadRunNumber: isSet(object.threadRunNumber) ? globalThis.Number(object.threadRunNumber) : 0,
+    };
+  },
+
+  toJSON(message: ArchivedThreadRunId): unknown {
+    const obj: any = {};
+    if (message.wfRunId !== undefined) {
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
+    }
+    if (message.threadRunNumber !== 0) {
+      obj.threadRunNumber = Math.round(message.threadRunNumber);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ArchivedThreadRunId>): ArchivedThreadRunId {
+    return ArchivedThreadRunId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ArchivedThreadRunId>): ArchivedThreadRunId {
+    const message = createBaseArchivedThreadRunId();
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
+    message.threadRunNumber = object.threadRunNumber ?? 0;
     return message;
   },
 };
