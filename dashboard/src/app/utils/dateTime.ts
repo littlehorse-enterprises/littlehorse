@@ -1,3 +1,5 @@
+import { UserTaskEvent } from 'littlehorse-client/proto'
+
 export const formatDate = (date?: Date | number) => {
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
@@ -8,6 +10,42 @@ export const formatDate = (date?: Date | number) => {
     second: 'numeric',
     hour12: false,
   }).format(date)
+}
+// Normalize and sort events by their `time` field (which may be a string or Date).
+
+export const getEventTime = (e: UserTaskEvent) => {
+  const t: any = e.time
+  if (!t) return 0
+  if (t instanceof Date) return t.getTime()
+  const parsed = Date.parse(t)
+  return Number.isNaN(parsed) ? 0 : parsed
+}
+/**
+ * Human-friendly date/time like: "April 2, 2022 at 11:29 am"
+ * Accepts a Date or a numeric timestamp. Returns empty string for invalid input.
+ */
+export const formatDateReadable = (dateInput?: string | undefined): string => {
+  if (dateInput === undefined || dateInput === null) return ''
+  const date = new Date(dateInput)
+
+  const dt = typeof date === 'number' ? new Date(date) : date instanceof Date ? date : new Date(date)
+  if (Number.isNaN(dt.getTime())) return ''
+
+  const formattedDate = dt.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
+  const formattedTime = dt
+    .toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    })
+    .toLowerCase()
+
+  return `  ${formattedDate} at ${formattedTime}`
 }
 
 export const utcToLocalDateTime = (utcISODateTime: string): string =>
