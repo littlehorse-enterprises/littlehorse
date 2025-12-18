@@ -1,5 +1,15 @@
 package io.littlehorse.server.streams;
 
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.serialization.Serializer;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.processor.TopicNameExtractor;
+import org.apache.kafka.streams.processor.api.ProcessorSupplier;
+import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.StoreBuilder;
+import org.apache.kafka.streams.state.Stores;
+
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.proto.Command;
@@ -18,15 +28,6 @@ import io.littlehorse.server.streams.topology.core.processors.ProcessorOutputRou
 import io.littlehorse.server.streams.topology.core.processors.TimerCommandProcessor;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.serialization.Serializer;
-import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.processor.TopicNameExtractor;
-import org.apache.kafka.streams.processor.api.ProcessorSupplier;
-import org.apache.kafka.streams.state.KeyValueStore;
-import org.apache.kafka.streams.state.StoreBuilder;
-import org.apache.kafka.streams.state.Stores;
 
 /**
  * The ServerTopologyV2 class is responsible for constructing storied architecture concerning the
@@ -56,7 +57,7 @@ public class ServerTopologyV2 extends Topology {
 
     private final ProcessorSupplier<String, Command, String, CommandProcessorOutput> commandProcessorSupplier;
     private final ProcessorSupplier<String, CommandProcessorOutput, String, Forwardable> routerProcessorSupplier;
-    private final ProcessorSupplier<String, CommandProcessorOutput, String, Forwardable> routerProcessorTimer2Supplier;
+    private final ProcessorSupplier<String, LHTimer, String, Object> routerProcessorTimer2Supplier;
     private final ProcessorSupplier<String, LHTimer, String, Object> timerProcessorSupplier;
     private final ProcessorSupplier<String, Command, String, CommandProcessorOutput> timerCommandProcessorSupplier;
     private final ProcessorSupplier<String, Forwardable, String, Forwardable> passthroughRepartitionProcessor;
@@ -94,8 +95,7 @@ public class ServerTopologyV2 extends Topology {
                 () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager, asyncWaiters);
         this.routerProcessorSupplier = () -> ProcessorOutputRouter.createCommandProcessorRouter(
                 TIMER_PROCESSOR_NAME, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR);
-        this.routerProcessorTimer2Supplier = () -> ProcessorOutputRouter.createCommandProcessorRouter(
-                TIMER_WITHOUT_FORWARD_PROCESSOR_NAME, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR);
+        this.routerProcessorTimer2Supplier = () -> ProcessorOutputRouter.createTimerProcessorRouter();
         this.timerProcessorSupplier = () -> new TimerCoreProcessor(true);
         this.passthroughRepartitionProcessor = ProcessorOutputRouter::createPassthroughRepartitionRouter;
         this.timerCommandProcessorSupplier =
@@ -146,21 +146,21 @@ public class ServerTopologyV2 extends Topology {
         serverTopology.addProcessor(COMMAND_PROCESSOR_NAME, commandProcessorSupplier, CORE_COMMAND_SOURCE_NAME);
         serverTopology.addProcessor(ROUTER_PROCESSOR_NAME, routerProcessorSupplier, COMMAND_PROCESSOR_NAME);
         serverTopology.addProcessor(TIMER_PROCESSOR_NAME, timerProcessorSupplier, ROUTER_PROCESSOR_NAME);
-        serverTopology.addProcessor(TIMER_COMMAND_PROCESSOR_NAME, timerCommandProcessorSupplier, TIMER_PROCESSOR_NAME);
         serverTopology.addProcessor(
-                ROUTER_PROCESSOR_NAME + "-2", routerProcessorTimer2Supplier, TIMER_COMMAND_PROCESSOR_NAME);
+                TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME, routerProcessorTimer2Supplier, TIMER_PROCESSOR_NAME);
         serverTopology.addProcessor(
-                REPARTITION_PASSTHROUGH_PROCESSOR, passthroughRepartitionProcessor, TIMER_PROCESSOR_NAME);
+                REPARTITION_PASSTHROUGH_PROCESSOR, passthroughRepartitionProcessor, TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME);
+        serverTopology.addProcessor(
+                TIMER_COMMAND_PROCESSOR_NAME, timerCommandProcessorSupplier, TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME);
+        serverTopology.addProcessor(
+                TIMER_WITHOUT_FORWARD_PROCESSOR_NAME,
+                timerWithoutForwardProcessorSupplier,
+                TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME);
         serverTopology.addProcessor(
                 OUTPUTTOPIC_PASSTHROUGH_PROCESSOR,
                 passthroughRepartitionProcessor,
                 TIMER_COMMAND_PROCESSOR_NAME,
-                ROUTER_PROCESSOR_NAME,
-                ROUTER_PROCESSOR_NAME + "-2");
-        serverTopology.addProcessor(
-                TIMER_WITHOUT_FORWARD_PROCESSOR_NAME,
-                timerWithoutForwardProcessorSupplier,
-                ROUTER_PROCESSOR_NAME + "-2");
+                ROUTER_PROCESSOR_NAME);
 
         serverTopology.addSink(
                 REPARTITION_SINK_NAME,

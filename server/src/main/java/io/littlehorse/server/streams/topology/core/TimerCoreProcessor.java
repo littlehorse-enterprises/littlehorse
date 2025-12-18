@@ -1,15 +1,7 @@
 package io.littlehorse.server.streams.topology.core;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.model.LHTimer;
-import io.littlehorse.common.proto.Command;
-import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streams.ServerTopologyV2;
-import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
@@ -20,6 +12,14 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
+
+import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streams.ServerTopologyV2;
+import io.littlehorse.server.streams.util.HeadersUtil;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class TimerCoreProcessor implements Processor<String, LHTimer, String, Object> {
@@ -82,7 +82,7 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, Ob
         Headers metadata = HeadersUtil.metadataHeadersFor(timer.getTenantId(), timer.getPrincipalId());
         // Now we gotta forward the timer.
         Record<String, LHTimer> toSend =
-                new Record<String, LHTimer>(timer.partitionKey, timer, timer.maturationTime.getTime(), metadata);
+                new Record<>(timer.partitionKey, timer, timer.maturationTime.getTime(), metadata);
         routeRecord(toSend);
     }
 
@@ -91,20 +91,9 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, Ob
     }
 
     protected void routeRecord(Record<String, LHTimer> record) {
-        try {
-            LHTimer timer = record.value();
-            Record<String, Command> nextRecord = record.withValue(Command.parseFrom(timer.getPayload()));
-
-            if (timer.isRepartition()) {
-                context.forward(
-                        nextRecord.withKey(timer.getPartitionKey()),
-                        ServerTopologyV2.REPARTITION_PASSTHROUGH_PROCESSOR);
-            } else {
-                context.forward(nextRecord, ServerTopologyV2.TIMER_COMMAND_PROCESSOR_NAME);
-            }
-        } catch (InvalidProtocolBufferException e) {
-            throw new RuntimeException("Failed to parse Command from LHTimer payload", e);
-        }
+        // Simply forward the timer without routing logic
+        // The downstream processor will handle routing
+        context.forward(record);
     }
 
     protected void routeToRepartition(Record<String, LHTimer> record) {
