@@ -23,6 +23,8 @@ You can think of the `WfRunMigrationPlan` as a set of instructions that will be 
 
 The rpc to register this metadata object in the lh server will look as follows:
 
+
+## Option 1
 ### Proto changes
 ```
   rpc PutMigrationPlan(PutMigrationPlanRequest) returns (WfRunMigrationPlan) {}
@@ -57,6 +59,7 @@ message MigrationPlan {
 Migration plans are broken down to a thread by thread basis.
 Every thread gets its own individual migration plan.
 
+
 ```
 // How to migrate a thread 
 message ThreadMigrationPlan {
@@ -65,14 +68,18 @@ message ThreadMigrationPlan {
     // name of curNode - > how to migrate curNode in new wfSpec
     map<string, NodeMigrationPlan> node_migrations  = 2;
     // Any variable that will be derived before migration node can be provided here
+    // if not provided then possible errors will be thrown
     map<string, VariableValue> migration_variables = 3;
 }
 ```
-For every thread we are migrating we need to know its exact destination in the new `wfSpec`so every thread migration has a new_thread_name -- name of the thread in the new wfSpec.
+
+
+
+For every thread we are migrating we need to know its exact destination in the new `wfSpec`so every thread migration has a new_thread_name -- name of the thread in the new `wfSpec`.
 
 Additionally we need to know what node within the new thread we are migrating to and for that reason we have node_migrations.
 
-Migration_variables come into play anytime a variable in the new `wfSpec` was derived prior to the migration node. That can either be from a node output, input variable, or assignment. Migration_variables allow clients to inject variable values into variables that need a value but may not have one due to where the migration occured. 
+migration_variables allows users to inject variableValues into the new Spec. This usefull when variableValues would have been derived prior to the migration node 
 
 ```
 //  How to migrate Node 
@@ -137,9 +144,65 @@ To perform a migration, we need the name of the migration plan, the `wfRunId` of
 
 The migration schema itself is fairly straightforward. The complexity arises in the server-side logic executed during a migration.
 
-To help guide this proposal, I have put together several diagrams to illustrate possible edge cases.
+### Option 2:
+
+In the first impl you must provide the migration variables for every thread in the `wfRunMigrationPlan`.
+Another approach to enable more flexibility would be to define the variables in the `migrateWfRunRequest`.
+
+### Proto
+
+We define the set of variables that are derived before the migration node but needed after the migration node
+
+```
+// How to migrate a thread 
+message ThreadMigrationPlan {
+    // Name of the new thread we are migrating to
+    string new_thread_name = 1;
+    // name of curNode - > how to migrate curNode in new wfSpec
+    map<string, NodeMigrationPlan> node_migrations  = 2;
+
+    // all the variables that are derived before a migration node
+    // and are needed after the migration node
+    repeated string migration_vars = 3;
+}
+```
+
+Now when a request to migrate is made we provide the name and the value of the migration variables for each thread. If the the migration variables are not provided then the request will be rejected. This impl gives fine-grained control on what variableValues to be passed in at execution.
+```
+message MigrateWfRunRequest {
+  // Migration Plan to use
+  MigrationPlanId migration_plan_id = 1; 
+
+  // WfRun to Migrate
+  WfRunId wf_run_id = 2;
+
+  // What version to migrate to
+  int32 revision_number = 3;
+  int32 major_version_number = 4;
+
+  map<string, MigrationVariables> = 5;
+
+}
+
+
+```
+
+```
+message MigrationVariables {
+    map<string, VariableValue> migrations_vars = 1
+}
+
+```
+
+
+
+
+
+
 
 ### Edge cases
+
+To help guide this proposal, I have put together several diagrams to illustrate possible edge cases.
 
 #### **Base Case:** 
 First is the base case this shows a successful migration from a `wfRun` to a new `wfSpec`
@@ -168,7 +231,7 @@ In case number three we see an example of an invalid migration that will be reje
 **Introducing Variables**:
 
 In case 4 variables that exist within new `wfSpec` that do not exist within the
-current `wfSpec`/`wfRun` must be provided within the map of variables for the given thread. If not then the migration is invalid do to missing state.
+current `wfSpec`/`wfRun` must be provided within the map of variables for the given thread. If not then either the request will fail or the `wfRun` will fail depending on the implementation.
 
 
 [migration w/ new vars needed](./img/migration_w_variables.jpg)
