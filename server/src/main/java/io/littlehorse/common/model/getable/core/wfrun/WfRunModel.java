@@ -628,7 +628,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             MigrateWfRunRequestModel req,
             WfRunMigrationPlanModel migrationPlan,
             CoreProcessorContext context) {
-      // STEP 1) ENTER A DORMIT WFRUN STATE WHERE STATUS CAN NOT BE UPDATE 
+
+        // STEP 1) ENTER A DORMIT WFRUN STATE WHERE STATUS CAN NOT BE UPDATE 
         // Threads can change state rapidly so thats why we need to pause
         int majorVersion = req.getMajorVersionNumber();
         int revision = req.getRevisionNumber();
@@ -640,74 +641,11 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         }
 
         // STEP 2) Validate that all active threads are in the migration plan
-        List<ThreadRunModel> activeThreads  = new ArrayList<>();
-        for(int i = 0 ; i < threadRunsUseMeCarefully.size(); i++){
-            ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
-            if(thread.isRunning()) activeThreads.add(thread);
-        }
-        MigrationPlanModel mp = migrationPlan.getMigrationPlan();
-        // Now We have all the active threads
-        for(int i = 0; i < activeThreads.size(); i++){
-            ThreadRunModel activeThread  = activeThreads.get(i);
-            String threadName = activeThread.getThreadSpecName();
-            if(!mp.getThreadMigrations().containsKey(threadName)){
-                throw new LHApiException(Status.INVALID_ARGUMENT, "An active thread in wfRun " + this.getId().getId() + "does not have a migration Plan");
-            }
-        // if here we know that thread is active and has a migration plan
-        String newThreadName  = mp.getThreadMigrations().get(threadName).getNewThreadName();
+        List<ThreadRunModel> activeThreads = getActiveThreads();
+        validateMigrationPlan(activeThreads, migrationPlan, newWfSpec);
 
-        
-       
-        if(!newWfSpec.threadSpecs.containsKey(newThreadName))
-            throw new LHApiException(Status.INVALID_ARGUMENT, " The thread provided in the migration plan does not exist in new version of the wfSpec");
-        // IF got here that the active thread has a migration plan and the thread it migrates to 
-        // exists within the new wfSpec
-
-
-        NodeRunModel currNode = activeThread.getCurrentNodeRun();
-        ThreadSpecModel newThreadSpec = newWfSpec.threadSpecs.get(newThreadName);
-        // Grab are currentNode and make sure it is in the migration plan
-
-        if(!mp.getThreadMigrations().get(activeThread.getThreadSpecName()).getNodeMigrations().containsKey(currNode.getNodeName()))
-            throw new LHApiException(Status.INVALID_ARGUMENT, " The curren active node does not have a migration plan");
-
-        String newNodeName  = mp.getThreadMigrations().get(activeThread.getThreadSpecName()).getNodeMigrations().get(currNode.getNodeName()).getNewNode();
-
-        if(!newThreadSpec.getNodes().containsKey(newNodeName))
-            throw new LHApiException(Status.INVALID_ARGUMENT, "The migration thread does not contain the migration node ");
-            
-        // otherwise this node has a exists within the new wfSpec we are migrating to. 
-        NodeModel newNode = newThreadSpec.getNode(newNodeName);
-
-        if(newNode.getType() != currNode.getNodeType())
-            throw new LHApiException(Status.INVALID_ARGUMENT, " As of rt now migration must occur between two nodes of the same subnode");
-        // Now We know curr thread has migration plan and the nodes are of the same type so this threads
-        // Migration Plan has passed all test cases for now
-
-    }
-    
-    // All threads are up for migration now point 
-    // everything to reference the new spec
-
-        this.getOldWfSpecVersions().add(wfSpecId);
-        this.setWfSpec(newWfSpec);
-        this.setWfSpecId(newWfSpec.getId());
-
-
-        for(int i = 0 ; i < activeThreads.size(); i++){
-            ThreadRunModel migrateThread = activeThreads.get(i);
-            migrateThread.setWfSpecId(newWfSpec.getId());
-            ThreadMigrationPlanModel threadMigrationPlan = migrationPlan.getMigrationPlan().getThreadMigrations().get(migrateThread.getThreadSpecName());
-            String newThreadName = threadMigrationPlan.getNewThreadName();
-            migrateThread.setThreadSpecName(newThreadName);
-            NodeRunModel currNode = migrateThread.getCurrentNodeRun();
-            currNode.setWfSpecId(newWfSpec.getId());
-            currNode.setThreadSpecName(newThreadName);
-            currNode.setNodeName(threadMigrationPlan.getNodeMigrations().get(currNode.getNodeName()).getNewNode());
-
-            
-
-        } 
+        // STEP 3) Migrate the wfRun to new wfSpec 
+        migrateWfRun(activeThreads, newWfSpec, migrationPlan);
     }
 
     
@@ -814,5 +752,73 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         // child threads, so we need to signal to the other threads that they might
         // want to wake up. Ding Ding Ding! Get out of bed.
         advance(time);
+    }
+
+    private List<ThreadRunModel> getActiveThreads(){
+        List<ThreadRunModel> activeThreads  = new ArrayList<>();
+        for(int i = 0 ; i < threadRunsUseMeCarefully.size(); i++){
+            ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
+            if(thread.isRunning()) activeThreads.add(thread);
+        }
+        return activeThreads;
+
+    }
+    
+    // Check if active threads ar in the migration plan and check if new wfSpec has migration threads
+    private void validateMigrationPlan(List<ThreadRunModel> activeThreads, WfRunMigrationPlanModel wfrmp, WfSpecModel newWfSpec){
+        MigrationPlanModel mp = wfrmp.getMigrationPlan();
+        // Now We have all the active threads
+        for(int i = 0; i < activeThreads.size(); i++){
+            ThreadRunModel activeThread  = activeThreads.get(i);
+            String threadName = activeThread.getThreadSpecName();
+            if(!mp.getThreadMigrations().containsKey(threadName)){
+                throw new LHApiException(Status.INVALID_ARGUMENT, "An active thread in wfRun " + this.getId().getId() + "does not have a migration Plan");
+            }
+        // if here we know that thread is active and has a migration plan
+        String newThreadName  = mp.getThreadMigrations().get(threadName).getNewThreadName();
+       
+        if(!newWfSpec.threadSpecs.containsKey(newThreadName))
+            throw new LHApiException(Status.INVALID_ARGUMENT, " The thread provided in the migration plan does not exist in new version of the wfSpec");
+
+        NodeRunModel currNode = activeThread.getCurrentNodeRun();
+        ThreadSpecModel newThreadSpec = newWfSpec.threadSpecs.get(newThreadName);
+        // Grab are currentNode and make sure it is in the migration plan
+
+        if(!mp.getThreadMigrations().get(activeThread.getThreadSpecName()).getNodeMigrations().containsKey(currNode.getNodeName()))
+            throw new LHApiException(Status.INVALID_ARGUMENT, " The curren active node does not have a migration plan");
+
+        String newNodeName  = mp.getThreadMigrations().get(activeThread.getThreadSpecName()).getNodeMigrations().get(currNode.getNodeName()).getNewNode();
+
+        if(!newThreadSpec.getNodes().containsKey(newNodeName))
+            throw new LHApiException(Status.INVALID_ARGUMENT, "The migration thread does not contain the migration node ");
+            
+        // otherwise this node has a exists within the new wfSpec we are migrating to. 
+        NodeModel newNode = newThreadSpec.getNode(newNodeName);
+
+        if(newNode.getType() != currNode.getNodeType())
+            throw new LHApiException(Status.INVALID_ARGUMENT, " As of rt now migration must occur between two nodes of the same subnode");
+        // Now We know curr thread has migration plan and the nodes are of the same type so this threads
+        // Migration Plan has passed all test cases for no
+   
+    }
+
+    public void migrateWfRun(List<ThreadRunModel> activeThreads, WfSpecModel newWfSpec, WfRunMigrationPlanModel migrationPlan){
+        this.getOldWfSpecVersions().add(wfSpecId);
+        this.setWfSpec(newWfSpec);
+        this.setWfSpecId(newWfSpec.getId());
+
+        for(int i = 0 ; i < activeThreads.size(); i++){
+            ThreadRunModel migrateThread = activeThreads.get(i);
+            migrateThread.setWfSpecId(newWfSpec.getId());
+            ThreadMigrationPlanModel threadMigrationPlan = migrationPlan.getMigrationPlan().getThreadMigrations().get(migrateThread.getThreadSpecName());
+            String newThreadName = threadMigrationPlan.getNewThreadName();
+            migrateThread.setThreadSpecName(newThreadName);
+            NodeRunModel currNode = migrateThread.getCurrentNodeRun();
+            currNode.setWfSpecId(newWfSpec.getId());
+            currNode.setThreadSpecName(newThreadName);
+            currNode.setNodeName(threadMigrationPlan.getNodeMigrations().get(currNode.getNodeName()).getNewNode());
+
+        } 
+
     }
 }
