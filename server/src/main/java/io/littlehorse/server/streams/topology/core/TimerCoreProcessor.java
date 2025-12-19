@@ -1,7 +1,13 @@
 package io.littlehorse.server.streams.topology.core;
 
+import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streams.ServerTopologyV2;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
@@ -12,14 +18,6 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
-
-import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.model.LHTimer;
-import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streams.ServerTopologyV2;
-import io.littlehorse.server.streams.util.HeadersUtil;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class TimerCoreProcessor implements Processor<String, LHTimer, String, Object> {
@@ -83,20 +81,10 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, Ob
         // Now we gotta forward the timer.
         Record<String, LHTimer> toSend =
                 new Record<>(timer.partitionKey, timer, timer.maturationTime.getTime(), metadata);
-        routeRecord(toSend);
+        context.forward(toSend);
     }
 
     protected void storeOneTimer(LHTimer timer) {
         timerStore.put(timer.getStoreKey(), new Bytes(timer.toBytes()));
-    }
-
-    protected void routeRecord(Record<String, LHTimer> record) {
-        // Simply forward the timer without routing logic
-        // The downstream processor will handle routing
-        context.forward(record);
-    }
-
-    protected void routeToRepartition(Record<String, LHTimer> record) {
-        routeRecord(record);
     }
 }
