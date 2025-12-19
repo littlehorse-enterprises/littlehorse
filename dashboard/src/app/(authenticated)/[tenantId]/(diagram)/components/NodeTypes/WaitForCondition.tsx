@@ -1,11 +1,11 @@
-import { LHStatus, WaitForConditionNode } from 'littlehorse-client/proto'
+import { WaitForConditionNode } from 'littlehorse-client/proto'
 import { CircleEqualIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
-import { NodeProps } from '..'
+import { NodeProps } from '.'
 
-import { Fade } from '../Fade'
-import { SelectedNode } from '../SelectedNode'
+import { Fade } from './Fade'
+import { SelectedNode } from './SelectedNode'
 const Node: FC<NodeProps<'waitForCondition', WaitForConditionNode>> = ({ data }) => {
   const { fade, condition, nodeRunsList } = data
   if (!condition) return null

@@ -4,7 +4,7 @@ import {
   ExternalEventNodeRun as ExternalEventNodeRunProto,
 } from 'littlehorse-client/proto'
 import { FC } from 'react'
-import { NodeVariable } from '../NodeVariable'
+import { NodeVariable } from '../../Components/NodeVariable'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { getExternalEvent } from '../../../NodeTypes/ExternalEvent/actions'
 import useSWR from 'swr'

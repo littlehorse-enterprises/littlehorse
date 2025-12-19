@@ -10,5 +10,5 @@ public interface CheckpointableFunction<T> {
      * Run the logic.
      * @return returns the result.
      */
-    public T run();
+    public T run(CheckpointContext context);
 }
