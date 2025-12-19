@@ -13,7 +13,7 @@ public class LHServerConnectionManager {
     private final RebalanceThread rebalanceThread;
     private final TaskDef taskDef;
     private final LHLivenessController livenessController;
-    private static final long HEARTBEAT_INTERVAL_MS = 5000L;
+    private static final long HEARTBEAT_INTERVAL_MS = 60_000L;
 
     public LHServerConnectionManager(
             TaskDef taskDef,

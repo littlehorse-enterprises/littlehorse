@@ -1,7 +1,8 @@
 'use client'
 
 import { DefaultSession } from 'next-auth'
-import { FC, PropsWithChildren, createContext, useContext } from 'react'
+import { useParams } from 'next/navigation'
+import { FC, PropsWithChildren, createContext, useContext, useMemo } from 'react'
 
 export type ContextProps = {
   user: DefaultSession['user']
@@ -18,7 +19,13 @@ const Context = createContext<ContextProps>({
 type WhoAmIContextProps = ContextProps
 
 export const WhoAmIContext: FC<PropsWithChildren<WhoAmIContextProps>> = ({ children, user, tenants, tenantId }) => {
-  return <Context.Provider value={{ user, tenants, tenantId: tenantId || tenants[0] }}>{children}</Context.Provider>
+  const params = useParams()
+  const currentTenantId = (params.tenantId as string) || tenantId || 'default'
+  const value = useMemo(
+    () => ({ user, tenants, tenantId: currentTenantId }),
+    [user, tenants, currentTenantId]
+  )
+  return <Context.Provider value={value}>{children}</Context.Provider>
 }
 
 export const useWhoAmI = () => {
