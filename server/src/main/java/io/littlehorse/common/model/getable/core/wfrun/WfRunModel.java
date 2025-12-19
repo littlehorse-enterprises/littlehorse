@@ -801,8 +801,9 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         // Migration Plan has passed all test cases for no
    
     }
+}
 
-    public void migrateWfRun(List<ThreadRunModel> activeThreads, WfSpecModel newWfSpec, WfRunMigrationPlanModel migrationPlan){
+    private void migrateWfRun(List<ThreadRunModel> activeThreads, WfSpecModel newWfSpec, WfRunMigrationPlanModel migrationPlan){
         this.getOldWfSpecVersions().add(wfSpecId);
         this.setWfSpec(newWfSpec);
         this.setWfSpecId(newWfSpec.getId());
