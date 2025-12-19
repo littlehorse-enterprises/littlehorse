@@ -1,11 +1,16 @@
 package io.littlehorse.common.model.getable.global.wfspec.migration;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.protobuf.Message;
+
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.sdk.common.proto.NodeMigrationPlan;
 import io.littlehorse.sdk.common.proto.ThreadMigrationPlan;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,9 +20,11 @@ public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan
 
     private String newThreadName;
     private Map<String, NodeMigrationPlanModel> nodeMigrations;
+    private List<String> migrationVars;
 
     public ThreadMigrationPlanModel() {
         nodeMigrations = new HashMap<>();
+        migrationVars = new ArrayList<>();
     }
 
     public ThreadMigrationPlanModel(String newThreadName) {
@@ -39,6 +46,10 @@ public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan
             builder.putNodeMigrations(entry.getKey(), entry.getValue().toProto().build());
         }
 
+        for (String var : migrationVars) {
+            builder.addMigrationVars(var);
+        }
+
         return builder;
     }
 
@@ -47,12 +58,16 @@ public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan
         ThreadMigrationPlan p = (ThreadMigrationPlan) proto;
         newThreadName = p.getNewThreadName();
         
-        for (Map.Entry<String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> entry : 
+        for (Map.Entry<String, NodeMigrationPlan> entry : 
                 p.getNodeMigrationsMap().entrySet()) {
             nodeMigrations.put(
                 entry.getKey(),
                 LHSerializable.fromProto(entry.getValue(), NodeMigrationPlanModel.class, context)
             );
+        }
+
+        for (String var : p.getMigrationVarsList()) {
+            migrationVars.add(var);
         }
     }
 

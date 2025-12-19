@@ -75,16 +75,17 @@ public final class WfRunMigration extends com.google.protobuf.GeneratedFile {
       "_migrations\030\001 \003(\01320.littlehorse.Migratio" +
       "nPlan.ThreadMigrationsEntry\032Y\n\025ThreadMig" +
       "rationsEntry\022\013\n\003key\030\001 \001(\t\022/\n\005value\030\002 \001(\013" +
-      "2 .littlehorse.ThreadMigrationPlan:\0028\001\"\324" +
+      "2 .littlehorse.ThreadMigrationPlan:\0028\001\"\354" +
       "\001\n\023ThreadMigrationPlan\022\027\n\017new_thread_nam" +
       "e\030\001 \001(\t\022M\n\017node_migrations\030\002 \003(\01324.littl" +
       "ehorse.ThreadMigrationPlan.NodeMigration" +
-      "sEntry\032U\n\023NodeMigrationsEntry\022\013\n\003key\030\001 \001" +
-      "(\t\022-\n\005value\030\002 \001(\0132\036.littlehorse.NodeMigr" +
-      "ationPlan:\0028\001\"%\n\021NodeMigrationPlan\022\020\n\010ne" +
-      "w_node\030\001 \001(\tBM\n\037io.littlehorse.sdk.commo" +
-      "n.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.C" +
-      "ommon.Protob\006proto3"
+      "sEntry\022\026\n\016migration_vars\030\004 \003(\t\032U\n\023NodeMi" +
+      "grationsEntry\022\013\n\003key\030\001 \001(\t\022-\n\005value\030\002 \001(" +
+      "\0132\036.littlehorse.NodeMigrationPlan:\0028\001\"%\n" +
+      "\021NodeMigrationPlan\022\020\n\010new_node\030\001 \001(\tBM\n\037" +
+      "io.littlehorse.sdk.common.protoP\001Z\t.;lhp" +
+      "roto\252\002\034LittleHorse.Sdk.Common.Protob\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -115,7 +116,7 @@ public final class WfRunMigration extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_ThreadMigrationPlan_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ThreadMigrationPlan_descriptor,
-        new java.lang.String[] { "NewThreadName", "NodeMigrations", });
+        new java.lang.String[] { "NewThreadName", "NodeMigrations", "MigrationVars", });
     internal_static_littlehorse_ThreadMigrationPlan_NodeMigrationsEntry_descriptor =
       internal_static_littlehorse_ThreadMigrationPlan_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_ThreadMigrationPlan_NodeMigrationsEntry_fieldAccessorTable = new

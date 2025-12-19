@@ -5,7 +5,7 @@ import littlehorse.model.object_id_pb2 as _object_id_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from collections.abc import Mapping as _Mapping
+from collections.abc import Iterable as _Iterable, Mapping as _Mapping
 from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
@@ -34,7 +34,7 @@ class MigrationPlan(_message.Message):
     def __init__(self, thread_migrations: _Optional[_Mapping[str, ThreadMigrationPlan]] = ...) -> None: ...
 
 class ThreadMigrationPlan(_message.Message):
-    __slots__ = ("new_thread_name", "node_migrations")
+    __slots__ = ("new_thread_name", "node_migrations", "migration_vars")
     class NodeMigrationsEntry(_message.Message):
         __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -44,9 +44,11 @@ class ThreadMigrationPlan(_message.Message):
         def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[NodeMigrationPlan, _Mapping]] = ...) -> None: ...
     NEW_THREAD_NAME_FIELD_NUMBER: _ClassVar[int]
     NODE_MIGRATIONS_FIELD_NUMBER: _ClassVar[int]
+    MIGRATION_VARS_FIELD_NUMBER: _ClassVar[int]
     new_thread_name: str
     node_migrations: _containers.MessageMap[str, NodeMigrationPlan]
-    def __init__(self, new_thread_name: _Optional[str] = ..., node_migrations: _Optional[_Mapping[str, NodeMigrationPlan]] = ...) -> None: ...
+    migration_vars: _containers.RepeatedScalarFieldContainer[str]
+    def __init__(self, new_thread_name: _Optional[str] = ..., node_migrations: _Optional[_Mapping[str, NodeMigrationPlan]] = ..., migration_vars: _Optional[_Iterable[str]] = ...) -> None: ...
 
 class NodeMigrationPlan(_message.Message):
     __slots__ = ("new_node",)

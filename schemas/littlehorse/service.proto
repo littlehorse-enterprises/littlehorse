@@ -1377,6 +1377,12 @@ message MigrateWfRunRequest {
   int32 revision_number = 3;
   int32 major_version_number = 4;
 
+  map<string, MigrationVariables> migration_vars = 5;
+
+}
+
+message MigrationVariables {
+  map<string, VariableValue> var_values = 1;
 }
 
 

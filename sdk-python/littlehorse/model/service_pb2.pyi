@@ -789,16 +789,38 @@ class PutMigrationPlanRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., migration_plan: _Optional[_Union[_wf_run_migration_pb2.MigrationPlan, _Mapping]] = ...) -> None: ...
 
 class MigrateWfRunRequest(_message.Message):
-    __slots__ = ("migration_plan_id", "wf_run_id", "revision_number", "major_version_number")
+    __slots__ = ("migration_plan_id", "wf_run_id", "revision_number", "major_version_number", "migration_vars")
+    class MigrationVarsEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: MigrationVariables
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[MigrationVariables, _Mapping]] = ...) -> None: ...
     MIGRATION_PLAN_ID_FIELD_NUMBER: _ClassVar[int]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     REVISION_NUMBER_FIELD_NUMBER: _ClassVar[int]
     MAJOR_VERSION_NUMBER_FIELD_NUMBER: _ClassVar[int]
+    MIGRATION_VARS_FIELD_NUMBER: _ClassVar[int]
     migration_plan_id: _object_id_pb2.MigrationPlanId
     wf_run_id: _object_id_pb2.WfRunId
     revision_number: int
     major_version_number: int
-    def __init__(self, migration_plan_id: _Optional[_Union[_object_id_pb2.MigrationPlanId, _Mapping]] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., revision_number: _Optional[int] = ..., major_version_number: _Optional[int] = ...) -> None: ...
+    migration_vars: _containers.MessageMap[str, MigrationVariables]
+    def __init__(self, migration_plan_id: _Optional[_Union[_object_id_pb2.MigrationPlanId, _Mapping]] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., revision_number: _Optional[int] = ..., major_version_number: _Optional[int] = ..., migration_vars: _Optional[_Mapping[str, MigrationVariables]] = ...) -> None: ...
+
+class MigrationVariables(_message.Message):
+    __slots__ = ("var_values",)
+    class VarValuesEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _variable_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    VAR_VALUES_FIELD_NUMBER: _ClassVar[int]
+    var_values: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    def __init__(self, var_values: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ...) -> None: ...
 
 class ScheduledTask(_message.Message):
     __slots__ = ("task_run_id", "task_def_id", "attempt_number", "variables", "created_at", "source", "total_observed_checkpoints")

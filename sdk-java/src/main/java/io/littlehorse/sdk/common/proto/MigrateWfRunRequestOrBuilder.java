@@ -79,4 +79,38 @@ public interface MigrateWfRunRequestOrBuilder extends
    * @return The majorVersionNumber.
    */
   int getMajorVersionNumber();
+
+  /**
+   * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+   */
+  int getMigrationVarsCount();
+  /**
+   * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+   */
+  boolean containsMigrationVars(
+      java.lang.String key);
+  /**
+   * Use {@link #getMigrationVarsMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables>
+  getMigrationVars();
+  /**
+   * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables>
+  getMigrationVarsMap();
+  /**
+   * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+   */
+  /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVariables getMigrationVarsOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVariables defaultValue);
+  /**
+   * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.MigrationVariables getMigrationVarsOrThrow(
+      java.lang.String key);
 }

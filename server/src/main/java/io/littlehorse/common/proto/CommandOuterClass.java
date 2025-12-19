@@ -200,53 +200,53 @@ public final class CommandOuterClass extends com.google.protobuf.GeneratedFile {
       "ehorse.PutExternalEventRequestH\000\0224\n\013stop" +
       "_wf_run\030\010 \001(\0132\035.littlehorse.StopWfRunReq" +
       "uestH\000\0228\n\rresume_wf_run\030\t \001(\0132\037.littleho" +
-      "rse.ResumeWfRunRequestH\000\022:\n\016migrate_wf_r" +
-      "un\030# \001(\0132 .littlehorse.MigrateWfRunReque" +
-      "stH\000\022=\n\022sleep_node_matured\030\n \001(\0132\037.littl" +
-      "ehorse.SleepNodeMaturedPbH\000\022@\n\rdelete_wf" +
-      "_run\030\013 \001(\0132\'.littlehorse.InternalDeleteW" +
-      "fRunRequestH\000\022I\n\026external_event_timeout\030" +
-      "\014 \001(\0132\'.littlehorse.ExternalEventNodeTim" +
-      "eoutPbH\000\022I\n\026task_worker_heart_beat\030\r \001(\013" +
-      "2\'.littlehorse.TaskWorkerHeartBeatReques" +
-      "tH\000\022H\n\025delete_external_event\030\016 \001(\0132\'.lit" +
-      "tlehorse.DeleteExternalEventRequestH\000\022E\n" +
-      "\024assign_user_task_run\030\017 \001(\0132%.littlehors" +
-      "e.AssignUserTaskRunRequestH\000\022I\n\026complete" +
-      "_user_task_run\030\020 \001(\0132\'.littlehorse.Compl" +
-      "eteUserTaskRunRequestH\000\022=\n\022triggered_tas" +
-      "k_run\030\021 \001(\0132\037.littlehorse.TriggeredTaskR" +
-      "unPbH\000\022E\n\024reassigned_user_task\030\022 \001(\0132%.l" +
-      "ittlehorse.DeadlineReassignUserTaskH\000\022A\n" +
-      "\020cancel_user_task\030\023 \001(\0132%.littlehorse.Ca" +
-      "ncelUserTaskRunRequestH\000\022.\n\010bulk_job\030\024 \001" +
-      "(\0132\032.littlehorse.BulkUpdateJobH\000\022F\n\030task" +
-      "_attempt_retry_ready\030\025 \001(\0132\".littlehorse" +
-      ".TaskAttemptRetryReadyH\000\022@\n\021rescue_threa" +
-      "d_run\030\026 \001(\0132#.littlehorse.RescueThreadRu" +
-      "nRequestH\000\022M\n\030delete_task_worker_group\030\027" +
-      " \001(\0132).littlehorse.DeleteTaskWorkerGroup" +
-      "RequestH\000\0225\n\017schedule_wf_run\030\030 \001(\0132\032.lit" +
-      "tlehorse.ScheduleWfRunH\000\022A\n\027schedule_wf_" +
-      "run_request\030\031 \001(\0132\036.littlehorse.Schedule" +
-      "WfRequestH\000\022K\n\027delete_scheduled_wf_run\030\032" +
-      " \001(\0132(.littlehorse.DeleteScheduledWfRunR" +
-      "equestH\000\022R\n\033save_user_task_run_progress\030" +
-      "\033 \001(\0132+.littlehorse.SaveUserTaskRunProgr" +
-      "essRequestH\000\022F\n\024put_correlated_event\030\034 \001" +
-      "(\0132&.littlehorse.PutCorrelatedEventReque" +
-      "stH\000\022K\n\031update_correlation_marker\030\035 \001(\0132" +
-      "&.littlehorse.UpdateCorrelationMarkerPbH" +
-      "\000\022L\n\027delete_correlated_event\030\036 \001(\0132).lit" +
-      "tlehorse.DeleteCorrelatedEventRequestH\000\022" +
-      "N\n\031put_user_task_run_comment\030\037 \001(\0132).lit" +
-      "tlehorse.PutUserTaskRunCommentRequestH\000\022" +
-      "P\n\032edit_user_task_run_comment\030  \001(\0132*.li" +
-      "ttlehorse.EditUserTaskRunCommentRequestH" +
-      "\000\022T\n\034delete_user_task_run_comment\030! \001(\0132" +
-      ",.littlehorse.DeleteUserTaskRunCommentRe" +
-      "questH\000\022;\n\016put_checkpoint\030\" \001(\0132!.little" +
-      "horse.PutCheckpointRequestH\000B\t\n\007commandB" +
+      "rse.ResumeWfRunRequestH\000\022=\n\022sleep_node_m" +
+      "atured\030\n \001(\0132\037.littlehorse.SleepNodeMatu" +
+      "redPbH\000\022@\n\rdelete_wf_run\030\013 \001(\0132\'.littleh" +
+      "orse.InternalDeleteWfRunRequestH\000\022I\n\026ext" +
+      "ernal_event_timeout\030\014 \001(\0132\'.littlehorse." +
+      "ExternalEventNodeTimeoutPbH\000\022I\n\026task_wor" +
+      "ker_heart_beat\030\r \001(\0132\'.littlehorse.TaskW" +
+      "orkerHeartBeatRequestH\000\022H\n\025delete_extern" +
+      "al_event\030\016 \001(\0132\'.littlehorse.DeleteExter" +
+      "nalEventRequestH\000\022E\n\024assign_user_task_ru" +
+      "n\030\017 \001(\0132%.littlehorse.AssignUserTaskRunR" +
+      "equestH\000\022I\n\026complete_user_task_run\030\020 \001(\013" +
+      "2\'.littlehorse.CompleteUserTaskRunReques" +
+      "tH\000\022=\n\022triggered_task_run\030\021 \001(\0132\037.little" +
+      "horse.TriggeredTaskRunPbH\000\022E\n\024reassigned" +
+      "_user_task\030\022 \001(\0132%.littlehorse.DeadlineR" +
+      "eassignUserTaskH\000\022A\n\020cancel_user_task\030\023 " +
+      "\001(\0132%.littlehorse.CancelUserTaskRunReque" +
+      "stH\000\022.\n\010bulk_job\030\024 \001(\0132\032.littlehorse.Bul" +
+      "kUpdateJobH\000\022F\n\030task_attempt_retry_ready" +
+      "\030\025 \001(\0132\".littlehorse.TaskAttemptRetryRea" +
+      "dyH\000\022@\n\021rescue_thread_run\030\026 \001(\0132#.little" +
+      "horse.RescueThreadRunRequestH\000\022M\n\030delete" +
+      "_task_worker_group\030\027 \001(\0132).littlehorse.D" +
+      "eleteTaskWorkerGroupRequestH\000\0225\n\017schedul" +
+      "e_wf_run\030\030 \001(\0132\032.littlehorse.ScheduleWfR" +
+      "unH\000\022A\n\027schedule_wf_run_request\030\031 \001(\0132\036." +
+      "littlehorse.ScheduleWfRequestH\000\022K\n\027delet" +
+      "e_scheduled_wf_run\030\032 \001(\0132(.littlehorse.D" +
+      "eleteScheduledWfRunRequestH\000\022R\n\033save_use" +
+      "r_task_run_progress\030\033 \001(\0132+.littlehorse." +
+      "SaveUserTaskRunProgressRequestH\000\022F\n\024put_" +
+      "correlated_event\030\034 \001(\0132&.littlehorse.Put" +
+      "CorrelatedEventRequestH\000\022K\n\031update_corre" +
+      "lation_marker\030\035 \001(\0132&.littlehorse.Update" +
+      "CorrelationMarkerPbH\000\022L\n\027delete_correlat" +
+      "ed_event\030\036 \001(\0132).littlehorse.DeleteCorre" +
+      "latedEventRequestH\000\022N\n\031put_user_task_run" +
+      "_comment\030\037 \001(\0132).littlehorse.PutUserTask" +
+      "RunCommentRequestH\000\022P\n\032edit_user_task_ru" +
+      "n_comment\030  \001(\0132*.littlehorse.EditUserTa" +
+      "skRunCommentRequestH\000\022T\n\034delete_user_tas" +
+      "k_run_comment\030! \001(\0132,.littlehorse.Delete" +
+      "UserTaskRunCommentRequestH\000\022;\n\016put_check" +
+      "point\030\" \001(\0132!.littlehorse.PutCheckpointR" +
+      "equestH\000\022:\n\016migrate_wf_run\030# \001(\0132 .littl" +
+      "ehorse.MigrateWfRunRequestH\000B\t\n\007commandB" +
       "\r\n\013_command_id\"\233\003\n\rScheduleWfRun\0223\n\014sche" +
       "duled_id\030\001 \001(\0132\035.littlehorse.ScheduledWf" +
       "RunId\022\024\n\014wf_spec_name\030\002 \001(\t\022\032\n\rmajor_ver" +
@@ -415,7 +415,7 @@ public final class CommandOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_Command_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_Command_descriptor,
-        new java.lang.String[] { "Time", "CommandId", "ReportTaskRun", "TaskClaimEvent", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "MigrateWfRun", "SleepNodeMatured", "DeleteWfRun", "ExternalEventTimeout", "TaskWorkerHeartBeat", "DeleteExternalEvent", "AssignUserTaskRun", "CompleteUserTaskRun", "TriggeredTaskRun", "ReassignedUserTask", "CancelUserTask", "BulkJob", "TaskAttemptRetryReady", "RescueThreadRun", "DeleteTaskWorkerGroup", "ScheduleWfRun", "ScheduleWfRunRequest", "DeleteScheduledWfRun", "SaveUserTaskRunProgress", "PutCorrelatedEvent", "UpdateCorrelationMarker", "DeleteCorrelatedEvent", "PutUserTaskRunComment", "EditUserTaskRunComment", "DeleteUserTaskRunComment", "PutCheckpoint", "Command", });
+        new java.lang.String[] { "Time", "CommandId", "ReportTaskRun", "TaskClaimEvent", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "SleepNodeMatured", "DeleteWfRun", "ExternalEventTimeout", "TaskWorkerHeartBeat", "DeleteExternalEvent", "AssignUserTaskRun", "CompleteUserTaskRun", "TriggeredTaskRun", "ReassignedUserTask", "CancelUserTask", "BulkJob", "TaskAttemptRetryReady", "RescueThreadRun", "DeleteTaskWorkerGroup", "ScheduleWfRun", "ScheduleWfRunRequest", "DeleteScheduledWfRun", "SaveUserTaskRunProgress", "PutCorrelatedEvent", "UpdateCorrelationMarker", "DeleteCorrelatedEvent", "PutUserTaskRunComment", "EditUserTaskRunComment", "DeleteUserTaskRunComment", "PutCheckpoint", "MigrateWfRun", "Command", });
     internal_static_littlehorse_ScheduleWfRun_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_ScheduleWfRun_fieldAccessorTable = new

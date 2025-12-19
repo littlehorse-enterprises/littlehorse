@@ -33,6 +33,8 @@ private static final long serialVersionUID = 0L;
   }
   private ThreadMigrationPlan() {
     newThreadName_ = "";
+    migrationVars_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -202,6 +204,43 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     return map.get(key);
   }
 
+  public static final int MIGRATION_VARS_FIELD_NUMBER = 4;
+  @SuppressWarnings("serial")
+  private com.google.protobuf.LazyStringArrayList migrationVars_ =
+      com.google.protobuf.LazyStringArrayList.emptyList();
+  /**
+   * <code>repeated string migration_vars = 4;</code>
+   * @return A list containing the migrationVars.
+   */
+  public com.google.protobuf.ProtocolStringList
+      getMigrationVarsList() {
+    return migrationVars_;
+  }
+  /**
+   * <code>repeated string migration_vars = 4;</code>
+   * @return The count of migrationVars.
+   */
+  public int getMigrationVarsCount() {
+    return migrationVars_.size();
+  }
+  /**
+   * <code>repeated string migration_vars = 4;</code>
+   * @param index The index of the element to return.
+   * @return The migrationVars at the given index.
+   */
+  public java.lang.String getMigrationVars(int index) {
+    return migrationVars_.get(index);
+  }
+  /**
+   * <code>repeated string migration_vars = 4;</code>
+   * @param index The index of the value to return.
+   * @return The bytes of the migrationVars at the given index.
+   */
+  public com.google.protobuf.ByteString
+      getMigrationVarsBytes(int index) {
+    return migrationVars_.getByteString(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -225,6 +264,9 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
         internalGetNodeMigrations(),
         NodeMigrationsDefaultEntryHolder.defaultEntry,
         2);
+    for (int i = 0; i < migrationVars_.size(); i++) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, migrationVars_.getRaw(i));
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -247,6 +289,14 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, nodeMigrations__);
     }
+    {
+      int dataSize = 0;
+      for (int i = 0; i < migrationVars_.size(); i++) {
+        dataSize += computeStringSizeNoTag(migrationVars_.getRaw(i));
+      }
+      size += dataSize;
+      size += 1 * getMigrationVarsList().size();
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -266,6 +316,8 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
         .equals(other.getNewThreadName())) return false;
     if (!internalGetNodeMigrations().equals(
         other.internalGetNodeMigrations())) return false;
+    if (!getMigrationVarsList()
+        .equals(other.getMigrationVarsList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -282,6 +334,10 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     if (!internalGetNodeMigrations().getMap().isEmpty()) {
       hash = (37 * hash) + NODE_MIGRATIONS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetNodeMigrations().hashCode();
+    }
+    if (getMigrationVarsCount() > 0) {
+      hash = (37 * hash) + MIGRATION_VARS_FIELD_NUMBER;
+      hash = (53 * hash) + getMigrationVarsList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -442,6 +498,8 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       bitField0_ = 0;
       newThreadName_ = "";
       internalGetMutableNodeMigrations().clear();
+      migrationVars_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
       return this;
     }
 
@@ -481,6 +539,10 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.nodeMigrations_ = internalGetNodeMigrations().build(NodeMigrationsDefaultEntryHolder.defaultEntry);
       }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        migrationVars_.makeImmutable();
+        result.migrationVars_ = migrationVars_;
+      }
     }
 
     @java.lang.Override
@@ -503,6 +565,16 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       internalGetMutableNodeMigrations().mergeFrom(
           other.internalGetNodeMigrations());
       bitField0_ |= 0x00000002;
+      if (!other.migrationVars_.isEmpty()) {
+        if (migrationVars_.isEmpty()) {
+          migrationVars_ = other.migrationVars_;
+          bitField0_ |= 0x00000004;
+        } else {
+          ensureMigrationVarsIsMutable();
+          migrationVars_.addAll(other.migrationVars_);
+        }
+        onChanged();
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -543,6 +615,12 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+              ensureMigrationVarsIsMutable();
+              migrationVars_.add(s);
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -837,6 +915,117 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
         builderMap.put(key, entry);
       }
       return (io.littlehorse.sdk.common.proto.NodeMigrationPlan.Builder) entry;
+    }
+
+    private com.google.protobuf.LazyStringArrayList migrationVars_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    private void ensureMigrationVarsIsMutable() {
+      if (!migrationVars_.isModifiable()) {
+        migrationVars_ = new com.google.protobuf.LazyStringArrayList(migrationVars_);
+      }
+      bitField0_ |= 0x00000004;
+    }
+    /**
+     * <code>repeated string migration_vars = 4;</code>
+     * @return A list containing the migrationVars.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getMigrationVarsList() {
+      migrationVars_.makeImmutable();
+      return migrationVars_;
+    }
+    /**
+     * <code>repeated string migration_vars = 4;</code>
+     * @return The count of migrationVars.
+     */
+    public int getMigrationVarsCount() {
+      return migrationVars_.size();
+    }
+    /**
+     * <code>repeated string migration_vars = 4;</code>
+     * @param index The index of the element to return.
+     * @return The migrationVars at the given index.
+     */
+    public java.lang.String getMigrationVars(int index) {
+      return migrationVars_.get(index);
+    }
+    /**
+     * <code>repeated string migration_vars = 4;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the migrationVars at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getMigrationVarsBytes(int index) {
+      return migrationVars_.getByteString(index);
+    }
+    /**
+     * <code>repeated string migration_vars = 4;</code>
+     * @param index The index to set the value at.
+     * @param value The migrationVars to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMigrationVars(
+        int index, java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      ensureMigrationVarsIsMutable();
+      migrationVars_.set(index, value);
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string migration_vars = 4;</code>
+     * @param value The migrationVars to add.
+     * @return This builder for chaining.
+     */
+    public Builder addMigrationVars(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      ensureMigrationVarsIsMutable();
+      migrationVars_.add(value);
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string migration_vars = 4;</code>
+     * @param values The migrationVars to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllMigrationVars(
+        java.lang.Iterable<java.lang.String> values) {
+      ensureMigrationVarsIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, migrationVars_);
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string migration_vars = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMigrationVars() {
+      migrationVars_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+      bitField0_ = (bitField0_ & ~0x00000004);;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string migration_vars = 4;</code>
+     * @param value The bytes of the migrationVars to add.
+     * @return This builder for chaining.
+     */
+    public Builder addMigrationVarsBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      ensureMigrationVarsIsMutable();
+      migrationVars_.add(value);
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.ThreadMigrationPlan)

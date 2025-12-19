@@ -35,6 +35,18 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MigrateWfRunRequest_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+      int number) {
+    switch (number) {
+      case 5:
+        return internalGetMigrationVars();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -146,6 +158,85 @@ private static final long serialVersionUID = 0L;
     return majorVersionNumber_;
   }
 
+  public static final int MIGRATION_VARS_FIELD_NUMBER = 5;
+  private static final class MigrationVarsDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables>newDefaultInstance(
+                io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MigrateWfRunRequest_MigrationVarsEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                io.littlehorse.sdk.common.proto.MigrationVariables.getDefaultInstance());
+  }
+  @SuppressWarnings("serial")
+  private com.google.protobuf.MapField<
+      java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables> migrationVars_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables>
+  internalGetMigrationVars() {
+    if (migrationVars_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          MigrationVarsDefaultEntryHolder.defaultEntry);
+    }
+    return migrationVars_;
+  }
+  public int getMigrationVarsCount() {
+    return internalGetMigrationVars().getMap().size();
+  }
+  /**
+   * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+   */
+  @java.lang.Override
+  public boolean containsMigrationVars(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    return internalGetMigrationVars().getMap().containsKey(key);
+  }
+  /**
+   * Use {@link #getMigrationVarsMap()} instead.
+   */
+  @java.lang.Override
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables> getMigrationVars() {
+    return getMigrationVarsMap();
+  }
+  /**
+   * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+   */
+  @java.lang.Override
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables> getMigrationVarsMap() {
+    return internalGetMigrationVars().getMap();
+  }
+  /**
+   * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+   */
+  @java.lang.Override
+  public /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVariables getMigrationVarsOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables> map =
+        internalGetMigrationVars().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.MigrationVariables getMigrationVarsOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables> map =
+        internalGetMigrationVars().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -172,6 +263,12 @@ private static final long serialVersionUID = 0L;
     if (majorVersionNumber_ != 0) {
       output.writeInt32(4, majorVersionNumber_);
     }
+    com.google.protobuf.GeneratedMessage
+      .serializeStringMapTo(
+        output,
+        internalGetMigrationVars(),
+        MigrationVarsDefaultEntryHolder.defaultEntry,
+        5);
     getUnknownFields().writeTo(output);
   }
 
@@ -196,6 +293,16 @@ private static final long serialVersionUID = 0L;
     if (majorVersionNumber_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(4, majorVersionNumber_);
+    }
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables> entry
+         : internalGetMigrationVars().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables>
+      migrationVars__ = MigrationVarsDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
+      size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, migrationVars__);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -226,6 +333,8 @@ private static final long serialVersionUID = 0L;
         != other.getRevisionNumber()) return false;
     if (getMajorVersionNumber()
         != other.getMajorVersionNumber()) return false;
+    if (!internalGetMigrationVars().equals(
+        other.internalGetMigrationVars())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -249,6 +358,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getRevisionNumber();
     hash = (37 * hash) + MAJOR_VERSION_NUMBER_FIELD_NUMBER;
     hash = (53 * hash) + getMajorVersionNumber();
+    if (!internalGetMigrationVars().getMap().isEmpty()) {
+      hash = (37 * hash) + MIGRATION_VARS_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetMigrationVars().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -358,6 +471,28 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MigrateWfRunRequest_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+        int number) {
+      switch (number) {
+        case 5:
+          return internalGetMigrationVars();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMutableMapFieldReflection(
+        int number) {
+      switch (number) {
+        case 5:
+          return internalGetMutableMigrationVars();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -399,6 +534,7 @@ private static final long serialVersionUID = 0L;
       }
       revisionNumber_ = 0;
       majorVersionNumber_ = 0;
+      internalGetMutableMigrationVars().clear();
       return this;
     }
 
@@ -451,6 +587,9 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.majorVersionNumber_ = majorVersionNumber_;
       }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.migrationVars_ = internalGetMigrationVars().build(MigrationVarsDefaultEntryHolder.defaultEntry);
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -478,6 +617,9 @@ private static final long serialVersionUID = 0L;
       if (other.getMajorVersionNumber() != 0) {
         setMajorVersionNumber(other.getMajorVersionNumber());
       }
+      internalGetMutableMigrationVars().mergeFrom(
+          other.internalGetMigrationVars());
+      bitField0_ |= 0x00000010;
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -528,6 +670,15 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 32
+            case 42: {
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables>
+              migrationVars__ = input.readMessage(
+                  MigrationVarsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutableMigrationVars().ensureBuilderMap().put(
+                  migrationVars__.getKey(), migrationVars__.getValue());
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -933,6 +1084,161 @@ private static final long serialVersionUID = 0L;
       majorVersionNumber_ = 0;
       onChanged();
       return this;
+    }
+
+    private static final class MigrationVarsConverter implements com.google.protobuf.MapFieldBuilder.Converter<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariablesOrBuilder, io.littlehorse.sdk.common.proto.MigrationVariables> {
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.MigrationVariables build(io.littlehorse.sdk.common.proto.MigrationVariablesOrBuilder val) {
+        if (val instanceof io.littlehorse.sdk.common.proto.MigrationVariables) { return (io.littlehorse.sdk.common.proto.MigrationVariables) val; }
+        return ((io.littlehorse.sdk.common.proto.MigrationVariables.Builder) val).build();
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables> defaultEntry() {
+        return MigrationVarsDefaultEntryHolder.defaultEntry;
+      }
+    };
+    private static final MigrationVarsConverter migrationVarsConverter = new MigrationVarsConverter();
+
+    private com.google.protobuf.MapFieldBuilder<
+        java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariablesOrBuilder, io.littlehorse.sdk.common.proto.MigrationVariables, io.littlehorse.sdk.common.proto.MigrationVariables.Builder> migrationVars_;
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariablesOrBuilder, io.littlehorse.sdk.common.proto.MigrationVariables, io.littlehorse.sdk.common.proto.MigrationVariables.Builder>
+        internalGetMigrationVars() {
+      if (migrationVars_ == null) {
+        return new com.google.protobuf.MapFieldBuilder<>(migrationVarsConverter);
+      }
+      return migrationVars_;
+    }
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariablesOrBuilder, io.littlehorse.sdk.common.proto.MigrationVariables, io.littlehorse.sdk.common.proto.MigrationVariables.Builder>
+        internalGetMutableMigrationVars() {
+      if (migrationVars_ == null) {
+        migrationVars_ = new com.google.protobuf.MapFieldBuilder<>(migrationVarsConverter);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return migrationVars_;
+    }
+    public int getMigrationVarsCount() {
+      return internalGetMigrationVars().ensureBuilderMap().size();
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+     */
+    @java.lang.Override
+    public boolean containsMigrationVars(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetMigrationVars().ensureBuilderMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getMigrationVarsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables> getMigrationVars() {
+      return getMigrationVarsMap();
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+     */
+    @java.lang.Override
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables> getMigrationVarsMap() {
+      return internalGetMigrationVars().getImmutableMap();
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+     */
+    @java.lang.Override
+    public /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVariables getMigrationVarsOrDefault(
+        java.lang.String key,
+        /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariablesOrBuilder> map = internalGetMutableMigrationVars().ensureBuilderMap();
+      return map.containsKey(key) ? migrationVarsConverter.build(map.get(key)) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.MigrationVariables getMigrationVarsOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariablesOrBuilder> map = internalGetMutableMigrationVars().ensureBuilderMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return migrationVarsConverter.build(map.get(key));
+    }
+    public Builder clearMigrationVars() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      internalGetMutableMigrationVars().clear();
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+     */
+    public Builder removeMigrationVars(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      internalGetMutableMigrationVars().ensureBuilderMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables>
+        getMutableMigrationVars() {
+      bitField0_ |= 0x00000010;
+      return internalGetMutableMigrationVars().ensureMessageMap();
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+     */
+    public Builder putMigrationVars(
+        java.lang.String key,
+        io.littlehorse.sdk.common.proto.MigrationVariables value) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      if (value == null) { throw new NullPointerException("map value"); }
+      internalGetMutableMigrationVars().ensureBuilderMap()
+          .put(key, value);
+      bitField0_ |= 0x00000010;
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+     */
+    public Builder putAllMigrationVars(
+        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables> values) {
+      for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables> e : values.entrySet()) {
+        if (e.getKey() == null || e.getValue() == null) {
+          throw new NullPointerException();
+        }
+      }
+      internalGetMutableMigrationVars().ensureBuilderMap()
+          .putAll(values);
+      bitField0_ |= 0x00000010;
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.MigrationVariables.Builder putMigrationVarsBuilderIfAbsent(
+        java.lang.String key) {
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariablesOrBuilder> builderMap = internalGetMutableMigrationVars().ensureBuilderMap();
+      io.littlehorse.sdk.common.proto.MigrationVariablesOrBuilder entry = builderMap.get(key);
+      if (entry == null) {
+        entry = io.littlehorse.sdk.common.proto.MigrationVariables.newBuilder();
+        builderMap.put(key, entry);
+      }
+      if (entry instanceof io.littlehorse.sdk.common.proto.MigrationVariables) {
+        entry = ((io.littlehorse.sdk.common.proto.MigrationVariables) entry).toBuilder();
+        builderMap.put(key, entry);
+      }
+      return (io.littlehorse.sdk.common.proto.MigrationVariables.Builder) entry;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MigrateWfRunRequest)

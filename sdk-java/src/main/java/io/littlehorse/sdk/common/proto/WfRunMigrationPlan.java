@@ -9,7 +9,6 @@ package io.littlehorse.sdk.common.proto;
  * <pre>
  * metadata object representing actions to take during a wfRun 
  * migration
- * externalEventDef
  * </pre>
  *
  * Protobuf type {@code littlehorse.WfRunMigrationPlan}
@@ -362,7 +361,6 @@ private static final long serialVersionUID = 0L;
    * <pre>
    * metadata object representing actions to take during a wfRun 
    * migration
-   * externalEventDef
    * </pre>
    *
    * Protobuf type {@code littlehorse.WfRunMigrationPlan}

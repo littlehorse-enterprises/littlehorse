@@ -12,7 +12,6 @@ import { MigrationPlanId } from "./object_id";
 /**
  * metadata object representing actions to take during a wfRun
  * migration
- * externalEventDef
  */
 export interface WfRunMigrationPlan {
   /** Name and id */
@@ -42,6 +41,7 @@ export interface ThreadMigrationPlan {
   newThreadName: string;
   /** name of curNode - > how to migrate curNode to new WfRun */
   nodeMigrations: { [key: string]: NodeMigrationPlan };
+  migrationVars: string[];
 }
 
 export interface ThreadMigrationPlan_NodeMigrationsEntry {
@@ -306,7 +306,7 @@ export const MigrationPlan_ThreadMigrationsEntry = {
 };
 
 function createBaseThreadMigrationPlan(): ThreadMigrationPlan {
-  return { newThreadName: "", nodeMigrations: {} };
+  return { newThreadName: "", nodeMigrations: {}, migrationVars: [] };
 }
 
 export const ThreadMigrationPlan = {
@@ -317,6 +317,9 @@ export const ThreadMigrationPlan = {
     Object.entries(message.nodeMigrations).forEach(([key, value]) => {
       ThreadMigrationPlan_NodeMigrationsEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
     });
+    for (const v of message.migrationVars) {
+      writer.uint32(34).string(v!);
+    }
     return writer;
   },
 
@@ -344,6 +347,13 @@ export const ThreadMigrationPlan = {
             message.nodeMigrations[entry2.key] = entry2.value;
           }
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.migrationVars.push(reader.string());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -362,6 +372,9 @@ export const ThreadMigrationPlan = {
           return acc;
         }, {})
         : {},
+      migrationVars: globalThis.Array.isArray(object?.migrationVars)
+        ? object.migrationVars.map((e: any) => globalThis.String(e))
+        : [],
     };
   },
 
@@ -378,6 +391,9 @@ export const ThreadMigrationPlan = {
           obj.nodeMigrations[k] = NodeMigrationPlan.toJSON(v);
         });
       }
+    }
+    if (message.migrationVars?.length) {
+      obj.migrationVars = message.migrationVars;
     }
     return obj;
   },
@@ -397,6 +413,7 @@ export const ThreadMigrationPlan = {
       },
       {},
     );
+    message.migrationVars = object.migrationVars?.map((e) => e) || [];
     return message;
   },
 };

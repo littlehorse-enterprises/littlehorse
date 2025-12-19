@@ -1,11 +1,14 @@
 package io.littlehorse.common.model.getable.global.wfspec.migration;
 
-import com.google.protobuf.Message;
-import io.littlehorse.common.LHSerializable;
-import io.littlehorse.sdk.common.proto.MigrationPlan;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.protobuf.Message;
+
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.sdk.common.proto.MigrationPlan;
+import io.littlehorse.sdk.common.proto.ThreadMigrationPlan;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +18,7 @@ public class MigrationPlanModel extends LHSerializable<MigrationPlan> {
 
     private Map<String, ThreadMigrationPlanModel> threadMigrations;
 
+    
     public MigrationPlanModel() {
         threadMigrations = new HashMap<>();
     }
@@ -39,7 +43,7 @@ public class MigrationPlanModel extends LHSerializable<MigrationPlan> {
     public void initFrom(Message proto, ExecutionContext context) {
         MigrationPlan p = (MigrationPlan) proto;
         
-        for (Map.Entry<String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> entry : 
+        for (Map.Entry<String, ThreadMigrationPlan> entry : 
                 p.getThreadMigrationsMap().entrySet()) {
             threadMigrations.put(
                 entry.getKey(),
