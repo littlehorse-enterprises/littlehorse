@@ -2058,6 +2058,99 @@ public final class LittleHorseGrpc {
     return getGetCheckpointMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMigrationPlanRequest,
+      io.littlehorse.sdk.common.proto.WfRunMigrationPlan> getPutMigrationPlanMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PutMigrationPlan",
+      requestType = io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.WfRunMigrationPlan.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMigrationPlanRequest,
+      io.littlehorse.sdk.common.proto.WfRunMigrationPlan> getPutMigrationPlanMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMigrationPlanRequest, io.littlehorse.sdk.common.proto.WfRunMigrationPlan> getPutMigrationPlanMethod;
+    if ((getPutMigrationPlanMethod = LittleHorseGrpc.getPutMigrationPlanMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getPutMigrationPlanMethod = LittleHorseGrpc.getPutMigrationPlanMethod) == null) {
+          LittleHorseGrpc.getPutMigrationPlanMethod = getPutMigrationPlanMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutMigrationPlanRequest, io.littlehorse.sdk.common.proto.WfRunMigrationPlan>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutMigrationPlan"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutMigrationPlanRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.WfRunMigrationPlan.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutMigrationPlan"))
+              .build();
+        }
+      }
+    }
+    return getPutMigrationPlanMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.MigrateWfRunRequest,
+      io.littlehorse.sdk.common.proto.WfRunId> getMigrateWfRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "MigrateWfRun",
+      requestType = io.littlehorse.sdk.common.proto.MigrateWfRunRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.WfRunId.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.MigrateWfRunRequest,
+      io.littlehorse.sdk.common.proto.WfRunId> getMigrateWfRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.MigrateWfRunRequest, io.littlehorse.sdk.common.proto.WfRunId> getMigrateWfRunMethod;
+    if ((getMigrateWfRunMethod = LittleHorseGrpc.getMigrateWfRunMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getMigrateWfRunMethod = LittleHorseGrpc.getMigrateWfRunMethod) == null) {
+          LittleHorseGrpc.getMigrateWfRunMethod = getMigrateWfRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.MigrateWfRunRequest, io.littlehorse.sdk.common.proto.WfRunId>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "MigrateWfRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MigrateWfRunRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("MigrateWfRun"))
+              .build();
+        }
+      }
+    }
+    return getMigrateWfRunMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.MigrationPlanId,
+      io.littlehorse.sdk.common.proto.WfRunMigrationPlan> getGetMigrationPlanMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "getMigrationPlan",
+      requestType = io.littlehorse.sdk.common.proto.MigrationPlanId.class,
+      responseType = io.littlehorse.sdk.common.proto.WfRunMigrationPlan.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.MigrationPlanId,
+      io.littlehorse.sdk.common.proto.WfRunMigrationPlan> getGetMigrationPlanMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.MigrationPlanId, io.littlehorse.sdk.common.proto.WfRunMigrationPlan> getGetMigrationPlanMethod;
+    if ((getGetMigrationPlanMethod = LittleHorseGrpc.getGetMigrationPlanMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetMigrationPlanMethod = LittleHorseGrpc.getGetMigrationPlanMethod) == null) {
+          LittleHorseGrpc.getGetMigrationPlanMethod = getGetMigrationPlanMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.MigrationPlanId, io.littlehorse.sdk.common.proto.WfRunMigrationPlan>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "getMigrationPlan"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MigrationPlanId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.WfRunMigrationPlan.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("getMigrationPlan"))
+              .build();
+        }
+      }
+    }
+    return getGetMigrationPlanMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.StopWfRunRequest,
       com.google.protobuf.Empty> getStopWfRunMethod;
 
@@ -3543,8 +3636,32 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+     * Register migration plan as metadata on server
      * </pre>
+     */
+    default void putMigrationPlan(io.littlehorse.sdk.common.proto.PutMigrationPlanRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunMigrationPlan> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutMigrationPlanMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default void migrateWfRun(io.littlehorse.sdk.common.proto.MigrateWfRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunId> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getMigrateWfRunMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Get Migration Plan
+     * </pre>
+     */
+    default void getMigrationPlan(io.littlehorse.sdk.common.proto.MigrationPlanId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunMigrationPlan> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetMigrationPlanMethod(), responseObserver);
+    }
+
+    /**
      */
     default void stopWfRun(io.littlehorse.sdk.common.proto.StopWfRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -4579,8 +4696,35 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+     * Register migration plan as metadata on server
      * </pre>
+     */
+    public void putMigrationPlan(io.littlehorse.sdk.common.proto.PutMigrationPlanRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunMigrationPlan> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPutMigrationPlanMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void migrateWfRun(io.littlehorse.sdk.common.proto.MigrateWfRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunId> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getMigrateWfRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Get Migration Plan
+     * </pre>
+     */
+    public void getMigrationPlan(io.littlehorse.sdk.common.proto.MigrationPlanId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunMigrationPlan> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetMigrationPlanMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
      */
     public void stopWfRun(io.littlehorse.sdk.common.proto.StopWfRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -5563,8 +5707,32 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+     * Register migration plan as metadata on server
      * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfRunMigrationPlan putMigrationPlan(io.littlehorse.sdk.common.proto.PutMigrationPlanRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getPutMigrationPlanMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.WfRunId migrateWfRun(io.littlehorse.sdk.common.proto.MigrateWfRunRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getMigrateWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Get Migration Plan
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfRunMigrationPlan getMigrationPlan(io.littlehorse.sdk.common.proto.MigrationPlanId request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getGetMigrationPlanMethod(), getCallOptions(), request);
+    }
+
+    /**
      */
     public com.google.protobuf.Empty stopWfRun(io.littlehorse.sdk.common.proto.StopWfRunRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -6511,8 +6679,32 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+     * Register migration plan as metadata on server
      * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfRunMigrationPlan putMigrationPlan(io.littlehorse.sdk.common.proto.PutMigrationPlanRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutMigrationPlanMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.WfRunId migrateWfRun(io.littlehorse.sdk.common.proto.MigrateWfRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getMigrateWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Get Migration Plan
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfRunMigrationPlan getMigrationPlan(io.littlehorse.sdk.common.proto.MigrationPlanId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetMigrationPlanMethod(), getCallOptions(), request);
+    }
+
+    /**
      */
     public com.google.protobuf.Empty stopWfRun(io.littlehorse.sdk.common.proto.StopWfRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -7524,8 +7716,35 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+     * Register migration plan as metadata on server
      * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfRunMigrationPlan> putMigrationPlan(
+        io.littlehorse.sdk.common.proto.PutMigrationPlanRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPutMigrationPlanMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfRunId> migrateWfRun(
+        io.littlehorse.sdk.common.proto.MigrateWfRunRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getMigrateWfRunMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Get Migration Plan
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfRunMigrationPlan> getMigrationPlan(
+        io.littlehorse.sdk.common.proto.MigrationPlanId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetMigrationPlanMethod(), getCallOptions()), request);
+    }
+
+    /**
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> stopWfRun(
         io.littlehorse.sdk.common.proto.StopWfRunRequest request) {
@@ -7846,30 +8065,33 @@ public final class LittleHorseGrpc {
   private static final int METHODID_REPORT_TASK = 62;
   private static final int METHODID_PUT_CHECKPOINT = 63;
   private static final int METHODID_GET_CHECKPOINT = 64;
-  private static final int METHODID_STOP_WF_RUN = 65;
-  private static final int METHODID_RESUME_WF_RUN = 66;
-  private static final int METHODID_RESCUE_THREAD_RUN = 67;
-  private static final int METHODID_DELETE_WF_RUN = 68;
-  private static final int METHODID_DELETE_TASK_DEF = 69;
-  private static final int METHODID_DELETE_STRUCT_DEF = 70;
-  private static final int METHODID_DELETE_WF_SPEC = 71;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 72;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 73;
-  private static final int METHODID_DELETE_CORRELATED_EVENT = 74;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 75;
-  private static final int METHODID_DELETE_PRINCIPAL = 76;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 77;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 78;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 79;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 80;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 81;
-  private static final int METHODID_PUT_TENANT = 82;
-  private static final int METHODID_GET_TENANT = 83;
-  private static final int METHODID_PUT_PRINCIPAL = 84;
-  private static final int METHODID_GET_PRINCIPAL = 85;
-  private static final int METHODID_WHOAMI = 86;
-  private static final int METHODID_GET_SERVER_VERSION = 87;
-  private static final int METHODID_POLL_TASK = 88;
+  private static final int METHODID_PUT_MIGRATION_PLAN = 65;
+  private static final int METHODID_MIGRATE_WF_RUN = 66;
+  private static final int METHODID_GET_MIGRATION_PLAN = 67;
+  private static final int METHODID_STOP_WF_RUN = 68;
+  private static final int METHODID_RESUME_WF_RUN = 69;
+  private static final int METHODID_RESCUE_THREAD_RUN = 70;
+  private static final int METHODID_DELETE_WF_RUN = 71;
+  private static final int METHODID_DELETE_TASK_DEF = 72;
+  private static final int METHODID_DELETE_STRUCT_DEF = 73;
+  private static final int METHODID_DELETE_WF_SPEC = 74;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 75;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 76;
+  private static final int METHODID_DELETE_CORRELATED_EVENT = 77;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 78;
+  private static final int METHODID_DELETE_PRINCIPAL = 79;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 80;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 81;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 82;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 83;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 84;
+  private static final int METHODID_PUT_TENANT = 85;
+  private static final int METHODID_GET_TENANT = 86;
+  private static final int METHODID_PUT_PRINCIPAL = 87;
+  private static final int METHODID_GET_PRINCIPAL = 88;
+  private static final int METHODID_WHOAMI = 89;
+  private static final int METHODID_GET_SERVER_VERSION = 90;
+  private static final int METHODID_POLL_TASK = 91;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -8147,6 +8369,18 @@ public final class LittleHorseGrpc {
         case METHODID_GET_CHECKPOINT:
           serviceImpl.getCheckpoint((io.littlehorse.sdk.common.proto.CheckpointId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Checkpoint>) responseObserver);
+          break;
+        case METHODID_PUT_MIGRATION_PLAN:
+          serviceImpl.putMigrationPlan((io.littlehorse.sdk.common.proto.PutMigrationPlanRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunMigrationPlan>) responseObserver);
+          break;
+        case METHODID_MIGRATE_WF_RUN:
+          serviceImpl.migrateWfRun((io.littlehorse.sdk.common.proto.MigrateWfRunRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunId>) responseObserver);
+          break;
+        case METHODID_GET_MIGRATION_PLAN:
+          serviceImpl.getMigrationPlan((io.littlehorse.sdk.common.proto.MigrationPlanId) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunMigrationPlan>) responseObserver);
           break;
         case METHODID_STOP_WF_RUN:
           serviceImpl.stopWfRun((io.littlehorse.sdk.common.proto.StopWfRunRequest) request,
@@ -8724,6 +8958,27 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.Checkpoint>(
                 service, METHODID_GET_CHECKPOINT)))
         .addMethod(
+          getPutMigrationPlanMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.PutMigrationPlanRequest,
+              io.littlehorse.sdk.common.proto.WfRunMigrationPlan>(
+                service, METHODID_PUT_MIGRATION_PLAN)))
+        .addMethod(
+          getMigrateWfRunMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.MigrateWfRunRequest,
+              io.littlehorse.sdk.common.proto.WfRunId>(
+                service, METHODID_MIGRATE_WF_RUN)))
+        .addMethod(
+          getGetMigrationPlanMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.MigrationPlanId,
+              io.littlehorse.sdk.common.proto.WfRunMigrationPlan>(
+                service, METHODID_GET_MIGRATION_PLAN)))
+        .addMethod(
           getStopWfRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -8998,6 +9253,9 @@ public final class LittleHorseGrpc {
               .addMethod(getReportTaskMethod())
               .addMethod(getPutCheckpointMethod())
               .addMethod(getGetCheckpointMethod())
+              .addMethod(getPutMigrationPlanMethod())
+              .addMethod(getMigrateWfRunMethod())
+              .addMethod(getGetMigrationPlanMethod())
               .addMethod(getStopWfRunMethod())
               .addMethod(getResumeWfRunMethod())
               .addMethod(getRescueThreadRunMethod())

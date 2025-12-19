@@ -39,6 +39,7 @@ import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEvent
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.migration.WfRunMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
@@ -66,6 +67,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecReques
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.MigrateWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutMigrationPlanRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
@@ -658,6 +660,26 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    public void putMigrationPlan(PutMigrationPlanRequest req , StreamObserver<WfRunMigrationPlan> ctx ){
+        PutMigrationPlanRequestModel reqModel = 
+                LHSerializable.fromProto(req, PutMigrationPlanRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, WfRunMigrationPlan.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getMigrationPlan(MigrationPlanId req, StreamObserver<WfRunMigrationPlan> ctx) {
+        WfRunMigrationPlanModel wfRunMigrationPlanModel = getServiceFromContext().getWfRunMigrationPlan(req.getName());
+        if(wfRunMigrationPlanModel == null){
+            throw new LHApiException(Status.NOT_FOUND, "Could not find wfRunMigrationPlan + " + req.getName());
+        }else {
+            ctx.onNext(wfRunMigrationPlanModel.toProto().build());
+            ctx.onCompleted();
+        }
+    }
+
+    @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getWfRun(WfRunId req, StreamObserver<WfRun> ctx) {
         WfRunIdModel id = LHSerializable.fromProto(req, WfRunIdModel.class, requestContext());
@@ -956,6 +978,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ResumeWfRunRequestModel reqModel =
                 LHSerializable.fromProto(req, ResumeWfRunRequestModel.class, requestContext());
         processCommand(new CommandModel(reqModel), ctx, Empty.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
+    public void migrateWfRun(MigrateWfRunRequest req, StreamObserver<WfRunId> ctx) {
+        MigrateWfRunRequestModel reqModel =
+                LHSerializable.fromProto(req, MigrateWfRunRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), ctx, WfRunId.class);
     }
 
     @Override

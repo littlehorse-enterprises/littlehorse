@@ -56,6 +56,7 @@ public class CommandModel extends AbstractCommand<Command> {
     public RunWfRequestModel runWf;
     public StopWfRunRequestModel stopWfRun;
     public ResumeWfRunRequestModel resumeWfRun;
+    public MigrateWfRunRequestModel migrateWfRun;
     public SleepNodeMaturedModel sleepNodeMatured;
     public InternalDeleteWfRunRequestModel deleteWfRun;
     public ExternalEventTimeoutModel externalEventTimeout;
@@ -124,6 +125,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case RESUME_WF_RUN:
                 out.setResumeWfRun(resumeWfRun.toProto());
+                break;
+            case MIGRATE_WF_RUN:
+                out.setMigrateWfRun(migrateWfRun.toProto());
                 break;
             case SLEEP_NODE_MATURED:
                 out.setSleepNodeMatured(sleepNodeMatured.toProto());
@@ -234,6 +238,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case RESUME_WF_RUN:
                 resumeWfRun = ResumeWfRunRequestModel.fromProto(p.getResumeWfRun(), context);
+                break;
+            case MIGRATE_WF_RUN:
+                migrateWfRun = MigrateWfRunRequestModel.fromProto(p.getMigrateWfRun(), context);
                 break;
             case SLEEP_NODE_MATURED:
                 sleepNodeMatured = SleepNodeMaturedModel.fromProto(p.getSleepNodeMatured(), context);
@@ -347,6 +354,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return stopWfRun;
             case RESUME_WF_RUN:
                 return resumeWfRun;
+            case MIGRATE_WF_RUN:
+                return migrateWfRun;
             case SLEEP_NODE_MATURED:
                 return sleepNodeMatured;
             case DELETE_WF_RUN:
@@ -422,6 +431,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(ResumeWfRunRequestModel.class)) {
             type = CommandCase.RESUME_WF_RUN;
             resumeWfRun = (ResumeWfRunRequestModel) cmd;
+        } else if (cls.equals(MigrateWfRunRequestModel.class)) {
+            type = CommandCase.MIGRATE_WF_RUN;
+            migrateWfRun = (MigrateWfRunRequestModel) cmd;
         } else if (cls.equals(SleepNodeMaturedModel.class)) {
             type = CommandCase.SLEEP_NODE_MATURED;
             sleepNodeMatured = (SleepNodeMaturedModel) cmd;

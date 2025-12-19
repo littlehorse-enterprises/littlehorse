@@ -9,8 +9,10 @@ import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEvent
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.migration.WfRunMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
+import io.littlehorse.common.model.getable.objectId.MigrationPlanIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
@@ -18,6 +20,7 @@ import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.sdk.common.proto.MigrationPlanId;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -131,5 +134,11 @@ public class WfService {
             adminPrincipalIds.add(new PrincipalIdModel((storedTag.getDescribedObjectId())));
         }
         return adminPrincipalIds;
+    }
+
+    public WfRunMigrationPlanModel getWfRunMigrationPlan(String name){
+        MigrationPlanIdModel id = new MigrationPlanIdModel(name);
+        return metadataManager.get(id);
+
     }
 }

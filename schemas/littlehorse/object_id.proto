@@ -222,3 +222,11 @@ message TenantId {
 message ScheduledWfRunId {
   string id = 1;
 }
+
+message MigrationPlanId {
+    string name = 1;
+}
+
+message WfRunMigrationId { 
+  string id = 1;
+}

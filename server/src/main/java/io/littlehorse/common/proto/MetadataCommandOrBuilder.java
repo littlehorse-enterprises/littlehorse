@@ -279,5 +279,20 @@ public interface MetadataCommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.DeleteStructDefRequestOrBuilder getDeleteStructDefOrBuilder();
 
+  /**
+   * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+   * @return Whether the putMigrationPlan field is set.
+   */
+  boolean hasPutMigrationPlan();
+  /**
+   * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+   * @return The putMigrationPlan.
+   */
+  io.littlehorse.sdk.common.proto.PutMigrationPlanRequest getPutMigrationPlan();
+  /**
+   * <code>.littlehorse.PutMigrationPlanRequest put_migration_plan = 19;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutMigrationPlanRequestOrBuilder getPutMigrationPlanOrBuilder();
+
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

@@ -86,6 +86,9 @@ const (
 	LittleHorse_ReportTask_FullMethodName                 = "/littlehorse.LittleHorse/ReportTask"
 	LittleHorse_PutCheckpoint_FullMethodName              = "/littlehorse.LittleHorse/PutCheckpoint"
 	LittleHorse_GetCheckpoint_FullMethodName              = "/littlehorse.LittleHorse/GetCheckpoint"
+	LittleHorse_PutMigrationPlan_FullMethodName           = "/littlehorse.LittleHorse/PutMigrationPlan"
+	LittleHorse_MigrateWfRun_FullMethodName               = "/littlehorse.LittleHorse/MigrateWfRun"
+	LittleHorse_GetMigrationPlan_FullMethodName           = "/littlehorse.LittleHorse/getMigrationPlan"
 	LittleHorse_StopWfRun_FullMethodName                  = "/littlehorse.LittleHorse/StopWfRun"
 	LittleHorse_ResumeWfRun_FullMethodName                = "/littlehorse.LittleHorse/ResumeWfRun"
 	LittleHorse_RescueThreadRun_FullMethodName            = "/littlehorse.LittleHorse/RescueThreadRun"
@@ -304,7 +307,11 @@ type LittleHorseClient interface {
 	PutCheckpoint(ctx context.Context, in *PutCheckpointRequest, opts ...grpc.CallOption) (*PutCheckpointResponse, error)
 	// Gets a Checkpoint.
 	GetCheckpoint(ctx context.Context, in *CheckpointId, opts ...grpc.CallOption) (*Checkpoint, error)
-	// Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+	// Register migration plan as metadata on server
+	PutMigrationPlan(ctx context.Context, in *PutMigrationPlanRequest, opts ...grpc.CallOption) (*WfRunMigrationPlan, error)
+	MigrateWfRun(ctx context.Context, in *MigrateWfRunRequest, opts ...grpc.CallOption) (*WfRunId, error)
+	// Get Migration Plan
+	GetMigrationPlan(ctx context.Context, in *MigrationPlanId, opts ...grpc.CallOption) (*WfRunMigrationPlan, error)
 	StopWfRun(ctx context.Context, in *StopWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Resumes a WfRun or a specific ThreadRun of a WfRun.
 	ResumeWfRun(ctx context.Context, in *ResumeWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -987,6 +994,33 @@ func (c *littleHorseClient) GetCheckpoint(ctx context.Context, in *CheckpointId,
 	return out, nil
 }
 
+func (c *littleHorseClient) PutMigrationPlan(ctx context.Context, in *PutMigrationPlanRequest, opts ...grpc.CallOption) (*WfRunMigrationPlan, error) {
+	out := new(WfRunMigrationPlan)
+	err := c.cc.Invoke(ctx, LittleHorse_PutMigrationPlan_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) MigrateWfRun(ctx context.Context, in *MigrateWfRunRequest, opts ...grpc.CallOption) (*WfRunId, error) {
+	out := new(WfRunId)
+	err := c.cc.Invoke(ctx, LittleHorse_MigrateWfRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetMigrationPlan(ctx context.Context, in *MigrationPlanId, opts ...grpc.CallOption) (*WfRunMigrationPlan, error) {
+	out := new(WfRunMigrationPlan)
+	err := c.cc.Invoke(ctx, LittleHorse_GetMigrationPlan_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) StopWfRun(ctx context.Context, in *StopWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LittleHorse_StopWfRun_FullMethodName, in, out, opts...)
@@ -1387,7 +1421,11 @@ type LittleHorseServer interface {
 	PutCheckpoint(context.Context, *PutCheckpointRequest) (*PutCheckpointResponse, error)
 	// Gets a Checkpoint.
 	GetCheckpoint(context.Context, *CheckpointId) (*Checkpoint, error)
-	// Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+	// Register migration plan as metadata on server
+	PutMigrationPlan(context.Context, *PutMigrationPlanRequest) (*WfRunMigrationPlan, error)
+	MigrateWfRun(context.Context, *MigrateWfRunRequest) (*WfRunId, error)
+	// Get Migration Plan
+	GetMigrationPlan(context.Context, *MigrationPlanId) (*WfRunMigrationPlan, error)
 	StopWfRun(context.Context, *StopWfRunRequest) (*emptypb.Empty, error)
 	// Resumes a WfRun or a specific ThreadRun of a WfRun.
 	ResumeWfRun(context.Context, *ResumeWfRunRequest) (*emptypb.Empty, error)
@@ -1648,6 +1686,15 @@ func (UnimplementedLittleHorseServer) PutCheckpoint(context.Context, *PutCheckpo
 }
 func (UnimplementedLittleHorseServer) GetCheckpoint(context.Context, *CheckpointId) (*Checkpoint, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCheckpoint not implemented")
+}
+func (UnimplementedLittleHorseServer) PutMigrationPlan(context.Context, *PutMigrationPlanRequest) (*WfRunMigrationPlan, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutMigrationPlan not implemented")
+}
+func (UnimplementedLittleHorseServer) MigrateWfRun(context.Context, *MigrateWfRunRequest) (*WfRunId, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MigrateWfRun not implemented")
+}
+func (UnimplementedLittleHorseServer) GetMigrationPlan(context.Context, *MigrationPlanId) (*WfRunMigrationPlan, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMigrationPlan not implemented")
 }
 func (UnimplementedLittleHorseServer) StopWfRun(context.Context, *StopWfRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StopWfRun not implemented")
@@ -2927,6 +2974,60 @@ func _LittleHorse_GetCheckpoint_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_PutMigrationPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutMigrationPlanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutMigrationPlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutMigrationPlan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutMigrationPlan(ctx, req.(*PutMigrationPlanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_MigrateWfRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MigrateWfRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).MigrateWfRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_MigrateWfRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).MigrateWfRun(ctx, req.(*MigrateWfRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetMigrationPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MigrationPlanId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetMigrationPlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetMigrationPlan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetMigrationPlan(ctx, req.(*MigrationPlanId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_StopWfRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(StopWfRunRequest)
 	if err := dec(in); err != nil {
@@ -3607,6 +3708,18 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCheckpoint",
 			Handler:    _LittleHorse_GetCheckpoint_Handler,
+		},
+		{
+			MethodName: "PutMigrationPlan",
+			Handler:    _LittleHorse_PutMigrationPlan_Handler,
+		},
+		{
+			MethodName: "MigrateWfRun",
+			Handler:    _LittleHorse_MigrateWfRun_Handler,
+		},
+		{
+			MethodName: "getMigrationPlan",
+			Handler:    _LittleHorse_GetMigrationPlan_Handler,
 		},
 		{
 			MethodName: "StopWfRun",

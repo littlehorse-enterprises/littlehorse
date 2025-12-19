@@ -255,6 +255,14 @@ export interface ScheduledWfRunId {
   id: string;
 }
 
+export interface MigrationPlanId {
+  name: string;
+}
+
+export interface WfRunMigrationId {
+  id: string;
+}
+
 function createBaseWfSpecId(): WfSpecId {
   return { name: "", majorVersion: 0, revision: 0 };
 }
@@ -1828,6 +1836,120 @@ export const ScheduledWfRunId = {
   },
   fromPartial(object: DeepPartial<ScheduledWfRunId>): ScheduledWfRunId {
     const message = createBaseScheduledWfRunId();
+    message.id = object.id ?? "";
+    return message;
+  },
+};
+
+function createBaseMigrationPlanId(): MigrationPlanId {
+  return { name: "" };
+}
+
+export const MigrationPlanId = {
+  encode(message: MigrationPlanId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MigrationPlanId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMigrationPlanId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MigrationPlanId {
+    return { name: isSet(object.name) ? globalThis.String(object.name) : "" };
+  },
+
+  toJSON(message: MigrationPlanId): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MigrationPlanId>): MigrationPlanId {
+    return MigrationPlanId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MigrationPlanId>): MigrationPlanId {
+    const message = createBaseMigrationPlanId();
+    message.name = object.name ?? "";
+    return message;
+  },
+};
+
+function createBaseWfRunMigrationId(): WfRunMigrationId {
+  return { id: "" };
+}
+
+export const WfRunMigrationId = {
+  encode(message: WfRunMigrationId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WfRunMigrationId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWfRunMigrationId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WfRunMigrationId {
+    return { id: isSet(object.id) ? globalThis.String(object.id) : "" };
+  },
+
+  toJSON(message: WfRunMigrationId): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<WfRunMigrationId>): WfRunMigrationId {
+    return WfRunMigrationId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WfRunMigrationId>): WfRunMigrationId {
+    const message = createBaseWfRunMigrationId();
     message.id = object.id ?? "";
     return message;
   },

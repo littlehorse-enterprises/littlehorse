@@ -53,6 +53,7 @@ message Command {
         EditUserTaskRunCommentRequest edit_user_task_run_comment = 32;
         DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 33;
         PutCheckpointRequest put_checkpoint = 34;
+        MigrateWfRunRequest migrate_wf_run = 35;
     }
 }
 
@@ -105,6 +106,8 @@ message MetadataCommand {
         PutStructDefRequest put_struct_def = 17;
 
         DeleteStructDefRequest delete_struct_def = 18;
+
+        PutMigrationPlanRequest put_migration_plan = 19;
     }
 }
 

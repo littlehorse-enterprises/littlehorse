@@ -507,5 +507,20 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.PutCheckpointRequestOrBuilder getPutCheckpointOrBuilder();
 
+  /**
+   * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+   * @return Whether the migrateWfRun field is set.
+   */
+  boolean hasMigrateWfRun();
+  /**
+   * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+   * @return The migrateWfRun.
+   */
+  io.littlehorse.sdk.common.proto.MigrateWfRunRequest getMigrateWfRun();
+  /**
+   * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+   */
+  io.littlehorse.sdk.common.proto.MigrateWfRunRequestOrBuilder getMigrateWfRunOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

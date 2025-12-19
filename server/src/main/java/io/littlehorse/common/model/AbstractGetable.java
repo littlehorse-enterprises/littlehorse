@@ -21,11 +21,13 @@ import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEvent
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.migration.WfRunMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.MigrationPlanIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
@@ -113,7 +115,11 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.CORRELATED_EVENT;
         } else if (cls.equals(CheckpointModel.class)) {
             return GetableClassEnum.CHECKPOINT;
-        } else {
+        }
+        else if (cls.equals(WfRunMigrationPlanModel.class)) {
+            return GetableClassEnum.MIGRATION_PLAN;
+        } 
+        else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
     }
@@ -162,6 +168,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CorrelatedEventModel.class;
             case CHECKPOINT:
                 return CheckpointModel.class;
+            case MIGRATION_PLAN:
+                return WfRunMigrationPlanModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -212,6 +220,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CorrelatedEventIdModel.class;
             case CHECKPOINT:
                 return CheckpointIdModel.class;
+            case MIGRATION_PLAN:
+                return MigrationPlanIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");

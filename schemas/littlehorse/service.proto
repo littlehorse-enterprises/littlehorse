@@ -19,6 +19,7 @@ import "struct_def.proto";
 import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
+import "wf_run_migration.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -284,7 +285,14 @@ service LittleHorse {
   // Gets a Checkpoint.
   rpc GetCheckpoint(CheckpointId) returns (Checkpoint) {}
 
-  // Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+  // Register migration plan as metadata on server
+  rpc PutMigrationPlan(PutMigrationPlanRequest) returns (WfRunMigrationPlan) {}
+
+  rpc MigrateWfRun(MigrateWfRunRequest) returns (WfRunId) {}
+
+  // Get Migration Plan
+  rpc getMigrationPlan(MigrationPlanId) returns (WfRunMigrationPlan) {}
+
   rpc StopWfRun(StopWfRunRequest) returns (google.protobuf.Empty) {}
   // Resumes a WfRun or a specific ThreadRun of a WfRun.
   rpc ResumeWfRun(ResumeWfRunRequest) returns (google.protobuf.Empty) {}
@@ -1351,6 +1359,30 @@ message PutCheckpointResponse {
 
   // The checkpoint (if created).
   optional Checkpoint created_checkpoint = 2;
+}
+
+message PutMigrationPlanRequest {
+   string name = 1;
+   MigrationPlan migration_plan = 2; 
+}
+
+message MigrateWfRunRequest {
+  // Migration Plan to use
+  MigrationPlanId migration_plan_id = 1; 
+
+  // WfRun to Migrate
+  WfRunId wf_run_id = 2;
+
+  // What version to migrate to
+  int32 revision_number = 3;
+  int32 major_version_number = 4;
+
+  map<string, MigrationVariables> migration_vars = 5;
+
+}
+
+message MigrationVariables {
+  map<string, VariableValue> var_values = 1;
 }
 
 

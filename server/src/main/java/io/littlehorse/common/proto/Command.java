@@ -86,6 +86,7 @@ private static final long serialVersionUID = 0L;
     EDIT_USER_TASK_RUN_COMMENT(32),
     DELETE_USER_TASK_RUN_COMMENT(33),
     PUT_CHECKPOINT(34),
+    MIGRATE_WF_RUN(35),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -134,6 +135,7 @@ private static final long serialVersionUID = 0L;
         case 32: return EDIT_USER_TASK_RUN_COMMENT;
         case 33: return DELETE_USER_TASK_RUN_COMMENT;
         case 34: return PUT_CHECKPOINT;
+        case 35: return MIGRATE_WF_RUN;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -1183,6 +1185,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.PutCheckpointRequest.getDefaultInstance();
   }
 
+  public static final int MIGRATE_WF_RUN_FIELD_NUMBER = 35;
+  /**
+   * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+   * @return Whether the migrateWfRun field is set.
+   */
+  @java.lang.Override
+  public boolean hasMigrateWfRun() {
+    return commandCase_ == 35;
+  }
+  /**
+   * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+   * @return The migrateWfRun.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.MigrateWfRunRequest getMigrateWfRun() {
+    if (commandCase_ == 35) {
+       return (io.littlehorse.sdk.common.proto.MigrateWfRunRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.MigrateWfRunRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.MigrateWfRunRequestOrBuilder getMigrateWfRunOrBuilder() {
+    if (commandCase_ == 35) {
+       return (io.littlehorse.sdk.common.proto.MigrateWfRunRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.MigrateWfRunRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1295,6 +1328,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 34) {
       output.writeMessage(34, (io.littlehorse.sdk.common.proto.PutCheckpointRequest) command_);
+    }
+    if (commandCase_ == 35) {
+      output.writeMessage(35, (io.littlehorse.sdk.common.proto.MigrateWfRunRequest) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1435,6 +1471,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 34) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(34, (io.littlehorse.sdk.common.proto.PutCheckpointRequest) command_);
+    }
+    if (commandCase_ == 35) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(35, (io.littlehorse.sdk.common.proto.MigrateWfRunRequest) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1587,6 +1627,10 @@ private static final long serialVersionUID = 0L;
         if (!getPutCheckpoint()
             .equals(other.getPutCheckpoint())) return false;
         break;
+      case 35:
+        if (!getMigrateWfRun()
+            .equals(other.getMigrateWfRun())) return false;
+        break;
       case 0:
       default:
     }
@@ -1733,6 +1777,10 @@ private static final long serialVersionUID = 0L;
       case 34:
         hash = (37 * hash) + PUT_CHECKPOINT_FIELD_NUMBER;
         hash = (53 * hash) + getPutCheckpoint().hashCode();
+        break;
+      case 35:
+        hash = (37 * hash) + MIGRATE_WF_RUN_FIELD_NUMBER;
+        hash = (53 * hash) + getMigrateWfRun().hashCode();
         break;
       case 0:
       default:
@@ -1978,6 +2026,9 @@ private static final long serialVersionUID = 0L;
       if (putCheckpointBuilder_ != null) {
         putCheckpointBuilder_.clear();
       }
+      if (migrateWfRunBuilder_ != null) {
+        migrateWfRunBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -2160,6 +2211,10 @@ private static final long serialVersionUID = 0L;
           putCheckpointBuilder_ != null) {
         result.command_ = putCheckpointBuilder_.build();
       }
+      if (commandCase_ == 35 &&
+          migrateWfRunBuilder_ != null) {
+        result.command_ = migrateWfRunBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -2305,6 +2360,10 @@ private static final long serialVersionUID = 0L;
         }
         case PUT_CHECKPOINT: {
           mergePutCheckpoint(other.getPutCheckpoint());
+          break;
+        }
+        case MIGRATE_WF_RUN: {
+          mergeMigrateWfRun(other.getMigrateWfRun());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2566,6 +2625,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 34;
               break;
             } // case 274
+            case 282: {
+              input.readMessage(
+                  internalGetMigrateWfRunFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 35;
+              break;
+            } // case 282
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -7199,6 +7265,148 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 34;
       onChanged();
       return putCheckpointBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.MigrateWfRunRequest, io.littlehorse.sdk.common.proto.MigrateWfRunRequest.Builder, io.littlehorse.sdk.common.proto.MigrateWfRunRequestOrBuilder> migrateWfRunBuilder_;
+    /**
+     * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+     * @return Whether the migrateWfRun field is set.
+     */
+    @java.lang.Override
+    public boolean hasMigrateWfRun() {
+      return commandCase_ == 35;
+    }
+    /**
+     * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+     * @return The migrateWfRun.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.MigrateWfRunRequest getMigrateWfRun() {
+      if (migrateWfRunBuilder_ == null) {
+        if (commandCase_ == 35) {
+          return (io.littlehorse.sdk.common.proto.MigrateWfRunRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.MigrateWfRunRequest.getDefaultInstance();
+      } else {
+        if (commandCase_ == 35) {
+          return migrateWfRunBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.MigrateWfRunRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+     */
+    public Builder setMigrateWfRun(io.littlehorse.sdk.common.proto.MigrateWfRunRequest value) {
+      if (migrateWfRunBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        migrateWfRunBuilder_.setMessage(value);
+      }
+      commandCase_ = 35;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+     */
+    public Builder setMigrateWfRun(
+        io.littlehorse.sdk.common.proto.MigrateWfRunRequest.Builder builderForValue) {
+      if (migrateWfRunBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        migrateWfRunBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 35;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+     */
+    public Builder mergeMigrateWfRun(io.littlehorse.sdk.common.proto.MigrateWfRunRequest value) {
+      if (migrateWfRunBuilder_ == null) {
+        if (commandCase_ == 35 &&
+            command_ != io.littlehorse.sdk.common.proto.MigrateWfRunRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.MigrateWfRunRequest.newBuilder((io.littlehorse.sdk.common.proto.MigrateWfRunRequest) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 35) {
+          migrateWfRunBuilder_.mergeFrom(value);
+        } else {
+          migrateWfRunBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 35;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+     */
+    public Builder clearMigrateWfRun() {
+      if (migrateWfRunBuilder_ == null) {
+        if (commandCase_ == 35) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 35) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        migrateWfRunBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+     */
+    public io.littlehorse.sdk.common.proto.MigrateWfRunRequest.Builder getMigrateWfRunBuilder() {
+      return internalGetMigrateWfRunFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.MigrateWfRunRequestOrBuilder getMigrateWfRunOrBuilder() {
+      if ((commandCase_ == 35) && (migrateWfRunBuilder_ != null)) {
+        return migrateWfRunBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 35) {
+          return (io.littlehorse.sdk.common.proto.MigrateWfRunRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.MigrateWfRunRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.MigrateWfRunRequest migrate_wf_run = 35;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.MigrateWfRunRequest, io.littlehorse.sdk.common.proto.MigrateWfRunRequest.Builder, io.littlehorse.sdk.common.proto.MigrateWfRunRequestOrBuilder> 
+        internalGetMigrateWfRunFieldBuilder() {
+      if (migrateWfRunBuilder_ == null) {
+        if (!(commandCase_ == 35)) {
+          command_ = io.littlehorse.sdk.common.proto.MigrateWfRunRequest.getDefaultInstance();
+        }
+        migrateWfRunBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.MigrateWfRunRequest, io.littlehorse.sdk.common.proto.MigrateWfRunRequest.Builder, io.littlehorse.sdk.common.proto.MigrateWfRunRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.MigrateWfRunRequest) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 35;
+      onChanged();
+      return migrateWfRunBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.Command)
