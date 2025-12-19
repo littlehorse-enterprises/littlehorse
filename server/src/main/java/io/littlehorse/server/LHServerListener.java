@@ -11,6 +11,8 @@ import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
@@ -597,7 +599,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public StreamObserver<PollTaskRequest> pollTask(StreamObserver<PollTaskResponse> ctx) {
         AuthorizationContext authorization = requestContext().authorization();
         return new PollTaskRequestObserver(
-                ctx,
+                (ServerCallStreamObserver<PollTaskResponse>) ctx,
                 taskQueueManager,
                 authorization.tenantId(),
                 authorization.principalId(),
