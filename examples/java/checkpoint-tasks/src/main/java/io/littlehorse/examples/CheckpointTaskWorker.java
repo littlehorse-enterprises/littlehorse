@@ -15,7 +15,8 @@ public class CheckpointTaskWorker {
         System.out.println("Hello from task worker on attempt " + attemptNumber + " before the checkpoint");
 
         String result = context.executeAndCheckpoint(
-                () -> {
+                (checkpointContext) -> {
+                    checkpointContext.log("this is a checkpoint log");
                     System.out.println(
                             "Hello from task worker on attempt " + attemptNumber + " in the first checkpoint");
                     return "hello " + name + " from first checkpoint";
@@ -29,7 +30,7 @@ public class CheckpointTaskWorker {
         }
 
         result += context.executeAndCheckpoint(
-                () -> {
+                context2 -> {
                     System.out.println("Hi from inside the second checkpoint");
                     return " and the second checkpoint";
                 },
