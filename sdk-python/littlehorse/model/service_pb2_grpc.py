@@ -730,7 +730,7 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def EditUserTaskRunComment(self, request, context):
-        """Edits userComment with the correlated userCommentId 
+        """Edits userComment with the correlated userCommentId
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')

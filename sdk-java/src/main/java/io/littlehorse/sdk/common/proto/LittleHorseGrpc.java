@@ -3144,7 +3144,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edits userComment with the correlated userCommentId 
+     * Edits userComment with the correlated userCommentId
      * </pre>
      */
     default void editUserTaskRunComment(io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest request,
@@ -4142,7 +4142,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edits userComment with the correlated userCommentId 
+     * Edits userComment with the correlated userCommentId
      * </pre>
      */
     public void editUserTaskRunComment(io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest request,
@@ -5162,7 +5162,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edits userComment with the correlated userCommentId 
+     * Edits userComment with the correlated userCommentId
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRun editUserTaskRunComment(io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest request) throws io.grpc.StatusException {
@@ -6123,7 +6123,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edits userComment with the correlated userCommentId 
+     * Edits userComment with the correlated userCommentId
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.UserTaskRun editUserTaskRunComment(io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest request) {
@@ -7099,7 +7099,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Edits userComment with the correlated userCommentId 
+     * Edits userComment with the correlated userCommentId
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskRun> editUserTaskRunComment(
