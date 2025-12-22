@@ -57,6 +57,8 @@ from littlehorse.model import (
     WfSpec,
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
+    RunChildWfNode,
+    WaitForChildWfNode,
 )
 from littlehorse.model.wf_spec_pb2 import PRIVATE_VAR
 from littlehorse.utils import negate_comparator, to_variable_value
@@ -76,6 +78,8 @@ NodeType = Union[
     UserTaskNode,
     StartMultipleThreadsNode,
     ThrowEventNode,
+    RunChildWfNode,
+    WaitForChildWfNode,
 ]
 
 
@@ -256,6 +260,8 @@ class NodeCase(Enum):
     USER_TASK = "USER_TASK"
     START_MULTIPLE_THREADS = "START_MULTIPLE_THREADS"
     THROW_EVENT = "THROW_EVENT"
+    RUN_CHILD_WF = "RUN_CHILD_WF"
+    WAIT_FOR_CHILD_WF = "WAIT_FOR_CHILD_WF"
 
     @classmethod
     def from_node(cls, node: NodeType) -> "NodeCase":
@@ -281,6 +287,10 @@ class NodeCase(Enum):
             return cls.START_MULTIPLE_THREADS
         if isinstance(node, ThrowEventNode):
             return cls.THROW_EVENT
+        if isinstance(node, RunChildWfNode):
+            return cls.RUN_CHILD_WF
+        if isinstance(node, WaitForChildWfNode):
+            return cls.WAIT_FOR_CHILD_WF
 
         raise TypeError("Unrecognized node type")
 
@@ -941,6 +951,10 @@ class WorkflowNode:
             return new_node(start_multiple_threads=self.sub_node)
         if self.node_case == NodeCase.THROW_EVENT:
             return new_node(throw_event=self.sub_node)
+        if self.node_case == NodeCase.RUN_CHILD_WF:
+            return new_node(run_child_wf=self.sub_node)
+        if self.node_case == NodeCase.WAIT_FOR_CHILD_WF:
+            return new_node(wait_for_child_wf=self.sub_node)
 
         raise ValueError("Node type not supported")
 
@@ -963,6 +977,12 @@ class WorkflowInterruption:
 
     def __str__(self) -> str:
         return to_json(self.compile())
+
+
+class SpawnedChildWf:
+    def __init__(self, source_node_name: str, thread: WorkflowThread):
+        self.source_node_name = source_node_name
+        self.thread = thread
 
 
 class SpawnedThread:
@@ -1653,6 +1673,39 @@ class WorkflowThread:
             exit_node = ExitNode()
 
         self.add_node("complete", exit_node)
+
+    def run_wf(
+        self, wf_spec_name: str, inputs: Optional[dict[str, Any]] = None
+    ) -> SpawnedChildWf:
+        self._check_if_active()
+        inputs = {} if inputs is None else inputs
+
+        run_child_wf_node = RunChildWfNode(
+            wf_spec_name=wf_spec_name,
+            major_version=-1,
+            inputs={
+                key: to_variable_assignment(value) for key, value in inputs.items()
+            },
+        )
+        node_name = self.add_node("run-" + wf_spec_name, run_child_wf_node)
+        return SpawnedChildWf(node_name, self)
+
+    def wait_for_child_wf(self, childWf: SpawnedChildWf) -> NodeOutput:
+        self._check_if_active()
+        if childWf.thread != self:
+            raise ValueError("Currently cannot wait for WfRun started in other thread")
+
+        node = WaitForChildWfNode(
+            child_wf_run_id=VariableAssignment(
+                node_output=VariableAssignment.NodeOutputReference(
+                    node_name=childWf.source_node_name
+                )
+            ),
+            child_wf_run_source_node=childWf.source_node_name,
+        )
+
+        node_name = self.add_node("wait", node)
+        return NodeOutput(node_name=node_name)
 
     def assign_user_task(
         self,
