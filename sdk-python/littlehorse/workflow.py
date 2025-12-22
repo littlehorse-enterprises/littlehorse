@@ -1677,8 +1677,8 @@ class WorkflowThread:
         run_child_wf_node = RunChildWfNode(
             wf_spec_name=wf_spec_name,
             major_version=-1,
-            inputs= {
-                key: to_variable_assignment(value) for key, value in inputs
+            inputs={
+                key: to_variable_assignment(value) for key, value in inputs.items()
             }
         )
         node_name = self.add_node("run-" + wf_spec_name, run_child_wf_node)
