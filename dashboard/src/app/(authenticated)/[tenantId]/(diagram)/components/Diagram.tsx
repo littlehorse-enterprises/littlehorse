@@ -34,51 +34,6 @@ type Props = {
   wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
   spec: WfSpec
 }
-const getCycleNodes = (threadSpec: WfSpec['threadSpecs'][string]) => {
-  Object.entries(threadSpec.nodes).forEach(([nodeId, node]) => {
-    if (node.outgoingEdges.length >= 2) {
-      const sourceNum = parseInt(nodeId.split('-')[0])
-      node.outgoingEdges.forEach(edge => {
-        const targetNum = parseInt(edge.sinkNodeName.split('-')[0])
-        if (targetNum <= sourceNum) {
-          const targetNodeId = edge.sinkNodeName
-          const cycleNodeId = `cycle-${nodeId}-${edge.sinkNodeName}`
-
-          // Create a properly typed cycle node without using `any`/`unknown`.
-          type NodeMap = (typeof threadSpec.nodes)[string]
-          const cycleNode: NodeMap = {
-            outgoingEdges: [
-              {
-                sinkNodeName: targetNodeId,
-                variableMutations: [],
-              },
-            ],
-            failureHandlers: [],
-            node: { $case: 'cycle', value: {} } as unknown as NodeMap['node'],
-          }
-
-          threadSpec.nodes[cycleNodeId] = cycleNode
-
-          threadSpec.nodes[edge.sinkNodeName].outgoingEdges = threadSpec.nodes[edge.sinkNodeName].outgoingEdges.filter(
-            edgeItem => {
-              return edgeItem.sinkNodeName !== nodeId
-            }
-          )
-          if (!threadSpec.nodes[nodeId].outgoingEdges.some(e => e.sinkNodeName === cycleNodeId)) {
-            threadSpec.nodes[nodeId].outgoingEdges.push({
-              sinkNodeName: cycleNodeId,
-              variableMutations: [],
-            })
-          }
-          threadSpec.nodes[nodeId].outgoingEdges = threadSpec.nodes[nodeId].outgoingEdges.filter(edgeItem => {
-            return edgeItem.sinkNodeName !== edge.sinkNodeName
-          })
-        }
-      })
-    }
-  })
-  return threadSpec
-}
 export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   const { tenantId } = useWhoAmI()
   const currentThread = wfRun

@@ -19,7 +19,7 @@ export const InputVariables = ({ variables }: { variables: VarNameAndVal[] }) =>
                   {variable.value && getVariableValue(variable.value)}
                 </p>
               </div>
-                {variable.value && <OutputModal label="" message={JSON.stringify(variable.value)} buttonText="JSON " />}
+              {variable.value && <OutputModal label="" message={JSON.stringify(variable.value)} buttonText="JSON " />}
             </div>
           ))}
         </AccordionContent>

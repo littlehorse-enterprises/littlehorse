@@ -23,21 +23,23 @@ export const Attempts = ({
     <div className="ml-1 mt-1 ">
       <div className="flex items-center justify-between">
         <p className=" text-sm font-bold ">Attempts</p>
-       {attemptLength > 1 && <DropdownMenu>
-          <DropdownMenuTrigger className="my-1" asChild>
-            <Button variant="outline" className="  my-0  px-2 drop-shadow-none">
-              {`${attemptIndex + 1}`}
-              <ChevronDown className="w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="max-h-[300px] overflow-y-auto">
-            {Array.from({ length: attemptLength }).map((_, nodeIndex) => (
-              <DropdownMenuItem key={nodeIndex} className="cursor-pointer" onClick={() => setAttemptIndex(nodeIndex)}>
-                {`${nodeIndex + 1}`}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>}
+        {attemptLength > 1 && (
+          <DropdownMenu>
+            <DropdownMenuTrigger className="my-1" asChild>
+              <Button variant="outline" className="  my-0  px-2 drop-shadow-none">
+                {`${attemptIndex + 1}`}
+                <ChevronDown className="w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="max-h-[300px] overflow-y-auto">
+              {Array.from({ length: attemptLength }).map((_, nodeIndex) => (
+                <DropdownMenuItem key={nodeIndex} className="cursor-pointer" onClick={() => setAttemptIndex(nodeIndex)}>
+                  {`${nodeIndex + 1}`}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
       {attempt.status && <NodeStatus status={attempt.status} type="task" />}
       <NodeVariable label="scheduleTime:" text={`${attempt.scheduleTime}`} type="date" />

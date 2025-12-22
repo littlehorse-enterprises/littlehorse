@@ -22,7 +22,6 @@ export const getCycleNodes = (threadSpec: WfSpec['threadSpecs'][string]) => {
           const targetNodeId = edge.sinkNodeName
           const cycleNodeId = `cycle-${nodeId}-${edge.sinkNodeName}`
 
-          // Create a properly typed cycle node without using `any`/`unknown`.
           type NodeMap = (typeof threadSpec.nodes)[string]
           const cycleNode: NodeMap = {
             outgoingEdges: [
