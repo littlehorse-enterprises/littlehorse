@@ -434,6 +434,8 @@ message PutStructDefRequest {
   // Then the request will be accepted or rejected based on the value of the
   // allowed_update_types.
   StructDefCompatibilityType allowed_updates = 4;
+
+  
 }
 
 // Request to validate the evolution of an existing StructDef to a new StructDef
