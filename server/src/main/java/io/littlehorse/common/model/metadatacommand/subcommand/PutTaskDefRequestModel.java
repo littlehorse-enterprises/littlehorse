@@ -25,6 +25,7 @@ import java.util.List;
 public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest> {
 
     public String name;
+    public String description;
     public List<VariableDefModel> inputVars;
 
     public ReturnTypeModel returnType;
@@ -42,8 +43,13 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
     }
 
     public PutTaskDefRequest.Builder toProto() {
-        PutTaskDefRequest.Builder out =
-                PutTaskDefRequest.newBuilder().setName(name).setReturnType(returnType.toProto());
+        PutTaskDefRequest.Builder out = PutTaskDefRequest.newBuilder().setName(name);
+
+        if (description != null) {
+            out.setDescription(description);
+        }
+
+        out.setReturnType(returnType.toProto());
 
         for (VariableDefModel entry : inputVars) {
             out.addInputVars(entry.toProto());
@@ -60,6 +66,10 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         for (VariableDef entry : p.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry, context));
         }
+
+        if (p.hasDescription()) {
+            description = p.getDescription();
+        }
     }
 
     public TaskDef process(MetadataProcessorContext context) {
@@ -72,6 +82,10 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         spec.setId(new TaskDefIdModel(name));
         spec.inputVars = inputVars;
         spec.setReturnType(returnType);
+
+        if (description != null) {
+            spec.setDescription(description);
+        }
 
         TaskDefModel oldVersion = metadataManager.get(new TaskDefIdModel(name));
         if (oldVersion != null) {
