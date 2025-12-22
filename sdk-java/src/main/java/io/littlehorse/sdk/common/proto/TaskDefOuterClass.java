@@ -42,14 +42,15 @@ public final class TaskDefOuterClass extends com.google.protobuf.GeneratedFile {
     java.lang.String[] descriptorData = {
       "\n\016task_def.proto\022\013littlehorse\032\037google/pr" +
       "otobuf/timestamp.proto\032\023common_wfspec.pr" +
-      "oto\032\017object_id.proto\"\316\001\n\007TaskDef\022\"\n\002id\030\001" +
+      "oto\032\017object_id.proto\"\370\001\n\007TaskDef\022\"\n\002id\030\001" +
       " \001(\0132\026.littlehorse.TaskDefId\022,\n\ninput_va" +
       "rs\030\002 \003(\0132\030.littlehorse.VariableDef\022.\n\ncr" +
       "eated_at\030\003 \001(\0132\032.google.protobuf.Timesta" +
       "mp\0221\n\013return_type\030\004 \001(\0132\027.littlehorse.Re" +
-      "turnTypeH\000\210\001\001B\016\n\014_return_typeBM\n\037io.litt" +
-      "lehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034" +
-      "LittleHorse.Sdk.Common.Protob\006proto3"
+      "turnTypeH\000\210\001\001\022\030\n\013description\030\005 \001(\tH\001\210\001\001B" +
+      "\016\n\014_return_typeB\016\n\014_descriptionBM\n\037io.li" +
+      "ttlehorse.sdk.common.protoP\001Z\t.;lhproto\252" +
+      "\002\034LittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -63,7 +64,7 @@ public final class TaskDefOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_TaskDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TaskDef_descriptor,
-        new java.lang.String[] { "Id", "InputVars", "CreatedAt", "ReturnType", });
+        new java.lang.String[] { "Id", "InputVars", "CreatedAt", "ReturnType", "Description", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor();

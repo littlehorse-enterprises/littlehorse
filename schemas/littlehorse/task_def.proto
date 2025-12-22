@@ -28,4 +28,7 @@ message TaskDef {
   // Versions after 0.13.2 require that typing information is provided when creating
   // TaskDef's.
   optional ReturnType return_type = 4;
+
+    // Optional description of the TaskDef.
+    optional string description = 5;
 }
