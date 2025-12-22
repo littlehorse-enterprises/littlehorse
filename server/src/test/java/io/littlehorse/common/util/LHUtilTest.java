@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -122,5 +124,26 @@ class LHUtilTest {
         String legacyKey = LHUtil.toLegacyFormat(groupedKey);
         String expected = "/5/4/wf-run-789/simple";
         Assertions.assertThat(legacyKey).isEqualTo(expected);
+    }
+
+    @Test
+    void strToJsonObjShouldDeserializeNulls() {
+        Map<String, Object> expectedMap = new HashMap<>();
+        expectedMap.put("key1", null);
+
+        Map<String, Object> actualMap = LHUtil.strToJsonObj("{\"key1\": null}");
+
+        Assertions.assertThat(actualMap).isEqualTo(expectedMap);
+    }
+
+    @Test
+    void objToStringShouldSerializeNulls() {
+        String expectedStr = "{\"key1\":null}";
+
+        Map<String, Object> someMap = new HashMap<>();
+        someMap.put("key1", null);
+        String actualStr = LHUtil.objToString(someMap);
+
+        Assertions.assertThat(expectedStr).isEqualTo(actualStr);
     }
 }

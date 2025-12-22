@@ -1,7 +1,7 @@
 {
   "name": "littlehorse-client",
   "version": "0.0.0-development",
-  "license": "AGPL-3.0-only",
+  "license": "Apache-2.0",
   "description": "Littlehorse gPRC Client",
   "engines": {
     "node": ">=18.14.0"

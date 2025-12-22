@@ -4,7 +4,7 @@ import { flattenWfRunId, formatDate, wfRunIdToPath } from '@/app/utils'
 import { WfRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { CopyToClipboard } from './CopyToClipboard'
-import { wfRunStatusColor } from '../../../StatusColor'
+import { WF_RUN_STATUS } from '../../../components/Sidebar/Components/StatusColor'
 
 type DetailsProps = WfRun
 
@@ -37,7 +37,7 @@ export const Details: FC<DetailsProps> = ({ id, status, wfSpecId, startTime }) =
           </LinkWithTenant>
         </div>
         <div className="flex items-center">
-          Status: <span className={`ml-2 rounded px-2 ${wfRunStatusColor[status]}`}>{`${status}`}</span>
+          Status: <span className={`ml-2 rounded px-2 ${WF_RUN_STATUS[status].backgroundColor}`}>{`${status}`}</span>
         </div>
         <div className="flex items-center">
           Started: <span className={` ml-2`}>{`${formatDate(Date.parse(startTime || ''))}`}</span>

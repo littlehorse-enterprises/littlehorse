@@ -2,27 +2,3 @@
   font-size: 0.75em;
   color: #94a3b8;
 }
-.node-status--starting {
-  color: #009689;
-}
-.node-status--running {
-  color: #2563eb;
-}
-.node-status--completed {
-  color: #16a34a;
-}
-.node-status--halting {
-  color: #ea580c;
-}
-.node-status--halted {
-  color: #4b5563;
-}
-.node-status--error {
-  color: #ca8a04;
-}
-.node-status--exception {
-  color: #dc2626;
-}
-.node-status--unrecognized {
-  color: #4b5563;
-}

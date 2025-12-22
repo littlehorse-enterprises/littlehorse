@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.ExitNode;
 import io.littlehorse.sdk.common.proto.ExitNode.ResultCase;
+import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -82,6 +83,15 @@ public class ExitNodeModel extends SubNode<ExitNode> {
         HashSet<String> out = new HashSet<>();
         if (failureDef != null) {
             out.addAll(failureDef.getNeededVariableNames());
+        }
+        return out;
+    }
+
+    @Override
+    public Set<String> getNeededNodeNames() {
+        Set<String> out = new HashSet<>();
+        if (returnContent != null && returnContent.getRhsSourceType() == SourceCase.NODE_OUTPUT) {
+            out.add(returnContent.getNodeOutputReference().getNodeName());
         }
         return out;
     }

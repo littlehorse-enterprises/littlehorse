@@ -17,6 +17,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -40,6 +41,7 @@ public class LHUtil {
 
     public static final Gson LH_GSON = new GsonBuilder()
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .serializeNulls()
             .create();
 
     public static Timestamp fromDate(Date date) {
@@ -379,5 +381,29 @@ public class LHUtil {
             legacyKey.append("/").append(restOfKey);
         }
         return legacyKey.toString();
+    }
+
+    public enum LHComparisonRule {
+        IDENTITY,
+        MAGNITUDE,
+        INCLUDES,
+    }
+
+    public static LHComparisonRule getRuleFromComparator(Comparator comparator) {
+        switch (comparator) {
+            case EQUALS:
+            case NOT_EQUALS:
+                return LHComparisonRule.IDENTITY;
+            case GREATER_THAN:
+            case GREATER_THAN_EQ:
+            case LESS_THAN:
+            case LESS_THAN_EQ:
+                return LHComparisonRule.MAGNITUDE;
+            case IN:
+            case NOT_IN:
+                return LHComparisonRule.INCLUDES;
+            case UNRECOGNIZED:
+        }
+        return null;
     }
 }
