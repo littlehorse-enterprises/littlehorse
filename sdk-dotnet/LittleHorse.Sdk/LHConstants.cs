@@ -19,7 +19,9 @@ internal static class LHConstants
         { Node.NodeOneofCase.StartMultipleThreads, "START_MULTIPLE_THREADS" },
         { Node.NodeOneofCase.ThrowEvent, "THROW_EVENT" },
         { Node.NodeOneofCase.WaitForCondition, "WAIT_FOR_CONDITION" },
-        { Node.NodeOneofCase.WaitForThreads, "WAIT_FOR_THREADS" }
+        { Node.NodeOneofCase.WaitForThreads, "WAIT_FOR_THREADS" },
+        { Node.NodeOneofCase.RunChildWf, "RUN_CHILD_WF" },
+        { Node.NodeOneofCase.WaitForChildWf, "WAIT_FOR_CHILD_WF" }
     };
 
     internal static readonly Dictionary<string, string> ErrorTypes = new()
