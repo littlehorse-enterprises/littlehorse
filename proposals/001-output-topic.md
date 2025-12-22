@@ -85,6 +85,8 @@ Therefore, we will separate metadata and execution data into two topics:
 1. The `metatadata-output` topic, which is a single-partition, compacted topic containing metadata updates.
 2. The `execution-output` topic, which is a multi-partition, non-compacted topic containing execution data updates.
 
+It is important for the metadata output topic to be single-partition so that all of the metadat `Getable`s have ordering.
+
 This will allow stream processors to load the current metadata snapshot through the compacted topic (think of a Kafka Streams Global Store), and then join the Execution Data against that snapshot in real time.
 
 Note that most metadata in LittleHorse is immutable—when you want to change it, you end up creating a new version, which is a separate LittleHorse API Object with its own ID—so historical version mismatching shouldn't be a problem if the consumer is up-to-date on metadata but way behind on execution data.

@@ -24,6 +24,8 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForChi
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForConditionNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForThreadsNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableMutationModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
@@ -31,6 +33,7 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
+import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
@@ -310,6 +313,23 @@ public class NodeModel extends LHSerializable<Node> {
 
         out.addAll(getSubNode().getNeededVariableNames());
 
+        return out;
+    }
+
+    /**
+     * Returns the set of all node names referred to by this Node
+     */
+    public Set<String> getRequiredNodeNames() {
+        Set<String> out = new HashSet<>();
+        for (EdgeModel edge : outgoingEdges) {
+            for (VariableMutationModel mutation : edge.getVariableMutations()) {
+                VariableAssignmentModel assignment = mutation.getRhsRhsAssignment();
+                if (assignment != null && assignment.getRhsSourceType() == SourceCase.NODE_OUTPUT) {
+                    out.add(assignment.getNodeOutputReference().getNodeName());
+                }
+            }
+        }
+        out.addAll(getSubNode().getNeededNodeNames());
         return out;
     }
 
