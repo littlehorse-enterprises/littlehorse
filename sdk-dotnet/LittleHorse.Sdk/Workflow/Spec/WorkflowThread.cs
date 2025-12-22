@@ -166,6 +166,12 @@ public class WorkflowThread
             case Node.NodeOneofCase.UserTask:
                 node.UserTask = (UserTaskNode) subNode;
                 break;
+            case Node.NodeOneofCase.RunChildWf:
+                node.RunChildWf = (RunChildWfNode) subNode;
+                break;
+            case Node.NodeOneofCase.WaitForChildWf:
+                node.WaitForChildWf = (WaitForChildWfNode) subNode;
+                break;
             case Node.NodeOneofCase.None:
                 throw new InvalidOperationException("Not possible");
         }
@@ -1008,6 +1014,54 @@ public class WorkflowThread
         string nodeName = AddNode("threads", Node.NodeOneofCase.WaitForThreads, waitNode);
         return new WaitForThreadsNodeOutput(nodeName, this);
     }
+
+    /// <summary>
+    /// Adds a RUN_CHILD_WF node to the ThreadSpec, starts a child WfRun and waits for it to complete.
+    /// </summary>
+    /// <param name="wfSpecName">
+    /// The name of the WfSpec we will run.
+    /// </param>
+    /// <param name="inputs">
+    /// The inputs that we will pass into the entrypoint ThreadRun.
+    /// </param>
+    /// <returns>A SpawnedChildWf which allows us to later wait for the child WfRun.</returns>
+    public SpawnedChildWf RunWf(string wfSpecName, Dictionary<string, object> inputs)
+    {
+        CheckIfWorkflowThreadIsActive();
+
+        RunChildWfNode node = new RunChildWfNode
+        {
+            MajorVersion = -1,
+            WfSpecName = wfSpecName
+        };
+
+        foreach (var keyValuePair in inputs)
+        {
+            node.Inputs.Add(keyValuePair.Key, AssignVariableHelper(keyValuePair.Value));
+        }
+
+        string nodeName = AddNode("run-" + wfSpecName, Node.NodeOneofCase.RunChildWf, node);
+        return new SpawnedChildWf(nodeName, this);
+
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="childToWaitFor"></param>
+    /// <returns></returns>
+    public NodeOutput WaitForChildWf(SpawnedChildWf childToWaitFor)
+    {
+        CheckIfWorkflowThreadIsActive();
+        if (childToWaitFor.Thread != this)
+        {
+            throw new InvalidOperationException("Currently cannot wait for WfRun started in other thread");
+        }
+
+        WaitForChildWfNode node = childToWaitFor.BuildNode();
+        string nodeName = AddNode("wait", Node.NodeOneofCase.WaitForChildWf, node);
+        return new NodeOutput(nodeName, this);
+    }
     
     /// <summary>
     /// Adds an EXIT node with no Failure defined. This causes the ThreadRun to complete gracefully.
@@ -1017,6 +1071,22 @@ public class WorkflowThread
     {
         CheckIfWorkflowThreadIsActive();
         AddNode("complete", Node.NodeOneofCase.Exit, new ExitNode());
+    }
+
+    /// <summary>
+    /// Adds an EXIT node which returns the provided result.
+    /// This causes the ThreadRun to complete gracefully.
+    /// It is equivalent to putting a call to `return;` early in your function.
+    /// </summary>
+    /// <param name="output">The data you want to return from this WorkflowThread.</param>
+    public void Complete(object output)
+    {
+        CheckIfWorkflowThreadIsActive();
+        ExitNode exitNode = new()
+        {
+            ReturnContent = AssignVariable(output)
+        };
+        AddNode("complete", Node.NodeOneofCase.Exit, exitNode);
     }
     
     /// <summary>
