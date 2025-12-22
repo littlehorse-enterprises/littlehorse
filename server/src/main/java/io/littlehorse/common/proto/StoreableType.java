@@ -51,6 +51,10 @@ public enum StoreableType
    * <code>TASK_QUEUE_HINT = 11;</code>
    */
   TASK_QUEUE_HINT(11),
+  /**
+   * <code>NODE_OUTPUT = 12;</code>
+   */
+  NODE_OUTPUT(12),
   UNRECOGNIZED(-1),
   ;
 
@@ -103,6 +107,10 @@ public enum StoreableType
    * <code>TASK_QUEUE_HINT = 11;</code>
    */
   public static final int TASK_QUEUE_HINT_VALUE = 11;
+  /**
+   * <code>NODE_OUTPUT = 12;</code>
+   */
+  public static final int NODE_OUTPUT_VALUE = 12;
 
 
   public final int getNumber() {
@@ -139,6 +147,7 @@ public enum StoreableType
       case 9: return WFRUN_STORED_INVENTORY;
       case 10: return CORRELATION_MARKER;
       case 11: return TASK_QUEUE_HINT;
+      case 12: return NODE_OUTPUT;
       default: return null;
     }
   }

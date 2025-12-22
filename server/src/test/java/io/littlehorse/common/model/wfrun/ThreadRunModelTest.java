@@ -1,5 +1,7 @@
 package io.littlehorse.common.model.wfrun;
 
+import static org.mockito.ArgumentMatchers.*;
+
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
