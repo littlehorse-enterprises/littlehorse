@@ -10,7 +10,7 @@ namespace LittleHorse.Sdk.Worker.Internal
     /// <typeparam name="T">It is the custom task worker.</typeparam>
     internal class LHServerConnectionManager<T>
     {
-        private const int HeartBeatIntervalMs = 5000;
+        private const int HeartBeatIntervalMs = 60000;
         private const int GrpcUnaryCallTimeoutSeconds = 30;
 
         private readonly LHConfig _config;
