@@ -8,7 +8,7 @@ public class MyWorker {
 
     private static final Logger log = LoggerFactory.getLogger(MyWorker.class);
 
-    @LHTaskMethod("greet")
+    @LHTaskMethod(value = "greet", description = "This task greets the user by name.")
     public String greeting(String name) {
         log.debug("Executing task greet");
         return "hello there, " + name;
