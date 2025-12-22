@@ -34,6 +34,9 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
     @Setter
     private ReturnTypeModel returnType;
 
+    @Setter
+    private String description;
+
     public TaskDefModel() {
         inputVars = new ArrayList<>();
     }
@@ -70,6 +73,11 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
                 .setReturnType(returnType.toProto());
+
+        if (description != null) {
+            b.setDescription(description);
+        }
+
         for (VariableDefModel entry : inputVars) {
             b.addInputVars(entry.toProto());
         }
@@ -82,6 +90,10 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
         TaskDef proto = (TaskDef) p;
         id = LHSerializable.fromProto(proto.getId(), TaskDefIdModel.class, context);
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
+
+        if (proto.hasDescription()) {
+            description = proto.getDescription();
+        }
 
         for (VariableDef entry : proto.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry, context));

@@ -12,12 +12,15 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ThrowEventNode;
+import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import lombok.Getter;
 
 public class ThrowEventNodeModel extends SubNode<ThrowEventNode> {
@@ -53,6 +56,15 @@ public class ThrowEventNodeModel extends SubNode<ThrowEventNode> {
     @Override
     public SubNodeRun<?> createSubNodeRun(Date time, CoreProcessorContext processorContext) {
         return new ThrowEventNodeRunModel(workflowEventDefId, context.castOnSupport(CoreProcessorContext.class));
+    }
+
+    @Override
+    public Set<String> getNeededNodeNames() {
+        Set<String> out = new HashSet<>();
+        if (content != null && content.getRhsSourceType() == SourceCase.NODE_OUTPUT) {
+            out.add(content.getNodeOutputReference().getNodeName());
+        }
+        return out;
     }
 
     @Override
