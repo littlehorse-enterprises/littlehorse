@@ -58,7 +58,7 @@ from littlehorse.model import (
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
     RunChildWfNode,
-    WaitForChildWfNode
+    WaitForChildWfNode,
 )
 from littlehorse.model.wf_spec_pb2 import PRIVATE_VAR
 from littlehorse.utils import negate_comparator, to_variable_value
@@ -79,7 +79,7 @@ NodeType = Union[
     StartMultipleThreadsNode,
     ThrowEventNode,
     RunChildWfNode,
-    WaitForChildWfNode
+    WaitForChildWfNode,
 ]
 
 
@@ -958,6 +958,7 @@ class WorkflowNode:
 
         raise ValueError("Node type not supported")
 
+
 class WorkflowInterruption:
     def __init__(self, name: str, thread_name: str) -> None:
         self.name = name
@@ -977,15 +978,18 @@ class WorkflowInterruption:
     def __str__(self) -> str:
         return to_json(self.compile())
 
+
 class SpawnedChildWf:
     def __init__(self, source_node_name: str, thread: WorkflowThread):
         self.source_node_name = source_node_name
         self.thread = thread
 
+
 class SpawnedThread:
     def __init__(self, name: str, number: WfRunVariable) -> None:
         self.name = name
         self.number = number
+
 
 class SpawnedThreads:
     def __init__(
@@ -1670,7 +1674,9 @@ class WorkflowThread:
 
         self.add_node("complete", exit_node)
 
-    def run_wf(self, wf_spec_name: str, inputs: Optional[dict[str, Any]] = None) -> SpawnedChildWf:
+    def run_wf(
+        self, wf_spec_name: str, inputs: Optional[dict[str, Any]] = None
+    ) -> SpawnedChildWf:
         self._check_if_active()
         inputs = {} if inputs is None else inputs
 
@@ -1679,23 +1685,23 @@ class WorkflowThread:
             major_version=-1,
             inputs={
                 key: to_variable_assignment(value) for key, value in inputs.items()
-            }
+            },
         )
         node_name = self.add_node("run-" + wf_spec_name, run_child_wf_node)
         return SpawnedChildWf(node_name, self)
 
     def wait_for_child_wf(self, childWf: SpawnedChildWf) -> NodeOutput:
         self._check_if_active()
-        if (childWf.thread != self):
+        if childWf.thread != self:
             raise ValueError("Currently cannot wait for WfRun started in other thread")
-        
+
         node = WaitForChildWfNode(
             child_wf_run_id=VariableAssignment(
                 node_output=VariableAssignment.NodeOutputReference(
                     node_name=childWf.source_node_name
                 )
             ),
-            child_wf_run_source_node=childWf.source_node_name
+            child_wf_run_source_node=childWf.source_node_name,
         )
 
         node_name = self.add_node("wait", node)
