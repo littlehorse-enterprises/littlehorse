@@ -56,7 +56,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
                 Overview
               </TabsTrigger>
               <TabsTrigger className="flex-1" value="node">
-                Node {nodeType}
+                Node {showNodeRun&& "run"}
               </TabsTrigger>
               {showNodeRun && hasFailures && (
                 <TabsTrigger className="flex-1" value="failures">

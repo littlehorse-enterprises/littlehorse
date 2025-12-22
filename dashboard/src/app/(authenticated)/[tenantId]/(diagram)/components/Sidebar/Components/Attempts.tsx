@@ -23,7 +23,7 @@ export const Attempts = ({
     <div className="ml-1 mt-1 ">
       <div className="flex items-center justify-between">
         <p className=" text-sm font-bold ">Attempts</p>
-        <DropdownMenu>
+       {attemptLength > 1 && <DropdownMenu>
           <DropdownMenuTrigger className="my-1" asChild>
             <Button variant="outline" className="  my-0  px-2 drop-shadow-none">
               {`${attemptIndex + 1}`}
@@ -37,7 +37,7 @@ export const Attempts = ({
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu>}
       </div>
       {attempt.status && <NodeStatus status={attempt.status} type="task" />}
       <NodeVariable label="scheduleTime:" text={`${attempt.scheduleTime}`} type="date" />

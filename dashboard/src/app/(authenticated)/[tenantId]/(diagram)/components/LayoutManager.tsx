@@ -22,7 +22,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[] }> = ({ nodeRuns }) => {
           'elk.spacing.nodeNode': '150',
           'elk.layered.spacing.nodeNodeBetweenLayers': '200',
           'elk.spacing.edgeEdge': '100',
-          'elk.spacing.edgeNode': '50',
+          'elk.spacing.edgeNode': '100',
           'elk.edgeRouting': 'ORTHOGONAL',
           'elk.layered.nodePlacement.strategy': 'LINEAR_SEGMENTS',
           'elk.layered.cycleBreaking.strategy': 'DEPTH_FIRST',

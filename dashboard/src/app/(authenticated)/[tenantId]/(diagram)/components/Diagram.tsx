@@ -26,7 +26,7 @@ import edgeTypes from './EdgeTypes'
 import { extractEdges } from './EdgeTypes/extractEdges'
 import { LayoutManager } from './LayoutManager'
 import nodeTypes from './NodeTypes'
-import { extractNodes } from './NodeTypes/extractNodes'
+import { extractNodes, getCycleNodes } from './NodeTypes/extractNodes'
 import { Sidebar } from './Sidebar'
 import { ThreadPanel } from './ThreadPanel'
 
