@@ -148,16 +148,28 @@ public interface TaskDefOrBuilder extends
   io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getReturnTypeOrBuilder();
 
   /**
+   * <pre>
+   * Optional description of the TaskDef.
+   * </pre>
+   *
    * <code>optional string description = 5;</code>
    * @return Whether the description field is set.
    */
   boolean hasDescription();
   /**
+   * <pre>
+   * Optional description of the TaskDef.
+   * </pre>
+   *
    * <code>optional string description = 5;</code>
    * @return The description.
    */
   java.lang.String getDescription();
   /**
+   * <pre>
+   * Optional description of the TaskDef.
+   * </pre>
+   *
    * <code>optional string description = 5;</code>
    * @return The bytes for description.
    */

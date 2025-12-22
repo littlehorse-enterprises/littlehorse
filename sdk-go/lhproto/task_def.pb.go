@@ -38,8 +38,9 @@ type TaskDef struct {
 	//
 	// Versions after 0.13.2 require that typing information is provided when creating
 	// TaskDef's.
-	ReturnType  *ReturnType `protobuf:"bytes,4,opt,name=return_type,json=returnType,proto3,oneof" json:"return_type,omitempty"`
-	Description *string     `protobuf:"bytes,5,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	ReturnType *ReturnType `protobuf:"bytes,4,opt,name=return_type,json=returnType,proto3,oneof" json:"return_type,omitempty"`
+	// Optional description of the TaskDef.
+	Description *string `protobuf:"bytes,5,opt,name=description,proto3,oneof" json:"description,omitempty"`
 }
 
 func (x *TaskDef) Reset() {

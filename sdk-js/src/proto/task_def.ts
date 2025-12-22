@@ -29,7 +29,10 @@ export interface TaskDef {
    * Versions after 0.13.2 require that typing information is provided when creating
    * TaskDef's.
    */
-  returnType?: ReturnType | undefined;
+  returnType?:
+    | ReturnType
+    | undefined;
+  /** Optional description of the TaskDef. */
   description?: string | undefined;
 }
 
