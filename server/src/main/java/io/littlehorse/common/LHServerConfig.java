@@ -404,8 +404,12 @@ public class LHServerConfig extends ConfigBase {
         String executionTopicName = getExecutionOutputTopicName(tenant.getId());
         String metadataTopicName = getMetadataOutputTopicName(tenant.getId());
 
+        // metadata topic is compacted
+        Map<String, String> compactedTopicConfig =
+                Map.of(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
+
         return Pair.of(
-                new NewTopic(metadataTopicName, 1, getReplicationFactor()),
+                new NewTopic(metadataTopicName, 1, getReplicationFactor()).configs(compactedTopicConfig),
                 new NewTopic(executionTopicName, getOutputToppicPartitions(), getReplicationFactor()));
     }
 
