@@ -32,6 +32,10 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 + storeKey;
     }
 
+    public static String getGroupedFullStoreKey(WfRunIdModel wfRunId, StoreableType type, String storeKey) {
+        return GROUPED_WF_RUN_PREFIX + "/" + wfRunId + "/" + type.getNumber() + "/" + storeKey;
+    }
+
     public static String getGroupedGetableStorePrefix(
             String wfRunId, StoreableType type, GetableClassEnum getableType) {
         return GROUPED_WF_RUN_PREFIX + "/" + wfRunId + "/" + type.getNumber() + "/" + getableType.getNumber() + "/";
@@ -58,8 +62,6 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
         switch (cls.getSimpleName()) {
             case "StoredGetable":
                 return StoreableType.STORED_GETABLE;
-            case "LHTimer":
-                return StoreableType.LH_TIMER;
             case "Tag":
                 return StoreableType.TAG;
             case "ScheduledTaskModel":
@@ -68,8 +70,6 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.TASK_METRIC_UPDATE;
             case "PartitionMetricsModel":
                 return StoreableType.PARTITION_METRICS;
-            case "MetricWindowModel":
-                return StoreableType.METRIC_WINDOW;
             case "InitializationLogModel":
                 return StoreableType.INITIALIZATION_LOG;
             case "WfRunStoredInventoryModel":
@@ -78,6 +78,8 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.CORRELATION_MARKER;
             case "TaskQueueHintModel":
                 return StoreableType.TASK_QUEUE_HINT;
+            case "NodeOutputModel":
+                return StoreableType.NODE_OUTPUT;
         }
         throw new IllegalArgumentException("Unrecognized Storeable class: " + cls);
     }

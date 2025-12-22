@@ -15,6 +15,7 @@ import (
 )
 
 const TOTAL_RETRIES = 5
+const HEARTBEAT_INTERVAL = time.Minute
 
 func (tw *LHTaskWorker) registerTaskDef() error {
 	ptd := &lhproto.PutTaskDefRequest{
@@ -256,7 +257,7 @@ func (m *serverConnectionManager) start() {
 			}
 		}
 
-		time.Sleep(time.Duration(time.Second * 8))
+		time.Sleep(HEARTBEAT_INTERVAL)
 	}
 
 }

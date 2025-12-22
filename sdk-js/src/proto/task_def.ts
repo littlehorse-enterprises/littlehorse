@@ -29,11 +29,15 @@ export interface TaskDef {
    * Versions after 0.13.2 require that typing information is provided when creating
    * TaskDef's.
    */
-  returnType?: ReturnType | undefined;
+  returnType?:
+    | ReturnType
+    | undefined;
+  /** Optional description of the TaskDef. */
+  description?: string | undefined;
 }
 
 function createBaseTaskDef(): TaskDef {
-  return { id: undefined, inputVars: [], createdAt: undefined, returnType: undefined };
+  return { id: undefined, inputVars: [], createdAt: undefined, returnType: undefined, description: undefined };
 }
 
 export const TaskDef = {
@@ -49,6 +53,9 @@ export const TaskDef = {
     }
     if (message.returnType !== undefined) {
       ReturnType.encode(message.returnType, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.description !== undefined) {
+      writer.uint32(42).string(message.description);
     }
     return writer;
   },
@@ -88,6 +95,13 @@ export const TaskDef = {
 
           message.returnType = ReturnType.decode(reader, reader.uint32());
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -105,6 +119,7 @@ export const TaskDef = {
         : [],
       createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
       returnType: isSet(object.returnType) ? ReturnType.fromJSON(object.returnType) : undefined,
+      description: isSet(object.description) ? globalThis.String(object.description) : undefined,
     };
   },
 
@@ -122,6 +137,9 @@ export const TaskDef = {
     if (message.returnType !== undefined) {
       obj.returnType = ReturnType.toJSON(message.returnType);
     }
+    if (message.description !== undefined) {
+      obj.description = message.description;
+    }
     return obj;
   },
 
@@ -136,6 +154,7 @@ export const TaskDef = {
     message.returnType = (object.returnType !== undefined && object.returnType !== null)
       ? ReturnType.fromPartial(object.returnType)
       : undefined;
+    message.description = object.description ?? undefined;
     return message;
   },
 };

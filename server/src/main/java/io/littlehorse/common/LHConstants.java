@@ -46,7 +46,7 @@ public class LHConstants {
 
     public static final int DEFAULT_LIMIT = 1000;
     public static final int MIN_WORKER_ASSIGNMENT_BY_SERVER = 2;
-    public static final long MAX_TASK_WORKER_INACTIVITY = 15L;
+    public static final long MAX_TASK_WORKER_INACTIVITY = 90L;
 
     public static final String CLUSTER_LEVEL_METRIC = "CLUSTER_LEVEL_METRIC";
 
@@ -68,6 +68,7 @@ public class LHConstants {
     public static final String PARTITION_METRICS_KEY = "partitionMetrics";
 
     public static final Duration MAX_INCOMING_REQUEST_IDLE_TIME = Duration.ofSeconds(60);
+    public static final int MAX_STACK_FRAMES_PER_COMMAND = 512;
 
     public static final String STRING_MASK = "*****";
 }

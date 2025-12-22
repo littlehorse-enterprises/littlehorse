@@ -117,6 +117,9 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
             case CORRELATED_EVENT:
                 correlatedEvent = LHSerializable.fromProto(p.getCorrelatedEvent(), CorrelatedEventModel.class, ignored);
                 break;
+            case TASK_CHECKPOINT:
+                checkpoint = LHSerializable.fromProto(p.getTaskCheckpoint(), CheckpointModel.class, ignored);
+                break;
             case PAYLOAD_NOT_SET:
         }
     }
@@ -141,6 +144,8 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
                 return variable;
             case CORRELATED_EVENT:
                 return correlatedEvent;
+            case TASK_CHECKPOINT:
+                return checkpoint;
             case PAYLOAD_NOT_SET:
         }
         throw new IllegalStateException("Forgot to add new output topic record type here");
@@ -172,6 +177,9 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
         } else if (CorrelatedEventModel.class.isAssignableFrom(thing.getClass())) {
             this.payloadCase = PayloadCase.CORRELATED_EVENT;
             this.correlatedEvent = (CorrelatedEventModel) thing;
+        } else if (CheckpointModel.class.isAssignableFrom(thing.getClass())) {
+            this.payloadCase = PayloadCase.TASK_CHECKPOINT;
+            this.checkpoint = (CheckpointModel) thing;
         } else {
             throw new IllegalArgumentException("Unrecognized Output Topic Event thing: " + thing.getClass());
         }
