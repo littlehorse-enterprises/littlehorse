@@ -166,6 +166,12 @@ public class WorkflowThread
             case Node.NodeOneofCase.UserTask:
                 node.UserTask = (UserTaskNode) subNode;
                 break;
+            case Node.NodeOneofCase.RunChildWf:
+                node.RunChildWf = (RunChildWfNode) subNode;
+                break;
+            case Node.NodeOneofCase.WaitForChildWf:
+                node.WaitForChildWf = (WaitForChildWfNode) subNode;
+                break;
             case Node.NodeOneofCase.None:
                 throw new InvalidOperationException("Not possible");
         }
