@@ -1,5 +1,6 @@
 package io.littlehorse.server.streams.taskqueue;
 
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
@@ -18,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> {
 
-    private StreamObserver<PollTaskResponse> responseObserver;
+    private ServerCallStreamObserver<PollTaskResponse> responseObserver;
     private TaskQueueManager taskQueueManager;
 
     @Getter
@@ -37,9 +38,14 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private CoreStoreProvider coreStoreProvider;
     private final MetadataCache metadataCache;
     private LHServerConfig config;
+    // Guard against spurious onReady() calls caused by a race between onNext() and onReady(). If the transport
+    // toggles isReady() from false to true while onNext() is executing, but before onNext() checks isReady(),
+    // request(1) would be called twice - once by onNext() and once by the onReady() scheduled during onNext()'s
+    // execution.
+    private boolean wasReady = false;
 
     public PollTaskRequestObserver(
-            StreamObserver<PollTaskResponse> responseObserver,
+            ServerCallStreamObserver<PollTaskResponse> responseObserver,
             TaskQueueManager manager,
             TenantIdModel tenantId,
             PrincipalIdModel principalId,
@@ -48,6 +54,8 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             LHServerConfig config,
             RequestExecutionContext requestContext) {
         this.responseObserver = responseObserver;
+        this.responseObserver.disableAutoRequest();
+        this.responseObserver.setOnReadyHandler(new OnReadyHandler());
         this.taskQueueManager = manager;
         this.principalId = principalId;
         this.tenantId = tenantId;
@@ -99,8 +107,15 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         taskDefId = LHSerializable.fromProto(req.getTaskDefId(), TaskDefIdModel.class, requestContext);
         clientId = req.getClientId();
         taskWorkerVersion = req.getTaskWorkerVersion();
-
         taskQueueManager.onPollRequest(this, tenantId, requestContext);
+        // Check the provided ServerCallStreamObserver to see if it is still ready to accept more messages.
+        if (responseObserver.isReady()) {
+            // Signal the worker to send another request.
+            responseObserver.request(1);
+        } else {
+            // back-pressure has begun.
+            wasReady = false;
+        }
     }
 
     @Override
@@ -123,6 +138,20 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             PollTaskResponse response =
                     PollTaskResponse.newBuilder().setResult(toExecute.toProto()).build();
             responseObserver.onNext(response);
+        }
+    }
+
+    private final class OnReadyHandler implements Runnable {
+        @Override
+        public void run() {
+            if (responseObserver.isReady() && !wasReady) {
+                wasReady = true;
+                log.trace("Response observer ready");
+                // Signal the request sender to send one message. This happens when isReady() turns true, signaling that
+                // the receive buffer has enough free space to receive more messages. Calling request() serves to prime
+                // the message pump.
+                responseObserver.request(1);
+            }
         }
     }
 }
