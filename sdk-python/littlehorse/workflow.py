@@ -1686,7 +1686,7 @@ class WorkflowThread:
 
     def wait_for_child_wf(self, childWf: SpawnedChildWf) -> NodeOutput:
         self._check_if_active()
-        if (childWf.thread == self):
+        if (childWf.thread != self):
             raise ValueError("Currently cannot wait for WfRun started in other thread")
         
         node = WaitForChildWfNode(
