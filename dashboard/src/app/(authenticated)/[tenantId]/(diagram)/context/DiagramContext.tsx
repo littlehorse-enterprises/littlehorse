@@ -2,8 +2,6 @@ import { Node as NodeProto, NodeRun, WfRun } from 'littlehorse-client/proto'
 import { Dispatch, SetStateAction, createContext } from 'react'
 import { Node } from 'reactflow'
 import { NodeType } from '../components/NodeTypes/extractNodes'
-import { NodeRunCase } from '../components/Modals/NodeRun/AccordionContent'
-import { NodeProps as NodeFlow } from 'reactflow'
 
 export type ThreadType = {
   name: string

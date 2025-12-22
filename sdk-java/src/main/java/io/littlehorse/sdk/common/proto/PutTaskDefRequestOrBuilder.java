@@ -105,4 +105,33 @@ public interface PutTaskDefRequestOrBuilder extends
    * <code>.littlehorse.ReturnType return_type = 3;</code>
    */
   io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getReturnTypeOrBuilder();
+
+  /**
+   * <pre>
+   * Optional description of the TaskDef.
+   * </pre>
+   *
+   * <code>optional string description = 4;</code>
+   * @return Whether the description field is set.
+   */
+  boolean hasDescription();
+  /**
+   * <pre>
+   * Optional description of the TaskDef.
+   * </pre>
+   *
+   * <code>optional string description = 4;</code>
+   * @return The description.
+   */
+  java.lang.String getDescription();
+  /**
+   * <pre>
+   * Optional description of the TaskDef.
+   * </pre>
+   *
+   * <code>optional string description = 4;</code>
+   * @return The bytes for description.
+   */
+  com.google.protobuf.ByteString
+      getDescriptionBytes();
 }

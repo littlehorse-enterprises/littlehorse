@@ -259,6 +259,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getScheduledWfRun(ScheduledWfRunId req, StreamObserver<ScheduledWfRun> ctx) {
         ScheduledWfRunIdModel scheduledWfId =
                 LHSerializable.fromProto(req, ScheduledWfRunIdModel.class, requestContext());
