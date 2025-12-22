@@ -2,8 +2,6 @@ package io.littlehorse.common.model.getable.objectId;
 
 import java.util.Optional;
 
-import com.google.protobuf.GeneratedMessage;
-import com.google.protobuf.GeneratedMessage.Builder;
 import com.google.protobuf.Message;
 
 import io.littlehorse.common.model.getable.CoreObjectId;
@@ -15,7 +13,6 @@ import io.littlehorse.sdk.common.proto.ArchivedThreadRun;
 import io.littlehorse.sdk.common.proto.ArchivedThreadRunId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
-//extends CoreObjectId<CorrelatedEventId, CorrelatedEvent, CorrelatedEventModel>
 public class ArchivedThreadRunIdModel extends CoreObjectId<ArchivedThreadRunId, ArchivedThreadRun, ArchivedThreadRunModel> {
 
   private WfRunIdModel wfRunId;
@@ -28,7 +25,7 @@ public class ArchivedThreadRunIdModel extends CoreObjectId<ArchivedThreadRunId, 
 
   @Override
   public Optional<String> getPartitionKey() {
-    return Optional.of(null);
+    return wfRunId.getPartitionKey();
   }
 
   @Override

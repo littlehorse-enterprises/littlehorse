@@ -9,6 +9,7 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunIterator;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNodeRunModel;
@@ -97,10 +98,10 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
             startingNodeRun = bookmark.getLastNodeRunPosition();
         }
 
-        for (int threadRunNumber = startingThread;
-                threadRunNumber < wfRun.getThreadRunsUseMeCarefully().size();
-                threadRunNumber++) {
-            ThreadRunModel thread = wfRun.getThreadRunsUseMeCarefully().get(threadRunNumber);
+        ThreadRunIterator threadRunIterator = wfRun.getThreadRunIterator();
+
+        while (threadRunIterator.hasNext()) {
+            ThreadRunModel thread = threadRunIterator.next();
             for (int nodeRunPosition = startingNodeRun;
                     nodeRunPosition <= thread.getCurrentNodePosition();
                     nodeRunPosition++) {
@@ -132,7 +133,7 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
                 if (thingsDone >= maxDeletesInOneCommand) {
                     log.debug("Not done deleting nodeRuns for {}", wfRunId);
                     DeleteWfRunBookmark.Builder result = DeleteWfRunBookmark.newBuilder()
-                            .setLastThreadRunNumber(threadRunNumber)
+                            .setLastThreadRunNumber(thread.getNumber())
                             .setLastNodeRunPosition(nodeRunPosition + 1);
                     return result.build();
                 }

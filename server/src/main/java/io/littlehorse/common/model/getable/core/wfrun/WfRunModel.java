@@ -45,6 +45,7 @@ import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
@@ -60,6 +61,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +76,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     private WfRunIdModel id;
     private WfSpecIdModel wfSpecId;
     private List<WfSpecIdModel> oldWfSpecVersions = new ArrayList<>();
+
+    // TODO: Iterate over all threadruns, archived included
     private int greatestThreadRunNumber;
 
     public LHStatus status;
@@ -81,6 +86,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     public Date endTime;
 
     // Using this directly is dangerous; better to use `WfRunModel#getThreadRun()`.
+    // TODO: Carefully examine where this is used
+    @Getter(AccessLevel.NONE)
     private List<ThreadRunModel> threadRunsUseMeCarefully = new ArrayList<>();
 
     public List<PendingInterruptModel> pendingInterrupts = new ArrayList<>();
@@ -193,10 +200,20 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     public ThreadRunModel getThreadRun(int threadRunNumber) {
-        return threadRunsUseMeCarefully.stream()
+        ThreadRunModel localThreadRun = threadRunsUseMeCarefully.stream()
                 .filter(thread -> thread.getNumber() == threadRunNumber)
                 .findFirst()
                 .orElse(null);
+
+        if (localThreadRun != null) return localThreadRun;
+
+        // Pull up ThreadRun from GetableManager
+        return null;
+    }
+
+    public ThreadRunIterator getThreadRunIterator() {
+        // TODO: How to get getableManager?
+        return new ThreadRunIterator(id, threadRunsUseMeCarefully, greatestThreadRunNumber, null);
     }
 
     @Override
@@ -465,6 +482,25 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         nodeRun.maybeHalt(processorContext);
     }
 
+    /*
+    CONCEPT METHOD (would merge with the other advance method if things work out)
+    */
+    public void advance(Date time, GetableManager getableManager) {
+        this.advance(time);
+        
+        for (ThreadRunModel threadRunModel : threadRunsUseMeCarefully) {
+            if (threadRunModel.type == ThreadType.ENTRYPOINT) continue;
+            
+            if (threadRunModel.status == LHStatus.COMPLETED) { 
+                removeThreadRun(threadRunModel);
+                
+                ArchivedThreadRunModel archivedThreadRunModel = new ArchivedThreadRunModel(threadRunModel);
+
+                getableManager.put(archivedThreadRunModel);
+            }
+        }
+    }
+
     public void advance(Date time) {
         boolean statusChanged = true;
         // We repeatedly advance each thread until we have a run wherein the entire
@@ -482,6 +518,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 transitionTo(LHStatus.ERROR);
                 break;
             }
+
             if (this.threadRunsUseMeCarefully.size() > LHConstants.MAX_THREAD_RUNS_PER_WF_RUN) {
                 putFailureOnThreadRun(
                         getThreadRun(0),
@@ -502,6 +539,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
         }
 
+        // TODO: Check if this code is used, see SDKs
         // Now we remove any old threadruns according to the retention policy
         for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
             ThreadRunModel thread = threadRunsUseMeCarefully.get(i);

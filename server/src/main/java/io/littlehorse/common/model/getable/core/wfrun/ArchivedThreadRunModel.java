@@ -17,10 +17,13 @@ import io.littlehorse.sdk.common.proto.ArchivedThreadRun;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.Getter;
 
 public class ArchivedThreadRunModel extends CoreGetable<ArchivedThreadRun> implements CoreOutputTopicGetable<ArchivedThreadRun> {
 
   private ArchivedThreadRunIdModel id;
+
+  @Getter
   private ThreadRunModel threadRun;
 
   public ArchivedThreadRunModel(ThreadRunModel threadRun) {
