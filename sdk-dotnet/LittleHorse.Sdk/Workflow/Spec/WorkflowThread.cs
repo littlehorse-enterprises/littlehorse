@@ -1018,6 +1018,22 @@ public class WorkflowThread
         CheckIfWorkflowThreadIsActive();
         AddNode("complete", Node.NodeOneofCase.Exit, new ExitNode());
     }
+
+    /// <summary>
+    /// Adds an EXIT node which returns the provided result.
+    /// This causes the ThreadRun to complete gracefully.
+    /// It is equivalent to putting a call to `return;` early in your function.
+    /// </summary>
+    /// <param name="output">The data you want to return from this WorkflowThread.</param>
+    public void Complete(object output)
+    {
+        CheckIfWorkflowThreadIsActive();
+        ExitNode exitNode = new()
+        {
+            ReturnContent = AssignVariable(output)
+        };
+        AddNode("complete", Node.NodeOneofCase.Exit, exitNode);
+    }
     
     /// <summary>
     /// Adds a SPAWN_THREAD node to the ThreadSpec, which spawns a Child ThreadRun whose ThreadSpec
