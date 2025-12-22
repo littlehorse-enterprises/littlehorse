@@ -3815,7 +3815,7 @@ class ExternalEventNodeTest(unittest.TestCase):
 class TestRunWf(unittest.TestCase):
     def test_run_wf_without_input(self):
         def wf_func(wf: WorkflowThread) -> None:
-            runChildWf = wf.run_wf("child-wf-spec", {})
+            wf.run_wf("child-wf-spec", {})
         
         compiled_wf_spec = Workflow("some-wf", wf_func).compile()
 
@@ -3831,7 +3831,8 @@ class TestRunWf(unittest.TestCase):
     def test_run_wf_with_input(self):
         def wf_func(wf: WorkflowThread) -> None:
             input = wf.declare_str("input").required()
-            runChildWf = wf.run_wf("child-wf-spec", {
+
+            wf.run_wf("child-wf-spec", {
                 "input-var-1": input,
                 "input-var-2": 1000
             })
