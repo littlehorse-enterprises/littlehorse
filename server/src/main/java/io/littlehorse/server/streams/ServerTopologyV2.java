@@ -56,6 +56,7 @@ public class ServerTopologyV2 extends Topology {
 
     private final ProcessorSupplier<String, Command, String, CommandProcessorOutput> commandProcessorSupplier;
     private final ProcessorSupplier<String, CommandProcessorOutput, String, Forwardable> routerProcessorSupplier;
+    private final ProcessorSupplier<String, CommandProcessorOutput, String, Forwardable> routerProcessor2Supplier;
     private final ProcessorSupplier<String, LHTimer, String, Object> routerProcessorTimer2Supplier;
     private final ProcessorSupplier<String, LHTimer, String, Object> timerProcessorSupplier;
     private final ProcessorSupplier<String, Command, String, CommandProcessorOutput> timerCommandProcessorSupplier;
@@ -94,7 +95,9 @@ public class ServerTopologyV2 extends Topology {
                 () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager, asyncWaiters);
         this.routerProcessorSupplier = () -> ProcessorOutputRouter.createCommandProcessorRouter(
                 TIMER_PROCESSOR_NAME, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR);
-        this.routerProcessorTimer2Supplier = () -> ProcessorOutputRouter.createTimerProcessorRouter();
+        this.routerProcessor2Supplier = () -> ProcessorOutputRouter.createCommandProcessorRouter(
+                TIMER_WITHOUT_FORWARD_PROCESSOR_NAME, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR);
+        this.routerProcessorTimer2Supplier = ProcessorOutputRouter::createTimerProcessorRouter;
         this.timerProcessorSupplier = () -> new TimerCoreProcessor(true);
         this.passthroughRepartitionProcessor = ProcessorOutputRouter::createPassthroughRepartitionRouter;
         this.timerCommandProcessorSupplier =
@@ -154,7 +157,7 @@ public class ServerTopologyV2 extends Topology {
         serverTopology.addProcessor(
                 TIMER_COMMAND_PROCESSOR_NAME, timerCommandProcessorSupplier, TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME);
         serverTopology.addProcessor(
-                ROUTER_PROCESSOR_NAME + "-2", routerProcessorSupplier, TIMER_COMMAND_PROCESSOR_NAME);
+                ROUTER_PROCESSOR_NAME + "-2", routerProcessor2Supplier, TIMER_COMMAND_PROCESSOR_NAME);
         serverTopology.addProcessor(
                 TIMER_WITHOUT_FORWARD_PROCESSOR_NAME,
                 timerWithoutForwardProcessorSupplier,
