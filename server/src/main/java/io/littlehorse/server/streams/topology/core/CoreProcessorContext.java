@@ -305,4 +305,8 @@ public class CoreProcessorContext implements ExecutionContext {
     public void notifyOfEventThrown(WorkflowEventModel event) {
         this.eventsToThrow.add(event);
     }
+
+    public TenantScopedStore getCoreStore() {
+        return coreStore;
+    }
 }
