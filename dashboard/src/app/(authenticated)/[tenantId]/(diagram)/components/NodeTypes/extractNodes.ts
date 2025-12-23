@@ -1,4 +1,4 @@
-import { Node as NodeProto, ThreadSpec, WfSpec } from 'littlehorse-client/proto'
+import { Node as NodeProto, ThreadSpec } from 'littlehorse-client/proto'
 import { Node, NodeProps } from 'reactflow'
 
 export const extractNodes = (spec: ThreadSpec): Node<NodeProto, NodeType>[] => {
@@ -12,47 +12,102 @@ export const extractNodes = (spec: ThreadSpec): Node<NodeProto, NodeType>[] => {
     }
   })
 }
-export const getCycleNodes = (threadSpec: WfSpec['threadSpecs'][string]) => {
-  Object.entries(threadSpec.nodes).forEach(([nodeId, node]) => {
-    if (node.outgoingEdges.length >= 2) {
-      const sourceNum = parseInt(nodeId.split('-')[0])
-      node.outgoingEdges.forEach(edge => {
-        const targetNum = parseInt(edge.sinkNodeName.split('-')[0])
-        if (targetNum <= sourceNum) {
-          const targetNodeId = edge.sinkNodeName
-          const cycleNodeId = `cycle-${nodeId}-${edge.sinkNodeName}`
+/**
+ * Detects cycles in the graph using DFS and topological ordering
+ * Returns a set of edges that create cycles (back edges)
+ */
+const detectCycleEdges = (nodes: ThreadSpec['nodes']): Set<string> => {
+  const visited = new Set<string>()
+  const recursionStack = new Set<string>()
+  const cycleEdges = new Set<string>()
 
-          type NodeMap = (typeof threadSpec.nodes)[string]
-          const cycleNode: NodeMap = {
-            outgoingEdges: [
-              {
-                sinkNodeName: targetNodeId,
-                variableMutations: [],
-              },
-            ],
-            failureHandlers: [],
-            node: { $case: 'cycle', value: {} } as unknown as NodeMap['node'],
-          }
+  const dfs = (nodeId: string, path: string[] = []): void => {
+    visited.add(nodeId)
+    recursionStack.add(nodeId)
 
-          threadSpec.nodes[cycleNodeId] = cycleNode
+    const node = nodes[nodeId]
+    if (!node) return
 
-          threadSpec.nodes[edge.sinkNodeName].outgoingEdges = threadSpec.nodes[edge.sinkNodeName].outgoingEdges.filter(
-            edgeItem => {
-              return edgeItem.sinkNodeName !== nodeId
-            }
-          )
-          if (!threadSpec.nodes[nodeId].outgoingEdges.some(e => e.sinkNodeName === cycleNodeId)) {
-            threadSpec.nodes[nodeId].outgoingEdges.push({
-              sinkNodeName: cycleNodeId,
-              variableMutations: [],
-            })
-          }
-          threadSpec.nodes[nodeId].outgoingEdges = threadSpec.nodes[nodeId].outgoingEdges.filter(edgeItem => {
-            return edgeItem.sinkNodeName !== edge.sinkNodeName
-          })
-        }
+    for (const edge of node.outgoingEdges) {
+      const targetId = edge.sinkNodeName
+
+      // If target is in recursion stack, we found a back edge (cycle)
+      if (recursionStack.has(targetId)) {
+        cycleEdges.add(`${nodeId}->${targetId}`)
+      } else if (!visited.has(targetId)) {
+        dfs(targetId, [...path, nodeId])
+      }
+    }
+
+    recursionStack.delete(nodeId)
+  }
+
+  // Start DFS from all nodes (to handle disconnected components)
+  Object.keys(nodes).forEach(nodeId => {
+    if (!visited.has(nodeId)) {
+      dfs(nodeId)
+    }
+  })
+
+  return cycleEdges
+}
+
+export const getCycleNodes = (threadSpec: ThreadSpec) => {
+  // Check if cycle nodes already exist (function already executed)
+  const hasCycleNodes = Object.keys(threadSpec.nodes).some(nodeId => nodeId.startsWith('cycle-'))
+  if (hasCycleNodes) {
+    return threadSpec // Already processed, skip
+  }
+
+  // Detect all cycle edges in the graph
+  const cycleEdges = detectCycleEdges(threadSpec.nodes)
+  if (cycleEdges.size === 0) return
+  // Process each cycle edge and insert cycle nodes
+  cycleEdges.forEach(edgeKey => {
+    const [sourceId, targetId] = edgeKey.split('->')
+    const sourceNode = threadSpec.nodes[sourceId]
+
+    if (!sourceNode) return
+
+    // Find the edge that creates the cycle
+    const cycleEdge = sourceNode.outgoingEdges.find(edge => edge.sinkNodeName === targetId)
+
+    if (!cycleEdge) return
+
+    const cycleNodeId = `cycle-${sourceId}-${targetId}`
+    type ExtendedNode = Omit<NodeProto, 'node'> & {
+      node: NodeProto['node'] | { $case: 'cycle'; value: {} }
+    }
+    const cycleNode: ExtendedNode = {
+      outgoingEdges: [
+        {
+          sinkNodeName: targetId,
+          variableMutations: [],
+        },
+      ],
+      failureHandlers: [],
+      node: { $case: 'cycle', value: {} },
+    }
+    // Add the cycle node to the graph
+    threadSpec.nodes[cycleNodeId] = cycleNode as unknown as NodeProto
+
+    // Remove back edge from target to source (if it exists)
+    if (threadSpec.nodes[targetId]) {
+      threadSpec.nodes[targetId].outgoingEdges = threadSpec.nodes[targetId].outgoingEdges.filter(
+        edge => edge.sinkNodeName !== sourceId
+      )
+    }
+
+    // Replace the direct cycle edge with an edge to the cycle node
+    if (!sourceNode.outgoingEdges.some(e => e.sinkNodeName === cycleNodeId)) {
+      sourceNode.outgoingEdges.push({
+        sinkNodeName: cycleNodeId,
+        variableMutations: [],
       })
     }
+
+    // Remove the original edge that creates the cycle
+    sourceNode.outgoingEdges = sourceNode.outgoingEdges.filter(edge => edge.sinkNodeName !== targetId)
   })
   return threadSpec
 }
