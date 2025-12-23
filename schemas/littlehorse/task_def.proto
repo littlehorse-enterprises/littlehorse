@@ -29,6 +29,6 @@ message TaskDef {
   // TaskDef's.
   optional ReturnType return_type = 4;
 
-    // Optional description of the TaskDef.
-    optional string description = 5;
+  // Optional description of the TaskDef.
+  optional string description = 5;
 }

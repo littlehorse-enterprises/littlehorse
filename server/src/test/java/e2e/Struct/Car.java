@@ -10,11 +10,11 @@ import lombok.Setter;
 public class Car {
     public String brand;
     public String model;
-    public int mileage;
+    public Integer mileage;
 
     public Car() {}
 
-    public Car(String brand, String model, int mileage) {
+    public Car(String brand, String model, Integer mileage) {
         this.brand = brand;
         this.model = model;
         this.mileage = mileage;

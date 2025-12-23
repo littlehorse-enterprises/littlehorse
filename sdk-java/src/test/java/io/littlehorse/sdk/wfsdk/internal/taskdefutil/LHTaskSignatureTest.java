@@ -1,6 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.StructDefId;
@@ -38,6 +38,9 @@ public class LHTaskSignatureTest {
 
         @LHTaskMethod("person-task")
         public void personTask(Person person) {}
+
+        @LHTaskMethod(value = "description-task", description = "description-test")
+        public void descriptionTask() {}
     }
 
     @LHStructDef("car")
@@ -63,6 +66,15 @@ public class LHTaskSignatureTest {
         String address;
         int size;
         Person owner;
+    }
+
+    @Test
+    void shouldGetDescriptionFromAnnotation() {
+        LHTaskSignature taskSignature = new LHTaskSignature("description-task", new MyWorker(), "description-task");
+        String actualDescription = taskSignature.getTaskDefDescription();
+        String expectedDescription = "description-test";
+
+        assertThat(actualDescription).isEqualTo(expectedDescription);
     }
 
     @Test
