@@ -154,19 +154,16 @@ public class ServerTopologyV2 extends Topology {
         serverTopology.addProcessor(
                 TIMER_COMMAND_PROCESSOR_NAME, timerCommandProcessorSupplier, TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME);
         serverTopology.addProcessor(
-                TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME+"-2", routerProcessorTimer2Supplier, TIMER_COMMAND_PROCESSOR_NAME);
-        serverTopology.addProcessor(
-                OUTPUTTOPIC_PASSTHROUGH_PROCESSOR,
-                passthroughRepartitionProcessor,
-                TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME,
-                TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME+"-2",
-                ROUTER_PROCESSOR_NAME);
+                ROUTER_PROCESSOR_NAME + "-2", routerProcessorSupplier, TIMER_COMMAND_PROCESSOR_NAME);
         serverTopology.addProcessor(
                 TIMER_WITHOUT_FORWARD_PROCESSOR_NAME,
                 timerWithoutForwardProcessorSupplier,
-                TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME,
-                TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME+"-2"
-                );
+                ROUTER_PROCESSOR_NAME + "-2");
+        serverTopology.addProcessor(
+                OUTPUTTOPIC_PASSTHROUGH_PROCESSOR,
+                passthroughRepartitionProcessor,
+                ROUTER_PROCESSOR_NAME,
+                ROUTER_PROCESSOR_NAME + "-2");
 
         serverTopology.addSink(
                 REPARTITION_SINK_NAME,
