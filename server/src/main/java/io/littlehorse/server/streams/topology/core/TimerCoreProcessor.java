@@ -85,6 +85,11 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, Ob
     }
 
     protected void storeOneTimer(LHTimer timer) {
+        Date currentDate = new Date();
+        if (!forwardTimers && timer.getMaturationTime().compareTo(currentDate) < 0) {
+            // Resetting the maturation time to the current time if the time is in the past.
+            timer.setMaturationTime(currentDate);
+        }
         timerStore.put(timer.getStoreKey(), new Bytes(timer.toBytes()));
     }
 }
