@@ -29,6 +29,9 @@ public class TaskDefBuilder {
         if (signature.getReturnType() != null) {
             out.setReturnType(signature.getReturnType());
         }
+        if (signature.getTaskDefDescription() != null) {
+            out.setDescription(signature.getTaskDefDescription());
+        }
 
         return out.build();
     }

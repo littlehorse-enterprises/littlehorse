@@ -109,7 +109,8 @@ public class MetadataProcessorContext implements ExecutionContext {
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.topic = lhConfig.getMetadataOutputTopicName(tenantId);
         cpo.payload = new MetadataOutputTopicRecordModel(getable);
-        cpo.partitionKey = "not-the-droids-you-are-looking-for";
+        cpo.partitionKey =
+                getable.getObjectId().getType() + "/" + getable.getObjectId().toString();
 
         Record<String, CommandProcessorOutput> out = new Record<>(cpo.partitionKey, cpo, System.currentTimeMillis());
         this.processorContext.forward(out);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Workflow.Spec;
 using Moq;
@@ -1567,5 +1568,30 @@ public class WorkflowThreadTest
 
         Assert.Equal("You cannot add a Node in a given thread after the thread has completed.",
             exception.Message);
+    }
+
+    [Fact]
+    public void WorkflowThread_WithReturnValueInComplete_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var output = wf.DeclareStr("output");
+            wf.Complete(output);
+        }
+
+        WorkflowThread thread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        ThreadSpec threadSpec = thread.Compile();
+        Node exitNode = threadSpec.Nodes["1-complete-EXIT"];
+
+        VariableAssignment actualReturnContent = exitNode.Exit.ReturnContent;
+        VariableAssignment expectedReturnContent = new VariableAssignment()
+        {
+          VariableName = "output"  
+        };
+
+        Assert.Equal(expectedReturnContent, actualReturnContent);
     }
 }

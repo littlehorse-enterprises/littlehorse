@@ -46,7 +46,7 @@ public class LHConstants {
 
     public static final int DEFAULT_LIMIT = 1000;
     public static final int MIN_WORKER_ASSIGNMENT_BY_SERVER = 2;
-    public static final long MAX_TASK_WORKER_INACTIVITY = 15L;
+    public static final long MAX_TASK_WORKER_INACTIVITY = 90L;
 
     public static final String CLUSTER_LEVEL_METRIC = "CLUSTER_LEVEL_METRIC";
 
