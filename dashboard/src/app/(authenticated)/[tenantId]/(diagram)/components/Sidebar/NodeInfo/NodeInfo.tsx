@@ -15,11 +15,7 @@ export const NodeInfo: FC = () => {
   const { failureHandlers } = data
   return (
     <div className="flex max-w-full flex-1 flex-col">
-      <NodeTypeDocumentation
-        nodeType={selectedNode.type}
-        showNodeRun={false}
-        className=" mt-1 text-lg font-medium"
-      />
+      <NodeTypeDocumentation nodeType={selectedNode.type} showNodeRun={false} className=" mt-1 text-lg font-medium" />
 
       <LabelContent label="Node Name" content={id} />
       <OutgoingEdges outgoingEdges={data.outgoingEdges} />
