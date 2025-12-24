@@ -21,6 +21,7 @@ export const NodeVariable = ({
     text = utcToLocalDateTime(text)
   }
   const [copied, setCopied] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
 
   const handleCopy = async () => {
     try {
@@ -32,7 +33,11 @@ export const NodeVariable = ({
     }
   }
   return (
-    <div className="ml-1 mt-1 grid grid-cols-2">
+    <div
+      className="ml-1 grid grid-cols-2 rounded pt-1 hover:bg-gray-100 "
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className=" text-sm font-bold">{label}</div>
       <div className="truncate  text-xs text-slate-400">
         <div className="flex justify-between">
@@ -43,25 +48,27 @@ export const NodeVariable = ({
           ) : (
             <div className="truncate"> {text}</div>
           )}
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={handleCopy}
-                  className={` inline-flex h-6 items-center justify-center rounded transition-colors hover:bg-gray-100 ${className}`}
-                >
-                  {copied ? (
-                    <Check className="h-4 w-4 text-green-500" />
-                  ) : (
-                    <Copy className="h-4 w-4 text-gray-500 hover:text-gray-700" />
-                  )}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{text}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          {isHovered && (
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={handleCopy}
+                    className={` inline-flex h-4 items-center justify-center rounded transition-colors hover:bg-gray-100 ${className}`}
+                  >
+                    {copied ? (
+                      <Check className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <Copy className="h-4 w-4 text-gray-500 hover:text-gray-700" />
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{text}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </div>
       </div>
     </div>
