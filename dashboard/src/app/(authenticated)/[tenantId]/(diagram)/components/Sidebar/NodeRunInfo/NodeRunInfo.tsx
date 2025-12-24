@@ -23,7 +23,6 @@ export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
         nodeType={selectedNode.type}
         showNodeRun={true}
         className="ml-1 mt-1 text-sm font-bold"
-        color="#6b7280"
       />
       <NodeVariable label="position:" text={`${nodeRun.id?.position}`} />
       <NodeVariable label="wfRunId:" text={nodeRun.id?.wfRunId?.id} />
