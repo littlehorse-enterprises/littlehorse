@@ -36,8 +36,8 @@ public class AsyncWaiters {
         this.timeUnit = TimeUnit.MILLISECONDS;
     }
 
-    public CompletableFuture<Message> getOrRegisterFuture(
-            String commandId, Class<?> responseType, CompletableFuture<Message> completable) {
+    public <T extends Message> CompletableFuture<T> getOrRegisterFuture(
+            String commandId, Class<T> responseType, CompletableFuture<Message> completable) {
         return getOrRegisterFutureAndWaitingClient(commandId, responseType, completable)
                 .completable();
     }
@@ -93,8 +93,8 @@ public class AsyncWaiters {
         return new FutureResponseAndWaitingClient(completable, waitingClient);
     }
 
-    private FutureResponseAndWaitingClient getOrRegisterFutureAndWaitingClient(
-            String commandId, Class<?> responseType, CompletableFuture<Message> completable) {
+    private <T extends Message> FutureResponseAndWaitingClient<T> getOrRegisterFutureAndWaitingClient(
+            String commandId, Class<T> responseType, CompletableFuture<Message> completable) {
         Objects.requireNonNull(commandId);
         Objects.requireNonNull(completable);
         return responses.computeIfAbsent(commandId, s -> createFuture(commandId, completable));
@@ -103,6 +103,6 @@ public class AsyncWaiters {
     private record WorkflowEventDefIdAndTenant(
             WfRunIdModel wfRunId, WorkflowEventDefIdModel eventDefId, TenantIdModel tenant) {}
 
-    private record FutureResponseAndWaitingClient(
-            CompletableFuture<Message> completable, CompletableFuture<FutureResponseAndWaitingClient> waitingClient) {}
+    private record FutureResponseAndWaitingClient<T extends Message>(
+            CompletableFuture<T> completable, CompletableFuture<FutureResponseAndWaitingClient<T>> waitingClient) {}
 }
