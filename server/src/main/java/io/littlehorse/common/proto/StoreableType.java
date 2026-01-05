@@ -55,6 +55,10 @@ public enum StoreableType
    * <code>NODE_OUTPUT = 12;</code>
    */
   NODE_OUTPUT(12),
+  /**
+   * <code>METRIC_PARTITION_INVENTORY = 13;</code>
+   */
+  METRIC_PARTITION_INVENTORY(13),
   UNRECOGNIZED(-1),
   ;
 
@@ -111,6 +115,10 @@ public enum StoreableType
    * <code>NODE_OUTPUT = 12;</code>
    */
   public static final int NODE_OUTPUT_VALUE = 12;
+  /**
+   * <code>METRIC_PARTITION_INVENTORY = 13;</code>
+   */
+  public static final int METRIC_PARTITION_INVENTORY_VALUE = 13;
 
 
   public final int getNumber() {
@@ -148,6 +156,7 @@ public enum StoreableType
       case 10: return CORRELATION_MARKER;
       case 11: return TASK_QUEUE_HINT;
       case 12: return NODE_OUTPUT;
+      case 13: return METRIC_PARTITION_INVENTORY;
       default: return null;
     }
   }
