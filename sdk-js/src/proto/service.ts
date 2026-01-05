@@ -278,7 +278,11 @@ export interface PutTaskDefRequest {
    */
   inputVars: VariableDef[];
   /** Specifies the return type of the TaskDef. */
-  returnType: ReturnType | undefined;
+  returnType:
+    | ReturnType
+    | undefined;
+  /** Optional description of the TaskDef. */
+  description?: string | undefined;
 }
 
 /** Creates a new StructDef. */
@@ -2268,7 +2272,7 @@ export const PutMetricSpecRequest = {
 };
 
 function createBasePutTaskDefRequest(): PutTaskDefRequest {
-  return { name: "", inputVars: [], returnType: undefined };
+  return { name: "", inputVars: [], returnType: undefined, description: undefined };
 }
 
 export const PutTaskDefRequest = {
@@ -2281,6 +2285,9 @@ export const PutTaskDefRequest = {
     }
     if (message.returnType !== undefined) {
       ReturnType.encode(message.returnType, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.description !== undefined) {
+      writer.uint32(34).string(message.description);
     }
     return writer;
   },
@@ -2313,6 +2320,13 @@ export const PutTaskDefRequest = {
 
           message.returnType = ReturnType.decode(reader, reader.uint32());
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2329,6 +2343,7 @@ export const PutTaskDefRequest = {
         ? object.inputVars.map((e: any) => VariableDef.fromJSON(e))
         : [],
       returnType: isSet(object.returnType) ? ReturnType.fromJSON(object.returnType) : undefined,
+      description: isSet(object.description) ? globalThis.String(object.description) : undefined,
     };
   },
 
@@ -2343,6 +2358,9 @@ export const PutTaskDefRequest = {
     if (message.returnType !== undefined) {
       obj.returnType = ReturnType.toJSON(message.returnType);
     }
+    if (message.description !== undefined) {
+      obj.description = message.description;
+    }
     return obj;
   },
 
@@ -2356,6 +2374,7 @@ export const PutTaskDefRequest = {
     message.returnType = (object.returnType !== undefined && object.returnType !== null)
       ? ReturnType.fromPartial(object.returnType)
       : undefined;
+    message.description = object.description ?? undefined;
     return message;
   },
 };

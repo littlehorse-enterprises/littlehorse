@@ -33,6 +33,8 @@ from littlehorse.model import (
     ThreadVarDef,
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
+    WaitForChildWfNode,
+    RunChildWfNode,
 )
 from littlehorse.workflow import (
     NodeOutput,
@@ -3810,6 +3812,63 @@ class ExternalEventNodeTest(unittest.TestCase):
         self.assertEqual(no_payload_node._payload_type, None)
         self.assertEqual(no_payload_node.event_name, "no-payload-event")
 
+class TestRunWf(unittest.TestCase):
+    def test_run_wf_without_input(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            wf.run_wf("child-wf-spec", {})
+        
+        compiled_wf_spec = Workflow("some-wf", wf_func).compile()
+
+        expected_run_wf_node = compiled_wf_spec.thread_specs["entrypoint"].nodes["1-run-child-wf-spec-RUN_CHILD_WF"].run_child_wf
+        actual_run_wf_node = RunChildWfNode(
+            wf_spec_name="child-wf-spec",
+            major_version=-1,
+            inputs=None
+        )
+
+        self.assertEqual(expected_run_wf_node, actual_run_wf_node)
+
+    def test_run_wf_with_input(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            input = wf.declare_str("input").required()
+
+            wf.run_wf("child-wf-spec", {
+                "input-var-1": input,
+                "input-var-2": 1000
+            })
+        
+        compiled_wf_spec = Workflow("some-wf", wf_func).compile()
+
+        expected_run_wf_node = compiled_wf_spec.thread_specs["entrypoint"].nodes["1-run-child-wf-spec-RUN_CHILD_WF"].run_child_wf
+        actual_run_wf_node = RunChildWfNode(
+            wf_spec_name="child-wf-spec",
+            major_version=-1,
+            inputs={
+                "input-var-1": VariableAssignment(variable_name="input"),
+                "input-var-2": VariableAssignment(literal_value=VariableValue(int=1000))
+            }
+        )
+
+        self.assertEqual(expected_run_wf_node, actual_run_wf_node)
+
+class TestWaitForChildWf(unittest.TestCase):
+    def test_wait_for_child_wf(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            input = wf.declare_str("input").required()
+            runChildWf = wf.run_wf("child-wf-spec", {"input-var-1": input})
+            wf.wait_for_child_wf(runChildWf)
+        
+        compiled_wf_spec = Workflow("some-wf", wf_func).compile()
+
+        expected_wait_for_child_wf_node = compiled_wf_spec.thread_specs["entrypoint"].nodes["2-wait-WAIT_FOR_CHILD_WF"].wait_for_child_wf
+        actual_wait_for_child_wf_node = WaitForChildWfNode(
+            child_wf_run_id=VariableAssignment(
+                node_output=VariableAssignment.NodeOutputReference(node_name="1-run-child-wf-spec-RUN_CHILD_WF")
+            ),
+            child_wf_run_source_node="1-run-child-wf-spec-RUN_CHILD_WF",
+        )
+
+        self.assertEqual(expected_wait_for_child_wf_node, actual_wait_for_child_wf_node)
 
 class TestWaitForThreads(unittest.TestCase):
 

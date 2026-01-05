@@ -200,6 +200,25 @@ public class GetableManager extends ReadOnlyGetableManager {
         return true;
     }
 
+    /**
+     * Deletes all existing NodeOutputs for the given node names in the specified thread.
+     * @param storeKeys the list store keys of the NodeOutputs to delete
+     */
+    public void deleteNodeOutputs(Set<String> storeKeys) {
+        for (String storeKey : storeKeys) {
+            deleteStoreable(storeKey, StoreableType.NODE_OUTPUT);
+        }
+    }
+
+    /**
+     * Deletes a Storeable directly from the store.
+     * @param storeKey the store key of the Storeable to delete
+     * @param type the StoreableType
+     */
+    public void deleteStoreable(String storeKey, StoreableType type) {
+        store.delete(storeKey, type);
+    }
+
     private <U extends Message, T extends CoreGetable<U>> Optional<OutputTopicRecordModel> processEntity(
             String storeableKey, GetableToStore<U, T> entity) {
         if (entity.containsUpdate()) {

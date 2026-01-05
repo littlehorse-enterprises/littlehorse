@@ -52,9 +52,9 @@ public enum StoreableType
    */
   TASK_QUEUE_HINT(11),
   /**
-   * <code>METRIC_PARTITION_INVENTORY = 12;</code>
+   * <code>NODE_OUTPUT = 12;</code>
    */
-  METRIC_PARTITION_INVENTORY(12),
+  NODE_OUTPUT(12),
   UNRECOGNIZED(-1),
   ;
 
@@ -108,9 +108,9 @@ public enum StoreableType
    */
   public static final int TASK_QUEUE_HINT_VALUE = 11;
   /**
-   * <code>METRIC_PARTITION_INVENTORY = 12;</code>
+   * <code>NODE_OUTPUT = 12;</code>
    */
-  public static final int METRIC_PARTITION_INVENTORY_VALUE = 12;
+  public static final int NODE_OUTPUT_VALUE = 12;
 
 
   public final int getNumber() {
@@ -147,7 +147,7 @@ public enum StoreableType
       case 9: return WFRUN_STORED_INVENTORY;
       case 10: return CORRELATION_MARKER;
       case 11: return TASK_QUEUE_HINT;
-      case 12: return METRIC_PARTITION_INVENTORY;
+      case 12: return NODE_OUTPUT;
       default: return null;
     }
   }

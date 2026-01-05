@@ -88,14 +88,16 @@ class PutMetricSpecRequest(_message.Message):
     def __init__(self, aggregation_type: _Optional[_Union[_common_enums_pb2.AggregationType, str]] = ..., node: _Optional[_Union[_object_id_pb2.NodeReference, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., thread_spec: _Optional[_Union[_object_id_pb2.ThreadSpecReference, _Mapping]] = ..., window_length: _Optional[_Union[datetime.timedelta, _duration_pb2.Duration, _Mapping]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
-    __slots__ = ("name", "input_vars", "return_type")
+    __slots__ = ("name", "input_vars", "return_type", "description")
     NAME_FIELD_NUMBER: _ClassVar[int]
     INPUT_VARS_FIELD_NUMBER: _ClassVar[int]
     RETURN_TYPE_FIELD_NUMBER: _ClassVar[int]
+    DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
     name: str
     input_vars: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.VariableDef]
     return_type: _common_wfspec_pb2.ReturnType
-    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., return_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
+    description: str
+    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., return_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ..., description: _Optional[str] = ...) -> None: ...
 
 class PutStructDefRequest(_message.Message):
     __slots__ = ("name", "description", "struct_def", "allowed_updates")

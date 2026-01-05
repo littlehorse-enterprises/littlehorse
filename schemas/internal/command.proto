@@ -294,6 +294,7 @@ message LHTimerPb {
 
     // optional for backwards compatibility
     optional string store_key = 7;
+    optional bool is_repartition = 8;
 }
 
 message DeleteTaskWorkerGroupRequest {

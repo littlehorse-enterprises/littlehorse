@@ -59,14 +59,14 @@ import org.apache.kafka.streams.state.KeyValueStore;
 @Slf4j
 public class CommandProcessor implements Processor<String, Command, String, CommandProcessorOutput> {
 
-    private ProcessorContext<String, CommandProcessorOutput> ctx;
+    protected ProcessorContext<String, CommandProcessorOutput> ctx;
     private final LHServerConfig config;
     private final LHServer server;
     private final MetadataCache metadataCache;
     private final TaskQueueManager globalTaskQueueManager;
 
-    private KeyValueStore<String, Bytes> nativeStore;
-    private KeyValueStore<String, Bytes> globalStore;
+    protected KeyValueStore<String, Bytes> nativeStore;
+    protected KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
     private final AsyncWaiters asyncWaiters;
 

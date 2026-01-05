@@ -198,7 +198,7 @@ public class ServerTopology {
         topo.addProcessor(
                 TIMER_PROCESSOR,
                 () -> {
-                    return new TimerProcessor();
+                    return new TimerProcessor(true);
                 },
                 TIMER_SOURCE);
 

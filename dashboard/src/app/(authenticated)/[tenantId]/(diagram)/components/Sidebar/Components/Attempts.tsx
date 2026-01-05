@@ -1,11 +1,12 @@
 import { TaskAttempt } from 'littlehorse-client/proto'
-import { NodeStatus } from '../NodeRunInfo/NodeStatus'
-import { NodeVariable } from '../NodeRunInfo/NodeVariable'
+import { NodeStatus } from './NodeStatus'
+import { NodeVariable } from './NodeVariable'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Dispatch, SetStateAction } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { getAttemptOutput, getAttemptResult } from '@/app/utils/struct'
+import { OutputModal } from './OutputModal'
 
 export const Attempts = ({
   attempts,
@@ -16,7 +17,7 @@ export const Attempts = ({
   attemptIndex: number
   setAttemptIndex: Dispatch<SetStateAction<number>>
 }) => {
-  const attempt = attempts[0]
+  const attempt = attempts[attemptIndex]
   const attemptLength = attempts.length
   return (
     <div className="ml-1 mt-1 ">
@@ -38,14 +39,14 @@ export const Attempts = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      {attempt.status && <NodeStatus status={attempt.status}   type="task" />}
+      {attempt.status && <NodeStatus status={attempt.status} type="task" />}
       <NodeVariable label="scheduleTime:" text={`${attempt.scheduleTime}`} type="date" />
       <NodeVariable label="startTime:" text={`${attempt.startTime}`} type="date" />
       <NodeVariable label="endTime:" text={`${attempt.endTime}`} type="date" />
       <NodeVariable label="taskWorkerId:" text={`${attempt.taskWorkerId}`} />
       {attempt.taskWorkerVersion && <NodeVariable label="taskWorkerVersion:" text={`${attempt.taskWorkerVersion}`} />}
       {attempt.logOutput && <NodeVariable label="logOutput:" text={`${getAttemptOutput(attempt.logOutput)}`} />}
-      <NodeVariable label="result:" text={`${getAttemptResult(attempt.result)}`} />
+      <OutputModal label="result:" message={`${getAttemptResult(attempt.result)}`} />
     </div>
   )
 }

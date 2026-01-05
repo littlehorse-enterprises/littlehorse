@@ -11,7 +11,15 @@ const config: Config = {
   coverageProvider: 'v8',
   testEnvironment: 'jsdom',
   // Add more setup options before each test is run
-  // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  // map the @/ alias used in the repo (tsconfig paths) so Jest can resolve imports like '@/app/...'
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
+  // Transform ES modules from node_modules (like jose)
+  transformIgnorePatterns: [
+    'node_modules/(?!(jose|@panva|oidc-token-hash|oauth4webapi|preact-render-to-string|nanoid)/)',
+  ],
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

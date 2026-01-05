@@ -12,6 +12,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LHTaskMethod {
+
+    String description() default "";
     /**
      * This is the value of the annotation; it corresponds to the name of the TaskDef executed by
      * the annotated Method.

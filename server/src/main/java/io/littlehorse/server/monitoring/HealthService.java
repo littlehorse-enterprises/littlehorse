@@ -79,14 +79,17 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
         coreStreams.setStandbyUpdateListener(this);
         coreStreams.setGlobalStateRestoreListener(this);
-        timerStreams.setGlobalStateRestoreListener(this);
-        timerStreams.setStandbyUpdateListener(this);
-
         coreStreams.setStateListener(coreState);
-        timerStreams.setStateListener((newState, oldState) -> {
-            log.debug("New state for timer topology: {}", newState);
-            timerState = newState;
-        });
+
+        if (timerStreams != null) {
+            this.timerState = State.CREATED;
+            timerStreams.setGlobalStateRestoreListener(this);
+            timerStreams.setStandbyUpdateListener(this);
+            timerStreams.setStateListener((newState, oldState) -> {
+                log.debug("New state for timer topology: {}", newState);
+                timerState = newState;
+            });
+        }
     }
 
     public void start() {
@@ -158,7 +161,10 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             return false;
         };
 
-        if (isAlive.test(coreState.getCurrentState()) && isAlive.test(timerState)) {
+        boolean coreAlive = isAlive.test(coreState.getCurrentState());
+        boolean timerAlive = timerState == null || isAlive.test(timerState);
+
+        if (coreAlive && timerAlive) {
             return "OK!";
         } else {
             throw new LHHttpException("Core topology or Timer Topology has an error");
