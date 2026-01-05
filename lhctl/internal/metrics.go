@@ -1,43 +1,36 @@
 package internal
 
 import (
+	"strings"
+	"time"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/types/known/durationpb"
-	"strings"
-	"time"
 )
 
 var putMetricCmd = &cobra.Command{
 	Use:   "metric <measurable> <type>",
 	Short: "Creates a new metric",
 	Run: func(cmd *cobra.Command, args []string) {
-		measurable := args[0]
-		metricType := args[1]
-		duration := args[2]
+		metricType := args[0]
+		duration := args[1]
 		windowLength, _ := time.ParseDuration(duration)
+		defaultNodeType := "TaskNode"
 		putMetricReq := &lhproto.PutMetricSpecRequest{
 			AggregationType: toType(metricType),
 			WindowLength:    durationpb.New(windowLength),
 		}
-		putMetricReq.Reference = &lhproto.PutMetricSpecRequest_Object{
-			Object: toMeasurable(measurable),
+		putMetricReq.Reference = &lhproto.PutMetricSpecRequest_Node{
+			Node: &lhproto.NodeReference{
+				NodeType: &defaultNodeType,
+			},
 		}
 
 		response, err := getGlobalClient(cmd).PutMetricSpec(requestContext(cmd), putMetricReq)
 		littlehorse.PrintResp(response, err)
 	},
-}
-
-func toMeasurable(measurable string) lhproto.MeasurableObject {
-	if strings.ToLower(measurable) == "workflow" {
-		return lhproto.MeasurableObject_WORKFLOW
-	} else if strings.ToLower(measurable) == "task" {
-		return lhproto.MeasurableObject_TASK
-	} else {
-		panic("Unrecognized measurable " + measurable)
-	}
 }
 
 func toType(metricType string) lhproto.AggregationType {
@@ -54,39 +47,6 @@ func toType(metricType string) lhproto.AggregationType {
 	}
 }
 
-var listMetricRuns = &cobra.Command{
-	Use:   "metricRun <wfRunId>",
-	Short: "List all MetricRun's for a given Metric Id.",
-	Long:  ``,
-	Args:  cobra.ExactArgs(3),
-	Run: func(cmd *cobra.Command, args []string) {
-		measurable := args[0]
-		aggregationType := toType(args[1])
-		windowLength, _ := time.ParseDuration(args[2])
-
-		metricId := &lhproto.MetricSpecId{
-			Reference: &lhproto.MetricSpecId_Object{
-				Object: toMeasurable(measurable),
-			},
-		}
-		metricId.Reference = &lhproto.MetricSpecId_Object{
-			Object: toMeasurable(measurable),
-		}
-
-		req := &lhproto.ListMetricsRequest{
-			MetricSpecId:    metricId,
-			WindowLength:    durationpb.New(windowLength),
-			AggregationType: aggregationType,
-		}
-
-		littlehorse.PrintResp(getGlobalClient(cmd).ListMetrics(
-			requestContext(cmd),
-			req,
-		))
-	},
-}
-
 func init() {
 	putCmd.AddCommand(putMetricCmd)
-	listCmd.AddCommand(listMetricRuns)
 }
