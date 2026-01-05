@@ -81,6 +81,7 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
             resumeCommand.setBookmark(resultToResumeFrom);
             LHTimer boomerangCommand = new LHTimer(new CommandModel(resumeCommand));
             boomerangCommand.setMaturationTime(new Date()); // No need to delay: just boomerang immediately
+            boomerangCommand.setRepartition(true);
             ctx.getTaskManager().scheduleTimer(boomerangCommand);
             log.debug("Scheduled timer to resume cleaning up WfRun");
         }

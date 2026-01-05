@@ -215,6 +215,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
             LHTimer timer = new LHTimer();
             timer.partitionKey = correlationKey;
             timer.maturationTime = context.currentCommand().getTime(); // Want the boomerang to be immediate
+            timer.setRepartition(true);
 
             UpdateCorrelationMarkerModel update = new UpdateCorrelationMarkerModel();
             update.setAction(CorrelationUpdateAction.CORRELATE);
@@ -240,6 +241,7 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         LHTimer timer = new LHTimer();
         timer.partitionKey = correlationKey;
         timer.maturationTime = context.currentCommand().getTime(); // Want the boomerang to be immediate
+        timer.setRepartition(true);
 
         UpdateCorrelationMarkerModel update = new UpdateCorrelationMarkerModel();
         update.setAction(CorrelationUpdateAction.UNCORRELATE);

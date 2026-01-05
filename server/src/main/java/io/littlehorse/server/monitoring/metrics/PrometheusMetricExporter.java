@@ -15,6 +15,7 @@ import io.micrometer.prometheusmetrics.PrometheusConfig;
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import java.io.Closeable;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
@@ -47,9 +48,11 @@ public class PrometheusMetricExporter implements Closeable {
             StandbyMetrics standbyMetrics,
             InstanceState coreState) {
 
-        this.kafkaStreamsMeters = List.of(
-                new KafkaStreamsMetrics(coreStreams, Tags.of("topology", "core")),
-                new KafkaStreamsMetrics(timerStreams, Tags.of("topology", "timer")));
+        this.kafkaStreamsMeters = new ArrayList<>();
+        kafkaStreamsMeters.add(new KafkaStreamsMetrics(coreStreams, Tags.of("topology", "core")));
+        if (timerStreams != null) {
+            kafkaStreamsMeters.add(new KafkaStreamsMetrics(timerStreams, Tags.of("topology", "timer")));
+        }
 
         for (KafkaStreamsMetrics ksm : kafkaStreamsMeters) {
             ksm.bindTo(prometheusRegistry);
