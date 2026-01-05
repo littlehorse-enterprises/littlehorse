@@ -6,6 +6,7 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.metrics.MetricModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.CheckpointModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -18,6 +19,8 @@ import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.metrics.MetricSpecModel;
+import io.littlehorse.common.model.getable.global.metrics.PartitionMetricModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -26,7 +29,10 @@ import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
@@ -48,10 +54,13 @@ import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecM
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.metrics.GetableNodeStatusUpdate;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -65,6 +74,8 @@ import org.apache.commons.lang3.tuple.Pair;
 public abstract class AbstractGetable<T extends Message> extends LHSerializable<T> {
 
     public abstract Date getCreatedAt();
+
+    private final List<GetableNodeStatusUpdate> updates = new ArrayList<>();
 
     public Optional<String> getPartitionKey() {
         return getObjectId().getPartitionKey();
@@ -109,6 +120,12 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.WORKFLOW_EVENT;
         } else if (cls.equals(ScheduledWfRunModel.class)) {
             return GetableClassEnum.SCHEDULED_WF_RUN;
+        } else if (cls.equals(MetricSpecModel.class)) {
+            return GetableClassEnum.METRIC_SPEC;
+        } else if (cls.equals(PartitionMetricModel.class)) {
+            return GetableClassEnum.PARTITION_METRIC;
+        } else if (cls.equals(MetricModel.class)) {
+            return GetableClassEnum.METRIC;
         } else if (cls.equals(CorrelatedEventModel.class)) {
             return GetableClassEnum.CORRELATED_EVENT;
         } else if (cls.equals(CheckpointModel.class)) {
@@ -158,6 +175,12 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return WorkflowEventModel.class;
             case SCHEDULED_WF_RUN:
                 return ScheduledWfRunModel.class;
+            case METRIC_SPEC:
+                return MetricSpecModel.class;
+            case PARTITION_METRIC:
+                return PartitionMetricModel.class;
+            case METRIC:
+                return MetricModel.class;
             case CORRELATED_EVENT:
                 return CorrelatedEventModel.class;
             case CHECKPOINT:
@@ -208,6 +231,12 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return WorkflowEventIdModel.class;
             case SCHEDULED_WF_RUN:
                 return ScheduledWfRunIdModel.class;
+            case METRIC_SPEC:
+                return MetricSpecIdModel.class;
+            case PARTITION_METRIC:
+                return PartitionMetricIdModel.class;
+            case METRIC:
+                return MetricIdModel.class;
             case CORRELATED_EVENT:
                 return CorrelatedEventIdModel.class;
             case CHECKPOINT:
@@ -275,6 +304,14 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             result.add(list);
         }
         return result;
+    }
+
+    public final void addUpdate(GetableNodeStatusUpdate update) {
+        updates.add(update);
+    }
+
+    public final Collection<GetableNodeStatusUpdate> updates() {
+        return Collections.unmodifiableList(updates);
     }
 }
 /*

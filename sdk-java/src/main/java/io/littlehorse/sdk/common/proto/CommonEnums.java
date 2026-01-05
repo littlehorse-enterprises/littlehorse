@@ -54,9 +54,13 @@ public final class CommonEnums extends com.google.protobuf.GeneratedFile {
       "OR\020\001\022\026\n\022VAR_MUTATION_ERROR\020\002\022\027\n\023USER_TAS" +
       "K_CANCELLED\020\003\022\013\n\007TIMEOUT\020\004\022\020\n\014TASK_FAILU" +
       "RE\020\005\022\r\n\tVAR_ERROR\020\006\022\016\n\nTASK_ERROR\020\007\022\022\n\016I" +
-      "NTERNAL_ERROR\020\010BM\n\037io.littlehorse.sdk.co" +
-      "mmon.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sd" +
-      "k.Common.Protob\006proto3"
+      "NTERNAL_ERROR\020\010*=\n\017AggregationType\022\t\n\005CO" +
+      "UNT\020\000\022\007\n\003AVG\020\001\022\t\n\005RATIO\020\002\022\013\n\007LATENCY\020\003*J" +
+      "\n\021UserTaskRunStatus\022\016\n\nUNASSIGNED\020\000\022\014\n\010A" +
+      "SSIGNED\020\001\022\010\n\004DONE\020\003\022\r\n\tCANCELLED\020\004BM\n\037io" +
+      ".littlehorse.sdk.common.protoP\001Z\t.;lhpro" +
+      "to\252\002\034LittleHorse.Sdk.Common.Protob\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

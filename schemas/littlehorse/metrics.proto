@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "object_id.proto";
+import "common_enums.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+
+message MetricSpec {
+  MetricSpecId id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  repeated Aggregator aggregators = 4;
+}
+
+message Aggregator {
+
+  message StatusRange {
+    oneof type {
+        LHStatusRange lh_status = 1;
+        TaskRunStatusRange task_run = 2;
+        UserTaskRunStatusRange user_task_run = 3;
+    }
+  }
+  message Count {
+    optional StatusRange status_range = 1;
+  }
+
+  message Ratio {
+    optional StatusRange status_range = 2;
+  }
+
+  message Latency {
+    optional StatusRange status_range = 3;
+  }
+
+  google.protobuf.Duration window_length = 1;
+
+  oneof type {
+    Count count = 2;
+    Ratio ratio = 3;
+    Latency latency = 4;
+  }
+
+}
+
+message LHStatusRange {
+  LHStatus starts = 1;
+  LHStatus ends = 2;
+}
+
+message TaskRunStatusRange {
+  TaskStatus starts = 1;
+  TaskStatus ends = 2;
+}
+
+message UserTaskRunStatusRange {
+  UserTaskRunStatus starts = 1;
+  UserTaskRunStatus ends = 2;
+}
+
+message PartitionMetric {
+  PartitionMetricId id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  repeated PartitionWindowedMetric active_windows = 3;
+  google.protobuf.Duration window_length = 4;
+}
+
+message PartitionWindowedMetric {
+  double value = 1;
+  google.protobuf.Timestamp window_start = 2;
+  int64 number_of_samples = 3;
+}
+
+message PartitionMetricId {
+   MetricSpecId id = 1;
+   TenantId tenant_id = 2;
+   AggregationType aggregation_type = 3;
+}
+
+// Metric value for a given MetricId
+message Metric {
+  // Unique id of the metric value
+  MetricId id = 1;
+  oneof value {
+    // represents the value for a count-based metric
+    int64 count = 2;
+    // represents the average latency for a latency-based metric
+    int64 latency_avg = 3;
+  }
+  // Indicates when the metric was created
+  google.protobuf.Timestamp created_at = 4;
+  map<int32, double> value_per_partition = 5;
+}

@@ -29,6 +29,7 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
@@ -44,13 +45,15 @@ import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfSpecId;
+import io.littlehorse.server.metrics.GetableStatusUpdate;
+import io.littlehorse.server.metrics.GetableUpdates;
+import io.littlehorse.server.metrics.Sensor;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -466,6 +469,15 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     public void advance(Date time) {
+        // startXnHandlersAndInterrupts(time);
+        // for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
+        //     threadRunsUseMeCarefully.get(i).advance(time);
+        // }
+        CoreProcessorContext processorExecutionContext = executionContext.castOnSupport(CoreProcessorContext.class);
+        if (processorExecutionContext == null) {
+            throw new IllegalStateException("Invalid operation from this context");
+        }
+
         boolean statusChanged = true;
         // We repeatedly advance each thread until we have a run wherein the entire
         // WfRun is static, meaning that there are no more advances that can be made
@@ -488,8 +500,11 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
                 ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
                 statusChanged = thread.advance(time) || statusChanged;
+
+                thread.recordMetrics(processorExecutionContext);
             }
         }
+        recordMetrics(processorExecutionContext);
 
         // Now we remove any old threadruns according to the retention policy
         for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
@@ -500,6 +515,17 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                     removeThreadRun(thread);
                 }
             }
+        }
+    }
+
+    private void recordMetrics(CoreProcessorContext processorExecutionContext) {
+        GetableStatusUpdate update;
+        while ((update = processorExecutionContext
+                        .getableUpdates()
+                        .getUpdatesForWfRunId(id)
+                        .poll())
+                != null) {
+            sensor().record(update);
         }
     }
 
@@ -632,16 +658,16 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
     public void transitionTo(LHStatus status) {
         CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
-        GetableUpdates.GetableStatusUpdate statusChanged;
+        GetableStatusUpdate statusChanged;
         if (Objects.equals(status, LHStatus.COMPLETED)) {
             statusChanged = GetableUpdates.create(
                     wfSpecId, processorContext.authorization().tenantId(), this.status, status);
         } else {
             statusChanged = GetableUpdates.createEndEvent(
-                    wfSpecId, processorContext.authorization().tenantId(), this.status, status, startTime);
+                    wfSpecId, processorContext.authorization().tenantId(), this.status, status);
         }
         this.status = status;
-        processorContext.getableUpdates().dispatch(statusChanged);
+        //        processorContext.getableUpdates().app(statusChanged);
 
         WorkflowRetentionPolicyModel retentionPolicy = getWfSpec().getRetentionPolicy();
         if (retentionPolicy != null && isTerminated()) {
@@ -716,5 +742,10 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         // child threads, so we need to signal to the other threads that they might
         // want to wake up. Ding Ding Ding! Get out of bed.
         advance(time);
+    }
+
+    private Sensor sensor() {
+        MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(wfSpecId);
+        return new Sensor(Set.of(wfSpecMetricId), executionContext.castOnSupport(CoreProcessorContext.class));
     }
 }
