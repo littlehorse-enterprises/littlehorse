@@ -14,6 +14,7 @@ jobs:
     outputs:
       tag: ${{ steps.set_tag.outputs.tag }}
       prerelease: ${{ steps.is_prerelease.outputs.prerelease }}
+      publish_js: ${{ steps.check_js.outputs.publish_js }}
     steps:
       - name: Set Tag
         id: set_tag
@@ -27,6 +28,18 @@ jobs:
             echo "prerelease=true" >> $GITHUB_OUTPUT
           else
             echo "prerelease=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Should publish js
+        id: check_js
+        env:
+          TAG: ${{  steps.set_tag.outputs.tag }}
+        run: |
+          if npm view "littlehorse-client@$TAG" version >/dev/null 2>&1; then
+            echo "Version $TAG already exists on npm, skipping publish."
+            echo "publish_js=false" >> $GITHUB_OUTPUT
+          else
+            echo "publish_js=true" >> $GITHUB_OUTPUT
           fi
 
   publish-docker:
@@ -175,6 +188,7 @@ jobs:
           packages-dir: ./sdk-python/dist/
 
   publish-sdk-js:
+    if: ${{ needs.prepare.outputs.publish_js == 'true' }}
     runs-on: ubuntu-latest
     needs:
       - publish-docker
