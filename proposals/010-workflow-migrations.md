@@ -42,34 +42,35 @@ message WfRunMigrationPlan {
     // When the MigrationPlan was created.
     google.protobuf.Timestamp created_at = 2; 
 
-    // Wrapper object that stores how to migrate every thread
-    MigrationPlan migration_plan = 3 ;
+    // ThreadRun Name -> ThreadMigrationPlan
+    // How each threadrun will migrate to the new wfSpec
+    map<string, ThreadMigrationPlan> migration_plan = 3 ;
+
+    // The id of wfSpec that this plan migrated to.
+    WfSpecId new_wfSpec = 4;
+
 }
 ```
-The first two fields are self-explanatory: the ID used to identify the plan and the time it was created. The third field is a wrapper class where metadata about the migration begins.
+The first two fields are self-explanatory: the ID used to identify the plan and the time it was created. The third field maps active threadRuns to their respective migration plans. The final field is to specify the new wfSpec we are migrating to.
 
-The `MigrationPlan` consists of the following proto:
 
-```
-message MigrationPlan { 
-    // {Threadname: {How to migrate that thread}}
-    map<string, ThreadMigrationPlan> thread_migrations = 1;
-}
-```
 Migration plans are broken down to a thread by thread basis.
-Every thread gets its own individual migration plan.
+Every active threadRun in a wfRun will have mapping to a new threadSpec within the new wfSpec
 
 
 ```
-// How to migrate a thread 
+// How to migrate threadRun to a new threadSpec within the new wfSpec 
 message ThreadMigrationPlan {
-    // Name of the new thread we are migrating to
+
+    // Name of the new threadSpec we are migrating to
     string new_thread_name = 1;
-    // name of curNode - > how to migrate curNode in new wfSpec
+
+    // name of migrationNode - > how to migrate the migration node to the new wfSpec
     map<string, NodeMigrationPlan> node_migrations  = 2;
+
     // Any variable that will be derived before migration node can be provided here
     // if not provided then possible errors will be thrown
-    map<string, VariableValue> migration_variables = 3;
+    map<string, VariableAssignment> migration_variables = 3;
 }
 ```
 
@@ -113,6 +114,9 @@ Getting Object:
 ```
 
 ```
+// not tying the migrationPlanId directly to the wfSpec
+// allows for multiple migration plans per wfRun version 0.0 
+// to wfRun version 0.1
 message MigrationPlanId {
     string name = 1;
 }
@@ -133,31 +137,29 @@ message MigrateWfRunRequest {
 
   // WfRun to Migrate
   WfRunId wf_run_id = 2;
-
-  // What version to migrate to
-  int32 revision_number = 3;
-  int32 major_version_number = 4;
-
 }
 ```
+
 To perform a migration, we need the name of the migration plan, the `wfRunId` of the `wfRun` being migrated, the revision number, and the major_version_number of the new specification to which it will migrate.
 
 The migration schema itself is fairly straightforward. The complexity arises in the server-side logic executed during a migration.
 
 ### Option 2:
 
-In the first impl you must provide the migration variables for every thread in the `wfRunMigrationPlan`.
-Another approach to enable more flexibility would be to define the variables in the `migrateWfRunRequest`.
+In the first impl you must provide the migration variables for every threadRun in the `wfRunMigrationPlan`.
+Another approach to enable more flexibility would be to define the migration variables in the `migrateWfRunRequest`.
 
 ### Proto
 
-We define the set of variables that are derived before the migration node but needed after the migration node
+We define the set of variables that are derived before the migration node but needed after the migration node in the new wfSpec
 
 ```
-// How to migrate a thread 
+// How to migrate a threadRun to new threadSpec
 message ThreadMigrationPlan {
-    // Name of the new thread we are migrating to
+
+    // Name of the new threadSpec we are migrating to
     string new_thread_name = 1;
+
     // name of curNode - > how to migrate curNode in new wfSpec
     map<string, NodeMigrationPlan> node_migrations  = 2;
 
@@ -170,17 +172,15 @@ message ThreadMigrationPlan {
 Now when a request to migrate is made we provide the name and the value of the migration variables for each thread. If the the migration variables are not provided then the request will be rejected. This impl gives fine-grained control on what variableValues to be passed in at execution.
 ```
 message MigrateWfRunRequest {
-  // Migration Plan to use
-  MigrationPlanId migration_plan_id = 1; 
+    // Migration Plan to use
+    MigrationPlanId migration_plan_id = 1; 
 
-  // WfRun to Migrate
-  WfRunId wf_run_id = 2;
+    // WfRun to Migrate
+    WfRunId wf_run_id = 2;
 
-  // What version to migrate to
-  int32 revision_number = 3;
-  int32 major_version_number = 4;
 
-  map<string, MigrationVariables> = 5;
+    // Name of threadRun -> Migration Vars needed 
+    map<string, MigrationVariables> = 5;
 
 }
 
@@ -189,7 +189,8 @@ message MigrateWfRunRequest {
 
 ```
 message MigrationVariables {
-    map<string, VariableValue> migrations_vars = 1
+    // Name of var -> how to derive value
+    map<string, VariableAssignment> migrations_vars = 1
 }
 
 ```
