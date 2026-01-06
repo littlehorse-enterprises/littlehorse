@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.SleepNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
@@ -9,6 +10,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -70,8 +72,20 @@ public class SleepNodeModel extends SubNode<SleepNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) {
-        // TODO (#1759)
+    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
+        switch (type) {
+            case RAW_SECONDS:
+                boolean canResolveToInt = rawSeconds.canBeType(VariableType.INT, node.threadSpec);
+                if (!canResolveToInt) {
+                    throw new InvalidNodeException(new LHVarSubError(null, "Invalid value: variable can't resolve to INT"), node);
+                }
+                break;
+            case TIMESTAMP:
+            case ISO_DATE:
+            case SLEEPLENGTH_NOT_SET:
+                throw new RuntimeException("Not possible");
+        }
+
     }
 
     @Override
