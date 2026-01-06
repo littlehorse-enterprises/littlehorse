@@ -658,7 +658,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             }
         }
         if (getTypeDefinition().getPrimitiveType() == VariableType.TIMESTAMP) {
-            return new VariableValueModel(utcTimestampVal.getSeconds());
+            // Returns milliseconds since epoch.
+            return new VariableValueModel(utcTimestampVal.getSeconds() * 1_000L);
         }
         throw new LHVarSubError(null, "Cant convert " + getTypeDefinition() + " to INT");
     }

@@ -93,7 +93,7 @@ public class SleepNodeModel extends SubNode<SleepNode> {
                 }
             case TIMESTAMP:
                 long epochSeconds = thread.assignVariable(timestamp).asInt().getIntVal();
-                return new Date(epochSeconds * 1_000L);
+                return new Date(epochSeconds);
             case SLEEPLENGTH_NOT_SET:
         }
         throw new RuntimeException("Not possible");
