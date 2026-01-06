@@ -92,8 +92,8 @@ public class SleepNodeModel extends SubNode<SleepNode> {
                     throw new LHVarSubError(exn, "failed parsing date string " + dateStr + ": " + exn.getMessage());
                 }
             case TIMESTAMP:
-                long ts = thread.assignVariable(timestamp).asInt().getIntVal();
-                return new Date(ts);
+                long epochSeconds = thread.assignVariable(timestamp).asInt().getIntVal();
+                return new Date(epochSeconds);
             case SLEEPLENGTH_NOT_SET:
         }
         throw new RuntimeException("Not possible");
