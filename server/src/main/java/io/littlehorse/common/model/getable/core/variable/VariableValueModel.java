@@ -657,6 +657,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 throw new LHVarSubError(exn, "Couldn't convert STR '" + strVal + "' to INT");
             }
         }
+        if (getTypeDefinition().getPrimitiveType() == VariableType.TIMESTAMP) {
+            return new VariableValueModel(utcTimestampVal.getSeconds());
+        }
         throw new LHVarSubError(null, "Cant convert " + getTypeDefinition() + " to INT");
     }
 
