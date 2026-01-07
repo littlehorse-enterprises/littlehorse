@@ -550,7 +550,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             if (threadRunModel.type == ThreadType.ENTRYPOINT) continue;
             
             if (threadRunModel.status == LHStatus.COMPLETED) { 
-                removeThreadRun(threadRunModel);
+                threadRunsUseMeCarefully.removeIf(candidate -> candidate.getNumber() == threadRunModel.getNumber());
                 
                 ArchivedThreadRunModel archivedThreadRunModel = new ArchivedThreadRunModel(threadRunModel);
 
