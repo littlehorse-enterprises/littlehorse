@@ -26,6 +26,8 @@ public class ArchivedThreadRunModel extends CoreGetable<ArchivedThreadRun> imple
   @Getter
   private ThreadRunModel threadRun;
 
+  public ArchivedThreadRunModel() {}
+
   public ArchivedThreadRunModel(ThreadRunModel threadRun) {
     this.threadRun = threadRun;
     this.id = new ArchivedThreadRunIdModel(threadRun.getWfRun().getId(), threadRun.getNumber());
