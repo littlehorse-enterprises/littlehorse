@@ -60,7 +60,7 @@ from littlehorse.model import (
     RunChildWfNode,
     WaitForChildWfNode,
 )
-from littlehorse.model.wf_spec_pb2 import PRIVATE_VAR
+from littlehorse.model.wf_spec_pb2 import PRIVATE_VAR, WaitForConditionNode
 from littlehorse.utils import negate_comparator, to_variable_value
 from littlehorse.worker import _create_task_def
 
@@ -80,6 +80,7 @@ NodeType = Union[
     ThrowEventNode,
     RunChildWfNode,
     WaitForChildWfNode,
+    WaitForConditionNode,
 ]
 
 
@@ -797,6 +798,11 @@ class WaitForThreadsNodeOutput(NodeOutput):
         )
         return self
 
+class WaitForConditionNodeOutput(NodeOutput):
+    def __init__(self, node_name: str, builder: "WorkflowThread") -> None:
+        super().__init__(node_name)
+        self.node_name = node_name
+        self.builder = builder
 
 class ThrowEventNodeOutput:
     """
@@ -1249,6 +1255,24 @@ class WorkflowThread:
         node = wait_for.compile()
         node_name = self.add_node("threads", node)
         return WaitForThreadsNodeOutput(node_name, self)
+
+    def wait_for_condition(self, condition: WorkflowCondition) -> WaitForConditionNodeOutput:
+        """
+        Waits for the specified workflow condition to become true.
+
+        Args:
+            condition (WorkflowCondition): The workflow condition to wait for.
+
+        Returns:
+            The output of the WAIT_FOR_CONDITION node.
+        """
+        self._check_if_active()
+        node = WaitForConditionNode(
+            condition=condition.compile(),
+        )
+        node_name = self.add_node("condition", node)
+        return WaitForConditionNodeOutput(node_name, self)
+
 
     def sleep(self, seconds: Union[int, WfRunVariable]) -> None:
         """Adds a SLEEP node which makes the ThreadRun sleep
