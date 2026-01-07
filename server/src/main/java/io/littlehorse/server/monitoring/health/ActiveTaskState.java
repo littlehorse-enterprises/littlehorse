@@ -19,9 +19,6 @@ public class ActiveTaskState {
             TaskMetadata meta, Map<TopicPartition, InProgressRestoration> restorations, LHServerConfig config) {
 
         Set<TopicPartition> topics = meta.topicPartitions();
-        if (topics.size() != 1) {
-            throw new IllegalStateException("Impossible. All LH processors have only one input topic");
-        }
 
         TopicPartition tp = topics.stream().findFirst().get();
         this.partition = tp.partition();

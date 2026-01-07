@@ -23,28 +23,46 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
     private Cancellable punctuator;
     private String lastSeenKey;
 
+    private final boolean forwardTimers;
+
+    public TimerProcessor(boolean forwardTimers) {
+        this.forwardTimers = forwardTimers;
+    }
+
     public void init(final ProcessorContext<String, LHTimer> context) {
         this.context = context;
         timerStore = context.getStateStore(ServerTopology.TIMER_STORE);
-        this.punctuator = context.schedule(
-                LHConstants.TIMER_PUNCTUATOR_INTERVAL, PunctuationType.WALL_CLOCK_TIME, this::clearTimers);
+        if (forwardTimers) {
+            this.punctuator = context.schedule(
+                    LHConstants.TIMER_PUNCTUATOR_INTERVAL, PunctuationType.WALL_CLOCK_TIME, this::clearTimers);
 
-        this.lastSeenKey = "0000000000";
+            this.lastSeenKey = "0000000000";
+        }
     }
 
     @Override
     public void close() {
-        punctuator.cancel();
+        if (punctuator != null) {
+            punctuator.cancel();
+        }
     }
 
     public void process(final Record<String, LHTimer> record) {
         LHTimer timer = record.value();
+        if (!forwardTimers) {
+            storeOneTimer(timer);
+            return;
+        }
+        if (timer.isRepartition()) {
+            context.forward(record);
+            return;
+        }
 
         // If the timer is already matured, no sense in putting it into the store. Just forward now.
         if (timer.maturationTime.getTime() <= System.currentTimeMillis()) {
             sendOneTimer(timer);
         } else {
-            timerStore.put(timer.getStoreKey(), timer);
+            storeOneTimer(timer);
         }
     }
 
@@ -67,5 +85,9 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
         Record<String, LHTimer> toSend =
                 new Record<String, LHTimer>(timer.partitionKey, timer, timer.maturationTime.getTime(), metadata);
         context.forward(toSend);
+    }
+
+    protected void storeOneTimer(LHTimer timer) {
+        timerStore.put(timer.getStoreKey(), timer);
     }
 }

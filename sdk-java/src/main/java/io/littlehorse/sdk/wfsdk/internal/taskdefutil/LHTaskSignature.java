@@ -33,6 +33,9 @@ public class LHTaskSignature {
     Object executable;
     ReturnType outputSchema;
 
+    @Getter
+    private String taskDefDescription;
+
     public LHTaskSignature(String taskDefName, Object executable, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
         variableDefs = new ArrayList<>();
@@ -44,11 +47,16 @@ public class LHTaskSignature {
 
         for (Method method : executable.getClass().getMethods()) {
             if (method.isAnnotationPresent(LHTaskMethod.class)) {
-                String taskDefForThisMethod =
-                        method.getAnnotation(LHTaskMethod.class).value();
+                LHTaskMethod lhTaskMethod = method.getAnnotation(LHTaskMethod.class);
+                String taskDefForThisMethod = lhTaskMethod.value();
 
                 if (!taskDefForThisMethod.equals(lhTaskMethodAnnotationValue)) {
                     continue;
+                }
+
+                String annotationDescription = lhTaskMethod.description();
+                if (annotationDescription != null && !annotationDescription.isEmpty()) {
+                    taskDefDescription = annotationDescription;
                 }
 
                 if (taskMethod != null) {

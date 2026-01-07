@@ -6,6 +6,8 @@ option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
+import "variable.proto";
+
 
 
 enum LHStoreType {
@@ -37,6 +39,7 @@ enum StoreableType {
     WFRUN_STORED_INVENTORY = 9;
     CORRELATION_MARKER = 10;
     TASK_QUEUE_HINT = 11;
+    NODE_OUTPUT = 12;
 }
 
 enum GetableClassEnum {
@@ -134,4 +137,13 @@ message EventCorrelationMarker {
 // https://github.com/facebook/rocksdb/wiki/Implement-Queue-Service-Using-RocksDB
 message TaskQueueHint {
   google.protobuf.Timestamp last_processed_timestamp = 1;
+}
+
+// Represents a persistently stored node output
+message NodeOutput {
+  int32 thread_run_number = 1;
+  int32 node_run_position = 2;
+  string node_name = 3;
+  VariableValue value = 4;
+  google.protobuf.Timestamp created_at = 5;
 }

@@ -200,6 +200,16 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         return out;
     }
 
+    // Returns the names of the nodes used by other nodes in this thread.
+
+    public Set<String> getRequiredNodeNames() {
+        Set<String> usedNodeNames = new HashSet<>();
+        for (NodeModel nodeModel : nodes.values()) {
+            usedNodeNames.addAll(nodeModel.getRequiredNodeNames());
+        }
+        return usedNodeNames;
+    }
+
     public Set<String> getChildThreadNames() {
         Set<String> out = new HashSet<>();
         for (NodeModel node : nodes.values()) {

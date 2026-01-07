@@ -150,6 +150,8 @@ public class LHServerConfig extends ConfigBase {
 
     // useful for testing and might be useful for certain incidents
     public static final String X_MAX_DELETES_PER_COMMAND_KEY = "LHS_X_MAX_DELETES_PER_COMMAND";
+    // Enable timer streams processing
+    public static final String X_ENABLE_TIMER_STREAMS_KEY = "LHS_X_ENABLE_TIMER_STREAMS";
 
     // Instance configs
     private String lhsMetricsLevel;
@@ -1075,7 +1077,7 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public int getProducerMaxRequestSize() {
-        return Integer.parseInt(getOrSetDefault(LHServerConfig.PRODUCER_MAX_REQUEST_SIZE, "1048576"));
+        return Integer.parseInt(getOrSetDefault(LHServerConfig.PRODUCER_MAX_REQUEST_SIZE, "1047000"));
     }
 
     public int getStreamsStateCleanupDelayMs() {
@@ -1085,6 +1087,10 @@ public class LHServerConfig extends ConfigBase {
 
     public int getMaxDeletesPerCommand() {
         return Integer.valueOf(getOrSetDefault(X_MAX_DELETES_PER_COMMAND_KEY, "1000"));
+    }
+
+    public boolean isTimerStreamsEnabled() {
+        return Boolean.valueOf(getOrSetDefault(X_ENABLE_TIMER_STREAMS_KEY, "true"));
     }
 
     public String getRackId() {

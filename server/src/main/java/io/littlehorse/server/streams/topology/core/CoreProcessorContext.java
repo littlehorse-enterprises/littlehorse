@@ -171,6 +171,7 @@ public class CoreProcessorContext implements ExecutionContext {
             LHTimer timer = new LHTimer(command);
             timer.partitionKey = command.getPartitionKey();
             timer.setMaturationTime(command.time);
+            timer.setRepartition(true);
 
             getTaskManager().forwardTimer(timer);
         }
@@ -303,5 +304,9 @@ public class CoreProcessorContext implements ExecutionContext {
 
     public void notifyOfEventThrown(WorkflowEventModel event) {
         this.eventsToThrow.add(event);
+    }
+
+    public TenantScopedStore getCoreStore() {
+        return coreStore;
     }
 }

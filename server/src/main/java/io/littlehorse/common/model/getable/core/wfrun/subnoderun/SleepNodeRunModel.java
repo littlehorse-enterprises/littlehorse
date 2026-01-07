@@ -16,6 +16,7 @@ import io.littlehorse.sdk.common.proto.SleepNodeRun;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
 
@@ -46,7 +47,6 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
         SleepNodeRun p = (SleepNodeRun) proto;
         maturationTime = LHUtil.fromProtoTs(p.getMaturationTime());
         matured = p.getMatured();
-        this.processorContext = context.castOnSupport(CoreProcessorContext.class);
     }
 
     @Override
@@ -71,6 +71,7 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
 
         try {
             maturationTime = sleepNode.getMaturationTime(nodeRun.getThreadRun());
+            Objects.requireNonNull(maturationTime, "Maturation resolved to null.");
             SleepNodeMaturedModel snm = new SleepNodeMaturedModel(nodeRun.getId());
             CommandModel command = new CommandModel(snm, maturationTime);
             processorContext.getTaskManager().scheduleTimer(new LHTimer(command));

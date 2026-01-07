@@ -303,6 +303,25 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int IS_REPARTITION_FIELD_NUMBER = 8;
+  private boolean isRepartition_ = false;
+  /**
+   * <code>optional bool is_repartition = 8;</code>
+   * @return Whether the isRepartition field is set.
+   */
+  @java.lang.Override
+  public boolean hasIsRepartition() {
+    return ((bitField0_ & 0x00000010) != 0);
+  }
+  /**
+   * <code>optional bool is_repartition = 8;</code>
+   * @return The isRepartition.
+   */
+  @java.lang.Override
+  public boolean getIsRepartition() {
+    return isRepartition_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -338,6 +357,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000008) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 7, storeKey_);
     }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      output.writeBool(8, isRepartition_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -371,6 +393,10 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000008) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(7, storeKey_);
+    }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(8, isRepartition_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -413,6 +439,11 @@ private static final long serialVersionUID = 0L;
       if (!getStoreKey()
           .equals(other.getStoreKey())) return false;
     }
+    if (hasIsRepartition() != other.hasIsRepartition()) return false;
+    if (hasIsRepartition()) {
+      if (getIsRepartition()
+          != other.getIsRepartition()) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -445,6 +476,11 @@ private static final long serialVersionUID = 0L;
     if (hasStoreKey()) {
       hash = (37 * hash) + STORE_KEY_FIELD_NUMBER;
       hash = (53 * hash) + getStoreKey().hashCode();
+    }
+    if (hasIsRepartition()) {
+      hash = (37 * hash) + IS_REPARTITION_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsRepartition());
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -609,6 +645,7 @@ private static final long serialVersionUID = 0L;
         principalIdBuilder_ = null;
       }
       storeKey_ = "";
+      isRepartition_ = false;
       return this;
     }
 
@@ -674,6 +711,10 @@ private static final long serialVersionUID = 0L;
         result.storeKey_ = storeKey_;
         to_bitField0_ |= 0x00000008;
       }
+      if (((from_bitField0_ & 0x00000080) != 0)) {
+        result.isRepartition_ = isRepartition_;
+        to_bitField0_ |= 0x00000010;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -715,6 +756,9 @@ private static final long serialVersionUID = 0L;
         storeKey_ = other.storeKey_;
         bitField0_ |= 0x00000040;
         onChanged();
+      }
+      if (other.hasIsRepartition()) {
+        setIsRepartition(other.getIsRepartition());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -783,6 +827,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000040;
               break;
             } // case 58
+            case 64: {
+              isRepartition_ = input.readBool();
+              bitField0_ |= 0x00000080;
+              break;
+            } // case 64
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1510,6 +1559,46 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       storeKey_ = value;
       bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+
+    private boolean isRepartition_ ;
+    /**
+     * <code>optional bool is_repartition = 8;</code>
+     * @return Whether the isRepartition field is set.
+     */
+    @java.lang.Override
+    public boolean hasIsRepartition() {
+      return ((bitField0_ & 0x00000080) != 0);
+    }
+    /**
+     * <code>optional bool is_repartition = 8;</code>
+     * @return The isRepartition.
+     */
+    @java.lang.Override
+    public boolean getIsRepartition() {
+      return isRepartition_;
+    }
+    /**
+     * <code>optional bool is_repartition = 8;</code>
+     * @param value The isRepartition to set.
+     * @return This builder for chaining.
+     */
+    public Builder setIsRepartition(boolean value) {
+
+      isRepartition_ = value;
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional bool is_repartition = 8;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearIsRepartition() {
+      bitField0_ = (bitField0_ & ~0x00000080);
+      isRepartition_ = false;
       onChanged();
       return this;
     }
