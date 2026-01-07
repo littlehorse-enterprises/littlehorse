@@ -1,12 +1,12 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { FC, useMemo, useState } from 'react'
 import { useDiagram } from '../../hooks/useDiagram'
-import { NodeInfo } from './NodeInfo/NodeInfo'
 import { Node } from './Node'
-import { NodeRunInfo } from './NodeRunInfo/NodeRunInfo'
+import { NodeInfo } from './NodeInfo/NodeInfo'
 import { SelectedNodeRun } from './NodeInfo/SelectNodeRun'
-import { NodeRunComponent } from './NodeRunInfo/NodeRunComponent'
 import { Failures } from './NodeRunInfo/Failures'
+import { NodeRunComponent } from './NodeRunInfo/NodeRunComponent'
+import { NodeRunInfo } from './NodeRunInfo/NodeRunInfo'
 
 export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
   const { selectedNode } = useDiagram()
@@ -45,32 +45,55 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
 
     return selectedNode.data.node.$case || ''
   }, [selectedNode, nodeRunIndex])
+
+  const capitalizedNodeType = useMemo(() => {
+    return nodeType.charAt(0).toUpperCase() + nodeType.slice(1)
+  }, [nodeType])
+
   return (
-    <aside className={`overflow-y flex max-w-full flex-col overflow-x-hidden pl-4 ${maxHeightClass} overflow-y-auto `}>
+    <aside className={`flex max-w-full flex-col overflow-hidden pl-4 ${maxHeightClass}`}>
       {isValidNode && selectedNode && (selectedNode as { type?: string }).type !== 'cycle' && (
         <>
           {showNodeRun && <SelectedNodeRun nodeRunIndex={nodeRunIndex} setNodeRunIndex={setNodeRunIndex} />}
-          <Tabs value={currentTab} onValueChange={value => setCurrentTab(value)} className="w-full">
-            <TabsList className="w-full">
-              <TabsTrigger className="flex-1" value="overview">
+          <Tabs
+            value={currentTab}
+            onValueChange={value => setCurrentTab(value)}
+            className="flex h-full min-h-0 w-full flex-col"
+          >
+            <TabsList className="w-full flex-shrink-0">
+              <TabsTrigger value="overview" className="flex-1">
                 Overview
               </TabsTrigger>
-              <TabsTrigger className="flex-1" value="node">
-                Node {nodeType}
+              <TabsTrigger value="node" className="flex-1">
+                Node
               </TabsTrigger>
+              {showNodeRun && (
+                <TabsTrigger value="nodeRun" className="flex-1">
+                  NodeRun
+                </TabsTrigger>
+              )}
               {showNodeRun && hasFailures && (
-                <TabsTrigger className="flex-1" value="failures">
+                <TabsTrigger value="failures" className="flex-1">
                   Failures
                 </TabsTrigger>
               )}
             </TabsList>
-            <TabsContent value="overview">
-              {showNodeRun ? <NodeRunInfo nodeRunIndex={nodeRunIndex} /> : <NodeInfo />}
-            </TabsContent>
-            <TabsContent value="node">
-              {showNodeRun ? <NodeRunComponent nodeRunIndex={nodeRunIndex} /> : <Node />}
-            </TabsContent>
-            <TabsContent value="failures">{showNodeRun && <Failures nodeRunIndex={nodeRunIndex} />}</TabsContent>
+            <div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-4">
+              <TabsContent value="overview" className="mt-0">
+                {showNodeRun ? <NodeRunInfo nodeRunIndex={nodeRunIndex} /> : <NodeInfo />}
+              </TabsContent>
+              <TabsContent value="node" className="mt-0">
+                <Node />
+              </TabsContent>
+              {showNodeRun && (
+                <TabsContent value="nodeRun" className="mt-0">
+                  <NodeRunComponent nodeRunIndex={nodeRunIndex} />
+                </TabsContent>
+              )}
+              <TabsContent value="failures" className="mt-0">
+                {showNodeRun && <Failures nodeRunIndex={nodeRunIndex} />}
+              </TabsContent>
+            </div>
           </Tabs>
         </>
       )}
