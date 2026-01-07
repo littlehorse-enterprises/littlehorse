@@ -29,6 +29,7 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.objectId.ArchivedThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
@@ -208,12 +209,18 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         if (localThreadRun != null) return localThreadRun;
 
         // Pull up ThreadRun from GetableManager
+        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
+
+        ArchivedThreadRunModel potentialThreadRun = processorContext.getableManager().get(new ArchivedThreadRunIdModel(id, threadRunNumber));
+
+        if (potentialThreadRun != null) return potentialThreadRun.getThreadRun();
+
         return null;
     }
 
     public ThreadRunIterator getThreadRunIterator() {
-        // TODO: How to get getableManager?
-        return new ThreadRunIterator(id, threadRunsUseMeCarefully, greatestThreadRunNumber, null);
+        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
+        return new ThreadRunIterator(id, threadRunsUseMeCarefully, greatestThreadRunNumber, processorContext.getableManager());
     }
 
     @Override
@@ -485,22 +492,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     /*
     CONCEPT METHOD (would merge with the other advance method if things work out)
     */
-    public void advance(Date time, GetableManager getableManager) {
-        this.advance(time);
-        
-        for (ThreadRunModel threadRunModel : threadRunsUseMeCarefully) {
-            if (threadRunModel.type == ThreadType.ENTRYPOINT) continue;
-            
-            if (threadRunModel.status == LHStatus.COMPLETED) { 
-                removeThreadRun(threadRunModel);
-                
-                ArchivedThreadRunModel archivedThreadRunModel = new ArchivedThreadRunModel(threadRunModel);
-
-                getableManager.put(archivedThreadRunModel);
-            }
-        }
-    }
-
     public void advance(Date time) {
         boolean statusChanged = true;
         // We repeatedly advance each thread until we have a run wherein the entire
@@ -541,13 +532,29 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
         // TODO: Check if this code is used, see SDKs
         // Now we remove any old threadruns according to the retention policy
-        for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
-            ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
-            ThreadSpecModel spec = thread.getThreadSpec();
-            if (spec.getRetentionPolicy() != null) {
-                if (spec.getRetentionPolicy().shouldGcThreadRun(thread)) {
-                    removeThreadRun(thread);
-                }
+        // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
+        //     ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
+        //     ThreadSpecModel spec = thread.getThreadSpec();
+        //     if (spec.getRetentionPolicy() != null) {
+        //         if (spec.getRetentionPolicy().shouldGcThreadRun(thread)) {
+        //             removeThreadRun(thread);
+        //         }
+        //     }
+        // }
+
+        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
+
+        for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
+            ThreadRunModel threadRunModel = threadRunsUseMeCarefully.get(i);
+
+            if (threadRunModel.type == ThreadType.ENTRYPOINT) continue;
+            
+            if (threadRunModel.status == LHStatus.COMPLETED) { 
+                removeThreadRun(threadRunModel);
+                
+                ArchivedThreadRunModel archivedThreadRunModel = new ArchivedThreadRunModel(threadRunModel);
+
+                processorContext.getableManager().put(archivedThreadRunModel);
             }
         }
     }

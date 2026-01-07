@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.wfrun.ArchivedThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
@@ -22,6 +23,7 @@ import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.getable.objectId.ArchivedThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
@@ -48,6 +50,7 @@ import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecM
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.ArchivedThreadRunId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -113,6 +116,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.CORRELATED_EVENT;
         } else if (cls.equals(CheckpointModel.class)) {
             return GetableClassEnum.CHECKPOINT;
+        } else if (cls.equals(ArchivedThreadRunModel.class)) {
+            return GetableClassEnum.ARCHIVED_THREAD_RUN;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -162,6 +167,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CorrelatedEventModel.class;
             case CHECKPOINT:
                 return CheckpointModel.class;
+            case ARCHIVED_THREAD_RUN:
+                return ArchivedThreadRunModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -212,6 +219,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CorrelatedEventIdModel.class;
             case CHECKPOINT:
                 return CheckpointIdModel.class;
+            case ARCHIVED_THREAD_RUN:
+                return ArchivedThreadRunIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");

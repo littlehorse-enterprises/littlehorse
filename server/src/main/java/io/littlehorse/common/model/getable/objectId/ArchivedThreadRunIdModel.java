@@ -30,8 +30,7 @@ public class ArchivedThreadRunIdModel extends CoreObjectId<ArchivedThreadRunId, 
 
   @Override
   public String toString() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'toString'");
+    return wfRunId + "/" + Integer.toString(threadRunNumber);
   }
 
   @Override
