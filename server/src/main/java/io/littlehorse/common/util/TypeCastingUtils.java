@@ -49,10 +49,10 @@ public class TypeCastingUtils {
     }
 
     public static boolean canBeType(VariableType sourceType, VariableType targetType) {
-        if (sourceType.equals(targetType)) {
+        if (sourceType == null) {
             return true;
         }
-        if (sourceType == null) {
+        if (sourceType.equals(targetType)) {
             return true;
         }
         if (targetType == null) {

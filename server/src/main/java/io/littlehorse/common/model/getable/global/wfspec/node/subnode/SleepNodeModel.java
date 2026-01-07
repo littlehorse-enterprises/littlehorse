@@ -77,15 +77,36 @@ public class SleepNodeModel extends SubNode<SleepNode> {
             case RAW_SECONDS:
                 boolean canResolveToInt = rawSeconds.canBeType(VariableType.INT, node.threadSpec);
                 if (!canResolveToInt) {
-                    throw new InvalidNodeException(new LHVarSubError(null, "Invalid value: variable can't resolve to INT"), node);
+                    throw new InvalidNodeException(
+                            new LHVarSubError(
+                                    null, "Invalid value: variable can't resolve to " + VariableType.INT.name()),
+                            node);
+                }
+                break;
+            case ISO_DATE:
+                boolean canResolveToStr = isoDate.canBeType(VariableType.STR, node.threadSpec);
+                if (!canResolveToStr) {
+                    throw new InvalidNodeException(
+                            new LHVarSubError(
+                                    null, "Invalid value: variable can't resolve to " + VariableType.STR.name()),
+                            node);
                 }
                 break;
             case TIMESTAMP:
-            case ISO_DATE:
+                boolean canResolveToTimestampOrInt = timestamp.canBeType(VariableType.TIMESTAMP, node.threadSpec)
+                        || timestamp.canBeType(VariableType.INT, node.threadSpec);
+                if (!canResolveToTimestampOrInt) {
+                    throw new InvalidNodeException(
+                            new LHVarSubError(
+                                    null,
+                                    "Invalid value: variable can't resolve to %s or %s"
+                                            .formatted(VariableType.TIMESTAMP.name(), VariableType.INT.name())),
+                            node);
+                }
+                break;
             case SLEEPLENGTH_NOT_SET:
-                throw new RuntimeException("Not possible");
+                throw new InvalidNodeException("Invalid value case for SleepNode", node);
         }
-
     }
 
     @Override
