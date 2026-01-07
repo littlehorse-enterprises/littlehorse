@@ -11,6 +11,7 @@ import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
@@ -210,10 +211,11 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
         this.grpcListener = null;
 
-        ServerBuilder<?> builder = Grpc.newServerBuilderForPort(
+        NettyServerBuilder builder = NettyServerBuilder.forPort(
                         listenerConfig.getPort(), listenerConfig.getCredentials())
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
+                .maxConcurrentCallsPerConnection(100)
                 .addService(this)
                 .executor(networkThreads);
 
