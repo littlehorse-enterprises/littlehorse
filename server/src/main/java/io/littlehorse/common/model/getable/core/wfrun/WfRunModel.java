@@ -483,6 +483,20 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 break;
             }
 
+            if (this.threadRunsUseMeCarefully.size() > LHConstants.MAX_THREAD_RUNS_PER_WF_RUN) {
+                putFailureOnThreadRun(
+                        getThreadRun(0),
+                        new FailureModel(
+                                LHErrorType.INTERNAL_ERROR.toString(),
+                                String.format(
+                                        "You exceeded the maximum number of ThreadRuns per WfRun: %s",
+                                        LHConstants.MAX_THREAD_RUNS_PER_WF_RUN)),
+                        time,
+                        null);
+                transitionTo(LHStatus.ERROR);
+                break;
+            }
+
             statusChanged = startXnHandlersAndInterrupts(time);
             // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
             for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
