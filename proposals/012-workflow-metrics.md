@@ -121,6 +121,8 @@ All metric collection and aggregation happens inside LittleHorse using:
 * Metrics are aggregated in time windows
 * Computation happens per partition first
 * Only finalized events produce metric updates
+* **Minimum window length**: 1 minute
+
 
 
 
@@ -179,37 +181,6 @@ Compute ratios between event counts.
 ```
 
 
-## Automatic Metrics
-
-To reduce setup friction, LittleHorse can automatically create a standard set of metrics in the definition of an object like  `WfSpec` or `TaskDef`.
-
-### Default Auto-Created Metrics
-
-#### Workflow Metrics
-
-* Workflow execution count
-* End-to-end workflow latency
-* Error and exception counts
-
-#### Task Metrics
-
-* Task execution count
-* Queue latency
-* Execution latency
-* Failure counts
-
-#### Node Metrics
-
-* Node execution count
-* Node execution latency
-
-#### User Task Metrics
-
-* Assignment latency
-* Completion latency
-* Cancellation counts
-
-
 ## Public API
 
 ### Metric Metadata APIs
@@ -238,9 +209,47 @@ message PutMetricSpecRequest {
     NodeReference node = 2;
     WfSpecId wf_spec_id = 3;
     ThreadSpecReference thread_spec = 4;
+    boolean any_workflow = 5;
   }
 
-  google.protobuf.Duration window_length = 5;
+  StatusRange status_range = 6;
+
+  google.protobuf.Duration window_length = 7;
+}
+
+message StatusRange {
+  oneof type {
+    LHStatusRange lh_status = 1;
+    TaskRunStatusRange task_run = 2;
+    UserTaskRunStatusRange user_task_run = 3;
+  }
+}
+
+message LHStatusRange {
+  LHStatus starts = 1;
+  LHStatus ends = 2;
+}
+
+message TaskRunStatusRange {
+  TaskStatus starts = 1;
+  TaskStatus ends = 2;
+}
+
+message UserTaskRunStatusRange {
+  UserTaskRunStatus starts = 1;
+  UserTaskRunStatus ends = 2;
+}
+
+message NodeReference {
+  optional ThreadSpecReference thread_spec = 1;
+  optional string node_type = 2;
+  optional int32 node_position = 3;
+  optional TaskDefId task_def_id = 4;
+}
+
+message ThreadSpecReference {
+  WfSpecId wf_spec_id = 1;
+  optional int32 thread_number = 2;
 }
 ```
 
@@ -312,6 +321,122 @@ message MetricList {
   repeated Metric results = 1;
 }
 ```
+
+
+## Global Metrics
+
+LittleHorse requires tracking global metrics for all workflows and all task definitions to provide cluster-wide observability. The operator could be the  responsible for defining these global metrics that will automatically apply to every workflow and every node in the system.
+
+### Global Metrics Scope
+
+Operators can define metrics at different scopes:
+
+* **Cluster-wide workflow metrics**: Track behavior across all workflows (using `any_workflow: true`)
+* **Cluster-wide task metrics**: Track behavior across all task nodes (using `NodeReference` with `task_def_id`)
+
+
+
+### Example Requests
+
+#### Global Workflow Completion Count
+
+Track the number of completed workflows across the entire cluster:
+
+```proto
+PutMetricSpecRequest {
+  aggregation_type: COUNT
+  any_workflow: true
+  status_range: {
+    lh_status: {
+      starts: RUNNING
+      ends: COMPLETED
+    }
+  }
+  window_length: { seconds: 300 }  // 5 minutes
+}
+```
+
+#### Global Workflow Failure Count
+
+Track the number of failed workflows across the entire cluster:
+
+```proto
+PutMetricSpecRequest {
+  aggregation_type: COUNT
+  any_workflow: true
+  status_range: {
+    lh_status: {
+      starts: RUNNING
+      ends: ERROR
+    }
+  }
+  window_length: { seconds: 300 }
+}
+```
+
+#### Global Task Execution Latency
+
+Track execution latency for all task nodes across all workflows:
+
+```proto
+PutMetricSpecRequest {
+  aggregation_type: LATENCY
+  node: {
+    // node_type, node_position, thread_spec not set = all task nodes
+    task_def_id: null  // applies to all TaskDefs
+  }
+  status_range: {
+    task_run: {
+      starts: TASK_RUNNING
+      ends: TASK_SUCCESS
+    }
+  }
+  window_length: { seconds: 300 }
+}
+```
+
+#### Global Task Queue Latency
+
+Track how long tasks wait in queues across all task definitions:
+
+```proto
+PutMetricSpecRequest {
+  aggregation_type: LATENCY
+  node: {
+    task_def_id: null  // applies to all TaskDefs
+  }
+  status_range: {
+    task_run: {
+      starts: TASK_SCHEDULED
+      ends: TASK_RUNNING
+    }
+  }
+  window_length: { seconds: 300 }
+}
+```
+
+#### Specific TaskDef Metrics
+
+Track metrics for a specific task definition:
+
+```proto
+PutMetricSpecRequest {
+  aggregation_type: COUNT
+  node: {
+    task_def_id: {
+      name: "send-email"
+    }
+  }
+  status_range: {
+    task_run: {
+      starts: TASK_RUNNING
+      ends: TASK_SUCCESS
+    }
+  }
+  window_length: { seconds: 300 }
+}
+```
+
 
 
 ## Implementation Overview
