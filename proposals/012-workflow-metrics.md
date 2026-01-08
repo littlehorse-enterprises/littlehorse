@@ -345,7 +345,9 @@ Track the number of completed workflows across the entire cluster:
 ```proto
 PutMetricSpecRequest {
   aggregation_type: COUNT
-  any_workflow: true
+  reference:{
+    any_workflow: true
+  }
   status_range: {
     lh_status: {
       starts: RUNNING
@@ -363,7 +365,9 @@ Track the number of failed workflows across the entire cluster:
 ```proto
 PutMetricSpecRequest {
   aggregation_type: COUNT
-  any_workflow: true
+  reference:{
+    any_workflow: true
+  }
   status_range: {
     lh_status: {
       starts: RUNNING
@@ -376,39 +380,20 @@ PutMetricSpecRequest {
 
 #### Global Task Execution Latency
 
-Track execution latency for all task nodes across all workflows:
+Track execution latency for all UserTaskNodeRun workflows:
 
 ```proto
 PutMetricSpecRequest {
   aggregation_type: LATENCY
-  node: {
-    // node_type, node_position, thread_spec not set = all task nodes
-    task_def_id: null  // applies to all TaskDefs
+  reference:{
+      node: {
+          node_type="UserTaskNodeRun"
+    }
   }
   status_range: {
     task_run: {
       starts: TASK_RUNNING
       ends: TASK_SUCCESS
-    }
-  }
-  window_length: { seconds: 300 }
-}
-```
-
-#### Global Task Queue Latency
-
-Track how long tasks wait in queues across all task definitions:
-
-```proto
-PutMetricSpecRequest {
-  aggregation_type: LATENCY
-  node: {
-    task_def_id: null  // applies to all TaskDefs
-  }
-  status_range: {
-    task_run: {
-      starts: TASK_SCHEDULED
-      ends: TASK_RUNNING
     }
   }
   window_length: { seconds: 300 }
