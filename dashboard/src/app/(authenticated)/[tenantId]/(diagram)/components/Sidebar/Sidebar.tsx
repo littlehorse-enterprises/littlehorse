@@ -36,9 +36,13 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
     if (!('nodeRunsList' in selectedNode.data)) {
       return false
     }
-    const nodeRun = selectedNode.data.nodeRunsList[nodeRunIndex]
+    const nodeRunsList = selectedNode.data.nodeRunsList
+    if (!nodeRunsList || !Array.isArray(nodeRunsList) || nodeRunIndex >= nodeRunsList.length) {
+      return false
+    }
+    const nodeRun = nodeRunsList[nodeRunIndex]
     return nodeRun?.failures?.length > 0
-  }, [selectedNode, nodeRunIndex])
+  }, [selectedNode, nodeRunIndex, showNodeRun])
 
   const nodeType = useMemo(() => {
     if (!selectedNode || !selectedNode.data.node) return ''
