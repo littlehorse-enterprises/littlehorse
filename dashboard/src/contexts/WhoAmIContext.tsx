@@ -21,10 +21,7 @@ type WhoAmIContextProps = ContextProps
 export const WhoAmIContext: FC<PropsWithChildren<WhoAmIContextProps>> = ({ children, user, tenants, tenantId }) => {
   const params = useParams()
   const currentTenantId = (params.tenantId as string) || tenantId || 'default'
-  const value = useMemo(
-    () => ({ user, tenants, tenantId: currentTenantId }),
-    [user, tenants, currentTenantId]
-  )
+  const value = useMemo(() => ({ user, tenants, tenantId: currentTenantId }), [user, tenants, currentTenantId])
   return <Context.Provider value={value}>{children}</Context.Provider>
 }
 
