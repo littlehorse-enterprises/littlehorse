@@ -1,8 +1,8 @@
-import React from 'react'
-import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { NodeStatus } from '../NodeStatus'
+import { render, screen } from '@testing-library/react'
 import { LHStatus, TaskStatus } from 'littlehorse-client/proto'
+import React from 'react'
+import { NodeStatus } from '../NodeStatus'
 
 jest.mock('../StatusColor', () => {
   const MockIcon = (props: any) => React.createElement('svg', { 'data-testid': 'icon', className: props.className })
