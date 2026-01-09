@@ -525,7 +525,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
         }
 
-        archiveCompletedThreadRuns();
+        // archiveCompletedThreadRuns();
     }
 
     private void archiveCompletedThreadRuns() {
