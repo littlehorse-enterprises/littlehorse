@@ -423,6 +423,30 @@ PutMetricSpecRequest {
 ```
 
 
+## Metric Exposure
+
+Workflow metrics wil be exposed exclusively through the **gRPC API** , providing a centralized access point for all workflow observability data.
+
+### Separation from Technical Metrics
+
+LittleHorse currently exposes **technical metrics** (JVM, Kafka Streams, RocksDB) via Prometheus on port 1822. These are operational metrics for cluster health monitoring and are used by system administrators.
+
+Workflow metrics are fundamentally different as they represent application-level data and require:
+
+1. **Multi-tenancy isolation**: Metrics must be scoped by tenant with proper authentication and authorization
+2. **Transactional guarantees**: Computed with Kafka Streams and stored in RocksDB
+
+Prometheus cannot meet these requirements as it prioritizes availability over accuracy and does not support tenant-based access control.
+
+### Alternative: Output Topics
+
+Customers needing event-driven metric distribution can use **Kafka output topics**, which provide:
+
+* Integration with external systems (data warehouses, alerting, dashboards)
+* Per-tenant organization
+
+This centralized gRPC approach ensures consistent access patterns for all workflow data (WfRuns, TaskRuns, metrics) while offering flexibility through Kafka output topics when needed.
+
 
 ## Implementation Overview
 
