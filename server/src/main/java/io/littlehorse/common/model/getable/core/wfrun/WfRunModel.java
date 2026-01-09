@@ -254,7 +254,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         }
         this.executionContext = context;
         this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
-        this.totalThreadRunNumber = proto.getTotalThreadrunNumber();
     }
 
     @Override
@@ -290,8 +289,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 .setId(id.toProto())
                 .setWfSpecId(wfSpecId.toProto())
                 .setStatus(status)
-                .setStartTime(LHUtil.fromDate(startTime))
-                .setTotalThreadrunNumber(totalThreadRunNumber);
+                .setStartTime(LHUtil.fromDate(startTime));
 
         int greatestThreadRunNumber = 0;
         for (ThreadRunModel threadRunModel : threadRunsUseMeCarefully) {

@@ -98,6 +98,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.MigrateWfSpecRequest.SerializeToString,
                 response_deserializer=wf__spec__pb2.WfSpec.FromString,
                 _registered_method=True)
+        self.GetArchivedThreadRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetArchivedThreadRun',
+                request_serializer=object__id__pb2.ArchivedThreadRunId.SerializeToString,
+                response_deserializer=wf__run__pb2.ArchivedThreadRun.FromString,
+                _registered_method=True)
         self.PutStructDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutStructDef',
                 request_serializer=service__pb2.PutStructDefRequest.SerializeToString,
@@ -569,6 +574,13 @@ class LittleHorseServicer(object):
         completion.
 
         As of 0.7.2, this feature is only partially implemented.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetArchivedThreadRun(self, request, context):
+        """Gets an Archived ThreadRun.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1244,6 +1256,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.MigrateWfSpecRequest.FromString,
                     response_serializer=wf__spec__pb2.WfSpec.SerializeToString,
             ),
+            'GetArchivedThreadRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetArchivedThreadRun,
+                    request_deserializer=object__id__pb2.ArchivedThreadRunId.FromString,
+                    response_serializer=wf__run__pb2.ArchivedThreadRun.SerializeToString,
+            ),
             'PutStructDef': grpc.unary_unary_rpc_method_handler(
                     servicer.PutStructDef,
                     request_deserializer=service__pb2.PutStructDefRequest.FromString,
@@ -1910,6 +1927,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/MigrateWfSpec',
             service__pb2.MigrateWfSpecRequest.SerializeToString,
             wf__spec__pb2.WfSpec.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetArchivedThreadRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetArchivedThreadRun',
+            object__id__pb2.ArchivedThreadRunId.SerializeToString,
+            wf__run__pb2.ArchivedThreadRun.FromString,
             options,
             channel_credentials,
             insecure,

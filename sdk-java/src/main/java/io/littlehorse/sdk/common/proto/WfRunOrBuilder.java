@@ -133,15 +133,6 @@ public interface WfRunOrBuilder extends
   io.littlehorse.sdk.common.proto.LHStatus getStatus();
 
   /**
-   * <pre>
-   * The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
-   * is given by greatest_thread_run_number + 1.
-   *
-   * Introduced now since with ThreadRun-level retention, we can't rely upon
-   * thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
-   * from the thread_runs list once its retention period expires.
-   * </pre>
-   *
    * <code>int32 greatest_threadrun_number = 5;</code>
    * @return The greatestThreadrunNumber.
    */

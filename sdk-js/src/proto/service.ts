@@ -35,6 +35,7 @@ import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRun } from "./node_run";
 import {
+  ArchivedThreadRunId,
   CheckpointId,
   CorrelatedEventId,
   ExternalEventDefId,
@@ -76,7 +77,7 @@ import {
   userTaskRunStatusToNumber,
 } from "./user_tasks";
 import { Variable, VariableValue } from "./variable";
-import { WfRun } from "./wf_run";
+import { ArchivedThreadRun, WfRun } from "./wf_run";
 import {
   ThreadSpec,
   WfSpec,
@@ -11314,6 +11315,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Gets an Archived ThreadRun. */
+    getArchivedThreadRun: {
+      name: "GetArchivedThreadRun",
+      requestType: ArchivedThreadRunId,
+      requestStream: false,
+      responseType: ArchivedThreadRun,
+      responseStream: false,
+      options: {},
+    },
     /**
      * EXPERIMENTAL: Creates a new `StructDef``.
      *
@@ -12171,6 +12181,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * As of 0.7.2, this feature is only partially implemented.
    */
   migrateWfSpec(request: MigrateWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
+  /** Gets an Archived ThreadRun. */
+  getArchivedThreadRun(
+    request: ArchivedThreadRunId,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ArchivedThreadRun>>;
   /**
    * EXPERIMENTAL: Creates a new `StructDef``.
    *
@@ -12621,6 +12636,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * As of 0.7.2, this feature is only partially implemented.
    */
   migrateWfSpec(request: DeepPartial<MigrateWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
+  /** Gets an Archived ThreadRun. */
+  getArchivedThreadRun(
+    request: DeepPartial<ArchivedThreadRunId>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ArchivedThreadRun>;
   /**
    * EXPERIMENTAL: Creates a new `StructDef``.
    *

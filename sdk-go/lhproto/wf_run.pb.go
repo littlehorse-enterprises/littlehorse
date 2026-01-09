@@ -93,14 +93,8 @@ type WfRun struct {
 	// old WfSpecId to this list for historical auditing and debugging purposes.
 	OldWfSpecVersions []*WfSpecId `protobuf:"bytes,3,rep,name=old_wf_spec_versions,json=oldWfSpecVersions,proto3" json:"old_wf_spec_versions,omitempty"`
 	// The status of this WfRun.
-	Status LHStatus `protobuf:"varint,4,opt,name=status,proto3,enum=littlehorse.LHStatus" json:"status,omitempty"`
-	// The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
-	// is given by greatest_thread_run_number + 1.
-	//
-	// Introduced now since with ThreadRun-level retention, we can't rely upon
-	// thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
-	// from the thread_runs list once its retention period expires.
-	GreatestThreadrunNumber int32 `protobuf:"varint,5,opt,name=greatest_threadrun_number,json=greatestThreadrunNumber,proto3" json:"greatest_threadrun_number,omitempty"`
+	Status                  LHStatus `protobuf:"varint,4,opt,name=status,proto3,enum=littlehorse.LHStatus" json:"status,omitempty"`
+	GreatestThreadrunNumber int32    `protobuf:"varint,5,opt,name=greatest_threadrun_number,json=greatestThreadrunNumber,proto3" json:"greatest_threadrun_number,omitempty"`
 	// The time the WfRun was started.
 	StartTime *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
 	// The time the WfRun failed or completed.

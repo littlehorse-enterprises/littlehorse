@@ -224,15 +224,6 @@ private static final long serialVersionUID = 0L;
   public static final int GREATEST_THREADRUN_NUMBER_FIELD_NUMBER = 5;
   private int greatestThreadrunNumber_ = 0;
   /**
-   * <pre>
-   * The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
-   * is given by greatest_thread_run_number + 1.
-   *
-   * Introduced now since with ThreadRun-level retention, we can't rely upon
-   * thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
-   * from the thread_runs list once its retention period expires.
-   * </pre>
-   *
    * <code>int32 greatest_threadrun_number = 5;</code>
    * @return The greatestThreadrunNumber.
    */
@@ -1990,15 +1981,6 @@ private static final long serialVersionUID = 0L;
 
     private int greatestThreadrunNumber_ ;
     /**
-     * <pre>
-     * The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
-     * is given by greatest_thread_run_number + 1.
-     *
-     * Introduced now since with ThreadRun-level retention, we can't rely upon
-     * thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
-     * from the thread_runs list once its retention period expires.
-     * </pre>
-     *
      * <code>int32 greatest_threadrun_number = 5;</code>
      * @return The greatestThreadrunNumber.
      */
@@ -2007,15 +1989,6 @@ private static final long serialVersionUID = 0L;
       return greatestThreadrunNumber_;
     }
     /**
-     * <pre>
-     * The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
-     * is given by greatest_thread_run_number + 1.
-     *
-     * Introduced now since with ThreadRun-level retention, we can't rely upon
-     * thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
-     * from the thread_runs list once its retention period expires.
-     * </pre>
-     *
      * <code>int32 greatest_threadrun_number = 5;</code>
      * @param value The greatestThreadrunNumber to set.
      * @return This builder for chaining.
@@ -2028,15 +2001,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
-     * is given by greatest_thread_run_number + 1.
-     *
-     * Introduced now since with ThreadRun-level retention, we can't rely upon
-     * thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
-     * from the thread_runs list once its retention period expires.
-     * </pre>
-     *
      * <code>int32 greatest_threadrun_number = 5;</code>
      * @return This builder for chaining.
      */

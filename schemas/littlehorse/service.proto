@@ -63,6 +63,9 @@ service LittleHorse {
    */
   rpc MigrateWfSpec(MigrateWfSpecRequest) returns (WfSpec) {}
 
+  // Gets an Archived ThreadRun.
+  rpc GetArchivedThreadRun(ArchivedThreadRunId) returns (ArchivedThreadRun) {}
+
   /* EXPERIMENTAL: Creates a new `StructDef``.
    *
    * Note that this request is idempotent: if you
@@ -351,7 +354,6 @@ service LittleHorse {
   // Gets the version of the LH Server.
   rpc GetServerVersion(google.protobuf.Empty) returns (LittleHorseVersion) {}
 }
-
 // Returns the UserTaskDef with a given name and the highest version number.
 message GetLatestUserTaskDefRequest {
   // The name of the UserTaskDef to search for.

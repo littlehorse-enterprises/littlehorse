@@ -30,6 +30,7 @@ const (
 	LittleHorse_GetWfSpec_FullMethodName                  = "/littlehorse.LittleHorse/GetWfSpec"
 	LittleHorse_GetLatestWfSpec_FullMethodName            = "/littlehorse.LittleHorse/GetLatestWfSpec"
 	LittleHorse_MigrateWfSpec_FullMethodName              = "/littlehorse.LittleHorse/MigrateWfSpec"
+	LittleHorse_GetArchivedThreadRun_FullMethodName       = "/littlehorse.LittleHorse/GetArchivedThreadRun"
 	LittleHorse_PutStructDef_FullMethodName               = "/littlehorse.LittleHorse/PutStructDef"
 	LittleHorse_GetStructDef_FullMethodName               = "/littlehorse.LittleHorse/GetStructDef"
 	LittleHorse_ValidateStructDefEvolution_FullMethodName = "/littlehorse.LittleHorse/ValidateStructDefEvolution"
@@ -140,6 +141,8 @@ type LittleHorseClient interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
+	// Gets an Archived ThreadRun.
+	GetArchivedThreadRun(ctx context.Context, in *ArchivedThreadRunId, opts ...grpc.CallOption) (*ArchivedThreadRun, error)
 	// EXPERIMENTAL: Creates a new `StructDef“.
 	//
 	// Note that this request is idempotent: if you
@@ -455,6 +458,15 @@ func (c *littleHorseClient) GetLatestWfSpec(ctx context.Context, in *GetLatestWf
 func (c *littleHorseClient) MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error) {
 	out := new(WfSpec)
 	err := c.cc.Invoke(ctx, LittleHorse_MigrateWfSpec_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetArchivedThreadRun(ctx context.Context, in *ArchivedThreadRunId, opts ...grpc.CallOption) (*ArchivedThreadRun, error) {
+	out := new(ArchivedThreadRun)
+	err := c.cc.Invoke(ctx, LittleHorse_GetArchivedThreadRun_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1223,6 +1235,8 @@ type LittleHorseServer interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error)
+	// Gets an Archived ThreadRun.
+	GetArchivedThreadRun(context.Context, *ArchivedThreadRunId) (*ArchivedThreadRun, error)
 	// EXPERIMENTAL: Creates a new `StructDef“.
 	//
 	// Note that this request is idempotent: if you
@@ -1480,6 +1494,9 @@ func (UnimplementedLittleHorseServer) GetLatestWfSpec(context.Context, *GetLates
 }
 func (UnimplementedLittleHorseServer) MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MigrateWfSpec not implemented")
+}
+func (UnimplementedLittleHorseServer) GetArchivedThreadRun(context.Context, *ArchivedThreadRunId) (*ArchivedThreadRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArchivedThreadRun not implemented")
 }
 func (UnimplementedLittleHorseServer) PutStructDef(context.Context, *PutStructDefRequest) (*StructDef, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutStructDef not implemented")
@@ -1907,6 +1924,24 @@ func _LittleHorse_MigrateWfSpec_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).MigrateWfSpec(ctx, req.(*MigrateWfSpecRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetArchivedThreadRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArchivedThreadRunId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetArchivedThreadRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetArchivedThreadRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetArchivedThreadRun(ctx, req.(*ArchivedThreadRunId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3387,6 +3422,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MigrateWfSpec",
 			Handler:    _LittleHorse_MigrateWfSpec_Handler,
+		},
+		{
+			MethodName: "GetArchivedThreadRun",
+			Handler:    _LittleHorse_GetArchivedThreadRun_Handler,
 		},
 		{
 			MethodName: "PutStructDef",
