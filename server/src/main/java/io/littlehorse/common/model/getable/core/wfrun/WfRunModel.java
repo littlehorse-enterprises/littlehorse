@@ -81,6 +81,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     // TODO: Iterate over all threadruns, archived included
     private int greatestThreadRunNumber;
 
+    private int totalThreadRunNumber;
+
     public LHStatus status;
 
     public Date startTime;
@@ -252,6 +254,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         }
         this.executionContext = context;
         this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
+        this.totalThreadRunNumber = proto.getTotalThreadrunNumber();
     }
 
     @Override
@@ -288,7 +291,13 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 .setWfSpecId(wfSpecId.toProto())
                 .setStatus(status)
                 .setStartTime(LHUtil.fromDate(startTime))
-                .setGreatestThreadrunNumber(greatestThreadRunNumber);
+                .setTotalThreadrunNumber(totalThreadRunNumber);
+
+        int greatestThreadRunNumber = 0;
+        for (ThreadRunModel threadRunModel : threadRunsUseMeCarefully) {
+            greatestThreadRunNumber = Math.max(greatestThreadRunNumber, threadRunModel.getNumber());
+        }
+        out.setGreatestThreadrunNumber(greatestThreadRunNumber);
 
         if (endTime != null) {
             out.setEndTime(LHUtil.fromDate(endTime));
@@ -510,18 +519,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 break;
             }
 
-            if (this.threadRunsUseMeCarefully.size() > LHConstants.MAX_THREAD_RUNS_PER_WF_RUN) {
-                putFailureOnThreadRun(
-                        getThreadRun(0),
-                        new FailureModel(
-                                LHErrorType.INTERNAL_ERROR.toString(),
-                                String.format("You exceeded the maximum number of ThreadRuns per WfRun: %s", LHConstants.MAX_THREAD_RUNS_PER_WF_RUN)),
-                        time,
-                        null);
-                transitionTo(LHStatus.ERROR);
-                break;
-            }
-
             statusChanged = startXnHandlersAndInterrupts(time);
             // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
             for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
@@ -530,47 +527,29 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
         }
 
-        // TODO: Check if this code is used, see SDKs
-        // Now we remove any old threadruns according to the retention policy
-        // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
-        //     ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
-        //     ThreadSpecModel spec = thread.getThreadSpec();
-        //     if (spec.getRetentionPolicy() != null) {
-        //         if (spec.getRetentionPolicy().shouldGcThreadRun(thread)) {
-        //             removeThreadRun(thread);
-        //         }
-        //     }
-        // }
+        archiveCompletedThreadRuns();
+    }
 
+    private void archiveCompletedThreadRuns() {
         CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
+
+        List<ThreadRunModel> threadRunsToKeep = new ArrayList<>(threadRunsUseMeCarefully);
 
         for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
             ThreadRunModel threadRunModel = threadRunsUseMeCarefully.get(i);
 
             if (threadRunModel.type == ThreadType.ENTRYPOINT) continue;
             
-            if (threadRunModel.status == LHStatus.COMPLETED) { 
-                threadRunsUseMeCarefully.removeIf(candidate -> candidate.getNumber() == threadRunModel.getNumber());
+            if (threadRunModel.status == LHStatus.COMPLETED) {
+                threadRunsToKeep.removeIf(candidate -> candidate.getNumber() == threadRunModel.getNumber());
                 
                 ArchivedThreadRunModel archivedThreadRunModel = new ArchivedThreadRunModel(threadRunModel);
 
                 processorContext.getableManager().put(archivedThreadRunModel);
             }
         }
-    }
 
-    private void removeThreadRun(ThreadRunModel thread) {
-        if (thread.getNumber() == 0) {
-            throw new IllegalStateException("Impossible to cleanup entrypoint threadrun");
-        }
-
-        // First, remove the reference to this thread from the parent threadrun.
-        ThreadRunModel parent = getThreadRun(thread.getParentThreadId());
-        if (parent != null) {
-            parent.childThreadIds.removeIf(childId -> childId.equals(thread.getNumber()));
-        }
-
-        threadRunsUseMeCarefully.removeIf(candidate -> candidate.getNumber() == thread.getNumber());
+        threadRunsUseMeCarefully = threadRunsToKeep;
     }
 
     public void processExtEvtTimeout(ExternalEventTimeoutModel timeout) {
