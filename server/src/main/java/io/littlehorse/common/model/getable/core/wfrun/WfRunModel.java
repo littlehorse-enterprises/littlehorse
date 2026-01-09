@@ -475,8 +475,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 putFailureOnThreadRun(
                         getThreadRun(0),
                         new FailureModel(
-                                LHErrorType.INTERNAL_ERROR.toString(),
-                                "Your WfSpec had a tight loop and exceeded the maximum iterations in one command."),
+                                "Your WfSpec had a tight loop and exceeded the maximum iterations in one command.",
+                                LHErrorType.INTERNAL_ERROR.toString()),
                         time,
                         null);
                 transitionTo(LHStatus.ERROR);
@@ -487,10 +487,10 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 putFailureOnThreadRun(
                         getThreadRun(0),
                         new FailureModel(
-                                LHErrorType.INTERNAL_ERROR.toString(),
                                 String.format(
                                         "You exceeded the maximum number of ThreadRuns per WfRun: %s",
-                                        LHConstants.MAX_THREAD_RUNS_PER_WF_RUN)),
+                                        LHConstants.MAX_THREAD_RUNS_PER_WF_RUN),
+                                LHErrorType.INTERNAL_ERROR.toString()),
                         time,
                         null);
                 transitionTo(LHStatus.ERROR);
