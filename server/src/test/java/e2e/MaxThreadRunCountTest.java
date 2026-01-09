@@ -1,5 +1,6 @@
 package e2e;
 
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -21,9 +22,23 @@ public class MaxThreadRunCountTest {
     private WorkflowVerifier verifier;
 
     @Test
-    void shouldFailIfSpawnTooManyWf() {
+    void shouldNotFailIfSpawnFewWf() {
+        // Creates Array with MAX_THREAD_RUNS_PER_WF_RUN-1 items, meaning MAX_THREAD_RUNS_PER_WF_RUN-1 new threads (+1 entrypoint) which should be the limit, but no error
         ArrayList<Integer> largeArr = new ArrayList<>();
-        for (int i = 0; i < 65; i++) {
+        for (int i = 0; i < LHConstants.MAX_THREAD_RUNS_PER_WF_RUN-1; i++) {
+            largeArr.add(i);
+        }
+
+        verifier.prepareRun(spawnManyThreadsWf, Arg.of("json-arr", largeArr))
+                .waitForStatus(LHStatus.COMPLETED)
+                .start();
+    }
+
+    @Test
+    void shouldFailIfSpawnTooManyWf() {
+        // Creates Array with MAX_THREAD_RUNS_PER_WF_RUN items, meaning MAX_THREAD_RUNS_PER_WF_RUN new threads (+1 entrypoint) which will throw error
+        ArrayList<Integer> largeArr = new ArrayList<>();
+        for (int i = 0; i < LHConstants.MAX_THREAD_RUNS_PER_WF_RUN; i++) {
             largeArr.add(i);
         }
 
