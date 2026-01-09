@@ -23,9 +23,10 @@ public class MaxThreadRunCountTest {
 
     @Test
     void shouldNotFailIfSpawnFewWf() {
-        // Creates Array with MAX_THREAD_RUNS_PER_WF_RUN-1 items, meaning MAX_THREAD_RUNS_PER_WF_RUN-1 new threads (+1 entrypoint) which should be the limit, but no error
+        // Creates Array with MAX_THREAD_RUNS_PER_WF_RUN-1 items, meaning MAX_THREAD_RUNS_PER_WF_RUN-1 new threads (+1
+        // entrypoint) which should be the limit, but no error
         ArrayList<Integer> largeArr = new ArrayList<>();
-        for (int i = 0; i < LHConstants.MAX_THREAD_RUNS_PER_WF_RUN-1; i++) {
+        for (int i = 0; i < LHConstants.MAX_THREAD_RUNS_PER_WF_RUN - 1; i++) {
             largeArr.add(i);
         }
 
@@ -36,7 +37,8 @@ public class MaxThreadRunCountTest {
 
     @Test
     void shouldFailIfSpawnTooManyWf() {
-        // Creates Array with MAX_THREAD_RUNS_PER_WF_RUN items, meaning MAX_THREAD_RUNS_PER_WF_RUN new threads (+1 entrypoint) which will throw error
+        // Creates Array with MAX_THREAD_RUNS_PER_WF_RUN items, meaning MAX_THREAD_RUNS_PER_WF_RUN new threads (+1
+        // entrypoint) which will throw error
         ArrayList<Integer> largeArr = new ArrayList<>();
         for (int i = 0; i < LHConstants.MAX_THREAD_RUNS_PER_WF_RUN; i++) {
             largeArr.add(i);
