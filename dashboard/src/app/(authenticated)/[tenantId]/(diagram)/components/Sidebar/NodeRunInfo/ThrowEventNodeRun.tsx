@@ -1,12 +1,12 @@
+import { VARIABLE_TYPES } from '@/app/constants'
+import { getVariableValue } from '@/app/utils'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { ThrowEventNodeRun as ThrowEventNodeRunProto, WorkflowEvent } from 'littlehorse-client/proto'
 import { FC } from 'react'
-import { NodeVariable } from '../Components/NodeVariable'
 import useSWR from 'swr'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { getWorkflowEvent } from '../../NodeTypes/ThrowEvent/getWorkflowEvent'
-import { getVariableValue } from '@/app/utils'
-import { VARIABLE_TYPES } from '@/app/constants'
 import { Divider } from '../Components/Divider'
+import { NodeVariable } from '../Components/NodeVariable'
 
 export const ThrowEventNodeRun: FC<{ node: ThrowEventNodeRunProto }> = ({ node }) => {
   const { tenantId } = useWhoAmI()
