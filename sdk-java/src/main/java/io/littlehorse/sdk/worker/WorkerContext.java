@@ -174,7 +174,7 @@ public class WorkerContext {
         if (checkpointsSoFarInThisRun < scheduledTask.getTotalObservedCheckpoints()) {
             return (T) fetchCheckpoint(checkpointsSoFarInThisRun++, clazz);
         } else {
-            return saveCheckpoint(runnable, clazz);
+            return saveCheckpoint(runnable);
         }
     }
 
@@ -187,7 +187,7 @@ public class WorkerContext {
         return (T) LHLibUtil.varValToObj(checkpoint.getValue(), clazz);
     }
 
-    private <T> T saveCheckpoint(CheckpointableFunction<T> runnable, Class<T> clazz) {
+    private <T> T saveCheckpoint(CheckpointableFunction<T> runnable) {
         CheckpointContext checkpointContext = new CheckpointContext();
         T result = runnable.run(checkpointContext);
 
