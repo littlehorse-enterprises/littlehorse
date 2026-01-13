@@ -1,5 +1,6 @@
 ﻿using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
+using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Sdk.Worker
 {
@@ -13,6 +14,10 @@ namespace LittleHorse.Sdk.Worker
         private readonly DateTime? _scheduleDateTime;
         private readonly ScheduledTask _scheduleTask;
 
+        private int _checkpointsSoFarInThisRun;
+
+        private readonly LittleHorseClient _client;
+
         /// <summary>
         /// The current logOutput.
         /// </summary>
@@ -23,10 +28,12 @@ namespace LittleHorse.Sdk.Worker
         /// </summary>
         /// <param name="scheduleTask">The raw payload for the scheduled task.</param>
         /// <param name="scheduleDateTime">The time that the task was actually scheduled.</param>
-        public LHWorkerContext(ScheduledTask scheduleTask, DateTime? scheduleDateTime)
+        public LHWorkerContext(ScheduledTask scheduleTask, DateTime? scheduleDateTime, LittleHorseClient client)
         {
             _scheduleTask = scheduleTask;
             _scheduleDateTime = scheduleDateTime;
+            _checkpointsSoFarInThisRun = 0;
+            _client = client;
         }
         
         /// <summary>
@@ -260,5 +267,96 @@ namespace LittleHorse.Sdk.Worker
         /// TaskRun Retries
         /// </summary>
         public string IdempotencyKey => LHTaskHelper.ParseTaskRunIdToString(TaskRunId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="checkpointContext"></param>
+        /// <returns></returns>
+        public delegate T CheckpointableFunction<T>(LHCheckpointContext checkpointContext);
+
+        /// <summary>
+        /// Executes and checkpoints the result of a function. 
+        /// 
+        /// On first Checkpoint Attempt, the Task Worker will execute you CheckpointableFunction
+        /// and put the result to the server as a Checkpoint.
+        /// 
+        /// If your overall Task Attempt fails after your Checkpoint, this method will
+        /// retrieve the Checkpoint from the server on future iterations.
+        /// </summary>
+        /// <typeparam name="T">The return type of your checkpoint</typeparam>
+        /// <param name="func">Your checkpointable function</param>
+        /// <returns>The function result</returns>
+        public T? ExecuteAndCheckpoint<T>(CheckpointableFunction<T> func)
+        {
+            if (_checkpointsSoFarInThisRun < _scheduleTask.TotalObservedCheckpoints)
+            {
+                return FetchCheckpoint<T>(_checkpointsSoFarInThisRun++);
+            }
+            else
+            {
+                return SaveCheckpoint(func);
+            }
+        }
+
+        /// <summary>
+        /// Fetches a checkpoint from the server based on its Checkpoint order number.
+        /// </summary>
+        /// <typeparam name="T">The type of your checkpoint data</typeparam>
+        /// <param name="checkpointNumber">The Checkpoint number</param>
+        /// <returns>The Checkpoint data</returns>
+        private T? FetchCheckpoint<T>(int checkpointNumber)
+        {
+            CheckpointId id = new()
+            {
+                TaskRun = _scheduleTask.TaskRunId,
+                CheckpointNumber = checkpointNumber,
+            };
+
+            Checkpoint checkpoint = _client.GetCheckpoint(id);
+
+            object? obj = LHMappingHelper.VariableValueToObject(checkpoint.Value, typeof(T));
+
+            if (obj == null)
+            {
+                return default;
+            }
+
+            return (T) obj;
+        }
+
+        /// <summary>
+        /// Executes a Checkpointable Function and puts the result to the server
+        /// </summary>
+        /// <typeparam name="T">The return type of the Checkpointable Function</typeparam>
+        /// <param name="func">The Checkpointable Function</param>
+        /// <returns>The result of the Checkpointable Function</returns>
+        /// <exception cref="Exception">
+        /// Throws an Exception if the server halts Task Worker progress in the PutCheckpointResponse
+        /// </exception>
+        private T SaveCheckpoint<T>(CheckpointableFunction<T> func)
+        {
+            LHCheckpointContext checkpointContext = new();
+            T result = func(checkpointContext);
+
+            PutCheckpointResponse response = _client.PutCheckpoint(new PutCheckpointRequest
+            {
+               TaskAttempt = _scheduleTask.AttemptNumber,
+               TaskRunId = _scheduleTask.TaskRunId,
+               Value = LHMappingHelper.ObjectToVariableValue(result),
+               Logs = checkpointContext.LogOutput
+            });
+
+            _checkpointsSoFarInThisRun++;
+
+            if (response.FlowControlContinueType != PutCheckpointResponse.Types.FlowControlContinue.ContinueTask)
+            {
+                throw new Exception("Halting execution because the server told us to.");
+            }
+            
+            return result;
+        }
+
     }
 }

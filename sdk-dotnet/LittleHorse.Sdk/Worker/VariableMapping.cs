@@ -38,42 +38,15 @@ namespace LittleHorse.Sdk.Worker
             }
 
             VarNameAndVal assignment = taskInstance.Variables[_position];
+            string taskDefParamName = assignment.VarName;
             VariableValue val = assignment.Value;
 
-            string? jsonStr;
-
-            switch (val.ValueCase)
+            try
             {
-                case VariableValue.ValueOneofCase.Int:
-                    if (LHMappingHelper.IsInt64Type(_type))
-                    {
-                        return val.Int;
-                    }
-
-                    return (int) val.Int;
-                case VariableValue.ValueOneofCase.Double:
-                    if (_type == typeof(double) || _type == typeof(Double))
-                    {
-                        return val.Double;
-                    }
-
-                    return (float) val.Double;
-                case VariableValue.ValueOneofCase.Str:
-                    return val.Str;
-                case VariableValue.ValueOneofCase.Bytes:
-                    return val.Bytes.ToByteArray();
-                case VariableValue.ValueOneofCase.Bool:
-                    return val.Bool;
-                case VariableValue.ValueOneofCase.JsonArr:
-                    jsonStr = val.JsonArr;
-                    return JsonHandler.DeserializeFromJson(jsonStr, _type);
-                case VariableValue.ValueOneofCase.JsonObj:
-                    jsonStr = val.JsonObj;
-                    return JsonHandler.DeserializeFromJson(jsonStr, _type);
-                case VariableValue.ValueOneofCase.None:
-                    return null;
-                default:
-                    throw new InvalidOperationException("Unrecognized variable value type");
+                return LHMappingHelper.VariableValueToObject(val, _type);
+            } catch (LHSerdeException e)
+            {
+                throw new Exception("Failed serializing Java object for variable: " + taskDefParamName + ". " + e.Message);
             }
         }
         
