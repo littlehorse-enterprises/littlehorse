@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, ThreadRun, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
@@ -82,7 +82,8 @@ const getCycleNodes = (threadSpec: WfSpec['threadSpecs'][string]) => {
 export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   const { tenantId } = useWhoAmI()
   const currentThread = wfRun
-    ? wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName
+    ? (wfRun.threadRuns.find(tr => tr.number === wfRun.greatestThreadrunNumber)?.threadSpecName ??
+      spec.entrypointThreadName)
     : spec.entrypointThreadName
 
   const [thread, setThread] = useState<ThreadType>({
@@ -102,7 +103,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
 
   const threadNodeRuns = useMemo(() => {
     if (!wfRun) return
-    return wfRun.threadRuns[thread.number].nodeRuns
+    return (wfRun.threadRuns.find(tr => tr.number === thread.number) as ThreadRun & ThreadRunWithNodeRuns).nodeRuns
   }, [thread, wfRun])
 
   const updateGraph = useCallback(() => {
