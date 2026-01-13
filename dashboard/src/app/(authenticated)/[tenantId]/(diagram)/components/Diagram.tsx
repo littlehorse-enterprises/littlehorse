@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { LHStatus, ThreadRun, WfRun, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
@@ -31,7 +31,7 @@ import { Sidebar } from './Sidebar'
 import { ThreadPanel } from './ThreadPanel'
 
 type Props = {
-  wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
+  wfRun?: Omit<WfRun, 'threadRuns'> & { threadRuns: ThreadRunWithNodeRuns[] }
   spec: WfSpec
 }
 const getCycleNodes = (threadSpec: WfSpec['threadSpecs'][string]) => {
@@ -103,7 +103,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
 
   const threadNodeRuns = useMemo(() => {
     if (!wfRun) return
-    return (wfRun.threadRuns.find(tr => tr.number === thread.number) as ThreadRun & ThreadRunWithNodeRuns).nodeRuns
+    return wfRun.threadRuns.find(tr => tr.number === thread.number)?.nodeRuns
   }, [thread, wfRun])
 
   const updateGraph = useCallback(() => {
