@@ -270,10 +270,10 @@ namespace LittleHorse.Sdk.Worker
         public string IdempotencyKey => LHTaskHelper.ParseTaskRunIdToString(TaskRunId);
 
         /// <summary>
-        /// 
+        /// A delegate type denoting a CheckpointableFunction to be used with the ExecuteAndCheckpoint method.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="checkpointContext"></param>
+        /// <typeparam name="T">The return type of the function.</typeparam>
+        /// <param name="checkpointContext">A context object passed by the Task Worker.</param>
         /// <returns></returns>
         public delegate T CheckpointableFunction<T>(LHCheckpointContext checkpointContext);
 

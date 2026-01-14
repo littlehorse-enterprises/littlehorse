@@ -13,7 +13,7 @@ namespace LittleHorse.Sdk.Worker
         public string? LogOutput { get; private set; }
 
         /// <summary>
-        /// 
+        /// Constructor for internal use by the Task Worker Library.
         /// </summary>
         public LHCheckpointContext()
         {
