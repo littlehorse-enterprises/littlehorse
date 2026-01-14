@@ -46,7 +46,7 @@ namespace LittleHorse.Sdk.Worker
                 return LHMappingHelper.VariableValueToObject(val, _type);
             } catch (LHSerdeException e)
             {
-                throw new Exception("Failed serializing Java object for variable: " + taskDefParamName + ". " + e.Message);
+                throw new LHInputVarSubstitutionException("Failed serializing Java object for variable: " + taskDefParamName + ". " + e.Message);
             }
         }
         
