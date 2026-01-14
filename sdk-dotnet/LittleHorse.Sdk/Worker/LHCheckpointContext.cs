@@ -17,6 +17,7 @@ namespace LittleHorse.Sdk.Worker
         /// </summary>
         public LHCheckpointContext()
         {
+            LogOutput = "";
         }
 
         /// <summary>
