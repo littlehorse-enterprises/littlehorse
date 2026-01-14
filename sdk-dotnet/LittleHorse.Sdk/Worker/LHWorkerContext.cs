@@ -28,6 +28,7 @@ namespace LittleHorse.Sdk.Worker
         /// </summary>
         /// <param name="scheduleTask">The raw payload for the scheduled task.</param>
         /// <param name="scheduleDateTime">The time that the task was actually scheduled.</param>
+        /// <param name="client">A LittleHorse Client for putting and fetching Checkpoints.</param>
         public LHWorkerContext(ScheduledTask scheduleTask, DateTime? scheduleDateTime, LittleHorseClient client)
         {
             _scheduleTask = scheduleTask;

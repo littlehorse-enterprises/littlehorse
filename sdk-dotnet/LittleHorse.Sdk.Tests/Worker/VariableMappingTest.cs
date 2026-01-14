@@ -9,6 +9,7 @@ using LittleHorse.Sdk.Worker;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
+using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Sdk.Tests.Worker;
 
@@ -130,12 +131,15 @@ public class VariableMappingTest
         int position = 0;
         string paramName = "param_test";
 
+        var mockClient = new Mock<LittleHorseClient>();
+
         foreach (var type in testAllowedTypes)
         {
             var variableMapping = GetVariableMappingForTest(type, paramName, position);
             VariableValue variableValue = new VariableValue {Int = expectedValue};
             ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
-            var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+
+            var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
         
             var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
         
@@ -152,7 +156,9 @@ public class VariableMappingTest
         var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue();
         ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
-        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+
+        var mockClient = new Mock<LittleHorseClient>();
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
 
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
 
@@ -168,12 +174,14 @@ public class VariableMappingTest
         int position = 0;
         string paramName = "param_test";
 
+        var mockClient = new Mock<LittleHorseClient>();
+
         foreach (var type in testAllowedTypes)
         {
             var variableMapping = GetVariableMappingForTest(type, paramName, position);
             VariableValue variableValue = new VariableValue {Int = expectedValue};
             ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
-            var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+            var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
         
             var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
         
@@ -190,12 +198,15 @@ public class VariableMappingTest
         int position = 0;
         string paramName = "param_test";
 
+        var mockClient = new Mock<LittleHorseClient>();
+
         foreach (var type in testAllowedTypes)
         {
             var variableMapping = GetVariableMappingForTest(type, paramName, position);
             VariableValue variableValue = new VariableValue {Double = expectedValue};
             ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
-            var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+            
+            var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
         
             var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
         
@@ -215,7 +226,9 @@ public class VariableMappingTest
         var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue {Double = expectedValue};
         ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
-        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+
+        var mockClient = new Mock<LittleHorseClient>();
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
     
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
     
@@ -231,7 +244,9 @@ public class VariableMappingTest
         var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue { Str = "param_value_test"};
         ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
-        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+        
+        var mockClient = new Mock<LittleHorseClient>();
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
         
@@ -249,7 +264,9 @@ public class VariableMappingTest
         var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue { Bytes = byteString};
         ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
-        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+
+        var mockClient = new Mock<LittleHorseClient>();
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
         
@@ -266,7 +283,9 @@ public class VariableMappingTest
         var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue { Bool = expectedValue};
         ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
-        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+        
+        var mockClient = new Mock<LittleHorseClient>();
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
         
@@ -283,7 +302,9 @@ public class VariableMappingTest
         var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue { JsonArr = value};
         ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
-        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+
+        var mockClient = new Mock<LittleHorseClient>();
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
         
@@ -306,7 +327,9 @@ public class VariableMappingTest
         var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue { JsonObj = value};
         ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
-        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+
+        var mockClient = new Mock<LittleHorseClient>();
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
         
@@ -329,7 +352,9 @@ public class VariableMappingTest
         var variableMapping = GetVariableMappingForTest(type, paramName, position);
         VariableValue variableValue = new VariableValue { JsonObj = value};
         ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
-        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+
+        var mockClient = new Mock<LittleHorseClient>();
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
         
