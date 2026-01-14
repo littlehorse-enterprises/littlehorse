@@ -105,7 +105,7 @@ describe('Attempts component', () => {
     const setAttemptIndex = jest.fn()
     render(<Attempts attempts={attempts} attemptIndex={0} setAttemptIndex={setAttemptIndex} />)
 
-    const itemTwo = screen.getByRole('button', { name: '2' })
+    const itemTwo = screen.getByRole('button', { name: 'Attempt 2' })
     fireEvent.click(itemTwo)
     expect(setAttemptIndex).toHaveBeenCalledWith(1)
   })

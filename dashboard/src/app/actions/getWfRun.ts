@@ -29,11 +29,16 @@ export const getWfRun = async ({ wfRunId, tenantId }: Props): Promise<WfRunRespo
     }),
   ])
 
-  const inheritedVariables = await getInheritedVariables(
-    wfRunId,
-    wfSpec.threadSpecs[wfRun.threadRuns[0].threadSpecName].variableDefs,
-    tenantId
-  )
+  const entrypointThreadRun =
+    wfRun.threadRuns.find(tr => tr.number === 0) ??
+    wfRun.threadRuns.find(tr => tr.threadSpecName === wfSpec.entrypointThreadName)
+  const inheritedVariables = entrypointThreadRun
+    ? await getInheritedVariables(
+        wfRunId,
+        wfSpec.threadSpecs[entrypointThreadRun.threadSpecName].variableDefs,
+        tenantId
+      )
+    : []
 
   const threadRuns = wfRun.threadRuns.map(threadRun => mergeThreadRunsWithNodeRuns(threadRun, nodeRuns))
   return { wfRun: { ...wfRun, threadRuns }, wfSpec, variables: [...variables, ...inheritedVariables] }

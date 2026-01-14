@@ -59,11 +59,7 @@ export const TaskNodeRun: FC<{ node: TaskNodeRunProto }> = ({ node }) => {
       {nodeTask?.attempts && (
         <Attempts attempts={nodeTask?.attempts} attemptIndex={attemptIndex} setAttemptIndex={setAttemptIndex} />
       )}
-      {nodeTask && (
-        <div className="ml-1">
-          <InputVariables variables={nodeTask.inputVariables} />
-        </div>
-      )}
+      {nodeTask && <InputVariables variables={nodeTask.inputVariables} />}
     </div>
   )
 }
