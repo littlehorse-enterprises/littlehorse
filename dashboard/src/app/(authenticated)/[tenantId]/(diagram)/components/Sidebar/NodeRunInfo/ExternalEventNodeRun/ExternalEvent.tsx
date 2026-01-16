@@ -14,6 +14,7 @@ export const ExternalEvent = ({ event }: { event: ExternalEventProto }) => {
       <NodeVariable label="guid:" text={`${event.id?.guid}`} />
       <NodeVariable label="wfRunId:" text={`${event.id?.wfRunId?.id}`} />
       <NodeVariable label="createdAt:" text={`${event.createdAt}`} />
+
       {event.threadRunNumber !== undefined && (
         <NodeVariable label="threadRunNumber:" text={`${event.threadRunNumber}`} />
       )}

@@ -3,14 +3,22 @@ package io.littlehorse.common.model.metadatacommand;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.google.protobuf.Message;
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.MetadataCommand;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfSpec;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.ServerTopology;
@@ -22,8 +30,11 @@ import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -32,6 +43,7 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -65,6 +77,9 @@ public class PutWfSpecRequestModelTest {
                     Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
+
+    Headers defaultHeaders = HeadersUtil.metadataHeadersFor(
+            new TenantIdModel(LHConstants.DEFAULT_TENANT), new PrincipalIdModel("my-principal-id"));
 
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
             new MockProcessorContext<>();
@@ -117,6 +132,74 @@ public class PutWfSpecRequestModelTest {
                 .isNull();
         assertThat(secondIsolatedStore.get(wfSpecToSearch.getStoreableKey(), StoredGetable.class))
                 .isNull();
+    }
+
+    @Test
+    public void shouldValidateRawSecondsEvaluatesToIntType() {
+        Map<VariableType, Exception> compilationErrors = new HashMap<>();
+        for (VariableType type : VariableType.values()) {
+            if (type == VariableType.UNRECOGNIZED) continue;
+            String typeName = type.name().toLowerCase();
+            Workflow wf = Workflow.newWorkflow(LHUtil.toLHName(typeName), thread -> {
+                WfRunVariable var = thread.addVariable(typeName, type);
+                thread.sleepSeconds(var);
+            });
+            String commandId = UUID.randomUUID().toString();
+            MetadataCommand command = MetadataCommand.newBuilder()
+                    .setCommandId(commandId)
+                    .setPutWfSpec(wf.compileWorkflow())
+                    .build();
+            metadataProcessor.init(mockProcessorContext);
+            metadataProcessor.process(new Record<>("test", command, 0L, defaultHeaders));
+            CompletableFuture<Message> test =
+                    asyncWaiters.getOrRegisterFuture(commandId, WfSpec.class, new CompletableFuture<>());
+            Exception thrown = catchException(() -> test.getNow(null));
+            if (thrown != null) {
+                compilationErrors.put(type, thrown);
+            }
+        }
+
+        assertThat(compilationErrors.values())
+                .map(Throwable::getCause)
+                .allMatch(e -> e instanceof LHApiException)
+                .allMatch(e -> e.getMessage()
+                        .contains("Node 1-sleep-SLEEP invalid: Invalid value: variable can't resolve to INT"));
+        assertThat(compilationErrors).hasSize(8);
+    }
+
+    @Test
+    public void shouldValidateTimestampVariablesEvaluatesToTimestampOrIntType() {
+        Map<VariableType, Exception> compilationErrors = new HashMap<>();
+        for (VariableType type : VariableType.values()) {
+            if (type == VariableType.UNRECOGNIZED) continue;
+            String typeName = type.name().toLowerCase();
+            Workflow wf = Workflow.newWorkflow(LHUtil.toLHName(typeName), thread -> {
+                WfRunVariable var = thread.addVariable(typeName, type);
+                thread.sleepUntil(var);
+            });
+            String commandId = UUID.randomUUID().toString();
+            MetadataCommand command = MetadataCommand.newBuilder()
+                    .setCommandId(commandId)
+                    .setPutWfSpec(wf.compileWorkflow())
+                    .build();
+            metadataProcessor.init(mockProcessorContext);
+            metadataProcessor.process(new Record<>("test", command, 0L, defaultHeaders));
+            CompletableFuture<Message> test =
+                    asyncWaiters.getOrRegisterFuture(commandId, WfSpec.class, new CompletableFuture<>());
+            Exception thrown = catchException(() -> test.getNow(null));
+            if (thrown != null) {
+                compilationErrors.put(type, thrown);
+            }
+        }
+
+        assertThat(compilationErrors.values())
+                .map(Throwable::getCause)
+                .allMatch(e -> e instanceof LHApiException)
+                .allMatch(
+                        e -> e.getMessage()
+                                .contains(
+                                        "Node 1-sleep-SLEEP invalid: Invalid value: variable can't resolve to TIMESTAMP or INT"));
+        assertThat(compilationErrors).hasSize(7);
     }
 
     private PutWfSpecRequest testWorkflowSpec() {
