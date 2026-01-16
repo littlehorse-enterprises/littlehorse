@@ -163,7 +163,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                 AttemptNumber = scheduledTask.AttemptNumber
             };
 
-            var workerContext = new LHWorkerContext(scheduledTask, scheduleTime);
+            var workerContext = new LHWorkerContext(scheduledTask, scheduleTime, _client);
 
             try
             {
