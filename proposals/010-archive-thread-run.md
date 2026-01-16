@@ -41,9 +41,11 @@ Add new message:
 message InactiveThreadRun {
   ThreadRun thread_run = 0;
 
-  // The status of the InactiveThreadRun.
+  InactiveThreadRunType type = 1;
+
+  // The type of the InactiveThreadRun.
   // Can be expanded later to include 'Scheduled' or 'Pending' ThreadRuns
-  enum InactiveThreadRunStatus {
+  enum InactiveThreadRunType {
     UNSPECIFIED = 0;
     ARCHIVED = 1;
   }
