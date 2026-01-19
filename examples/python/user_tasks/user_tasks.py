@@ -39,7 +39,7 @@ async def get_user_task_def() -> PutUserTaskDefRequest:
 def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
         task_def_name = "greet"
-        user_task_output = wf.declare_str("person-details", None, "writer-group")
+        user_task_output = wf.assign_user_task("person-details", None, "writer-group")
         delay_in_seconds = 10
         arg1 = "Sam"
         arg2 = {"identification": "1258796641-4", "Address": "NA-Street", "Age": 28}
@@ -48,11 +48,11 @@ def get_workflow() -> Workflow:
             user_task_output, delay_in_seconds, task_def_name, arg1, arg2
         )
 
-    return Workflow("example-wait-for-condition", my_entrypoint)
+    return Workflow("example-user-tasks", my_entrypoint)
 
 
 async def greeting(
-    name: str, person_details: dict[str, Any], ctx: WorkerContext
+        name: str, person_details: dict[str, Any], ctx: WorkerContext
 ) -> str:
     msg = f"Hello {name}!. WfRun {ctx.wf_run_id.id} Person: {person_details}"
     print(msg)
