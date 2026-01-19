@@ -130,6 +130,54 @@ namespace LittleHorse.Sdk.Helper
 
             return result;
         }
+
+        /// <summary>
+        /// Converts an LH VariableValue to a C# object
+        /// </summary>
+        /// <param name="val">The value</param>
+        /// <param name="type">The type of the desired C# object</param>
+        /// <returns>The converted C# object</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Throws an exception if the VariableValue type is not recognized
+        /// </exception>
+        public static object? VariableValueToObject(VariableValue val, Type type)
+        {
+            string? jsonStr;
+
+            switch (val.ValueCase)
+            {
+                case VariableValue.ValueOneofCase.Int:
+                    if (IsInt64Type(type))
+                    {
+                        return val.Int;
+                    }
+
+                    return (int) val.Int;
+                case VariableValue.ValueOneofCase.Double:
+                    if (type == typeof(double))
+                    {
+                        return val.Double;
+                    }
+
+                    return (float) val.Double;
+                case VariableValue.ValueOneofCase.Str:
+                    return val.Str;
+                case VariableValue.ValueOneofCase.Bytes:
+                    return val.Bytes.ToByteArray();
+                case VariableValue.ValueOneofCase.Bool:
+                    return val.Bool;
+                case VariableValue.ValueOneofCase.JsonArr:
+                    jsonStr = val.JsonArr;
+                    return JsonHandler.DeserializeFromJson(jsonStr, type);
+                case VariableValue.ValueOneofCase.JsonObj:
+                    jsonStr = val.JsonObj;
+                    return JsonHandler.DeserializeFromJson(jsonStr, type);
+                case VariableValue.ValueOneofCase.None:
+                    return null;
+                default:
+                    throw new InvalidOperationException("Unrecognized variable value type");
+            }
+        }
         
         /// <summary>
         /// Concatenates the <c>exception.StackTrace</c> and the <c>LogOutput</c> coming from <c>LHWorkerContext</c>
