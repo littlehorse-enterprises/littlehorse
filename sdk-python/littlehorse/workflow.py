@@ -1279,7 +1279,7 @@ class WorkflowThread:
         node = WaitForConditionNode(
             condition=condition.compile(),
         )
-        node_name = self.add_node("condition", node)
+        node_name = self.add_node("wait-for-condition", node)
         return WaitForConditionNodeOutput(node_name, self)
 
     def sleep(self, seconds: Union[int, WfRunVariable]) -> None:
