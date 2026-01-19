@@ -1231,12 +1231,23 @@ message NodeRunList {
 message ListVariablesRequest {
   // The WfRun for whom we will list Variables.
   WfRunId wf_run_id = 1;
+
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 2;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 3;
 }
 
 // A list of Variables.
 message VariableList {
   // A list of Variable objects.
   repeated Variable results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
 }
 
 // List all ExternalEvents for a specific WfRunId. Note that List Requests return actual
@@ -1244,12 +1255,23 @@ message VariableList {
 message ListExternalEventsRequest {
   // The WfRunId for whom we list ExternalEvent's.
   WfRunId wf_run_id = 1;
+
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 2;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 3;
 }
 
 // A list of ExternalEvents.
 message ExternalEventList {
   // A list of ExternalEvent objects.
   repeated ExternalEvent results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
 }
 
 // List all WorkflowEvents for a specific WfRunId. Note that List Requests return actual
@@ -1257,12 +1279,23 @@ message ExternalEventList {
 message ListWorkflowEventsRequest {
   // The WfRunId for whom we list WorkflowEvent's.
   WfRunId wf_run_id = 1;
+
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 2;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 3;
 }
 
 // A list of WorkflowEvents.
 message WorkflowEventList {
   // A list of WorkflowEvent objects.
   repeated WorkflowEvent results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
 }
 
 // Message used by Task Worker to register itself to the server and ask for assignments of
@@ -1499,12 +1532,23 @@ message ListTaskMetricsRequest {
   MetricsWindowLength window_length = 3;
   // Number of windows to retrieve.
   int32 num_windows = 4;
+
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 5;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 6;
 }
 
 // A list of TaskDef Metrics WIndows
 message ListTaskMetricsResponse {
   // List of TaskDef Metrics Windows
   repeated TaskDefMetrics results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
 }
 
 // Query to retrieve a specific WfSpec Metrics Window.
@@ -1533,12 +1577,23 @@ message ListWfMetricsRequest {
   MetricsWindowLength window_length = 3;
   // Number of windows to retrieve
   int32 num_windows = 4;
+
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 5;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 6;
 }
 
 // A list of WfSpec Metrics Windows
 message ListWfMetricsResponse {
   // List of WfSpec Metrics Windows
   repeated WfSpecMetrics results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
 }
 
 // Metrics for a TaskDef in a certain time period.
@@ -1595,12 +1650,23 @@ message WfSpecMetrics {
 message ListUserTaskRunRequest {
   // The WfRun for which to list UserTaskRuns
   WfRunId wf_run_id = 1;
+
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 2;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 3;
 }
 
 // List of UserTaskRuns
 message UserTaskRunList {
   // A list of UserTaskRun Objects
   repeated UserTaskRun results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
 }
 
 // List of ScheduledWfRun
@@ -1643,12 +1709,23 @@ message TaskWorkerGroup {
 message ListTaskRunsRequest {
   // The WfRun for which to list TaskRun's
   WfRunId wf_run_id = 1;
+
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 2;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 3;
 }
 
 // A list of TaskRun's
 message TaskRunList {
   // A list of TaskRun Objects
   repeated TaskRun results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
 }
 
 // EXPERIMENTAL: migrate live WfRun's from one version of a WfSpec to another.

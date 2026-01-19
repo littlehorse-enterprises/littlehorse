@@ -33,6 +33,7 @@ private static final long serialVersionUID = 0L;
   }
   private ListWfMetricsRequest() {
     windowLength_ = 0;
+    bookmark_ = com.google.protobuf.ByteString.EMPTY;
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -169,6 +170,60 @@ private static final long serialVersionUID = 0L;
     return numWindows_;
   }
 
+  public static final int BOOKMARK_FIELD_NUMBER = 5;
+  private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
+  /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
+   * <code>optional bytes bookmark = 5;</code>
+   * @return Whether the bookmark field is set.
+   */
+  @java.lang.Override
+  public boolean hasBookmark() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
+   * <code>optional bytes bookmark = 5;</code>
+   * @return The bookmark.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString getBookmark() {
+    return bookmark_;
+  }
+
+  public static final int LIMIT_FIELD_NUMBER = 6;
+  private int limit_ = 0;
+  /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
+   * <code>optional int32 limit = 6;</code>
+   * @return Whether the limit field is set.
+   */
+  @java.lang.Override
+  public boolean hasLimit() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
+   * <code>optional int32 limit = 6;</code>
+   * @return The limit.
+   */
+  @java.lang.Override
+  public int getLimit() {
+    return limit_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -195,6 +250,12 @@ private static final long serialVersionUID = 0L;
     if (numWindows_ != 0) {
       output.writeInt32(4, numWindows_);
     }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      output.writeBytes(5, bookmark_);
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      output.writeInt32(6, limit_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -219,6 +280,14 @@ private static final long serialVersionUID = 0L;
     if (numWindows_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(4, numWindows_);
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBytesSize(5, bookmark_);
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(6, limit_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -248,6 +317,16 @@ private static final long serialVersionUID = 0L;
     if (windowLength_ != other.windowLength_) return false;
     if (getNumWindows()
         != other.getNumWindows()) return false;
+    if (hasBookmark() != other.hasBookmark()) return false;
+    if (hasBookmark()) {
+      if (!getBookmark()
+          .equals(other.getBookmark())) return false;
+    }
+    if (hasLimit() != other.hasLimit()) return false;
+    if (hasLimit()) {
+      if (getLimit()
+          != other.getLimit()) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -271,6 +350,14 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + windowLength_;
     hash = (37 * hash) + NUM_WINDOWS_FIELD_NUMBER;
     hash = (53 * hash) + getNumWindows();
+    if (hasBookmark()) {
+      hash = (37 * hash) + BOOKMARK_FIELD_NUMBER;
+      hash = (53 * hash) + getBookmark().hashCode();
+    }
+    if (hasLimit()) {
+      hash = (37 * hash) + LIMIT_FIELD_NUMBER;
+      hash = (53 * hash) + getLimit();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -425,6 +512,8 @@ private static final long serialVersionUID = 0L;
       }
       windowLength_ = 0;
       numWindows_ = 0;
+      bookmark_ = com.google.protobuf.ByteString.EMPTY;
+      limit_ = 0;
       return this;
     }
 
@@ -477,6 +566,14 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.numWindows_ = numWindows_;
       }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.bookmark_ = bookmark_;
+        to_bitField0_ |= 0x00000004;
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.limit_ = limit_;
+        to_bitField0_ |= 0x00000008;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -503,6 +600,12 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getNumWindows() != 0) {
         setNumWindows(other.getNumWindows());
+      }
+      if (other.hasBookmark()) {
+        setBookmark(other.getBookmark());
+      }
+      if (other.hasLimit()) {
+        setLimit(other.getLimit());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -554,6 +657,16 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 32
+            case 42: {
+              bookmark_ = input.readBytes();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 42
+            case 48: {
+              limit_ = input.readInt32();
+              bitField0_ |= 0x00000020;
+              break;
+            } // case 48
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1005,6 +1118,118 @@ private static final long serialVersionUID = 0L;
     public Builder clearNumWindows() {
       bitField0_ = (bitField0_ & ~0x00000008);
       numWindows_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
+     * <code>optional bytes bookmark = 5;</code>
+     * @return Whether the bookmark field is set.
+     */
+    @java.lang.Override
+    public boolean hasBookmark() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
+     * <code>optional bytes bookmark = 5;</code>
+     * @return The bookmark.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getBookmark() {
+      return bookmark_;
+    }
+    /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
+     * <code>optional bytes bookmark = 5;</code>
+     * @param value The bookmark to set.
+     * @return This builder for chaining.
+     */
+    public Builder setBookmark(com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      bookmark_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
+     * <code>optional bytes bookmark = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearBookmark() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      bookmark_ = getDefaultInstance().getBookmark();
+      onChanged();
+      return this;
+    }
+
+    private int limit_ ;
+    /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
+     * <code>optional int32 limit = 6;</code>
+     * @return Whether the limit field is set.
+     */
+    @java.lang.Override
+    public boolean hasLimit() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
+     * <code>optional int32 limit = 6;</code>
+     * @return The limit.
+     */
+    @java.lang.Override
+    public int getLimit() {
+      return limit_;
+    }
+    /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
+     * <code>optional int32 limit = 6;</code>
+     * @param value The limit to set.
+     * @return This builder for chaining.
+     */
+    public Builder setLimit(int value) {
+
+      limit_ = value;
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
+     * <code>optional int32 limit = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearLimit() {
+      bitField0_ = (bitField0_ & ~0x00000020);
+      limit_ = 0;
       onChanged();
       return this;
     }

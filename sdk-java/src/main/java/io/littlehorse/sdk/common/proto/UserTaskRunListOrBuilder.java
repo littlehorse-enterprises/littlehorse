@@ -53,4 +53,27 @@ public interface UserTaskRunListOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UserTaskRunOrBuilder getResultsOrBuilder(
       int index);
+
+  /**
+   * <pre>
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   * </pre>
+   *
+   * <code>optional bytes bookmark = 2;</code>
+   * @return Whether the bookmark field is set.
+   */
+  boolean hasBookmark();
+  /**
+   * <pre>
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   * </pre>
+   *
+   * <code>optional bytes bookmark = 2;</code>
+   * @return The bookmark.
+   */
+  com.google.protobuf.ByteString getBookmark();
 }
