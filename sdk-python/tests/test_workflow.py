@@ -3979,7 +3979,7 @@ class TestWaitForCondition(unittest.TestCase):
         entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
         self.assertEqual(3, len(entrypoint.nodes))
         wait_for_condition_node = entrypoint.nodes[
-            "1-condition-WAIT_FOR_CONDITION"
+            "1-wait-for-condition-WAIT_FOR_CONDITION"
         ].wait_for_condition
         self.assertEqual(
             Comparator.EQUALS, wait_for_condition_node.condition.comparator
