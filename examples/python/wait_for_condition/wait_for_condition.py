@@ -5,9 +5,8 @@ import random
 
 import littlehorse
 from littlehorse.config import LHConfig
-from littlehorse.model import VariableType, Comparator
-from littlehorse.worker import LHTaskWorker, WorkerContext
-from littlehorse.workflow import WorkflowThread, Workflow, WfRunVariable
+from littlehorse.model import VariableType, Comparator, VariableMutationType
+from littlehorse.workflow import WorkflowThread, Workflow
 
 logging.basicConfig(level=logging.INFO)
 
@@ -24,20 +23,13 @@ def get_workflow() -> Workflow:
 
 
     def my_entrypoint(wf: WorkflowThread) -> None:
-        def substract(handler: WorkflowThread) -> None:
-            handler.subtract(counter, 1)
-        counter = wf.declare_int("counter", VariableType.INT).with_default(2)
+        counter = wf.declare_int("counter").with_default(2)
+        def subtract(handler: WorkflowThread) -> None:
+            handler.mutate(counter, VariableMutationType.SUBTRACT, 1)
         wf.wait_for_condition(wf.condition(counter, Comparator.EQUALS, 0))
-        wf.add_interrupt_handler("subtract", substract)
+        wf.add_interrupt_handler("subtract", subtract)
 
-    return Workflow("example-basic", my_entrypoint)
-
-
-async def greeting(name: str, ctx: WorkerContext) -> str:
-    msg = f"Hello {name}!. WfRun {ctx.wf_run_id.id}"
-    print(msg)
-    await asyncio.sleep(random.uniform(0.5, 1.5))
-    return msg
+    return Workflow("example-wait-for-condition", my_entrypoint)
 
 
 async def main() -> None:
@@ -45,10 +37,7 @@ async def main() -> None:
     wf = get_workflow()
 
     littlehorse.create_external_event_def("subtract", config)
-    littlehorse.create_task_def(greeting, "greet", config)
     littlehorse.create_workflow_spec(wf, config)
-
-    await littlehorse.start(LHTaskWorker(greeting, "greet", config))
 
 
 if __name__ == "__main__":
