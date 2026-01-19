@@ -263,6 +263,7 @@ class NodeCase(Enum):
     THROW_EVENT = "THROW_EVENT"
     RUN_CHILD_WF = "RUN_CHILD_WF"
     WAIT_FOR_CHILD_WF = "WAIT_FOR_CHILD_WF"
+    WAIT_FOR_CONDITION = "WAIT_FOR_CONDITION"
 
     @classmethod
     def from_node(cls, node: NodeType) -> "NodeCase":
@@ -292,6 +293,8 @@ class NodeCase(Enum):
             return cls.RUN_CHILD_WF
         if isinstance(node, WaitForChildWfNode):
             return cls.WAIT_FOR_CHILD_WF
+        if isinstance(node, WaitForConditionNode):
+            return cls.WAIT_FOR_CONDITION
 
         raise TypeError("Unrecognized node type")
 
@@ -798,11 +801,13 @@ class WaitForThreadsNodeOutput(NodeOutput):
         )
         return self
 
+
 class WaitForConditionNodeOutput(NodeOutput):
     def __init__(self, node_name: str, builder: "WorkflowThread") -> None:
         super().__init__(node_name)
         self.node_name = node_name
         self.builder = builder
+
 
 class ThrowEventNodeOutput:
     """
@@ -961,6 +966,8 @@ class WorkflowNode:
             return new_node(run_child_wf=self.sub_node)
         if self.node_case == NodeCase.WAIT_FOR_CHILD_WF:
             return new_node(wait_for_child_wf=self.sub_node)
+        if self.node_case == NodeCase.WAIT_FOR_CONDITION:
+            return new_node(wait_for_condition=self.sub_node)
 
         raise ValueError("Node type not supported")
 
@@ -1256,7 +1263,9 @@ class WorkflowThread:
         node_name = self.add_node("threads", node)
         return WaitForThreadsNodeOutput(node_name, self)
 
-    def wait_for_condition(self, condition: WorkflowCondition) -> WaitForConditionNodeOutput:
+    def wait_for_condition(
+        self, condition: WorkflowCondition
+    ) -> WaitForConditionNodeOutput:
         """
         Waits for the specified workflow condition to become true.
 
@@ -1272,7 +1281,6 @@ class WorkflowThread:
         )
         node_name = self.add_node("condition", node)
         return WaitForConditionNodeOutput(node_name, self)
-
 
     def sleep(self, seconds: Union[int, WfRunVariable]) -> None:
         """Adds a SLEEP node which makes the ThreadRun sleep
