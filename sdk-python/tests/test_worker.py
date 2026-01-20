@@ -1,6 +1,7 @@
 from typing import Any
 import unittest
 import uuid
+import datetime
 
 from littlehorse.exceptions import TaskSchemaMismatchException
 from littlehorse.model import (
@@ -358,6 +359,7 @@ class TestLHTask(unittest.TestCase):
             VariableType.STR: int,
             VariableType.INT: str,
             VariableType.BYTES: str,
+            VariableType.TIMESTAMP: str,
         }.items():
             test(variable_type, callable_type)
 
@@ -390,6 +392,7 @@ class TestLHTask(unittest.TestCase):
             VariableType.STR: str,
             VariableType.INT: int,
             VariableType.BYTES: bytes,
+            VariableType.TIMESTAMP: datetime,
         }.items():
             test(variable_type, callable_type)
 

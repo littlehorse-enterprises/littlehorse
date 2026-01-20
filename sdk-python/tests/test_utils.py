@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 import json
 from inspect import signature
@@ -55,6 +56,10 @@ class TestProtoUtils(unittest.TestCase):
         result = extract_value(VariableValue(bytes=value))
         self.assertEqual(result, value)
 
+        value = datetime.now()
+        result = extract_value(VariableValue(utc_timestamp=value))
+        self.assertEqual(value, result)
+
         # JSON_OBJ
         input_dict = {"name": self.faker.name(), "income": self.faker.random_int()}
         value = json.dumps(input_dict)
@@ -107,6 +112,11 @@ class TestProtoUtils(unittest.TestCase):
         value = self.faker.binary()
         result = to_variable_value(value)
         self.assertEqual(result, VariableValue(bytes=value))
+
+        # TIMESTAMP
+        value = datetime.now()
+        result = to_variable_value(value)
+        self.assertEqual(result, VariableValue(utc_timestamp=value))
 
         # NULL
         result = to_variable_value(None)

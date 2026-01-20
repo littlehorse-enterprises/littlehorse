@@ -1533,6 +1533,11 @@ class WorkflowThread:
             name, VariableType.JSON_OBJ, default_value=default_value
         )
 
+    def declare_timestamp(self, name: str, default_value: Any = None) -> WfRunVariable:
+        return self.add_variable(
+            name, VariableType.TIMESTAMP, default_value=default_value
+        )
+
     def handle_any_failure(
         self, node: NodeOutput, initializer: "ThreadInitializer"
     ) -> None:
