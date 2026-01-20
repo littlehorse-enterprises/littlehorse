@@ -2,37 +2,41 @@
 
 Author: Jake Rose
 
+
+## Introduction
 This proposal will introduce the following:
-- `WfRunMigrationPlans`(metadata object)
+- `WfRunMigrationPlan` (metadata object)
 - `WfRunMigration` (run time action)
-- edge cases while migrating `wfRun`
+- `wfRun` schema extension
+- Edge cases while migrating `wfRun`
 - Future Plans
 
 ## Background
 
-Long-running processes are one of the main attractions of any durable execution engine, allowing state to survive for days, weeks, or even months. As a result, migrations become an important feature, since services and processes inevitably change over time.
-
-Migrations -- the practice of transferring runtime state from one actively running process (`wfRun`) to another compatible process specification (`wfSpec`) becomes a must have capability.
+Long-running processes are one of the main attractions of any durable execution engine, allowing state to persist for days, weeks, or even months. Since systems evolve, supporting process migrations between specifications becomes essential.
 
 
-## `WfRunMigrationPlan`
+# Migrations Overview
 
-`wfRunMigrationPlan` is a metadata object that sets the stage for how a migration will occur within `wfRun`
+Migrations are the practice of transferring runtime state from one actively running process (`wfRun`) to another compatible process specification (`wfSpec`)
 
-You can think of the `WfRunMigrationPlan` as a set of instructions that will be enforced during a given migration.
+A Migration will be a runtime action that takes place on a `wfRun` manipulating underlying specifications to allow a `wfRun` to keep its identity while changing the course of action.
 
-The rpc to register this metadata object in the lh server will look as follows:
+Every `threadRun` or every actively running `threadSpec` within a `wfRun` must be provided with a set of instructions on how to migrate to the new `wfSpec`'s correlated `threadSpec`, in return this will modify the existing `threadrun`'s path of exectution to the new `threadSpec`.
+(See considerations)
 
 
-## Option 1
-### Proto changes
-```
-  rpc PutMigrationPlan(PutMigrationPlanRequest) returns (WfRunMigrationPlan) {}
-```
+Migrating `threadSpecs` will allow for an 
+alternative course of execution, but migrations that do not  properly address runtime state can cause errors within a new `threadRun`. This means variables must be carefully handled ensuring proper semantics.
 
-After registering the metadata object, the lh server will return the object itself.
+The remaining of this proposal will introduce schema impl for migrations as well as migration safety, ensuring migrations do not cause unintended errors.
 
-The following is the wfRunMigrationPlan proto:
+
+# PROTO CHANGES 
+## `WfRunMigrationPlan` 
+
+The `wfRunMigrationPlan` is a wrapper object around set of instructions provided by the user to determine how a `wfRun` will migrate.
+
 
 ```
 message WfRunMigrationPlan {
@@ -46,80 +50,89 @@ message WfRunMigrationPlan {
     // How each threadrun will migrate to the new wfSpec
     map<string, ThreadMigrationPlan> migration_plan = 3 ;
 
-    // The id of wfSpec that this plan migrated to.
+    // The id of wfSpec that this plan migrates to
     WfSpecId new_wfSpec = 4;
 
 }
 ```
-The first two fields are self-explanatory: the ID used to identify the plan and the time it was created. The third field maps active threadRuns to their respective migration plans. The final field is to specify the new wfSpec we are migrating to.
-
-
-Migration plans are broken down to a thread by thread basis.
-Every active threadRun in a wfRun will have mapping to a new threadSpec within the new wfSpec
 
 
 ```
-// How to migrate threadRun to a new threadSpec within the new wfSpec 
+
+
+// Plan  to migrate individual threadRun
 message ThreadMigrationPlan {
 
     // Name of the new threadSpec we are migrating to
     string new_thread_name = 1;
 
-    // name of migrationNode - > how to migrate the migration node to the new wfSpec
+    // name of migrationNode - > where to start in new threadSpec
     map<string, NodeMigrationPlan> node_migrations  = 2;
 
-    // Any variable that will be derived before migration node can be provided here
-    // if not provided then possible errors will be thrown
-    map<string, VariableAssignment> migration_variables = 3;
+    // The set of vars within the new threadRun
+    // that state would have been derived prior
+    // to the migration node
+    repeated string required_migration_vars = 3;
 }
 ```
 
 
-
-For every thread we are migrating we need to know its exact destination in the new `wfSpec`so every thread migration has a new_thread_name -- name of the thread in the new `wfSpec`.
-
-Additionally we need to know what node within the new thread we are migrating to and for that reason we have node_migrations.
-
-migration_variables allows users to inject variableValues into the new Spec. This usefull when variableValues would have been derived prior to the migration node 
-
 ```
-//  How to migrate Node 
+//  How to migrate Node within threadRun
 message NodeMigrationPlan {
 
     // Currently just migrate to node with this name 
     string new_node = 1;
 }
+
 ```
-As of now just the new_node name will be sufficient. A check will be done making sure nodes are of same sub type before migrating.
+### Variables
+**Required_Migration_vars** field represents the set of variables in the new `WfSpec` whos state will need to be derived at migration time.
 
-### Loose `WfRunMigrationPlan` Criteria
+This could include a variable whos value would have been assigned prior to the migration node.
 
-This implementation provides loose enforcement of rules when registering the `wfRunMigrationPlan` metadata object, since at registration time we do not yet know the runtime state of any `wfRun` that will be migrated or the version it will migrate to.
+In the migration impl the `wfRunId` and `threadRunNumber` will remain the same, so just because we change the specs we do not lose any variable state. 
+That being said if the new `threadSpec` has a variable named the same as in the previous `threadSpec` the state will carry. If this is not the desired variable state then it can be reassigned at migration time.
 
-This design allows users to define a single `wfRunMigrationPlan` object and apply that migration to multiple `wfRuns` without having to redefine the migration plan for each migration.
+This impl lets the `migrationPlan` create strict rules regarding what variables will need variable assignment at the time of migration. 
+
+
+
+
+## Creating `wfRunMigrationPlan` object
+
+```
+  rpc PutMigrationPlan(PutMigrationPlanRequest) returns (WfRunMigrationPlan) {}
+```
+
+```
+// Request object to create Migration Plan
+message PutMigrationPlanRequest {
+    string name = 1; 
+    WfSpecId newSpec = 2;
+    map<string, ThreadMigrationPlan> = 3;
+}
+```
 
 ### Additional Proto changes
 
+**ID**:
+```
+message MigrationPlanId {
+    string name = 1;
+}
+```
+**GETTABLE ENUM**:
 ```
 enum GetableClassEnum {
     WF_RUN_MIGRATION_PLAN = 21;
 }
 ```
 
-Getting Object:
-
+**Get Request**: 
 ```
   // Get Migration Plan
   rpc getMigrationPlan(MigrationPlanId) returns (WfRunMigrationPlan) {}
-```
-
-```
-// not tying the migrationPlanId directly to the wfSpec
-// allows for multiple migration plans per wfRun version 0.0 
-// to wfRun version 0.1
-message MigrationPlanId {
-    string name = 1;
-}
 ```
 
 ## Migrating a `wfRun`
@@ -132,46 +145,6 @@ rpc MigrateWfRun(MigrateWfRunRequest) returns (WfRunId) {}
 
 ```
 message MigrateWfRunRequest {
-  // Migration Plan to use
-  MigrationPlanId migration_plan_id = 1; 
-
-  // WfRun to Migrate
-  WfRunId wf_run_id = 2;
-}
-```
-
-To perform a migration, we need the name of the migration plan, the `wfRunId` of the `wfRun` being migrated, the revision number, and the major_version_number of the new specification to which it will migrate.
-
-The migration schema itself is fairly straightforward. The complexity arises in the server-side logic executed during a migration.
-
-### Option 2:
-
-In the first impl you must provide the migration variables for every threadRun in the `wfRunMigrationPlan`.
-Another approach to enable more flexibility would be to define the migration variables in the `migrateWfRunRequest`.
-
-### Proto
-
-We define the set of variables that are derived before the migration node but needed after the migration node in the new wfSpec
-
-```
-// How to migrate a threadRun to new threadSpec
-message ThreadMigrationPlan {
-
-    // Name of the new threadSpec we are migrating to
-    string new_thread_name = 1;
-
-    // name of curNode - > how to migrate curNode in new wfSpec
-    map<string, NodeMigrationPlan> node_migrations  = 2;
-
-    // all the variables that are derived before a migration node
-    // and are needed after the migration node
-    repeated string migration_vars = 3;
-}
-```
-
-Now when a request to migrate is made we provide the name and the value of the migration variables for each thread. If the the migration variables are not provided then the request will be rejected. This impl gives fine-grained control on what variableValues to be passed in at execution.
-```
-message MigrateWfRunRequest {
     // Migration Plan to use
     MigrationPlanId migration_plan_id = 1; 
 
@@ -180,10 +153,9 @@ message MigrateWfRunRequest {
 
 
     // Name of threadRun -> Migration Vars needed 
-    map<string, MigrationVariables> = 5;
+    map<string, MigrationVariables> migration_var_assignments= 3;
 
 }
-
 
 ```
 
@@ -194,14 +166,27 @@ message MigrationVariables {
 }
 
 ```
+## WfRun Proto Extension
+
+```
+message WfRun {
+    // ...
+    // ...
+
+    // Designates this wfRun as migrating 
+    MigrationPlanid migration_plan_id =11
+}
+```
+
+Migration_plan_id will serve as a flag to determine if a `wfRun` is currently migrating to a new wfSpec.
+
+This allows a migration to be called prior to a `threadRun` being at the migration node. If migration_plan_id is not null then we check on every threadRun.advance() call if we moved to the migration node, if so then migrate.
+
+If any `threadRun` has already passed the migration node, at the time rpc migrateWfRun is called then the migration will be rejected.
 
 
 
-
-
-
-
-### Edge cases
+# Edge cases
 
 To help guide this proposal, I have put together several diagrams to illustrate possible edge cases.
 
@@ -216,89 +201,71 @@ are no additional variables, and there are no threads to be handled.
 **Valid Migration w/ Threading**
 
 This second example introduces threading into the equation of a migration.
-If a thread in a new `wfSpec` spawned a thread prior to the migration node we still
-have a valid migration, but the work in that thread never gets done.
+If a `threadSpec` in th new `wfSpec` spawned a `threadRun` prior to the migration node we still have a valid migration, but the work in that thread never gets executed.
 
 [Valid Migration w/ threading](./img/wf_run_threading_migration_valid.jpg)
 
 #### **Case 3**:
 **Invalid Migration w/ threading**
 
-In case number three we see an example of an invalid migration that will be rejected by the lh server. In this case a thread is spawned prior to the migration node and after the migration node `waitForThread` node exist. This node would wait indefinitely since the thread was never spawned and work will not be done. 
+In case number three we see an example of an invalid migration. In this case a threadRun is spawned prior to the migration node and after the migration node `waitForThread` node exist. This node would wait indefinitely since the thread was never spawned and work will not be done. 
+
+(I am not sure if this validation can be done within the lh Server)
 
 [Invalid migration with threading](./img/Migration_w_threading_invalid.jpg)
 
 #### **Case 4**: 
 **Introducing Variables**:
 
-In case 4 variables that exist within new `wfSpec` that do not exist within the
-current `wfSpec`/`wfRun` must be provided within the map of variables for the given thread. If not then either the request will fail or the `wfRun` will fail depending on the implementation.
-
+In case 4 variables that exist within new `wfSpec` that do not exist within the current `wfSpec`/`wfRun` must be provided at the time of migration and provided in required_migration_vars for the given threadMigrationPlan.
 
 [migration w/ new vars needed](./img/migration_w_variables.jpg)
 
 ## Server Impl
 
-For this implementation of `wfRunMigrations`, only a single workflow run is migrated per request. Each request is partitioned by the `wfRunId`, which provides access to the `wfRun` state stores for the specific `wfRun` being migrated.
+For this implementation of `wfRunMigrations`, only a single workflow run can be migrated per request. Each request is partitioned by the `wfRunId`, which provides access to the `wfRun` state stores for the specific `wfRun` being migrated.
 
 Migrations will occur in a two phase process. Phase 1 will be validating the migration based on current 
 `wfRun` state and new `wfSpec` version
 
 `WfRunMigration` validation logic will exists within the wfRunModel.
 
-wfRun.validateMigration(newSpec, `wfRunMigrationPlan`)
+wfRun.validateMigration(`wfRunMigrationPlan`)
 
 
 
-During Validation will ensure that
+During Validation we will ensure that
 
-- The `wfRun` up for migration is currently running
+- The `wfRun` up for migration exists
 
-- The new `wfSpec` version actually exists
+- All active threads in the current `wfRun` have a migration plan, if not then the migration is invalid (possibly)
 
-- All active threads in the current `wfRun` have a migration plan, if not then the migration is invalid
+- All migrations nodes for a given  `threadRun` have not been executed yet
 
 - The current node within the active thread matches the subnode in the new `wfSpec`, if not the migration is invalid.
 
-- Check in the new `wfSpec` for `waitForThread` nodes. If exists make sure the threads derive after the migration node in the the new wfSpec.
+- Check in the new `wfSpec` for `waitForThread` nodes. If exists make sure the threads derive after the migration node in the the new wfSpec. (I am not sure about this yet maybe passed to client)
 
-- Check for variables, any unaccounted for variable must be provided in a variable mapping or derived after the migration. 
+- Ensure all required migration variables defined in the required_migration_vars for `threadMigrationPlan` are provided
 
-In phase two we now need to actually migrate the workflow. This consists of making the `wfRun` that is migrating reference the new `wfSpec` and updating the `oldWfSpecVersions` field like so:
 
-```java
-    this.getOldWfSpecVersions().add(wfSpecId);
-    this.setWfSpec(newWfSpec);
-    this.setWfSpecId(newWfSpec.getId());
-```
+After we validate the above we can now migrate the wfRun.
 
-Now For every active thread we have collected we migrate them to a new `wfSpec`.
 
-```java 
-  // Iterating through every active thread
-  for(int i = 0 ; i < activeThreads.size(); i++){
-            // Getting our active thread
-            ThreadRunModel migrateThread = activeThreads.get(i);
-            // Make old thread reference a new wfSpec
-            migrateThread.setWfSpecId(newWfSpec.getId());
-            // Get the threadMigrationPlan for current active thread
-            ThreadMigrationPlanModel threadMigrationPlan = migrationPlan.getMigrationPlan().getThreadMigrations().get(migrateThread.getThreadSpecName());
-            // Get name of new thread in new Spec
-            String newThreadName = threadMigrationPlan.getNewThreadName();
-            // Change the name of the current thread 
-            migrateThread.setThreadSpecName(newThreadName);
-            // Get the current node run of current thread
-            NodeRunModel currNode = migrateThread.getCurrentNodeRun();
-            
-            // Now set current node run = the new node run
-            currNode.setWfSpecId(newWfSpec.getId());
-            currNode.setThreadSpecName(newThreadName);
-            currNode.setNodeName(threadMigrationPlan.getNodeMigrations().get(currNode.getNodeName()).getNewNode());
-        } 
-```
 
-This lays the basis for a migration.
+The actual migration process consist of changing the underlying specifications and applying variable assignments. When a `threadRun` arrives at its migration node then we change the `nodeRun` to reference the destination node spec's within the `nodeMigrationPlan` as well as the `threadSpec` name and the `wfSpec` name.
+
+Once every `threadRun` has been migrated to its new threadSpec then the `wfRun`s `wfSpecId` will be updated.
+
+### Considerations and feedback please
+
+Should every threadRun need a threadMigrationPlan ?  
+
+If we allow rpc migrateWfRun to be called prior to all threadRuns being at the migration node then new threadRuns can be spawned after the rpc. This would mean that we can not ensure all active threadRuns have a migrationPlan. Some threadRun could be left behind running on the old wfSpec. I do not think we can ensure every threadRun is operating under the new wfSpec.
+
+If we ensure every thread is at the migration node. Then every threadRun will migrate to the new wfSpec and threadSpec.
+
 
 ### Future Work
 
-This implementation only allows migrating one workflow instance at a time. Future implementations could support migrating multiple `wfRuns` in a single request by allowing clients to provide a list of `wfRunIds`. The LH Server would then create a command for each individual `wfRun`, partitioning them by `wfRunId` so that each migration has access to the appropriate `wfRun` state store.
+This implementation only allows migrating one workflow instance at a time. Future implementations could support migrating multiple `wfRuns` in a single request by allowing clients to provide a list of `wfRunIds`, or possibly by providing a wfSpec version and migrations all `wfRun`s for that version.
