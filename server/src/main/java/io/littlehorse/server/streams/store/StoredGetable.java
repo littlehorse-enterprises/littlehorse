@@ -100,4 +100,8 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
             return Storeable.getGroupedGetableStorePrefix(wfRun, StoreableType.STORED_GETABLE, objType);
         }
     }
+
+    public static String getMetadataRocksDBKey(String key, GetableClassEnum objType) {
+        return objType.getNumber() + "/" + key;
+    }
 }
