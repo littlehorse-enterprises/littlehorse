@@ -175,6 +175,23 @@ public class LHMappingHelperTest
 
         Assert.Equal(currentDateTime.ToUniversalTime().ToTimestamp(), result.UtcTimestamp);
     }
+    
+    [Fact]
+    public void LHHelper_WithWfRunIdValue_ShouldReturnLHWfRunIdValue()
+    {
+        var wfRunId = new WfRunId()
+        {
+            Id = "test-id"
+        };
+        var expectedVariableValue = new VariableValue()
+        {
+            WfRunId = wfRunId
+        };
+
+        var result = LHMappingHelper.ObjectToVariableValue(wfRunId);
+
+        Assert.Equal(result, expectedVariableValue);
+    }
 
     [Fact]
     public void LHHelper_WithBoolValue_ShouldReturnLHBoolValue()
@@ -231,6 +248,7 @@ public class LHMappingHelperTest
         var stringVariableValue = new VariableValue { Str = "test" };
         var boolVariableValue = new VariableValue { Bool = true };
         var timestampVariableValue = new VariableValue { UtcTimestamp = DateTime.UtcNow.ToTimestamp() };
+        var wfRunIdVariableValue = new VariableValue { WfRunId = new WfRunId() {Id = "test"} };
         var bytesVariableValue = new VariableValue { Bytes = ByteString.FromBase64("aG9sYQ==") };
         var jsonArrayVariableValue = new VariableValue { JsonArr = "[{\"name\": \"obiwan\"}, {\"name\": \"pepito\"}]" };
 
@@ -243,6 +261,7 @@ public class LHMappingHelperTest
             { VariableType.Bytes, bytesVariableValue },
             { VariableType.JsonArr, jsonArrayVariableValue },
             { VariableType.Timestamp, timestampVariableValue },
+            { VariableType.WfRunId, wfRunIdVariableValue }
         };
 
 

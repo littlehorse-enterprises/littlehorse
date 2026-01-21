@@ -99,6 +99,10 @@ namespace LittleHorse.Sdk.Helper
             {
                 result.UtcTimestamp = Timestamp.FromDateTime(dateTime.ToUniversalTime());
             }
+            else if (obj is WfRunId wfRunId)
+            {
+                result.WfRunId = wfRunId;
+            }
             else
             {
                 var jsonStr = JsonHandler.ObjectSerializeToJson(obj);
@@ -159,6 +163,8 @@ namespace LittleHorse.Sdk.Helper
                     return JsonHandler.DeserializeFromJson(jsonStr, type);
                 case VariableValue.ValueOneofCase.UtcTimestamp:
                     return val.UtcTimestamp.ToDateTime();
+                case VariableValue.ValueOneofCase.WfRunId:
+                    return val.WfRunId;
                 case VariableValue.ValueOneofCase.None:
                     return null;
                 default:
@@ -244,6 +250,8 @@ namespace LittleHorse.Sdk.Helper
                     return VariableType.JsonArr;
                 case VariableValue.ValueOneofCase.UtcTimestamp:
                     return VariableType.Timestamp;
+                case VariableValue.ValueOneofCase.WfRunId:
+                    return VariableType.WfRunId;
                 case VariableValue.ValueOneofCase.JsonObj:
                 case VariableValue.ValueOneofCase.None:
                 default:

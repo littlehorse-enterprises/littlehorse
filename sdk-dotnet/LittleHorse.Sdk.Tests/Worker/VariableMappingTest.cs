@@ -315,6 +315,26 @@ public class VariableMappingTest
     }
     
     [Fact]
+    public void VariableMapping_WithAssignWfRunIdValue_ShouldReturnWfRunIdObject()
+    {
+        WfRunId expectedValue = new WfRunId() {Id = "test"};
+        Type type = typeof(WfRunId);
+        int position = 0;
+        string paramName = "param_test";
+        var variableMapping = GetVariableMappingForTest(type, paramName, position);
+        VariableValue variableValue = new VariableValue { WfRunId = expectedValue };
+        ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
+        
+        var mockClient = new Mock<LittleHorseClient>();
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
+        
+        var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
+        Assert.NotNull(result);
+        Assert.IsType(type, result);
+        Assert.Equal(expectedValue, result);
+    }
+    
+    [Fact]
     public void VariableMapping_WithAssignArrayObjectValue_ShouldReturnArrayObject()
     {
         string value = "[{\"FirstName\":\"Test\",\"Age\":35,\"Cars\":[{\"Id\":1,\"Cost\":1.3445}]}]";
