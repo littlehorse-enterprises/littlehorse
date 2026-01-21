@@ -90,6 +90,12 @@ type ExternalEventNodeOutput struct {
 	correlatedEventConfig *lhproto.CorrelatedEventConfig
 }
 
+type WaitForConditionNodeOutput struct {
+	nodeName string
+	jsonPath *string
+	thread   *WorkflowThread
+}
+
 func (n *ExternalEventNodeOutput) JsonPath(jsonPath string) NodeOutput {
 	return &ExternalEventNodeOutput{
 		nodeName:              n.nodeName,
@@ -636,6 +642,10 @@ func (t *WorkflowThread) ReassignUserTaskOnDeadline(
 
 func (t *WorkflowThread) WaitForEvent(eventName string) *ExternalEventNodeOutput {
 	return t.waitForEvent(eventName)
+}
+
+func (t *WorkflowThread) WaitForCondition(condition *WorkflowCondition) *WaitForConditionNodeOutput {
+	return t.waitForCondition(condition)
 }
 
 func (t *WorkflowThread) Sleep(sleepSeconds int) {
