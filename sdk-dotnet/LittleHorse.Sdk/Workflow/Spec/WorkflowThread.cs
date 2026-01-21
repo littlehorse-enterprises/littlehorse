@@ -431,6 +431,21 @@ public class WorkflowThread
     {
         return AddVariable(name, VariableType.Str);
     }
+
+    
+    /// <summary>
+    /// Creates a variable of type TIMESTAMP in the ThreadSpec.
+    /// </summary>
+    /// <param name="name">
+    /// The name of the variable.
+    /// </param>
+    /// <returns>
+    /// An instance of <see cref="WfRunVariable"/> that represents the created TIMESTAMP variable.
+    /// </returns>
+    public WfRunVariable DeclareTimestamp(string name)
+    {
+        return AddVariable(name, VariableType.Timestamp);
+    }
     
     /// <summary>
     /// Creates a variable of type DOUBLE in the ThreadSpec.
