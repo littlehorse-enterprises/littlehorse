@@ -1426,6 +1426,22 @@ func (t *WorkflowThread) waitForEvent(eventName string) *ExternalEventNodeOutput
 	}
 }
 
+func (t *WorkflowThread) waitForCondition(condition *WorkflowCondition) *WaitForConditionNodeOutput {
+	t.checkIfIsActive()
+	nodeName, node := t.createBlankNode("wait-for-condition", "WAIT_FOR_CONDITION")
+	node.Node = &lhproto.Node_WaitForCondition{
+		WaitForCondition: &lhproto.WaitForConditionNode{
+			Condition: condition.spec,
+		},
+	}
+
+	return &WaitForConditionNodeOutput{
+		nodeName: nodeName,
+		thread:   t,
+		jsonPath: nil,
+	}
+}
+
 func (t *WorkflowThread) throwEvent(workflowEventDefName string, content interface{}) *ThrowEventNodeOutput {
 	t.checkIfIsActive()
 	_, node := t.createBlankNode("throw-"+workflowEventDefName, "THROW_EVENT")
