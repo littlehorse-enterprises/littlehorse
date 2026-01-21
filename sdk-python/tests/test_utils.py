@@ -7,7 +7,7 @@ from typing import Annotated
 
 from faker import Faker
 from littlehorse.exceptions import SerdeException
-from littlehorse.model import VariableType, VariableAssignment, VariableValue
+from littlehorse.model import VariableType, VariableAssignment, VariableValue, WfRunId
 
 from littlehorse.utils import (
     extract_value,
@@ -57,6 +57,10 @@ class TestProtoUtils(unittest.TestCase):
 
         value = datetime.now()
         result = extract_value(VariableValue(utc_timestamp=value))
+        self.assertEqual(value, result)
+
+        value = WfRunId(id=self.faker.uuid4())
+        result = extract_value(VariableValue(wf_run_id=value))
         self.assertEqual(value, result)
 
         # JSON_OBJ
@@ -116,6 +120,11 @@ class TestProtoUtils(unittest.TestCase):
         value = datetime.now()
         result = to_variable_value(value)
         self.assertEqual(result, VariableValue(utc_timestamp=value))
+
+        # WF_RUN_ID
+        value = WfRunId(id=self.faker.uuid4())
+        result = to_variable_value(value)
+        self.assertEqual(result, VariableValue(wf_run_id=value))
 
         # NULL
         result = to_variable_value(None)
