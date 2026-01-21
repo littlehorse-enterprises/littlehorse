@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"reflect"
 	"strconv"
+	"time"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func StrToVarVal(input string, varType lhproto.VariableType) (*lhproto.VariableValue, error) {
@@ -94,6 +96,12 @@ func VarValToVarType(varVal *lhproto.VariableValue) *lhproto.VariableType {
 		return &result
 	case *lhproto.VariableValue_Int:
 		result := lhproto.VariableType_INT
+		return &result
+	case *lhproto.VariableValue_UtcTimestamp:
+		result := lhproto.VariableType_TIMESTAMP
+		return &result
+	case *lhproto.VariableValue_WfRunId:
+		result := lhproto.VariableType_WF_RUN_ID
 		return &result
 	case *lhproto.VariableValue_JsonArr:
 		result := lhproto.VariableType_JSON_ARR
@@ -201,6 +209,10 @@ func InterfaceToVarVal(someInterface interface{}) (*lhproto.VariableValue, error
 		out.Value = &lhproto.VariableValue_Str{Str: e}
 	case bool:
 		out.Value = &lhproto.VariableValue_Bool{Bool: e}
+	case time.Time:
+		out.Value = &lhproto.VariableValue_UtcTimestamp{UtcTimestamp: timestamppb.New(e.UTC())}
+	case lhproto.WfRunId:
+		out.Value = &lhproto.VariableValue_WfRunId{WfRunId: &e}
 	case []byte:
 		out.Value = &lhproto.VariableValue_Bytes{Bytes: e}
 	default:
