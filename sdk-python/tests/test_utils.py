@@ -1,3 +1,4 @@
+from collections import deque
 from datetime import datetime
 import json
 from inspect import signature
@@ -204,7 +205,7 @@ class TestProtoUtils(unittest.TestCase):
         )
 
     def test_serde_error_when_serializing(self):
-        value = datetime.now()
+        value = deque([1, 2, 3])
 
         with self.assertRaises(SerdeException) as exception_context:
             to_variable_value(value)

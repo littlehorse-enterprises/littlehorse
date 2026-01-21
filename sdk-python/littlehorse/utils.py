@@ -136,7 +136,7 @@ VARIABLE_TYPE_TO_TYPE_MAP = {
     VariableType.STR: str,
     VariableType.INT: int,
     VariableType.BYTES: bytes,
-    VariableType.TIMESTAMP: type(datetime),
+    VariableType.TIMESTAMP: type(datetime.datetime),
     VariableType.WF_RUN_ID: type(WfRunId),
 }
 

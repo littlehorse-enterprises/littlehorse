@@ -392,7 +392,7 @@ class TestLHTask(unittest.TestCase):
             VariableType.STR: str,
             VariableType.INT: int,
             VariableType.BYTES: bytes,
-            VariableType.TIMESTAMP: datetime,
+            VariableType.TIMESTAMP: type(datetime.datetime),
         }.items():
             test(variable_type, callable_type)
 
