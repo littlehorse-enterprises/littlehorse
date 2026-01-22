@@ -15,6 +15,7 @@ This proposal introduces **workflow metrics** as a first-class feature in Little
 
 * **Counted Tags** — A separate proposal will handle count-at-a-single-instant queries (e.g., how many NodeRuns are currently in TASK_SCHEDULED). These require a different architectural treatment.
 * **P95 approximations** — While desirable, approximate P95s via mergeable sketches (DDSketch) are left for a follow-up as they add significant complexity to the pipeline.
+* **Exporting MetricReadings** — The MetricReadings will be retrievable via the gRPC API. This proposal does not include building additional exporters (e.g., Datadog); users may build their own exporters using the gRPC clients. The LH Dashboard will provide a user-friendly interface to explore the metrics.
 
 
 ## Current Problem
@@ -46,7 +47,7 @@ These approaches are:
 
 ## Proposed Solution
 
-We propose introducing **workflow metrics** with a server-defined set of default `MetricSpec`s that are loaded at startup. Clients can query collected metrics via read-only APIs (gRPC), but cannot create or mutate metric definitions at runtime; operators customize and extend the defaults via the server-side registry before startup.
+We propose introducing **workflow metrics** with a server-defined set of default `MetricSpec`s that are loaded at startup. Clients can query collected metrics via read-only APIs (gRPC), but cannot create or mutate metric definitions at runtime;
 
 Metrics are:
 
@@ -55,12 +56,12 @@ Metrics are:
 * Computed internally by the LittleHorse Server
 * Stored and queried using native APIs
 
-No external systems or dependencies are required for collection (users can export data via Kafka output topics or build exporters).
+No external systems or dependencies are required for collection (users can export data via Kafka output topics or build exporters). For future scope, the server could optionally publish aggregated metric windows directly to a Kafka output topic to enable real-time consumption and integration with external analytics or monitoring pipelines.
 
 ## Key Decisions
 
-* **No public metric spec mutation**: There will be no public RPC to create or mutate `MetricSpec`s. The system ships with server-side defaults in `DefaultMetricsRegistry` which is loaded at startup; operators may customize this list prior to startup.
-* **Default windowing**: Default windows are 5-minute tumbling windows; windows are mergeable and persisted for a configurable retention (default 14 days).
+* **No public metric spec mutation**: There will be no public RPC to create or mutate `MetricSpec`s. The system ships with server-side defaults in `DefaultMetricsRegistry` which is loaded at startup.
+* **Default windowing**: Default windows are 5 minute tumbling windows; windows are mergeable and persisted for a configurable retention (default 14 days).
 * **Metric recording levels**: `INFO`, `NONE`, and `DEBUG` recording levels control which metrics are collected; flamegraph/debug-level metrics are only enabled at `DEBUG`.
 * **Read-only query surface**: Clients query metrics through read-only gRPC endpoints; exports to external systems should be done via Kafka output topics or custom exporters.
 
@@ -69,7 +70,7 @@ No external systems or dependencies are required for collection (users can expor
 
 ### Supported Metric Types
 
-This proposal introduces **three metric types**:
+This proposal introduces **two metric types**:
 
 1. **Rate metrics**
    Measure how often an event occurs in a time window
@@ -78,10 +79,6 @@ This proposal introduces **three metric types**:
 2. **Latency metrics**
    Measure time between two status transitions
    *Example: time from `TASK_SCHEDULED` → `TASK_SUCCESS`*
-
-3. **Ratio metrics**
-   Measure relationships between counts
-   *Example: percentage of workflows that spawned a child thread*
 
 
 
@@ -146,9 +143,9 @@ Existing workflows continue to work unchanged.
 
 ### Mergeable windows & retention
 
-* Default windows are **5-minute tumbling windows** aligned to the epoch. While we allow smaller window lengths for advanced use, the default shipped metrics use 5-minute windows for operational simplicity.
+* Default windows are **5 minute windows** aligned to the epoch for operational simplicity.
 * Each window is persisted for **14 days** (configurable) to allow for historical queries.
-* Metric windows are **mergeable** — we store totals (e.g. `total_latency_ms` and `count`) instead of `latency_avg` so windows can be added together to form larger windows without losing precision.
+* Metric windows are **mergeable** — we store totals (e.g. `total_latency_ms` and `count`) instead of `latency_avg` so windows can be added together to form larger window.
 
 ### Metric recording levels
 
@@ -211,17 +208,6 @@ Latency metrics are only available for entities with a status field.
 | `TASK_SCHEDULED` | `TASK_RUNNING` | Queue latency      |
 | `TASK_RUNNING`   | `TASK_SUCCESS` | Execution latency  |
 | `TASK_SCHEDULED` | `TASK_SUCCESS` | Total task latency |
-
-
-### Ratio Metrics
-
-Compute ratios between event counts.
-
-**Example**
-
-```
-(child_thread_count / wf_run_count) * 100
-```
 
 
 ## Metrics configuration & Public API
@@ -351,8 +337,7 @@ message MetricSpec {
 enum AggregationType {
   COUNT = 0;
   AVG = 1;
-  RATIO = 2;
-  LATENCY = 3;
+  LATENCY = 2;
 }
 ```
 
@@ -365,8 +350,7 @@ message Aggregator {
 
   oneof type {
     Count count = 2;
-    Ratio ratio = 3;
-    Latency latency = 4;
+    Latency latency = 3;
   }
 }
 ```
