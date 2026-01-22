@@ -225,7 +225,7 @@ rpc ListMetrics(ListMetricsRequest) returns (MetricList);
 
 ### Server-side default registry
 
-A server-side class (for example, `DefaultMetricsRegistry`) will contain the canonical list of `MetricSpec` definitions that are loaded at server startup. Operators can provide their own registry by configuration or by overriding the class during application startup.
+A server-side class (for example, `DefaultMetricsRegistry`) will contain the canonical list of `MetricSpec` definitions that are loaded at server startup. Operators can provide their own registry by overriding the class.
 
 Java example (pseudo):
 
@@ -240,14 +240,14 @@ public class DefaultMetricsRegistry {
 }
 ```
 
-> **Note:** If we later decide to allow limited user-defined metrics we can implement an admin-only or operator-only API; for now metrics are configured via the server-side registry loaded at startup.
+> **Note:** If we later decide to allow limited user-defined metrics we can implement an admin-only or operator-only API; for now metrics are configured via the server-side registry.
 
 
 ## The Dashboard Experience
 
 ### Metrics Overview
 
-On the dashboard front page, users should see time-series line charts for the Workflow and Task metrics. Users must be able to select arbitrary time ranges — the dashboard will be responsible for aggregating adjacent 5-minute windows into larger windows for display.
+On the dashboard front page, users should see time-series line charts for the Workflow and Task metrics. Users must be able to select arbitrary time ranges, the dashboard will be responsible for aggregating adjacent 5-minute windows into larger windows for display.
 
 ### Workflow Metrics
 
@@ -336,8 +336,7 @@ message MetricSpec {
 ```proto
 enum AggregationType {
   COUNT = 0;
-  AVG = 1;
-  LATENCY = 2;
+  LATENCY = 1;
 }
 ```
 
