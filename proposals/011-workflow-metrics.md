@@ -2,7 +2,7 @@
 
 This proposal introduces application-level metrics for LH Server users to track the health of their `WfRun`s, `TaskRun`s, and `UserTaskRun`s. In this proposal, we:
 
-* Introduce a new `Getable` called `MetricReading`.
+* Introduce 2 new `Getable`s: `TaskMetric` and `WorkflowMetric`.
 * Pre-define a set of metric types which are automatically collected for each `TaskDef` and `WfSpec`.
 * Collect aggregates for each metric type and `WfSpec` / `TaskDef` in 5-minute windows, which can be stored and retrieved historically.
 
@@ -20,9 +20,9 @@ The data should be exposed in a `Tenant`-aware manner with proper scoping and AC
 
 This proposal does not include the following.
 
-#### Exporting the `MetricReading`
+#### Exporting the Metric Readings
 
-The `MetricReading`s will be retrievable via the GRPC API. We do not propose to provide additional exporters—users can build their own using the GRPC clients.
+The `TaskMetric` and `WorkflowMetric`s will be retrievable via the GRPC API. We do not propose to provide additional exporters—users can build their own using the GRPC clients.
 
 However, the LH Dashboard will provide a user-friendly interface to explore the metrics.
 
