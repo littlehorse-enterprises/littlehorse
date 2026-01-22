@@ -52,6 +52,9 @@ public class TypeCastingUtils {
         if (sourceType == null) {
             return true;
         }
+        if (sourceType.equals(targetType)) {
+            return true;
+        }
         if (targetType == null) {
             return false;
         }
