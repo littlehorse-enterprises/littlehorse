@@ -19,6 +19,7 @@ import "struct_def.proto";
 import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
+import "metrics.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -350,6 +351,12 @@ service LittleHorse {
 
   // Gets the version of the LH Server.
   rpc GetServerVersion(google.protobuf.Empty) returns (LittleHorseVersion) {}
+
+  // Metrics APIs
+  rpc ListMetrics(ListMetricsRequest) returns (MetricList) {}
+  rpc PutMetricLevelOverride(PutMetricLevelOverrideRequest) returns (MetricLevelOverride) {}
+  rpc DeleteMetricLevelOverride(DeleteMetricLevelOverrideRequest) returns (google.protobuf.Empty) {}
+  rpc ListMetricLevelOverrides(ListMetricLevelOverridesRequest) returns (MetricLevelOverridesList) {}
 }
 
 // Returns the UserTaskDef with a given name and the highest version number.

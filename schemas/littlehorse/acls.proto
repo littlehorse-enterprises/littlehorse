@@ -3,6 +3,7 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
+import "common_enums.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -48,6 +49,9 @@ message Tenant {
     // Configuration for the output topic associated with this Tenant. If not set,
     // then the output topic is not enabled.
     optional OutputTopicConfig output_topic_config = 3;
+
+    // The default level of metrics to record in a given `Tenant`.
+    optional MetricRecordingLevel metrics_level = 4;
 }
 
 // List of ACL's for LittleHorse

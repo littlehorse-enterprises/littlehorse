@@ -1,0 +1,110 @@
+syntax = "proto3";
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "object_id.proto";
+import "common_enums.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+message StatusTransition {
+  EntityType entity = 1;
+  string from_status = 2;
+  string to_status = 3;
+}
+
+message MetricScope {
+  oneof type {
+    WfSpecId wf_spec = 1;
+    TaskDefId task_def = 2;
+    NodeReference node = 3;
+    bool global = 4; // for cluster-wide metrics
+  }
+}
+
+message NodeReference {
+  WfSpecId wf_spec = 1;
+  optional string thread_name = 2;
+  optional string node_name = 3;
+  optional TaskDefId task_def = 4;
+}
+
+message MetricSpec {
+  string id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  AggregationType aggregation_type = 3;
+  MetricScope scope = 4;
+  StatusTransition transition = 5;
+  google.protobuf.Duration window_length = 6;
+}
+
+message ListMetricsRequest {
+  string metric_spec_id = 1;
+  google.protobuf.Duration window_length = 2;
+  AggregationType aggregation_type = 3;
+  google.protobuf.Timestamp start_time = 4;
+  google.protobuf.Timestamp end_time = 5;
+}
+
+message MetricList {
+  repeated MetricWindow windows = 1;
+}
+
+message CountAndTiming {
+  int32 count = 1;
+  int64 min_latency_ms = 2;
+  int64 max_latency_ms = 3;
+  int64 total_latency_ms = 4;
+}
+
+message MetricWindowId {
+  EntityType entity = 1;
+  string entity_id = 2; // e.g., wf_spec name, task_def name
+  google.protobuf.Timestamp window_start = 3;
+}
+
+message MetricWindow {
+  MetricWindowId id = 1;
+  int32 total_started = 2; // for applicable entities
+  CountAndTiming completed = 3;
+  CountAndTiming halted = 4;
+  CountAndTiming error = 5;
+  CountAndTiming exception = 6;
+  map<string, CountAndTiming> custom = 7; // for exceptions, errors by type, etc.
+  // Additional fields for TaskMetric specifics
+  CountAndTiming scheduled_to_running = 8;
+  CountAndTiming running_to_success = 9;
+  int32 timeouts = 10;
+}
+
+message MetricLevelOverride {
+  string id = 1;
+  MetricRecordingLevel new_level = 2;
+  oneof target {
+    WfSpecId wf_spec = 3;
+    TaskDefId task_def = 4;
+    NodeReference node = 5;
+  }
+}
+
+message PutMetricLevelOverrideRequest {
+  MetricLevelOverride override = 1;
+}
+
+message DeleteMetricLevelOverrideRequest {
+  string id = 1;
+}
+
+message ListMetricLevelOverridesRequest {
+  // Optional filters
+  optional WfSpecId wf_spec_filter = 1;
+  optional TaskDefId task_def_filter = 2;
+}
+
+message MetricLevelOverridesList {
+  repeated MetricLevelOverride overrides = 1;
+}
