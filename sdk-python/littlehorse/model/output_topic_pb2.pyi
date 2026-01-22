@@ -1,15 +1,15 @@
 import datetime
 
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
-import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
-import littlehorse.model.user_tasks_pb2 as _user_tasks_pb2
-import littlehorse.model.task_run_pb2 as _task_run_pb2
-import littlehorse.model.task_def_pb2 as _task_def_pb2
-import littlehorse.model.wf_spec_pb2 as _wf_spec_pb2
-import littlehorse.model.wf_run_pb2 as _wf_run_pb2
-import littlehorse.model.variable_pb2 as _variable_pb2
-import littlehorse.model.struct_def_pb2 as _struct_def_pb2
-import littlehorse.model.external_event_pb2 as _external_event_pb2
+import workflow_event_pb2 as _workflow_event_pb2
+import user_tasks_pb2 as _user_tasks_pb2
+import task_run_pb2 as _task_run_pb2
+import task_def_pb2 as _task_def_pb2
+import wf_spec_pb2 as _wf_spec_pb2
+import wf_run_pb2 as _wf_run_pb2
+import variable_pb2 as _variable_pb2
+import struct_def_pb2 as _struct_def_pb2
+import external_event_pb2 as _external_event_pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from collections.abc import Mapping as _Mapping

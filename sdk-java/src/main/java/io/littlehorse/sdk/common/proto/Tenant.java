@@ -36,6 +36,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private Tenant() {
+    metricsLevel_ = 0;
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -169,6 +170,43 @@ private static final long serialVersionUID = 0L;
     return outputTopicConfig_ == null ? io.littlehorse.sdk.common.proto.OutputTopicConfig.getDefaultInstance() : outputTopicConfig_;
   }
 
+  public static final int METRICS_LEVEL_FIELD_NUMBER = 4;
+  private int metricsLevel_ = 0;
+  /**
+   * <pre>
+   * The default level of metrics to record in a given `Tenant`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.MetricRecordingLevel metrics_level = 4;</code>
+   * @return Whether the metricsLevel field is set.
+   */
+  @java.lang.Override public boolean hasMetricsLevel() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <pre>
+   * The default level of metrics to record in a given `Tenant`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.MetricRecordingLevel metrics_level = 4;</code>
+   * @return The enum numeric value on the wire for metricsLevel.
+   */
+  @java.lang.Override public int getMetricsLevelValue() {
+    return metricsLevel_;
+  }
+  /**
+   * <pre>
+   * The default level of metrics to record in a given `Tenant`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.MetricRecordingLevel metrics_level = 4;</code>
+   * @return The metricsLevel.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.MetricRecordingLevel getMetricsLevel() {
+    io.littlehorse.sdk.common.proto.MetricRecordingLevel result = io.littlehorse.sdk.common.proto.MetricRecordingLevel.forNumber(metricsLevel_);
+    return result == null ? io.littlehorse.sdk.common.proto.MetricRecordingLevel.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -192,6 +230,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       output.writeMessage(3, getOutputTopicConfig());
     }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      output.writeEnum(4, metricsLevel_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -212,6 +253,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getOutputTopicConfig());
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(4, metricsLevel_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -243,6 +288,10 @@ private static final long serialVersionUID = 0L;
       if (!getOutputTopicConfig()
           .equals(other.getOutputTopicConfig())) return false;
     }
+    if (hasMetricsLevel() != other.hasMetricsLevel()) return false;
+    if (hasMetricsLevel()) {
+      if (metricsLevel_ != other.metricsLevel_) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -265,6 +314,10 @@ private static final long serialVersionUID = 0L;
     if (hasOutputTopicConfig()) {
       hash = (37 * hash) + OUTPUT_TOPIC_CONFIG_FIELD_NUMBER;
       hash = (53 * hash) + getOutputTopicConfig().hashCode();
+    }
+    if (hasMetricsLevel()) {
+      hash = (37 * hash) + METRICS_LEVEL_FIELD_NUMBER;
+      hash = (53 * hash) + metricsLevel_;
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -428,6 +481,7 @@ private static final long serialVersionUID = 0L;
         outputTopicConfigBuilder_.dispose();
         outputTopicConfigBuilder_ = null;
       }
+      metricsLevel_ = 0;
       return this;
     }
 
@@ -480,6 +534,10 @@ private static final long serialVersionUID = 0L;
             : outputTopicConfigBuilder_.build();
         to_bitField0_ |= 0x00000004;
       }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.metricsLevel_ = metricsLevel_;
+        to_bitField0_ |= 0x00000008;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -503,6 +561,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasOutputTopicConfig()) {
         mergeOutputTopicConfig(other.getOutputTopicConfig());
+      }
+      if (other.hasMetricsLevel()) {
+        setMetricsLevelValue(other.getMetricsLevelValue());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -551,6 +612,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 32: {
+              metricsLevel_ = input.readEnum();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1046,6 +1112,88 @@ private static final long serialVersionUID = 0L;
         outputTopicConfig_ = null;
       }
       return outputTopicConfigBuilder_;
+    }
+
+    private int metricsLevel_ = 0;
+    /**
+     * <pre>
+     * The default level of metrics to record in a given `Tenant`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.MetricRecordingLevel metrics_level = 4;</code>
+     * @return Whether the metricsLevel field is set.
+     */
+    @java.lang.Override public boolean hasMetricsLevel() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <pre>
+     * The default level of metrics to record in a given `Tenant`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.MetricRecordingLevel metrics_level = 4;</code>
+     * @return The enum numeric value on the wire for metricsLevel.
+     */
+    @java.lang.Override public int getMetricsLevelValue() {
+      return metricsLevel_;
+    }
+    /**
+     * <pre>
+     * The default level of metrics to record in a given `Tenant`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.MetricRecordingLevel metrics_level = 4;</code>
+     * @param value The enum numeric value on the wire for metricsLevel to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMetricsLevelValue(int value) {
+      metricsLevel_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The default level of metrics to record in a given `Tenant`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.MetricRecordingLevel metrics_level = 4;</code>
+     * @return The metricsLevel.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.MetricRecordingLevel getMetricsLevel() {
+      io.littlehorse.sdk.common.proto.MetricRecordingLevel result = io.littlehorse.sdk.common.proto.MetricRecordingLevel.forNumber(metricsLevel_);
+      return result == null ? io.littlehorse.sdk.common.proto.MetricRecordingLevel.UNRECOGNIZED : result;
+    }
+    /**
+     * <pre>
+     * The default level of metrics to record in a given `Tenant`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.MetricRecordingLevel metrics_level = 4;</code>
+     * @param value The metricsLevel to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMetricsLevel(io.littlehorse.sdk.common.proto.MetricRecordingLevel value) {
+      if (value == null) { throw new NullPointerException(); }
+      bitField0_ |= 0x00000008;
+      metricsLevel_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The default level of metrics to record in a given `Tenant`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.MetricRecordingLevel metrics_level = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMetricsLevel() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      metricsLevel_ = 0;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.Tenant)

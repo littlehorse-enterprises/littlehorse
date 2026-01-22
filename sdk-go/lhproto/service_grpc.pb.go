@@ -109,6 +109,10 @@ const (
 	LittleHorse_GetPrincipal_FullMethodName               = "/littlehorse.LittleHorse/GetPrincipal"
 	LittleHorse_Whoami_FullMethodName                     = "/littlehorse.LittleHorse/Whoami"
 	LittleHorse_GetServerVersion_FullMethodName           = "/littlehorse.LittleHorse/GetServerVersion"
+	LittleHorse_ListMetrics_FullMethodName                = "/littlehorse.LittleHorse/ListMetrics"
+	LittleHorse_PutMetricLevelOverride_FullMethodName     = "/littlehorse.LittleHorse/PutMetricLevelOverride"
+	LittleHorse_DeleteMetricLevelOverride_FullMethodName  = "/littlehorse.LittleHorse/DeleteMetricLevelOverride"
+	LittleHorse_ListMetricLevelOverrides_FullMethodName   = "/littlehorse.LittleHorse/ListMetricLevelOverrides"
 )
 
 // LittleHorseClient is the client API for LittleHorse service.
@@ -361,6 +365,11 @@ type LittleHorseClient interface {
 	Whoami(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Principal, error)
 	// Gets the version of the LH Server.
 	GetServerVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*LittleHorseVersion, error)
+	// Metrics APIs
+	ListMetrics(ctx context.Context, in *ListMetricsRequest, opts ...grpc.CallOption) (*MetricList, error)
+	PutMetricLevelOverride(ctx context.Context, in *PutMetricLevelOverrideRequest, opts ...grpc.CallOption) (*MetricLevelOverride, error)
+	DeleteMetricLevelOverride(ctx context.Context, in *DeleteMetricLevelOverrideRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	ListMetricLevelOverrides(ctx context.Context, in *ListMetricLevelOverridesRequest, opts ...grpc.CallOption) (*MetricLevelOverridesList, error)
 }
 
 type littleHorseClient struct {
@@ -1194,6 +1203,42 @@ func (c *littleHorseClient) GetServerVersion(ctx context.Context, in *emptypb.Em
 	return out, nil
 }
 
+func (c *littleHorseClient) ListMetrics(ctx context.Context, in *ListMetricsRequest, opts ...grpc.CallOption) (*MetricList, error) {
+	out := new(MetricList)
+	err := c.cc.Invoke(ctx, LittleHorse_ListMetrics_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) PutMetricLevelOverride(ctx context.Context, in *PutMetricLevelOverrideRequest, opts ...grpc.CallOption) (*MetricLevelOverride, error) {
+	out := new(MetricLevelOverride)
+	err := c.cc.Invoke(ctx, LittleHorse_PutMetricLevelOverride_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) DeleteMetricLevelOverride(ctx context.Context, in *DeleteMetricLevelOverrideRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, LittleHorse_DeleteMetricLevelOverride_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) ListMetricLevelOverrides(ctx context.Context, in *ListMetricLevelOverridesRequest, opts ...grpc.CallOption) (*MetricLevelOverridesList, error) {
+	out := new(MetricLevelOverridesList)
+	err := c.cc.Invoke(ctx, LittleHorse_ListMetricLevelOverrides_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LittleHorseServer is the server API for LittleHorse service.
 // All implementations must embed UnimplementedLittleHorseServer
 // for forward compatibility
@@ -1444,6 +1489,11 @@ type LittleHorseServer interface {
 	Whoami(context.Context, *emptypb.Empty) (*Principal, error)
 	// Gets the version of the LH Server.
 	GetServerVersion(context.Context, *emptypb.Empty) (*LittleHorseVersion, error)
+	// Metrics APIs
+	ListMetrics(context.Context, *ListMetricsRequest) (*MetricList, error)
+	PutMetricLevelOverride(context.Context, *PutMetricLevelOverrideRequest) (*MetricLevelOverride, error)
+	DeleteMetricLevelOverride(context.Context, *DeleteMetricLevelOverrideRequest) (*emptypb.Empty, error)
+	ListMetricLevelOverrides(context.Context, *ListMetricLevelOverridesRequest) (*MetricLevelOverridesList, error)
 	mustEmbedUnimplementedLittleHorseServer()
 }
 
@@ -1717,6 +1767,18 @@ func (UnimplementedLittleHorseServer) Whoami(context.Context, *emptypb.Empty) (*
 }
 func (UnimplementedLittleHorseServer) GetServerVersion(context.Context, *emptypb.Empty) (*LittleHorseVersion, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetServerVersion not implemented")
+}
+func (UnimplementedLittleHorseServer) ListMetrics(context.Context, *ListMetricsRequest) (*MetricList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListMetrics not implemented")
+}
+func (UnimplementedLittleHorseServer) PutMetricLevelOverride(context.Context, *PutMetricLevelOverrideRequest) (*MetricLevelOverride, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutMetricLevelOverride not implemented")
+}
+func (UnimplementedLittleHorseServer) DeleteMetricLevelOverride(context.Context, *DeleteMetricLevelOverrideRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteMetricLevelOverride not implemented")
+}
+func (UnimplementedLittleHorseServer) ListMetricLevelOverrides(context.Context, *ListMetricLevelOverridesRequest) (*MetricLevelOverridesList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListMetricLevelOverrides not implemented")
 }
 func (UnimplementedLittleHorseServer) mustEmbedUnimplementedLittleHorseServer() {}
 
@@ -3341,6 +3403,78 @@ func _LittleHorse_GetServerVersion_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_ListMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMetricsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).ListMetrics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_ListMetrics_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).ListMetrics(ctx, req.(*ListMetricsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_PutMetricLevelOverride_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutMetricLevelOverrideRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutMetricLevelOverride(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutMetricLevelOverride_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutMetricLevelOverride(ctx, req.(*PutMetricLevelOverrideRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_DeleteMetricLevelOverride_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteMetricLevelOverrideRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).DeleteMetricLevelOverride(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_DeleteMetricLevelOverride_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).DeleteMetricLevelOverride(ctx, req.(*DeleteMetricLevelOverrideRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_ListMetricLevelOverrides_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMetricLevelOverridesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).ListMetricLevelOverrides(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_ListMetricLevelOverrides_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).ListMetricLevelOverrides(ctx, req.(*ListMetricLevelOverridesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LittleHorse_ServiceDesc is the grpc.ServiceDesc for LittleHorse service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3699,6 +3833,22 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetServerVersion",
 			Handler:    _LittleHorse_GetServerVersion_Handler,
+		},
+		{
+			MethodName: "ListMetrics",
+			Handler:    _LittleHorse_ListMetrics_Handler,
+		},
+		{
+			MethodName: "PutMetricLevelOverride",
+			Handler:    _LittleHorse_PutMetricLevelOverride_Handler,
+		},
+		{
+			MethodName: "DeleteMetricLevelOverride",
+			Handler:    _LittleHorse_DeleteMetricLevelOverride_Handler,
+		},
+		{
+			MethodName: "ListMetricLevelOverrides",
+			Handler:    _LittleHorse_ListMetricLevelOverrides_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

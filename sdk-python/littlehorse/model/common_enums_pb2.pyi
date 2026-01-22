@@ -38,6 +38,25 @@ class MetricsWindowLength(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     HOURS_2: _ClassVar[MetricsWindowLength]
     DAYS_1: _ClassVar[MetricsWindowLength]
 
+class AggregationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = ()
+    COUNT: _ClassVar[AggregationType]
+    LATENCY: _ClassVar[AggregationType]
+
+class MetricRecordingLevel(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = ()
+    INFO: _ClassVar[MetricRecordingLevel]
+    NONE: _ClassVar[MetricRecordingLevel]
+    DEBUG: _ClassVar[MetricRecordingLevel]
+
+class EntityType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = ()
+    WF_RUN: _ClassVar[EntityType]
+    TASK_RUN: _ClassVar[EntityType]
+    USER_TASK_RUN: _ClassVar[EntityType]
+    NODE_RUN: _ClassVar[EntityType]
+    THREAD_RUN: _ClassVar[EntityType]
+
 class VariableType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
     JSON_OBJ: _ClassVar[VariableType]
@@ -83,6 +102,16 @@ TASK_PENDING: TaskStatus
 MINUTES_5: MetricsWindowLength
 HOURS_2: MetricsWindowLength
 DAYS_1: MetricsWindowLength
+COUNT: AggregationType
+LATENCY: AggregationType
+INFO: MetricRecordingLevel
+NONE: MetricRecordingLevel
+DEBUG: MetricRecordingLevel
+WF_RUN: EntityType
+TASK_RUN: EntityType
+USER_TASK_RUN: EntityType
+NODE_RUN: EntityType
+THREAD_RUN: EntityType
 JSON_OBJ: VariableType
 JSON_ARR: VariableType
 DOUBLE: VariableType

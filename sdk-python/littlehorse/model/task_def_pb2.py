@@ -23,8 +23,8 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
-import littlehorse.model.common_wfspec_pb2 as common__wfspec__pb2
-import littlehorse.model.object_id_pb2 as object__id__pb2
+import common_wfspec_pb2 as common__wfspec__pb2
+import object_id_pb2 as object__id__pb2
 
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0etask_def.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x13\x63ommon_wfspec.proto\x1a\x0fobject_id.proto\"\xf8\x01\n\x07TaskDef\x12\"\n\x02id\x18\x01 \x01(\x0b\x32\x16.littlehorse.TaskDefId\x12,\n\ninput_vars\x18\x02 \x03(\x0b\x32\x18.littlehorse.VariableDef\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x0breturn_type\x18\x04 \x01(\x0b\x32\x17.littlehorse.ReturnTypeH\x00\x88\x01\x01\x12\x18\n\x0b\x64\x65scription\x18\x05 \x01(\tH\x01\x88\x01\x01\x42\x0e\n\x0c_return_typeB\x0e\n\x0c_descriptionBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')

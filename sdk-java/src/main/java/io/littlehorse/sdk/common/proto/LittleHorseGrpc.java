@@ -2771,6 +2771,130 @@ public final class LittleHorseGrpc {
     return getGetServerVersionMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricsRequest,
+      io.littlehorse.sdk.common.proto.MetricList> getListMetricsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ListMetrics",
+      requestType = io.littlehorse.sdk.common.proto.ListMetricsRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricsRequest,
+      io.littlehorse.sdk.common.proto.MetricList> getListMetricsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricsRequest, io.littlehorse.sdk.common.proto.MetricList> getListMetricsMethod;
+    if ((getListMetricsMethod = LittleHorseGrpc.getListMetricsMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getListMetricsMethod = LittleHorseGrpc.getListMetricsMethod) == null) {
+          LittleHorseGrpc.getListMetricsMethod = getListMetricsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListMetricsRequest, io.littlehorse.sdk.common.proto.MetricList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListMetrics"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ListMetricsRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListMetrics"))
+              .build();
+        }
+      }
+    }
+    return getListMetricsMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricLevelOverrideRequest,
+      io.littlehorse.sdk.common.proto.MetricLevelOverride> getPutMetricLevelOverrideMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PutMetricLevelOverride",
+      requestType = io.littlehorse.sdk.common.proto.PutMetricLevelOverrideRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricLevelOverride.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricLevelOverrideRequest,
+      io.littlehorse.sdk.common.proto.MetricLevelOverride> getPutMetricLevelOverrideMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricLevelOverrideRequest, io.littlehorse.sdk.common.proto.MetricLevelOverride> getPutMetricLevelOverrideMethod;
+    if ((getPutMetricLevelOverrideMethod = LittleHorseGrpc.getPutMetricLevelOverrideMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getPutMetricLevelOverrideMethod = LittleHorseGrpc.getPutMetricLevelOverrideMethod) == null) {
+          LittleHorseGrpc.getPutMetricLevelOverrideMethod = getPutMetricLevelOverrideMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutMetricLevelOverrideRequest, io.littlehorse.sdk.common.proto.MetricLevelOverride>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutMetricLevelOverride"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutMetricLevelOverrideRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricLevelOverride.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutMetricLevelOverride"))
+              .build();
+        }
+      }
+    }
+    return getPutMetricLevelOverrideMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteMetricLevelOverrideRequest,
+      com.google.protobuf.Empty> getDeleteMetricLevelOverrideMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeleteMetricLevelOverride",
+      requestType = io.littlehorse.sdk.common.proto.DeleteMetricLevelOverrideRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteMetricLevelOverrideRequest,
+      com.google.protobuf.Empty> getDeleteMetricLevelOverrideMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteMetricLevelOverrideRequest, com.google.protobuf.Empty> getDeleteMetricLevelOverrideMethod;
+    if ((getDeleteMetricLevelOverrideMethod = LittleHorseGrpc.getDeleteMetricLevelOverrideMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getDeleteMetricLevelOverrideMethod = LittleHorseGrpc.getDeleteMetricLevelOverrideMethod) == null) {
+          LittleHorseGrpc.getDeleteMetricLevelOverrideMethod = getDeleteMetricLevelOverrideMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteMetricLevelOverrideRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteMetricLevelOverride"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.DeleteMetricLevelOverrideRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("DeleteMetricLevelOverride"))
+              .build();
+        }
+      }
+    }
+    return getDeleteMetricLevelOverrideMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest,
+      io.littlehorse.sdk.common.proto.MetricLevelOverridesList> getListMetricLevelOverridesMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ListMetricLevelOverrides",
+      requestType = io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricLevelOverridesList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest,
+      io.littlehorse.sdk.common.proto.MetricLevelOverridesList> getListMetricLevelOverridesMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest, io.littlehorse.sdk.common.proto.MetricLevelOverridesList> getListMetricLevelOverridesMethod;
+    if ((getListMetricLevelOverridesMethod = LittleHorseGrpc.getListMetricLevelOverridesMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getListMetricLevelOverridesMethod = LittleHorseGrpc.getListMetricLevelOverridesMethod) == null) {
+          LittleHorseGrpc.getListMetricLevelOverridesMethod = getListMetricLevelOverridesMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest, io.littlehorse.sdk.common.proto.MetricLevelOverridesList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListMetricLevelOverrides"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricLevelOverridesList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListMetricLevelOverrides"))
+              .build();
+        }
+      }
+    }
+    return getListMetricLevelOverridesMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -3774,6 +3898,37 @@ public final class LittleHorseGrpc {
     default void getServerVersion(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.LittleHorseVersion> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetServerVersionMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Metrics APIs
+     * </pre>
+     */
+    default void listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListMetricsMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default void putMetricLevelOverride(io.littlehorse.sdk.common.proto.PutMetricLevelOverrideRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricLevelOverride> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutMetricLevelOverrideMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default void deleteMetricLevelOverride(io.littlehorse.sdk.common.proto.DeleteMetricLevelOverrideRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteMetricLevelOverrideMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default void listMetricLevelOverrides(io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricLevelOverridesList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListMetricLevelOverridesMethod(), responseObserver);
     }
   }
 
@@ -4834,6 +4989,41 @@ public final class LittleHorseGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     * <pre>
+     * Metrics APIs
+     * </pre>
+     */
+    public void listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getListMetricsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void putMetricLevelOverride(io.littlehorse.sdk.common.proto.PutMetricLevelOverrideRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricLevelOverride> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPutMetricLevelOverrideMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void deleteMetricLevelOverride(io.littlehorse.sdk.common.proto.DeleteMetricLevelOverrideRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getDeleteMetricLevelOverrideMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void listMetricLevelOverrides(io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricLevelOverridesList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getListMetricLevelOverridesMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -5795,6 +5985,37 @@ public final class LittleHorseGrpc {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
           getChannel(), getGetServerVersionMethod(), getCallOptions(), request);
     }
+
+    /**
+     * <pre>
+     * Metrics APIs
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricList listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getListMetricsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.MetricLevelOverride putMetricLevelOverride(io.littlehorse.sdk.common.proto.PutMetricLevelOverrideRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getPutMetricLevelOverrideMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.google.protobuf.Empty deleteMetricLevelOverride(io.littlehorse.sdk.common.proto.DeleteMetricLevelOverrideRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getDeleteMetricLevelOverrideMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.MetricLevelOverridesList listMetricLevelOverrides(io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getListMetricLevelOverridesMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -6742,6 +6963,37 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.LittleHorseVersion getServerVersion(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetServerVersionMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Metrics APIs
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricList listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListMetricsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.MetricLevelOverride putMetricLevelOverride(io.littlehorse.sdk.common.proto.PutMetricLevelOverrideRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutMetricLevelOverrideMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.google.protobuf.Empty deleteMetricLevelOverride(io.littlehorse.sdk.common.proto.DeleteMetricLevelOverrideRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteMetricLevelOverrideMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.MetricLevelOverridesList listMetricLevelOverrides(io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListMetricLevelOverridesMethod(), getCallOptions(), request);
     }
   }
 
@@ -7779,6 +8031,41 @@ public final class LittleHorseGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     * Metrics APIs
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricList> listMetrics(
+        io.littlehorse.sdk.common.proto.ListMetricsRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getListMetricsMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricLevelOverride> putMetricLevelOverride(
+        io.littlehorse.sdk.common.proto.PutMetricLevelOverrideRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPutMetricLevelOverrideMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteMetricLevelOverride(
+        io.littlehorse.sdk.common.proto.DeleteMetricLevelOverrideRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDeleteMetricLevelOverrideMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricLevelOverridesList> listMetricLevelOverrides(
+        io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getListMetricLevelOverridesMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PUT_TASK_DEF = 0;
@@ -7869,7 +8156,11 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_PRINCIPAL = 85;
   private static final int METHODID_WHOAMI = 86;
   private static final int METHODID_GET_SERVER_VERSION = 87;
-  private static final int METHODID_POLL_TASK = 88;
+  private static final int METHODID_LIST_METRICS = 88;
+  private static final int METHODID_PUT_METRIC_LEVEL_OVERRIDE = 89;
+  private static final int METHODID_DELETE_METRIC_LEVEL_OVERRIDE = 90;
+  private static final int METHODID_LIST_METRIC_LEVEL_OVERRIDES = 91;
+  private static final int METHODID_POLL_TASK = 92;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -8239,6 +8530,22 @@ public final class LittleHorseGrpc {
         case METHODID_GET_SERVER_VERSION:
           serviceImpl.getServerVersion((com.google.protobuf.Empty) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.LittleHorseVersion>) responseObserver);
+          break;
+        case METHODID_LIST_METRICS:
+          serviceImpl.listMetrics((io.littlehorse.sdk.common.proto.ListMetricsRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricList>) responseObserver);
+          break;
+        case METHODID_PUT_METRIC_LEVEL_OVERRIDE:
+          serviceImpl.putMetricLevelOverride((io.littlehorse.sdk.common.proto.PutMetricLevelOverrideRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricLevelOverride>) responseObserver);
+          break;
+        case METHODID_DELETE_METRIC_LEVEL_OVERRIDE:
+          serviceImpl.deleteMetricLevelOverride((io.littlehorse.sdk.common.proto.DeleteMetricLevelOverrideRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_LIST_METRIC_LEVEL_OVERRIDES:
+          serviceImpl.listMetricLevelOverrides((io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricLevelOverridesList>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -8884,6 +9191,34 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty,
               io.littlehorse.sdk.common.proto.LittleHorseVersion>(
                 service, METHODID_GET_SERVER_VERSION)))
+        .addMethod(
+          getListMetricsMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.ListMetricsRequest,
+              io.littlehorse.sdk.common.proto.MetricList>(
+                service, METHODID_LIST_METRICS)))
+        .addMethod(
+          getPutMetricLevelOverrideMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.PutMetricLevelOverrideRequest,
+              io.littlehorse.sdk.common.proto.MetricLevelOverride>(
+                service, METHODID_PUT_METRIC_LEVEL_OVERRIDE)))
+        .addMethod(
+          getDeleteMetricLevelOverrideMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.DeleteMetricLevelOverrideRequest,
+              com.google.protobuf.Empty>(
+                service, METHODID_DELETE_METRIC_LEVEL_OVERRIDE)))
+        .addMethod(
+          getListMetricLevelOverridesMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest,
+              io.littlehorse.sdk.common.proto.MetricLevelOverridesList>(
+                service, METHODID_LIST_METRIC_LEVEL_OVERRIDES)))
         .build();
   }
 
@@ -9021,6 +9356,10 @@ public final class LittleHorseGrpc {
               .addMethod(getGetPrincipalMethod())
               .addMethod(getWhoamiMethod())
               .addMethod(getGetServerVersionMethod())
+              .addMethod(getListMetricsMethod())
+              .addMethod(getPutMetricLevelOverrideMethod())
+              .addMethod(getDeleteMetricLevelOverrideMethod())
+              .addMethod(getListMetricLevelOverridesMethod())
               .build();
         }
       }

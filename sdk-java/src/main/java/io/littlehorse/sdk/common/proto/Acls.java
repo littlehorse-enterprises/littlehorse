@@ -86,56 +86,59 @@ public final class Acls extends com.google.protobuf.GeneratedFile {
   static {
     java.lang.String[] descriptorData = {
       "\n\nacls.proto\022\013littlehorse\032\037google/protob" +
-      "uf/timestamp.proto\032\017object_id.proto\"\242\002\n\t" +
-      "Principal\022$\n\002id\030\001 \001(\0132\030.littlehorse.Prin" +
-      "cipalId\022.\n\ncreated_at\030\002 \001(\0132\032.google.pro" +
-      "tobuf.Timestamp\022B\n\017per_tenant_acls\030\003 \003(\013" +
-      "2).littlehorse.Principal.PerTenantAclsEn" +
-      "try\022,\n\013global_acls\030\004 \001(\0132\027.littlehorse.S" +
-      "erverACLs\032M\n\022PerTenantAclsEntry\022\013\n\003key\030\001" +
-      " \001(\t\022&\n\005value\030\002 \001(\0132\027.littlehorse.Server" +
-      "ACLs:\0028\001\"\265\001\n\006Tenant\022!\n\002id\030\001 \001(\0132\025.little" +
-      "horse.TenantId\022.\n\ncreated_at\030\002 \001(\0132\032.goo" +
-      "gle.protobuf.Timestamp\022@\n\023output_topic_c" +
-      "onfig\030\003 \001(\0132\036.littlehorse.OutputTopicCon" +
-      "figH\000\210\001\001B\026\n\024_output_topic_config\"2\n\nServ" +
-      "erACLs\022$\n\004acls\030\001 \003(\0132\026.littlehorse.Serve" +
-      "rACL\"\236\001\n\tServerACL\022+\n\tresources\030\001 \003(\0162\030." +
-      "littlehorse.ACLResource\022/\n\017allowed_actio" +
-      "ns\030\002 \003(\0162\026.littlehorse.ACLAction\022\016\n\004name" +
-      "\030\003 \001(\tH\000\022\020\n\006prefix\030\004 \001(\tH\000B\021\n\017resource_f" +
-      "ilter\"\377\001\n\023PutPrincipalRequest\022\n\n\002id\030\001 \001(" +
-      "\t\022L\n\017per_tenant_acls\030\002 \003(\01323.littlehorse" +
-      ".PutPrincipalRequest.PerTenantAclsEntry\022" +
-      ",\n\013global_acls\030\003 \001(\0132\027.littlehorse.Serve" +
-      "rACLs\022\021\n\toverwrite\030\005 \001(\010\032M\n\022PerTenantAcl" +
-      "sEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.lit" +
-      "tlehorse.ServerACLs:\0028\001\">\n\026DeletePrincip" +
-      "alRequest\022$\n\002id\030\001 \001(\0132\030.littlehorse.Prin" +
-      "cipalId\"\270\001\n\021OutputTopicConfig\022Y\n\027default" +
-      "_recording_level\030\001 \001(\01628.littlehorse.Out" +
-      "putTopicConfig.OutputTopicRecordingLevel" +
-      "\"H\n\031OutputTopicRecordingLevel\022\025\n\021ALL_ENT" +
-      "ITY_EVENTS\020\000\022\024\n\020NO_ENTITY_EVENTS\020\001\"x\n\020Pu" +
-      "tTenantRequest\022\n\n\002id\030\001 \001(\t\022@\n\023output_top" +
-      "ic_config\030\002 \001(\0132\036.littlehorse.OutputTopi" +
-      "cConfigH\000\210\001\001B\026\n\024_output_topic_config*\325\001\n" +
-      "\013ACLResource\022\020\n\014ACL_WORKFLOW\020\000\022\014\n\010ACL_TA" +
-      "SK\020\001\022\026\n\022ACL_EXTERNAL_EVENT\020\002\022\021\n\rACL_USER" +
-      "_TASK\020\003\022\021\n\rACL_PRINCIPAL\020\004\022\016\n\nACL_TENANT" +
-      "\020\005\022\025\n\021ACL_ALL_RESOURCES\020\006\022\031\n\025ACL_TASK_WO" +
-      "RKER_GROUP\020\007\022\026\n\022ACL_WORKFLOW_EVENT\020\010\022\016\n\n" +
-      "ACL_STRUCT\020\t*C\n\tACLAction\022\010\n\004READ\020\000\022\007\n\003R" +
-      "UN\020\001\022\022\n\016WRITE_METADATA\020\002\022\017\n\013ALL_ACTIONS\020" +
-      "\003BM\n\037io.littlehorse.sdk.common.protoP\001Z\t" +
-      ".;lhproto\252\002\034LittleHorse.Sdk.Common.Proto" +
-      "b\006proto3"
+      "uf/timestamp.proto\032\017object_id.proto\032\022com" +
+      "mon_enums.proto\"\242\002\n\tPrincipal\022$\n\002id\030\001 \001(" +
+      "\0132\030.littlehorse.PrincipalId\022.\n\ncreated_a" +
+      "t\030\002 \001(\0132\032.google.protobuf.Timestamp\022B\n\017p" +
+      "er_tenant_acls\030\003 \003(\0132).littlehorse.Princ" +
+      "ipal.PerTenantAclsEntry\022,\n\013global_acls\030\004" +
+      " \001(\0132\027.littlehorse.ServerACLs\032M\n\022PerTena" +
+      "ntAclsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132" +
+      "\027.littlehorse.ServerACLs:\0028\001\"\206\002\n\006Tenant\022" +
+      "!\n\002id\030\001 \001(\0132\025.littlehorse.TenantId\022.\n\ncr" +
+      "eated_at\030\002 \001(\0132\032.google.protobuf.Timesta" +
+      "mp\022@\n\023output_topic_config\030\003 \001(\0132\036.little" +
+      "horse.OutputTopicConfigH\000\210\001\001\022=\n\rmetrics_" +
+      "level\030\004 \001(\0162!.littlehorse.MetricRecordin" +
+      "gLevelH\001\210\001\001B\026\n\024_output_topic_configB\020\n\016_" +
+      "metrics_level\"2\n\nServerACLs\022$\n\004acls\030\001 \003(" +
+      "\0132\026.littlehorse.ServerACL\"\236\001\n\tServerACL\022" +
+      "+\n\tresources\030\001 \003(\0162\030.littlehorse.ACLReso" +
+      "urce\022/\n\017allowed_actions\030\002 \003(\0162\026.littleho" +
+      "rse.ACLAction\022\016\n\004name\030\003 \001(\tH\000\022\020\n\006prefix\030" +
+      "\004 \001(\tH\000B\021\n\017resource_filter\"\377\001\n\023PutPrinci" +
+      "palRequest\022\n\n\002id\030\001 \001(\t\022L\n\017per_tenant_acl" +
+      "s\030\002 \003(\01323.littlehorse.PutPrincipalReques" +
+      "t.PerTenantAclsEntry\022,\n\013global_acls\030\003 \001(" +
+      "\0132\027.littlehorse.ServerACLs\022\021\n\toverwrite\030" +
+      "\005 \001(\010\032M\n\022PerTenantAclsEntry\022\013\n\003key\030\001 \001(\t" +
+      "\022&\n\005value\030\002 \001(\0132\027.littlehorse.ServerACLs" +
+      ":\0028\001\">\n\026DeletePrincipalRequest\022$\n\002id\030\001 \001" +
+      "(\0132\030.littlehorse.PrincipalId\"\270\001\n\021OutputT" +
+      "opicConfig\022Y\n\027default_recording_level\030\001 " +
+      "\001(\01628.littlehorse.OutputTopicConfig.Outp" +
+      "utTopicRecordingLevel\"H\n\031OutputTopicReco" +
+      "rdingLevel\022\025\n\021ALL_ENTITY_EVENTS\020\000\022\024\n\020NO_" +
+      "ENTITY_EVENTS\020\001\"x\n\020PutTenantRequest\022\n\n\002i" +
+      "d\030\001 \001(\t\022@\n\023output_topic_config\030\002 \001(\0132\036.l" +
+      "ittlehorse.OutputTopicConfigH\000\210\001\001B\026\n\024_ou" +
+      "tput_topic_config*\325\001\n\013ACLResource\022\020\n\014ACL" +
+      "_WORKFLOW\020\000\022\014\n\010ACL_TASK\020\001\022\026\n\022ACL_EXTERNA" +
+      "L_EVENT\020\002\022\021\n\rACL_USER_TASK\020\003\022\021\n\rACL_PRIN" +
+      "CIPAL\020\004\022\016\n\nACL_TENANT\020\005\022\025\n\021ACL_ALL_RESOU" +
+      "RCES\020\006\022\031\n\025ACL_TASK_WORKER_GROUP\020\007\022\026\n\022ACL" +
+      "_WORKFLOW_EVENT\020\010\022\016\n\nACL_STRUCT\020\t*C\n\tACL" +
+      "Action\022\010\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_METAD" +
+      "ATA\020\002\022\017\n\013ALL_ACTIONS\020\003BM\n\037io.littlehorse" +
+      ".sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleH" +
+      "orse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.TimestampProto.getDescriptor(),
           io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
+          io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor(),
         });
     internal_static_littlehorse_Principal_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -154,7 +157,7 @@ public final class Acls extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_Tenant_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_Tenant_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", "OutputTopicConfig", });
+        new java.lang.String[] { "Id", "CreatedAt", "OutputTopicConfig", "MetricsLevel", });
     internal_static_littlehorse_ServerACLs_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_littlehorse_ServerACLs_fieldAccessorTable = new
@@ -200,6 +203,7 @@ public final class Acls extends com.google.protobuf.GeneratedFile {
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
+    io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)
