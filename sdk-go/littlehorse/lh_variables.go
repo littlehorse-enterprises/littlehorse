@@ -232,6 +232,13 @@ func InterfaceToVarVal(someInterface interface{}) (*lhproto.VariableValue, error
 }
 
 func ReflectTypeToVarType(rt reflect.Type) lhproto.VariableType {
+	// Handle non-primitive types first
+	if rt == reflect.TypeOf(time.Time{}) {
+		return lhproto.VariableType_TIMESTAMP
+	} else if rt == reflect.TypeOf(lhproto.WfRunId{}) {
+		return lhproto.VariableType_WF_RUN_ID
+	}
+
 	switch rt.Kind() {
 	case reflect.Ptr:
 		return ReflectTypeToVarType(rt.Elem())
