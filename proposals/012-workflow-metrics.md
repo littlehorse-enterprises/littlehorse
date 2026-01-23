@@ -57,6 +57,42 @@ Key points:
 * All metrics are tenant-scoped for multi-tenancy isolation.
 
 
+### Default Metrics Available
+
+The following table lists the default metrics collected for each entity type. The "Key" column indicates the string key used in a `MetricWindow`. This key is how each metric is identified and queried in the metric window messages. The meaning and structure of a metric window will be described later in this proposal.
+
+| Metric | Entity |  Key |
+|--------|--------|------------------------|
+| Number of workflows started | WfRun | "STARTED" |
+| Number of workflows completed | WfRun | "COMPLETED" |
+| Number of workflows halted | WfRun | "HALTED" |
+| Number of workflows with exceptions | WfRun | exception name |
+| Number of workflows with errors | WfRun | LHErrorType |
+| Latency for completed workflows | WfRun | "STARTING_TO_COMPLETED" |
+| Latency for halted workflows | WfRun | "HALTED" |
+| Latency for exceptions | WfRun | exception name |
+| Latency for errors | WfRun | LHErrorType |
+| Number of TaskRuns started | TaskRun | "TASKRUN_STARTED" |
+| Number of TaskAttempts started | TaskRun | "TASKATTEMPT_STARTED" |
+| Latency from TASK_SCHEDULED to TASK_RUNNING | TaskRun | "SCHEDULED_TO_RUNNING" |
+| Latency from TASK_RUNNING to TASK_SUCCESS | TaskRun | "RUNNING_TO_SUCCESS" |
+| Latency from TASK_RUNNING to TASK_ERROR | TaskRun | "RUNNING_TO_ERROR" |
+| Latency from TASK_RUNNING to TASK_EXCEPTION | TaskRun | "RUNNING_TO_EXCEPTION" |
+| Number of TaskAttempts that timed out | TaskRun | "TIMEOUT" |
+| Number of user tasks assigned | UserTaskRun | "ASSIGNED" |
+| Number of user tasks completed | UserTaskRun | "COMPLETED" |
+| Number of user tasks cancelled | UserTaskRun | "CANCELLED" |
+| Latency from assignment to completion | UserTaskRun | "ASSIGN_TO_COMPLETE" |
+| Per-user breakdowns and assignment latency (DEBUG) | UserTaskRun | user id |
+| Number of NodeRuns started | NodeRun | "STARTED" |
+| Number of NodeRuns completed | NodeRun | "COMPLETED" |
+| Number of NodeRuns with errors | NodeRun | "ERROR" |
+| Number of NodeRuns with exceptions | NodeRun | "EXCEPTION" |
+| Latency for completed NodeRuns | NodeRun | "COMPLETED" |
+| Latency for errors | NodeRun | "ERROR" |
+| Latency for exceptions | NodeRun | "EXCEPTION" |
+
+
 ## Scope
 
 ### Supported Metric Types
@@ -346,48 +382,3 @@ The following describes the system flow and technical implementation of workflow
    - For example, multiple 5-minute windows can be merged into hourly views by summing `CountAndTiming` fields.
 
 This flow ensures metrics are collected efficiently without affecting workflow execution, stored durably, and queried flexibly via gRPC.
-
-## Default Metrics Available// mover a propuesta
-
-The following metrics will be available by default and can be queried using the current API.
-
-### Workflow Metrics (WfRun)
-
-- Number of workflows started// explicar esto
-- Number of workflows completed
-- Number of workflows halted
-- Number of workflows with exceptions
-- Number of workflows with errors
-- Latency for completed workflows
-- Latency for halted workflows 
-- Latency for exceptions
-- Latency for errors 
-
-### Task Metrics (TaskRun)
-
-- Number of TaskRuns started
-- Number of TaskAttempts started
-- Latency from TASK_SCHEDULED to TASK_RUNNING
-- Latency from TASK_RUNNING to TASK_SUCCESS
-- Latency from TASK_RUNNING to TASK_ERROR
-- Latency from TASK_RUNNING to TASK_EXCEPTION
-- Number of TaskAttempts that timed out
-
-
-### User Task Metrics (UserTaskRun)
-
-- Number of user tasks assigned
-- Number of user tasks completed
-- Number of user tasks cancelled
-- Latency from assignment to completion
-- Per-user breakdowns and assignment latency *(DEBUG)*
-
-### Node Metrics (NodeRun) *(DEBUG)*
-
-- Number of NodeRuns started
-- Number of NodeRuns completed
-- Number of NodeRuns with errors
-- Number of NodeRuns with exceptions
-- Latency for completed NodeRuns 
-- Latency for errors 
-- Latency for exceptions 
