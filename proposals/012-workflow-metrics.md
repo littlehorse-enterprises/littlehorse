@@ -14,8 +14,7 @@ This proposal introduces **workflow metrics** as a first-class feature in Little
 ### Out of scope
 
 * **Counted Tags** — A separate proposal will handle count-at-a-single-instant queries (e.g., how many NodeRuns are currently in TASK_SCHEDULED). These require a different architectural treatment.
-* **P95 approximations** — While desirable, approximate P95s via mergeable sketches (DDSketch) are left for a follow-up as they add significant complexity to the pipeline.
-* **Exporting MetricReadings** — The MetricReadings will be retrievable via the gRPC API. This proposal does not include building additional exporters (e.g., Datadog); users may build their own exporters using the gRPC clients. The LH Dashboard will provide a user-friendly interface to explore the metrics.
+* **Exporting Windows** — The Metric windows will be retrievable via the gRPC API. This proposal does not include building additional exporters (e.g., Datadog).
 
 
 ## Current Problem
@@ -24,7 +23,7 @@ This proposal introduces **workflow metrics** as a first-class feature in Little
 
 Today, LittleHorse provides no native mechanism to answer questions like:
 
-* How many workflows are running or completing per unit of time?
+* How many completed workflows do we have in a period?
 * How long does a workflow or task usually take?
 * Which node or task is the main bottleneck?
 * Are error rates increasing after a deployment?
@@ -56,15 +55,14 @@ Metrics are:
 * Computed internally by the LittleHorse Server
 * Stored and queried using native APIs
 
-No external systems or dependencies are required for collection (users can export data via Kafka output topics or build exporters). For future scope, the server could optionally publish aggregated metric windows directly to a Kafka output topic to enable real-time consumption and integration with external analytics or monitoring pipelines.
-
 ## Key Decisions
+/// list no need to mention registry
 
-* **No public metric spec mutation**: There will be no public RPC to create or mutate `MetricSpec`s. The system ships with server-side defaults in `DefaultMetricsRegistry` which is loaded at startup.
+
 * **Default windowing**: Default windows are 5 minute tumbling windows; windows are mergeable and persisted for a configurable retention (default 14 days).
 * **Metric recording levels**: `INFO`, `NONE`, and `DEBUG` recording levels control which metrics are collected; flamegraph/debug-level metrics are only enabled at `DEBUG`.
-* **Read-only query surface**: Clients query metrics through read-only gRPC endpoints; exports to external systems should be done via Kafka output topics or custom exporters.
-* **Tenant-scoped metrics**: All metrics are tenant-scoped for multi-tenancy isolation. Global metrics apply cluster-wide within a single tenant, while scoped metrics target specific workflows or tasks within that tenant.
+* **Read-only query surface**: Clients query metrics through read-only gRPC endpoints.
+* **Tenant-scoped metrics**: All metrics are tenant-scoped for multi-tenancy isolation.
 
 
 ## Scope
@@ -73,13 +71,15 @@ No external systems or dependencies are required for collection (users can expor
 
 This proposal introduces **two metric types**:
 
-1. **Rate metrics**
-   Measure how often an event occurs in a time window
-   *Example: number of `TaskRun`s in the last 5 minutes*
+1. **Count metrics**
+ Track the  number of times an event occurs in a period (window).
+  
+    *Example:  number of completed WorkflowRuns in 5m*
 
 2. **Latency metrics**
-   Measure time between two status transitions
-   *Example: time from `TASK_SCHEDULED` → `TASK_SUCCESS`*
+   Measure time between two status transitions in a period (window).
+
+   *Example: how loing it took for a to go from `TASK_SCHEDULED` → `TASK_SUCCESS` in 5m*
 
 
 
@@ -93,60 +93,34 @@ Metrics can be collected for:
 * `TaskRun`
 * `UserTaskRun`
 
-Metrics can be scoped at:
-
-* Workflow level (`WfSpec`)
-* Thread level
-* Node level
-* Task level
+>For this first iteration, we focus on the most relevant runtime entities. Metrics for the others can be considered in the future if needed.
 
 
 
 ## Design Principles
 
-### Explicit Metric Definition
-
-Metrics are only collected when explicitly defined via `MetricSpec`, unless auto-metrics are enabled.
-
-This avoids:
-
-* Unbounded storage growth
-* Unnecessary computation
-* Collecting metrics that are never queried
-
 
 
 ### No External Dependencies
 
-All metric collection and aggregation happens inside LittleHorse using:
+All metric collection and aggregation happens inside LittleHorse.
 
-* Kafka Streams
-* Native state stores
-* Repartitioning for global aggregation
-
-
+- Aggregation is performed per partition (process-level).
+- Repartitioning is used only for global aggregation.
 
 ### Minimal Performance Impact
 
-* Metrics are aggregated in time windows
-* Computation happens per partition first
-* Only finalized events produce metric updates
-* **Minimum window length**: 1 minute
-
-
-
-
-### Non-Intrusive Execution
-
-Metric collection does **not** affect workflow semantics or execution order.
-Existing workflows continue to work unchanged.
+- Metrics are aggregated using time windows.
+- Computation happens per partition first.
+- Only finalized events produce metric updates.
+- Window length: **5 minutes**.
 
 
 ### Mergeable windows & retention
 
 * Default windows are **5 minute windows** aligned to the epoch for operational simplicity.
 * Each window is persisted for **14 days** (configurable) to allow for historical queries.
-* Metric windows are **mergeable** — we store totals (e.g. `total_latency_ms` and `count`) instead of `latency_avg` so windows can be added together to form larger window.
+* Metric windows are **mergeable**  we store totals,so windows can be added together to form larger window.
 
 ### Metric recording levels
 
@@ -155,8 +129,8 @@ By default metrics are collected at a conservative level to avoid performance re
 ```proto
 enum MetricRecordingLevel {
   INFO = 0;  // Collect non-intrusive defaults
-  NONE = 1;  // Collect no metrics unless explicitly configured
-  DEBUG = 2; // Collect detailed/expensive metrics (e.g. flamegraphs)
+  NONE = 1;  // Collect no metrics
+  DEBUG = 2; // Collect detailed/expensive metrics 
 }
 ```
 
@@ -186,7 +160,7 @@ This allows granular control: e.g., enable `DEBUG` metrics for a problematic wor
 
 ## Metric Model
 
-### Rate Metrics
+### Count Metrics
 
 Count how many events occur in a window.
 
@@ -223,7 +197,7 @@ Latency metrics are only available for entities with a status field.
 
 ## Metrics configuration & Public API
 
-**Important:** Metric *specs* are *not* created by end-users at runtime. Instead, LittleHorse ships with a server-side class containing the default set of metrics (e.g. `DefaultMetricsRegistry`) which is loaded when the server starts. Operators may customize that set via configuration or code before startup, but there is no public RPC that allows clients to create or mutate metric specs at runtime. This reduces surface area, avoids unbounded/incorrect metric definitions, and ensures sane defaults for all deployments.
+**Important:** Metric *specs* are *not* created by end-users at runtime. Instead, LittleHorse ships with a server-side class containing the default set of metrics (e.g. `DefaultMetricsRegistry`) which is loaded when the server starts. Operators may customize that set via configuration or code before startup, but there is no public RPC that allows clients to create or mutate metric specs at runtime. This reduces surface area, avoids unbounded/incorrect metric definitions, and ensures sane defaults for all deployments.  // esto esta raro
 
 ### Query API (read-only)
 
@@ -367,6 +341,7 @@ message MetricWindowId {
   EntityType entity = 1;
   string entity_id = 2; // e.g., wf_spec name, task_def name
   google.protobuf.Timestamp window_start = 3;
+  agregation type
 }
 
 message MetricWindow {
