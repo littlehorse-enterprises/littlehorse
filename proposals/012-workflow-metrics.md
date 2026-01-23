@@ -46,23 +46,15 @@ These approaches are:
 
 ## Proposed Solution
 
-We propose introducing **workflow metrics** with a server-defined set of default `MetricSpec`s that are loaded at startup. Clients can query collected metrics via read-only APIs (gRPC), but cannot create or mutate metric definitions at runtime;
+We propose introducing **workflow metrics** with a predefined list of metrics to collect. Clients can query collected metrics via read-only APIs (gRPC), but cannot create or mutate metric definitions at runtime.
 
-Metrics are:
+Key points:
 
-* Pre-defined in `DefaultMetricsRegistry` (server-side)
-* Aggregated over mergeable time windows
-* Computed internally by the LittleHorse Server
-* Stored and queried using native APIs
-
-## Key Decisions
-/// list no need to mention registry
-
-
-* **Default windowing**: Default windows are 5 minute tumbling windows; windows are mergeable and persisted for a configurable retention (default 14 days).
-* **Metric recording levels**: `INFO`, `NONE`, and `DEBUG` recording levels control which metrics are collected; flamegraph/debug-level metrics are only enabled at `DEBUG`.
-* **Read-only query surface**: Clients query metrics through read-only gRPC endpoints.
-* **Tenant-scoped metrics**: All metrics are tenant-scoped for multi-tenancy isolation.
+* Metrics are collected from a fixed, server-defined list.
+* Retention period and metric recording level are configured at the tenant level, with sensible defaults if not set (`INFO` level, 2 weeks retention).
+* An RPC is exposed to configure the metric recording level, which can be applied globally to all objects or specifically to individual objects (e.g., a workflow, task, or node).
+* Metrics are aggregated over mergeable time windows (5 min window).
+* All metrics are tenant-scoped for multi-tenancy isolation.
 
 
 ## Scope
@@ -118,8 +110,8 @@ All metric collection and aggregation happens inside LittleHorse.
 
 ### Mergeable windows & retention
 
-* Default windows are **5 minute windows** aligned to the epoch for operational simplicity.
-* Each window is persisted for **14 days** (configurable) to allow for historical queries.
+* Default windows are **5 minute windows** aligned to the epoch.
+* Each window is persisted for **14 days** (configurable at tenant level) to allow for historical queries.
 * Metric windows are **mergeable**  we store totals,so windows can be added together to form larger window.
 
 ### Metric recording levels
@@ -143,9 +135,9 @@ message Tenant {
   // The default level of metrics to record in a given `Tenant`.
   MetricRecordingLevel metrics_level = 4;
 }
-```
 
-The server-side `DefaultMetricsRegistry` may also contain per-`WfSpec` or per-`TaskDef` overrides; these overrides are managed by operators via configuration (not public RPCs).
+```
+/////mising retention config
 
 ### Metric Recording Level Resolution Logic
 
