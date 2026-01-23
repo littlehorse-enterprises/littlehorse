@@ -212,6 +212,10 @@ export interface ThreadRun {
   output?: VariableValue | undefined;
 }
 
+export interface InactiveThreadRun {
+  threadRun: ThreadRun | undefined;
+}
+
 /** Points to the Failure that is currently being handled in the ThreadRun. */
 export interface FailureBeingHandled {
   /** The thread run number. */
@@ -860,6 +864,65 @@ export const ThreadRun = {
     message.type = object.type ?? ThreadType.ENTRYPOINT;
     message.output = (object.output !== undefined && object.output !== null)
       ? VariableValue.fromPartial(object.output)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseInactiveThreadRun(): InactiveThreadRun {
+  return { threadRun: undefined };
+}
+
+export const InactiveThreadRun = {
+  encode(message: InactiveThreadRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.threadRun !== undefined) {
+      ThreadRun.encode(message.threadRun, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InactiveThreadRun {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInactiveThreadRun();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.threadRun = ThreadRun.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InactiveThreadRun {
+    return { threadRun: isSet(object.threadRun) ? ThreadRun.fromJSON(object.threadRun) : undefined };
+  },
+
+  toJSON(message: InactiveThreadRun): unknown {
+    const obj: any = {};
+    if (message.threadRun !== undefined) {
+      obj.threadRun = ThreadRun.toJSON(message.threadRun);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<InactiveThreadRun>): InactiveThreadRun {
+    return InactiveThreadRun.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InactiveThreadRun>): InactiveThreadRun {
+    const message = createBaseInactiveThreadRun();
+    message.threadRun = (object.threadRun !== undefined && object.threadRun !== null)
+      ? ThreadRun.fromPartial(object.threadRun)
       : undefined;
     return message;
   },

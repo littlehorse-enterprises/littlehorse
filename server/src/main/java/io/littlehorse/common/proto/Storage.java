@@ -117,7 +117,7 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
       "TRICS\020\006\022\026\n\022INITIALIZATION_LOG\020\010\022\032\n\026WFRUN" +
       "_STORED_INVENTORY\020\t\022\026\n\022CORRELATION_MARKE" +
       "R\020\n\022\023\n\017TASK_QUEUE_HINT\020\013\022\017\n\013NODE_OUTPUT\020" +
-      "\014\"\004\010\004\020\004\"\004\010\007\020\007*\212\003\n\020GetableClassEnum\022\014\n\010TA" +
+      "\014\"\004\010\004\020\004\"\004\010\007\020\007*\243\003\n\020GetableClassEnum\022\014\n\010TA" +
       "SK_DEF\020\000\022\026\n\022EXTERNAL_EVENT_DEF\020\001\022\013\n\007WF_S" +
       "PEC\020\002\022\n\n\006WF_RUN\020\003\022\014\n\010NODE_RUN\020\004\022\014\n\010VARIA" +
       "BLE\020\005\022\022\n\016EXTERNAL_EVENT\020\006\022\024\n\020TASK_DEF_ME" +
@@ -127,8 +127,9 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
       "\n\006TENANT\020\016\022\026\n\022WORKFLOW_EVENT_DEF\020\017\022\022\n\016WO" +
       "RKFLOW_EVENT\020\020\022\024\n\020SCHEDULED_WF_RUN\020\021\022\016\n\n" +
       "STRUCT_DEF\020\022\022\024\n\020CORRELATED_EVENT\020\023\022\016\n\nCH" +
-      "ECKPOINT\020\024*\033\n\016TagStorageType\022\t\n\005LOCAL\020\000B" +
-      "\037\n\033io.littlehorse.common.protoP\001b\006proto3"
+      "ECKPOINT\020\024\022\027\n\023INACTIVE_THREAD_RUN\020\025*\033\n\016T" +
+      "agStorageType\022\t\n\005LOCAL\020\000B\037\n\033io.littlehor" +
+      "se.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

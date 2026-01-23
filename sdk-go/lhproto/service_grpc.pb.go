@@ -81,6 +81,7 @@ const (
 	LittleHorse_SearchTenant_FullMethodName               = "/littlehorse.LittleHorse/SearchTenant"
 	LittleHorse_SearchPrincipal_FullMethodName            = "/littlehorse.LittleHorse/SearchPrincipal"
 	LittleHorse_SearchStructDef_FullMethodName            = "/littlehorse.LittleHorse/SearchStructDef"
+	LittleHorse_GetInactiveThreadRun_FullMethodName       = "/littlehorse.LittleHorse/GetInactiveThreadRun"
 	LittleHorse_RegisterTaskWorker_FullMethodName         = "/littlehorse.LittleHorse/RegisterTaskWorker"
 	LittleHorse_PollTask_FullMethodName                   = "/littlehorse.LittleHorse/PollTask"
 	LittleHorse_ReportTask_FullMethodName                 = "/littlehorse.LittleHorse/ReportTask"
@@ -282,6 +283,8 @@ type LittleHorseClient interface {
 	SearchPrincipal(ctx context.Context, in *SearchPrincipalRequest, opts ...grpc.CallOption) (*PrincipalIdList, error)
 	// Search for StructDef's
 	SearchStructDef(ctx context.Context, in *SearchStructDefRequest, opts ...grpc.CallOption) (*StructDefIdList, error)
+	// Get an InactiveThreadRun
+	GetInactiveThreadRun(ctx context.Context, in *InactiveThreadRunId, opts ...grpc.CallOption) (*InactiveThreadRun, error)
 	// Used by the Task Worker to:
 	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
 	// 2. Receive the assignemnt of LH Server's to poll from.
@@ -920,6 +923,15 @@ func (c *littleHorseClient) SearchStructDef(ctx context.Context, in *SearchStruc
 	return out, nil
 }
 
+func (c *littleHorseClient) GetInactiveThreadRun(ctx context.Context, in *InactiveThreadRunId, opts ...grpc.CallOption) (*InactiveThreadRun, error) {
+	out := new(InactiveThreadRun)
+	err := c.cc.Invoke(ctx, LittleHorse_GetInactiveThreadRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) RegisterTaskWorker(ctx context.Context, in *RegisterTaskWorkerRequest, opts ...grpc.CallOption) (*RegisterTaskWorkerResponse, error) {
 	out := new(RegisterTaskWorkerResponse)
 	err := c.cc.Invoke(ctx, LittleHorse_RegisterTaskWorker_FullMethodName, in, out, opts...)
@@ -1365,6 +1377,8 @@ type LittleHorseServer interface {
 	SearchPrincipal(context.Context, *SearchPrincipalRequest) (*PrincipalIdList, error)
 	// Search for StructDef's
 	SearchStructDef(context.Context, *SearchStructDefRequest) (*StructDefIdList, error)
+	// Get an InactiveThreadRun
+	GetInactiveThreadRun(context.Context, *InactiveThreadRunId) (*InactiveThreadRun, error)
 	// Used by the Task Worker to:
 	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
 	// 2. Receive the assignemnt of LH Server's to poll from.
@@ -1633,6 +1647,9 @@ func (UnimplementedLittleHorseServer) SearchPrincipal(context.Context, *SearchPr
 }
 func (UnimplementedLittleHorseServer) SearchStructDef(context.Context, *SearchStructDefRequest) (*StructDefIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchStructDef not implemented")
+}
+func (UnimplementedLittleHorseServer) GetInactiveThreadRun(context.Context, *InactiveThreadRunId) (*InactiveThreadRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetInactiveThreadRun not implemented")
 }
 func (UnimplementedLittleHorseServer) RegisterTaskWorker(context.Context, *RegisterTaskWorkerRequest) (*RegisterTaskWorkerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterTaskWorker not implemented")
@@ -2829,6 +2846,24 @@ func _LittleHorse_SearchStructDef_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_GetInactiveThreadRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InactiveThreadRunId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetInactiveThreadRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetInactiveThreadRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetInactiveThreadRun(ctx, req.(*InactiveThreadRunId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_RegisterTaskWorker_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RegisterTaskWorkerRequest)
 	if err := dec(in); err != nil {
@@ -3591,6 +3626,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchStructDef",
 			Handler:    _LittleHorse_SearchStructDef_Handler,
+		},
+		{
+			MethodName: "GetInactiveThreadRun",
+			Handler:    _LittleHorse_GetInactiveThreadRun_Handler,
 		},
 		{
 			MethodName: "RegisterTaskWorker",

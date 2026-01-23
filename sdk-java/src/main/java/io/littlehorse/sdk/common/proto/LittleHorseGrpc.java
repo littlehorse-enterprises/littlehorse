@@ -1903,6 +1903,37 @@ public final class LittleHorseGrpc {
     return getSearchStructDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.InactiveThreadRunId,
+      io.littlehorse.sdk.common.proto.InactiveThreadRun> getGetInactiveThreadRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetInactiveThreadRun",
+      requestType = io.littlehorse.sdk.common.proto.InactiveThreadRunId.class,
+      responseType = io.littlehorse.sdk.common.proto.InactiveThreadRun.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.InactiveThreadRunId,
+      io.littlehorse.sdk.common.proto.InactiveThreadRun> getGetInactiveThreadRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.InactiveThreadRunId, io.littlehorse.sdk.common.proto.InactiveThreadRun> getGetInactiveThreadRunMethod;
+    if ((getGetInactiveThreadRunMethod = LittleHorseGrpc.getGetInactiveThreadRunMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetInactiveThreadRunMethod = LittleHorseGrpc.getGetInactiveThreadRunMethod) == null) {
+          LittleHorseGrpc.getGetInactiveThreadRunMethod = getGetInactiveThreadRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.InactiveThreadRunId, io.littlehorse.sdk.common.proto.InactiveThreadRun>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetInactiveThreadRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.InactiveThreadRunId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.InactiveThreadRun.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetInactiveThreadRun"))
+              .build();
+        }
+      }
+    }
+    return getGetInactiveThreadRunMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest,
       io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse> getRegisterTaskWorkerMethod;
 
@@ -3482,6 +3513,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Get an InactiveThreadRun
+     * </pre>
+     */
+    default void getInactiveThreadRun(io.littlehorse.sdk.common.proto.InactiveThreadRunId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.InactiveThreadRun> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetInactiveThreadRunMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
      * 2. Receive the assignemnt of LH Server's to poll from.
@@ -4513,6 +4554,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Get an InactiveThreadRun
+     * </pre>
+     */
+    public void getInactiveThreadRun(io.littlehorse.sdk.common.proto.InactiveThreadRunId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.InactiveThreadRun> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetInactiveThreadRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
      * 2. Receive the assignemnt of LH Server's to poll from.
@@ -5500,6 +5552,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Get an InactiveThreadRun
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.InactiveThreadRun getInactiveThreadRun(io.littlehorse.sdk.common.proto.InactiveThreadRunId request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getGetInactiveThreadRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
      * 2. Receive the assignemnt of LH Server's to poll from.
@@ -6457,6 +6519,16 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.StructDefIdList searchStructDef(io.littlehorse.sdk.common.proto.SearchStructDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getSearchStructDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Get an InactiveThreadRun
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.InactiveThreadRun getInactiveThreadRun(io.littlehorse.sdk.common.proto.InactiveThreadRunId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetInactiveThreadRunMethod(), getCallOptions(), request);
     }
 
     /**
@@ -7470,6 +7542,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Get an InactiveThreadRun
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.InactiveThreadRun> getInactiveThreadRun(
+        io.littlehorse.sdk.common.proto.InactiveThreadRunId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetInactiveThreadRunMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
      * 2. Receive the assignemnt of LH Server's to poll from.
@@ -7842,34 +7925,35 @@ public final class LittleHorseGrpc {
   private static final int METHODID_SEARCH_TENANT = 58;
   private static final int METHODID_SEARCH_PRINCIPAL = 59;
   private static final int METHODID_SEARCH_STRUCT_DEF = 60;
-  private static final int METHODID_REGISTER_TASK_WORKER = 61;
-  private static final int METHODID_REPORT_TASK = 62;
-  private static final int METHODID_PUT_CHECKPOINT = 63;
-  private static final int METHODID_GET_CHECKPOINT = 64;
-  private static final int METHODID_STOP_WF_RUN = 65;
-  private static final int METHODID_RESUME_WF_RUN = 66;
-  private static final int METHODID_RESCUE_THREAD_RUN = 67;
-  private static final int METHODID_DELETE_WF_RUN = 68;
-  private static final int METHODID_DELETE_TASK_DEF = 69;
-  private static final int METHODID_DELETE_STRUCT_DEF = 70;
-  private static final int METHODID_DELETE_WF_SPEC = 71;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 72;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 73;
-  private static final int METHODID_DELETE_CORRELATED_EVENT = 74;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 75;
-  private static final int METHODID_DELETE_PRINCIPAL = 76;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 77;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 78;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 79;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 80;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 81;
-  private static final int METHODID_PUT_TENANT = 82;
-  private static final int METHODID_GET_TENANT = 83;
-  private static final int METHODID_PUT_PRINCIPAL = 84;
-  private static final int METHODID_GET_PRINCIPAL = 85;
-  private static final int METHODID_WHOAMI = 86;
-  private static final int METHODID_GET_SERVER_VERSION = 87;
-  private static final int METHODID_POLL_TASK = 88;
+  private static final int METHODID_GET_INACTIVE_THREAD_RUN = 61;
+  private static final int METHODID_REGISTER_TASK_WORKER = 62;
+  private static final int METHODID_REPORT_TASK = 63;
+  private static final int METHODID_PUT_CHECKPOINT = 64;
+  private static final int METHODID_GET_CHECKPOINT = 65;
+  private static final int METHODID_STOP_WF_RUN = 66;
+  private static final int METHODID_RESUME_WF_RUN = 67;
+  private static final int METHODID_RESCUE_THREAD_RUN = 68;
+  private static final int METHODID_DELETE_WF_RUN = 69;
+  private static final int METHODID_DELETE_TASK_DEF = 70;
+  private static final int METHODID_DELETE_STRUCT_DEF = 71;
+  private static final int METHODID_DELETE_WF_SPEC = 72;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 73;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 74;
+  private static final int METHODID_DELETE_CORRELATED_EVENT = 75;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 76;
+  private static final int METHODID_DELETE_PRINCIPAL = 77;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 78;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 79;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 80;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 81;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 82;
+  private static final int METHODID_PUT_TENANT = 83;
+  private static final int METHODID_GET_TENANT = 84;
+  private static final int METHODID_PUT_PRINCIPAL = 85;
+  private static final int METHODID_GET_PRINCIPAL = 86;
+  private static final int METHODID_WHOAMI = 87;
+  private static final int METHODID_GET_SERVER_VERSION = 88;
+  private static final int METHODID_POLL_TASK = 89;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -8131,6 +8215,10 @@ public final class LittleHorseGrpc {
         case METHODID_SEARCH_STRUCT_DEF:
           serviceImpl.searchStructDef((io.littlehorse.sdk.common.proto.SearchStructDefRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDefIdList>) responseObserver);
+          break;
+        case METHODID_GET_INACTIVE_THREAD_RUN:
+          serviceImpl.getInactiveThreadRun((io.littlehorse.sdk.common.proto.InactiveThreadRunId) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.InactiveThreadRun>) responseObserver);
           break;
         case METHODID_REGISTER_TASK_WORKER:
           serviceImpl.registerTaskWorker((io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest) request,
@@ -8689,6 +8777,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.StructDefIdList>(
                 service, METHODID_SEARCH_STRUCT_DEF)))
         .addMethod(
+          getGetInactiveThreadRunMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.InactiveThreadRunId,
+              io.littlehorse.sdk.common.proto.InactiveThreadRun>(
+                service, METHODID_GET_INACTIVE_THREAD_RUN)))
+        .addMethod(
           getRegisterTaskWorkerMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -8993,6 +9088,7 @@ public final class LittleHorseGrpc {
               .addMethod(getSearchTenantMethod())
               .addMethod(getSearchPrincipalMethod())
               .addMethod(getSearchStructDefMethod())
+              .addMethod(getGetInactiveThreadRunMethod())
               .addMethod(getRegisterTaskWorkerMethod())
               .addMethod(getPollTaskMethod())
               .addMethod(getReportTaskMethod())
