@@ -49,19 +49,19 @@ private static final long serialVersionUID = 0L;
   public static final int ENTITY_FIELD_NUMBER = 1;
   private int entity_ = 0;
   /**
-   * <code>.littlehorse.EntityType entity = 1;</code>
+   * <code>.littlehorse.MetricEntityType entity = 1;</code>
    * @return The enum numeric value on the wire for entity.
    */
   @java.lang.Override public int getEntityValue() {
     return entity_;
   }
   /**
-   * <code>.littlehorse.EntityType entity = 1;</code>
+   * <code>.littlehorse.MetricEntityType entity = 1;</code>
    * @return The entity.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.EntityType getEntity() {
-    io.littlehorse.sdk.common.proto.EntityType result = io.littlehorse.sdk.common.proto.EntityType.forNumber(entity_);
-    return result == null ? io.littlehorse.sdk.common.proto.EntityType.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.MetricEntityType getEntity() {
+    io.littlehorse.sdk.common.proto.MetricEntityType result = io.littlehorse.sdk.common.proto.MetricEntityType.forNumber(entity_);
+    return result == null ? io.littlehorse.sdk.common.proto.MetricEntityType.UNRECOGNIZED : result;
   }
 
   public static final int FROM_STATUS_FIELD_NUMBER = 2;
@@ -156,7 +156,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (entity_ != io.littlehorse.sdk.common.proto.EntityType.WF_RUN.getNumber()) {
+    if (entity_ != io.littlehorse.sdk.common.proto.MetricEntityType.METRIC_WF_RUN.getNumber()) {
       output.writeEnum(1, entity_);
     }
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromStatus_)) {
@@ -174,7 +174,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (entity_ != io.littlehorse.sdk.common.proto.EntityType.WF_RUN.getNumber()) {
+    if (entity_ != io.littlehorse.sdk.common.proto.MetricEntityType.METRIC_WF_RUN.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(1, entity_);
     }
@@ -484,14 +484,14 @@ private static final long serialVersionUID = 0L;
 
     private int entity_ = 0;
     /**
-     * <code>.littlehorse.EntityType entity = 1;</code>
+     * <code>.littlehorse.MetricEntityType entity = 1;</code>
      * @return The enum numeric value on the wire for entity.
      */
     @java.lang.Override public int getEntityValue() {
       return entity_;
     }
     /**
-     * <code>.littlehorse.EntityType entity = 1;</code>
+     * <code>.littlehorse.MetricEntityType entity = 1;</code>
      * @param value The enum numeric value on the wire for entity to set.
      * @return This builder for chaining.
      */
@@ -502,20 +502,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.EntityType entity = 1;</code>
+     * <code>.littlehorse.MetricEntityType entity = 1;</code>
      * @return The entity.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.EntityType getEntity() {
-      io.littlehorse.sdk.common.proto.EntityType result = io.littlehorse.sdk.common.proto.EntityType.forNumber(entity_);
-      return result == null ? io.littlehorse.sdk.common.proto.EntityType.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.MetricEntityType getEntity() {
+      io.littlehorse.sdk.common.proto.MetricEntityType result = io.littlehorse.sdk.common.proto.MetricEntityType.forNumber(entity_);
+      return result == null ? io.littlehorse.sdk.common.proto.MetricEntityType.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.EntityType entity = 1;</code>
+     * <code>.littlehorse.MetricEntityType entity = 1;</code>
      * @param value The entity to set.
      * @return This builder for chaining.
      */
-    public Builder setEntity(io.littlehorse.sdk.common.proto.EntityType value) {
+    public Builder setEntity(io.littlehorse.sdk.common.proto.MetricEntityType value) {
       if (value == null) { throw new NullPointerException(); }
       bitField0_ |= 0x00000001;
       entity_ = value.getNumber();
@@ -523,7 +523,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.EntityType entity = 1;</code>
+     * <code>.littlehorse.MetricEntityType entity = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearEntity() {

@@ -24,11 +24,11 @@ _sym_db = _symbol_database.Default()
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 from google.protobuf import duration_pb2 as google_dot_protobuf_dot_duration__pb2
-import object_id_pb2 as object__id__pb2
-import common_enums_pb2 as common__enums__pb2
+import littlehorse.model.object_id_pb2 as object__id__pb2
+import littlehorse.model.common_enums_pb2 as common__enums__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmetrics.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x0fobject_id.proto\x1a\x12\x63ommon_enums.proto\"c\n\x10StatusTransition\x12\'\n\x06\x65ntity\x18\x01 \x01(\x0e\x32\x17.littlehorse.EntityType\x12\x13\n\x0b\x66rom_status\x18\x02 \x01(\t\x12\x11\n\tto_status\x18\x03 \x01(\t\"\xa9\x01\n\x0bMetricScope\x12(\n\x07wf_spec\x18\x01 \x01(\x0b\x32\x15.littlehorse.WfSpecIdH\x00\x12*\n\x08task_def\x18\x02 \x01(\x0b\x32\x16.littlehorse.TaskDefIdH\x00\x12*\n\x04node\x18\x03 \x01(\x0b\x32\x1a.littlehorse.NodeReferenceH\x00\x12\x10\n\x06global\x18\x04 \x01(\x08H\x00\x42\x06\n\x04type\"\xc3\x01\n\rNodeReference\x12&\n\x07wf_spec\x18\x01 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12\x18\n\x0bthread_name\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x16\n\tnode_name\x18\x03 \x01(\tH\x01\x88\x01\x01\x12-\n\x08task_def\x18\x04 \x01(\x0b\x32\x16.littlehorse.TaskDefIdH\x02\x88\x01\x01\x42\x0e\n\x0c_thread_nameB\x0c\n\n_node_nameB\x0b\n\t_task_def\"\x8e\x02\n\nMetricSpec\x12\n\n\x02id\x18\x01 \x01(\t\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x36\n\x10\x61ggregation_type\x18\x03 \x01(\x0e\x32\x1c.littlehorse.AggregationType\x12\'\n\x05scope\x18\x04 \x01(\x0b\x32\x18.littlehorse.MetricScope\x12\x31\n\ntransition\x18\x05 \x01(\x0b\x32\x1d.littlehorse.StatusTransition\x12\x30\n\rwindow_length\x18\x06 \x01(\x0b\x32\x19.google.protobuf.Duration\"\xf4\x01\n\x12ListMetricsRequest\x12\x16\n\x0emetric_spec_id\x18\x01 \x01(\t\x12\x30\n\rwindow_length\x18\x02 \x01(\x0b\x32\x19.google.protobuf.Duration\x12\x36\n\x10\x61ggregation_type\x18\x03 \x01(\x0e\x32\x1c.littlehorse.AggregationType\x12.\n\nstart_time\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08\x65nd_time\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"8\n\nMetricList\x12*\n\x07windows\x18\x01 \x03(\x0b\x32\x19.littlehorse.MetricWindow\"i\n\x0e\x43ountAndTiming\x12\r\n\x05\x63ount\x18\x01 \x01(\x05\x12\x16\n\x0emin_latency_ms\x18\x02 \x01(\x03\x12\x16\n\x0emax_latency_ms\x18\x03 \x01(\x03\x12\x18\n\x10total_latency_ms\x18\x04 \x01(\x03\"~\n\x0eMetricWindowId\x12\'\n\x06\x65ntity\x18\x01 \x01(\x0e\x32\x17.littlehorse.EntityType\x12\x11\n\tentity_id\x18\x02 \x01(\t\x12\x30\n\x0cwindow_start\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\x90\x04\n\x0cMetricWindow\x12\'\n\x02id\x18\x01 \x01(\x0b\x32\x1b.littlehorse.MetricWindowId\x12\x15\n\rtotal_started\x18\x02 \x01(\x05\x12.\n\tcompleted\x18\x03 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12+\n\x06halted\x18\x04 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12*\n\x05\x65rror\x18\x05 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12.\n\texception\x18\x06 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x35\n\x06\x63ustom\x18\x07 \x03(\x0b\x32%.littlehorse.MetricWindow.CustomEntry\x12\x39\n\x14scheduled_to_running\x18\x08 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x37\n\x12running_to_success\x18\t \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x10\n\x08timeouts\x18\n \x01(\x05\x1aJ\n\x0b\x43ustomEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12*\n\x05value\x18\x02 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming:\x02\x38\x01\"\xe3\x01\n\x13MetricLevelOverride\x12\n\n\x02id\x18\x01 \x01(\t\x12\x34\n\tnew_level\x18\x02 \x01(\x0e\x32!.littlehorse.MetricRecordingLevel\x12(\n\x07wf_spec\x18\x03 \x01(\x0b\x32\x15.littlehorse.WfSpecIdH\x00\x12*\n\x08task_def\x18\x04 \x01(\x0b\x32\x16.littlehorse.TaskDefIdH\x00\x12*\n\x04node\x18\x05 \x01(\x0b\x32\x1a.littlehorse.NodeReferenceH\x00\x42\x08\n\x06target\"S\n\x1dPutMetricLevelOverrideRequest\x12\x32\n\x08override\x18\x01 \x01(\x0b\x32 .littlehorse.MetricLevelOverride\".\n DeleteMetricLevelOverrideRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\xb2\x01\n\x1fListMetricLevelOverridesRequest\x12\x32\n\x0ewf_spec_filter\x18\x01 \x01(\x0b\x32\x15.littlehorse.WfSpecIdH\x00\x88\x01\x01\x12\x34\n\x0ftask_def_filter\x18\x02 \x01(\x0b\x32\x16.littlehorse.TaskDefIdH\x01\x88\x01\x01\x42\x11\n\x0f_wf_spec_filterB\x12\n\x10_task_def_filter\"O\n\x18MetricLevelOverridesList\x12\x33\n\toverrides\x18\x01 \x03(\x0b\x32 .littlehorse.MetricLevelOverrideBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmetrics.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x0fobject_id.proto\x1a\x12\x63ommon_enums.proto\"i\n\x10StatusTransition\x12-\n\x06\x65ntity\x18\x01 \x01(\x0e\x32\x1d.littlehorse.MetricEntityType\x12\x13\n\x0b\x66rom_status\x18\x02 \x01(\t\x12\x11\n\tto_status\x18\x03 \x01(\t\"\xa9\x01\n\x0bMetricScope\x12(\n\x07wf_spec\x18\x01 \x01(\x0b\x32\x15.littlehorse.WfSpecIdH\x00\x12*\n\x08task_def\x18\x02 \x01(\x0b\x32\x16.littlehorse.TaskDefIdH\x00\x12*\n\x04node\x18\x03 \x01(\x0b\x32\x1a.littlehorse.NodeReferenceH\x00\x12\x10\n\x06global\x18\x04 \x01(\x08H\x00\x42\x06\n\x04type\"\xc3\x01\n\rNodeReference\x12&\n\x07wf_spec\x18\x01 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12\x18\n\x0bthread_name\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x16\n\tnode_name\x18\x03 \x01(\tH\x01\x88\x01\x01\x12-\n\x08task_def\x18\x04 \x01(\x0b\x32\x16.littlehorse.TaskDefIdH\x02\x88\x01\x01\x42\x0e\n\x0c_thread_nameB\x0c\n\n_node_nameB\x0b\n\t_task_def\"\x8e\x02\n\nMetricSpec\x12\n\n\x02id\x18\x01 \x01(\t\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x36\n\x10\x61ggregation_type\x18\x03 \x01(\x0e\x32\x1c.littlehorse.AggregationType\x12\'\n\x05scope\x18\x04 \x01(\x0b\x32\x18.littlehorse.MetricScope\x12\x31\n\ntransition\x18\x05 \x01(\x0b\x32\x1d.littlehorse.StatusTransition\x12\x30\n\rwindow_length\x18\x06 \x01(\x0b\x32\x19.google.protobuf.Duration\"\xf4\x01\n\x12ListMetricsRequest\x12\x16\n\x0emetric_spec_id\x18\x01 \x01(\t\x12\x30\n\rwindow_length\x18\x02 \x01(\x0b\x32\x19.google.protobuf.Duration\x12\x36\n\x10\x61ggregation_type\x18\x03 \x01(\x0e\x32\x1c.littlehorse.AggregationType\x12.\n\nstart_time\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08\x65nd_time\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"8\n\nMetricList\x12*\n\x07windows\x18\x01 \x03(\x0b\x32\x19.littlehorse.MetricWindow\"i\n\x0e\x43ountAndTiming\x12\r\n\x05\x63ount\x18\x01 \x01(\x05\x12\x16\n\x0emin_latency_ms\x18\x02 \x01(\x03\x12\x16\n\x0emax_latency_ms\x18\x03 \x01(\x03\x12\x18\n\x10total_latency_ms\x18\x04 \x01(\x03\"\x84\x01\n\x0eMetricWindowId\x12-\n\x06\x65ntity\x18\x01 \x01(\x0e\x32\x1d.littlehorse.MetricEntityType\x12\x11\n\tentity_id\x18\x02 \x01(\t\x12\x30\n\x0cwindow_start\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\x90\x04\n\x0cMetricWindow\x12\'\n\x02id\x18\x01 \x01(\x0b\x32\x1b.littlehorse.MetricWindowId\x12\x15\n\rtotal_started\x18\x02 \x01(\x05\x12.\n\tcompleted\x18\x03 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12+\n\x06halted\x18\x04 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12*\n\x05\x65rror\x18\x05 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12.\n\texception\x18\x06 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x35\n\x06\x63ustom\x18\x07 \x03(\x0b\x32%.littlehorse.MetricWindow.CustomEntry\x12\x39\n\x14scheduled_to_running\x18\x08 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x37\n\x12running_to_success\x18\t \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x10\n\x08timeouts\x18\n \x01(\x05\x1aJ\n\x0b\x43ustomEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12*\n\x05value\x18\x02 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming:\x02\x38\x01\"\xe3\x01\n\x13MetricLevelOverride\x12\n\n\x02id\x18\x01 \x01(\t\x12\x34\n\tnew_level\x18\x02 \x01(\x0e\x32!.littlehorse.MetricRecordingLevel\x12(\n\x07wf_spec\x18\x03 \x01(\x0b\x32\x15.littlehorse.WfSpecIdH\x00\x12*\n\x08task_def\x18\x04 \x01(\x0b\x32\x16.littlehorse.TaskDefIdH\x00\x12*\n\x04node\x18\x05 \x01(\x0b\x32\x1a.littlehorse.NodeReferenceH\x00\x42\x08\n\x06target\"S\n\x1dPutMetricLevelOverrideRequest\x12\x32\n\x08override\x18\x01 \x01(\x0b\x32 .littlehorse.MetricLevelOverride\".\n DeleteMetricLevelOverrideRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\xb2\x01\n\x1fListMetricLevelOverridesRequest\x12\x32\n\x0ewf_spec_filter\x18\x01 \x01(\x0b\x32\x15.littlehorse.WfSpecIdH\x00\x88\x01\x01\x12\x34\n\x0ftask_def_filter\x18\x02 \x01(\x0b\x32\x16.littlehorse.TaskDefIdH\x01\x88\x01\x01\x42\x11\n\x0f_wf_spec_filterB\x12\n\x10_task_def_filter\"O\n\x18MetricLevelOverridesList\x12\x33\n\toverrides\x18\x01 \x03(\x0b\x32 .littlehorse.MetricLevelOverrideBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -39,33 +39,33 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_METRICWINDOW_CUSTOMENTRY']._loaded_options = None
   _globals['_METRICWINDOW_CUSTOMENTRY']._serialized_options = b'8\001'
   _globals['_STATUSTRANSITION']._serialized_start=132
-  _globals['_STATUSTRANSITION']._serialized_end=231
-  _globals['_METRICSCOPE']._serialized_start=234
-  _globals['_METRICSCOPE']._serialized_end=403
-  _globals['_NODEREFERENCE']._serialized_start=406
-  _globals['_NODEREFERENCE']._serialized_end=601
-  _globals['_METRICSPEC']._serialized_start=604
-  _globals['_METRICSPEC']._serialized_end=874
-  _globals['_LISTMETRICSREQUEST']._serialized_start=877
-  _globals['_LISTMETRICSREQUEST']._serialized_end=1121
-  _globals['_METRICLIST']._serialized_start=1123
-  _globals['_METRICLIST']._serialized_end=1179
-  _globals['_COUNTANDTIMING']._serialized_start=1181
-  _globals['_COUNTANDTIMING']._serialized_end=1286
-  _globals['_METRICWINDOWID']._serialized_start=1288
-  _globals['_METRICWINDOWID']._serialized_end=1414
-  _globals['_METRICWINDOW']._serialized_start=1417
-  _globals['_METRICWINDOW']._serialized_end=1945
-  _globals['_METRICWINDOW_CUSTOMENTRY']._serialized_start=1871
-  _globals['_METRICWINDOW_CUSTOMENTRY']._serialized_end=1945
-  _globals['_METRICLEVELOVERRIDE']._serialized_start=1948
-  _globals['_METRICLEVELOVERRIDE']._serialized_end=2175
-  _globals['_PUTMETRICLEVELOVERRIDEREQUEST']._serialized_start=2177
-  _globals['_PUTMETRICLEVELOVERRIDEREQUEST']._serialized_end=2260
-  _globals['_DELETEMETRICLEVELOVERRIDEREQUEST']._serialized_start=2262
-  _globals['_DELETEMETRICLEVELOVERRIDEREQUEST']._serialized_end=2308
-  _globals['_LISTMETRICLEVELOVERRIDESREQUEST']._serialized_start=2311
-  _globals['_LISTMETRICLEVELOVERRIDESREQUEST']._serialized_end=2489
-  _globals['_METRICLEVELOVERRIDESLIST']._serialized_start=2491
-  _globals['_METRICLEVELOVERRIDESLIST']._serialized_end=2570
+  _globals['_STATUSTRANSITION']._serialized_end=237
+  _globals['_METRICSCOPE']._serialized_start=240
+  _globals['_METRICSCOPE']._serialized_end=409
+  _globals['_NODEREFERENCE']._serialized_start=412
+  _globals['_NODEREFERENCE']._serialized_end=607
+  _globals['_METRICSPEC']._serialized_start=610
+  _globals['_METRICSPEC']._serialized_end=880
+  _globals['_LISTMETRICSREQUEST']._serialized_start=883
+  _globals['_LISTMETRICSREQUEST']._serialized_end=1127
+  _globals['_METRICLIST']._serialized_start=1129
+  _globals['_METRICLIST']._serialized_end=1185
+  _globals['_COUNTANDTIMING']._serialized_start=1187
+  _globals['_COUNTANDTIMING']._serialized_end=1292
+  _globals['_METRICWINDOWID']._serialized_start=1295
+  _globals['_METRICWINDOWID']._serialized_end=1427
+  _globals['_METRICWINDOW']._serialized_start=1430
+  _globals['_METRICWINDOW']._serialized_end=1958
+  _globals['_METRICWINDOW_CUSTOMENTRY']._serialized_start=1884
+  _globals['_METRICWINDOW_CUSTOMENTRY']._serialized_end=1958
+  _globals['_METRICLEVELOVERRIDE']._serialized_start=1961
+  _globals['_METRICLEVELOVERRIDE']._serialized_end=2188
+  _globals['_PUTMETRICLEVELOVERRIDEREQUEST']._serialized_start=2190
+  _globals['_PUTMETRICLEVELOVERRIDEREQUEST']._serialized_end=2273
+  _globals['_DELETEMETRICLEVELOVERRIDEREQUEST']._serialized_start=2275
+  _globals['_DELETEMETRICLEVELOVERRIDEREQUEST']._serialized_end=2321
+  _globals['_LISTMETRICLEVELOVERRIDESREQUEST']._serialized_start=2324
+  _globals['_LISTMETRICLEVELOVERRIDESREQUEST']._serialized_end=2502
+  _globals['_METRICLEVELOVERRIDESLIST']._serialized_start=2504
+  _globals['_METRICLEVELOVERRIDESLIST']._serialized_end=2583
 # @@protoc_insertion_point(module_scope)

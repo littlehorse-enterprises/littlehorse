@@ -2,22 +2,22 @@ import datetime
 
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 from google.protobuf import empty_pb2 as _empty_pb2
-import common_wfspec_pb2 as _common_wfspec_pb2
-import common_enums_pb2 as _common_enums_pb2
-import object_id_pb2 as _object_id_pb2
-import variable_pb2 as _variable_pb2
-import external_event_pb2 as _external_event_pb2
-import wf_run_pb2 as _wf_run_pb2
-import node_run_pb2 as _node_run_pb2
-import task_run_pb2 as _task_run_pb2
-import user_tasks_pb2 as _user_tasks_pb2
-import wf_spec_pb2 as _wf_spec_pb2
-import task_def_pb2 as _task_def_pb2
-import struct_def_pb2 as _struct_def_pb2
-import acls_pb2 as _acls_pb2
-import workflow_event_pb2 as _workflow_event_pb2
-import scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
-import metrics_pb2 as _metrics_pb2
+import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
+import littlehorse.model.common_enums_pb2 as _common_enums_pb2
+import littlehorse.model.object_id_pb2 as _object_id_pb2
+import littlehorse.model.variable_pb2 as _variable_pb2
+import littlehorse.model.external_event_pb2 as _external_event_pb2
+import littlehorse.model.wf_run_pb2 as _wf_run_pb2
+import littlehorse.model.node_run_pb2 as _node_run_pb2
+import littlehorse.model.task_run_pb2 as _task_run_pb2
+import littlehorse.model.user_tasks_pb2 as _user_tasks_pb2
+import littlehorse.model.wf_spec_pb2 as _wf_spec_pb2
+import littlehorse.model.task_def_pb2 as _task_def_pb2
+import littlehorse.model.struct_def_pb2 as _struct_def_pb2
+import littlehorse.model.acls_pb2 as _acls_pb2
+import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
+import littlehorse.model.scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
+import littlehorse.model.metrics_pb2 as _metrics_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor

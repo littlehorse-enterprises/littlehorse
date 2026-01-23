@@ -23,9 +23,9 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
-import variable_pb2 as variable__pb2
-import object_id_pb2 as object__id__pb2
-import common_wfspec_pb2 as common__wfspec__pb2
+import littlehorse.model.variable_pb2 as variable__pb2
+import littlehorse.model.object_id_pb2 as object__id__pb2
+import littlehorse.model.common_wfspec_pb2 as common__wfspec__pb2
 
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14workflow_event.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0evariable.proto\x1a\x0fobject_id.proto\x1a\x13\x63ommon_wfspec.proto\"\xc3\x01\n\rWorkflowEvent\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.littlehorse.WorkflowEventId\x12+\n\x07\x63ontent\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValue\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\x0bnode_run_id\x18\x04 \x01(\x0b\x32\x16.littlehorse.NodeRunId\"\x9e\x01\n\x10WorkflowEventDef\x12+\n\x02id\x18\x01 \x01(\x0b\x32\x1f.littlehorse.WorkflowEventDefId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12-\n\x0c\x63ontent_type\x18\x03 \x01(\x0b\x32\x17.littlehorse.ReturnTypeBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')

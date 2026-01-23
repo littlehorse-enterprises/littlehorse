@@ -113,70 +113,70 @@ public final class Metrics extends com.google.protobuf.GeneratedFile {
       "\n\rmetrics.proto\022\013littlehorse\032\037google/pro" +
       "tobuf/timestamp.proto\032\036google/protobuf/d" +
       "uration.proto\032\017object_id.proto\032\022common_e" +
-      "nums.proto\"c\n\020StatusTransition\022\'\n\006entity" +
-      "\030\001 \001(\0162\027.littlehorse.EntityType\022\023\n\013from_" +
-      "status\030\002 \001(\t\022\021\n\tto_status\030\003 \001(\t\"\251\001\n\013Metr" +
-      "icScope\022(\n\007wf_spec\030\001 \001(\0132\025.littlehorse.W" +
-      "fSpecIdH\000\022*\n\010task_def\030\002 \001(\0132\026.littlehors" +
-      "e.TaskDefIdH\000\022*\n\004node\030\003 \001(\0132\032.littlehors" +
-      "e.NodeReferenceH\000\022\020\n\006global\030\004 \001(\010H\000B\006\n\004t" +
-      "ype\"\303\001\n\rNodeReference\022&\n\007wf_spec\030\001 \001(\0132\025" +
-      ".littlehorse.WfSpecId\022\030\n\013thread_name\030\002 \001" +
-      "(\tH\000\210\001\001\022\026\n\tnode_name\030\003 \001(\tH\001\210\001\001\022-\n\010task_" +
-      "def\030\004 \001(\0132\026.littlehorse.TaskDefIdH\002\210\001\001B\016" +
-      "\n\014_thread_nameB\014\n\n_node_nameB\013\n\t_task_de" +
-      "f\"\216\002\n\nMetricSpec\022\n\n\002id\030\001 \001(\t\022.\n\ncreated_" +
-      "at\030\002 \001(\0132\032.google.protobuf.Timestamp\0226\n\020" +
-      "aggregation_type\030\003 \001(\0162\034.littlehorse.Agg" +
-      "regationType\022\'\n\005scope\030\004 \001(\0132\030.littlehors" +
-      "e.MetricScope\0221\n\ntransition\030\005 \001(\0132\035.litt" +
-      "lehorse.StatusTransition\0220\n\rwindow_lengt" +
-      "h\030\006 \001(\0132\031.google.protobuf.Duration\"\364\001\n\022L" +
-      "istMetricsRequest\022\026\n\016metric_spec_id\030\001 \001(" +
-      "\t\0220\n\rwindow_length\030\002 \001(\0132\031.google.protob" +
-      "uf.Duration\0226\n\020aggregation_type\030\003 \001(\0162\034." +
-      "littlehorse.AggregationType\022.\n\nstart_tim" +
-      "e\030\004 \001(\0132\032.google.protobuf.Timestamp\022,\n\010e" +
-      "nd_time\030\005 \001(\0132\032.google.protobuf.Timestam" +
-      "p\"8\n\nMetricList\022*\n\007windows\030\001 \003(\0132\031.littl" +
-      "ehorse.MetricWindow\"i\n\016CountAndTiming\022\r\n" +
-      "\005count\030\001 \001(\005\022\026\n\016min_latency_ms\030\002 \001(\003\022\026\n\016" +
-      "max_latency_ms\030\003 \001(\003\022\030\n\020total_latency_ms" +
-      "\030\004 \001(\003\"~\n\016MetricWindowId\022\'\n\006entity\030\001 \001(\016" +
-      "2\027.littlehorse.EntityType\022\021\n\tentity_id\030\002" +
-      " \001(\t\0220\n\014window_start\030\003 \001(\0132\032.google.prot" +
-      "obuf.Timestamp\"\220\004\n\014MetricWindow\022\'\n\002id\030\001 " +
-      "\001(\0132\033.littlehorse.MetricWindowId\022\025\n\rtota" +
-      "l_started\030\002 \001(\005\022.\n\tcompleted\030\003 \001(\0132\033.lit" +
-      "tlehorse.CountAndTiming\022+\n\006halted\030\004 \001(\0132" +
-      "\033.littlehorse.CountAndTiming\022*\n\005error\030\005 " +
-      "\001(\0132\033.littlehorse.CountAndTiming\022.\n\texce" +
-      "ption\030\006 \001(\0132\033.littlehorse.CountAndTiming" +
-      "\0225\n\006custom\030\007 \003(\0132%.littlehorse.MetricWin" +
-      "dow.CustomEntry\0229\n\024scheduled_to_running\030" +
-      "\010 \001(\0132\033.littlehorse.CountAndTiming\0227\n\022ru" +
-      "nning_to_success\030\t \001(\0132\033.littlehorse.Cou" +
-      "ntAndTiming\022\020\n\010timeouts\030\n \001(\005\032J\n\013CustomE" +
-      "ntry\022\013\n\003key\030\001 \001(\t\022*\n\005value\030\002 \001(\0132\033.littl" +
-      "ehorse.CountAndTiming:\0028\001\"\343\001\n\023MetricLeve" +
-      "lOverride\022\n\n\002id\030\001 \001(\t\0224\n\tnew_level\030\002 \001(\016" +
-      "2!.littlehorse.MetricRecordingLevel\022(\n\007w" +
-      "f_spec\030\003 \001(\0132\025.littlehorse.WfSpecIdH\000\022*\n" +
+      "nums.proto\"i\n\020StatusTransition\022-\n\006entity" +
+      "\030\001 \001(\0162\035.littlehorse.MetricEntityType\022\023\n" +
+      "\013from_status\030\002 \001(\t\022\021\n\tto_status\030\003 \001(\t\"\251\001" +
+      "\n\013MetricScope\022(\n\007wf_spec\030\001 \001(\0132\025.littleh" +
+      "orse.WfSpecIdH\000\022*\n\010task_def\030\002 \001(\0132\026.litt" +
+      "lehorse.TaskDefIdH\000\022*\n\004node\030\003 \001(\0132\032.litt" +
+      "lehorse.NodeReferenceH\000\022\020\n\006global\030\004 \001(\010H" +
+      "\000B\006\n\004type\"\303\001\n\rNodeReference\022&\n\007wf_spec\030\001" +
+      " \001(\0132\025.littlehorse.WfSpecId\022\030\n\013thread_na" +
+      "me\030\002 \001(\tH\000\210\001\001\022\026\n\tnode_name\030\003 \001(\tH\001\210\001\001\022-\n" +
       "\010task_def\030\004 \001(\0132\026.littlehorse.TaskDefIdH" +
-      "\000\022*\n\004node\030\005 \001(\0132\032.littlehorse.NodeRefere" +
-      "nceH\000B\010\n\006target\"S\n\035PutMetricLevelOverrid" +
-      "eRequest\0222\n\010override\030\001 \001(\0132 .littlehorse" +
-      ".MetricLevelOverride\".\n DeleteMetricLeve" +
-      "lOverrideRequest\022\n\n\002id\030\001 \001(\t\"\262\001\n\037ListMet" +
-      "ricLevelOverridesRequest\0222\n\016wf_spec_filt" +
-      "er\030\001 \001(\0132\025.littlehorse.WfSpecIdH\000\210\001\001\0224\n\017" +
-      "task_def_filter\030\002 \001(\0132\026.littlehorse.Task" +
-      "DefIdH\001\210\001\001B\021\n\017_wf_spec_filterB\022\n\020_task_d" +
-      "ef_filter\"O\n\030MetricLevelOverridesList\0223\n" +
-      "\toverrides\030\001 \003(\0132 .littlehorse.MetricLev" +
-      "elOverrideBM\n\037io.littlehorse.sdk.common." +
-      "protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Com" +
-      "mon.Protob\006proto3"
+      "\002\210\001\001B\016\n\014_thread_nameB\014\n\n_node_nameB\013\n\t_t" +
+      "ask_def\"\216\002\n\nMetricSpec\022\n\n\002id\030\001 \001(\t\022.\n\ncr" +
+      "eated_at\030\002 \001(\0132\032.google.protobuf.Timesta" +
+      "mp\0226\n\020aggregation_type\030\003 \001(\0162\034.littlehor" +
+      "se.AggregationType\022\'\n\005scope\030\004 \001(\0132\030.litt" +
+      "lehorse.MetricScope\0221\n\ntransition\030\005 \001(\0132" +
+      "\035.littlehorse.StatusTransition\0220\n\rwindow" +
+      "_length\030\006 \001(\0132\031.google.protobuf.Duration" +
+      "\"\364\001\n\022ListMetricsRequest\022\026\n\016metric_spec_i" +
+      "d\030\001 \001(\t\0220\n\rwindow_length\030\002 \001(\0132\031.google." +
+      "protobuf.Duration\0226\n\020aggregation_type\030\003 " +
+      "\001(\0162\034.littlehorse.AggregationType\022.\n\nsta" +
+      "rt_time\030\004 \001(\0132\032.google.protobuf.Timestam" +
+      "p\022,\n\010end_time\030\005 \001(\0132\032.google.protobuf.Ti" +
+      "mestamp\"8\n\nMetricList\022*\n\007windows\030\001 \003(\0132\031" +
+      ".littlehorse.MetricWindow\"i\n\016CountAndTim" +
+      "ing\022\r\n\005count\030\001 \001(\005\022\026\n\016min_latency_ms\030\002 \001" +
+      "(\003\022\026\n\016max_latency_ms\030\003 \001(\003\022\030\n\020total_late" +
+      "ncy_ms\030\004 \001(\003\"\204\001\n\016MetricWindowId\022-\n\006entit" +
+      "y\030\001 \001(\0162\035.littlehorse.MetricEntityType\022\021" +
+      "\n\tentity_id\030\002 \001(\t\0220\n\014window_start\030\003 \001(\0132" +
+      "\032.google.protobuf.Timestamp\"\220\004\n\014MetricWi" +
+      "ndow\022\'\n\002id\030\001 \001(\0132\033.littlehorse.MetricWin" +
+      "dowId\022\025\n\rtotal_started\030\002 \001(\005\022.\n\tcomplete" +
+      "d\030\003 \001(\0132\033.littlehorse.CountAndTiming\022+\n\006" +
+      "halted\030\004 \001(\0132\033.littlehorse.CountAndTimin" +
+      "g\022*\n\005error\030\005 \001(\0132\033.littlehorse.CountAndT" +
+      "iming\022.\n\texception\030\006 \001(\0132\033.littlehorse.C" +
+      "ountAndTiming\0225\n\006custom\030\007 \003(\0132%.littleho" +
+      "rse.MetricWindow.CustomEntry\0229\n\024schedule" +
+      "d_to_running\030\010 \001(\0132\033.littlehorse.CountAn" +
+      "dTiming\0227\n\022running_to_success\030\t \001(\0132\033.li" +
+      "ttlehorse.CountAndTiming\022\020\n\010timeouts\030\n \001" +
+      "(\005\032J\n\013CustomEntry\022\013\n\003key\030\001 \001(\t\022*\n\005value\030" +
+      "\002 \001(\0132\033.littlehorse.CountAndTiming:\0028\001\"\343" +
+      "\001\n\023MetricLevelOverride\022\n\n\002id\030\001 \001(\t\0224\n\tne" +
+      "w_level\030\002 \001(\0162!.littlehorse.MetricRecord" +
+      "ingLevel\022(\n\007wf_spec\030\003 \001(\0132\025.littlehorse." +
+      "WfSpecIdH\000\022*\n\010task_def\030\004 \001(\0132\026.littlehor" +
+      "se.TaskDefIdH\000\022*\n\004node\030\005 \001(\0132\032.littlehor" +
+      "se.NodeReferenceH\000B\010\n\006target\"S\n\035PutMetri" +
+      "cLevelOverrideRequest\0222\n\010override\030\001 \001(\0132" +
+      " .littlehorse.MetricLevelOverride\".\n Del" +
+      "eteMetricLevelOverrideRequest\022\n\n\002id\030\001 \001(" +
+      "\t\"\262\001\n\037ListMetricLevelOverridesRequest\0222\n" +
+      "\016wf_spec_filter\030\001 \001(\0132\025.littlehorse.WfSp" +
+      "ecIdH\000\210\001\001\0224\n\017task_def_filter\030\002 \001(\0132\026.lit" +
+      "tlehorse.TaskDefIdH\001\210\001\001B\021\n\017_wf_spec_filt" +
+      "erB\022\n\020_task_def_filter\"O\n\030MetricLevelOve" +
+      "rridesList\0223\n\toverrides\030\001 \003(\0132 .littleho" +
+      "rse.MetricLevelOverrideBM\n\037io.littlehors" +
+      "e.sdk.common.protoP\001Z\t.;lhproto\252\002\034Little" +
+      "Horse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

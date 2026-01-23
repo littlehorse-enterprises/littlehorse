@@ -9,7 +9,7 @@ import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.Tenant;
+import io.littlehorse.sdk.common.proto.MetricRecordingLevel;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -28,6 +28,7 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
     private TenantIdModel id;
     private Date createdAt;
     private OutputTopicConfigModel outputTopicConfig;
+    private MetricRecordingLevel metricsLevel;
 
     public TenantModel() {}
 
@@ -52,6 +53,10 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
             result.setOutputTopicConfig(outputTopicConfig.toProto());
         }
 
+        if (metricsLevel != null) {
+            result.setMetricsLevel(metricsLevel);
+        }
+
         return result;
     }
 
@@ -64,6 +69,10 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
         if (tenant.hasOutputTopicConfig()) {
             this.outputTopicConfig =
                     LHSerializable.fromProto(tenant.getOutputTopicConfig(), OutputTopicConfigModel.class, context);
+        }
+
+        if (tenant.hasMetricsLevel()) {
+            this.metricsLevel = tenant.getMetricsLevel();
         }
     }
 

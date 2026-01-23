@@ -11,15 +11,15 @@ public interface MetricWindowIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.EntityType entity = 1;</code>
+   * <code>.littlehorse.MetricEntityType entity = 1;</code>
    * @return The enum numeric value on the wire for entity.
    */
   int getEntityValue();
   /**
-   * <code>.littlehorse.EntityType entity = 1;</code>
+   * <code>.littlehorse.MetricEntityType entity = 1;</code>
    * @return The entity.
    */
-  io.littlehorse.sdk.common.proto.EntityType getEntity();
+  io.littlehorse.sdk.common.proto.MetricEntityType getEntity();
 
   /**
    * <pre>

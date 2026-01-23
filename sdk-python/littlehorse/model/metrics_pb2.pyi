@@ -2,8 +2,8 @@ import datetime
 
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 from google.protobuf import duration_pb2 as _duration_pb2
-import object_id_pb2 as _object_id_pb2
-import common_enums_pb2 as _common_enums_pb2
+import littlehorse.model.object_id_pb2 as _object_id_pb2
+import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -17,10 +17,10 @@ class StatusTransition(_message.Message):
     ENTITY_FIELD_NUMBER: _ClassVar[int]
     FROM_STATUS_FIELD_NUMBER: _ClassVar[int]
     TO_STATUS_FIELD_NUMBER: _ClassVar[int]
-    entity: _common_enums_pb2.EntityType
+    entity: _common_enums_pb2.MetricEntityType
     from_status: str
     to_status: str
-    def __init__(self, entity: _Optional[_Union[_common_enums_pb2.EntityType, str]] = ..., from_status: _Optional[str] = ..., to_status: _Optional[str] = ...) -> None: ...
+    def __init__(self, entity: _Optional[_Union[_common_enums_pb2.MetricEntityType, str]] = ..., from_status: _Optional[str] = ..., to_status: _Optional[str] = ...) -> None: ...
 
 class MetricScope(_message.Message):
     __slots__ = ("wf_spec", "task_def", "node")
@@ -98,10 +98,10 @@ class MetricWindowId(_message.Message):
     ENTITY_FIELD_NUMBER: _ClassVar[int]
     ENTITY_ID_FIELD_NUMBER: _ClassVar[int]
     WINDOW_START_FIELD_NUMBER: _ClassVar[int]
-    entity: _common_enums_pb2.EntityType
+    entity: _common_enums_pb2.MetricEntityType
     entity_id: str
     window_start: _timestamp_pb2.Timestamp
-    def __init__(self, entity: _Optional[_Union[_common_enums_pb2.EntityType, str]] = ..., entity_id: _Optional[str] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    def __init__(self, entity: _Optional[_Union[_common_enums_pb2.MetricEntityType, str]] = ..., entity_id: _Optional[str] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class MetricWindow(_message.Message):
     __slots__ = ("id", "total_started", "completed", "halted", "error", "exception", "custom", "scheduled_to_running", "running_to_success", "timeouts")

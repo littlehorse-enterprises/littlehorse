@@ -49,13 +49,13 @@ class MetricRecordingLevel(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     NONE: _ClassVar[MetricRecordingLevel]
     DEBUG: _ClassVar[MetricRecordingLevel]
 
-class EntityType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+class MetricEntityType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
-    WF_RUN: _ClassVar[EntityType]
-    TASK_RUN: _ClassVar[EntityType]
-    USER_TASK_RUN: _ClassVar[EntityType]
-    NODE_RUN: _ClassVar[EntityType]
-    THREAD_RUN: _ClassVar[EntityType]
+    METRIC_WF_RUN: _ClassVar[MetricEntityType]
+    METRIC_TASK_RUN: _ClassVar[MetricEntityType]
+    METRIC_USER_TASK_RUN: _ClassVar[MetricEntityType]
+    METRIC_NODE_RUN: _ClassVar[MetricEntityType]
+    METRIC_THREAD_RUN: _ClassVar[MetricEntityType]
 
 class VariableType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
@@ -107,11 +107,11 @@ LATENCY: AggregationType
 INFO: MetricRecordingLevel
 NONE: MetricRecordingLevel
 DEBUG: MetricRecordingLevel
-WF_RUN: EntityType
-TASK_RUN: EntityType
-USER_TASK_RUN: EntityType
-NODE_RUN: EntityType
-THREAD_RUN: EntityType
+METRIC_WF_RUN: MetricEntityType
+METRIC_TASK_RUN: MetricEntityType
+METRIC_USER_TASK_RUN: MetricEntityType
+METRIC_NODE_RUN: MetricEntityType
+METRIC_THREAD_RUN: MetricEntityType
 JSON_OBJ: VariableType
 JSON_ARR: VariableType
 DOUBLE: VariableType

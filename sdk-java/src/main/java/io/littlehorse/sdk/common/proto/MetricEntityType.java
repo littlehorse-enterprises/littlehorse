@@ -6,31 +6,31 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf enum {@code littlehorse.EntityType}
+ * Protobuf enum {@code littlehorse.MetricEntityType}
  */
 @com.google.protobuf.Generated
-public enum EntityType
+public enum MetricEntityType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>WF_RUN = 0;</code>
+   * <code>METRIC_WF_RUN = 0;</code>
    */
-  WF_RUN(0),
+  METRIC_WF_RUN(0),
   /**
-   * <code>TASK_RUN = 1;</code>
+   * <code>METRIC_TASK_RUN = 1;</code>
    */
-  TASK_RUN(1),
+  METRIC_TASK_RUN(1),
   /**
-   * <code>USER_TASK_RUN = 2;</code>
+   * <code>METRIC_USER_TASK_RUN = 2;</code>
    */
-  USER_TASK_RUN(2),
+  METRIC_USER_TASK_RUN(2),
   /**
-   * <code>NODE_RUN = 3;</code>
+   * <code>METRIC_NODE_RUN = 3;</code>
    */
-  NODE_RUN(3),
+  METRIC_NODE_RUN(3),
   /**
-   * <code>THREAD_RUN = 4;</code>
+   * <code>METRIC_THREAD_RUN = 4;</code>
    */
-  THREAD_RUN(4),
+  METRIC_THREAD_RUN(4),
   UNRECOGNIZED(-1),
   ;
 
@@ -41,28 +41,28 @@ public enum EntityType
       /* minor= */ 32,
       /* patch= */ 1,
       /* suffix= */ "",
-      EntityType.class.getName());
+      MetricEntityType.class.getName());
   }
   /**
-   * <code>WF_RUN = 0;</code>
+   * <code>METRIC_WF_RUN = 0;</code>
    */
-  public static final int WF_RUN_VALUE = 0;
+  public static final int METRIC_WF_RUN_VALUE = 0;
   /**
-   * <code>TASK_RUN = 1;</code>
+   * <code>METRIC_TASK_RUN = 1;</code>
    */
-  public static final int TASK_RUN_VALUE = 1;
+  public static final int METRIC_TASK_RUN_VALUE = 1;
   /**
-   * <code>USER_TASK_RUN = 2;</code>
+   * <code>METRIC_USER_TASK_RUN = 2;</code>
    */
-  public static final int USER_TASK_RUN_VALUE = 2;
+  public static final int METRIC_USER_TASK_RUN_VALUE = 2;
   /**
-   * <code>NODE_RUN = 3;</code>
+   * <code>METRIC_NODE_RUN = 3;</code>
    */
-  public static final int NODE_RUN_VALUE = 3;
+  public static final int METRIC_NODE_RUN_VALUE = 3;
   /**
-   * <code>THREAD_RUN = 4;</code>
+   * <code>METRIC_THREAD_RUN = 4;</code>
    */
-  public static final int THREAD_RUN_VALUE = 4;
+  public static final int METRIC_THREAD_RUN_VALUE = 4;
 
 
   public final int getNumber() {
@@ -79,7 +79,7 @@ public enum EntityType
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static EntityType valueOf(int value) {
+  public static MetricEntityType valueOf(int value) {
     return forNumber(value);
   }
 
@@ -87,26 +87,26 @@ public enum EntityType
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static EntityType forNumber(int value) {
+  public static MetricEntityType forNumber(int value) {
     switch (value) {
-      case 0: return WF_RUN;
-      case 1: return TASK_RUN;
-      case 2: return USER_TASK_RUN;
-      case 3: return NODE_RUN;
-      case 4: return THREAD_RUN;
+      case 0: return METRIC_WF_RUN;
+      case 1: return METRIC_TASK_RUN;
+      case 2: return METRIC_USER_TASK_RUN;
+      case 3: return METRIC_NODE_RUN;
+      case 4: return METRIC_THREAD_RUN;
       default: return null;
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<EntityType>
+  public static com.google.protobuf.Internal.EnumLiteMap<MetricEntityType>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      EntityType> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<EntityType>() {
-          public EntityType findValueByNumber(int number) {
-            return EntityType.forNumber(number);
+      MetricEntityType> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<MetricEntityType>() {
+          public MetricEntityType findValueByNumber(int number) {
+            return MetricEntityType.forNumber(number);
           }
         };
 
@@ -127,9 +127,9 @@ public enum EntityType
     return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(6);
   }
 
-  private static final EntityType[] VALUES = values();
+  private static final MetricEntityType[] VALUES = values();
 
-  public static EntityType valueOf(
+  public static MetricEntityType valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -143,10 +143,10 @@ public enum EntityType
 
   private final int value;
 
-  private EntityType(int value) {
+  private MetricEntityType(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:littlehorse.EntityType)
+  // @@protoc_insertion_point(enum_scope:littlehorse.MetricEntityType)
 }
 

@@ -340,6 +340,176 @@ export function metricsWindowLengthToNumber(object: MetricsWindowLength): number
   }
 }
 
+export enum AggregationType {
+  COUNT = "COUNT",
+  LATENCY = "LATENCY",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function aggregationTypeFromJSON(object: any): AggregationType {
+  switch (object) {
+    case 0:
+    case "COUNT":
+      return AggregationType.COUNT;
+    case 1:
+    case "LATENCY":
+      return AggregationType.LATENCY;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return AggregationType.UNRECOGNIZED;
+  }
+}
+
+export function aggregationTypeToJSON(object: AggregationType): string {
+  switch (object) {
+    case AggregationType.COUNT:
+      return "COUNT";
+    case AggregationType.LATENCY:
+      return "LATENCY";
+    case AggregationType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function aggregationTypeToNumber(object: AggregationType): number {
+  switch (object) {
+    case AggregationType.COUNT:
+      return 0;
+    case AggregationType.LATENCY:
+      return 1;
+    case AggregationType.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
+export enum MetricRecordingLevel {
+  /** INFO - Collect non-intrusive defaults */
+  INFO = "INFO",
+  /** NONE - Collect no metrics unless explicitly configured */
+  NONE = "NONE",
+  /** DEBUG - Collect detailed/expensive metrics (e.g. flamegraphs) */
+  DEBUG = "DEBUG",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function metricRecordingLevelFromJSON(object: any): MetricRecordingLevel {
+  switch (object) {
+    case 0:
+    case "INFO":
+      return MetricRecordingLevel.INFO;
+    case 1:
+    case "NONE":
+      return MetricRecordingLevel.NONE;
+    case 2:
+    case "DEBUG":
+      return MetricRecordingLevel.DEBUG;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return MetricRecordingLevel.UNRECOGNIZED;
+  }
+}
+
+export function metricRecordingLevelToJSON(object: MetricRecordingLevel): string {
+  switch (object) {
+    case MetricRecordingLevel.INFO:
+      return "INFO";
+    case MetricRecordingLevel.NONE:
+      return "NONE";
+    case MetricRecordingLevel.DEBUG:
+      return "DEBUG";
+    case MetricRecordingLevel.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function metricRecordingLevelToNumber(object: MetricRecordingLevel): number {
+  switch (object) {
+    case MetricRecordingLevel.INFO:
+      return 0;
+    case MetricRecordingLevel.NONE:
+      return 1;
+    case MetricRecordingLevel.DEBUG:
+      return 2;
+    case MetricRecordingLevel.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
+export enum MetricEntityType {
+  METRIC_WF_RUN = "METRIC_WF_RUN",
+  METRIC_TASK_RUN = "METRIC_TASK_RUN",
+  METRIC_USER_TASK_RUN = "METRIC_USER_TASK_RUN",
+  METRIC_NODE_RUN = "METRIC_NODE_RUN",
+  METRIC_THREAD_RUN = "METRIC_THREAD_RUN",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function metricEntityTypeFromJSON(object: any): MetricEntityType {
+  switch (object) {
+    case 0:
+    case "METRIC_WF_RUN":
+      return MetricEntityType.METRIC_WF_RUN;
+    case 1:
+    case "METRIC_TASK_RUN":
+      return MetricEntityType.METRIC_TASK_RUN;
+    case 2:
+    case "METRIC_USER_TASK_RUN":
+      return MetricEntityType.METRIC_USER_TASK_RUN;
+    case 3:
+    case "METRIC_NODE_RUN":
+      return MetricEntityType.METRIC_NODE_RUN;
+    case 4:
+    case "METRIC_THREAD_RUN":
+      return MetricEntityType.METRIC_THREAD_RUN;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return MetricEntityType.UNRECOGNIZED;
+  }
+}
+
+export function metricEntityTypeToJSON(object: MetricEntityType): string {
+  switch (object) {
+    case MetricEntityType.METRIC_WF_RUN:
+      return "METRIC_WF_RUN";
+    case MetricEntityType.METRIC_TASK_RUN:
+      return "METRIC_TASK_RUN";
+    case MetricEntityType.METRIC_USER_TASK_RUN:
+      return "METRIC_USER_TASK_RUN";
+    case MetricEntityType.METRIC_NODE_RUN:
+      return "METRIC_NODE_RUN";
+    case MetricEntityType.METRIC_THREAD_RUN:
+      return "METRIC_THREAD_RUN";
+    case MetricEntityType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function metricEntityTypeToNumber(object: MetricEntityType): number {
+  switch (object) {
+    case MetricEntityType.METRIC_WF_RUN:
+      return 0;
+    case MetricEntityType.METRIC_TASK_RUN:
+      return 1;
+    case MetricEntityType.METRIC_USER_TASK_RUN:
+      return 2;
+    case MetricEntityType.METRIC_NODE_RUN:
+      return 3;
+    case MetricEntityType.METRIC_THREAD_RUN:
+      return 4;
+    case MetricEntityType.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
 /** Specifies a primitive type in LittleHorse. */
 export enum VariableType {
   /**

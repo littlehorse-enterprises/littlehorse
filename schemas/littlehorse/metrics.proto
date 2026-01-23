@@ -12,7 +12,7 @@ option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 message StatusTransition {
-  EntityType entity = 1;
+  MetricEntityType entity = 1;
   string from_status = 2;
   string to_status = 3;
 }
@@ -62,7 +62,7 @@ message CountAndTiming {
 }
 
 message MetricWindowId {
-  EntityType entity = 1;
+  MetricEntityType entity = 1;
   string entity_id = 2; // e.g., wf_spec name, task_def name
   google.protobuf.Timestamp window_start = 3;
 }
