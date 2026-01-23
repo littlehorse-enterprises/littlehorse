@@ -35,3 +35,4 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 007 | [`ExternalEvent`s `wfspec` and `wfRun` validations](./007-extending-external-event-validations.md) | Jake Rose | [#588](https://github.com/littlehorse-enterprises/littlehorse/issues/588) |
 | 008 | [Type casting](./008-type-casting.md) | Christian Caicedo | [#1543](https://github.com/littlehorse-enterprises/littlehorse/issues/1543)|
 | 009 | [Checkpointed Tasks](./009-checkpointed-task-run.md) | Colt McNealy | [#1765](https://github.com/littlehorse-enterprises/littlehorse/issues/1765) |
+| 013 | [Wait For One Of Many Threads](./013-wait-for-one-of.md) | Colt McNealy | TBD |
