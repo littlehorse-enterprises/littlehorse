@@ -77,10 +77,10 @@ This proposal introduces **two metric types**:
 
 ### Supported Entities
 
+
 Metrics can be collected for:
 
 * `WfRun`
-* `ThreadRun`
 * `NodeRun`
 * `TaskRun`
 * `UserTaskRun`
@@ -167,12 +167,12 @@ Count how many events occur in a window.
 Measure time between two status transitions.
 Latency metrics are only available for entities with a status field.
 
+
 #### Supported Status-Based Entities
 
 * `TaskRun`
 * `UserTaskRun`
 * `WfRun`
-* `ThreadRun`
 * `NodeRun`
 
 
@@ -238,33 +238,43 @@ message MetricWindowId {
   EntityType entity = 1;
   string entity_id = 2; // e.g., wf_spec name, task_def name
   google.protobuf.Timestamp window_start = 3;
-  agregation type
+}
+
+enum AggregationType {
+  COUNT = 0;
+  LATENCY = 1;
+}
+
+message MetricWindowId {
+  EntityType entity = 1;
+  string entity_id = 2; // e.g., wf_spec name, task_def name
+  google.protobuf.Timestamp window_start = 3;
+  AggregationType aggregation_type = 4;
 }
 
 message MetricWindow {
   MetricWindowId id = 1;
   int32 total_started = 2; // for applicable entities
-  CountAndTiming completed = 3;
-  CountAndTiming halted = 4;
-  CountAndTiming error = 5;
-  CountAndTiming exception = 6;
-  map<string, CountAndTiming> custom = 7; // for exceptions, errors by type, etc.
-  // Additional fields for TaskMetric specifics
-  CountAndTiming scheduled_to_running = 8;
-  CountAndTiming running_to_success = 9;
-  int32 timeouts = 10;
+  oneof status_metrics {
+    map<TaskStatus, CountAndTiming> task_status_metrics = 3;
+    map<LHStatus, CountAndTiming> wf_status_metrics = 4;
+    map<UserTaskRunStatus, CountAndTiming> user_task_status_metrics = 5;
+    map<WaitingThreadStatus, CountAndTiming> node_status_metrics = 6;
+  }
 }
 ```
 
 ### Query API
 
 ```proto
+
 message ListMetricsRequest {
   string metric_spec_id = 1;
-  google.protobuf.Duration window_length = 2;
+  EntityType entity = 2;
   AggregationType aggregation_type = 3;
   google.protobuf.Timestamp start_time = 4;
-  google.protobuf.Timestamp end_time = 5;
+  // Optional: if not set, server uses current time
+  optional google.protobuf.Timestamp end_time = 5;
 }
 
 message MetricList {
@@ -337,129 +347,47 @@ The following describes the system flow and technical implementation of workflow
 
 This flow ensures metrics are collected efficiently without affecting workflow execution, stored durably, and queried flexibly via gRPC.
 
-#### Technical Implementation
+## Default Metrics Available
 
-- **Storage Model**: Metrics are stored as `StoredGetable` objects in Kafka Streams state stores. Aggregation occurs per partition first, with global aggregation achieved through Kafka Streams repartitioning to combine data across the cluster.
+The following metrics will be available by default and can be queried using the current API.
 
-- **Ongoing Event Tracking**: An internal `OngoingEvent` object tracks start and end timestamps for workflow entities. Metrics are computed and emitted only when the final status is observed, ensuring accuracy.
+### Workflow Metrics (WfRun)
 
-- **Locally-Aggregated Updates**: In Kafka Streams, each partition processes events independently. For global metrics (cluster-wide), each partition maintains local time windows with aggregated data (e.g., count of events, total latency). These "partial aggregates" are forwarded periodically to a repartition topic. A repartition processor then merges partials into global `WfSpecMetricsModel` objects by summing cumulative totals (e.g., `total_latency_ms` + `count`) in the partitioned state store.
+- Number of workflows started
+- Number of workflows completed
+- Number of workflows halted
+- Number of workflows with exceptions
+- Number of workflows with errors
+- Latency for completed workflows
+- Latency for halted workflows 
+- Latency for exceptions
+- Latency for errors 
 
-- **Performance & Caching Considerations**:
-  - **Caching**: Leverages Kafka Streams' built-in State Store Cache (configurable via `cache.max.bytes.buffering` and `commit.interval.ms`) to hold deserialized state in memory, reducing RocksDB reads and batching writes to minimize changelog topic traffic.
-  - **Partial Updates**: Calculated locally per partition in state stores; partials are emitted to repartition topics for global aggregation in the partitioned store. Merging occurs during repartition command processing.
-  - **Cleanup**: Old windows are removed after 30 days using state store retention.
+### Task Metrics (TaskRun)
 
-The `DefaultMetricsRegistry` is a server-side component that defines the set of `MetricSpec` instances loaded at server startup. **Operators can customize this registry** by:
-
-- **Overriding the registry class**: Provide a custom implementation of `DefaultMetricsRegistry` to modify the built-in metrics list.
-- **Configuration-based customization**: Use server configuration to enable/disable specific metrics or adjust recording levels per tenant, workflow, or task.
-- **Per-entity overrides**: Configure metric recording levels (INFO, NONE, DEBUG) at the tenant level or for specific WfSpecs/TaskDefs.
-
-This ensures metrics are pre-configured and not dynamically created by clients, maintaining performance and security. Operators cannot create or mutate metrics at runtime via public APIs.
-
-
-### Server-Side Configuration Examples
-
-Below are examples of how to configure metrics in the `DefaultMetricsRegistry`. Each example shows a `MetricSpec` proto that would be included in the registry's list.
-
-#### Cluster-Wide Workflow Completion Count
-
-Tracks the total number of workflows completed across the entire cluster every 5 minutes.
-
-```proto
-MetricSpec {
-  id: "global-workflow-completed-5m"
-  aggregation_type: COUNT
-  scope: { global: true }
-  transition: {
-    entity: WF_RUN
-    from_status: "RUNNING"
-    to_status: "COMPLETED"
-  }
-  window_length: { seconds: 300 }
-}
-```
-
-#### Cluster-Wide Workflow Failure Count
-
-Tracks the total number of workflows that failed across the entire cluster every 5 minutes.
-
-```proto
-MetricSpec {
-  id: "global-workflow-failed-5m"
-  aggregation_type: COUNT
-  scope: { global: true }
-  transition: {
-    entity: WF_RUN
-    from_status: "RUNNING"
-    to_status: "ERROR"
-  }
-  window_length: { seconds: 300 }
-}
-```
-
-#### Cluster-Wide Task Execution Latency
-
-Tracks the average execution time for all tasks across the cluster every 5 minutes.
-
-```proto
-MetricSpec {
-  id: "global-task-execution-latency-5m"
-  aggregation_type: LATENCY
-  scope: { global: true }
-  transition: {
-    entity: TASK_RUN
-    from_status: "TASK_RUNNING"
-    to_status: "TASK_SUCCESS"
-  }
-  window_length: { seconds: 300 }
-}
-```
-
-#### Workflow-Specific: Order Processing Completion Count
-
-Tracks completions for a specific workflow (e.g., "order-processing") every 5 minutes.
-
-```proto
-MetricSpec {
-  id: "order-processing-completed-5m"
-  aggregation_type: COUNT
-  scope: {
-    wf_spec: { name: "order-processing" }
-  }
-  transition: {
-    entity: WF_RUN
-    from_status: "RUNNING"
-    to_status: "COMPLETED"
-  }
-  window_length: { seconds: 300 }
-}
-```
-
-#### Task-Specific: Send Email Success Count
-
-Tracks successful executions for a specific task definition (e.g., "send-email") every 5 minutes.
-
-```proto
-MetricSpec {
-  id: "send-email-success-5m"
-  aggregation_type: COUNT
-  scope: {
-    task_def: { name: "send-email" }
-  }
-  transition: {
-    entity: TASK_RUN
-    from_status: "TASK_RUNNING"
-    to_status: "TASK_SUCCESS"
-  }
-  window_length: { seconds: 300 }
-}
-```
+- Number of TaskRuns started
+- Number of TaskAttempts started
+- Latency from TASK_SCHEDULED to TASK_RUNNING
+- Latency from TASK_RUNNING to TASK_SUCCESS
+- Latency from TASK_RUNNING to TASK_ERROR
+- Latency from TASK_RUNNING to TASK_EXCEPTION
+- Number of TaskAttempts that timed out
 
 
-## Metric Exposure
+### User Task Metrics (UserTaskRun)
 
-Workflow metrics are exposed **exclusively through the gRPC API**, providing a centralized, authenticated access point for all workflow observability data. This differs from technical metrics (JVM, Kafka Streams, RocksDB) which are exposed via Prometheus for operational monitoring. Workflow metrics require multi-tenancy isolation and transactional guarantees that Prometheus cannot support due to its focus on availability over accuracy and lack of tenant-based access control. As an alternative for event-driven distribution, metrics can be published to Kafka output topics for integration with external systems like data warehouses or alerting platforms.
+- Number of user tasks assigned
+- Number of user tasks completed
+- Number of user tasks cancelled
+- Latency from assignment to completion
+- Per-user breakdowns and assignment latency *(DEBUG)*
 
+### Node Metrics (NodeRun) *(DEBUG)*
 
+- Number of NodeRuns started
+- Number of NodeRuns completed
+- Number of NodeRuns with errors
+- Number of NodeRuns with exceptions
+- Latency for completed NodeRuns 
+- Latency for errors 
+- Latency for exceptions 
