@@ -71,7 +71,7 @@ This proposal introduces **two metric types**:
 2. **Latency metrics**
    Measure time between two status transitions in a period (window).
 
-   *Example: how loing it took for a to go from `TASK_SCHEDULED` → `TASK_SUCCESS` in 5m*
+   *Example: how long it took for a task to go from `TASK_SCHEDULED` → `TASK_SUCCESS` in 5m*
 
 
 
@@ -227,17 +227,29 @@ The `WfSpec` overview page should show started/completed/error/exception series 
 ### Runtime Metric Windows
 
 ```proto
-message CountAndTiming {
-  int32 count = 1;
-  int64 min_latency_ms = 2;
-  int64 max_latency_ms = 3;
-  int64 total_latency_ms = 4;
+
+message WorkflowMetricId {
+    optional WfSpecId wf_spec = 1; // If null, tenant-level aggregate
+    google.protobuf.Timestamp window_start = 2;
+}
+
+message TaskMetricId {
+    optional TaskDefId task_def = 1; // If null, tenant-level aggregate
+    google.protobuf.Timestamp window_start = 2;
+}
+
+message NodeMetricId {
+    WfSpecId wf_spec = 1;
+    string node_name = 2;
+    google.protobuf.Timestamp window_start = 3;
 }
 
 message MetricWindowId {
-  EntityType entity = 1;
-  string entity_id = 2; // e.g., wf_spec name, task_def name
-  google.protobuf.Timestamp window_start = 3;
+  oneof id {
+    WorkflowMetricId workflow = 1;
+    TaskMetricId task = 2;
+    NodeMetricId node = 3;
+  }
 }
 
 enum AggregationType {
@@ -245,16 +257,16 @@ enum AggregationType {
   LATENCY = 1;
 }
 
-message MetricWindowId {
-  EntityType entity = 1;
-  string entity_id = 2; // e.g., wf_spec name, task_def name
-  google.protobuf.Timestamp window_start = 3;
-  AggregationType aggregation_type = 4;
+message CountAndTiming {
+  int32 count = 1;
+  int64 min_latency_ms = 2;
+  int64 max_latency_ms = 3;
+  int64 total_latency_ms = 4;
 }
+
 
 message MetricWindow {
   MetricWindowId id = 1;
-  int32 total_started = 2; // for applicable entities
   oneof status_metrics {
     map<TaskStatus, CountAndTiming> task_status_metrics = 3;
     map<LHStatus, CountAndTiming> wf_status_metrics = 4;
