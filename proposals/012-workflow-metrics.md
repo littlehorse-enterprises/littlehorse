@@ -112,32 +112,31 @@ All metric collection and aggregation happens inside LittleHorse.
 
 * Default windows are **5 minute windows** aligned to the epoch.
 * Each window is persisted for **14 days** (configurable at tenant level) to allow for historical queries.
-* Metric windows are **mergeable**  we store totals,so windows can be added together to form larger window.
+* Metric windows are **mergeable**  we store totals, so windows can be added together to form larger window.
 
-### Metric recording levels
+### Metrics Configuration and Recording Levels
 
-By default metrics are collected at a conservative level to avoid performance regressions. We recommend the following levels:
+By default, metrics are collected at a conservative level to avoid performance regressions. We recommend the following levels:
 
 ```proto
 enum MetricRecordingLevel {
   INFO = 0;  // Collect non-intrusive defaults
   NONE = 1;  // Collect no metrics
-  DEBUG = 2; // Collect detailed/expensive metrics 
+  DEBUG = 2; // Collect detailed/expensive metrics
 }
-```
 
-A tenant-level default controls the recording level for that tenant. For example, the `Tenant` proto could include a field such as:
+message MetricsConfig {
+  MetricRecordingLevel level = 1;
+  int32 retention_days = 2;
+}
 
-```proto
 message Tenant {
   // ... existing fields ...
 
-  // The default level of metrics to record in a given `Tenant`.
-  MetricRecordingLevel metrics_level = 4;
+  // Configuration metrics associated with this Tenant. If not set, defaults are used.
+  optional MetricsConfig metrics_config = 4;
 }
-
 ```
-/////mising retention config
 
 ### Metric Recording Level Resolution Logic
 
@@ -187,49 +186,25 @@ Latency metrics are only available for entities with a status field.
 | `TASK_SCHEDULED` | `TASK_SUCCESS` | Total task latency |
 
 
-## Metrics configuration & Public API
+## Metrics configuration
 
-**Important:** Metric *specs* are *not* created by end-users at runtime. Instead, LittleHorse ships with a server-side class containing the default set of metrics (e.g. `DefaultMetricsRegistry`) which is loaded when the server starts. Operators may customize that set via configuration or code before startup, but there is no public RPC that allows clients to create or mutate metric specs at runtime. This reduces surface area, avoids unbounded/incorrect metric definitions, and ensures sane defaults for all deployments.  // esto esta raro
 
 ### Query API (read-only)
 
-The following RPCs remain public so that clients (dashboards, operators) can read the collected metrics and historical windows.
+The following RPCs remain public so that clients can read the collected metrics and historical windows.
 
 ```proto
 rpc ListMetrics(ListMetricsRequest) returns (MetricList);
-// (optional) rpc GetMetric(MetricId) returns (Metric);
 ```
 
-### Override API (admin/operator-only)
+### Override API 
 
-To allow operators to customize metric recording levels without server restarts, we expose an admin API for managing `MetricLevelOverride` objects:
+To allow clients to override metric recording levels without server restarts, we expose an admin API for managing `MetricLevelOverride` objects:
 
 ```proto
 rpc PutMetricLevelOverride(PutMetricLevelOverrideRequest) returns (MetricLevelOverride);
 rpc DeleteMetricLevelOverride(DeleteMetricLevelOverrideRequest) returns (google.protobuf.Empty);
 rpc ListMetricLevelOverrides(ListMetricLevelOverridesRequest) returns (MetricLevelOverridesList);
-```
-
-### Server-side default registry
-
-A server-side class (for example, `DefaultMetricsRegistry`) will contain the canonical list of `MetricSpec` definitions that are loaded at server startup. Operators can provide their own registry by overriding the class.
-
-Java example (pseudo):
-
-```java
-public class DefaultMetricsRegistry {
-    public static List<MetricSpec> builtIn() {
-        return List.of(
-            MetricSpec.builder("workflow-completed-5m")
-                .aggregation(COUNT)
-                .scope(globalScope())
-                .transition(WF_RUN, "RUNNING", "COMPLETED")
-                .window(5m)
-                .build(),
-            // more defaults...
-        );
-    }
-}
 ```
 
 
@@ -297,7 +272,7 @@ message MetricList {
 }
 ```
 
-### Override API Messages
+### Override API Proto
 
 ```proto
 message MetricLevelOverride {
@@ -344,6 +319,8 @@ The following describes the system flow and technical implementation of workflow
    - As workflow events occur (e.g., a `WfRun` changes status from `RUNNING` to `COMPLETED`), the server checks if the event matches any `MetricSpec`'s criteria.
    - If matched, the server updates the corresponding `MetricWindow` in the Kafka Streams state store. The `MetricWindowId` identifies the window by `EntityType`, `entity_id` (e.g., workflow name), and `window_start` timestamp.
    - Aggregations are performed using `CountAndTiming`: for COUNT metrics, increment the `count`; for LATENCY metrics, calculate the time difference and update `min_latency_ms`, `max_latency_ms`, and `total_latency_ms`.
+
+   wf events es otra cosa, si hace match
 
 3. **Window Management**:
    - Windows are aligned to the epoch and have a fixed length (5minutes).
