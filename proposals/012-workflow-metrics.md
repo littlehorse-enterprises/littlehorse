@@ -230,18 +230,15 @@ The `WfSpec` overview page should show started/completed/error/exception series 
 
 message WorkflowMetricId {
     optional WfSpecId wf_spec = 1; // If null, tenant-level aggregate
-    google.protobuf.Timestamp window_start = 2;
 }
 
 message TaskMetricId {
     optional TaskDefId task_def = 1; // If null, tenant-level aggregate
-    google.protobuf.Timestamp window_start = 2;
 }
 
 message NodeMetricId {
     WfSpecId wf_spec = 1;
     string node_name = 2;
-    google.protobuf.Timestamp window_start = 3;
 }
 
 message MetricWindowId {
@@ -250,12 +247,9 @@ message MetricWindowId {
     TaskMetricId task = 2;
     NodeMetricId node = 3;
   }
+  google.protobuf.Timestamp window_start = 4;
 }
 
-enum AggregationType {
-  COUNT = 0;
-  LATENCY = 1;
-}
 
 message CountAndTiming {
   int32 count = 1;
@@ -267,24 +261,18 @@ message CountAndTiming {
 
 message MetricWindow {
   MetricWindowId id = 1;
-  oneof status_metrics {
-    map<TaskStatus, CountAndTiming> task_status_metrics = 3;
-    map<LHStatus, CountAndTiming> wf_status_metrics = 4;
-    map<UserTaskRunStatus, CountAndTiming> user_task_status_metrics = 5;
-    map<WaitingThreadStatus, CountAndTiming> node_status_metrics = 6;
-  }
+  map<string, CountAndTiming> task_status_metrics = 2;
 }
 ```
+
 
 ### Query API
 
 ```proto
 
 message ListMetricsRequest {
-  string metric_spec_id = 1;
-  EntityType entity = 2;
-  AggregationType aggregation_type = 3;
-  google.protobuf.Timestamp start_time = 4;
+  / Metric window id contains object and start time
+  MetricWindowId id = 1;
   // Optional: if not set, server uses current time
   optional google.protobuf.Timestamp end_time = 5;
 }
@@ -301,9 +289,9 @@ message MetricLevelOverride {
   string id = 1;
   MetricRecordingLevel new_level = 2;
   oneof target {
-    WfSpecId wf_spec = 3;
-    TaskDefId task_def = 4;
-    NodeReference node = 5;
+    WorkflowMetricId workflow = 1;
+    TaskMetricId task = 2;
+    NodeMetricId node = 3;
   }
 }
 
@@ -359,13 +347,13 @@ The following describes the system flow and technical implementation of workflow
 
 This flow ensures metrics are collected efficiently without affecting workflow execution, stored durably, and queried flexibly via gRPC.
 
-## Default Metrics Available
+## Default Metrics Available// mover a propuesta
 
 The following metrics will be available by default and can be queried using the current API.
 
 ### Workflow Metrics (WfRun)
 
-- Number of workflows started
+- Number of workflows started// explicar esto
 - Number of workflows completed
 - Number of workflows halted
 - Number of workflows with exceptions
