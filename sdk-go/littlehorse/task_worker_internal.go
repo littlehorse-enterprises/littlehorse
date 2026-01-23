@@ -407,7 +407,6 @@ func (m *serverConnectionManager) doTaskHelper(task *lhproto.ScheduledTask) *lhp
 		taskOutputReflect := invocationResults[0]
 		if taskOutputReflect.Interface() != nil {
 			taskOutputVarVal, err := InterfaceToVarVal(taskOutputReflect.Interface())
-
 			if err != nil {
 				msg := "Failed to serialize task output: " + err.Error()
 				if workerContext.GetLogOutput() != "" {
@@ -420,13 +419,17 @@ func (m *serverConnectionManager) doTaskHelper(task *lhproto.ScheduledTask) *lhp
 				return taskResult
 			}
 			taskResult.Result = &lhproto.ReportTaskRun_Output{Output: taskOutputVarVal}
-			if workerContext.GetLogOutput() != "" {
-				msg := workerContext.GetLogOutput()
-				taskResult.LogOutput = &lhproto.VariableValue{
-					Value: &lhproto.VariableValue_Str{Str: msg},
-				}
-			}
 			taskResult.Status = lhproto.TaskStatus_TASK_SUCCESS
+		}
+	} else {
+		taskResult.Status = lhproto.TaskStatus_TASK_SUCCESS
+		taskResult.Result = &lhproto.ReportTaskRun_Output{Output: &lhproto.VariableValue{}}
+	}
+
+	if workerContext.GetLogOutput() != "" && taskResult.LogOutput.Value == nil {
+		msg := workerContext.GetLogOutput()
+		taskResult.LogOutput = &lhproto.VariableValue{
+			Value: &lhproto.VariableValue_Str{Str: msg},
 		}
 	}
 
