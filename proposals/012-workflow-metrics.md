@@ -240,7 +240,6 @@ public class DefaultMetricsRegistry {
 }
 ```
 
-> **Note:** If we later decide to allow limited user-defined metrics we can implement an admin-only or operator-only API; for now metrics are configured via the server-side registry.
 
 
 ## The Dashboard Experience
@@ -257,75 +256,6 @@ The `WfSpec` overview page should show started/completed/error/exception series 
 
 ## Protobuf Changes
 
-
-
-```proto
-enum AggregationType {
-  COUNT = 0;
-  LATENCY = 1;
-}
-
-enum MetricRecordingLevel {
-  INFO = 0;  // Collect non-intrusive defaults
-  NONE = 1;  // Collect no metrics unless explicitly configured
-  DEBUG = 2; // Collect detailed/expensive metrics (e.g. flamegraphs)
-}
-
-enum EntityType {
-  WF_RUN = 0;
-  TASK_RUN = 1;
-  USER_TASK_RUN = 2;
-  NODE_RUN = 3;
-  THREAD_RUN = 4;
-}
-
-message StatusTransition {
-  EntityType entity = 1;
-  string from_status = 2;
-  string to_status = 3;
-}
-
-message MetricScope {
-  oneof type {
-    WfSpecId wf_spec = 1;
-    TaskDefId task_def = 2;
-    NodeReference node = 3;
-    bool global = 4; // for cluster-wide metrics
-  }
-}
-
-message NodeReference {
-  WfSpecId wf_spec = 1;
-  optional string thread_name = 2;
-  optional string node_name = 3;
-  optional TaskDefId task_def = 4;
-}
-
-message MetricSpec {
-  string id = 1;
-  google.protobuf.Timestamp created_at = 2;
-  AggregationType aggregation_type = 3;
-  MetricScope scope = 4;
-  StatusTransition transition = 5;
-  google.protobuf.Duration window_length = 6;
-}
-```
-
-### Query API
-
-```proto
-message ListMetricsRequest {
-  string metric_spec_id = 1;
-  google.protobuf.Duration window_length = 2;
-  AggregationType aggregation_type = 3;
-  google.protobuf.Timestamp start_time = 4;
-  google.protobuf.Timestamp end_time = 5;
-}
-
-message MetricList {
-  repeated MetricWindow windows = 1;
-}
-```
 
 ### Runtime Metric Windows
 
@@ -356,6 +286,22 @@ message MetricWindow {
   CountAndTiming scheduled_to_running = 8;
   CountAndTiming running_to_success = 9;
   int32 timeouts = 10;
+}
+```
+
+### Query API
+
+```proto
+message ListMetricsRequest {
+  string metric_spec_id = 1;
+  google.protobuf.Duration window_length = 2;
+  AggregationType aggregation_type = 3;
+  google.protobuf.Timestamp start_time = 4;
+  google.protobuf.Timestamp end_time = 5;
+}
+
+message MetricList {
+  repeated MetricWindow windows = 1;
 }
 ```
 
