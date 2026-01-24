@@ -1613,6 +1613,6 @@ public class WorkflowThreadTest
         ThreadSpec threadSpec = thread.Compile();
         Node waitForThread = threadSpec.Nodes["4-threads-WAIT_FOR_THREADS"];
 
-        Assert.Equal(node.WaitForThread.Strategy, WaitForThreadsStrategy.WAIT_FOR_ANY);
+        Assert.Equal(waitForThread.WaitForThreads.Strategy, WaitForThreadsStrategy.WaitForAny);
     }
 }

@@ -34,8 +34,9 @@ public class FixedSpawnedThreads: SpawnedThreads
         
         waitNode.Threads = new WaitForThreadsNode.Types.ThreadsToWaitFor { 
             Threads = { threads },
-            Strategy = strategy
         };
+
+        waitNode.Strategy = strategy;
         
         return waitNode;
     }

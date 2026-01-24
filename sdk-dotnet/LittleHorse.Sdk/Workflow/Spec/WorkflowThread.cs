@@ -1010,7 +1010,7 @@ public class WorkflowThread
     public WaitForThreadsNodeOutput WaitForThreads(SpawnedThreads threadsToWaitFor)
     {
         CheckIfWorkflowThreadIsActive();
-        WaitForThreadsNode waitNode = threadsToWaitFor.BuildNode(WaitForThreadsStrategy.WAIT_FOR_ALL);
+        WaitForThreadsNode waitNode = threadsToWaitFor.BuildNode(WaitForThreadsStrategy.WaitForAll);
         string nodeName = AddNode("threads", Node.NodeOneofCase.WaitForThreads, waitNode);
         return new WaitForThreadsNodeOutput(nodeName, this);
     }
@@ -1025,7 +1025,7 @@ public class WorkflowThread
     public WaitForThreadsNodeOutput WaitForFirstOf(SpawnedThreads threadsToWaitFor)
     {
         CheckIfWorkflowThreadIsActive();
-        WaitForThreadsNode waitNode = threadsToWaitFor.BuildNode(WaitForThreadsStrategy.WAIT_FOR_FIRST);
+        WaitForThreadsNode waitNode = threadsToWaitFor.BuildNode(WaitForThreadsStrategy.WaitForFirst);
         string nodeName = AddNode("threads", Node.NodeOneofCase.WaitForThreads, waitNode);
         return new WaitForThreadsNodeOutput(nodeName, this);
     }
@@ -1040,7 +1040,7 @@ public class WorkflowThread
     public WaitForThreadsNodeOutput WaitForAnyOf(SpawnedThreads threadsToWaitFor)
     {
         CheckIfWorkflowThreadIsActive();
-        WaitForThreadsNode waitNode = threadsToWaitFor.BuildNode(WaitForThreadsStrategy.WAIT_FOR_ANY);
+        WaitForThreadsNode waitNode = threadsToWaitFor.BuildNode(WaitForThreadsStrategy.WaitForAny);
         string nodeName = AddNode("threads", Node.NodeOneofCase.WaitForThreads, waitNode);
         return new WaitForThreadsNodeOutput(nodeName, this);
     }
