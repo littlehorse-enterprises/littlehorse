@@ -76,7 +76,7 @@ public class CorrelatedEventTest {
             ExternalEventNodeOutput output = wf.waitForEvent("correlated-no-deletion")
                     .registeredAs(Integer.class)
                     .withCorrelationId(key)
-                    .timeout(1)
+                    .timeout(2)
                     .withCorrelatedEventConfig(CorrelatedEventConfig.newBuilder()
                             .setDeleteAfterFirstCorrelation(false)
                             .build());
