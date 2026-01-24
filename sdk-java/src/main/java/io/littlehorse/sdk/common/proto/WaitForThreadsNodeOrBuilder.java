@@ -152,5 +152,24 @@ public interface WaitForThreadsNodeOrBuilder extends
   io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder getPerThreadFailureHandlersOrBuilder(
       int index);
 
+  /**
+   * <pre>
+   * Determines the strategy to wait for different threads in parallel.
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForThreadsStrategy strategy = 4;</code>
+   * @return The enum numeric value on the wire for strategy.
+   */
+  int getStrategyValue();
+  /**
+   * <pre>
+   * Determines the strategy to wait for different threads in parallel.
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForThreadsStrategy strategy = 4;</code>
+   * @return The strategy.
+   */
+  io.littlehorse.sdk.common.proto.WaitForThreadsStrategy getStrategy();
+
   io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForCase getThreadsToWaitForCase();
 }

@@ -107,6 +107,20 @@ message WaitForThreadsNode {
 }
 ```
 
+We also have to introduce a new halt reason to say that a `NodeRun` in one of the parent threads decided to halt a child:
+
+```proto
+// A Halt Reason denoting that a specific NodeRun in a parent ThreadRun caused this ThreadRun
+// to halt. Could be the parent, the parent's parent, or so on.
+message HaltedByParentNodeHaltReason {
+  // The ThreadRun number of the NodeRun which caused the halt.
+  int32 parent_thread_run_number = 1;
+
+  // The specific node run position which caused the halt.
+  int32 waiting_node_run_position = 2;
+}
+```
+
 ## Compatibility
 
 This proposal does not deprecate nor alter any existing functionality, syntax, nor protobuf structures.

@@ -7,9 +7,11 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
+import io.littlehorse.common.model.getable.core.wfrun.haltreason.HaltedByParentNodeHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.utils.WaitForThreadModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
@@ -17,9 +19,11 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForThr
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus;
+import io.littlehorse.sdk.common.proto.WaitForThreadsStrategy;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -80,19 +84,76 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
     @Override
     public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
-        boolean allCompleteOrHandled = true;
-
         // This is stupid but it's required to make things work.
         threads.stream().forEach(child -> child.setNodeRun(nodeRun));
 
-        for (WaitForThreadModel childThread : threads) {
-            updateStatusOfAndMaybeThrow(childThread, processorContext);
-
-            allCompleteOrHandled = allCompleteOrHandled
-                    && childThread.getWaitingStatus() == WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED;
+        for (WaitForThreadModel child : threads) {
+            updateStatusOfChildThread(child, processorContext);
         }
 
-        return allCompleteOrHandled;
+        WaitForThreadsStrategy strategy = getNode().getWaitForThreadsNode().getStrategy();
+
+        switch (strategy) {
+            case WAIT_FOR_ALL:
+                return waitForAllStrategy();
+            case WAIT_FOR_ANY:
+                return waitForAnyStrategy();
+            case WAIT_FOR_FIRST:
+                return waitForFirstStrategy();
+            case UNRECOGNIZED:
+        }
+
+        throw new IllegalStateException("Unrecognized enum " + strategy);
+    }
+
+    private boolean waitForAllStrategy() throws NodeFailureException {
+        boolean allCompletedOrHandled = true;
+        WfRunModel wfRun = getWfRun();
+
+        for (WaitForThreadModel child : threads) {
+            if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_UNSUCCESSFUL) {
+                propagateFailure(getLastFailureFrom(child, wfRun), child);
+            }
+
+            if (child.getWaitingStatus() != WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED) {
+                allCompletedOrHandled = false;
+            }
+        }
+        return allCompletedOrHandled;
+    }
+
+    private boolean waitForAnyStrategy() throws NodeFailureException {
+        boolean allFailed = true;
+        for (WaitForThreadModel child : threads) {
+            if (child.getWaitingStatus() != WaitingThreadStatus.THREAD_UNSUCCESSFUL) {
+                allFailed = false;
+            }
+            if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED) {
+                haltAllOtherThreads();
+                return true;
+            }
+        }
+
+        if (allFailed) {
+            throw new NodeFailureException(
+                    new FailureModel("All child threads failed", LHErrorType.CHILD_FAILURE.toString()));
+        }
+
+        return false;
+    }
+
+    private boolean waitForFirstStrategy() throws NodeFailureException {
+        for (WaitForThreadModel child : threads) {
+            if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED) {
+                haltAllOtherThreads();
+                return true;
+            }
+            if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_UNSUCCESSFUL) {
+                haltAllOtherThreads();
+                propagateFailure(getLastFailureFrom(child, getWfRun()), child);
+            }
+        }
+        return false;
     }
 
     @Override
@@ -121,7 +182,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
      * @param child is the child we're looking at.
      * @throws NodeFailureException if the child failed with an unrecoverable error.
      */
-    private void updateStatusOfAndMaybeThrow(WaitForThreadModel child, CoreProcessorContext processorContext)
+    private void updateStatusOfChildThread(WaitForThreadModel child, CoreProcessorContext processorContext)
             throws NodeFailureException {
         if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED) {
             return;
@@ -148,7 +209,6 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
                     startFailureHandlerFor(handler, latestFailure, childThreadRun, child, processorContext);
                 } else {
                     child.setWaitingStatus(WaitingThreadStatus.THREAD_UNSUCCESSFUL);
-                    propagateFailure(latestFailure, child);
                 }
             }
         } else if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_HANDLING_FAILURE) {
@@ -163,10 +223,6 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
                     || failureHandler.getStatus() == LHStatus.ERROR) {
 
                 child.setWaitingStatus(WaitingThreadStatus.THREAD_UNSUCCESSFUL);
-                // Here, the failure handler failed, so we propagate the failure anyways.
-                FailureModel lastFailure =
-                        failureHandler.getCurrentNodeRun().getLatestFailure().get();
-                propagateFailure(lastFailure, child);
             }
         }
     }
@@ -181,6 +237,47 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
                                     failedChild.getThreadRunNumber(), failure.getFailureName(), failure.getMessage()),
                     LHErrorType.CHILD_FAILURE.toString());
             throw new NodeFailureException(toThrow);
+        }
+    }
+
+    /*
+     * Utility to extract the propagatable failure from a child failure.
+     */
+    private FailureModel getLastFailureFrom(WaitForThreadModel failedChild, WfRunModel wfRun) {
+        FailureModel lastFailure = null;
+        if (failedChild.getFailureHandlerThreadRunId() == null) {
+            lastFailure = wfRun.getThreadRun(failedChild.getThreadRunNumber())
+                    .getCurrentNodeRun()
+                    .getLatestFailure()
+                    .get();
+        } else {
+            ThreadRunModel failureHandler = wfRun.getThreadRun(failedChild.getFailureHandlerThreadRunId());
+            lastFailure = failureHandler.getCurrentNodeRun().getLatestFailure().get();
+        }
+
+        return lastFailure;
+    }
+
+    private void haltAllOtherThreads() {
+        WfRunModel wfRun = getWfRun();
+        ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
+        haltReason.setHaltedByParent(new HaltedByParentNodeHaltReasonModel(
+                getNodeRun().getThreadRunNumber(), getNodeRun().getId().getPosition()));
+        haltReason.setType(ReasonCase.HALTED_BY_PARENT);
+
+        for (WaitForThreadModel childThread : threads) {
+            switch (childThread.getWaitingStatus()) {
+                case THREAD_HANDLING_FAILURE:
+                case THREAD_IN_PROGRESS:
+                case THREAD_STOPPED:
+                    ThreadRunModel toHalt = wfRun.getThreadRun(childThread.getThreadRunNumber());
+                    toHalt.halt(haltReason);
+                    break;
+                case THREAD_COMPLETED_OR_FAILURE_HANDLED:
+                case THREAD_UNSUCCESSFUL:
+                case UNRECOGNIZED:
+                    // Nothing to do
+            }
         }
     }
 
