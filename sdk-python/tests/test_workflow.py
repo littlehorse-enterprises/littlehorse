@@ -34,6 +34,7 @@ from littlehorse.model import (
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
     WaitForChildWfNode,
+    WaitForThreadsStrategy,
     RunChildWfNode,
 )
 from littlehorse.workflow import (
@@ -3910,6 +3911,25 @@ class TestWaitForThreads(unittest.TestCase):
             any_handler.handler_spec_name,
             "exn-handler-2-threads-WAIT_FOR_THREADS",
         )
+
+    def test_wait_for_threads_strategy(self):
+        def child_thread(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def wf_func(wf: WorkflowThread) -> None:
+            child1 = wf.spawn_thread(child_thread, "child-1")
+            child2 = wf.spawn_thread(child_thread, "child-2")
+            wf.wait_for_threads(SpawnedThreads(
+                fixed_threads=[child1, child2]),
+                strategy=WaitForThreadsStrategy.WAIT_FOR_FIRST,
+            )
+
+        wf_spec = Workflow("some-wf", wf_func).compile()
+
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        node = entrypoint.nodes["3-threads-WAIT_FOR_THREADS"]
+        wftn = node.wait_for_threads
+        self.assertEqual(WaitForThreadsStrategy.WAIT_FOR_FIRST, wftn.strategy)
 
     def test_wait_for_threads_handle_error_on_child(self):
         def error_handler(wf: WorkflowThread) -> None:

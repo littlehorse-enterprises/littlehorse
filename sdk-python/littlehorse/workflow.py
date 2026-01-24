@@ -54,6 +54,7 @@ from littlehorse.model import (
     UserTaskNode,
     WaitForThreadsNode,
     FailureHandlerDef,
+    WaitForThreadsStrategy,
     WfSpec,
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
@@ -1004,7 +1005,7 @@ class SpawnedThreads:
     def from_list(cls, *spawned_threads: SpawnedThread) -> "SpawnedThreads":
         return SpawnedThreads(iterable=None, fixed_threads=list(spawned_threads))
 
-    def compile(self) -> WaitForThreadsNode:
+    def compile(self, strategy: WaitForThreadsStrategy) -> WaitForThreadsNode:
         def build_fixed_threads(
             fixed_threads: Optional[list[SpawnedThread]],
         ) -> WaitForThreadsNode:
@@ -1017,6 +1018,7 @@ class SpawnedThreads:
                     threads.append(thread_to_wait_for)
             return WaitForThreadsNode(
                 threads=WaitForThreadsNode.ThreadsToWaitFor(threads=threads),
+                strategy=strategy,
             )
 
         def build_iterator_threads(
@@ -1024,6 +1026,7 @@ class SpawnedThreads:
         ) -> WaitForThreadsNode:
             return WaitForThreadsNode(
                 thread_list=to_variable_assignment(iterable),
+                strategy=strategy,
             )
 
         return (
@@ -1234,7 +1237,7 @@ class WorkflowThread:
         self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
         return SpawnedThreads(thread_number, None)
 
-    def wait_for_threads(self, wait_for: SpawnedThreads) -> WaitForThreadsNodeOutput:
+    def wait_for_threads(self, wait_for: SpawnedThreads, strategy: WaitForThreadsStrategy = WaitForThreadsStrategy.WAIT_FOR_ALL) -> WaitForThreadsNodeOutput:
         """Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
 
         Args:
@@ -1246,7 +1249,7 @@ class WorkflowThread:
             or exception handling.
         """
         self._check_if_active()
-        node = wait_for.compile()
+        node = wait_for.compile(strategy)
         node_name = self.add_node("threads", node)
         return WaitForThreadsNodeOutput(node_name, self)
 
