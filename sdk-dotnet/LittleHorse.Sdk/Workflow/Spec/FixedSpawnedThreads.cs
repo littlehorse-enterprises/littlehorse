@@ -22,7 +22,7 @@ public class FixedSpawnedThreads: SpawnedThreads
     /// Builds a <see cref="WaitForThreadsNode"/> that represents the spawned threads.
     /// </summary>
     /// <returns>WaitForThreadsNode</returns>
-    public WaitForThreadsNode BuildNode()
+    public WaitForThreadsNode BuildNode(WaitForThreadsStrategy strategy)
     {
         var waitNode = new WaitForThreadsNode();
         var threads = new List<WaitForThreadsNode.Types.ThreadToWaitFor>();
@@ -32,7 +32,10 @@ public class FixedSpawnedThreads: SpawnedThreads
             threads.Add(threadToWaitFor);
         }
         
-        waitNode.Threads = new WaitForThreadsNode.Types.ThreadsToWaitFor { Threads = { threads } };
+        waitNode.Threads = new WaitForThreadsNode.Types.ThreadsToWaitFor { 
+            Threads = { threads },
+            Strategy = strategy
+        };
         
         return waitNode;
     }
