@@ -210,7 +210,6 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
                 } else {
                     child.setWaitingStatus(WaitingThreadStatus.THREAD_UNSUCCESSFUL);
                 }
-                getNodeRun().getThreadRun().getHandledFailedChildren().add(childThreadRun.getNumber());
             }
         } else if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_HANDLING_FAILURE) {
             ThreadRunModel failureHandler = wfRun.getThreadRun(child.getFailureHandlerThreadRunId());
@@ -276,6 +275,8 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
                     break;
                 case THREAD_COMPLETED_OR_FAILURE_HANDLED:
                 case THREAD_UNSUCCESSFUL:
+                    getNodeRun().getThreadRun().getHandledFailedChildren().add(childThread.getThreadRunNumber());
+                    break;
                 case UNRECOGNIZED:
                     // Nothing to do
             }
