@@ -160,7 +160,11 @@ wf.doIf(foo.isLessThan(10), handler -> {
 });
 ```
 
-What is going to be no longer valid is the following code:
+What is going to be no longer valid is the following outdated code:
+
+```java
+wf.doIf(wf.condition(foo, Comparator.LESS_THAN, bar), handler -> {/* ... */});
+```
 
 We will release these changes in the 1.0 release. Our compatibility promise will be that:
 
