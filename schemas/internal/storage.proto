@@ -21,11 +21,7 @@ enum StoreableType {
     SCHEDULED_TASK = 1;
     WF_METRIC_UPDATE = 2;
     TASK_METRIC_UPDATE = 3;
-
-    // LHTimer is not a `Storeable` in the sense that it's not stored in thhe
-    // corer store.
-    // LH_TIMER = 4;
-    reserved 4;
+    LH_TIMER = 4;
 
     TAG = 5;
 

@@ -28,6 +28,10 @@ public enum StoreableType
    */
   TASK_METRIC_UPDATE(3),
   /**
+   * <code>LH_TIMER = 4;</code>
+   */
+  LH_TIMER(4),
+  /**
    * <code>TAG = 5;</code>
    */
   TAG(5),
@@ -87,6 +91,10 @@ public enum StoreableType
    * <code>TASK_METRIC_UPDATE = 3;</code>
    */
   public static final int TASK_METRIC_UPDATE_VALUE = 3;
+  /**
+   * <code>LH_TIMER = 4;</code>
+   */
+  public static final int LH_TIMER_VALUE = 4;
   /**
    * <code>TAG = 5;</code>
    */
@@ -149,6 +157,7 @@ public enum StoreableType
       case 1: return SCHEDULED_TASK;
       case 2: return WF_METRIC_UPDATE;
       case 3: return TASK_METRIC_UPDATE;
+      case 4: return LH_TIMER;
       case 5: return TAG;
       case 6: return PARTITION_METRICS;
       case 8: return INITIALIZATION_LOG;
