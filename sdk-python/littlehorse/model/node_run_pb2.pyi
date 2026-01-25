@@ -138,10 +138,12 @@ class WaitForThreadsRun(_message.Message):
         THREAD_HANDLING_FAILURE: _ClassVar[WaitForThreadsRun.WaitingThreadStatus]
         THREAD_COMPLETED_OR_FAILURE_HANDLED: _ClassVar[WaitForThreadsRun.WaitingThreadStatus]
         THREAD_UNSUCCESSFUL: _ClassVar[WaitForThreadsRun.WaitingThreadStatus]
+        THREAD_STOPPED: _ClassVar[WaitForThreadsRun.WaitingThreadStatus]
     THREAD_IN_PROGRESS: WaitForThreadsRun.WaitingThreadStatus
     THREAD_HANDLING_FAILURE: WaitForThreadsRun.WaitingThreadStatus
     THREAD_COMPLETED_OR_FAILURE_HANDLED: WaitForThreadsRun.WaitingThreadStatus
     THREAD_UNSUCCESSFUL: WaitForThreadsRun.WaitingThreadStatus
+    THREAD_STOPPED: WaitForThreadsRun.WaitingThreadStatus
     class WaitForThread(_message.Message):
         __slots__ = ("thread_end_time", "thread_status", "thread_run_number", "waiting_status", "failure_handler_thread_run_id")
         THREAD_END_TIME_FIELD_NUMBER: _ClassVar[int]

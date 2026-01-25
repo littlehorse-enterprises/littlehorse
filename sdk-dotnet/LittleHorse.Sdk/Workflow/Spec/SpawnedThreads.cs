@@ -11,7 +11,7 @@ public interface SpawnedThreads
     /// Builds a <see cref="WaitForThreadsNode"/> that represents the spawned threads.
     /// </summary>
     /// <returns>WaitForThreadsNode</returns>
-    WaitForThreadsNode BuildNode();
+    WaitForThreadsNode BuildNode(WaitForThreadsStrategy strategy);
 
     /// <summary>
     /// Creates a new instance of <see cref="SpawnedThreads"/> with the specified spawned threads.
