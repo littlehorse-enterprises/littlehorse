@@ -1056,6 +1056,29 @@ func TestWaitForThreadsHandleExceptionOnChild(t *testing.T) {
 	assert.Equal(t, "exn-handler-2-threads-WAIT_FOR_THREADS", anyHandler.HandlerSpecName)
 }
 
+func TestWaitForAnyOf(t *testing.T) {
+	childThread := func(wf *littlehorse.WorkflowThread) {
+		wf.Execute("some-task")
+	}
+
+	wfFunc := func(t *littlehorse.WorkflowThread) {
+		child1 := t.SpawnThread(childThread, "child-1", nil)
+		child2 := t.SpawnThread(childThread, "child-1", nil)
+		t.WaitForAnyOf(child1, child2)
+	}
+
+	wf, err := littlehorse.NewWorkflow(wfFunc, "some-wf").Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := wf.ThreadSpecs[wf.EntrypointThreadName]
+	node := entrypoint.Nodes["3-threads-WAIT_FOR_THREADS"]
+
+	wftn := node.GetWaitForThreads()
+	assert.Equal(t, lhproto.WaitForThreadsStrategy_WAIT_FOR_ANY, wftn.GetStrategy())
+}
+
 func TestWaitForThreadsHandleAnyFailureOnChild(t *testing.T) {
 	failureHandler := func(wf *littlehorse.WorkflowThread) {
 		wf.Execute("some-task")

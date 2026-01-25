@@ -193,6 +193,16 @@ message HandlingFailureHaltReason {
   int32 handler_thread_id = 1;
 }
 
+// A Halt Reason denoting that a specific NodeRun in a parent ThreadRun caused this ThreadRun
+// to halt. Could be the parent, the parent's parent, or so on.
+message HaltedByParentNodeHaltReason {
+  // The ThreadRun number of the NodeRun which caused the halt.
+  int32 parent_thread_run_number = 1;
+
+  // The specific node run position which caused the halt.
+  int32 waiting_node_run_position = 2;
+}
+
 // A Halt Reason denoting that a ThreadRun is halted because its parent is also HALTED.
 message ParentHalted {
   // The ID of the halted parent.
@@ -233,5 +243,8 @@ message ThreadHaltReason {
 
     // Manually stopped the WfRun.
     ManualHalt manual_halt = 6;
+
+    // Stopped by a NodeRun in the parent.
+    HaltedByParentNodeHaltReason halted_by_parent = 7;
   }
 }

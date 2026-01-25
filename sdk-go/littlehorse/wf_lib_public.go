@@ -591,7 +591,15 @@ func (t *WorkflowThread) SpawnThread(
 }
 
 func (t *WorkflowThread) WaitForThreads(s ...*SpawnedThread) WaitForThreadsNodeOutput {
-	return *t.waitForThreads(s...)
+	return *t.waitForThreads(lhproto.WaitForThreadsStrategy_WAIT_FOR_ALL, s...)
+}
+
+func (t *WorkflowThread) WaitForFirstOf(s ...*SpawnedThread) WaitForThreadsNodeOutput {
+	return *t.waitForThreads(lhproto.WaitForThreadsStrategy_WAIT_FOR_FIRST, s...)
+}
+
+func (t *WorkflowThread) WaitForAnyOf(s ...*SpawnedThread) WaitForThreadsNodeOutput {
+	return *t.waitForThreads(lhproto.WaitForThreadsStrategy_WAIT_FOR_ANY, s...)
 }
 
 func (t *WorkflowThread) SpawnThreadForEach(
@@ -601,7 +609,15 @@ func (t *WorkflowThread) SpawnThreadForEach(
 }
 
 func (t *WorkflowThread) WaitForThreadsList(s *SpawnedThreads) *WaitForThreadsNodeOutput {
-	return t.waitForThreadsList(s)
+	return t.waitForThreadsList(lhproto.WaitForThreadsStrategy_WAIT_FOR_ALL, s)
+}
+
+func (t *WorkflowThread) WaitForFirstOfList(s *SpawnedThreads) *WaitForThreadsNodeOutput {
+	return t.waitForThreadsList(lhproto.WaitForThreadsStrategy_WAIT_FOR_FIRST, s)
+}
+
+func (t *WorkflowThread) WaitForAnyOfList(s *SpawnedThreads) *WaitForThreadsNodeOutput {
+	return t.waitForThreadsList(lhproto.WaitForThreadsStrategy_WAIT_FOR_ANY, s)
 }
 
 func (t *WorkflowThread) AssignUserTask(

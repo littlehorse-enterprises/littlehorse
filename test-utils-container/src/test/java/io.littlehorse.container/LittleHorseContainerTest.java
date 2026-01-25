@@ -6,11 +6,13 @@ import com.google.protobuf.Empty;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.Principal;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
+@Disabled("Disabled until we can find a solution for caching the docker image, so we don't reach registry limits")
 public class LittleHorseContainerTest {
 
     @Container

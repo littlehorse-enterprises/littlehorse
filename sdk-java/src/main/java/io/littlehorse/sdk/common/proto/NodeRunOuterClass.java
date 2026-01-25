@@ -170,7 +170,7 @@ public final class NodeRunOuterClass extends com.google.protobuf.GeneratedFile {
       "(\t\022)\n\005value\030\002 \001(\0132\032.littlehorse.Variable" +
       "Value:\0028\001\"_\n\025WaitForChildWfNodeRun\0222\n\017ch" +
       "ild_wf_run_id\030\001 \001(\0132\024.littlehorse.WfRunI" +
-      "dH\000\210\001\001B\022\n\020_child_wf_run_id\"\244\004\n\021WaitForTh" +
+      "dH\000\210\001\001B\022\n\020_child_wf_run_id\"\270\004\n\021WaitForTh" +
       "readsRun\022=\n\007threads\030\001 \003(\0132,.littlehorse." +
       "WaitForThreadsRun.WaitForThread\032\300\002\n\rWait" +
       "ForThread\0228\n\017thread_end_time\030\001 \001(\0132\032.goo" +
@@ -180,29 +180,30 @@ public final class NodeRunOuterClass extends com.google.protobuf.GeneratedFile {
       " \001(\01622.littlehorse.WaitForThreadsRun.Wai" +
       "tingThreadStatus\022*\n\035failure_handler_thre" +
       "ad_run_id\030\005 \001(\005H\001\210\001\001B\022\n\020_thread_end_time" +
-      "B \n\036_failure_handler_thread_run_id\"\214\001\n\023W" +
+      "B \n\036_failure_handler_thread_run_id\"\240\001\n\023W" +
       "aitingThreadStatus\022\026\n\022THREAD_IN_PROGRESS" +
       "\020\000\022\033\n\027THREAD_HANDLING_FAILURE\020\001\022\'\n#THREA" +
       "D_COMPLETED_OR_FAILURE_HANDLED\020\002\022\027\n\023THRE" +
-      "AD_UNSUCCESSFUL\020\003\"\321\002\n\024ExternalEventNodeR" +
-      "un\022>\n\025external_event_def_id\030\001 \001(\0132\037.litt" +
-      "lehorse.ExternalEventDefId\0223\n\nevent_time" +
-      "\030\002 \001(\0132\032.google.protobuf.TimestampH\000\210\001\001\022" +
-      "<\n\021external_event_id\030\003 \001(\0132\034.littlehorse" +
-      ".ExternalEventIdH\001\210\001\001\022\021\n\ttimed_out\030\004 \001(\010" +
-      "\022\034\n\017correlation_key\030\005 \001(\tH\002\210\001\001\022\034\n\024mask_c" +
-      "orrelation_key\030\006 \001(\010B\r\n\013_event_timeB\024\n\022_" +
-      "external_event_idB\022\n\020_correlation_key\"T\n" +
-      "\014SleepNodeRun\0223\n\017maturation_time\030\001 \001(\0132\032" +
-      ".google.protobuf.Timestamp\022\017\n\007matured\030\002 " +
-      "\001(\010\"\330\001\n\007Failure\022\024\n\014failure_name\030\001 \001(\t\022\017\n" +
-      "\007message\030\002 \001(\t\0220\n\007content\030\003 \001(\0132\032.little" +
-      "horse.VariableValueH\000\210\001\001\022\034\n\024was_properly" +
-      "_handled\030\004 \001(\010\022)\n\034failure_handler_thread" +
-      "run_id\030\005 \001(\005H\001\210\001\001B\n\n\010_contentB\037\n\035_failur" +
-      "e_handler_threadrun_idBM\n\037io.littlehorse" +
-      ".sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleH" +
-      "orse.Sdk.Common.Protob\006proto3"
+      "AD_UNSUCCESSFUL\020\003\022\022\n\016THREAD_STOPPED\020\004\"\321\002" +
+      "\n\024ExternalEventNodeRun\022>\n\025external_event" +
+      "_def_id\030\001 \001(\0132\037.littlehorse.ExternalEven" +
+      "tDefId\0223\n\nevent_time\030\002 \001(\0132\032.google.prot" +
+      "obuf.TimestampH\000\210\001\001\022<\n\021external_event_id" +
+      "\030\003 \001(\0132\034.littlehorse.ExternalEventIdH\001\210\001" +
+      "\001\022\021\n\ttimed_out\030\004 \001(\010\022\034\n\017correlation_key\030" +
+      "\005 \001(\tH\002\210\001\001\022\034\n\024mask_correlation_key\030\006 \001(\010" +
+      "B\r\n\013_event_timeB\024\n\022_external_event_idB\022\n" +
+      "\020_correlation_key\"T\n\014SleepNodeRun\0223\n\017mat" +
+      "uration_time\030\001 \001(\0132\032.google.protobuf.Tim" +
+      "estamp\022\017\n\007matured\030\002 \001(\010\"\330\001\n\007Failure\022\024\n\014f" +
+      "ailure_name\030\001 \001(\t\022\017\n\007message\030\002 \001(\t\0220\n\007co" +
+      "ntent\030\003 \001(\0132\032.littlehorse.VariableValueH" +
+      "\000\210\001\001\022\034\n\024was_properly_handled\030\004 \001(\010\022)\n\034fa" +
+      "ilure_handler_threadrun_id\030\005 \001(\005H\001\210\001\001B\n\n" +
+      "\010_contentB\037\n\035_failure_handler_threadrun_" +
+      "idBM\n\037io.littlehorse.sdk.common.protoP\001Z" +
+      "\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Prot" +
+      "ob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

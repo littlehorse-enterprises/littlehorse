@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.core.wfrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.core.wfrun.haltreason.HaltedByParentNodeHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.HandlingFailureHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.InterruptedModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel;
@@ -25,6 +26,7 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
     public HandlingFailureHaltReasonModel handlingFailure;
     public PendingFailureHandlerHaltReasonModel pendingFailure;
     public ManualHaltModel manualHalt;
+    public HaltedByParentNodeHaltReasonModel haltedByParent;
 
     public ReasonCase type;
 
@@ -50,6 +52,8 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
                 return handlingFailure;
             case MANUAL_HALT:
                 return manualHalt;
+            case HALTED_BY_PARENT:
+                return haltedByParent;
             case REASON_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -82,6 +86,9 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
             case MANUAL_HALT:
                 out.setManualHalt(manualHalt.toProto());
                 break;
+            case HALTED_BY_PARENT:
+                out.setHaltedByParent(haltedByParent.toProto());
+                break;
             case REASON_NOT_SET:
                 throw new RuntimeException("not possible");
         }
@@ -112,6 +119,9 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
                 break;
             case MANUAL_HALT:
                 manualHalt = ManualHaltModel.fromProto(p.getManualHalt(), context);
+                break;
+            case HALTED_BY_PARENT:
+                haltedByParent = HaltedByParentNodeHaltReasonModel.fromProto(p.getHaltedByParent(), context);
                 break;
             case REASON_NOT_SET:
                 throw new RuntimeException("not possible");

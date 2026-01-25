@@ -52,7 +52,7 @@ def get_workflow() -> Workflow:
 
 
 async def greeting(
-    name: str, person_details: dict[str, Any], ctx: WorkerContext
+        name: str, person_details: dict[str, Any], ctx: WorkerContext
 ) -> str:
     msg = f"Hello {name}!. WfRun {ctx.wf_run_id.id} Person: {person_details}"
     print(msg)
