@@ -113,7 +113,6 @@ func (a *TaskFuncArg) assign(task *lhproto.ScheduledTask, context *WorkerContext
 	varVal := varAssignment.Value
 
 	isPtr, reflectType := a.getType()
-
 	// switch varVal.Type {
 	switch varVal.GetValue().(type) {
 	case *lhproto.VariableValue_Int:
@@ -212,7 +211,8 @@ func (a *TaskFuncArg) assign(task *lhproto.ScheduledTask, context *WorkerContext
 			panic("task accepts a struct as an input variable; only pointers to struct are supported")
 		}
 		return loadJsonObj(varVal, a.Type)
-
+	case *lhproto.VariableValue_UtcTimestamp:
+		return varVal.GetUtcTimestamp().AsTime(), nil
 	case nil:
 		if !isPtr {
 			return nil, errors.New("got a NULL assignment for a non-pointer variable")

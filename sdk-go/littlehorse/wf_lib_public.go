@@ -418,6 +418,14 @@ func (t *WorkflowThread) DeclareBytes(name string) *WfRunVariable {
 	return t.addVariable(name, lhproto.VariableType_BYTES)
 }
 
+func (t *WorkflowThread) DeclareTimestamp(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_TIMESTAMP)
+}
+
+func (t *WorkflowThread) DeclareWfRunId(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_WF_RUN_ID)
+}
+
 func (t *WorkflowThread) DeclareJsonArr(name string) *WfRunVariable {
 	return t.addVariable(name, lhproto.VariableType_JSON_ARR)
 }
