@@ -54,13 +54,14 @@ from littlehorse.model import (
     UserTaskNode,
     WaitForThreadsNode,
     FailureHandlerDef,
+    WaitForThreadsStrategy,
     WfSpec,
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
     RunChildWfNode,
     WaitForChildWfNode,
 )
-from littlehorse.model.wf_spec_pb2 import PRIVATE_VAR
+from littlehorse.model.wf_spec_pb2 import PRIVATE_VAR, WaitForConditionNode
 from littlehorse.utils import negate_comparator, to_variable_value
 from littlehorse.worker import _create_task_def
 
@@ -80,6 +81,7 @@ NodeType = Union[
     ThrowEventNode,
     RunChildWfNode,
     WaitForChildWfNode,
+    WaitForConditionNode,
 ]
 
 
@@ -262,6 +264,7 @@ class NodeCase(Enum):
     THROW_EVENT = "THROW_EVENT"
     RUN_CHILD_WF = "RUN_CHILD_WF"
     WAIT_FOR_CHILD_WF = "WAIT_FOR_CHILD_WF"
+    WAIT_FOR_CONDITION = "WAIT_FOR_CONDITION"
 
     @classmethod
     def from_node(cls, node: NodeType) -> "NodeCase":
@@ -291,6 +294,8 @@ class NodeCase(Enum):
             return cls.RUN_CHILD_WF
         if isinstance(node, WaitForChildWfNode):
             return cls.WAIT_FOR_CHILD_WF
+        if isinstance(node, WaitForConditionNode):
+            return cls.WAIT_FOR_CONDITION
 
         raise TypeError("Unrecognized node type")
 
@@ -798,6 +803,13 @@ class WaitForThreadsNodeOutput(NodeOutput):
         return self
 
 
+class WaitForConditionNodeOutput(NodeOutput):
+    def __init__(self, node_name: str, builder: "WorkflowThread") -> None:
+        super().__init__(node_name)
+        self.node_name = node_name
+        self.builder = builder
+
+
 class ThrowEventNodeOutput:
     """
     Represents the output of a ThrowEvent node in a workflow, allowing event definition registration.
@@ -955,6 +967,8 @@ class WorkflowNode:
             return new_node(run_child_wf=self.sub_node)
         if self.node_case == NodeCase.WAIT_FOR_CHILD_WF:
             return new_node(wait_for_child_wf=self.sub_node)
+        if self.node_case == NodeCase.WAIT_FOR_CONDITION:
+            return new_node(wait_for_condition=self.sub_node)
 
         raise ValueError("Node type not supported")
 
@@ -1004,7 +1018,7 @@ class SpawnedThreads:
     def from_list(cls, *spawned_threads: SpawnedThread) -> "SpawnedThreads":
         return SpawnedThreads(iterable=None, fixed_threads=list(spawned_threads))
 
-    def compile(self) -> WaitForThreadsNode:
+    def compile(self, strategy: WaitForThreadsStrategy) -> WaitForThreadsNode:
         def build_fixed_threads(
             fixed_threads: Optional[list[SpawnedThread]],
         ) -> WaitForThreadsNode:
@@ -1017,6 +1031,7 @@ class SpawnedThreads:
                     threads.append(thread_to_wait_for)
             return WaitForThreadsNode(
                 threads=WaitForThreadsNode.ThreadsToWaitFor(threads=threads),
+                strategy=strategy,
             )
 
         def build_iterator_threads(
@@ -1024,6 +1039,7 @@ class SpawnedThreads:
         ) -> WaitForThreadsNode:
             return WaitForThreadsNode(
                 thread_list=to_variable_assignment(iterable),
+                strategy=strategy,
             )
 
         return (
@@ -1234,7 +1250,7 @@ class WorkflowThread:
         self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
         return SpawnedThreads(thread_number, None)
 
-    def wait_for_threads(self, wait_for: SpawnedThreads) -> WaitForThreadsNodeOutput:
+    def wait_for_threads(self, wait_for: SpawnedThreads, strategy: WaitForThreadsStrategy = WaitForThreadsStrategy.WAIT_FOR_ALL) -> WaitForThreadsNodeOutput:
         """Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
 
         Args:
@@ -1246,9 +1262,28 @@ class WorkflowThread:
             or exception handling.
         """
         self._check_if_active()
-        node = wait_for.compile()
+        node = wait_for.compile(strategy)
         node_name = self.add_node("threads", node)
         return WaitForThreadsNodeOutput(node_name, self)
+
+    def wait_for_condition(
+        self, condition: WorkflowCondition
+    ) -> WaitForConditionNodeOutput:
+        """
+        Waits for the specified workflow condition to become true.
+
+        Args:
+            condition (WorkflowCondition): The workflow condition to wait for.
+
+        Returns:
+            The output of the WAIT_FOR_CONDITION node.
+        """
+        self._check_if_active()
+        node = WaitForConditionNode(
+            condition=condition.compile(),
+        )
+        node_name = self.add_node("wait-for-condition", node)
+        return WaitForConditionNodeOutput(node_name, self)
 
     def sleep(self, seconds: Union[int, WfRunVariable]) -> None:
         """Adds a SLEEP node which makes the ThreadRun sleep

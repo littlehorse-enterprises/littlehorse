@@ -1040,7 +1040,37 @@ public class WorkflowThread
     public WaitForThreadsNodeOutput WaitForThreads(SpawnedThreads threadsToWaitFor)
     {
         CheckIfWorkflowThreadIsActive();
-        WaitForThreadsNode waitNode = threadsToWaitFor.BuildNode();
+        WaitForThreadsNode waitNode = threadsToWaitFor.BuildNode(WaitForThreadsStrategy.WaitForAll);
+        string nodeName = AddNode("threads", Node.NodeOneofCase.WaitForThreads, waitNode);
+        return new WaitForThreadsNodeOutput(nodeName, this);
+    }
+
+    /// <summary>
+    /// Adds a WAIT_FOR_THREAD node which waits for the first Child ThreadRun to complete of a provided list.
+    /// </summary>
+    /// <param name="threadsToWaitFor">
+    /// Set of SpawnedThread objects returned one or more calls to spawnThread.
+    /// </param>
+    /// <returns>A WaitForThreadsNodeOutput that can be used for timeouts or exception handling. </returns>
+    public WaitForThreadsNodeOutput WaitForFirstOf(SpawnedThreads threadsToWaitFor)
+    {
+        CheckIfWorkflowThreadIsActive();
+        WaitForThreadsNode waitNode = threadsToWaitFor.BuildNode(WaitForThreadsStrategy.WaitForFirst);
+        string nodeName = AddNode("threads", Node.NodeOneofCase.WaitForThreads, waitNode);
+        return new WaitForThreadsNodeOutput(nodeName, this);
+    }
+
+    /// <summary>
+    /// Adds a WAIT_FOR_THREAD node which waits for any Child ThreadRun to complete of a provided list.
+    /// </summary>
+    /// <param name="threadsToWaitFor">
+    /// Set of SpawnedThread objects returned one or more calls to spawnThread.
+    /// </param>
+    /// <returns>A WaitForThreadsNodeOutput that can be used for timeouts or exception handling. </returns>
+    public WaitForThreadsNodeOutput WaitForAnyOf(SpawnedThreads threadsToWaitFor)
+    {
+        CheckIfWorkflowThreadIsActive();
+        WaitForThreadsNode waitNode = threadsToWaitFor.BuildNode(WaitForThreadsStrategy.WaitForAny);
         string nodeName = AddNode("threads", Node.NodeOneofCase.WaitForThreads, waitNode);
         return new WaitForThreadsNodeOutput(nodeName, this);
     }
