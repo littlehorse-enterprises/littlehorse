@@ -39,3 +39,4 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 011 | [Type-Safe `StructPath`s](./011-type-safe-structpaths.md) | Jacob Snarr | [#1884](https://github.com/littlehorse-enterprises/littlehorse/issues/1884) |
 | 012 | [`ThreadRun` Archival](./012-archive-thread-run.md) | Jacob Snarr | [#2038](https://github.com/littlehorse-enterprises/littlehorse/issues/2038) |
 | 013 | [Wait For One Of Many Threads](./013-wait-for-one-of.md) | Colt McNealy | [#2037](https://github.com/littlehorse-enterprises/littlehorse/issues/2037) |
+| 014 | [Conditions Refactor](./014-conditions-refactor.md) | Colt McNealy | [#1458](https://github.com/littlehorse-enterprises/littlehorse/issues/1458) |
