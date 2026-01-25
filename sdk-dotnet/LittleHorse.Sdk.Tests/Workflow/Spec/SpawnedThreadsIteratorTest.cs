@@ -33,7 +33,7 @@ public class SpawnedThreadsIteratorTest
        
         var spawnedThreadsIterator = new SpawnedThreadsIterator(wfRunVariable);
         
-        var actualSpawnedThreadsIterator = spawnedThreadsIterator.BuildNode();
+        var actualSpawnedThreadsIterator = spawnedThreadsIterator.BuildNode(WaitForThreadsStrategy.WaitForAll);
         
         var waitNode = new WaitForThreadsNode
         {

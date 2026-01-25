@@ -1305,11 +1305,12 @@ func (t *WorkflowThread) spawnThread(
 	}
 }
 
-func (t *WorkflowThread) waitForThreads(s ...*SpawnedThread) *WaitForThreadsNodeOutput {
+func (t *WorkflowThread) waitForThreads(strategy lhproto.WaitForThreadsStrategy, s ...*SpawnedThread) *WaitForThreadsNodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode("threads", "WAIT_FOR_THREADS")
 	node.Node = &lhproto.Node_WaitForThreads{
 		WaitForThreads: &lhproto.WaitForThreadsNode{
+			Strategy: strategy,
 			ThreadsToWaitFor: &lhproto.WaitForThreadsNode_Threads{
 				Threads: &lhproto.WaitForThreadsNode_ThreadsToWaitFor{
 					Threads: make([]*lhproto.WaitForThreadsNode_ThreadToWaitFor, 0),
@@ -1387,7 +1388,7 @@ func (t *WorkflowThread) spawnThreadForEach(
 	}
 }
 
-func (t *WorkflowThread) waitForThreadsList(s *SpawnedThreads) *WaitForThreadsNodeOutput {
+func (t *WorkflowThread) waitForThreadsList(strategy lhproto.WaitForThreadsStrategy, s *SpawnedThreads) *WaitForThreadsNodeOutput {
 	t.checkIfIsActive()
 	threadListAssn, err := t.assignVariable(s.threadsVar)
 	if err != nil {
@@ -1395,6 +1396,7 @@ func (t *WorkflowThread) waitForThreadsList(s *SpawnedThreads) *WaitForThreadsNo
 	}
 
 	subNode := &lhproto.WaitForThreadsNode{
+		Strategy: strategy,
 		ThreadsToWaitFor: &lhproto.WaitForThreadsNode_ThreadList{
 			ThreadList: threadListAssn,
 		},
