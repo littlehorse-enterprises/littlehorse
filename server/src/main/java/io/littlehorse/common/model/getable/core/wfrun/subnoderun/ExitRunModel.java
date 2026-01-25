@@ -56,7 +56,7 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
                 // Can't exit yet.
                 return false;
             }
-            if (child.status != LHStatus.COMPLETED && child.status != LHStatus.HALTED) {
+            if (child.status != LHStatus.COMPLETED && !child.isHalted()) {
                 if (!nodeRun.getThreadRun().getHandledFailedChildren().contains(childId)) {
                     allComplete = false;
 
