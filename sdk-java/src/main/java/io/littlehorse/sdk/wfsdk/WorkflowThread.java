@@ -335,6 +335,29 @@ public interface WorkflowThread {
     WaitForThreadsNodeOutput waitForThreads(SpawnedThreads threadsToWaitFor);
 
     /**
+     * Adds a WAIT_FOR_THREADS node that waits for the first child ThreadRun to complete or fail.
+     * Once the first thread completes, all other threads are halted.
+     * If the first thread to finish fails, the failure propagates and other threads are halted.
+     *
+     * @param threadsToWaitFor set of SpawnedThread objects returned one or more calls to
+     *     spawnThread.
+     * @return a WaitForThreadsNodeOutput that can be used for exception handling.
+     */
+    WaitForThreadsNodeOutput waitForFirstOf(SpawnedThreads threadsToWaitFor);
+
+    /**
+     * Adds a WAIT_FOR_THREADS node that waits for any child ThreadRun to complete successfully,
+     * ignoring failures. If a thread fails, it waits for other threads to complete.
+     * Once any thread completes successfully, all other threads are halted.
+     * If all threads fail, a CHILD_FAILURE error is thrown.
+     *
+     * @param threadsToWaitFor set of SpawnedThread objects returned one or more calls to
+     *     spawnThread.
+     * @return a WaitForThreadsNodeOutput that can be used for exception handling.
+     */
+    WaitForThreadsNodeOutput waitForAnyOf(SpawnedThreads threadsToWaitFor);
+
+    /**
      * Adds an EXTERNAL_EVENT node which blocks until an 'ExternalEvent' of the specified type
      * arrives.
      *
