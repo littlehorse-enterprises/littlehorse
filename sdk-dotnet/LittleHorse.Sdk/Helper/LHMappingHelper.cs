@@ -58,25 +58,6 @@ namespace LittleHorse.Sdk.Helper
             return VariableType.JsonObj;
         }
         
-        /// <summary>
-        /// Converts a Timestamp from the proto lib to Dotnet Datetime.
-        /// 
-        /// </summary>
-        /// <param name="protoTimestamp"> The timestamp to convert.</param>
-        public static DateTime? DateTimeFromProtoTimeStamp(Timestamp? protoTimestamp)
-        {
-            if (protoTimestamp == null) return null;
-
-            DateTime? outDate = DateTimeOffset.FromUnixTimeSeconds(protoTimestamp.Seconds).DateTime;
-            outDate = outDate?.AddMilliseconds(protoTimestamp.Nanos / 1_000_000.0);
-
-            if (protoTimestamp is { Seconds: 0, Nanos: 0 })
-            {
-                return DateTime.Now;
-            }
-
-            return outDate;
-        }
         
         /// <summary>
         /// Converts a dotnet object to LH VariableValue.
@@ -113,6 +94,14 @@ namespace LittleHorse.Sdk.Helper
             else if (obj is byte[] byteArray)
             {
                 result.Bytes = ByteString.CopyFrom(byteArray);
+            }
+            else if (obj is DateTime dateTime) 
+            {
+                result.UtcTimestamp = Timestamp.FromDateTime(dateTime.ToUniversalTime());
+            }
+            else if (obj is WfRunId wfRunId)
+            {
+                result.WfRunId = wfRunId;
             }
             else
             {
@@ -172,6 +161,10 @@ namespace LittleHorse.Sdk.Helper
                 case VariableValue.ValueOneofCase.JsonObj:
                     jsonStr = val.JsonObj;
                     return JsonHandler.DeserializeFromJson(jsonStr, type);
+                case VariableValue.ValueOneofCase.UtcTimestamp:
+                    return val.UtcTimestamp.ToDateTime();
+                case VariableValue.ValueOneofCase.WfRunId:
+                    return val.WfRunId;
                 case VariableValue.ValueOneofCase.None:
                     return null;
                 default:
@@ -255,6 +248,10 @@ namespace LittleHorse.Sdk.Helper
                     return VariableType.Bool;
                 case VariableValue.ValueOneofCase.JsonArr:
                     return VariableType.JsonArr;
+                case VariableValue.ValueOneofCase.UtcTimestamp:
+                    return VariableType.Timestamp;
+                case VariableValue.ValueOneofCase.WfRunId:
+                    return VariableType.WfRunId;
                 case VariableValue.ValueOneofCase.JsonObj:
                 case VariableValue.ValueOneofCase.None:
                 default:
