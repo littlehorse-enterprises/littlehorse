@@ -73,6 +73,7 @@ The following list describes the default metrics collected for each entity type.
   - "TASKATTEMPT_STARTED": Count of TaskAttempts started
   - "TASK_SCHEDULED_TO_TASK_RUNNING": Latency from TASK_SCHEDULED to TASK_RUNNING
   - "TASK_RUNNING_TO_TASK_SUCCESS": Latency from TASK_RUNNING to TASK_SUCCESS
+  - "TASK_SCHEDULED_TO_TASK_SUCCESS": Latency from TASK_SCHEDULED to TASK_SUCCESS
   - "TASK_RUNNING_TO_TASK_FAILED": Latency from TASK_RUNNING to TASK_FAILED
   - "TASK_RUNNING_TO_TASK_EXCEPTION": Latency from TASK_RUNNING to TASK_EXCEPTION
   - "TIMEOUT": Count of TaskAttempts that timed out
