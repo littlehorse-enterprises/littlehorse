@@ -31,8 +31,6 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, Ob
     private long lastSeenTimestampMillis;
     private long lastCheckpointedHintTimeMillis;
 
-    private boolean seenLastKey = false;
-
     private final boolean forwardTimers;
 
     public TimerCoreProcessor(boolean forwardTimers) {
@@ -81,11 +79,6 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, Ob
         String end = LHUtil.toLhDbFormat(new Date(timestamp));
         String lastSeenKey =
                 lastSeenTimestampMillis == 0L ? "000000" : LHUtil.toLhDbFormat(new Date(lastSeenTimestampMillis));
-
-        if (!seenLastKey) {
-            System.out.println(lastSeenKey);
-            seenLastKey = true;
-        }
 
         try (LHKeyValueIterator<LHTimer> iter = lhKeyValueStore.range(lastSeenKey, end, LHTimer.class)) {
             long startTimeMs = System.currentTimeMillis();
