@@ -202,7 +202,12 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         this.wfSpec = spec;
     }
 
-    //    public ThreadRunModel getThreadRun(int threadRunNumber, ReadOnlyGetableManager readOnlyGetableManager) {
+    public Iterator<ThreadRunModel> getThreadRunIterator() {
+        GetableManager getableManager =
+                this.executionContext.castOnSupport(CoreProcessorContext.class).getableManager();
+        return new ThreadRunIterator(id, threadRunsUseMeCarefully, greatestThreadRunNumber, getableManager);
+    }
+
     public ThreadRunModel getThreadRun(int threadRunNumber) {
         ThreadRunModel localThreadRun = threadRunsUseMeCarefully.stream()
                 .filter(thread -> thread.getNumber() == threadRunNumber)
