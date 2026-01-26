@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.wfrun.InactiveThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
@@ -26,6 +27,7 @@ import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
@@ -113,6 +115,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.CORRELATED_EVENT;
         } else if (cls.equals(CheckpointModel.class)) {
             return GetableClassEnum.CHECKPOINT;
+        } else if (cls.equals(InactiveThreadRunModel.class)) {
+            return GetableClassEnum.INACTIVE_THREAD_RUN;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -162,6 +166,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CorrelatedEventModel.class;
             case CHECKPOINT:
                 return CheckpointModel.class;
+            case INACTIVE_THREAD_RUN:
+                return InactiveThreadRunModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -212,6 +218,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CorrelatedEventIdModel.class;
             case CHECKPOINT:
                 return CheckpointIdModel.class;
+            case INACTIVE_THREAD_RUN:
+                return InactiveThreadRunIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");
