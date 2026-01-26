@@ -28,8 +28,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ListMetricsRequest() {
-    metricSpecId_ = "";
-    aggregationType_ = 0;
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -46,127 +44,64 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int METRIC_SPEC_ID_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object metricSpecId_ = "";
+  public static final int ID_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.MetricWindowId id_;
   /**
-   * <code>string metric_spec_id = 1;</code>
-   * @return The metricSpecId.
+   * <pre>
+   * Metric window id contains object and start time
+   * </pre>
+   *
+   * <code>.littlehorse.MetricWindowId id = 1;</code>
+   * @return Whether the id field is set.
    */
   @java.lang.Override
-  public java.lang.String getMetricSpecId() {
-    java.lang.Object ref = metricSpecId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      metricSpecId_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string metric_spec_id = 1;</code>
-   * @return The bytes for metricSpecId.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getMetricSpecIdBytes() {
-    java.lang.Object ref = metricSpecId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      metricSpecId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int WINDOW_LENGTH_FIELD_NUMBER = 2;
-  private com.google.protobuf.Duration windowLength_;
-  /**
-   * <code>.google.protobuf.Duration window_length = 2;</code>
-   * @return Whether the windowLength field is set.
-   */
-  @java.lang.Override
-  public boolean hasWindowLength() {
+  public boolean hasId() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.google.protobuf.Duration window_length = 2;</code>
-   * @return The windowLength.
+   * <pre>
+   * Metric window id contains object and start time
+   * </pre>
+   *
+   * <code>.littlehorse.MetricWindowId id = 1;</code>
+   * @return The id.
    */
   @java.lang.Override
-  public com.google.protobuf.Duration getWindowLength() {
-    return windowLength_ == null ? com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
+  public io.littlehorse.sdk.common.proto.MetricWindowId getId() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.MetricWindowId.getDefaultInstance() : id_;
   }
   /**
-   * <code>.google.protobuf.Duration window_length = 2;</code>
+   * <pre>
+   * Metric window id contains object and start time
+   * </pre>
+   *
+   * <code>.littlehorse.MetricWindowId id = 1;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder() {
-    return windowLength_ == null ? com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
-  }
-
-  public static final int AGGREGATION_TYPE_FIELD_NUMBER = 3;
-  private int aggregationType_ = 0;
-  /**
-   * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-   * @return The enum numeric value on the wire for aggregationType.
-   */
-  @java.lang.Override public int getAggregationTypeValue() {
-    return aggregationType_;
-  }
-  /**
-   * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-   * @return The aggregationType.
-   */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.AggregationType getAggregationType() {
-    io.littlehorse.sdk.common.proto.AggregationType result = io.littlehorse.sdk.common.proto.AggregationType.forNumber(aggregationType_);
-    return result == null ? io.littlehorse.sdk.common.proto.AggregationType.UNRECOGNIZED : result;
-  }
-
-  public static final int START_TIME_FIELD_NUMBER = 4;
-  private com.google.protobuf.Timestamp startTime_;
-  /**
-   * <code>.google.protobuf.Timestamp start_time = 4;</code>
-   * @return Whether the startTime field is set.
-   */
-  @java.lang.Override
-  public boolean hasStartTime() {
-    return ((bitField0_ & 0x00000002) != 0);
-  }
-  /**
-   * <code>.google.protobuf.Timestamp start_time = 4;</code>
-   * @return The startTime.
-   */
-  @java.lang.Override
-  public com.google.protobuf.Timestamp getStartTime() {
-    return startTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
-  }
-  /**
-   * <code>.google.protobuf.Timestamp start_time = 4;</code>
-   */
-  @java.lang.Override
-  public com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder() {
-    return startTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
+  public io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder getIdOrBuilder() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.MetricWindowId.getDefaultInstance() : id_;
   }
 
   public static final int END_TIME_FIELD_NUMBER = 5;
   private com.google.protobuf.Timestamp endTime_;
   /**
-   * <code>.google.protobuf.Timestamp end_time = 5;</code>
+   * <pre>
+   * Optional: if not set, server uses current time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
    * @return Whether the endTime field is set.
    */
   @java.lang.Override
   public boolean hasEndTime() {
-    return ((bitField0_ & 0x00000004) != 0);
+    return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>.google.protobuf.Timestamp end_time = 5;</code>
+   * <pre>
+   * Optional: if not set, server uses current time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
    * @return The endTime.
    */
   @java.lang.Override
@@ -174,7 +109,11 @@ private static final long serialVersionUID = 0L;
     return endTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : endTime_;
   }
   /**
-   * <code>.google.protobuf.Timestamp end_time = 5;</code>
+   * <pre>
+   * Optional: if not set, server uses current time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder() {
@@ -195,19 +134,10 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(metricSpecId_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 1, metricSpecId_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(2, getWindowLength());
-    }
-    if (aggregationType_ != io.littlehorse.sdk.common.proto.AggregationType.COUNT.getNumber()) {
-      output.writeEnum(3, aggregationType_);
+      output.writeMessage(1, getId());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(4, getStartTime());
-    }
-    if (((bitField0_ & 0x00000004) != 0)) {
       output.writeMessage(5, getEndTime());
     }
     getUnknownFields().writeTo(output);
@@ -219,22 +149,11 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(metricSpecId_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, metricSpecId_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getWindowLength());
-    }
-    if (aggregationType_ != io.littlehorse.sdk.common.proto.AggregationType.COUNT.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(3, aggregationType_);
+        .computeMessageSize(1, getId());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getStartTime());
-    }
-    if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getEndTime());
     }
@@ -253,18 +172,10 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.ListMetricsRequest other = (io.littlehorse.sdk.common.proto.ListMetricsRequest) obj;
 
-    if (!getMetricSpecId()
-        .equals(other.getMetricSpecId())) return false;
-    if (hasWindowLength() != other.hasWindowLength()) return false;
-    if (hasWindowLength()) {
-      if (!getWindowLength()
-          .equals(other.getWindowLength())) return false;
-    }
-    if (aggregationType_ != other.aggregationType_) return false;
-    if (hasStartTime() != other.hasStartTime()) return false;
-    if (hasStartTime()) {
-      if (!getStartTime()
-          .equals(other.getStartTime())) return false;
+    if (hasId() != other.hasId()) return false;
+    if (hasId()) {
+      if (!getId()
+          .equals(other.getId())) return false;
     }
     if (hasEndTime() != other.hasEndTime()) return false;
     if (hasEndTime()) {
@@ -282,17 +193,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + METRIC_SPEC_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getMetricSpecId().hashCode();
-    if (hasWindowLength()) {
-      hash = (37 * hash) + WINDOW_LENGTH_FIELD_NUMBER;
-      hash = (53 * hash) + getWindowLength().hashCode();
-    }
-    hash = (37 * hash) + AGGREGATION_TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + aggregationType_;
-    if (hasStartTime()) {
-      hash = (37 * hash) + START_TIME_FIELD_NUMBER;
-      hash = (53 * hash) + getStartTime().hashCode();
+    if (hasId()) {
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
     }
     if (hasEndTime()) {
       hash = (37 * hash) + END_TIME_FIELD_NUMBER;
@@ -428,8 +331,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessage
               .alwaysUseFieldBuilders) {
-        internalGetWindowLengthFieldBuilder();
-        internalGetStartTimeFieldBuilder();
+        internalGetIdFieldBuilder();
         internalGetEndTimeFieldBuilder();
       }
     }
@@ -437,17 +339,10 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      metricSpecId_ = "";
-      windowLength_ = null;
-      if (windowLengthBuilder_ != null) {
-        windowLengthBuilder_.dispose();
-        windowLengthBuilder_ = null;
-      }
-      aggregationType_ = 0;
-      startTime_ = null;
-      if (startTimeBuilder_ != null) {
-        startTimeBuilder_.dispose();
-        startTimeBuilder_ = null;
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
       }
       endTime_ = null;
       if (endTimeBuilder_ != null) {
@@ -487,30 +382,18 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.ListMetricsRequest result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.metricSpecId_ = metricSpecId_;
-      }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.windowLength_ = windowLengthBuilder_ == null
-            ? windowLength_
-            : windowLengthBuilder_.build();
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.id_ = idBuilder_ == null
+            ? id_
+            : idBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.aggregationType_ = aggregationType_;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.startTime_ = startTimeBuilder_ == null
-            ? startTime_
-            : startTimeBuilder_.build();
-        to_bitField0_ |= 0x00000002;
-      }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
+      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.endTime_ = endTimeBuilder_ == null
             ? endTime_
             : endTimeBuilder_.build();
-        to_bitField0_ |= 0x00000004;
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -527,19 +410,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.ListMetricsRequest other) {
       if (other == io.littlehorse.sdk.common.proto.ListMetricsRequest.getDefaultInstance()) return this;
-      if (!other.getMetricSpecId().isEmpty()) {
-        metricSpecId_ = other.metricSpecId_;
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
-      if (other.hasWindowLength()) {
-        mergeWindowLength(other.getWindowLength());
-      }
-      if (other.aggregationType_ != 0) {
-        setAggregationTypeValue(other.getAggregationTypeValue());
-      }
-      if (other.hasStartTime()) {
-        mergeStartTime(other.getStartTime());
+      if (other.hasId()) {
+        mergeId(other.getId());
       }
       if (other.hasEndTime()) {
         mergeEndTime(other.getEndTime());
@@ -571,34 +443,17 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              metricSpecId_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  internalGetIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 18: {
-              input.readMessage(
-                  internalGetWindowLengthFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 18
-            case 24: {
-              aggregationType_ = input.readEnum();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
-            case 34: {
-              input.readMessage(
-                  internalGetStartTimeFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000008;
-              break;
-            } // case 34
             case 42: {
               input.readMessage(
                   internalGetEndTimeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000002;
               break;
             } // case 42
             default: {
@@ -618,383 +473,183 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.lang.Object metricSpecId_ = "";
+    private io.littlehorse.sdk.common.proto.MetricWindowId id_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.MetricWindowId, io.littlehorse.sdk.common.proto.MetricWindowId.Builder, io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder> idBuilder_;
     /**
-     * <code>string metric_spec_id = 1;</code>
-     * @return The metricSpecId.
+     * <pre>
+     * Metric window id contains object and start time
+     * </pre>
+     *
+     * <code>.littlehorse.MetricWindowId id = 1;</code>
+     * @return Whether the id field is set.
      */
-    public java.lang.String getMetricSpecId() {
-      java.lang.Object ref = metricSpecId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        metricSpecId_ = s;
-        return s;
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * Metric window id contains object and start time
+     * </pre>
+     *
+     * <code>.littlehorse.MetricWindowId id = 1;</code>
+     * @return The id.
+     */
+    public io.littlehorse.sdk.common.proto.MetricWindowId getId() {
+      if (idBuilder_ == null) {
+        return id_ == null ? io.littlehorse.sdk.common.proto.MetricWindowId.getDefaultInstance() : id_;
       } else {
-        return (java.lang.String) ref;
+        return idBuilder_.getMessage();
       }
     }
     /**
-     * <code>string metric_spec_id = 1;</code>
-     * @return The bytes for metricSpecId.
+     * <pre>
+     * Metric window id contains object and start time
+     * </pre>
+     *
+     * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getMetricSpecIdBytes() {
-      java.lang.Object ref = metricSpecId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        metricSpecId_ = b;
-        return b;
+    public Builder setId(io.littlehorse.sdk.common.proto.MetricWindowId value) {
+      if (idBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        id_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        idBuilder_.setMessage(value);
       }
-    }
-    /**
-     * <code>string metric_spec_id = 1;</code>
-     * @param value The metricSpecId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMetricSpecId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      metricSpecId_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>string metric_spec_id = 1;</code>
-     * @return This builder for chaining.
+     * <pre>
+     * Metric window id contains object and start time
+     * </pre>
+     *
+     * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
-    public Builder clearMetricSpecId() {
-      metricSpecId_ = getDefaultInstance().getMetricSpecId();
+    public Builder setId(
+        io.littlehorse.sdk.common.proto.MetricWindowId.Builder builderForValue) {
+      if (idBuilder_ == null) {
+        id_ = builderForValue.build();
+      } else {
+        idBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Metric window id contains object and start time
+     * </pre>
+     *
+     * <code>.littlehorse.MetricWindowId id = 1;</code>
+     */
+    public Builder mergeId(io.littlehorse.sdk.common.proto.MetricWindowId value) {
+      if (idBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          id_ != null &&
+          id_ != io.littlehorse.sdk.common.proto.MetricWindowId.getDefaultInstance()) {
+          getIdBuilder().mergeFrom(value);
+        } else {
+          id_ = value;
+        }
+      } else {
+        idBuilder_.mergeFrom(value);
+      }
+      if (id_ != null) {
+        bitField0_ |= 0x00000001;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Metric window id contains object and start time
+     * </pre>
+     *
+     * <code>.littlehorse.MetricWindowId id = 1;</code>
+     */
+    public Builder clearId() {
       bitField0_ = (bitField0_ & ~0x00000001);
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
       onChanged();
       return this;
     }
     /**
-     * <code>string metric_spec_id = 1;</code>
-     * @param value The bytes for metricSpecId to set.
-     * @return This builder for chaining.
+     * <pre>
+     * Metric window id contains object and start time
+     * </pre>
+     *
+     * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
-    public Builder setMetricSpecIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      metricSpecId_ = value;
+    public io.littlehorse.sdk.common.proto.MetricWindowId.Builder getIdBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
-      return this;
-    }
-
-    private com.google.protobuf.Duration windowLength_;
-    private com.google.protobuf.SingleFieldBuilder<
-        com.google.protobuf.Duration, com.google.protobuf.Duration.Builder, com.google.protobuf.DurationOrBuilder> windowLengthBuilder_;
-    /**
-     * <code>.google.protobuf.Duration window_length = 2;</code>
-     * @return Whether the windowLength field is set.
-     */
-    public boolean hasWindowLength() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return internalGetIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Duration window_length = 2;</code>
-     * @return The windowLength.
+     * <pre>
+     * Metric window id contains object and start time
+     * </pre>
+     *
+     * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
-    public com.google.protobuf.Duration getWindowLength() {
-      if (windowLengthBuilder_ == null) {
-        return windowLength_ == null ? com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
+    public io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder getIdOrBuilder() {
+      if (idBuilder_ != null) {
+        return idBuilder_.getMessageOrBuilder();
       } else {
-        return windowLengthBuilder_.getMessage();
+        return id_ == null ?
+            io.littlehorse.sdk.common.proto.MetricWindowId.getDefaultInstance() : id_;
       }
     }
     /**
-     * <code>.google.protobuf.Duration window_length = 2;</code>
-     */
-    public Builder setWindowLength(com.google.protobuf.Duration value) {
-      if (windowLengthBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        windowLength_ = value;
-      } else {
-        windowLengthBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 2;</code>
-     */
-    public Builder setWindowLength(
-        com.google.protobuf.Duration.Builder builderForValue) {
-      if (windowLengthBuilder_ == null) {
-        windowLength_ = builderForValue.build();
-      } else {
-        windowLengthBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 2;</code>
-     */
-    public Builder mergeWindowLength(com.google.protobuf.Duration value) {
-      if (windowLengthBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
-          windowLength_ != null &&
-          windowLength_ != com.google.protobuf.Duration.getDefaultInstance()) {
-          getWindowLengthBuilder().mergeFrom(value);
-        } else {
-          windowLength_ = value;
-        }
-      } else {
-        windowLengthBuilder_.mergeFrom(value);
-      }
-      if (windowLength_ != null) {
-        bitField0_ |= 0x00000002;
-        onChanged();
-      }
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 2;</code>
-     */
-    public Builder clearWindowLength() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      windowLength_ = null;
-      if (windowLengthBuilder_ != null) {
-        windowLengthBuilder_.dispose();
-        windowLengthBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 2;</code>
-     */
-    public com.google.protobuf.Duration.Builder getWindowLengthBuilder() {
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return internalGetWindowLengthFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 2;</code>
-     */
-    public com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder() {
-      if (windowLengthBuilder_ != null) {
-        return windowLengthBuilder_.getMessageOrBuilder();
-      } else {
-        return windowLength_ == null ?
-            com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
-      }
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 2;</code>
+     * <pre>
+     * Metric window id contains object and start time
+     * </pre>
+     *
+     * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        com.google.protobuf.Duration, com.google.protobuf.Duration.Builder, com.google.protobuf.DurationOrBuilder> 
-        internalGetWindowLengthFieldBuilder() {
-      if (windowLengthBuilder_ == null) {
-        windowLengthBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            com.google.protobuf.Duration, com.google.protobuf.Duration.Builder, com.google.protobuf.DurationOrBuilder>(
-                getWindowLength(),
+        io.littlehorse.sdk.common.proto.MetricWindowId, io.littlehorse.sdk.common.proto.MetricWindowId.Builder, io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder> 
+        internalGetIdFieldBuilder() {
+      if (idBuilder_ == null) {
+        idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.MetricWindowId, io.littlehorse.sdk.common.proto.MetricWindowId.Builder, io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder>(
+                getId(),
                 getParentForChildren(),
                 isClean());
-        windowLength_ = null;
+        id_ = null;
       }
-      return windowLengthBuilder_;
-    }
-
-    private int aggregationType_ = 0;
-    /**
-     * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-     * @return The enum numeric value on the wire for aggregationType.
-     */
-    @java.lang.Override public int getAggregationTypeValue() {
-      return aggregationType_;
-    }
-    /**
-     * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-     * @param value The enum numeric value on the wire for aggregationType to set.
-     * @return This builder for chaining.
-     */
-    public Builder setAggregationTypeValue(int value) {
-      aggregationType_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-     * @return The aggregationType.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.AggregationType getAggregationType() {
-      io.littlehorse.sdk.common.proto.AggregationType result = io.littlehorse.sdk.common.proto.AggregationType.forNumber(aggregationType_);
-      return result == null ? io.littlehorse.sdk.common.proto.AggregationType.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-     * @param value The aggregationType to set.
-     * @return This builder for chaining.
-     */
-    public Builder setAggregationType(io.littlehorse.sdk.common.proto.AggregationType value) {
-      if (value == null) { throw new NullPointerException(); }
-      bitField0_ |= 0x00000004;
-      aggregationType_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearAggregationType() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      aggregationType_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private com.google.protobuf.Timestamp startTime_;
-    private com.google.protobuf.SingleFieldBuilder<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> startTimeBuilder_;
-    /**
-     * <code>.google.protobuf.Timestamp start_time = 4;</code>
-     * @return Whether the startTime field is set.
-     */
-    public boolean hasStartTime() {
-      return ((bitField0_ & 0x00000008) != 0);
-    }
-    /**
-     * <code>.google.protobuf.Timestamp start_time = 4;</code>
-     * @return The startTime.
-     */
-    public com.google.protobuf.Timestamp getStartTime() {
-      if (startTimeBuilder_ == null) {
-        return startTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
-      } else {
-        return startTimeBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.google.protobuf.Timestamp start_time = 4;</code>
-     */
-    public Builder setStartTime(com.google.protobuf.Timestamp value) {
-      if (startTimeBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        startTime_ = value;
-      } else {
-        startTimeBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp start_time = 4;</code>
-     */
-    public Builder setStartTime(
-        com.google.protobuf.Timestamp.Builder builderForValue) {
-      if (startTimeBuilder_ == null) {
-        startTime_ = builderForValue.build();
-      } else {
-        startTimeBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp start_time = 4;</code>
-     */
-    public Builder mergeStartTime(com.google.protobuf.Timestamp value) {
-      if (startTimeBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
-          startTime_ != null &&
-          startTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-          getStartTimeBuilder().mergeFrom(value);
-        } else {
-          startTime_ = value;
-        }
-      } else {
-        startTimeBuilder_.mergeFrom(value);
-      }
-      if (startTime_ != null) {
-        bitField0_ |= 0x00000008;
-        onChanged();
-      }
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp start_time = 4;</code>
-     */
-    public Builder clearStartTime() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      startTime_ = null;
-      if (startTimeBuilder_ != null) {
-        startTimeBuilder_.dispose();
-        startTimeBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp start_time = 4;</code>
-     */
-    public com.google.protobuf.Timestamp.Builder getStartTimeBuilder() {
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return internalGetStartTimeFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.google.protobuf.Timestamp start_time = 4;</code>
-     */
-    public com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder() {
-      if (startTimeBuilder_ != null) {
-        return startTimeBuilder_.getMessageOrBuilder();
-      } else {
-        return startTime_ == null ?
-            com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
-      }
-    }
-    /**
-     * <code>.google.protobuf.Timestamp start_time = 4;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-        internalGetStartTimeFieldBuilder() {
-      if (startTimeBuilder_ == null) {
-        startTimeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                getStartTime(),
-                getParentForChildren(),
-                isClean());
-        startTime_ = null;
-      }
-      return startTimeBuilder_;
+      return idBuilder_;
     }
 
     private com.google.protobuf.Timestamp endTime_;
     private com.google.protobuf.SingleFieldBuilder<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> endTimeBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp end_time = 5;</code>
+     * <pre>
+     * Optional: if not set, server uses current time
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
      * @return Whether the endTime field is set.
      */
     public boolean hasEndTime() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 5;</code>
+     * <pre>
+     * Optional: if not set, server uses current time
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
      * @return The endTime.
      */
     public com.google.protobuf.Timestamp getEndTime() {
@@ -1005,7 +660,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 5;</code>
+     * <pre>
+     * Optional: if not set, server uses current time
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
      */
     public Builder setEndTime(com.google.protobuf.Timestamp value) {
       if (endTimeBuilder_ == null) {
@@ -1016,12 +675,16 @@ private static final long serialVersionUID = 0L;
       } else {
         endTimeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 5;</code>
+     * <pre>
+     * Optional: if not set, server uses current time
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
      */
     public Builder setEndTime(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -1030,16 +693,20 @@ private static final long serialVersionUID = 0L;
       } else {
         endTimeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 5;</code>
+     * <pre>
+     * Optional: if not set, server uses current time
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
      */
     public Builder mergeEndTime(com.google.protobuf.Timestamp value) {
       if (endTimeBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) != 0) &&
+        if (((bitField0_ & 0x00000002) != 0) &&
           endTime_ != null &&
           endTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getEndTimeBuilder().mergeFrom(value);
@@ -1050,16 +717,20 @@ private static final long serialVersionUID = 0L;
         endTimeBuilder_.mergeFrom(value);
       }
       if (endTime_ != null) {
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000002;
         onChanged();
       }
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 5;</code>
+     * <pre>
+     * Optional: if not set, server uses current time
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
      */
     public Builder clearEndTime() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000002);
       endTime_ = null;
       if (endTimeBuilder_ != null) {
         endTimeBuilder_.dispose();
@@ -1069,15 +740,23 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 5;</code>
+     * <pre>
+     * Optional: if not set, server uses current time
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
      */
     public com.google.protobuf.Timestamp.Builder getEndTimeBuilder() {
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000002;
       onChanged();
       return internalGetEndTimeFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 5;</code>
+     * <pre>
+     * Optional: if not set, server uses current time
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder() {
       if (endTimeBuilder_ != null) {
@@ -1088,7 +767,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 5;</code>
+     * <pre>
+     * Optional: if not set, server uses current time
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 

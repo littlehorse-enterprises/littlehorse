@@ -36,19 +36,4 @@ public interface ListMetricLevelOverridesRequestOrBuilder extends
    * <code>optional .littlehorse.WfSpecId wf_spec_filter = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecFilterOrBuilder();
-
-  /**
-   * <code>optional .littlehorse.TaskDefId task_def_filter = 2;</code>
-   * @return Whether the taskDefFilter field is set.
-   */
-  boolean hasTaskDefFilter();
-  /**
-   * <code>optional .littlehorse.TaskDefId task_def_filter = 2;</code>
-   * @return The taskDefFilter.
-   */
-  io.littlehorse.sdk.common.proto.TaskDefId getTaskDefFilter();
-  /**
-   * <code>optional .littlehorse.TaskDefId task_def_filter = 2;</code>
-   */
-  io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefFilterOrBuilder();
 }

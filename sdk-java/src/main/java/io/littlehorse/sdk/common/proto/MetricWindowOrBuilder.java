@@ -26,174 +26,36 @@ public interface MetricWindowOrBuilder extends
   io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder getIdOrBuilder();
 
   /**
-   * <pre>
-   * for applicable entities
-   * </pre>
-   *
-   * <code>int32 total_started = 2;</code>
-   * @return The totalStarted.
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
-  int getTotalStarted();
-
+  int getMetricsCount();
   /**
-   * <code>.littlehorse.CountAndTiming completed = 3;</code>
-   * @return Whether the completed field is set.
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
-  boolean hasCompleted();
-  /**
-   * <code>.littlehorse.CountAndTiming completed = 3;</code>
-   * @return The completed.
-   */
-  io.littlehorse.sdk.common.proto.CountAndTiming getCompleted();
-  /**
-   * <code>.littlehorse.CountAndTiming completed = 3;</code>
-   */
-  io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getCompletedOrBuilder();
-
-  /**
-   * <code>.littlehorse.CountAndTiming halted = 4;</code>
-   * @return Whether the halted field is set.
-   */
-  boolean hasHalted();
-  /**
-   * <code>.littlehorse.CountAndTiming halted = 4;</code>
-   * @return The halted.
-   */
-  io.littlehorse.sdk.common.proto.CountAndTiming getHalted();
-  /**
-   * <code>.littlehorse.CountAndTiming halted = 4;</code>
-   */
-  io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getHaltedOrBuilder();
-
-  /**
-   * <code>.littlehorse.CountAndTiming error = 5;</code>
-   * @return Whether the error field is set.
-   */
-  boolean hasError();
-  /**
-   * <code>.littlehorse.CountAndTiming error = 5;</code>
-   * @return The error.
-   */
-  io.littlehorse.sdk.common.proto.CountAndTiming getError();
-  /**
-   * <code>.littlehorse.CountAndTiming error = 5;</code>
-   */
-  io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getErrorOrBuilder();
-
-  /**
-   * <code>.littlehorse.CountAndTiming exception = 6;</code>
-   * @return Whether the exception field is set.
-   */
-  boolean hasException();
-  /**
-   * <code>.littlehorse.CountAndTiming exception = 6;</code>
-   * @return The exception.
-   */
-  io.littlehorse.sdk.common.proto.CountAndTiming getException();
-  /**
-   * <code>.littlehorse.CountAndTiming exception = 6;</code>
-   */
-  io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getExceptionOrBuilder();
-
-  /**
-   * <pre>
-   * for exceptions, errors by type, etc.
-   * </pre>
-   *
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
-   */
-  int getCustomCount();
-  /**
-   * <pre>
-   * for exceptions, errors by type, etc.
-   * </pre>
-   *
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
-   */
-  boolean containsCustom(
+  boolean containsMetrics(
       java.lang.String key);
   /**
-   * Use {@link #getCustomMap()} instead.
+   * Use {@link #getMetricsMap()} instead.
    */
   @java.lang.Deprecated
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
-  getCustom();
+  getMetrics();
   /**
-   * <pre>
-   * for exceptions, errors by type, etc.
-   * </pre>
-   *
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
-  getCustomMap();
+  getMetricsMap();
   /**
-   * <pre>
-   * for exceptions, errors by type, etc.
-   * </pre>
-   *
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   /* nullable */
-io.littlehorse.sdk.common.proto.CountAndTiming getCustomOrDefault(
+io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrDefault(
       java.lang.String key,
       /* nullable */
 io.littlehorse.sdk.common.proto.CountAndTiming defaultValue);
   /**
-   * <pre>
-   * for exceptions, errors by type, etc.
-   * </pre>
-   *
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.CountAndTiming getCustomOrThrow(
+  io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrThrow(
       java.lang.String key);
-
-  /**
-   * <pre>
-   * Additional fields for TaskMetric specifics
-   * </pre>
-   *
-   * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-   * @return Whether the scheduledToRunning field is set.
-   */
-  boolean hasScheduledToRunning();
-  /**
-   * <pre>
-   * Additional fields for TaskMetric specifics
-   * </pre>
-   *
-   * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-   * @return The scheduledToRunning.
-   */
-  io.littlehorse.sdk.common.proto.CountAndTiming getScheduledToRunning();
-  /**
-   * <pre>
-   * Additional fields for TaskMetric specifics
-   * </pre>
-   *
-   * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-   */
-  io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getScheduledToRunningOrBuilder();
-
-  /**
-   * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-   * @return Whether the runningToSuccess field is set.
-   */
-  boolean hasRunningToSuccess();
-  /**
-   * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-   * @return The runningToSuccess.
-   */
-  io.littlehorse.sdk.common.proto.CountAndTiming getRunningToSuccess();
-  /**
-   * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-   */
-  io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getRunningToSuccessOrBuilder();
-
-  /**
-   * <code>int32 timeouts = 10;</code>
-   * @return The timeouts.
-   */
-  int getTimeouts();
 }

@@ -40,8 +40,8 @@ private static final long serialVersionUID = 0L;
   protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
       int number) {
     switch (number) {
-      case 7:
-        return internalGetCustom();
+      case 2:
+        return internalGetMetrics();
       default:
         throw new RuntimeException(
             "Invalid map field number: " + number);
@@ -82,132 +82,13 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.MetricWindowId.getDefaultInstance() : id_;
   }
 
-  public static final int TOTAL_STARTED_FIELD_NUMBER = 2;
-  private int totalStarted_ = 0;
-  /**
-   * <pre>
-   * for applicable entities
-   * </pre>
-   *
-   * <code>int32 total_started = 2;</code>
-   * @return The totalStarted.
-   */
-  @java.lang.Override
-  public int getTotalStarted() {
-    return totalStarted_;
-  }
-
-  public static final int COMPLETED_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.CountAndTiming completed_;
-  /**
-   * <code>.littlehorse.CountAndTiming completed = 3;</code>
-   * @return Whether the completed field is set.
-   */
-  @java.lang.Override
-  public boolean hasCompleted() {
-    return ((bitField0_ & 0x00000002) != 0);
-  }
-  /**
-   * <code>.littlehorse.CountAndTiming completed = 3;</code>
-   * @return The completed.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTiming getCompleted() {
-    return completed_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : completed_;
-  }
-  /**
-   * <code>.littlehorse.CountAndTiming completed = 3;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getCompletedOrBuilder() {
-    return completed_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : completed_;
-  }
-
-  public static final int HALTED_FIELD_NUMBER = 4;
-  private io.littlehorse.sdk.common.proto.CountAndTiming halted_;
-  /**
-   * <code>.littlehorse.CountAndTiming halted = 4;</code>
-   * @return Whether the halted field is set.
-   */
-  @java.lang.Override
-  public boolean hasHalted() {
-    return ((bitField0_ & 0x00000004) != 0);
-  }
-  /**
-   * <code>.littlehorse.CountAndTiming halted = 4;</code>
-   * @return The halted.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTiming getHalted() {
-    return halted_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : halted_;
-  }
-  /**
-   * <code>.littlehorse.CountAndTiming halted = 4;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getHaltedOrBuilder() {
-    return halted_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : halted_;
-  }
-
-  public static final int ERROR_FIELD_NUMBER = 5;
-  private io.littlehorse.sdk.common.proto.CountAndTiming error_;
-  /**
-   * <code>.littlehorse.CountAndTiming error = 5;</code>
-   * @return Whether the error field is set.
-   */
-  @java.lang.Override
-  public boolean hasError() {
-    return ((bitField0_ & 0x00000008) != 0);
-  }
-  /**
-   * <code>.littlehorse.CountAndTiming error = 5;</code>
-   * @return The error.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTiming getError() {
-    return error_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : error_;
-  }
-  /**
-   * <code>.littlehorse.CountAndTiming error = 5;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getErrorOrBuilder() {
-    return error_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : error_;
-  }
-
-  public static final int EXCEPTION_FIELD_NUMBER = 6;
-  private io.littlehorse.sdk.common.proto.CountAndTiming exception_;
-  /**
-   * <code>.littlehorse.CountAndTiming exception = 6;</code>
-   * @return Whether the exception field is set.
-   */
-  @java.lang.Override
-  public boolean hasException() {
-    return ((bitField0_ & 0x00000010) != 0);
-  }
-  /**
-   * <code>.littlehorse.CountAndTiming exception = 6;</code>
-   * @return The exception.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTiming getException() {
-    return exception_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : exception_;
-  }
-  /**
-   * <code>.littlehorse.CountAndTiming exception = 6;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getExceptionOrBuilder() {
-    return exception_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : exception_;
-  }
-
-  public static final int CUSTOM_FIELD_NUMBER = 7;
-  private static final class CustomDefaultEntryHolder {
+  public static final int METRICS_FIELD_NUMBER = 2;
+  private static final class MetricsDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
         java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> defaultEntry =
             com.google.protobuf.MapEntry
             .<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>newDefaultInstance(
-                io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricWindow_CustomEntry_descriptor, 
+                io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricWindow_MetricsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -215,160 +96,69 @@ private static final long serialVersionUID = 0L;
   }
   @SuppressWarnings("serial")
   private com.google.protobuf.MapField<
-      java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> custom_;
+      java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> metrics_;
   private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
-  internalGetCustom() {
-    if (custom_ == null) {
+  internalGetMetrics() {
+    if (metrics_ == null) {
       return com.google.protobuf.MapField.emptyMapField(
-          CustomDefaultEntryHolder.defaultEntry);
+          MetricsDefaultEntryHolder.defaultEntry);
     }
-    return custom_;
+    return metrics_;
   }
-  public int getCustomCount() {
-    return internalGetCustom().getMap().size();
+  public int getMetricsCount() {
+    return internalGetMetrics().getMap().size();
   }
   /**
-   * <pre>
-   * for exceptions, errors by type, etc.
-   * </pre>
-   *
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   @java.lang.Override
-  public boolean containsCustom(
+  public boolean containsMetrics(
       java.lang.String key) {
     if (key == null) { throw new NullPointerException("map key"); }
-    return internalGetCustom().getMap().containsKey(key);
+    return internalGetMetrics().getMap().containsKey(key);
   }
   /**
-   * Use {@link #getCustomMap()} instead.
+   * Use {@link #getMetricsMap()} instead.
    */
   @java.lang.Override
   @java.lang.Deprecated
-  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> getCustom() {
-    return getCustomMap();
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> getMetrics() {
+    return getMetricsMap();
   }
   /**
-   * <pre>
-   * for exceptions, errors by type, etc.
-   * </pre>
-   *
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   @java.lang.Override
-  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> getCustomMap() {
-    return internalGetCustom().getMap();
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> getMetricsMap() {
+    return internalGetMetrics().getMap();
   }
   /**
-   * <pre>
-   * for exceptions, errors by type, etc.
-   * </pre>
-   *
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   @java.lang.Override
   public /* nullable */
-io.littlehorse.sdk.common.proto.CountAndTiming getCustomOrDefault(
+io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrDefault(
       java.lang.String key,
       /* nullable */
 io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
     if (key == null) { throw new NullPointerException("map key"); }
     java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> map =
-        internalGetCustom().getMap();
+        internalGetMetrics().getMap();
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <pre>
-   * for exceptions, errors by type, etc.
-   * </pre>
-   *
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTiming getCustomOrThrow(
+  public io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrThrow(
       java.lang.String key) {
     if (key == null) { throw new NullPointerException("map key"); }
     java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> map =
-        internalGetCustom().getMap();
+        internalGetMetrics().getMap();
     if (!map.containsKey(key)) {
       throw new java.lang.IllegalArgumentException();
     }
     return map.get(key);
-  }
-
-  public static final int SCHEDULED_TO_RUNNING_FIELD_NUMBER = 8;
-  private io.littlehorse.sdk.common.proto.CountAndTiming scheduledToRunning_;
-  /**
-   * <pre>
-   * Additional fields for TaskMetric specifics
-   * </pre>
-   *
-   * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-   * @return Whether the scheduledToRunning field is set.
-   */
-  @java.lang.Override
-  public boolean hasScheduledToRunning() {
-    return ((bitField0_ & 0x00000020) != 0);
-  }
-  /**
-   * <pre>
-   * Additional fields for TaskMetric specifics
-   * </pre>
-   *
-   * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-   * @return The scheduledToRunning.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTiming getScheduledToRunning() {
-    return scheduledToRunning_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : scheduledToRunning_;
-  }
-  /**
-   * <pre>
-   * Additional fields for TaskMetric specifics
-   * </pre>
-   *
-   * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getScheduledToRunningOrBuilder() {
-    return scheduledToRunning_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : scheduledToRunning_;
-  }
-
-  public static final int RUNNING_TO_SUCCESS_FIELD_NUMBER = 9;
-  private io.littlehorse.sdk.common.proto.CountAndTiming runningToSuccess_;
-  /**
-   * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-   * @return Whether the runningToSuccess field is set.
-   */
-  @java.lang.Override
-  public boolean hasRunningToSuccess() {
-    return ((bitField0_ & 0x00000040) != 0);
-  }
-  /**
-   * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-   * @return The runningToSuccess.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTiming getRunningToSuccess() {
-    return runningToSuccess_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : runningToSuccess_;
-  }
-  /**
-   * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getRunningToSuccessOrBuilder() {
-    return runningToSuccess_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : runningToSuccess_;
-  }
-
-  public static final int TIMEOUTS_FIELD_NUMBER = 10;
-  private int timeouts_ = 0;
-  /**
-   * <code>int32 timeouts = 10;</code>
-   * @return The timeouts.
-   */
-  @java.lang.Override
-  public int getTimeouts() {
-    return timeouts_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -388,36 +178,12 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(1, getId());
     }
-    if (totalStarted_ != 0) {
-      output.writeInt32(2, totalStarted_);
-    }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(3, getCompleted());
-    }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      output.writeMessage(4, getHalted());
-    }
-    if (((bitField0_ & 0x00000008) != 0)) {
-      output.writeMessage(5, getError());
-    }
-    if (((bitField0_ & 0x00000010) != 0)) {
-      output.writeMessage(6, getException());
-    }
     com.google.protobuf.GeneratedMessage
       .serializeStringMapTo(
         output,
-        internalGetCustom(),
-        CustomDefaultEntryHolder.defaultEntry,
-        7);
-    if (((bitField0_ & 0x00000020) != 0)) {
-      output.writeMessage(8, getScheduledToRunning());
-    }
-    if (((bitField0_ & 0x00000040) != 0)) {
-      output.writeMessage(9, getRunningToSuccess());
-    }
-    if (timeouts_ != 0) {
-      output.writeInt32(10, timeouts_);
-    }
+        internalGetMetrics(),
+        MetricsDefaultEntryHolder.defaultEntry,
+        2);
     getUnknownFields().writeTo(output);
   }
 
@@ -431,47 +197,15 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getId());
     }
-    if (totalStarted_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, totalStarted_);
-    }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getCompleted());
-    }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getHalted());
-    }
-    if (((bitField0_ & 0x00000008) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, getError());
-    }
-    if (((bitField0_ & 0x00000010) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, getException());
-    }
     for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> entry
-         : internalGetCustom().getMap().entrySet()) {
+         : internalGetMetrics().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
-      custom__ = CustomDefaultEntryHolder.defaultEntry.newBuilderForType()
+      metrics__ = MetricsDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
       size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, custom__);
-    }
-    if (((bitField0_ & 0x00000020) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(8, getScheduledToRunning());
-    }
-    if (((bitField0_ & 0x00000040) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, getRunningToSuccess());
-    }
-    if (timeouts_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(10, timeouts_);
+          .computeMessageSize(2, metrics__);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -493,42 +227,8 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       if (!getId()
           .equals(other.getId())) return false;
     }
-    if (getTotalStarted()
-        != other.getTotalStarted()) return false;
-    if (hasCompleted() != other.hasCompleted()) return false;
-    if (hasCompleted()) {
-      if (!getCompleted()
-          .equals(other.getCompleted())) return false;
-    }
-    if (hasHalted() != other.hasHalted()) return false;
-    if (hasHalted()) {
-      if (!getHalted()
-          .equals(other.getHalted())) return false;
-    }
-    if (hasError() != other.hasError()) return false;
-    if (hasError()) {
-      if (!getError()
-          .equals(other.getError())) return false;
-    }
-    if (hasException() != other.hasException()) return false;
-    if (hasException()) {
-      if (!getException()
-          .equals(other.getException())) return false;
-    }
-    if (!internalGetCustom().equals(
-        other.internalGetCustom())) return false;
-    if (hasScheduledToRunning() != other.hasScheduledToRunning()) return false;
-    if (hasScheduledToRunning()) {
-      if (!getScheduledToRunning()
-          .equals(other.getScheduledToRunning())) return false;
-    }
-    if (hasRunningToSuccess() != other.hasRunningToSuccess()) return false;
-    if (hasRunningToSuccess()) {
-      if (!getRunningToSuccess()
-          .equals(other.getRunningToSuccess())) return false;
-    }
-    if (getTimeouts()
-        != other.getTimeouts()) return false;
+    if (!internalGetMetrics().equals(
+        other.internalGetMetrics())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -544,38 +244,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId().hashCode();
     }
-    hash = (37 * hash) + TOTAL_STARTED_FIELD_NUMBER;
-    hash = (53 * hash) + getTotalStarted();
-    if (hasCompleted()) {
-      hash = (37 * hash) + COMPLETED_FIELD_NUMBER;
-      hash = (53 * hash) + getCompleted().hashCode();
+    if (!internalGetMetrics().getMap().isEmpty()) {
+      hash = (37 * hash) + METRICS_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetMetrics().hashCode();
     }
-    if (hasHalted()) {
-      hash = (37 * hash) + HALTED_FIELD_NUMBER;
-      hash = (53 * hash) + getHalted().hashCode();
-    }
-    if (hasError()) {
-      hash = (37 * hash) + ERROR_FIELD_NUMBER;
-      hash = (53 * hash) + getError().hashCode();
-    }
-    if (hasException()) {
-      hash = (37 * hash) + EXCEPTION_FIELD_NUMBER;
-      hash = (53 * hash) + getException().hashCode();
-    }
-    if (!internalGetCustom().getMap().isEmpty()) {
-      hash = (37 * hash) + CUSTOM_FIELD_NUMBER;
-      hash = (53 * hash) + internalGetCustom().hashCode();
-    }
-    if (hasScheduledToRunning()) {
-      hash = (37 * hash) + SCHEDULED_TO_RUNNING_FIELD_NUMBER;
-      hash = (53 * hash) + getScheduledToRunning().hashCode();
-    }
-    if (hasRunningToSuccess()) {
-      hash = (37 * hash) + RUNNING_TO_SUCCESS_FIELD_NUMBER;
-      hash = (53 * hash) + getRunningToSuccess().hashCode();
-    }
-    hash = (37 * hash) + TIMEOUTS_FIELD_NUMBER;
-    hash = (53 * hash) + getTimeouts();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -689,8 +361,8 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
     protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
         int number) {
       switch (number) {
-        case 7:
-          return internalGetCustom();
+        case 2:
+          return internalGetMetrics();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -700,8 +372,8 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
     protected com.google.protobuf.MapFieldReflectionAccessor internalGetMutableMapFieldReflection(
         int number) {
       switch (number) {
-        case 7:
-          return internalGetMutableCustom();
+        case 2:
+          return internalGetMutableMetrics();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -729,12 +401,6 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       if (com.google.protobuf.GeneratedMessage
               .alwaysUseFieldBuilders) {
         internalGetIdFieldBuilder();
-        internalGetCompletedFieldBuilder();
-        internalGetHaltedFieldBuilder();
-        internalGetErrorFieldBuilder();
-        internalGetExceptionFieldBuilder();
-        internalGetScheduledToRunningFieldBuilder();
-        internalGetRunningToSuccessFieldBuilder();
       }
     }
     @java.lang.Override
@@ -746,39 +412,7 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
         idBuilder_.dispose();
         idBuilder_ = null;
       }
-      totalStarted_ = 0;
-      completed_ = null;
-      if (completedBuilder_ != null) {
-        completedBuilder_.dispose();
-        completedBuilder_ = null;
-      }
-      halted_ = null;
-      if (haltedBuilder_ != null) {
-        haltedBuilder_.dispose();
-        haltedBuilder_ = null;
-      }
-      error_ = null;
-      if (errorBuilder_ != null) {
-        errorBuilder_.dispose();
-        errorBuilder_ = null;
-      }
-      exception_ = null;
-      if (exceptionBuilder_ != null) {
-        exceptionBuilder_.dispose();
-        exceptionBuilder_ = null;
-      }
-      internalGetMutableCustom().clear();
-      scheduledToRunning_ = null;
-      if (scheduledToRunningBuilder_ != null) {
-        scheduledToRunningBuilder_.dispose();
-        scheduledToRunningBuilder_ = null;
-      }
-      runningToSuccess_ = null;
-      if (runningToSuccessBuilder_ != null) {
-        runningToSuccessBuilder_.dispose();
-        runningToSuccessBuilder_ = null;
-      }
-      timeouts_ = 0;
+      internalGetMutableMetrics().clear();
       return this;
     }
 
@@ -820,49 +454,7 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.totalStarted_ = totalStarted_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.completed_ = completedBuilder_ == null
-            ? completed_
-            : completedBuilder_.build();
-        to_bitField0_ |= 0x00000002;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.halted_ = haltedBuilder_ == null
-            ? halted_
-            : haltedBuilder_.build();
-        to_bitField0_ |= 0x00000004;
-      }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.error_ = errorBuilder_ == null
-            ? error_
-            : errorBuilder_.build();
-        to_bitField0_ |= 0x00000008;
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
-        result.exception_ = exceptionBuilder_ == null
-            ? exception_
-            : exceptionBuilder_.build();
-        to_bitField0_ |= 0x00000010;
-      }
-      if (((from_bitField0_ & 0x00000040) != 0)) {
-        result.custom_ = internalGetCustom().build(CustomDefaultEntryHolder.defaultEntry);
-      }
-      if (((from_bitField0_ & 0x00000080) != 0)) {
-        result.scheduledToRunning_ = scheduledToRunningBuilder_ == null
-            ? scheduledToRunning_
-            : scheduledToRunningBuilder_.build();
-        to_bitField0_ |= 0x00000020;
-      }
-      if (((from_bitField0_ & 0x00000100) != 0)) {
-        result.runningToSuccess_ = runningToSuccessBuilder_ == null
-            ? runningToSuccess_
-            : runningToSuccessBuilder_.build();
-        to_bitField0_ |= 0x00000040;
-      }
-      if (((from_bitField0_ & 0x00000200) != 0)) {
-        result.timeouts_ = timeouts_;
+        result.metrics_ = internalGetMetrics().build(MetricsDefaultEntryHolder.defaultEntry);
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -882,33 +474,9 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       if (other.hasId()) {
         mergeId(other.getId());
       }
-      if (other.getTotalStarted() != 0) {
-        setTotalStarted(other.getTotalStarted());
-      }
-      if (other.hasCompleted()) {
-        mergeCompleted(other.getCompleted());
-      }
-      if (other.hasHalted()) {
-        mergeHalted(other.getHalted());
-      }
-      if (other.hasError()) {
-        mergeError(other.getError());
-      }
-      if (other.hasException()) {
-        mergeException(other.getException());
-      }
-      internalGetMutableCustom().mergeFrom(
-          other.internalGetCustom());
-      bitField0_ |= 0x00000040;
-      if (other.hasScheduledToRunning()) {
-        mergeScheduledToRunning(other.getScheduledToRunning());
-      }
-      if (other.hasRunningToSuccess()) {
-        mergeRunningToSuccess(other.getRunningToSuccess());
-      }
-      if (other.getTimeouts() != 0) {
-        setTimeouts(other.getTimeouts());
-      }
+      internalGetMutableMetrics().mergeFrom(
+          other.internalGetMetrics());
+      bitField0_ |= 0x00000002;
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -942,67 +510,15 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 16: {
-              totalStarted_ = input.readInt32();
+            case 18: {
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
+              metrics__ = input.readMessage(
+                  MetricsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutableMetrics().ensureBuilderMap().put(
+                  metrics__.getKey(), metrics__.getValue());
               bitField0_ |= 0x00000002;
               break;
-            } // case 16
-            case 26: {
-              input.readMessage(
-                  internalGetCompletedFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 26
-            case 34: {
-              input.readMessage(
-                  internalGetHaltedFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000008;
-              break;
-            } // case 34
-            case 42: {
-              input.readMessage(
-                  internalGetErrorFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 42
-            case 50: {
-              input.readMessage(
-                  internalGetExceptionFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000020;
-              break;
-            } // case 50
-            case 58: {
-              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
-              custom__ = input.readMessage(
-                  CustomDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              internalGetMutableCustom().ensureBuilderMap().put(
-                  custom__.getKey(), custom__.getValue());
-              bitField0_ |= 0x00000040;
-              break;
-            } // case 58
-            case 66: {
-              input.readMessage(
-                  internalGetScheduledToRunningFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000080;
-              break;
-            } // case 66
-            case 74: {
-              input.readMessage(
-                  internalGetRunningToSuccessFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000100;
-              break;
-            } // case 74
-            case 80: {
-              timeouts_ = input.readInt32();
-              bitField0_ |= 0x00000200;
-              break;
-            } // case 80
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1141,535 +657,7 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return idBuilder_;
     }
 
-    private int totalStarted_ ;
-    /**
-     * <pre>
-     * for applicable entities
-     * </pre>
-     *
-     * <code>int32 total_started = 2;</code>
-     * @return The totalStarted.
-     */
-    @java.lang.Override
-    public int getTotalStarted() {
-      return totalStarted_;
-    }
-    /**
-     * <pre>
-     * for applicable entities
-     * </pre>
-     *
-     * <code>int32 total_started = 2;</code>
-     * @param value The totalStarted to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTotalStarted(int value) {
-
-      totalStarted_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * for applicable entities
-     * </pre>
-     *
-     * <code>int32 total_started = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTotalStarted() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      totalStarted_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private io.littlehorse.sdk.common.proto.CountAndTiming completed_;
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> completedBuilder_;
-    /**
-     * <code>.littlehorse.CountAndTiming completed = 3;</code>
-     * @return Whether the completed field is set.
-     */
-    public boolean hasCompleted() {
-      return ((bitField0_ & 0x00000004) != 0);
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming completed = 3;</code>
-     * @return The completed.
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTiming getCompleted() {
-      if (completedBuilder_ == null) {
-        return completed_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : completed_;
-      } else {
-        return completedBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming completed = 3;</code>
-     */
-    public Builder setCompleted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
-      if (completedBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        completed_ = value;
-      } else {
-        completedBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming completed = 3;</code>
-     */
-    public Builder setCompleted(
-        io.littlehorse.sdk.common.proto.CountAndTiming.Builder builderForValue) {
-      if (completedBuilder_ == null) {
-        completed_ = builderForValue.build();
-      } else {
-        completedBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming completed = 3;</code>
-     */
-    public Builder mergeCompleted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
-      if (completedBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
-          completed_ != null &&
-          completed_ != io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance()) {
-          getCompletedBuilder().mergeFrom(value);
-        } else {
-          completed_ = value;
-        }
-      } else {
-        completedBuilder_.mergeFrom(value);
-      }
-      if (completed_ != null) {
-        bitField0_ |= 0x00000004;
-        onChanged();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming completed = 3;</code>
-     */
-    public Builder clearCompleted() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      completed_ = null;
-      if (completedBuilder_ != null) {
-        completedBuilder_.dispose();
-        completedBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming completed = 3;</code>
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getCompletedBuilder() {
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return internalGetCompletedFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming completed = 3;</code>
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getCompletedOrBuilder() {
-      if (completedBuilder_ != null) {
-        return completedBuilder_.getMessageOrBuilder();
-      } else {
-        return completed_ == null ?
-            io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : completed_;
-      }
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming completed = 3;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> 
-        internalGetCompletedFieldBuilder() {
-      if (completedBuilder_ == null) {
-        completedBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder>(
-                getCompleted(),
-                getParentForChildren(),
-                isClean());
-        completed_ = null;
-      }
-      return completedBuilder_;
-    }
-
-    private io.littlehorse.sdk.common.proto.CountAndTiming halted_;
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> haltedBuilder_;
-    /**
-     * <code>.littlehorse.CountAndTiming halted = 4;</code>
-     * @return Whether the halted field is set.
-     */
-    public boolean hasHalted() {
-      return ((bitField0_ & 0x00000008) != 0);
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming halted = 4;</code>
-     * @return The halted.
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTiming getHalted() {
-      if (haltedBuilder_ == null) {
-        return halted_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : halted_;
-      } else {
-        return haltedBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming halted = 4;</code>
-     */
-    public Builder setHalted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
-      if (haltedBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        halted_ = value;
-      } else {
-        haltedBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming halted = 4;</code>
-     */
-    public Builder setHalted(
-        io.littlehorse.sdk.common.proto.CountAndTiming.Builder builderForValue) {
-      if (haltedBuilder_ == null) {
-        halted_ = builderForValue.build();
-      } else {
-        haltedBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming halted = 4;</code>
-     */
-    public Builder mergeHalted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
-      if (haltedBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
-          halted_ != null &&
-          halted_ != io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance()) {
-          getHaltedBuilder().mergeFrom(value);
-        } else {
-          halted_ = value;
-        }
-      } else {
-        haltedBuilder_.mergeFrom(value);
-      }
-      if (halted_ != null) {
-        bitField0_ |= 0x00000008;
-        onChanged();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming halted = 4;</code>
-     */
-    public Builder clearHalted() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      halted_ = null;
-      if (haltedBuilder_ != null) {
-        haltedBuilder_.dispose();
-        haltedBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming halted = 4;</code>
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getHaltedBuilder() {
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return internalGetHaltedFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming halted = 4;</code>
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getHaltedOrBuilder() {
-      if (haltedBuilder_ != null) {
-        return haltedBuilder_.getMessageOrBuilder();
-      } else {
-        return halted_ == null ?
-            io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : halted_;
-      }
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming halted = 4;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> 
-        internalGetHaltedFieldBuilder() {
-      if (haltedBuilder_ == null) {
-        haltedBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder>(
-                getHalted(),
-                getParentForChildren(),
-                isClean());
-        halted_ = null;
-      }
-      return haltedBuilder_;
-    }
-
-    private io.littlehorse.sdk.common.proto.CountAndTiming error_;
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> errorBuilder_;
-    /**
-     * <code>.littlehorse.CountAndTiming error = 5;</code>
-     * @return Whether the error field is set.
-     */
-    public boolean hasError() {
-      return ((bitField0_ & 0x00000010) != 0);
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming error = 5;</code>
-     * @return The error.
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTiming getError() {
-      if (errorBuilder_ == null) {
-        return error_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : error_;
-      } else {
-        return errorBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming error = 5;</code>
-     */
-    public Builder setError(io.littlehorse.sdk.common.proto.CountAndTiming value) {
-      if (errorBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        error_ = value;
-      } else {
-        errorBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming error = 5;</code>
-     */
-    public Builder setError(
-        io.littlehorse.sdk.common.proto.CountAndTiming.Builder builderForValue) {
-      if (errorBuilder_ == null) {
-        error_ = builderForValue.build();
-      } else {
-        errorBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming error = 5;</code>
-     */
-    public Builder mergeError(io.littlehorse.sdk.common.proto.CountAndTiming value) {
-      if (errorBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) != 0) &&
-          error_ != null &&
-          error_ != io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance()) {
-          getErrorBuilder().mergeFrom(value);
-        } else {
-          error_ = value;
-        }
-      } else {
-        errorBuilder_.mergeFrom(value);
-      }
-      if (error_ != null) {
-        bitField0_ |= 0x00000010;
-        onChanged();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming error = 5;</code>
-     */
-    public Builder clearError() {
-      bitField0_ = (bitField0_ & ~0x00000010);
-      error_ = null;
-      if (errorBuilder_ != null) {
-        errorBuilder_.dispose();
-        errorBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming error = 5;</code>
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getErrorBuilder() {
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return internalGetErrorFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming error = 5;</code>
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getErrorOrBuilder() {
-      if (errorBuilder_ != null) {
-        return errorBuilder_.getMessageOrBuilder();
-      } else {
-        return error_ == null ?
-            io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : error_;
-      }
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming error = 5;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> 
-        internalGetErrorFieldBuilder() {
-      if (errorBuilder_ == null) {
-        errorBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder>(
-                getError(),
-                getParentForChildren(),
-                isClean());
-        error_ = null;
-      }
-      return errorBuilder_;
-    }
-
-    private io.littlehorse.sdk.common.proto.CountAndTiming exception_;
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> exceptionBuilder_;
-    /**
-     * <code>.littlehorse.CountAndTiming exception = 6;</code>
-     * @return Whether the exception field is set.
-     */
-    public boolean hasException() {
-      return ((bitField0_ & 0x00000020) != 0);
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming exception = 6;</code>
-     * @return The exception.
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTiming getException() {
-      if (exceptionBuilder_ == null) {
-        return exception_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : exception_;
-      } else {
-        return exceptionBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming exception = 6;</code>
-     */
-    public Builder setException(io.littlehorse.sdk.common.proto.CountAndTiming value) {
-      if (exceptionBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        exception_ = value;
-      } else {
-        exceptionBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000020;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming exception = 6;</code>
-     */
-    public Builder setException(
-        io.littlehorse.sdk.common.proto.CountAndTiming.Builder builderForValue) {
-      if (exceptionBuilder_ == null) {
-        exception_ = builderForValue.build();
-      } else {
-        exceptionBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000020;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming exception = 6;</code>
-     */
-    public Builder mergeException(io.littlehorse.sdk.common.proto.CountAndTiming value) {
-      if (exceptionBuilder_ == null) {
-        if (((bitField0_ & 0x00000020) != 0) &&
-          exception_ != null &&
-          exception_ != io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance()) {
-          getExceptionBuilder().mergeFrom(value);
-        } else {
-          exception_ = value;
-        }
-      } else {
-        exceptionBuilder_.mergeFrom(value);
-      }
-      if (exception_ != null) {
-        bitField0_ |= 0x00000020;
-        onChanged();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming exception = 6;</code>
-     */
-    public Builder clearException() {
-      bitField0_ = (bitField0_ & ~0x00000020);
-      exception_ = null;
-      if (exceptionBuilder_ != null) {
-        exceptionBuilder_.dispose();
-        exceptionBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming exception = 6;</code>
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getExceptionBuilder() {
-      bitField0_ |= 0x00000020;
-      onChanged();
-      return internalGetExceptionFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming exception = 6;</code>
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getExceptionOrBuilder() {
-      if (exceptionBuilder_ != null) {
-        return exceptionBuilder_.getMessageOrBuilder();
-      } else {
-        return exception_ == null ?
-            io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : exception_;
-      }
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming exception = 6;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> 
-        internalGetExceptionFieldBuilder() {
-      if (exceptionBuilder_ == null) {
-        exceptionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder>(
-                getException(),
-                getParentForChildren(),
-                isClean());
-        exception_ = null;
-      }
-      return exceptionBuilder_;
-    }
-
-    private static final class CustomConverter implements com.google.protobuf.MapFieldBuilder.Converter<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder, io.littlehorse.sdk.common.proto.CountAndTiming> {
+    private static final class MetricsConverter implements com.google.protobuf.MapFieldBuilder.Converter<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder, io.littlehorse.sdk.common.proto.CountAndTiming> {
       @java.lang.Override
       public io.littlehorse.sdk.common.proto.CountAndTiming build(io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder val) {
         if (val instanceof io.littlehorse.sdk.common.proto.CountAndTiming) { return (io.littlehorse.sdk.common.proto.CountAndTiming) val; }
@@ -1678,114 +666,94 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
 
       @java.lang.Override
       public com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> defaultEntry() {
-        return CustomDefaultEntryHolder.defaultEntry;
+        return MetricsDefaultEntryHolder.defaultEntry;
       }
     };
-    private static final CustomConverter customConverter = new CustomConverter();
+    private static final MetricsConverter metricsConverter = new MetricsConverter();
 
     private com.google.protobuf.MapFieldBuilder<
-        java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder, io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder> custom_;
+        java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder, io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder> metrics_;
     private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder, io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder>
-        internalGetCustom() {
-      if (custom_ == null) {
-        return new com.google.protobuf.MapFieldBuilder<>(customConverter);
+        internalGetMetrics() {
+      if (metrics_ == null) {
+        return new com.google.protobuf.MapFieldBuilder<>(metricsConverter);
       }
-      return custom_;
+      return metrics_;
     }
     private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder, io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder>
-        internalGetMutableCustom() {
-      if (custom_ == null) {
-        custom_ = new com.google.protobuf.MapFieldBuilder<>(customConverter);
+        internalGetMutableMetrics() {
+      if (metrics_ == null) {
+        metrics_ = new com.google.protobuf.MapFieldBuilder<>(metricsConverter);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000002;
       onChanged();
-      return custom_;
+      return metrics_;
     }
-    public int getCustomCount() {
-      return internalGetCustom().ensureBuilderMap().size();
+    public int getMetricsCount() {
+      return internalGetMetrics().ensureBuilderMap().size();
     }
     /**
-     * <pre>
-     * for exceptions, errors by type, etc.
-     * </pre>
-     *
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
     @java.lang.Override
-    public boolean containsCustom(
+    public boolean containsMetrics(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      return internalGetCustom().ensureBuilderMap().containsKey(key);
+      return internalGetMetrics().ensureBuilderMap().containsKey(key);
     }
     /**
-     * Use {@link #getCustomMap()} instead.
+     * Use {@link #getMetricsMap()} instead.
      */
     @java.lang.Override
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> getCustom() {
-      return getCustomMap();
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> getMetrics() {
+      return getMetricsMap();
     }
     /**
-     * <pre>
-     * for exceptions, errors by type, etc.
-     * </pre>
-     *
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
     @java.lang.Override
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> getCustomMap() {
-      return internalGetCustom().getImmutableMap();
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> getMetricsMap() {
+      return internalGetMetrics().getImmutableMap();
     }
     /**
-     * <pre>
-     * for exceptions, errors by type, etc.
-     * </pre>
-     *
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
     @java.lang.Override
     public /* nullable */
-io.littlehorse.sdk.common.proto.CountAndTiming getCustomOrDefault(
+io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrDefault(
         java.lang.String key,
         /* nullable */
 io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> map = internalGetMutableCustom().ensureBuilderMap();
-      return map.containsKey(key) ? customConverter.build(map.get(key)) : defaultValue;
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> map = internalGetMutableMetrics().ensureBuilderMap();
+      return map.containsKey(key) ? metricsConverter.build(map.get(key)) : defaultValue;
     }
     /**
-     * <pre>
-     * for exceptions, errors by type, etc.
-     * </pre>
-     *
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.CountAndTiming getCustomOrThrow(
+    public io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrThrow(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> map = internalGetMutableCustom().ensureBuilderMap();
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> map = internalGetMutableMetrics().ensureBuilderMap();
       if (!map.containsKey(key)) {
         throw new java.lang.IllegalArgumentException();
       }
-      return customConverter.build(map.get(key));
+      return metricsConverter.build(map.get(key));
     }
-    public Builder clearCustom() {
-      bitField0_ = (bitField0_ & ~0x00000040);
-      internalGetMutableCustom().clear();
+    public Builder clearMetrics() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      internalGetMutableMetrics().clear();
       return this;
     }
     /**
-     * <pre>
-     * for exceptions, errors by type, etc.
-     * </pre>
-     *
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
-    public Builder removeCustom(
+    public Builder removeMetrics(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      internalGetMutableCustom().ensureBuilderMap()
+      internalGetMutableMetrics().ensureBuilderMap()
           .remove(key);
       return this;
     }
@@ -1794,56 +762,44 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
      */
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
-        getMutableCustom() {
-      bitField0_ |= 0x00000040;
-      return internalGetMutableCustom().ensureMessageMap();
+        getMutableMetrics() {
+      bitField0_ |= 0x00000002;
+      return internalGetMutableMetrics().ensureMessageMap();
     }
     /**
-     * <pre>
-     * for exceptions, errors by type, etc.
-     * </pre>
-     *
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
-    public Builder putCustom(
+    public Builder putMetrics(
         java.lang.String key,
         io.littlehorse.sdk.common.proto.CountAndTiming value) {
       if (key == null) { throw new NullPointerException("map key"); }
       if (value == null) { throw new NullPointerException("map value"); }
-      internalGetMutableCustom().ensureBuilderMap()
+      internalGetMutableMetrics().ensureBuilderMap()
           .put(key, value);
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000002;
       return this;
     }
     /**
-     * <pre>
-     * for exceptions, errors by type, etc.
-     * </pre>
-     *
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
-    public Builder putAllCustom(
+    public Builder putAllMetrics(
         java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> values) {
       for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> e : values.entrySet()) {
         if (e.getKey() == null || e.getValue() == null) {
           throw new NullPointerException();
         }
       }
-      internalGetMutableCustom().ensureBuilderMap()
+      internalGetMutableMetrics().ensureBuilderMap()
           .putAll(values);
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000002;
       return this;
     }
     /**
-     * <pre>
-     * for exceptions, errors by type, etc.
-     * </pre>
-     *
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; custom = 7;</code>
+     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.CountAndTiming.Builder putCustomBuilderIfAbsent(
+    public io.littlehorse.sdk.common.proto.CountAndTiming.Builder putMetricsBuilderIfAbsent(
         java.lang.String key) {
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> builderMap = internalGetMutableCustom().ensureBuilderMap();
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> builderMap = internalGetMutableMetrics().ensureBuilderMap();
       io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder entry = builderMap.get(key);
       if (entry == null) {
         entry = io.littlehorse.sdk.common.proto.CountAndTiming.newBuilder();
@@ -1854,316 +810,6 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
         builderMap.put(key, entry);
       }
       return (io.littlehorse.sdk.common.proto.CountAndTiming.Builder) entry;
-    }
-
-    private io.littlehorse.sdk.common.proto.CountAndTiming scheduledToRunning_;
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> scheduledToRunningBuilder_;
-    /**
-     * <pre>
-     * Additional fields for TaskMetric specifics
-     * </pre>
-     *
-     * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-     * @return Whether the scheduledToRunning field is set.
-     */
-    public boolean hasScheduledToRunning() {
-      return ((bitField0_ & 0x00000080) != 0);
-    }
-    /**
-     * <pre>
-     * Additional fields for TaskMetric specifics
-     * </pre>
-     *
-     * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-     * @return The scheduledToRunning.
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTiming getScheduledToRunning() {
-      if (scheduledToRunningBuilder_ == null) {
-        return scheduledToRunning_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : scheduledToRunning_;
-      } else {
-        return scheduledToRunningBuilder_.getMessage();
-      }
-    }
-    /**
-     * <pre>
-     * Additional fields for TaskMetric specifics
-     * </pre>
-     *
-     * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-     */
-    public Builder setScheduledToRunning(io.littlehorse.sdk.common.proto.CountAndTiming value) {
-      if (scheduledToRunningBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        scheduledToRunning_ = value;
-      } else {
-        scheduledToRunningBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000080;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Additional fields for TaskMetric specifics
-     * </pre>
-     *
-     * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-     */
-    public Builder setScheduledToRunning(
-        io.littlehorse.sdk.common.proto.CountAndTiming.Builder builderForValue) {
-      if (scheduledToRunningBuilder_ == null) {
-        scheduledToRunning_ = builderForValue.build();
-      } else {
-        scheduledToRunningBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000080;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Additional fields for TaskMetric specifics
-     * </pre>
-     *
-     * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-     */
-    public Builder mergeScheduledToRunning(io.littlehorse.sdk.common.proto.CountAndTiming value) {
-      if (scheduledToRunningBuilder_ == null) {
-        if (((bitField0_ & 0x00000080) != 0) &&
-          scheduledToRunning_ != null &&
-          scheduledToRunning_ != io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance()) {
-          getScheduledToRunningBuilder().mergeFrom(value);
-        } else {
-          scheduledToRunning_ = value;
-        }
-      } else {
-        scheduledToRunningBuilder_.mergeFrom(value);
-      }
-      if (scheduledToRunning_ != null) {
-        bitField0_ |= 0x00000080;
-        onChanged();
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * Additional fields for TaskMetric specifics
-     * </pre>
-     *
-     * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-     */
-    public Builder clearScheduledToRunning() {
-      bitField0_ = (bitField0_ & ~0x00000080);
-      scheduledToRunning_ = null;
-      if (scheduledToRunningBuilder_ != null) {
-        scheduledToRunningBuilder_.dispose();
-        scheduledToRunningBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Additional fields for TaskMetric specifics
-     * </pre>
-     *
-     * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getScheduledToRunningBuilder() {
-      bitField0_ |= 0x00000080;
-      onChanged();
-      return internalGetScheduledToRunningFieldBuilder().getBuilder();
-    }
-    /**
-     * <pre>
-     * Additional fields for TaskMetric specifics
-     * </pre>
-     *
-     * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getScheduledToRunningOrBuilder() {
-      if (scheduledToRunningBuilder_ != null) {
-        return scheduledToRunningBuilder_.getMessageOrBuilder();
-      } else {
-        return scheduledToRunning_ == null ?
-            io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : scheduledToRunning_;
-      }
-    }
-    /**
-     * <pre>
-     * Additional fields for TaskMetric specifics
-     * </pre>
-     *
-     * <code>.littlehorse.CountAndTiming scheduled_to_running = 8;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> 
-        internalGetScheduledToRunningFieldBuilder() {
-      if (scheduledToRunningBuilder_ == null) {
-        scheduledToRunningBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder>(
-                getScheduledToRunning(),
-                getParentForChildren(),
-                isClean());
-        scheduledToRunning_ = null;
-      }
-      return scheduledToRunningBuilder_;
-    }
-
-    private io.littlehorse.sdk.common.proto.CountAndTiming runningToSuccess_;
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> runningToSuccessBuilder_;
-    /**
-     * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-     * @return Whether the runningToSuccess field is set.
-     */
-    public boolean hasRunningToSuccess() {
-      return ((bitField0_ & 0x00000100) != 0);
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-     * @return The runningToSuccess.
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTiming getRunningToSuccess() {
-      if (runningToSuccessBuilder_ == null) {
-        return runningToSuccess_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : runningToSuccess_;
-      } else {
-        return runningToSuccessBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-     */
-    public Builder setRunningToSuccess(io.littlehorse.sdk.common.proto.CountAndTiming value) {
-      if (runningToSuccessBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        runningToSuccess_ = value;
-      } else {
-        runningToSuccessBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000100;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-     */
-    public Builder setRunningToSuccess(
-        io.littlehorse.sdk.common.proto.CountAndTiming.Builder builderForValue) {
-      if (runningToSuccessBuilder_ == null) {
-        runningToSuccess_ = builderForValue.build();
-      } else {
-        runningToSuccessBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000100;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-     */
-    public Builder mergeRunningToSuccess(io.littlehorse.sdk.common.proto.CountAndTiming value) {
-      if (runningToSuccessBuilder_ == null) {
-        if (((bitField0_ & 0x00000100) != 0) &&
-          runningToSuccess_ != null &&
-          runningToSuccess_ != io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance()) {
-          getRunningToSuccessBuilder().mergeFrom(value);
-        } else {
-          runningToSuccess_ = value;
-        }
-      } else {
-        runningToSuccessBuilder_.mergeFrom(value);
-      }
-      if (runningToSuccess_ != null) {
-        bitField0_ |= 0x00000100;
-        onChanged();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-     */
-    public Builder clearRunningToSuccess() {
-      bitField0_ = (bitField0_ & ~0x00000100);
-      runningToSuccess_ = null;
-      if (runningToSuccessBuilder_ != null) {
-        runningToSuccessBuilder_.dispose();
-        runningToSuccessBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getRunningToSuccessBuilder() {
-      bitField0_ |= 0x00000100;
-      onChanged();
-      return internalGetRunningToSuccessFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-     */
-    public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getRunningToSuccessOrBuilder() {
-      if (runningToSuccessBuilder_ != null) {
-        return runningToSuccessBuilder_.getMessageOrBuilder();
-      } else {
-        return runningToSuccess_ == null ?
-            io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : runningToSuccess_;
-      }
-    }
-    /**
-     * <code>.littlehorse.CountAndTiming running_to_success = 9;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> 
-        internalGetRunningToSuccessFieldBuilder() {
-      if (runningToSuccessBuilder_ == null) {
-        runningToSuccessBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder>(
-                getRunningToSuccess(),
-                getParentForChildren(),
-                isClean());
-        runningToSuccess_ = null;
-      }
-      return runningToSuccessBuilder_;
-    }
-
-    private int timeouts_ ;
-    /**
-     * <code>int32 timeouts = 10;</code>
-     * @return The timeouts.
-     */
-    @java.lang.Override
-    public int getTimeouts() {
-      return timeouts_;
-    }
-    /**
-     * <code>int32 timeouts = 10;</code>
-     * @param value The timeouts to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTimeouts(int value) {
-
-      timeouts_ = value;
-      bitField0_ |= 0x00000200;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 timeouts = 10;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTimeouts() {
-      bitField0_ = (bitField0_ & ~0x00000200);
-      timeouts_ = 0;
-      onChanged();
-      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetricWindow)

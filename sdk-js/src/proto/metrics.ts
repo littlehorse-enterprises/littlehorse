@@ -56,16 +56,34 @@ export interface MetricSpec {
   windowLength: Duration | undefined;
 }
 
-export interface ListMetricsRequest {
-  metricSpecId: string;
-  windowLength: Duration | undefined;
-  aggregationType: AggregationType;
-  startTime: string | undefined;
-  endTime: string | undefined;
+export interface MetricsConfig {
+  level: MetricRecordingLevel;
+  retentionDays: number;
 }
 
-export interface MetricList {
-  windows: MetricWindow[];
+export interface WorkflowMetricId {
+  /** If null, tenant-level aggregate */
+  wfSpec?: WfSpecId | undefined;
+}
+
+export interface TaskMetricId {
+  /** If null, tenant-level aggregate */
+  taskDef?: TaskDefId | undefined;
+}
+
+export interface NodeMetricId {
+  wfSpec: WfSpecId | undefined;
+  nodeName: string;
+  /** Position within the ThreadSpec for ordering */
+  nodePosition: number;
+}
+
+export interface MetricWindowId {
+  id?: { $case: "workflow"; value: WorkflowMetricId } | { $case: "task"; value: TaskMetricId } | {
+    $case: "node";
+    value: NodeMetricId;
+  } | undefined;
+  windowStart: string | undefined;
 }
 
 export interface CountAndTiming {
@@ -75,45 +93,33 @@ export interface CountAndTiming {
   totalLatencyMs: number;
 }
 
-export interface MetricWindowId {
-  entity: MetricEntityType;
-  /** e.g., wf_spec name, task_def name */
-  entityId: string;
-  windowStart: string | undefined;
+export interface MetricWindow {
+  id: MetricWindowId | undefined;
+  metrics: { [key: string]: CountAndTiming };
 }
 
-export interface MetricWindow {
+export interface MetricWindow_MetricsEntry {
+  key: string;
+  value: CountAndTiming | undefined;
+}
+
+export interface ListMetricsRequest {
+  /** Metric window id contains object and start time */
   id:
     | MetricWindowId
     | undefined;
-  /** for applicable entities */
-  totalStarted: number;
-  completed: CountAndTiming | undefined;
-  halted: CountAndTiming | undefined;
-  error: CountAndTiming | undefined;
-  exception:
-    | CountAndTiming
-    | undefined;
-  /** for exceptions, errors by type, etc. */
-  custom: { [key: string]: CountAndTiming };
-  /** Additional fields for TaskMetric specifics */
-  scheduledToRunning: CountAndTiming | undefined;
-  runningToSuccess: CountAndTiming | undefined;
-  timeouts: number;
+  /** Optional: if not set, server uses current time */
+  endTime?: string | undefined;
 }
 
-export interface MetricWindow_CustomEntry {
-  key: string;
-  value: CountAndTiming | undefined;
+export interface MetricList {
+  windows: MetricWindow[];
 }
 
 export interface MetricLevelOverride {
   id: string;
   newLevel: MetricRecordingLevel;
-  target?: { $case: "wfSpec"; value: WfSpecId } | { $case: "taskDef"; value: TaskDefId } | {
-    $case: "node";
-    value: NodeReference;
-  } | undefined;
+  workflow: WorkflowMetricId | undefined;
 }
 
 export interface PutMetricLevelOverrideRequest {
@@ -127,7 +133,6 @@ export interface DeleteMetricLevelOverrideRequest {
 export interface ListMetricLevelOverridesRequest {
   /** Optional filters */
   wfSpecFilter?: WfSpecId | undefined;
-  taskDefFilter?: TaskDefId | undefined;
 }
 
 export interface MetricLevelOverridesList {
@@ -599,40 +604,96 @@ export const MetricSpec = {
   },
 };
 
-function createBaseListMetricsRequest(): ListMetricsRequest {
-  return {
-    metricSpecId: "",
-    windowLength: undefined,
-    aggregationType: AggregationType.COUNT,
-    startTime: undefined,
-    endTime: undefined,
-  };
+function createBaseMetricsConfig(): MetricsConfig {
+  return { level: MetricRecordingLevel.INFO, retentionDays: 0 };
 }
 
-export const ListMetricsRequest = {
-  encode(message: ListMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.metricSpecId !== "") {
-      writer.uint32(10).string(message.metricSpecId);
+export const MetricsConfig = {
+  encode(message: MetricsConfig, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.level !== MetricRecordingLevel.INFO) {
+      writer.uint32(8).int32(metricRecordingLevelToNumber(message.level));
     }
-    if (message.windowLength !== undefined) {
-      Duration.encode(message.windowLength, writer.uint32(18).fork()).ldelim();
-    }
-    if (message.aggregationType !== AggregationType.COUNT) {
-      writer.uint32(24).int32(aggregationTypeToNumber(message.aggregationType));
-    }
-    if (message.startTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.startTime), writer.uint32(34).fork()).ldelim();
-    }
-    if (message.endTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.endTime), writer.uint32(42).fork()).ldelim();
+    if (message.retentionDays !== 0) {
+      writer.uint32(16).int32(message.retentionDays);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): ListMetricsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricsConfig {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListMetricsRequest();
+    const message = createBaseMetricsConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.level = metricRecordingLevelFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.retentionDays = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MetricsConfig {
+    return {
+      level: isSet(object.level) ? metricRecordingLevelFromJSON(object.level) : MetricRecordingLevel.INFO,
+      retentionDays: isSet(object.retentionDays) ? globalThis.Number(object.retentionDays) : 0,
+    };
+  },
+
+  toJSON(message: MetricsConfig): unknown {
+    const obj: any = {};
+    if (message.level !== MetricRecordingLevel.INFO) {
+      obj.level = metricRecordingLevelToJSON(message.level);
+    }
+    if (message.retentionDays !== 0) {
+      obj.retentionDays = Math.round(message.retentionDays);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MetricsConfig>): MetricsConfig {
+    return MetricsConfig.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MetricsConfig>): MetricsConfig {
+    const message = createBaseMetricsConfig();
+    message.level = object.level ?? MetricRecordingLevel.INFO;
+    message.retentionDays = object.retentionDays ?? 0;
+    return message;
+  },
+};
+
+function createBaseWorkflowMetricId(): WorkflowMetricId {
+  return { wfSpec: undefined };
+}
+
+export const WorkflowMetricId = {
+  encode(message: WorkflowMetricId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpec !== undefined) {
+      WfSpecId.encode(message.wfSpec, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WorkflowMetricId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkflowMetricId();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -641,35 +702,145 @@ export const ListMetricsRequest = {
             break;
           }
 
-          message.metricSpecId = reader.string();
+          message.wfSpec = WfSpecId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WorkflowMetricId {
+    return { wfSpec: isSet(object.wfSpec) ? WfSpecId.fromJSON(object.wfSpec) : undefined };
+  },
+
+  toJSON(message: WorkflowMetricId): unknown {
+    const obj: any = {};
+    if (message.wfSpec !== undefined) {
+      obj.wfSpec = WfSpecId.toJSON(message.wfSpec);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<WorkflowMetricId>): WorkflowMetricId {
+    return WorkflowMetricId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WorkflowMetricId>): WorkflowMetricId {
+    const message = createBaseWorkflowMetricId();
+    message.wfSpec = (object.wfSpec !== undefined && object.wfSpec !== null)
+      ? WfSpecId.fromPartial(object.wfSpec)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseTaskMetricId(): TaskMetricId {
+  return { taskDef: undefined };
+}
+
+export const TaskMetricId = {
+  encode(message: TaskMetricId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.taskDef !== undefined) {
+      TaskDefId.encode(message.taskDef, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TaskMetricId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTaskMetricId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.taskDef = TaskDefId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TaskMetricId {
+    return { taskDef: isSet(object.taskDef) ? TaskDefId.fromJSON(object.taskDef) : undefined };
+  },
+
+  toJSON(message: TaskMetricId): unknown {
+    const obj: any = {};
+    if (message.taskDef !== undefined) {
+      obj.taskDef = TaskDefId.toJSON(message.taskDef);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<TaskMetricId>): TaskMetricId {
+    return TaskMetricId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<TaskMetricId>): TaskMetricId {
+    const message = createBaseTaskMetricId();
+    message.taskDef = (object.taskDef !== undefined && object.taskDef !== null)
+      ? TaskDefId.fromPartial(object.taskDef)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseNodeMetricId(): NodeMetricId {
+  return { wfSpec: undefined, nodeName: "", nodePosition: 0 };
+}
+
+export const NodeMetricId = {
+  encode(message: NodeMetricId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpec !== undefined) {
+      WfSpecId.encode(message.wfSpec, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.nodeName !== "") {
+      writer.uint32(18).string(message.nodeName);
+    }
+    if (message.nodePosition !== 0) {
+      writer.uint32(24).int32(message.nodePosition);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): NodeMetricId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNodeMetricId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfSpec = WfSpecId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.windowLength = Duration.decode(reader, reader.uint32());
+          message.nodeName = reader.string();
           continue;
         case 3:
           if (tag !== 24) {
             break;
           }
 
-          message.aggregationType = aggregationTypeFromJSON(reader.int32());
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.startTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.endTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.nodePosition = reader.int32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -680,70 +851,69 @@ export const ListMetricsRequest = {
     return message;
   },
 
-  fromJSON(object: any): ListMetricsRequest {
+  fromJSON(object: any): NodeMetricId {
     return {
-      metricSpecId: isSet(object.metricSpecId) ? globalThis.String(object.metricSpecId) : "",
-      windowLength: isSet(object.windowLength) ? Duration.fromJSON(object.windowLength) : undefined,
-      aggregationType: isSet(object.aggregationType)
-        ? aggregationTypeFromJSON(object.aggregationType)
-        : AggregationType.COUNT,
-      startTime: isSet(object.startTime) ? globalThis.String(object.startTime) : undefined,
-      endTime: isSet(object.endTime) ? globalThis.String(object.endTime) : undefined,
+      wfSpec: isSet(object.wfSpec) ? WfSpecId.fromJSON(object.wfSpec) : undefined,
+      nodeName: isSet(object.nodeName) ? globalThis.String(object.nodeName) : "",
+      nodePosition: isSet(object.nodePosition) ? globalThis.Number(object.nodePosition) : 0,
     };
   },
 
-  toJSON(message: ListMetricsRequest): unknown {
+  toJSON(message: NodeMetricId): unknown {
     const obj: any = {};
-    if (message.metricSpecId !== "") {
-      obj.metricSpecId = message.metricSpecId;
+    if (message.wfSpec !== undefined) {
+      obj.wfSpec = WfSpecId.toJSON(message.wfSpec);
     }
-    if (message.windowLength !== undefined) {
-      obj.windowLength = Duration.toJSON(message.windowLength);
+    if (message.nodeName !== "") {
+      obj.nodeName = message.nodeName;
     }
-    if (message.aggregationType !== AggregationType.COUNT) {
-      obj.aggregationType = aggregationTypeToJSON(message.aggregationType);
-    }
-    if (message.startTime !== undefined) {
-      obj.startTime = message.startTime;
-    }
-    if (message.endTime !== undefined) {
-      obj.endTime = message.endTime;
+    if (message.nodePosition !== 0) {
+      obj.nodePosition = Math.round(message.nodePosition);
     }
     return obj;
   },
 
-  create(base?: DeepPartial<ListMetricsRequest>): ListMetricsRequest {
-    return ListMetricsRequest.fromPartial(base ?? {});
+  create(base?: DeepPartial<NodeMetricId>): NodeMetricId {
+    return NodeMetricId.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<ListMetricsRequest>): ListMetricsRequest {
-    const message = createBaseListMetricsRequest();
-    message.metricSpecId = object.metricSpecId ?? "";
-    message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
-      ? Duration.fromPartial(object.windowLength)
+  fromPartial(object: DeepPartial<NodeMetricId>): NodeMetricId {
+    const message = createBaseNodeMetricId();
+    message.wfSpec = (object.wfSpec !== undefined && object.wfSpec !== null)
+      ? WfSpecId.fromPartial(object.wfSpec)
       : undefined;
-    message.aggregationType = object.aggregationType ?? AggregationType.COUNT;
-    message.startTime = object.startTime ?? undefined;
-    message.endTime = object.endTime ?? undefined;
+    message.nodeName = object.nodeName ?? "";
+    message.nodePosition = object.nodePosition ?? 0;
     return message;
   },
 };
 
-function createBaseMetricList(): MetricList {
-  return { windows: [] };
+function createBaseMetricWindowId(): MetricWindowId {
+  return { id: undefined, windowStart: undefined };
 }
 
-export const MetricList = {
-  encode(message: MetricList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.windows) {
-      MetricWindow.encode(v!, writer.uint32(10).fork()).ldelim();
+export const MetricWindowId = {
+  encode(message: MetricWindowId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    switch (message.id?.$case) {
+      case "workflow":
+        WorkflowMetricId.encode(message.id.value, writer.uint32(10).fork()).ldelim();
+        break;
+      case "task":
+        TaskMetricId.encode(message.id.value, writer.uint32(18).fork()).ldelim();
+        break;
+      case "node":
+        NodeMetricId.encode(message.id.value, writer.uint32(26).fork()).ldelim();
+        break;
+    }
+    if (message.windowStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MetricList {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricWindowId {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMetricList();
+    const message = createBaseMetricWindowId();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -752,7 +922,28 @@ export const MetricList = {
             break;
           }
 
-          message.windows.push(MetricWindow.decode(reader, reader.uint32()));
+          message.id = { $case: "workflow", value: WorkflowMetricId.decode(reader, reader.uint32()) };
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.id = { $case: "task", value: TaskMetricId.decode(reader, reader.uint32()) };
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.id = { $case: "node", value: NodeMetricId.decode(reader, reader.uint32()) };
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -763,28 +954,51 @@ export const MetricList = {
     return message;
   },
 
-  fromJSON(object: any): MetricList {
+  fromJSON(object: any): MetricWindowId {
     return {
-      windows: globalThis.Array.isArray(object?.windows)
-        ? object.windows.map((e: any) => MetricWindow.fromJSON(e))
-        : [],
+      id: isSet(object.workflow)
+        ? { $case: "workflow", value: WorkflowMetricId.fromJSON(object.workflow) }
+        : isSet(object.task)
+        ? { $case: "task", value: TaskMetricId.fromJSON(object.task) }
+        : isSet(object.node)
+        ? { $case: "node", value: NodeMetricId.fromJSON(object.node) }
+        : undefined,
+      windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
     };
   },
 
-  toJSON(message: MetricList): unknown {
+  toJSON(message: MetricWindowId): unknown {
     const obj: any = {};
-    if (message.windows?.length) {
-      obj.windows = message.windows.map((e) => MetricWindow.toJSON(e));
+    if (message.id?.$case === "workflow") {
+      obj.workflow = WorkflowMetricId.toJSON(message.id.value);
+    }
+    if (message.id?.$case === "task") {
+      obj.task = TaskMetricId.toJSON(message.id.value);
+    }
+    if (message.id?.$case === "node") {
+      obj.node = NodeMetricId.toJSON(message.id.value);
+    }
+    if (message.windowStart !== undefined) {
+      obj.windowStart = message.windowStart;
     }
     return obj;
   },
 
-  create(base?: DeepPartial<MetricList>): MetricList {
-    return MetricList.fromPartial(base ?? {});
+  create(base?: DeepPartial<MetricWindowId>): MetricWindowId {
+    return MetricWindowId.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<MetricList>): MetricList {
-    const message = createBaseMetricList();
-    message.windows = object.windows?.map((e) => MetricWindow.fromPartial(e)) || [];
+  fromPartial(object: DeepPartial<MetricWindowId>): MetricWindowId {
+    const message = createBaseMetricWindowId();
+    if (object.id?.$case === "workflow" && object.id?.value !== undefined && object.id?.value !== null) {
+      message.id = { $case: "workflow", value: WorkflowMetricId.fromPartial(object.id.value) };
+    }
+    if (object.id?.$case === "task" && object.id?.value !== undefined && object.id?.value !== null) {
+      message.id = { $case: "task", value: TaskMetricId.fromPartial(object.id.value) };
+    }
+    if (object.id?.$case === "node" && object.id?.value !== undefined && object.id?.value !== null) {
+      message.id = { $case: "node", value: NodeMetricId.fromPartial(object.id.value) };
+    }
+    message.windowStart = object.windowStart ?? undefined;
     return message;
   },
 };
@@ -893,108 +1107,8 @@ export const CountAndTiming = {
   },
 };
 
-function createBaseMetricWindowId(): MetricWindowId {
-  return { entity: MetricEntityType.METRIC_WF_RUN, entityId: "", windowStart: undefined };
-}
-
-export const MetricWindowId = {
-  encode(message: MetricWindowId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.entity !== MetricEntityType.METRIC_WF_RUN) {
-      writer.uint32(8).int32(metricEntityTypeToNumber(message.entity));
-    }
-    if (message.entityId !== "") {
-      writer.uint32(18).string(message.entityId);
-    }
-    if (message.windowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(26).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MetricWindowId {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMetricWindowId();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 8) {
-            break;
-          }
-
-          message.entity = metricEntityTypeFromJSON(reader.int32());
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.entityId = reader.string();
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MetricWindowId {
-    return {
-      entity: isSet(object.entity) ? metricEntityTypeFromJSON(object.entity) : MetricEntityType.METRIC_WF_RUN,
-      entityId: isSet(object.entityId) ? globalThis.String(object.entityId) : "",
-      windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
-    };
-  },
-
-  toJSON(message: MetricWindowId): unknown {
-    const obj: any = {};
-    if (message.entity !== MetricEntityType.METRIC_WF_RUN) {
-      obj.entity = metricEntityTypeToJSON(message.entity);
-    }
-    if (message.entityId !== "") {
-      obj.entityId = message.entityId;
-    }
-    if (message.windowStart !== undefined) {
-      obj.windowStart = message.windowStart;
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<MetricWindowId>): MetricWindowId {
-    return MetricWindowId.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<MetricWindowId>): MetricWindowId {
-    const message = createBaseMetricWindowId();
-    message.entity = object.entity ?? MetricEntityType.METRIC_WF_RUN;
-    message.entityId = object.entityId ?? "";
-    message.windowStart = object.windowStart ?? undefined;
-    return message;
-  },
-};
-
 function createBaseMetricWindow(): MetricWindow {
-  return {
-    id: undefined,
-    totalStarted: 0,
-    completed: undefined,
-    halted: undefined,
-    error: undefined,
-    exception: undefined,
-    custom: {},
-    scheduledToRunning: undefined,
-    runningToSuccess: undefined,
-    timeouts: 0,
-  };
+  return { id: undefined, metrics: {} };
 }
 
 export const MetricWindow = {
@@ -1002,33 +1116,9 @@ export const MetricWindow = {
     if (message.id !== undefined) {
       MetricWindowId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
-    if (message.totalStarted !== 0) {
-      writer.uint32(16).int32(message.totalStarted);
-    }
-    if (message.completed !== undefined) {
-      CountAndTiming.encode(message.completed, writer.uint32(26).fork()).ldelim();
-    }
-    if (message.halted !== undefined) {
-      CountAndTiming.encode(message.halted, writer.uint32(34).fork()).ldelim();
-    }
-    if (message.error !== undefined) {
-      CountAndTiming.encode(message.error, writer.uint32(42).fork()).ldelim();
-    }
-    if (message.exception !== undefined) {
-      CountAndTiming.encode(message.exception, writer.uint32(50).fork()).ldelim();
-    }
-    Object.entries(message.custom).forEach(([key, value]) => {
-      MetricWindow_CustomEntry.encode({ key: key as any, value }, writer.uint32(58).fork()).ldelim();
+    Object.entries(message.metrics).forEach(([key, value]) => {
+      MetricWindow_MetricsEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
     });
-    if (message.scheduledToRunning !== undefined) {
-      CountAndTiming.encode(message.scheduledToRunning, writer.uint32(66).fork()).ldelim();
-    }
-    if (message.runningToSuccess !== undefined) {
-      CountAndTiming.encode(message.runningToSuccess, writer.uint32(74).fork()).ldelim();
-    }
-    if (message.timeouts !== 0) {
-      writer.uint32(80).int32(message.timeouts);
-    }
     return writer;
   },
 
@@ -1047,70 +1137,14 @@ export const MetricWindow = {
           message.id = MetricWindowId.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.totalStarted = reader.int32();
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
+          const entry2 = MetricWindow_MetricsEntry.decode(reader, reader.uint32());
+          if (entry2.value !== undefined) {
+            message.metrics[entry2.key] = entry2.value;
           }
-
-          message.completed = CountAndTiming.decode(reader, reader.uint32());
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.halted = CountAndTiming.decode(reader, reader.uint32());
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.error = CountAndTiming.decode(reader, reader.uint32());
-          continue;
-        case 6:
-          if (tag !== 50) {
-            break;
-          }
-
-          message.exception = CountAndTiming.decode(reader, reader.uint32());
-          continue;
-        case 7:
-          if (tag !== 58) {
-            break;
-          }
-
-          const entry7 = MetricWindow_CustomEntry.decode(reader, reader.uint32());
-          if (entry7.value !== undefined) {
-            message.custom[entry7.key] = entry7.value;
-          }
-          continue;
-        case 8:
-          if (tag !== 66) {
-            break;
-          }
-
-          message.scheduledToRunning = CountAndTiming.decode(reader, reader.uint32());
-          continue;
-        case 9:
-          if (tag !== 74) {
-            break;
-          }
-
-          message.runningToSuccess = CountAndTiming.decode(reader, reader.uint32());
-          continue;
-        case 10:
-          if (tag !== 80) {
-            break;
-          }
-
-          message.timeouts = reader.int32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1124,22 +1158,12 @@ export const MetricWindow = {
   fromJSON(object: any): MetricWindow {
     return {
       id: isSet(object.id) ? MetricWindowId.fromJSON(object.id) : undefined,
-      totalStarted: isSet(object.totalStarted) ? globalThis.Number(object.totalStarted) : 0,
-      completed: isSet(object.completed) ? CountAndTiming.fromJSON(object.completed) : undefined,
-      halted: isSet(object.halted) ? CountAndTiming.fromJSON(object.halted) : undefined,
-      error: isSet(object.error) ? CountAndTiming.fromJSON(object.error) : undefined,
-      exception: isSet(object.exception) ? CountAndTiming.fromJSON(object.exception) : undefined,
-      custom: isObject(object.custom)
-        ? Object.entries(object.custom).reduce<{ [key: string]: CountAndTiming }>((acc, [key, value]) => {
+      metrics: isObject(object.metrics)
+        ? Object.entries(object.metrics).reduce<{ [key: string]: CountAndTiming }>((acc, [key, value]) => {
           acc[key] = CountAndTiming.fromJSON(value);
           return acc;
         }, {})
         : {},
-      scheduledToRunning: isSet(object.scheduledToRunning)
-        ? CountAndTiming.fromJSON(object.scheduledToRunning)
-        : undefined,
-      runningToSuccess: isSet(object.runningToSuccess) ? CountAndTiming.fromJSON(object.runningToSuccess) : undefined,
-      timeouts: isSet(object.timeouts) ? globalThis.Number(object.timeouts) : 0,
     };
   },
 
@@ -1148,38 +1172,14 @@ export const MetricWindow = {
     if (message.id !== undefined) {
       obj.id = MetricWindowId.toJSON(message.id);
     }
-    if (message.totalStarted !== 0) {
-      obj.totalStarted = Math.round(message.totalStarted);
-    }
-    if (message.completed !== undefined) {
-      obj.completed = CountAndTiming.toJSON(message.completed);
-    }
-    if (message.halted !== undefined) {
-      obj.halted = CountAndTiming.toJSON(message.halted);
-    }
-    if (message.error !== undefined) {
-      obj.error = CountAndTiming.toJSON(message.error);
-    }
-    if (message.exception !== undefined) {
-      obj.exception = CountAndTiming.toJSON(message.exception);
-    }
-    if (message.custom) {
-      const entries = Object.entries(message.custom);
+    if (message.metrics) {
+      const entries = Object.entries(message.metrics);
       if (entries.length > 0) {
-        obj.custom = {};
+        obj.metrics = {};
         entries.forEach(([k, v]) => {
-          obj.custom[k] = CountAndTiming.toJSON(v);
+          obj.metrics[k] = CountAndTiming.toJSON(v);
         });
       }
-    }
-    if (message.scheduledToRunning !== undefined) {
-      obj.scheduledToRunning = CountAndTiming.toJSON(message.scheduledToRunning);
-    }
-    if (message.runningToSuccess !== undefined) {
-      obj.runningToSuccess = CountAndTiming.toJSON(message.runningToSuccess);
-    }
-    if (message.timeouts !== 0) {
-      obj.timeouts = Math.round(message.timeouts);
     }
     return obj;
   },
@@ -1190,20 +1190,7 @@ export const MetricWindow = {
   fromPartial(object: DeepPartial<MetricWindow>): MetricWindow {
     const message = createBaseMetricWindow();
     message.id = (object.id !== undefined && object.id !== null) ? MetricWindowId.fromPartial(object.id) : undefined;
-    message.totalStarted = object.totalStarted ?? 0;
-    message.completed = (object.completed !== undefined && object.completed !== null)
-      ? CountAndTiming.fromPartial(object.completed)
-      : undefined;
-    message.halted = (object.halted !== undefined && object.halted !== null)
-      ? CountAndTiming.fromPartial(object.halted)
-      : undefined;
-    message.error = (object.error !== undefined && object.error !== null)
-      ? CountAndTiming.fromPartial(object.error)
-      : undefined;
-    message.exception = (object.exception !== undefined && object.exception !== null)
-      ? CountAndTiming.fromPartial(object.exception)
-      : undefined;
-    message.custom = Object.entries(object.custom ?? {}).reduce<{ [key: string]: CountAndTiming }>(
+    message.metrics = Object.entries(object.metrics ?? {}).reduce<{ [key: string]: CountAndTiming }>(
       (acc, [key, value]) => {
         if (value !== undefined) {
           acc[key] = CountAndTiming.fromPartial(value);
@@ -1212,23 +1199,16 @@ export const MetricWindow = {
       },
       {},
     );
-    message.scheduledToRunning = (object.scheduledToRunning !== undefined && object.scheduledToRunning !== null)
-      ? CountAndTiming.fromPartial(object.scheduledToRunning)
-      : undefined;
-    message.runningToSuccess = (object.runningToSuccess !== undefined && object.runningToSuccess !== null)
-      ? CountAndTiming.fromPartial(object.runningToSuccess)
-      : undefined;
-    message.timeouts = object.timeouts ?? 0;
     return message;
   },
 };
 
-function createBaseMetricWindow_CustomEntry(): MetricWindow_CustomEntry {
+function createBaseMetricWindow_MetricsEntry(): MetricWindow_MetricsEntry {
   return { key: "", value: undefined };
 }
 
-export const MetricWindow_CustomEntry = {
-  encode(message: MetricWindow_CustomEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MetricWindow_MetricsEntry = {
+  encode(message: MetricWindow_MetricsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1238,10 +1218,10 @@ export const MetricWindow_CustomEntry = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MetricWindow_CustomEntry {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricWindow_MetricsEntry {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMetricWindow_CustomEntry();
+    const message = createBaseMetricWindow_MetricsEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1268,14 +1248,14 @@ export const MetricWindow_CustomEntry = {
     return message;
   },
 
-  fromJSON(object: any): MetricWindow_CustomEntry {
+  fromJSON(object: any): MetricWindow_MetricsEntry {
     return {
       key: isSet(object.key) ? globalThis.String(object.key) : "",
       value: isSet(object.value) ? CountAndTiming.fromJSON(object.value) : undefined,
     };
   },
 
-  toJSON(message: MetricWindow_CustomEntry): unknown {
+  toJSON(message: MetricWindow_MetricsEntry): unknown {
     const obj: any = {};
     if (message.key !== "") {
       obj.key = message.key;
@@ -1286,11 +1266,11 @@ export const MetricWindow_CustomEntry = {
     return obj;
   },
 
-  create(base?: DeepPartial<MetricWindow_CustomEntry>): MetricWindow_CustomEntry {
-    return MetricWindow_CustomEntry.fromPartial(base ?? {});
+  create(base?: DeepPartial<MetricWindow_MetricsEntry>): MetricWindow_MetricsEntry {
+    return MetricWindow_MetricsEntry.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<MetricWindow_CustomEntry>): MetricWindow_CustomEntry {
-    const message = createBaseMetricWindow_CustomEntry();
+  fromPartial(object: DeepPartial<MetricWindow_MetricsEntry>): MetricWindow_MetricsEntry {
+    const message = createBaseMetricWindow_MetricsEntry();
     message.key = object.key ?? "";
     message.value = (object.value !== undefined && object.value !== null)
       ? CountAndTiming.fromPartial(object.value)
@@ -1299,8 +1279,143 @@ export const MetricWindow_CustomEntry = {
   },
 };
 
+function createBaseListMetricsRequest(): ListMetricsRequest {
+  return { id: undefined, endTime: undefined };
+}
+
+export const ListMetricsRequest = {
+  encode(message: ListMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      MetricWindowId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.endTime !== undefined) {
+      Timestamp.encode(toTimestamp(message.endTime), writer.uint32(42).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ListMetricsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListMetricsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = MetricWindowId.decode(reader, reader.uint32());
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.endTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ListMetricsRequest {
+    return {
+      id: isSet(object.id) ? MetricWindowId.fromJSON(object.id) : undefined,
+      endTime: isSet(object.endTime) ? globalThis.String(object.endTime) : undefined,
+    };
+  },
+
+  toJSON(message: ListMetricsRequest): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = MetricWindowId.toJSON(message.id);
+    }
+    if (message.endTime !== undefined) {
+      obj.endTime = message.endTime;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ListMetricsRequest>): ListMetricsRequest {
+    return ListMetricsRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ListMetricsRequest>): ListMetricsRequest {
+    const message = createBaseListMetricsRequest();
+    message.id = (object.id !== undefined && object.id !== null) ? MetricWindowId.fromPartial(object.id) : undefined;
+    message.endTime = object.endTime ?? undefined;
+    return message;
+  },
+};
+
+function createBaseMetricList(): MetricList {
+  return { windows: [] };
+}
+
+export const MetricList = {
+  encode(message: MetricList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.windows) {
+      MetricWindow.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.windows.push(MetricWindow.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MetricList {
+    return {
+      windows: globalThis.Array.isArray(object?.windows)
+        ? object.windows.map((e: any) => MetricWindow.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: MetricList): unknown {
+    const obj: any = {};
+    if (message.windows?.length) {
+      obj.windows = message.windows.map((e) => MetricWindow.toJSON(e));
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MetricList>): MetricList {
+    return MetricList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MetricList>): MetricList {
+    const message = createBaseMetricList();
+    message.windows = object.windows?.map((e) => MetricWindow.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 function createBaseMetricLevelOverride(): MetricLevelOverride {
-  return { id: "", newLevel: MetricRecordingLevel.INFO, target: undefined };
+  return { id: "", newLevel: MetricRecordingLevel.INFO, workflow: undefined };
 }
 
 export const MetricLevelOverride = {
@@ -1311,16 +1426,8 @@ export const MetricLevelOverride = {
     if (message.newLevel !== MetricRecordingLevel.INFO) {
       writer.uint32(16).int32(metricRecordingLevelToNumber(message.newLevel));
     }
-    switch (message.target?.$case) {
-      case "wfSpec":
-        WfSpecId.encode(message.target.value, writer.uint32(26).fork()).ldelim();
-        break;
-      case "taskDef":
-        TaskDefId.encode(message.target.value, writer.uint32(34).fork()).ldelim();
-        break;
-      case "node":
-        NodeReference.encode(message.target.value, writer.uint32(42).fork()).ldelim();
-        break;
+    if (message.workflow !== undefined) {
+      WorkflowMetricId.encode(message.workflow, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -1351,21 +1458,7 @@ export const MetricLevelOverride = {
             break;
           }
 
-          message.target = { $case: "wfSpec", value: WfSpecId.decode(reader, reader.uint32()) };
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.target = { $case: "taskDef", value: TaskDefId.decode(reader, reader.uint32()) };
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.target = { $case: "node", value: NodeReference.decode(reader, reader.uint32()) };
+          message.workflow = WorkflowMetricId.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1380,13 +1473,7 @@ export const MetricLevelOverride = {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       newLevel: isSet(object.newLevel) ? metricRecordingLevelFromJSON(object.newLevel) : MetricRecordingLevel.INFO,
-      target: isSet(object.wfSpec)
-        ? { $case: "wfSpec", value: WfSpecId.fromJSON(object.wfSpec) }
-        : isSet(object.taskDef)
-        ? { $case: "taskDef", value: TaskDefId.fromJSON(object.taskDef) }
-        : isSet(object.node)
-        ? { $case: "node", value: NodeReference.fromJSON(object.node) }
-        : undefined,
+      workflow: isSet(object.workflow) ? WorkflowMetricId.fromJSON(object.workflow) : undefined,
     };
   },
 
@@ -1398,14 +1485,8 @@ export const MetricLevelOverride = {
     if (message.newLevel !== MetricRecordingLevel.INFO) {
       obj.newLevel = metricRecordingLevelToJSON(message.newLevel);
     }
-    if (message.target?.$case === "wfSpec") {
-      obj.wfSpec = WfSpecId.toJSON(message.target.value);
-    }
-    if (message.target?.$case === "taskDef") {
-      obj.taskDef = TaskDefId.toJSON(message.target.value);
-    }
-    if (message.target?.$case === "node") {
-      obj.node = NodeReference.toJSON(message.target.value);
+    if (message.workflow !== undefined) {
+      obj.workflow = WorkflowMetricId.toJSON(message.workflow);
     }
     return obj;
   },
@@ -1417,15 +1498,9 @@ export const MetricLevelOverride = {
     const message = createBaseMetricLevelOverride();
     message.id = object.id ?? "";
     message.newLevel = object.newLevel ?? MetricRecordingLevel.INFO;
-    if (object.target?.$case === "wfSpec" && object.target?.value !== undefined && object.target?.value !== null) {
-      message.target = { $case: "wfSpec", value: WfSpecId.fromPartial(object.target.value) };
-    }
-    if (object.target?.$case === "taskDef" && object.target?.value !== undefined && object.target?.value !== null) {
-      message.target = { $case: "taskDef", value: TaskDefId.fromPartial(object.target.value) };
-    }
-    if (object.target?.$case === "node" && object.target?.value !== undefined && object.target?.value !== null) {
-      message.target = { $case: "node", value: NodeReference.fromPartial(object.target.value) };
-    }
+    message.workflow = (object.workflow !== undefined && object.workflow !== null)
+      ? WorkflowMetricId.fromPartial(object.workflow)
+      : undefined;
     return message;
   },
 };
@@ -1547,16 +1622,13 @@ export const DeleteMetricLevelOverrideRequest = {
 };
 
 function createBaseListMetricLevelOverridesRequest(): ListMetricLevelOverridesRequest {
-  return { wfSpecFilter: undefined, taskDefFilter: undefined };
+  return { wfSpecFilter: undefined };
 }
 
 export const ListMetricLevelOverridesRequest = {
   encode(message: ListMetricLevelOverridesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.wfSpecFilter !== undefined) {
       WfSpecId.encode(message.wfSpecFilter, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.taskDefFilter !== undefined) {
-      TaskDefId.encode(message.taskDefFilter, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -1575,13 +1647,6 @@ export const ListMetricLevelOverridesRequest = {
 
           message.wfSpecFilter = WfSpecId.decode(reader, reader.uint32());
           continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.taskDefFilter = TaskDefId.decode(reader, reader.uint32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1592,19 +1657,13 @@ export const ListMetricLevelOverridesRequest = {
   },
 
   fromJSON(object: any): ListMetricLevelOverridesRequest {
-    return {
-      wfSpecFilter: isSet(object.wfSpecFilter) ? WfSpecId.fromJSON(object.wfSpecFilter) : undefined,
-      taskDefFilter: isSet(object.taskDefFilter) ? TaskDefId.fromJSON(object.taskDefFilter) : undefined,
-    };
+    return { wfSpecFilter: isSet(object.wfSpecFilter) ? WfSpecId.fromJSON(object.wfSpecFilter) : undefined };
   },
 
   toJSON(message: ListMetricLevelOverridesRequest): unknown {
     const obj: any = {};
     if (message.wfSpecFilter !== undefined) {
       obj.wfSpecFilter = WfSpecId.toJSON(message.wfSpecFilter);
-    }
-    if (message.taskDefFilter !== undefined) {
-      obj.taskDefFilter = TaskDefId.toJSON(message.taskDefFilter);
     }
     return obj;
   },
@@ -1616,9 +1675,6 @@ export const ListMetricLevelOverridesRequest = {
     const message = createBaseListMetricLevelOverridesRequest();
     message.wfSpecFilter = (object.wfSpecFilter !== undefined && object.wfSpecFilter !== null)
       ? WfSpecId.fromPartial(object.wfSpecFilter)
-      : undefined;
-    message.taskDefFilter = (object.taskDefFilter !== undefined && object.taskDefFilter !== null)
-      ? TaskDefId.fromPartial(object.taskDefFilter)
       : undefined;
     return message;
   },

@@ -11,70 +11,56 @@ public interface ListMetricsRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string metric_spec_id = 1;</code>
-   * @return The metricSpecId.
+   * <pre>
+   * Metric window id contains object and start time
+   * </pre>
+   *
+   * <code>.littlehorse.MetricWindowId id = 1;</code>
+   * @return Whether the id field is set.
    */
-  java.lang.String getMetricSpecId();
+  boolean hasId();
   /**
-   * <code>string metric_spec_id = 1;</code>
-   * @return The bytes for metricSpecId.
+   * <pre>
+   * Metric window id contains object and start time
+   * </pre>
+   *
+   * <code>.littlehorse.MetricWindowId id = 1;</code>
+   * @return The id.
    */
-  com.google.protobuf.ByteString
-      getMetricSpecIdBytes();
+  io.littlehorse.sdk.common.proto.MetricWindowId getId();
+  /**
+   * <pre>
+   * Metric window id contains object and start time
+   * </pre>
+   *
+   * <code>.littlehorse.MetricWindowId id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder getIdOrBuilder();
 
   /**
-   * <code>.google.protobuf.Duration window_length = 2;</code>
-   * @return Whether the windowLength field is set.
-   */
-  boolean hasWindowLength();
-  /**
-   * <code>.google.protobuf.Duration window_length = 2;</code>
-   * @return The windowLength.
-   */
-  com.google.protobuf.Duration getWindowLength();
-  /**
-   * <code>.google.protobuf.Duration window_length = 2;</code>
-   */
-  com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder();
-
-  /**
-   * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-   * @return The enum numeric value on the wire for aggregationType.
-   */
-  int getAggregationTypeValue();
-  /**
-   * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-   * @return The aggregationType.
-   */
-  io.littlehorse.sdk.common.proto.AggregationType getAggregationType();
-
-  /**
-   * <code>.google.protobuf.Timestamp start_time = 4;</code>
-   * @return Whether the startTime field is set.
-   */
-  boolean hasStartTime();
-  /**
-   * <code>.google.protobuf.Timestamp start_time = 4;</code>
-   * @return The startTime.
-   */
-  com.google.protobuf.Timestamp getStartTime();
-  /**
-   * <code>.google.protobuf.Timestamp start_time = 4;</code>
-   */
-  com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder();
-
-  /**
-   * <code>.google.protobuf.Timestamp end_time = 5;</code>
+   * <pre>
+   * Optional: if not set, server uses current time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
    * @return Whether the endTime field is set.
    */
   boolean hasEndTime();
   /**
-   * <code>.google.protobuf.Timestamp end_time = 5;</code>
+   * <pre>
+   * Optional: if not set, server uses current time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
    * @return The endTime.
    */
   com.google.protobuf.Timestamp getEndTime();
   /**
-   * <code>.google.protobuf.Timestamp end_time = 5;</code>
+   * <pre>
+   * Optional: if not set, server uses current time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp end_time = 5;</code>
    */
   com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
 }

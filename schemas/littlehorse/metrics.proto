@@ -42,16 +42,32 @@ message MetricSpec {
   google.protobuf.Duration window_length = 6;
 }
 
-message ListMetricsRequest {
-  string metric_spec_id = 1;
-  google.protobuf.Duration window_length = 2;
-  AggregationType aggregation_type = 3;
-  google.protobuf.Timestamp start_time = 4;
-  google.protobuf.Timestamp end_time = 5;
+message MetricsConfig {
+  MetricRecordingLevel level = 1;
+  int32 retention_days = 2;
 }
 
-message MetricList {
-  repeated MetricWindow windows = 1;
+message WorkflowMetricId {
+    optional WfSpecId wf_spec = 1; // If null, tenant-level aggregate
+}
+
+message TaskMetricId {
+    optional TaskDefId task_def = 1; // If null, tenant-level aggregate
+}
+
+message NodeMetricId {
+    WfSpecId wf_spec = 1;
+    string node_name = 2;
+    int32 node_position = 3; // Position within the ThreadSpec for ordering
+}
+
+message MetricWindowId {
+  oneof id {
+    WorkflowMetricId workflow = 1;
+    TaskMetricId task = 2;
+    NodeMetricId node = 3;
+  }
+  google.protobuf.Timestamp window_start = 4;
 }
 
 message CountAndTiming {
@@ -61,34 +77,26 @@ message CountAndTiming {
   int64 total_latency_ms = 4;
 }
 
-message MetricWindowId {
-  MetricEntityType entity = 1;
-  string entity_id = 2; // e.g., wf_spec name, task_def name
-  google.protobuf.Timestamp window_start = 3;
-}
-
 message MetricWindow {
   MetricWindowId id = 1;
-  int32 total_started = 2; // for applicable entities
-  CountAndTiming completed = 3;
-  CountAndTiming halted = 4;
-  CountAndTiming error = 5;
-  CountAndTiming exception = 6;
-  map<string, CountAndTiming> custom = 7; // for exceptions, errors by type, etc.
-  // Additional fields for TaskMetric specifics
-  CountAndTiming scheduled_to_running = 8;
-  CountAndTiming running_to_success = 9;
-  int32 timeouts = 10;
+  map<string, CountAndTiming> metrics = 2;
+}
+
+message ListMetricsRequest {
+  // Metric window id contains object and start time
+  MetricWindowId id = 1;
+  // Optional: if not set, server uses current time
+  optional google.protobuf.Timestamp end_time = 5;
+}
+
+message MetricList {
+  repeated MetricWindow windows = 1;
 }
 
 message MetricLevelOverride {
   string id = 1;
   MetricRecordingLevel new_level = 2;
-  oneof target {
-    WfSpecId wf_spec = 3;
-    TaskDefId task_def = 4;
-    NodeReference node = 5;
-  }
+  WorkflowMetricId workflow = 3;
 }
 
 message PutMetricLevelOverrideRequest {
@@ -102,7 +110,6 @@ message DeleteMetricLevelOverrideRequest {
 message ListMetricLevelOverridesRequest {
   // Optional filters
   optional WfSpecId wf_spec_filter = 1;
-  optional TaskDefId task_def_filter = 2;
 }
 
 message MetricLevelOverridesList {

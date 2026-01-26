@@ -47,6 +47,46 @@ public final class Metrics extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_MetricSpec_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_MetricsConfig_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_MetricsConfig_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_WorkflowMetricId_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_WorkflowMetricId_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_TaskMetricId_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_TaskMetricId_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_NodeMetricId_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_NodeMetricId_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_MetricWindowId_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_MetricWindowId_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_CountAndTiming_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_CountAndTiming_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_MetricWindow_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_MetricWindow_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_MetricWindow_MetricsEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_MetricWindow_MetricsEntry_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_ListMetricsRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -56,26 +96,6 @@ public final class Metrics extends com.google.protobuf.GeneratedFile {
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_MetricList_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_CountAndTiming_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_littlehorse_CountAndTiming_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_MetricWindowId_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_littlehorse_MetricWindowId_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_MetricWindow_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_littlehorse_MetricWindow_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_MetricWindow_CustomEntry_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_littlehorse_MetricWindow_CustomEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_MetricLevelOverride_descriptor;
   static final 
@@ -132,51 +152,46 @@ public final class Metrics extends com.google.protobuf.GeneratedFile {
       "lehorse.MetricScope\0221\n\ntransition\030\005 \001(\0132" +
       "\035.littlehorse.StatusTransition\0220\n\rwindow" +
       "_length\030\006 \001(\0132\031.google.protobuf.Duration" +
-      "\"\364\001\n\022ListMetricsRequest\022\026\n\016metric_spec_i" +
-      "d\030\001 \001(\t\0220\n\rwindow_length\030\002 \001(\0132\031.google." +
-      "protobuf.Duration\0226\n\020aggregation_type\030\003 " +
-      "\001(\0162\034.littlehorse.AggregationType\022.\n\nsta" +
-      "rt_time\030\004 \001(\0132\032.google.protobuf.Timestam" +
-      "p\022,\n\010end_time\030\005 \001(\0132\032.google.protobuf.Ti" +
-      "mestamp\"8\n\nMetricList\022*\n\007windows\030\001 \003(\0132\031" +
-      ".littlehorse.MetricWindow\"i\n\016CountAndTim" +
-      "ing\022\r\n\005count\030\001 \001(\005\022\026\n\016min_latency_ms\030\002 \001" +
-      "(\003\022\026\n\016max_latency_ms\030\003 \001(\003\022\030\n\020total_late" +
-      "ncy_ms\030\004 \001(\003\"\204\001\n\016MetricWindowId\022-\n\006entit" +
-      "y\030\001 \001(\0162\035.littlehorse.MetricEntityType\022\021" +
-      "\n\tentity_id\030\002 \001(\t\0220\n\014window_start\030\003 \001(\0132" +
-      "\032.google.protobuf.Timestamp\"\220\004\n\014MetricWi" +
-      "ndow\022\'\n\002id\030\001 \001(\0132\033.littlehorse.MetricWin" +
-      "dowId\022\025\n\rtotal_started\030\002 \001(\005\022.\n\tcomplete" +
-      "d\030\003 \001(\0132\033.littlehorse.CountAndTiming\022+\n\006" +
-      "halted\030\004 \001(\0132\033.littlehorse.CountAndTimin" +
-      "g\022*\n\005error\030\005 \001(\0132\033.littlehorse.CountAndT" +
-      "iming\022.\n\texception\030\006 \001(\0132\033.littlehorse.C" +
-      "ountAndTiming\0225\n\006custom\030\007 \003(\0132%.littleho" +
-      "rse.MetricWindow.CustomEntry\0229\n\024schedule" +
-      "d_to_running\030\010 \001(\0132\033.littlehorse.CountAn" +
-      "dTiming\0227\n\022running_to_success\030\t \001(\0132\033.li" +
-      "ttlehorse.CountAndTiming\022\020\n\010timeouts\030\n \001" +
-      "(\005\032J\n\013CustomEntry\022\013\n\003key\030\001 \001(\t\022*\n\005value\030" +
-      "\002 \001(\0132\033.littlehorse.CountAndTiming:\0028\001\"\343" +
+      "\"Y\n\rMetricsConfig\0220\n\005level\030\001 \001(\0162!.littl" +
+      "ehorse.MetricRecordingLevel\022\026\n\016retention" +
+      "_days\030\002 \001(\005\"K\n\020WorkflowMetricId\022+\n\007wf_sp" +
+      "ec\030\001 \001(\0132\025.littlehorse.WfSpecIdH\000\210\001\001B\n\n\010" +
+      "_wf_spec\"J\n\014TaskMetricId\022-\n\010task_def\030\001 \001" +
+      "(\0132\026.littlehorse.TaskDefIdH\000\210\001\001B\013\n\t_task" +
+      "_def\"`\n\014NodeMetricId\022&\n\007wf_spec\030\001 \001(\0132\025." +
+      "littlehorse.WfSpecId\022\021\n\tnode_name\030\002 \001(\t\022" +
+      "\025\n\rnode_position\030\003 \001(\005\"\321\001\n\016MetricWindowI" +
+      "d\0221\n\010workflow\030\001 \001(\0132\035.littlehorse.Workfl" +
+      "owMetricIdH\000\022)\n\004task\030\002 \001(\0132\031.littlehorse" +
+      ".TaskMetricIdH\000\022)\n\004node\030\003 \001(\0132\031.littleho" +
+      "rse.NodeMetricIdH\000\0220\n\014window_start\030\004 \001(\013" +
+      "2\032.google.protobuf.TimestampB\004\n\002id\"i\n\016Co" +
+      "untAndTiming\022\r\n\005count\030\001 \001(\005\022\026\n\016min_laten" +
+      "cy_ms\030\002 \001(\003\022\026\n\016max_latency_ms\030\003 \001(\003\022\030\n\020t" +
+      "otal_latency_ms\030\004 \001(\003\"\275\001\n\014MetricWindow\022\'" +
+      "\n\002id\030\001 \001(\0132\033.littlehorse.MetricWindowId\022" +
+      "7\n\007metrics\030\002 \003(\0132&.littlehorse.MetricWin" +
+      "dow.MetricsEntry\032K\n\014MetricsEntry\022\013\n\003key\030" +
+      "\001 \001(\t\022*\n\005value\030\002 \001(\0132\033.littlehorse.Count" +
+      "AndTiming:\0028\001\"}\n\022ListMetricsRequest\022\'\n\002i" +
+      "d\030\001 \001(\0132\033.littlehorse.MetricWindowId\0221\n\010" +
+      "end_time\030\005 \001(\0132\032.google.protobuf.Timesta" +
+      "mpH\000\210\001\001B\013\n\t_end_time\"8\n\nMetricList\022*\n\007wi" +
+      "ndows\030\001 \003(\0132\031.littlehorse.MetricWindow\"\210" +
       "\001\n\023MetricLevelOverride\022\n\n\002id\030\001 \001(\t\0224\n\tne" +
       "w_level\030\002 \001(\0162!.littlehorse.MetricRecord" +
-      "ingLevel\022(\n\007wf_spec\030\003 \001(\0132\025.littlehorse." +
-      "WfSpecIdH\000\022*\n\010task_def\030\004 \001(\0132\026.littlehor" +
-      "se.TaskDefIdH\000\022*\n\004node\030\005 \001(\0132\032.littlehor" +
-      "se.NodeReferenceH\000B\010\n\006target\"S\n\035PutMetri" +
-      "cLevelOverrideRequest\0222\n\010override\030\001 \001(\0132" +
-      " .littlehorse.MetricLevelOverride\".\n Del" +
-      "eteMetricLevelOverrideRequest\022\n\n\002id\030\001 \001(" +
-      "\t\"\262\001\n\037ListMetricLevelOverridesRequest\0222\n" +
-      "\016wf_spec_filter\030\001 \001(\0132\025.littlehorse.WfSp" +
-      "ecIdH\000\210\001\001\0224\n\017task_def_filter\030\002 \001(\0132\026.lit" +
-      "tlehorse.TaskDefIdH\001\210\001\001B\021\n\017_wf_spec_filt" +
-      "erB\022\n\020_task_def_filter\"O\n\030MetricLevelOve" +
-      "rridesList\0223\n\toverrides\030\001 \003(\0132 .littleho" +
-      "rse.MetricLevelOverrideBM\n\037io.littlehors" +
-      "e.sdk.common.protoP\001Z\t.;lhproto\252\002\034Little" +
-      "Horse.Sdk.Common.Protob\006proto3"
+      "ingLevel\022/\n\010workflow\030\003 \001(\0132\035.littlehorse" +
+      ".WorkflowMetricId\"S\n\035PutMetricLevelOverr" +
+      "ideRequest\0222\n\010override\030\001 \001(\0132 .littlehor" +
+      "se.MetricLevelOverride\".\n DeleteMetricLe" +
+      "velOverrideRequest\022\n\n\002id\030\001 \001(\t\"h\n\037ListMe" +
+      "tricLevelOverridesRequest\0222\n\016wf_spec_fil" +
+      "ter\030\001 \001(\0132\025.littlehorse.WfSpecIdH\000\210\001\001B\021\n" +
+      "\017_wf_spec_filter\"O\n\030MetricLevelOverrides" +
+      "List\0223\n\toverrides\030\001 \003(\0132 .littlehorse.Me" +
+      "tricLevelOverrideBM\n\037io.littlehorse.sdk." +
+      "common.protoP\001Z\t.;lhproto\252\002\034LittleHorse." +
+      "Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -210,68 +225,92 @@ public final class Metrics extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_MetricSpec_descriptor,
         new java.lang.String[] { "Id", "CreatedAt", "AggregationType", "Scope", "Transition", "WindowLength", });
-    internal_static_littlehorse_ListMetricsRequest_descriptor =
+    internal_static_littlehorse_MetricsConfig_descriptor =
       getDescriptor().getMessageTypes().get(4);
-    internal_static_littlehorse_ListMetricsRequest_fieldAccessorTable = new
+    internal_static_littlehorse_MetricsConfig_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_littlehorse_ListMetricsRequest_descriptor,
-        new java.lang.String[] { "MetricSpecId", "WindowLength", "AggregationType", "StartTime", "EndTime", });
-    internal_static_littlehorse_MetricList_descriptor =
+        internal_static_littlehorse_MetricsConfig_descriptor,
+        new java.lang.String[] { "Level", "RetentionDays", });
+    internal_static_littlehorse_WorkflowMetricId_descriptor =
       getDescriptor().getMessageTypes().get(5);
-    internal_static_littlehorse_MetricList_fieldAccessorTable = new
+    internal_static_littlehorse_WorkflowMetricId_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_littlehorse_MetricList_descriptor,
-        new java.lang.String[] { "Windows", });
-    internal_static_littlehorse_CountAndTiming_descriptor =
+        internal_static_littlehorse_WorkflowMetricId_descriptor,
+        new java.lang.String[] { "WfSpec", });
+    internal_static_littlehorse_TaskMetricId_descriptor =
       getDescriptor().getMessageTypes().get(6);
+    internal_static_littlehorse_TaskMetricId_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_TaskMetricId_descriptor,
+        new java.lang.String[] { "TaskDef", });
+    internal_static_littlehorse_NodeMetricId_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_littlehorse_NodeMetricId_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_NodeMetricId_descriptor,
+        new java.lang.String[] { "WfSpec", "NodeName", "NodePosition", });
+    internal_static_littlehorse_MetricWindowId_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_littlehorse_MetricWindowId_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_MetricWindowId_descriptor,
+        new java.lang.String[] { "Workflow", "Task", "Node", "WindowStart", "Id", });
+    internal_static_littlehorse_CountAndTiming_descriptor =
+      getDescriptor().getMessageTypes().get(9);
     internal_static_littlehorse_CountAndTiming_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_CountAndTiming_descriptor,
         new java.lang.String[] { "Count", "MinLatencyMs", "MaxLatencyMs", "TotalLatencyMs", });
-    internal_static_littlehorse_MetricWindowId_descriptor =
-      getDescriptor().getMessageTypes().get(7);
-    internal_static_littlehorse_MetricWindowId_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_littlehorse_MetricWindowId_descriptor,
-        new java.lang.String[] { "Entity", "EntityId", "WindowStart", });
     internal_static_littlehorse_MetricWindow_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_littlehorse_MetricWindow_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_MetricWindow_descriptor,
-        new java.lang.String[] { "Id", "TotalStarted", "Completed", "Halted", "Error", "Exception", "Custom", "ScheduledToRunning", "RunningToSuccess", "Timeouts", });
-    internal_static_littlehorse_MetricWindow_CustomEntry_descriptor =
+        new java.lang.String[] { "Id", "Metrics", });
+    internal_static_littlehorse_MetricWindow_MetricsEntry_descriptor =
       internal_static_littlehorse_MetricWindow_descriptor.getNestedTypes().get(0);
-    internal_static_littlehorse_MetricWindow_CustomEntry_fieldAccessorTable = new
+    internal_static_littlehorse_MetricWindow_MetricsEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_littlehorse_MetricWindow_CustomEntry_descriptor,
+        internal_static_littlehorse_MetricWindow_MetricsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
+    internal_static_littlehorse_ListMetricsRequest_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_littlehorse_ListMetricsRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_ListMetricsRequest_descriptor,
+        new java.lang.String[] { "Id", "EndTime", });
+    internal_static_littlehorse_MetricList_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_littlehorse_MetricList_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_MetricList_descriptor,
+        new java.lang.String[] { "Windows", });
     internal_static_littlehorse_MetricLevelOverride_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_littlehorse_MetricLevelOverride_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_MetricLevelOverride_descriptor,
-        new java.lang.String[] { "Id", "NewLevel", "WfSpec", "TaskDef", "Node", "Target", });
+        new java.lang.String[] { "Id", "NewLevel", "Workflow", });
     internal_static_littlehorse_PutMetricLevelOverrideRequest_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_littlehorse_PutMetricLevelOverrideRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_PutMetricLevelOverrideRequest_descriptor,
         new java.lang.String[] { "Override", });
     internal_static_littlehorse_DeleteMetricLevelOverrideRequest_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_littlehorse_DeleteMetricLevelOverrideRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_DeleteMetricLevelOverrideRequest_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_littlehorse_ListMetricLevelOverridesRequest_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_littlehorse_ListMetricLevelOverridesRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ListMetricLevelOverridesRequest_descriptor,
-        new java.lang.String[] { "WfSpecFilter", "TaskDefFilter", });
+        new java.lang.String[] { "WfSpecFilter", });
     internal_static_littlehorse_MetricLevelOverridesList_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_littlehorse_MetricLevelOverridesList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_MetricLevelOverridesList_descriptor,

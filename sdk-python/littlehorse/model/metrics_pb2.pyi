@@ -61,25 +61,47 @@ class MetricSpec(_message.Message):
     window_length: _duration_pb2.Duration
     def __init__(self, id: _Optional[str] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., aggregation_type: _Optional[_Union[_common_enums_pb2.AggregationType, str]] = ..., scope: _Optional[_Union[MetricScope, _Mapping]] = ..., transition: _Optional[_Union[StatusTransition, _Mapping]] = ..., window_length: _Optional[_Union[datetime.timedelta, _duration_pb2.Duration, _Mapping]] = ...) -> None: ...
 
-class ListMetricsRequest(_message.Message):
-    __slots__ = ("metric_spec_id", "window_length", "aggregation_type", "start_time", "end_time")
-    METRIC_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
-    WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
-    AGGREGATION_TYPE_FIELD_NUMBER: _ClassVar[int]
-    START_TIME_FIELD_NUMBER: _ClassVar[int]
-    END_TIME_FIELD_NUMBER: _ClassVar[int]
-    metric_spec_id: str
-    window_length: _duration_pb2.Duration
-    aggregation_type: _common_enums_pb2.AggregationType
-    start_time: _timestamp_pb2.Timestamp
-    end_time: _timestamp_pb2.Timestamp
-    def __init__(self, metric_spec_id: _Optional[str] = ..., window_length: _Optional[_Union[datetime.timedelta, _duration_pb2.Duration, _Mapping]] = ..., aggregation_type: _Optional[_Union[_common_enums_pb2.AggregationType, str]] = ..., start_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+class MetricsConfig(_message.Message):
+    __slots__ = ("level", "retention_days")
+    LEVEL_FIELD_NUMBER: _ClassVar[int]
+    RETENTION_DAYS_FIELD_NUMBER: _ClassVar[int]
+    level: _common_enums_pb2.MetricRecordingLevel
+    retention_days: int
+    def __init__(self, level: _Optional[_Union[_common_enums_pb2.MetricRecordingLevel, str]] = ..., retention_days: _Optional[int] = ...) -> None: ...
 
-class MetricList(_message.Message):
-    __slots__ = ("windows",)
-    WINDOWS_FIELD_NUMBER: _ClassVar[int]
-    windows: _containers.RepeatedCompositeFieldContainer[MetricWindow]
-    def __init__(self, windows: _Optional[_Iterable[_Union[MetricWindow, _Mapping]]] = ...) -> None: ...
+class WorkflowMetricId(_message.Message):
+    __slots__ = ("wf_spec",)
+    WF_SPEC_FIELD_NUMBER: _ClassVar[int]
+    wf_spec: _object_id_pb2.WfSpecId
+    def __init__(self, wf_spec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
+
+class TaskMetricId(_message.Message):
+    __slots__ = ("task_def",)
+    TASK_DEF_FIELD_NUMBER: _ClassVar[int]
+    task_def: _object_id_pb2.TaskDefId
+    def __init__(self, task_def: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ...) -> None: ...
+
+class NodeMetricId(_message.Message):
+    __slots__ = ("wf_spec", "node_name", "node_position")
+    WF_SPEC_FIELD_NUMBER: _ClassVar[int]
+    NODE_NAME_FIELD_NUMBER: _ClassVar[int]
+    NODE_POSITION_FIELD_NUMBER: _ClassVar[int]
+    wf_spec: _object_id_pb2.WfSpecId
+    node_name: str
+    node_position: int
+    def __init__(self, wf_spec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., node_name: _Optional[str] = ..., node_position: _Optional[int] = ...) -> None: ...
+
+class MetricWindowId(_message.Message):
+    __slots__ = ("workflow", "task", "node", "window_start")
+    WORKFLOW_FIELD_NUMBER: _ClassVar[int]
+    TASK_FIELD_NUMBER: _ClassVar[int]
+    NODE_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_START_FIELD_NUMBER: _ClassVar[int]
+    workflow: WorkflowMetricId
+    task: TaskMetricId
+    node: NodeMetricId
+    window_start: _timestamp_pb2.Timestamp
+    def __init__(self, workflow: _Optional[_Union[WorkflowMetricId, _Mapping]] = ..., task: _Optional[_Union[TaskMetricId, _Mapping]] = ..., node: _Optional[_Union[NodeMetricId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class CountAndTiming(_message.Message):
     __slots__ = ("count", "min_latency_ms", "max_latency_ms", "total_latency_ms")
@@ -93,19 +115,9 @@ class CountAndTiming(_message.Message):
     total_latency_ms: int
     def __init__(self, count: _Optional[int] = ..., min_latency_ms: _Optional[int] = ..., max_latency_ms: _Optional[int] = ..., total_latency_ms: _Optional[int] = ...) -> None: ...
 
-class MetricWindowId(_message.Message):
-    __slots__ = ("entity", "entity_id", "window_start")
-    ENTITY_FIELD_NUMBER: _ClassVar[int]
-    ENTITY_ID_FIELD_NUMBER: _ClassVar[int]
-    WINDOW_START_FIELD_NUMBER: _ClassVar[int]
-    entity: _common_enums_pb2.MetricEntityType
-    entity_id: str
-    window_start: _timestamp_pb2.Timestamp
-    def __init__(self, entity: _Optional[_Union[_common_enums_pb2.MetricEntityType, str]] = ..., entity_id: _Optional[str] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
-
 class MetricWindow(_message.Message):
-    __slots__ = ("id", "total_started", "completed", "halted", "error", "exception", "custom", "scheduled_to_running", "running_to_success", "timeouts")
-    class CustomEntry(_message.Message):
+    __slots__ = ("id", "metrics")
+    class MetricsEntry(_message.Message):
         __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
@@ -113,40 +125,34 @@ class MetricWindow(_message.Message):
         value: CountAndTiming
         def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[CountAndTiming, _Mapping]] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
-    TOTAL_STARTED_FIELD_NUMBER: _ClassVar[int]
-    COMPLETED_FIELD_NUMBER: _ClassVar[int]
-    HALTED_FIELD_NUMBER: _ClassVar[int]
-    ERROR_FIELD_NUMBER: _ClassVar[int]
-    EXCEPTION_FIELD_NUMBER: _ClassVar[int]
-    CUSTOM_FIELD_NUMBER: _ClassVar[int]
-    SCHEDULED_TO_RUNNING_FIELD_NUMBER: _ClassVar[int]
-    RUNNING_TO_SUCCESS_FIELD_NUMBER: _ClassVar[int]
-    TIMEOUTS_FIELD_NUMBER: _ClassVar[int]
+    METRICS_FIELD_NUMBER: _ClassVar[int]
     id: MetricWindowId
-    total_started: int
-    completed: CountAndTiming
-    halted: CountAndTiming
-    error: CountAndTiming
-    exception: CountAndTiming
-    custom: _containers.MessageMap[str, CountAndTiming]
-    scheduled_to_running: CountAndTiming
-    running_to_success: CountAndTiming
-    timeouts: int
-    def __init__(self, id: _Optional[_Union[MetricWindowId, _Mapping]] = ..., total_started: _Optional[int] = ..., completed: _Optional[_Union[CountAndTiming, _Mapping]] = ..., halted: _Optional[_Union[CountAndTiming, _Mapping]] = ..., error: _Optional[_Union[CountAndTiming, _Mapping]] = ..., exception: _Optional[_Union[CountAndTiming, _Mapping]] = ..., custom: _Optional[_Mapping[str, CountAndTiming]] = ..., scheduled_to_running: _Optional[_Union[CountAndTiming, _Mapping]] = ..., running_to_success: _Optional[_Union[CountAndTiming, _Mapping]] = ..., timeouts: _Optional[int] = ...) -> None: ...
+    metrics: _containers.MessageMap[str, CountAndTiming]
+    def __init__(self, id: _Optional[_Union[MetricWindowId, _Mapping]] = ..., metrics: _Optional[_Mapping[str, CountAndTiming]] = ...) -> None: ...
+
+class ListMetricsRequest(_message.Message):
+    __slots__ = ("id", "end_time")
+    ID_FIELD_NUMBER: _ClassVar[int]
+    END_TIME_FIELD_NUMBER: _ClassVar[int]
+    id: MetricWindowId
+    end_time: _timestamp_pb2.Timestamp
+    def __init__(self, id: _Optional[_Union[MetricWindowId, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+
+class MetricList(_message.Message):
+    __slots__ = ("windows",)
+    WINDOWS_FIELD_NUMBER: _ClassVar[int]
+    windows: _containers.RepeatedCompositeFieldContainer[MetricWindow]
+    def __init__(self, windows: _Optional[_Iterable[_Union[MetricWindow, _Mapping]]] = ...) -> None: ...
 
 class MetricLevelOverride(_message.Message):
-    __slots__ = ("id", "new_level", "wf_spec", "task_def", "node")
+    __slots__ = ("id", "new_level", "workflow")
     ID_FIELD_NUMBER: _ClassVar[int]
     NEW_LEVEL_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_FIELD_NUMBER: _ClassVar[int]
-    TASK_DEF_FIELD_NUMBER: _ClassVar[int]
-    NODE_FIELD_NUMBER: _ClassVar[int]
+    WORKFLOW_FIELD_NUMBER: _ClassVar[int]
     id: str
     new_level: _common_enums_pb2.MetricRecordingLevel
-    wf_spec: _object_id_pb2.WfSpecId
-    task_def: _object_id_pb2.TaskDefId
-    node: NodeReference
-    def __init__(self, id: _Optional[str] = ..., new_level: _Optional[_Union[_common_enums_pb2.MetricRecordingLevel, str]] = ..., wf_spec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., task_def: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., node: _Optional[_Union[NodeReference, _Mapping]] = ...) -> None: ...
+    workflow: WorkflowMetricId
+    def __init__(self, id: _Optional[str] = ..., new_level: _Optional[_Union[_common_enums_pb2.MetricRecordingLevel, str]] = ..., workflow: _Optional[_Union[WorkflowMetricId, _Mapping]] = ...) -> None: ...
 
 class PutMetricLevelOverrideRequest(_message.Message):
     __slots__ = ("override",)
@@ -161,12 +167,10 @@ class DeleteMetricLevelOverrideRequest(_message.Message):
     def __init__(self, id: _Optional[str] = ...) -> None: ...
 
 class ListMetricLevelOverridesRequest(_message.Message):
-    __slots__ = ("wf_spec_filter", "task_def_filter")
+    __slots__ = ("wf_spec_filter",)
     WF_SPEC_FILTER_FIELD_NUMBER: _ClassVar[int]
-    TASK_DEF_FILTER_FIELD_NUMBER: _ClassVar[int]
     wf_spec_filter: _object_id_pb2.WfSpecId
-    task_def_filter: _object_id_pb2.TaskDefId
-    def __init__(self, wf_spec_filter: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., task_def_filter: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ...) -> None: ...
+    def __init__(self, wf_spec_filter: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
 
 class MetricLevelOverridesList(_message.Message):
     __slots__ = ("overrides",)

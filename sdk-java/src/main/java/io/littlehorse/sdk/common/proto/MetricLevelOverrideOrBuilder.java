@@ -34,49 +34,17 @@ public interface MetricLevelOverrideOrBuilder extends
   io.littlehorse.sdk.common.proto.MetricRecordingLevel getNewLevel();
 
   /**
-   * <code>.littlehorse.WfSpecId wf_spec = 3;</code>
-   * @return Whether the wfSpec field is set.
+   * <code>.littlehorse.WorkflowMetricId workflow = 3;</code>
+   * @return Whether the workflow field is set.
    */
-  boolean hasWfSpec();
+  boolean hasWorkflow();
   /**
-   * <code>.littlehorse.WfSpecId wf_spec = 3;</code>
-   * @return The wfSpec.
+   * <code>.littlehorse.WorkflowMetricId workflow = 3;</code>
+   * @return The workflow.
    */
-  io.littlehorse.sdk.common.proto.WfSpecId getWfSpec();
+  io.littlehorse.sdk.common.proto.WorkflowMetricId getWorkflow();
   /**
-   * <code>.littlehorse.WfSpecId wf_spec = 3;</code>
+   * <code>.littlehorse.WorkflowMetricId workflow = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecOrBuilder();
-
-  /**
-   * <code>.littlehorse.TaskDefId task_def = 4;</code>
-   * @return Whether the taskDef field is set.
-   */
-  boolean hasTaskDef();
-  /**
-   * <code>.littlehorse.TaskDefId task_def = 4;</code>
-   * @return The taskDef.
-   */
-  io.littlehorse.sdk.common.proto.TaskDefId getTaskDef();
-  /**
-   * <code>.littlehorse.TaskDefId task_def = 4;</code>
-   */
-  io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefOrBuilder();
-
-  /**
-   * <code>.littlehorse.NodeReference node = 5;</code>
-   * @return Whether the node field is set.
-   */
-  boolean hasNode();
-  /**
-   * <code>.littlehorse.NodeReference node = 5;</code>
-   * @return The node.
-   */
-  io.littlehorse.sdk.common.proto.NodeReference getNode();
-  /**
-   * <code>.littlehorse.NodeReference node = 5;</code>
-   */
-  io.littlehorse.sdk.common.proto.NodeReferenceOrBuilder getNodeOrBuilder();
-
-  io.littlehorse.sdk.common.proto.MetricLevelOverride.TargetCase getTargetCase();
+  io.littlehorse.sdk.common.proto.WorkflowMetricIdOrBuilder getWorkflowOrBuilder();
 }

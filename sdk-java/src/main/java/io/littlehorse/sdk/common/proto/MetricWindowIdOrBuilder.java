@@ -11,48 +11,64 @@ public interface MetricWindowIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.MetricEntityType entity = 1;</code>
-   * @return The enum numeric value on the wire for entity.
+   * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
+   * @return Whether the workflow field is set.
    */
-  int getEntityValue();
+  boolean hasWorkflow();
   /**
-   * <code>.littlehorse.MetricEntityType entity = 1;</code>
-   * @return The entity.
+   * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
+   * @return The workflow.
    */
-  io.littlehorse.sdk.common.proto.MetricEntityType getEntity();
+  io.littlehorse.sdk.common.proto.WorkflowMetricId getWorkflow();
+  /**
+   * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.WorkflowMetricIdOrBuilder getWorkflowOrBuilder();
 
   /**
-   * <pre>
-   * e.g., wf_spec name, task_def name
-   * </pre>
-   *
-   * <code>string entity_id = 2;</code>
-   * @return The entityId.
+   * <code>.littlehorse.TaskMetricId task = 2;</code>
+   * @return Whether the task field is set.
    */
-  java.lang.String getEntityId();
+  boolean hasTask();
   /**
-   * <pre>
-   * e.g., wf_spec name, task_def name
-   * </pre>
-   *
-   * <code>string entity_id = 2;</code>
-   * @return The bytes for entityId.
+   * <code>.littlehorse.TaskMetricId task = 2;</code>
+   * @return The task.
    */
-  com.google.protobuf.ByteString
-      getEntityIdBytes();
+  io.littlehorse.sdk.common.proto.TaskMetricId getTask();
+  /**
+   * <code>.littlehorse.TaskMetricId task = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.TaskMetricIdOrBuilder getTaskOrBuilder();
 
   /**
-   * <code>.google.protobuf.Timestamp window_start = 3;</code>
+   * <code>.littlehorse.NodeMetricId node = 3;</code>
+   * @return Whether the node field is set.
+   */
+  boolean hasNode();
+  /**
+   * <code>.littlehorse.NodeMetricId node = 3;</code>
+   * @return The node.
+   */
+  io.littlehorse.sdk.common.proto.NodeMetricId getNode();
+  /**
+   * <code>.littlehorse.NodeMetricId node = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.NodeMetricIdOrBuilder getNodeOrBuilder();
+
+  /**
+   * <code>.google.protobuf.Timestamp window_start = 4;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 3;</code>
+   * <code>.google.protobuf.Timestamp window_start = 4;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 3;</code>
+   * <code>.google.protobuf.Timestamp window_start = 4;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
+
+  io.littlehorse.sdk.common.proto.MetricWindowId.IdCase getIdCase();
 }

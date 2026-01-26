@@ -6,13 +6,13 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.ListMetricLevelOverridesRequest}
+ * Protobuf type {@code littlehorse.WorkflowMetricId}
  */
 @com.google.protobuf.Generated
-public final class ListMetricLevelOverridesRequest extends
+public final class WorkflowMetricId extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:littlehorse.ListMetricLevelOverridesRequest)
-    ListMetricLevelOverridesRequestOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.WorkflowMetricId)
+    WorkflowMetricIdOrBuilder {
 private static final long serialVersionUID = 0L;
   static {
     com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -21,65 +21,65 @@ private static final long serialVersionUID = 0L;
       /* minor= */ 32,
       /* patch= */ 1,
       /* suffix= */ "",
-      ListMetricLevelOverridesRequest.class.getName());
+      WorkflowMetricId.class.getName());
   }
-  // Use ListMetricLevelOverridesRequest.newBuilder() to construct.
-  private ListMetricLevelOverridesRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  // Use WorkflowMetricId.newBuilder() to construct.
+  private WorkflowMetricId(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
-  private ListMetricLevelOverridesRequest() {
+  private WorkflowMetricId() {
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_ListMetricLevelOverridesRequest_descriptor;
+    return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_WorkflowMetricId_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_ListMetricLevelOverridesRequest_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_WorkflowMetricId_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest.class, io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest.Builder.class);
+            io.littlehorse.sdk.common.proto.WorkflowMetricId.class, io.littlehorse.sdk.common.proto.WorkflowMetricId.Builder.class);
   }
 
   private int bitField0_;
-  public static final int WF_SPEC_FILTER_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.WfSpecId wfSpecFilter_;
+  public static final int WF_SPEC_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.WfSpecId wfSpec_;
   /**
    * <pre>
-   * Optional filters
+   * If null, tenant-level aggregate
    * </pre>
    *
-   * <code>optional .littlehorse.WfSpecId wf_spec_filter = 1;</code>
-   * @return Whether the wfSpecFilter field is set.
+   * <code>optional .littlehorse.WfSpecId wf_spec = 1;</code>
+   * @return Whether the wfSpec field is set.
    */
   @java.lang.Override
-  public boolean hasWfSpecFilter() {
+  public boolean hasWfSpec() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
    * <pre>
-   * Optional filters
+   * If null, tenant-level aggregate
    * </pre>
    *
-   * <code>optional .littlehorse.WfSpecId wf_spec_filter = 1;</code>
-   * @return The wfSpecFilter.
+   * <code>optional .littlehorse.WfSpecId wf_spec = 1;</code>
+   * @return The wfSpec.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecFilter() {
-    return wfSpecFilter_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecFilter_;
+  public io.littlehorse.sdk.common.proto.WfSpecId getWfSpec() {
+    return wfSpec_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpec_;
   }
   /**
    * <pre>
-   * Optional filters
+   * If null, tenant-level aggregate
    * </pre>
    *
-   * <code>optional .littlehorse.WfSpecId wf_spec_filter = 1;</code>
+   * <code>optional .littlehorse.WfSpecId wf_spec = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecFilterOrBuilder() {
-    return wfSpecFilter_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecFilter_;
+  public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecOrBuilder() {
+    return wfSpec_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpec_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -97,7 +97,7 @@ private static final long serialVersionUID = 0L;
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(1, getWfSpecFilter());
+      output.writeMessage(1, getWfSpec());
     }
     getUnknownFields().writeTo(output);
   }
@@ -110,7 +110,7 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getWfSpecFilter());
+        .computeMessageSize(1, getWfSpec());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -122,15 +122,15 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.WorkflowMetricId)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest other = (io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest) obj;
+    io.littlehorse.sdk.common.proto.WorkflowMetricId other = (io.littlehorse.sdk.common.proto.WorkflowMetricId) obj;
 
-    if (hasWfSpecFilter() != other.hasWfSpecFilter()) return false;
-    if (hasWfSpecFilter()) {
-      if (!getWfSpecFilter()
-          .equals(other.getWfSpecFilter())) return false;
+    if (hasWfSpec() != other.hasWfSpec()) return false;
+    if (hasWfSpec()) {
+      if (!getWfSpec()
+          .equals(other.getWfSpec())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -143,53 +143,53 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasWfSpecFilter()) {
-      hash = (37 * hash) + WF_SPEC_FILTER_FIELD_NUMBER;
-      hash = (53 * hash) + getWfSpecFilter().hashCode();
+    if (hasWfSpec()) {
+      hash = (37 * hash) + WF_SPEC_FIELD_NUMBER;
+      hash = (53 * hash) + getWfSpec().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowMetricId parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowMetricId parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowMetricId parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowMetricId parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.WorkflowMetricId parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowMetricId parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.WorkflowMetricId parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowMetricId parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -197,26 +197,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.WorkflowMetricId parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowMetricId parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowMetricId parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.WorkflowMetricId parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -229,7 +229,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.WorkflowMetricId prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -245,26 +245,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.ListMetricLevelOverridesRequest}
+   * Protobuf type {@code littlehorse.WorkflowMetricId}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.ListMetricLevelOverridesRequest)
-      io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.WorkflowMetricId)
+      io.littlehorse.sdk.common.proto.WorkflowMetricIdOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_ListMetricLevelOverridesRequest_descriptor;
+      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_WorkflowMetricId_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_ListMetricLevelOverridesRequest_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_WorkflowMetricId_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest.class, io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest.Builder.class);
+              io.littlehorse.sdk.common.proto.WorkflowMetricId.class, io.littlehorse.sdk.common.proto.WorkflowMetricId.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.WorkflowMetricId.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -277,17 +277,17 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessage
               .alwaysUseFieldBuilders) {
-        internalGetWfSpecFilterFieldBuilder();
+        internalGetWfSpecFieldBuilder();
       }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      wfSpecFilter_ = null;
-      if (wfSpecFilterBuilder_ != null) {
-        wfSpecFilterBuilder_.dispose();
-        wfSpecFilterBuilder_ = null;
+      wfSpec_ = null;
+      if (wfSpecBuilder_ != null) {
+        wfSpecBuilder_.dispose();
+        wfSpecBuilder_ = null;
       }
       return this;
     }
@@ -295,17 +295,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_ListMetricLevelOverridesRequest_descriptor;
+      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_WorkflowMetricId_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.WorkflowMetricId getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.WorkflowMetricId.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest build() {
-      io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest result = buildPartial();
+    public io.littlehorse.sdk.common.proto.WorkflowMetricId build() {
+      io.littlehorse.sdk.common.proto.WorkflowMetricId result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -313,20 +313,20 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest buildPartial() {
-      io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest result = new io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest(this);
+    public io.littlehorse.sdk.common.proto.WorkflowMetricId buildPartial() {
+      io.littlehorse.sdk.common.proto.WorkflowMetricId result = new io.littlehorse.sdk.common.proto.WorkflowMetricId(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.WorkflowMetricId result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.wfSpecFilter_ = wfSpecFilterBuilder_ == null
-            ? wfSpecFilter_
-            : wfSpecFilterBuilder_.build();
+        result.wfSpec_ = wfSpecBuilder_ == null
+            ? wfSpec_
+            : wfSpecBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
       result.bitField0_ |= to_bitField0_;
@@ -334,18 +334,18 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.WorkflowMetricId) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.WorkflowMetricId)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest other) {
-      if (other == io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest.getDefaultInstance()) return this;
-      if (other.hasWfSpecFilter()) {
-        mergeWfSpecFilter(other.getWfSpecFilter());
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.WorkflowMetricId other) {
+      if (other == io.littlehorse.sdk.common.proto.WorkflowMetricId.getDefaultInstance()) return this;
+      if (other.hasWfSpec()) {
+        mergeWfSpec(other.getWfSpec());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -375,7 +375,7 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               input.readMessage(
-                  internalGetWfSpecFilterFieldBuilder().getBuilder(),
+                  internalGetWfSpecFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
@@ -397,50 +397,50 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.WfSpecId wfSpecFilter_;
+    private io.littlehorse.sdk.common.proto.WfSpecId wfSpec_;
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecFilterBuilder_;
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecBuilder_;
     /**
      * <pre>
-     * Optional filters
+     * If null, tenant-level aggregate
      * </pre>
      *
-     * <code>optional .littlehorse.WfSpecId wf_spec_filter = 1;</code>
-     * @return Whether the wfSpecFilter field is set.
+     * <code>optional .littlehorse.WfSpecId wf_spec = 1;</code>
+     * @return Whether the wfSpec field is set.
      */
-    public boolean hasWfSpecFilter() {
+    public boolean hasWfSpec() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <pre>
-     * Optional filters
+     * If null, tenant-level aggregate
      * </pre>
      *
-     * <code>optional .littlehorse.WfSpecId wf_spec_filter = 1;</code>
-     * @return The wfSpecFilter.
+     * <code>optional .littlehorse.WfSpecId wf_spec = 1;</code>
+     * @return The wfSpec.
      */
-    public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecFilter() {
-      if (wfSpecFilterBuilder_ == null) {
-        return wfSpecFilter_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecFilter_;
+    public io.littlehorse.sdk.common.proto.WfSpecId getWfSpec() {
+      if (wfSpecBuilder_ == null) {
+        return wfSpec_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpec_;
       } else {
-        return wfSpecFilterBuilder_.getMessage();
+        return wfSpecBuilder_.getMessage();
       }
     }
     /**
      * <pre>
-     * Optional filters
+     * If null, tenant-level aggregate
      * </pre>
      *
-     * <code>optional .littlehorse.WfSpecId wf_spec_filter = 1;</code>
+     * <code>optional .littlehorse.WfSpecId wf_spec = 1;</code>
      */
-    public Builder setWfSpecFilter(io.littlehorse.sdk.common.proto.WfSpecId value) {
-      if (wfSpecFilterBuilder_ == null) {
+    public Builder setWfSpec(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (wfSpecBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        wfSpecFilter_ = value;
+        wfSpec_ = value;
       } else {
-        wfSpecFilterBuilder_.setMessage(value);
+        wfSpecBuilder_.setMessage(value);
       }
       bitField0_ |= 0x00000001;
       onChanged();
@@ -448,17 +448,17 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional filters
+     * If null, tenant-level aggregate
      * </pre>
      *
-     * <code>optional .littlehorse.WfSpecId wf_spec_filter = 1;</code>
+     * <code>optional .littlehorse.WfSpecId wf_spec = 1;</code>
      */
-    public Builder setWfSpecFilter(
+    public Builder setWfSpec(
         io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
-      if (wfSpecFilterBuilder_ == null) {
-        wfSpecFilter_ = builderForValue.build();
+      if (wfSpecBuilder_ == null) {
+        wfSpec_ = builderForValue.build();
       } else {
-        wfSpecFilterBuilder_.setMessage(builderForValue.build());
+        wfSpecBuilder_.setMessage(builderForValue.build());
       }
       bitField0_ |= 0x00000001;
       onChanged();
@@ -466,24 +466,24 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional filters
+     * If null, tenant-level aggregate
      * </pre>
      *
-     * <code>optional .littlehorse.WfSpecId wf_spec_filter = 1;</code>
+     * <code>optional .littlehorse.WfSpecId wf_spec = 1;</code>
      */
-    public Builder mergeWfSpecFilter(io.littlehorse.sdk.common.proto.WfSpecId value) {
-      if (wfSpecFilterBuilder_ == null) {
+    public Builder mergeWfSpec(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (wfSpecBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
-          wfSpecFilter_ != null &&
-          wfSpecFilter_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
-          getWfSpecFilterBuilder().mergeFrom(value);
+          wfSpec_ != null &&
+          wfSpec_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
+          getWfSpecBuilder().mergeFrom(value);
         } else {
-          wfSpecFilter_ = value;
+          wfSpec_ = value;
         }
       } else {
-        wfSpecFilterBuilder_.mergeFrom(value);
+        wfSpecBuilder_.mergeFrom(value);
       }
-      if (wfSpecFilter_ != null) {
+      if (wfSpec_ != null) {
         bitField0_ |= 0x00000001;
         onChanged();
       }
@@ -491,86 +491,86 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional filters
+     * If null, tenant-level aggregate
      * </pre>
      *
-     * <code>optional .littlehorse.WfSpecId wf_spec_filter = 1;</code>
+     * <code>optional .littlehorse.WfSpecId wf_spec = 1;</code>
      */
-    public Builder clearWfSpecFilter() {
+    public Builder clearWfSpec() {
       bitField0_ = (bitField0_ & ~0x00000001);
-      wfSpecFilter_ = null;
-      if (wfSpecFilterBuilder_ != null) {
-        wfSpecFilterBuilder_.dispose();
-        wfSpecFilterBuilder_ = null;
+      wfSpec_ = null;
+      if (wfSpecBuilder_ != null) {
+        wfSpecBuilder_.dispose();
+        wfSpecBuilder_ = null;
       }
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * Optional filters
+     * If null, tenant-level aggregate
      * </pre>
      *
-     * <code>optional .littlehorse.WfSpecId wf_spec_filter = 1;</code>
+     * <code>optional .littlehorse.WfSpecId wf_spec = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecFilterBuilder() {
+    public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
-      return internalGetWfSpecFilterFieldBuilder().getBuilder();
+      return internalGetWfSpecFieldBuilder().getBuilder();
     }
     /**
      * <pre>
-     * Optional filters
+     * If null, tenant-level aggregate
      * </pre>
      *
-     * <code>optional .littlehorse.WfSpecId wf_spec_filter = 1;</code>
+     * <code>optional .littlehorse.WfSpecId wf_spec = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecFilterOrBuilder() {
-      if (wfSpecFilterBuilder_ != null) {
-        return wfSpecFilterBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecOrBuilder() {
+      if (wfSpecBuilder_ != null) {
+        return wfSpecBuilder_.getMessageOrBuilder();
       } else {
-        return wfSpecFilter_ == null ?
-            io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecFilter_;
+        return wfSpec_ == null ?
+            io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpec_;
       }
     }
     /**
      * <pre>
-     * Optional filters
+     * If null, tenant-level aggregate
      * </pre>
      *
-     * <code>optional .littlehorse.WfSpecId wf_spec_filter = 1;</code>
+     * <code>optional .littlehorse.WfSpecId wf_spec = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
-        internalGetWfSpecFilterFieldBuilder() {
-      if (wfSpecFilterBuilder_ == null) {
-        wfSpecFilterBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+        internalGetWfSpecFieldBuilder() {
+      if (wfSpecBuilder_ == null) {
+        wfSpecBuilder_ = new com.google.protobuf.SingleFieldBuilder<
             io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder>(
-                getWfSpecFilter(),
+                getWfSpec(),
                 getParentForChildren(),
                 isClean());
-        wfSpecFilter_ = null;
+        wfSpec_ = null;
       }
-      return wfSpecFilterBuilder_;
+      return wfSpecBuilder_;
     }
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.ListMetricLevelOverridesRequest)
+    // @@protoc_insertion_point(builder_scope:littlehorse.WorkflowMetricId)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.ListMetricLevelOverridesRequest)
-  private static final io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.WorkflowMetricId)
+  private static final io.littlehorse.sdk.common.proto.WorkflowMetricId DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.WorkflowMetricId();
   }
 
-  public static io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.WorkflowMetricId getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<ListMetricLevelOverridesRequest>
-      PARSER = new com.google.protobuf.AbstractParser<ListMetricLevelOverridesRequest>() {
+  private static final com.google.protobuf.Parser<WorkflowMetricId>
+      PARSER = new com.google.protobuf.AbstractParser<WorkflowMetricId>() {
     @java.lang.Override
-    public ListMetricLevelOverridesRequest parsePartialFrom(
+    public WorkflowMetricId parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -589,17 +589,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<ListMetricLevelOverridesRequest> parser() {
+  public static com.google.protobuf.Parser<WorkflowMetricId> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<ListMetricLevelOverridesRequest> getParserForType() {
+  public com.google.protobuf.Parser<WorkflowMetricId> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ListMetricLevelOverridesRequest getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.WorkflowMetricId getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 
