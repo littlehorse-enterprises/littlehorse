@@ -52,14 +52,14 @@ Key points:
 
 * Metrics are collected from a fixed, server-defined list.
 * Retention period and metric recording level are configured at the tenant level, with sensible defaults if not set (`INFO` level, 2 weeks retention).
-* An RPC is exposed to configure the metric recording level, which can be applied globally to all objects or specifically to individual objects (e.g., a workflow, task, or node).
+* An RPC is exposed to configure the metric recording level, which can be applied globally to all objects or specifically to individual workflows (e.g., a workflow).
 * Metrics are aggregated over mergeable time windows (5 min window).
 * All metrics are tenant-scoped for multi-tenancy isolation.
 
 
 ### Default Metrics Available
 
-The following list describes the default metrics collected for each entity type. Each metric includes count and latency where applicable, identified by a key used in `MetricWindow`.
+The following list describes the default metrics collected for each entity type. Each metric includes a count, and latency where applicable, identified by a key used in `MetricWindow`.
 
 - **WfRun**:
   - "STARTED": Count of workflows started
@@ -84,11 +84,11 @@ The following list describes the default metrics collected for each entity type.
   - "CANCELLED": Count of user tasks cancelled
   - "ASSIGNED_TO_DONE": Latency from ASSIGNED to DONE
 
-- **NodeRun**:
-  - "STARTED": Count of NodeRuns started
-  - "RUNNING_TO_COMPLETED": Count of NodeRuns completed, Latency from RUNNING to COMPLETED
-  - "RUNNING_TO_ERROR": Count of NodeRuns with errors, Latency from RUNNING to ERROR
-  - "RUNNING_TO_EXCEPTION": Count of NodeRuns with exceptions, Latency from RUNNING to EXCEPTION
+- **NodeRun** (when WF is in DEBUG, metrics collected per node):
+  - "STARTED": Count of NodeRuns started for the node
+  - "RUNNING_TO_COMPLETED": Count of NodeRuns completed for the node, Latency from RUNNING to COMPLETED
+  - "RUNNING_TO_ERROR": Count of NodeRuns with errors for the node, Latency from RUNNING to ERROR
+  - "RUNNING_TO_EXCEPTION": Count of NodeRuns with exceptions for the node, Latency from RUNNING to EXCEPTION
 
 
 ## Scope
@@ -176,7 +176,7 @@ message Tenant {
 
 Metric recording levels are resolved hierarchically for each metric collection event:
 
-1. **Check for specific overrides**: Look up `MetricLevelOverride` objects for the specific `WfSpec`, `TaskDef`, or `Node` involved.
+1. **Check for specific overrides**: Look up `MetricLevelOverride` objects for the specific `WfSpec` involved.
 2. **Fall back to tenant default**: If no specific override exists, use the `Tenant.metrics_level` field.
 3. **Fall back to server default**: If no tenant default is set, use the server-wide default ( `INFO`).
 
@@ -273,6 +273,7 @@ message TaskMetricId {
 message NodeMetricId {
     WfSpecId wf_spec = 1;
     string node_name = 2;
+    int32 node_position = 3;  // Position within the ThreadSpec for ordering
 }
 
 message MetricWindowId {
@@ -322,11 +323,7 @@ message MetricList {
 message MetricLevelOverride {
   string id = 1;
   MetricRecordingLevel new_level = 2;
-  oneof target {
-    WorkflowMetricId workflow = 1;
-    TaskMetricId task = 2;
-    NodeMetricId node = 3;
-  }
+  WorkflowMetricId workflow = 3;
 }
 
 message PutMetricLevelOverrideRequest {
@@ -340,7 +337,6 @@ message DeleteMetricLevelOverrideRequest {
 message ListMetricLevelOverridesRequest {
   // Optional filters
   optional WfSpecId wf_spec_filter = 1;
-  optional TaskDefId task_def_filter = 2;
 }
 
 message MetricLevelOverridesList {
@@ -355,28 +351,28 @@ The following describes the system flow and technical implementation of workflow
 #### Metrics Data Flow
 
 1. **Server Startup and Metric Definition**:
-   - The server loads predefined `MetricSpec` instances from the `DefaultMetricsRegistry` at startup.
-   - Each `MetricSpec` defines what to measure (e.g., `AggregationType.COUNT` for workflow completions), the scope (`MetricScope` - could be a specific `WfSpecId`, `TaskDefId`, or global), the status transition to track (`StatusTransition` with `EntityType`, from/to statuses), and the window length.
-   - Metric recording levels are resolved hierarchically at runtime: specific overrides (for WfSpec, TaskDef, or Node) take precedence over tenant defaults, which fall back to server defaults.
+   - The server initializes with a set of metric definitions listed above.
+   - Each metric definition includes the entity type, key, aggregation type (count and latency), and applicable status transitions.
+   - Metric recording levels are resolved hierarchically at runtime: specific overrides for `WfSpec` take precedence over tenant defaults, which fall back to server defaults. NodeRun metrics are only collected if the associated `WfSpec` is set to `DEBUG` level.
 
 2. **Event Processing**:
-   - As workflow events occur (e.g., a `WfRun` changes status from `RUNNING` to `COMPLETED`), the server checks if the event matches any `MetricSpec`'s criteria.
+   - As workflow events occur (e.g., a `WfRun` changes status from `RUNNING` to `COMPLETED`), the server checks if the event matches any predefined metric criteria and if the recording level allows it.
+   - For NodeRun events, additionally check if the parent `WfSpec` has `DEBUG` level enabled.
    - If matched, the server updates the corresponding `MetricWindow` in the Kafka Streams state store. The `MetricWindowId` identifies the window by `EntityType`, `entity_id` (e.g., workflow name), and `window_start` timestamp.
    - Aggregations are performed using `CountAndTiming`: for COUNT metrics, increment the `count`; for LATENCY metrics, calculate the time difference and update `min_latency_ms`, `max_latency_ms`, and `total_latency_ms`.
 
-   wf events es otra cosa, si hace match
-
 3. **Window Management**:
-   - Windows are aligned to the epoch and have a fixed length (5minutes).
-   - Old windows are cleaned up after the retention period (e.g., 30 days).
+   - Windows are aligned to the epoch and have a fixed length (5 minutes).
+   - Old windows are cleaned up after the retention period (configurable, default 14 days).
 
 4. **Querying Metrics**:
-   - Clients (e.g., dashboard) send a `ListMetricsRequest` specifying the `metric_spec_id`, desired `window_length`, `aggregation_type`, and time range (`start_time` to `end_time`).
+   - Clients (e.g., dashboard) send a `ListMetricsRequest` with a `MetricWindowId` specifying the entity (workflow, task, or node), start time, and optional end time.
    - The server retrieves relevant `MetricWindow` instances from the state store.
-   - A `MetricList` is returned containing the matching `MetricWindow`s, each with aggregated data like `total_started`, `completed` (a `CountAndTiming`), and other status-specific metrics.
+   - A `MetricList` is returned containing the matching `MetricWindow`s, each with aggregated data in the `task_status_metrics` map.
 
 5. **Dashboard Visualization**:
    - The dashboard processes the `MetricList` to display time-series charts, aggregating windows as needed for different time ranges.
    - For example, multiple 5-minute windows can be merged into hourly views by summing `CountAndTiming` fields.
+   - When `DEBUG` is enabled for a workflow, node-level heatmaps are available for detailed performance analysis.
 
 This flow ensures metrics are collected efficiently without affecting workflow execution, stored durably, and queried flexibly via gRPC.
