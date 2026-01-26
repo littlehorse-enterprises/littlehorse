@@ -136,6 +136,14 @@ class HandlingFailureHaltReason(_message.Message):
     handler_thread_id: int
     def __init__(self, handler_thread_id: _Optional[int] = ...) -> None: ...
 
+class HaltedByParentNodeHaltReason(_message.Message):
+    __slots__ = ("parent_thread_run_number", "waiting_node_run_position")
+    PARENT_THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
+    WAITING_NODE_RUN_POSITION_FIELD_NUMBER: _ClassVar[int]
+    parent_thread_run_number: int
+    waiting_node_run_position: int
+    def __init__(self, parent_thread_run_number: _Optional[int] = ..., waiting_node_run_position: _Optional[int] = ...) -> None: ...
+
 class ParentHalted(_message.Message):
     __slots__ = ("parent_thread_id",)
     PARENT_THREAD_ID_FIELD_NUMBER: _ClassVar[int]
@@ -155,17 +163,19 @@ class ManualHalt(_message.Message):
     def __init__(self, meaning_of_life: _Optional[bool] = ...) -> None: ...
 
 class ThreadHaltReason(_message.Message):
-    __slots__ = ("parent_halted", "interrupted", "pending_interrupt", "pending_failure", "handling_failure", "manual_halt")
+    __slots__ = ("parent_halted", "interrupted", "pending_interrupt", "pending_failure", "handling_failure", "manual_halt", "halted_by_parent")
     PARENT_HALTED_FIELD_NUMBER: _ClassVar[int]
     INTERRUPTED_FIELD_NUMBER: _ClassVar[int]
     PENDING_INTERRUPT_FIELD_NUMBER: _ClassVar[int]
     PENDING_FAILURE_FIELD_NUMBER: _ClassVar[int]
     HANDLING_FAILURE_FIELD_NUMBER: _ClassVar[int]
     MANUAL_HALT_FIELD_NUMBER: _ClassVar[int]
+    HALTED_BY_PARENT_FIELD_NUMBER: _ClassVar[int]
     parent_halted: ParentHalted
     interrupted: Interrupted
     pending_interrupt: PendingInterruptHaltReason
     pending_failure: PendingFailureHandlerHaltReason
     handling_failure: HandlingFailureHaltReason
     manual_halt: ManualHalt
-    def __init__(self, parent_halted: _Optional[_Union[ParentHalted, _Mapping]] = ..., interrupted: _Optional[_Union[Interrupted, _Mapping]] = ..., pending_interrupt: _Optional[_Union[PendingInterruptHaltReason, _Mapping]] = ..., pending_failure: _Optional[_Union[PendingFailureHandlerHaltReason, _Mapping]] = ..., handling_failure: _Optional[_Union[HandlingFailureHaltReason, _Mapping]] = ..., manual_halt: _Optional[_Union[ManualHalt, _Mapping]] = ...) -> None: ...
+    halted_by_parent: HaltedByParentNodeHaltReason
+    def __init__(self, parent_halted: _Optional[_Union[ParentHalted, _Mapping]] = ..., interrupted: _Optional[_Union[Interrupted, _Mapping]] = ..., pending_interrupt: _Optional[_Union[PendingInterruptHaltReason, _Mapping]] = ..., pending_failure: _Optional[_Union[PendingFailureHandlerHaltReason, _Mapping]] = ..., handling_failure: _Optional[_Union[HandlingFailureHaltReason, _Mapping]] = ..., manual_halt: _Optional[_Union[ManualHalt, _Mapping]] = ..., halted_by_parent: _Optional[_Union[HaltedByParentNodeHaltReason, _Mapping]] = ...) -> None: ...

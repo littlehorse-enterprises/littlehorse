@@ -42,6 +42,7 @@ include(
         'user-tasks',
         'variables',
         'wait-for-condition',
+        'wait-for-one-of',
         'worker-context',
 ].each { example ->
     include "example-$example"

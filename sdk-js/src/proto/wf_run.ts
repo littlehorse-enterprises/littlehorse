@@ -268,6 +268,17 @@ export interface HandlingFailureHaltReason {
   handlerThreadId: number;
 }
 
+/**
+ * A Halt Reason denoting that a specific NodeRun in a parent ThreadRun caused this ThreadRun
+ * to halt. Could be the parent, the parent's parent, or so on.
+ */
+export interface HaltedByParentNodeHaltReason {
+  /** The ThreadRun number of the NodeRun which caused the halt. */
+  parentThreadRunNumber: number;
+  /** The specific node run position which caused the halt. */
+  waitingNodeRunPosition: number;
+}
+
 /** A Halt Reason denoting that a ThreadRun is halted because its parent is also HALTED. */
 export interface ParentHalted {
   /** The ID of the halted parent. */
@@ -298,6 +309,7 @@ export interface ThreadHaltReason {
     | { $case: "pendingFailure"; value: PendingFailureHandlerHaltReason }
     | { $case: "handlingFailure"; value: HandlingFailureHaltReason }
     | { $case: "manualHalt"; value: ManualHalt }
+    | { $case: "haltedByParent"; value: HaltedByParentNodeHaltReason }
     | undefined;
 }
 
@@ -1349,6 +1361,82 @@ export const HandlingFailureHaltReason = {
   },
 };
 
+function createBaseHaltedByParentNodeHaltReason(): HaltedByParentNodeHaltReason {
+  return { parentThreadRunNumber: 0, waitingNodeRunPosition: 0 };
+}
+
+export const HaltedByParentNodeHaltReason = {
+  encode(message: HaltedByParentNodeHaltReason, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.parentThreadRunNumber !== 0) {
+      writer.uint32(8).int32(message.parentThreadRunNumber);
+    }
+    if (message.waitingNodeRunPosition !== 0) {
+      writer.uint32(16).int32(message.waitingNodeRunPosition);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): HaltedByParentNodeHaltReason {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseHaltedByParentNodeHaltReason();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.parentThreadRunNumber = reader.int32();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.waitingNodeRunPosition = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): HaltedByParentNodeHaltReason {
+    return {
+      parentThreadRunNumber: isSet(object.parentThreadRunNumber) ? globalThis.Number(object.parentThreadRunNumber) : 0,
+      waitingNodeRunPosition: isSet(object.waitingNodeRunPosition)
+        ? globalThis.Number(object.waitingNodeRunPosition)
+        : 0,
+    };
+  },
+
+  toJSON(message: HaltedByParentNodeHaltReason): unknown {
+    const obj: any = {};
+    if (message.parentThreadRunNumber !== 0) {
+      obj.parentThreadRunNumber = Math.round(message.parentThreadRunNumber);
+    }
+    if (message.waitingNodeRunPosition !== 0) {
+      obj.waitingNodeRunPosition = Math.round(message.waitingNodeRunPosition);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<HaltedByParentNodeHaltReason>): HaltedByParentNodeHaltReason {
+    return HaltedByParentNodeHaltReason.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<HaltedByParentNodeHaltReason>): HaltedByParentNodeHaltReason {
+    const message = createBaseHaltedByParentNodeHaltReason();
+    message.parentThreadRunNumber = object.parentThreadRunNumber ?? 0;
+    message.waitingNodeRunPosition = object.waitingNodeRunPosition ?? 0;
+    return message;
+  },
+};
+
 function createBaseParentHalted(): ParentHalted {
   return { parentThreadId: 0 };
 }
@@ -1545,6 +1633,9 @@ export const ThreadHaltReason = {
       case "manualHalt":
         ManualHalt.encode(message.reason.value, writer.uint32(50).fork()).ldelim();
         break;
+      case "haltedByParent":
+        HaltedByParentNodeHaltReason.encode(message.reason.value, writer.uint32(58).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -1607,6 +1698,16 @@ export const ThreadHaltReason = {
 
           message.reason = { $case: "manualHalt", value: ManualHalt.decode(reader, reader.uint32()) };
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.reason = {
+            $case: "haltedByParent",
+            value: HaltedByParentNodeHaltReason.decode(reader, reader.uint32()),
+          };
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1630,6 +1731,8 @@ export const ThreadHaltReason = {
         ? { $case: "handlingFailure", value: HandlingFailureHaltReason.fromJSON(object.handlingFailure) }
         : isSet(object.manualHalt)
         ? { $case: "manualHalt", value: ManualHalt.fromJSON(object.manualHalt) }
+        : isSet(object.haltedByParent)
+        ? { $case: "haltedByParent", value: HaltedByParentNodeHaltReason.fromJSON(object.haltedByParent) }
         : undefined,
     };
   },
@@ -1653,6 +1756,9 @@ export const ThreadHaltReason = {
     }
     if (message.reason?.$case === "manualHalt") {
       obj.manualHalt = ManualHalt.toJSON(message.reason.value);
+    }
+    if (message.reason?.$case === "haltedByParent") {
+      obj.haltedByParent = HaltedByParentNodeHaltReason.toJSON(message.reason.value);
     }
     return obj;
   },
@@ -1693,6 +1799,14 @@ export const ThreadHaltReason = {
     }
     if (object.reason?.$case === "manualHalt" && object.reason?.value !== undefined && object.reason?.value !== null) {
       message.reason = { $case: "manualHalt", value: ManualHalt.fromPartial(object.reason.value) };
+    }
+    if (
+      object.reason?.$case === "haltedByParent" && object.reason?.value !== undefined && object.reason?.value !== null
+    ) {
+      message.reason = {
+        $case: "haltedByParent",
+        value: HaltedByParentNodeHaltReason.fromPartial(object.reason.value),
+      };
     }
     return message;
   },
