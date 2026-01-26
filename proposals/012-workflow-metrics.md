@@ -296,7 +296,7 @@ message CountAndTiming {
 
 message MetricWindow {
   MetricWindowId id = 1;
-  map<string, CountAndTiming> task_status_metrics = 2;
+  map<string, CountAndTiming> metrics = 2;
 }
 ```
 
@@ -314,6 +314,85 @@ message ListMetricsRequest {
 
 message MetricList {
   repeated MetricWindow windows = 1;
+}
+```
+
+#### Example Query for WfRun Metrics
+
+**Request:**
+
+```json
+{
+  "id": {
+    "workflow": {
+      "wf_spec": {
+        "name": "my-workflow",
+        "version": 1
+      }
+    },
+    "window_start": "2023-10-01T10:00:00Z"
+  },
+  "end_time": "2023-10-01T10:05:00Z"
+}
+```
+
+**Response:**
+
+```json
+{
+  "windows": [
+    {
+      "id": {
+        "workflow": {
+          "wf_spec": {
+            "name": "my-workflow",
+            "version": 1
+          }
+        },
+        "window_start": "2023-10-01T10:00:00Z"
+      },
+      "metrics": {
+        "STARTED": {
+          "count": 150,
+          "min_latency_ms": 0,
+          "max_latency_ms": 0,
+          "total_latency_ms": 0
+        },
+        "RUNNING_TO_COMPLETED": {
+          "count": 140,
+          "min_latency_ms": 5000,
+          "max_latency_ms": 30000,
+          "total_latency_ms": 2100000
+        }
+      }
+    },
+    {
+      "id": {
+        "workflow": {
+          "wf_spec": {
+            "name": "my-workflow",
+            "version": 1
+          }
+        },
+        "window_start": "2023-10-01T10:05:00Z"
+      },
+      "metrics": {
+        "STARTED": {
+          "count": 150,
+          "min_latency_ms": 0,
+          "max_latency_ms": 0,
+          "total_latency_ms": 0
+        },
+        "RUNNING_TO_COMPLETED": {
+          "count": 120,
+          "min_latency_ms": 5000,
+          "max_latency_ms": 30000,
+          "total_latency_ms": 2100000
+        }
+      }
+    },
+
+  ]
 }
 ```
 
@@ -368,7 +447,7 @@ The following describes the system flow and technical implementation of workflow
 4. **Querying Metrics**:
    - Clients (e.g., dashboard) send a `ListMetricsRequest` with a `MetricWindowId` specifying the entity (workflow, task, or node), start time, and optional end time.
    - The server retrieves relevant `MetricWindow` instances from the state store.
-   - A `MetricList` is returned containing the matching `MetricWindow`s, each with aggregated data in the `task_status_metrics` map.
+   - A `MetricList` is returned containing the matching `MetricWindow`s, each with aggregated data in the `metrics` map.
 
 5. **Dashboard Visualization**:
    - The dashboard processes the `MetricList` to display time-series charts, aggregating windows as needed for different time ranges.
