@@ -59,38 +59,35 @@ Key points:
 
 ### Default Metrics Available
 
-The following table lists the default metrics collected for each entity type. The "Key" column indicates the string key used in a `MetricWindow`. This key is how each metric is identified and queried in the metric window messages. The meaning and structure of a metric window will be described later in this proposal.
+The following list describes the default metrics collected for each entity type. Each metric includes count and latency where applicable, identified by a key used in `MetricWindow`.
 
-| Metric | Entity |  Key |
-|--------|--------|------------------------|
-| Number of workflows started | WfRun | "STARTED" |
-| Number of workflows completed | WfRun | "COMPLETED" |
-| Number of workflows halted | WfRun | "HALTED" |
-| Number of workflows with exceptions | WfRun | exception name |
-| Number of workflows with errors | WfRun | LHErrorType |
-| Latency for completed workflows | WfRun | "STARTING_TO_COMPLETED" |
-| Latency for halted workflows | WfRun | "HALTED" |
-| Latency for exceptions | WfRun | exception name |
-| Latency for errors | WfRun | LHErrorType |
-| Number of TaskRuns started | TaskRun | "TASKRUN_STARTED" |
-| Number of TaskAttempts started | TaskRun | "TASKATTEMPT_STARTED" |
-| Latency from TASK_SCHEDULED to TASK_RUNNING | TaskRun | "SCHEDULED_TO_RUNNING" |
-| Latency from TASK_RUNNING to TASK_SUCCESS | TaskRun | "RUNNING_TO_SUCCESS" |
-| Latency from TASK_RUNNING to TASK_ERROR | TaskRun | "RUNNING_TO_ERROR" |
-| Latency from TASK_RUNNING to TASK_EXCEPTION | TaskRun | "RUNNING_TO_EXCEPTION" |
-| Number of TaskAttempts that timed out | TaskRun | "TIMEOUT" |
-| Number of user tasks assigned | UserTaskRun | "ASSIGNED" |
-| Number of user tasks completed | UserTaskRun | "COMPLETED" |
-| Number of user tasks cancelled | UserTaskRun | "CANCELLED" |
-| Latency from assignment to completion | UserTaskRun | "ASSIGN_TO_COMPLETE" |
-| Per-user breakdowns and assignment latency (DEBUG) | UserTaskRun | user id |
-| Number of NodeRuns started | NodeRun | "STARTED" |
-| Number of NodeRuns completed | NodeRun | "COMPLETED" |
-| Number of NodeRuns with errors | NodeRun | "ERROR" |
-| Number of NodeRuns with exceptions | NodeRun | "EXCEPTION" |
-| Latency for completed NodeRuns | NodeRun | "COMPLETED" |
-| Latency for errors | NodeRun | "ERROR" |
-| Latency for exceptions | NodeRun | "EXCEPTION" |
+- **WfRun**:
+  - "STARTED": Count of workflows started
+  - "RUNNING_TO_COMPLETED": Count of workflows completed, Latency from RUNNING to COMPLETED
+  - "RUNNING_TO_HALTED": Count of workflows halted, Latency from RUNNING to HALTED
+  - exception name: Count of workflows with exceptions, Latency from RUNNING to EXCEPTION
+  - LHErrorType: Count of workflows with errors, Latency from RUNNING to ERROR
+
+- **TaskRun**:
+  - "TASKRUN_STARTED": Count of TaskRuns started
+  - "TASKATTEMPT_STARTED": Count of TaskAttempts started
+  - "TASK_SCHEDULED_TO_TASK_RUNNING": Latency from TASK_SCHEDULED to TASK_RUNNING
+  - "TASK_RUNNING_TO_TASK_SUCCESS": Latency from TASK_RUNNING to TASK_SUCCESS
+  - "TASK_RUNNING_TO_TASK_FAILED": Latency from TASK_RUNNING to TASK_FAILED
+  - "TASK_RUNNING_TO_TASK_EXCEPTION": Latency from TASK_RUNNING to TASK_EXCEPTION
+  - "TIMEOUT": Count of TaskAttempts that timed out
+
+- **UserTaskRun**:
+  - "ASSIGNED": Count of user tasks assigned
+  - "DONE": Count of user tasks completed
+  - "CANCELLED": Count of user tasks cancelled
+  - "ASSIGNED_TO_DONE": Latency from ASSIGNED to DONE
+
+- **NodeRun**:
+  - "STARTED": Count of NodeRuns started
+  - "RUNNING_TO_COMPLETED": Count of NodeRuns completed, Latency from RUNNING to COMPLETED
+  - "RUNNING_TO_ERROR": Count of NodeRuns with errors, Latency from RUNNING to ERROR
+  - "RUNNING_TO_EXCEPTION": Count of NodeRuns with exceptions, Latency from RUNNING to EXCEPTION
 
 
 ## Scope
