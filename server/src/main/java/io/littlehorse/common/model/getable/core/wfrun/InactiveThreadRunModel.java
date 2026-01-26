@@ -4,10 +4,10 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
-import io.littlehorse.common.model.getable.objectId.ArchivedThreadRunIdModel;
+import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.ArchivedThreadRun;
+import io.littlehorse.sdk.common.proto.InactiveThreadRun;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -16,19 +16,19 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 
-public class ArchivedThreadRunModel extends CoreGetable<ArchivedThreadRun>
-        implements CoreOutputTopicGetable<ArchivedThreadRun> {
+public class InactiveThreadRunModel extends CoreGetable<InactiveThreadRun>
+        implements CoreOutputTopicGetable<InactiveThreadRun> {
 
-    private ArchivedThreadRunIdModel id;
+    private InactiveThreadRunIdModel id;
 
     @Getter
     private ThreadRunModel threadRun;
 
-    public ArchivedThreadRunModel() {}
+    public InactiveThreadRunModel() {}
 
-    public ArchivedThreadRunModel(ThreadRunModel threadRun) {
+    public InactiveThreadRunModel(ThreadRunModel threadRun) {
         this.threadRun = threadRun;
-        this.id = new ArchivedThreadRunIdModel(threadRun.getWfRun().getId(), threadRun.getNumber());
+        this.id = new InactiveThreadRunIdModel(threadRun.getWfRun().getId(), threadRun.getNumber());
     }
 
     @Override
@@ -47,25 +47,25 @@ public class ArchivedThreadRunModel extends CoreGetable<ArchivedThreadRun>
     }
 
     @Override
-    public ArchivedThreadRunIdModel getObjectId() {
+    public InactiveThreadRunIdModel getObjectId() {
         return id;
     }
 
     @Override
-    public ArchivedThreadRun.Builder toProto() {
-        ArchivedThreadRun.Builder out = ArchivedThreadRun.newBuilder();
+    public InactiveThreadRun.Builder toProto() {
+        InactiveThreadRun.Builder out = InactiveThreadRun.newBuilder();
         out.setThreadRun(this.threadRun.toProto());
         return out;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
-        ArchivedThreadRun p = (ArchivedThreadRun) proto;
+        InactiveThreadRun p = (InactiveThreadRun) proto;
         this.threadRun = ThreadRunModel.fromProto(p.getThreadRun(), context);
     }
 
     @Override
-    public Class<ArchivedThreadRun> getProtoBaseClass() {
-        return ArchivedThreadRun.class;
+    public Class<InactiveThreadRun> getProtoBaseClass() {
+        return InactiveThreadRun.class;
     }
 }

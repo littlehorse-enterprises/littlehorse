@@ -96,9 +96,9 @@ public enum GetableClassEnum
    */
   CHECKPOINT(20),
   /**
-   * <code>ARCHIVED_THREAD_RUN = 21;</code>
+   * <code>INACTIVE_THREAD_RUN = 21;</code>
    */
-  ARCHIVED_THREAD_RUN(21),
+  INACTIVE_THREAD_RUN(21),
   UNRECOGNIZED(-1),
   ;
 
@@ -196,9 +196,9 @@ public enum GetableClassEnum
    */
   public static final int CHECKPOINT_VALUE = 20;
   /**
-   * <code>ARCHIVED_THREAD_RUN = 21;</code>
+   * <code>INACTIVE_THREAD_RUN = 21;</code>
    */
-  public static final int ARCHIVED_THREAD_RUN_VALUE = 21;
+  public static final int INACTIVE_THREAD_RUN_VALUE = 21;
 
 
   public final int getNumber() {
@@ -246,7 +246,7 @@ public enum GetableClassEnum
       case 18: return STRUCT_DEF;
       case 19: return CORRELATED_EVENT;
       case 20: return CHECKPOINT;
-      case 21: return ARCHIVED_THREAD_RUN;
+      case 21: return INACTIVE_THREAD_RUN;
       default: return null;
     }
   }

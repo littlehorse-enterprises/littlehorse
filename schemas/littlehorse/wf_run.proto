@@ -139,7 +139,7 @@ message ThreadRun {
   optional VariableValue output = 16;
 }
 
-message ArchivedThreadRun {
+message InactiveThreadRun {
   ThreadRun thread_run = 1;
 }
 

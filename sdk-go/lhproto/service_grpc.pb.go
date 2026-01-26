@@ -30,7 +30,6 @@ const (
 	LittleHorse_GetWfSpec_FullMethodName                  = "/littlehorse.LittleHorse/GetWfSpec"
 	LittleHorse_GetLatestWfSpec_FullMethodName            = "/littlehorse.LittleHorse/GetLatestWfSpec"
 	LittleHorse_MigrateWfSpec_FullMethodName              = "/littlehorse.LittleHorse/MigrateWfSpec"
-	LittleHorse_GetArchivedThreadRun_FullMethodName       = "/littlehorse.LittleHorse/GetArchivedThreadRun"
 	LittleHorse_PutStructDef_FullMethodName               = "/littlehorse.LittleHorse/PutStructDef"
 	LittleHorse_GetStructDef_FullMethodName               = "/littlehorse.LittleHorse/GetStructDef"
 	LittleHorse_ValidateStructDefEvolution_FullMethodName = "/littlehorse.LittleHorse/ValidateStructDefEvolution"
@@ -82,6 +81,7 @@ const (
 	LittleHorse_SearchTenant_FullMethodName               = "/littlehorse.LittleHorse/SearchTenant"
 	LittleHorse_SearchPrincipal_FullMethodName            = "/littlehorse.LittleHorse/SearchPrincipal"
 	LittleHorse_SearchStructDef_FullMethodName            = "/littlehorse.LittleHorse/SearchStructDef"
+	LittleHorse_GetInactiveThreadRun_FullMethodName       = "/littlehorse.LittleHorse/GetInactiveThreadRun"
 	LittleHorse_RegisterTaskWorker_FullMethodName         = "/littlehorse.LittleHorse/RegisterTaskWorker"
 	LittleHorse_PollTask_FullMethodName                   = "/littlehorse.LittleHorse/PollTask"
 	LittleHorse_ReportTask_FullMethodName                 = "/littlehorse.LittleHorse/ReportTask"
@@ -141,8 +141,6 @@ type LittleHorseClient interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
-	// Gets an Archived ThreadRun.
-	GetArchivedThreadRun(ctx context.Context, in *ArchivedThreadRunId, opts ...grpc.CallOption) (*ArchivedThreadRun, error)
 	// EXPERIMENTAL: Creates a new `StructDef“.
 	//
 	// Note that this request is idempotent: if you
@@ -285,6 +283,8 @@ type LittleHorseClient interface {
 	SearchPrincipal(ctx context.Context, in *SearchPrincipalRequest, opts ...grpc.CallOption) (*PrincipalIdList, error)
 	// Search for StructDef's
 	SearchStructDef(ctx context.Context, in *SearchStructDefRequest, opts ...grpc.CallOption) (*StructDefIdList, error)
+	// Get an InactiveThreadRun
+	GetInactiveThreadRun(ctx context.Context, in *InactiveThreadRunId, opts ...grpc.CallOption) (*InactiveThreadRun, error)
 	// Used by the Task Worker to:
 	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
 	// 2. Receive the assignemnt of LH Server's to poll from.
@@ -458,15 +458,6 @@ func (c *littleHorseClient) GetLatestWfSpec(ctx context.Context, in *GetLatestWf
 func (c *littleHorseClient) MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error) {
 	out := new(WfSpec)
 	err := c.cc.Invoke(ctx, LittleHorse_MigrateWfSpec_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *littleHorseClient) GetArchivedThreadRun(ctx context.Context, in *ArchivedThreadRunId, opts ...grpc.CallOption) (*ArchivedThreadRun, error) {
-	out := new(ArchivedThreadRun)
-	err := c.cc.Invoke(ctx, LittleHorse_GetArchivedThreadRun_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -932,6 +923,15 @@ func (c *littleHorseClient) SearchStructDef(ctx context.Context, in *SearchStruc
 	return out, nil
 }
 
+func (c *littleHorseClient) GetInactiveThreadRun(ctx context.Context, in *InactiveThreadRunId, opts ...grpc.CallOption) (*InactiveThreadRun, error) {
+	out := new(InactiveThreadRun)
+	err := c.cc.Invoke(ctx, LittleHorse_GetInactiveThreadRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) RegisterTaskWorker(ctx context.Context, in *RegisterTaskWorkerRequest, opts ...grpc.CallOption) (*RegisterTaskWorkerResponse, error) {
 	out := new(RegisterTaskWorkerResponse)
 	err := c.cc.Invoke(ctx, LittleHorse_RegisterTaskWorker_FullMethodName, in, out, opts...)
@@ -1235,8 +1235,6 @@ type LittleHorseServer interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error)
-	// Gets an Archived ThreadRun.
-	GetArchivedThreadRun(context.Context, *ArchivedThreadRunId) (*ArchivedThreadRun, error)
 	// EXPERIMENTAL: Creates a new `StructDef“.
 	//
 	// Note that this request is idempotent: if you
@@ -1379,6 +1377,8 @@ type LittleHorseServer interface {
 	SearchPrincipal(context.Context, *SearchPrincipalRequest) (*PrincipalIdList, error)
 	// Search for StructDef's
 	SearchStructDef(context.Context, *SearchStructDefRequest) (*StructDefIdList, error)
+	// Get an InactiveThreadRun
+	GetInactiveThreadRun(context.Context, *InactiveThreadRunId) (*InactiveThreadRun, error)
 	// Used by the Task Worker to:
 	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
 	// 2. Receive the assignemnt of LH Server's to poll from.
@@ -1494,9 +1494,6 @@ func (UnimplementedLittleHorseServer) GetLatestWfSpec(context.Context, *GetLates
 }
 func (UnimplementedLittleHorseServer) MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MigrateWfSpec not implemented")
-}
-func (UnimplementedLittleHorseServer) GetArchivedThreadRun(context.Context, *ArchivedThreadRunId) (*ArchivedThreadRun, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetArchivedThreadRun not implemented")
 }
 func (UnimplementedLittleHorseServer) PutStructDef(context.Context, *PutStructDefRequest) (*StructDef, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutStructDef not implemented")
@@ -1650,6 +1647,9 @@ func (UnimplementedLittleHorseServer) SearchPrincipal(context.Context, *SearchPr
 }
 func (UnimplementedLittleHorseServer) SearchStructDef(context.Context, *SearchStructDefRequest) (*StructDefIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchStructDef not implemented")
+}
+func (UnimplementedLittleHorseServer) GetInactiveThreadRun(context.Context, *InactiveThreadRunId) (*InactiveThreadRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetInactiveThreadRun not implemented")
 }
 func (UnimplementedLittleHorseServer) RegisterTaskWorker(context.Context, *RegisterTaskWorkerRequest) (*RegisterTaskWorkerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterTaskWorker not implemented")
@@ -1924,24 +1924,6 @@ func _LittleHorse_MigrateWfSpec_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).MigrateWfSpec(ctx, req.(*MigrateWfSpecRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _LittleHorse_GetArchivedThreadRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ArchivedThreadRunId)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LittleHorseServer).GetArchivedThreadRun(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LittleHorse_GetArchivedThreadRun_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LittleHorseServer).GetArchivedThreadRun(ctx, req.(*ArchivedThreadRunId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2864,6 +2846,24 @@ func _LittleHorse_SearchStructDef_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_GetInactiveThreadRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InactiveThreadRunId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetInactiveThreadRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetInactiveThreadRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetInactiveThreadRun(ctx, req.(*InactiveThreadRunId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_RegisterTaskWorker_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RegisterTaskWorkerRequest)
 	if err := dec(in); err != nil {
@@ -3424,10 +3424,6 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_MigrateWfSpec_Handler,
 		},
 		{
-			MethodName: "GetArchivedThreadRun",
-			Handler:    _LittleHorse_GetArchivedThreadRun_Handler,
-		},
-		{
 			MethodName: "PutStructDef",
 			Handler:    _LittleHorse_PutStructDef_Handler,
 		},
@@ -3630,6 +3626,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchStructDef",
 			Handler:    _LittleHorse_SearchStructDef_Handler,
+		},
+		{
+			MethodName: "GetInactiveThreadRun",
+			Handler:    _LittleHorse_GetInactiveThreadRun_Handler,
 		},
 		{
 			MethodName: "RegisterTaskWorker",

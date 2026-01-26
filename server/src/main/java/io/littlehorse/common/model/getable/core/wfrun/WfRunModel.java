@@ -29,7 +29,7 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
-import io.littlehorse.common.model.getable.objectId.ArchivedThreadRunIdModel;
+import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
@@ -46,6 +46,7 @@ import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -101,7 +103,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     public WfRunModel() {}
 
     public WfRunModel(CoreProcessorContext processorContext) {
-        this.executionContext = processorContext;
+        this.executionContext = Objects.requireNonNull(processorContext);
     }
 
     public Date getCreatedAt() {
@@ -200,6 +202,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         this.wfSpec = spec;
     }
 
+    //    public ThreadRunModel getThreadRun(int threadRunNumber, ReadOnlyGetableManager readOnlyGetableManager) {
     public ThreadRunModel getThreadRun(int threadRunNumber) {
         ThreadRunModel localThreadRun = threadRunsUseMeCarefully.stream()
                 .filter(thread -> thread.getNumber() == threadRunNumber)
@@ -208,21 +211,16 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
         if (localThreadRun != null) return localThreadRun;
 
-        // Pull up ThreadRun from GetableManager
-        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
+        GetableManager getableManager =
+                this.executionContext.castOnSupport(CoreProcessorContext.class).getableManager();
 
-        ArchivedThreadRunModel potentialThreadRun =
-                processorContext.getableManager().get(new ArchivedThreadRunIdModel(id, threadRunNumber));
+        // Pull up ThreadRun from GetableManager
+        InactiveThreadRunModel potentialThreadRun =
+                getableManager.get(new InactiveThreadRunIdModel(id, threadRunNumber));
 
         if (potentialThreadRun != null) return potentialThreadRun.getThreadRun();
 
         return null;
-    }
-
-    public ThreadRunIterator getThreadRunIterator() {
-        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
-        return new ThreadRunIterator(
-                id, threadRunsUseMeCarefully, greatestThreadRunNumber, processorContext.getableManager());
     }
 
     @Override
@@ -252,7 +250,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         for (WfSpecId oldWfSpecId : proto.getOldWfSpecVersionsList()) {
             oldWfSpecVersions.add(LHSerializable.fromProto(oldWfSpecId, WfSpecIdModel.class, context));
         }
-        this.executionContext = context;
+        this.executionContext = Objects.requireNonNull(context);
         this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
     }
 
@@ -539,29 +537,36 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
         }
 
-        // archiveCompletedThreadRuns();
+        archiveCompletedThreadRuns();
     }
 
     private void archiveCompletedThreadRuns() {
-        CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
+        Iterator<ThreadRunModel> threadRunIterator = threadRunsUseMeCarefully.iterator();
+        GetableManager getableManager =
+                this.executionContext.castOnSupport(CoreProcessorContext.class).getableManager();
 
-        List<ThreadRunModel> threadRunsToKeep = new ArrayList<>(threadRunsUseMeCarefully);
+        while (threadRunIterator.hasNext()) {
+            ThreadRunModel threadRun = threadRunIterator.next();
 
-        for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
-            ThreadRunModel threadRunModel = threadRunsUseMeCarefully.get(i);
+            if (threadRun.getType() == ThreadType.ENTRYPOINT) continue;
 
-            if (threadRunModel.type == ThreadType.ENTRYPOINT) continue;
-
-            if (threadRunModel.status == LHStatus.COMPLETED) {
-                threadRunsToKeep.removeIf(candidate -> candidate.getNumber() == threadRunModel.getNumber());
-
-                ArchivedThreadRunModel archivedThreadRunModel = new ArchivedThreadRunModel(threadRunModel);
-
-                processorContext.getableManager().put(archivedThreadRunModel);
+            switch (threadRun.getStatus()) {
+                case COMPLETED:
+                    threadRunIterator.remove();
+                    InactiveThreadRunModel inactiveThreadRunModel = new InactiveThreadRunModel(threadRun);
+                    getableManager.put(inactiveThreadRunModel);
+                    break;
+                case ERROR:
+                case EXCEPTION:
+                case HALTED:
+                case HALTING:
+                case RUNNING:
+                case STARTING:
+                case UNRECOGNIZED:
+                default:
+                    break;
             }
         }
-
-        threadRunsUseMeCarefully = threadRunsToKeep;
     }
 
     public void processExtEvtTimeout(ExternalEventTimeoutModel timeout) {

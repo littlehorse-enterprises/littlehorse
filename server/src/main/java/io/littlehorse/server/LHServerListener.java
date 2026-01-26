@@ -30,6 +30,7 @@ import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.wfrun.InactiveThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
@@ -43,6 +44,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.
 import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
@@ -531,12 +533,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
-    public void getArchivedThreadRun(ArchivedThreadRunId req, StreamObserver<ArchivedThreadRun> ctx) {
-        // Need to mock RPC
-    }
-
-    @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
     public void putWfSpec(PutWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         PutWfSpecRequestModel reqModel = LHSerializable.fromProto(req, PutWfSpecRequestModel.class, requestContext());
@@ -659,6 +655,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void getCheckpoint(CheckpointId req, StreamObserver<Checkpoint> observer) {
         CheckpointIdModel id = LHSerializable.fromProto(req, CheckpointIdModel.class, requestContext());
         CheckpointModel checkpoint = internalComms.getObject(id, CheckpointModel.class, requestContext());
+        observer.onNext(checkpoint.toProto().build());
+        observer.onCompleted();
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getInactiveThreadRun(InactiveThreadRunId req, StreamObserver<InactiveThreadRun> observer) {
+        InactiveThreadRunIdModel id = LHSerializable.fromProto(req, InactiveThreadRunIdModel.class, requestContext());
+        InactiveThreadRunModel checkpoint = internalComms.getObject(id, InactiveThreadRunModel.class, requestContext());
         observer.onNext(checkpoint.toProto().build());
         observer.onCompleted();
     }

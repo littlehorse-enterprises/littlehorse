@@ -6,8 +6,8 @@
 package io.littlehorse.sdk.common.proto;
 
 @com.google.protobuf.Generated
-public interface ArchivedThreadRunIdOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.ArchivedThreadRunId)
+public interface InactiveThreadRunIdOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.InactiveThreadRunId)
     com.google.protobuf.MessageOrBuilder {
 
   /**

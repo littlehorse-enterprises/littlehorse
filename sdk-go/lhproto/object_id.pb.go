@@ -1264,7 +1264,7 @@ func (x *ScheduledWfRunId) GetId() string {
 	return ""
 }
 
-type ArchivedThreadRunId struct {
+type InactiveThreadRunId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -1273,8 +1273,8 @@ type ArchivedThreadRunId struct {
 	ThreadRunNumber int32    `protobuf:"varint,2,opt,name=thread_run_number,json=threadRunNumber,proto3" json:"thread_run_number,omitempty"`
 }
 
-func (x *ArchivedThreadRunId) Reset() {
-	*x = ArchivedThreadRunId{}
+func (x *InactiveThreadRunId) Reset() {
+	*x = InactiveThreadRunId{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_object_id_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1282,13 +1282,13 @@ func (x *ArchivedThreadRunId) Reset() {
 	}
 }
 
-func (x *ArchivedThreadRunId) String() string {
+func (x *InactiveThreadRunId) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ArchivedThreadRunId) ProtoMessage() {}
+func (*InactiveThreadRunId) ProtoMessage() {}
 
-func (x *ArchivedThreadRunId) ProtoReflect() protoreflect.Message {
+func (x *InactiveThreadRunId) ProtoReflect() protoreflect.Message {
 	mi := &file_object_id_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1300,19 +1300,19 @@ func (x *ArchivedThreadRunId) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ArchivedThreadRunId.ProtoReflect.Descriptor instead.
-func (*ArchivedThreadRunId) Descriptor() ([]byte, []int) {
+// Deprecated: Use InactiveThreadRunId.ProtoReflect.Descriptor instead.
+func (*InactiveThreadRunId) Descriptor() ([]byte, []int) {
 	return file_object_id_proto_rawDescGZIP(), []int{21}
 }
 
-func (x *ArchivedThreadRunId) GetWfRunId() *WfRunId {
+func (x *InactiveThreadRunId) GetWfRunId() *WfRunId {
 	if x != nil {
 		return x.WfRunId
 	}
 	return nil
 }
 
-func (x *ArchivedThreadRunId) GetThreadRunNumber() int32 {
+func (x *InactiveThreadRunId) GetThreadRunNumber() int32 {
 	if x != nil {
 		return x.ThreadRunNumber
 	}
@@ -1457,8 +1457,8 @@ var file_object_id_proto_rawDesc = []byte{
 	0x74, 0x49, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x02, 0x69, 0x64, 0x22, 0x22, 0x0a, 0x10, 0x53, 0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65, 0x64,
 	0x57, 0x66, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x73, 0x0a, 0x13, 0x41, 0x72, 0x63, 0x68, 0x69,
-	0x76, 0x65, 0x64, 0x54, 0x68, 0x72, 0x65, 0x61, 0x64, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x12, 0x30,
+	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x73, 0x0a, 0x13, 0x49, 0x6e, 0x61, 0x63, 0x74,
+	0x69, 0x76, 0x65, 0x54, 0x68, 0x72, 0x65, 0x61, 0x64, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x12, 0x30,
 	0x0a, 0x09, 0x77, 0x66, 0x5f, 0x72, 0x75, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x0b, 0x32, 0x14, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e,
 	0x57, 0x66, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x52, 0x07, 0x77, 0x66, 0x52, 0x75, 0x6e, 0x49, 0x64,
@@ -1508,7 +1508,7 @@ var file_object_id_proto_goTypes = []interface{}{
 	(*PrincipalId)(nil),           // 18: littlehorse.PrincipalId
 	(*TenantId)(nil),              // 19: littlehorse.TenantId
 	(*ScheduledWfRunId)(nil),      // 20: littlehorse.ScheduledWfRunId
-	(*ArchivedThreadRunId)(nil),   // 21: littlehorse.ArchivedThreadRunId
+	(*InactiveThreadRunId)(nil),   // 21: littlehorse.InactiveThreadRunId
 	(*timestamppb.Timestamp)(nil), // 22: google.protobuf.Timestamp
 	(MetricsWindowLength)(0),      // 23: littlehorse.MetricsWindowLength
 }
@@ -1531,7 +1531,7 @@ var file_object_id_proto_depIdxs = []int32{
 	22, // 15: littlehorse.WfSpecMetricsId.window_start:type_name -> google.protobuf.Timestamp
 	23, // 16: littlehorse.WfSpecMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
 	0,  // 17: littlehorse.WfSpecMetricsId.wf_spec_id:type_name -> littlehorse.WfSpecId
-	10, // 18: littlehorse.ArchivedThreadRunId.wf_run_id:type_name -> littlehorse.WfRunId
+	10, // 18: littlehorse.InactiveThreadRunId.wf_run_id:type_name -> littlehorse.WfRunId
 	19, // [19:19] is the sub-list for method output_type
 	19, // [19:19] is the sub-list for method input_type
 	19, // [19:19] is the sub-list for extension type_name
@@ -1799,7 +1799,7 @@ func file_object_id_proto_init() {
 			}
 		}
 		file_object_id_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ArchivedThreadRunId); i {
+			switch v := v.(*InactiveThreadRunId); i {
 			case 0:
 				return &v.state
 			case 1:

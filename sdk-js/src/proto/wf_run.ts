@@ -204,7 +204,7 @@ export interface ThreadRun {
   output?: VariableValue | undefined;
 }
 
-export interface ArchivedThreadRun {
+export interface InactiveThreadRun {
   threadRun: ThreadRun | undefined;
 }
 
@@ -861,22 +861,22 @@ export const ThreadRun = {
   },
 };
 
-function createBaseArchivedThreadRun(): ArchivedThreadRun {
+function createBaseInactiveThreadRun(): InactiveThreadRun {
   return { threadRun: undefined };
 }
 
-export const ArchivedThreadRun = {
-  encode(message: ArchivedThreadRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const InactiveThreadRun = {
+  encode(message: InactiveThreadRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.threadRun !== undefined) {
       ThreadRun.encode(message.threadRun, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): ArchivedThreadRun {
+  decode(input: _m0.Reader | Uint8Array, length?: number): InactiveThreadRun {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseArchivedThreadRun();
+    const message = createBaseInactiveThreadRun();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -896,11 +896,11 @@ export const ArchivedThreadRun = {
     return message;
   },
 
-  fromJSON(object: any): ArchivedThreadRun {
+  fromJSON(object: any): InactiveThreadRun {
     return { threadRun: isSet(object.threadRun) ? ThreadRun.fromJSON(object.threadRun) : undefined };
   },
 
-  toJSON(message: ArchivedThreadRun): unknown {
+  toJSON(message: InactiveThreadRun): unknown {
     const obj: any = {};
     if (message.threadRun !== undefined) {
       obj.threadRun = ThreadRun.toJSON(message.threadRun);
@@ -908,11 +908,11 @@ export const ArchivedThreadRun = {
     return obj;
   },
 
-  create(base?: DeepPartial<ArchivedThreadRun>): ArchivedThreadRun {
-    return ArchivedThreadRun.fromPartial(base ?? {});
+  create(base?: DeepPartial<InactiveThreadRun>): InactiveThreadRun {
+    return InactiveThreadRun.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<ArchivedThreadRun>): ArchivedThreadRun {
-    const message = createBaseArchivedThreadRun();
+  fromPartial(object: DeepPartial<InactiveThreadRun>): InactiveThreadRun {
+    const message = createBaseInactiveThreadRun();
     message.threadRun = (object.threadRun !== undefined && object.threadRun !== null)
       ? ThreadRun.fromPartial(object.threadRun)
       : undefined;

@@ -37,10 +37,10 @@ public final class WfRunOuterClass extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_ThreadRun_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_ArchivedThreadRun_descriptor;
+    internal_static_littlehorse_InactiveThreadRun_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_littlehorse_ArchivedThreadRun_fieldAccessorTable;
+      internal_static_littlehorse_InactiveThreadRun_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_FailureBeingHandled_descriptor;
   static final 
@@ -134,7 +134,7 @@ public final class WfRunOuterClass extends com.google.protobuf.GeneratedFile {
       "tlehorse.VariableValueH\005\210\001\001B\013\n\t_end_time" +
       "B\020\n\016_error_messageB\023\n\021_parent_thread_idB" +
       "\027\n\025_interrupt_trigger_idB\030\n\026_failure_bei" +
-      "ng_handledB\t\n\007_output\"?\n\021ArchivedThreadR" +
+      "ng_handledB\t\n\007_output\"?\n\021InactiveThreadR" +
       "un\022*\n\nthread_run\030\001 \001(\0132\026.littlehorse.Thr" +
       "eadRun\"c\n\023FailureBeingHandled\022\031\n\021thread_" +
       "run_number\030\001 \001(\005\022\031\n\021node_run_position\030\002 " +
@@ -188,11 +188,11 @@ public final class WfRunOuterClass extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ThreadRun_descriptor,
         new java.lang.String[] { "WfSpecId", "Number", "Status", "ThreadSpecName", "StartTime", "EndTime", "ErrorMessage", "ChildThreadIds", "ParentThreadId", "HaltReasons", "InterruptTriggerId", "FailureBeingHandled", "CurrentNodePosition", "HandledFailedChildren", "Type", "Output", });
-    internal_static_littlehorse_ArchivedThreadRun_descriptor =
+    internal_static_littlehorse_InactiveThreadRun_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_littlehorse_ArchivedThreadRun_fieldAccessorTable = new
+    internal_static_littlehorse_InactiveThreadRun_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_littlehorse_ArchivedThreadRun_descriptor,
+        internal_static_littlehorse_InactiveThreadRun_descriptor,
         new java.lang.String[] { "ThreadRun", });
     internal_static_littlehorse_FailureBeingHandled_descriptor =
       getDescriptor().getMessageTypes().get(3);

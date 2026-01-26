@@ -35,11 +35,11 @@ import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRun } from "./node_run";
 import {
-  ArchivedThreadRunId,
   CheckpointId,
   CorrelatedEventId,
   ExternalEventDefId,
   ExternalEventId,
+  InactiveThreadRunId,
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
@@ -77,7 +77,7 @@ import {
   userTaskRunStatusToNumber,
 } from "./user_tasks";
 import { Variable, VariableValue } from "./variable";
-import { ArchivedThreadRun, WfRun } from "./wf_run";
+import { InactiveThreadRun, WfRun } from "./wf_run";
 import {
   ThreadSpec,
   WfSpec,
@@ -11315,15 +11315,6 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Gets an Archived ThreadRun. */
-    getArchivedThreadRun: {
-      name: "GetArchivedThreadRun",
-      requestType: ArchivedThreadRunId,
-      requestStream: false,
-      responseType: ArchivedThreadRun,
-      responseStream: false,
-      options: {},
-    },
     /**
      * EXPERIMENTAL: Creates a new `StructDef``.
      *
@@ -11854,6 +11845,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Get an InactiveThreadRun */
+    getInactiveThreadRun: {
+      name: "GetInactiveThreadRun",
+      requestType: InactiveThreadRunId,
+      requestStream: false,
+      responseType: InactiveThreadRun,
+      responseStream: false,
+      options: {},
+    },
     /**
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -12181,11 +12181,6 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * As of 0.7.2, this feature is only partially implemented.
    */
   migrateWfSpec(request: MigrateWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
-  /** Gets an Archived ThreadRun. */
-  getArchivedThreadRun(
-    request: ArchivedThreadRunId,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ArchivedThreadRun>>;
   /**
    * EXPERIMENTAL: Creates a new `StructDef``.
    *
@@ -12467,6 +12462,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: SearchStructDefRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<StructDefIdList>>;
+  /** Get an InactiveThreadRun */
+  getInactiveThreadRun(
+    request: InactiveThreadRunId,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<InactiveThreadRun>>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -12636,11 +12636,6 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * As of 0.7.2, this feature is only partially implemented.
    */
   migrateWfSpec(request: DeepPartial<MigrateWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
-  /** Gets an Archived ThreadRun. */
-  getArchivedThreadRun(
-    request: DeepPartial<ArchivedThreadRunId>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ArchivedThreadRun>;
   /**
    * EXPERIMENTAL: Creates a new `StructDef``.
    *
@@ -12928,6 +12923,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchStructDefRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<StructDefIdList>;
+  /** Get an InactiveThreadRun */
+  getInactiveThreadRun(
+    request: DeepPartial<InactiveThreadRunId>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<InactiveThreadRun>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.

@@ -413,7 +413,7 @@ func (x *ThreadRun) GetOutput() *VariableValue {
 	return nil
 }
 
-type ArchivedThreadRun struct {
+type InactiveThreadRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -421,8 +421,8 @@ type ArchivedThreadRun struct {
 	ThreadRun *ThreadRun `protobuf:"bytes,1,opt,name=thread_run,json=threadRun,proto3" json:"thread_run,omitempty"`
 }
 
-func (x *ArchivedThreadRun) Reset() {
-	*x = ArchivedThreadRun{}
+func (x *InactiveThreadRun) Reset() {
+	*x = InactiveThreadRun{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_wf_run_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -430,13 +430,13 @@ func (x *ArchivedThreadRun) Reset() {
 	}
 }
 
-func (x *ArchivedThreadRun) String() string {
+func (x *InactiveThreadRun) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ArchivedThreadRun) ProtoMessage() {}
+func (*InactiveThreadRun) ProtoMessage() {}
 
-func (x *ArchivedThreadRun) ProtoReflect() protoreflect.Message {
+func (x *InactiveThreadRun) ProtoReflect() protoreflect.Message {
 	mi := &file_wf_run_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -448,12 +448,12 @@ func (x *ArchivedThreadRun) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ArchivedThreadRun.ProtoReflect.Descriptor instead.
-func (*ArchivedThreadRun) Descriptor() ([]byte, []int) {
+// Deprecated: Use InactiveThreadRun.ProtoReflect.Descriptor instead.
+func (*InactiveThreadRun) Descriptor() ([]byte, []int) {
 	return file_wf_run_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *ArchivedThreadRun) GetThreadRun() *ThreadRun {
+func (x *InactiveThreadRun) GetThreadRun() *ThreadRun {
 	if x != nil {
 		return x.ThreadRun
 	}
@@ -1208,8 +1208,8 @@ var file_wf_run_proto_rawDesc = []byte{
 	0x74, 0x65, 0x72, 0x72, 0x75, 0x70, 0x74, 0x5f, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x5f,
 	0x69, 0x64, 0x42, 0x18, 0x0a, 0x16, 0x5f, 0x66, 0x61, 0x69, 0x6c, 0x75, 0x72, 0x65, 0x5f, 0x62,
 	0x65, 0x69, 0x6e, 0x67, 0x5f, 0x68, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x64, 0x42, 0x09, 0x0a, 0x07,
-	0x5f, 0x6f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x22, 0x4a, 0x0a, 0x11, 0x41, 0x72, 0x63, 0x68, 0x69,
-	0x76, 0x65, 0x64, 0x54, 0x68, 0x72, 0x65, 0x61, 0x64, 0x52, 0x75, 0x6e, 0x12, 0x35, 0x0a, 0x0a,
+	0x5f, 0x6f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x22, 0x4a, 0x0a, 0x11, 0x49, 0x6e, 0x61, 0x63, 0x74,
+	0x69, 0x76, 0x65, 0x54, 0x68, 0x72, 0x65, 0x61, 0x64, 0x52, 0x75, 0x6e, 0x12, 0x35, 0x0a, 0x0a,
 	0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x5f, 0x72, 0x75, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
 	0x32, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54,
 	0x68, 0x72, 0x65, 0x61, 0x64, 0x52, 0x75, 0x6e, 0x52, 0x09, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64,
@@ -1329,7 +1329,7 @@ var file_wf_run_proto_goTypes = []interface{}{
 	(ThreadType)(0),                         // 0: littlehorse.ThreadType
 	(*WfRun)(nil),                           // 1: littlehorse.WfRun
 	(*ThreadRun)(nil),                       // 2: littlehorse.ThreadRun
-	(*ArchivedThreadRun)(nil),               // 3: littlehorse.ArchivedThreadRun
+	(*InactiveThreadRun)(nil),               // 3: littlehorse.InactiveThreadRun
 	(*FailureBeingHandled)(nil),             // 4: littlehorse.FailureBeingHandled
 	(*PendingInterrupt)(nil),                // 5: littlehorse.PendingInterrupt
 	(*PendingFailureHandler)(nil),           // 6: littlehorse.PendingFailureHandler
@@ -1366,7 +1366,7 @@ var file_wf_run_proto_depIdxs = []int32{
 	4,  // 15: littlehorse.ThreadRun.failure_being_handled:type_name -> littlehorse.FailureBeingHandled
 	0,  // 16: littlehorse.ThreadRun.type:type_name -> littlehorse.ThreadType
 	19, // 17: littlehorse.ThreadRun.output:type_name -> littlehorse.VariableValue
-	2,  // 18: littlehorse.ArchivedThreadRun.thread_run:type_name -> littlehorse.ThreadRun
+	2,  // 18: littlehorse.InactiveThreadRun.thread_run:type_name -> littlehorse.ThreadRun
 	18, // 19: littlehorse.PendingInterrupt.external_event_id:type_name -> littlehorse.ExternalEventId
 	18, // 20: littlehorse.PendingInterruptHaltReason.external_event_id:type_name -> littlehorse.ExternalEventId
 	10, // 21: littlehorse.ThreadHaltReason.parent_halted:type_name -> littlehorse.ParentHalted
@@ -1416,7 +1416,7 @@ func file_wf_run_proto_init() {
 			}
 		}
 		file_wf_run_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ArchivedThreadRun); i {
+			switch v := v.(*InactiveThreadRun); i {
 			case 0:
 				return &v.state
 			case 1:

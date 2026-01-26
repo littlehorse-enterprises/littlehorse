@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
-import io.littlehorse.common.model.getable.objectId.ArchivedThreadRunIdModel;
+import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import java.util.Iterator;
@@ -42,8 +42,8 @@ public class ThreadRunIterator implements Iterator<ThreadRunModel> {
         }
 
         // Obtain from archived storage
-        ArchivedThreadRunModel potentialThreadRun =
-                getableManager.get(new ArchivedThreadRunIdModel(this.wfRunId, currentIndex));
+        InactiveThreadRunModel potentialThreadRun =
+                getableManager.get(new InactiveThreadRunIdModel(this.wfRunId, currentIndex));
 
         if (potentialThreadRun != null) {
             currentIndex++;

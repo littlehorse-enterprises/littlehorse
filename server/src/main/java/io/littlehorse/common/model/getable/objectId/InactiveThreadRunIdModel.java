@@ -3,21 +3,23 @@ package io.littlehorse.common.model.getable.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
-import io.littlehorse.common.model.getable.core.wfrun.ArchivedThreadRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.InactiveThreadRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.ArchivedThreadRun;
-import io.littlehorse.sdk.common.proto.ArchivedThreadRunId;
+import io.littlehorse.sdk.common.proto.InactiveThreadRun;
+import io.littlehorse.sdk.common.proto.InactiveThreadRunId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 
-public class ArchivedThreadRunIdModel
-        extends CoreObjectId<ArchivedThreadRunId, ArchivedThreadRun, ArchivedThreadRunModel> {
+public class InactiveThreadRunIdModel
+        extends CoreObjectId<InactiveThreadRunId, InactiveThreadRun, InactiveThreadRunModel> {
 
     private WfRunIdModel wfRunId;
     private int threadRunNumber;
 
-    public ArchivedThreadRunIdModel(WfRunIdModel wfRunId, int threadRunNumber) {
+    public InactiveThreadRunIdModel() {}
+
+    public InactiveThreadRunIdModel(WfRunIdModel wfRunId, int threadRunNumber) {
         this.wfRunId = wfRunId;
         this.threadRunNumber = threadRunNumber;
     }
@@ -41,12 +43,12 @@ public class ArchivedThreadRunIdModel
 
     @Override
     public GetableClassEnum getType() {
-        return GetableClassEnum.ARCHIVED_THREAD_RUN;
+        return GetableClassEnum.INACTIVE_THREAD_RUN;
     }
 
     @Override
-    public ArchivedThreadRunId.Builder toProto() {
-        ArchivedThreadRunId.Builder out = ArchivedThreadRunId.newBuilder();
+    public InactiveThreadRunId.Builder toProto() {
+        InactiveThreadRunId.Builder out = InactiveThreadRunId.newBuilder();
         out.setWfRunId(this.wfRunId.toProto());
         out.setThreadRunNumber(this.threadRunNumber);
         return out;
@@ -54,13 +56,13 @@ public class ArchivedThreadRunIdModel
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
-        ArchivedThreadRunId p = (ArchivedThreadRunId) proto;
+        InactiveThreadRunId p = (InactiveThreadRunId) proto;
         this.wfRunId = WfRunIdModel.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
         this.threadRunNumber = p.getThreadRunNumber();
     }
 
     @Override
-    public Class<ArchivedThreadRunId> getProtoBaseClass() {
-        return ArchivedThreadRunId.class;
+    public Class<InactiveThreadRunId> getProtoBaseClass() {
+        return InactiveThreadRunId.class;
     }
 }

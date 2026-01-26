@@ -6,13 +6,13 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.ArchivedThreadRunId}
+ * Protobuf type {@code littlehorse.InactiveThreadRunId}
  */
 @com.google.protobuf.Generated
-public final class ArchivedThreadRunId extends
+public final class InactiveThreadRunId extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:littlehorse.ArchivedThreadRunId)
-    ArchivedThreadRunIdOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.InactiveThreadRunId)
+    InactiveThreadRunIdOrBuilder {
 private static final long serialVersionUID = 0L;
   static {
     com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -21,26 +21,26 @@ private static final long serialVersionUID = 0L;
       /* minor= */ 32,
       /* patch= */ 1,
       /* suffix= */ "",
-      ArchivedThreadRunId.class.getName());
+      InactiveThreadRunId.class.getName());
   }
-  // Use ArchivedThreadRunId.newBuilder() to construct.
-  private ArchivedThreadRunId(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  // Use InactiveThreadRunId.newBuilder() to construct.
+  private InactiveThreadRunId(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
-  private ArchivedThreadRunId() {
+  private InactiveThreadRunId() {
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_ArchivedThreadRunId_descriptor;
+    return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_InactiveThreadRunId_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_ArchivedThreadRunId_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_InactiveThreadRunId_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.ArchivedThreadRunId.class, io.littlehorse.sdk.common.proto.ArchivedThreadRunId.Builder.class);
+            io.littlehorse.sdk.common.proto.InactiveThreadRunId.class, io.littlehorse.sdk.common.proto.InactiveThreadRunId.Builder.class);
   }
 
   private int bitField0_;
@@ -128,10 +128,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.ArchivedThreadRunId)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.InactiveThreadRunId)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.ArchivedThreadRunId other = (io.littlehorse.sdk.common.proto.ArchivedThreadRunId) obj;
+    io.littlehorse.sdk.common.proto.InactiveThreadRunId other = (io.littlehorse.sdk.common.proto.InactiveThreadRunId) obj;
 
     if (hasWfRunId() != other.hasWfRunId()) return false;
     if (hasWfRunId()) {
@@ -162,44 +162,44 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.ArchivedThreadRunId parseFrom(
+  public static io.littlehorse.sdk.common.proto.InactiveThreadRunId parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ArchivedThreadRunId parseFrom(
+  public static io.littlehorse.sdk.common.proto.InactiveThreadRunId parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ArchivedThreadRunId parseFrom(
+  public static io.littlehorse.sdk.common.proto.InactiveThreadRunId parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ArchivedThreadRunId parseFrom(
+  public static io.littlehorse.sdk.common.proto.InactiveThreadRunId parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ArchivedThreadRunId parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.InactiveThreadRunId parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ArchivedThreadRunId parseFrom(
+  public static io.littlehorse.sdk.common.proto.InactiveThreadRunId parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ArchivedThreadRunId parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.InactiveThreadRunId parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.ArchivedThreadRunId parseFrom(
+  public static io.littlehorse.sdk.common.proto.InactiveThreadRunId parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -207,26 +207,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.ArchivedThreadRunId parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.InactiveThreadRunId parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.ArchivedThreadRunId parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.InactiveThreadRunId parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ArchivedThreadRunId parseFrom(
+  public static io.littlehorse.sdk.common.proto.InactiveThreadRunId parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.ArchivedThreadRunId parseFrom(
+  public static io.littlehorse.sdk.common.proto.InactiveThreadRunId parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -239,7 +239,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.ArchivedThreadRunId prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.InactiveThreadRunId prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -255,26 +255,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.ArchivedThreadRunId}
+   * Protobuf type {@code littlehorse.InactiveThreadRunId}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.ArchivedThreadRunId)
-      io.littlehorse.sdk.common.proto.ArchivedThreadRunIdOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.InactiveThreadRunId)
+      io.littlehorse.sdk.common.proto.InactiveThreadRunIdOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_ArchivedThreadRunId_descriptor;
+      return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_InactiveThreadRunId_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_ArchivedThreadRunId_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_InactiveThreadRunId_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.ArchivedThreadRunId.class, io.littlehorse.sdk.common.proto.ArchivedThreadRunId.Builder.class);
+              io.littlehorse.sdk.common.proto.InactiveThreadRunId.class, io.littlehorse.sdk.common.proto.InactiveThreadRunId.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.ArchivedThreadRunId.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.InactiveThreadRunId.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -306,17 +306,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_ArchivedThreadRunId_descriptor;
+      return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_InactiveThreadRunId_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ArchivedThreadRunId getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.ArchivedThreadRunId.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.InactiveThreadRunId getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.InactiveThreadRunId.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ArchivedThreadRunId build() {
-      io.littlehorse.sdk.common.proto.ArchivedThreadRunId result = buildPartial();
+    public io.littlehorse.sdk.common.proto.InactiveThreadRunId build() {
+      io.littlehorse.sdk.common.proto.InactiveThreadRunId result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -324,14 +324,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ArchivedThreadRunId buildPartial() {
-      io.littlehorse.sdk.common.proto.ArchivedThreadRunId result = new io.littlehorse.sdk.common.proto.ArchivedThreadRunId(this);
+    public io.littlehorse.sdk.common.proto.InactiveThreadRunId buildPartial() {
+      io.littlehorse.sdk.common.proto.InactiveThreadRunId result = new io.littlehorse.sdk.common.proto.InactiveThreadRunId(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.ArchivedThreadRunId result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.InactiveThreadRunId result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -348,16 +348,16 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.ArchivedThreadRunId) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.ArchivedThreadRunId)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.InactiveThreadRunId) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.InactiveThreadRunId)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.ArchivedThreadRunId other) {
-      if (other == io.littlehorse.sdk.common.proto.ArchivedThreadRunId.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.InactiveThreadRunId other) {
+      if (other == io.littlehorse.sdk.common.proto.InactiveThreadRunId.getDefaultInstance()) return this;
       if (other.hasWfRunId()) {
         mergeWfRunId(other.getWfRunId());
       }
@@ -572,23 +572,23 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.ArchivedThreadRunId)
+    // @@protoc_insertion_point(builder_scope:littlehorse.InactiveThreadRunId)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.ArchivedThreadRunId)
-  private static final io.littlehorse.sdk.common.proto.ArchivedThreadRunId DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.InactiveThreadRunId)
+  private static final io.littlehorse.sdk.common.proto.InactiveThreadRunId DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.ArchivedThreadRunId();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.InactiveThreadRunId();
   }
 
-  public static io.littlehorse.sdk.common.proto.ArchivedThreadRunId getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.InactiveThreadRunId getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<ArchivedThreadRunId>
-      PARSER = new com.google.protobuf.AbstractParser<ArchivedThreadRunId>() {
+  private static final com.google.protobuf.Parser<InactiveThreadRunId>
+      PARSER = new com.google.protobuf.AbstractParser<InactiveThreadRunId>() {
     @java.lang.Override
-    public ArchivedThreadRunId parsePartialFrom(
+    public InactiveThreadRunId parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -607,17 +607,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<ArchivedThreadRunId> parser() {
+  public static com.google.protobuf.Parser<InactiveThreadRunId> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<ArchivedThreadRunId> getParserForType() {
+  public com.google.protobuf.Parser<InactiveThreadRunId> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ArchivedThreadRunId getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.InactiveThreadRunId getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

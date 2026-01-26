@@ -30,21 +30,17 @@ public class ChildThreadExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-child-thread", wf -> {
-            WfRunVariable parentVar = wf.declareInt("parent-var");
+            WfRunVariable arrVar = wf.declareJsonArr("json-arr");
+            
+            SpawnedThreads spawnedThreads = wf.spawnThreadForEach(arrVar, "child-thread", threadBody -> {
+                threadBody.sleepSeconds(1);
+            });
 
-            wf.mutate(parentVar, VariableMutationType.ASSIGN, wf.execute("parent-task-1", parentVar));
+            wf.spawnThread(threadBody -> {
+                threadBody.sleepSeconds(1);
+            }, "some-thread", Map.of());
 
-            SpawnedThread childThread = wf.spawnThread(
-                    child -> { // this is the child workflow thread
-                        WfRunVariable childVar = child.declareInt("child-var");
-                        child.execute("child-task", childVar);
-                    },
-                    "spawned-thread",
-                    Map.of("child-var", parentVar));
-
-            wf.waitForThreads(SpawnedThreads.of(childThread));
-
-            wf.execute("parent-task-2");
+            wf.waitForThreads(spawnedThreads);
         });
     }
 

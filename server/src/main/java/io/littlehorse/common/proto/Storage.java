@@ -127,7 +127,7 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
       "\n\006TENANT\020\016\022\026\n\022WORKFLOW_EVENT_DEF\020\017\022\022\n\016WO" +
       "RKFLOW_EVENT\020\020\022\024\n\020SCHEDULED_WF_RUN\020\021\022\016\n\n" +
       "STRUCT_DEF\020\022\022\024\n\020CORRELATED_EVENT\020\023\022\016\n\nCH" +
-      "ECKPOINT\020\024\022\027\n\023ARCHIVED_THREAD_RUN\020\025*\033\n\016T" +
+      "ECKPOINT\020\024\022\027\n\023INACTIVE_THREAD_RUN\020\025*\033\n\016T" +
       "agStorageType\022\t\n\005LOCAL\020\000B\037\n\033io.littlehor" +
       "se.common.protoP\001b\006proto3"
     };
