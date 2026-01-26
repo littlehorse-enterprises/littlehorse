@@ -453,5 +453,3 @@ The following describes the system flow and technical implementation of workflow
    - The dashboard processes the `MetricList` to display time-series charts, aggregating windows as needed for different time ranges.
    - For example, multiple 5-minute windows can be merged into hourly views by summing `CountAndTiming` fields.
    - When `DEBUG` is enabled for a workflow, node-level heatmaps are available for detailed performance analysis.
-
-This flow ensures metrics are collected efficiently without affecting workflow execution, stored durably, and queried flexibly via gRPC.
