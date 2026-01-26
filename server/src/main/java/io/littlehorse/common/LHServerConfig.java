@@ -1114,6 +1114,9 @@ public class LHServerConfig extends ConfigBase {
      * @throws ExecutionException if the topic creation callback fails.
      */
     public boolean createKafkaTopic(NewTopic topic) throws InterruptedException, ExecutionException {
+        if (kafkaAdmin == null) {
+            return false;
+        }
         try {
             kafkaAdmin.createTopics(Collections.singleton(topic)).all().get();
             log.info("Topic {} created.", topic.name());
@@ -1156,6 +1159,9 @@ public class LHServerConfig extends ConfigBase {
     }
 
     private void initKafkaAdmin() {
+        if (!shouldCreateTopics()) {
+            return;
+        }
         Properties kafkaSettings = new Properties();
         kafkaSettings.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         addKafkaSecuritySettings(kafkaSettings);
