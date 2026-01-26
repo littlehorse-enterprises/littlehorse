@@ -29,6 +29,7 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
@@ -45,6 +46,7 @@ import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
@@ -55,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -93,7 +96,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     public WfRunModel() {}
 
     public WfRunModel(CoreProcessorContext processorContext) {
-        this.executionContext = processorContext;
+        this.executionContext = Objects.requireNonNull(processorContext);
     }
 
     public Date getCreatedAt() {
@@ -192,11 +195,25 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         this.wfSpec = spec;
     }
 
+    //    public ThreadRunModel getThreadRun(int threadRunNumber, ReadOnlyGetableManager readOnlyGetableManager) {
     public ThreadRunModel getThreadRun(int threadRunNumber) {
-        return threadRunsUseMeCarefully.stream()
+        ThreadRunModel localThreadRun = threadRunsUseMeCarefully.stream()
                 .filter(thread -> thread.getNumber() == threadRunNumber)
                 .findFirst()
                 .orElse(null);
+
+        if (localThreadRun != null) return localThreadRun;
+
+        GetableManager getableManager =
+                this.executionContext.castOnSupport(CoreProcessorContext.class).getableManager();
+
+        // Pull up ThreadRun from GetableManager
+        InactiveThreadRunModel potentialThreadRun =
+                getableManager.get(new InactiveThreadRunIdModel(id, threadRunNumber));
+
+        if (potentialThreadRun != null) return potentialThreadRun.getThreadRun();
+
+        return null;
     }
 
     @Override
@@ -226,7 +243,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         for (WfSpecId oldWfSpecId : proto.getOldWfSpecVersionsList()) {
             oldWfSpecVersions.add(LHSerializable.fromProto(oldWfSpecId, WfSpecIdModel.class, context));
         }
-        this.executionContext = context;
+        this.executionContext = Objects.requireNonNull(context);
         this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
     }
 
@@ -505,30 +522,32 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
         }
 
-        // Now we remove any old threadruns according to the retention policy
-        for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
-            ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
-            ThreadSpecModel spec = thread.getThreadSpec();
-            if (spec.getRetentionPolicy() != null) {
-                if (spec.getRetentionPolicy().shouldGcThreadRun(thread)) {
-                    removeThreadRun(thread);
-                }
+        Iterator<ThreadRunModel> threadRunIterator = threadRunsUseMeCarefully.iterator();
+        GetableManager getableManager =
+                this.executionContext.castOnSupport(CoreProcessorContext.class).getableManager();
+
+        while (threadRunIterator.hasNext()) {
+            ThreadRunModel threadRun = threadRunIterator.next();
+
+            if (threadRun.getType() == ThreadType.ENTRYPOINT) continue;
+
+            switch (threadRun.getStatus()) {
+                case COMPLETED:
+                    threadRunIterator.remove();
+                    InactiveThreadRunModel inactiveThreadRunModel = new InactiveThreadRunModel(threadRun);
+                    getableManager.put(inactiveThreadRunModel);
+                    break;
+                case ERROR:
+                case EXCEPTION:
+                case HALTED:
+                case HALTING:
+                case RUNNING:
+                case STARTING:
+                case UNRECOGNIZED:
+                default:
+                    break;
             }
         }
-    }
-
-    private void removeThreadRun(ThreadRunModel thread) {
-        if (thread.getNumber() == 0) {
-            throw new IllegalStateException("Impossible to cleanup entrypoint threadrun");
-        }
-
-        // First, remove the reference to this thread from the parent threadrun.
-        ThreadRunModel parent = getThreadRun(thread.getParentThreadId());
-        if (parent != null) {
-            parent.childThreadIds.removeIf(childId -> childId.equals(thread.getNumber()));
-        }
-
-        threadRunsUseMeCarefully.removeIf(candidate -> candidate.getNumber() == thread.getNumber());
     }
 
     public void processExtEvtTimeout(ExternalEventTimeoutModel timeout) {

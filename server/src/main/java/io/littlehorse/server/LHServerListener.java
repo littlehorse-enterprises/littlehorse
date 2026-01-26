@@ -665,6 +665,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         InactiveThreadRunIdModel id = LHSerializable.fromProto(req, InactiveThreadRunIdModel.class, requestContext());
         InactiveThreadRunModel checkpoint = internalComms.getObject(id, InactiveThreadRunModel.class, requestContext());
         observer.onNext(checkpoint.toProto().build());
+        observer.onCompleted();
     }
 
     @Override

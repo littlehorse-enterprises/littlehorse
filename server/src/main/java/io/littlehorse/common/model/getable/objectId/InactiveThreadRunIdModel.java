@@ -17,6 +17,8 @@ public class InactiveThreadRunIdModel
     private WfRunIdModel wfRunId;
     private int threadRunNumber;
 
+    public InactiveThreadRunIdModel() {}
+
     public InactiveThreadRunIdModel(WfRunIdModel wfRunId, int threadRunNumber) {
         this.wfRunId = wfRunId;
         this.threadRunNumber = threadRunNumber;
