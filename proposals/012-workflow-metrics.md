@@ -62,35 +62,35 @@ Key points:
 The following list describes the default metrics collected for each entity type. Each metric includes a count, and latency where applicable, identified by a key used in `MetricWindow`.
 
 - **WfRun**:
-  - "wfrun_started": Workflow throughput - how many business processes are initiated per period
-  - "wfrun_running_to_completed": Successful completion rate - business processes that finish normally (key performance indicator)
-  - "wfrun_running_to_halted": Controlled termination - workflows stopped intentionally for business reasons
-  - "wfrun_running_to_exception": System reliability - unexpected failures requiring immediate attention
-  - "wfrun_running_to_error": Business validation - expected failures from business rule violations
+  - "started": Workflow throughput - how many business processes are initiated per period (**count**)
+  - "running_to_completed": Successful completion rate - business processes that finish normally (**count + latency**)
+  - "running_to_halted": Controlled termination - workflows manually stopped (**count + latency**)
+  - "running_to_exception": Business validation - expected failures from business rule violations(**count + latency**)
+  - "running_to_error": System reliability - unexpected failures requiring immediate attention   (**count + latency**)
 
 - **TaskRun**:
-  - "taskrun_started": Task initiation rate - automated work units started (system load indicator)
-  - "taskrun_attempt_started": Retry frequency - how often tasks need to be retried (resilience metric)
-  - "taskrun_scheduled_to_running": Queue efficiency - how long tasks wait for execution resources
-  - "taskrun_running_to_success": Task success rate - automated operations completing successfully
-  - "taskrun_scheduled_to_success": End-to-end task time - total time from scheduling to completion
-  - "taskrun_running_to_failed": Task failure rate - automated operations failing permanently
-  - "taskrun_running_to_exception": System issues - unexpected task errors during execution
-  - "taskrun_timeout": Performance bottlenecks - tasks exceeding time limits
+  - "started": Task initiation rate - automated work units started (system load indicator) (**count**)
+  - "attempt_started": Retry frequency - how often tasks need to be retried (resilience metric) (**count**)
+  - "scheduled_to_running": Queue efficiency - how long tasks wait for execution resources (**count + latency**)
+  - "running_to_success": Task success rate - automated operations completing successfully (**count + latency**)
+  - "scheduled_to_success": End-to-end task time - total time from scheduling to completion (**count + latency**)
+  - "running_to_failed": System issues - unexpected task errors during execution (**count + latency**)
+  - "running_to_exception": Task failure rate - automated operations failing permanently (**count + latency**)
+  - "timeout": Performance bottlenecks - tasks exceeding time limits (**count**)
 
 - **UserTaskRun**:
-  - "usertaskrun_assigned": Work distribution - tasks assigned to human workers (workload balancing)
-  - "usertaskrun_done": Human productivity - tasks completed by users (efficiency metric)
-  - "usertaskrun_cancelled": Process optimization - tasks cancelled when no longer needed
-  - "usertaskrun_unassigned_to_assigned": Assignment speed - how quickly work gets distributed to people
-  - "usertaskrun_assigned_to_done": Task completion time - human task processing duration
-  - "usertaskrun_assigned_to_cancelled": Cancellation efficiency - how quickly obsolete tasks are cleaned up
+  - "assigned": Work distribution - tasks assigned to human workers (workload balancing) (**count**)
+  - "done": Human productivity - tasks completed by users (efficiency metric) (**count**)
+  - "cancelled": Process optimization - tasks cancelled when no longer needed (**count**)
+  - "unassigned_to_assigned": Assignment speed - how quickly work gets distributed to people (**count + latency**)
+  - "assigned_to_done": Task completion time - human task processing duration (**count + latency**)
+  - "assigned_to_cancelled": Cancellation efficiency - how quickly obsolete tasks are cleaned up (**count + latency**)
 
 - **NodeRun** (when WF is in DEBUG, metrics collected per node):
-  - "noderun_started": Step execution frequency - individual workflow steps being processed
-  - "noderun_running_to_completed": Step success rate - workflow progression through individual nodes
-  - "noderun_running_to_error": Process bottlenecks - where workflows get stuck in the flow
-  - "noderun_running_to_exception": System reliability - unexpected failures at specific workflow steps
+  - "started": Step execution frequency - individual workflow steps being processed (**count**)
+  - "running_to_completed": Step success rate - workflow progression through individual nodes (**count + latency**)
+  - "running_to_error": Process bottlenecks - where workflows get stuck in the flow (**count + latency**)
+  - "running_to_exception": System reliability - unexpected failures at specific workflow steps (**count + latency**)
 
 
 
@@ -110,9 +110,9 @@ This proposal introduces **two metric types**:
 2. **Latency metrics**
    Measure time between two status transitions in a period (window).
 
-   *Example: how long it took for a task to go from `TASK_SCHEDULED` → `TASK_SUCCESS` in 5m (key: "taskrun_scheduled_to_success")*
-   *Example: how long it took for a user task to go from `ASSIGNED` → `DONE` in 5m (key: "usertaskrun_assigned_to_done")*
-   *Example: how long it took to assign a user task from `UNASSIGNED` → `ASSIGNED` in 5m (key: "usertaskrun_unassigned_to_assigned")*
+   *Example: how long it took for a task to go from `TASK_SCHEDULED` → `TASK_SUCCESS` in 5m (key: "scheduled_to_success")*
+   *Example: how long it took for a user task to go from `ASSIGNED` → `DONE` in 5m (key: "assigned_to_done")*
+   *Example: how long it took to assign a user task from `UNASSIGNED` → `ASSIGNED` in 5m (key: "unassigned_to_assigned")*
 
 
 
@@ -177,6 +177,12 @@ message Tenant {
   // Configuration metrics associated with this Tenant. If not set, defaults are used.
   optional MetricsConfig metrics_config = 4;
 }
+
+message MetricLevelOverride {
+  string id = 1;
+  MetricRecordingLevel new_level = 2;
+  WorkflowMetricId workflow = 3;
+}
 ```
 
 ### Metric Recording Level Resolution Logic
@@ -184,7 +190,7 @@ message Tenant {
 Metric recording levels are resolved hierarchically for each metric collection event:
 
 1. **Check for specific overrides**: Look up `MetricLevelOverride` objects for the specific `WfSpec` involved.
-2. **Fall back to tenant default**: If no specific override exists, use the `Tenant.metrics_level` field.
+2. **Fall back to tenant default**: If no specific override exists, use the `Tenant.metrics_config.level` field.
 3. **Fall back to server default**: If no tenant default is set, use the server-wide default ( `INFO`).
 
 This allows granular control: e.g., enable `DEBUG` metrics for a problematic workflow while keeping others at `INFO`.
@@ -198,10 +204,10 @@ Count how many events occur in a window.
 
 **Examples**
 
-* Number of completed `WfRun`s (key: "wfrun_running_to_completed")
-* Number of failed `TaskRun`s (key: "taskrun_running_to_failed")
-* Number of completed user tasks (key: "usertaskrun_done")
-* Number of cancelled user tasks (key: "usertaskrun_cancelled")
+* Number of completed `WfRun`s (key: "running_to_completed")
+* Number of failed `TaskRun`s (key: "running_to_failed")
+* Number of completed user tasks (key: "done")
+* Number of cancelled user tasks (key: "cancelled")
 
 
 
@@ -377,13 +383,13 @@ message MetricList {
         "window_start": "2023-10-01T10:00:00Z"
       },
       "metrics": {
-        "wfrun_started": {
+        "started": {
           "count": 150,
           "min_latency_ms": 0,
           "max_latency_ms": 0,
           "total_latency_ms": 0
         },
-        "wfrun_running_to_completed": {
+        "running_to_completed": {
           "count": 140,
           "min_latency_ms": 5000,
           "max_latency_ms": 30000,
@@ -402,13 +408,13 @@ message MetricList {
         "window_start": "2023-10-01T10:05:00Z"
       },
       "metrics": {
-        "wfrun_started": {
+        "started": {
           "count": 150,
           "min_latency_ms": 0,
           "max_latency_ms": 0,
           "total_latency_ms": 0
         },
-        "wfrun_running_to_completed": {
+        "running_to_completed": {
           "count": 120,
           "min_latency_ms": 5000,
           "max_latency_ms": 30000,
@@ -417,83 +423,6 @@ message MetricList {
       }
     },
 
-  ]
-}
-```
-
-#### Example Query for UserTaskRun Metrics
-
-**Request:**
-
-```json
-{
-  "id": {
-    "workflow": {
-      "wf_spec": {
-        "name": "user-approval-workflow",
-        "version": 1
-      }
-    },
-    "window_start": "2023-10-01T10:00:00Z"
-  },
-  "end_time": "2023-10-01T10:05:00Z"
-}
-```
-
-**Response:**
-
-```json
-{
-  "windows": [
-    {
-      "id": {
-        "workflow": {
-          "wf_spec": {
-            "name": "user-approval-workflow",
-            "version": 1
-          }
-        },
-        "window_start": "2023-10-01T10:00:00Z"
-      },
-      "metrics": {
-        "usertaskrun_assigned": {
-          "count": 25,
-          "min_latency_ms": 0,
-          "max_latency_ms": 0,
-          "total_latency_ms": 0
-        },
-        "usertaskrun_done": {
-          "count": 20,
-          "min_latency_ms": 0,
-          "max_latency_ms": 0,
-          "total_latency_ms": 0
-        },
-        "usertaskrun_cancelled": {
-          "count": 2,
-          "min_latency_ms": 0,
-          "max_latency_ms": 0,
-          "total_latency_ms": 0
-        },
-        "usertaskrun_unassigned_to_assigned": {
-          "count": 25,
-          "min_latency_ms": 1000,
-          "max_latency_ms": 30000,
-          "total_latency_ms": 150000
-        },
-        "usertaskrun_assigned_to_done": {
-          "count": 20,
-          "min_latency_ms": 50000,
-          "max_latency_ms": 3600000,
-          "total_latency_ms": 18000000
-        },
-        "usertaskrun_assigned_to_cancelled": {
-          "count": 2,
-          "min_latency_ms": 10000,
-          "max_latency_ms": 60000,
-          "total_latency_ms": 70000
-        }
-      }
-    }
   ]
 }
 ```
