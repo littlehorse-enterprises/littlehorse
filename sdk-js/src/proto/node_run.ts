@@ -150,7 +150,7 @@ export interface StartMultipleThreadsRun {
 /** The RunChildWfNodeRun starts a Child `WfRun` and waits for its completion. */
 export interface RunChildWfNodeRun {
   /** The id of the created `WfRun`. */
-  childWfRunId:
+  childWfRunId?:
     | WfRunId
     | undefined;
   /** A record of the variables which were used to start the `WfRun`. */

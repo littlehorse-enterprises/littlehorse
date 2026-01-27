@@ -15,7 +15,7 @@ public interface RunChildWfNodeRunOrBuilder extends
    * The id of the created `WfRun`.
    * </pre>
    *
-   * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+   * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
    * @return Whether the childWfRunId field is set.
    */
   boolean hasChildWfRunId();
@@ -24,7 +24,7 @@ public interface RunChildWfNodeRunOrBuilder extends
    * The id of the created `WfRun`.
    * </pre>
    *
-   * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+   * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
    * @return The childWfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getChildWfRunId();
@@ -33,7 +33,7 @@ public interface RunChildWfNodeRunOrBuilder extends
    * The id of the created `WfRun`.
    * </pre>
    *
-   * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+   * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getChildWfRunIdOrBuilder();
 

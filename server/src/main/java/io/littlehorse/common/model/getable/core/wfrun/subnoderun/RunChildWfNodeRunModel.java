@@ -37,7 +37,8 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
 
     @Override
     public RunChildWfNodeRun.Builder toProto() {
-        RunChildWfNodeRun.Builder out = RunChildWfNodeRun.newBuilder().setChildWfRunId(childWfRunId.toProto());
+        RunChildWfNodeRun.Builder out = RunChildWfNodeRun.newBuilder();
+        if (childWfRunId != null) out.setChildWfRunId(childWfRunId.toProto());
 
         for (Map.Entry<String, VariableValueModel> entry : inputs.entrySet()) {
             out.putInputs(entry.getKey(), entry.getValue().toProto().build());
@@ -49,7 +50,9 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
     @Override
     public void initFrom(Message proto, ExecutionContext ctx) {
         RunChildWfNodeRun p = (RunChildWfNodeRun) proto;
-        this.childWfRunId = LHSerializable.fromProto(p.getChildWfRunId(), WfRunIdModel.class, ctx);
+        if (p.hasChildWfRunId()) {
+            this.childWfRunId = LHSerializable.fromProto(p.getChildWfRunId(), WfRunIdModel.class, ctx);
+        }
         for (Map.Entry<String, VariableValue> entry : p.getInputsMap().entrySet()) {
             this.inputs.put(entry.getKey(), LHSerializable.fromProto(entry.getValue(), VariableValueModel.class, ctx));
         }
@@ -103,6 +106,10 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
 
     @Override
     public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
-        return Optional.of(new VariableValueModel(childWfRunId));
+        if (childWfRunId != null) {
+            return Optional.of(new VariableValueModel(childWfRunId));
+        } else {
+            return Optional.empty();
+        }
     }
 }

@@ -67,7 +67,7 @@ private static final long serialVersionUID = 0L;
    * The id of the created `WfRun`.
    * </pre>
    *
-   * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+   * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
    * @return Whether the childWfRunId field is set.
    */
   @java.lang.Override
@@ -79,7 +79,7 @@ private static final long serialVersionUID = 0L;
    * The id of the created `WfRun`.
    * </pre>
    *
-   * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+   * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
    * @return The childWfRunId.
    */
   @java.lang.Override
@@ -91,7 +91,7 @@ private static final long serialVersionUID = 0L;
    * The id of the created `WfRun`.
    * </pre>
    *
-   * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+   * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getChildWfRunIdOrBuilder() {
@@ -580,7 +580,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * The id of the created `WfRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      * @return Whether the childWfRunId field is set.
      */
     public boolean hasChildWfRunId() {
@@ -591,7 +591,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * The id of the created `WfRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      * @return The childWfRunId.
      */
     public io.littlehorse.sdk.common.proto.WfRunId getChildWfRunId() {
@@ -606,7 +606,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * The id of the created `WfRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     public Builder setChildWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
       if (childWfRunIdBuilder_ == null) {
@@ -626,7 +626,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * The id of the created `WfRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     public Builder setChildWfRunId(
         io.littlehorse.sdk.common.proto.WfRunId.Builder builderForValue) {
@@ -644,7 +644,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * The id of the created `WfRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     public Builder mergeChildWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
       if (childWfRunIdBuilder_ == null) {
@@ -669,7 +669,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * The id of the created `WfRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     public Builder clearChildWfRunId() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -686,7 +686,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * The id of the created `WfRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getChildWfRunIdBuilder() {
       bitField0_ |= 0x00000001;
@@ -698,7 +698,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * The id of the created `WfRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getChildWfRunIdOrBuilder() {
       if (childWfRunIdBuilder_ != null) {
@@ -713,7 +713,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * The id of the created `WfRun`.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> 
