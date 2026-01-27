@@ -73,7 +73,7 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
             throw new NodeFailureException(failure);
         }
 
-        WfSpecModel childSpec = ctx.service().getWfSpec(runWfNode.getWfSpecName(), runWfNode.getMajorVersion(), null);
+        WfSpecModel childSpec = runWfNode.getWfSpecToRun(nodeRun, ctx.metadataManager());
 
         this.childWfRunId =
                 new WfRunIdModel(LHUtil.generateGuid(), nodeRun.getId().getWfRunId());
