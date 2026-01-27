@@ -65,7 +65,7 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
         RunChildWfNode p = (RunChildWfNode) proto;
         this.wfSpecName = p.getWfSpecName();
         this.majorVersion = p.getMajorVersion();
-        if (p.hasWfSpecName()) {
+        if (p.hasWfSpecName() && !p.getWfSpecName().isEmpty()) {
             this.wfSpecName = p.getWfSpecName();
         } else if (p.hasWfSpecVar()) {
             this.wfSpecVar = VariableAssignmentModel.fromProto(p.getWfSpecVar(), ignored);
