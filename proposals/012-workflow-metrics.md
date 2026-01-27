@@ -53,7 +53,7 @@ Key points:
 * Metrics are collected from a fixed, server-defined list.
 * Retention period and metric recording level are configured at the tenant level, with sensible defaults if not set (`INFO` level, 2 weeks retention).
 * An RPC is exposed to configure the metric recording level, which can be applied globally to all objects or specifically to individual workflows (e.g., a workflow).
-* Metrics are aggregated over mergeable time windows (5 min window).
+* Metrics are aggregated over mergeable time windows (2 min window).
 * All metrics are tenant-scoped for multi-tenancy isolation.
 
 
@@ -105,14 +105,14 @@ This proposal introduces **two metric types**:
 1. **Count metrics**
  Track the  number of times an event occurs in a period (window).
   
-    *Example:  number of completed WorkflowRuns in 5m*
+    *Example:  number of completed WorkflowRuns in 2m*
 
 2. **Latency metrics**
    Measure time between two status transitions in a period (window).
 
-   *Example: how long it took for a task to go from `TASK_SCHEDULED` → `TASK_SUCCESS` in 5m (key: "scheduled_to_success")*
-   *Example: how long it took for a user task to go from `ASSIGNED` → `DONE` in 5m (key: "assigned_to_done")*
-   *Example: how long it took to assign a user task from `UNASSIGNED` → `ASSIGNED` in 5m (key: "unassigned_to_assigned")*
+   *Example: how long it took for a task to go from `TASK_SCHEDULED` → `TASK_SUCCESS` in 2m (key: "scheduled_to_success")*
+   *Example: how long it took for a user task to go from `ASSIGNED` → `DONE` in 2m (key: "assigned_to_done")*
+   *Example: how long it took to assign a user task from `UNASSIGNED` → `ASSIGNED` in 2m (key: "unassigned_to_assigned")*
 
 
 
@@ -146,12 +146,12 @@ All metric collection and aggregation happens inside LittleHorse.
 - Metrics are aggregated using time windows.
 - Computation happens per partition first.
 - Only finalized events produce metric updates.
-- Window length: **5 minutes**.
+- Window length: **2 minutes**.
 
 
 ### Mergeable windows & retention
 
-* Default windows are **5 minute windows** aligned to the epoch.
+* Default windows are **2 minute windows** aligned to the epoch.
 * Each window is persisted for **14 days** (configurable at tenant level) to allow for historical queries.
 * Metric windows are **mergeable**  we store totals, so windows can be added together to form larger window.
 
@@ -282,7 +282,7 @@ On the dashboard front page, users should see time-series line charts for the Wo
 
 ### Workflow Metrics
 
-The `WfSpec` overview page should show started/completed/error/exception series with selectable windows (5m, 1h, 24h). When `DEBUG` metrics are enabled (see Recording Levels), provide a "view heat map" action to show node-level performance and failure hotspots.
+The `WfSpec` overview page should show started/completed/error/exception series with selectable windows (2m, 1h, 24h). When `DEBUG` metrics are enabled (see Recording Levels), provide a "view heat map" action to show node-level performance and failure hotspots.
 
 
 
@@ -472,7 +472,7 @@ The following describes the system flow and technical implementation of workflow
    - Aggregations are performed using `CountAndTiming`: for COUNT metrics, increment the `count`; for LATENCY metrics, calculate the time difference and update `min_latency_ms`, `max_latency_ms`, and `total_latency_ms`.
 
 3. **Window Management**:
-   - Windows are aligned to the epoch and have a fixed length (5 minutes).
+   - Windows are aligned to the epoch and have a fixed length (2 minutes).
    - Old windows are cleaned up after the retention period (configurable, default 14 days).
 
 4. **Querying Metrics**:
