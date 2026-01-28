@@ -48,6 +48,9 @@ public class WaitForChildWfNodeModel extends SubNode<WaitForChildWfNode> {
     @Override
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
         WfSpecModel childWfSpec = getSourceNode().getRunChildWfNode().getWfSpecToRun(manager);
+        if (childWfSpec == null) {
+            return Optional.empty();
+        }
         return childWfSpec.getOutputType(manager);
     }
 

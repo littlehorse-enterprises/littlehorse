@@ -12,7 +12,16 @@ public interface RunChildWfNodeOrBuilder extends
 
   /**
    * <pre>
-   * The name of the WfSpec to spawn.
+   * Static reference to a WfSpec by its exact name that will be executed as a child workflow.
+   * </pre>
+   *
+   * <code>string wf_spec_name = 1;</code>
+   * @return Whether the wfSpecName field is set.
+   */
+  boolean hasWfSpecName();
+  /**
+   * <pre>
+   * Static reference to a WfSpec by its exact name that will be executed as a child workflow.
    * </pre>
    *
    * <code>string wf_spec_name = 1;</code>
@@ -21,7 +30,7 @@ public interface RunChildWfNodeOrBuilder extends
   java.lang.String getWfSpecName();
   /**
    * <pre>
-   * The name of the WfSpec to spawn.
+   * Static reference to a WfSpec by its exact name that will be executed as a child workflow.
    * </pre>
    *
    * <code>string wf_spec_name = 1;</code>
@@ -29,6 +38,36 @@ public interface RunChildWfNodeOrBuilder extends
    */
   com.google.protobuf.ByteString
       getWfSpecNameBytes();
+
+  /**
+   * <pre>
+   * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+   * that resolves to a STR containing the WfSpec name to execute
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+   * @return Whether the wfSpecVar field is set.
+   */
+  boolean hasWfSpecVar();
+  /**
+   * <pre>
+   * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+   * that resolves to a STR containing the WfSpec name to execute
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+   * @return The wfSpecVar.
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment getWfSpecVar();
+  /**
+   * <pre>
+   * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+   * that resolves to a STR containing the WfSpec name to execute
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getWfSpecVarOrBuilder();
 
   /**
    * <pre>
@@ -93,4 +132,6 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue);
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getInputsOrThrow(
       java.lang.String key);
+
+  io.littlehorse.sdk.common.proto.RunChildWfNode.WfSpecCase getWfSpecCase();
 }

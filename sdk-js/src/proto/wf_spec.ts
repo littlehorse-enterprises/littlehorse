@@ -381,8 +381,10 @@ export interface StartMultipleThreadsNode_VariablesEntry {
 
 /** This node spawns a child `WfRun` and returns the associated WfRunId. */
 export interface RunChildWfNode {
-  /** The name of the WfSpec to spawn. */
-  wfSpecName: string;
+  wfSpec?:
+    | { $case: "wfSpecName"; value: string }
+    | { $case: "wfSpecVar"; value: VariableAssignment }
+    | undefined;
   /** The major version of the WfSpec to spawn. */
   majorVersion: number;
   /** The input variables to pass into the Child ThreadRun. */
@@ -2129,13 +2131,18 @@ export const StartMultipleThreadsNode_VariablesEntry = {
 };
 
 function createBaseRunChildWfNode(): RunChildWfNode {
-  return { wfSpecName: "", majorVersion: 0, inputs: {} };
+  return { wfSpec: undefined, majorVersion: 0, inputs: {} };
 }
 
 export const RunChildWfNode = {
   encode(message: RunChildWfNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfSpecName !== "") {
-      writer.uint32(10).string(message.wfSpecName);
+    switch (message.wfSpec?.$case) {
+      case "wfSpecName":
+        writer.uint32(10).string(message.wfSpec.value);
+        break;
+      case "wfSpecVar":
+        VariableAssignment.encode(message.wfSpec.value, writer.uint32(34).fork()).ldelim();
+        break;
     }
     if (message.majorVersion !== 0) {
       writer.uint32(16).int32(message.majorVersion);
@@ -2158,7 +2165,14 @@ export const RunChildWfNode = {
             break;
           }
 
-          message.wfSpecName = reader.string();
+          message.wfSpec = { $case: "wfSpecName", value: reader.string() };
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.wfSpec = { $case: "wfSpecVar", value: VariableAssignment.decode(reader, reader.uint32()) };
           continue;
         case 2:
           if (tag !== 16) {
@@ -2188,7 +2202,11 @@ export const RunChildWfNode = {
 
   fromJSON(object: any): RunChildWfNode {
     return {
-      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpec: isSet(object.wfSpecName)
+        ? { $case: "wfSpecName", value: globalThis.String(object.wfSpecName) }
+        : isSet(object.wfSpecVar)
+        ? { $case: "wfSpecVar", value: VariableAssignment.fromJSON(object.wfSpecVar) }
+        : undefined,
       majorVersion: isSet(object.majorVersion) ? globalThis.Number(object.majorVersion) : 0,
       inputs: isObject(object.inputs)
         ? Object.entries(object.inputs).reduce<{ [key: string]: VariableAssignment }>((acc, [key, value]) => {
@@ -2201,8 +2219,11 @@ export const RunChildWfNode = {
 
   toJSON(message: RunChildWfNode): unknown {
     const obj: any = {};
-    if (message.wfSpecName !== "") {
-      obj.wfSpecName = message.wfSpecName;
+    if (message.wfSpec?.$case === "wfSpecName") {
+      obj.wfSpecName = message.wfSpec.value;
+    }
+    if (message.wfSpec?.$case === "wfSpecVar") {
+      obj.wfSpecVar = VariableAssignment.toJSON(message.wfSpec.value);
     }
     if (message.majorVersion !== 0) {
       obj.majorVersion = Math.round(message.majorVersion);
@@ -2224,7 +2245,12 @@ export const RunChildWfNode = {
   },
   fromPartial(object: DeepPartial<RunChildWfNode>): RunChildWfNode {
     const message = createBaseRunChildWfNode();
-    message.wfSpecName = object.wfSpecName ?? "";
+    if (object.wfSpec?.$case === "wfSpecName" && object.wfSpec?.value !== undefined && object.wfSpec?.value !== null) {
+      message.wfSpec = { $case: "wfSpecName", value: object.wfSpec.value };
+    }
+    if (object.wfSpec?.$case === "wfSpecVar" && object.wfSpec?.value !== undefined && object.wfSpec?.value !== null) {
+      message.wfSpec = { $case: "wfSpecVar", value: VariableAssignment.fromPartial(object.wfSpec.value) };
+    }
     message.majorVersion = object.majorVersion ?? 0;
     message.inputs = Object.entries(object.inputs ?? {}).reduce<{ [key: string]: VariableAssignment }>(
       (acc, [key, value]) => {
