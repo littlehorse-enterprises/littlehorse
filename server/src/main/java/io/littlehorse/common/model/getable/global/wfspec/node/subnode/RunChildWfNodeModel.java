@@ -157,12 +157,12 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
                 String wfSpecName = specNameVal.getStrVal();
                 WfSpecModel wfSpec = service.getWfSpec(wfSpecName, majorVersion == -1 ? null : majorVersion, 0);
                 // Pin major version to the latest available right now.
-                if (majorVersion == -1) {
-                    this.majorVersion = wfSpec.getId().getMajorVersion();
-                }
                 if (wfSpec == null) {
                     throw new NodeFailureException(new FailureModel(
                             "Couldn't find WfSpec %s".formatted(wfSpecName), LHConstants.CHILD_FAILURE));
+                }
+                if (majorVersion == -1) {
+                    this.majorVersion = wfSpec.getId().getMajorVersion();
                 }
                 return wfSpec;
             } catch (LHVarSubError e) {
