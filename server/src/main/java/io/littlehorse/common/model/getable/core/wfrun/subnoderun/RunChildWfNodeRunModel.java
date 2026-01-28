@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.RunChildWfNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.RunChildWfNodeRun;
@@ -28,6 +29,7 @@ import java.util.Optional;
 public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
 
     private WfRunIdModel childWfRunId;
+    private WfSpecIdModel wfSpecId;
     private Map<String, VariableValueModel> inputs = new HashMap<>();
 
     @Override
@@ -39,6 +41,7 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
     public RunChildWfNodeRun.Builder toProto() {
         RunChildWfNodeRun.Builder out = RunChildWfNodeRun.newBuilder();
         if (childWfRunId != null) out.setChildWfRunId(childWfRunId.toProto());
+        if (wfSpecId != null) out.setWfSpecId(wfSpecId.toProto());
 
         for (Map.Entry<String, VariableValueModel> entry : inputs.entrySet()) {
             out.putInputs(entry.getKey(), entry.getValue().toProto().build());
@@ -52,6 +55,9 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
         RunChildWfNodeRun p = (RunChildWfNodeRun) proto;
         if (p.hasChildWfRunId()) {
             this.childWfRunId = LHSerializable.fromProto(p.getChildWfRunId(), WfRunIdModel.class, ctx);
+        }
+        if (p.hasWfSpecId()) {
+            this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, ctx);
         }
         for (Map.Entry<String, VariableValue> entry : p.getInputsMap().entrySet()) {
             this.inputs.put(entry.getKey(), LHSerializable.fromProto(entry.getValue(), VariableValueModel.class, ctx));
@@ -77,6 +83,7 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
         }
 
         WfSpecModel childSpec = runWfNode.getWfSpecToRun(nodeRun, ctx.metadataManager());
+        this.wfSpecId = childSpec.getId();
 
         this.childWfRunId =
                 new WfRunIdModel(LHUtil.generateGuid(), nodeRun.getId().getWfRunId());

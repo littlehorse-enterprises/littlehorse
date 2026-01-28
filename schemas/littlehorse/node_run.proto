@@ -155,10 +155,16 @@ message StartMultipleThreadsRun {
 // The RunChildWfNodeRun starts a Child `WfRun` and waits for its completion.
 message RunChildWfNodeRun {
   // The id of the created `WfRun`.
+  // If the node failed to create the child WfRun, this field will be empty.
   optional WfRunId child_wf_run_id = 1;
 
   // A record of the variables which were used to start the `WfRun`.
   map<string, VariableValue> inputs = 2;
+  // The resolved WfSpecId of the child workflow that was started. This field is populated
+  // only after the child WfRun has been successfully created and started. If the node failed
+  // to create the child WfRun, this field will be empty. The ID can be used to track which
+  // version of the WfSpec was actually executed.
+  optional WfSpecId wf_spec_id = 3;
 }
 
 // The WaitForChildWfNodeRun waits for a specified child WfRun to complete.

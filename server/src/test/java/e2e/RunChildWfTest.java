@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
+import io.littlehorse.sdk.common.proto.RunChildWfNodeRun;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.VariableId;
@@ -218,6 +219,12 @@ public class RunChildWfTest {
 
         verifier.prepareRun(dynamicChildWf, Arg.of("wf-name", childWfName))
                 .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    Assertions.assertThat(nodeRun.hasRunChildWf()).isTrue();
+                    RunChildWfNodeRun childWfNodeRun = nodeRun.getRunChildWf();
+                    Assertions.assertThat(childWfNodeRun.hasChildWfRunId()).isTrue();
+                    Assertions.assertThat(childWfNodeRun.hasWfSpecId()).isTrue();
+                })
                 .start();
 
         verifier.prepareRun(dynamicChildWf, Arg.of("wf-name", invalidChildWfName))
@@ -228,6 +235,10 @@ public class RunChildWfTest {
                     Failure failure = nodeRunFailures.getFirst();
                     Assertions.assertThat(failure.getFailureName()).isEqualTo("CHILD_FAILURE");
                     Assertions.assertThat(failure.getMessage()).isEqualTo("Couldn't find WfSpec " + invalidChildWfName);
+                    Assertions.assertThat(nodeRun.hasRunChildWf()).isTrue();
+                    RunChildWfNodeRun childWfNodeRun = nodeRun.getRunChildWf();
+                    Assertions.assertThat(childWfNodeRun.hasChildWfRunId()).isFalse();
+                    Assertions.assertThat(childWfNodeRun.hasWfSpecId()).isFalse();
                 })
                 .start();
     }
