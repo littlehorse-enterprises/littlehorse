@@ -51,6 +51,7 @@ import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
+import io.littlehorse.server.streams.topology.core.Sensor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -69,6 +70,8 @@ import org.apache.commons.lang3.tuple.Pair;
 @Setter
 @Getter
 public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGetable<WfRun> {
+
+    public static final Sensor workflowSensor = new Sensor();
 
     private WfRunIdModel id;
     private WfSpecIdModel wfSpecId;
@@ -655,6 +658,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                     wfSpecId, processorContext.authorization().tenantId(), this.status, status, startTime);
         }
         this.status = status;
+        Sensor.track(this);
         processorContext.getableUpdates().dispatch(statusChanged);
 
         WorkflowRetentionPolicyModel retentionPolicy = getWfSpec().getRetentionPolicy();
