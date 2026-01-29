@@ -29,7 +29,6 @@ private static final long serialVersionUID = 0L;
   }
   private MetricSpec() {
     id_ = "";
-    aggregationType_ = 0;
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -111,28 +110,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
 
-  public static final int AGGREGATION_TYPE_FIELD_NUMBER = 3;
-  private int aggregationType_ = 0;
-  /**
-   * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-   * @return The enum numeric value on the wire for aggregationType.
-   */
-  @java.lang.Override public int getAggregationTypeValue() {
-    return aggregationType_;
-  }
-  /**
-   * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-   * @return The aggregationType.
-   */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.AggregationType getAggregationType() {
-    io.littlehorse.sdk.common.proto.AggregationType result = io.littlehorse.sdk.common.proto.AggregationType.forNumber(aggregationType_);
-    return result == null ? io.littlehorse.sdk.common.proto.AggregationType.UNRECOGNIZED : result;
-  }
-
-  public static final int SCOPE_FIELD_NUMBER = 4;
+  public static final int SCOPE_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.MetricScope scope_;
   /**
-   * <code>.littlehorse.MetricScope scope = 4;</code>
+   * <code>.littlehorse.MetricScope scope = 3;</code>
    * @return Whether the scope field is set.
    */
   @java.lang.Override
@@ -140,7 +121,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>.littlehorse.MetricScope scope = 4;</code>
+   * <code>.littlehorse.MetricScope scope = 3;</code>
    * @return The scope.
    */
   @java.lang.Override
@@ -148,17 +129,17 @@ private static final long serialVersionUID = 0L;
     return scope_ == null ? io.littlehorse.sdk.common.proto.MetricScope.getDefaultInstance() : scope_;
   }
   /**
-   * <code>.littlehorse.MetricScope scope = 4;</code>
+   * <code>.littlehorse.MetricScope scope = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.MetricScopeOrBuilder getScopeOrBuilder() {
     return scope_ == null ? io.littlehorse.sdk.common.proto.MetricScope.getDefaultInstance() : scope_;
   }
 
-  public static final int TRANSITION_FIELD_NUMBER = 5;
+  public static final int TRANSITION_FIELD_NUMBER = 4;
   private io.littlehorse.sdk.common.proto.StatusTransition transition_;
   /**
-   * <code>.littlehorse.StatusTransition transition = 5;</code>
+   * <code>.littlehorse.StatusTransition transition = 4;</code>
    * @return Whether the transition field is set.
    */
   @java.lang.Override
@@ -166,7 +147,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>.littlehorse.StatusTransition transition = 5;</code>
+   * <code>.littlehorse.StatusTransition transition = 4;</code>
    * @return The transition.
    */
   @java.lang.Override
@@ -174,37 +155,11 @@ private static final long serialVersionUID = 0L;
     return transition_ == null ? io.littlehorse.sdk.common.proto.StatusTransition.getDefaultInstance() : transition_;
   }
   /**
-   * <code>.littlehorse.StatusTransition transition = 5;</code>
+   * <code>.littlehorse.StatusTransition transition = 4;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.StatusTransitionOrBuilder getTransitionOrBuilder() {
     return transition_ == null ? io.littlehorse.sdk.common.proto.StatusTransition.getDefaultInstance() : transition_;
-  }
-
-  public static final int WINDOW_LENGTH_FIELD_NUMBER = 6;
-  private com.google.protobuf.Duration windowLength_;
-  /**
-   * <code>.google.protobuf.Duration window_length = 6;</code>
-   * @return Whether the windowLength field is set.
-   */
-  @java.lang.Override
-  public boolean hasWindowLength() {
-    return ((bitField0_ & 0x00000008) != 0);
-  }
-  /**
-   * <code>.google.protobuf.Duration window_length = 6;</code>
-   * @return The windowLength.
-   */
-  @java.lang.Override
-  public com.google.protobuf.Duration getWindowLength() {
-    return windowLength_ == null ? com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
-  }
-  /**
-   * <code>.google.protobuf.Duration window_length = 6;</code>
-   */
-  @java.lang.Override
-  public com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder() {
-    return windowLength_ == null ? com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -227,17 +182,11 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(2, getCreatedAt());
     }
-    if (aggregationType_ != io.littlehorse.sdk.common.proto.AggregationType.COUNT.getNumber()) {
-      output.writeEnum(3, aggregationType_);
-    }
     if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(4, getScope());
+      output.writeMessage(3, getScope());
     }
     if (((bitField0_ & 0x00000004) != 0)) {
-      output.writeMessage(5, getTransition());
-    }
-    if (((bitField0_ & 0x00000008) != 0)) {
-      output.writeMessage(6, getWindowLength());
+      output.writeMessage(4, getTransition());
     }
     getUnknownFields().writeTo(output);
   }
@@ -255,21 +204,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getCreatedAt());
     }
-    if (aggregationType_ != io.littlehorse.sdk.common.proto.AggregationType.COUNT.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(3, aggregationType_);
-    }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getScope());
+        .computeMessageSize(3, getScope());
     }
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, getTransition());
-    }
-    if (((bitField0_ & 0x00000008) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, getWindowLength());
+        .computeMessageSize(4, getTransition());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -293,7 +234,6 @@ private static final long serialVersionUID = 0L;
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
-    if (aggregationType_ != other.aggregationType_) return false;
     if (hasScope() != other.hasScope()) return false;
     if (hasScope()) {
       if (!getScope()
@@ -303,11 +243,6 @@ private static final long serialVersionUID = 0L;
     if (hasTransition()) {
       if (!getTransition()
           .equals(other.getTransition())) return false;
-    }
-    if (hasWindowLength() != other.hasWindowLength()) return false;
-    if (hasWindowLength()) {
-      if (!getWindowLength()
-          .equals(other.getWindowLength())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -326,8 +261,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
     }
-    hash = (37 * hash) + AGGREGATION_TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + aggregationType_;
     if (hasScope()) {
       hash = (37 * hash) + SCOPE_FIELD_NUMBER;
       hash = (53 * hash) + getScope().hashCode();
@@ -335,10 +268,6 @@ private static final long serialVersionUID = 0L;
     if (hasTransition()) {
       hash = (37 * hash) + TRANSITION_FIELD_NUMBER;
       hash = (53 * hash) + getTransition().hashCode();
-    }
-    if (hasWindowLength()) {
-      hash = (37 * hash) + WINDOW_LENGTH_FIELD_NUMBER;
-      hash = (53 * hash) + getWindowLength().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -473,7 +402,6 @@ private static final long serialVersionUID = 0L;
         internalGetCreatedAtFieldBuilder();
         internalGetScopeFieldBuilder();
         internalGetTransitionFieldBuilder();
-        internalGetWindowLengthFieldBuilder();
       }
     }
     @java.lang.Override
@@ -486,7 +414,6 @@ private static final long serialVersionUID = 0L;
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
       }
-      aggregationType_ = 0;
       scope_ = null;
       if (scopeBuilder_ != null) {
         scopeBuilder_.dispose();
@@ -496,11 +423,6 @@ private static final long serialVersionUID = 0L;
       if (transitionBuilder_ != null) {
         transitionBuilder_.dispose();
         transitionBuilder_ = null;
-      }
-      windowLength_ = null;
-      if (windowLengthBuilder_ != null) {
-        windowLengthBuilder_.dispose();
-        windowLengthBuilder_ = null;
       }
       return this;
     }
@@ -546,25 +468,16 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.aggregationType_ = aggregationType_;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.scope_ = scopeBuilder_ == null
             ? scope_
             : scopeBuilder_.build();
         to_bitField0_ |= 0x00000002;
       }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.transition_ = transitionBuilder_ == null
             ? transition_
             : transitionBuilder_.build();
         to_bitField0_ |= 0x00000004;
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
-        result.windowLength_ = windowLengthBuilder_ == null
-            ? windowLength_
-            : windowLengthBuilder_.build();
-        to_bitField0_ |= 0x00000008;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -589,17 +502,11 @@ private static final long serialVersionUID = 0L;
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
-      if (other.aggregationType_ != 0) {
-        setAggregationTypeValue(other.getAggregationTypeValue());
-      }
       if (other.hasScope()) {
         mergeScope(other.getScope());
       }
       if (other.hasTransition()) {
         mergeTransition(other.getTransition());
-      }
-      if (other.hasWindowLength()) {
-        mergeWindowLength(other.getWindowLength());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -639,32 +546,20 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 24: {
-              aggregationType_ = input.readEnum();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
-            case 34: {
+            case 26: {
               input.readMessage(
                   internalGetScopeFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
+            case 34: {
+              input.readMessage(
+                  internalGetTransitionFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000008;
               break;
             } // case 34
-            case 42: {
-              input.readMessage(
-                  internalGetTransitionFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 42
-            case 50: {
-              input.readMessage(
-                  internalGetWindowLengthFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000020;
-              break;
-            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -875,69 +770,18 @@ private static final long serialVersionUID = 0L;
       return createdAtBuilder_;
     }
 
-    private int aggregationType_ = 0;
-    /**
-     * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-     * @return The enum numeric value on the wire for aggregationType.
-     */
-    @java.lang.Override public int getAggregationTypeValue() {
-      return aggregationType_;
-    }
-    /**
-     * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-     * @param value The enum numeric value on the wire for aggregationType to set.
-     * @return This builder for chaining.
-     */
-    public Builder setAggregationTypeValue(int value) {
-      aggregationType_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-     * @return The aggregationType.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.AggregationType getAggregationType() {
-      io.littlehorse.sdk.common.proto.AggregationType result = io.littlehorse.sdk.common.proto.AggregationType.forNumber(aggregationType_);
-      return result == null ? io.littlehorse.sdk.common.proto.AggregationType.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-     * @param value The aggregationType to set.
-     * @return This builder for chaining.
-     */
-    public Builder setAggregationType(io.littlehorse.sdk.common.proto.AggregationType value) {
-      if (value == null) { throw new NullPointerException(); }
-      bitField0_ |= 0x00000004;
-      aggregationType_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearAggregationType() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      aggregationType_ = 0;
-      onChanged();
-      return this;
-    }
-
     private io.littlehorse.sdk.common.proto.MetricScope scope_;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.MetricScope, io.littlehorse.sdk.common.proto.MetricScope.Builder, io.littlehorse.sdk.common.proto.MetricScopeOrBuilder> scopeBuilder_;
     /**
-     * <code>.littlehorse.MetricScope scope = 4;</code>
+     * <code>.littlehorse.MetricScope scope = 3;</code>
      * @return Whether the scope field is set.
      */
     public boolean hasScope() {
-      return ((bitField0_ & 0x00000008) != 0);
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>.littlehorse.MetricScope scope = 4;</code>
+     * <code>.littlehorse.MetricScope scope = 3;</code>
      * @return The scope.
      */
     public io.littlehorse.sdk.common.proto.MetricScope getScope() {
@@ -948,7 +792,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.littlehorse.MetricScope scope = 4;</code>
+     * <code>.littlehorse.MetricScope scope = 3;</code>
      */
     public Builder setScope(io.littlehorse.sdk.common.proto.MetricScope value) {
       if (scopeBuilder_ == null) {
@@ -959,12 +803,12 @@ private static final long serialVersionUID = 0L;
       } else {
         scopeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.MetricScope scope = 4;</code>
+     * <code>.littlehorse.MetricScope scope = 3;</code>
      */
     public Builder setScope(
         io.littlehorse.sdk.common.proto.MetricScope.Builder builderForValue) {
@@ -973,16 +817,16 @@ private static final long serialVersionUID = 0L;
       } else {
         scopeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.MetricScope scope = 4;</code>
+     * <code>.littlehorse.MetricScope scope = 3;</code>
      */
     public Builder mergeScope(io.littlehorse.sdk.common.proto.MetricScope value) {
       if (scopeBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
+        if (((bitField0_ & 0x00000004) != 0) &&
           scope_ != null &&
           scope_ != io.littlehorse.sdk.common.proto.MetricScope.getDefaultInstance()) {
           getScopeBuilder().mergeFrom(value);
@@ -993,16 +837,16 @@ private static final long serialVersionUID = 0L;
         scopeBuilder_.mergeFrom(value);
       }
       if (scope_ != null) {
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000004;
         onChanged();
       }
       return this;
     }
     /**
-     * <code>.littlehorse.MetricScope scope = 4;</code>
+     * <code>.littlehorse.MetricScope scope = 3;</code>
      */
     public Builder clearScope() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000004);
       scope_ = null;
       if (scopeBuilder_ != null) {
         scopeBuilder_.dispose();
@@ -1012,15 +856,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.MetricScope scope = 4;</code>
+     * <code>.littlehorse.MetricScope scope = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.MetricScope.Builder getScopeBuilder() {
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return internalGetScopeFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.MetricScope scope = 4;</code>
+     * <code>.littlehorse.MetricScope scope = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.MetricScopeOrBuilder getScopeOrBuilder() {
       if (scopeBuilder_ != null) {
@@ -1031,7 +875,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.littlehorse.MetricScope scope = 4;</code>
+     * <code>.littlehorse.MetricScope scope = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.MetricScope, io.littlehorse.sdk.common.proto.MetricScope.Builder, io.littlehorse.sdk.common.proto.MetricScopeOrBuilder> 
@@ -1051,14 +895,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.StatusTransition, io.littlehorse.sdk.common.proto.StatusTransition.Builder, io.littlehorse.sdk.common.proto.StatusTransitionOrBuilder> transitionBuilder_;
     /**
-     * <code>.littlehorse.StatusTransition transition = 5;</code>
+     * <code>.littlehorse.StatusTransition transition = 4;</code>
      * @return Whether the transition field is set.
      */
     public boolean hasTransition() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>.littlehorse.StatusTransition transition = 5;</code>
+     * <code>.littlehorse.StatusTransition transition = 4;</code>
      * @return The transition.
      */
     public io.littlehorse.sdk.common.proto.StatusTransition getTransition() {
@@ -1069,7 +913,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.littlehorse.StatusTransition transition = 5;</code>
+     * <code>.littlehorse.StatusTransition transition = 4;</code>
      */
     public Builder setTransition(io.littlehorse.sdk.common.proto.StatusTransition value) {
       if (transitionBuilder_ == null) {
@@ -1080,12 +924,12 @@ private static final long serialVersionUID = 0L;
       } else {
         transitionBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.StatusTransition transition = 5;</code>
+     * <code>.littlehorse.StatusTransition transition = 4;</code>
      */
     public Builder setTransition(
         io.littlehorse.sdk.common.proto.StatusTransition.Builder builderForValue) {
@@ -1094,16 +938,16 @@ private static final long serialVersionUID = 0L;
       } else {
         transitionBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.StatusTransition transition = 5;</code>
+     * <code>.littlehorse.StatusTransition transition = 4;</code>
      */
     public Builder mergeTransition(io.littlehorse.sdk.common.proto.StatusTransition value) {
       if (transitionBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) != 0) &&
+        if (((bitField0_ & 0x00000008) != 0) &&
           transition_ != null &&
           transition_ != io.littlehorse.sdk.common.proto.StatusTransition.getDefaultInstance()) {
           getTransitionBuilder().mergeFrom(value);
@@ -1114,16 +958,16 @@ private static final long serialVersionUID = 0L;
         transitionBuilder_.mergeFrom(value);
       }
       if (transition_ != null) {
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000008;
         onChanged();
       }
       return this;
     }
     /**
-     * <code>.littlehorse.StatusTransition transition = 5;</code>
+     * <code>.littlehorse.StatusTransition transition = 4;</code>
      */
     public Builder clearTransition() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000008);
       transition_ = null;
       if (transitionBuilder_ != null) {
         transitionBuilder_.dispose();
@@ -1133,15 +977,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.StatusTransition transition = 5;</code>
+     * <code>.littlehorse.StatusTransition transition = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.StatusTransition.Builder getTransitionBuilder() {
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return internalGetTransitionFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.StatusTransition transition = 5;</code>
+     * <code>.littlehorse.StatusTransition transition = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.StatusTransitionOrBuilder getTransitionOrBuilder() {
       if (transitionBuilder_ != null) {
@@ -1152,7 +996,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.littlehorse.StatusTransition transition = 5;</code>
+     * <code>.littlehorse.StatusTransition transition = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.StatusTransition, io.littlehorse.sdk.common.proto.StatusTransition.Builder, io.littlehorse.sdk.common.proto.StatusTransitionOrBuilder> 
@@ -1166,127 +1010,6 @@ private static final long serialVersionUID = 0L;
         transition_ = null;
       }
       return transitionBuilder_;
-    }
-
-    private com.google.protobuf.Duration windowLength_;
-    private com.google.protobuf.SingleFieldBuilder<
-        com.google.protobuf.Duration, com.google.protobuf.Duration.Builder, com.google.protobuf.DurationOrBuilder> windowLengthBuilder_;
-    /**
-     * <code>.google.protobuf.Duration window_length = 6;</code>
-     * @return Whether the windowLength field is set.
-     */
-    public boolean hasWindowLength() {
-      return ((bitField0_ & 0x00000020) != 0);
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 6;</code>
-     * @return The windowLength.
-     */
-    public com.google.protobuf.Duration getWindowLength() {
-      if (windowLengthBuilder_ == null) {
-        return windowLength_ == null ? com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
-      } else {
-        return windowLengthBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 6;</code>
-     */
-    public Builder setWindowLength(com.google.protobuf.Duration value) {
-      if (windowLengthBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        windowLength_ = value;
-      } else {
-        windowLengthBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000020;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 6;</code>
-     */
-    public Builder setWindowLength(
-        com.google.protobuf.Duration.Builder builderForValue) {
-      if (windowLengthBuilder_ == null) {
-        windowLength_ = builderForValue.build();
-      } else {
-        windowLengthBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000020;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 6;</code>
-     */
-    public Builder mergeWindowLength(com.google.protobuf.Duration value) {
-      if (windowLengthBuilder_ == null) {
-        if (((bitField0_ & 0x00000020) != 0) &&
-          windowLength_ != null &&
-          windowLength_ != com.google.protobuf.Duration.getDefaultInstance()) {
-          getWindowLengthBuilder().mergeFrom(value);
-        } else {
-          windowLength_ = value;
-        }
-      } else {
-        windowLengthBuilder_.mergeFrom(value);
-      }
-      if (windowLength_ != null) {
-        bitField0_ |= 0x00000020;
-        onChanged();
-      }
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 6;</code>
-     */
-    public Builder clearWindowLength() {
-      bitField0_ = (bitField0_ & ~0x00000020);
-      windowLength_ = null;
-      if (windowLengthBuilder_ != null) {
-        windowLengthBuilder_.dispose();
-        windowLengthBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 6;</code>
-     */
-    public com.google.protobuf.Duration.Builder getWindowLengthBuilder() {
-      bitField0_ |= 0x00000020;
-      onChanged();
-      return internalGetWindowLengthFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 6;</code>
-     */
-    public com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder() {
-      if (windowLengthBuilder_ != null) {
-        return windowLengthBuilder_.getMessageOrBuilder();
-      } else {
-        return windowLength_ == null ?
-            com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
-      }
-    }
-    /**
-     * <code>.google.protobuf.Duration window_length = 6;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        com.google.protobuf.Duration, com.google.protobuf.Duration.Builder, com.google.protobuf.DurationOrBuilder> 
-        internalGetWindowLengthFieldBuilder() {
-      if (windowLengthBuilder_ == null) {
-        windowLengthBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            com.google.protobuf.Duration, com.google.protobuf.Duration.Builder, com.google.protobuf.DurationOrBuilder>(
-                getWindowLength(),
-                getParentForChildren(),
-                isClean());
-        windowLength_ = null;
-      }
-      return windowLengthBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetricSpec)

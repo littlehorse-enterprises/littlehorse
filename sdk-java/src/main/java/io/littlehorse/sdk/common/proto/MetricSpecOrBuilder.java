@@ -38,58 +38,32 @@ public interface MetricSpecOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-   * @return The enum numeric value on the wire for aggregationType.
-   */
-  int getAggregationTypeValue();
-  /**
-   * <code>.littlehorse.AggregationType aggregation_type = 3;</code>
-   * @return The aggregationType.
-   */
-  io.littlehorse.sdk.common.proto.AggregationType getAggregationType();
-
-  /**
-   * <code>.littlehorse.MetricScope scope = 4;</code>
+   * <code>.littlehorse.MetricScope scope = 3;</code>
    * @return Whether the scope field is set.
    */
   boolean hasScope();
   /**
-   * <code>.littlehorse.MetricScope scope = 4;</code>
+   * <code>.littlehorse.MetricScope scope = 3;</code>
    * @return The scope.
    */
   io.littlehorse.sdk.common.proto.MetricScope getScope();
   /**
-   * <code>.littlehorse.MetricScope scope = 4;</code>
+   * <code>.littlehorse.MetricScope scope = 3;</code>
    */
   io.littlehorse.sdk.common.proto.MetricScopeOrBuilder getScopeOrBuilder();
 
   /**
-   * <code>.littlehorse.StatusTransition transition = 5;</code>
+   * <code>.littlehorse.StatusTransition transition = 4;</code>
    * @return Whether the transition field is set.
    */
   boolean hasTransition();
   /**
-   * <code>.littlehorse.StatusTransition transition = 5;</code>
+   * <code>.littlehorse.StatusTransition transition = 4;</code>
    * @return The transition.
    */
   io.littlehorse.sdk.common.proto.StatusTransition getTransition();
   /**
-   * <code>.littlehorse.StatusTransition transition = 5;</code>
+   * <code>.littlehorse.StatusTransition transition = 4;</code>
    */
   io.littlehorse.sdk.common.proto.StatusTransitionOrBuilder getTransitionOrBuilder();
-
-  /**
-   * <code>.google.protobuf.Duration window_length = 6;</code>
-   * @return Whether the windowLength field is set.
-   */
-  boolean hasWindowLength();
-  /**
-   * <code>.google.protobuf.Duration window_length = 6;</code>
-   * @return The windowLength.
-   */
-  com.google.protobuf.Duration getWindowLength();
-  /**
-   * <code>.google.protobuf.Duration window_length = 6;</code>
-   */
-  com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder();
 }

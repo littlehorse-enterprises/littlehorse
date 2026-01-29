@@ -11,37 +11,64 @@ public interface StatusTransitionOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.MetricEntityType entity = 1;</code>
-   * @return The enum numeric value on the wire for entity.
+   * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+   * @return Whether the lhTransition field is set.
    */
-  int getEntityValue();
+  boolean hasLhTransition();
   /**
-   * <code>.littlehorse.MetricEntityType entity = 1;</code>
-   * @return The entity.
+   * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+   * @return The lhTransition.
    */
-  io.littlehorse.sdk.common.proto.MetricEntityType getEntity();
+  io.littlehorse.sdk.common.proto.LHTransition getLhTransition();
+  /**
+   * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.LHTransitionOrBuilder getLhTransitionOrBuilder();
 
   /**
-   * <code>string from_status = 2;</code>
-   * @return The fromStatus.
+   * <code>.littlehorse.TaskTransition task_transition = 2;</code>
+   * @return Whether the taskTransition field is set.
    */
-  java.lang.String getFromStatus();
+  boolean hasTaskTransition();
   /**
-   * <code>string from_status = 2;</code>
-   * @return The bytes for fromStatus.
+   * <code>.littlehorse.TaskTransition task_transition = 2;</code>
+   * @return The taskTransition.
    */
-  com.google.protobuf.ByteString
-      getFromStatusBytes();
+  io.littlehorse.sdk.common.proto.TaskTransition getTaskTransition();
+  /**
+   * <code>.littlehorse.TaskTransition task_transition = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.TaskTransitionOrBuilder getTaskTransitionOrBuilder();
 
   /**
-   * <code>string to_status = 3;</code>
-   * @return The toStatus.
+   * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
+   * @return Whether the userTaskTransition field is set.
    */
-  java.lang.String getToStatus();
+  boolean hasUserTaskTransition();
   /**
-   * <code>string to_status = 3;</code>
-   * @return The bytes for toStatus.
+   * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
+   * @return The userTaskTransition.
    */
-  com.google.protobuf.ByteString
-      getToStatusBytes();
+  io.littlehorse.sdk.common.proto.UserTaskTransition getUserTaskTransition();
+  /**
+   * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserTaskTransitionOrBuilder getUserTaskTransitionOrBuilder();
+
+  /**
+   * <code>.littlehorse.LHTransition node_transition = 4;</code>
+   * @return Whether the nodeTransition field is set.
+   */
+  boolean hasNodeTransition();
+  /**
+   * <code>.littlehorse.LHTransition node_transition = 4;</code>
+   * @return The nodeTransition.
+   */
+  io.littlehorse.sdk.common.proto.LHTransition getNodeTransition();
+  /**
+   * <code>.littlehorse.LHTransition node_transition = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.LHTransitionOrBuilder getNodeTransitionOrBuilder();
+
+  io.littlehorse.sdk.common.proto.StatusTransition.TransitionCase getTransitionCase();
 }

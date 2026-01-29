@@ -28,9 +28,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private StatusTransition() {
-    entity_ = 0;
-    fromStatus_ = "";
-    toStatus_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -46,100 +43,174 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.StatusTransition.class, io.littlehorse.sdk.common.proto.StatusTransition.Builder.class);
   }
 
-  public static final int ENTITY_FIELD_NUMBER = 1;
-  private int entity_ = 0;
-  /**
-   * <code>.littlehorse.MetricEntityType entity = 1;</code>
-   * @return The enum numeric value on the wire for entity.
-   */
-  @java.lang.Override public int getEntityValue() {
-    return entity_;
-  }
-  /**
-   * <code>.littlehorse.MetricEntityType entity = 1;</code>
-   * @return The entity.
-   */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.MetricEntityType getEntity() {
-    io.littlehorse.sdk.common.proto.MetricEntityType result = io.littlehorse.sdk.common.proto.MetricEntityType.forNumber(entity_);
-    return result == null ? io.littlehorse.sdk.common.proto.MetricEntityType.UNRECOGNIZED : result;
+  private int transitionCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object transition_;
+  public enum TransitionCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    LH_TRANSITION(1),
+    TASK_TRANSITION(2),
+    USER_TASK_TRANSITION(3),
+    NODE_TRANSITION(4),
+    TRANSITION_NOT_SET(0);
+    private final int value;
+    private TransitionCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static TransitionCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static TransitionCase forNumber(int value) {
+      switch (value) {
+        case 1: return LH_TRANSITION;
+        case 2: return TASK_TRANSITION;
+        case 3: return USER_TASK_TRANSITION;
+        case 4: return NODE_TRANSITION;
+        case 0: return TRANSITION_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public TransitionCase
+  getTransitionCase() {
+    return TransitionCase.forNumber(
+        transitionCase_);
   }
 
-  public static final int FROM_STATUS_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object fromStatus_ = "";
+  public static final int LH_TRANSITION_FIELD_NUMBER = 1;
   /**
-   * <code>string from_status = 2;</code>
-   * @return The fromStatus.
+   * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+   * @return Whether the lhTransition field is set.
    */
   @java.lang.Override
-  public java.lang.String getFromStatus() {
-    java.lang.Object ref = fromStatus_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      fromStatus_ = s;
-      return s;
-    }
+  public boolean hasLhTransition() {
+    return transitionCase_ == 1;
   }
   /**
-   * <code>string from_status = 2;</code>
-   * @return The bytes for fromStatus.
+   * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+   * @return The lhTransition.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getFromStatusBytes() {
-    java.lang.Object ref = fromStatus_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      fromStatus_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
+  public io.littlehorse.sdk.common.proto.LHTransition getLhTransition() {
+    if (transitionCase_ == 1) {
+       return (io.littlehorse.sdk.common.proto.LHTransition) transition_;
     }
+    return io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHTransitionOrBuilder getLhTransitionOrBuilder() {
+    if (transitionCase_ == 1) {
+       return (io.littlehorse.sdk.common.proto.LHTransition) transition_;
+    }
+    return io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance();
   }
 
-  public static final int TO_STATUS_FIELD_NUMBER = 3;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object toStatus_ = "";
+  public static final int TASK_TRANSITION_FIELD_NUMBER = 2;
   /**
-   * <code>string to_status = 3;</code>
-   * @return The toStatus.
+   * <code>.littlehorse.TaskTransition task_transition = 2;</code>
+   * @return Whether the taskTransition field is set.
    */
   @java.lang.Override
-  public java.lang.String getToStatus() {
-    java.lang.Object ref = toStatus_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      toStatus_ = s;
-      return s;
-    }
+  public boolean hasTaskTransition() {
+    return transitionCase_ == 2;
   }
   /**
-   * <code>string to_status = 3;</code>
-   * @return The bytes for toStatus.
+   * <code>.littlehorse.TaskTransition task_transition = 2;</code>
+   * @return The taskTransition.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getToStatusBytes() {
-    java.lang.Object ref = toStatus_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      toStatus_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
+  public io.littlehorse.sdk.common.proto.TaskTransition getTaskTransition() {
+    if (transitionCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.TaskTransition) transition_;
     }
+    return io.littlehorse.sdk.common.proto.TaskTransition.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.TaskTransition task_transition = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TaskTransitionOrBuilder getTaskTransitionOrBuilder() {
+    if (transitionCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.TaskTransition) transition_;
+    }
+    return io.littlehorse.sdk.common.proto.TaskTransition.getDefaultInstance();
+  }
+
+  public static final int USER_TASK_TRANSITION_FIELD_NUMBER = 3;
+  /**
+   * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
+   * @return Whether the userTaskTransition field is set.
+   */
+  @java.lang.Override
+  public boolean hasUserTaskTransition() {
+    return transitionCase_ == 3;
+  }
+  /**
+   * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
+   * @return The userTaskTransition.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskTransition getUserTaskTransition() {
+    if (transitionCase_ == 3) {
+       return (io.littlehorse.sdk.common.proto.UserTaskTransition) transition_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskTransition.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskTransitionOrBuilder getUserTaskTransitionOrBuilder() {
+    if (transitionCase_ == 3) {
+       return (io.littlehorse.sdk.common.proto.UserTaskTransition) transition_;
+    }
+    return io.littlehorse.sdk.common.proto.UserTaskTransition.getDefaultInstance();
+  }
+
+  public static final int NODE_TRANSITION_FIELD_NUMBER = 4;
+  /**
+   * <code>.littlehorse.LHTransition node_transition = 4;</code>
+   * @return Whether the nodeTransition field is set.
+   */
+  @java.lang.Override
+  public boolean hasNodeTransition() {
+    return transitionCase_ == 4;
+  }
+  /**
+   * <code>.littlehorse.LHTransition node_transition = 4;</code>
+   * @return The nodeTransition.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHTransition getNodeTransition() {
+    if (transitionCase_ == 4) {
+       return (io.littlehorse.sdk.common.proto.LHTransition) transition_;
+    }
+    return io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.LHTransition node_transition = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHTransitionOrBuilder getNodeTransitionOrBuilder() {
+    if (transitionCase_ == 4) {
+       return (io.littlehorse.sdk.common.proto.LHTransition) transition_;
+    }
+    return io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -156,14 +227,17 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (entity_ != io.littlehorse.sdk.common.proto.MetricEntityType.METRIC_WF_RUN.getNumber()) {
-      output.writeEnum(1, entity_);
+    if (transitionCase_ == 1) {
+      output.writeMessage(1, (io.littlehorse.sdk.common.proto.LHTransition) transition_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromStatus_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 2, fromStatus_);
+    if (transitionCase_ == 2) {
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.TaskTransition) transition_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(toStatus_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 3, toStatus_);
+    if (transitionCase_ == 3) {
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.UserTaskTransition) transition_);
+    }
+    if (transitionCase_ == 4) {
+      output.writeMessage(4, (io.littlehorse.sdk.common.proto.LHTransition) transition_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -174,15 +248,21 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (entity_ != io.littlehorse.sdk.common.proto.MetricEntityType.METRIC_WF_RUN.getNumber()) {
+    if (transitionCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, entity_);
+        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.LHTransition) transition_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromStatus_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, fromStatus_);
+    if (transitionCase_ == 2) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.TaskTransition) transition_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(toStatus_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, toStatus_);
+    if (transitionCase_ == 3) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.UserTaskTransition) transition_);
+    }
+    if (transitionCase_ == 4) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.LHTransition) transition_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -199,11 +279,27 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.StatusTransition other = (io.littlehorse.sdk.common.proto.StatusTransition) obj;
 
-    if (entity_ != other.entity_) return false;
-    if (!getFromStatus()
-        .equals(other.getFromStatus())) return false;
-    if (!getToStatus()
-        .equals(other.getToStatus())) return false;
+    if (!getTransitionCase().equals(other.getTransitionCase())) return false;
+    switch (transitionCase_) {
+      case 1:
+        if (!getLhTransition()
+            .equals(other.getLhTransition())) return false;
+        break;
+      case 2:
+        if (!getTaskTransition()
+            .equals(other.getTaskTransition())) return false;
+        break;
+      case 3:
+        if (!getUserTaskTransition()
+            .equals(other.getUserTaskTransition())) return false;
+        break;
+      case 4:
+        if (!getNodeTransition()
+            .equals(other.getNodeTransition())) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -215,12 +311,26 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + ENTITY_FIELD_NUMBER;
-    hash = (53 * hash) + entity_;
-    hash = (37 * hash) + FROM_STATUS_FIELD_NUMBER;
-    hash = (53 * hash) + getFromStatus().hashCode();
-    hash = (37 * hash) + TO_STATUS_FIELD_NUMBER;
-    hash = (53 * hash) + getToStatus().hashCode();
+    switch (transitionCase_) {
+      case 1:
+        hash = (37 * hash) + LH_TRANSITION_FIELD_NUMBER;
+        hash = (53 * hash) + getLhTransition().hashCode();
+        break;
+      case 2:
+        hash = (37 * hash) + TASK_TRANSITION_FIELD_NUMBER;
+        hash = (53 * hash) + getTaskTransition().hashCode();
+        break;
+      case 3:
+        hash = (37 * hash) + USER_TASK_TRANSITION_FIELD_NUMBER;
+        hash = (53 * hash) + getUserTaskTransition().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + NODE_TRANSITION_FIELD_NUMBER;
+        hash = (53 * hash) + getNodeTransition().hashCode();
+        break;
+      case 0:
+      default:
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -352,9 +462,20 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      entity_ = 0;
-      fromStatus_ = "";
-      toStatus_ = "";
+      if (lhTransitionBuilder_ != null) {
+        lhTransitionBuilder_.clear();
+      }
+      if (taskTransitionBuilder_ != null) {
+        taskTransitionBuilder_.clear();
+      }
+      if (userTaskTransitionBuilder_ != null) {
+        userTaskTransitionBuilder_.clear();
+      }
+      if (nodeTransitionBuilder_ != null) {
+        nodeTransitionBuilder_.clear();
+      }
+      transitionCase_ = 0;
+      transition_ = null;
       return this;
     }
 
@@ -382,20 +503,33 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.StatusTransition buildPartial() {
       io.littlehorse.sdk.common.proto.StatusTransition result = new io.littlehorse.sdk.common.proto.StatusTransition(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.StatusTransition result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.entity_ = entity_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.StatusTransition result) {
+      result.transitionCase_ = transitionCase_;
+      result.transition_ = this.transition_;
+      if (transitionCase_ == 1 &&
+          lhTransitionBuilder_ != null) {
+        result.transition_ = lhTransitionBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.fromStatus_ = fromStatus_;
+      if (transitionCase_ == 2 &&
+          taskTransitionBuilder_ != null) {
+        result.transition_ = taskTransitionBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.toStatus_ = toStatus_;
+      if (transitionCase_ == 3 &&
+          userTaskTransitionBuilder_ != null) {
+        result.transition_ = userTaskTransitionBuilder_.build();
+      }
+      if (transitionCase_ == 4 &&
+          nodeTransitionBuilder_ != null) {
+        result.transition_ = nodeTransitionBuilder_.build();
       }
     }
 
@@ -411,18 +545,26 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.StatusTransition other) {
       if (other == io.littlehorse.sdk.common.proto.StatusTransition.getDefaultInstance()) return this;
-      if (other.entity_ != 0) {
-        setEntityValue(other.getEntityValue());
-      }
-      if (!other.getFromStatus().isEmpty()) {
-        fromStatus_ = other.fromStatus_;
-        bitField0_ |= 0x00000002;
-        onChanged();
-      }
-      if (!other.getToStatus().isEmpty()) {
-        toStatus_ = other.toStatus_;
-        bitField0_ |= 0x00000004;
-        onChanged();
+      switch (other.getTransitionCase()) {
+        case LH_TRANSITION: {
+          mergeLhTransition(other.getLhTransition());
+          break;
+        }
+        case TASK_TRANSITION: {
+          mergeTaskTransition(other.getTaskTransition());
+          break;
+        }
+        case USER_TASK_TRANSITION: {
+          mergeUserTaskTransition(other.getUserTaskTransition());
+          break;
+        }
+        case NODE_TRANSITION: {
+          mergeNodeTransition(other.getNodeTransition());
+          break;
+        }
+        case TRANSITION_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -450,21 +592,34 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 8: {
-              entity_ = input.readEnum();
-              bitField0_ |= 0x00000001;
+            case 10: {
+              input.readMessage(
+                  internalGetLhTransitionFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              transitionCase_ = 1;
               break;
-            } // case 8
+            } // case 10
             case 18: {
-              fromStatus_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
+              input.readMessage(
+                  internalGetTaskTransitionFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              transitionCase_ = 2;
               break;
             } // case 18
             case 26: {
-              toStatus_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000004;
+              input.readMessage(
+                  internalGetUserTaskTransitionFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              transitionCase_ = 3;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  internalGetNodeTransitionFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              transitionCase_ = 4;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -480,201 +635,589 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int transitionCase_ = 0;
+    private java.lang.Object transition_;
+    public TransitionCase
+        getTransitionCase() {
+      return TransitionCase.forNumber(
+          transitionCase_);
+    }
+
+    public Builder clearTransition() {
+      transitionCase_ = 0;
+      transition_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
-    private int entity_ = 0;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.LHTransition, io.littlehorse.sdk.common.proto.LHTransition.Builder, io.littlehorse.sdk.common.proto.LHTransitionOrBuilder> lhTransitionBuilder_;
     /**
-     * <code>.littlehorse.MetricEntityType entity = 1;</code>
-     * @return The enum numeric value on the wire for entity.
-     */
-    @java.lang.Override public int getEntityValue() {
-      return entity_;
-    }
-    /**
-     * <code>.littlehorse.MetricEntityType entity = 1;</code>
-     * @param value The enum numeric value on the wire for entity to set.
-     * @return This builder for chaining.
-     */
-    public Builder setEntityValue(int value) {
-      entity_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.MetricEntityType entity = 1;</code>
-     * @return The entity.
+     * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+     * @return Whether the lhTransition field is set.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.MetricEntityType getEntity() {
-      io.littlehorse.sdk.common.proto.MetricEntityType result = io.littlehorse.sdk.common.proto.MetricEntityType.forNumber(entity_);
-      return result == null ? io.littlehorse.sdk.common.proto.MetricEntityType.UNRECOGNIZED : result;
+    public boolean hasLhTransition() {
+      return transitionCase_ == 1;
     }
     /**
-     * <code>.littlehorse.MetricEntityType entity = 1;</code>
-     * @param value The entity to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+     * @return The lhTransition.
      */
-    public Builder setEntity(io.littlehorse.sdk.common.proto.MetricEntityType value) {
-      if (value == null) { throw new NullPointerException(); }
-      bitField0_ |= 0x00000001;
-      entity_ = value.getNumber();
-      onChanged();
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LHTransition getLhTransition() {
+      if (lhTransitionBuilder_ == null) {
+        if (transitionCase_ == 1) {
+          return (io.littlehorse.sdk.common.proto.LHTransition) transition_;
+        }
+        return io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance();
+      } else {
+        if (transitionCase_ == 1) {
+          return lhTransitionBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+     */
+    public Builder setLhTransition(io.littlehorse.sdk.common.proto.LHTransition value) {
+      if (lhTransitionBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        transition_ = value;
+        onChanged();
+      } else {
+        lhTransitionBuilder_.setMessage(value);
+      }
+      transitionCase_ = 1;
       return this;
     }
     /**
-     * <code>.littlehorse.MetricEntityType entity = 1;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.LHTransition lh_transition = 1;</code>
      */
-    public Builder clearEntity() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      entity_ = 0;
-      onChanged();
+    public Builder setLhTransition(
+        io.littlehorse.sdk.common.proto.LHTransition.Builder builderForValue) {
+      if (lhTransitionBuilder_ == null) {
+        transition_ = builderForValue.build();
+        onChanged();
+      } else {
+        lhTransitionBuilder_.setMessage(builderForValue.build());
+      }
+      transitionCase_ = 1;
       return this;
+    }
+    /**
+     * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+     */
+    public Builder mergeLhTransition(io.littlehorse.sdk.common.proto.LHTransition value) {
+      if (lhTransitionBuilder_ == null) {
+        if (transitionCase_ == 1 &&
+            transition_ != io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance()) {
+          transition_ = io.littlehorse.sdk.common.proto.LHTransition.newBuilder((io.littlehorse.sdk.common.proto.LHTransition) transition_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          transition_ = value;
+        }
+        onChanged();
+      } else {
+        if (transitionCase_ == 1) {
+          lhTransitionBuilder_.mergeFrom(value);
+        } else {
+          lhTransitionBuilder_.setMessage(value);
+        }
+      }
+      transitionCase_ = 1;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+     */
+    public Builder clearLhTransition() {
+      if (lhTransitionBuilder_ == null) {
+        if (transitionCase_ == 1) {
+          transitionCase_ = 0;
+          transition_ = null;
+          onChanged();
+        }
+      } else {
+        if (transitionCase_ == 1) {
+          transitionCase_ = 0;
+          transition_ = null;
+        }
+        lhTransitionBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHTransition.Builder getLhTransitionBuilder() {
+      return internalGetLhTransitionFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LHTransitionOrBuilder getLhTransitionOrBuilder() {
+      if ((transitionCase_ == 1) && (lhTransitionBuilder_ != null)) {
+        return lhTransitionBuilder_.getMessageOrBuilder();
+      } else {
+        if (transitionCase_ == 1) {
+          return (io.littlehorse.sdk.common.proto.LHTransition) transition_;
+        }
+        return io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.LHTransition lh_transition = 1;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.LHTransition, io.littlehorse.sdk.common.proto.LHTransition.Builder, io.littlehorse.sdk.common.proto.LHTransitionOrBuilder> 
+        internalGetLhTransitionFieldBuilder() {
+      if (lhTransitionBuilder_ == null) {
+        if (!(transitionCase_ == 1)) {
+          transition_ = io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance();
+        }
+        lhTransitionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.LHTransition, io.littlehorse.sdk.common.proto.LHTransition.Builder, io.littlehorse.sdk.common.proto.LHTransitionOrBuilder>(
+                (io.littlehorse.sdk.common.proto.LHTransition) transition_,
+                getParentForChildren(),
+                isClean());
+        transition_ = null;
+      }
+      transitionCase_ = 1;
+      onChanged();
+      return lhTransitionBuilder_;
     }
 
-    private java.lang.Object fromStatus_ = "";
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.TaskTransition, io.littlehorse.sdk.common.proto.TaskTransition.Builder, io.littlehorse.sdk.common.proto.TaskTransitionOrBuilder> taskTransitionBuilder_;
     /**
-     * <code>string from_status = 2;</code>
-     * @return The fromStatus.
+     * <code>.littlehorse.TaskTransition task_transition = 2;</code>
+     * @return Whether the taskTransition field is set.
      */
-    public java.lang.String getFromStatus() {
-      java.lang.Object ref = fromStatus_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        fromStatus_ = s;
-        return s;
+    @java.lang.Override
+    public boolean hasTaskTransition() {
+      return transitionCase_ == 2;
+    }
+    /**
+     * <code>.littlehorse.TaskTransition task_transition = 2;</code>
+     * @return The taskTransition.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.TaskTransition getTaskTransition() {
+      if (taskTransitionBuilder_ == null) {
+        if (transitionCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.TaskTransition) transition_;
+        }
+        return io.littlehorse.sdk.common.proto.TaskTransition.getDefaultInstance();
       } else {
-        return (java.lang.String) ref;
+        if (transitionCase_ == 2) {
+          return taskTransitionBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.TaskTransition.getDefaultInstance();
       }
     }
     /**
-     * <code>string from_status = 2;</code>
-     * @return The bytes for fromStatus.
+     * <code>.littlehorse.TaskTransition task_transition = 2;</code>
      */
-    public com.google.protobuf.ByteString
-        getFromStatusBytes() {
-      java.lang.Object ref = fromStatus_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        fromStatus_ = b;
-        return b;
+    public Builder setTaskTransition(io.littlehorse.sdk.common.proto.TaskTransition value) {
+      if (taskTransitionBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        transition_ = value;
+        onChanged();
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        taskTransitionBuilder_.setMessage(value);
+      }
+      transitionCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskTransition task_transition = 2;</code>
+     */
+    public Builder setTaskTransition(
+        io.littlehorse.sdk.common.proto.TaskTransition.Builder builderForValue) {
+      if (taskTransitionBuilder_ == null) {
+        transition_ = builderForValue.build();
+        onChanged();
+      } else {
+        taskTransitionBuilder_.setMessage(builderForValue.build());
+      }
+      transitionCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskTransition task_transition = 2;</code>
+     */
+    public Builder mergeTaskTransition(io.littlehorse.sdk.common.proto.TaskTransition value) {
+      if (taskTransitionBuilder_ == null) {
+        if (transitionCase_ == 2 &&
+            transition_ != io.littlehorse.sdk.common.proto.TaskTransition.getDefaultInstance()) {
+          transition_ = io.littlehorse.sdk.common.proto.TaskTransition.newBuilder((io.littlehorse.sdk.common.proto.TaskTransition) transition_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          transition_ = value;
+        }
+        onChanged();
+      } else {
+        if (transitionCase_ == 2) {
+          taskTransitionBuilder_.mergeFrom(value);
+        } else {
+          taskTransitionBuilder_.setMessage(value);
+        }
+      }
+      transitionCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskTransition task_transition = 2;</code>
+     */
+    public Builder clearTaskTransition() {
+      if (taskTransitionBuilder_ == null) {
+        if (transitionCase_ == 2) {
+          transitionCase_ = 0;
+          transition_ = null;
+          onChanged();
+        }
+      } else {
+        if (transitionCase_ == 2) {
+          transitionCase_ = 0;
+          transition_ = null;
+        }
+        taskTransitionBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskTransition task_transition = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TaskTransition.Builder getTaskTransitionBuilder() {
+      return internalGetTaskTransitionFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.TaskTransition task_transition = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.TaskTransitionOrBuilder getTaskTransitionOrBuilder() {
+      if ((transitionCase_ == 2) && (taskTransitionBuilder_ != null)) {
+        return taskTransitionBuilder_.getMessageOrBuilder();
+      } else {
+        if (transitionCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.TaskTransition) transition_;
+        }
+        return io.littlehorse.sdk.common.proto.TaskTransition.getDefaultInstance();
       }
     }
     /**
-     * <code>string from_status = 2;</code>
-     * @param value The fromStatus to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.TaskTransition task_transition = 2;</code>
      */
-    public Builder setFromStatus(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      fromStatus_ = value;
-      bitField0_ |= 0x00000002;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.TaskTransition, io.littlehorse.sdk.common.proto.TaskTransition.Builder, io.littlehorse.sdk.common.proto.TaskTransitionOrBuilder> 
+        internalGetTaskTransitionFieldBuilder() {
+      if (taskTransitionBuilder_ == null) {
+        if (!(transitionCase_ == 2)) {
+          transition_ = io.littlehorse.sdk.common.proto.TaskTransition.getDefaultInstance();
+        }
+        taskTransitionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.TaskTransition, io.littlehorse.sdk.common.proto.TaskTransition.Builder, io.littlehorse.sdk.common.proto.TaskTransitionOrBuilder>(
+                (io.littlehorse.sdk.common.proto.TaskTransition) transition_,
+                getParentForChildren(),
+                isClean());
+        transition_ = null;
+      }
+      transitionCase_ = 2;
       onChanged();
-      return this;
-    }
-    /**
-     * <code>string from_status = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearFromStatus() {
-      fromStatus_ = getDefaultInstance().getFromStatus();
-      bitField0_ = (bitField0_ & ~0x00000002);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string from_status = 2;</code>
-     * @param value The bytes for fromStatus to set.
-     * @return This builder for chaining.
-     */
-    public Builder setFromStatusBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      fromStatus_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
+      return taskTransitionBuilder_;
     }
 
-    private java.lang.Object toStatus_ = "";
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.UserTaskTransition, io.littlehorse.sdk.common.proto.UserTaskTransition.Builder, io.littlehorse.sdk.common.proto.UserTaskTransitionOrBuilder> userTaskTransitionBuilder_;
     /**
-     * <code>string to_status = 3;</code>
-     * @return The toStatus.
+     * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
+     * @return Whether the userTaskTransition field is set.
      */
-    public java.lang.String getToStatus() {
-      java.lang.Object ref = toStatus_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        toStatus_ = s;
-        return s;
+    @java.lang.Override
+    public boolean hasUserTaskTransition() {
+      return transitionCase_ == 3;
+    }
+    /**
+     * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
+     * @return The userTaskTransition.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskTransition getUserTaskTransition() {
+      if (userTaskTransitionBuilder_ == null) {
+        if (transitionCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.UserTaskTransition) transition_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskTransition.getDefaultInstance();
       } else {
-        return (java.lang.String) ref;
+        if (transitionCase_ == 3) {
+          return userTaskTransitionBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskTransition.getDefaultInstance();
       }
     }
     /**
-     * <code>string to_status = 3;</code>
-     * @return The bytes for toStatus.
+     * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
      */
-    public com.google.protobuf.ByteString
-        getToStatusBytes() {
-      java.lang.Object ref = toStatus_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        toStatus_ = b;
-        return b;
+    public Builder setUserTaskTransition(io.littlehorse.sdk.common.proto.UserTaskTransition value) {
+      if (userTaskTransitionBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        transition_ = value;
+        onChanged();
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        userTaskTransitionBuilder_.setMessage(value);
+      }
+      transitionCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
+     */
+    public Builder setUserTaskTransition(
+        io.littlehorse.sdk.common.proto.UserTaskTransition.Builder builderForValue) {
+      if (userTaskTransitionBuilder_ == null) {
+        transition_ = builderForValue.build();
+        onChanged();
+      } else {
+        userTaskTransitionBuilder_.setMessage(builderForValue.build());
+      }
+      transitionCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
+     */
+    public Builder mergeUserTaskTransition(io.littlehorse.sdk.common.proto.UserTaskTransition value) {
+      if (userTaskTransitionBuilder_ == null) {
+        if (transitionCase_ == 3 &&
+            transition_ != io.littlehorse.sdk.common.proto.UserTaskTransition.getDefaultInstance()) {
+          transition_ = io.littlehorse.sdk.common.proto.UserTaskTransition.newBuilder((io.littlehorse.sdk.common.proto.UserTaskTransition) transition_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          transition_ = value;
+        }
+        onChanged();
+      } else {
+        if (transitionCase_ == 3) {
+          userTaskTransitionBuilder_.mergeFrom(value);
+        } else {
+          userTaskTransitionBuilder_.setMessage(value);
+        }
+      }
+      transitionCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
+     */
+    public Builder clearUserTaskTransition() {
+      if (userTaskTransitionBuilder_ == null) {
+        if (transitionCase_ == 3) {
+          transitionCase_ = 0;
+          transition_ = null;
+          onChanged();
+        }
+      } else {
+        if (transitionCase_ == 3) {
+          transitionCase_ = 0;
+          transition_ = null;
+        }
+        userTaskTransitionBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskTransition.Builder getUserTaskTransitionBuilder() {
+      return internalGetUserTaskTransitionFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.UserTaskTransitionOrBuilder getUserTaskTransitionOrBuilder() {
+      if ((transitionCase_ == 3) && (userTaskTransitionBuilder_ != null)) {
+        return userTaskTransitionBuilder_.getMessageOrBuilder();
+      } else {
+        if (transitionCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.UserTaskTransition) transition_;
+        }
+        return io.littlehorse.sdk.common.proto.UserTaskTransition.getDefaultInstance();
       }
     }
     /**
-     * <code>string to_status = 3;</code>
-     * @param value The toStatus to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.UserTaskTransition user_task_transition = 3;</code>
      */
-    public Builder setToStatus(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      toStatus_ = value;
-      bitField0_ |= 0x00000004;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.UserTaskTransition, io.littlehorse.sdk.common.proto.UserTaskTransition.Builder, io.littlehorse.sdk.common.proto.UserTaskTransitionOrBuilder> 
+        internalGetUserTaskTransitionFieldBuilder() {
+      if (userTaskTransitionBuilder_ == null) {
+        if (!(transitionCase_ == 3)) {
+          transition_ = io.littlehorse.sdk.common.proto.UserTaskTransition.getDefaultInstance();
+        }
+        userTaskTransitionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.UserTaskTransition, io.littlehorse.sdk.common.proto.UserTaskTransition.Builder, io.littlehorse.sdk.common.proto.UserTaskTransitionOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskTransition) transition_,
+                getParentForChildren(),
+                isClean());
+        transition_ = null;
+      }
+      transitionCase_ = 3;
       onChanged();
+      return userTaskTransitionBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.LHTransition, io.littlehorse.sdk.common.proto.LHTransition.Builder, io.littlehorse.sdk.common.proto.LHTransitionOrBuilder> nodeTransitionBuilder_;
+    /**
+     * <code>.littlehorse.LHTransition node_transition = 4;</code>
+     * @return Whether the nodeTransition field is set.
+     */
+    @java.lang.Override
+    public boolean hasNodeTransition() {
+      return transitionCase_ == 4;
+    }
+    /**
+     * <code>.littlehorse.LHTransition node_transition = 4;</code>
+     * @return The nodeTransition.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LHTransition getNodeTransition() {
+      if (nodeTransitionBuilder_ == null) {
+        if (transitionCase_ == 4) {
+          return (io.littlehorse.sdk.common.proto.LHTransition) transition_;
+        }
+        return io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance();
+      } else {
+        if (transitionCase_ == 4) {
+          return nodeTransitionBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.LHTransition node_transition = 4;</code>
+     */
+    public Builder setNodeTransition(io.littlehorse.sdk.common.proto.LHTransition value) {
+      if (nodeTransitionBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        transition_ = value;
+        onChanged();
+      } else {
+        nodeTransitionBuilder_.setMessage(value);
+      }
+      transitionCase_ = 4;
       return this;
     }
     /**
-     * <code>string to_status = 3;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.LHTransition node_transition = 4;</code>
      */
-    public Builder clearToStatus() {
-      toStatus_ = getDefaultInstance().getToStatus();
-      bitField0_ = (bitField0_ & ~0x00000004);
-      onChanged();
+    public Builder setNodeTransition(
+        io.littlehorse.sdk.common.proto.LHTransition.Builder builderForValue) {
+      if (nodeTransitionBuilder_ == null) {
+        transition_ = builderForValue.build();
+        onChanged();
+      } else {
+        nodeTransitionBuilder_.setMessage(builderForValue.build());
+      }
+      transitionCase_ = 4;
       return this;
     }
     /**
-     * <code>string to_status = 3;</code>
-     * @param value The bytes for toStatus to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.LHTransition node_transition = 4;</code>
      */
-    public Builder setToStatusBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      toStatus_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
+    public Builder mergeNodeTransition(io.littlehorse.sdk.common.proto.LHTransition value) {
+      if (nodeTransitionBuilder_ == null) {
+        if (transitionCase_ == 4 &&
+            transition_ != io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance()) {
+          transition_ = io.littlehorse.sdk.common.proto.LHTransition.newBuilder((io.littlehorse.sdk.common.proto.LHTransition) transition_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          transition_ = value;
+        }
+        onChanged();
+      } else {
+        if (transitionCase_ == 4) {
+          nodeTransitionBuilder_.mergeFrom(value);
+        } else {
+          nodeTransitionBuilder_.setMessage(value);
+        }
+      }
+      transitionCase_ = 4;
       return this;
+    }
+    /**
+     * <code>.littlehorse.LHTransition node_transition = 4;</code>
+     */
+    public Builder clearNodeTransition() {
+      if (nodeTransitionBuilder_ == null) {
+        if (transitionCase_ == 4) {
+          transitionCase_ = 0;
+          transition_ = null;
+          onChanged();
+        }
+      } else {
+        if (transitionCase_ == 4) {
+          transitionCase_ = 0;
+          transition_ = null;
+        }
+        nodeTransitionBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LHTransition node_transition = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHTransition.Builder getNodeTransitionBuilder() {
+      return internalGetNodeTransitionFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.LHTransition node_transition = 4;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LHTransitionOrBuilder getNodeTransitionOrBuilder() {
+      if ((transitionCase_ == 4) && (nodeTransitionBuilder_ != null)) {
+        return nodeTransitionBuilder_.getMessageOrBuilder();
+      } else {
+        if (transitionCase_ == 4) {
+          return (io.littlehorse.sdk.common.proto.LHTransition) transition_;
+        }
+        return io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.LHTransition node_transition = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.LHTransition, io.littlehorse.sdk.common.proto.LHTransition.Builder, io.littlehorse.sdk.common.proto.LHTransitionOrBuilder> 
+        internalGetNodeTransitionFieldBuilder() {
+      if (nodeTransitionBuilder_ == null) {
+        if (!(transitionCase_ == 4)) {
+          transition_ = io.littlehorse.sdk.common.proto.LHTransition.getDefaultInstance();
+        }
+        nodeTransitionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.LHTransition, io.littlehorse.sdk.common.proto.LHTransition.Builder, io.littlehorse.sdk.common.proto.LHTransitionOrBuilder>(
+                (io.littlehorse.sdk.common.proto.LHTransition) transition_,
+                getParentForChildren(),
+                isClean());
+        transition_ = null;
+      }
+      transitionCase_ = 4;
+      onChanged();
+      return nodeTransitionBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.StatusTransition)

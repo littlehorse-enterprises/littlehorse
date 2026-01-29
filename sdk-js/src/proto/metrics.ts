@@ -8,27 +8,50 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import {
-  AggregationType,
-  aggregationTypeFromJSON,
-  aggregationTypeToJSON,
-  aggregationTypeToNumber,
-  MetricEntityType,
-  metricEntityTypeFromJSON,
-  metricEntityTypeToJSON,
-  metricEntityTypeToNumber,
+  LHStatus,
+  lHStatusFromJSON,
+  lHStatusToJSON,
+  lHStatusToNumber,
   MetricRecordingLevel,
   metricRecordingLevelFromJSON,
   metricRecordingLevelToJSON,
   metricRecordingLevelToNumber,
+  TaskStatus,
+  taskStatusFromJSON,
+  taskStatusToJSON,
+  taskStatusToNumber,
 } from "./common_enums";
-import { Duration } from "./google/protobuf/duration";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { TaskDefId, WfSpecId } from "./object_id";
+import {
+  UserTaskRunStatus,
+  userTaskRunStatusFromJSON,
+  userTaskRunStatusToJSON,
+  userTaskRunStatusToNumber,
+} from "./user_tasks";
+
+export interface LHTransition {
+  fromStatus: LHStatus;
+  toStatus: LHStatus;
+}
+
+export interface TaskTransition {
+  fromStatus: TaskStatus;
+  toStatus: TaskStatus;
+}
+
+export interface UserTaskTransition {
+  fromStatus: UserTaskRunStatus;
+  toStatus: UserTaskRunStatus;
+}
 
 export interface StatusTransition {
-  entity: MetricEntityType;
-  fromStatus: string;
-  toStatus: string;
+  transition?:
+    | { $case: "lhTransition"; value: LHTransition }
+    | { $case: "taskTransition"; value: TaskTransition }
+    | { $case: "userTaskTransition"; value: UserTaskTransition }
+    | { $case: "nodeTransition"; value: LHTransition }
+    | undefined;
 }
 
 export interface MetricScope {
@@ -50,10 +73,8 @@ export interface NodeReference {
 export interface MetricSpec {
   id: string;
   createdAt: string | undefined;
-  aggregationType: AggregationType;
   scope: MetricScope | undefined;
   transition: StatusTransition | undefined;
-  windowLength: Duration | undefined;
 }
 
 export interface MetricsConfig {
@@ -139,20 +160,249 @@ export interface MetricLevelOverridesList {
   overrides: MetricLevelOverride[];
 }
 
+function createBaseLHTransition(): LHTransition {
+  return { fromStatus: LHStatus.STARTING, toStatus: LHStatus.STARTING };
+}
+
+export const LHTransition = {
+  encode(message: LHTransition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.fromStatus !== LHStatus.STARTING) {
+      writer.uint32(8).int32(lHStatusToNumber(message.fromStatus));
+    }
+    if (message.toStatus !== LHStatus.STARTING) {
+      writer.uint32(16).int32(lHStatusToNumber(message.toStatus));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LHTransition {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLHTransition();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.fromStatus = lHStatusFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.toStatus = lHStatusFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LHTransition {
+    return {
+      fromStatus: isSet(object.fromStatus) ? lHStatusFromJSON(object.fromStatus) : LHStatus.STARTING,
+      toStatus: isSet(object.toStatus) ? lHStatusFromJSON(object.toStatus) : LHStatus.STARTING,
+    };
+  },
+
+  toJSON(message: LHTransition): unknown {
+    const obj: any = {};
+    if (message.fromStatus !== LHStatus.STARTING) {
+      obj.fromStatus = lHStatusToJSON(message.fromStatus);
+    }
+    if (message.toStatus !== LHStatus.STARTING) {
+      obj.toStatus = lHStatusToJSON(message.toStatus);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<LHTransition>): LHTransition {
+    return LHTransition.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<LHTransition>): LHTransition {
+    const message = createBaseLHTransition();
+    message.fromStatus = object.fromStatus ?? LHStatus.STARTING;
+    message.toStatus = object.toStatus ?? LHStatus.STARTING;
+    return message;
+  },
+};
+
+function createBaseTaskTransition(): TaskTransition {
+  return { fromStatus: TaskStatus.TASK_SCHEDULED, toStatus: TaskStatus.TASK_SCHEDULED };
+}
+
+export const TaskTransition = {
+  encode(message: TaskTransition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.fromStatus !== TaskStatus.TASK_SCHEDULED) {
+      writer.uint32(8).int32(taskStatusToNumber(message.fromStatus));
+    }
+    if (message.toStatus !== TaskStatus.TASK_SCHEDULED) {
+      writer.uint32(16).int32(taskStatusToNumber(message.toStatus));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TaskTransition {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTaskTransition();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.fromStatus = taskStatusFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.toStatus = taskStatusFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TaskTransition {
+    return {
+      fromStatus: isSet(object.fromStatus) ? taskStatusFromJSON(object.fromStatus) : TaskStatus.TASK_SCHEDULED,
+      toStatus: isSet(object.toStatus) ? taskStatusFromJSON(object.toStatus) : TaskStatus.TASK_SCHEDULED,
+    };
+  },
+
+  toJSON(message: TaskTransition): unknown {
+    const obj: any = {};
+    if (message.fromStatus !== TaskStatus.TASK_SCHEDULED) {
+      obj.fromStatus = taskStatusToJSON(message.fromStatus);
+    }
+    if (message.toStatus !== TaskStatus.TASK_SCHEDULED) {
+      obj.toStatus = taskStatusToJSON(message.toStatus);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<TaskTransition>): TaskTransition {
+    return TaskTransition.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<TaskTransition>): TaskTransition {
+    const message = createBaseTaskTransition();
+    message.fromStatus = object.fromStatus ?? TaskStatus.TASK_SCHEDULED;
+    message.toStatus = object.toStatus ?? TaskStatus.TASK_SCHEDULED;
+    return message;
+  },
+};
+
+function createBaseUserTaskTransition(): UserTaskTransition {
+  return { fromStatus: UserTaskRunStatus.UNASSIGNED, toStatus: UserTaskRunStatus.UNASSIGNED };
+}
+
+export const UserTaskTransition = {
+  encode(message: UserTaskTransition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.fromStatus !== UserTaskRunStatus.UNASSIGNED) {
+      writer.uint32(8).int32(userTaskRunStatusToNumber(message.fromStatus));
+    }
+    if (message.toStatus !== UserTaskRunStatus.UNASSIGNED) {
+      writer.uint32(16).int32(userTaskRunStatusToNumber(message.toStatus));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserTaskTransition {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserTaskTransition();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.fromStatus = userTaskRunStatusFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.toStatus = userTaskRunStatusFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserTaskTransition {
+    return {
+      fromStatus: isSet(object.fromStatus)
+        ? userTaskRunStatusFromJSON(object.fromStatus)
+        : UserTaskRunStatus.UNASSIGNED,
+      toStatus: isSet(object.toStatus) ? userTaskRunStatusFromJSON(object.toStatus) : UserTaskRunStatus.UNASSIGNED,
+    };
+  },
+
+  toJSON(message: UserTaskTransition): unknown {
+    const obj: any = {};
+    if (message.fromStatus !== UserTaskRunStatus.UNASSIGNED) {
+      obj.fromStatus = userTaskRunStatusToJSON(message.fromStatus);
+    }
+    if (message.toStatus !== UserTaskRunStatus.UNASSIGNED) {
+      obj.toStatus = userTaskRunStatusToJSON(message.toStatus);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<UserTaskTransition>): UserTaskTransition {
+    return UserTaskTransition.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<UserTaskTransition>): UserTaskTransition {
+    const message = createBaseUserTaskTransition();
+    message.fromStatus = object.fromStatus ?? UserTaskRunStatus.UNASSIGNED;
+    message.toStatus = object.toStatus ?? UserTaskRunStatus.UNASSIGNED;
+    return message;
+  },
+};
+
 function createBaseStatusTransition(): StatusTransition {
-  return { entity: MetricEntityType.METRIC_WF_RUN, fromStatus: "", toStatus: "" };
+  return { transition: undefined };
 }
 
 export const StatusTransition = {
   encode(message: StatusTransition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.entity !== MetricEntityType.METRIC_WF_RUN) {
-      writer.uint32(8).int32(metricEntityTypeToNumber(message.entity));
-    }
-    if (message.fromStatus !== "") {
-      writer.uint32(18).string(message.fromStatus);
-    }
-    if (message.toStatus !== "") {
-      writer.uint32(26).string(message.toStatus);
+    switch (message.transition?.$case) {
+      case "lhTransition":
+        LHTransition.encode(message.transition.value, writer.uint32(10).fork()).ldelim();
+        break;
+      case "taskTransition":
+        TaskTransition.encode(message.transition.value, writer.uint32(18).fork()).ldelim();
+        break;
+      case "userTaskTransition":
+        UserTaskTransition.encode(message.transition.value, writer.uint32(26).fork()).ldelim();
+        break;
+      case "nodeTransition":
+        LHTransition.encode(message.transition.value, writer.uint32(34).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -165,25 +415,35 @@ export const StatusTransition = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
+          if (tag !== 10) {
             break;
           }
 
-          message.entity = metricEntityTypeFromJSON(reader.int32());
+          message.transition = { $case: "lhTransition", value: LHTransition.decode(reader, reader.uint32()) };
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.fromStatus = reader.string();
+          message.transition = { $case: "taskTransition", value: TaskTransition.decode(reader, reader.uint32()) };
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.toStatus = reader.string();
+          message.transition = {
+            $case: "userTaskTransition",
+            value: UserTaskTransition.decode(reader, reader.uint32()),
+          };
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.transition = { $case: "nodeTransition", value: LHTransition.decode(reader, reader.uint32()) };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -196,22 +456,31 @@ export const StatusTransition = {
 
   fromJSON(object: any): StatusTransition {
     return {
-      entity: isSet(object.entity) ? metricEntityTypeFromJSON(object.entity) : MetricEntityType.METRIC_WF_RUN,
-      fromStatus: isSet(object.fromStatus) ? globalThis.String(object.fromStatus) : "",
-      toStatus: isSet(object.toStatus) ? globalThis.String(object.toStatus) : "",
+      transition: isSet(object.lhTransition)
+        ? { $case: "lhTransition", value: LHTransition.fromJSON(object.lhTransition) }
+        : isSet(object.taskTransition)
+        ? { $case: "taskTransition", value: TaskTransition.fromJSON(object.taskTransition) }
+        : isSet(object.userTaskTransition)
+        ? { $case: "userTaskTransition", value: UserTaskTransition.fromJSON(object.userTaskTransition) }
+        : isSet(object.nodeTransition)
+        ? { $case: "nodeTransition", value: LHTransition.fromJSON(object.nodeTransition) }
+        : undefined,
     };
   },
 
   toJSON(message: StatusTransition): unknown {
     const obj: any = {};
-    if (message.entity !== MetricEntityType.METRIC_WF_RUN) {
-      obj.entity = metricEntityTypeToJSON(message.entity);
+    if (message.transition?.$case === "lhTransition") {
+      obj.lhTransition = LHTransition.toJSON(message.transition.value);
     }
-    if (message.fromStatus !== "") {
-      obj.fromStatus = message.fromStatus;
+    if (message.transition?.$case === "taskTransition") {
+      obj.taskTransition = TaskTransition.toJSON(message.transition.value);
     }
-    if (message.toStatus !== "") {
-      obj.toStatus = message.toStatus;
+    if (message.transition?.$case === "userTaskTransition") {
+      obj.userTaskTransition = UserTaskTransition.toJSON(message.transition.value);
+    }
+    if (message.transition?.$case === "nodeTransition") {
+      obj.nodeTransition = LHTransition.toJSON(message.transition.value);
     }
     return obj;
   },
@@ -221,9 +490,37 @@ export const StatusTransition = {
   },
   fromPartial(object: DeepPartial<StatusTransition>): StatusTransition {
     const message = createBaseStatusTransition();
-    message.entity = object.entity ?? MetricEntityType.METRIC_WF_RUN;
-    message.fromStatus = object.fromStatus ?? "";
-    message.toStatus = object.toStatus ?? "";
+    if (
+      object.transition?.$case === "lhTransition" &&
+      object.transition?.value !== undefined &&
+      object.transition?.value !== null
+    ) {
+      message.transition = { $case: "lhTransition", value: LHTransition.fromPartial(object.transition.value) };
+    }
+    if (
+      object.transition?.$case === "taskTransition" &&
+      object.transition?.value !== undefined &&
+      object.transition?.value !== null
+    ) {
+      message.transition = { $case: "taskTransition", value: TaskTransition.fromPartial(object.transition.value) };
+    }
+    if (
+      object.transition?.$case === "userTaskTransition" &&
+      object.transition?.value !== undefined &&
+      object.transition?.value !== null
+    ) {
+      message.transition = {
+        $case: "userTaskTransition",
+        value: UserTaskTransition.fromPartial(object.transition.value),
+      };
+    }
+    if (
+      object.transition?.$case === "nodeTransition" &&
+      object.transition?.value !== undefined &&
+      object.transition?.value !== null
+    ) {
+      message.transition = { $case: "nodeTransition", value: LHTransition.fromPartial(object.transition.value) };
+    }
     return message;
   },
 };
@@ -456,14 +753,7 @@ export const NodeReference = {
 };
 
 function createBaseMetricSpec(): MetricSpec {
-  return {
-    id: "",
-    createdAt: undefined,
-    aggregationType: AggregationType.COUNT,
-    scope: undefined,
-    transition: undefined,
-    windowLength: undefined,
-  };
+  return { id: "", createdAt: undefined, scope: undefined, transition: undefined };
 }
 
 export const MetricSpec = {
@@ -474,17 +764,11 @@ export const MetricSpec = {
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
     }
-    if (message.aggregationType !== AggregationType.COUNT) {
-      writer.uint32(24).int32(aggregationTypeToNumber(message.aggregationType));
-    }
     if (message.scope !== undefined) {
-      MetricScope.encode(message.scope, writer.uint32(34).fork()).ldelim();
+      MetricScope.encode(message.scope, writer.uint32(26).fork()).ldelim();
     }
     if (message.transition !== undefined) {
-      StatusTransition.encode(message.transition, writer.uint32(42).fork()).ldelim();
-    }
-    if (message.windowLength !== undefined) {
-      Duration.encode(message.windowLength, writer.uint32(50).fork()).ldelim();
+      StatusTransition.encode(message.transition, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -511,32 +795,18 @@ export const MetricSpec = {
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.aggregationType = aggregationTypeFromJSON(reader.int32());
+          message.scope = MetricScope.decode(reader, reader.uint32());
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.scope = MetricScope.decode(reader, reader.uint32());
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
           message.transition = StatusTransition.decode(reader, reader.uint32());
-          continue;
-        case 6:
-          if (tag !== 50) {
-            break;
-          }
-
-          message.windowLength = Duration.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -551,12 +821,8 @@ export const MetricSpec = {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
-      aggregationType: isSet(object.aggregationType)
-        ? aggregationTypeFromJSON(object.aggregationType)
-        : AggregationType.COUNT,
       scope: isSet(object.scope) ? MetricScope.fromJSON(object.scope) : undefined,
       transition: isSet(object.transition) ? StatusTransition.fromJSON(object.transition) : undefined,
-      windowLength: isSet(object.windowLength) ? Duration.fromJSON(object.windowLength) : undefined,
     };
   },
 
@@ -568,17 +834,11 @@ export const MetricSpec = {
     if (message.createdAt !== undefined) {
       obj.createdAt = message.createdAt;
     }
-    if (message.aggregationType !== AggregationType.COUNT) {
-      obj.aggregationType = aggregationTypeToJSON(message.aggregationType);
-    }
     if (message.scope !== undefined) {
       obj.scope = MetricScope.toJSON(message.scope);
     }
     if (message.transition !== undefined) {
       obj.transition = StatusTransition.toJSON(message.transition);
-    }
-    if (message.windowLength !== undefined) {
-      obj.windowLength = Duration.toJSON(message.windowLength);
     }
     return obj;
   },
@@ -590,15 +850,11 @@ export const MetricSpec = {
     const message = createBaseMetricSpec();
     message.id = object.id ?? "";
     message.createdAt = object.createdAt ?? undefined;
-    message.aggregationType = object.aggregationType ?? AggregationType.COUNT;
     message.scope = (object.scope !== undefined && object.scope !== null)
       ? MetricScope.fromPartial(object.scope)
       : undefined;
     message.transition = (object.transition !== undefined && object.transition !== null)
       ? StatusTransition.fromPartial(object.transition)
-      : undefined;
-    message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
-      ? Duration.fromPartial(object.windowLength)
       : undefined;
     return message;
   },

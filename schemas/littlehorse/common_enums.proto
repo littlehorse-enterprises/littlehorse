@@ -87,14 +87,6 @@ enum MetricRecordingLevel {
   DEBUG = 2; // Collect detailed/expensive metrics (e.g. flamegraphs)
 }
 
-enum MetricEntityType {
-  METRIC_WF_RUN = 0;
-  METRIC_TASK_RUN = 1;
-  METRIC_USER_TASK_RUN = 2;
-  METRIC_NODE_RUN = 3;
-  METRIC_THREAD_RUN = 4;
-}
-
 // Specifies a primitive type in LittleHorse.
 enum VariableType {
   // An object represented as a json string. <br/>
