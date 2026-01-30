@@ -114,6 +114,10 @@ namespace LittleHorse.Sdk.Helper
             {
                 result.Bytes = ByteString.CopyFrom(byteArray);
             }
+            else if (obj is Common.Proto.Struct lhStruct)
+            {
+                result.Struct = lhStruct;
+            }
             else
             {
                 var jsonStr = JsonHandler.ObjectSerializeToJson(obj);
@@ -166,6 +170,8 @@ namespace LittleHorse.Sdk.Helper
                     return val.Bytes.ToByteArray();
                 case VariableValue.ValueOneofCase.Bool:
                     return val.Bool;
+                case VariableValue.ValueOneofCase.Struct:
+                    return DeserializeStructToObject(val.Struct, type);
                 case VariableValue.ValueOneofCase.JsonArr:
                     jsonStr = val.JsonArr;
                     return JsonHandler.DeserializeFromJson(jsonStr, type);
@@ -177,6 +183,17 @@ namespace LittleHorse.Sdk.Helper
                 default:
                     throw new InvalidOperationException("Unrecognized variable value type");
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static object? DeserializeStructToObject(Common.Proto.Struct val, Type type)
+        {
+            
         }
         
         /// <summary>
