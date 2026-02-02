@@ -92,10 +92,6 @@ The following list describes the default metrics collected for each entity type.
   - "running_to_error": Process bottlenecks - where workflows get stuck in the flow (**count + latency**)
   - "running_to_exception": System reliability - unexpected failures at specific workflow steps (**count + latency**)
 
-
-
-
-
 ## Scope
 
 ### Supported Metric Types
