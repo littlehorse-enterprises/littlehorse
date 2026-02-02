@@ -683,8 +683,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     private void trackMetrics(CoreProcessorContext processorContext) {
-        Date now = new Date();
-        Date windowStart = alignToMinute(now);
+        Date windowStart = alignToMinute(new Date());
         
         // Key format: metrics/wf/partition/{wfSpecId}/{windowStart}
         String storeKey = String.format("metrics/wf/partition/%s/%s", wfSpecId.toString(), LHUtil.toLhDbFormat(windowStart));

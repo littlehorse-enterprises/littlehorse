@@ -53,26 +53,16 @@ public class MetricWindowModel extends Storeable<MetricWindow> {
         }
         
         switch (status) {
-            case RUNNING:
-                addMetric("started", 1, latencyMs);
-                break;
-            case COMPLETED:
-                addMetric("running_to_completed", 1, latencyMs);
-                break;
-            case HALTED:
-                addMetric("running_to_halted", 1, latencyMs);
-                break;
-            case EXCEPTION:
-                addMetric("running_to_exception", 1, latencyMs);
-                break;
-            case ERROR:
-                addMetric("running_to_error", 1, latencyMs);
-                break;
-            default:
-                // No metric for this status
-                break;
+            case RUNNING -> addMetric("started", 1, latencyMs);
+            case COMPLETED -> addMetric("running_to_completed", 1, latencyMs);
+            case HALTED -> addMetric("running_to_halted", 1, latencyMs);
+            case EXCEPTION -> addMetric("running_to_exception", 1, latencyMs);
+            case ERROR -> addMetric("running_to_error", 1, latencyMs);
+            default -> {
+            }
         }
-    }
+        // No metric for this status
+            }
     
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
