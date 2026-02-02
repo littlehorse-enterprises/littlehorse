@@ -58,4 +58,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue);
    */
   io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrThrow(
       java.lang.String key);
+
+  /**
+   * <code>bool is_local_partition = 3;</code>
+   * @return The isLocalPartition.
+   */
+  boolean getIsLocalPartition();
 }

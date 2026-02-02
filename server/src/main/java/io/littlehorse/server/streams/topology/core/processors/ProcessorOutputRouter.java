@@ -1,13 +1,6 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
-import java.util.function.BiConsumer;
-
-import org.apache.kafka.streams.processor.api.Processor;
-import org.apache.kafka.streams.processor.api.ProcessorContext;
-import org.apache.kafka.streams.processor.api.Record;
-
 import com.google.protobuf.InvalidProtocolBufferException;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
@@ -16,6 +9,10 @@ import io.littlehorse.common.proto.Command;
 import io.littlehorse.server.streams.ServerTopologyV2;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.Forwardable;
+import java.util.function.BiConsumer;
+import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 
 public class ProcessorOutputRouter<KIn, VIn, KOut, VOut> implements Processor<KIn, VIn, KOut, VOut> {
 

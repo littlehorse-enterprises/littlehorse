@@ -193,30 +193,31 @@ public final class Metrics extends com.google.protobuf.GeneratedFile {
       "\001(\0132\032.google.protobuf.TimestampB\004\n\002id\"i\n" +
       "\016CountAndTiming\022\r\n\005count\030\001 \001(\005\022\026\n\016min_la" +
       "tency_ms\030\002 \001(\003\022\026\n\016max_latency_ms\030\003 \001(\003\022\030" +
-      "\n\020total_latency_ms\030\004 \001(\003\"\275\001\n\014MetricWindo" +
+      "\n\020total_latency_ms\030\004 \001(\003\"\331\001\n\014MetricWindo" +
       "w\022\'\n\002id\030\001 \001(\0132\033.littlehorse.MetricWindow" +
       "Id\0227\n\007metrics\030\002 \003(\0132&.littlehorse.Metric" +
-      "Window.MetricsEntry\032K\n\014MetricsEntry\022\013\n\003k" +
-      "ey\030\001 \001(\t\022*\n\005value\030\002 \001(\0132\033.littlehorse.Co" +
-      "untAndTiming:\0028\001\"}\n\022ListMetricsRequest\022\'" +
-      "\n\002id\030\001 \001(\0132\033.littlehorse.MetricWindowId\022" +
-      "1\n\010end_time\030\005 \001(\0132\032.google.protobuf.Time" +
-      "stampH\000\210\001\001B\013\n\t_end_time\"8\n\nMetricList\022*\n" +
-      "\007windows\030\001 \003(\0132\031.littlehorse.MetricWindo" +
-      "w\"\210\001\n\023MetricLevelOverride\022\n\n\002id\030\001 \001(\t\0224\n" +
-      "\tnew_level\030\002 \001(\0162!.littlehorse.MetricRec" +
-      "ordingLevel\022/\n\010workflow\030\003 \001(\0132\035.littleho" +
-      "rse.WorkflowMetricId\"S\n\035PutMetricLevelOv" +
-      "errideRequest\0222\n\010override\030\001 \001(\0132 .little" +
-      "horse.MetricLevelOverride\".\n DeleteMetri" +
-      "cLevelOverrideRequest\022\n\n\002id\030\001 \001(\t\"h\n\037Lis" +
-      "tMetricLevelOverridesRequest\0222\n\016wf_spec_" +
-      "filter\030\001 \001(\0132\025.littlehorse.WfSpecIdH\000\210\001\001" +
-      "B\021\n\017_wf_spec_filter\"O\n\030MetricLevelOverri" +
-      "desList\0223\n\toverrides\030\001 \003(\0132 .littlehorse" +
-      ".MetricLevelOverrideBM\n\037io.littlehorse.s" +
-      "dk.common.protoP\001Z\t.;lhproto\252\002\034LittleHor" +
-      "se.Sdk.Common.Protob\006proto3"
+      "Window.MetricsEntry\022\032\n\022is_local_partitio" +
+      "n\030\003 \001(\010\032K\n\014MetricsEntry\022\013\n\003key\030\001 \001(\t\022*\n\005" +
+      "value\030\002 \001(\0132\033.littlehorse.CountAndTiming" +
+      ":\0028\001\"}\n\022ListMetricsRequest\022\'\n\002id\030\001 \001(\0132\033" +
+      ".littlehorse.MetricWindowId\0221\n\010end_time\030" +
+      "\005 \001(\0132\032.google.protobuf.TimestampH\000\210\001\001B\013" +
+      "\n\t_end_time\"8\n\nMetricList\022*\n\007windows\030\001 \003" +
+      "(\0132\031.littlehorse.MetricWindow\"\210\001\n\023Metric" +
+      "LevelOverride\022\n\n\002id\030\001 \001(\t\0224\n\tnew_level\030\002" +
+      " \001(\0162!.littlehorse.MetricRecordingLevel\022" +
+      "/\n\010workflow\030\003 \001(\0132\035.littlehorse.Workflow" +
+      "MetricId\"S\n\035PutMetricLevelOverrideReques" +
+      "t\0222\n\010override\030\001 \001(\0132 .littlehorse.Metric" +
+      "LevelOverride\".\n DeleteMetricLevelOverri" +
+      "deRequest\022\n\n\002id\030\001 \001(\t\"h\n\037ListMetricLevel" +
+      "OverridesRequest\0222\n\016wf_spec_filter\030\001 \001(\013" +
+      "2\025.littlehorse.WfSpecIdH\000\210\001\001B\021\n\017_wf_spec" +
+      "_filter\"O\n\030MetricLevelOverridesList\0223\n\to" +
+      "verrides\030\001 \003(\0132 .littlehorse.MetricLevel" +
+      "OverrideBM\n\037io.littlehorse.sdk.common.pr" +
+      "otoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Commo" +
+      "n.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -310,7 +311,7 @@ public final class Metrics extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_MetricWindow_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_MetricWindow_descriptor,
-        new java.lang.String[] { "Id", "Metrics", });
+        new java.lang.String[] { "Id", "Metrics", "IsLocalPartition", });
     internal_static_littlehorse_MetricWindow_MetricsEntry_descriptor =
       internal_static_littlehorse_MetricWindow_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_MetricWindow_MetricsEntry_fieldAccessorTable = new

@@ -151,7 +151,8 @@ public class ServerTopologyV2 extends Topology {
                 Serdes.String().deserializer(),
                 new LHDeserializer<>(io.littlehorse.common.model.repartitioncommand.RepartitionCommand.class),
                 repartitionTopic);
-        serverTopology.addProcessor(REPARTITION_PROCESSOR_NAME, repartitionCommandProcessorSupplier, REPARTITION_SOURCE_NAME);
+        serverTopology.addProcessor(
+                REPARTITION_PROCESSOR_NAME, repartitionCommandProcessorSupplier, REPARTITION_SOURCE_NAME);
         serverTopology.addProcessor(COMMAND_PROCESSOR_NAME, commandProcessorSupplier, CORE_COMMAND_SOURCE_NAME);
         serverTopology.addProcessor(ROUTER_PROCESSOR_NAME, routerProcessorSupplier, COMMAND_PROCESSOR_NAME);
         serverTopology.addProcessor(TIMER_PROCESSOR_NAME, timerProcessorSupplier, ROUTER_PROCESSOR_NAME);

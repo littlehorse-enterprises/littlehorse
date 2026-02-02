@@ -117,6 +117,7 @@ export interface CountAndTiming {
 export interface MetricWindow {
   id: MetricWindowId | undefined;
   metrics: { [key: string]: CountAndTiming };
+  isLocalPartition: boolean;
 }
 
 export interface MetricWindow_MetricsEntry {
@@ -1364,7 +1365,7 @@ export const CountAndTiming = {
 };
 
 function createBaseMetricWindow(): MetricWindow {
-  return { id: undefined, metrics: {} };
+  return { id: undefined, metrics: {}, isLocalPartition: false };
 }
 
 export const MetricWindow = {
@@ -1375,6 +1376,9 @@ export const MetricWindow = {
     Object.entries(message.metrics).forEach(([key, value]) => {
       MetricWindow_MetricsEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
     });
+    if (message.isLocalPartition !== false) {
+      writer.uint32(24).bool(message.isLocalPartition);
+    }
     return writer;
   },
 
@@ -1402,6 +1406,13 @@ export const MetricWindow = {
             message.metrics[entry2.key] = entry2.value;
           }
           continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isLocalPartition = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1420,6 +1431,7 @@ export const MetricWindow = {
           return acc;
         }, {})
         : {},
+      isLocalPartition: isSet(object.isLocalPartition) ? globalThis.Boolean(object.isLocalPartition) : false,
     };
   },
 
@@ -1436,6 +1448,9 @@ export const MetricWindow = {
           obj.metrics[k] = CountAndTiming.toJSON(v);
         });
       }
+    }
+    if (message.isLocalPartition !== false) {
+      obj.isLocalPartition = message.isLocalPartition;
     }
     return obj;
   },
@@ -1455,6 +1470,7 @@ export const MetricWindow = {
       },
       {},
     );
+    message.isLocalPartition = object.isLocalPartition ?? false;
     return message;
   },
 };

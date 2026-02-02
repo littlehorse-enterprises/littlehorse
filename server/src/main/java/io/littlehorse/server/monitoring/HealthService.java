@@ -1,25 +1,6 @@
 package io.littlehorse.server.monitoring;
 
-import java.io.Closeable;
-import java.io.File;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.KafkaStreams.State;
-import org.apache.kafka.streams.processor.StandbyUpdateListener;
-import org.apache.kafka.streams.processor.StateRestoreListener;
-import org.apache.kafka.streams.processor.TaskId;
-import org.apache.kafka.streams.state.KeyValueIterator;
-import org.apache.kafka.streams.state.QueryableStoreTypes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-
 import com.google.gson.Gson;
-
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.monitoring.health.InProgressRestoration;
 import io.littlehorse.server.monitoring.health.ServerHealthState;
@@ -32,7 +13,23 @@ import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.micrometer.core.instrument.MeterRegistry;
+import java.io.Closeable;
+import java.io.File;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.KafkaStreams.State;
+import org.apache.kafka.streams.processor.StandbyUpdateListener;
+import org.apache.kafka.streams.processor.StateRestoreListener;
+import org.apache.kafka.streams.processor.TaskId;
+import org.apache.kafka.streams.state.KeyValueIterator;
+import org.apache.kafka.streams.state.QueryableStoreTypes;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
 public class HealthService implements Closeable, StateRestoreListener, StandbyUpdateListener {
@@ -239,18 +236,18 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     private String dumpStore() {
         try {
-            ReadOnlyKeyValueStore<String, Bytes> store = coreStreams.store(
-                    org.apache.kafka.streams.StoreQueryParameters.fromNameAndType(
+            ReadOnlyKeyValueStore<String, Bytes> store =
+                    coreStreams.store(org.apache.kafka.streams.StoreQueryParameters.fromNameAndType(
                             "core-store", QueryableStoreTypes.keyValueStore()));
 
             java.util.ArrayList<String> result = new java.util.ArrayList<>();
             KeyValueIterator<String, Bytes> iter = store.all();
             while (iter.hasNext()) {
-            
+
                 String key = iter.next().key;
-                if(key.contains("/metrics/")) {
+                if (key.contains("/metrics/")) {
                     result.add(key);
-                    }
+                }
             }
             iter.close();
 

@@ -136,8 +136,8 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
                         LHSerializable.fromProto(p.getAggregateTaskMetrics(), AggregateTaskMetricsModel.class, context);
                 break;
             case AGGREGATE_WINDOW_METRICS:
-                aggregateWindowMetrics =
-                        LHSerializable.fromProto(p.getAggregateWindowMetrics(), AggregateWindowMetricsModel.class, context);
+                aggregateWindowMetrics = LHSerializable.fromProto(
+                        p.getAggregateWindowMetrics(), AggregateWindowMetricsModel.class, context);
                 break;
             case REPARTITIONCOMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
