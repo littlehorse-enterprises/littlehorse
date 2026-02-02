@@ -686,28 +686,16 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         Date now = new Date();
         Date windowStart = alignToMinute(now);
         
-        String storeKey = String.format("metrics/wf/%s/%s", wfSpecId.toString(), LHUtil.toLhDbFormat(windowStart));
+        // Key format: metrics/wf/partition/{wfSpecId}/{windowStart}
+        String storeKey = String.format("metrics/wf/partition/%s/%s", wfSpecId.toString(), LHUtil.toLhDbFormat(windowStart));
         
         MetricWindowModel metricWindow = processorContext.getCoreStore().get(storeKey, MetricWindowModel.class);
         if (metricWindow == null) {
             metricWindow = new MetricWindowModel(wfSpecId, windowStart);
         }
         
-        
-        long latencyMs = 0;
-        if (startTime != null && endTime != null) {
-            latencyMs = endTime.getTime() - startTime.getTime();
-        }
-        
-        switch (status) {
-            case RUNNING -> metricWindow.addMetric("started", 1, latencyMs);
-            case COMPLETED -> metricWindow.addMetric("running_to_completed", 1, latencyMs);
-            case HALTED -> metricWindow.addMetric("running_to_halted", 1, latencyMs);
-            case EXCEPTION -> metricWindow.addMetric("running_to_exception", 1, latencyMs);
-            case ERROR -> metricWindow.addMetric("running_to_error", 1, latencyMs);
-            default -> {
-            }
-        }
+        // Delegate all metric calculation logic to MetricWindowModel
+        metricWindow.trackWfRun(status, startTime, endTime);
         
         processorContext.getCoreStore().put(metricWindow);
     }

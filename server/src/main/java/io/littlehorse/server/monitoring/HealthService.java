@@ -246,8 +246,11 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             java.util.ArrayList<String> result = new java.util.ArrayList<>();
             KeyValueIterator<String, Bytes> iter = store.all();
             while (iter.hasNext()) {
+            
                 String key = iter.next().key;
+                if(key.contains("/metrics/")) {
                     result.add(key);
+                    }
             }
             iter.close();
 

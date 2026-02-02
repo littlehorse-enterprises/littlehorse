@@ -45,6 +45,35 @@ public class MetricWindowModel extends Storeable<MetricWindow> {
         timing.add(count, latencyMs);
     }
     
+
+    public void trackWfRun(io.littlehorse.sdk.common.proto.LHStatus status, Date startTime, Date endTime) {
+        long latencyMs = 0;
+        if (startTime != null && endTime != null) {
+            latencyMs = endTime.getTime() - startTime.getTime();
+        }
+        
+        switch (status) {
+            case RUNNING:
+                addMetric("started", 1, latencyMs);
+                break;
+            case COMPLETED:
+                addMetric("running_to_completed", 1, latencyMs);
+                break;
+            case HALTED:
+                addMetric("running_to_halted", 1, latencyMs);
+                break;
+            case EXCEPTION:
+                addMetric("running_to_exception", 1, latencyMs);
+                break;
+            case ERROR:
+                addMetric("running_to_error", 1, latencyMs);
+                break;
+            default:
+                // No metric for this status
+                break;
+        }
+    }
+    
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         MetricWindow p = (MetricWindow) proto;
@@ -105,12 +134,13 @@ public class MetricWindowModel extends Storeable<MetricWindow> {
     
     @Override
     public String getStoreKey() {
-        // Format: metrics/{type}/{id}/{windowStart}
+        // Format: metrics/{type}/partition/{id}/{windowStart}
         // type: wf, task, or node
+        // partition: literal string for future repartitioning/consolidation
         String typeStr = getMetricTypeString();
         String idStr = wfSpecId != null ? wfSpecId.toString() : "null";
         String windowStr = windowStart != null ? LHUtil.toLhDbFormat(windowStart) : "0";
-        return String.format("metrics/%s/%s/%s", typeStr, idStr, windowStr);
+        return String.format("metrics/%s/partition/%s/%s", typeStr, idStr, windowStr);
     }
     
     private String getMetricTypeString() {
