@@ -28,6 +28,10 @@ public enum StoreableType
    */
   TASK_METRIC_UPDATE(3),
   /**
+   * <code>LH_TIMER = 4;</code>
+   */
+  LH_TIMER(4),
+  /**
    * <code>TAG = 5;</code>
    */
   TAG(5),
@@ -55,6 +59,10 @@ public enum StoreableType
    * <code>NODE_OUTPUT = 12;</code>
    */
   NODE_OUTPUT(12),
+  /**
+   * <code>TIMER_ITERATOR_HINT = 13;</code>
+   */
+  TIMER_ITERATOR_HINT(13),
   UNRECOGNIZED(-1),
   ;
 
@@ -84,6 +92,10 @@ public enum StoreableType
    */
   public static final int TASK_METRIC_UPDATE_VALUE = 3;
   /**
+   * <code>LH_TIMER = 4;</code>
+   */
+  public static final int LH_TIMER_VALUE = 4;
+  /**
    * <code>TAG = 5;</code>
    */
   public static final int TAG_VALUE = 5;
@@ -111,6 +123,10 @@ public enum StoreableType
    * <code>NODE_OUTPUT = 12;</code>
    */
   public static final int NODE_OUTPUT_VALUE = 12;
+  /**
+   * <code>TIMER_ITERATOR_HINT = 13;</code>
+   */
+  public static final int TIMER_ITERATOR_HINT_VALUE = 13;
 
 
   public final int getNumber() {
@@ -141,6 +157,7 @@ public enum StoreableType
       case 1: return SCHEDULED_TASK;
       case 2: return WF_METRIC_UPDATE;
       case 3: return TASK_METRIC_UPDATE;
+      case 4: return LH_TIMER;
       case 5: return TAG;
       case 6: return PARTITION_METRICS;
       case 8: return INITIALIZATION_LOG;
@@ -148,6 +165,7 @@ public enum StoreableType
       case 10: return CORRELATION_MARKER;
       case 11: return TASK_QUEUE_HINT;
       case 12: return NODE_OUTPUT;
+      case 13: return TIMER_ITERATOR_HINT;
       default: return null;
     }
   }

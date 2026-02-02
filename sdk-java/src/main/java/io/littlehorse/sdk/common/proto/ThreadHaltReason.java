@@ -59,6 +59,7 @@ private static final long serialVersionUID = 0L;
     PENDING_FAILURE(4),
     HANDLING_FAILURE(5),
     MANUAL_HALT(6),
+    HALTED_BY_PARENT(7),
     REASON_NOT_SET(0);
     private final int value;
     private ReasonCase(int value) {
@@ -82,6 +83,7 @@ private static final long serialVersionUID = 0L;
         case 4: return PENDING_FAILURE;
         case 5: return HANDLING_FAILURE;
         case 6: return MANUAL_HALT;
+        case 7: return HALTED_BY_PARENT;
         case 0: return REASON_NOT_SET;
         default: return null;
       }
@@ -355,6 +357,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ManualHalt.getDefaultInstance();
   }
 
+  public static final int HALTED_BY_PARENT_FIELD_NUMBER = 7;
+  /**
+   * <pre>
+   * Stopped by a NodeRun in the parent.
+   * </pre>
+   *
+   * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+   * @return Whether the haltedByParent field is set.
+   */
+  @java.lang.Override
+  public boolean hasHaltedByParent() {
+    return reasonCase_ == 7;
+  }
+  /**
+   * <pre>
+   * Stopped by a NodeRun in the parent.
+   * </pre>
+   *
+   * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+   * @return The haltedByParent.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason getHaltedByParent() {
+    if (reasonCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason) reason_;
+    }
+    return io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Stopped by a NodeRun in the parent.
+   * </pre>
+   *
+   * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReasonOrBuilder getHaltedByParentOrBuilder() {
+    if (reasonCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason) reason_;
+    }
+    return io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -386,6 +431,9 @@ private static final long serialVersionUID = 0L;
     }
     if (reasonCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.sdk.common.proto.ManualHalt) reason_);
+    }
+    if (reasonCase_ == 7) {
+      output.writeMessage(7, (io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason) reason_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -419,6 +467,10 @@ private static final long serialVersionUID = 0L;
     if (reasonCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (io.littlehorse.sdk.common.proto.ManualHalt) reason_);
+    }
+    if (reasonCase_ == 7) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason) reason_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -461,6 +513,10 @@ private static final long serialVersionUID = 0L;
         if (!getManualHalt()
             .equals(other.getManualHalt())) return false;
         break;
+      case 7:
+        if (!getHaltedByParent()
+            .equals(other.getHaltedByParent())) return false;
+        break;
       case 0:
       default:
     }
@@ -499,6 +555,10 @@ private static final long serialVersionUID = 0L;
       case 6:
         hash = (37 * hash) + MANUAL_HALT_FIELD_NUMBER;
         hash = (53 * hash) + getManualHalt().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + HALTED_BY_PARENT_FIELD_NUMBER;
+        hash = (53 * hash) + getHaltedByParent().hashCode();
         break;
       case 0:
       default:
@@ -656,6 +716,9 @@ private static final long serialVersionUID = 0L;
       if (manualHaltBuilder_ != null) {
         manualHaltBuilder_.clear();
       }
+      if (haltedByParentBuilder_ != null) {
+        haltedByParentBuilder_.clear();
+      }
       reasonCase_ = 0;
       reason_ = null;
       return this;
@@ -721,6 +784,10 @@ private static final long serialVersionUID = 0L;
           manualHaltBuilder_ != null) {
         result.reason_ = manualHaltBuilder_.build();
       }
+      if (reasonCase_ == 7 &&
+          haltedByParentBuilder_ != null) {
+        result.reason_ = haltedByParentBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -758,6 +825,10 @@ private static final long serialVersionUID = 0L;
         }
         case MANUAL_HALT: {
           mergeManualHalt(other.getManualHalt());
+          break;
+        }
+        case HALTED_BY_PARENT: {
+          mergeHaltedByParent(other.getHaltedByParent());
           break;
         }
         case REASON_NOT_SET: {
@@ -832,6 +903,13 @@ private static final long serialVersionUID = 0L;
               reasonCase_ = 6;
               break;
             } // case 50
+            case 58: {
+              input.readMessage(
+                  internalGetHaltedByParentFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              reasonCase_ = 7;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1930,6 +2008,184 @@ private static final long serialVersionUID = 0L;
       reasonCase_ = 6;
       onChanged();
       return manualHaltBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason, io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason.Builder, io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReasonOrBuilder> haltedByParentBuilder_;
+    /**
+     * <pre>
+     * Stopped by a NodeRun in the parent.
+     * </pre>
+     *
+     * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+     * @return Whether the haltedByParent field is set.
+     */
+    @java.lang.Override
+    public boolean hasHaltedByParent() {
+      return reasonCase_ == 7;
+    }
+    /**
+     * <pre>
+     * Stopped by a NodeRun in the parent.
+     * </pre>
+     *
+     * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+     * @return The haltedByParent.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason getHaltedByParent() {
+      if (haltedByParentBuilder_ == null) {
+        if (reasonCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason) reason_;
+        }
+        return io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason.getDefaultInstance();
+      } else {
+        if (reasonCase_ == 7) {
+          return haltedByParentBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Stopped by a NodeRun in the parent.
+     * </pre>
+     *
+     * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+     */
+    public Builder setHaltedByParent(io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason value) {
+      if (haltedByParentBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        reason_ = value;
+        onChanged();
+      } else {
+        haltedByParentBuilder_.setMessage(value);
+      }
+      reasonCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * Stopped by a NodeRun in the parent.
+     * </pre>
+     *
+     * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+     */
+    public Builder setHaltedByParent(
+        io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason.Builder builderForValue) {
+      if (haltedByParentBuilder_ == null) {
+        reason_ = builderForValue.build();
+        onChanged();
+      } else {
+        haltedByParentBuilder_.setMessage(builderForValue.build());
+      }
+      reasonCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * Stopped by a NodeRun in the parent.
+     * </pre>
+     *
+     * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+     */
+    public Builder mergeHaltedByParent(io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason value) {
+      if (haltedByParentBuilder_ == null) {
+        if (reasonCase_ == 7 &&
+            reason_ != io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason.getDefaultInstance()) {
+          reason_ = io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason.newBuilder((io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason) reason_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          reason_ = value;
+        }
+        onChanged();
+      } else {
+        if (reasonCase_ == 7) {
+          haltedByParentBuilder_.mergeFrom(value);
+        } else {
+          haltedByParentBuilder_.setMessage(value);
+        }
+      }
+      reasonCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * Stopped by a NodeRun in the parent.
+     * </pre>
+     *
+     * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+     */
+    public Builder clearHaltedByParent() {
+      if (haltedByParentBuilder_ == null) {
+        if (reasonCase_ == 7) {
+          reasonCase_ = 0;
+          reason_ = null;
+          onChanged();
+        }
+      } else {
+        if (reasonCase_ == 7) {
+          reasonCase_ = 0;
+          reason_ = null;
+        }
+        haltedByParentBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Stopped by a NodeRun in the parent.
+     * </pre>
+     *
+     * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason.Builder getHaltedByParentBuilder() {
+      return internalGetHaltedByParentFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Stopped by a NodeRun in the parent.
+     * </pre>
+     *
+     * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReasonOrBuilder getHaltedByParentOrBuilder() {
+      if ((reasonCase_ == 7) && (haltedByParentBuilder_ != null)) {
+        return haltedByParentBuilder_.getMessageOrBuilder();
+      } else {
+        if (reasonCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason) reason_;
+        }
+        return io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Stopped by a NodeRun in the parent.
+     * </pre>
+     *
+     * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason, io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason.Builder, io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReasonOrBuilder> 
+        internalGetHaltedByParentFieldBuilder() {
+      if (haltedByParentBuilder_ == null) {
+        if (!(reasonCase_ == 7)) {
+          reason_ = io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason.getDefaultInstance();
+        }
+        haltedByParentBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason, io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason.Builder, io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReasonOrBuilder>(
+                (io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason) reason_,
+                getParentForChildren(),
+                isClean());
+        reason_ = null;
+      }
+      reasonCase_ = 7;
+      onChanged();
+      return haltedByParentBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.ThreadHaltReason)
