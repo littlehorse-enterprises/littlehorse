@@ -14,6 +14,7 @@ import "variable.proto";
 import "storage.proto";
 import "acls.proto";
 import "job.proto";
+import "metrics.proto";
 
 
 // This is the schema of everything that flows through the Central Command topic.
@@ -115,6 +116,12 @@ message AggregateWfMetrics {
     repeated WfMetricUpdate metric_updates = 3;
 }
 
+message AggregateWindowMetrics {
+    WfSpecId wf_spec_id = 1;
+    TenantId tenant_id = 2;
+    MetricWindow metric_window = 3;
+}
+
 message AggregateTaskMetrics {
     TaskDefId task_def_id = 1;
     TenantId tenant_id = 2;
@@ -191,6 +198,7 @@ message RepartitionCommandPb {
         RemoveRemoteTagPb remove_remote_tag = 6;
         AggregateWfMetrics aggregate_wf_metrics = 7;
         AggregateTaskMetrics aggregate_task_metrics = 8;
+        AggregateWindowMetrics aggregate_window_metrics = 9;
     }
 }
 

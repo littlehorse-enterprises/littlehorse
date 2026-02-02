@@ -1,6 +1,20 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
+import java.time.Duration;
+import java.util.Date;
+import java.util.concurrent.CompletableFuture;
+
+import org.apache.kafka.common.KafkaException;
+import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.processor.PunctuationType;
+import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
+import org.apache.kafka.streams.state.KeyValueStore;
+
 import com.google.protobuf.Message;
+
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.PartitionMetricsModel;
@@ -13,6 +27,7 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateTaskMetricsModel;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWindowMetricsModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.Tenant;
@@ -30,21 +45,11 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreCommandException;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
+import io.littlehorse.server.streams.topology.core.MetricWindowModel;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
-import java.time.Duration;
-import java.util.Date;
-import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.KafkaException;
-import org.apache.kafka.common.header.Headers;
-import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.processor.PunctuationType;
-import org.apache.kafka.streams.processor.api.Processor;
-import org.apache.kafka.streams.processor.api.ProcessorContext;
-import org.apache.kafka.streams.processor.api.Record;
-import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
 public class CommandProcessor implements Processor<String, Command, String, CommandProcessorOutput> {
@@ -84,6 +89,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         onPartitionClaimed();
         ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
+        ctx.schedule(Duration.ofSeconds(10), PunctuationType.WALL_CLOCK_TIME, this::forwardWindowMetricsUpdates);
         log.info("Completed the init() process on partition {}", ctx.taskId().partition());
     }
 
@@ -188,6 +194,69 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 forwardMetricSubcommand(aggregateTaskMetrics);
             }
             coreDefaultStore.delete(metricsOnCurrentPartition);
+        }
+    }
+
+    private void forwardWindowMetricsUpdates(long timestamp) {
+        try {
+            ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(this.globalStore, new BackgroundContext());
+            
+            int totalForwarded = 0;
+            
+            // Iterate over all tenants
+            try (LHKeyValueIterator<?> storedTenants = clusterStore.range(
+                    GetableClassEnum.TENANT.getNumber() + "/",
+                    GetableClassEnum.TENANT.getNumber() + "/~",
+                    StoredGetable.class)) {
+                
+                while (storedTenants.hasNext()) {
+                    LHIterKeyValue<?> tenantEntry = storedTenants.next();
+                    TenantModel tenant = ((StoredGetable<Tenant, TenantModel>) tenantEntry.getValue()).getStoredObject();
+                    
+                    // For each tenant, scan for partition metrics
+                    TenantScopedStore tenantStore = 
+                        TenantScopedStore.newInstance(this.nativeStore, tenant.getId(), new BackgroundContext());
+                    
+                    int tenantMetricsCount = 0;
+                    try (LHKeyValueIterator<MetricWindowModel> iter = 
+                            tenantStore.prefixScan("metrics/wf/partition/", MetricWindowModel.class)) {
+                        while (iter.hasNext()) {
+                            LHIterKeyValue<MetricWindowModel> next = iter.next();
+                            MetricWindowModel metricWindow = next.getValue();
+                            
+                            // Create and forward repartition command
+                            AggregateWindowMetricsModel aggregateCommand = new AggregateWindowMetricsModel(
+                                metricWindow.getWfSpecId(),
+                                tenant.getId(),
+                                metricWindow
+                            );
+                            
+                            forwardMetricSubcommand(aggregateCommand);
+                            
+                            log.debug("Forwarded metric window for tenant {}: key={}", 
+                                tenant.getId(), metricWindow.getStoreKey());
+                            
+                            // Delete the partition metric after forwarding
+                            tenantStore.delete(metricWindow);
+                            tenantMetricsCount++;
+                        }
+                    }
+                    
+                    if (tenantMetricsCount > 0) {
+                        log.info("Forwarded {} metrics for tenant {} on partition {}", 
+                            tenantMetricsCount, tenant.getId(), ctx.taskId().partition());
+                        totalForwarded += tenantMetricsCount;
+                    }
+                }
+            }
+            
+            if (totalForwarded > 0) {
+                log.info("Total forwarded and deleted {} partition metrics on partition {}", 
+                    totalForwarded, ctx.taskId().partition());
+            }
+        } catch (Exception e) {
+            log.error("Error forwarding window metrics on partition {}: {}", 
+                ctx.taskId().partition(), e.getMessage(), e);
         }
     }
 

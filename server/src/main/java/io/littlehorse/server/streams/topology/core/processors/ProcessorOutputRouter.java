@@ -1,17 +1,21 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
+import java.util.function.BiConsumer;
+
+import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
+
 import com.google.protobuf.InvalidProtocolBufferException;
+
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
+import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.server.streams.ServerTopologyV2;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.Forwardable;
-import java.util.function.BiConsumer;
-import org.apache.kafka.streams.processor.api.Processor;
-import org.apache.kafka.streams.processor.api.ProcessorContext;
-import org.apache.kafka.streams.processor.api.Record;
 
 public class ProcessorOutputRouter<KIn, VIn, KOut, VOut> implements Processor<KIn, VIn, KOut, VOut> {
 
@@ -58,6 +62,10 @@ public class ProcessorOutputRouter<KIn, VIn, KOut, VOut> implements Processor<KI
             context.forward(timerRecord, timerProcessorName);
         } else if (payload instanceof OutputTopicRecordModel) {
             context.forward(record, outputTopicProcessorName);
+        } else if (payload instanceof RepartitionCommand) {
+            RepartitionCommand repartitionCommand = (RepartitionCommand) payload;
+            String partitionKey = repartitionCommand.getSubCommand().getPartitionKey();
+            context.forward(record.withKey(partitionKey), ServerTopologyV2.REPARTITION_PASSTHROUGH_PROCESSOR);
         } else {
             throw new IllegalArgumentException("Unknown payload type: " + payload.getClass());
         }

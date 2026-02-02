@@ -20,9 +20,13 @@ import lombok.Getter;
 
 public class MetricWindowModel extends Storeable<MetricWindow> {
     
+    @Getter
     private MetricWindowId.IdCase metricType;
+    @Getter
     private WfSpecIdModel wfSpecId;
+    @Getter
     private Date windowStart;
+    @Getter
     private Map<String, CountAndTimingModel> metrics = new HashMap<>();
     
     public MetricWindowModel() {}
@@ -43,6 +47,33 @@ public class MetricWindowModel extends Storeable<MetricWindow> {
     public void addMetric(String metricKey, int count, long latencyMs) {
         CountAndTimingModel timing = metrics.computeIfAbsent(metricKey, k -> new CountAndTimingModel());
         timing.add(count, latencyMs);
+    }
+    
+    /**
+     * Merges metrics from another MetricWindowModel into this one.
+     * This is used during repartitioning to aggregate metrics from multiple partitions.
+     */
+    public void mergeFrom(MetricWindowModel other) {
+        if (other == null) {
+            return;
+        }
+        
+        for (Map.Entry<String, CountAndTimingModel> entry : other.getMetrics().entrySet()) {
+            String metricKey = entry.getKey();
+            CountAndTimingModel otherTiming = entry.getValue();
+            
+            CountAndTimingModel thisTiming = metrics.computeIfAbsent(metricKey, k -> new CountAndTimingModel());
+            thisTiming.add(otherTiming.getCount(), 0); // Add count
+            
+            // Update min/max/total
+            if (otherTiming.getMinLatencyMs() < thisTiming.getMinLatencyMs()) {
+                thisTiming.setMinLatencyMs(otherTiming.getMinLatencyMs());
+            }
+            if (otherTiming.getMaxLatencyMs() > thisTiming.getMaxLatencyMs()) {
+                thisTiming.setMaxLatencyMs(otherTiming.getMaxLatencyMs());
+            }
+            thisTiming.setTotalLatencyMs(thisTiming.getTotalLatencyMs() + otherTiming.getTotalLatencyMs());
+        }
     }
     
 
