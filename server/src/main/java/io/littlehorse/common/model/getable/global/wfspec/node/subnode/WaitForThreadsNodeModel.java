@@ -20,6 +20,7 @@ import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForCase;
+import io.littlehorse.sdk.common.proto.WaitForThreadsStrategy;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -44,6 +45,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     private ThreadsToWaitForCase type;
     private ThreadsToWaitForModel threads;
     private VariableAssignmentModel threadList;
+    private WaitForThreadsStrategy strategy;
 
     private List<FailureHandlerDefModel> perThreadFailureHandlers;
 
@@ -75,10 +77,12 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         for (FailureHandlerDef handler : p.getPerThreadFailureHandlersList()) {
             perThreadFailureHandlers.add(FailureHandlerDefModel.fromProto(handler, context));
         }
+
+        this.strategy = p.getStrategy();
     }
 
     public WaitForThreadsNode.Builder toProto() {
-        WaitForThreadsNode.Builder out = WaitForThreadsNode.newBuilder();
+        WaitForThreadsNode.Builder out = WaitForThreadsNode.newBuilder().setStrategy(strategy);
         switch (type) {
             case THREADS:
                 out.setThreads(threads.toProto());

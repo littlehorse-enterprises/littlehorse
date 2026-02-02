@@ -1594,4 +1594,25 @@ public class WorkflowThreadTest
 
         Assert.Equal(expectedReturnContent, actualReturnContent);
     }
+
+    [Fact]
+    public void WaitForAny_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var childThread1 = wf.SpawnThread("child-thread-1", thread => thread.Execute("any-task"));
+            var childThread2 = wf.SpawnThread("child-thread-2", thread => thread.Execute("any-task"));
+            var childThread3 = wf.SpawnThread("child-thread-3", thread => thread.Execute("any-task"));
+            wf.WaitForAnyOf(SpawnedThreads.Of(childThread1, childThread2, childThread3));
+        }
+
+        WorkflowThread thread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        ThreadSpec threadSpec = thread.Compile();
+        Node waitForThread = threadSpec.Nodes["4-threads-WAIT_FOR_THREADS"];
+
+        Assert.Equal(waitForThread.WaitForThreads.Strategy, WaitForThreadsStrategy.WaitForAny);
+    }
 }

@@ -5,10 +5,12 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.LHTimerPb;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.Forwardable;
@@ -18,7 +20,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LHTimer extends LHSerializable<LHTimerPb> implements Forwardable {
+public class LHTimer extends Storeable<LHTimerPb> implements Forwardable {
 
     public Date maturationTime;
     public String topic;
@@ -106,6 +108,11 @@ public class LHTimer extends LHSerializable<LHTimerPb> implements Forwardable {
     @Override
     public Class<LHTimerPb> getProtoBaseClass() {
         return LHTimerPb.class;
+    }
+
+    @Override
+    public StoreableType getType() {
+        return StoreableType.LH_TIMER;
     }
 
     public byte[] getPayload(LHServerConfig config) {

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
+import io.littlehorse.sdk.common.proto.WaitForThreadsStrategy;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
@@ -35,7 +36,7 @@ public class FixedSpawnedThreadsTest {
 
     @Test
     void shouldBuildNodeForTwoThreadsToWaitFor() {
-        WaitForThreadsNode waitForThreadsNode = fixedSpawnedThreads.buildNode();
+        WaitForThreadsNode waitForThreadsNode = fixedSpawnedThreads.buildNode(WaitForThreadsStrategy.WAIT_FOR_ALL);
         assertThat(waitForThreadsNode.getThreads().getThreadsList()).hasSize(2);
     }
 
@@ -44,7 +45,7 @@ public class FixedSpawnedThreadsTest {
         doReturn(WfRunVariableImpl.createPrimitiveVar("thread-2", "2", workflowThread))
                 .when(spawnedThread2)
                 .getThreadNumberVariable();
-        Throwable exception = catchThrowable(fixedSpawnedThreads::buildNode);
+        Throwable exception = catchThrowable(() -> fixedSpawnedThreads.buildNode(WaitForThreadsStrategy.WAIT_FOR_ALL));
         assertThat(exception).isInstanceOfAny(IllegalArgumentException.class);
     }
 }

@@ -186,6 +186,9 @@ message WaitForThreadsRun {
     // The ThreadRun did not complete successfully, and there wasn't a successful
     // run of a Failure Handler for the Failure that was thrown.
     THREAD_UNSUCCESSFUL = 3;
+
+    // The `ThreadRun` was halted because another sibling thread completed or failed.
+    THREAD_STOPPED = 4;
   }
 
   // A 'WaitForThread' structure defines a thread that is being waited for.
