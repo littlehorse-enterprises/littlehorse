@@ -1,6 +1,19 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.protobuf.Message;
+
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
@@ -51,27 +64,15 @@ import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
-import io.littlehorse.server.streams.topology.core.Sensor;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import io.littlehorse.server.streams.topology.core.MetricWindowModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 @Setter
 @Getter
 public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGetable<WfRun> {
-
-    public static final Sensor workflowSensor = new Sensor();
 
     private WfRunIdModel id;
     private WfSpecIdModel wfSpecId;
@@ -658,7 +659,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                     wfSpecId, processorContext.authorization().tenantId(), this.status, status, startTime);
         }
         this.status = status;
-        Sensor.track(this);
+        trackMetrics(processorContext);
         processorContext.getableUpdates().dispatch(statusChanged);
 
         WorkflowRetentionPolicyModel retentionPolicy = getWfSpec().getRetentionPolicy();
@@ -679,6 +680,43 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 processorContext.getTaskManager().scheduleTimer(timer);
             }
         }
+    }
+
+    private void trackMetrics(CoreProcessorContext processorContext) {
+        Date now = new Date();
+        Date windowStart = alignToMinute(now);
+        
+        String storeKey = String.format("metrics/wf/%s/%s", wfSpecId.toString(), LHUtil.toLhDbFormat(windowStart));
+        
+        MetricWindowModel metricWindow = processorContext.getCoreStore().get(storeKey, MetricWindowModel.class);
+        if (metricWindow == null) {
+            metricWindow = new MetricWindowModel(wfSpecId, windowStart);
+        }
+        
+        
+        long latencyMs = 0;
+        if (startTime != null && endTime != null) {
+            latencyMs = endTime.getTime() - startTime.getTime();
+        }
+        
+        switch (status) {
+            case RUNNING -> metricWindow.addMetric("started", 1, latencyMs);
+            case COMPLETED -> metricWindow.addMetric("running_to_completed", 1, latencyMs);
+            case HALTED -> metricWindow.addMetric("running_to_halted", 1, latencyMs);
+            case EXCEPTION -> metricWindow.addMetric("running_to_exception", 1, latencyMs);
+            case ERROR -> metricWindow.addMetric("running_to_error", 1, latencyMs);
+            default -> {
+            }
+        }
+        
+        processorContext.getCoreStore().put(metricWindow);
+    }
+
+    private Date alignToMinute(Date date) {
+        long timestamp = date.getTime();
+        long minuteInMs = 60 * 1000;
+        long aligned = (timestamp / minuteInMs) * minuteInMs;
+        return new Date(aligned);
     }
 
     private boolean isTerminated() {
