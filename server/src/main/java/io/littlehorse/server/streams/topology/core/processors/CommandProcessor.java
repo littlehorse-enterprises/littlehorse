@@ -85,8 +85,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         onPartitionClaimed();
-        ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
-        ctx.schedule(Duration.ofSeconds(10), PunctuationType.WALL_CLOCK_TIME, this::forwardWindowMetricsUpdates);
+        // ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
+        ctx.schedule(Duration.ofSeconds(10), PunctuationType.WALL_CLOCK_TIME, this::forwardWindowPartitionMetrics);
         log.info("Completed the init() process on partition {}", ctx.taskId().partition());
     }
 
@@ -194,8 +194,34 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         }
     }
 
-    private void forwardWindowMetricsUpdates(long timestamp) {
+    private void forwardWindowPartitionMetrics(long timestamp) {
+        ClusterScopedStore globalStore =
+                ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
 
+        String startKey = "metrics/partition/";
+        String endKey = "metrics/partition/~";
+
+        try (LHKeyValueIterator<PartitionMetricWindowModel> iter =
+                globalStore.range(startKey, endKey, PartitionMetricWindowModel.class)) {
+            while (iter.hasNext()) {
+                LHIterKeyValue<PartitionMetricWindowModel> next = iter.next();
+                PartitionMetricWindowModel metricWindow = next.getValue();
+                
+                if (metricWindow != null) {
+                    // Create the aggregation command for this metric window
+                    AggregateWindowMetricsModel aggregateMetrics = new AggregateWindowMetricsModel(
+                            metricWindow.getWfSpecId(),
+                            metricWindow.getTenantId(),
+                            metricWindow
+                    );
+                    
+                    forwardMetricSubcommand(aggregateMetrics);
+                    
+                    // Delete the metric window after forwarding
+                    globalStore.delete(metricWindow);
+                }
+            }
+        }
     }
 
     private void forwardMetricSubcommand(RepartitionSubCommand repartitionSubCommand) {

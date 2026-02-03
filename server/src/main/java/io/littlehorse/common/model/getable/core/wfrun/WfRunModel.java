@@ -686,7 +686,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         TenantIdModel tenantId = processorContext.authorization().tenantId();
 
         String storeKey = String.format(
-                "metrics/window/%s/%s/%s/%s",
+                "metrics/partition/%s/%s/%s/%s",
                 LHUtil.toLhDbFormat(windowStart),
                 tenantId.toString(),
                 "wf",

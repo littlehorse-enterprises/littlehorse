@@ -150,12 +150,12 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
 
     @Override
     public String getStoreKey() {
-        // Format: metrics/window/{windowStart}/{tenantId}/{type}/{specId}
+        // Format: metrics/partition/{windowStart}/{tenantId}/{type}/{specId}
         String typeStr = getMetricTypeString();
         String tenantStr = tenantId != null ? tenantId.toString() : "null";
         String idStr = wfSpecId != null ? wfSpecId.toString() : "null";
         String windowStr = windowStart != null ? LHUtil.toLhDbFormat(windowStart) : "0";
-        return String.format("metrics/%s/%s/%s/%s", windowStr, tenantStr, typeStr, idStr);
+        return String.format("metrics/partition/%s/%s/%s/%s", windowStr, tenantStr, typeStr, idStr);
     }
 
     private String getMetricTypeString() {
