@@ -139,7 +139,7 @@ class CountAndTiming(_message.Message):
     def __init__(self, count: _Optional[int] = ..., min_latency_ms: _Optional[int] = ..., max_latency_ms: _Optional[int] = ..., total_latency_ms: _Optional[int] = ...) -> None: ...
 
 class MetricWindow(_message.Message):
-    __slots__ = ("id", "metrics", "is_local_partition")
+    __slots__ = ("id", "metrics")
     class MetricsEntry(_message.Message):
         __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -149,11 +149,9 @@ class MetricWindow(_message.Message):
         def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[CountAndTiming, _Mapping]] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
     METRICS_FIELD_NUMBER: _ClassVar[int]
-    IS_LOCAL_PARTITION_FIELD_NUMBER: _ClassVar[int]
     id: MetricWindowId
     metrics: _containers.MessageMap[str, CountAndTiming]
-    is_local_partition: bool
-    def __init__(self, id: _Optional[_Union[MetricWindowId, _Mapping]] = ..., metrics: _Optional[_Mapping[str, CountAndTiming]] = ..., is_local_partition: _Optional[bool] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[MetricWindowId, _Mapping]] = ..., metrics: _Optional[_Mapping[str, CountAndTiming]] = ...) -> None: ...
 
 class ListMetricsRequest(_message.Message):
     __slots__ = ("id", "end_time")

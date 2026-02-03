@@ -31,7 +31,7 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreCommandException;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
-import io.littlehorse.server.streams.topology.core.MetricWindowModel;
+import io.littlehorse.server.streams.topology.core.PartitionMetricWindowModel;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -216,12 +216,11 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                             TenantScopedStore.newInstance(this.nativeStore, tenant.getId(), new BackgroundContext());
 
                     int tenantMetricsCount = 0;
-                    try (LHKeyValueIterator<MetricWindowModel> iter =
-                            tenantStore.prefixScan("metrics/wf/partition/", MetricWindowModel.class)) {
+                    try (LHKeyValueIterator<PartitionMetricWindowModel> iter =
+                            tenantStore.prefixScan("metrics/wf/partition/", PartitionMetricWindowModel.class)) {
                         while (iter.hasNext()) {
-                            LHIterKeyValue<MetricWindowModel> next = iter.next();
-                            MetricWindowModel metricWindow = next.getValue();
-
+                            LHIterKeyValue<PartitionMetricWindowModel> next = iter.next();
+                            PartitionMetricWindowModel metricWindow = next.getValue();
                             log.info(
                                     "Punctuator found metric with key: {}, isLocalPartition: {}",
                                     next.getKey(),

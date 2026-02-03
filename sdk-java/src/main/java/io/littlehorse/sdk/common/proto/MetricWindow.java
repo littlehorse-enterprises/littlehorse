@@ -161,17 +161,6 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
     return map.get(key);
   }
 
-  public static final int IS_LOCAL_PARTITION_FIELD_NUMBER = 3;
-  private boolean isLocalPartition_ = false;
-  /**
-   * <code>bool is_local_partition = 3;</code>
-   * @return The isLocalPartition.
-   */
-  @java.lang.Override
-  public boolean getIsLocalPartition() {
-    return isLocalPartition_;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -195,9 +184,6 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
         internalGetMetrics(),
         MetricsDefaultEntryHolder.defaultEntry,
         2);
-    if (isLocalPartition_ != false) {
-      output.writeBool(3, isLocalPartition_);
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -221,10 +207,6 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, metrics__);
     }
-    if (isLocalPartition_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(3, isLocalPartition_);
-    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -247,8 +229,6 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
     }
     if (!internalGetMetrics().equals(
         other.internalGetMetrics())) return false;
-    if (getIsLocalPartition()
-        != other.getIsLocalPartition()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -268,9 +248,6 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       hash = (37 * hash) + METRICS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetMetrics().hashCode();
     }
-    hash = (37 * hash) + IS_LOCAL_PARTITION_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getIsLocalPartition());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -436,7 +413,6 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
         idBuilder_ = null;
       }
       internalGetMutableMetrics().clear();
-      isLocalPartition_ = false;
       return this;
     }
 
@@ -480,9 +456,6 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.metrics_ = internalGetMetrics().build(MetricsDefaultEntryHolder.defaultEntry);
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.isLocalPartition_ = isLocalPartition_;
-      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -504,9 +477,6 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       internalGetMutableMetrics().mergeFrom(
           other.internalGetMetrics());
       bitField0_ |= 0x00000002;
-      if (other.getIsLocalPartition() != false) {
-        setIsLocalPartition(other.getIsLocalPartition());
-      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -549,11 +519,6 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 24: {
-              isLocalPartition_ = input.readBool();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -845,38 +810,6 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
         builderMap.put(key, entry);
       }
       return (io.littlehorse.sdk.common.proto.CountAndTiming.Builder) entry;
-    }
-
-    private boolean isLocalPartition_ ;
-    /**
-     * <code>bool is_local_partition = 3;</code>
-     * @return The isLocalPartition.
-     */
-    @java.lang.Override
-    public boolean getIsLocalPartition() {
-      return isLocalPartition_;
-    }
-    /**
-     * <code>bool is_local_partition = 3;</code>
-     * @param value The isLocalPartition to set.
-     * @return This builder for chaining.
-     */
-    public Builder setIsLocalPartition(boolean value) {
-
-      isLocalPartition_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>bool is_local_partition = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearIsLocalPartition() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      isLocalPartition_ = false;
-      onChanged();
-      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetricWindow)

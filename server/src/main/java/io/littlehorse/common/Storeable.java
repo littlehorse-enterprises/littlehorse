@@ -74,7 +74,7 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.TASK_METRIC_UPDATE;
             case "PartitionMetricsModel":
                 return StoreableType.PARTITION_METRICS;
-            case "MetricWindowModel":
+            case "PartitionMetricWindowModel":
                 return StoreableType.PARTITION_METRICS;
             case "InitializationLogModel":
                 return StoreableType.INITIALIZATION_LOG;

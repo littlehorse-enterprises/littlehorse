@@ -294,7 +294,7 @@ public class CoreProcessorContext implements ExecutionContext {
         return new AuthorizationContextImpl(principalId, tenantId, List.of(), false);
     }
 
-    private KeyValueStore<String, Bytes> nativeCoreStore() {
+    public KeyValueStore<String, Bytes> nativeCoreStore() {
         return processorContext.getStateStore(ServerTopology.CORE_STORE);
     }
 

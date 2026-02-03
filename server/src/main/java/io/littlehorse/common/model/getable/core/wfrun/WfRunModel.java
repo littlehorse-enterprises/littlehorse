@@ -51,7 +51,7 @@ import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
-import io.littlehorse.server.streams.topology.core.MetricWindowModel;
+import io.littlehorse.server.streams.topology.core.PartitionMetricWindowModel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -682,18 +682,14 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     private void trackMetrics(CoreProcessorContext processorContext) {
         Date windowStart = alignToMinute(new Date());
 
-        // Key format: metrics/wf/partition/{wfSpecId}/{windowStart}
         String storeKey =
                 String.format("metrics/wf/partition/%s/%s", wfSpecId.toString(), LHUtil.toLhDbFormat(windowStart));
 
-        MetricWindowModel metricWindow = processorContext.getCoreStore().get(storeKey, MetricWindowModel.class);
+        PartitionMetricWindowModel metricWindow = processorContext.getCoreStore().get(storeKey, PartitionMetricWindowModel.class);
         if (metricWindow == null) {
-            metricWindow = new MetricWindowModel(wfSpecId, windowStart);
+            metricWindow = new PartitionMetricWindowModel(wfSpecId, windowStart,true);
         }
-
-        // Delegate all metric calculation logic to MetricWindowModel
         metricWindow.trackWfRun(status, startTime, endTime);
-
         processorContext.getCoreStore().put(metricWindow);
     }
 

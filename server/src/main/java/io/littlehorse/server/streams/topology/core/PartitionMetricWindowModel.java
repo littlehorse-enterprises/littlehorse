@@ -4,10 +4,12 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.proto.PartitionMetricWindow;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.CountAndTiming;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.MetricWindow;
 import io.littlehorse.sdk.common.proto.MetricWindowId;
 import io.littlehorse.sdk.common.proto.WorkflowMetricId;
@@ -15,34 +17,30 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
+import lombok.Setter;
 
-public class MetricWindowModel extends Storeable<MetricWindow> {
+@Getter
+@Setter
+public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow> {
 
-    @Getter
     private MetricWindowId.IdCase metricType;
 
-    @Getter
     private WfSpecIdModel wfSpecId;
 
-    @Getter
     private Date windowStart;
 
-    @Getter
-    private Map<String, CountAndTimingModel> metrics = new HashMap<>();
+    private Map<String, CountAndTimingModel> metrics;
 
-    @Getter
-    private boolean isLocalPartition = true;
+    private boolean isLocalPartition;
 
-    public MetricWindowModel() {}
 
-    public MetricWindowModel(WfSpecIdModel wfSpecId, Date windowStart) {
-        this(wfSpecId, windowStart, true);
-    }
+    public PartitionMetricWindowModel() {}
 
-    public MetricWindowModel(WfSpecIdModel wfSpecId, Date windowStart, boolean isLocalPartition) {
+    public PartitionMetricWindowModel(WfSpecIdModel wfSpecId, Date windowStart, boolean isLocalPartition) {
         this.metricType = MetricWindowId.IdCase.WORKFLOW;
         this.wfSpecId = wfSpecId;
         this.windowStart = alignToMinute(windowStart);
+        this.metrics = new HashMap<>();
         this.isLocalPartition = isLocalPartition;
     }
 
@@ -58,7 +56,7 @@ public class MetricWindowModel extends Storeable<MetricWindow> {
         timing.add(count, latencyMs);
     }
 
-    public void mergeFrom(MetricWindowModel other) {
+    public void mergeFrom(PartitionMetricWindowModel other) {
         if (other == null) {
             return;
         }
@@ -80,7 +78,7 @@ public class MetricWindowModel extends Storeable<MetricWindow> {
         }
     }
 
-    public void trackWfRun(io.littlehorse.sdk.common.proto.LHStatus status, Date startTime, Date endTime) {
+    public void trackWfRun(LHStatus status, Date startTime, Date endTime) {
         long latencyMs = 0;
         if (startTime != null && endTime != null) {
             latencyMs = endTime.getTime() - startTime.getTime();
@@ -113,7 +111,6 @@ public class MetricWindowModel extends Storeable<MetricWindow> {
                 this.windowStart = LHUtil.fromProtoTs(id.getWindowStart());
             }
         }
-        this.isLocalPartition = true;
         this.metrics = new HashMap<>();
         for (Map.Entry<String, CountAndTiming> entry : p.getMetricsMap().entrySet()) {
             CountAndTimingModel model = new CountAndTimingModel();

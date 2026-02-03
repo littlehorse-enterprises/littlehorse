@@ -7,6 +7,7 @@ option java_package = "io.littlehorse.common.proto";
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
 import "variable.proto";
+import "metrics.proto";
 
 
 
@@ -148,4 +149,11 @@ message NodeOutput {
   string node_name = 3;
   VariableValue value = 4;
   google.protobuf.Timestamp created_at = 5;
+}
+
+message PartitionMetricWindow {
+  google.protobuf.Timestamp window_start = 1;
+  TenantId tenant_id = 2;
+  map<string, CountAndTiming> metrics = 3;
+  WfSpecId wf_spec_id = 4;
 }

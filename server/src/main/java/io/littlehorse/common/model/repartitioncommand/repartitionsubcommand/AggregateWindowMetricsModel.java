@@ -9,7 +9,7 @@ import io.littlehorse.common.proto.AggregateWindowMetrics;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetricWindowModel;
+import io.littlehorse.server.streams.topology.core.PartitionMetricWindowModel;
 import lombok.Getter;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
@@ -19,11 +19,11 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
 
     private WfSpecIdModel wfSpecId;
     private TenantIdModel tenantId;
-    private MetricWindowModel metricWindow;
+    private PartitionMetricWindowModel metricWindow;
 
     public AggregateWindowMetricsModel() {}
 
-    public AggregateWindowMetricsModel(WfSpecIdModel wfSpecId, TenantIdModel tenantId, MetricWindowModel metricWindow) {
+    public AggregateWindowMetricsModel(WfSpecIdModel wfSpecId, TenantIdModel tenantId, PartitionMetricWindowModel metricWindow) {
         this.wfSpecId = wfSpecId;
         this.tenantId = tenantId;
         this.metricWindow = metricWindow;
@@ -34,7 +34,7 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
         AggregateWindowMetrics p = (AggregateWindowMetrics) proto;
         this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
         this.tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
-        this.metricWindow = LHSerializable.fromProto(p.getMetricWindow(), MetricWindowModel.class, context);
+        this.metricWindow = LHSerializable.fromProto(p.getMetricWindow(), PartitionMetricWindowModel.class, context);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
     @Override
     public void process(TenantScopedStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
         String consolidatedKey = metricWindow.getStoreKey().replace("/partition/", "/");
-        MetricWindowModel existingMetric = repartitionedStore.get(consolidatedKey, MetricWindowModel.class);
+        PartitionMetricWindowModel existingMetric = repartitionedStore.get(consolidatedKey, PartitionMetricWindowModel.class);
 
         System.out.println(
                 "AggregateWindowMetricsModel.process() - incoming metric key: " + metricWindow.getStoreKey());
@@ -69,7 +69,7 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
 
         // Always create a new consolidated metric with isLocalPartition=false
         // This ensures the key is generated correctly when saving
-        MetricWindowModel consolidatedMetric = new MetricWindowModel(
+        PartitionMetricWindowModel consolidatedMetric = new PartitionMetricWindowModel(
                 metricWindow.getWfSpecId(),
                 metricWindow.getWindowStart(),
                 false // isLocalPartition=false for consolidated metrics
