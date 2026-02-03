@@ -41,17 +41,17 @@ public interface AggregateWindowMetricsOrBuilder extends
   io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder();
 
   /**
-   * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+   * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
    * @return Whether the metricWindow field is set.
    */
   boolean hasMetricWindow();
   /**
-   * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+   * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
    * @return The metricWindow.
    */
-  io.littlehorse.sdk.common.proto.MetricWindow getMetricWindow();
+  io.littlehorse.common.proto.PartitionMetricWindow getMetricWindow();
   /**
-   * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+   * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.MetricWindowOrBuilder getMetricWindowOrBuilder();
+  io.littlehorse.common.proto.PartitionMetricWindowOrBuilder getMetricWindowOrBuilder();
 }

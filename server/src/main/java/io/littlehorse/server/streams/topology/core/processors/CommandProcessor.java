@@ -229,7 +229,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 new RepartitionCommand(repartitionSubCommand, new Date(), repartitionSubCommand.getPartitionKey());
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.partitionKey = repartitionSubCommand.getPartitionKey();
-        cpo.topic = this.config.getRepartitionTopicName();
+        cpo.topic = this.config.getCoreCmdTopicName();
         cpo.payload = repartitionCommand;
         Record<String, CommandProcessorOutput> out = new Record<>(
                 cpo.partitionKey,

@@ -49,13 +49,7 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
         RepartitionExecutionContext repartitionContext = buildExecutionContext(record.headers());
         if (record.value() != null) {
             TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(record.headers());
-            log.info(
-                    "Processing RepartitionCommand: {} for tenant {}",
-                    record.value().getType(),
-                    tenantId);
             record.value().process(TenantScopedStore.newInstance(nativeStore, tenantId, repartitionContext), ctx);
-            log.info(
-                    "Finished processing RepartitionCommand: {}", record.value().getType());
         }
     }
 

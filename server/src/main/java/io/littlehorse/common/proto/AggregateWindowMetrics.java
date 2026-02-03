@@ -97,9 +97,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int METRIC_WINDOW_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.MetricWindow metricWindow_;
+  private io.littlehorse.common.proto.PartitionMetricWindow metricWindow_;
   /**
-   * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+   * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
    * @return Whether the metricWindow field is set.
    */
   @java.lang.Override
@@ -107,19 +107,19 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+   * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
    * @return The metricWindow.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.MetricWindow getMetricWindow() {
-    return metricWindow_ == null ? io.littlehorse.sdk.common.proto.MetricWindow.getDefaultInstance() : metricWindow_;
+  public io.littlehorse.common.proto.PartitionMetricWindow getMetricWindow() {
+    return metricWindow_ == null ? io.littlehorse.common.proto.PartitionMetricWindow.getDefaultInstance() : metricWindow_;
   }
   /**
-   * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+   * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.MetricWindowOrBuilder getMetricWindowOrBuilder() {
-    return metricWindow_ == null ? io.littlehorse.sdk.common.proto.MetricWindow.getDefaultInstance() : metricWindow_;
+  public io.littlehorse.common.proto.PartitionMetricWindowOrBuilder getMetricWindowOrBuilder() {
+    return metricWindow_ == null ? io.littlehorse.common.proto.PartitionMetricWindow.getDefaultInstance() : metricWindow_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -755,31 +755,31 @@ private static final long serialVersionUID = 0L;
       return tenantIdBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.MetricWindow metricWindow_;
+    private io.littlehorse.common.proto.PartitionMetricWindow metricWindow_;
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.MetricWindow, io.littlehorse.sdk.common.proto.MetricWindow.Builder, io.littlehorse.sdk.common.proto.MetricWindowOrBuilder> metricWindowBuilder_;
+        io.littlehorse.common.proto.PartitionMetricWindow, io.littlehorse.common.proto.PartitionMetricWindow.Builder, io.littlehorse.common.proto.PartitionMetricWindowOrBuilder> metricWindowBuilder_;
     /**
-     * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
      * @return Whether the metricWindow field is set.
      */
     public boolean hasMetricWindow() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
      * @return The metricWindow.
      */
-    public io.littlehorse.sdk.common.proto.MetricWindow getMetricWindow() {
+    public io.littlehorse.common.proto.PartitionMetricWindow getMetricWindow() {
       if (metricWindowBuilder_ == null) {
-        return metricWindow_ == null ? io.littlehorse.sdk.common.proto.MetricWindow.getDefaultInstance() : metricWindow_;
+        return metricWindow_ == null ? io.littlehorse.common.proto.PartitionMetricWindow.getDefaultInstance() : metricWindow_;
       } else {
         return metricWindowBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
      */
-    public Builder setMetricWindow(io.littlehorse.sdk.common.proto.MetricWindow value) {
+    public Builder setMetricWindow(io.littlehorse.common.proto.PartitionMetricWindow value) {
       if (metricWindowBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -793,10 +793,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
      */
     public Builder setMetricWindow(
-        io.littlehorse.sdk.common.proto.MetricWindow.Builder builderForValue) {
+        io.littlehorse.common.proto.PartitionMetricWindow.Builder builderForValue) {
       if (metricWindowBuilder_ == null) {
         metricWindow_ = builderForValue.build();
       } else {
@@ -807,13 +807,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
      */
-    public Builder mergeMetricWindow(io.littlehorse.sdk.common.proto.MetricWindow value) {
+    public Builder mergeMetricWindow(io.littlehorse.common.proto.PartitionMetricWindow value) {
       if (metricWindowBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0) &&
           metricWindow_ != null &&
-          metricWindow_ != io.littlehorse.sdk.common.proto.MetricWindow.getDefaultInstance()) {
+          metricWindow_ != io.littlehorse.common.proto.PartitionMetricWindow.getDefaultInstance()) {
           getMetricWindowBuilder().mergeFrom(value);
         } else {
           metricWindow_ = value;
@@ -828,7 +828,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
      */
     public Builder clearMetricWindow() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -841,33 +841,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.MetricWindow.Builder getMetricWindowBuilder() {
+    public io.littlehorse.common.proto.PartitionMetricWindow.Builder getMetricWindowBuilder() {
       bitField0_ |= 0x00000004;
       onChanged();
       return internalGetMetricWindowFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.MetricWindowOrBuilder getMetricWindowOrBuilder() {
+    public io.littlehorse.common.proto.PartitionMetricWindowOrBuilder getMetricWindowOrBuilder() {
       if (metricWindowBuilder_ != null) {
         return metricWindowBuilder_.getMessageOrBuilder();
       } else {
         return metricWindow_ == null ?
-            io.littlehorse.sdk.common.proto.MetricWindow.getDefaultInstance() : metricWindow_;
+            io.littlehorse.common.proto.PartitionMetricWindow.getDefaultInstance() : metricWindow_;
       }
     }
     /**
-     * <code>.littlehorse.MetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.MetricWindow, io.littlehorse.sdk.common.proto.MetricWindow.Builder, io.littlehorse.sdk.common.proto.MetricWindowOrBuilder> 
+        io.littlehorse.common.proto.PartitionMetricWindow, io.littlehorse.common.proto.PartitionMetricWindow.Builder, io.littlehorse.common.proto.PartitionMetricWindowOrBuilder> 
         internalGetMetricWindowFieldBuilder() {
       if (metricWindowBuilder_ == null) {
         metricWindowBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.MetricWindow, io.littlehorse.sdk.common.proto.MetricWindow.Builder, io.littlehorse.sdk.common.proto.MetricWindowOrBuilder>(
+            io.littlehorse.common.proto.PartitionMetricWindow, io.littlehorse.common.proto.PartitionMetricWindow.Builder, io.littlehorse.common.proto.PartitionMetricWindowOrBuilder>(
                 getMetricWindow(),
                 getParentForChildren(),
                 isClean());

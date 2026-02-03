@@ -42,7 +42,7 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
         AggregateWindowMetrics.Builder out = AggregateWindowMetrics.newBuilder();
         out.setWfSpecId(wfSpecId.toProto());
         out.setTenantId(tenantId.toProto());
-        // out.setMetricWindow(metricWindow.toProto());
+        out.setMetricWindow(metricWindow.toProto());
         return out;
     }
 
