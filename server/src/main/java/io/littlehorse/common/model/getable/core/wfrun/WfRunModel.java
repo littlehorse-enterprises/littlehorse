@@ -29,6 +29,7 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
@@ -48,6 +49,7 @@ import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
@@ -681,16 +683,25 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
     private void trackMetrics(CoreProcessorContext processorContext) {
         Date windowStart = alignToMinute(new Date());
+        TenantIdModel tenantId = processorContext.authorization().tenantId();
 
-        String storeKey =
-                String.format("metrics/wf/partition/%s/%s", wfSpecId.toString(), LHUtil.toLhDbFormat(windowStart));
+        String storeKey = String.format(
+                "metrics/window/%s/%s/%s/%s",
+                LHUtil.toLhDbFormat(windowStart),
+                tenantId.toString(),
+                "wf",
+                wfSpecId.toString());
 
-        PartitionMetricWindowModel metricWindow = processorContext.getCoreStore().get(storeKey, PartitionMetricWindowModel.class);
+        ClusterScopedStore globalStore =
+                ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
+        
+        PartitionMetricWindowModel metricWindow =
+                globalStore.get(storeKey, PartitionMetricWindowModel.class);
         if (metricWindow == null) {
-            metricWindow = new PartitionMetricWindowModel(wfSpecId, windowStart,true);
+            metricWindow = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
         }
         metricWindow.trackWfRun(status, startTime, endTime);
-        processorContext.getCoreStore().put(metricWindow);
+        globalStore.put(metricWindow);
     }
 
     private Date alignToMinute(Date date) {

@@ -42,7 +42,7 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
         AggregateWindowMetrics.Builder out = AggregateWindowMetrics.newBuilder();
         out.setWfSpecId(wfSpecId.toProto());
         out.setTenantId(tenantId.toProto());
-        out.setMetricWindow(metricWindow.toProto());
+        // out.setMetricWindow(metricWindow.toProto());
         return out;
     }
 
@@ -58,42 +58,42 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
 
     @Override
     public void process(TenantScopedStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
-        String consolidatedKey = metricWindow.getStoreKey().replace("/partition/", "/");
-        PartitionMetricWindowModel existingMetric = repartitionedStore.get(consolidatedKey, PartitionMetricWindowModel.class);
+        // String consolidatedKey = metricWindow.getStoreKey().replace("/partition/", "/");
+        // PartitionMetricWindowModel existingMetric = repartitionedStore.get(consolidatedKey, PartitionMetricWindowModel.class);
 
-        System.out.println(
-                "AggregateWindowMetricsModel.process() - incoming metric key: " + metricWindow.getStoreKey());
-        System.out.println("AggregateWindowMetricsModel.process() - incoming isLocalPartition: "
-                + metricWindow.isLocalPartition());
-        System.out.println("AggregateWindowMetricsModel.process() - consolidatedKey: " + consolidatedKey);
+        // System.out.println(
+        //         "AggregateWindowMetricsModel.process() - incoming metric key: " + metricWindow.getStoreKey());
+        // System.out.println("AggregateWindowMetricsModel.process() - incoming isLocalPartition: "
+        //         + metricWindow.isLocalPartition());
+        // System.out.println("AggregateWindowMetricsModel.process() - consolidatedKey: " + consolidatedKey);
 
-        // Always create a new consolidated metric with isLocalPartition=false
-        // This ensures the key is generated correctly when saving
-        PartitionMetricWindowModel consolidatedMetric = new PartitionMetricWindowModel(
-                metricWindow.getWfSpecId(),
-                metricWindow.getWindowStart(),
-                false // isLocalPartition=false for consolidated metrics
-                );
+        // // Always create a new consolidated metric with isLocalPartition=false
+        // // This ensures the key is generated correctly when saving
+        // PartitionMetricWindowModel consolidatedMetric = new PartitionMetricWindowModel(
+        //         metricWindow.getWfSpecId(),
+        //         metricWindow.getWindowStart(),
+        //         false // isLocalPartition=false for consolidated metrics
+        //         );
 
-        // Merge existing data if any
-        if (existingMetric != null) {
-            consolidatedMetric.mergeFrom(existingMetric);
-        }
+        // // Merge existing data if any
+        // if (existingMetric != null) {
+        //     consolidatedMetric.mergeFrom(existingMetric);
+        // }
 
-        // Merge the incoming partition data
-        consolidatedMetric.mergeFrom(metricWindow);
+        // // Merge the incoming partition data
+        // consolidatedMetric.mergeFrom(metricWindow);
 
-        System.out.println(
-                "AggregateWindowMetricsModel.process() - consolidated metric key: " + consolidatedMetric.getStoreKey());
-        System.out.println("AggregateWindowMetricsModel.process() - consolidated getFullStoreKey: "
-                + consolidatedMetric.getFullStoreKey());
-        System.out.println("AggregateWindowMetricsModel.process() - consolidated isLocalPartition: "
-                + consolidatedMetric.isLocalPartition());
-        System.out.println("AggregateWindowMetricsModel.process() - saving with "
-                + consolidatedMetric.getMetrics().size() + " metric entries");
-        // Save the consolidated metric back to the store
-        repartitionedStore.put(consolidatedMetric);
-        System.out.println("AggregateWindowMetricsModel.process() - SAVED - now key would be: "
-                + consolidatedMetric.getStoreKey());
+        // System.out.println(
+        //         "AggregateWindowMetricsModel.process() - consolidated metric key: " + consolidatedMetric.getStoreKey());
+        // System.out.println("AggregateWindowMetricsModel.process() - consolidated getFullStoreKey: "
+        //         + consolidatedMetric.getFullStoreKey());
+        // System.out.println("AggregateWindowMetricsModel.process() - consolidated isLocalPartition: "
+        //         + consolidatedMetric.isLocalPartition());
+        // System.out.println("AggregateWindowMetricsModel.process() - saving with "
+        //         + consolidatedMetric.getMetrics().size() + " metric entries");
+        // // Save the consolidated metric back to the store
+        // repartitionedStore.put(consolidatedMetric);
+        // System.out.println("AggregateWindowMetricsModel.process() - SAVED - now key would be: "
+        //         + consolidatedMetric.getStoreKey());
     }
 }

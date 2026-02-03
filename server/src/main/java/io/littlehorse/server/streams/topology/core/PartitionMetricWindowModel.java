@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.topology.core;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.PartitionMetricWindow;
 import io.littlehorse.common.proto.StoreableType;
@@ -10,9 +11,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.CountAndTiming;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.MetricWindow;
 import io.littlehorse.sdk.common.proto.MetricWindowId;
-import io.littlehorse.sdk.common.proto.WorkflowMetricId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,17 +30,17 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
 
     private Map<String, CountAndTimingModel> metrics;
 
-    private boolean isLocalPartition;
-
+    private TenantIdModel tenantId;
 
     public PartitionMetricWindowModel() {}
 
-    public PartitionMetricWindowModel(WfSpecIdModel wfSpecId, Date windowStart, boolean isLocalPartition) {
+    public PartitionMetricWindowModel(
+            WfSpecIdModel wfSpecId, Date windowStart, TenantIdModel tenantId) {
         this.metricType = MetricWindowId.IdCase.WORKFLOW;
         this.wfSpecId = wfSpecId;
         this.windowStart = alignToMinute(windowStart);
         this.metrics = new HashMap<>();
-        this.isLocalPartition = isLocalPartition;
+        this.tenantId = tenantId;
     }
 
     private Date alignToMinute(Date date) {
@@ -96,21 +95,21 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
-        MetricWindow p = (MetricWindow) proto;
+        PartitionMetricWindow p = (PartitionMetricWindow) proto;
 
-        if (p.hasId()) {
-            MetricWindowId id = p.getId();
-            this.metricType = id.getIdCase();
-            if (id.hasWorkflow()) {
-                WorkflowMetricId workflowId = id.getWorkflow();
-                if (workflowId.hasWfSpec()) {
-                    this.wfSpecId = LHSerializable.fromProto(workflowId.getWfSpec(), WfSpecIdModel.class, context);
-                }
-            }
-            if (id.hasWindowStart()) {
-                this.windowStart = LHUtil.fromProtoTs(id.getWindowStart());
-            }
+        if (p.hasWindowStart()) {
+            this.windowStart = LHUtil.fromProtoTs(p.getWindowStart());
         }
+
+        if (p.hasTenantId()) {
+            this.tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
+        }
+
+        if (p.hasWfSpecId()) {
+            this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+        }
+
+        this.metricType = MetricWindowId.IdCase.WORKFLOW;
         this.metrics = new HashMap<>();
         for (Map.Entry<String, CountAndTiming> entry : p.getMetricsMap().entrySet()) {
             CountAndTimingModel model = new CountAndTimingModel();
@@ -123,22 +122,20 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
     }
 
     @Override
-    public MetricWindow.Builder toProto() {
-        MetricWindow.Builder builder = MetricWindow.newBuilder();
-        // isLocalPartition is not serialized - it's determined by the key format
-
-        WorkflowMetricId.Builder workflowIdBuilder = WorkflowMetricId.newBuilder();
-        if (wfSpecId != null) {
-            workflowIdBuilder.setWfSpec(wfSpecId.toProto());
-        }
-
-        MetricWindowId.Builder idBuilder = MetricWindowId.newBuilder().setWorkflow(workflowIdBuilder.build());
+    public PartitionMetricWindow.Builder toProto() {
+        PartitionMetricWindow.Builder builder = PartitionMetricWindow.newBuilder();
 
         if (windowStart != null) {
-            idBuilder.setWindowStart(LHUtil.fromDate(windowStart));
+            builder.setWindowStart(LHUtil.fromDate(windowStart));
         }
 
-        builder.setId(idBuilder.build());
+        if (tenantId != null) {
+            builder.setTenantId(tenantId.toProto());
+        }
+
+        if (wfSpecId != null) {
+            builder.setWfSpecId(wfSpecId.toProto());
+        }
 
         for (Map.Entry<String, CountAndTimingModel> entry : metrics.entrySet()) {
             builder.putMetrics(entry.getKey(), entry.getValue().toProto());
@@ -147,23 +144,18 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
     }
 
     @Override
-    public Class<MetricWindow> getProtoBaseClass() {
-        return MetricWindow.class;
+    public Class<PartitionMetricWindow> getProtoBaseClass() {
+        return PartitionMetricWindow.class;
     }
 
     @Override
     public String getStoreKey() {
-        // Format for partition-local: metrics/{type}/partition/{id}/{windowStart}
-        // Format for consolidated: metrics/{type}/{id}/{windowStart}
+        // Format: metrics/window/{windowStart}/{tenantId}/{type}/{specId}
         String typeStr = getMetricTypeString();
+        String tenantStr = tenantId != null ? tenantId.toString() : "null";
         String idStr = wfSpecId != null ? wfSpecId.toString() : "null";
         String windowStr = windowStart != null ? LHUtil.toLhDbFormat(windowStart) : "0";
-
-        if (isLocalPartition) {
-            return String.format("metrics/%s/partition/%s/%s", typeStr, idStr, windowStr);
-        } else {
-            return String.format("metrics/%s/%s/%s", typeStr, idStr, windowStr);
-        }
+        return String.format("metrics/%s/%s/%s/%s", windowStr, tenantStr, typeStr, idStr);
     }
 
     private String getMetricTypeString() {
