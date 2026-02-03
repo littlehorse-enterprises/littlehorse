@@ -2,11 +2,15 @@ package io.littlehorse.common.model.repartitioncommand.repartitionsubcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
+import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.AggregateWindowMetrics;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
+import io.littlehorse.sdk.common.proto.MetricWindow;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.PartitionMetricWindowModel;
@@ -58,42 +62,23 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
 
     @Override
     public void process(TenantScopedStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
-        // String consolidatedKey = metricWindow.getStoreKey().replace("/partition/", "/");
-        // PartitionMetricWindowModel existingMetric = repartitionedStore.get(consolidatedKey, PartitionMetricWindowModel.class);
-
-        // System.out.println(
-        //         "AggregateWindowMetricsModel.process() - incoming metric key: " + metricWindow.getStoreKey());
-        // System.out.println("AggregateWindowMetricsModel.process() - incoming isLocalPartition: "
-        //         + metricWindow.isLocalPartition());
-        // System.out.println("AggregateWindowMetricsModel.process() - consolidatedKey: " + consolidatedKey);
-
-        // // Always create a new consolidated metric with isLocalPartition=false
-        // // This ensures the key is generated correctly when saving
-        // PartitionMetricWindowModel consolidatedMetric = new PartitionMetricWindowModel(
-        //         metricWindow.getWfSpecId(),
-        //         metricWindow.getWindowStart(),
-        //         false // isLocalPartition=false for consolidated metrics
-        //         );
-
-        // // Merge existing data if any
-        // if (existingMetric != null) {
-        //     consolidatedMetric.mergeFrom(existingMetric);
-        // }
-
-        // // Merge the incoming partition data
-        // consolidatedMetric.mergeFrom(metricWindow);
-
-        // System.out.println(
-        //         "AggregateWindowMetricsModel.process() - consolidated metric key: " + consolidatedMetric.getStoreKey());
-        // System.out.println("AggregateWindowMetricsModel.process() - consolidated getFullStoreKey: "
-        //         + consolidatedMetric.getFullStoreKey());
-        // System.out.println("AggregateWindowMetricsModel.process() - consolidated isLocalPartition: "
-        //         + consolidatedMetric.isLocalPartition());
-        // System.out.println("AggregateWindowMetricsModel.process() - saving with "
-        //         + consolidatedMetric.getMetrics().size() + " metric entries");
-        // // Save the consolidated metric back to the store
-        // repartitionedStore.put(consolidatedMetric);
-        // System.out.println("AggregateWindowMetricsModel.process() - SAVED - now key would be: "
-        //         + consolidatedMetric.getStoreKey());
+        MetricWindowIdModel id = new MetricWindowIdModel(wfSpecId, metricWindow.getWindowStart());
+        
+        StoredGetable<MetricWindow, MetricWindowModel> storedMetric = 
+                repartitionedStore.get(id.getStoreableKey(), StoredGetable.class);
+        
+        MetricWindowModel consolidatedMetric;
+        if (storedMetric == null) {
+            // Create new consolidated metric window
+            consolidatedMetric = new MetricWindowModel(wfSpecId, metricWindow.getWindowStart());
+        } else {
+            consolidatedMetric = storedMetric.getStoredObject();
+        }
+        
+        // Merge the partition metrics into the consolidated window
+        consolidatedMetric.mergeFrom(metricWindow);
+        
+        // Save the consolidated metric back to the store
+        repartitionedStore.put(new StoredGetable<>(consolidatedMetric));
     }
 }

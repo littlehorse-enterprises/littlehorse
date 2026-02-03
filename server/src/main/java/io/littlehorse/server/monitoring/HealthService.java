@@ -245,7 +245,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             while (iter.hasNext()) {
 
                 String key = iter.next().key;
-                if (key.contains("/metrics/")) {
+                if (key.contains("/metrics/") || key.contains("/21/")) {
                     result.add(key);
                 }
             }
