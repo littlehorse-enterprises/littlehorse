@@ -294,10 +294,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 .setStatus(status)
                 .setStartTime(LHUtil.fromDate(startTime));
 
-        int greatestThreadRunNumber = 0;
-        for (ThreadRunModel threadRunModel : threadRunsUseMeCarefully) {
-            greatestThreadRunNumber = Math.max(greatestThreadRunNumber, threadRunModel.getNumber());
-        }
         out.setGreatestThreadrunNumber(greatestThreadRunNumber);
 
         if (endTime != null) {
