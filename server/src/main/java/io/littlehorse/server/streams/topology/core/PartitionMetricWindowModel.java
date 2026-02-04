@@ -42,6 +42,7 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         this.metrics = new HashMap<>();
         this.tenantId = tenantId;
     }
+
     public PartitionMetricWindowModel(WfSpecIdModel wfSpecId, TenantIdModel tenantId) {
         this.metricType = MetricWindowId.IdCase.WORKFLOW;
         this.wfSpecId = wfSpecId;

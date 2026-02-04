@@ -34,6 +34,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -345,7 +349,7 @@ public class LHUtil {
     }
 
     public static Date getCurrentWindowTime() {
-        return Date.from(new Date().toInstant().truncatedTo(ChronoUnit.MINUTES));
+         return Date.from(Instant.now().truncatedTo(ChronoUnit.MINUTES));
     }
 
     /**

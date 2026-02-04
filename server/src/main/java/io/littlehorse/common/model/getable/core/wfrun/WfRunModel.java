@@ -54,7 +54,6 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import io.littlehorse.server.streams.topology.core.PartitionMetricWindowModel;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -700,7 +699,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         metricWindow.trackWfRun(previousStatus, status, startTime, endTime);
         clusterScopedStore.put(metricWindow);
     }
-
 
     private boolean isTerminated() {
         switch (status) {
