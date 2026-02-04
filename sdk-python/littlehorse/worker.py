@@ -183,15 +183,15 @@ class WorkerContext:
         return extract_value(checkpoint.value)
 
     def _save_checkpoint(self, callable: Callable[..., Any]) -> Any:
-        checkpointContext: CheckpointContext = CheckpointContext()
-        result: Any = callable(checkpointContext)
+        checkpoint_context: CheckpointContext = CheckpointContext()
+        result: Any = callable(checkpoint_context)
 
         response: PutCheckpointResponse = self._client.PutCheckpoint(
             PutCheckpointRequest(
                 task_run_id=self._scheduled_task.task_run_id,
                 task_attempt=self._scheduled_task.attempt_number,
                 value=to_variable_value(result),
-                logs=checkpointContext.log_output,
+                logs=checkpoint_context.log_output,
             )
         )
 
