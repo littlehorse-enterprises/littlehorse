@@ -194,6 +194,8 @@ export enum WaitForThreadsRun_WaitingThreadStatus {
    * run of a Failure Handler for the Failure that was thrown.
    */
   THREAD_UNSUCCESSFUL = "THREAD_UNSUCCESSFUL",
+  /** THREAD_STOPPED - The `ThreadRun` was halted because another sibling thread completed or failed. */
+  THREAD_STOPPED = "THREAD_STOPPED",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -211,6 +213,9 @@ export function waitForThreadsRun_WaitingThreadStatusFromJSON(object: any): Wait
     case 3:
     case "THREAD_UNSUCCESSFUL":
       return WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL;
+    case 4:
+    case "THREAD_STOPPED":
+      return WaitForThreadsRun_WaitingThreadStatus.THREAD_STOPPED;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -228,6 +233,8 @@ export function waitForThreadsRun_WaitingThreadStatusToJSON(object: WaitForThrea
       return "THREAD_COMPLETED_OR_FAILURE_HANDLED";
     case WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL:
       return "THREAD_UNSUCCESSFUL";
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_STOPPED:
+      return "THREAD_STOPPED";
     case WaitForThreadsRun_WaitingThreadStatus.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -244,6 +251,8 @@ export function waitForThreadsRun_WaitingThreadStatusToNumber(object: WaitForThr
       return 2;
     case WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL:
       return 3;
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_STOPPED:
+      return 4;
     case WaitForThreadsRun_WaitingThreadStatus.UNRECOGNIZED:
     default:
       return -1;

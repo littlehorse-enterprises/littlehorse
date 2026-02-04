@@ -41,6 +41,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WaitForChildWfNode;
 import io.littlehorse.sdk.common.proto.WaitForConditionNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
+import io.littlehorse.sdk.common.proto.WaitForThreadsStrategy;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.LHExpression;
@@ -856,7 +857,23 @@ final class WorkflowThreadImpl implements WorkflowThread {
     @Override
     public WaitForThreadsNodeOutput waitForThreads(SpawnedThreads threads) {
         checkIfIsActive();
-        WaitForThreadsNode waitNode = threads.buildNode();
+        WaitForThreadsNode waitNode = threads.buildNode(WaitForThreadsStrategy.WAIT_FOR_ALL);
+        String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode);
+        return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
+    }
+
+    @Override
+    public WaitForThreadsNodeOutput waitForFirstOf(SpawnedThreads threads) {
+        checkIfIsActive();
+        WaitForThreadsNode waitNode = threads.buildNode(WaitForThreadsStrategy.WAIT_FOR_FIRST);
+        String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode);
+        return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
+    }
+
+    @Override
+    public WaitForThreadsNodeOutput waitForAnyOf(SpawnedThreads threads) {
+        checkIfIsActive();
+        WaitForThreadsNode waitNode = threads.buildNode(WaitForThreadsStrategy.WAIT_FOR_ANY);
         String nodeName = addNode("threads", NodeCase.WAIT_FOR_THREADS, waitNode);
         return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
     }

@@ -67,6 +67,11 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_TaskQueueHint_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_TimerIteratorHint_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_TimerIteratorHint_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_NodeOutput_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -104,31 +109,34 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
       "\014event_def_id\030\002 \001(\0132\037.littlehorse.Extern" +
       "alEventDefId\022\027\n\017correlation_key\030\003 \001(\t\"M\n" +
       "\rTaskQueueHint\022<\n\030last_processed_timesta" +
-      "mp\030\001 \001(\0132\032.google.protobuf.Timestamp\"\260\001\n" +
-      "\nNodeOutput\022\031\n\021thread_run_number\030\001 \001(\005\022\031" +
-      "\n\021node_run_position\030\002 \001(\005\022\021\n\tnode_name\030\003" +
-      " \001(\t\022)\n\005value\030\004 \001(\0132\032.littlehorse.Variab" +
-      "leValue\022.\n\ncreated_at\030\005 \001(\0132\032.google.pro" +
-      "tobuf.Timestamp*6\n\013LHStoreType\022\010\n\004CORE\020\000" +
-      "\022\014\n\010METADATA\020\001\022\017\n\013REPARTITION\020\002*\203\002\n\rStor" +
-      "eableType\022\022\n\016STORED_GETABLE\020\000\022\022\n\016SCHEDUL" +
-      "ED_TASK\020\001\022\024\n\020WF_METRIC_UPDATE\020\002\022\026\n\022TASK_" +
-      "METRIC_UPDATE\020\003\022\007\n\003TAG\020\005\022\025\n\021PARTITION_ME" +
-      "TRICS\020\006\022\026\n\022INITIALIZATION_LOG\020\010\022\032\n\026WFRUN" +
-      "_STORED_INVENTORY\020\t\022\026\n\022CORRELATION_MARKE" +
-      "R\020\n\022\023\n\017TASK_QUEUE_HINT\020\013\022\017\n\013NODE_OUTPUT\020" +
-      "\014\"\004\010\004\020\004\"\004\010\007\020\007*\212\003\n\020GetableClassEnum\022\014\n\010TA" +
-      "SK_DEF\020\000\022\026\n\022EXTERNAL_EVENT_DEF\020\001\022\013\n\007WF_S" +
-      "PEC\020\002\022\n\n\006WF_RUN\020\003\022\014\n\010NODE_RUN\020\004\022\014\n\010VARIA" +
-      "BLE\020\005\022\022\n\016EXTERNAL_EVENT\020\006\022\024\n\020TASK_DEF_ME" +
-      "TRICS\020\007\022\023\n\017WF_SPEC_METRICS\020\010\022\025\n\021TASK_WOR" +
-      "KER_GROUP\020\t\022\021\n\rUSER_TASK_DEF\020\n\022\014\n\010TASK_R" +
-      "UN\020\013\022\021\n\rUSER_TASK_RUN\020\014\022\r\n\tPRINCIPAL\020\r\022\n" +
-      "\n\006TENANT\020\016\022\026\n\022WORKFLOW_EVENT_DEF\020\017\022\022\n\016WO" +
-      "RKFLOW_EVENT\020\020\022\024\n\020SCHEDULED_WF_RUN\020\021\022\016\n\n" +
-      "STRUCT_DEF\020\022\022\024\n\020CORRELATED_EVENT\020\023\022\016\n\nCH" +
-      "ECKPOINT\020\024*\033\n\016TagStorageType\022\t\n\005LOCAL\020\000B" +
-      "\037\n\033io.littlehorse.common.protoP\001b\006proto3"
+      "mp\030\001 \001(\0132\032.google.protobuf.Timestamp\"M\n\021" +
+      "TimerIteratorHint\0228\n\024last_processed_time" +
+      "r\030\002 \001(\0132\032.google.protobuf.Timestamp\"\260\001\n\n" +
+      "NodeOutput\022\031\n\021thread_run_number\030\001 \001(\005\022\031\n" +
+      "\021node_run_position\030\002 \001(\005\022\021\n\tnode_name\030\003 " +
+      "\001(\t\022)\n\005value\030\004 \001(\0132\032.littlehorse.Variabl" +
+      "eValue\022.\n\ncreated_at\030\005 \001(\0132\032.google.prot" +
+      "obuf.Timestamp*6\n\013LHStoreType\022\010\n\004CORE\020\000\022" +
+      "\014\n\010METADATA\020\001\022\017\n\013REPARTITION\020\002*\244\002\n\rStore" +
+      "ableType\022\022\n\016STORED_GETABLE\020\000\022\022\n\016SCHEDULE" +
+      "D_TASK\020\001\022\024\n\020WF_METRIC_UPDATE\020\002\022\026\n\022TASK_M" +
+      "ETRIC_UPDATE\020\003\022\014\n\010LH_TIMER\020\004\022\007\n\003TAG\020\005\022\025\n" +
+      "\021PARTITION_METRICS\020\006\022\026\n\022INITIALIZATION_L" +
+      "OG\020\010\022\032\n\026WFRUN_STORED_INVENTORY\020\t\022\026\n\022CORR" +
+      "ELATION_MARKER\020\n\022\023\n\017TASK_QUEUE_HINT\020\013\022\017\n" +
+      "\013NODE_OUTPUT\020\014\022\027\n\023TIMER_ITERATOR_HINT\020\r\"" +
+      "\004\010\007\020\007*\212\003\n\020GetableClassEnum\022\014\n\010TASK_DEF\020\000" +
+      "\022\026\n\022EXTERNAL_EVENT_DEF\020\001\022\013\n\007WF_SPEC\020\002\022\n\n" +
+      "\006WF_RUN\020\003\022\014\n\010NODE_RUN\020\004\022\014\n\010VARIABLE\020\005\022\022\n" +
+      "\016EXTERNAL_EVENT\020\006\022\024\n\020TASK_DEF_METRICS\020\007\022" +
+      "\023\n\017WF_SPEC_METRICS\020\010\022\025\n\021TASK_WORKER_GROU" +
+      "P\020\t\022\021\n\rUSER_TASK_DEF\020\n\022\014\n\010TASK_RUN\020\013\022\021\n\r" +
+      "USER_TASK_RUN\020\014\022\r\n\tPRINCIPAL\020\r\022\n\n\006TENANT" +
+      "\020\016\022\026\n\022WORKFLOW_EVENT_DEF\020\017\022\022\n\016WORKFLOW_E" +
+      "VENT\020\020\022\024\n\020SCHEDULED_WF_RUN\020\021\022\016\n\nSTRUCT_D" +
+      "EF\020\022\022\024\n\020CORRELATED_EVENT\020\023\022\016\n\nCHECKPOINT" +
+      "\020\024*\033\n\016TagStorageType\022\t\n\005LOCAL\020\000B\037\n\033io.li" +
+      "ttlehorse.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -185,8 +193,14 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TaskQueueHint_descriptor,
         new java.lang.String[] { "LastProcessedTimestamp", });
-    internal_static_littlehorse_NodeOutput_descriptor =
+    internal_static_littlehorse_TimerIteratorHint_descriptor =
       getDescriptor().getMessageTypes().get(7);
+    internal_static_littlehorse_TimerIteratorHint_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_TimerIteratorHint_descriptor,
+        new java.lang.String[] { "LastProcessedTimer", });
+    internal_static_littlehorse_NodeOutput_descriptor =
+      getDescriptor().getMessageTypes().get(8);
     internal_static_littlehorse_NodeOutput_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_NodeOutput_descriptor,

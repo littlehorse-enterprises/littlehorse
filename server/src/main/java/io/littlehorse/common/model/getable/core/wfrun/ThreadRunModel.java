@@ -803,6 +803,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return status == LHStatus.COMPLETED || status == LHStatus.ERROR || status == LHStatus.EXCEPTION;
     }
 
+    public boolean isHalted() {
+        return status == LHStatus.HALTED;
+    }
+
     public VariableValueModel assignVariable(VariableAssignmentModel assn) throws LHVarSubError {
         return assignVariable(assn, new HashMap<>());
     }

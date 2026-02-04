@@ -38,6 +38,7 @@ private static final long serialVersionUID = 0L;
   }
   private WaitForThreadsNode() {
     perThreadFailureHandlers_ = java.util.Collections.emptyList();
+    strategy_ = 0;
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -1783,6 +1784,32 @@ private static final long serialVersionUID = 0L;
     return perThreadFailureHandlers_.get(index);
   }
 
+  public static final int STRATEGY_FIELD_NUMBER = 4;
+  private int strategy_ = 0;
+  /**
+   * <pre>
+   * Determines the strategy to wait for different threads in parallel.
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForThreadsStrategy strategy = 4;</code>
+   * @return The enum numeric value on the wire for strategy.
+   */
+  @java.lang.Override public int getStrategyValue() {
+    return strategy_;
+  }
+  /**
+   * <pre>
+   * Determines the strategy to wait for different threads in parallel.
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForThreadsStrategy strategy = 4;</code>
+   * @return The strategy.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.WaitForThreadsStrategy getStrategy() {
+    io.littlehorse.sdk.common.proto.WaitForThreadsStrategy result = io.littlehorse.sdk.common.proto.WaitForThreadsStrategy.forNumber(strategy_);
+    return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsStrategy.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1806,6 +1833,9 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < perThreadFailureHandlers_.size(); i++) {
       output.writeMessage(3, perThreadFailureHandlers_.get(i));
     }
+    if (strategy_ != io.littlehorse.sdk.common.proto.WaitForThreadsStrategy.WAIT_FOR_ALL.getNumber()) {
+      output.writeEnum(4, strategy_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -1827,6 +1857,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, perThreadFailureHandlers_.get(i));
     }
+    if (strategy_ != io.littlehorse.sdk.common.proto.WaitForThreadsStrategy.WAIT_FOR_ALL.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(4, strategy_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -1844,6 +1878,7 @@ private static final long serialVersionUID = 0L;
 
     if (!getPerThreadFailureHandlersList()
         .equals(other.getPerThreadFailureHandlersList())) return false;
+    if (strategy_ != other.strategy_) return false;
     if (!getThreadsToWaitForCase().equals(other.getThreadsToWaitForCase())) return false;
     switch (threadsToWaitForCase_) {
       case 1:
@@ -1872,6 +1907,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + PER_THREAD_FAILURE_HANDLERS_FIELD_NUMBER;
       hash = (53 * hash) + getPerThreadFailureHandlersList().hashCode();
     }
+    hash = (37 * hash) + STRATEGY_FIELD_NUMBER;
+    hash = (53 * hash) + strategy_;
     switch (threadsToWaitForCase_) {
       case 1:
         hash = (37 * hash) + THREADS_FIELD_NUMBER;
@@ -2037,6 +2074,7 @@ private static final long serialVersionUID = 0L;
         perThreadFailureHandlersBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000004);
+      strategy_ = 0;
       threadsToWaitForCase_ = 0;
       threadsToWaitFor_ = null;
       return this;
@@ -2086,6 +2124,9 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.WaitForThreadsNode result) {
       int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.strategy_ = strategy_;
+      }
     }
 
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.WaitForThreadsNode result) {
@@ -2138,6 +2179,9 @@ private static final long serialVersionUID = 0L;
             perThreadFailureHandlersBuilder_.addAllMessages(other.perThreadFailureHandlers_);
           }
         }
+      }
+      if (other.strategy_ != 0) {
+        setStrategyValue(other.getStrategyValue());
       }
       switch (other.getThreadsToWaitForCase()) {
         case THREADS: {
@@ -2205,6 +2249,11 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 26
+            case 32: {
+              strategy_ = input.readEnum();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3056,6 +3105,77 @@ private static final long serialVersionUID = 0L;
         perThreadFailureHandlers_ = null;
       }
       return perThreadFailureHandlersBuilder_;
+    }
+
+    private int strategy_ = 0;
+    /**
+     * <pre>
+     * Determines the strategy to wait for different threads in parallel.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForThreadsStrategy strategy = 4;</code>
+     * @return The enum numeric value on the wire for strategy.
+     */
+    @java.lang.Override public int getStrategyValue() {
+      return strategy_;
+    }
+    /**
+     * <pre>
+     * Determines the strategy to wait for different threads in parallel.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForThreadsStrategy strategy = 4;</code>
+     * @param value The enum numeric value on the wire for strategy to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStrategyValue(int value) {
+      strategy_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Determines the strategy to wait for different threads in parallel.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForThreadsStrategy strategy = 4;</code>
+     * @return The strategy.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WaitForThreadsStrategy getStrategy() {
+      io.littlehorse.sdk.common.proto.WaitForThreadsStrategy result = io.littlehorse.sdk.common.proto.WaitForThreadsStrategy.forNumber(strategy_);
+      return result == null ? io.littlehorse.sdk.common.proto.WaitForThreadsStrategy.UNRECOGNIZED : result;
+    }
+    /**
+     * <pre>
+     * Determines the strategy to wait for different threads in parallel.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForThreadsStrategy strategy = 4;</code>
+     * @param value The strategy to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStrategy(io.littlehorse.sdk.common.proto.WaitForThreadsStrategy value) {
+      if (value == null) { throw new NullPointerException(); }
+      bitField0_ |= 0x00000008;
+      strategy_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Determines the strategy to wait for different threads in parallel.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForThreadsStrategy strategy = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearStrategy() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      strategy_ = 0;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.WaitForThreadsNode)
