@@ -2,6 +2,7 @@ from typing import Any
 import unittest
 import uuid
 import datetime
+from unittest.mock import Mock, MagicMock
 
 from littlehorse.exceptions import TaskSchemaMismatchException
 from littlehorse.model import (
@@ -17,11 +18,16 @@ from littlehorse.model import (
     TaskRunSource,
     TypeDefinition,
     UserTaskTriggerReference,
+    Checkpoint,
+    CheckpointId,
+    PutCheckpointResponse,
+    VariableValue,
 )
 
 from littlehorse.worker import (
     LHTask,
     WorkerContext,
+    CheckpointContext,
     LHLivenessController,
     LHTaskWorkerHealth,
     TaskWorkerHealthReason,
@@ -35,11 +41,13 @@ class TestWorkerContext(unittest.TestCase):
         scheduled_task = ScheduledTask(
             task_run_id=TaskRunId(task_guid=task_id, wf_run_id=WfRunId(id=wf_id))
         )
-        ctx = WorkerContext(scheduled_task)
+        mock_client = Mock()
+        ctx = WorkerContext(scheduled_task, mock_client)
         self.assertEqual(ctx.idempotency_key, f"{task_id}")
 
     def test_log_output(self):
-        ctx = WorkerContext(ScheduledTask())
+        mock_client = Mock()
+        ctx = WorkerContext(ScheduledTask(), mock_client)
         self.assertEqual(ctx.log_output, "")
         ctx.log("my log 1")
         ctx.log("my log 2")
@@ -50,12 +58,13 @@ class TestWorkerContext(unittest.TestCase):
         self.assertTrue("my exception" in output)
 
     def test_get_right_node(self):
+        mock_client = Mock()
         wf_id = str(uuid.uuid4())
         node_run_task = NodeRunId(wf_run_id=WfRunId(id=wf_id))
         scheduled_task_task = ScheduledTask(
             source=TaskRunSource(task_node=TaskNodeReference(node_run_id=node_run_task))
         )
-        ctx = WorkerContext(scheduled_task_task)
+        ctx = WorkerContext(scheduled_task_task, mock_client)
 
         self.assertEqual(ctx.node_run_id, node_run_task)
 
@@ -66,10 +75,95 @@ class TestWorkerContext(unittest.TestCase):
                 user_task_trigger=UserTaskTriggerReference(node_run_id=node_run_user)
             )
         )
-        ctx = WorkerContext(scheduled_task_user)
+        ctx = WorkerContext(scheduled_task_user, mock_client)
 
         self.assertEqual(ctx.node_run_id, node_run_user)
 
+    def test_execute_and_checkpoint_saves_new_checkpoint(self):
+        mock_client = Mock()
+        task_id = str(uuid.uuid4())
+        scheduled_task = ScheduledTask(
+            task_run_id=TaskRunId(task_guid=task_id, wf_run_id=WfRunId(id="mock-wf")),
+            total_observed_checkpoints=0
+        )
+        
+        mock_response = PutCheckpointResponse(
+            flow_control_continue_type=PutCheckpointResponse.FlowControlContinue.CONTINUE_TASK
+        )
+        mock_client.PutCheckpoint.return_value = mock_response
+        
+        ctx = WorkerContext(scheduled_task, mock_client)
+        
+        result = ctx.execute_and_checkpoint(lambda checkpoint_ctx: "checkpoint_value")
+
+        self.assertEqual(result, "checkpoint_value")
+        mock_client.PutCheckpoint.assert_called_once()
+        self.assertEqual(ctx._checkpoints_so_far_in_this_run, 1)
+
+    def test_should_fetch_checkpoint_on_second_checkpoint_attempt(self):
+        task_run_id = TaskRunId(
+            wf_run_id=WfRunId(id="mock-wf"),
+            task_guid="mock-guid"
+        )
+        
+        scheduled_task = ScheduledTask(
+            task_run_id=task_run_id,
+            total_observed_checkpoints=1
+        )
+        
+        mock_client = Mock()
+        mock_client.GetCheckpoint.return_value = Checkpoint(
+            id=CheckpointId(
+                task_run=task_run_id,
+                checkpoint_number=1
+            ),
+            value=VariableValue(str="checkpoint_value")
+        )
+        
+        ctx = WorkerContext(scheduled_task, mock_client)
+        
+        checkpoint_data = ctx.execute_and_checkpoint(lambda checkpoint_ctx: "checkpoint_value")
+        
+        mock_client.PutCheckpoint.assert_not_called()
+        mock_client.GetCheckpoint.assert_called_once()
+        self.assertEqual(checkpoint_data, "checkpoint_value")
+
+    def test_save_checkpoint_halts_on_server_instruction(self):
+        mock_client = Mock()
+        scheduled_task = ScheduledTask(
+            task_run_id=TaskRunId(task_guid="mock-guid"),
+            total_observed_checkpoints=0
+        )
+        
+        mock_response = PutCheckpointResponse(
+            flow_control_continue_type=PutCheckpointResponse.FlowControlContinue.STOP_TASK
+        )
+        mock_client.PutCheckpoint.return_value = mock_response
+        
+        ctx = WorkerContext(scheduled_task, mock_client)
+        
+        # Should raise exception when server says to halt
+        with self.assertRaises(Exception) as exception_context:
+            ctx.execute_and_checkpoint(lambda ctx: "checkpoint_value")
+        
+        self.assertEqual(
+            "Halting execution because the server told us to.",
+            str(exception_context.exception)
+        )
+
+class TestCheckpointContext(unittest.TestCase):
+    def test_log_output(self):
+        ctx = CheckpointContext()
+        self.assertEqual(ctx.log_output, "")
+        
+        ctx.log("checkpoint log 1")
+        ctx.log("checkpoint log 2")
+        ctx.log(67)
+        
+        output = ctx.log_output
+        self.assertTrue("checkpoint log 1" in output)
+        self.assertTrue("checkpoint log 2" in output)
+        self.assertTrue("67" in output)
 
 class TestLHTask(unittest.TestCase):
     def test_raise_exception_if_it_is_not_a_callable(self):
