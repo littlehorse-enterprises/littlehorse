@@ -155,9 +155,9 @@ class TestCheckpointContext(unittest.TestCase):
         ctx.log(67)
 
         output = ctx.log_output
-        self.assertTrue("checkpoint log 1" in output)
-        self.assertTrue("checkpoint log 2" in output)
-        self.assertTrue("67" in output)
+        self.assertIn("checkpoint log 1", output)
+        self.assertIn("checkpoint log 2", output)
+        self.assertIn("67", output)
 
 
 class TestLHTask(unittest.TestCase):
