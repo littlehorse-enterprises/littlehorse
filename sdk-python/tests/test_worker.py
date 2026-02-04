@@ -2,7 +2,7 @@ from typing import Any
 import unittest
 import uuid
 import datetime
-from unittest.mock import Mock
+from unittest.mock import Mock, AsyncMock
 
 from littlehorse.exceptions import TaskSchemaMismatchException
 from littlehorse.model import (
@@ -34,7 +34,7 @@ from littlehorse.worker import (
 )
 
 
-class TestWorkerContext(unittest.TestCase):
+class TestWorkerContext(unittest.IsolatedAsyncioTestCase):
     def test_idempotency_key(self):
         wf_id = str(uuid.uuid4())
         task_id = str(uuid.uuid4())
@@ -78,7 +78,7 @@ class TestWorkerContext(unittest.TestCase):
 
         self.assertEqual(ctx.node_run_id, node_run_user)
 
-    def test_execute_and_checkpoint_saves_new_checkpoint(self):
+    async def test_execute_and_checkpoint_saves_new_checkpoint(self):
         mock_client = Mock()
         scheduled_task = ScheduledTask(
             task_run_id=TaskRunId(
@@ -90,17 +90,17 @@ class TestWorkerContext(unittest.TestCase):
         mock_response = PutCheckpointResponse(
             flow_control_continue_type=PutCheckpointResponse.FlowControlContinue.CONTINUE_TASK
         )
-        mock_client.PutCheckpoint.return_value = mock_response
+        mock_client.PutCheckpoint = AsyncMock(return_value=mock_response)
 
         ctx = WorkerContext(scheduled_task, mock_client)
 
-        result = ctx.execute_and_checkpoint(lambda checkpoint_ctx: "checkpoint_value")
+        result = await ctx.execute_and_checkpoint(lambda checkpoint_ctx: "checkpoint_value")
 
         self.assertEqual(result, "checkpoint_value")
         mock_client.PutCheckpoint.assert_called_once()
         self.assertEqual(ctx._checkpoints_so_far_in_this_run, 1)
 
-    def test_should_fetch_checkpoint_on_second_checkpoint_attempt(self):
+    async def test_should_fetch_checkpoint_on_second_checkpoint_attempt(self):
         task_run_id = TaskRunId(wf_run_id=WfRunId(id="mock-id"), task_guid="mock-guid")
 
         scheduled_task = ScheduledTask(
@@ -108,14 +108,16 @@ class TestWorkerContext(unittest.TestCase):
         )
 
         mock_client = Mock()
-        mock_client.GetCheckpoint.return_value = Checkpoint(
+        mock_checkpoint = Checkpoint(
             id=CheckpointId(task_run=task_run_id, checkpoint_number=1),
             value=VariableValue(str="checkpoint_value"),
         )
+        mock_client.GetCheckpoint = AsyncMock(return_value=mock_checkpoint)
+        mock_client.PutCheckpoint = AsyncMock()
 
         ctx = WorkerContext(scheduled_task, mock_client)
 
-        checkpoint_data = ctx.execute_and_checkpoint(
+        checkpoint_data = await ctx.execute_and_checkpoint(
             lambda checkpoint_ctx: "checkpoint_value"
         )
 
@@ -123,7 +125,7 @@ class TestWorkerContext(unittest.TestCase):
         mock_client.GetCheckpoint.assert_called_once()
         self.assertEqual(checkpoint_data, "checkpoint_value")
 
-    def test_save_checkpoint_halts_on_server_instruction(self):
+    async def test_save_checkpoint_halts_on_server_instruction(self):
         mock_client = Mock()
         scheduled_task = ScheduledTask(
             task_run_id=TaskRunId(task_guid="mock-guid"), total_observed_checkpoints=0
@@ -132,12 +134,12 @@ class TestWorkerContext(unittest.TestCase):
         mock_response = PutCheckpointResponse(
             flow_control_continue_type=PutCheckpointResponse.FlowControlContinue.STOP_TASK
         )
-        mock_client.PutCheckpoint.return_value = mock_response
+        mock_client.PutCheckpoint = AsyncMock(return_value=mock_response)
 
         ctx = WorkerContext(scheduled_task, mock_client)
 
         with self.assertRaises(Exception) as exception_context:
-            ctx.execute_and_checkpoint(lambda ctx: "checkpoint_value")
+            await ctx.execute_and_checkpoint(lambda ctx: "checkpoint_value")
 
         self.assertEqual(
             "Halting execution because the server told us to.",

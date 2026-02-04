@@ -161,32 +161,32 @@ class WorkerContext:
         """
         return "\n".join(self._log_entries)
 
-    def execute_and_checkpoint(self, callable: Callable[..., Any]) -> Any:
+    async def execute_and_checkpoint(self, callable: Callable[..., Any]) -> Any:
         if (
             self._checkpoints_so_far_in_this_run
             < self._scheduled_task.total_observed_checkpoints
         ):
-            output = self._fetch_checkpoint(self._checkpoints_so_far_in_this_run)
+            output = await self._fetch_checkpoint(self._checkpoints_so_far_in_this_run)
             self._checkpoints_so_far_in_this_run += 1
             return output
         else:
-            return self._save_checkpoint(callable)
+            return await self._save_checkpoint(callable)
 
-    def _fetch_checkpoint(self, checkpoint_number: int) -> Any:
+    async def _fetch_checkpoint(self, checkpoint_number: int) -> Any:
         id: CheckpointId = CheckpointId(
             task_run=self._scheduled_task.task_run_id,
             checkpoint_number=checkpoint_number,
         )
 
-        checkpoint: Checkpoint = self._client.GetCheckpoint(id)
+        checkpoint: Checkpoint = await self._client.GetCheckpoint(id)
 
         return extract_value(checkpoint.value)
 
-    def _save_checkpoint(self, callable: Callable[..., Any]) -> Any:
+    async def _save_checkpoint(self, callable: Callable[..., Any]) -> Any:
         checkpoint_context: CheckpointContext = CheckpointContext()
         result: Any = callable(checkpoint_context)
 
-        response: PutCheckpointResponse = self._client.PutCheckpoint(
+        response: PutCheckpointResponse = await self._client.PutCheckpoint(
             PutCheckpointRequest(
                 task_run_id=self._scheduled_task.task_run_id,
                 task_attempt=self._scheduled_task.attempt_number,
