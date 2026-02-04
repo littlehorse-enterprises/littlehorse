@@ -38,16 +38,16 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
     public PartitionMetricWindowModel(WfSpecIdModel wfSpecId, Date windowStart, TenantIdModel tenantId) {
         this.metricType = MetricWindowId.IdCase.WORKFLOW;
         this.wfSpecId = wfSpecId;
-        this.windowStart = alignToMinute(windowStart);
+        this.windowStart = windowStart;
         this.metrics = new HashMap<>();
         this.tenantId = tenantId;
     }
-
-    private Date alignToMinute(Date date) {
-        long timestamp = date.getTime();
-        long minuteInMs = 60 * 1000;
-        long aligned = (timestamp / minuteInMs) * minuteInMs;
-        return new Date(aligned);
+    public PartitionMetricWindowModel(WfSpecIdModel wfSpecId, TenantIdModel tenantId) {
+        this.metricType = MetricWindowId.IdCase.WORKFLOW;
+        this.wfSpecId = wfSpecId;
+        this.windowStart = LHUtil.getCurrentWindowTime();
+        this.metrics = new HashMap<>();
+        this.tenantId = tenantId;
     }
 
     public void incrementCountAndLatency(String metricKey, long latencyMs) {
@@ -143,8 +143,11 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
 
     @Override
     public String getStoreKey() {
-        // Format: metrics/window/{windowStart}/{tenantId}/{type}/{specId}
-        String typeStr = getMetricTypeString();
+        return buildStoreKey(windowStart, tenantId, wfSpecId);
+    }
+
+    public static String buildStoreKey(Date windowStart, TenantIdModel tenantId, WfSpecIdModel wfSpecId) {
+        String typeStr = "wf";
         String tenantStr = tenantId != null ? tenantId.toString() : "null";
         String idStr = wfSpecId != null ? wfSpecId.toString() : "null";
         String windowStr = windowStart != null ? LHUtil.toLhDbFormat(windowStart) : "0";

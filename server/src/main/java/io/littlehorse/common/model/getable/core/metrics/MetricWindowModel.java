@@ -43,7 +43,7 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
             CountAndTimingModel existing = metrics.get(key);
             if (existing == null) {
                 metrics.put(key, incoming);
-            }else{
+            } else {
                 existing.mergeFrom(incoming);
             }
         }
@@ -97,6 +97,7 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
 
     @Override
     public String toString() {
-        return " {\nwfSpecID=" + id.getWfSpecId() + ",\nwindowStart=" + id.getWindowStart() + ",\nmetrics=" + metrics + "\n}";
+        return " {\nwfSpecID=" + id.getWfSpecId() + ",\nwindowStart=" + id.getWindowStart() + ",\nmetrics=" + metrics
+                + "\n}";
     }
 }

@@ -684,29 +684,23 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     private void trackMetrics(CoreProcessorContext processorContext, LHStatus previousStatus) {
-        Date windowStart = alignToMinute();
+        Date windowStart = LHUtil.getCurrentWindowTime();
         TenantIdModel tenantId = processorContext.authorization().tenantId();
-        //put this somewherelse
-        String storeKey = String.format(
-                "metrics/partition/%s/%s/%s/%s",
-                LHUtil.toLhDbFormat(windowStart), tenantId.toString(), "wf", wfSpecId.toString());
 
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
 
-        PartitionMetricWindowModel partitionMetric = clusterScopedStore.get(storeKey, PartitionMetricWindowModel.class);
-        if (partitionMetric == null) {
-            partitionMetric = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel metricWindow = clusterScopedStore.get(
+                PartitionMetricWindowModel.buildStoreKey(windowStart, tenantId, wfSpecId),
+                PartitionMetricWindowModel.class);
+        if (metricWindow == null) {
+            metricWindow = new PartitionMetricWindowModel(wfSpecId, tenantId);
         }
 
-        partitionMetric.trackWfRun(previousStatus, status, startTime, endTime);
-        clusterScopedStore.put(partitionMetric);
-        System.out.println("Partition metrics: " + partitionMetric);
+        metricWindow.trackWfRun(previousStatus, status, startTime, endTime);
+        clusterScopedStore.put(metricWindow);
     }
 
-    private Date alignToMinute() {
-        return Date.from(new Date().toInstant().truncatedTo(ChronoUnit.MINUTES));
-    }
 
     private boolean isTerminated() {
         switch (status) {
