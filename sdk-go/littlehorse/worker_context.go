@@ -13,6 +13,12 @@ import (
 // It accepts a CheckpointContext and returns a value and an error.
 type CheckpointableFunction func(*CheckpointContext) (interface{}, error)
 
+// WorkerContext contains runtime information about the specific WfRun and NodeRun
+// being executed by the Task Worker. It is automatically provided by the SDK when
+// a task function includes it as a parameter.
+//
+// Note: WorkerContext instances are created internally by the SDK. Do not instantiate
+// this struct directly.
 type WorkerContext struct {
 	ScheduledTask             *lhproto.ScheduledTask
 	ScheduleTime              *timestamppb.Timestamp
@@ -21,20 +27,9 @@ type WorkerContext struct {
 	client                    *lhproto.LittleHorseClient
 }
 
-func NewWorkerContext(
-	scheduledTask *lhproto.ScheduledTask,
-	scheduleTime *timestamppb.Timestamp,
-) *WorkerContext {
-	return &WorkerContext{
-		ScheduledTask:             scheduledTask,
-		ScheduleTime:              scheduleTime,
-		checkpointsSoFarInThisRun: 0,
-		client:                    nil,
-	}
-}
-
-// NewWorkerContextWithClient creates a new WorkerContext with a gRPC client for checkpoint operations.
-func NewWorkerContextWithClient(
+// newWorkerContext creates a new WorkerContext with a gRPC client.
+// This is an internal function used by the task worker to provision WorkerContext instances.
+func newWorkerContext(
 	scheduledTask *lhproto.ScheduledTask,
 	scheduleTime *timestamppb.Timestamp,
 	client *lhproto.LittleHorseClient,

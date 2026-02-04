@@ -378,7 +378,7 @@ func (m *serverConnectionManager) doTaskHelper(task *lhproto.ScheduledTask, clie
 		TaskRunId: task.TaskRunId,
 	}
 
-	workerContext := NewWorkerContextWithClient(
+	workerContext := newWorkerContext(
 		task,
 		task.GetCreatedAt(),
 		client,

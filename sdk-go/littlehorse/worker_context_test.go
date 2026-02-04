@@ -52,7 +52,7 @@ func TestExecuteAndCheckpoint_FirstAttempt_ShouldPutCheckpoint(t *testing.T) {
 		AttemptNumber:            0,
 	}
 
-	workerContext := NewWorkerContextWithClient(
+	workerContext := newWorkerContext(
 		scheduledTask,
 		timestamppb.Now(),
 		&client,
@@ -109,7 +109,7 @@ func TestExecuteAndCheckpoint_RetryAttempt_ShouldGetCheckpoint(t *testing.T) {
 		AttemptNumber:            1,
 	}
 
-	workerContext := NewWorkerContextWithClient(
+	workerContext := newWorkerContext(
 		scheduledTask,
 		timestamppb.Now(),
 		&client,
@@ -160,7 +160,7 @@ func TestExecuteAndCheckpoint_MultipleCheckpoints(t *testing.T) {
 		AttemptNumber:            0,
 	}
 
-	workerContext := NewWorkerContextWithClient(
+	workerContext := newWorkerContext(
 		scheduledTask,
 		timestamppb.Now(),
 		&client,
@@ -216,7 +216,7 @@ func TestExecuteAndCheckpoint_CheckpointContextLogging(t *testing.T) {
 		AttemptNumber:            0,
 	}
 
-	workerContext := NewWorkerContextWithClient(
+	workerContext := newWorkerContext(
 		scheduledTask,
 		timestamppb.Now(),
 		&client,
