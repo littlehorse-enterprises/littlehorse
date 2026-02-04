@@ -68,7 +68,8 @@ class TestWorkerContext(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(ctx.node_run_id, node_run_task)
 
-        node_run_user = NodeRunId(wf_run_id=WfRunId(id="mock-id"))
+        wf_id = str(uuid.uuid4())
+        node_run_user = NodeRunId(wf_run_id=WfRunId(id=wf_id))
         scheduled_task_user = ScheduledTask(
             source=TaskRunSource(
                 user_task_trigger=UserTaskTriggerReference(node_run_id=node_run_user)
