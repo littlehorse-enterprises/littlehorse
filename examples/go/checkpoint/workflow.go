@@ -41,7 +41,7 @@ func GreetWithCheckpoints(name string, context *littlehorse.WorkerContext) (stri
 	}
 
 	// Second checkpoint - this will only run on retry after the first checkpoint is restored
-	result2, err := context.ExecuteAndCheckpoint(func(context2 *littlehorse.CheckpointContext) (interface{}, error) {
+	result2, err := context.ExecuteAndCheckpoint(func(secondCheckpointCtx *littlehorse.CheckpointContext) (interface{}, error) {
 		fmt.Println("Hi from inside the second checkpoint")
 		return " and the second checkpoint", nil
 	})

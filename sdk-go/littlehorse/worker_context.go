@@ -207,7 +207,7 @@ func (wc *WorkerContext) saveCheckpoint(fn CheckpointableFunction) (interface{},
 	wc.checkpointsSoFarInThisRun++
 
 	if response.FlowControlContinueType != lhproto.PutCheckpointResponse_CONTINUE_TASK {
-		return nil, fmt.Errorf("halting execution because the server told us to")
+		return nil, fmt.Errorf("checkpoint operation halted by server flow control (received: %v)", response.FlowControlContinueType)
 	}
 
 	return result, nil

@@ -65,3 +65,12 @@ Checkpoints are useful for:
 - Expensive database queries or transformations
 - Image/video processing pipelines
 - Any task where partial progress should be preserved across retries
+
+## Checkpoint Lifecycle
+
+Checkpoints are stored on the LittleHorse server and associated with the specific TaskRun:
+
+- **On Success**: When a task completes successfully, all its checkpoint data remains available for auditing and debugging through the dashboard
+- **On Permanent Failure**: If a task fails after all retries are exhausted, checkpoint data is retained to help diagnose what work was completed before the final failure
+- **Cleanup**: Checkpoint data follows the same retention policies as other TaskRun data in LittleHorse
+- **Persistence**: Checkpoints persist across task worker restarts and can be inspected via the dashboard or API
