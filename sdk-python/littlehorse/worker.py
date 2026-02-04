@@ -199,7 +199,7 @@ class WorkerContext:
 
         if (
             response.flow_control_continue_type
-            is not PutCheckpointResponse.FlowControlContinue.CONTINUE_TASK
+            != PutCheckpointResponse.FlowControlContinue.CONTINUE_TASK
         ):
             raise Exception("Halting execution because the server told us to.")
 
