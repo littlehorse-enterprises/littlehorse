@@ -2,6 +2,7 @@ import asyncio
 import logging
 from pathlib import Path
 
+from examples.python.basic.example_basic import greeting
 from littlehorse.config import LHConfig
 from littlehorse.worker import LHTaskWorker, WorkerContext, CheckpointContext
 from littlehorse.workflow import Workflow
@@ -10,15 +11,15 @@ logging.basicConfig(level=logging.INFO)
 
 
 def get_config() -> LHConfig:
-    config_path = Path.home() / ".config" / "littlehorse.config"
+    config = LHConfig()
+    config_path = Path.home().joinpath(".config", "littlehorse.config")
     if config_path.exists():
-        return LHConfig.from_file(str(config_path))
-    return LHConfig()
-
+        config.load(config_path)
+    return config
 
 def get_workflow() -> Workflow:
     def workflow_logic(wf: Workflow) -> None:
-        the_name = wf.add_str_variable("input-name", None).searchable()
+        the_name = wf.declare_str("input-name", None).searchable()
         wf.execute("greet", the_name).with_retries(2)
 
     return Workflow("example-checkpointed-tasks", workflow_logic)
@@ -30,7 +31,7 @@ async def greet(name: str, context: WorkerContext) -> str:
     print(f"Hello from task worker on attempt {attempt_number} before the checkpoint")
 
     result = await context.execute_and_checkpoint(
-        lambda checkpoint_context: checkpoint_greeting(name, attempt_number, checkpoint_context)
+        lambda checkpoint_context: first_checkpoint(name, attempt_number, checkpoint_context)
     )
 
     print("Hello from after the first checkpoint")
@@ -49,11 +50,10 @@ async def greet(name: str, context: WorkerContext) -> str:
     return result + " and after the second checkpoint"
 
 
-def checkpoint_greeting(name: str, attempt_number: int, checkpoint_context: CheckpointContext) -> str:
+def first_checkpoint(name: str, attempt_number: int, checkpoint_context: CheckpointContext) -> str:
     checkpoint_context.log("This is a checkpoint log.")
     print(f"Hello from task worker on attempt {attempt_number} in the first checkpoint")
     return f"hello {name} from first checkpoint"
-
 
 def second_checkpoint(attempt_number: int) -> str:
     print("Hi from inside the second checkpoint")
