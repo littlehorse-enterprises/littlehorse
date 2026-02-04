@@ -27,7 +27,8 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
 
     public AggregateWindowMetricsModel() {}
 
-    public AggregateWindowMetricsModel(WfSpecIdModel wfSpecId, TenantIdModel tenantId, PartitionMetricWindowModel metricWindow) {
+    public AggregateWindowMetricsModel(
+            WfSpecIdModel wfSpecId, TenantIdModel tenantId, PartitionMetricWindowModel metricWindow) {
         this.wfSpecId = wfSpecId;
         this.tenantId = tenantId;
         this.metricWindow = metricWindow;
@@ -63,22 +64,22 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
     @Override
     public void process(TenantScopedStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
         MetricWindowIdModel id = new MetricWindowIdModel(wfSpecId, metricWindow.getWindowStart());
-        
-        StoredGetable<MetricWindow, MetricWindowModel> storedMetric = 
+
+        StoredGetable<MetricWindow, MetricWindowModel> storedMetric =
                 repartitionedStore.get(id.getStoreableKey(), StoredGetable.class);
-        
+
         MetricWindowModel consolidatedMetric;
         if (storedMetric == null) {
-            // Create new consolidated metric window
-            consolidatedMetric = new MetricWindowModel(wfSpecId, metricWindow.getWindowStart());
+            consolidatedMetric = new MetricWindowModel(id, metricWindow.getMetrics());
         } else {
             consolidatedMetric = storedMetric.getStoredObject();
+            consolidatedMetric.mergeFrom(metricWindow);
         }
-        
-        // Merge the partition metrics into the consolidated window
-        consolidatedMetric.mergeFrom(metricWindow);
-        
+
         // Save the consolidated metric back to the store
+
+        System.out.println(
+                "Storing consolidated metric window for " + id + " with metrics: " + consolidatedMetric.getMetrics());
         repartitionedStore.put(new StoredGetable<>(consolidatedMetric));
     }
 }

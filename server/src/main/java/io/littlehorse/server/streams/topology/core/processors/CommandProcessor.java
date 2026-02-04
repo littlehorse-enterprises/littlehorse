@@ -86,7 +86,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         onPartitionClaimed();
         // ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
-        ctx.schedule(Duration.ofSeconds(10), PunctuationType.WALL_CLOCK_TIME, this::forwardWindowPartitionMetrics);
+        ctx.schedule(Duration.ofSeconds(20), PunctuationType.WALL_CLOCK_TIME, this::forwardWindowPartitionMetrics);
         log.info("Completed the init() process on partition {}", ctx.taskId().partition());
     }
 
@@ -206,17 +206,14 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             while (iter.hasNext()) {
                 LHIterKeyValue<PartitionMetricWindowModel> next = iter.next();
                 PartitionMetricWindowModel metricWindow = next.getValue();
-                
+
                 if (metricWindow != null) {
                     // Create the aggregation command for this metric window
                     AggregateWindowMetricsModel aggregateMetrics = new AggregateWindowMetricsModel(
-                            metricWindow.getWfSpecId(),
-                            metricWindow.getTenantId(),
-                            metricWindow
-                    );
-                    
+                            metricWindow.getWfSpecId(), metricWindow.getTenantId(), metricWindow);
+
                     forwardMetricSubcommand(aggregateMetrics);
-                    
+
                     // Delete the metric window after forwarding
                     globalStore.delete(metricWindow);
                 }

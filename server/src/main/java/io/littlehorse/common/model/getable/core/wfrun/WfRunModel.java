@@ -54,6 +54,8 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import io.littlehorse.server.streams.topology.core.PartitionMetricWindowModel;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -657,8 +659,9 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             statusChanged = GetableUpdates.createEndEvent(
                     wfSpecId, processorContext.authorization().tenantId(), this.status, status, startTime);
         }
+        var previousStatus = this.status;
         this.status = status;
-        trackMetrics(processorContext);
+        trackMetrics(processorContext, previousStatus);
         processorContext.getableUpdates().dispatch(statusChanged);
 
         WorkflowRetentionPolicyModel retentionPolicy = getWfSpec().getRetentionPolicy();
@@ -681,34 +684,28 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         }
     }
 
-    private void trackMetrics(CoreProcessorContext processorContext) {
-        Date windowStart = alignToMinute(new Date());
+    private void trackMetrics(CoreProcessorContext processorContext, LHStatus previousStatus) {
+        Date windowStart = alignToMinute();
         TenantIdModel tenantId = processorContext.authorization().tenantId();
 
         String storeKey = String.format(
                 "metrics/partition/%s/%s/%s/%s",
-                LHUtil.toLhDbFormat(windowStart),
-                tenantId.toString(),
-                "wf",
-                wfSpecId.toString());
+                LHUtil.toLhDbFormat(windowStart), tenantId.toString(), "wf", wfSpecId.toString());
 
         ClusterScopedStore globalStore =
                 ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
-        
-        PartitionMetricWindowModel metricWindow =
-                globalStore.get(storeKey, PartitionMetricWindowModel.class);
+
+        PartitionMetricWindowModel metricWindow = globalStore.get(storeKey, PartitionMetricWindowModel.class);
         if (metricWindow == null) {
             metricWindow = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
         }
-        metricWindow.trackWfRun(status, startTime, endTime);
+
+        metricWindow.trackWfRun(previousStatus, status, startTime, endTime);
         globalStore.put(metricWindow);
     }
 
-    private Date alignToMinute(Date date) {
-        long timestamp = date.getTime();
-        long minuteInMs = 60 * 1000;
-        long aligned = (timestamp / minuteInMs) * minuteInMs;
-        return new Date(aligned);
+    private Date alignToMinute() {
+        return Date.from(new Date().toInstant().truncatedTo(ChronoUnit.MINUTES));
     }
 
     private boolean isTerminated() {

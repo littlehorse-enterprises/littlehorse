@@ -48,15 +48,14 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
 
     @Override
     public MetricWindowId.Builder toProto() {
-        MetricWindowId.Builder out = MetricWindowId.newBuilder()
-                .setWindowStart(LHUtil.fromDate(windowStart));
-        
+        MetricWindowId.Builder out = MetricWindowId.newBuilder().setWindowStart(LHUtil.fromDate(windowStart));
+
         if (wfSpecId != null) {
             out.setWorkflow(io.littlehorse.sdk.common.proto.WorkflowMetricId.newBuilder()
                     .setWfSpec(wfSpecId.toProto())
                     .build());
         }
-        
+
         return out;
     }
 
@@ -69,8 +68,8 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
     public void initFromString(String storeKey) {
         String[] split = storeKey.split("/");
         // Expecting format: wfSpecName/majorVersion/revision/windowStartTimestamp
-        wfSpecId = (WfSpecIdModel) ObjectIdModel.fromString(
-                split[0] + "/" + split[1] + "/" + split[2], WfSpecIdModel.class);
+        wfSpecId = (WfSpecIdModel)
+                ObjectIdModel.fromString(split[0] + "/" + split[1] + "/" + split[2], WfSpecIdModel.class);
         windowStart = new Date(Long.valueOf(split[3]));
     }
 

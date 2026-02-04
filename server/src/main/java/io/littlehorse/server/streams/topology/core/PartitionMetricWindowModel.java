@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.topology.core;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.getable.core.metrics.CountAndTimingModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.PartitionMetricWindow;
@@ -34,8 +35,7 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
 
     public PartitionMetricWindowModel() {}
 
-    public PartitionMetricWindowModel(
-            WfSpecIdModel wfSpecId, Date windowStart, TenantIdModel tenantId) {
+    public PartitionMetricWindowModel(WfSpecIdModel wfSpecId, Date windowStart, TenantIdModel tenantId) {
         this.metricType = MetricWindowId.IdCase.WORKFLOW;
         this.wfSpecId = wfSpecId;
         this.windowStart = alignToMinute(windowStart);
@@ -50,46 +50,41 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         return new Date(aligned);
     }
 
-    public void addMetric(String metricKey, int count, long latencyMs) {
+    public void add(String metricKey, int count, long latencyMs) {
         CountAndTimingModel timing = metrics.computeIfAbsent(metricKey, k -> new CountAndTimingModel());
         timing.add(count, latencyMs);
+    }
+
+    public void add(String metricKey, int count) {
+        CountAndTimingModel timing = metrics.computeIfAbsent(metricKey, k -> new CountAndTimingModel());
+        timing.add(count);
     }
 
     public void mergeFrom(PartitionMetricWindowModel other) {
         if (other == null) {
             return;
         }
-
         for (Map.Entry<String, CountAndTimingModel> entry : other.getMetrics().entrySet()) {
             String metricKey = entry.getKey();
             CountAndTimingModel otherTiming = entry.getValue();
-
             CountAndTimingModel thisTiming = metrics.computeIfAbsent(metricKey, k -> new CountAndTimingModel());
-            thisTiming.add(otherTiming.getCount(), 0); // Add count
-
-            if (otherTiming.getMinLatencyMs() < thisTiming.getMinLatencyMs()) {
-                thisTiming.setMinLatencyMs(otherTiming.getMinLatencyMs());
-            }
-            if (otherTiming.getMaxLatencyMs() > thisTiming.getMaxLatencyMs()) {
-                thisTiming.setMaxLatencyMs(otherTiming.getMaxLatencyMs());
-            }
-            thisTiming.setTotalLatencyMs(thisTiming.getTotalLatencyMs() + otherTiming.getTotalLatencyMs());
+            thisTiming.mergeFrom(otherTiming);
         }
     }
 
-    public void trackWfRun(LHStatus status, Date startTime, Date endTime) {
-        long latencyMs = 0;
-        if (startTime != null && endTime != null) {
+    public void trackWfRun(LHStatus previousStatus, LHStatus newStatus, Date startTime, Date endTime) {
+        String metricKey = "started";
+        if (previousStatus != null) {
+            long latencyMs = 0;
+            if (endTime == null) {
+                endTime = new Date();
+            }
             latencyMs = endTime.getTime() - startTime.getTime();
-        }
-
-        switch (status) {
-            case RUNNING -> addMetric("started", 1, latencyMs);
-            case COMPLETED -> addMetric("running_to_completed", 1, latencyMs);
-            case HALTED -> addMetric("running_to_halted", 1, latencyMs);
-            case EXCEPTION -> addMetric("running_to_exception", 1, latencyMs);
-            case ERROR -> addMetric("running_to_error", 1, latencyMs);
-            default -> {}
+            metricKey = previousStatus.name().toLowerCase() + "_to_"
+                    + newStatus.name().toLowerCase();
+            add(metricKey, 1, latencyMs);
+        } else {
+            add(metricKey, 1);
         }
     }
 
@@ -138,7 +133,7 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         }
 
         for (Map.Entry<String, CountAndTimingModel> entry : metrics.entrySet()) {
-            builder.putMetrics(entry.getKey(), entry.getValue().toProto());
+            builder.putMetrics(entry.getKey(), entry.getValue().toProto().build());
         }
         return builder;
     }
@@ -150,7 +145,7 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
 
     @Override
     public String getStoreKey() {
-        // Format: metrics/partition/{windowStart}/{tenantId}/{type}/{specId}
+        // Format: metrics/window/{windowStart}/{tenantId}/{type}/{specId}
         String typeStr = getMetricTypeString();
         String tenantStr = tenantId != null ? tenantId.toString() : "null";
         String idStr = wfSpecId != null ? wfSpecId.toString() : "null";
@@ -179,45 +174,8 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         return StoreableType.PARTITION_METRICS;
     }
 
-    @Getter
-    public static class CountAndTimingModel {
-        private int count = 0;
-        private long minLatencyMs = Long.MAX_VALUE;
-        private long maxLatencyMs = 0;
-        private long totalLatencyMs = 0;
-
-        public void add(int countToAdd, long latencyMs) {
-            this.count += countToAdd;
-            if (latencyMs > 0) {
-                this.minLatencyMs = Math.min(this.minLatencyMs, latencyMs);
-                this.maxLatencyMs = Math.max(this.maxLatencyMs, latencyMs);
-                this.totalLatencyMs += latencyMs;
-            }
-        }
-
-        public void setCount(int count) {
-            this.count = count;
-        }
-
-        public void setMinLatencyMs(long minLatencyMs) {
-            this.minLatencyMs = minLatencyMs;
-        }
-
-        public void setMaxLatencyMs(long maxLatencyMs) {
-            this.maxLatencyMs = maxLatencyMs;
-        }
-
-        public void setTotalLatencyMs(long totalLatencyMs) {
-            this.totalLatencyMs = totalLatencyMs;
-        }
-
-        public CountAndTiming toProto() {
-            return CountAndTiming.newBuilder()
-                    .setCount(count)
-                    .setMinLatencyMs(minLatencyMs == Long.MAX_VALUE ? 0 : minLatencyMs)
-                    .setMaxLatencyMs(maxLatencyMs)
-                    .setTotalLatencyMs(totalLatencyMs)
-                    .build();
-        }
+    @Override
+    public String toString() {
+        return "PartitionMetricWindowModel{" + ", windowStart=" + windowStart + ", metrics=" + metrics + '}';
     }
 }
