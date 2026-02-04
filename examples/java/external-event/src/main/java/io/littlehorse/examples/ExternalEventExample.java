@@ -35,7 +35,7 @@ public class ExternalEventExample {
 
             wf.mutate(name, VariableMutationType.ASSIGN, wf.waitForEvent("name-event"));
 
-            wf.execute("greet", name);
+            wf.execute("greet-external-event", name);
         });
     }
 
@@ -52,7 +52,7 @@ public class ExternalEventExample {
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         WaitForExternalEventWorker executable = new WaitForExternalEventWorker();
         List<LHTaskWorker> workers = List.of(
-                new LHTaskWorker(executable, "ask-for-name", config), new LHTaskWorker(executable, "greet", config));
+                new LHTaskWorker(executable, "ask-for-name", config), new LHTaskWorker(executable, "greet-external-event", config));
 
         // Gracefully shutdown
         Runtime.getRuntime()

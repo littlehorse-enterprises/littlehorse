@@ -58,7 +58,7 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
 
     @Override
     public String getPartitionKey() {
-        return wfSpecId.toString();
+        return wfSpecId.toString() + "/" + metricWindow.getWindowStart().getTime();
     }
 
     @Override
@@ -75,11 +75,7 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
             consolidatedMetric = storedMetric.getStoredObject();
             consolidatedMetric.mergeFrom(metricWindow);
         }
-
-        // Save the consolidated metric back to the store
-
-        System.out.println(
-                "Storing consolidated metric window for " + id + " with metrics: " + consolidatedMetric.getMetrics());
         repartitionedStore.put(new StoredGetable<>(consolidatedMetric));
+        System.out.println("Consolidated metrics: " + consolidatedMetric);
     }
 }

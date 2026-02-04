@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +32,21 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
 
     public MetricWindowModel(MetricWindowIdModel id, Map<String, CountAndTimingModel> metrics) {
         this.id = id;
-        this.metrics = new HashMap<>(metrics);
+        this.metrics = metrics;
+    }
+
+    public void mergeFrom(PartitionMetricWindowModel partitionMetric) {
+        for (Entry<String, CountAndTimingModel> entry :
+                partitionMetric.getMetrics().entrySet()) {
+            String key = entry.getKey();
+            CountAndTimingModel incoming = entry.getValue();
+            CountAndTimingModel existing = metrics.get(key);
+            if (existing == null) {
+                metrics.put(key, incoming);
+            }else{
+                existing.mergeFrom(incoming);
+            }
+        }
     }
 
     @Override
@@ -60,30 +75,6 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
         return out;
     }
 
-    public void mergeFrom(PartitionMetricWindowModel partitionMetric) {
-        for (Map.Entry<String, CountAndTimingModel> entry :
-                partitionMetric.getMetrics().entrySet()) {
-
-            String key = entry.getKey();
-            CountAndTimingModel incoming = entry.getValue();
-
-            CountAndTimingModel existing = metrics.get(key);
-            if (existing == null) {
-                existing = new CountAndTimingModel();
-                existing.setCount(0);
-                existing.setMinLatencyMs(Long.MAX_VALUE);
-                existing.setMaxLatencyMs(0L);
-                existing.setTotalLatencyMs(0L);
-                metrics.put(key, existing);
-            }
-
-            existing.setCount(existing.getCount() + incoming.getCount());
-            existing.setMinLatencyMs(Math.min(existing.getMinLatencyMs(), incoming.getMinLatencyMs()));
-            existing.setMaxLatencyMs(Math.max(existing.getMaxLatencyMs(), incoming.getMaxLatencyMs()));
-            existing.setTotalLatencyMs(existing.getTotalLatencyMs() + incoming.getTotalLatencyMs());
-        }
-    }
-
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
         return List.of();
@@ -106,6 +97,6 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
 
     @Override
     public String toString() {
-        return metrics.toString();
+        return " {\nwfSpecID=" + id.getWfSpecId() + ",\nwindowStart=" + id.getWindowStart() + ",\nmetrics=" + metrics + "\n}";
     }
 }

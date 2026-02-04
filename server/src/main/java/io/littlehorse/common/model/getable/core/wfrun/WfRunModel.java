@@ -54,7 +54,6 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import io.littlehorse.server.streams.topology.core.PartitionMetricWindowModel;
-import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
@@ -659,7 +658,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             statusChanged = GetableUpdates.createEndEvent(
                     wfSpecId, processorContext.authorization().tenantId(), this.status, status, startTime);
         }
-        var previousStatus = this.status;
+        LHStatus previousStatus = this.status;
         this.status = status;
         trackMetrics(processorContext, previousStatus);
         processorContext.getableUpdates().dispatch(statusChanged);
@@ -687,21 +686,22 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     private void trackMetrics(CoreProcessorContext processorContext, LHStatus previousStatus) {
         Date windowStart = alignToMinute();
         TenantIdModel tenantId = processorContext.authorization().tenantId();
-
+        //put this somewherelse
         String storeKey = String.format(
                 "metrics/partition/%s/%s/%s/%s",
                 LHUtil.toLhDbFormat(windowStart), tenantId.toString(), "wf", wfSpecId.toString());
 
-        ClusterScopedStore globalStore =
+        ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
 
-        PartitionMetricWindowModel metricWindow = globalStore.get(storeKey, PartitionMetricWindowModel.class);
-        if (metricWindow == null) {
-            metricWindow = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel partitionMetric = clusterScopedStore.get(storeKey, PartitionMetricWindowModel.class);
+        if (partitionMetric == null) {
+            partitionMetric = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
         }
 
-        metricWindow.trackWfRun(previousStatus, status, startTime, endTime);
-        globalStore.put(metricWindow);
+        partitionMetric.trackWfRun(previousStatus, status, startTime, endTime);
+        clusterScopedStore.put(partitionMetric);
+        System.out.println("Partition metrics: " + partitionMetric);
     }
 
     private Date alignToMinute() {
@@ -759,7 +759,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
         // ThreadRuns depend on each other, for example Exception Handler Threads or
         // child threads, so we need to signal to the other threads that they might
-        // want to wake up. Ding Ding Ding! Get out of bed.
+        // want to wake up. Ding Ding Ding! Get out of bed. XD
         advance(time);
     }
 }

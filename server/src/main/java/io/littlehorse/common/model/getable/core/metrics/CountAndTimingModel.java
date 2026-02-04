@@ -5,15 +5,46 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.CountAndTiming;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class CountAndTimingModel extends LHSerializable<CountAndTiming> {
     private int count;
     private long minLatencyMs;
     private long maxLatencyMs;
     private long totalLatencyMs;
+
+    CountAndTimingModel(int count, long minLatencyMs, long maxLatencyMs, long totalLatencyMs) {
+        this.count = count;
+        this.minLatencyMs = minLatencyMs;
+        this.maxLatencyMs = maxLatencyMs;
+        this.totalLatencyMs = totalLatencyMs;
+    }
+
+    public void incrementCountAndLatency(long incomingLatencyMs) {
+        incrementCount();
+        if (this.minLatencyMs == 0 || incomingLatencyMs < this.minLatencyMs) {
+            this.minLatencyMs = incomingLatencyMs;
+        }
+        if (incomingLatencyMs > this.maxLatencyMs) {
+            this.maxLatencyMs = incomingLatencyMs;
+        }
+        this.totalLatencyMs += incomingLatencyMs;
+    }
+
+    public void incrementCount() {
+        this.count++;
+    }
+
+    public void mergeFrom(CountAndTimingModel other) {
+        this.count += other.count;
+        this.minLatencyMs = Math.min(this.minLatencyMs, other.minLatencyMs);
+        this.maxLatencyMs = Math.max(this.maxLatencyMs, other.maxLatencyMs);
+        this.totalLatencyMs += other.totalLatencyMs;
+    }
 
     @Override
     public Class<CountAndTiming> getProtoBaseClass() {
@@ -36,27 +67,5 @@ public class CountAndTimingModel extends LHSerializable<CountAndTiming> {
                 .setMinLatencyMs(minLatencyMs)
                 .setMaxLatencyMs(maxLatencyMs)
                 .setTotalLatencyMs(totalLatencyMs);
-    }
-
-    public void add(int count, long latencyMs) {
-        this.count += count;
-        if (this.minLatencyMs == 0 || latencyMs < this.minLatencyMs) {
-            this.minLatencyMs = latencyMs;
-        }
-        if (latencyMs > this.maxLatencyMs) {
-            this.maxLatencyMs = latencyMs;
-        }
-        this.totalLatencyMs += latencyMs * count;
-    }
-
-    public void add(int count) {
-        this.count += count;
-    }
-
-    public void mergeFrom(CountAndTimingModel other) {
-        this.count += other.count;
-        this.minLatencyMs = Math.min(this.minLatencyMs, other.minLatencyMs);
-        this.maxLatencyMs = Math.max(this.maxLatencyMs, other.maxLatencyMs);
-        this.totalLatencyMs += other.totalLatencyMs;
     }
 }

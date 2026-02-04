@@ -195,27 +195,23 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     private void forwardWindowPartitionMetrics(long timestamp) {
-        ClusterScopedStore globalStore =
+        ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
 
         String startKey = "metrics/partition/";
         String endKey = "metrics/partition/~";
 
         try (LHKeyValueIterator<PartitionMetricWindowModel> iter =
-                globalStore.range(startKey, endKey, PartitionMetricWindowModel.class)) {
+                clusterScopedStore.range(startKey, endKey, PartitionMetricWindowModel.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<PartitionMetricWindowModel> next = iter.next();
                 PartitionMetricWindowModel metricWindow = next.getValue();
 
                 if (metricWindow != null) {
-                    // Create the aggregation command for this metric window
                     AggregateWindowMetricsModel aggregateMetrics = new AggregateWindowMetricsModel(
                             metricWindow.getWfSpecId(), metricWindow.getTenantId(), metricWindow);
-
                     forwardMetricSubcommand(aggregateMetrics);
-
-                    // Delete the metric window after forwarding
-                    globalStore.delete(metricWindow);
+                    clusterScopedStore.delete(metricWindow);
                 }
             }
         }
@@ -226,6 +222,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 new RepartitionCommand(repartitionSubCommand, new Date(), repartitionSubCommand.getPartitionKey());
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.partitionKey = repartitionSubCommand.getPartitionKey();
+        System.out.println("Forwarding repartition command for partition key: " + cpo.partitionKey);
         cpo.topic = this.config.getCoreCmdTopicName();
         cpo.payload = repartitionCommand;
         Record<String, CommandProcessorOutput> out = new Record<>(

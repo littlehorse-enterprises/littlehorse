@@ -50,14 +50,14 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         return new Date(aligned);
     }
 
-    public void add(String metricKey, int count, long latencyMs) {
+    public void incrementCountAndLatency(String metricKey, long latencyMs) {
         CountAndTimingModel timing = metrics.computeIfAbsent(metricKey, k -> new CountAndTimingModel());
-        timing.add(count, latencyMs);
+        timing.incrementCountAndLatency(latencyMs);
     }
 
-    public void add(String metricKey, int count) {
+    public void incrementCount(String metricKey) {
         CountAndTimingModel timing = metrics.computeIfAbsent(metricKey, k -> new CountAndTimingModel());
-        timing.add(count);
+        timing.incrementCount();
     }
 
     public void mergeFrom(PartitionMetricWindowModel other) {
@@ -73,18 +73,16 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
     }
 
     public void trackWfRun(LHStatus previousStatus, LHStatus newStatus, Date startTime, Date endTime) {
-        String metricKey = "started";
         if (previousStatus != null) {
-            long latencyMs = 0;
             if (endTime == null) {
                 endTime = new Date();
             }
-            latencyMs = endTime.getTime() - startTime.getTime();
-            metricKey = previousStatus.name().toLowerCase() + "_to_"
+            long latencyMs = endTime.getTime() - startTime.getTime();
+            String metricKey = previousStatus.name().toLowerCase() + "_to_"
                     + newStatus.name().toLowerCase();
-            add(metricKey, 1, latencyMs);
+            incrementCountAndLatency(metricKey, latencyMs);
         } else {
-            add(metricKey, 1);
+            incrementCount("started");
         }
     }
 
@@ -176,6 +174,6 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
 
     @Override
     public String toString() {
-        return "PartitionMetricWindowModel{" + ", windowStart=" + windowStart + ", metrics=" + metrics + '}';
+        return " {" + "\nwindowStart=" + windowStart + ",\nmetrics=" + metrics + "\n}";
     }
 }
