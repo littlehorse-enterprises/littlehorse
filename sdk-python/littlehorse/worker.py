@@ -17,7 +17,7 @@ from typing import (
     get_args,
     get_origin,
 )
-from littlehorse.config import LHConfig, LittleHorseStub
+from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     TaskSchemaMismatchException,
     LHTaskException as LHTaskPythonException,
@@ -46,6 +46,7 @@ from littlehorse.model import (
     Checkpoint,
     PutCheckpointRequest,
     PutCheckpointResponse,
+    LittleHorseStub
 )
 from google.protobuf.timestamp_pb2 import Timestamp
 from littlehorse.utils import extract_value, to_variable_type, to_variable_value
@@ -365,7 +366,7 @@ class LHConnection:
         asyncio.create_task(self._execute_task(task))
 
     async def _execute_task(self, task: ScheduledTask) -> None:
-        context = WorkerContext(task)
+        context = WorkerContext(task, self._stub)
         args: Any = [extract_value(var.value) for var in task.variables]
 
         if self._task.has_context():
