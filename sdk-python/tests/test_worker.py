@@ -84,16 +84,16 @@ class TestWorkerContext(unittest.TestCase):
         task_id = str(uuid.uuid4())
         scheduled_task = ScheduledTask(
             task_run_id=TaskRunId(task_guid=task_id, wf_run_id=WfRunId(id="mock-wf")),
-            total_observed_checkpoints=0
+            total_observed_checkpoints=0,
         )
-        
+
         mock_response = PutCheckpointResponse(
             flow_control_continue_type=PutCheckpointResponse.FlowControlContinue.CONTINUE_TASK
         )
         mock_client.PutCheckpoint.return_value = mock_response
-        
+
         ctx = WorkerContext(scheduled_task, mock_client)
-        
+
         result = ctx.execute_and_checkpoint(lambda checkpoint_ctx: "checkpoint_value")
 
         self.assertEqual(result, "checkpoint_value")
@@ -101,29 +101,24 @@ class TestWorkerContext(unittest.TestCase):
         self.assertEqual(ctx._checkpoints_so_far_in_this_run, 1)
 
     def test_should_fetch_checkpoint_on_second_checkpoint_attempt(self):
-        task_run_id = TaskRunId(
-            wf_run_id=WfRunId(id="mock-wf"),
-            task_guid="mock-guid"
-        )
-        
+        task_run_id = TaskRunId(wf_run_id=WfRunId(id="mock-wf"), task_guid="mock-guid")
+
         scheduled_task = ScheduledTask(
-            task_run_id=task_run_id,
-            total_observed_checkpoints=1
+            task_run_id=task_run_id, total_observed_checkpoints=1
         )
-        
+
         mock_client = Mock()
         mock_client.GetCheckpoint.return_value = Checkpoint(
-            id=CheckpointId(
-                task_run=task_run_id,
-                checkpoint_number=1
-            ),
-            value=VariableValue(str="checkpoint_value")
+            id=CheckpointId(task_run=task_run_id, checkpoint_number=1),
+            value=VariableValue(str="checkpoint_value"),
         )
-        
+
         ctx = WorkerContext(scheduled_task, mock_client)
-        
-        checkpoint_data = ctx.execute_and_checkpoint(lambda checkpoint_ctx: "checkpoint_value")
-        
+
+        checkpoint_data = ctx.execute_and_checkpoint(
+            lambda checkpoint_ctx: "checkpoint_value"
+        )
+
         mock_client.PutCheckpoint.assert_not_called()
         mock_client.GetCheckpoint.assert_called_once()
         self.assertEqual(checkpoint_data, "checkpoint_value")
@@ -131,39 +126,40 @@ class TestWorkerContext(unittest.TestCase):
     def test_save_checkpoint_halts_on_server_instruction(self):
         mock_client = Mock()
         scheduled_task = ScheduledTask(
-            task_run_id=TaskRunId(task_guid="mock-guid"),
-            total_observed_checkpoints=0
+            task_run_id=TaskRunId(task_guid="mock-guid"), total_observed_checkpoints=0
         )
-        
+
         mock_response = PutCheckpointResponse(
             flow_control_continue_type=PutCheckpointResponse.FlowControlContinue.STOP_TASK
         )
         mock_client.PutCheckpoint.return_value = mock_response
-        
+
         ctx = WorkerContext(scheduled_task, mock_client)
-        
+
         # Should raise exception when server says to halt
         with self.assertRaises(Exception) as exception_context:
             ctx.execute_and_checkpoint(lambda ctx: "checkpoint_value")
-        
+
         self.assertEqual(
             "Halting execution because the server told us to.",
-            str(exception_context.exception)
+            str(exception_context.exception),
         )
+
 
 class TestCheckpointContext(unittest.TestCase):
     def test_log_output(self):
         ctx = CheckpointContext()
         self.assertEqual(ctx.log_output, "")
-        
+
         ctx.log("checkpoint log 1")
         ctx.log("checkpoint log 2")
         ctx.log(67)
-        
+
         output = ctx.log_output
         self.assertTrue("checkpoint log 1" in output)
         self.assertTrue("checkpoint log 2" in output)
         self.assertTrue("67" in output)
+
 
 class TestLHTask(unittest.TestCase):
     def test_raise_exception_if_it_is_not_a_callable(self):

@@ -45,7 +45,7 @@ from littlehorse.model import (
     CheckpointId,
     Checkpoint,
     PutCheckpointRequest,
-    PutCheckpointResponse
+    PutCheckpointResponse,
 )
 from google.protobuf.timestamp_pb2 import Timestamp
 from littlehorse.utils import extract_value, to_variable_type, to_variable_value
@@ -159,38 +159,49 @@ class WorkerContext:
             str: Log output.
         """
         return "\n".join(self._log_entries)
-    
+
     def execute_and_checkpoint(self, callable: Callable[..., Any]) -> Any:
-        if (self._checkpoints_so_far_in_this_run < self._scheduled_task.total_observed_checkpoints):
+        if (
+            self._checkpoints_so_far_in_this_run
+            < self._scheduled_task.total_observed_checkpoints
+        ):
             output = self._fetch_checkpoint(self._checkpoints_so_far_in_this_run)
             self._checkpoints_so_far_in_this_run += 1
             return output
         else:
             return self._save_checkpoint(callable)
-        
+
     def _fetch_checkpoint(self, checkpoint_number: int) -> Any:
-        id: CheckpointId = CheckpointId(task_run=self._scheduled_task.task_run_id, checkpoint_number=checkpoint_number)
-        
+        id: CheckpointId = CheckpointId(
+            task_run=self._scheduled_task.task_run_id,
+            checkpoint_number=checkpoint_number,
+        )
+
         checkpoint: Checkpoint = self._client.GetCheckpoint(id)
 
         return extract_value(checkpoint.value)
-    
+
     def _save_checkpoint(self, callable: Callable[..., Any]) -> Any:
         checkpointContext: CheckpointContext = CheckpointContext()
         result: Any = callable(checkpointContext)
 
-        response: PutCheckpointResponse = self._client.PutCheckpoint(PutCheckpointRequest(
-            task_run_id=self._scheduled_task.task_run_id,
-            task_attempt=self._scheduled_task.attempt_number,
-            value=to_variable_value(result),
-            logs=checkpointContext.log_output
-        ))
+        response: PutCheckpointResponse = self._client.PutCheckpoint(
+            PutCheckpointRequest(
+                task_run_id=self._scheduled_task.task_run_id,
+                task_attempt=self._scheduled_task.attempt_number,
+                value=to_variable_value(result),
+                logs=checkpointContext.log_output,
+            )
+        )
 
         self._checkpoints_so_far_in_this_run += 1
 
-        if response.flow_control_continue_type is not PutCheckpointResponse.FlowControlContinue.CONTINUE_TASK:
+        if (
+            response.flow_control_continue_type
+            is not PutCheckpointResponse.FlowControlContinue.CONTINUE_TASK
+        ):
             raise Exception("Halting execution because the server told us to.")
-        
+
         return result
 
     def __str__(self) -> str:
@@ -204,15 +215,16 @@ class WorkerContext:
             }
         )
 
+
 class CheckpointContext:
     def __init__(self) -> None:
         self._log_entries: list[str] = []
-    
+
     def log(self, obj: Any) -> None:
         """Stores log data for the given Checkpoint.
 
-           Args:
-               obj (str): The item to add to the Checkpoints's Log Output
+        Args:
+            obj (str): The item to add to the Checkpoints's Log Output
         """
         self._log_entries.append(f"[{datetime.now()}] {obj}")
 
@@ -224,6 +236,7 @@ class CheckpointContext:
             str: Log output.
         """
         return "\n".join(self._log_entries)
+
 
 class LHTask:
     def __init__(self, callable: Callable[..., Any], task_def: TaskDef) -> None:
