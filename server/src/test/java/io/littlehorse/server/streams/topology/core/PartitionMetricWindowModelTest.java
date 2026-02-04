@@ -58,7 +58,6 @@ public class PartitionMetricWindowModelTest {
         assertThat(model1.getMetrics().get("metric1").getTotalLatencyMs()).isEqualTo(400L);
         assertThat(model1.getMetrics().get("metric2").getTotalLatencyMs()).isEqualTo(200L);
         assertThat(model1.getMetrics().get("metric3").getTotalLatencyMs()).isEqualTo(600L);
-
     }
 
     @Test
@@ -144,7 +143,7 @@ public class PartitionMetricWindowModelTest {
         model.trackWfRun(LHStatus.RUNNING, LHStatus.ERROR, new Date(1000L), new Date(2000L));
 
         assertThat(model.getMetrics()).hasSize(2);
-        
+
         CountAndTimingModel completedTiming = model.getMetrics().get("running_to_completed");
         assertThat(completedTiming.getCount()).isEqualTo(2);
         assertThat(completedTiming.getTotalLatencyMs()).isEqualTo(5000L); // 2000 + 3000
@@ -199,7 +198,7 @@ public class PartitionMetricWindowModelTest {
 
         assertThat(model1.getMetrics()).hasSize(2);
         assertThat(model1.getMetrics().get("started").getCount()).isEqualTo(2);
-        
+
         CountAndTimingModel completedTiming = model1.getMetrics().get("running_to_completed");
         assertThat(completedTiming.getCount()).isEqualTo(2);
         assertThat(completedTiming.getTotalLatencyMs()).isEqualTo(5000L);

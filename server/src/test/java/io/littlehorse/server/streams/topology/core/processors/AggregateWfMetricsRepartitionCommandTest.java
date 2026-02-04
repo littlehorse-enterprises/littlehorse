@@ -58,9 +58,7 @@ public class AggregateWfMetricsRepartitionCommandTest {
     private final TenantIdModel tenantId = new TenantIdModel("my-tenant");
 
     private final KeyValueStore<String, Bytes> nativeInMemoryStore = Stores.keyValueStoreBuilder(
-                    Stores.inMemoryKeyValueStore(ServerTopology.CORE_REPARTITION_STORE),
-                    Serdes.String(),
-                    Serdes.Bytes())
+                    Stores.inMemoryKeyValueStore(ServerTopology.CORE_STORE), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
     private final KeyValueStore<String, Bytes> nativeInMemoryGlobalStore = Stores.keyValueStoreBuilder(

@@ -50,9 +50,7 @@ public class CreateRemoteTagRepartitionCommandTest {
     private final MetadataCache metadataCache = new MetadataCache();
 
     private final KeyValueStore<String, Bytes> nativeInMemoryStore = Stores.keyValueStoreBuilder(
-                    Stores.inMemoryKeyValueStore(ServerTopology.CORE_REPARTITION_STORE),
-                    Serdes.String(),
-                    Serdes.Bytes())
+                    Stores.inMemoryKeyValueStore(ServerTopology.CORE_STORE), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
     private final KeyValueStore<String, Bytes> nativeInMemoryGlobalStore = Stores.keyValueStoreBuilder(
