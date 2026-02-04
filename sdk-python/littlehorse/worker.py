@@ -225,7 +225,7 @@ class CheckpointContext:
         """Stores log data for the given Checkpoint.
 
         Args:
-            obj (str): The item to add to the Checkpoint's Log Output
+            obj (Any): The item to add to the Checkpoint's Log Output
         """
         self._log_entries.append(f"[{datetime.now()}] {obj}")
 

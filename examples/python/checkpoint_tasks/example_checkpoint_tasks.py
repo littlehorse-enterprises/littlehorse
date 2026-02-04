@@ -2,7 +2,6 @@ import asyncio
 import logging
 from pathlib import Path
 
-from examples.python.basic.example_basic import greeting
 from littlehorse.config import LHConfig
 from littlehorse.worker import LHTaskWorker, WorkerContext, CheckpointContext
 from littlehorse.workflow import Workflow
