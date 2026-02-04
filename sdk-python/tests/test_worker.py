@@ -2,7 +2,7 @@ from typing import Any
 import unittest
 import uuid
 import datetime
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock
 
 from littlehorse.exceptions import TaskSchemaMismatchException
 from littlehorse.model import (
