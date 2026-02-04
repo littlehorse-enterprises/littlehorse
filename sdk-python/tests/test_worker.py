@@ -68,8 +68,7 @@ class TestWorkerContext(unittest.TestCase):
 
         self.assertEqual(ctx.node_run_id, node_run_task)
 
-        wf_id = str(uuid.uuid4())
-        node_run_user = NodeRunId(wf_run_id=WfRunId(id=wf_id))
+        node_run_user = NodeRunId(wf_run_id=WfRunId(id="mock-id"))
         scheduled_task_user = ScheduledTask(
             source=TaskRunSource(
                 user_task_trigger=UserTaskTriggerReference(node_run_id=node_run_user)
@@ -81,9 +80,10 @@ class TestWorkerContext(unittest.TestCase):
 
     def test_execute_and_checkpoint_saves_new_checkpoint(self):
         mock_client = Mock()
-        task_id = str(uuid.uuid4())
         scheduled_task = ScheduledTask(
-            task_run_id=TaskRunId(task_guid=task_id, wf_run_id=WfRunId(id="mock-wf")),
+            task_run_id=TaskRunId(
+                task_guid="mock-guid", wf_run_id=WfRunId(id="mock-id")
+            ),
             total_observed_checkpoints=0,
         )
 
@@ -101,7 +101,7 @@ class TestWorkerContext(unittest.TestCase):
         self.assertEqual(ctx._checkpoints_so_far_in_this_run, 1)
 
     def test_should_fetch_checkpoint_on_second_checkpoint_attempt(self):
-        task_run_id = TaskRunId(wf_run_id=WfRunId(id="mock-wf"), task_guid="mock-guid")
+        task_run_id = TaskRunId(wf_run_id=WfRunId(id="mock-id"), task_guid="mock-guid")
 
         scheduled_task = ScheduledTask(
             task_run_id=task_run_id, total_observed_checkpoints=1
@@ -136,7 +136,6 @@ class TestWorkerContext(unittest.TestCase):
 
         ctx = WorkerContext(scheduled_task, mock_client)
 
-        # Should raise exception when server says to halt
         with self.assertRaises(Exception) as exception_context:
             ctx.execute_and_checkpoint(lambda ctx: "checkpoint_value")
 

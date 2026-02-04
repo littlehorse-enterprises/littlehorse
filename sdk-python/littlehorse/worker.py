@@ -46,7 +46,7 @@ from littlehorse.model import (
     Checkpoint,
     PutCheckpointRequest,
     PutCheckpointResponse,
-    LittleHorseStub
+    LittleHorseStub,
 )
 from google.protobuf.timestamp_pb2 import Timestamp
 from littlehorse.utils import extract_value, to_variable_type, to_variable_value
