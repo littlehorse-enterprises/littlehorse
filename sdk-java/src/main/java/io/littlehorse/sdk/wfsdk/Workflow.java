@@ -11,6 +11,7 @@ import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpecId;
@@ -208,6 +209,14 @@ public abstract class Workflow {
      *      workflow.
      */
     public abstract Set<String> getRequiredWorkflowEventDefNames();
+
+    /**
+     * Returns WorkflowEventDef registrations declared via ThrowEventNodeOutput#registeredAs.
+     *
+     * @return a Set of PutWorkflowEventDefRequest for WorkflowEventDefs that will be registered
+     *     with this workflow.
+     */
+    public abstract Set<PutWorkflowEventDefRequest> getWorkflowEventDefsToRegister();
 
     /**
      * Returns the associated PutWfSpecRequest in JSON form.
