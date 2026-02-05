@@ -23,6 +23,16 @@ export type VersionList = {
 export type WfSpecData = {
   name: string
   latestVersion: string
+  createdAt: Date | undefined
+  parentWfSpec?: {
+    wfSpecName: string
+    wfSpecMajorVersion: number
+  }
+}
+
+export type TaskDefData = {
+  name: string
+  createdAt: Date | undefined
 }
 
 export type FormFieldProp = {
