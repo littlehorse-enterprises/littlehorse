@@ -4,6 +4,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
@@ -123,6 +124,18 @@ public class WorkflowImpl extends Workflow {
             compiledWorkflow = compileWorkflowHelper();
         }
         return requiredEedNames;
+    }
+
+    @Override
+    public Set<PutExternalEventDefRequest> getExternalEventDefsToRegister() {
+        if (compiledWorkflow == null) {
+            compiledWorkflow = compileWorkflowHelper();
+        }
+        Set<PutExternalEventDefRequest> out = new HashSet<>();
+        for (ExternalEventNodeOutputImpl node : externalEventsToRegister) {
+            out.add(node.toPutExtDefRequest());
+        }
+        return out;
     }
 
     @Override
