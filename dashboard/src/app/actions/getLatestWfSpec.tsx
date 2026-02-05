@@ -1,7 +1,7 @@
 'use server'
 
-import { lhClient } from '../lhClient'
 import { WfSpecData } from '@/types'
+import { lhClient } from '../lhClient'
 
 export async function getLatestWfSpecs(tenantId: string, wfSpecNames: string[]): Promise<WfSpecData[]> {
   const client = await lhClient({ tenantId })
@@ -11,9 +11,13 @@ export async function getLatestWfSpecs(tenantId: string, wfSpecNames: string[]):
     wfSpecNames.map(async name => {
       if (!specMap.has(name)) {
         const wf = await client.getLatestWfSpec({ name })
+        if (!wf) return
+
         specMap.set(name, {
           name,
-          latestVersion: `${wf?.id?.majorVersion}.${wf?.id?.revision}`,
+          latestVersion: `${wf.id?.majorVersion}.${wf.id?.revision}`,
+          createdAt: wf.createdAt ? new Date(wf.createdAt) : undefined,
+          parentWfSpec: wf.parentWfSpec ?? undefined,
         })
       }
     })
