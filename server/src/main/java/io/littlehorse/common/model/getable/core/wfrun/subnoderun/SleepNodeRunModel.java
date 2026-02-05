@@ -58,7 +58,7 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) {
+    public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         maybeRescheduleMaturation(processorContext);
         return this.isMatured();
     }
@@ -99,7 +99,7 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
         this.matured = true;
     }
 
-    public void maybeRescheduleMaturation(CoreProcessorContext processorContext) {
+    public void maybeRescheduleMaturation(CoreProcessorContext processorContext) throws NodeFailureException {
         if (matured) {
             return;
         }
@@ -120,7 +120,9 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
             CommandModel command = new CommandModel(snm, maturationTime);
             processorContext.getTaskManager().scheduleTimer(new LHTimer(command));
         } catch (LHVarSubError exn) {
-            // Best-effort: if the variable can't be resolved, keep the original timer.
+            FailureModel failure = new FailureModel(
+                    "Failed calculating maturation for timer: " + exn.getMessage(), LHConstants.VAR_SUB_ERROR);
+            throw new NodeFailureException(failure);
         }
     }
 
