@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.Properties;
 
 /*
@@ -22,7 +21,6 @@ public class BasicExample {
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-basic", wf -> {
             WfRunVariable theName = wf.declareStr("input-name").searchable();
-            wf.runWf(theName, Map.of());
             wf.execute("greet", theName);
         });
     }
