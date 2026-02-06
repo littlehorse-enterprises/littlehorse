@@ -1250,7 +1250,11 @@ class WorkflowThread:
         self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
         return SpawnedThreads(thread_number, None)
 
-    def wait_for_threads(self, wait_for: SpawnedThreads, strategy: WaitForThreadsStrategy = WaitForThreadsStrategy.WAIT_FOR_ALL) -> WaitForThreadsNodeOutput:
+    def wait_for_threads(
+        self,
+        wait_for: SpawnedThreads,
+        strategy: WaitForThreadsStrategy = WaitForThreadsStrategy.WAIT_FOR_ALL,
+    ) -> WaitForThreadsNodeOutput:
         """Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
 
         Args:
@@ -1566,6 +1570,16 @@ class WorkflowThread:
     def declare_json_obj(self, name: str, default_value: Any = None) -> WfRunVariable:
         return self.add_variable(
             name, VariableType.JSON_OBJ, default_value=default_value
+        )
+
+    def declare_timestamp(self, name: str, default_value: Any = None) -> WfRunVariable:
+        return self.add_variable(
+            name, VariableType.TIMESTAMP, default_value=default_value
+        )
+
+    def declare_wf_run_id(self, name: str, default_value: Any = None) -> WfRunVariable:
+        return self.add_variable(
+            name, VariableType.WF_RUN_ID, default_value=default_value
         )
 
     def handle_any_failure(
