@@ -49,9 +49,6 @@ message Tenant {
     // Configuration for the output topic associated with this Tenant. If not set,
     // then the output topic is not enabled.
     optional OutputTopicConfig output_topic_config = 3;
-
-    // The default level of metrics to record in a given `Tenant`.
-    optional MetricRecordingLevel metrics_level = 4;
 }
 
 // List of ACL's for LittleHorse

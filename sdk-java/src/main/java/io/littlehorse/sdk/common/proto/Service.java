@@ -934,7 +934,7 @@ public final class Service extends com.google.protobuf.GeneratedFile {
       "\032\n\026MINOR_REVISION_UPDATES\020\001\022\016\n\nNO_UPDATE" +
       "S\020\002*X\n\032StructDefCompatibilityType\022\025\n\021NO_" +
       "SCHEMA_UPDATES\020\000\022#\n\037FULLY_COMPATIBLE_SCH" +
-      "EMA_UPDATES\020\0012\301=\n\013LittleHorse\022D\n\nPutTask" +
+      "EMA_UPDATES\020\0012\376:\n\013LittleHorse\022D\n\nPutTask" +
       "Def\022\036.littlehorse.PutTaskDefRequest\032\024.li" +
       "ttlehorse.TaskDef\"\000\022<\n\nGetTaskDef\022\026.litt" +
       "lehorse.TaskDefId\032\024.littlehorse.TaskDef\"" +
@@ -1123,17 +1123,9 @@ public final class Service extends com.google.protobuf.GeneratedFile {
       "e.protobuf.Empty\032\037.littlehorse.LittleHor" +
       "seVersion\"\000\022I\n\013ListMetrics\022\037.littlehorse" +
       ".ListMetricsRequest\032\027.littlehorse.Metric" +
-      "List\"\000\022h\n\026PutMetricLevelOverride\022*.littl" +
-      "ehorse.PutMetricLevelOverrideRequest\032 .l" +
-      "ittlehorse.MetricLevelOverride\"\000\022d\n\031Dele" +
-      "teMetricLevelOverride\022-.littlehorse.Dele" +
-      "teMetricLevelOverrideRequest\032\026.google.pr" +
-      "otobuf.Empty\"\000\022q\n\030ListMetricLevelOverrid" +
-      "es\022,.littlehorse.ListMetricLevelOverride" +
-      "sRequest\032%.littlehorse.MetricLevelOverri" +
-      "desList\"\000BM\n\037io.littlehorse.sdk.common.p" +
-      "rotoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Comm" +
-      "on.Protob\006proto3"
+      "List\"\000BM\n\037io.littlehorse.sdk.common.prot" +
+      "oP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common." +
+      "Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

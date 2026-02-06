@@ -93,32 +93,4 @@ public interface TenantOrBuilder extends
    * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
    */
   io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder getOutputTopicConfigOrBuilder();
-
-  /**
-   * <pre>
-   * The default level of metrics to record in a given `Tenant`.
-   * </pre>
-   *
-   * <code>optional .littlehorse.MetricRecordingLevel metrics_level = 4;</code>
-   * @return Whether the metricsLevel field is set.
-   */
-  boolean hasMetricsLevel();
-  /**
-   * <pre>
-   * The default level of metrics to record in a given `Tenant`.
-   * </pre>
-   *
-   * <code>optional .littlehorse.MetricRecordingLevel metrics_level = 4;</code>
-   * @return The enum numeric value on the wire for metricsLevel.
-   */
-  int getMetricsLevelValue();
-  /**
-   * <pre>
-   * The default level of metrics to record in a given `Tenant`.
-   * </pre>
-   *
-   * <code>optional .littlehorse.MetricRecordingLevel metrics_level = 4;</code>
-   * @return The metricsLevel.
-   */
-  io.littlehorse.sdk.common.proto.MetricRecordingLevel getMetricsLevel();
 }

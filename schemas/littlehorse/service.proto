@@ -354,9 +354,6 @@ service LittleHorse {
 
   // Metrics APIs
   rpc ListMetrics(ListMetricsRequest) returns (MetricList) {}
-  rpc PutMetricLevelOverride(PutMetricLevelOverrideRequest) returns (MetricLevelOverride) {}
-  rpc DeleteMetricLevelOverride(DeleteMetricLevelOverrideRequest) returns (google.protobuf.Empty) {}
-  rpc ListMetricLevelOverrides(ListMetricLevelOverridesRequest) returns (MetricLevelOverridesList) {}
 }
 
 // Returns the UserTaskDef with a given name and the highest version number.

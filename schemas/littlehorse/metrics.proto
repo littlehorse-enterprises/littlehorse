@@ -59,11 +59,6 @@ message MetricSpec {
   StatusTransition transition = 4;
 }
 
-message MetricsConfig {
-  MetricRecordingLevel level = 1;
-  int32 retention_days = 2;
-}
-
 message WorkflowMetricId {
     optional WfSpecId wf_spec = 1; // If null, tenant-level aggregate
 }
@@ -108,27 +103,4 @@ message ListMetricsRequest {
 
 message MetricList {
   repeated MetricWindow windows = 1;
-}
-
-message MetricLevelOverride {
-  string id = 1;
-  MetricRecordingLevel new_level = 2;
-  WorkflowMetricId workflow = 3;
-}
-
-message PutMetricLevelOverrideRequest {
-  MetricLevelOverride override = 1;
-}
-
-message DeleteMetricLevelOverrideRequest {
-  string id = 1;
-}
-
-message ListMetricLevelOverridesRequest {
-  // Optional filters
-  optional WfSpecId wf_spec_filter = 1;
-}
-
-message MetricLevelOverridesList {
-  repeated MetricLevelOverride overrides = 1;
 }

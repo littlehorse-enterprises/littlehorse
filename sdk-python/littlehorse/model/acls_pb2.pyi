@@ -66,16 +66,14 @@ class Principal(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.PrincipalId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., per_tenant_acls: _Optional[_Mapping[str, ServerACLs]] = ..., global_acls: _Optional[_Union[ServerACLs, _Mapping]] = ...) -> None: ...
 
 class Tenant(_message.Message):
-    __slots__ = ("id", "created_at", "output_topic_config", "metrics_level")
+    __slots__ = ("id", "created_at", "output_topic_config")
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     OUTPUT_TOPIC_CONFIG_FIELD_NUMBER: _ClassVar[int]
-    METRICS_LEVEL_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.TenantId
     created_at: _timestamp_pb2.Timestamp
     output_topic_config: OutputTopicConfig
-    metrics_level: _common_enums_pb2.MetricRecordingLevel
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., output_topic_config: _Optional[_Union[OutputTopicConfig, _Mapping]] = ..., metrics_level: _Optional[_Union[_common_enums_pb2.MetricRecordingLevel, str]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., output_topic_config: _Optional[_Union[OutputTopicConfig, _Mapping]] = ...) -> None: ...
 
 class ServerACLs(_message.Message):
     __slots__ = ("acls",)

@@ -33,15 +33,7 @@ import {
 } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
-import {
-  DeleteMetricLevelOverrideRequest,
-  ListMetricLevelOverridesRequest,
-  ListMetricsRequest,
-  MetricLevelOverride,
-  MetricLevelOverridesList,
-  MetricList,
-  PutMetricLevelOverrideRequest,
-} from "./metrics";
+import { ListMetricsRequest, MetricList } from "./metrics";
 import { NodeRun } from "./node_run";
 import {
   CheckpointId,
@@ -12149,30 +12141,6 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    putMetricLevelOverride: {
-      name: "PutMetricLevelOverride",
-      requestType: PutMetricLevelOverrideRequest,
-      requestStream: false,
-      responseType: MetricLevelOverride,
-      responseStream: false,
-      options: {},
-    },
-    deleteMetricLevelOverride: {
-      name: "DeleteMetricLevelOverride",
-      requestType: DeleteMetricLevelOverrideRequest,
-      requestStream: false,
-      responseType: Empty,
-      responseStream: false,
-      options: {},
-    },
-    listMetricLevelOverrides: {
-      name: "ListMetricLevelOverrides",
-      requestType: ListMetricLevelOverridesRequest,
-      requestStream: false,
-      responseType: MetricLevelOverridesList,
-      responseStream: false,
-      options: {},
-    },
   },
 } as const;
 
@@ -12623,18 +12591,6 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<LittleHorseVersion>>;
   /** Metrics APIs */
   listMetrics(request: ListMetricsRequest, context: CallContext & CallContextExt): Promise<DeepPartial<MetricList>>;
-  putMetricLevelOverride(
-    request: PutMetricLevelOverrideRequest,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<MetricLevelOverride>>;
-  deleteMetricLevelOverride(
-    request: DeleteMetricLevelOverrideRequest,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  listMetricLevelOverrides(
-    request: ListMetricLevelOverridesRequest,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<MetricLevelOverridesList>>;
 }
 
 export interface LittleHorseClient<CallOptionsExt = {}> {
@@ -13093,18 +13049,6 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<LittleHorseVersion>;
   /** Metrics APIs */
   listMetrics(request: DeepPartial<ListMetricsRequest>, options?: CallOptions & CallOptionsExt): Promise<MetricList>;
-  putMetricLevelOverride(
-    request: DeepPartial<PutMetricLevelOverrideRequest>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<MetricLevelOverride>;
-  deleteMetricLevelOverride(
-    request: DeepPartial<DeleteMetricLevelOverrideRequest>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  listMetricLevelOverrides(
-    request: DeepPartial<ListMetricLevelOverridesRequest>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<MetricLevelOverridesList>;
 }
 
 function bytesFromBase64(b64: string): Uint8Array {

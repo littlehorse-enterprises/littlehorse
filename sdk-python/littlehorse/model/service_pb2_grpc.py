@@ -499,21 +499,6 @@ class LittleHorseStub(object):
                 request_serializer=metrics__pb2.ListMetricsRequest.SerializeToString,
                 response_deserializer=metrics__pb2.MetricList.FromString,
                 _registered_method=True)
-        self.PutMetricLevelOverride = channel.unary_unary(
-                '/littlehorse.LittleHorse/PutMetricLevelOverride',
-                request_serializer=metrics__pb2.PutMetricLevelOverrideRequest.SerializeToString,
-                response_deserializer=metrics__pb2.MetricLevelOverride.FromString,
-                _registered_method=True)
-        self.DeleteMetricLevelOverride = channel.unary_unary(
-                '/littlehorse.LittleHorse/DeleteMetricLevelOverride',
-                request_serializer=metrics__pb2.DeleteMetricLevelOverrideRequest.SerializeToString,
-                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-                _registered_method=True)
-        self.ListMetricLevelOverrides = channel.unary_unary(
-                '/littlehorse.LittleHorse/ListMetricLevelOverrides',
-                request_serializer=metrics__pb2.ListMetricLevelOverridesRequest.SerializeToString,
-                response_deserializer=metrics__pb2.MetricLevelOverridesList.FromString,
-                _registered_method=True)
 
 
 class LittleHorseServicer(object):
@@ -1219,24 +1204,6 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def PutMetricLevelOverride(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def DeleteMetricLevelOverride(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def ListMetricLevelOverrides(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
 
 def add_LittleHorseServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1689,21 +1656,6 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.ListMetrics,
                     request_deserializer=metrics__pb2.ListMetricsRequest.FromString,
                     response_serializer=metrics__pb2.MetricList.SerializeToString,
-            ),
-            'PutMetricLevelOverride': grpc.unary_unary_rpc_method_handler(
-                    servicer.PutMetricLevelOverride,
-                    request_deserializer=metrics__pb2.PutMetricLevelOverrideRequest.FromString,
-                    response_serializer=metrics__pb2.MetricLevelOverride.SerializeToString,
-            ),
-            'DeleteMetricLevelOverride': grpc.unary_unary_rpc_method_handler(
-                    servicer.DeleteMetricLevelOverride,
-                    request_deserializer=metrics__pb2.DeleteMetricLevelOverrideRequest.FromString,
-                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-            ),
-            'ListMetricLevelOverrides': grpc.unary_unary_rpc_method_handler(
-                    servicer.ListMetricLevelOverrides,
-                    request_deserializer=metrics__pb2.ListMetricLevelOverridesRequest.FromString,
-                    response_serializer=metrics__pb2.MetricLevelOverridesList.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -4136,87 +4088,6 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/ListMetrics',
             metrics__pb2.ListMetricsRequest.SerializeToString,
             metrics__pb2.MetricList.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-    @staticmethod
-    def PutMetricLevelOverride(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/littlehorse.LittleHorse/PutMetricLevelOverride',
-            metrics__pb2.PutMetricLevelOverrideRequest.SerializeToString,
-            metrics__pb2.MetricLevelOverride.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-    @staticmethod
-    def DeleteMetricLevelOverride(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/littlehorse.LittleHorse/DeleteMetricLevelOverride',
-            metrics__pb2.DeleteMetricLevelOverrideRequest.SerializeToString,
-            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-    @staticmethod
-    def ListMetricLevelOverrides(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/littlehorse.LittleHorse/ListMetricLevelOverrides',
-            metrics__pb2.ListMetricLevelOverridesRequest.SerializeToString,
-            metrics__pb2.MetricLevelOverridesList.FromString,
             options,
             channel_credentials,
             insecure,

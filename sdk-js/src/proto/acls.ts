@@ -6,12 +6,6 @@
 
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
-import {
-  MetricRecordingLevel,
-  metricRecordingLevelFromJSON,
-  metricRecordingLevelToJSON,
-  metricRecordingLevelToNumber,
-} from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { PrincipalId, TenantId } from "./object_id";
 
@@ -281,11 +275,7 @@ export interface Tenant {
    * Configuration for the output topic associated with this Tenant. If not set,
    * then the output topic is not enabled.
    */
-  outputTopicConfig?:
-    | OutputTopicConfig
-    | undefined;
-  /** The default level of metrics to record in a given `Tenant`. */
-  metricsLevel?: MetricRecordingLevel | undefined;
+  outputTopicConfig?: OutputTopicConfig | undefined;
 }
 
 /** List of ACL's for LittleHorse */
@@ -625,7 +615,7 @@ export const Principal_PerTenantAclsEntry = {
 };
 
 function createBaseTenant(): Tenant {
-  return { id: undefined, createdAt: undefined, outputTopicConfig: undefined, metricsLevel: undefined };
+  return { id: undefined, createdAt: undefined, outputTopicConfig: undefined };
 }
 
 export const Tenant = {
@@ -638,9 +628,6 @@ export const Tenant = {
     }
     if (message.outputTopicConfig !== undefined) {
       OutputTopicConfig.encode(message.outputTopicConfig, writer.uint32(26).fork()).ldelim();
-    }
-    if (message.metricsLevel !== undefined) {
-      writer.uint32(32).int32(metricRecordingLevelToNumber(message.metricsLevel));
     }
     return writer;
   },
@@ -673,13 +660,6 @@ export const Tenant = {
 
           message.outputTopicConfig = OutputTopicConfig.decode(reader, reader.uint32());
           continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.metricsLevel = metricRecordingLevelFromJSON(reader.int32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -696,7 +676,6 @@ export const Tenant = {
       outputTopicConfig: isSet(object.outputTopicConfig)
         ? OutputTopicConfig.fromJSON(object.outputTopicConfig)
         : undefined,
-      metricsLevel: isSet(object.metricsLevel) ? metricRecordingLevelFromJSON(object.metricsLevel) : undefined,
     };
   },
 
@@ -711,9 +690,6 @@ export const Tenant = {
     if (message.outputTopicConfig !== undefined) {
       obj.outputTopicConfig = OutputTopicConfig.toJSON(message.outputTopicConfig);
     }
-    if (message.metricsLevel !== undefined) {
-      obj.metricsLevel = metricRecordingLevelToJSON(message.metricsLevel);
-    }
     return obj;
   },
 
@@ -727,7 +703,6 @@ export const Tenant = {
     message.outputTopicConfig = (object.outputTopicConfig !== undefined && object.outputTopicConfig !== null)
       ? OutputTopicConfig.fromPartial(object.outputTopicConfig)
       : undefined;
-    message.metricsLevel = object.metricsLevel ?? undefined;
     return message;
   },
 };

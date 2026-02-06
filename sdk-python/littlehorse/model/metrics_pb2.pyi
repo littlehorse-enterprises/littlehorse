@@ -84,14 +84,6 @@ class MetricSpec(_message.Message):
     transition: StatusTransition
     def __init__(self, id: _Optional[str] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., scope: _Optional[_Union[MetricScope, _Mapping]] = ..., transition: _Optional[_Union[StatusTransition, _Mapping]] = ...) -> None: ...
 
-class MetricsConfig(_message.Message):
-    __slots__ = ("level", "retention_days")
-    LEVEL_FIELD_NUMBER: _ClassVar[int]
-    RETENTION_DAYS_FIELD_NUMBER: _ClassVar[int]
-    level: _common_enums_pb2.MetricRecordingLevel
-    retention_days: int
-    def __init__(self, level: _Optional[_Union[_common_enums_pb2.MetricRecordingLevel, str]] = ..., retention_days: _Optional[int] = ...) -> None: ...
-
 class WorkflowMetricId(_message.Message):
     __slots__ = ("wf_spec",)
     WF_SPEC_FIELD_NUMBER: _ClassVar[int]
@@ -166,37 +158,3 @@ class MetricList(_message.Message):
     WINDOWS_FIELD_NUMBER: _ClassVar[int]
     windows: _containers.RepeatedCompositeFieldContainer[MetricWindow]
     def __init__(self, windows: _Optional[_Iterable[_Union[MetricWindow, _Mapping]]] = ...) -> None: ...
-
-class MetricLevelOverride(_message.Message):
-    __slots__ = ("id", "new_level", "workflow")
-    ID_FIELD_NUMBER: _ClassVar[int]
-    NEW_LEVEL_FIELD_NUMBER: _ClassVar[int]
-    WORKFLOW_FIELD_NUMBER: _ClassVar[int]
-    id: str
-    new_level: _common_enums_pb2.MetricRecordingLevel
-    workflow: WorkflowMetricId
-    def __init__(self, id: _Optional[str] = ..., new_level: _Optional[_Union[_common_enums_pb2.MetricRecordingLevel, str]] = ..., workflow: _Optional[_Union[WorkflowMetricId, _Mapping]] = ...) -> None: ...
-
-class PutMetricLevelOverrideRequest(_message.Message):
-    __slots__ = ("override",)
-    OVERRIDE_FIELD_NUMBER: _ClassVar[int]
-    override: MetricLevelOverride
-    def __init__(self, override: _Optional[_Union[MetricLevelOverride, _Mapping]] = ...) -> None: ...
-
-class DeleteMetricLevelOverrideRequest(_message.Message):
-    __slots__ = ("id",)
-    ID_FIELD_NUMBER: _ClassVar[int]
-    id: str
-    def __init__(self, id: _Optional[str] = ...) -> None: ...
-
-class ListMetricLevelOverridesRequest(_message.Message):
-    __slots__ = ("wf_spec_filter",)
-    WF_SPEC_FILTER_FIELD_NUMBER: _ClassVar[int]
-    wf_spec_filter: _object_id_pb2.WfSpecId
-    def __init__(self, wf_spec_filter: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
-
-class MetricLevelOverridesList(_message.Message):
-    __slots__ = ("overrides",)
-    OVERRIDES_FIELD_NUMBER: _ClassVar[int]
-    overrides: _containers.RepeatedCompositeFieldContainer[MetricLevelOverride]
-    def __init__(self, overrides: _Optional[_Iterable[_Union[MetricLevelOverride, _Mapping]]] = ...) -> None: ...
