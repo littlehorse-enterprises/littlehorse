@@ -161,7 +161,7 @@ class StartMultipleThreadsNode(_message.Message):
     def __init__(self, thread_spec_name: _Optional[str] = ..., variables: _Optional[_Mapping[str, _common_wfspec_pb2.VariableAssignment]] = ..., iterable: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class RunChildWfNode(_message.Message):
-    __slots__ = ("wf_spec_name", "major_version", "inputs")
+    __slots__ = ("wf_spec_name", "wf_spec_var", "major_version", "inputs")
     class InputsEntry(_message.Message):
         __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -170,12 +170,14 @@ class RunChildWfNode(_message.Message):
         value: _common_wfspec_pb2.VariableAssignment
         def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
     WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_VAR_FIELD_NUMBER: _ClassVar[int]
     MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
     INPUTS_FIELD_NUMBER: _ClassVar[int]
     wf_spec_name: str
+    wf_spec_var: _common_wfspec_pb2.VariableAssignment
     major_version: int
     inputs: _containers.MessageMap[str, _common_wfspec_pb2.VariableAssignment]
-    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., inputs: _Optional[_Mapping[str, _common_wfspec_pb2.VariableAssignment]] = ...) -> None: ...
+    def __init__(self, wf_spec_name: _Optional[str] = ..., wf_spec_var: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., major_version: _Optional[int] = ..., inputs: _Optional[_Mapping[str, _common_wfspec_pb2.VariableAssignment]] = ...) -> None: ...
 
 class WaitForChildWfNode(_message.Message):
     __slots__ = ("child_wf_run_id", "child_wf_run_source_node")
