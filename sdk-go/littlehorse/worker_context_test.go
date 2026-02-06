@@ -239,25 +239,25 @@ func TestExecuteAndCheckpoint_CheckpointContextLogging(t *testing.T) {
 }
 
 func TestCheckpointContext_Log(t *testing.T) {
-	ctx := NewCheckpointContext()
+	ctx := newCheckpointContext()
 
 	ctx.Log("hello")
-	if ctx.GetLogOutput() != "hello" {
-		t.Errorf("Expected 'hello', got '%s'", ctx.GetLogOutput())
+	if ctx.getLogOutput() != "hello" {
+		t.Errorf("Expected 'hello', got '%s'", ctx.getLogOutput())
 	}
 
 	ctx.Log(" world")
-	if ctx.GetLogOutput() != "hello world" {
-		t.Errorf("Expected 'hello world', got '%s'", ctx.GetLogOutput())
+	if ctx.getLogOutput() != "hello world" {
+		t.Errorf("Expected 'hello world', got '%s'", ctx.getLogOutput())
 	}
 
 	ctx.Log(nil)
-	if ctx.GetLogOutput() != "hello worldnil" {
-		t.Errorf("Expected 'hello worldnil', got '%s'", ctx.GetLogOutput())
+	if ctx.getLogOutput() != "hello worldnil" {
+		t.Errorf("Expected 'hello worldnil', got '%s'", ctx.getLogOutput())
 	}
 
 	ctx.Log(123)
-	if ctx.GetLogOutput() != "hello worldnil123" {
-		t.Errorf("Expected 'hello worldnil123', got '%s'", ctx.GetLogOutput())
+	if ctx.getLogOutput() != "hello worldnil123" {
+		t.Errorf("Expected 'hello worldnil123', got '%s'", ctx.getLogOutput())
 	}
 }

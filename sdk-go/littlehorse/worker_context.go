@@ -2,7 +2,6 @@ package littlehorse
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
@@ -27,6 +26,12 @@ type WorkerContext struct {
 	client                    *lhproto.LittleHorseClient
 }
 
+// CheckpointContext contains runtime information for a checkpoint execution.
+// It provides logging capabilities that are specific to the checkpoint being executed.
+type CheckpointContext struct {
+	logOutput string
+}
+
 // newWorkerContext creates a new WorkerContext with a gRPC client.
 // This is an internal function used by the task worker to provision WorkerContext instances.
 func newWorkerContext(
@@ -39,6 +44,13 @@ func newWorkerContext(
 		ScheduleTime:              scheduleTime,
 		checkpointsSoFarInThisRun: 0,
 		client:                    client,
+	}
+}
+
+// newCheckpointContext creates a new CheckpointContext instance.
+func newCheckpointContext() *CheckpointContext {
+	return &CheckpointContext{
+		logOutput: "",
 	}
 }
 
@@ -90,10 +102,11 @@ func (wc *WorkerContext) GetLogOutput() string {
 //
 // The function returns the result as interface{} which should be type-asserted to the expected type.
 // Example:
-//   result, err := context.ExecuteAndCheckpoint(func(ctx *CheckpointContext) (interface{}, error) {
-//       return "hello world", nil
-//   })
-//   str := result.(string)
+//
+//	result, err := context.ExecuteAndCheckpoint(func(ctx *CheckpointContext) (interface{}, error) {
+//	    return "hello world", nil
+//	})
+//	str := result.(string)
 func (wc *WorkerContext) ExecuteAndCheckpoint(fn CheckpointableFunction) (interface{}, error) {
 	if wc.checkpointsSoFarInThisRun < wc.ScheduledTask.GetTotalObservedCheckpoints() {
 		// Fetch checkpoint from server
@@ -108,10 +121,6 @@ func (wc *WorkerContext) ExecuteAndCheckpoint(fn CheckpointableFunction) (interf
 
 // fetchCheckpoint retrieves a checkpoint from the server based on its checkpoint order number.
 func (wc *WorkerContext) fetchCheckpoint(checkpointNumber int32) (interface{}, error) {
-	if wc.client == nil {
-		return nil, fmt.Errorf("client is not initialized for checkpoint operations")
-	}
-
 	id := &lhproto.CheckpointId{
 		TaskRun:          wc.ScheduledTask.TaskRunId,
 		CheckpointNumber: checkpointNumber,
@@ -123,7 +132,7 @@ func (wc *WorkerContext) fetchCheckpoint(checkpointNumber int32) (interface{}, e
 	}
 
 	// Extract the value from VariableValue based on its type
-	result, err := varValToInterface(checkpoint.Value)
+	result, err := VarValToInterface(checkpoint.Value)
 	if err != nil {
 		return nil, err
 	}
@@ -131,50 +140,9 @@ func (wc *WorkerContext) fetchCheckpoint(checkpointNumber int32) (interface{}, e
 	return result, nil
 }
 
-// varValToInterface converts a VariableValue to a Go interface{}.
-// This is a helper function for checkpoint deserialization.
-func varValToInterface(varVal *lhproto.VariableValue) (interface{}, error) {
-	switch v := varVal.GetValue().(type) {
-	case *lhproto.VariableValue_Int:
-		return v.Int, nil
-	case *lhproto.VariableValue_Double:
-		return v.Double, nil
-	case *lhproto.VariableValue_Bool:
-		return v.Bool, nil
-	case *lhproto.VariableValue_Str:
-		return v.Str, nil
-	case *lhproto.VariableValue_Bytes:
-		return v.Bytes, nil
-	case *lhproto.VariableValue_JsonArr:
-		// For JSON arrays, we need to deserialize to a generic structure
-		var arr interface{}
-		err := json.Unmarshal([]byte(v.JsonArr), &arr)
-		if err != nil {
-			return nil, fmt.Errorf("failed to deserialize JSON array: %w", err)
-		}
-		return arr, nil
-	case *lhproto.VariableValue_JsonObj:
-		// For JSON objects, we need to deserialize to a generic structure
-		var obj interface{}
-		err := json.Unmarshal([]byte(v.JsonObj), &obj)
-		if err != nil {
-			return nil, fmt.Errorf("failed to deserialize JSON object: %w", err)
-		}
-		return obj, nil
-	case nil:
-		return nil, nil
-	default:
-		return nil, fmt.Errorf("unknown VariableValue type")
-	}
-}
-
 // saveCheckpoint executes a checkpointable function and puts the result to the server.
 func (wc *WorkerContext) saveCheckpoint(fn CheckpointableFunction) (interface{}, error) {
-	if wc.client == nil {
-		return nil, fmt.Errorf("client is not initialized for checkpoint operations")
-	}
-
-	checkpointContext := NewCheckpointContext()
+	checkpointContext := newCheckpointContext()
 	result, err := fn(checkpointContext)
 	if err != nil {
 		return nil, err
@@ -193,8 +161,8 @@ func (wc *WorkerContext) saveCheckpoint(fn CheckpointableFunction) (interface{},
 	}
 
 	// Add logs if any
-	if checkpointContext.GetLogOutput() != "" {
-		logs := checkpointContext.GetLogOutput()
+	if checkpointContext.getLogOutput() != "" {
+		logs := checkpointContext.getLogOutput()
 		request.Logs = &logs
 	}
 
@@ -210,4 +178,19 @@ func (wc *WorkerContext) saveCheckpoint(fn CheckpointableFunction) (interface{},
 	}
 
 	return result, nil
+}
+
+// Log appends the string representation of the provided item to the checkpoint's log output.
+// If the item is nil, "nil" is appended to the log.
+func (cc *CheckpointContext) Log(item interface{}) {
+	if item != nil {
+		cc.logOutput += fmt.Sprint(item)
+	} else {
+		cc.logOutput += "nil"
+	}
+}
+
+// GetLogOutput returns the accumulated log output for this checkpoint.
+func (cc *CheckpointContext) getLogOutput() string {
+	return cc.logOutput
 }
