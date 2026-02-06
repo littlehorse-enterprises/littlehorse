@@ -19,8 +19,8 @@ export const useThreadRunPagination = ({ wfRun, page, tenantId }: UseThreadRunPa
     archivedRef.current = archivedThreadRuns
   }, [archivedThreadRuns])
 
-  const threadRunNumbersNeeded = useMemo(() => {
-    if (!wfRun?.greatestThreadrunNumber) return []
+  let threadRunNumbersNeeded = useMemo(() => {
+    if (wfRun?.greatestThreadrunNumber === undefined) return []
     const start = (page - 1) * PAGE_SIZE
     const end = Math.min(start + PAGE_SIZE - 1, wfRun.greatestThreadrunNumber)
     return Array.from({ length: end - start + 1 }, (_, i) => start + i)
