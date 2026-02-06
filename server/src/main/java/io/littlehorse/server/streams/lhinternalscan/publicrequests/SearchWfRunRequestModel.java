@@ -155,7 +155,7 @@ public class SearchWfRunRequestModel
         }
 
         if (parentWfRunId != null) {
-            out.add(new Attribute("parentWfRunId", parentWfRunId.toString()));
+            out.add(new Attribute("parentWfRunId", LHUtil.toLHDbSearchFormat(parentWfRunId.toString())));
         }
 
         return out;
