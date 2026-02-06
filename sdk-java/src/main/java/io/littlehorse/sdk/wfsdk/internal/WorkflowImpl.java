@@ -4,8 +4,10 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
@@ -126,11 +128,35 @@ public class WorkflowImpl extends Workflow {
     }
 
     @Override
+    public Set<PutExternalEventDefRequest> getExternalEventDefsToRegister() {
+        if (compiledWorkflow == null) {
+            compiledWorkflow = compileWorkflowHelper();
+        }
+        Set<PutExternalEventDefRequest> out = new HashSet<>();
+        for (ExternalEventNodeOutputImpl node : externalEventsToRegister) {
+            out.add(node.toPutExtDefRequest());
+        }
+        return out;
+    }
+
+    @Override
     public Set<String> getRequiredWorkflowEventDefNames() {
         if (compiledWorkflow == null) {
             compiledWorkflow = compileWorkflowHelper();
         }
         return requiredWorkflowEventDefNames;
+    }
+
+    @Override
+    public Set<PutWorkflowEventDefRequest> getWorkflowEventDefsToRegister() {
+        if (compiledWorkflow == null) {
+            compiledWorkflow = compileWorkflowHelper();
+        }
+        Set<PutWorkflowEventDefRequest> out = new HashSet<>();
+        for (ThrowEventNodeOutputImpl node : workflowEventsToRegister) {
+            out.add(node.toPutWorkflowEventDefRequest());
+        }
+        return out;
     }
 
     private PutWfSpecRequest compileWorkflowHelper() {
