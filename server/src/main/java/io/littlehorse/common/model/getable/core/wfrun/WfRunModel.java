@@ -37,6 +37,7 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.PendingFailureHandler;
 import io.littlehorse.sdk.common.proto.PendingInterrupt;
@@ -641,6 +642,20 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
         if (nodeRunPosition > thread.currentNodePosition) {
             throw new LHValidationException(null, "Reference to nonexistent nodeRun");
+        }
+
+        if (nodeRunPosition != thread.currentNodePosition) {
+            // Ignore stale timers for previous nodes.
+            return;
+        }
+
+        NodeRunModel currentNodeRun = thread.getCurrentNodeRun();
+        if (currentNodeRun.getType() == NodeTypeCase.SLEEP) {
+            Date expectedTime = currentNodeRun.getSleepNodeRun().getMaturationTime();
+            if (expectedTime != null && time.before(expectedTime)) {
+                // Ignore outdated timer firing before the updated maturation time.
+                return;
+            }
         }
 
         thread.processSleepNodeMatured(req);

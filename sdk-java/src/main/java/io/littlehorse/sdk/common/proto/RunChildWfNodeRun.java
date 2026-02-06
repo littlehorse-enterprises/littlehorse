@@ -65,9 +65,10 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The id of the created `WfRun`.
+   * If the node failed to create the child WfRun, this field will be empty.
    * </pre>
    *
-   * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+   * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
    * @return Whether the childWfRunId field is set.
    */
   @java.lang.Override
@@ -77,9 +78,10 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The id of the created `WfRun`.
+   * If the node failed to create the child WfRun, this field will be empty.
    * </pre>
    *
-   * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+   * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
    * @return The childWfRunId.
    */
   @java.lang.Override
@@ -89,9 +91,10 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The id of the created `WfRun`.
+   * If the node failed to create the child WfRun, this field will be empty.
    * </pre>
    *
-   * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+   * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getChildWfRunIdOrBuilder() {
@@ -193,6 +196,53 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return map.get(key);
   }
 
+  public static final int WF_SPEC_ID_FIELD_NUMBER = 3;
+  private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
+  /**
+   * <pre>
+   * The resolved WfSpecId of the child workflow that was started. This field is populated
+   * only after the child WfRun has been successfully created and started. If the node failed
+   * to create the child WfRun, this field will be empty. The ID can be used to track which
+   * version of the WfSpec was actually executed.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return Whether the wfSpecId field is set.
+   */
+  @java.lang.Override
+  public boolean hasWfSpecId() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <pre>
+   * The resolved WfSpecId of the child workflow that was started. This field is populated
+   * only after the child WfRun has been successfully created and started. If the node failed
+   * to create the child WfRun, this field will be empty. The ID can be used to track which
+   * version of the WfSpec was actually executed.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return The wfSpecId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
+    return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+  }
+  /**
+   * <pre>
+   * The resolved WfSpecId of the child workflow that was started. This field is populated
+   * only after the child WfRun has been successfully created and started. If the node failed
+   * to create the child WfRun, this field will be empty. The ID can be used to track which
+   * version of the WfSpec was actually executed.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
+    return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -216,6 +266,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         internalGetInputs(),
         InputsDefaultEntryHolder.defaultEntry,
         2);
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeMessage(3, getWfSpecId());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -239,6 +292,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, inputs__);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getWfSpecId());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -261,6 +318,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     if (!internalGetInputs().equals(
         other.internalGetInputs())) return false;
+    if (hasWfSpecId() != other.hasWfSpecId()) return false;
+    if (hasWfSpecId()) {
+      if (!getWfSpecId()
+          .equals(other.getWfSpecId())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -279,6 +341,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (!internalGetInputs().getMap().isEmpty()) {
       hash = (37 * hash) + INPUTS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetInputs().hashCode();
+    }
+    if (hasWfSpecId()) {
+      hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getWfSpecId().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -437,6 +503,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (com.google.protobuf.GeneratedMessage
               .alwaysUseFieldBuilders) {
         internalGetChildWfRunIdFieldBuilder();
+        internalGetWfSpecIdFieldBuilder();
       }
     }
     @java.lang.Override
@@ -449,6 +516,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         childWfRunIdBuilder_ = null;
       }
       internalGetMutableInputs().clear();
+      wfSpecId_ = null;
+      if (wfSpecIdBuilder_ != null) {
+        wfSpecIdBuilder_.dispose();
+        wfSpecIdBuilder_ = null;
+      }
       return this;
     }
 
@@ -492,6 +564,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.inputs_ = internalGetInputs().build(InputsDefaultEntryHolder.defaultEntry);
       }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.wfSpecId_ = wfSpecIdBuilder_ == null
+            ? wfSpecId_
+            : wfSpecIdBuilder_.build();
+        to_bitField0_ |= 0x00000002;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -513,6 +591,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       internalGetMutableInputs().mergeFrom(
           other.internalGetInputs());
       bitField0_ |= 0x00000002;
+      if (other.hasWfSpecId()) {
+        mergeWfSpecId(other.getWfSpecId());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -555,6 +636,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 26: {
+              input.readMessage(
+                  internalGetWfSpecIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -578,9 +666,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     /**
      * <pre>
      * The id of the created `WfRun`.
+     * If the node failed to create the child WfRun, this field will be empty.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      * @return Whether the childWfRunId field is set.
      */
     public boolean hasChildWfRunId() {
@@ -589,9 +678,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     /**
      * <pre>
      * The id of the created `WfRun`.
+     * If the node failed to create the child WfRun, this field will be empty.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      * @return The childWfRunId.
      */
     public io.littlehorse.sdk.common.proto.WfRunId getChildWfRunId() {
@@ -604,9 +694,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     /**
      * <pre>
      * The id of the created `WfRun`.
+     * If the node failed to create the child WfRun, this field will be empty.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     public Builder setChildWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
       if (childWfRunIdBuilder_ == null) {
@@ -624,9 +715,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     /**
      * <pre>
      * The id of the created `WfRun`.
+     * If the node failed to create the child WfRun, this field will be empty.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     public Builder setChildWfRunId(
         io.littlehorse.sdk.common.proto.WfRunId.Builder builderForValue) {
@@ -642,9 +734,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     /**
      * <pre>
      * The id of the created `WfRun`.
+     * If the node failed to create the child WfRun, this field will be empty.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     public Builder mergeChildWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
       if (childWfRunIdBuilder_ == null) {
@@ -667,9 +760,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     /**
      * <pre>
      * The id of the created `WfRun`.
+     * If the node failed to create the child WfRun, this field will be empty.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     public Builder clearChildWfRunId() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -684,9 +778,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     /**
      * <pre>
      * The id of the created `WfRun`.
+     * If the node failed to create the child WfRun, this field will be empty.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getChildWfRunIdBuilder() {
       bitField0_ |= 0x00000001;
@@ -696,9 +791,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     /**
      * <pre>
      * The id of the created `WfRun`.
+     * If the node failed to create the child WfRun, this field will be empty.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getChildWfRunIdOrBuilder() {
       if (childWfRunIdBuilder_ != null) {
@@ -711,9 +807,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     /**
      * <pre>
      * The id of the created `WfRun`.
+     * If the node failed to create the child WfRun, this field will be empty.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+     * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> 
@@ -914,6 +1011,190 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         builderMap.put(key, entry);
       }
       return (io.littlehorse.sdk.common.proto.VariableValue.Builder) entry;
+    }
+
+    private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
+    /**
+     * <pre>
+     * The resolved WfSpecId of the child workflow that was started. This field is populated
+     * only after the child WfRun has been successfully created and started. If the node failed
+     * to create the child WfRun, this field will be empty. The ID can be used to track which
+     * version of the WfSpec was actually executed.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * @return Whether the wfSpecId field is set.
+     */
+    public boolean hasWfSpecId() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <pre>
+     * The resolved WfSpecId of the child workflow that was started. This field is populated
+     * only after the child WfRun has been successfully created and started. If the node failed
+     * to create the child WfRun, this field will be empty. The ID can be used to track which
+     * version of the WfSpec was actually executed.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     * @return The wfSpecId.
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
+      if (wfSpecIdBuilder_ == null) {
+        return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+      } else {
+        return wfSpecIdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * The resolved WfSpecId of the child workflow that was started. This field is populated
+     * only after the child WfRun has been successfully created and started. If the node failed
+     * to create the child WfRun, this field will be empty. The ID can be used to track which
+     * version of the WfSpec was actually executed.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (wfSpecIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        wfSpecId_ = value;
+      } else {
+        wfSpecIdBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The resolved WfSpecId of the child workflow that was started. This field is populated
+     * only after the child WfRun has been successfully created and started. If the node failed
+     * to create the child WfRun, this field will be empty. The ID can be used to track which
+     * version of the WfSpec was actually executed.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public Builder setWfSpecId(
+        io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
+      if (wfSpecIdBuilder_ == null) {
+        wfSpecId_ = builderForValue.build();
+      } else {
+        wfSpecIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The resolved WfSpecId of the child workflow that was started. This field is populated
+     * only after the child WfRun has been successfully created and started. If the node failed
+     * to create the child WfRun, this field will be empty. The ID can be used to track which
+     * version of the WfSpec was actually executed.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (wfSpecIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          wfSpecId_ != null &&
+          wfSpecId_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
+          getWfSpecIdBuilder().mergeFrom(value);
+        } else {
+          wfSpecId_ = value;
+        }
+      } else {
+        wfSpecIdBuilder_.mergeFrom(value);
+      }
+      if (wfSpecId_ != null) {
+        bitField0_ |= 0x00000004;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * The resolved WfSpecId of the child workflow that was started. This field is populated
+     * only after the child WfRun has been successfully created and started. If the node failed
+     * to create the child WfRun, this field will be empty. The ID can be used to track which
+     * version of the WfSpec was actually executed.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public Builder clearWfSpecId() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      wfSpecId_ = null;
+      if (wfSpecIdBuilder_ != null) {
+        wfSpecIdBuilder_.dispose();
+        wfSpecIdBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The resolved WfSpecId of the child workflow that was started. This field is populated
+     * only after the child WfRun has been successfully created and started. If the node failed
+     * to create the child WfRun, this field will be empty. The ID can be used to track which
+     * version of the WfSpec was actually executed.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return internalGetWfSpecIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * The resolved WfSpecId of the child workflow that was started. This field is populated
+     * only after the child WfRun has been successfully created and started. If the node failed
+     * to create the child WfRun, this field will be empty. The ID can be used to track which
+     * version of the WfSpec was actually executed.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
+      if (wfSpecIdBuilder_ != null) {
+        return wfSpecIdBuilder_.getMessageOrBuilder();
+      } else {
+        return wfSpecId_ == null ?
+            io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+      }
+    }
+    /**
+     * <pre>
+     * The resolved WfSpecId of the child workflow that was started. This field is populated
+     * only after the child WfRun has been successfully created and started. If the node failed
+     * to create the child WfRun, this field will be empty. The ID can be used to track which
+     * version of the WfSpec was actually executed.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
+        internalGetWfSpecIdFieldBuilder() {
+      if (wfSpecIdBuilder_ == null) {
+        wfSpecIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder>(
+                getWfSpecId(),
+                getParentForChildren(),
+                isClean());
+        wfSpecId_ = null;
+      }
+      return wfSpecIdBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.RunChildWfNodeRun)
