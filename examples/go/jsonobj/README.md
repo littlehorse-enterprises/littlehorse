@@ -14,7 +14,7 @@ The file [workflow.go](./workflow.go) has two functions defined:
 Before we can create the `WfSpec`, we need to register the `TaskDef`. The easiest way to do that is to run the task worker:
 
 ```
-go run ./examples/jsonobj/worker
+go run ./examples/go/jsonobj/worker
 ```
 
 Leave that process running.
@@ -24,7 +24,7 @@ Leave that process running.
 Next, in another terminal, run:
 
 ```
-go run ./examples/jsonobj/deploy
+go run ./examples/go/jsonobj/deploy
 ```
 
 That will create the `WfSpec`. You can verify that via:
