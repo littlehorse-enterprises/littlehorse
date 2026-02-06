@@ -7,7 +7,7 @@ This is a simple example of a workflow that launches a Child Thread and waits fo
 We have two `TaskDef`'s and thus two Task Functions. Note that `worker/main.go` kicks off two threads, one for each Task Worker.
 
 ```
-go run ./examples/childthread/worker
+go run ./examples/go/childthread/worker
 ```
 
 ## Register the `WfSpec`
@@ -15,7 +15,7 @@ go run ./examples/childthread/worker
 In another terminal, run:
 
 ```
-go run ./examples/childthread/deploy
+go run ./examples/go/childthread/deploy
 ```
 
 ## Run a `WfRun`

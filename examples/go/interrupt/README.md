@@ -7,7 +7,7 @@ This is a simple example of a workflow that uses an `ExternalEvent` to trigger a
 We have two `TaskDef`'s and thus two Task Functions. Note that `worker/main.go` kicks off two threads, one for each Task Worker.
 
 ```
-go run ./examples/interrupt/worker
+go run ./examples/go/interrupt/worker
 ```
 
 ## Register the `WfSpec`
@@ -15,7 +15,7 @@ go run ./examples/interrupt/worker
 In another terminal, run:
 
 ```
-go run ./examples/interrupt/deploy
+go run ./examples/go/interrupt/deploy
 ```
 
 ## Run a `WfRun`
