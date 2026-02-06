@@ -42,7 +42,7 @@ lhctl get wfSpec example-checkpointed-tasks
 To run a `WfRun`, you can use `lhctl`.
 
 ```
-lhctl run example-checkpointed-tasks name obi-wan
+lhctl run example-checkpointed-tasks input-name obi-wan
 ```
 
 It will print out an ID. You can view the status of that `WfRun` via:
