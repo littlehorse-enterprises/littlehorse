@@ -88,8 +88,12 @@ func (wc *WorkerContext) GetLogOutput() string {
 // If your overall Task Attempt fails after your Checkpoint, this method will
 // retrieve the Checkpoint from the server on future iterations.
 //
-// The function returns the result as interface{} or an error if the checkpoint operation fails.
-// The caller should type-assert the result to the expected type.
+// The function returns the result as interface{} which should be type-asserted to the expected type.
+// Example:
+//   result, err := context.ExecuteAndCheckpoint(func(ctx *CheckpointContext) (interface{}, error) {
+//       return "hello world", nil
+//   })
+//   str := result.(string)
 func (wc *WorkerContext) ExecuteAndCheckpoint(fn CheckpointableFunction) (interface{}, error) {
 	if wc.checkpointsSoFarInThisRun < wc.ScheduledTask.GetTotalObservedCheckpoints() {
 		// Fetch checkpoint from server

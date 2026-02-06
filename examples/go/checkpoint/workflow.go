@@ -6,7 +6,7 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
-const WorkflowName string = "checkpoint-example"
+const WorkflowName string = "example-checkpointed-tasks"
 const TaskDefName string = "greet-with-checkpoints"
 
 // GreetWithCheckpoints demonstrates the use of ExecuteAndCheckpoint to create
@@ -18,7 +18,7 @@ func GreetWithCheckpoints(name string, context *littlehorse.WorkerContext) (stri
 
 	// First checkpoint - this expensive operation will only run once
 	result, err := context.ExecuteAndCheckpoint(func(checkpointContext *littlehorse.CheckpointContext) (interface{}, error) {
-		checkpointContext.Log("this is a checkpoint log")
+		checkpointContext.Log("This is a checkpoint log.")
 		fmt.Printf("Hello from task worker on attempt %d in the first checkpoint\n", attemptNumber)
 		return fmt.Sprintf("hello %s from first checkpoint", name), nil
 	})
@@ -35,7 +35,6 @@ func GreetWithCheckpoints(name string, context *littlehorse.WorkerContext) (stri
 
 	fmt.Println("Hello from after the first checkpoint")
 
-	// Simulate a failure on the first attempt to demonstrate checkpoint recovery
 	if attemptNumber == 0 {
 		return "", fmt.Errorf("throwing a failure in the second checkpoint to show how the checkpoint works")
 	}
@@ -62,8 +61,7 @@ func GreetWithCheckpoints(name string, context *littlehorse.WorkerContext) (stri
 }
 
 func MyWorkflow(wf *littlehorse.WorkflowThread) {
-	nameVar := wf.DeclareStr("name").WithDefault("World")
-	nameVar.Searchable()
+	nameVar := wf.DeclareStr("input-name").Searchable().Required()
 
-	wf.Execute(TaskDefName, nameVar)
+	wf.Execute(TaskDefName, nameVar).WithRetries(2)
 }
