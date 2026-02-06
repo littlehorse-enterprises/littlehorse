@@ -118,6 +118,10 @@ namespace LittleHorse.Sdk.Helper
             {
                 result.Struct = lhStruct;
             }
+            else if (Attribute.IsDefined(obj.GetType(), typeof(LHStructDefAttribute)))
+            {
+                result.Struct = SerializeToStruct(obj);
+            }
             else
             {
                 var jsonStr = JsonHandler.ObjectSerializeToJson(obj);
@@ -193,7 +197,94 @@ namespace LittleHorse.Sdk.Helper
         /// <returns></returns>
         private static object? DeserializeStructToObject(Common.Proto.Struct val, Type type)
         {
-            
+            var lhClassType = LHClassType.FromType(type);
+
+            if (lhClassType is not LHStructDefType structDefType)
+            {
+                throw new LHSerdeException("Failed deserializing Struct into class of type: " + lhClassType.GetType().Name);
+            }
+
+            try
+            {
+                var structObject = lhClassType.CreateInstance();
+                if (structObject == null)
+                {
+                    throw new LHSerdeException("Failed deserializing Struct into Object: could not create instance for type " + type.FullName);
+                }
+
+                var inlineStruct = val.Struct_ ?? new Common.Proto.InlineStruct();
+                foreach (var property in structDefType.GetStructProperties())
+                {
+                    string fieldName = property.FieldName;
+                    if (!inlineStruct.Fields.ContainsKey(fieldName))
+                    {
+                        throw new LHSerdeException(
+                            string.Format(
+                                "Failed deserializing VariableValue into Struct because no such field [{0}] exists on class [{1}]",
+                                fieldName,
+                                type.FullName));
+                    }
+
+                    VariableValue fieldValue = inlineStruct.Fields[fieldName].Value;
+                    property.SetValueTo(structObject, fieldValue);
+                }
+
+                return structObject;
+            }
+            catch (Exception ex) when (ex is not LHSerdeException)
+            {
+                throw new LHSerdeException("Failed deserializing Struct into Object", ex);
+            }
+        }
+
+        /// <summary>
+        /// Serializes a C# object to a LittleHorse Struct based on its struct definition metadata.
+        /// </summary>
+        /// <param name="o">The source object.</param>
+        /// <returns>A Struct whose fields mirror the object's properties.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when the object type is not a struct definition.</exception>
+        private static Common.Proto.Struct SerializeToStruct(object o)
+        {
+            var lhClassType = LHClassType.FromType(o.GetType());
+
+            if (lhClassType is not LHStructDefType structDefType)
+            {
+                throw new InvalidOperationException("Cannot serialize given object to Struct");
+            }
+
+            var outputStruct = new Common.Proto.Struct
+            {
+                StructDefId = structDefType.GetStructDefId()
+            };
+
+            var inlineStruct = new Common.Proto.InlineStruct();
+
+            try
+            {
+                foreach (var property in structDefType.GetStructProperties())
+                {
+                    VariableValue? fieldValue = property.GetValueFrom(o);
+                    if (fieldValue == null)
+                    {
+                        continue;
+                    }
+
+                    var structField = new Common.Proto.StructField
+                    {
+                        Value = fieldValue
+                    };
+
+                    inlineStruct.Fields.Add(property.FieldName, structField);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            outputStruct.Struct_ = inlineStruct;
+
+            return outputStruct;
         }
         
         /// <summary>

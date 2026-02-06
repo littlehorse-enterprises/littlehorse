@@ -2,33 +2,32 @@ using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
 
 /// <summary>
-/// 
+/// Represents a LittleHorse primitive type backed by a .NET type.
 /// </summary>
 public class LHPrimitiveType : LHClassType
 {
   /// <summary>
-  /// 
+  /// Creates a primitive type wrapper.
   /// </summary>
-  /// <param name="type"></param>
+  /// <param name="type">The underlying .NET type.</param>
   public LHPrimitiveType(Type type) : base(type)
   {
     
   }
 
   /// <summary>
-  /// 
+  /// Gets the defined type case for primitive types.
   /// </summary>
-  /// <returns></returns>
+  /// <returns>The defined type case.</returns>
   public override TypeDefinition.DefinedTypeOneofCase GetDefinedTypeCase()
   {
     return TypeDefinition.DefinedTypeOneofCase.PrimitiveType;
   }
 
   /// <summary>
-  /// 
+  /// Gets the LittleHorse <see cref="TypeDefinition"/> for this primitive type.
   /// </summary>
-  /// <returns></returns>
-  /// <exception cref="NotImplementedException"></exception>
+  /// <returns>The type definition.</returns>
   public override TypeDefinition GetTypeDefinition()
   {
     return new TypeDefinition
