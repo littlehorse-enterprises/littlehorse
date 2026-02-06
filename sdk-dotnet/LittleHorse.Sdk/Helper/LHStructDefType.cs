@@ -76,6 +76,11 @@ public class LHStructDefType : LHClassType
     };
   }
 
+  public string GetStructDefDescription()
+  {
+    return GetStructDefAnnotation().Description;
+  }
+
   /// <summary>
   /// Gets the <see cref="InlineStructDef"/> describing the fields of this struct.
   /// </summary>

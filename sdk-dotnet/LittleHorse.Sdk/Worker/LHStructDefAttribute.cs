@@ -1,20 +1,27 @@
 /// <summary>
-/// Marks a class as a LittleHorse struct definition and provides its name.
+/// Marks a class as a LittleHorse StructDef, providing its name and description.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 public class LHStructDefAttribute : Attribute
 {
   /// <summary>
-  /// The struct definition name.
+  /// The StructDef name.
   /// </summary>
   public string Value;
 
   /// <summary>
-  /// Creates a struct definition attribute.
+  /// The StructDef description.
   /// </summary>
-  /// <param name="value">The struct definition name.</param>
-  public LHStructDefAttribute(string value)
+  public string Description;
+
+  /// <summary>
+  /// Creates a StructDef attribute.
+  /// </summary>
+  /// <param name="value">The StructDef name.</param>
+  /// <param name="description">The StructDef description.</param>
+  public LHStructDefAttribute(string value, string description)
   {
     Value = value;
+    Description = description;
   }
 }

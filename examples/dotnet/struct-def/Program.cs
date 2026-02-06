@@ -70,6 +70,7 @@ public class Program
             var request = new PutStructDefRequest
             {
                 Name = structDefType.GetStructDefId().Name,
+                Description = structDefType.GetStructDefDescription(),
                 StructDef = structDefType.GetInlineStructDef(),
                 AllowedUpdates = StructDefCompatibilityType.NoSchemaUpdates
             };
