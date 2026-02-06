@@ -27,6 +27,7 @@ import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.internal.TestExecutionContext;
 import io.littlehorse.test.internal.step.SearchResultCaptor;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
@@ -307,8 +308,42 @@ public class WfRunSearchTest {
 
     @Test
     @Order(2)
-    void searchByParentIdShouldOnlyReturnChildNoGrandChild() {
+    void shouldSearchGrandChildWorkflowWithLongIDs() {
+        WfRunId parentId =
+                WfRunId.newBuilder().setId(UUID.randomUUID().toString()).build();
+        workflowVerifier
+                .prepareRun(getSearchableVariableWf())
+                .waitForStatus(COMPLETED)
+                .start(parentId);
+        WfRunId childId = WfRunId.newBuilder()
+                .setId(UUID.randomUUID().toString())
+                .setParentWfRunId(parentId)
+                .build();
+        workflowVerifier.prepareRun(getChildWorkflow()).waitForStatus(COMPLETED).start(childId);
 
+        WfRunId grandChildId = WfRunId.newBuilder()
+                .setId(UUID.randomUUID().toString())
+                .setParentWfRunId(childId)
+                .build();
+        SearchResultCaptor<WfRunIdList> captor = SearchResultCaptor.of(WfRunIdList.class);
+        Function<TestExecutionContext, SearchWfRunRequest> searchByChildId = context ->
+                SearchWfRunRequest.newBuilder().setParentWfRunId(childId).build();
+
+        workflowVerifier
+                .prepareRun(getGrandChildWorkflow())
+                .waitForStatus(COMPLETED)
+                .doSearch(SearchWfRunRequest.class, captor.capture(), searchByChildId)
+                .start(grandChildId);
+
+        WfRunIdList result = captor.getValue().get();
+        Assertions.assertThat(result.getResultsList())
+                .hasSize(1)
+                .allSatisfy(foundId -> Assertions.assertThat(foundId.getId()).isEqualTo(grandChildId.getId()));
+    }
+
+    @Test
+    @Order(2)
+    void searchByParentIdShouldOnlyReturnChildNoGrandChild() {
         WfRunId parentId = workflowVerifier
                 .prepareRun(getSearchableVariableWf())
                 .waitForStatus(COMPLETED)
