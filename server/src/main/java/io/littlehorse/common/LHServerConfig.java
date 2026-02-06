@@ -1090,7 +1090,7 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public boolean isTimerStreamsEnabled() {
-        return Boolean.valueOf(getOrSetDefault(X_ENABLE_TIMER_STREAMS_KEY, "true"));
+        return Boolean.valueOf(getOrSetDefault(X_ENABLE_TIMER_STREAMS_KEY, "false"));
     }
 
     public String getRackId() {

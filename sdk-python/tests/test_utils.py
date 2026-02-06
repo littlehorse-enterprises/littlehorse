@@ -1,3 +1,4 @@
+from collections import deque
 from datetime import datetime
 import json
 from inspect import signature
@@ -7,7 +8,7 @@ from typing import Annotated
 
 from faker import Faker
 from littlehorse.exceptions import SerdeException
-from littlehorse.model import VariableType, VariableAssignment, VariableValue
+from littlehorse.model import VariableType, VariableAssignment, VariableValue, WfRunId
 
 from littlehorse.utils import (
     extract_value,
@@ -54,6 +55,14 @@ class TestProtoUtils(unittest.TestCase):
         value = self.faker.binary()
         result = extract_value(VariableValue(bytes=value))
         self.assertEqual(result, value)
+
+        value = datetime.now()
+        result = extract_value(VariableValue(utc_timestamp=value))
+        self.assertEqual(value, result)
+
+        value = WfRunId(id=self.faker.uuid4())
+        result = extract_value(VariableValue(wf_run_id=value))
+        self.assertEqual(value, result)
 
         # JSON_OBJ
         input_dict = {"name": self.faker.name(), "income": self.faker.random_int()}
@@ -107,6 +116,16 @@ class TestProtoUtils(unittest.TestCase):
         value = self.faker.binary()
         result = to_variable_value(value)
         self.assertEqual(result, VariableValue(bytes=value))
+
+        # TIMESTAMP
+        value = datetime.now()
+        result = to_variable_value(value)
+        self.assertEqual(result, VariableValue(utc_timestamp=value))
+
+        # WF_RUN_ID
+        value = WfRunId(id=self.faker.uuid4())
+        result = to_variable_value(value)
+        self.assertEqual(result, VariableValue(wf_run_id=value))
 
         # NULL
         result = to_variable_value(None)
@@ -186,7 +205,7 @@ class TestProtoUtils(unittest.TestCase):
         )
 
     def test_serde_error_when_serializing(self):
-        value = datetime.now()
+        value = deque([1, 2, 3])
 
         with self.assertRaises(SerdeException) as exception_context:
             to_variable_value(value)

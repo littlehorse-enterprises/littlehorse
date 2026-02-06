@@ -84,6 +84,10 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.TASK_QUEUE_HINT;
             case "NodeOutputModel":
                 return StoreableType.NODE_OUTPUT;
+            case "TimerIteratorHintModel":
+                return StoreableType.TIMER_ITERATOR_HINT;
+            case "LHTimer":
+                return StoreableType.LH_TIMER;
         }
         throw new IllegalArgumentException("Unrecognized Storeable class: " + cls);
     }
