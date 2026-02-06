@@ -15,9 +15,15 @@ public class WfRunVariable
     public string Name { get; private set; }
 
     /// <value>
-    /// Gets the Type of this WfRunVariable.
+    /// Gets the Type of this WfRunVariable. For StructDef variables, this will
+    /// default to <see cref="VariableType.JsonObj"/>.
     /// </value>
     public VariableType Type { get; private set; }
+
+    /// <value>
+    /// Gets the TypeDefinition of this WfRunVariable.
+    /// </value>
+    internal TypeDefinition TypeDef { get; private set; } = new();
     
     /// <value>
     /// Gets the JsonPath of this WfRunVariable that is JSON_OBJ or JSON_ARR types.
@@ -60,17 +66,64 @@ public class WfRunVariable
         _accessLevel = WfRunVariableAccessLevel.PrivateVar;
         InitializeType();
     }
+
+    internal WfRunVariable(string name, TypeDefinition typeDef, WorkflowThread parent)
+    {
+        Name = name;
+        _parent = parent ?? throw new ArgumentNullException(nameof(parent));
+        _jsonIndexes = new List<JsonIndex>();
+        _typeOrDefaultVal = VariableType.JsonObj;
+        _accessLevel = WfRunVariableAccessLevel.PrivateVar;
+        TypeDef = typeDef ?? throw new ArgumentNullException(nameof(typeDef));
+        Type = TypeDef.DefinedTypeCase == TypeDefinition.DefinedTypeOneofCase.PrimitiveType
+            ? TypeDef.PrimitiveType
+            : VariableType.JsonObj;
+    }
+
+    internal static WfRunVariable CreateStructDefVar(string name, LHStructDefType structDefType, WorkflowThread parent)
+    {
+        if (structDefType == null)
+        {
+            throw new ArgumentNullException(nameof(structDefType));
+        }
+
+        return new WfRunVariable(name, structDefType.GetTypeDefinition(), parent);
+    }
+
+    internal static WfRunVariable CreateStructDefVar(string name, string structDefName, WorkflowThread parent)
+    {
+        if (string.IsNullOrWhiteSpace(structDefName))
+        {
+            throw new ArgumentException("StructDef name cannot be null or empty.", nameof(structDefName));
+        }
+
+        return new WfRunVariable(
+            name,
+            new TypeDefinition
+            {
+                StructDefId = new StructDefId { Name = structDefName }
+            },
+            parent);
+    }
     
     private void InitializeType() 
     {
         if (_typeOrDefaultVal is VariableType) 
         {
             Type = (VariableType) _typeOrDefaultVal;
+            TypeDef = new TypeDefinition
+            {
+                PrimitiveType = Type
+            };
         } 
         else 
         {
             SetDefaultValue(_typeOrDefaultVal);
             Type = LHMappingHelper.ValueCaseToVariableType(_defaultValue!.ValueCase);
+            TypeDef = new TypeDefinition
+            {
+                PrimitiveType = Type
+            };
         }
     }
     
@@ -94,13 +147,12 @@ public class WfRunVariable
     /// </returns>
     public ThreadVarDef Compile() 
     {
+        var compiledTypeDef = TypeDef.Clone();
+        compiledTypeDef.Masked = _masked;
+
         VariableDef varDef = new VariableDef
         {
-            TypeDef = new TypeDefinition
-            {
-                PrimitiveType = Type,
-                Masked = _masked
-            },
+            TypeDef = compiledTypeDef,
             Name = Name
         };
 
@@ -152,7 +204,9 @@ public class WfRunVariable
         if (!fieldPath.StartsWith("$.")) {
             throw new LHMisconfigurationException($"Invalid JsonPath: {fieldPath}");
         }
-        if (!Type.Equals(VariableType.JsonObj) && !Type.Equals(VariableType.JsonArr)) {
+        if (TypeDef.DefinedTypeCase != TypeDefinition.DefinedTypeOneofCase.PrimitiveType
+            || (!TypeDef.PrimitiveType.Equals(VariableType.JsonObj)
+                && !TypeDef.PrimitiveType.Equals(VariableType.JsonArr))) {
             throw new LHMisconfigurationException($"Non-Json {Name} variable contains jsonIndex.");
         }
         _jsonIndexes.Add(new JsonIndex
@@ -253,6 +307,11 @@ public class WfRunVariable
     {
         SetDefaultValue(defaultVal);
 
+        if (TypeDef.DefinedTypeCase != TypeDefinition.DefinedTypeOneofCase.PrimitiveType)
+        {
+            throw new ArgumentException("Default values are only supported for primitive variables.");
+        }
+
         if (!LHMappingHelper.ValueCaseToVariableType(_defaultValue!.ValueCase).Equals(Type)) 
         {
             throw new ArgumentException($"Default value type does not match LH variable type {Type}");
@@ -279,9 +338,10 @@ public class WfRunVariable
         {
             throw new LHMisconfigurationException("Cannot use jsonpath() twice on same var!");
         }
-        if (Type != VariableType.JsonObj && Type != VariableType.JsonArr) 
+        if (TypeDef.DefinedTypeCase != TypeDefinition.DefinedTypeOneofCase.PrimitiveType
+            || (TypeDef.PrimitiveType != VariableType.JsonObj && TypeDef.PrimitiveType != VariableType.JsonArr))
         {
-            throw new LHMisconfigurationException($"JsonPath not allowed in a {Type.ToString()} variable");
+            throw new LHMisconfigurationException($"JsonPath not allowed in a {TypeDef.DefinedTypeCase} variable");
         }
         var outVariable = new WfRunVariable(Name, _typeOrDefaultVal, _parent)
         {
