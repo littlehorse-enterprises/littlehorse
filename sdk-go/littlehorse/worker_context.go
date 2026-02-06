@@ -111,8 +111,12 @@ func (wc *WorkerContext) ExecuteAndCheckpoint(fn CheckpointableFunction) (interf
 	if wc.checkpointsSoFarInThisRun < wc.ScheduledTask.GetTotalObservedCheckpoints() {
 		// Fetch checkpoint from server
 		result, err := wc.fetchCheckpoint(wc.checkpointsSoFarInThisRun)
+		if err != nil {
+			// Do not advance the checkpoint counter on error, so we can retry this checkpoint.
+			return nil, err
+		}
 		wc.checkpointsSoFarInThisRun++
-		return result, err
+		return result, nil
 	} else {
 		// Execute and save checkpoint
 		return wc.saveCheckpoint(fn)
