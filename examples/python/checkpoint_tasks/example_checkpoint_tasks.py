@@ -2,9 +2,11 @@ import asyncio
 import logging
 from pathlib import Path
 
+import littlehorse
 from littlehorse.config import LHConfig
+from littlehorse.model import VariableType
 from littlehorse.worker import LHTaskWorker, WorkerContext, CheckpointContext
-from littlehorse.workflow import Workflow
+from littlehorse.workflow import Workflow, WorkflowThread
 
 logging.basicConfig(level=logging.INFO)
 
@@ -17,9 +19,9 @@ def get_config() -> LHConfig:
     return config
 
 def get_workflow() -> Workflow:
-    def workflow_logic(wf: Workflow) -> None:
-        the_name = wf.declare_str("input-name", None).searchable()
-        wf.execute("greet", the_name).with_retries(2)
+    def workflow_logic(wf: WorkflowThread) -> None:
+        the_name = wf.declare_str("input-name").searchable()
+        wf.execute("greet", the_name, retries=2)
 
     return Workflow("example-checkpointed-tasks", workflow_logic)
 
@@ -62,15 +64,11 @@ def second_checkpoint(attempt_number: int) -> str:
 async def main():
     config = get_config()
     workflow = get_workflow()
-    worker = LHTaskWorker(greet, "greet", config)
 
-    worker.register_task_def()
-    workflow.register_wf_spec(config.stub())
+    littlehorse.create_task_def(greet, "greet", config)
+    littlehorse.create_workflow_spec(workflow, config)
 
-    print("Starting Checkpoint Task Worker...")
-    print('Run: lhctl run example-checkpointed-tasks input-name "Qui-Gon Jinn"')
-
-    await worker.start()
+    await littlehorse.start(LHTaskWorker(greet, "greet", config))
 
 
 if __name__ == "__main__":
