@@ -190,7 +190,7 @@ func (cc *CheckpointContext) Log(item interface{}) {
 	}
 }
 
-// GetLogOutput returns the accumulated log output for this checkpoint.
+// getLogOutput returns the accumulated log output for this checkpoint.
 func (cc *CheckpointContext) getLogOutput() string {
 	return cc.logOutput
 }
