@@ -3,7 +3,6 @@ import { FC } from 'react'
 import { LabelContent, VariableAssignment } from '../Components'
 
 export const ChildWFNode: FC<{ node: RunChildWfNode }> = ({ node }) => {
-  console.log(node)
   const { wfSpec } = node
   let wfSpecName = ""
   if (wfSpec?.$case === 'wfSpecName') {
