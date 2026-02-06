@@ -109,6 +109,7 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
             CommandModel commandToExecute = new CommandModel(createRunWfCommand(executionContext), currentDate);
             LHTimer runWfTimer = new LHTimer(commandToExecute);
             runWfTimer.maturationTime = currentDate;
+            runWfTimer.setRepartition(true);
             executionContext.getTaskManager().scheduleTimer(runWfTimer);
             Optional<Date> scheduledTime = LHUtil.nextDate(
                     cronExpression, executionContext.currentCommand().getTime());
@@ -139,9 +140,7 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
         for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
             protoBuilder.putVariables(e.getKey(), e.getValue().toProto().build());
         }
-        RunWfRequestModel output = LHSerializable.fromProto(protoBuilder.build(), RunWfRequestModel.class, context);
-        output.getPartitionKey();
-        return output;
+        return LHSerializable.fromProto(protoBuilder.build(), RunWfRequestModel.class, context);
     }
 
     @Override

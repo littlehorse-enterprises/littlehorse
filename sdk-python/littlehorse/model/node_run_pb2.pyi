@@ -110,7 +110,7 @@ class StartMultipleThreadsRun(_message.Message):
     def __init__(self, thread_spec_name: _Optional[str] = ..., child_thread_ids: _Optional[_Iterable[int]] = ...) -> None: ...
 
 class RunChildWfNodeRun(_message.Message):
-    __slots__ = ("child_wf_run_id", "inputs")
+    __slots__ = ("child_wf_run_id", "inputs", "wf_spec_id")
     class InputsEntry(_message.Message):
         __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -120,9 +120,11 @@ class RunChildWfNodeRun(_message.Message):
         def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
     CHILD_WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     INPUTS_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     child_wf_run_id: _object_id_pb2.WfRunId
     inputs: _containers.MessageMap[str, _variable_pb2.VariableValue]
-    def __init__(self, child_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., inputs: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ...) -> None: ...
+    wf_spec_id: _object_id_pb2.WfSpecId
+    def __init__(self, child_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., inputs: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
 
 class WaitForChildWfNodeRun(_message.Message):
     __slots__ = ("child_wf_run_id",)

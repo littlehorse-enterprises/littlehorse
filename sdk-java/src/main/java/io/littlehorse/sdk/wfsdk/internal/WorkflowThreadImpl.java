@@ -354,6 +354,19 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
+    public SpawnedChildWf runWf(WfRunVariable wfSpecName, Map<String, Serializable> inputs) {
+        checkIfIsActive();
+        // TODO: handle workflow versioning
+        RunChildWfNode.Builder node =
+                RunChildWfNode.newBuilder().setMajorVersion(-1).setWfSpecVar(assignVariable(wfSpecName));
+        for (Map.Entry<String, Serializable> input : inputs.entrySet()) {
+            node.putInputs(input.getKey(), assignVariable(input.getValue()));
+        }
+        String nodeName = addNode("run-child-wf", NodeCase.RUN_CHILD_WF, node.build());
+        return new SpawnedChildWfImpl(nodeName, this);
+    }
+
+    @Override
     public NodeOutput waitForChildWf(SpawnedChildWf childWf) {
         checkIfIsActive();
         SpawnedChildWfImpl scwf = (SpawnedChildWfImpl) childWf;
