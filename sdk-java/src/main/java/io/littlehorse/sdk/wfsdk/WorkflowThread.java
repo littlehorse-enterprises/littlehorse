@@ -69,6 +69,14 @@ public interface WorkflowThread {
     SpawnedChildWf runWf(String wfSpecName, Map<String, Serializable> inputs);
 
     /**
+     * Adds a RUN_CHILD_WF node to the ThreadSpec, starts a child WfRun and waits for it to complete.
+     * @param wfSpecName a WfRunVariable containing the name of the WfSpec to execute as a child workflow.
+     * @param inputs are the inputs that we will pass into the entrypoint ThreadRun.
+     * @return a SpawnedChildWf which allows us to later wait for the child WfRun.
+     */
+    SpawnedChildWf runWf(WfRunVariable wfSpecName, Map<String, Serializable> inputs);
+
+    /**
      * Adds a WAIT_FOR_CHILD_WF node which waits for a specified WfRun to complete and
      * returns its output. As of 0.15 the SpawnedChildWf must come from the same ThreadSpec.
      * @param childToWaitFor is a handle to the child WfRun to wait for.
