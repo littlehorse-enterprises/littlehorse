@@ -42,6 +42,11 @@ from littlehorse.model import (
     LHTaskError,
     LHTaskException,
     VariableValue,
+    CheckpointId,
+    Checkpoint,
+    PutCheckpointRequest,
+    PutCheckpointResponse,
+    LittleHorseStub,
 )
 from google.protobuf.timestamp_pb2 import Timestamp
 from littlehorse.utils import extract_value, to_variable_type, to_variable_value
@@ -55,9 +60,11 @@ GRPC_UNARY_CALL_TIMEOUT_SECONDS = 30
 
 
 class WorkerContext:
-    def __init__(self, scheduled_task: ScheduledTask) -> None:
+    def __init__(self, scheduled_task: ScheduledTask, client: LittleHorseStub) -> None:
         self._scheduled_task = scheduled_task
         self._log_entries: list[str] = []
+        self._checkpoints_so_far_in_this_run = 0
+        self._client = client
 
     @property
     def scheduled_time(self) -> datetime:
@@ -154,6 +161,50 @@ class WorkerContext:
         """
         return "\n".join(self._log_entries)
 
+    async def execute_and_checkpoint(self, callable: Callable[..., Any]) -> Any:
+        if (
+            self._checkpoints_so_far_in_this_run
+            < self._scheduled_task.total_observed_checkpoints
+        ):
+            output = await self._fetch_checkpoint(self._checkpoints_so_far_in_this_run)
+            self._checkpoints_so_far_in_this_run += 1
+            return output
+        else:
+            return await self._save_checkpoint(callable)
+
+    async def _fetch_checkpoint(self, checkpoint_number: int) -> Any:
+        id: CheckpointId = CheckpointId(
+            task_run=self._scheduled_task.task_run_id,
+            checkpoint_number=checkpoint_number,
+        )
+
+        checkpoint: Checkpoint = await self._client.GetCheckpoint(id)
+
+        return extract_value(checkpoint.value)
+
+    async def _save_checkpoint(self, callable: Callable[..., Any]) -> Any:
+        checkpoint_context: CheckpointContext = CheckpointContext()
+        result: Any = callable(checkpoint_context)
+
+        response: PutCheckpointResponse = await self._client.PutCheckpoint(
+            PutCheckpointRequest(
+                task_run_id=self._scheduled_task.task_run_id,
+                task_attempt=self._scheduled_task.attempt_number,
+                value=to_variable_value(result),
+                logs=checkpoint_context.log_output,
+            )
+        )
+
+        self._checkpoints_so_far_in_this_run += 1
+
+        if (
+            response.flow_control_continue_type
+            != PutCheckpointResponse.FlowControlContinue.CONTINUE_TASK
+        ):
+            raise Exception("Halting execution because the server told us to.")
+
+        return result
+
     def __str__(self) -> str:
         return str(
             {
@@ -164,6 +215,28 @@ class WorkerContext:
                 "attempt_number": self.attempt_number,
             }
         )
+
+
+class CheckpointContext:
+    def __init__(self) -> None:
+        self._log_entries: list[str] = []
+
+    def log(self, obj: Any) -> None:
+        """Stores log data for the given Checkpoint.
+
+        Args:
+            obj (Any): The item to add to the Checkpoint's Log Output
+        """
+        self._log_entries.append(f"[{datetime.now()}] {obj}")
+
+    @property
+    def log_output(self) -> str:
+        """Returns the current log output.
+
+        Returns:
+            str: Log output.
+        """
+        return "\n".join(self._log_entries)
 
 
 class LHTask:
@@ -293,7 +366,7 @@ class LHConnection:
         asyncio.create_task(self._execute_task(task))
 
     async def _execute_task(self, task: ScheduledTask) -> None:
-        context = WorkerContext(task)
+        context = WorkerContext(task, self._stub)
         args: Any = [extract_value(var.value) for var in task.variables]
 
         if self._task.has_context():
