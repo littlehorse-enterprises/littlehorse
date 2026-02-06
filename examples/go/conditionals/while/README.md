@@ -14,7 +14,7 @@ while number_of_donuts > 0:
 We have two `TaskDef`'s and thus two Task Functions. Note that `worker/main.go` kicks off two threads, one for each Task Worker.
 
 ```
-go run ./examples/conditionals/while/worker
+go run ./examples/go/conditionals/while/worker
 ```
 
 ## Register the `WfSpec`
@@ -22,7 +22,7 @@ go run ./examples/conditionals/while/worker
 In another terminal, run:
 
 ```
-go run ./examples/conditionals/while/deploy
+go run ./examples/go/conditionals/while/deploy
 ```
 
 ## Run a `WfRun`

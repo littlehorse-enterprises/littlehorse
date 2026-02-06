@@ -2,9 +2,12 @@ package littlehorse
 
 import (
 	"encoding/base64"
+	"encoding/binary"
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
@@ -217,6 +220,218 @@ func InterfaceToVarVal(someInterface interface{}) (*lhproto.VariableValue, error
 		}
 	}
 	return out, err
+}
+
+// VarValToInterface converts a VariableValue to a Go interface{}.
+// This is the inverse operation of InterfaceToVarVal.
+func VarValToInterface(varVal *lhproto.VariableValue) (interface{}, error) {
+	switch v := varVal.GetValue().(type) {
+	case *lhproto.VariableValue_Int:
+		return v.Int, nil
+	case *lhproto.VariableValue_Double:
+		return v.Double, nil
+	case *lhproto.VariableValue_Bool:
+		return v.Bool, nil
+	case *lhproto.VariableValue_Str:
+		return v.Str, nil
+	case *lhproto.VariableValue_Bytes:
+		return v.Bytes, nil
+	case *lhproto.VariableValue_JsonArr:
+		// For JSON arrays, we need to deserialize to a generic structure
+		var arr interface{}
+		err := json.Unmarshal([]byte(v.JsonArr), &arr)
+		if err != nil {
+			return nil, fmt.Errorf("failed to deserialize JSON array: %w", err)
+		}
+		return arr, nil
+	case *lhproto.VariableValue_JsonObj:
+		// For JSON objects, we need to deserialize to a generic structure
+		var obj interface{}
+		err := json.Unmarshal([]byte(v.JsonObj), &obj)
+		if err != nil {
+			return nil, fmt.Errorf("failed to deserialize JSON object: %w", err)
+		}
+		return obj, nil
+	case nil:
+		return nil, nil
+	default:
+		return nil, fmt.Errorf("unknown VariableValue type")
+	}
+}
+
+// loadByteArr loads a byte array from a VariableValue, handling various numeric conversions
+func loadByteArr(varVal *lhproto.VariableValue, kind reflect.Type) (interface{}, error) {
+	switch kind.Kind() {
+	case reflect.Slice, reflect.Array:
+		return []byte(varVal.GetBytes()), nil
+	case reflect.Uint:
+		return uint(varVal.GetBytes()[8]), nil
+	case reflect.Uint8:
+		return uint8(varVal.GetBytes()[8]), nil
+	case reflect.Uint16:
+		return binary.BigEndian.Uint16(varVal.GetBytes()), nil
+	case reflect.Uint32:
+		return binary.BigEndian.Uint32(varVal.GetBytes()), nil
+	case reflect.Uint64:
+		return binary.BigEndian.Uint64(varVal.GetBytes()), nil
+	}
+	return nil, fmt.Errorf(
+		"task input variable was of type BYTES but task function needed %s",
+		kind.Kind().String(),
+	)
+}
+
+// loadJsonArr deserializes a JSON array from a VariableValue into a specific Go type
+func loadJsonArr(varVal *lhproto.VariableValue, kind reflect.Type) (interface{}, error) {
+	strPointerValue := varVal.GetJsonArr()
+	decoder := json.NewDecoder(strings.NewReader(strPointerValue))
+
+	obj := reflect.New(kind.Elem())
+	objPtr := obj.Interface()
+
+	err := decoder.Decode(objPtr)
+	if err != nil {
+		return nil, fmt.Errorf("Error Decoding the Json Array: %s", err.Error())
+	}
+	return objPtr, nil
+}
+
+// loadJsonObj deserializes a JSON object from a VariableValue into a specific Go type
+func loadJsonObj(varVal *lhproto.VariableValue, kind reflect.Type) (interface{}, error) {
+	strPointerValue := varVal.GetJsonObj()
+	decoder := json.NewDecoder(strings.NewReader(strPointerValue))
+
+	obj := reflect.New(kind.Elem())
+	objPtr := obj.Interface()
+
+	err := decoder.Decode(objPtr)
+	if err != nil {
+		return nil, fmt.Errorf("Error Decoding the Json Obj: %s", err.Error())
+	}
+	return objPtr, nil
+}
+
+// VarValToType converts a VariableValue to a specific Go type.
+// This is similar to Java's varValToObj method - it handles type conversion based on the target type.
+func VarValToType(varVal *lhproto.VariableValue, targetType reflect.Type) (interface{}, error) {
+	isPtr, reflectKind := GetIsPtrAndType(targetType)
+
+	// Handle null values
+	if varVal.GetValue() == nil {
+		if !isPtr {
+			return nil, fmt.Errorf("got a NULL assignment for a non-pointer variable")
+		}
+		return nil, nil
+	}
+
+	// Special handling for JSON types that need type-specific deserialization
+	switch varVal.GetValue().(type) {
+	case *lhproto.VariableValue_JsonArr:
+		if !isPtr {
+			panic("task accepts a slice as an input variable; only pointers to slice are supported")
+		}
+		return loadJsonArr(varVal, targetType)
+
+	case *lhproto.VariableValue_JsonObj:
+		if !isPtr {
+			panic("task accepts a struct as an input variable; only pointers to struct are supported")
+		}
+		return loadJsonObj(varVal, targetType)
+
+	case *lhproto.VariableValue_Bytes:
+		return loadByteArr(varVal, targetType)
+	}
+
+	// For primitive types, get the base value and convert to the target type
+	baseValue, err := VarValToInterface(varVal)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert the base value to the expected type
+	switch varVal.GetValue().(type) {
+	case *lhproto.VariableValue_Int:
+		int64Val := baseValue.(int64)
+		switch reflectKind {
+		case reflect.Int:
+			result := int(int64Val)
+			if isPtr {
+				return &result, nil
+			}
+			return result, nil
+		case reflect.Int16:
+			result := int16(int64Val)
+			if isPtr {
+				return &result, nil
+			}
+			return result, nil
+		case reflect.Int32:
+			result := int32(int64Val)
+			if isPtr {
+				return &result, nil
+			}
+			return result, nil
+		case reflect.Int64:
+			result := int64Val
+			if isPtr {
+				return &result, nil
+			}
+			return result, nil
+		}
+		return nil, fmt.Errorf(
+			"task input variable was of type INT but task function needed %s",
+			reflectKind.String(),
+		)
+
+	case *lhproto.VariableValue_Double:
+		float64Val := baseValue.(float64)
+		switch reflectKind {
+		case reflect.Float32:
+			result := float32(float64Val)
+			if isPtr {
+				return &result, nil
+			}
+			return result, nil
+		case reflect.Float64:
+			result := float64Val
+			if isPtr {
+				return &result, nil
+			}
+			return result, nil
+		}
+		return nil, fmt.Errorf(
+			"task input variable was of type DOUBLE but task function needed %s",
+			reflectKind.String(),
+		)
+
+	case *lhproto.VariableValue_Bool:
+		if reflectKind != reflect.Bool {
+			return nil, fmt.Errorf(
+				"task input variable was of type BOOL but task function needed %s",
+				reflectKind.String(),
+			)
+		}
+		boolVal := baseValue.(bool)
+		if isPtr {
+			return &boolVal, nil
+		}
+		return boolVal, nil
+
+	case *lhproto.VariableValue_Str:
+		if reflectKind != reflect.String {
+			return nil, fmt.Errorf(
+				"task input variable was of type STR but task function needed %s",
+				reflectKind.String(),
+			)
+		}
+		strVal := baseValue.(string)
+		if isPtr {
+			return &strVal, nil
+		}
+		return strVal, nil
+	}
+
+	return nil, fmt.Errorf("unknown VariableValue type")
 }
 
 func ReflectTypeToVarType(rt reflect.Type) lhproto.VariableType {
