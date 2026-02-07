@@ -43,7 +43,6 @@ import io.littlehorse.sdk.common.proto.WaitForConditionNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsStrategy;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
-import io.littlehorse.sdk.wfsdk.ExternalEventDefRegistration;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.InterruptHandler;
 import io.littlehorse.sdk.wfsdk.LHExpression;

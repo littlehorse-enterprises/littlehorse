@@ -45,7 +45,6 @@ public abstract class Workflow {
 
     protected ExponentialBackoffRetryPolicy defaultExponentialBackoff;
     protected int defaultSimpleRetries;
-    protected Set<ExternalEventDefRegistration> externalEventsToRegister;
     protected Set<ThrowEventNodeOutputImpl> workflowEventsToRegister;
 
     /**
@@ -59,7 +58,6 @@ public abstract class Workflow {
         this.entrypointThread = entrypointThreadFunc;
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
-        this.externalEventsToRegister = new HashSet<>();
         this.workflowEventsToRegister = new HashSet<>();
     }
 

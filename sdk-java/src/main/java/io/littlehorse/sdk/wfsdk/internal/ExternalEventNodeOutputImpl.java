@@ -2,7 +2,6 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.proto.CorrelatedEventConfig;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
-import io.littlehorse.sdk.wfsdk.ExternalEventDefRegistration;
 import io.littlehorse.sdk.wfsdk.ExternalEventNodeOutput;
 import java.io.Serializable;
 

@@ -10,7 +10,6 @@ import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
-import io.littlehorse.sdk.wfsdk.ExternalEventDefRegistration;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
@@ -32,6 +31,7 @@ public class WorkflowImpl extends Workflow {
     private Set<String> requiredEedNames;
     private Set<String> requiredWorkflowEventDefNames;
     private Stack<WorkflowThreadImpl> threads;
+    private Set<ExternalEventDefRegistration> externalEventsToRegister;
 
     public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc) {
         super(name, entrypointThreadFunc);
@@ -41,6 +41,7 @@ public class WorkflowImpl extends Workflow {
         this.requiredWorkflowEventDefNames = new HashSet<>();
         this.requiredEedNames = new HashSet<>();
         this.threads = new Stack<>();
+        this.externalEventsToRegister = new HashSet<>();
     }
 
     @Override
