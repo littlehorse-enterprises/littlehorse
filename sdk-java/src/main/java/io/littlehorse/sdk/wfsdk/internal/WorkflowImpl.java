@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
+import io.littlehorse.sdk.wfsdk.ExternalEventDefRegistration;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
@@ -48,7 +49,7 @@ public class WorkflowImpl extends Workflow {
         PutWfSpecRequest wfRequest = compileWorkflow();
 
         // Create externalEventDef's that the user wanted us to create
-        for (ExternalEventNodeOutputImpl node : externalEventsToRegister) {
+        for (ExternalEventDefRegistration node : externalEventsToRegister) {
             log.info(
                     "Creating ExternalEventDef:\n {}",
                     LHLibUtil.protoToJson(client.putExternalEventDef(node.toPutExtDefRequest())));
@@ -68,7 +69,7 @@ public class WorkflowImpl extends Workflow {
         workflowEventsToRegister.add(node);
     }
 
-    public void addExternalEventDefToRegister(ExternalEventNodeOutputImpl node) {
+    public void addExternalEventDefToRegister(ExternalEventDefRegistration node) {
         externalEventsToRegister.add(node);
     }
 
@@ -133,7 +134,7 @@ public class WorkflowImpl extends Workflow {
             compiledWorkflow = compileWorkflowHelper();
         }
         Set<PutExternalEventDefRequest> out = new HashSet<>();
-        for (ExternalEventNodeOutputImpl node : externalEventsToRegister) {
+        for (ExternalEventDefRegistration node : externalEventsToRegister) {
             out.add(node.toPutExtDefRequest());
         }
         return out;
