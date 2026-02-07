@@ -756,7 +756,8 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public boolean shouldCreateOutputTopics() {
-        String outputTopicsValue = getOrSetDefault(SHOULD_CREATE_OUTPUT_TOPICS_KEY, String.valueOf(shouldCreateTopics()));
+        String outputTopicsValue =
+                getOrSetDefault(SHOULD_CREATE_OUTPUT_TOPICS_KEY, String.valueOf(shouldCreateTopics()));
         return Boolean.valueOf(outputTopicsValue);
     }
 
