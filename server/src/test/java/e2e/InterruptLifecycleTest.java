@@ -21,13 +21,7 @@ import org.junit.jupiter.api.Test;
 /*
  * Tests that Interrupts cause NodeRun lifecycle to move properly.
  */
-@LHTest(
-        externalEventNames = {
-            InterruptLifecycleTest.PARENT_EVENT,
-            InterruptLifecycleTest.INTERRUPT_TRIGGER,
-            InterruptLifecycleTest.COMPLETE_INTERRUPT_HANDLER,
-            InterruptLifecycleTest.CHILD_EVENT
-        })
+@LHTest
 public class InterruptLifecycleTest {
     public static final String PARENT_EVENT = "ilt-parent-event";
     public static final String CHILD_EVENT = "ilt-child-event";
@@ -79,16 +73,16 @@ public class InterruptLifecycleTest {
         return Workflow.newWorkflow("interrupt-lifecycle-test", wf -> {
             WfRunVariable theKey = wf.addVariable("key", VariableType.STR).required();
             wf.registerInterruptHandler(INTERRUPT_TRIGGER, handler -> {
-                handler.waitForEvent(COMPLETE_INTERRUPT_HANDLER);
-            });
+                handler.waitForEvent(COMPLETE_INTERRUPT_HANDLER).registeredAs(null);
+            }).withEventType(null);;
 
-            wf.waitForEvent(PARENT_EVENT);
+            wf.waitForEvent(PARENT_EVENT).registeredAs(null);
             wf.execute("dummy-task", theKey);
 
             // Spawn and wait for child
             wf.waitForThreads(SpawnedThreads.of(wf.spawnThread(
                     child -> {
-                        child.waitForEvent(CHILD_EVENT);
+                        child.waitForEvent(CHILD_EVENT).registeredAs(null);
                     },
                     "child",
                     Map.of())));
