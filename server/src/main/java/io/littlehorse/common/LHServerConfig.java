@@ -1163,9 +1163,6 @@ public class LHServerConfig extends ConfigBase {
     }
 
     private void initKafkaAdmin() {
-        if (!shouldCreateTopics() && !shouldCreateOutputTopics()) {
-            return;
-        }
         Properties kafkaSettings = new Properties();
         kafkaSettings.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         addKafkaSecuritySettings(kafkaSettings);
