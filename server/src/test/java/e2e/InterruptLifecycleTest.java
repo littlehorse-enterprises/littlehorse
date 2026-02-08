@@ -73,8 +73,10 @@ public class InterruptLifecycleTest {
         return Workflow.newWorkflow("interrupt-lifecycle-test", wf -> {
             WfRunVariable theKey = wf.addVariable("key", VariableType.STR).required();
             wf.registerInterruptHandler(INTERRUPT_TRIGGER, handler -> {
-                handler.waitForEvent(COMPLETE_INTERRUPT_HANDLER).registeredAs(null);
-            }).withEventType(null);;
+                        handler.waitForEvent(COMPLETE_INTERRUPT_HANDLER).registeredAs(null);
+                    })
+                    .withEventType(null);
+            ;
 
             wf.waitForEvent(PARENT_EVENT).registeredAs(null);
             wf.execute("dummy-task", theKey);
