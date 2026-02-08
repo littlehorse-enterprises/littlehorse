@@ -31,6 +31,7 @@ public class WorkflowImpl extends Workflow {
     private Set<String> requiredEedNames;
     private Set<String> requiredWorkflowEventDefNames;
     private Stack<WorkflowThreadImpl> threads;
+    private Set<ExternalEventDefRegistration> externalEventsToRegister;
 
     public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc) {
         super(name, entrypointThreadFunc);
@@ -40,6 +41,7 @@ public class WorkflowImpl extends Workflow {
         this.requiredWorkflowEventDefNames = new HashSet<>();
         this.requiredEedNames = new HashSet<>();
         this.threads = new Stack<>();
+        this.externalEventsToRegister = new HashSet<>();
     }
 
     @Override
@@ -48,7 +50,7 @@ public class WorkflowImpl extends Workflow {
         PutWfSpecRequest wfRequest = compileWorkflow();
 
         // Create externalEventDef's that the user wanted us to create
-        for (ExternalEventNodeOutputImpl node : externalEventsToRegister) {
+        for (ExternalEventDefRegistration node : externalEventsToRegister) {
             log.info(
                     "Creating ExternalEventDef:\n {}",
                     LHLibUtil.protoToJson(client.putExternalEventDef(node.toPutExtDefRequest())));
@@ -68,7 +70,7 @@ public class WorkflowImpl extends Workflow {
         workflowEventsToRegister.add(node);
     }
 
-    public void addExternalEventDefToRegister(ExternalEventNodeOutputImpl node) {
+    public void addExternalEventDefToRegister(ExternalEventDefRegistration node) {
         externalEventsToRegister.add(node);
     }
 
@@ -133,7 +135,7 @@ public class WorkflowImpl extends Workflow {
             compiledWorkflow = compileWorkflowHelper();
         }
         Set<PutExternalEventDefRequest> out = new HashSet<>();
-        for (ExternalEventNodeOutputImpl node : externalEventsToRegister) {
+        for (ExternalEventDefRegistration node : externalEventsToRegister) {
             out.add(node.toPutExtDefRequest());
         }
         return out;

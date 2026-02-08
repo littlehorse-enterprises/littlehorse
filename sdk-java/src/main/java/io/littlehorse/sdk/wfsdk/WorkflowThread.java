@@ -423,7 +423,7 @@ public interface WorkflowThread {
      * @param interruptName The name of the ExternalEventDef to listen for.
      * @param handler A Thread Function defining a ThreadSpec to use to handle the Interrupt.
      */
-    void registerInterruptHandler(String interruptName, ThreadFunc handler);
+    InterruptHandler registerInterruptHandler(String interruptName, ThreadFunc handler);
 
     /**
      * Adds a SLEEP node which makes the ThreadRun sleep for a specified number of seconds.

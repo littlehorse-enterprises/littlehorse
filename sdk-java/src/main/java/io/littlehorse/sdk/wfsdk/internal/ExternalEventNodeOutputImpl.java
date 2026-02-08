@@ -5,7 +5,8 @@ import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.wfsdk.ExternalEventNodeOutput;
 import java.io.Serializable;
 
-public class ExternalEventNodeOutputImpl extends NodeOutputImpl implements ExternalEventNodeOutput {
+public class ExternalEventNodeOutputImpl extends NodeOutputImpl
+        implements ExternalEventNodeOutput, ExternalEventDefRegistration {
 
     private final String externalEventDefName;
     private CorrelatedEventConfig correlatedEventConfig;
@@ -55,10 +56,12 @@ public class ExternalEventNodeOutputImpl extends NodeOutputImpl implements Exter
         return correlatedEventConfig;
     }
 
+    @Override
     public String getExternalEventDefName() {
         return externalEventDefName;
     }
 
+    @Override
     public PutExternalEventDefRequest toPutExtDefRequest() {
         PutExternalEventDefRequest.Builder builder = PutExternalEventDefRequest.newBuilder()
                 .setName(externalEventDefName)

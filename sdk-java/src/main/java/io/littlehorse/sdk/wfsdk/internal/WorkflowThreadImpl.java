@@ -44,6 +44,7 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsStrategy;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
+import io.littlehorse.sdk.wfsdk.InterruptHandler;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.LHFormatString;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
@@ -274,8 +275,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
         // us mutate variables
     }
 
-    public void registerExternalEventDef(ExternalEventNodeOutputImpl nodeOutputImpl) {
-        parent.addExternalEventDefToRegister(nodeOutputImpl);
+    public void registerExternalEventDef(ExternalEventDefRegistration registration) {
+        parent.addExternalEventDefToRegister(registration);
     }
 
     public void registerWorkflowEventDef(ThrowEventNodeOutputImpl nodeOutputImpl) {
@@ -960,7 +961,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         addNode(failureName, NodeCase.EXIT, exitNode);
     }
 
-    public void registerInterruptHandler(String interruptName, ThreadFunc handler) {
+    public InterruptHandler registerInterruptHandler(String interruptName, ThreadFunc handler) {
         checkIfIsActive();
         String threadName = "interrupt-" + interruptName;
         threadName = parent.addSubThread(threadName, handler);
@@ -970,6 +971,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 .setExternalEventDefId(ExternalEventDefId.newBuilder().setName(interruptName))
                 .setHandlerSpecName(threadName)
                 .build());
+        return new InterruptHandlerImpl(interruptName, this);
     }
 
     public void handleException(NodeOutput nodeOutput, String exceptionName, ThreadFunc handler) {

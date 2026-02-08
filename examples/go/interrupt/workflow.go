@@ -33,7 +33,7 @@ func InterruptWorkflow(wf *littlehorse.WorkflowThread) {
 		eventContent := handler.DeclareInt("INPUT")
 		handler.Execute(ChildFooTaskName, eventContent)
 		handler.Mutate(tally, lhproto.VariableMutationType_ADD, eventContent)
-	})
+	}).RegisteredAs(lhproto.VariableType_INT)
 
 	// The main thread sleeps for 120 seconds and then reports the tally
 	wf.Sleep(120)

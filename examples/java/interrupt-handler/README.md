@@ -1,7 +1,8 @@
 ## Running InterruptHandlerExample
 
 This example shows how to interrupt a workflow execution.
-You need to register and interrupt handler with thread.registerInterruptHandler.
+You need to register an interrupt handler with thread.registerInterruptHandler and
+declare the ExternalEvent payload type using withEventType().
 
 In this example the parent thread sleeps 30 sec, we can interrupt it while it's sleeping,
 and it creates a child thread. When an interruption is received the workflow executes the task:
@@ -25,7 +26,7 @@ lhctl run example-interrupt-handler
 lhctl get wfRun <wf run id>
 
 # Note that it is 'RUNNING'. Next, post an external event using the following:
-lhctl postEvent <wf run id> interruption-event
+lhctl postEvent <wf run id> interruption-event STR hello
 
 # Then inspect the wfRun:
 # Note that the threadRuns number 1 is 'ERROR' with type 'INTERRUPT'
