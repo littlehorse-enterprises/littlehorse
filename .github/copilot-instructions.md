@@ -56,6 +56,19 @@ Lastly for Getables, some metadata `Getable`s which do not have anything to do w
 - Install `lhctl` by `cd lhctl && go install .`
 - Use `poetry run ...` etc inside `sdk-python`
 
+### E2E Tests
+
+If you edit the server, and every time you add functionality in the `sdk-java`, please add an end-to-end test. Look in `server/src/test/java/e2e` for examples.
+
+You can run them with
+```
+./gradlew server:e2e --tests MyTestFile
+```
+
+Try your best to avoid tests that require sleeping or waiting a long time as we don't want the pipeline to take too long.
+
+It's also helpful to reuse a single `WfSpec` for multiple test cases rather than generate one `WfSpec` per e2e test because registering the `WfSpec` takes longer than processing a test.
+
 ## Project-specific conventions
 
 - Dashboard env lives in dashboard/.env.local (not repo root). Use LHC_* vars to point to the server; OAuth env uses LHD_* and Keycloak vars (see [dashboard/README.md](dashboard/README.md)).
