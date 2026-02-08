@@ -87,7 +87,7 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
         }
         tenant.setOutputTopicConfig(outputTopicConfig);
         metadataManager.put(tenant);
-        if (outputTopicConfig != null) {
+        if (outputTopicConfig != null && context.serverConfig().shouldCreateOutputTopics()) {
             final TenantModel finalTenant = tenant;
             Thread.startVirtualThread(() -> {
                 context.maybeCreateOutputTopics(finalTenant);
