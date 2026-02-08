@@ -1,4 +1,4 @@
-﻿using LittleHorse.Sdk;
+using LittleHorse.Sdk;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Workflow.Spec;
@@ -55,7 +55,8 @@ public abstract class Program
                 handler =>
                 {
                     handler.Execute("some-task");
-                });
+                })
+                .WithEventType(null);
             // Do some work that takes a while
             wf.SleepSeconds(30);
             wf.Execute("my-task");
@@ -77,14 +78,7 @@ public abstract class Program
             await Task.WhenAll(workers.Select(worker => worker.RegisterTaskDef()));
             
             var workflow = GetWorkflow();
-            
-            // Register external event if it does not exist
-            foreach (var externalEventName in workflow.GetRequiredExternalEventDefNames())
-            {
-                Console.WriteLine($"Registering external event {externalEventName}");
-                client.PutExternalEventDef(new PutExternalEventDefRequest { Name = externalEventName });
-            }
-            
+
             await workflow.RegisterWfSpec(config.GetGrpcClientInstance());
 
             await Task.Delay(300);
