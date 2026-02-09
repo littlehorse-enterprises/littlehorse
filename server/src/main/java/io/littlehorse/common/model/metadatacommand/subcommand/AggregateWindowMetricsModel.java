@@ -73,7 +73,6 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
             consolidatedMetric.mergeFrom(metricWindow);
         }
         executionContext.getCoreStore().put(new StoredGetable<>(consolidatedMetric));
-        System.out.println("Consolidated metrics: " + consolidatedMetric);
         return null;
     }
 }

@@ -86,8 +86,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         onPartitionClaimed();
-        // ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
-        ctx.schedule(Duration.ofSeconds(10), PunctuationType.WALL_CLOCK_TIME, this::forwardWindowPartitionMetrics);
+        ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardWindowPartitionMetrics);
         log.info("Completed the init() process on partition {}", ctx.taskId().partition());
     }
 
@@ -177,29 +176,12 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         server.drainPartitionTaskQueue(ctx.taskId());
     }
 
-    private void forwardMetricsUpdates(long timestamp) {
-        ClusterScopedStore coreDefaultStore =
-                ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
-        PartitionMetricsModel metricsOnCurrentPartition =
-                coreDefaultStore.get(LHConstants.PARTITION_METRICS_KEY, PartitionMetricsModel.class);
-
-        if (metricsOnCurrentPartition != null) {
-            for (AggregateWfMetricsModel aggregateWfMetrics : metricsOnCurrentPartition.buildWfRepartitionCommands()) {
-                forwardMetricSubcommand(aggregateWfMetrics);
-            }
-            for (AggregateTaskMetricsModel aggregateTaskMetrics :
-                    metricsOnCurrentPartition.buildTaskMetricRepartitionCommand()) {
-                forwardMetricSubcommand(aggregateTaskMetrics);
-            }
-            coreDefaultStore.delete(metricsOnCurrentPartition);
-        }
-    }
-
     private void forwardWindowPartitionMetrics(long timestamp) {
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
 
-        String startKey = "metrics/partition/";
+        long startTime = timestamp - (2 * 60 * 60 * 1000L);
+        String startKey = "metrics/partition/" + startTime;
         String endKey = "metrics/partition/~";
 
         try (LHKeyValueIterator<PartitionMetricWindowModel> iter =
@@ -210,35 +192,15 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 if (metricWindow != null) {
                     AggregateWindowMetricsModel aggregateMetrics = new AggregateWindowMetricsModel(
                             metricWindow.getWfSpecId(), metricWindow.getTenantId(), metricWindow);
-                    fordwardSubcomand(aggregateMetrics);
+                    forwardSubcommand(aggregateMetrics);
                     clusterScopedStore.delete(metricWindow);
                 }
             }
         }
     }
 
-    private void forwardMetricSubcommand(RepartitionSubCommand repartitionSubCommand) {
-        RepartitionCommand repartitionCommand =
-                new RepartitionCommand(repartitionSubCommand, new Date(), repartitionSubCommand.getPartitionKey());
-        CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.partitionKey = repartitionSubCommand.getPartitionKey();
-        System.out.println("Forwarding repartition command for partition key: " + cpo.partitionKey);
-        cpo.topic = this.config.getCoreCmdTopicName();
-        cpo.payload = repartitionCommand;
-        Record<String, CommandProcessorOutput> out = new Record<>(
-                cpo.partitionKey,
-                cpo,
-                System.currentTimeMillis(),
-                // NOT SURE IF THIS SHOULD BE DEFAULT/ANONYMOUS.
-                // I think we should mark it as "cluster-scoped" and by the "internal system" not any external
-                // principal.
-                HeadersUtil.metadataHeadersFor(
-                        new TenantIdModel(LHConstants.DEFAULT_TENANT),
-                        new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
-        this.ctx.forward(out);
-    }
 
-    private void fordwardSubcomand(AggregateWindowMetricsModel subCommand) {
+    private void forwardSubcommand(AggregateWindowMetricsModel subCommand) {
         CommandModel command = new CommandModel(subCommand, new Date());
         LHTimer timer = new LHTimer(command);
         timer.maturationTime = new Date();
@@ -246,7 +208,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         timer.topic = this.config.getCoreCmdTopicName();
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.partitionKey = subCommand.getPartitionKey();
-        log.info("Forwarding subcommand for partition key: " + cpo.partitionKey);
         cpo.topic = this.config.getCoreCmdTopicName();
         cpo.payload = timer;
         Record<String, CommandProcessorOutput> out = new Record<>(
