@@ -1,25 +1,24 @@
-package io.littlehorse.common.model.repartitioncommand.repartitionsubcommand;
+package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
-import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.AggregateWindowMetrics;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.MetricWindow;
 import io.littlehorse.server.streams.store.StoredGetable;
-import io.littlehorse.server.streams.stores.TenantScopedStore;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.PartitionMetricWindowModel;
 import lombok.Getter;
-import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 @Getter
-public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowMetrics>
-        implements RepartitionSubCommand {
+public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowMetrics> {
 
     private WfSpecIdModel wfSpecId;
     private TenantIdModel tenantId;
@@ -56,17 +55,15 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
         return AggregateWindowMetrics.class;
     }
 
-    @Override
     public String getPartitionKey() {
         return wfSpecId.toString() + "/" + metricWindow.getWindowStart().getTime();
     }
 
-    @Override
-    public void process(TenantScopedStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
+    public Message process(CoreProcessorContext executionContext, LHServerConfig config) {
         MetricWindowIdModel id = new MetricWindowIdModel(wfSpecId, metricWindow.getWindowStart());
 
         StoredGetable<MetricWindow, MetricWindowModel> storedMetric =
-                repartitionedStore.get(id.getStoreableKey(), StoredGetable.class);
+                executionContext.getCoreStore().get(id.getStoreableKey(), StoredGetable.class);
 
         MetricWindowModel consolidatedMetric;
         if (storedMetric == null) {
@@ -75,7 +72,8 @@ public class AggregateWindowMetricsModel extends LHSerializable<AggregateWindowM
             consolidatedMetric = storedMetric.getStoredObject();
             consolidatedMetric.mergeFrom(metricWindow);
         }
-        repartitionedStore.put(new StoredGetable<>(consolidatedMetric));
+        executionContext.getCoreStore().put(new StoredGetable<>(consolidatedMetric));
         System.out.println("Consolidated metrics: " + consolidatedMetric);
+        return null;
     }
 }

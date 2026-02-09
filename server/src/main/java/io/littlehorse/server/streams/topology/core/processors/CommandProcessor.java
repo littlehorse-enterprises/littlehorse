@@ -3,17 +3,18 @@ package io.littlehorse.server.streams.topology.core.processors;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.PartitionMetricsModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.AggregateWindowMetricsModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateTaskMetricsModel;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWindowMetricsModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.Tenant;
@@ -86,7 +87,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         onPartitionClaimed();
         // ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
-        ctx.schedule(Duration.ofSeconds(20), PunctuationType.WALL_CLOCK_TIME, this::forwardWindowPartitionMetrics);
+        ctx.schedule(Duration.ofSeconds(10), PunctuationType.WALL_CLOCK_TIME, this::forwardWindowPartitionMetrics);
         log.info("Completed the init() process on partition {}", ctx.taskId().partition());
     }
 
@@ -206,11 +207,10 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             while (iter.hasNext()) {
                 LHIterKeyValue<PartitionMetricWindowModel> next = iter.next();
                 PartitionMetricWindowModel metricWindow = next.getValue();
-
                 if (metricWindow != null) {
                     AggregateWindowMetricsModel aggregateMetrics = new AggregateWindowMetricsModel(
                             metricWindow.getWfSpecId(), metricWindow.getTenantId(), metricWindow);
-                    forwardMetricSubcommand(aggregateMetrics);
+                    fordwardSubcomand(aggregateMetrics);
                     clusterScopedStore.delete(metricWindow);
                 }
             }
@@ -235,6 +235,26 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 HeadersUtil.metadataHeadersFor(
                         new TenantIdModel(LHConstants.DEFAULT_TENANT),
                         new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
+        this.ctx.forward(out);
+    }
+
+    private void fordwardSubcomand(AggregateWindowMetricsModel subCommand) {
+        CommandModel command = new CommandModel(subCommand, new Date());
+        LHTimer timer = new LHTimer(command);
+        timer.maturationTime = new Date();
+        timer.setRepartition(true);
+        timer.topic = this.config.getCoreCmdTopicName();
+        CommandProcessorOutput cpo = new CommandProcessorOutput();
+        cpo.partitionKey = subCommand.getPartitionKey();
+        log.info("Forwarding subcommand for partition key: " + cpo.partitionKey);
+        cpo.topic = this.config.getCoreCmdTopicName();
+        cpo.payload = timer;
+        Record<String, CommandProcessorOutput> out = new Record<>(
+                cpo.partitionKey,
+                cpo,
+                System.currentTimeMillis(),
+                HeadersUtil.metadataHeadersFor(
+                        subCommand.getTenantId(), new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
         this.ctx.forward(out);
     }
 }
