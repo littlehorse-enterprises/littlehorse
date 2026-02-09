@@ -30,7 +30,7 @@ public class Workflow
     private WorkflowRetentionPolicy? _wfRetentionPolicy;
     internal readonly Stack<WorkflowThread> Threads;
     private readonly List<ThrowEventNodeOutput> _workflowEventsToRegister;
-    private readonly List<ExternalEventNodeOutput> _externalEventsToRegister;
+    private readonly List<IExternalEventDefRegistration> _externalEventsToRegister;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Workflow"/> class.
@@ -50,7 +50,7 @@ public class Workflow
         _requiredEedNames = new HashSet<string>();
         _requiredWorkflowEventDefNames = new HashSet<string>();
         _workflowEventsToRegister = new List<ThrowEventNodeOutput>();
-        _externalEventsToRegister = new List<ExternalEventNodeOutput>();
+        _externalEventsToRegister = new List<IExternalEventDefRegistration>();
         Threads = new Stack<WorkflowThread>();
     }
     
@@ -264,7 +264,7 @@ public class Workflow
         _workflowEventsToRegister.Add(node);
     }
     
-    internal void AddExternalEventDefToRegister(ExternalEventNodeOutput node)
+    internal void AddExternalEventDefToRegister(IExternalEventDefRegistration node)
     {
         _externalEventsToRegister.Add(node);
     }

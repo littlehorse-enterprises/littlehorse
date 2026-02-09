@@ -70,6 +70,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String CLUSTER_PARTITIONS_KEY = "LHS_CLUSTER_PARTITIONS";
     public static final String OUTPUT_TOPIC_PARTITIONS_KEY = "LHS_OUTPUT_TOPIC_PARTITIONS";
     public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
+    public static final String SHOULD_CREATE_OUTPUT_TOPICS_KEY = "LHS_SHOULD_CREATE_OUTPUT_TOPICS";
     public static final String RACK_ID_KEY = "LHS_RACK_ID";
 
     // Optional Performance-Related Configs for Kafka Streams
@@ -752,6 +753,12 @@ public class LHServerConfig extends ConfigBase {
 
     public boolean shouldCreateTopics() {
         return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "true"));
+    }
+
+    public boolean shouldCreateOutputTopics() {
+        String outputTopicsValue =
+                getOrSetDefault(SHOULD_CREATE_OUTPUT_TOPICS_KEY, String.valueOf(shouldCreateTopics()));
+        return Boolean.valueOf(outputTopicsValue);
     }
 
     public int getRocksDBCompactionThreads() {
