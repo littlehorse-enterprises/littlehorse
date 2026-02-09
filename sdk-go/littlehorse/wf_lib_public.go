@@ -23,7 +23,11 @@ type LHWorkflow struct {
 	spec                     lhproto.PutWfSpecRequest
 	funcs                    map[string]ThreadFunc
 	workflowEventsToRegister []*ThrowEventNodeOutput
-	externalEventsToRegister []*ExternalEventNodeOutput
+	externalEventsToRegister []externalEventDefRegistration
+}
+
+type externalEventDefRegistration interface {
+	ToPutExternalEventDefRequest() *lhproto.PutExternalEventDefRequest
 }
 
 type WorkflowThread struct {
@@ -90,6 +94,12 @@ type ExternalEventNodeOutput struct {
 	correlatedEventConfig *lhproto.CorrelatedEventConfig
 }
 
+type InterruptHandler struct {
+	thread        *WorkflowThread
+	interruptName string
+	eventTypeSet  bool
+}
+
 type WaitForConditionNodeOutput struct {
 	nodeName string
 	jsonPath *string
@@ -113,6 +123,16 @@ func (n *ExternalEventNodeOutput) RegisteredAs(payloadType lhproto.VariableType)
 
 func (n *ExternalEventNodeOutput) RegisteredAsEmpty() *ExternalEventNodeOutput {
 	return n.thread.registerExternalEventDefAsEmpty(n)
+}
+
+func (h *InterruptHandler) RegisteredAs(payloadType lhproto.VariableType) *InterruptHandler {
+	h.thread.registerInterruptExternalEventDefAs(h, payloadType)
+	return h
+}
+
+func (h *InterruptHandler) RegisteredAsEmpty() *InterruptHandler {
+	h.thread.registerInterruptExternalEventDefAsEmpty(h)
+	return h
 }
 
 func (n *ExternalEventNodeOutput) Timeout(timeout int64) *ExternalEventNodeOutput {
@@ -672,8 +692,8 @@ func (t *WorkflowThread) Fail(content interface{}, failureName string, msg *stri
 	t.fail(content, failureName, msg)
 }
 
-func (t *WorkflowThread) HandleInterrupt(interruptName string, handler ThreadFunc) {
-	t.handleInterrupt(interruptName, handler)
+func (t *WorkflowThread) HandleInterrupt(interruptName string, handler ThreadFunc) *InterruptHandler {
+	return t.handleInterrupt(interruptName, handler)
 }
 
 func (t *WorkflowThread) HandleError(
