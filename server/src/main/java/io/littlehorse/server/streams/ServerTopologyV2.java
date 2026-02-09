@@ -2,10 +2,8 @@ package io.littlehorse.server.streams;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.LHTimer;
-import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.MetadataCommand;
-import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.ProtobufDeserializer;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.store.BoundedBytesSerde;
@@ -13,7 +11,11 @@ import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.topology.core.TimerCoreProcessor;
-import io.littlehorse.server.streams.topology.core.processors.*;
+import io.littlehorse.server.streams.topology.core.processors.CommandProcessor;
+import io.littlehorse.server.streams.topology.core.processors.MetadataGlobalStoreProcessor;
+import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
+import io.littlehorse.server.streams.topology.core.processors.ProcessorOutputRouter;
+import io.littlehorse.server.streams.topology.core.processors.TimerCommandProcessor;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import org.apache.kafka.common.serialization.Serdes;
@@ -40,8 +42,6 @@ public class ServerTopologyV2 extends Topology {
     public static final String METADATA_STORE_NAME = ServerTopology.METADATA_STORE;
     public static final String METADATA_PROCESSOR_SINK_NAME = ServerTopology.METADATA_PROCESSOR_SINK;
     public static final String REPARTITION_SINK_NAME = "repartition-sink";
-    public static final String REPARTITION_SOURCE_NAME = "repartition-source";
-    public static final String REPARTITION_PROCESSOR_NAME = "repartition-processor";
     public static final String TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME = "timer-processor-router-processor";
     public static final String TIMER_COMMAND_PROCESSOR_NAME = "timer-command-processor";
     public static final String ROUTER_PROCESSOR_NAME = "router-processor";
@@ -60,7 +60,6 @@ public class ServerTopologyV2 extends Topology {
     private final ProcessorSupplier<String, LHTimer, String, Object> routerProcessorTimer2Supplier;
     private final ProcessorSupplier<String, LHTimer, String, Object> timerProcessorSupplier;
     private final ProcessorSupplier<String, Command, String, CommandProcessorOutput> timerCommandProcessorSupplier;
-    private final ProcessorSupplier<String, RepartitionCommand, Void, Void> repartitionCommandProcessorSupplier;
     private final ProcessorSupplier<String, Forwardable, String, Forwardable> passthroughRepartitionProcessor;
     private final ProcessorSupplier<String, LHTimer, String, Object> timerWithoutForwardProcessorSupplier;
     private final ProcessorSupplier<String, MetadataCommand, String, CommandProcessorOutput> metadataProcessorSupplier;
@@ -106,7 +105,6 @@ public class ServerTopologyV2 extends Topology {
         this.metadataStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(METADATA_STORE_NAME), Serdes.String(), Serdes.Bytes());
         this.timerWithoutForwardProcessorSupplier = () -> new TimerCoreProcessor(false);
-        this.repartitionCommandProcessorSupplier = () -> new RepartitionCommandProcessor(config, metadataCache);
         this.coreCommandTopic = config.getCoreCmdTopicName();
         this.repartitionTopic = config.getRepartitionTopicName();
         this.metadataTopic = config.getMetadataCmdTopicName();
@@ -145,14 +143,8 @@ public class ServerTopologyV2 extends Topology {
                 CORE_COMMAND_SOURCE_NAME,
                 Serdes.String().deserializer(),
                 new ProtobufDeserializer<>(Command.parser()),
-                coreCommandTopic);
-        serverTopology.addSource(
-                REPARTITION_SOURCE_NAME,
-                Serdes.String().deserializer(),
-                new LHDeserializer<>(io.littlehorse.common.model.repartitioncommand.RepartitionCommand.class),
+                coreCommandTopic,
                 repartitionTopic);
-        serverTopology.addProcessor(
-                REPARTITION_PROCESSOR_NAME, repartitionCommandProcessorSupplier, REPARTITION_SOURCE_NAME);
         serverTopology.addProcessor(COMMAND_PROCESSOR_NAME, commandProcessorSupplier, CORE_COMMAND_SOURCE_NAME);
         serverTopology.addProcessor(ROUTER_PROCESSOR_NAME, routerProcessorSupplier, COMMAND_PROCESSOR_NAME);
         serverTopology.addProcessor(TIMER_PROCESSOR_NAME, timerProcessorSupplier, ROUTER_PROCESSOR_NAME);
@@ -161,7 +153,6 @@ public class ServerTopologyV2 extends Topology {
         serverTopology.addProcessor(
                 REPARTITION_PASSTHROUGH_PROCESSOR,
                 passthroughRepartitionProcessor,
-                ROUTER_PROCESSOR_NAME,
                 TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME);
         serverTopology.addProcessor(
                 TIMER_COMMAND_PROCESSOR_NAME, timerCommandProcessorSupplier, TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME);
@@ -194,7 +185,6 @@ public class ServerTopologyV2 extends Topology {
         serverTopology.addStateStore(
                 coreStoreBuilder,
                 COMMAND_PROCESSOR_NAME,
-                REPARTITION_PROCESSOR_NAME,
                 TIMER_PROCESSOR_NAME,
                 TIMER_COMMAND_PROCESSOR_NAME,
                 TIMER_WITHOUT_FORWARD_PROCESSOR_NAME);
