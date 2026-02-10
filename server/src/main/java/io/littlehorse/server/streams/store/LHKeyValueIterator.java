@@ -29,7 +29,7 @@ public class LHKeyValueIterator<T extends Storeable<?>> implements Iterator<LHIt
     @Override
     public LHIterKeyValue<T> next() {
         var next = rawIter.next();
-        if(!cls.getSimpleName().equals("StoredGetable")){
+        if(cls.getSimpleName().equals("StoredGetable")){
             System.out.println("LHKeyValueIterator - Next key: " + next.key + ", cls: " + cls.getSimpleName());
         }
         

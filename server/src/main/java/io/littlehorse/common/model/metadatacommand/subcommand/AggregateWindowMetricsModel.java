@@ -54,9 +54,10 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
     public Class<AggregateWindowMetrics> getProtoBaseClass() {
         return AggregateWindowMetrics.class;
     }
-
+    
+    @Override
     public String getPartitionKey() {
-        return wfSpecId.toString() + "/" + metricWindow.getWindowStart().getTime();
+        return wfSpecId.toString() ;
     }
 
     public Message process(CoreProcessorContext executionContext, LHServerConfig config) {

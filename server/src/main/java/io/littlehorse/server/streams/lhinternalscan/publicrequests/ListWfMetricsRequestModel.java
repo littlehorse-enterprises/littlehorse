@@ -53,9 +53,17 @@ public class ListWfMetricsRequestModel
     public void initFrom(Message proto, ExecutionContext context) {
         ListWfMetricsRequest p = (ListWfMetricsRequest) proto;
         wfSpecId = LHSerializable.fromProto(p.getWfSpec(), WfSpecIdModel.class, context);
-        // Hardcode windowStart to 5 hours ago, windowEnd to now
-        windowStart = new Date(System.currentTimeMillis() - 5 * 60 * 60 * 1000L);
-        windowEnd = new Date();
+        // Use windowStart and windowEnd from the request (default to 5 hours ago if not provided)
+        if (p.hasWindowStart()) {
+            windowStart = LHUtil.fromProtoTs(p.getWindowStart());
+        } else {
+            windowStart = new Date(System.currentTimeMillis() - 5 * 60 * 60 * 1000L);
+        }
+        if (p.hasWindowEnd()) {
+            windowEnd = LHUtil.fromProtoTs(p.getWindowEnd());
+        } else {
+            windowEnd = new Date();
+        }
     }
 
     @Override
@@ -78,6 +86,6 @@ public class ListWfMetricsRequestModel
         // Scan all metrics for the wfSpec, ignoring time
         String prefix = wfSpecId.toString() + "/";
         System.out.println("ListWfMetricsRequestModel - StartKey: " + prefix + ", EndKey: " + (prefix + "~"));
-        return new ObjectIdScanBoundaryStrategy(wfSpecId.getName(), prefix, prefix + "~");
+        return new ObjectIdScanBoundaryStrategy(wfSpecId.toString(), prefix, prefix + "~");
     }
 }
