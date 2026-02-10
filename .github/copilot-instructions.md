@@ -51,10 +51,16 @@ Lastly for Getables, some metadata `Getable`s which do not have anything to do w
 
 - If the human hasn't set up kafka, you can look into ./local-dev/setup.sh (see [local-dev/README.md](local-dev/README.md)).
 - If the human doesn't have the server running locally: ./local-dev/do-server.sh
+  - It takes about 30 seconds to start up after compiling (which takes a while too)
+  - You need to let it run in the background: if you want to run an example, do it in another terminal.
 - If you need to run the dashboard: in [dashboard](dashboard), npm install && npm run dev; expects server on localhost:2023 (see [dashboard/README.md](dashboard/README.md)).
 - Compile protobuf after changing anything in [schemas](schemas): `./local-dev/compile-proto.sh`
 - Install `lhctl` by `cd lhctl && go install .`
 - Use `poetry run ...` etc inside `sdk-python`
+
+### RUNNING EXAMPLES
+
+When you run the examples, REMEMBER THAT THE `./gradlew example-foo:run` SHOULD GO IN THE BACKGROUND! it runs a task worker which is a long-lived process that won't terminate until you kill it. It needs to keep running in the background.
 
 ### E2E Tests
 
