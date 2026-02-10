@@ -95,7 +95,7 @@ message MetricWindow {
 
 message ListWfMetricsRequest {
   WfSpecId wf_spec = 1;
-  google.protobuf.Timestamp window_start = 2;
+  optional google.protobuf.Timestamp window_start = 2;
   optional google.protobuf.Timestamp window_end = 3;
 }
 

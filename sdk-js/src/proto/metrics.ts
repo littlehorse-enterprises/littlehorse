@@ -117,7 +117,7 @@ export interface MetricWindow_MetricsEntry {
 
 export interface ListWfMetricsRequest {
   wfSpec: WfSpecId | undefined;
-  windowStart: string | undefined;
+  windowStart?: string | undefined;
   windowEnd?: string | undefined;
 }
 

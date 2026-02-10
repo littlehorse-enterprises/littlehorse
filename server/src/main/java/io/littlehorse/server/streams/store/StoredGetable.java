@@ -90,14 +90,8 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
     }
 
     public static String getRocksDBKey(String key, GetableClassEnum objType) {
-        System.out.println("Getting RocksDB key for key: " + key + " and objType: " + objType);
-        // For metrics, return key as is since they are not stored as StoredGetable
-        if (objType == GetableClassEnum.WF_SPEC_METRICS) {
-            return key;
-        }
-        // For metric windows, prepend the getable type
         if (objType == GetableClassEnum.METRIC_WINDOW) {
-            return "21/" + key;
+            return objType.getNumber() + "/" + key;
         }
         // Weird but needed for the new format
         var parts = key.split("/");

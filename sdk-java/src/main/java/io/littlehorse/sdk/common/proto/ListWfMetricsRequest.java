@@ -73,7 +73,7 @@ private static final long serialVersionUID = 0L;
   public static final int WINDOW_START_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp windowStart_;
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
    * @return Whether the windowStart field is set.
    */
   @java.lang.Override
@@ -81,7 +81,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
    * @return The windowStart.
    */
   @java.lang.Override
@@ -89,7 +89,7 @@ private static final long serialVersionUID = 0L;
     return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
   }
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
@@ -638,14 +638,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> windowStartBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
      * @return Whether the windowStart field is set.
      */
     public boolean hasWindowStart() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
      * @return The windowStart.
      */
     public com.google.protobuf.Timestamp getWindowStart() {
@@ -656,7 +656,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder setWindowStart(com.google.protobuf.Timestamp value) {
       if (windowStartBuilder_ == null) {
@@ -672,7 +672,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder setWindowStart(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -686,7 +686,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder mergeWindowStart(com.google.protobuf.Timestamp value) {
       if (windowStartBuilder_ == null) {
@@ -707,7 +707,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder clearWindowStart() {
       bitField0_ = (bitField0_ & ~0x00000002);
@@ -720,7 +720,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getWindowStartBuilder() {
       bitField0_ |= 0x00000002;
@@ -728,7 +728,7 @@ private static final long serialVersionUID = 0L;
       return internalGetWindowStartFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
       if (windowStartBuilder_ != null) {
@@ -739,7 +739,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 

@@ -22,7 +22,7 @@ import java.util.Date;
 
 public class ListWfMetricsRequestModel
         extends PublicScanRequest<
-        ListWfMetricsRequest, MetricsList, MetricWindow, MetricWindowModel, ListMetricsReply> {
+                ListWfMetricsRequest, MetricsList, MetricWindow, MetricWindowModel, ListMetricsReply> {
 
     private WfSpecIdModel wfSpecId;
     private Date windowStart;
@@ -53,11 +53,11 @@ public class ListWfMetricsRequestModel
     public void initFrom(Message proto, ExecutionContext context) {
         ListWfMetricsRequest p = (ListWfMetricsRequest) proto;
         wfSpecId = LHSerializable.fromProto(p.getWfSpec(), WfSpecIdModel.class, context);
-        // Use windowStart and windowEnd from the request (default to 5 hours ago if not provided)
+        // Use windowStart and windowEnd from the request (default to 1 hour ago if not provided)
         if (p.hasWindowStart()) {
             windowStart = LHUtil.fromProtoTs(p.getWindowStart());
         } else {
-            windowStart = new Date(System.currentTimeMillis() - 5 * 60 * 60 * 1000L);
+            windowStart = new Date(System.currentTimeMillis() - 60 * 60 * 1000L);
         }
         if (p.hasWindowEnd()) {
             windowEnd = LHUtil.fromProtoTs(p.getWindowEnd());
@@ -83,13 +83,8 @@ public class ListWfMetricsRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        // Scan all metrics for the wfSpec, ignoring time
-        String startPrefixString = wfSpecId.toString() + "/"+LHUtil.toLhDbFormat(windowStart);
+        String startPrefixString = wfSpecId.toString() + "/" + LHUtil.toLhDbFormat(windowStart);
         String endPrefixString = wfSpecId.toString() + "/" + LHUtil.toLhDbFormat(windowEnd) + "/~";
-        System.out.println("Scan boundary from " + startPrefixString + " to " + endPrefixString);
-        return new ObjectIdScanBoundaryStrategy(
-            wfSpecId.toString(), 
-            startPrefixString, 
-            endPrefixString);
+        return new ObjectIdScanBoundaryStrategy(wfSpecId.toString(), startPrefixString, endPrefixString);
     }
 }

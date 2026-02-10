@@ -26,17 +26,17 @@ public interface ListWfMetricsRequestOrBuilder extends
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecOrBuilder();
 
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>optional .google.protobuf.Timestamp window_start = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 

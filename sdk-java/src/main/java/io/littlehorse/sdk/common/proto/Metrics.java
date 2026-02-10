@@ -165,15 +165,16 @@ public final class Metrics extends com.google.protobuf.GeneratedFile {
       "7\n\007metrics\030\002 \003(\0132&.littlehorse.MetricWin" +
       "dow.MetricsEntry\032K\n\014MetricsEntry\022\013\n\003key\030" +
       "\001 \001(\t\022*\n\005value\030\002 \001(\0132\033.littlehorse.Count" +
-      "AndTiming:\0028\001\"\264\001\n\024ListWfMetricsRequest\022&" +
-      "\n\007wf_spec\030\001 \001(\0132\025.littlehorse.WfSpecId\0220" +
+      "AndTiming:\0028\001\"\312\001\n\024ListWfMetricsRequest\022&" +
+      "\n\007wf_spec\030\001 \001(\0132\025.littlehorse.WfSpecId\0225" +
       "\n\014window_start\030\002 \001(\0132\032.google.protobuf.T" +
-      "imestamp\0223\n\nwindow_end\030\003 \001(\0132\032.google.pr" +
-      "otobuf.TimestampH\000\210\001\001B\r\n\013_window_end\"9\n\013" +
-      "MetricsList\022*\n\007windows\030\001 \003(\0132\031.littlehor" +
-      "se.MetricWindowBM\n\037io.littlehorse.sdk.co" +
-      "mmon.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sd" +
-      "k.Common.Protob\006proto3"
+      "imestampH\000\210\001\001\0223\n\nwindow_end\030\003 \001(\0132\032.goog" +
+      "le.protobuf.TimestampH\001\210\001\001B\017\n\r_window_st" +
+      "artB\r\n\013_window_end\"9\n\013MetricsList\022*\n\007win" +
+      "dows\030\001 \003(\0132\031.littlehorse.MetricWindowBM\n" +
+      "\037io.littlehorse.sdk.common.protoP\001Z\t.;lh" +
+      "proto\252\002\034LittleHorse.Sdk.Common.Protob\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

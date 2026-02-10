@@ -613,7 +613,6 @@ public class BackendInternalComms implements Closeable {
                 }
                 results.add(iterKeyValueToInternalScanResult(next, ScanResultTypePb.OBJECT_ID, objectType));
             }
-
         }
         PartitionBookmarkPb bookmarkOut = bookmarkKey == null
                 ? null
@@ -712,15 +711,13 @@ public class BackendInternalComms implements Closeable {
         ReadOnlyTenantScopedStore store = getStore(partition, req.storeName);
         PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(partition, null);
 
-        String endKey =
-                StoredGetable.getRocksDBKey(req.boundedObjectIdScan.getEndObjectId(), req.getObjectType()) + "~";
+        String endKey = StoredGetable.getRocksDBKey(req.boundedObjectIdScan.getEndObjectId(), req.getObjectType());
         String startKey;
         if (partBookmark == null) {
             startKey = StoredGetable.getRocksDBKey(req.boundedObjectIdScan.getStartObjectId(), req.getObjectType());
         } else {
             startKey = partBookmark.getLastKey();
         }
-        
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
         try (LHKeyValueIterator<?> iter = store.range(startKey, endKey, StoredGetable.class)) {
