@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 using Type = System.Type;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
@@ -290,6 +291,47 @@ public class VariableMappingTest
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
         
         Assert.Equal(taskInstance.Variables[0].Value.Bool, result);
+    }
+
+
+    [Fact]
+    public void VariableMapping_WithAssignTimestampValue_ShouldReturnDateObject()
+    {
+        DateTime expectedValue = DateTime.UtcNow;
+        Type type = typeof(DateTime);
+        int position = 0;
+        string paramName = "param_test";
+        var variableMapping = GetVariableMappingForTest(type, paramName, position);
+        VariableValue variableValue = new VariableValue { UtcTimestamp = expectedValue.ToTimestamp()};
+        ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
+        
+        var mockClient = new Mock<LittleHorseClient>();
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
+        
+        var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
+        Assert.NotNull(result);
+        Assert.IsType(type, result);
+        Assert.Equal(expectedValue, result);
+    }
+    
+    [Fact]
+    public void VariableMapping_WithAssignWfRunIdValue_ShouldReturnWfRunIdObject()
+    {
+        WfRunId expectedValue = new WfRunId() {Id = "test"};
+        Type type = typeof(WfRunId);
+        int position = 0;
+        string paramName = "param_test";
+        var variableMapping = GetVariableMappingForTest(type, paramName, position);
+        VariableValue variableValue = new VariableValue { WfRunId = expectedValue };
+        ScheduledTask taskInstance = GetScheduledTaskForTest(variableValue, paramName);
+        
+        var mockClient = new Mock<LittleHorseClient>();
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime(), mockClient.Object);
+        
+        var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
+        Assert.NotNull(result);
+        Assert.IsType(type, result);
+        Assert.Equal(expectedValue, result);
     }
     
     [Fact]
