@@ -38,20 +38,16 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
 
     public PartitionMetricWindowModel() {}
 
-    public PartitionMetricWindowModel(WfSpecIdModel wfSpecId, Date windowStart, TenantIdModel tenantId) {
-        this.metricType = MetricWindowId.IdCase.WORKFLOW;
+    public PartitionMetricWindowModel(WfSpecIdModel wfSpecId, TenantIdModel tenantId, Date windowStart) {
         this.wfSpecId = wfSpecId;
-        this.windowStart = windowStart;
-        this.metrics = new HashMap<>();
         this.tenantId = tenantId;
+        this.windowStart = windowStart;
+        this.metricType = MetricWindowId.IdCase.WORKFLOW;
+        this.metrics = new HashMap<>();
     }
 
     public PartitionMetricWindowModel(WfSpecIdModel wfSpecId, TenantIdModel tenantId) {
-        this.metricType = MetricWindowId.IdCase.WORKFLOW;
-        this.wfSpecId = wfSpecId;
-        this.windowStart = LHUtil.getCurrentWindowTime();
-        this.metrics = new HashMap<>();
-        this.tenantId = tenantId;
+        this(wfSpecId, tenantId, LHUtil.getCurrentWindowTime());
     }
 
     public void incrementCountAndLatency(String metricKey, long latencyMs) {

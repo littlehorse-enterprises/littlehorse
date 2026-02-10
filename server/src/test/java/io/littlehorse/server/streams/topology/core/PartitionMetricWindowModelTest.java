@@ -25,7 +25,7 @@ public class PartitionMetricWindowModelTest {
 
     @Test
     public void shouldHandleNullWhenMergingFrom() {
-        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
         model.incrementCount("test-metric");
 
         model.mergeFrom(null);
@@ -36,15 +36,15 @@ public class PartitionMetricWindowModelTest {
 
     @Test
     public void shouldMergeMetricsFromOtherModel() {
-        PartitionMetricWindowModel model1 = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model1 = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
         model1.incrementCountAndLatency("metric1", 100L);
         model1.incrementCountAndLatency("metric2", 200L);
 
-        PartitionMetricWindowModel model2 = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model2 = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
         model2.incrementCountAndLatency("metric1", 150L);
         model2.incrementCountAndLatency("metric3", 300L);
 
-        PartitionMetricWindowModel model3 = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model3 = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
         model3.incrementCountAndLatency("metric1", 150L);
         model3.incrementCountAndLatency("metric3", 300L);
 
@@ -62,10 +62,10 @@ public class PartitionMetricWindowModelTest {
 
     @Test
     public void shouldMergeEmptyMetrics() {
-        PartitionMetricWindowModel model1 = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model1 = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
         model1.incrementCount("metric1");
 
-        PartitionMetricWindowModel model2 = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model2 = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
 
         model1.mergeFrom(model2);
 
@@ -75,9 +75,9 @@ public class PartitionMetricWindowModelTest {
 
     @Test
     public void shouldMergeIntoEmptyMetrics() {
-        PartitionMetricWindowModel model1 = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model1 = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
 
-        PartitionMetricWindowModel model2 = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model2 = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
         model2.incrementCount("metric1");
         model2.incrementCountAndLatency("metric2", 500L);
 
@@ -91,7 +91,7 @@ public class PartitionMetricWindowModelTest {
 
     @Test
     public void shouldTrackWfRunStarted() {
-        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
         Date startTime = new Date(1000L);
 
         model.incrementWfCount(null, LHStatus.RUNNING, startTime, null);
@@ -103,7 +103,7 @@ public class PartitionMetricWindowModelTest {
 
     @Test
     public void shouldTrackWfRunTransition() {
-        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
         Date startTime = new Date(1000L);
         Date endTime = new Date(6000L); // 5 seconds later
 
@@ -121,7 +121,7 @@ public class PartitionMetricWindowModelTest {
 
     @Test
     public void shouldUseCurrentTimeWhenEndTimeIsNull() {
-        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
         Date startTime = new Date(System.currentTimeMillis() - 1000L); // 1 second ago
 
         model.incrementWfCount(LHStatus.RUNNING, LHStatus.HALTED, startTime, null);
@@ -136,7 +136,7 @@ public class PartitionMetricWindowModelTest {
 
     @Test
     public void shouldTrackMultipleTransitions() {
-        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
 
         model.incrementWfCount(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(1000L), new Date(3000L));
         model.incrementWfCount(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(2000L), new Date(5000L));
@@ -157,7 +157,7 @@ public class PartitionMetricWindowModelTest {
 
     @Test
     public void shouldTrackDifferentStatusTransitions() {
-        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
 
         model.incrementWfCount(LHStatus.STARTING, LHStatus.RUNNING, new Date(1000L), new Date(2000L));
         model.incrementWfCount(LHStatus.RUNNING, LHStatus.HALTED, new Date(2000L), new Date(3000L));
@@ -173,7 +173,7 @@ public class PartitionMetricWindowModelTest {
 
     @Test
     public void shouldCalculateZeroLatencyForSameTime() {
-        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
         Date time = new Date(1000L);
 
         model.incrementWfCount(LHStatus.RUNNING, LHStatus.COMPLETED, time, time);
@@ -186,11 +186,11 @@ public class PartitionMetricWindowModelTest {
 
     @Test
     public void shouldCombineTrackingAndMerging() {
-        PartitionMetricWindowModel model1 = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model1 = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
         model1.incrementWfCount(null, LHStatus.RUNNING, new Date(1000L), null);
         model1.incrementWfCount(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(1000L), new Date(3000L));
 
-        PartitionMetricWindowModel model2 = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
+        PartitionMetricWindowModel model2 = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
         model2.incrementWfCount(null, LHStatus.RUNNING, new Date(2000L), null);
         model2.incrementWfCount(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(2000L), new Date(5000L));
 

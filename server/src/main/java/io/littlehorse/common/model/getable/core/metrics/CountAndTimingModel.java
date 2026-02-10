@@ -25,14 +25,14 @@ public class CountAndTimingModel extends LHSerializable<CountAndTiming> {
     }
 
     public void incrementCountAndLatency(long incomingLatencyMs) {
-        incrementCount();
+        this.count++;
+        this.totalLatencyMs += incomingLatencyMs;
         if (this.minLatencyMs == 0 || incomingLatencyMs < this.minLatencyMs) {
             this.minLatencyMs = incomingLatencyMs;
         }
         if (incomingLatencyMs > this.maxLatencyMs) {
             this.maxLatencyMs = incomingLatencyMs;
         }
-        this.totalLatencyMs += incomingLatencyMs;
     }
 
     public void incrementCount() {
