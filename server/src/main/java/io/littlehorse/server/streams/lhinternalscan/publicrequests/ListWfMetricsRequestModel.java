@@ -84,8 +84,12 @@ public class ListWfMetricsRequestModel
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         // Scan all metrics for the wfSpec, ignoring time
-        String prefix = wfSpecId.toString() + "/";
-        System.out.println("ListWfMetricsRequestModel - StartKey: " + prefix + ", EndKey: " + (prefix + "~"));
-        return new ObjectIdScanBoundaryStrategy(wfSpecId.toString(), prefix, prefix + "~");
+        String startPrefixString = wfSpecId.toString() + "/"+LHUtil.toLhDbFormat(windowStart);
+        String endPrefixString = wfSpecId.toString() + "/" + LHUtil.toLhDbFormat(windowEnd) + "/~";
+        System.out.println("Scan boundary from " + startPrefixString + " to " + endPrefixString);
+        return new ObjectIdScanBoundaryStrategy(
+            wfSpecId.toString(), 
+            startPrefixString, 
+            endPrefixString);
     }
 }

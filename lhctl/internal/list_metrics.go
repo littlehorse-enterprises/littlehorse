@@ -17,14 +17,17 @@ import (
 
 var listWfMetricsCmd = &cobra.Command{
 	Use:   "wfMetrics <wfSpecName> [wfSpecVersion]",
-	Short: "List WfSpec Metrics for the last 12 five-minute windows",
+	Short: "List WfSpec Metrics for the specified time window",
 	Long: `List metrics for a given WfSpec.
 
-By default, returns metrics for the last 12 five-minute windows (60 minutes total).
+By default, returns metrics for the last 60 minutes.
+Use --minutes to specify a different time window.
 
 Examples:
   lhctl list wfMetrics my-workflow
   lhctl list wfMetrics my-workflow 1
+  lhctl list wfMetrics my-workflow --minutes 1
+  lhctl list wfMetrics my-workflow 0 --minutes 5
 `,
 	Args: cobra.RangeArgs(1, 2),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -39,13 +42,12 @@ Examples:
 			wfSpecVersion = int32(version)
 		}
 
-		// Default to last 12 five-minute windows (60 minutes)
-		windowDurationSeconds := int64(5 * 60)
-		numWindows := int64(12)
+		// Get minutes from flag, default to 60
+		minutes, _ := cmd.Flags().GetInt("minutes")
 
 		windowEnd := timestamppb.Now()
 		windowStart := timestamppb.New(
-			windowEnd.AsTime().Add(-time.Duration(windowDurationSeconds*numWindows) * time.Second),
+			windowEnd.AsTime().Add(-time.Duration(minutes) * time.Minute),
 		)
 
 		littlehorse.PrintResp(getGlobalClient(cmd).ListWfMetrics(
@@ -64,4 +66,5 @@ Examples:
 
 func init() {
 	listCmd.AddCommand(listWfMetricsCmd)
+	listWfMetricsCmd.Flags().Int("minutes", 60, "Number of minutes to look back for metrics")
 }
