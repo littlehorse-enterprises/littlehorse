@@ -68,7 +68,7 @@ public class ParallelApprovalExample {
     private static ThreadFunc waitForPerson3(WfRunVariable person3Approved) {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.declareJsonObj("person-3-response");
-                jsonVariable.assign(approvalThread.waitForEvent("person-3-approves"));
+            jsonVariable.assign(approvalThread.waitForEvent("person-3-approves"));
             approvalThread
                     .doIf(
                             approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
@@ -84,7 +84,7 @@ public class ParallelApprovalExample {
     private static ThreadFunc waitForPerson2(WfRunVariable person2Approved) {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.declareJsonObj("person-2-response");
-                jsonVariable.assign(approvalThread.waitForEvent("person-2-approves"));
+            jsonVariable.assign(approvalThread.waitForEvent("person-2-approves"));
             approvalThread
                     .doIf(
                             approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
@@ -100,7 +100,7 @@ public class ParallelApprovalExample {
     private static ThreadFunc waitForPerson1(WfRunVariable person1Approved) {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.declareJsonObj("person-1-response");
-                jsonVariable.assign(approvalThread.waitForEvent("person-1-approves"));
+            jsonVariable.assign(approvalThread.waitForEvent("person-1-approves"));
             approvalThread
                     .doIf(
                             approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
@@ -118,7 +118,7 @@ public class ParallelApprovalExample {
             WfRunVariable nextReminderTime = reminderThread.declareInt("next-reminder");
 
             // Calculate next time to send notification
-                nextReminderTime.assign(reminderThread.execute("calculate-next-notification"));
+            nextReminderTime.assign(reminderThread.execute("calculate-next-notification"));
 
             reminderThread.sleepUntil(nextReminderTime);
 
