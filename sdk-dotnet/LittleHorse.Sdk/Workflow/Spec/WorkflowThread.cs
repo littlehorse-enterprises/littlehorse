@@ -1263,7 +1263,7 @@ public class WorkflowThread
     /// A Thread Function defining a ThreadSpec to use to handle the Interrupt.
     /// </param>
     /// <returns>A NodeOutput that can be used for timeouts or exception handling. </returns>
-    public void RegisterInterruptHandler(string interruptName, Action<WorkflowThread> handler)
+    public InterruptHandler RegisterInterruptHandler(string interruptName, Action<WorkflowThread> handler)
     {
         CheckIfWorkflowThreadIsActive();
         string threadName = "interrupt-" + interruptName;
@@ -1277,6 +1277,7 @@ public class WorkflowThread
                 HandlerSpecName = threadName
             }
         );
+        return new InterruptHandler(Parent, interruptName);
     }
     
     /// <summary>
@@ -1365,7 +1366,7 @@ public class WorkflowThread
         Parent.AddWorkflowEventDefToRegister(nodeOutput);
     }
 
-    internal void RegisterExternalEventDef(ExternalEventNodeOutput nodeOutput)
+    internal void RegisterExternalEventDef(IExternalEventDefRegistration nodeOutput)
     {
         Parent.AddExternalEventDefToRegister(nodeOutput);
     }

@@ -1,12 +1,8 @@
 package littlehorse
 
 import (
-	"encoding/binary"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"reflect"
-	"strings"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
@@ -112,168 +108,9 @@ func (a *TaskFuncArg) assign(task *lhproto.ScheduledTask, context *WorkerContext
 	varAssignment := task.Variables[a.Position]
 	varVal := varAssignment.Value
 
-	isPtr, reflectType := a.getType()
-
-	// switch varVal.Type {
-	switch varVal.GetValue().(type) {
-	case *lhproto.VariableValue_Int:
-		switch reflectType {
-		case reflect.Int:
-			if isPtr {
-				result := int(varVal.GetInt())
-				return &result, nil
-			} else {
-				return int(varVal.GetInt()), nil
-			}
-		case reflect.Int16:
-			if isPtr {
-				result := int16(varVal.GetInt())
-				return &result, nil
-			} else {
-				return int16(varVal.GetInt()), nil
-			}
-		case reflect.Int32:
-			if isPtr {
-				result := int32(varVal.GetInt())
-				return &result, nil
-			} else {
-				return int32(varVal.GetInt()), nil
-			}
-		case reflect.Int64:
-			if isPtr {
-				result := int32(varVal.GetInt())
-				return &result, nil
-			} else {
-				return int32(varVal.GetInt()), nil
-			}
-		}
-		return nil, errors.New(
-			"task input variable was of type INT but task function needed " + reflectType.String(),
-		)
-
-	case *lhproto.VariableValue_Double:
-		switch a.Type.Kind() {
-		case reflect.Float32:
-			if isPtr {
-				result := float32(varVal.GetDouble())
-				return &result, nil
-			} else {
-				return float32(varVal.GetDouble()), nil
-			}
-		case reflect.Float64:
-			if isPtr {
-				result := float64(varVal.GetDouble())
-				return &result, nil
-			} else {
-				return float64(varVal.GetDouble()), nil
-			}
-		}
-		return nil, errors.New(
-			"task input variable was of type DOUBLE but task function needed " + reflectType.String(),
-		)
-
-	case *lhproto.VariableValue_Bool:
-		if reflectType != reflect.Bool {
-			return nil, errors.New(
-				"task input variable was of type BOOL but task function needed " + reflectType.String(),
-			)
-		}
-		if isPtr {
-			tmp := varVal.GetBool()
-			return &tmp, nil
-		} else {
-			return varVal.GetBool(), nil
-		}
-
-	case *lhproto.VariableValue_Str:
-		if reflectType != reflect.String {
-			return nil, errors.New(
-				"task input variable was of type STR but task function needed " + reflectType.String(),
-			)
-		}
-		if isPtr {
-			tmp := varVal.GetStr()
-			return &tmp, nil
-		} else {
-			return varVal.GetStr(), nil
-		}
-
-	case *lhproto.VariableValue_Bytes:
-		return loadByteArr(varVal, a.Type)
-
-	case *lhproto.VariableValue_JsonArr:
-		if !isPtr {
-			panic("task accepts a slice as an input variable; only pointers to slice are supported")
-		}
-		return loadJsonArr(varVal, a.Type)
-
-	case *lhproto.VariableValue_JsonObj:
-		if !isPtr {
-			panic("task accepts a struct as an input variable; only pointers to struct are supported")
-		}
-		return loadJsonObj(varVal, a.Type)
-
-	case nil:
-		if !isPtr {
-			return nil, errors.New("got a NULL assignment for a non-pointer variable")
-		}
-		return nil, nil
-	}
-
-	PrintProto(varVal)
-
-	return nil, errors.New("impossible: couldn't find type of VariableValue")
+	return VarValToType(varVal, a.Type)
 }
 
 func (a *TaskFuncArg) getType() (bool, reflect.Kind) {
 	return GetIsPtrAndType(a.Type)
-}
-
-// TODO
-func loadByteArr(varVal *lhproto.VariableValue, kind reflect.Type) (interface{}, error) {
-	switch kind.Kind() {
-	case reflect.Slice, reflect.Array:
-		return []byte(varVal.GetBytes()), nil
-	case reflect.Uint:
-		return uint(varVal.GetBytes()[8]), nil
-	case reflect.Uint8:
-		return uint8(varVal.GetBytes()[8]), nil
-	case reflect.Uint16:
-		return binary.BigEndian.Uint16(varVal.GetBytes()), nil
-	case reflect.Uint32:
-		return binary.BigEndian.Uint32(varVal.GetBytes()), nil
-	case reflect.Uint64:
-		return binary.BigEndian.Uint64(varVal.GetBytes()), nil
-	}
-	return nil, errors.New(
-		"task input variable was of type BYTES but task function needed " + kind.Kind().String(),
-	)
-}
-
-func loadJsonArr(varVal *lhproto.VariableValue, kind reflect.Type) (interface{}, error) {
-	strPointerValue := varVal.GetJsonArr()
-	decoder := json.NewDecoder(strings.NewReader(strPointerValue))
-
-	obj := reflect.New(kind.Elem())
-	objPtr := obj.Interface()
-
-	err := decoder.Decode(objPtr)
-	if err != nil {
-		return nil, fmt.Errorf("Error Decoding the Json Array: %s", err.Error())
-	}
-	return objPtr, nil
-}
-
-func loadJsonObj(varVal *lhproto.VariableValue, kind reflect.Type) (interface{}, error) {
-	strPointerValue := varVal.GetJsonObj()
-	decoder := json.NewDecoder(strings.NewReader(strPointerValue))
-
-	obj := reflect.New(kind.Elem())
-	objPtr := obj.Interface()
-
-	err := decoder.Decode(objPtr)
-	if err != nil {
-		return nil, fmt.Errorf("Error Decoding the Json Obj: %s", err.Error())
-	}
-	return objPtr, nil
 }

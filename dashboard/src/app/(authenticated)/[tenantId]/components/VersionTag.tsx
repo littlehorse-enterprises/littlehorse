@@ -2,9 +2,9 @@ import { TagIcon } from 'lucide-react'
 
 export default function VersionTag({ label }: { label: string }) {
   return (
-    <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
-      <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-2.5 py-1 font-mono text-xs font-medium text-blue-700">
+      <TagIcon className="h-3 w-3 fill-none stroke-blue-700 stroke-1" />
       {label}
-    </div>
+    </span>
   )
 }

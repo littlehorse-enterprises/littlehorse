@@ -318,7 +318,7 @@ func (m *serverConnectionManager) submitTaskForExecution(task *lhproto.Scheduled
 
 func (m *serverConnectionManager) doTask(taskToExec *taskExecutionInfo) {
 	defer m.recoverFromPanic(taskToExec)
-	taskResult := m.doTaskHelper(taskToExec.task)
+	taskResult := m.doTaskHelper(taskToExec.task, taskToExec.specificStub)
 	_, err := (*taskToExec.specificStub).ReportTask(context.Background(), taskResult)
 	if err != nil {
 		m.retryReportTask(context.Background(), taskResult, TOTAL_RETRIES)
@@ -372,16 +372,17 @@ func (m *serverConnectionManager) retryReportTask(ctx context.Context, taskResul
 	}
 }
 
-func (m *serverConnectionManager) doTaskHelper(task *lhproto.ScheduledTask) *lhproto.ReportTaskRun {
+func (m *serverConnectionManager) doTaskHelper(task *lhproto.ScheduledTask, client *lhproto.LittleHorseClient) *lhproto.ReportTaskRun {
 	var reflectArgs []reflect.Value
 	taskResult := &lhproto.ReportTaskRun{
 		TaskRunId: task.TaskRunId,
 	}
 
-	workerContext := &WorkerContext{
-		ScheduledTask: task,
-		ScheduleTime:  task.GetCreatedAt(),
-	}
+	workerContext := newWorkerContext(
+		task,
+		task.GetCreatedAt(),
+		client,
+	)
 
 	for _, taskFuncArg := range m.tw.taskSig.Args {
 		goValue, err := taskFuncArg.Assign(task, workerContext)

@@ -3,19 +3,26 @@ package e2e;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.Failure;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
+import io.littlehorse.sdk.common.proto.RunChildWfNodeRun;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfSpecId;
+import io.littlehorse.sdk.common.util.Arg;
+import io.littlehorse.sdk.wfsdk.SpawnedChildWf;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.LHTest;
+import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WorkflowVerifier;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.assertj.core.api.Assertions;
@@ -26,6 +33,10 @@ import org.junit.jupiter.api.Test;
 public class RunChildWfTest {
 
     private LittleHorseBlockingStub client;
+    private WorkflowVerifier verifier;
+
+    @LHWorkflow("test-dynamic-child-workflow")
+    private Workflow dynamicChildWf;
 
     @Test
     void cannotReferToNonexistingWfSpec() {
@@ -194,6 +205,51 @@ public class RunChildWfTest {
                 .build());
 
         Assertions.assertThat(result.getValue().getStr()).isEqualTo("hello");
+    }
+
+    @Test
+    void shouldRunDynamicChildWorkflow() {
+        final String childWfName = UUID.randomUUID().toString();
+        final String invalidChildWfName = UUID.randomUUID().toString();
+        Workflow emptyWorkflow = Workflow.newWorkflow(childWfName, wf -> {
+            // Empty workflow
+        });
+
+        emptyWorkflow.registerWfSpec(client);
+
+        verifier.prepareRun(dynamicChildWf, Arg.of("wf-name", childWfName))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    Assertions.assertThat(nodeRun.hasRunChildWf()).isTrue();
+                    RunChildWfNodeRun childWfNodeRun = nodeRun.getRunChildWf();
+                    Assertions.assertThat(childWfNodeRun.hasChildWfRunId()).isTrue();
+                    Assertions.assertThat(childWfNodeRun.hasWfSpecId()).isTrue();
+                })
+                .start();
+
+        verifier.prepareRun(dynamicChildWf, Arg.of("wf-name", invalidChildWfName))
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    List<Failure> nodeRunFailures = nodeRun.getFailuresList();
+                    Assertions.assertThat(nodeRunFailures).hasSize(1);
+                    Failure failure = nodeRunFailures.getFirst();
+                    Assertions.assertThat(failure.getFailureName()).isEqualTo("CHILD_FAILURE");
+                    Assertions.assertThat(failure.getMessage()).isEqualTo("Couldn't find WfSpec " + invalidChildWfName);
+                    Assertions.assertThat(nodeRun.hasRunChildWf()).isTrue();
+                    RunChildWfNodeRun childWfNodeRun = nodeRun.getRunChildWf();
+                    Assertions.assertThat(childWfNodeRun.hasChildWfRunId()).isFalse();
+                    Assertions.assertThat(childWfNodeRun.hasWfSpecId()).isFalse();
+                })
+                .start();
+    }
+
+    @LHWorkflow("test-dynamic-child-workflow")
+    public Workflow dynamicChildWorkflow() {
+        return Workflow.newWorkflow("test-dynamic-child-workflow", wf -> {
+            WfRunVariable required = wf.declareStr("wf-name").required();
+            SpawnedChildWf spawnedChildWf = wf.runWf(required, Map.of());
+            wf.waitForChildWf(spawnedChildWf);
+        });
     }
 
     // Randomness guarantees that there are not conflicts between test runs.
