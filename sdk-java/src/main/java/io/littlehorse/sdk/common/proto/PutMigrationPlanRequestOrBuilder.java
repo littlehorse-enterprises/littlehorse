@@ -23,17 +23,51 @@ public interface PutMigrationPlanRequestOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
-   * @return Whether the migrationPlan field is set.
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
    */
-  boolean hasMigrationPlan();
+  int getMigrationPlanCount();
   /**
-   * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
-   * @return The migrationPlan.
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.MigrationPlan getMigrationPlan();
+  boolean containsMigrationPlan(
+      java.lang.String key);
   /**
-   * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
+   * Use {@link #getMigrationPlanMap()} instead.
    */
-  io.littlehorse.sdk.common.proto.MigrationPlanOrBuilder getMigrationPlanOrBuilder();
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+  getMigrationPlan();
+  /**
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+  getMigrationPlanMap();
+  /**
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
+   */
+  /* nullable */
+io.littlehorse.sdk.common.proto.ThreadMigrationPlan getMigrationPlanOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue);
+  /**
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.ThreadMigrationPlan getMigrationPlanOrThrow(
+      java.lang.String key);
+
+  /**
+   * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
+   * @return Whether the newWfSpec field is set.
+   */
+  boolean hasNewWfSpec();
+  /**
+   * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
+   * @return The newWfSpec.
+   */
+  io.littlehorse.sdk.common.proto.WfSpecId getNewWfSpec();
+  /**
+   * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getNewWfSpecOrBuilder();
 }

@@ -5,14 +5,18 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.objectId.MigrationPlanIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.ThreadMigrationPlan;
 import io.littlehorse.sdk.common.proto.WfRunMigrationPlan;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,14 +27,19 @@ public class WfRunMigrationPlanModel extends MetadataGetable<WfRunMigrationPlan>
 
     private MigrationPlanIdModel id;
     private Date createdAt;
-    private MigrationPlanModel migrationPlan;
+    private Map<String, ThreadMigrationPlanModel> threadMigrations;
+    private WfSpecIdModel newWfSpecId;
 
-    public WfRunMigrationPlanModel() {}
+    public WfRunMigrationPlanModel() {
+        threadMigrations = new HashMap<>();
+    }
 
-    public WfRunMigrationPlanModel(String name, MigrationPlanModel migrationPlan) {
+    public WfRunMigrationPlanModel(
+            String name, Map<String, ThreadMigrationPlanModel> threadMigrations, WfSpecIdModel newWfSpecId) {
         this.id = new MigrationPlanIdModel(name);
         this.createdAt = new Date();
-        this.migrationPlan = migrationPlan;
+        this.threadMigrations = threadMigrations;
+        this.newWfSpecId = newWfSpecId;
     }
 
     @Override
@@ -40,10 +49,16 @@ public class WfRunMigrationPlanModel extends MetadataGetable<WfRunMigrationPlan>
 
     @Override
     public WfRunMigrationPlan.Builder toProto() {
-        return WfRunMigrationPlan.newBuilder()
+        WfRunMigrationPlan.Builder out = WfRunMigrationPlan.newBuilder()
                 .setId(id.toProto())
-                .setCreatedAt(LHUtil.fromDate(createdAt))
-                .setMigrationPlan(migrationPlan.toProto().build());
+                .setCreatedAt(LHUtil.fromDate(createdAt));
+        for(Map.Entry<String,ThreadMigrationPlanModel> e: threadMigrations.entrySet()){
+            out.putThreadMigration(e.getKey(), e.getValue().toProto().build());
+        }
+        if (newWfSpecId != null) {
+            out.setNewWfSpec(newWfSpecId.toProto());
+        }
+        return out;
     }
 
     @Override
@@ -51,7 +66,15 @@ public class WfRunMigrationPlanModel extends MetadataGetable<WfRunMigrationPlan>
         WfRunMigrationPlan p = (WfRunMigrationPlan) proto;
         this.id = LHSerializable.fromProto(p.getId(), MigrationPlanIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
-        this.migrationPlan = LHSerializable.fromProto(p.getMigrationPlan(), MigrationPlanModel.class, context);
+        if (p.hasNewWfSpec()) {
+            this.newWfSpecId = LHSerializable.fromProto(p.getNewWfSpec(), WfSpecIdModel.class, context);
+        }
+        if (threadMigrations == null) {
+            threadMigrations = new HashMap<>();
+        }
+        for(Map.Entry<String,ThreadMigrationPlan> e: p.getThreadMigrationMap().entrySet()){
+            threadMigrations.put(e.getKey(), LHSerializable.fromProto(e.getValue(), ThreadMigrationPlanModel.class, context));
+        }
     }
 
     @Override

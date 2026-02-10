@@ -132,32 +132,6 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : wfRunId_;
   }
 
-  public static final int REVISION_NUMBER_FIELD_NUMBER = 3;
-  private int revisionNumber_ = 0;
-  /**
-   * <pre>
-   * What version to migrate to
-   * </pre>
-   *
-   * <code>int32 revision_number = 3;</code>
-   * @return The revisionNumber.
-   */
-  @java.lang.Override
-  public int getRevisionNumber() {
-    return revisionNumber_;
-  }
-
-  public static final int MAJOR_VERSION_NUMBER_FIELD_NUMBER = 4;
-  private int majorVersionNumber_ = 0;
-  /**
-   * <code>int32 major_version_number = 4;</code>
-   * @return The majorVersionNumber.
-   */
-  @java.lang.Override
-  public int getMajorVersionNumber() {
-    return majorVersionNumber_;
-  }
-
   public static final int MIGRATION_VARS_FIELD_NUMBER = 5;
   private static final class MigrationVarsDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
@@ -185,6 +159,10 @@ private static final long serialVersionUID = 0L;
     return internalGetMigrationVars().getMap().size();
   }
   /**
+   * <pre>
+   * Thread Name -&gt; Variables needed for proper migration
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
    */
   @java.lang.Override
@@ -202,6 +180,10 @@ private static final long serialVersionUID = 0L;
     return getMigrationVarsMap();
   }
   /**
+   * <pre>
+   * Thread Name -&gt; Variables needed for proper migration
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
    */
   @java.lang.Override
@@ -209,6 +191,10 @@ private static final long serialVersionUID = 0L;
     return internalGetMigrationVars().getMap();
   }
   /**
+   * <pre>
+   * Thread Name -&gt; Variables needed for proper migration
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
    */
   @java.lang.Override
@@ -223,6 +209,10 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
+   * <pre>
+   * Thread Name -&gt; Variables needed for proper migration
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
    */
   @java.lang.Override
@@ -257,12 +247,6 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(2, getWfRunId());
     }
-    if (revisionNumber_ != 0) {
-      output.writeInt32(3, revisionNumber_);
-    }
-    if (majorVersionNumber_ != 0) {
-      output.writeInt32(4, majorVersionNumber_);
-    }
     com.google.protobuf.GeneratedMessage
       .serializeStringMapTo(
         output,
@@ -285,14 +269,6 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getWfRunId());
-    }
-    if (revisionNumber_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, revisionNumber_);
-    }
-    if (majorVersionNumber_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(4, majorVersionNumber_);
     }
     for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables> entry
          : internalGetMigrationVars().getMap().entrySet()) {
@@ -329,10 +305,6 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
       if (!getWfRunId()
           .equals(other.getWfRunId())) return false;
     }
-    if (getRevisionNumber()
-        != other.getRevisionNumber()) return false;
-    if (getMajorVersionNumber()
-        != other.getMajorVersionNumber()) return false;
     if (!internalGetMigrationVars().equals(
         other.internalGetMigrationVars())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -354,10 +326,6 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
       hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
       hash = (53 * hash) + getWfRunId().hashCode();
     }
-    hash = (37 * hash) + REVISION_NUMBER_FIELD_NUMBER;
-    hash = (53 * hash) + getRevisionNumber();
-    hash = (37 * hash) + MAJOR_VERSION_NUMBER_FIELD_NUMBER;
-    hash = (53 * hash) + getMajorVersionNumber();
     if (!internalGetMigrationVars().getMap().isEmpty()) {
       hash = (37 * hash) + MIGRATION_VARS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetMigrationVars().hashCode();
@@ -532,8 +500,6 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
         wfRunIdBuilder_.dispose();
         wfRunIdBuilder_ = null;
       }
-      revisionNumber_ = 0;
-      majorVersionNumber_ = 0;
       internalGetMutableMigrationVars().clear();
       return this;
     }
@@ -582,12 +548,6 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
         to_bitField0_ |= 0x00000002;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.revisionNumber_ = revisionNumber_;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.majorVersionNumber_ = majorVersionNumber_;
-      }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.migrationVars_ = internalGetMigrationVars().build(MigrationVarsDefaultEntryHolder.defaultEntry);
       }
       result.bitField0_ |= to_bitField0_;
@@ -611,15 +571,9 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
       if (other.hasWfRunId()) {
         mergeWfRunId(other.getWfRunId());
       }
-      if (other.getRevisionNumber() != 0) {
-        setRevisionNumber(other.getRevisionNumber());
-      }
-      if (other.getMajorVersionNumber() != 0) {
-        setMajorVersionNumber(other.getMajorVersionNumber());
-      }
       internalGetMutableMigrationVars().mergeFrom(
           other.internalGetMigrationVars());
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000004;
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -660,23 +614,13 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 24: {
-              revisionNumber_ = input.readInt32();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
-            case 32: {
-              majorVersionNumber_ = input.readInt32();
-              bitField0_ |= 0x00000008;
-              break;
-            } // case 32
             case 42: {
               com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables>
               migrationVars__ = input.readMessage(
                   MigrationVarsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               internalGetMutableMigrationVars().ensureBuilderMap().put(
                   migrationVars__.getKey(), migrationVars__.getValue());
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000004;
               break;
             } // case 42
             default: {
@@ -1010,82 +954,6 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
       return wfRunIdBuilder_;
     }
 
-    private int revisionNumber_ ;
-    /**
-     * <pre>
-     * What version to migrate to
-     * </pre>
-     *
-     * <code>int32 revision_number = 3;</code>
-     * @return The revisionNumber.
-     */
-    @java.lang.Override
-    public int getRevisionNumber() {
-      return revisionNumber_;
-    }
-    /**
-     * <pre>
-     * What version to migrate to
-     * </pre>
-     *
-     * <code>int32 revision_number = 3;</code>
-     * @param value The revisionNumber to set.
-     * @return This builder for chaining.
-     */
-    public Builder setRevisionNumber(int value) {
-
-      revisionNumber_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * What version to migrate to
-     * </pre>
-     *
-     * <code>int32 revision_number = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearRevisionNumber() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      revisionNumber_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int majorVersionNumber_ ;
-    /**
-     * <code>int32 major_version_number = 4;</code>
-     * @return The majorVersionNumber.
-     */
-    @java.lang.Override
-    public int getMajorVersionNumber() {
-      return majorVersionNumber_;
-    }
-    /**
-     * <code>int32 major_version_number = 4;</code>
-     * @param value The majorVersionNumber to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMajorVersionNumber(int value) {
-
-      majorVersionNumber_ = value;
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 major_version_number = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearMajorVersionNumber() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      majorVersionNumber_ = 0;
-      onChanged();
-      return this;
-    }
-
     private static final class MigrationVarsConverter implements com.google.protobuf.MapFieldBuilder.Converter<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariablesOrBuilder, io.littlehorse.sdk.common.proto.MigrationVariables> {
       @java.lang.Override
       public io.littlehorse.sdk.common.proto.MigrationVariables build(io.littlehorse.sdk.common.proto.MigrationVariablesOrBuilder val) {
@@ -1114,7 +982,7 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
       if (migrationVars_ == null) {
         migrationVars_ = new com.google.protobuf.MapFieldBuilder<>(migrationVarsConverter);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000004;
       onChanged();
       return migrationVars_;
     }
@@ -1122,6 +990,10 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
       return internalGetMigrationVars().ensureBuilderMap().size();
     }
     /**
+     * <pre>
+     * Thread Name -&gt; Variables needed for proper migration
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
      */
     @java.lang.Override
@@ -1139,6 +1011,10 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
       return getMigrationVarsMap();
     }
     /**
+     * <pre>
+     * Thread Name -&gt; Variables needed for proper migration
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
      */
     @java.lang.Override
@@ -1146,6 +1022,10 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
       return internalGetMigrationVars().getImmutableMap();
     }
     /**
+     * <pre>
+     * Thread Name -&gt; Variables needed for proper migration
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
      */
     @java.lang.Override
@@ -1159,6 +1039,10 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
       return map.containsKey(key) ? migrationVarsConverter.build(map.get(key)) : defaultValue;
     }
     /**
+     * <pre>
+     * Thread Name -&gt; Variables needed for proper migration
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
      */
     @java.lang.Override
@@ -1172,11 +1056,15 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
       return migrationVarsConverter.build(map.get(key));
     }
     public Builder clearMigrationVars() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000004);
       internalGetMutableMigrationVars().clear();
       return this;
     }
     /**
+     * <pre>
+     * Thread Name -&gt; Variables needed for proper migration
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
      */
     public Builder removeMigrationVars(
@@ -1192,10 +1080,14 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables>
         getMutableMigrationVars() {
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000004;
       return internalGetMutableMigrationVars().ensureMessageMap();
     }
     /**
+     * <pre>
+     * Thread Name -&gt; Variables needed for proper migration
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
      */
     public Builder putMigrationVars(
@@ -1205,10 +1097,14 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
       if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableMigrationVars().ensureBuilderMap()
           .put(key, value);
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000004;
       return this;
     }
     /**
+     * <pre>
+     * Thread Name -&gt; Variables needed for proper migration
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
      */
     public Builder putAllMigrationVars(
@@ -1220,10 +1116,14 @@ io.littlehorse.sdk.common.proto.MigrationVariables defaultValue) {
       }
       internalGetMutableMigrationVars().ensureBuilderMap()
           .putAll(values);
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000004;
       return this;
     }
     /**
+     * <pre>
+     * Thread Name -&gt; Variables needed for proper migration
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.MigrationVariables.Builder putMigrationVarsBuilderIfAbsent(

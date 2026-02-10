@@ -8,7 +8,7 @@
 import _m0 from "protobufjs/minimal";
 import { LHStatus, lHStatusFromJSON, lHStatusToJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ExternalEventId, WfRunId, WfSpecId } from "./object_id";
+import { ExternalEventId, MigrationPlanId, WfRunId, WfSpecId } from "./object_id";
 import { VariableValue } from "./variable";
 
 /** The type of a ThreadRUn. */
@@ -129,6 +129,7 @@ export interface WfRun {
    * finish halting.
    */
   pendingFailures: PendingFailureHandler[];
+  migrationPlanId: MigrationPlanId | undefined;
 }
 
 /** A ThreadRun is a running thread of execution within a WfRun. */
@@ -317,6 +318,7 @@ function createBaseWfRun(): WfRun {
     threadRuns: [],
     pendingInterrupts: [],
     pendingFailures: [],
+    migrationPlanId: undefined,
   };
 }
 
@@ -351,6 +353,9 @@ export const WfRun = {
     }
     for (const v of message.pendingFailures) {
       PendingFailureHandler.encode(v!, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.migrationPlanId !== undefined) {
+      MigrationPlanId.encode(message.migrationPlanId, writer.uint32(90).fork()).ldelim();
     }
     return writer;
   },
@@ -432,6 +437,13 @@ export const WfRun = {
 
           message.pendingFailures.push(PendingFailureHandler.decode(reader, reader.uint32()));
           continue;
+        case 11:
+          if (tag !== 90) {
+            break;
+          }
+
+          message.migrationPlanId = MigrationPlanId.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -463,6 +475,7 @@ export const WfRun = {
       pendingFailures: globalThis.Array.isArray(object?.pendingFailures)
         ? object.pendingFailures.map((e: any) => PendingFailureHandler.fromJSON(e))
         : [],
+      migrationPlanId: isSet(object.migrationPlanId) ? MigrationPlanId.fromJSON(object.migrationPlanId) : undefined,
     };
   },
 
@@ -498,6 +511,9 @@ export const WfRun = {
     if (message.pendingFailures?.length) {
       obj.pendingFailures = message.pendingFailures.map((e) => PendingFailureHandler.toJSON(e));
     }
+    if (message.migrationPlanId !== undefined) {
+      obj.migrationPlanId = MigrationPlanId.toJSON(message.migrationPlanId);
+    }
     return obj;
   },
 
@@ -518,6 +534,9 @@ export const WfRun = {
     message.threadRuns = object.threadRuns?.map((e) => ThreadRun.fromPartial(e)) || [];
     message.pendingInterrupts = object.pendingInterrupts?.map((e) => PendingInterrupt.fromPartial(e)) || [];
     message.pendingFailures = object.pendingFailures?.map((e) => PendingFailureHandler.fromPartial(e)) || [];
+    message.migrationPlanId = (object.migrationPlanId !== undefined && object.migrationPlanId !== null)
+      ? MigrationPlanId.fromPartial(object.migrationPlanId)
+      : undefined;
     return message;
   },
 };

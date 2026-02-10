@@ -33,7 +33,7 @@ private static final long serialVersionUID = 0L;
   }
   private ThreadMigrationPlan() {
     newThreadName_ = "";
-    migrationVars_ =
+    requiredMigrationVars_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
   }
 
@@ -204,41 +204,41 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     return map.get(key);
   }
 
-  public static final int MIGRATION_VARS_FIELD_NUMBER = 4;
+  public static final int REQUIRED_MIGRATION_VARS_FIELD_NUMBER = 4;
   @SuppressWarnings("serial")
-  private com.google.protobuf.LazyStringArrayList migrationVars_ =
+  private com.google.protobuf.LazyStringArrayList requiredMigrationVars_ =
       com.google.protobuf.LazyStringArrayList.emptyList();
   /**
-   * <code>repeated string migration_vars = 4;</code>
-   * @return A list containing the migrationVars.
+   * <code>repeated string required_migration_vars = 4;</code>
+   * @return A list containing the requiredMigrationVars.
    */
   public com.google.protobuf.ProtocolStringList
-      getMigrationVarsList() {
-    return migrationVars_;
+      getRequiredMigrationVarsList() {
+    return requiredMigrationVars_;
   }
   /**
-   * <code>repeated string migration_vars = 4;</code>
-   * @return The count of migrationVars.
+   * <code>repeated string required_migration_vars = 4;</code>
+   * @return The count of requiredMigrationVars.
    */
-  public int getMigrationVarsCount() {
-    return migrationVars_.size();
+  public int getRequiredMigrationVarsCount() {
+    return requiredMigrationVars_.size();
   }
   /**
-   * <code>repeated string migration_vars = 4;</code>
+   * <code>repeated string required_migration_vars = 4;</code>
    * @param index The index of the element to return.
-   * @return The migrationVars at the given index.
+   * @return The requiredMigrationVars at the given index.
    */
-  public java.lang.String getMigrationVars(int index) {
-    return migrationVars_.get(index);
+  public java.lang.String getRequiredMigrationVars(int index) {
+    return requiredMigrationVars_.get(index);
   }
   /**
-   * <code>repeated string migration_vars = 4;</code>
+   * <code>repeated string required_migration_vars = 4;</code>
    * @param index The index of the value to return.
-   * @return The bytes of the migrationVars at the given index.
+   * @return The bytes of the requiredMigrationVars at the given index.
    */
   public com.google.protobuf.ByteString
-      getMigrationVarsBytes(int index) {
-    return migrationVars_.getByteString(index);
+      getRequiredMigrationVarsBytes(int index) {
+    return requiredMigrationVars_.getByteString(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -264,8 +264,8 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
         internalGetNodeMigrations(),
         NodeMigrationsDefaultEntryHolder.defaultEntry,
         2);
-    for (int i = 0; i < migrationVars_.size(); i++) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 4, migrationVars_.getRaw(i));
+    for (int i = 0; i < requiredMigrationVars_.size(); i++) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, requiredMigrationVars_.getRaw(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -291,11 +291,11 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     {
       int dataSize = 0;
-      for (int i = 0; i < migrationVars_.size(); i++) {
-        dataSize += computeStringSizeNoTag(migrationVars_.getRaw(i));
+      for (int i = 0; i < requiredMigrationVars_.size(); i++) {
+        dataSize += computeStringSizeNoTag(requiredMigrationVars_.getRaw(i));
       }
       size += dataSize;
-      size += 1 * getMigrationVarsList().size();
+      size += 1 * getRequiredMigrationVarsList().size();
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -316,8 +316,8 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
         .equals(other.getNewThreadName())) return false;
     if (!internalGetNodeMigrations().equals(
         other.internalGetNodeMigrations())) return false;
-    if (!getMigrationVarsList()
-        .equals(other.getMigrationVarsList())) return false;
+    if (!getRequiredMigrationVarsList()
+        .equals(other.getRequiredMigrationVarsList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -335,9 +335,9 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       hash = (37 * hash) + NODE_MIGRATIONS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetNodeMigrations().hashCode();
     }
-    if (getMigrationVarsCount() > 0) {
-      hash = (37 * hash) + MIGRATION_VARS_FIELD_NUMBER;
-      hash = (53 * hash) + getMigrationVarsList().hashCode();
+    if (getRequiredMigrationVarsCount() > 0) {
+      hash = (37 * hash) + REQUIRED_MIGRATION_VARS_FIELD_NUMBER;
+      hash = (53 * hash) + getRequiredMigrationVarsList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -498,7 +498,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       bitField0_ = 0;
       newThreadName_ = "";
       internalGetMutableNodeMigrations().clear();
-      migrationVars_ =
+      requiredMigrationVars_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
       return this;
     }
@@ -540,8 +540,8 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
         result.nodeMigrations_ = internalGetNodeMigrations().build(NodeMigrationsDefaultEntryHolder.defaultEntry);
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        migrationVars_.makeImmutable();
-        result.migrationVars_ = migrationVars_;
+        requiredMigrationVars_.makeImmutable();
+        result.requiredMigrationVars_ = requiredMigrationVars_;
       }
     }
 
@@ -565,13 +565,13 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       internalGetMutableNodeMigrations().mergeFrom(
           other.internalGetNodeMigrations());
       bitField0_ |= 0x00000002;
-      if (!other.migrationVars_.isEmpty()) {
-        if (migrationVars_.isEmpty()) {
-          migrationVars_ = other.migrationVars_;
+      if (!other.requiredMigrationVars_.isEmpty()) {
+        if (requiredMigrationVars_.isEmpty()) {
+          requiredMigrationVars_ = other.requiredMigrationVars_;
           bitField0_ |= 0x00000004;
         } else {
-          ensureMigrationVarsIsMutable();
-          migrationVars_.addAll(other.migrationVars_);
+          ensureRequiredMigrationVarsIsMutable();
+          requiredMigrationVars_.addAll(other.requiredMigrationVars_);
         }
         onChanged();
       }
@@ -617,8 +617,8 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
             } // case 18
             case 34: {
               java.lang.String s = input.readStringRequireUtf8();
-              ensureMigrationVarsIsMutable();
-              migrationVars_.add(s);
+              ensureRequiredMigrationVarsIsMutable();
+              requiredMigrationVars_.add(s);
               break;
             } // case 34
             default: {
@@ -917,112 +917,112 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       return (io.littlehorse.sdk.common.proto.NodeMigrationPlan.Builder) entry;
     }
 
-    private com.google.protobuf.LazyStringArrayList migrationVars_ =
+    private com.google.protobuf.LazyStringArrayList requiredMigrationVars_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
-    private void ensureMigrationVarsIsMutable() {
-      if (!migrationVars_.isModifiable()) {
-        migrationVars_ = new com.google.protobuf.LazyStringArrayList(migrationVars_);
+    private void ensureRequiredMigrationVarsIsMutable() {
+      if (!requiredMigrationVars_.isModifiable()) {
+        requiredMigrationVars_ = new com.google.protobuf.LazyStringArrayList(requiredMigrationVars_);
       }
       bitField0_ |= 0x00000004;
     }
     /**
-     * <code>repeated string migration_vars = 4;</code>
-     * @return A list containing the migrationVars.
+     * <code>repeated string required_migration_vars = 4;</code>
+     * @return A list containing the requiredMigrationVars.
      */
     public com.google.protobuf.ProtocolStringList
-        getMigrationVarsList() {
-      migrationVars_.makeImmutable();
-      return migrationVars_;
+        getRequiredMigrationVarsList() {
+      requiredMigrationVars_.makeImmutable();
+      return requiredMigrationVars_;
     }
     /**
-     * <code>repeated string migration_vars = 4;</code>
-     * @return The count of migrationVars.
+     * <code>repeated string required_migration_vars = 4;</code>
+     * @return The count of requiredMigrationVars.
      */
-    public int getMigrationVarsCount() {
-      return migrationVars_.size();
+    public int getRequiredMigrationVarsCount() {
+      return requiredMigrationVars_.size();
     }
     /**
-     * <code>repeated string migration_vars = 4;</code>
+     * <code>repeated string required_migration_vars = 4;</code>
      * @param index The index of the element to return.
-     * @return The migrationVars at the given index.
+     * @return The requiredMigrationVars at the given index.
      */
-    public java.lang.String getMigrationVars(int index) {
-      return migrationVars_.get(index);
+    public java.lang.String getRequiredMigrationVars(int index) {
+      return requiredMigrationVars_.get(index);
     }
     /**
-     * <code>repeated string migration_vars = 4;</code>
+     * <code>repeated string required_migration_vars = 4;</code>
      * @param index The index of the value to return.
-     * @return The bytes of the migrationVars at the given index.
+     * @return The bytes of the requiredMigrationVars at the given index.
      */
     public com.google.protobuf.ByteString
-        getMigrationVarsBytes(int index) {
-      return migrationVars_.getByteString(index);
+        getRequiredMigrationVarsBytes(int index) {
+      return requiredMigrationVars_.getByteString(index);
     }
     /**
-     * <code>repeated string migration_vars = 4;</code>
+     * <code>repeated string required_migration_vars = 4;</code>
      * @param index The index to set the value at.
-     * @param value The migrationVars to set.
+     * @param value The requiredMigrationVars to set.
      * @return This builder for chaining.
      */
-    public Builder setMigrationVars(
+    public Builder setRequiredMigrationVars(
         int index, java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      ensureMigrationVarsIsMutable();
-      migrationVars_.set(index, value);
+      ensureRequiredMigrationVarsIsMutable();
+      requiredMigrationVars_.set(index, value);
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string migration_vars = 4;</code>
-     * @param value The migrationVars to add.
+     * <code>repeated string required_migration_vars = 4;</code>
+     * @param value The requiredMigrationVars to add.
      * @return This builder for chaining.
      */
-    public Builder addMigrationVars(
+    public Builder addRequiredMigrationVars(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      ensureMigrationVarsIsMutable();
-      migrationVars_.add(value);
+      ensureRequiredMigrationVarsIsMutable();
+      requiredMigrationVars_.add(value);
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string migration_vars = 4;</code>
-     * @param values The migrationVars to add.
+     * <code>repeated string required_migration_vars = 4;</code>
+     * @param values The requiredMigrationVars to add.
      * @return This builder for chaining.
      */
-    public Builder addAllMigrationVars(
+    public Builder addAllRequiredMigrationVars(
         java.lang.Iterable<java.lang.String> values) {
-      ensureMigrationVarsIsMutable();
+      ensureRequiredMigrationVarsIsMutable();
       com.google.protobuf.AbstractMessageLite.Builder.addAll(
-          values, migrationVars_);
+          values, requiredMigrationVars_);
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string migration_vars = 4;</code>
+     * <code>repeated string required_migration_vars = 4;</code>
      * @return This builder for chaining.
      */
-    public Builder clearMigrationVars() {
-      migrationVars_ =
+    public Builder clearRequiredMigrationVars() {
+      requiredMigrationVars_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
       bitField0_ = (bitField0_ & ~0x00000004);;
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string migration_vars = 4;</code>
-     * @param value The bytes of the migrationVars to add.
+     * <code>repeated string required_migration_vars = 4;</code>
+     * @param value The bytes of the requiredMigrationVars to add.
      * @return This builder for chaining.
      */
-    public Builder addMigrationVarsBytes(
+    public Builder addRequiredMigrationVarsBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      ensureMigrationVarsIsMutable();
-      migrationVars_.add(value);
+      ensureRequiredMigrationVarsIsMutable();
+      requiredMigrationVars_.add(value);
       bitField0_ |= 0x00000004;
       onChanged();
       return this;

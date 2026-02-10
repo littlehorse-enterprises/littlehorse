@@ -11,11 +11,19 @@ public interface MigrationVariablesOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+   * <pre>
+   * var name -&gt; var Value
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
    */
   int getVarValuesCount();
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+   * <pre>
+   * var name -&gt; var Value
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
    */
   boolean containsVarValues(
       java.lang.String key);
@@ -23,24 +31,36 @@ public interface MigrationVariablesOrBuilder extends
    * Use {@link #getVarValuesMap()} instead.
    */
   @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
   getVarValues();
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+   * <pre>
+   * var name -&gt; var Value
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
    */
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
   getVarValuesMap();
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+   * <pre>
+   * var name -&gt; var Value
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
    */
   /* nullable */
-io.littlehorse.sdk.common.proto.VariableValue getVarValuesOrDefault(
+io.littlehorse.sdk.common.proto.VariableAssignment getVarValuesOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.sdk.common.proto.VariableValue defaultValue);
+io.littlehorse.sdk.common.proto.VariableAssignment defaultValue);
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+   * <pre>
+   * var name -&gt; var Value
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValue getVarValuesOrThrow(
+  io.littlehorse.sdk.common.proto.VariableAssignment getVarValuesOrThrow(
       java.lang.String key);
 }

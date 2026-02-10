@@ -28,8 +28,6 @@ public class MigrateWfRunRequestModel extends CoreSubCommand<MigrateWfRunRequest
 
     private MigrationPlanIdModel migrationPlanId;
     private WfRunIdModel wfRunId;
-    private int revisionNumber;
-    private int majorVersionNumber;
 
     private Map<String, MigrationVariablesModel> migrationVars;
 
@@ -42,9 +40,7 @@ public class MigrateWfRunRequestModel extends CoreSubCommand<MigrateWfRunRequest
     public MigrateWfRunRequest.Builder toProto() {
         MigrateWfRunRequest.Builder out = MigrateWfRunRequest.newBuilder()
                     .setMigrationPlanId(migrationPlanId.toProto())
-                    .setWfRunId(wfRunId.toProto())
-                    .setRevisionNumber(revisionNumber)
-                    .setMajorVersionNumber(majorVersionNumber);
+                    .setWfRunId(wfRunId.toProto());
         
         for (Map.Entry<String, MigrationVariablesModel> e : migrationVars.entrySet()) {
             out.putMigrationVars(e.getKey(), e.getValue().toProto().build());
@@ -57,8 +53,6 @@ public class MigrateWfRunRequestModel extends CoreSubCommand<MigrateWfRunRequest
         MigrateWfRunRequest p = (MigrateWfRunRequest) proto;
         migrationPlanId = LHSerializable.fromProto(p.getMigrationPlanId(), MigrationPlanIdModel.class, context);
         wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
-        revisionNumber = p.getRevisionNumber();
-        majorVersionNumber = p.getMajorVersionNumber();
         for (Map.Entry<String, MigrationVariables> e : p.getMigrationVarsMap().entrySet()) {
             migrationVars.put(e.getKey(), MigrationVariablesModel.fromProto(e.getValue(), context));
         }
@@ -84,7 +78,7 @@ public class MigrateWfRunRequestModel extends CoreSubCommand<MigrateWfRunRequest
         }
 
         // Perform the migration
-        wfRunModel.processMigration(this, migrationPlan, executionContext);
+        wfRunModel.processMigration(this, migrationVars, executionContext);
         
         return wfRunId.toProto().build();
     }

@@ -6,8 +6,8 @@ from .node_run_pb2 import *
 from .object_id_pb2 import *
 from .output_topic_pb2 import *
 from .scheduled_wf_run_pb2 import *
-from .service_pb2_grpc import *
 from .service_pb2 import *
+from .service_pb2_grpc import *
 from .struct_def_pb2 import *
 from .task_def_pb2 import *
 from .task_run_pb2 import *

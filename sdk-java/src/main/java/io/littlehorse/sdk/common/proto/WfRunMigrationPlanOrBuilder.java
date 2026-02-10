@@ -69,25 +69,67 @@ public interface WfRunMigrationPlanOrBuilder extends
    * Name of old thread -&gt; How to migrate thread
    * </pre>
    *
-   * <code>.littlehorse.MigrationPlan migration_plan = 3;</code>
-   * @return Whether the migrationPlan field is set.
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migration = 3;</code>
    */
-  boolean hasMigrationPlan();
+  int getThreadMigrationCount();
   /**
    * <pre>
    * Name of old thread -&gt; How to migrate thread
    * </pre>
    *
-   * <code>.littlehorse.MigrationPlan migration_plan = 3;</code>
-   * @return The migrationPlan.
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migration = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.MigrationPlan getMigrationPlan();
+  boolean containsThreadMigration(
+      java.lang.String key);
+  /**
+   * Use {@link #getThreadMigrationMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+  getThreadMigration();
   /**
    * <pre>
    * Name of old thread -&gt; How to migrate thread
    * </pre>
    *
-   * <code>.littlehorse.MigrationPlan migration_plan = 3;</code>
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migration = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.MigrationPlanOrBuilder getMigrationPlanOrBuilder();
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+  getThreadMigrationMap();
+  /**
+   * <pre>
+   * Name of old thread -&gt; How to migrate thread
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migration = 3;</code>
+   */
+  /* nullable */
+io.littlehorse.sdk.common.proto.ThreadMigrationPlan getThreadMigrationOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue);
+  /**
+   * <pre>
+   * Name of old thread -&gt; How to migrate thread
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migration = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.ThreadMigrationPlan getThreadMigrationOrThrow(
+      java.lang.String key);
+
+  /**
+   * <code>.littlehorse.WfSpecId new_wfSpec = 4;</code>
+   * @return Whether the newWfSpec field is set.
+   */
+  boolean hasNewWfSpec();
+  /**
+   * <code>.littlehorse.WfSpecId new_wfSpec = 4;</code>
+   * @return The newWfSpec.
+   */
+  io.littlehorse.sdk.common.proto.WfSpecId getNewWfSpec();
+  /**
+   * <code>.littlehorse.WfSpecId new_wfSpec = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getNewWfSpecOrBuilder();
 }

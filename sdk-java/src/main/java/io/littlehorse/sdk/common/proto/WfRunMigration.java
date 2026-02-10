@@ -32,15 +32,10 @@ public final class WfRunMigration extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_WfRunMigrationPlan_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_MigrationPlan_descriptor;
+    internal_static_littlehorse_WfRunMigrationPlan_ThreadMigrationEntry_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_littlehorse_MigrationPlan_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_MigrationPlan_ThreadMigrationsEntry_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_littlehorse_MigrationPlan_ThreadMigrationsEntry_fieldAccessorTable;
+      internal_static_littlehorse_WfRunMigrationPlan_ThreadMigrationEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_ThreadMigrationPlan_descriptor;
   static final 
@@ -67,25 +62,24 @@ public final class WfRunMigration extends com.google.protobuf.GeneratedFile {
     java.lang.String[] descriptorData = {
       "\n\026wf_run_migration.proto\022\013littlehorse\032\037g" +
       "oogle/protobuf/timestamp.proto\032\017object_i" +
-      "d.proto\"\242\001\n\022WfRunMigrationPlan\022(\n\002id\030\001 \001" +
+      "d.proto\"\303\002\n\022WfRunMigrationPlan\022(\n\002id\030\001 \001" +
       "(\0132\034.littlehorse.MigrationPlanId\022.\n\ncrea" +
       "ted_at\030\002 \001(\0132\032.google.protobuf.Timestamp" +
-      "\0222\n\016migration_plan\030\003 \001(\0132\032.littlehorse.M" +
-      "igrationPlan\"\267\001\n\rMigrationPlan\022K\n\021thread" +
-      "_migrations\030\001 \003(\01320.littlehorse.Migratio" +
-      "nPlan.ThreadMigrationsEntry\032Y\n\025ThreadMig" +
-      "rationsEntry\022\013\n\003key\030\001 \001(\t\022/\n\005value\030\002 \001(\013" +
-      "2 .littlehorse.ThreadMigrationPlan:\0028\001\"\354" +
-      "\001\n\023ThreadMigrationPlan\022\027\n\017new_thread_nam" +
-      "e\030\001 \001(\t\022M\n\017node_migrations\030\002 \003(\01324.littl" +
-      "ehorse.ThreadMigrationPlan.NodeMigration" +
-      "sEntry\022\026\n\016migration_vars\030\004 \003(\t\032U\n\023NodeMi" +
-      "grationsEntry\022\013\n\003key\030\001 \001(\t\022-\n\005value\030\002 \001(" +
-      "\0132\036.littlehorse.NodeMigrationPlan:\0028\001\"%\n" +
-      "\021NodeMigrationPlan\022\020\n\010new_node\030\001 \001(\tBM\n\037" +
-      "io.littlehorse.sdk.common.protoP\001Z\t.;lhp" +
-      "roto\252\002\034LittleHorse.Sdk.Common.Protob\006pro" +
-      "to3"
+      "\022N\n\020thread_migration\030\003 \003(\01324.littlehorse" +
+      ".WfRunMigrationPlan.ThreadMigrationEntry" +
+      "\022)\n\nnew_wfSpec\030\004 \001(\0132\025.littlehorse.WfSpe" +
+      "cId\032X\n\024ThreadMigrationEntry\022\013\n\003key\030\001 \001(\t" +
+      "\022/\n\005value\030\002 \001(\0132 .littlehorse.ThreadMigr" +
+      "ationPlan:\0028\001\"\365\001\n\023ThreadMigrationPlan\022\027\n" +
+      "\017new_thread_name\030\001 \001(\t\022M\n\017node_migration" +
+      "s\030\002 \003(\01324.littlehorse.ThreadMigrationPla" +
+      "n.NodeMigrationsEntry\022\037\n\027required_migrat" +
+      "ion_vars\030\004 \003(\t\032U\n\023NodeMigrationsEntry\022\013\n" +
+      "\003key\030\001 \001(\t\022-\n\005value\030\002 \001(\0132\036.littlehorse." +
+      "NodeMigrationPlan:\0028\001\"%\n\021NodeMigrationPl" +
+      "an\022\020\n\010new_node\030\001 \001(\tBM\n\037io.littlehorse.s" +
+      "dk.common.protoP\001Z\t.;lhproto\252\002\034LittleHor" +
+      "se.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -98,25 +92,19 @@ public final class WfRunMigration extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_WfRunMigrationPlan_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_WfRunMigrationPlan_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", "MigrationPlan", });
-    internal_static_littlehorse_MigrationPlan_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_littlehorse_MigrationPlan_fieldAccessorTable = new
+        new java.lang.String[] { "Id", "CreatedAt", "ThreadMigration", "NewWfSpec", });
+    internal_static_littlehorse_WfRunMigrationPlan_ThreadMigrationEntry_descriptor =
+      internal_static_littlehorse_WfRunMigrationPlan_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_WfRunMigrationPlan_ThreadMigrationEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_littlehorse_MigrationPlan_descriptor,
-        new java.lang.String[] { "ThreadMigrations", });
-    internal_static_littlehorse_MigrationPlan_ThreadMigrationsEntry_descriptor =
-      internal_static_littlehorse_MigrationPlan_descriptor.getNestedTypes().get(0);
-    internal_static_littlehorse_MigrationPlan_ThreadMigrationsEntry_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_littlehorse_MigrationPlan_ThreadMigrationsEntry_descriptor,
+        internal_static_littlehorse_WfRunMigrationPlan_ThreadMigrationEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_ThreadMigrationPlan_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_ThreadMigrationPlan_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ThreadMigrationPlan_descriptor,
-        new java.lang.String[] { "NewThreadName", "NodeMigrations", "MigrationVars", });
+        new java.lang.String[] { "NewThreadName", "NodeMigrations", "RequiredMigrationVars", });
     internal_static_littlehorse_ThreadMigrationPlan_NodeMigrationsEntry_descriptor =
       internal_static_littlehorse_ThreadMigrationPlan_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_ThreadMigrationPlan_NodeMigrationsEntry_fieldAccessorTable = new
@@ -124,7 +112,7 @@ public final class WfRunMigration extends com.google.protobuf.GeneratedFile {
         internal_static_littlehorse_ThreadMigrationPlan_NodeMigrationsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_NodeMigrationPlan_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_littlehorse_NodeMigrationPlan_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_NodeMigrationPlan_descriptor,

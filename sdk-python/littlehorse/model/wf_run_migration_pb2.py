@@ -26,7 +26,7 @@ from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__
 import littlehorse.model.object_id_pb2 as object__id__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16wf_run_migration.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0fobject_id.proto\"\xa2\x01\n\x12WfRunMigrationPlan\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.littlehorse.MigrationPlanId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x32\n\x0emigration_plan\x18\x03 \x01(\x0b\x32\x1a.littlehorse.MigrationPlan\"\xb7\x01\n\rMigrationPlan\x12K\n\x11thread_migrations\x18\x01 \x03(\x0b\x32\x30.littlehorse.MigrationPlan.ThreadMigrationsEntry\x1aY\n\x15ThreadMigrationsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12/\n\x05value\x18\x02 \x01(\x0b\x32 .littlehorse.ThreadMigrationPlan:\x02\x38\x01\"\xec\x01\n\x13ThreadMigrationPlan\x12\x17\n\x0fnew_thread_name\x18\x01 \x01(\t\x12M\n\x0fnode_migrations\x18\x02 \x03(\x0b\x32\x34.littlehorse.ThreadMigrationPlan.NodeMigrationsEntry\x12\x16\n\x0emigration_vars\x18\x04 \x03(\t\x1aU\n\x13NodeMigrationsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12-\n\x05value\x18\x02 \x01(\x0b\x32\x1e.littlehorse.NodeMigrationPlan:\x02\x38\x01\"%\n\x11NodeMigrationPlan\x12\x10\n\x08new_node\x18\x01 \x01(\tBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16wf_run_migration.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0fobject_id.proto\"\xc3\x02\n\x12WfRunMigrationPlan\x12(\n\x02id\x18\x01 \x01(\x0b\x32\x1c.littlehorse.MigrationPlanId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12N\n\x10thread_migration\x18\x03 \x03(\x0b\x32\x34.littlehorse.WfRunMigrationPlan.ThreadMigrationEntry\x12)\n\nnew_wfSpec\x18\x04 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x1aX\n\x14ThreadMigrationEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12/\n\x05value\x18\x02 \x01(\x0b\x32 .littlehorse.ThreadMigrationPlan:\x02\x38\x01\"\xf5\x01\n\x13ThreadMigrationPlan\x12\x17\n\x0fnew_thread_name\x18\x01 \x01(\t\x12M\n\x0fnode_migrations\x18\x02 \x03(\x0b\x32\x34.littlehorse.ThreadMigrationPlan.NodeMigrationsEntry\x12\x1f\n\x17required_migration_vars\x18\x04 \x03(\t\x1aU\n\x13NodeMigrationsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12-\n\x05value\x18\x02 \x01(\x0b\x32\x1e.littlehorse.NodeMigrationPlan:\x02\x38\x01\"%\n\x11NodeMigrationPlan\x12\x10\n\x08new_node\x18\x01 \x01(\tBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,20 +34,18 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'wf_run_migration_pb2', _glo
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Proto'
-  _globals['_MIGRATIONPLAN_THREADMIGRATIONSENTRY']._loaded_options = None
-  _globals['_MIGRATIONPLAN_THREADMIGRATIONSENTRY']._serialized_options = b'8\001'
+  _globals['_WFRUNMIGRATIONPLAN_THREADMIGRATIONENTRY']._loaded_options = None
+  _globals['_WFRUNMIGRATIONPLAN_THREADMIGRATIONENTRY']._serialized_options = b'8\001'
   _globals['_THREADMIGRATIONPLAN_NODEMIGRATIONSENTRY']._loaded_options = None
   _globals['_THREADMIGRATIONPLAN_NODEMIGRATIONSENTRY']._serialized_options = b'8\001'
   _globals['_WFRUNMIGRATIONPLAN']._serialized_start=90
-  _globals['_WFRUNMIGRATIONPLAN']._serialized_end=252
-  _globals['_MIGRATIONPLAN']._serialized_start=255
-  _globals['_MIGRATIONPLAN']._serialized_end=438
-  _globals['_MIGRATIONPLAN_THREADMIGRATIONSENTRY']._serialized_start=349
-  _globals['_MIGRATIONPLAN_THREADMIGRATIONSENTRY']._serialized_end=438
-  _globals['_THREADMIGRATIONPLAN']._serialized_start=441
-  _globals['_THREADMIGRATIONPLAN']._serialized_end=677
-  _globals['_THREADMIGRATIONPLAN_NODEMIGRATIONSENTRY']._serialized_start=592
-  _globals['_THREADMIGRATIONPLAN_NODEMIGRATIONSENTRY']._serialized_end=677
-  _globals['_NODEMIGRATIONPLAN']._serialized_start=679
-  _globals['_NODEMIGRATIONPLAN']._serialized_end=716
+  _globals['_WFRUNMIGRATIONPLAN']._serialized_end=413
+  _globals['_WFRUNMIGRATIONPLAN_THREADMIGRATIONENTRY']._serialized_start=325
+  _globals['_WFRUNMIGRATIONPLAN_THREADMIGRATIONENTRY']._serialized_end=413
+  _globals['_THREADMIGRATIONPLAN']._serialized_start=416
+  _globals['_THREADMIGRATIONPLAN']._serialized_end=661
+  _globals['_THREADMIGRATIONPLAN_NODEMIGRATIONSENTRY']._serialized_start=576
+  _globals['_THREADMIGRATIONPLAN_NODEMIGRATIONSENTRY']._serialized_end=661
+  _globals['_NODEMIGRATIONPLAN']._serialized_start=663
+  _globals['_NODEMIGRATIONPLAN']._serialized_end=700
 # @@protoc_insertion_point(module_scope)

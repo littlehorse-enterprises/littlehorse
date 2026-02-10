@@ -7,7 +7,7 @@
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { MigrationPlanId } from "./object_id";
+import { MigrationPlanId, WfSpecId } from "./object_id";
 
 /**
  * metadata object representing actions to take during a wfRun
@@ -23,14 +23,11 @@ export interface WfRunMigrationPlan {
     | string
     | undefined;
   /** Name of old thread -> How to migrate thread */
-  migrationPlan: MigrationPlan | undefined;
+  threadMigration: { [key: string]: ThreadMigrationPlan };
+  newWfSpec: WfSpecId | undefined;
 }
 
-export interface MigrationPlan {
-  threadMigrations: { [key: string]: ThreadMigrationPlan };
-}
-
-export interface MigrationPlan_ThreadMigrationsEntry {
+export interface WfRunMigrationPlan_ThreadMigrationEntry {
   key: string;
   value: ThreadMigrationPlan | undefined;
 }
@@ -41,7 +38,7 @@ export interface ThreadMigrationPlan {
   newThreadName: string;
   /** name of curNode - > how to migrate curNode to new WfRun */
   nodeMigrations: { [key: string]: NodeMigrationPlan };
-  migrationVars: string[];
+  requiredMigrationVars: string[];
 }
 
 export interface ThreadMigrationPlan_NodeMigrationsEntry {
@@ -56,7 +53,7 @@ export interface NodeMigrationPlan {
 }
 
 function createBaseWfRunMigrationPlan(): WfRunMigrationPlan {
-  return { id: undefined, createdAt: undefined, migrationPlan: undefined };
+  return { id: undefined, createdAt: undefined, threadMigration: {}, newWfSpec: undefined };
 }
 
 export const WfRunMigrationPlan = {
@@ -67,8 +64,11 @@ export const WfRunMigrationPlan = {
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
     }
-    if (message.migrationPlan !== undefined) {
-      MigrationPlan.encode(message.migrationPlan, writer.uint32(26).fork()).ldelim();
+    Object.entries(message.threadMigration).forEach(([key, value]) => {
+      WfRunMigrationPlan_ThreadMigrationEntry.encode({ key: key as any, value }, writer.uint32(26).fork()).ldelim();
+    });
+    if (message.newWfSpec !== undefined) {
+      WfSpecId.encode(message.newWfSpec, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -99,7 +99,17 @@ export const WfRunMigrationPlan = {
             break;
           }
 
-          message.migrationPlan = MigrationPlan.decode(reader, reader.uint32());
+          const entry3 = WfRunMigrationPlan_ThreadMigrationEntry.decode(reader, reader.uint32());
+          if (entry3.value !== undefined) {
+            message.threadMigration[entry3.key] = entry3.value;
+          }
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.newWfSpec = WfSpecId.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -114,7 +124,13 @@ export const WfRunMigrationPlan = {
     return {
       id: isSet(object.id) ? MigrationPlanId.fromJSON(object.id) : undefined,
       createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
-      migrationPlan: isSet(object.migrationPlan) ? MigrationPlan.fromJSON(object.migrationPlan) : undefined,
+      threadMigration: isObject(object.threadMigration)
+        ? Object.entries(object.threadMigration).reduce<{ [key: string]: ThreadMigrationPlan }>((acc, [key, value]) => {
+          acc[key] = ThreadMigrationPlan.fromJSON(value);
+          return acc;
+        }, {})
+        : {},
+      newWfSpec: isSet(object.newWfSpec) ? WfSpecId.fromJSON(object.newWfSpec) : undefined,
     };
   },
 
@@ -126,8 +142,17 @@ export const WfRunMigrationPlan = {
     if (message.createdAt !== undefined) {
       obj.createdAt = message.createdAt;
     }
-    if (message.migrationPlan !== undefined) {
-      obj.migrationPlan = MigrationPlan.toJSON(message.migrationPlan);
+    if (message.threadMigration) {
+      const entries = Object.entries(message.threadMigration);
+      if (entries.length > 0) {
+        obj.threadMigration = {};
+        entries.forEach(([k, v]) => {
+          obj.threadMigration[k] = ThreadMigrationPlan.toJSON(v);
+        });
+      }
+    }
+    if (message.newWfSpec !== undefined) {
+      obj.newWfSpec = WfSpecId.toJSON(message.newWfSpec);
     }
     return obj;
   },
@@ -139,85 +164,7 @@ export const WfRunMigrationPlan = {
     const message = createBaseWfRunMigrationPlan();
     message.id = (object.id !== undefined && object.id !== null) ? MigrationPlanId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
-    message.migrationPlan = (object.migrationPlan !== undefined && object.migrationPlan !== null)
-      ? MigrationPlan.fromPartial(object.migrationPlan)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseMigrationPlan(): MigrationPlan {
-  return { threadMigrations: {} };
-}
-
-export const MigrationPlan = {
-  encode(message: MigrationPlan, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    Object.entries(message.threadMigrations).forEach(([key, value]) => {
-      MigrationPlan_ThreadMigrationsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
-    });
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MigrationPlan {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMigrationPlan();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          const entry1 = MigrationPlan_ThreadMigrationsEntry.decode(reader, reader.uint32());
-          if (entry1.value !== undefined) {
-            message.threadMigrations[entry1.key] = entry1.value;
-          }
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MigrationPlan {
-    return {
-      threadMigrations: isObject(object.threadMigrations)
-        ? Object.entries(object.threadMigrations).reduce<{ [key: string]: ThreadMigrationPlan }>(
-          (acc, [key, value]) => {
-            acc[key] = ThreadMigrationPlan.fromJSON(value);
-            return acc;
-          },
-          {},
-        )
-        : {},
-    };
-  },
-
-  toJSON(message: MigrationPlan): unknown {
-    const obj: any = {};
-    if (message.threadMigrations) {
-      const entries = Object.entries(message.threadMigrations);
-      if (entries.length > 0) {
-        obj.threadMigrations = {};
-        entries.forEach(([k, v]) => {
-          obj.threadMigrations[k] = ThreadMigrationPlan.toJSON(v);
-        });
-      }
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<MigrationPlan>): MigrationPlan {
-    return MigrationPlan.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<MigrationPlan>): MigrationPlan {
-    const message = createBaseMigrationPlan();
-    message.threadMigrations = Object.entries(object.threadMigrations ?? {}).reduce<
+    message.threadMigration = Object.entries(object.threadMigration ?? {}).reduce<
       { [key: string]: ThreadMigrationPlan }
     >((acc, [key, value]) => {
       if (value !== undefined) {
@@ -225,16 +172,19 @@ export const MigrationPlan = {
       }
       return acc;
     }, {});
+    message.newWfSpec = (object.newWfSpec !== undefined && object.newWfSpec !== null)
+      ? WfSpecId.fromPartial(object.newWfSpec)
+      : undefined;
     return message;
   },
 };
 
-function createBaseMigrationPlan_ThreadMigrationsEntry(): MigrationPlan_ThreadMigrationsEntry {
+function createBaseWfRunMigrationPlan_ThreadMigrationEntry(): WfRunMigrationPlan_ThreadMigrationEntry {
   return { key: "", value: undefined };
 }
 
-export const MigrationPlan_ThreadMigrationsEntry = {
-  encode(message: MigrationPlan_ThreadMigrationsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const WfRunMigrationPlan_ThreadMigrationEntry = {
+  encode(message: WfRunMigrationPlan_ThreadMigrationEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -244,10 +194,10 @@ export const MigrationPlan_ThreadMigrationsEntry = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MigrationPlan_ThreadMigrationsEntry {
+  decode(input: _m0.Reader | Uint8Array, length?: number): WfRunMigrationPlan_ThreadMigrationEntry {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMigrationPlan_ThreadMigrationsEntry();
+    const message = createBaseWfRunMigrationPlan_ThreadMigrationEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -274,14 +224,14 @@ export const MigrationPlan_ThreadMigrationsEntry = {
     return message;
   },
 
-  fromJSON(object: any): MigrationPlan_ThreadMigrationsEntry {
+  fromJSON(object: any): WfRunMigrationPlan_ThreadMigrationEntry {
     return {
       key: isSet(object.key) ? globalThis.String(object.key) : "",
       value: isSet(object.value) ? ThreadMigrationPlan.fromJSON(object.value) : undefined,
     };
   },
 
-  toJSON(message: MigrationPlan_ThreadMigrationsEntry): unknown {
+  toJSON(message: WfRunMigrationPlan_ThreadMigrationEntry): unknown {
     const obj: any = {};
     if (message.key !== "") {
       obj.key = message.key;
@@ -292,11 +242,11 @@ export const MigrationPlan_ThreadMigrationsEntry = {
     return obj;
   },
 
-  create(base?: DeepPartial<MigrationPlan_ThreadMigrationsEntry>): MigrationPlan_ThreadMigrationsEntry {
-    return MigrationPlan_ThreadMigrationsEntry.fromPartial(base ?? {});
+  create(base?: DeepPartial<WfRunMigrationPlan_ThreadMigrationEntry>): WfRunMigrationPlan_ThreadMigrationEntry {
+    return WfRunMigrationPlan_ThreadMigrationEntry.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<MigrationPlan_ThreadMigrationsEntry>): MigrationPlan_ThreadMigrationsEntry {
-    const message = createBaseMigrationPlan_ThreadMigrationsEntry();
+  fromPartial(object: DeepPartial<WfRunMigrationPlan_ThreadMigrationEntry>): WfRunMigrationPlan_ThreadMigrationEntry {
+    const message = createBaseWfRunMigrationPlan_ThreadMigrationEntry();
     message.key = object.key ?? "";
     message.value = (object.value !== undefined && object.value !== null)
       ? ThreadMigrationPlan.fromPartial(object.value)
@@ -306,7 +256,7 @@ export const MigrationPlan_ThreadMigrationsEntry = {
 };
 
 function createBaseThreadMigrationPlan(): ThreadMigrationPlan {
-  return { newThreadName: "", nodeMigrations: {}, migrationVars: [] };
+  return { newThreadName: "", nodeMigrations: {}, requiredMigrationVars: [] };
 }
 
 export const ThreadMigrationPlan = {
@@ -317,7 +267,7 @@ export const ThreadMigrationPlan = {
     Object.entries(message.nodeMigrations).forEach(([key, value]) => {
       ThreadMigrationPlan_NodeMigrationsEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
     });
-    for (const v of message.migrationVars) {
+    for (const v of message.requiredMigrationVars) {
       writer.uint32(34).string(v!);
     }
     return writer;
@@ -352,7 +302,7 @@ export const ThreadMigrationPlan = {
             break;
           }
 
-          message.migrationVars.push(reader.string());
+          message.requiredMigrationVars.push(reader.string());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -372,8 +322,8 @@ export const ThreadMigrationPlan = {
           return acc;
         }, {})
         : {},
-      migrationVars: globalThis.Array.isArray(object?.migrationVars)
-        ? object.migrationVars.map((e: any) => globalThis.String(e))
+      requiredMigrationVars: globalThis.Array.isArray(object?.requiredMigrationVars)
+        ? object.requiredMigrationVars.map((e: any) => globalThis.String(e))
         : [],
     };
   },
@@ -392,8 +342,8 @@ export const ThreadMigrationPlan = {
         });
       }
     }
-    if (message.migrationVars?.length) {
-      obj.migrationVars = message.migrationVars;
+    if (message.requiredMigrationVars?.length) {
+      obj.requiredMigrationVars = message.requiredMigrationVars;
     }
     return obj;
   },
@@ -413,7 +363,7 @@ export const ThreadMigrationPlan = {
       },
       {},
     );
-    message.migrationVars = object.migrationVars?.map((e) => e) || [];
+    message.requiredMigrationVars = object.requiredMigrationVars?.map((e) => e) || [];
     return message;
   },
 };

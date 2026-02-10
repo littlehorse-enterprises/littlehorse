@@ -22,12 +22,11 @@ message WfRunMigrationPlan {
     google.protobuf.Timestamp created_at = 2; 
 
     // Name of old thread -> How to migrate thread
-    MigrationPlan migration_plan = 3 ;
+    map<string,  ThreadMigrationPlan> thread_migration = 3;
+
+    WfSpecId new_wfSpec = 4;
 }
 
-message MigrationPlan { 
-    map<string, ThreadMigrationPlan> thread_migrations = 1;
-}
 
 // How to migrate a thread 
 message ThreadMigrationPlan {
@@ -36,7 +35,7 @@ message ThreadMigrationPlan {
     // name of curNode - > how to migrate curNode to new WfRun
     map<string, NodeMigrationPlan> node_migrations  = 2;
     
-    repeated string migration_vars = 4;
+    repeated string required_migration_vars = 4;
 }
 
 //  How to migrate Node 

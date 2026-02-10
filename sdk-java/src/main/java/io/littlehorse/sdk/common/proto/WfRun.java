@@ -515,6 +515,32 @@ private static final long serialVersionUID = 0L;
     return pendingFailures_.get(index);
   }
 
+  public static final int MIGRATION_PLAN_ID_FIELD_NUMBER = 11;
+  private io.littlehorse.sdk.common.proto.MigrationPlanId migrationPlanId_;
+  /**
+   * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+   * @return Whether the migrationPlanId field is set.
+   */
+  @java.lang.Override
+  public boolean hasMigrationPlanId() {
+    return ((bitField0_ & 0x00000010) != 0);
+  }
+  /**
+   * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+   * @return The migrationPlanId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.MigrationPlanId getMigrationPlanId() {
+    return migrationPlanId_ == null ? io.littlehorse.sdk.common.proto.MigrationPlanId.getDefaultInstance() : migrationPlanId_;
+  }
+  /**
+   * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.MigrationPlanIdOrBuilder getMigrationPlanIdOrBuilder() {
+    return migrationPlanId_ == null ? io.littlehorse.sdk.common.proto.MigrationPlanId.getDefaultInstance() : migrationPlanId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -558,6 +584,9 @@ private static final long serialVersionUID = 0L;
     }
     for (int i = 0; i < pendingFailures_.size(); i++) {
       output.writeMessage(10, pendingFailures_.get(i));
+    }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      output.writeMessage(11, getMigrationPlanId());
     }
     getUnknownFields().writeTo(output);
   }
@@ -608,6 +637,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, pendingFailures_.get(i));
     }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(11, getMigrationPlanId());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -654,6 +687,11 @@ private static final long serialVersionUID = 0L;
         .equals(other.getPendingInterruptsList())) return false;
     if (!getPendingFailuresList()
         .equals(other.getPendingFailuresList())) return false;
+    if (hasMigrationPlanId() != other.hasMigrationPlanId()) return false;
+    if (hasMigrationPlanId()) {
+      if (!getMigrationPlanId()
+          .equals(other.getMigrationPlanId())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -700,6 +738,10 @@ private static final long serialVersionUID = 0L;
     if (getPendingFailuresCount() > 0) {
       hash = (37 * hash) + PENDING_FAILURES_FIELD_NUMBER;
       hash = (53 * hash) + getPendingFailuresList().hashCode();
+    }
+    if (hasMigrationPlanId()) {
+      hash = (37 * hash) + MIGRATION_PLAN_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getMigrationPlanId().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -843,6 +885,7 @@ private static final long serialVersionUID = 0L;
         internalGetThreadRunsFieldBuilder();
         internalGetPendingInterruptsFieldBuilder();
         internalGetPendingFailuresFieldBuilder();
+        internalGetMigrationPlanIdFieldBuilder();
       }
     }
     @java.lang.Override
@@ -899,6 +942,11 @@ private static final long serialVersionUID = 0L;
         pendingFailuresBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000200);
+      migrationPlanId_ = null;
+      if (migrationPlanIdBuilder_ != null) {
+        migrationPlanIdBuilder_.dispose();
+        migrationPlanIdBuilder_ = null;
+      }
       return this;
     }
 
@@ -1002,6 +1050,12 @@ private static final long serialVersionUID = 0L;
             ? endTime_
             : endTimeBuilder_.build();
         to_bitField0_ |= 0x00000008;
+      }
+      if (((from_bitField0_ & 0x00000400) != 0)) {
+        result.migrationPlanId_ = migrationPlanIdBuilder_ == null
+            ? migrationPlanId_
+            : migrationPlanIdBuilder_.build();
+        to_bitField0_ |= 0x00000010;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -1140,6 +1194,9 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (other.hasMigrationPlanId()) {
+        mergeMigrationPlanId(other.getMigrationPlanId());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -1256,6 +1313,13 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 82
+            case 90: {
+              input.readMessage(
+                  internalGetMigrationPlanIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000400;
+              break;
+            } // case 90
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3349,6 +3413,127 @@ private static final long serialVersionUID = 0L;
         pendingFailures_ = null;
       }
       return pendingFailuresBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.MigrationPlanId migrationPlanId_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.MigrationPlanId, io.littlehorse.sdk.common.proto.MigrationPlanId.Builder, io.littlehorse.sdk.common.proto.MigrationPlanIdOrBuilder> migrationPlanIdBuilder_;
+    /**
+     * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+     * @return Whether the migrationPlanId field is set.
+     */
+    public boolean hasMigrationPlanId() {
+      return ((bitField0_ & 0x00000400) != 0);
+    }
+    /**
+     * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+     * @return The migrationPlanId.
+     */
+    public io.littlehorse.sdk.common.proto.MigrationPlanId getMigrationPlanId() {
+      if (migrationPlanIdBuilder_ == null) {
+        return migrationPlanId_ == null ? io.littlehorse.sdk.common.proto.MigrationPlanId.getDefaultInstance() : migrationPlanId_;
+      } else {
+        return migrationPlanIdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+     */
+    public Builder setMigrationPlanId(io.littlehorse.sdk.common.proto.MigrationPlanId value) {
+      if (migrationPlanIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        migrationPlanId_ = value;
+      } else {
+        migrationPlanIdBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000400;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+     */
+    public Builder setMigrationPlanId(
+        io.littlehorse.sdk.common.proto.MigrationPlanId.Builder builderForValue) {
+      if (migrationPlanIdBuilder_ == null) {
+        migrationPlanId_ = builderForValue.build();
+      } else {
+        migrationPlanIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000400;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+     */
+    public Builder mergeMigrationPlanId(io.littlehorse.sdk.common.proto.MigrationPlanId value) {
+      if (migrationPlanIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000400) != 0) &&
+          migrationPlanId_ != null &&
+          migrationPlanId_ != io.littlehorse.sdk.common.proto.MigrationPlanId.getDefaultInstance()) {
+          getMigrationPlanIdBuilder().mergeFrom(value);
+        } else {
+          migrationPlanId_ = value;
+        }
+      } else {
+        migrationPlanIdBuilder_.mergeFrom(value);
+      }
+      if (migrationPlanId_ != null) {
+        bitField0_ |= 0x00000400;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+     */
+    public Builder clearMigrationPlanId() {
+      bitField0_ = (bitField0_ & ~0x00000400);
+      migrationPlanId_ = null;
+      if (migrationPlanIdBuilder_ != null) {
+        migrationPlanIdBuilder_.dispose();
+        migrationPlanIdBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+     */
+    public io.littlehorse.sdk.common.proto.MigrationPlanId.Builder getMigrationPlanIdBuilder() {
+      bitField0_ |= 0x00000400;
+      onChanged();
+      return internalGetMigrationPlanIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+     */
+    public io.littlehorse.sdk.common.proto.MigrationPlanIdOrBuilder getMigrationPlanIdOrBuilder() {
+      if (migrationPlanIdBuilder_ != null) {
+        return migrationPlanIdBuilder_.getMessageOrBuilder();
+      } else {
+        return migrationPlanId_ == null ?
+            io.littlehorse.sdk.common.proto.MigrationPlanId.getDefaultInstance() : migrationPlanId_;
+      }
+    }
+    /**
+     * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.MigrationPlanId, io.littlehorse.sdk.common.proto.MigrationPlanId.Builder, io.littlehorse.sdk.common.proto.MigrationPlanIdOrBuilder> 
+        internalGetMigrationPlanIdFieldBuilder() {
+      if (migrationPlanIdBuilder_ == null) {
+        migrationPlanIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.MigrationPlanId, io.littlehorse.sdk.common.proto.MigrationPlanId.Builder, io.littlehorse.sdk.common.proto.MigrationPlanIdOrBuilder>(
+                getMigrationPlanId(),
+                getParentForChildren(),
+                isClean());
+        migrationPlanId_ = null;
+      }
+      return migrationPlanIdBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.WfRun)

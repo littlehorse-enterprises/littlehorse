@@ -20,11 +20,11 @@ public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan
 
     private String newThreadName;
     private Map<String, NodeMigrationPlanModel> nodeMigrations;
-    private List<String> migrationVars;
+    private List<String> requiredMigrationVars;
 
     public ThreadMigrationPlanModel() {
         nodeMigrations = new HashMap<>();
-        migrationVars = new ArrayList<>();
+        requiredMigrationVars = new ArrayList<>();
     }
 
     public ThreadMigrationPlanModel(String newThreadName) {
@@ -46,10 +46,10 @@ public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan
             builder.putNodeMigrations(entry.getKey(), entry.getValue().toProto().build());
         }
 
-        for (String var : migrationVars) {
-            builder.addMigrationVars(var);
+        for(String varName: requiredMigrationVars){
+            builder.addRequiredMigrationVars(varName);
         }
-
+        
         return builder;
     }
 
@@ -66,8 +66,8 @@ public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan
             );
         }
 
-        for (String var : p.getMigrationVarsList()) {
-            migrationVars.add(var);
+        for (String var : p.getRequiredMigrationVarsList()) {
+            requiredMigrationVars.add(var);
         }
     }
 

@@ -36,6 +36,18 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutMigrationPlanRequest_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+      int number) {
+    switch (number) {
+      case 2:
+        return internalGetMigrationPlan();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -85,29 +97,108 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int MIGRATION_PLAN_FIELD_NUMBER = 2;
-  private io.littlehorse.sdk.common.proto.MigrationPlan migrationPlan_;
+  private static final class MigrationPlanDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>newDefaultInstance(
+                io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutMigrationPlanRequest_MigrationPlanEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                io.littlehorse.sdk.common.proto.ThreadMigrationPlan.getDefaultInstance());
+  }
+  @SuppressWarnings("serial")
+  private com.google.protobuf.MapField<
+      java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> migrationPlan_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+  internalGetMigrationPlan() {
+    if (migrationPlan_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          MigrationPlanDefaultEntryHolder.defaultEntry);
+    }
+    return migrationPlan_;
+  }
+  public int getMigrationPlanCount() {
+    return internalGetMigrationPlan().getMap().size();
+  }
   /**
-   * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
-   * @return Whether the migrationPlan field is set.
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
    */
   @java.lang.Override
-  public boolean hasMigrationPlan() {
+  public boolean containsMigrationPlan(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    return internalGetMigrationPlan().getMap().containsKey(key);
+  }
+  /**
+   * Use {@link #getMigrationPlanMap()} instead.
+   */
+  @java.lang.Override
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> getMigrationPlan() {
+    return getMigrationPlanMap();
+  }
+  /**
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
+   */
+  @java.lang.Override
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> getMigrationPlanMap() {
+    return internalGetMigrationPlan().getMap();
+  }
+  /**
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
+   */
+  @java.lang.Override
+  public /* nullable */
+io.littlehorse.sdk.common.proto.ThreadMigrationPlan getMigrationPlanOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> map =
+        internalGetMigrationPlan().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ThreadMigrationPlan getMigrationPlanOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> map =
+        internalGetMigrationPlan().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
+  }
+
+  public static final int NEWWFSPEC_FIELD_NUMBER = 3;
+  private io.littlehorse.sdk.common.proto.WfSpecId newWfSpec_;
+  /**
+   * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
+   * @return Whether the newWfSpec field is set.
+   */
+  @java.lang.Override
+  public boolean hasNewWfSpec() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
-   * @return The migrationPlan.
+   * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
+   * @return The newWfSpec.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.MigrationPlan getMigrationPlan() {
-    return migrationPlan_ == null ? io.littlehorse.sdk.common.proto.MigrationPlan.getDefaultInstance() : migrationPlan_;
+  public io.littlehorse.sdk.common.proto.WfSpecId getNewWfSpec() {
+    return newWfSpec_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : newWfSpec_;
   }
   /**
-   * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
+   * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.MigrationPlanOrBuilder getMigrationPlanOrBuilder() {
-    return migrationPlan_ == null ? io.littlehorse.sdk.common.proto.MigrationPlan.getDefaultInstance() : migrationPlan_;
+  public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getNewWfSpecOrBuilder() {
+    return newWfSpec_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : newWfSpec_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -127,8 +218,14 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
     }
+    com.google.protobuf.GeneratedMessage
+      .serializeStringMapTo(
+        output,
+        internalGetMigrationPlan(),
+        MigrationPlanDefaultEntryHolder.defaultEntry,
+        2);
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(2, getMigrationPlan());
+      output.writeMessage(3, getNewWfSpec());
     }
     getUnknownFields().writeTo(output);
   }
@@ -142,9 +239,19 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
     }
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> entry
+         : internalGetMigrationPlan().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+      migrationPlan__ = MigrationPlanDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
+      size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, migrationPlan__);
+    }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getMigrationPlan());
+        .computeMessageSize(3, getNewWfSpec());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -163,10 +270,12 @@ private static final long serialVersionUID = 0L;
 
     if (!getName()
         .equals(other.getName())) return false;
-    if (hasMigrationPlan() != other.hasMigrationPlan()) return false;
-    if (hasMigrationPlan()) {
-      if (!getMigrationPlan()
-          .equals(other.getMigrationPlan())) return false;
+    if (!internalGetMigrationPlan().equals(
+        other.internalGetMigrationPlan())) return false;
+    if (hasNewWfSpec() != other.hasNewWfSpec()) return false;
+    if (hasNewWfSpec()) {
+      if (!getNewWfSpec()
+          .equals(other.getNewWfSpec())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -181,9 +290,13 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
-    if (hasMigrationPlan()) {
+    if (!internalGetMigrationPlan().getMap().isEmpty()) {
       hash = (37 * hash) + MIGRATION_PLAN_FIELD_NUMBER;
-      hash = (53 * hash) + getMigrationPlan().hashCode();
+      hash = (53 * hash) + internalGetMigrationPlan().hashCode();
+    }
+    if (hasNewWfSpec()) {
+      hash = (37 * hash) + NEWWFSPEC_FIELD_NUMBER;
+      hash = (53 * hash) + getNewWfSpec().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -294,6 +407,28 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutMigrationPlanRequest_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetMigrationPlan();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMutableMapFieldReflection(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetMutableMigrationPlan();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -315,7 +450,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessage
               .alwaysUseFieldBuilders) {
-        internalGetMigrationPlanFieldBuilder();
+        internalGetNewWfSpecFieldBuilder();
       }
     }
     @java.lang.Override
@@ -323,10 +458,11 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       name_ = "";
-      migrationPlan_ = null;
-      if (migrationPlanBuilder_ != null) {
-        migrationPlanBuilder_.dispose();
-        migrationPlanBuilder_ = null;
+      internalGetMutableMigrationPlan().clear();
+      newWfSpec_ = null;
+      if (newWfSpecBuilder_ != null) {
+        newWfSpecBuilder_.dispose();
+        newWfSpecBuilder_ = null;
       }
       return this;
     }
@@ -364,11 +500,14 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.name_ = name_;
       }
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.migrationPlan_ = migrationPlanBuilder_ == null
-            ? migrationPlan_
-            : migrationPlanBuilder_.build();
+        result.migrationPlan_ = internalGetMigrationPlan().build(MigrationPlanDefaultEntryHolder.defaultEntry);
+      }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.newWfSpec_ = newWfSpecBuilder_ == null
+            ? newWfSpec_
+            : newWfSpecBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
       result.bitField0_ |= to_bitField0_;
@@ -391,8 +530,11 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (other.hasMigrationPlan()) {
-        mergeMigrationPlan(other.getMigrationPlan());
+      internalGetMutableMigrationPlan().mergeFrom(
+          other.internalGetMigrationPlan());
+      bitField0_ |= 0x00000002;
+      if (other.hasNewWfSpec()) {
+        mergeNewWfSpec(other.getNewWfSpec());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -426,12 +568,21 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 18: {
-              input.readMessage(
-                  internalGetMigrationPlanFieldBuilder().getBuilder(),
-                  extensionRegistry);
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+              migrationPlan__ = input.readMessage(
+                  MigrationPlanDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutableMigrationPlan().ensureBuilderMap().put(
+                  migrationPlan__.getKey(), migrationPlan__.getValue());
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 26: {
+              input.readMessage(
+                  internalGetNewWfSpecFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -521,125 +672,280 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.sdk.common.proto.MigrationPlan migrationPlan_;
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.MigrationPlan, io.littlehorse.sdk.common.proto.MigrationPlan.Builder, io.littlehorse.sdk.common.proto.MigrationPlanOrBuilder> migrationPlanBuilder_;
-    /**
-     * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
-     * @return Whether the migrationPlan field is set.
-     */
-    public boolean hasMigrationPlan() {
-      return ((bitField0_ & 0x00000002) != 0);
+    private static final class MigrationPlanConverter implements com.google.protobuf.MapFieldBuilder.Converter<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> {
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.ThreadMigrationPlan build(io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder val) {
+        if (val instanceof io.littlehorse.sdk.common.proto.ThreadMigrationPlan) { return (io.littlehorse.sdk.common.proto.ThreadMigrationPlan) val; }
+        return ((io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder) val).build();
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> defaultEntry() {
+        return MigrationPlanDefaultEntryHolder.defaultEntry;
+      }
+    };
+    private static final MigrationPlanConverter migrationPlanConverter = new MigrationPlanConverter();
+
+    private com.google.protobuf.MapFieldBuilder<
+        java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder, io.littlehorse.sdk.common.proto.ThreadMigrationPlan, io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder> migrationPlan_;
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder, io.littlehorse.sdk.common.proto.ThreadMigrationPlan, io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder>
+        internalGetMigrationPlan() {
+      if (migrationPlan_ == null) {
+        return new com.google.protobuf.MapFieldBuilder<>(migrationPlanConverter);
+      }
+      return migrationPlan_;
+    }
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder, io.littlehorse.sdk.common.proto.ThreadMigrationPlan, io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder>
+        internalGetMutableMigrationPlan() {
+      if (migrationPlan_ == null) {
+        migrationPlan_ = new com.google.protobuf.MapFieldBuilder<>(migrationPlanConverter);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return migrationPlan_;
+    }
+    public int getMigrationPlanCount() {
+      return internalGetMigrationPlan().ensureBuilderMap().size();
     }
     /**
-     * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
-     * @return The migrationPlan.
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.MigrationPlan getMigrationPlan() {
-      if (migrationPlanBuilder_ == null) {
-        return migrationPlan_ == null ? io.littlehorse.sdk.common.proto.MigrationPlan.getDefaultInstance() : migrationPlan_;
+    @java.lang.Override
+    public boolean containsMigrationPlan(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetMigrationPlan().ensureBuilderMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getMigrationPlanMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> getMigrationPlan() {
+      return getMigrationPlanMap();
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> getMigrationPlanMap() {
+      return internalGetMigrationPlan().getImmutableMap();
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
+     */
+    @java.lang.Override
+    public /* nullable */
+io.littlehorse.sdk.common.proto.ThreadMigrationPlan getMigrationPlanOrDefault(
+        java.lang.String key,
+        /* nullable */
+io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder> map = internalGetMutableMigrationPlan().ensureBuilderMap();
+      return map.containsKey(key) ? migrationPlanConverter.build(map.get(key)) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ThreadMigrationPlan getMigrationPlanOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder> map = internalGetMutableMigrationPlan().ensureBuilderMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return migrationPlanConverter.build(map.get(key));
+    }
+    public Builder clearMigrationPlan() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      internalGetMutableMigrationPlan().clear();
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
+     */
+    public Builder removeMigrationPlan(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      internalGetMutableMigrationPlan().ensureBuilderMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+        getMutableMigrationPlan() {
+      bitField0_ |= 0x00000002;
+      return internalGetMutableMigrationPlan().ensureMessageMap();
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
+     */
+    public Builder putMigrationPlan(
+        java.lang.String key,
+        io.littlehorse.sdk.common.proto.ThreadMigrationPlan value) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      if (value == null) { throw new NullPointerException("map value"); }
+      internalGetMutableMigrationPlan().ensureBuilderMap()
+          .put(key, value);
+      bitField0_ |= 0x00000002;
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
+     */
+    public Builder putAllMigrationPlan(
+        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> values) {
+      for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> e : values.entrySet()) {
+        if (e.getKey() == null || e.getValue() == null) {
+          throw new NullPointerException();
+        }
+      }
+      internalGetMutableMigrationPlan().ensureBuilderMap()
+          .putAll(values);
+      bitField0_ |= 0x00000002;
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; migration_plan = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder putMigrationPlanBuilderIfAbsent(
+        java.lang.String key) {
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder> builderMap = internalGetMutableMigrationPlan().ensureBuilderMap();
+      io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder entry = builderMap.get(key);
+      if (entry == null) {
+        entry = io.littlehorse.sdk.common.proto.ThreadMigrationPlan.newBuilder();
+        builderMap.put(key, entry);
+      }
+      if (entry instanceof io.littlehorse.sdk.common.proto.ThreadMigrationPlan) {
+        entry = ((io.littlehorse.sdk.common.proto.ThreadMigrationPlan) entry).toBuilder();
+        builderMap.put(key, entry);
+      }
+      return (io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder) entry;
+    }
+
+    private io.littlehorse.sdk.common.proto.WfSpecId newWfSpec_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> newWfSpecBuilder_;
+    /**
+     * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
+     * @return Whether the newWfSpec field is set.
+     */
+    public boolean hasNewWfSpec() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
+     * @return The newWfSpec.
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecId getNewWfSpec() {
+      if (newWfSpecBuilder_ == null) {
+        return newWfSpec_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : newWfSpec_;
       } else {
-        return migrationPlanBuilder_.getMessage();
+        return newWfSpecBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
+     * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
      */
-    public Builder setMigrationPlan(io.littlehorse.sdk.common.proto.MigrationPlan value) {
-      if (migrationPlanBuilder_ == null) {
+    public Builder setNewWfSpec(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (newWfSpecBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        migrationPlan_ = value;
+        newWfSpec_ = value;
       } else {
-        migrationPlanBuilder_.setMessage(value);
+        newWfSpecBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
+     * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
      */
-    public Builder setMigrationPlan(
-        io.littlehorse.sdk.common.proto.MigrationPlan.Builder builderForValue) {
-      if (migrationPlanBuilder_ == null) {
-        migrationPlan_ = builderForValue.build();
+    public Builder setNewWfSpec(
+        io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
+      if (newWfSpecBuilder_ == null) {
+        newWfSpec_ = builderForValue.build();
       } else {
-        migrationPlanBuilder_.setMessage(builderForValue.build());
+        newWfSpecBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
+     * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
      */
-    public Builder mergeMigrationPlan(io.littlehorse.sdk.common.proto.MigrationPlan value) {
-      if (migrationPlanBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
-          migrationPlan_ != null &&
-          migrationPlan_ != io.littlehorse.sdk.common.proto.MigrationPlan.getDefaultInstance()) {
-          getMigrationPlanBuilder().mergeFrom(value);
+    public Builder mergeNewWfSpec(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (newWfSpecBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          newWfSpec_ != null &&
+          newWfSpec_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
+          getNewWfSpecBuilder().mergeFrom(value);
         } else {
-          migrationPlan_ = value;
+          newWfSpec_ = value;
         }
       } else {
-        migrationPlanBuilder_.mergeFrom(value);
+        newWfSpecBuilder_.mergeFrom(value);
       }
-      if (migrationPlan_ != null) {
-        bitField0_ |= 0x00000002;
+      if (newWfSpec_ != null) {
+        bitField0_ |= 0x00000004;
         onChanged();
       }
       return this;
     }
     /**
-     * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
+     * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
      */
-    public Builder clearMigrationPlan() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      migrationPlan_ = null;
-      if (migrationPlanBuilder_ != null) {
-        migrationPlanBuilder_.dispose();
-        migrationPlanBuilder_ = null;
+    public Builder clearNewWfSpec() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      newWfSpec_ = null;
+      if (newWfSpecBuilder_ != null) {
+        newWfSpecBuilder_.dispose();
+        newWfSpecBuilder_ = null;
       }
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
+     * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.MigrationPlan.Builder getMigrationPlanBuilder() {
-      bitField0_ |= 0x00000002;
+    public io.littlehorse.sdk.common.proto.WfSpecId.Builder getNewWfSpecBuilder() {
+      bitField0_ |= 0x00000004;
       onChanged();
-      return internalGetMigrationPlanFieldBuilder().getBuilder();
+      return internalGetNewWfSpecFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
+     * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.MigrationPlanOrBuilder getMigrationPlanOrBuilder() {
-      if (migrationPlanBuilder_ != null) {
-        return migrationPlanBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getNewWfSpecOrBuilder() {
+      if (newWfSpecBuilder_ != null) {
+        return newWfSpecBuilder_.getMessageOrBuilder();
       } else {
-        return migrationPlan_ == null ?
-            io.littlehorse.sdk.common.proto.MigrationPlan.getDefaultInstance() : migrationPlan_;
+        return newWfSpec_ == null ?
+            io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : newWfSpec_;
       }
     }
     /**
-     * <code>.littlehorse.MigrationPlan migration_plan = 2;</code>
+     * <code>.littlehorse.WfSpecId newWfSpec = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.MigrationPlan, io.littlehorse.sdk.common.proto.MigrationPlan.Builder, io.littlehorse.sdk.common.proto.MigrationPlanOrBuilder> 
-        internalGetMigrationPlanFieldBuilder() {
-      if (migrationPlanBuilder_ == null) {
-        migrationPlanBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.MigrationPlan, io.littlehorse.sdk.common.proto.MigrationPlan.Builder, io.littlehorse.sdk.common.proto.MigrationPlanOrBuilder>(
-                getMigrationPlan(),
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
+        internalGetNewWfSpecFieldBuilder() {
+      if (newWfSpecBuilder_ == null) {
+        newWfSpecBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder>(
+                getNewWfSpec(),
                 getParentForChildren(),
                 isClean());
-        migrationPlan_ = null;
+        newWfSpec_ = null;
       }
-      return migrationPlanBuilder_;
+      return newWfSpecBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.PutMigrationPlanRequest)

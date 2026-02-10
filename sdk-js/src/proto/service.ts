@@ -23,7 +23,7 @@ import {
   taskStatusToJSON,
   taskStatusToNumber,
 } from "./common_enums";
-import { InlineStructDef, ReturnType, VariableDef } from "./common_wfspec";
+import { InlineStructDef, ReturnType, VariableAssignment, VariableDef } from "./common_wfspec";
 import {
   CorrelatedEvent,
   CorrelatedEventConfig,
@@ -78,7 +78,7 @@ import {
 } from "./user_tasks";
 import { Variable, VariableValue } from "./variable";
 import { WfRun } from "./wf_run";
-import { MigrationPlan, WfRunMigrationPlan } from "./wf_run_migration";
+import { ThreadMigrationPlan, WfRunMigrationPlan } from "./wf_run_migration";
 import {
   ThreadSpec,
   WfSpec,
@@ -1392,7 +1392,13 @@ export function putCheckpointResponse_FlowControlContinueToNumber(
 
 export interface PutMigrationPlanRequest {
   name: string;
-  migrationPlan: MigrationPlan | undefined;
+  migrationPlan: { [key: string]: ThreadMigrationPlan };
+  newWfSpec: WfSpecId | undefined;
+}
+
+export interface PutMigrationPlanRequest_MigrationPlanEntry {
+  key: string;
+  value: ThreadMigrationPlan | undefined;
 }
 
 export interface MigrateWfRunRequest {
@@ -1404,9 +1410,7 @@ export interface MigrateWfRunRequest {
   wfRunId:
     | WfRunId
     | undefined;
-  /** What version to migrate to */
-  revisionNumber: number;
-  majorVersionNumber: number;
+  /** Thread Name -> Variables needed for proper migration */
   migrationVars: { [key: string]: MigrationVariables };
 }
 
@@ -1416,12 +1420,13 @@ export interface MigrateWfRunRequest_MigrationVarsEntry {
 }
 
 export interface MigrationVariables {
-  varValues: { [key: string]: VariableValue };
+  /** var name -> var Value */
+  varValues: { [key: string]: VariableAssignment };
 }
 
 export interface MigrationVariables_VarValuesEntry {
   key: string;
-  value: VariableValue | undefined;
+  value: VariableAssignment | undefined;
 }
 
 /**
@@ -8708,7 +8713,7 @@ export const PutCheckpointResponse = {
 };
 
 function createBasePutMigrationPlanRequest(): PutMigrationPlanRequest {
-  return { name: "", migrationPlan: undefined };
+  return { name: "", migrationPlan: {}, newWfSpec: undefined };
 }
 
 export const PutMigrationPlanRequest = {
@@ -8716,8 +8721,11 @@ export const PutMigrationPlanRequest = {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
-    if (message.migrationPlan !== undefined) {
-      MigrationPlan.encode(message.migrationPlan, writer.uint32(18).fork()).ldelim();
+    Object.entries(message.migrationPlan).forEach(([key, value]) => {
+      PutMigrationPlanRequest_MigrationPlanEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
+    });
+    if (message.newWfSpec !== undefined) {
+      WfSpecId.encode(message.newWfSpec, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -8741,7 +8749,17 @@ export const PutMigrationPlanRequest = {
             break;
           }
 
-          message.migrationPlan = MigrationPlan.decode(reader, reader.uint32());
+          const entry2 = PutMigrationPlanRequest_MigrationPlanEntry.decode(reader, reader.uint32());
+          if (entry2.value !== undefined) {
+            message.migrationPlan[entry2.key] = entry2.value;
+          }
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.newWfSpec = WfSpecId.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -8755,7 +8773,13 @@ export const PutMigrationPlanRequest = {
   fromJSON(object: any): PutMigrationPlanRequest {
     return {
       name: isSet(object.name) ? globalThis.String(object.name) : "",
-      migrationPlan: isSet(object.migrationPlan) ? MigrationPlan.fromJSON(object.migrationPlan) : undefined,
+      migrationPlan: isObject(object.migrationPlan)
+        ? Object.entries(object.migrationPlan).reduce<{ [key: string]: ThreadMigrationPlan }>((acc, [key, value]) => {
+          acc[key] = ThreadMigrationPlan.fromJSON(value);
+          return acc;
+        }, {})
+        : {},
+      newWfSpec: isSet(object.newWfSpec) ? WfSpecId.fromJSON(object.newWfSpec) : undefined,
     };
   },
 
@@ -8764,8 +8788,17 @@ export const PutMigrationPlanRequest = {
     if (message.name !== "") {
       obj.name = message.name;
     }
-    if (message.migrationPlan !== undefined) {
-      obj.migrationPlan = MigrationPlan.toJSON(message.migrationPlan);
+    if (message.migrationPlan) {
+      const entries = Object.entries(message.migrationPlan);
+      if (entries.length > 0) {
+        obj.migrationPlan = {};
+        entries.forEach(([k, v]) => {
+          obj.migrationPlan[k] = ThreadMigrationPlan.toJSON(v);
+        });
+      }
+    }
+    if (message.newWfSpec !== undefined) {
+      obj.newWfSpec = WfSpecId.toJSON(message.newWfSpec);
     }
     return obj;
   },
@@ -8776,21 +8809,102 @@ export const PutMigrationPlanRequest = {
   fromPartial(object: DeepPartial<PutMigrationPlanRequest>): PutMigrationPlanRequest {
     const message = createBasePutMigrationPlanRequest();
     message.name = object.name ?? "";
-    message.migrationPlan = (object.migrationPlan !== undefined && object.migrationPlan !== null)
-      ? MigrationPlan.fromPartial(object.migrationPlan)
+    message.migrationPlan = Object.entries(object.migrationPlan ?? {}).reduce<{ [key: string]: ThreadMigrationPlan }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = ThreadMigrationPlan.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    message.newWfSpec = (object.newWfSpec !== undefined && object.newWfSpec !== null)
+      ? WfSpecId.fromPartial(object.newWfSpec)
+      : undefined;
+    return message;
+  },
+};
+
+function createBasePutMigrationPlanRequest_MigrationPlanEntry(): PutMigrationPlanRequest_MigrationPlanEntry {
+  return { key: "", value: undefined };
+}
+
+export const PutMigrationPlanRequest_MigrationPlanEntry = {
+  encode(message: PutMigrationPlanRequest_MigrationPlanEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      ThreadMigrationPlan.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutMigrationPlanRequest_MigrationPlanEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutMigrationPlanRequest_MigrationPlanEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = ThreadMigrationPlan.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PutMigrationPlanRequest_MigrationPlanEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? ThreadMigrationPlan.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: PutMigrationPlanRequest_MigrationPlanEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = ThreadMigrationPlan.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<PutMigrationPlanRequest_MigrationPlanEntry>): PutMigrationPlanRequest_MigrationPlanEntry {
+    return PutMigrationPlanRequest_MigrationPlanEntry.fromPartial(base ?? {});
+  },
+  fromPartial(
+    object: DeepPartial<PutMigrationPlanRequest_MigrationPlanEntry>,
+  ): PutMigrationPlanRequest_MigrationPlanEntry {
+    const message = createBasePutMigrationPlanRequest_MigrationPlanEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? ThreadMigrationPlan.fromPartial(object.value)
       : undefined;
     return message;
   },
 };
 
 function createBaseMigrateWfRunRequest(): MigrateWfRunRequest {
-  return {
-    migrationPlanId: undefined,
-    wfRunId: undefined,
-    revisionNumber: 0,
-    majorVersionNumber: 0,
-    migrationVars: {},
-  };
+  return { migrationPlanId: undefined, wfRunId: undefined, migrationVars: {} };
 }
 
 export const MigrateWfRunRequest = {
@@ -8800,12 +8914,6 @@ export const MigrateWfRunRequest = {
     }
     if (message.wfRunId !== undefined) {
       WfRunId.encode(message.wfRunId, writer.uint32(18).fork()).ldelim();
-    }
-    if (message.revisionNumber !== 0) {
-      writer.uint32(24).int32(message.revisionNumber);
-    }
-    if (message.majorVersionNumber !== 0) {
-      writer.uint32(32).int32(message.majorVersionNumber);
     }
     Object.entries(message.migrationVars).forEach(([key, value]) => {
       MigrateWfRunRequest_MigrationVarsEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).ldelim();
@@ -8834,20 +8942,6 @@ export const MigrateWfRunRequest = {
 
           message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.revisionNumber = reader.int32();
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.majorVersionNumber = reader.int32();
-          continue;
         case 5:
           if (tag !== 42) {
             break;
@@ -8871,8 +8965,6 @@ export const MigrateWfRunRequest = {
     return {
       migrationPlanId: isSet(object.migrationPlanId) ? MigrationPlanId.fromJSON(object.migrationPlanId) : undefined,
       wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
-      revisionNumber: isSet(object.revisionNumber) ? globalThis.Number(object.revisionNumber) : 0,
-      majorVersionNumber: isSet(object.majorVersionNumber) ? globalThis.Number(object.majorVersionNumber) : 0,
       migrationVars: isObject(object.migrationVars)
         ? Object.entries(object.migrationVars).reduce<{ [key: string]: MigrationVariables }>((acc, [key, value]) => {
           acc[key] = MigrationVariables.fromJSON(value);
@@ -8889,12 +8981,6 @@ export const MigrateWfRunRequest = {
     }
     if (message.wfRunId !== undefined) {
       obj.wfRunId = WfRunId.toJSON(message.wfRunId);
-    }
-    if (message.revisionNumber !== 0) {
-      obj.revisionNumber = Math.round(message.revisionNumber);
-    }
-    if (message.majorVersionNumber !== 0) {
-      obj.majorVersionNumber = Math.round(message.majorVersionNumber);
     }
     if (message.migrationVars) {
       const entries = Object.entries(message.migrationVars);
@@ -8919,8 +9005,6 @@ export const MigrateWfRunRequest = {
     message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
       ? WfRunId.fromPartial(object.wfRunId)
       : undefined;
-    message.revisionNumber = object.revisionNumber ?? 0;
-    message.majorVersionNumber = object.majorVersionNumber ?? 0;
     message.migrationVars = Object.entries(object.migrationVars ?? {}).reduce<{ [key: string]: MigrationVariables }>(
       (acc, [key, value]) => {
         if (value !== undefined) {
@@ -9051,8 +9135,8 @@ export const MigrationVariables = {
   fromJSON(object: any): MigrationVariables {
     return {
       varValues: isObject(object.varValues)
-        ? Object.entries(object.varValues).reduce<{ [key: string]: VariableValue }>((acc, [key, value]) => {
-          acc[key] = VariableValue.fromJSON(value);
+        ? Object.entries(object.varValues).reduce<{ [key: string]: VariableAssignment }>((acc, [key, value]) => {
+          acc[key] = VariableAssignment.fromJSON(value);
           return acc;
         }, {})
         : {},
@@ -9066,7 +9150,7 @@ export const MigrationVariables = {
       if (entries.length > 0) {
         obj.varValues = {};
         entries.forEach(([k, v]) => {
-          obj.varValues[k] = VariableValue.toJSON(v);
+          obj.varValues[k] = VariableAssignment.toJSON(v);
         });
       }
     }
@@ -9078,10 +9162,10 @@ export const MigrationVariables = {
   },
   fromPartial(object: DeepPartial<MigrationVariables>): MigrationVariables {
     const message = createBaseMigrationVariables();
-    message.varValues = Object.entries(object.varValues ?? {}).reduce<{ [key: string]: VariableValue }>(
+    message.varValues = Object.entries(object.varValues ?? {}).reduce<{ [key: string]: VariableAssignment }>(
       (acc, [key, value]) => {
         if (value !== undefined) {
-          acc[key] = VariableValue.fromPartial(value);
+          acc[key] = VariableAssignment.fromPartial(value);
         }
         return acc;
       },
@@ -9101,7 +9185,7 @@ export const MigrationVariables_VarValuesEntry = {
       writer.uint32(10).string(message.key);
     }
     if (message.value !== undefined) {
-      VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+      VariableAssignment.encode(message.value, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -9125,7 +9209,7 @@ export const MigrationVariables_VarValuesEntry = {
             break;
           }
 
-          message.value = VariableValue.decode(reader, reader.uint32());
+          message.value = VariableAssignment.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -9139,7 +9223,7 @@ export const MigrationVariables_VarValuesEntry = {
   fromJSON(object: any): MigrationVariables_VarValuesEntry {
     return {
       key: isSet(object.key) ? globalThis.String(object.key) : "",
-      value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
+      value: isSet(object.value) ? VariableAssignment.fromJSON(object.value) : undefined,
     };
   },
 
@@ -9149,7 +9233,7 @@ export const MigrationVariables_VarValuesEntry = {
       obj.key = message.key;
     }
     if (message.value !== undefined) {
-      obj.value = VariableValue.toJSON(message.value);
+      obj.value = VariableAssignment.toJSON(message.value);
     }
     return obj;
   },
@@ -9161,7 +9245,7 @@ export const MigrationVariables_VarValuesEntry = {
     const message = createBaseMigrationVariables_VarValuesEntry();
     message.key = object.key ?? "";
     message.value = (object.value !== undefined && object.value !== null)
-      ? VariableValue.fromPartial(object.value)
+      ? VariableAssignment.fromPartial(object.value)
       : undefined;
     return message;
   },

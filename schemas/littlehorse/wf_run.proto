@@ -52,6 +52,8 @@ message WfRun {
   // A list of pending failure handlers which will fire once their appropriate ThreadRun's
   // finish halting.
   repeated PendingFailureHandler pending_failures = 10;
+
+  MigrationPlanId migration_plan_id = 11;
 }
 
 // The type of a ThreadRUn.

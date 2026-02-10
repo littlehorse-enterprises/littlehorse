@@ -66,25 +66,17 @@ public interface MigrateWfRunRequestOrBuilder extends
 
   /**
    * <pre>
-   * What version to migrate to
+   * Thread Name -&gt; Variables needed for proper migration
    * </pre>
    *
-   * <code>int32 revision_number = 3;</code>
-   * @return The revisionNumber.
-   */
-  int getRevisionNumber();
-
-  /**
-   * <code>int32 major_version_number = 4;</code>
-   * @return The majorVersionNumber.
-   */
-  int getMajorVersionNumber();
-
-  /**
    * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
    */
   int getMigrationVarsCount();
   /**
+   * <pre>
+   * Thread Name -&gt; Variables needed for proper migration
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
    */
   boolean containsMigrationVars(
@@ -96,11 +88,19 @@ public interface MigrateWfRunRequestOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables>
   getMigrationVars();
   /**
+   * <pre>
+   * Thread Name -&gt; Variables needed for proper migration
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVariables>
   getMigrationVarsMap();
   /**
+   * <pre>
+   * Thread Name -&gt; Variables needed for proper migration
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
    */
   /* nullable */
@@ -109,6 +109,10 @@ io.littlehorse.sdk.common.proto.MigrationVariables getMigrationVarsOrDefault(
       /* nullable */
 io.littlehorse.sdk.common.proto.MigrationVariables defaultValue);
   /**
+   * <pre>
+   * Thread Name -&gt; Variables needed for proper migration
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.MigrationVariables&gt; migration_vars = 5;</code>
    */
   io.littlehorse.sdk.common.proto.MigrationVariables getMigrationVarsOrThrow(

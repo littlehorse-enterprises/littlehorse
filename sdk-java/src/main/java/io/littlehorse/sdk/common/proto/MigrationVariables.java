@@ -58,19 +58,19 @@ private static final long serialVersionUID = 0L;
   public static final int VAR_VALUES_FIELD_NUMBER = 1;
   private static final class VarValuesDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
-        java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> defaultEntry =
+        java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> defaultEntry =
             com.google.protobuf.MapEntry
-            .<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>newDefaultInstance(
+            .<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>newDefaultInstance(
                 io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MigrationVariables_VarValuesEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance());
+                io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance());
   }
   @SuppressWarnings("serial")
   private com.google.protobuf.MapField<
-      java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> varValues_;
-  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+      java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> varValues_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
   internalGetVarValues() {
     if (varValues_ == null) {
       return com.google.protobuf.MapField.emptyMapField(
@@ -82,7 +82,11 @@ private static final long serialVersionUID = 0L;
     return internalGetVarValues().getMap().size();
   }
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+   * <pre>
+   * var name -&gt; var Value
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
    */
   @java.lang.Override
   public boolean containsVarValues(
@@ -95,38 +99,50 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   @java.lang.Deprecated
-  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getVarValues() {
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> getVarValues() {
     return getVarValuesMap();
   }
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+   * <pre>
+   * var name -&gt; var Value
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
    */
   @java.lang.Override
-  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getVarValuesMap() {
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> getVarValuesMap() {
     return internalGetVarValues().getMap();
   }
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+   * <pre>
+   * var name -&gt; var Value
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
    */
   @java.lang.Override
   public /* nullable */
-io.littlehorse.sdk.common.proto.VariableValue getVarValuesOrDefault(
+io.littlehorse.sdk.common.proto.VariableAssignment getVarValuesOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
+io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> map =
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> map =
         internalGetVarValues().getMap();
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+   * <pre>
+   * var name -&gt; var Value
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableValue getVarValuesOrThrow(
+  public io.littlehorse.sdk.common.proto.VariableAssignment getVarValuesOrThrow(
       java.lang.String key) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> map =
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> map =
         internalGetVarValues().getMap();
     if (!map.containsKey(key)) {
       throw new java.lang.IllegalArgumentException();
@@ -163,9 +179,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (size != -1) return size;
 
     size = 0;
-    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> entry
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> entry
          : internalGetVarValues().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
       varValues__ = VarValuesDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
@@ -439,7 +455,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
               done = true;
               break;
             case 10: {
-              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
               varValues__ = input.readMessage(
                   VarValuesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               internalGetMutableVarValues().ensureBuilderMap().put(
@@ -464,30 +480,30 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     private int bitField0_;
 
-    private static final class VarValuesConverter implements com.google.protobuf.MapFieldBuilder.Converter<java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder, io.littlehorse.sdk.common.proto.VariableValue> {
+    private static final class VarValuesConverter implements com.google.protobuf.MapFieldBuilder.Converter<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder, io.littlehorse.sdk.common.proto.VariableAssignment> {
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.VariableValue build(io.littlehorse.sdk.common.proto.VariableValueOrBuilder val) {
-        if (val instanceof io.littlehorse.sdk.common.proto.VariableValue) { return (io.littlehorse.sdk.common.proto.VariableValue) val; }
-        return ((io.littlehorse.sdk.common.proto.VariableValue.Builder) val).build();
+      public io.littlehorse.sdk.common.proto.VariableAssignment build(io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder val) {
+        if (val instanceof io.littlehorse.sdk.common.proto.VariableAssignment) { return (io.littlehorse.sdk.common.proto.VariableAssignment) val; }
+        return ((io.littlehorse.sdk.common.proto.VariableAssignment.Builder) val).build();
       }
 
       @java.lang.Override
-      public com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> defaultEntry() {
+      public com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> defaultEntry() {
         return VarValuesDefaultEntryHolder.defaultEntry;
       }
     };
     private static final VarValuesConverter varValuesConverter = new VarValuesConverter();
 
     private com.google.protobuf.MapFieldBuilder<
-        java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder, io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder> varValues_;
-    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder, io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder>
+        java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder, io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder> varValues_;
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder, io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder>
         internalGetVarValues() {
       if (varValues_ == null) {
         return new com.google.protobuf.MapFieldBuilder<>(varValuesConverter);
       }
       return varValues_;
     }
-    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder, io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder>
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder, io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder>
         internalGetMutableVarValues() {
       if (varValues_ == null) {
         varValues_ = new com.google.protobuf.MapFieldBuilder<>(varValuesConverter);
@@ -500,7 +516,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return internalGetVarValues().ensureBuilderMap().size();
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+     * <pre>
+     * var name -&gt; var Value
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
      */
     @java.lang.Override
     public boolean containsVarValues(
@@ -513,37 +533,49 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      */
     @java.lang.Override
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getVarValues() {
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> getVarValues() {
       return getVarValuesMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+     * <pre>
+     * var name -&gt; var Value
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
      */
     @java.lang.Override
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getVarValuesMap() {
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> getVarValuesMap() {
       return internalGetVarValues().getImmutableMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+     * <pre>
+     * var name -&gt; var Value
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
      */
     @java.lang.Override
     public /* nullable */
-io.littlehorse.sdk.common.proto.VariableValue getVarValuesOrDefault(
+io.littlehorse.sdk.common.proto.VariableAssignment getVarValuesOrDefault(
         java.lang.String key,
         /* nullable */
-io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
+io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> map = internalGetMutableVarValues().ensureBuilderMap();
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> map = internalGetMutableVarValues().ensureBuilderMap();
       return map.containsKey(key) ? varValuesConverter.build(map.get(key)) : defaultValue;
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+     * <pre>
+     * var name -&gt; var Value
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableValue getVarValuesOrThrow(
+    public io.littlehorse.sdk.common.proto.VariableAssignment getVarValuesOrThrow(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> map = internalGetMutableVarValues().ensureBuilderMap();
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> map = internalGetMutableVarValues().ensureBuilderMap();
       if (!map.containsKey(key)) {
         throw new java.lang.IllegalArgumentException();
       }
@@ -555,7 +587,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+     * <pre>
+     * var name -&gt; var Value
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
      */
     public Builder removeVarValues(
         java.lang.String key) {
@@ -568,17 +604,21 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * Use alternate mutation accessors instead.
      */
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
         getMutableVarValues() {
       bitField0_ |= 0x00000001;
       return internalGetMutableVarValues().ensureMessageMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+     * <pre>
+     * var name -&gt; var Value
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
      */
     public Builder putVarValues(
         java.lang.String key,
-        io.littlehorse.sdk.common.proto.VariableValue value) {
+        io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (key == null) { throw new NullPointerException("map key"); }
       if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableVarValues().ensureBuilderMap()
@@ -587,11 +627,15 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+     * <pre>
+     * var name -&gt; var Value
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
      */
     public Builder putAllVarValues(
-        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> values) {
-      for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> e : values.entrySet()) {
+        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> values) {
+      for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> e : values.entrySet()) {
         if (e.getKey() == null || e.getValue() == null) {
           throw new NullPointerException();
         }
@@ -602,21 +646,25 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; var_values = 1;</code>
+     * <pre>
+     * var name -&gt; var Value
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; var_values = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableValue.Builder putVarValuesBuilderIfAbsent(
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder putVarValuesBuilderIfAbsent(
         java.lang.String key) {
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> builderMap = internalGetMutableVarValues().ensureBuilderMap();
-      io.littlehorse.sdk.common.proto.VariableValueOrBuilder entry = builderMap.get(key);
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> builderMap = internalGetMutableVarValues().ensureBuilderMap();
+      io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder entry = builderMap.get(key);
       if (entry == null) {
-        entry = io.littlehorse.sdk.common.proto.VariableValue.newBuilder();
+        entry = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder();
         builderMap.put(key, entry);
       }
-      if (entry instanceof io.littlehorse.sdk.common.proto.VariableValue) {
-        entry = ((io.littlehorse.sdk.common.proto.VariableValue) entry).toBuilder();
+      if (entry instanceof io.littlehorse.sdk.common.proto.VariableAssignment) {
+        entry = ((io.littlehorse.sdk.common.proto.VariableAssignment) entry).toBuilder();
         builderMap.put(key, entry);
       }
-      return (io.littlehorse.sdk.common.proto.VariableValue.Builder) entry;
+      return (io.littlehorse.sdk.common.proto.VariableAssignment.Builder) entry;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MigrationVariables)

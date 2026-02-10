@@ -85,27 +85,27 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue);
       java.lang.String key);
 
   /**
-   * <code>repeated string migration_vars = 4;</code>
-   * @return A list containing the migrationVars.
+   * <code>repeated string required_migration_vars = 4;</code>
+   * @return A list containing the requiredMigrationVars.
    */
   java.util.List<java.lang.String>
-      getMigrationVarsList();
+      getRequiredMigrationVarsList();
   /**
-   * <code>repeated string migration_vars = 4;</code>
-   * @return The count of migrationVars.
+   * <code>repeated string required_migration_vars = 4;</code>
+   * @return The count of requiredMigrationVars.
    */
-  int getMigrationVarsCount();
+  int getRequiredMigrationVarsCount();
   /**
-   * <code>repeated string migration_vars = 4;</code>
+   * <code>repeated string required_migration_vars = 4;</code>
    * @param index The index of the element to return.
-   * @return The migrationVars at the given index.
+   * @return The requiredMigrationVars at the given index.
    */
-  java.lang.String getMigrationVars(int index);
+  java.lang.String getRequiredMigrationVars(int index);
   /**
-   * <code>repeated string migration_vars = 4;</code>
+   * <code>repeated string required_migration_vars = 4;</code>
    * @param index The index of the value to return.
-   * @return The bytes of the migrationVars at the given index.
+   * @return The bytes of the requiredMigrationVars at the given index.
    */
   com.google.protobuf.ByteString
-      getMigrationVarsBytes(int index);
+      getRequiredMigrationVarsBytes(int index);
 }

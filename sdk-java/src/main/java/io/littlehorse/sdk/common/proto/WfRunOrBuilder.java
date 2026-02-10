@@ -347,4 +347,19 @@ public interface WfRunOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder getPendingFailuresOrBuilder(
       int index);
+
+  /**
+   * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+   * @return Whether the migrationPlanId field is set.
+   */
+  boolean hasMigrationPlanId();
+  /**
+   * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+   * @return The migrationPlanId.
+   */
+  io.littlehorse.sdk.common.proto.MigrationPlanId getMigrationPlanId();
+  /**
+   * <code>.littlehorse.MigrationPlanId migration_plan_id = 11;</code>
+   */
+  io.littlehorse.sdk.common.proto.MigrationPlanIdOrBuilder getMigrationPlanIdOrBuilder();
 }
