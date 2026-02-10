@@ -62,6 +62,18 @@ Lastly for Getables, some metadata `Getable`s which do not have anything to do w
 
 When you run the examples, REMEMBER THAT THE `./gradlew example-foo:run` SHOULD GO IN THE BACKGROUND! it runs a task worker which is a long-lived process that won't terminate until you kill it. It needs to keep running in the background.
 
+#### VERIFY SERVER IS RUNNING (REQUIRED)
+
+When asked whether the server is running, ALWAYS verify connectivity first:
+
+- Run: `lhctl whoami`
+
+Notes:
+- `localhost:2023` is the gRPC listener; don't use `curl http://localhost:2023` as a "server up" check.
+- If `lhctl whoami` can't be executed due to environment/network restrictions, say so explicitly and use these fallbacks:
+  - Server log shows "Starting the LHServer now!" and Kafka Streams reaches `RUNNING`.
+  - Process list contains `io.littlehorse.App ... local-dev/configs/server-1.config`.
+
 ### E2E Tests
 
 If you edit the server, and every time you add functionality in the `sdk-java`, please add an end-to-end test. Look in `server/src/test/java/e2e` for examples.
