@@ -15,6 +15,7 @@ import io.littlehorse.sdk.common.proto.CountAndTiming;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.MetricWindow;
 import io.littlehorse.sdk.common.proto.MetricWindowId;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,7 +76,7 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         }
     }
 
-    public void trackWfRun(LHStatus previousStatus, LHStatus newStatus, Date startTime, Date endTime) {
+    public void incrementWfCount(LHStatus previousStatus, LHStatus newStatus, Date startTime, Date endTime) {
         if (previousStatus != null) {
             if (endTime == null) {
                 endTime = new Date();
@@ -87,6 +88,29 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         } else {
             incrementCount("started");
         }
+    }
+
+    public static void trackWorkflow(
+            CoreProcessorContext processorContext,
+            WfSpecIdModel wfSpecId,
+            LHStatus previousStatus,
+            LHStatus newStatus,
+            Date startTime,
+            Date endTime) {
+        Date windowStart = LHUtil.getCurrentWindowTime();
+        TenantIdModel tenantId = processorContext.authorization().tenantId();
+
+        ClusterScopedStore clusterScopedStore =
+                ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
+
+        PartitionMetricWindowModel metricWindow = clusterScopedStore.get(
+                buildStoreKey(windowStart, tenantId, wfSpecId), PartitionMetricWindowModel.class);
+        if (metricWindow == null) {
+            metricWindow = new PartitionMetricWindowModel(wfSpecId, tenantId);
+        }
+
+        metricWindow.incrementWfCount(previousStatus, newStatus, startTime, endTime);
+        clusterScopedStore.put(metricWindow);
     }
 
     @Override
@@ -141,17 +165,12 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
 
     public MetricWindow.Builder toMetricWindowProto() {
         MetricWindow.Builder builder = MetricWindow.newBuilder();
-
-        // Build MetricWindowId
         WfSpecIdModel wfSpecId = this.wfSpecId;
         MetricWindowIdModel id = new MetricWindowIdModel(wfSpecId, this.windowStart);
         builder.setId(id.toProto());
-
-        // Set metrics
-        this.metrics.forEach((key, value) -> {
-            builder.putMetrics(key, value.toProto().build());
+        this.metrics.forEach((key, val) -> {
+            builder.putMetrics(key, val.toProto().build());
         });
-
         return builder;
     }
 

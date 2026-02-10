@@ -29,7 +29,6 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
@@ -50,7 +49,6 @@ import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
-import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
@@ -674,7 +672,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         }
         LHStatus previousStatus = this.status;
         this.status = status;
-        trackMetrics(processorContext, previousStatus);
         processorContext.getableUpdates().dispatch(statusChanged);
 
         WorkflowRetentionPolicyModel retentionPolicy = getWfSpec().getRetentionPolicy();
@@ -695,24 +692,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 processorContext.getTaskManager().scheduleTimer(timer);
             }
         }
-    }
-
-    private void trackMetrics(CoreProcessorContext processorContext, LHStatus previousStatus) {
-        Date windowStart = LHUtil.getCurrentWindowTime();
-        TenantIdModel tenantId = processorContext.authorization().tenantId();
-
-        ClusterScopedStore clusterScopedStore =
-                ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
-
-        PartitionMetricWindowModel metricWindow = clusterScopedStore.get(
-                PartitionMetricWindowModel.buildStoreKey(windowStart, tenantId, wfSpecId),
-                PartitionMetricWindowModel.class);
-        if (metricWindow == null) {
-            metricWindow = new PartitionMetricWindowModel(wfSpecId, tenantId);
-        }
-
-        metricWindow.trackWfRun(previousStatus, status, startTime, endTime);
-        clusterScopedStore.put(metricWindow);
+        PartitionMetricWindowModel.trackWorkflow(
+                processorContext, wfSpecId, previousStatus, status, startTime, endTime);
     }
 
     private boolean isTerminated() {

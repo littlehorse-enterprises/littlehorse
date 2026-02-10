@@ -94,7 +94,7 @@ public class PartitionMetricWindowModelTest {
         PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
         Date startTime = new Date(1000L);
 
-        model.trackWfRun(null, LHStatus.RUNNING, startTime, null);
+        model.incrementWfCount(null, LHStatus.RUNNING, startTime, null);
 
         assertThat(model.getMetrics()).hasSize(1);
         assertThat(model.getMetrics()).containsKey("started");
@@ -107,7 +107,7 @@ public class PartitionMetricWindowModelTest {
         Date startTime = new Date(1000L);
         Date endTime = new Date(6000L); // 5 seconds later
 
-        model.trackWfRun(LHStatus.RUNNING, LHStatus.COMPLETED, startTime, endTime);
+        model.incrementWfCount(LHStatus.RUNNING, LHStatus.COMPLETED, startTime, endTime);
 
         assertThat(model.getMetrics()).hasSize(1);
         String expectedKey = "running_to_completed";
@@ -124,7 +124,7 @@ public class PartitionMetricWindowModelTest {
         PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
         Date startTime = new Date(System.currentTimeMillis() - 1000L); // 1 second ago
 
-        model.trackWfRun(LHStatus.RUNNING, LHStatus.HALTED, startTime, null);
+        model.incrementWfCount(LHStatus.RUNNING, LHStatus.HALTED, startTime, null);
 
         assertThat(model.getMetrics()).hasSize(1);
         String expectedKey = "running_to_halted";
@@ -138,9 +138,9 @@ public class PartitionMetricWindowModelTest {
     public void shouldTrackMultipleTransitions() {
         PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
 
-        model.trackWfRun(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(1000L), new Date(3000L));
-        model.trackWfRun(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(2000L), new Date(5000L));
-        model.trackWfRun(LHStatus.RUNNING, LHStatus.ERROR, new Date(1000L), new Date(2000L));
+        model.incrementWfCount(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(1000L), new Date(3000L));
+        model.incrementWfCount(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(2000L), new Date(5000L));
+        model.incrementWfCount(LHStatus.RUNNING, LHStatus.ERROR, new Date(1000L), new Date(2000L));
 
         assertThat(model.getMetrics()).hasSize(2);
 
@@ -159,10 +159,10 @@ public class PartitionMetricWindowModelTest {
     public void shouldTrackDifferentStatusTransitions() {
         PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
 
-        model.trackWfRun(LHStatus.STARTING, LHStatus.RUNNING, new Date(1000L), new Date(2000L));
-        model.trackWfRun(LHStatus.RUNNING, LHStatus.HALTED, new Date(2000L), new Date(3000L));
-        model.trackWfRun(LHStatus.HALTED, LHStatus.RUNNING, new Date(3000L), new Date(4000L));
-        model.trackWfRun(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(4000L), new Date(5000L));
+        model.incrementWfCount(LHStatus.STARTING, LHStatus.RUNNING, new Date(1000L), new Date(2000L));
+        model.incrementWfCount(LHStatus.RUNNING, LHStatus.HALTED, new Date(2000L), new Date(3000L));
+        model.incrementWfCount(LHStatus.HALTED, LHStatus.RUNNING, new Date(3000L), new Date(4000L));
+        model.incrementWfCount(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(4000L), new Date(5000L));
 
         assertThat(model.getMetrics()).hasSize(4);
         assertThat(model.getMetrics()).containsKey("starting_to_running");
@@ -176,7 +176,7 @@ public class PartitionMetricWindowModelTest {
         PartitionMetricWindowModel model = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
         Date time = new Date(1000L);
 
-        model.trackWfRun(LHStatus.RUNNING, LHStatus.COMPLETED, time, time);
+        model.incrementWfCount(LHStatus.RUNNING, LHStatus.COMPLETED, time, time);
 
         CountAndTimingModel timing = model.getMetrics().get("running_to_completed");
         assertThat(timing.getTotalLatencyMs()).isEqualTo(0L);
@@ -187,12 +187,12 @@ public class PartitionMetricWindowModelTest {
     @Test
     public void shouldCombineTrackingAndMerging() {
         PartitionMetricWindowModel model1 = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
-        model1.trackWfRun(null, LHStatus.RUNNING, new Date(1000L), null);
-        model1.trackWfRun(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(1000L), new Date(3000L));
+        model1.incrementWfCount(null, LHStatus.RUNNING, new Date(1000L), null);
+        model1.incrementWfCount(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(1000L), new Date(3000L));
 
         PartitionMetricWindowModel model2 = new PartitionMetricWindowModel(wfSpecId, windowStart, tenantId);
-        model2.trackWfRun(null, LHStatus.RUNNING, new Date(2000L), null);
-        model2.trackWfRun(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(2000L), new Date(5000L));
+        model2.incrementWfCount(null, LHStatus.RUNNING, new Date(2000L), null);
+        model2.incrementWfCount(LHStatus.RUNNING, LHStatus.COMPLETED, new Date(2000L), new Date(5000L));
 
         model1.mergeFrom(model2);
 
