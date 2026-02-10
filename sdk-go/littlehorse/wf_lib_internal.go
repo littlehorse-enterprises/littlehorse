@@ -1243,6 +1243,59 @@ func (t *WorkflowThread) registerExternalEventDefAsEmpty(n *ExternalEventNodeOut
 	return n
 }
 
+type interruptExternalEventDefRegistration struct {
+	eventName   string
+	payloadType *lhproto.VariableType
+}
+
+func (n *interruptExternalEventDefRegistration) ToPutExternalEventDefRequest() *lhproto.PutExternalEventDefRequest {
+	req := &lhproto.PutExternalEventDefRequest{
+		Name: n.eventName,
+	}
+
+	if n.payloadType != nil {
+		req.ContentType = &lhproto.ReturnType{
+			ReturnType: &lhproto.TypeDefinition{
+				DefinedType: &lhproto.TypeDefinition_PrimitiveType{
+					PrimitiveType: *n.payloadType,
+				},
+			},
+		}
+	}
+
+	return req
+}
+
+func (t *WorkflowThread) registerInterruptExternalEventDefAs(handler *InterruptHandler, payloadType lhproto.VariableType) {
+	t.checkIfIsActive()
+	if handler.eventTypeSet {
+		t.throwError(tracerr.Wrap(errors.New("interrupt event type already registered")))
+	}
+	handler.eventTypeSet = true
+	t.wf.externalEventsToRegister = append(
+		t.wf.externalEventsToRegister,
+		&interruptExternalEventDefRegistration{
+			eventName:   handler.interruptName,
+			payloadType: &payloadType,
+		},
+	)
+}
+
+func (t *WorkflowThread) registerInterruptExternalEventDefAsEmpty(handler *InterruptHandler) {
+	t.checkIfIsActive()
+	if handler.eventTypeSet {
+		t.throwError(tracerr.Wrap(errors.New("interrupt event type already registered")))
+	}
+	handler.eventTypeSet = true
+	t.wf.externalEventsToRegister = append(
+		t.wf.externalEventsToRegister,
+		&interruptExternalEventDefRegistration{
+			eventName:   handler.interruptName,
+			payloadType: nil,
+		},
+	)
+}
+
 func (t *WorkflowThread) addTimeoutToExtEvtNode(extEvNodeOutput *ExternalEventNodeOutput, timeoutSeconds int64) {
 	t.checkIfIsActive()
 
@@ -1525,13 +1578,18 @@ func (t *WorkflowThread) sleep(sleepSeconds int) {
 	node.Node = sleepNode
 }
 
-func (t *WorkflowThread) handleInterrupt(interruptName string, handler ThreadFunc) {
+func (t *WorkflowThread) handleInterrupt(interruptName string, handler ThreadFunc) *InterruptHandler {
 	t.checkIfIsActive()
 	handlerName := t.wf.addSubThread("interrupt-"+interruptName, handler)
 	t.spec.InterruptDefs = append(t.spec.InterruptDefs, &lhproto.InterruptDef{
 		ExternalEventDefId: &lhproto.ExternalEventDefId{Name: interruptName},
 		HandlerSpecName:    handlerName,
 	})
+	return &InterruptHandler{
+		thread:        t,
+		interruptName: interruptName,
+		eventTypeSet:  false,
+	}
 }
 
 func (t *WorkflowThread) handleError(
