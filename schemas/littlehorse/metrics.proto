@@ -3,60 +3,11 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
-import "common_enums.proto";
-import "user_tasks.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
-
-message LHTransition {
-  LHStatus from_status = 1;
-  LHStatus to_status = 2;
-}
-
-message TaskTransition {
-  TaskStatus from_status = 1;
-  TaskStatus to_status = 2;
-}
-
-message UserTaskTransition {
-  UserTaskRunStatus from_status = 1;
-  UserTaskRunStatus to_status = 2;
-}
-
-message StatusTransition {
-  oneof transition {
-    LHTransition lh_transition = 1;
-    TaskTransition task_transition = 2;
-    UserTaskTransition user_task_transition = 3;
-    LHTransition node_transition = 4;
-  }
-}
-
-message MetricScope {
-  oneof type {
-    WfSpecId wf_spec = 1;
-    TaskDefId task_def = 2;
-    NodeReference node = 3;
-    bool global = 4; // for cluster-wide metrics
-  }
-}
-
-message NodeReference {
-  WfSpecId wf_spec = 1;
-  optional string thread_name = 2;
-  optional string node_name = 3;
-  optional TaskDefId task_def = 4;
-}
-
-message MetricSpec {
-  string id = 1;
-  google.protobuf.Timestamp created_at = 2;
-  MetricScope scope = 3;
-  StatusTransition transition = 4;
-}
 
 message WorkflowMetricId {
     optional WfSpecId wf_spec = 1; // If null, tenant-level aggregate

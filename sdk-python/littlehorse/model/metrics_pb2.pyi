@@ -2,8 +2,6 @@ import datetime
 
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
-import littlehorse.model.common_enums_pb2 as _common_enums_pb2
-import littlehorse.model.user_tasks_pb2 as _user_tasks_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -11,77 +9,6 @@ from collections.abc import Iterable as _Iterable, Mapping as _Mapping
 from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
-
-class LHTransition(_message.Message):
-    __slots__ = ("from_status", "to_status")
-    FROM_STATUS_FIELD_NUMBER: _ClassVar[int]
-    TO_STATUS_FIELD_NUMBER: _ClassVar[int]
-    from_status: _common_enums_pb2.LHStatus
-    to_status: _common_enums_pb2.LHStatus
-    def __init__(self, from_status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., to_status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ...) -> None: ...
-
-class TaskTransition(_message.Message):
-    __slots__ = ("from_status", "to_status")
-    FROM_STATUS_FIELD_NUMBER: _ClassVar[int]
-    TO_STATUS_FIELD_NUMBER: _ClassVar[int]
-    from_status: _common_enums_pb2.TaskStatus
-    to_status: _common_enums_pb2.TaskStatus
-    def __init__(self, from_status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., to_status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ...) -> None: ...
-
-class UserTaskTransition(_message.Message):
-    __slots__ = ("from_status", "to_status")
-    FROM_STATUS_FIELD_NUMBER: _ClassVar[int]
-    TO_STATUS_FIELD_NUMBER: _ClassVar[int]
-    from_status: _user_tasks_pb2.UserTaskRunStatus
-    to_status: _user_tasks_pb2.UserTaskRunStatus
-    def __init__(self, from_status: _Optional[_Union[_user_tasks_pb2.UserTaskRunStatus, str]] = ..., to_status: _Optional[_Union[_user_tasks_pb2.UserTaskRunStatus, str]] = ...) -> None: ...
-
-class StatusTransition(_message.Message):
-    __slots__ = ("lh_transition", "task_transition", "user_task_transition", "node_transition")
-    LH_TRANSITION_FIELD_NUMBER: _ClassVar[int]
-    TASK_TRANSITION_FIELD_NUMBER: _ClassVar[int]
-    USER_TASK_TRANSITION_FIELD_NUMBER: _ClassVar[int]
-    NODE_TRANSITION_FIELD_NUMBER: _ClassVar[int]
-    lh_transition: LHTransition
-    task_transition: TaskTransition
-    user_task_transition: UserTaskTransition
-    node_transition: LHTransition
-    def __init__(self, lh_transition: _Optional[_Union[LHTransition, _Mapping]] = ..., task_transition: _Optional[_Union[TaskTransition, _Mapping]] = ..., user_task_transition: _Optional[_Union[UserTaskTransition, _Mapping]] = ..., node_transition: _Optional[_Union[LHTransition, _Mapping]] = ...) -> None: ...
-
-class MetricScope(_message.Message):
-    __slots__ = ("wf_spec", "task_def", "node")
-    WF_SPEC_FIELD_NUMBER: _ClassVar[int]
-    TASK_DEF_FIELD_NUMBER: _ClassVar[int]
-    NODE_FIELD_NUMBER: _ClassVar[int]
-    GLOBAL_FIELD_NUMBER: _ClassVar[int]
-    wf_spec: _object_id_pb2.WfSpecId
-    task_def: _object_id_pb2.TaskDefId
-    node: NodeReference
-    def __init__(self, wf_spec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., task_def: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., node: _Optional[_Union[NodeReference, _Mapping]] = ..., **kwargs) -> None: ...
-
-class NodeReference(_message.Message):
-    __slots__ = ("wf_spec", "thread_name", "node_name", "task_def")
-    WF_SPEC_FIELD_NUMBER: _ClassVar[int]
-    THREAD_NAME_FIELD_NUMBER: _ClassVar[int]
-    NODE_NAME_FIELD_NUMBER: _ClassVar[int]
-    TASK_DEF_FIELD_NUMBER: _ClassVar[int]
-    wf_spec: _object_id_pb2.WfSpecId
-    thread_name: str
-    node_name: str
-    task_def: _object_id_pb2.TaskDefId
-    def __init__(self, wf_spec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., thread_name: _Optional[str] = ..., node_name: _Optional[str] = ..., task_def: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ...) -> None: ...
-
-class MetricSpec(_message.Message):
-    __slots__ = ("id", "created_at", "scope", "transition")
-    ID_FIELD_NUMBER: _ClassVar[int]
-    CREATED_AT_FIELD_NUMBER: _ClassVar[int]
-    SCOPE_FIELD_NUMBER: _ClassVar[int]
-    TRANSITION_FIELD_NUMBER: _ClassVar[int]
-    id: str
-    created_at: _timestamp_pb2.Timestamp
-    scope: MetricScope
-    transition: StatusTransition
-    def __init__(self, id: _Optional[str] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., scope: _Optional[_Union[MetricScope, _Mapping]] = ..., transition: _Optional[_Union[StatusTransition, _Mapping]] = ...) -> None: ...
 
 class WorkflowMetricId(_message.Message):
     __slots__ = ("wf_spec",)

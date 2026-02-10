@@ -260,7 +260,7 @@ public enum VariableType
   }
   public static com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(6);
+    return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(4);
   }
 
   private static final VariableType[] VALUES = values();

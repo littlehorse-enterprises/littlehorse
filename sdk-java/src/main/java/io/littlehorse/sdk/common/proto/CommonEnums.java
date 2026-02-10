@@ -46,19 +46,17 @@ public final class CommonEnums extends com.google.protobuf.GeneratedFile {
       "_SERDE_ERROR\020\005\022\034\n\030TASK_INPUT_VAR_SUB_ERR" +
       "OR\020\006\022\022\n\016TASK_EXCEPTION\020\010\022\020\n\014TASK_PENDING" +
       "\020\t*=\n\023MetricsWindowLength\022\r\n\tMINUTES_5\020\000" +
-      "\022\013\n\007HOURS_2\020\001\022\n\n\006DAYS_1\020\002*)\n\017Aggregation" +
-      "Type\022\t\n\005COUNT\020\000\022\013\n\007LATENCY\020\001*5\n\024MetricRe" +
-      "cordingLevel\022\010\n\004INFO\020\000\022\010\n\004NONE\020\001\022\t\n\005DEBU" +
-      "G\020\002*{\n\014VariableType\022\014\n\010JSON_OBJ\020\000\022\014\n\010JSO" +
-      "N_ARR\020\001\022\n\n\006DOUBLE\020\002\022\010\n\004BOOL\020\003\022\007\n\003STR\020\004\022\007" +
-      "\n\003INT\020\005\022\t\n\005BYTES\020\006\022\r\n\tWF_RUN_ID\020\007\022\r\n\tTIM" +
-      "ESTAMP\020\010*\266\001\n\013LHErrorType\022\021\n\rCHILD_FAILUR" +
-      "E\020\000\022\021\n\rVAR_SUB_ERROR\020\001\022\026\n\022VAR_MUTATION_E" +
-      "RROR\020\002\022\027\n\023USER_TASK_CANCELLED\020\003\022\013\n\007TIMEO" +
-      "UT\020\004\022\020\n\014TASK_FAILURE\020\005\022\r\n\tVAR_ERROR\020\006\022\016\n" +
-      "\nTASK_ERROR\020\007\022\022\n\016INTERNAL_ERROR\020\010BM\n\037io." +
-      "littlehorse.sdk.common.protoP\001Z\t.;lhprot" +
-      "o\252\002\034LittleHorse.Sdk.Common.Protob\006proto3"
+      "\022\013\n\007HOURS_2\020\001\022\n\n\006DAYS_1\020\002*{\n\014VariableTyp" +
+      "e\022\014\n\010JSON_OBJ\020\000\022\014\n\010JSON_ARR\020\001\022\n\n\006DOUBLE\020" +
+      "\002\022\010\n\004BOOL\020\003\022\007\n\003STR\020\004\022\007\n\003INT\020\005\022\t\n\005BYTES\020\006" +
+      "\022\r\n\tWF_RUN_ID\020\007\022\r\n\tTIMESTAMP\020\010*\266\001\n\013LHErr" +
+      "orType\022\021\n\rCHILD_FAILURE\020\000\022\021\n\rVAR_SUB_ERR" +
+      "OR\020\001\022\026\n\022VAR_MUTATION_ERROR\020\002\022\027\n\023USER_TAS" +
+      "K_CANCELLED\020\003\022\013\n\007TIMEOUT\020\004\022\020\n\014TASK_FAILU" +
+      "RE\020\005\022\r\n\tVAR_ERROR\020\006\022\016\n\nTASK_ERROR\020\007\022\022\n\016I" +
+      "NTERNAL_ERROR\020\010BM\n\037io.littlehorse.sdk.co" +
+      "mmon.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sd" +
+      "k.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

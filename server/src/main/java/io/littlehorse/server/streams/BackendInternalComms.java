@@ -688,8 +688,6 @@ public class BackendInternalComms implements Closeable {
 
     private InternalScanResponse objectIdPrefixScan(InternalScan search) throws StatusRuntimeException {
         HostInfo correctHost = getHostForKey(search.storeName, search.partitionKey);
-        System.out.println("Looking up partition key " + search.partitionKey + " for store " + search.storeName
-                + ". Correct host is " + correctHost.host() + ":" + correctHost.port());
         if (getHostForKey(search.storeName, search.partitionKey).equals(thisHost)) {
             return objectIdPrefixScanOnThisHost(search);
         } else {

@@ -76,17 +76,6 @@ enum MetricsWindowLength {
   DAYS_1 = 2;
 }
 
-enum AggregationType {
-  COUNT = 0;
-  LATENCY = 1;
-}
-
-enum MetricRecordingLevel {
-  INFO = 0; // Collect non-intrusive defaults
-  NONE = 1; // Collect no metrics unless explicitly configured
-  DEBUG = 2; // Collect detailed/expensive metrics (e.g. flamegraphs)
-}
-
 // Specifies a primitive type in LittleHorse.
 enum VariableType {
   // An object represented as a json string. <br/>

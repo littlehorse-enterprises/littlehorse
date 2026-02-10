@@ -38,17 +38,6 @@ class MetricsWindowLength(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     HOURS_2: _ClassVar[MetricsWindowLength]
     DAYS_1: _ClassVar[MetricsWindowLength]
 
-class AggregationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = ()
-    COUNT: _ClassVar[AggregationType]
-    LATENCY: _ClassVar[AggregationType]
-
-class MetricRecordingLevel(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = ()
-    INFO: _ClassVar[MetricRecordingLevel]
-    NONE: _ClassVar[MetricRecordingLevel]
-    DEBUG: _ClassVar[MetricRecordingLevel]
-
 class VariableType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
     JSON_OBJ: _ClassVar[VariableType]
@@ -94,11 +83,6 @@ TASK_PENDING: TaskStatus
 MINUTES_5: MetricsWindowLength
 HOURS_2: MetricsWindowLength
 DAYS_1: MetricsWindowLength
-COUNT: AggregationType
-LATENCY: AggregationType
-INFO: MetricRecordingLevel
-NONE: MetricRecordingLevel
-DEBUG: MetricRecordingLevel
 JSON_OBJ: VariableType
 JSON_ARR: VariableType
 DOUBLE: VariableType

@@ -94,10 +94,4 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
     public MetricWindowIdModel getObjectId() {
         return id;
     }
-
-    @Override
-    public String toString() {
-        return " {\nwfSpecID=" + id.getWfSpecId() + ",\nwindowStart=" + id.getWindowStart() + ",\nmetrics=" + metrics
-                + "\n}";
-    }
 }

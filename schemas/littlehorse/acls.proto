@@ -3,7 +3,6 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
-import "common_enums.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;

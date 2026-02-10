@@ -236,7 +236,7 @@ public enum LHErrorType
   }
   public static com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(7);
+    return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(5);
   }
 
   private static final LHErrorType[] VALUES = values();

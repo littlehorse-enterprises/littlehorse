@@ -20,7 +20,6 @@ public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy 
 
     @Override
     public Message buildScanProto() {
-        System.out.println("ObjectIdScanBoundaryStrategy - StartObjectId: " + startKey + ", EndObjectId: " + endKey);
         return InternalScanPb.BoundedObjectIdScanPb.newBuilder()
                 .setStartObjectId(startKey)
                 .setEndObjectId(endKey)
