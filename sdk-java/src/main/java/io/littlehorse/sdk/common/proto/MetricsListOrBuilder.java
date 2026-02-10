@@ -6,8 +6,8 @@
 package io.littlehorse.sdk.common.proto;
 
 @com.google.protobuf.Generated
-public interface MetricListOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.MetricList)
+public interface MetricsListOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.MetricsList)
     com.google.protobuf.MessageOrBuilder {
 
   /**

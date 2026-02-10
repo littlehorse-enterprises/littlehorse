@@ -108,12 +108,12 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfSpecR
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskRunsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListUserTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVariablesReply;
-import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWorkflowEventsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchCorrelatedEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
@@ -929,10 +929,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
-    public void listWfSpecMetrics(ListWfMetricsRequest req, StreamObserver<ListWfMetricsResponse> ctx) {
-        ListWfMetricsRequestModel ltm =
+    public void listWfMetrics(ListWfMetricsRequest req, StreamObserver<MetricsList> ctx) {
+        ListWfMetricsRequestModel lwm =
                 LHSerializable.fromProto(req, ListWfMetricsRequestModel.class, requestContext());
-        handleScan(ltm, ctx, ListWfMetricsReply.class);
+        handleScan(lwm, ctx, ListMetricsReply.class);
     }
 
     @Override

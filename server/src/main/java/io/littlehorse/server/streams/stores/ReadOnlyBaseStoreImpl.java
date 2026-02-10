@@ -166,6 +166,9 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
         start = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, start));
         end = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, end));
+        if(cls.getSimpleName().equals("StoredGetable")){
+            System.out.println("ReadOnlyBaseStoreImpl - Range scan with start: " + start + ", end: " + end + ", cls: " + cls.getSimpleName()); ;
+        }
         KeyValueIterator<String, Bytes> iterator = nativeStore.range(start, end);
         String legacyStart = LHUtil.toLegacyFormat(start);
         if (legacyStart == null) {

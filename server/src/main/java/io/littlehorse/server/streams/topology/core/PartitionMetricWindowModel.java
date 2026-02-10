@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.core.metrics.CountAndTimingModel;
+import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.PartitionMetricWindow;
@@ -12,6 +13,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.CountAndTiming;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.MetricWindow;
 import io.littlehorse.sdk.common.proto.MetricWindowId;
 import java.util.Date;
 import java.util.HashMap;
@@ -134,6 +136,22 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         for (Map.Entry<String, CountAndTimingModel> entry : metrics.entrySet()) {
             builder.putMetrics(entry.getKey(), entry.getValue().toProto().build());
         }
+        return builder;
+    }
+
+    public MetricWindow.Builder toMetricWindowProto() {
+        MetricWindow.Builder builder = MetricWindow.newBuilder();
+
+        // Build MetricWindowId
+        WfSpecIdModel wfSpecId = this.wfSpecId;
+        MetricWindowIdModel id = new MetricWindowIdModel(wfSpecId, this.windowStart);
+        builder.setId(id.toProto());
+
+        // Set metrics
+        this.metrics.forEach((key, value) -> {
+            builder.putMetrics(key, value.toProto().build());
+        });
+
         return builder;
     }
 

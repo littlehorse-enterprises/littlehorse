@@ -718,6 +718,7 @@ public class BackendInternalComms implements Closeable {
         } else {
             startKey = partBookmark.getLastKey();
         }
+        
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
         try (LHKeyValueIterator<?> iter = store.range(startKey, endKey, StoredGetable.class)) {

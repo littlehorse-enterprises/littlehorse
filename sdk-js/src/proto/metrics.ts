@@ -115,16 +115,13 @@ export interface MetricWindow_MetricsEntry {
   value: CountAndTiming | undefined;
 }
 
-export interface ListMetricsRequest {
-  /** Metric window id contains object and start time */
-  id:
-    | MetricWindowId
-    | undefined;
-  /** Optional: if not set, server uses current time */
-  endTime?: string | undefined;
+export interface ListWfMetricsRequest {
+  wfSpec: WfSpecId | undefined;
+  windowStart: string | undefined;
+  windowEnd?: string | undefined;
 }
 
-export interface MetricList {
+export interface MetricsList {
   windows: MetricWindow[];
 }
 
@@ -1429,25 +1426,28 @@ export const MetricWindow_MetricsEntry = {
   },
 };
 
-function createBaseListMetricsRequest(): ListMetricsRequest {
-  return { id: undefined, endTime: undefined };
+function createBaseListWfMetricsRequest(): ListWfMetricsRequest {
+  return { wfSpec: undefined, windowStart: undefined, windowEnd: undefined };
 }
 
-export const ListMetricsRequest = {
-  encode(message: ListMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== undefined) {
-      MetricWindowId.encode(message.id, writer.uint32(10).fork()).ldelim();
+export const ListWfMetricsRequest = {
+  encode(message: ListWfMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpec !== undefined) {
+      WfSpecId.encode(message.wfSpec, writer.uint32(10).fork()).ldelim();
     }
-    if (message.endTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.endTime), writer.uint32(42).fork()).ldelim();
+    if (message.windowStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(18).fork()).ldelim();
+    }
+    if (message.windowEnd !== undefined) {
+      Timestamp.encode(toTimestamp(message.windowEnd), writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): ListMetricsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ListWfMetricsRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListMetricsRequest();
+    const message = createBaseListWfMetricsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1456,14 +1456,21 @@ export const ListMetricsRequest = {
             break;
           }
 
-          message.id = MetricWindowId.decode(reader, reader.uint32());
+          message.wfSpec = WfSpecId.decode(reader, reader.uint32());
           continue;
-        case 5:
-          if (tag !== 42) {
+        case 2:
+          if (tag !== 18) {
             break;
           }
 
-          message.endTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.windowEnd = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1474,51 +1481,58 @@ export const ListMetricsRequest = {
     return message;
   },
 
-  fromJSON(object: any): ListMetricsRequest {
+  fromJSON(object: any): ListWfMetricsRequest {
     return {
-      id: isSet(object.id) ? MetricWindowId.fromJSON(object.id) : undefined,
-      endTime: isSet(object.endTime) ? globalThis.String(object.endTime) : undefined,
+      wfSpec: isSet(object.wfSpec) ? WfSpecId.fromJSON(object.wfSpec) : undefined,
+      windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
+      windowEnd: isSet(object.windowEnd) ? globalThis.String(object.windowEnd) : undefined,
     };
   },
 
-  toJSON(message: ListMetricsRequest): unknown {
+  toJSON(message: ListWfMetricsRequest): unknown {
     const obj: any = {};
-    if (message.id !== undefined) {
-      obj.id = MetricWindowId.toJSON(message.id);
+    if (message.wfSpec !== undefined) {
+      obj.wfSpec = WfSpecId.toJSON(message.wfSpec);
     }
-    if (message.endTime !== undefined) {
-      obj.endTime = message.endTime;
+    if (message.windowStart !== undefined) {
+      obj.windowStart = message.windowStart;
+    }
+    if (message.windowEnd !== undefined) {
+      obj.windowEnd = message.windowEnd;
     }
     return obj;
   },
 
-  create(base?: DeepPartial<ListMetricsRequest>): ListMetricsRequest {
-    return ListMetricsRequest.fromPartial(base ?? {});
+  create(base?: DeepPartial<ListWfMetricsRequest>): ListWfMetricsRequest {
+    return ListWfMetricsRequest.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<ListMetricsRequest>): ListMetricsRequest {
-    const message = createBaseListMetricsRequest();
-    message.id = (object.id !== undefined && object.id !== null) ? MetricWindowId.fromPartial(object.id) : undefined;
-    message.endTime = object.endTime ?? undefined;
+  fromPartial(object: DeepPartial<ListWfMetricsRequest>): ListWfMetricsRequest {
+    const message = createBaseListWfMetricsRequest();
+    message.wfSpec = (object.wfSpec !== undefined && object.wfSpec !== null)
+      ? WfSpecId.fromPartial(object.wfSpec)
+      : undefined;
+    message.windowStart = object.windowStart ?? undefined;
+    message.windowEnd = object.windowEnd ?? undefined;
     return message;
   },
 };
 
-function createBaseMetricList(): MetricList {
+function createBaseMetricsList(): MetricsList {
   return { windows: [] };
 }
 
-export const MetricList = {
-  encode(message: MetricList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MetricsList = {
+  encode(message: MetricsList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.windows) {
       MetricWindow.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MetricList {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricsList {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMetricList();
+    const message = createBaseMetricsList();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1538,7 +1552,7 @@ export const MetricList = {
     return message;
   },
 
-  fromJSON(object: any): MetricList {
+  fromJSON(object: any): MetricsList {
     return {
       windows: globalThis.Array.isArray(object?.windows)
         ? object.windows.map((e: any) => MetricWindow.fromJSON(e))
@@ -1546,7 +1560,7 @@ export const MetricList = {
     };
   },
 
-  toJSON(message: MetricList): unknown {
+  toJSON(message: MetricsList): unknown {
     const obj: any = {};
     if (message.windows?.length) {
       obj.windows = message.windows.map((e) => MetricWindow.toJSON(e));
@@ -1554,11 +1568,11 @@ export const MetricList = {
     return obj;
   },
 
-  create(base?: DeepPartial<MetricList>): MetricList {
-    return MetricList.fromPartial(base ?? {});
+  create(base?: DeepPartial<MetricsList>): MetricsList {
+    return MetricsList.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<MetricList>): MetricList {
-    const message = createBaseMetricList();
+  fromPartial(object: DeepPartial<MetricsList>): MetricsList {
+    const message = createBaseMetricsList();
     message.windows = object.windows?.map((e) => MetricWindow.fromPartial(e)) || [];
     return message;
   },

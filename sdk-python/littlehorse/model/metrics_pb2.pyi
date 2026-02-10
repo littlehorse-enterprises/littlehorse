@@ -1,7 +1,6 @@
 import datetime
 
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
-from google.protobuf import duration_pb2 as _duration_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.user_tasks_pb2 as _user_tasks_pb2
@@ -145,15 +144,17 @@ class MetricWindow(_message.Message):
     metrics: _containers.MessageMap[str, CountAndTiming]
     def __init__(self, id: _Optional[_Union[MetricWindowId, _Mapping]] = ..., metrics: _Optional[_Mapping[str, CountAndTiming]] = ...) -> None: ...
 
-class ListMetricsRequest(_message.Message):
-    __slots__ = ("id", "end_time")
-    ID_FIELD_NUMBER: _ClassVar[int]
-    END_TIME_FIELD_NUMBER: _ClassVar[int]
-    id: MetricWindowId
-    end_time: _timestamp_pb2.Timestamp
-    def __init__(self, id: _Optional[_Union[MetricWindowId, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+class ListWfMetricsRequest(_message.Message):
+    __slots__ = ("wf_spec", "window_start", "window_end")
+    WF_SPEC_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_START_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_END_FIELD_NUMBER: _ClassVar[int]
+    wf_spec: _object_id_pb2.WfSpecId
+    window_start: _timestamp_pb2.Timestamp
+    window_end: _timestamp_pb2.Timestamp
+    def __init__(self, wf_spec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., window_end: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
-class MetricList(_message.Message):
+class MetricsList(_message.Message):
     __slots__ = ("windows",)
     WINDOWS_FIELD_NUMBER: _ClassVar[int]
     windows: _containers.RepeatedCompositeFieldContainer[MetricWindow]

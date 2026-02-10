@@ -52,7 +52,8 @@ public class ExternalEventExample {
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         WaitForExternalEventWorker executable = new WaitForExternalEventWorker();
         List<LHTaskWorker> workers = List.of(
-                new LHTaskWorker(executable, "ask-for-name", config), new LHTaskWorker(executable, "greet-external-event", config));
+                new LHTaskWorker(executable, "ask-for-name", config),
+                new LHTaskWorker(executable, "greet-external-event", config));
 
         // Gracefully shutdown
         Runtime.getRuntime()

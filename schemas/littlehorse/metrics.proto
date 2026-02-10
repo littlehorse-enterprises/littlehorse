@@ -2,7 +2,6 @@ syntax = "proto3";
 package littlehorse;
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/duration.proto";
 import "object_id.proto";
 import "common_enums.proto";
 import "user_tasks.proto";
@@ -94,13 +93,12 @@ message MetricWindow {
   map<string, CountAndTiming> metrics = 2;
 }
 
-message ListMetricsRequest {
-  // Metric window id contains object and start time
-  MetricWindowId id = 1;
-  // Optional: if not set, server uses current time
-  optional google.protobuf.Timestamp end_time = 5;
+message ListWfMetricsRequest {
+  WfSpecId wf_spec = 1;
+  google.protobuf.Timestamp window_start = 2;
+  optional google.protobuf.Timestamp window_end = 3;
 }
 
-message MetricList {
+message MetricsList {
   repeated MetricWindow windows = 1;
 }

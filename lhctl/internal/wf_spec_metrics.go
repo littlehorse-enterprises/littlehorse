@@ -6,6 +6,7 @@ package internal
 import (
 	"log"
 	"strconv"
+	"time"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
@@ -46,18 +47,34 @@ as your wfSpecName, and 0 as your wfSpecVersion.
 		if err != nil {
 			log.Fatal(err)
 		}
-		ts := timestamppb.Now()
 
-		littlehorse.PrintResp(getGlobalClient(cmd).ListWfSpecMetrics(
+		// Calculate window duration in seconds based on type
+		var windowDurationSeconds int64
+		switch lhproto.MetricsWindowLength(windowType) {
+		case lhproto.MetricsWindowLength_MINUTES_5:
+			windowDurationSeconds = 5 * 60
+		case lhproto.MetricsWindowLength_HOURS_2:
+			windowDurationSeconds = 2 * 60 * 60
+		case lhproto.MetricsWindowLength_DAYS_1:
+			windowDurationSeconds = 24 * 60 * 60
+		default:
+			log.Fatal("Invalid window type")
+		}
+
+		windowEnd := timestamppb.Now()
+		windowStart := timestamppb.New(
+			windowEnd.AsTime().Add(-time.Duration(windowDurationSeconds*int64(numWindows)) * time.Second),
+		)
+
+		littlehorse.PrintResp(getGlobalClient(cmd).ListWfMetrics(
 			requestContext(cmd),
 			&lhproto.ListWfMetricsRequest{
-				LastWindowStart: ts,
-				WindowLength:    lhproto.MetricsWindowLength(windowType),
-				WfSpecId: &lhproto.WfSpecId{
+				WfSpec: &lhproto.WfSpecId{
 					Name:         wfSpecName,
 					MajorVersion: int32(wfSpecVersion),
 				},
-				NumWindows: int32(numWindows),
+				WindowStart: windowStart,
+				WindowEnd:   windowEnd,
 			},
 		))
 

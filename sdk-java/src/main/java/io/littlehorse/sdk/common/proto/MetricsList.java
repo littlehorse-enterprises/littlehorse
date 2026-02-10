@@ -6,13 +6,13 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.MetricList}
+ * Protobuf type {@code littlehorse.MetricsList}
  */
 @com.google.protobuf.Generated
-public final class MetricList extends
+public final class MetricsList extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:littlehorse.MetricList)
-    MetricListOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.MetricsList)
+    MetricsListOrBuilder {
 private static final long serialVersionUID = 0L;
   static {
     com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -21,27 +21,27 @@ private static final long serialVersionUID = 0L;
       /* minor= */ 32,
       /* patch= */ 1,
       /* suffix= */ "",
-      MetricList.class.getName());
+      MetricsList.class.getName());
   }
-  // Use MetricList.newBuilder() to construct.
-  private MetricList(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  // Use MetricsList.newBuilder() to construct.
+  private MetricsList(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
-  private MetricList() {
+  private MetricsList() {
     windows_ = java.util.Collections.emptyList();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricList_descriptor;
+    return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricsList_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricList_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricsList_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.MetricList.class, io.littlehorse.sdk.common.proto.MetricList.Builder.class);
+            io.littlehorse.sdk.common.proto.MetricsList.class, io.littlehorse.sdk.common.proto.MetricsList.Builder.class);
   }
 
   public static final int WINDOWS_FIELD_NUMBER = 1;
@@ -125,10 +125,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.MetricList)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.MetricsList)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.MetricList other = (io.littlehorse.sdk.common.proto.MetricList) obj;
+    io.littlehorse.sdk.common.proto.MetricsList other = (io.littlehorse.sdk.common.proto.MetricsList) obj;
 
     if (!getWindowsList()
         .equals(other.getWindowsList())) return false;
@@ -152,44 +152,44 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricsList parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricsList parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricsList parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricsList parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.MetricsList parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricsList parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.MetricsList parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricsList parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -197,26 +197,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.MetricList parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.MetricsList parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.MetricList parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.MetricsList parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricsList parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricsList parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -229,7 +229,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.MetricList prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.MetricsList prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -245,26 +245,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.MetricList}
+   * Protobuf type {@code littlehorse.MetricsList}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.MetricList)
-      io.littlehorse.sdk.common.proto.MetricListOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.MetricsList)
+      io.littlehorse.sdk.common.proto.MetricsListOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricList_descriptor;
+      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricsList_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricList_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricsList_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.MetricList.class, io.littlehorse.sdk.common.proto.MetricList.Builder.class);
+              io.littlehorse.sdk.common.proto.MetricsList.class, io.littlehorse.sdk.common.proto.MetricsList.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.MetricList.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.MetricsList.newBuilder()
     private Builder() {
 
     }
@@ -291,17 +291,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricList_descriptor;
+      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricsList_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.MetricList getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.MetricList.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.MetricsList getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.MetricsList.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.MetricList build() {
-      io.littlehorse.sdk.common.proto.MetricList result = buildPartial();
+    public io.littlehorse.sdk.common.proto.MetricsList build() {
+      io.littlehorse.sdk.common.proto.MetricsList result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -309,15 +309,15 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.MetricList buildPartial() {
-      io.littlehorse.sdk.common.proto.MetricList result = new io.littlehorse.sdk.common.proto.MetricList(this);
+    public io.littlehorse.sdk.common.proto.MetricsList buildPartial() {
+      io.littlehorse.sdk.common.proto.MetricsList result = new io.littlehorse.sdk.common.proto.MetricsList(this);
       buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.MetricList result) {
+    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.MetricsList result) {
       if (windowsBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0)) {
           windows_ = java.util.Collections.unmodifiableList(windows_);
@@ -329,22 +329,22 @@ private static final long serialVersionUID = 0L;
       }
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.MetricList result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.MetricsList result) {
       int from_bitField0_ = bitField0_;
     }
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.MetricList) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.MetricList)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.MetricsList) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.MetricsList)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.MetricList other) {
-      if (other == io.littlehorse.sdk.common.proto.MetricList.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.MetricsList other) {
+      if (other == io.littlehorse.sdk.common.proto.MetricsList.getDefaultInstance()) return this;
       if (windowsBuilder_ == null) {
         if (!other.windows_.isEmpty()) {
           if (windows_.isEmpty()) {
@@ -667,23 +667,23 @@ private static final long serialVersionUID = 0L;
       return windowsBuilder_;
     }
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.MetricList)
+    // @@protoc_insertion_point(builder_scope:littlehorse.MetricsList)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.MetricList)
-  private static final io.littlehorse.sdk.common.proto.MetricList DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.MetricsList)
+  private static final io.littlehorse.sdk.common.proto.MetricsList DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.MetricList();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.MetricsList();
   }
 
-  public static io.littlehorse.sdk.common.proto.MetricList getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.MetricsList getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<MetricList>
-      PARSER = new com.google.protobuf.AbstractParser<MetricList>() {
+  private static final com.google.protobuf.Parser<MetricsList>
+      PARSER = new com.google.protobuf.AbstractParser<MetricsList>() {
     @java.lang.Override
-    public MetricList parsePartialFrom(
+    public MetricsList parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -702,17 +702,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<MetricList> parser() {
+  public static com.google.protobuf.Parser<MetricsList> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<MetricList> getParserForType() {
+  public com.google.protobuf.Parser<MetricsList> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.MetricList getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.MetricsList getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 
