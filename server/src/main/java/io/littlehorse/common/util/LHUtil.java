@@ -165,7 +165,7 @@ public class LHUtil {
     }
 
     public static boolean isValidLHName(String name) {
-        return name.matches("[a-z0-9]([-a-z0-9]*[a-z0-9])?");
+        return name.matches("[A-Za-z0-9]([-A-Za-z0-9]*[A-Za-z0-9])?");
     }
 
     public static String digestify(String str) {
