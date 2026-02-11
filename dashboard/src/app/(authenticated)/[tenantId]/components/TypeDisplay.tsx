@@ -13,10 +13,14 @@ const TypeBadge: FC<TypeBadgeProps> = ({ children }) => (
 )
 
 type Props = {
-  definedType: TypeDefinition['definedType']
+  definedType?: TypeDefinition['definedType']
 }
 
 export const TypeDisplay: FC<Props> = ({ definedType }) => {
+  if (!definedType) {
+    return <TypeBadge>void</TypeBadge>
+  }
+
   if (definedType?.$case === 'structDefId') {
     return (
       <TypeBadge>
