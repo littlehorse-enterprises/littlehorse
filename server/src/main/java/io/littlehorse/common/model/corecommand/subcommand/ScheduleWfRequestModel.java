@@ -25,6 +25,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Represents a request to schedule workflow runs based on a specific cron expression.
@@ -86,6 +87,10 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
                     Status.INVALID_ARGUMENT,
                     "WfSpec %s %s.%s does not exist".formatted(wfSpecName, majorVersion, revision));
         }
+        // Ensure we have an ID for partitioning and storage
+        if (id == null) {
+            id = LHUtil.generateGuid();
+        }
         WfSpecIdModel wfSpecId = spec.getId();
         ScheduledWfRunIdModel scheduledId = new ScheduledWfRunIdModel(id);
         ScheduledWfRunModel scheduledWfRun =
@@ -93,9 +98,16 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
         executionContext.getableManager().put(scheduledWfRun);
         ScheduleWfRunCommandModel scheduledCommand = new ScheduleWfRunCommandModel(
                 scheduledId, wfSpecName, majorVersion, revision, parentWfRunId, variables, cronExpression);
-        scheduledCommand.getPartitionKey();
-        LHTimer timer = new LHTimer(new CommandModel(scheduledCommand));
-        timer.maturationTime = new Date();
+
+        // Schedule first execution at the next cron time, not immediately
+        CommandModel current = executionContext.currentCommand();
+        Date baseTime = current != null ? current.getTime() : null;
+        Optional<Date> firstRun = LHUtil.nextDate(cronExpression, baseTime != null ? baseTime : new Date());
+        if (firstRun.isEmpty()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Cron expression does not yield a next execution time");
+        }
+        LHTimer timer = new LHTimer(new CommandModel(scheduledCommand, firstRun.get()));
+        timer.maturationTime = firstRun.get();
         executionContext.getTaskManager().scheduleTimer(timer);
         return scheduledWfRun.toProto().build();
     }
