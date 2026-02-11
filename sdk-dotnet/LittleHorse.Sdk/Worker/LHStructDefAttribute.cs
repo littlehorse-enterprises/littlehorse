@@ -19,7 +19,7 @@ public class LHStructDefAttribute : Attribute
   /// </summary>
   /// <param name="value">The StructDef name.</param>
   /// <param name="description">The StructDef description.</param>
-  public LHStructDefAttribute(string value, string description)
+  public LHStructDefAttribute(string value, string description = "")
   {
     Value = value;
     Description = description;
