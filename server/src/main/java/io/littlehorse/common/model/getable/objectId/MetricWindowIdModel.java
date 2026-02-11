@@ -9,22 +9,30 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.MetricWindow;
 import io.littlehorse.sdk.common.proto.MetricWindowId;
+import io.littlehorse.sdk.common.proto.MetricWindowType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWindow, MetricWindowModel> {
 
     private WfSpecIdModel wfSpecId;
+    private TaskDefIdModel taskDefId;
+    private UserTaskDefIdModel userTaskDefId;
+
     private Date windowStart;
+    private MetricWindowType metricType;
 
     public MetricWindowIdModel() {}
 
     public MetricWindowIdModel(WfSpecIdModel wfSpecId, Date windowStart) {
         this.wfSpecId = wfSpecId;
         this.windowStart = windowStart;
+        this.metricType = MetricWindowType.WORKFLOW_METRIC;
     }
 
     @Override
@@ -34,26 +42,59 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
 
     @Override
     public Optional<String> getPartitionKey() {
-        return Optional.of(wfSpecId.getName());
+        String parritionKey = getMetricType().name() + "/";
+        if (wfSpecId != null) {
+            parritionKey += wfSpecId;
+        } else if (taskDefId != null) {
+            parritionKey += taskDefId;
+        } else if (userTaskDefId != null) {
+            parritionKey += userTaskDefId;
+        }
+        return Optional.of(parritionKey);
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         MetricWindowId p = (MetricWindowId) proto;
-        if (p.hasWorkflow() && p.getWorkflow().hasWfSpec()) {
-            wfSpecId = LHSerializable.fromProto(p.getWorkflow().getWfSpec(), WfSpecIdModel.class, context);
+
+        switch (p.getIdCase()) {
+            case WF_SPEC_ID:
+                this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+                break;
+            case TASK_DEF_ID:
+                this.taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
+                break;
+            case USER_TASK_DEF_ID:
+                this.userTaskDefId = LHSerializable.fromProto(p.getUserTaskDefId(), UserTaskDefIdModel.class, context);
+                break;
+            case ID_NOT_SET:
+                break;
         }
-        windowStart = LHUtil.fromProtoTs(p.getWindowStart());
+
+        if (p.hasWindowStart()) {
+            windowStart = LHUtil.fromProtoTs(p.getWindowStart());
+        }
+
+        metricType = p.getMetricType();
     }
 
     @Override
     public MetricWindowId.Builder toProto() {
-        MetricWindowId.Builder out = MetricWindowId.newBuilder().setWindowStart(LHUtil.fromDate(windowStart));
+        MetricWindowId.Builder out = MetricWindowId.newBuilder();
+        if (windowStart != null) {
+            out.setWindowStart(LHUtil.fromDate(windowStart));
+        }
 
         if (wfSpecId != null) {
-            out.setWorkflow(io.littlehorse.sdk.common.proto.WorkflowMetricId.newBuilder()
-                    .setWfSpec(wfSpecId.toProto())
-                    .build());
+            out.setWfSpecId(wfSpecId.toProto());
+        } else if (taskDefId != null) {
+            out.setTaskDefId(taskDefId.toProto());
+        } else if (userTaskDefId != null) {
+            out.setUserTaskDefId(userTaskDefId.toProto());
+        }
+
+        if (metricType != null) {
+            out.setMetricType(metricType);
         }
 
         return out;
@@ -61,16 +102,39 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
 
     @Override
     public String toString() {
-        return LHUtil.getCompositeId(wfSpecId.toString(), LHUtil.toLhDbFormat(windowStart));
+        String idPart;
+        if (wfSpecId != null) {
+            idPart = wfSpecId.toString();
+        } else if (taskDefId != null) {
+            idPart = taskDefId.toString();
+        } else if (userTaskDefId != null) {
+            idPart = userTaskDefId.toString();
+        } else {
+            idPart = "unknown";
+        }
+        return LHUtil.getCompositeId(this.getMetricType().name(), idPart, LHUtil.toLhDbFormat(windowStart));
     }
 
     @Override
     public void initFromString(String storeKey) {
         String[] split = storeKey.split("/");
-        // Expecting format: wfSpecName/majorVersion/revision/windowStartTimestamp
-        wfSpecId = (WfSpecIdModel)
-                ObjectIdModel.fromString(split[0] + "/" + split[1] + "/" + split[2], WfSpecIdModel.class);
-        windowStart = new Date(Long.valueOf(split[3]));
+        metricType = MetricWindowType.valueOf(split[0]);
+        switch (metricType) {
+            case WORKFLOW_METRIC:
+                wfSpecId = (WfSpecIdModel)
+                        ObjectIdModel.fromString(split[1] + "/" + split[2] + "/" + split[3], WfSpecIdModel.class);
+                break;
+            case TASK_METRIC:
+                taskDefId = (TaskDefIdModel) ObjectIdModel.fromString(split[1], TaskDefIdModel.class);
+                break;
+            case USER_TASK_METRIC:
+                userTaskDefId = (UserTaskDefIdModel) ObjectIdModel.fromString(split[1], UserTaskDefIdModel.class);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown metric type: " + metricType);
+        }
+
+        windowStart = new Date(Long.valueOf(split[split.length - 1]));
     }
 
     @Override

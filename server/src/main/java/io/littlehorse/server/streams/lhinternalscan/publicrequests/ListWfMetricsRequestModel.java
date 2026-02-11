@@ -12,6 +12,7 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
 import io.littlehorse.sdk.common.proto.MetricWindow;
+import io.littlehorse.sdk.common.proto.MetricWindowType;
 import io.littlehorse.sdk.common.proto.MetricsList;
 import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
@@ -83,8 +84,9 @@ public class ListWfMetricsRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        String startPrefixString = wfSpecId.toString() + "/" + LHUtil.toLhDbFormat(windowStart);
-        String endPrefixString = wfSpecId.toString() + "/" + LHUtil.toLhDbFormat(windowEnd) + "/~";
-        return new ObjectIdScanBoundaryStrategy(wfSpecId.toString(), startPrefixString, endPrefixString);
+        String partitionKey = MetricWindowType.WORKFLOW_METRIC.name() + "/" + wfSpecId.toString();
+        String startPrefixString = partitionKey + "/" + LHUtil.toLhDbFormat(windowStart);
+        String endPrefixString = partitionKey + "/" + LHUtil.toLhDbFormat(windowEnd) + "/~";
+        return new ObjectIdScanBoundaryStrategy(partitionKey, startPrefixString, endPrefixString);
     }
 }

@@ -11,41 +11,97 @@ public interface PartitionMetricWindowOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.google.protobuf.Timestamp window_start = 1;</code>
-   * @return Whether the windowStart field is set.
+   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
+   * @return Whether the wfSpecId field is set.
    */
-  boolean hasWindowStart();
+  boolean hasWfSpecId();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 1;</code>
-   * @return The windowStart.
+   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
+   * @return The wfSpecId.
    */
-  com.google.protobuf.Timestamp getWindowStart();
+  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 1;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    */
-  com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
-   * <code>.littlehorse.TenantId tenant_id = 2;</code>
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+   * @return Whether the taskDefId field is set.
+   */
+  boolean hasTaskDefId();
+  /**
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+   * @return The taskDefId.
+   */
+  io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
+  /**
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
+
+  /**
+   * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
+   * @return Whether the userTaskDefId field is set.
+   */
+  boolean hasUserTaskDefId();
+  /**
+   * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
+   * @return The userTaskDefId.
+   */
+  io.littlehorse.sdk.common.proto.UserTaskDefId getUserTaskDefId();
+  /**
+   * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder getUserTaskDefIdOrBuilder();
+
+  /**
+   * <code>.littlehorse.TenantId tenant_id = 5;</code>
    * @return Whether the tenantId field is set.
    */
   boolean hasTenantId();
   /**
-   * <code>.littlehorse.TenantId tenant_id = 2;</code>
+   * <code>.littlehorse.TenantId tenant_id = 5;</code>
    * @return The tenantId.
    */
   io.littlehorse.sdk.common.proto.TenantId getTenantId();
   /**
-   * <code>.littlehorse.TenantId tenant_id = 2;</code>
+   * <code>.littlehorse.TenantId tenant_id = 5;</code>
    */
   io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder();
 
   /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 3;</code>
+   * <code>.littlehorse.MetricWindowType metric_type = 6;</code>
+   * @return The enum numeric value on the wire for metricType.
+   */
+  int getMetricTypeValue();
+  /**
+   * <code>.littlehorse.MetricWindowType metric_type = 6;</code>
+   * @return The metricType.
+   */
+  io.littlehorse.sdk.common.proto.MetricWindowType getMetricType();
+
+  /**
+   * <code>.google.protobuf.Timestamp window_start = 7;</code>
+   * @return Whether the windowStart field is set.
+   */
+  boolean hasWindowStart();
+  /**
+   * <code>.google.protobuf.Timestamp window_start = 7;</code>
+   * @return The windowStart.
+   */
+  com.google.protobuf.Timestamp getWindowStart();
+  /**
+   * <code>.google.protobuf.Timestamp window_start = 7;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
+
+  /**
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 8;</code>
    */
   int getMetricsCount();
   /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 3;</code>
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 8;</code>
    */
   boolean containsMetrics(
       java.lang.String key);
@@ -56,12 +112,12 @@ public interface PartitionMetricWindowOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
   getMetrics();
   /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 3;</code>
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 8;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
   getMetricsMap();
   /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 3;</code>
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 8;</code>
    */
   /* nullable */
 io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrDefault(
@@ -69,23 +125,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrDefault(
       /* nullable */
 io.littlehorse.sdk.common.proto.CountAndTiming defaultValue);
   /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 3;</code>
+   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 8;</code>
    */
   io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrThrow(
       java.lang.String key);
 
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
-   * @return Whether the wfSpecId field is set.
-   */
-  boolean hasWfSpecId();
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
-   * @return The wfSpecId.
-   */
-  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
-   */
-  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
+  io.littlehorse.common.proto.PartitionMetricWindow.IdCase getIdCase();
 }

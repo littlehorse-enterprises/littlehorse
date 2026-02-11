@@ -11,64 +11,75 @@ public interface MetricWindowIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
-   * @return Whether the workflow field is set.
+   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
+   * @return Whether the wfSpecId field is set.
    */
-  boolean hasWorkflow();
+  boolean hasWfSpecId();
   /**
-   * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
-   * @return The workflow.
+   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
+   * @return The wfSpecId.
    */
-  io.littlehorse.sdk.common.proto.WorkflowMetricId getWorkflow();
+  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
-   * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.WorkflowMetricIdOrBuilder getWorkflowOrBuilder();
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
-   * <code>.littlehorse.TaskMetricId task = 2;</code>
-   * @return Whether the task field is set.
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+   * @return Whether the taskDefId field is set.
    */
-  boolean hasTask();
+  boolean hasTaskDefId();
   /**
-   * <code>.littlehorse.TaskMetricId task = 2;</code>
-   * @return The task.
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+   * @return The taskDefId.
    */
-  io.littlehorse.sdk.common.proto.TaskMetricId getTask();
+  io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
   /**
-   * <code>.littlehorse.TaskMetricId task = 2;</code>
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.TaskMetricIdOrBuilder getTaskOrBuilder();
+  io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 
   /**
-   * <code>.littlehorse.NodeMetricId node = 3;</code>
-   * @return Whether the node field is set.
+   * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
+   * @return Whether the userTaskDefId field is set.
    */
-  boolean hasNode();
+  boolean hasUserTaskDefId();
   /**
-   * <code>.littlehorse.NodeMetricId node = 3;</code>
-   * @return The node.
+   * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
+   * @return The userTaskDefId.
    */
-  io.littlehorse.sdk.common.proto.NodeMetricId getNode();
+  io.littlehorse.sdk.common.proto.UserTaskDefId getUserTaskDefId();
   /**
-   * <code>.littlehorse.NodeMetricId node = 3;</code>
+   * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.NodeMetricIdOrBuilder getNodeOrBuilder();
+  io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder getUserTaskDefIdOrBuilder();
 
   /**
-   * <code>.google.protobuf.Timestamp window_start = 4;</code>
+   * <code>.google.protobuf.Timestamp window_start = 5;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 4;</code>
+   * <code>.google.protobuf.Timestamp window_start = 5;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 4;</code>
+   * <code>.google.protobuf.Timestamp window_start = 5;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
+
+  /**
+   * <code>.littlehorse.MetricWindowType metric_type = 6;</code>
+   * @return The enum numeric value on the wire for metricType.
+   */
+  int getMetricTypeValue();
+  /**
+   * <code>.littlehorse.MetricWindowType metric_type = 6;</code>
+   * @return The metricType.
+   */
+  io.littlehorse.sdk.common.proto.MetricWindowType getMetricType();
 
   io.littlehorse.sdk.common.proto.MetricWindowId.IdCase getIdCase();
 }

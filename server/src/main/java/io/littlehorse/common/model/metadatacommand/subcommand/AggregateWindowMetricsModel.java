@@ -57,9 +57,10 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
 
     @Override
     public String getPartitionKey() {
-        return wfSpecId.toString();
+        return this.metricWindow.getMetricType().name() + "/" + wfSpecId.toString();
     }
 
+    @SuppressWarnings("unchecked")
     public Message process(CoreProcessorContext executionContext, LHServerConfig config) {
         MetricWindowIdModel id = new MetricWindowIdModel(wfSpecId, metricWindow.getWindowStart());
 
@@ -71,7 +72,7 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
             consolidatedMetric = new MetricWindowModel(id, metricWindow.getMetrics());
         } else {
             consolidatedMetric = storedMetric.getStoredObject();
-            consolidatedMetric.mergeFrom(metricWindow);
+            consolidatedMetric.mergeFrom(metricWindow.getMetrics());
         }
         executionContext.getCoreStore().put(new StoredGetable<>(consolidatedMetric));
         return null;

@@ -1,6 +1,5 @@
 syntax = "proto3";
 package littlehorse;
-
 option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
@@ -8,6 +7,8 @@ import "google/protobuf/timestamp.proto";
 import "object_id.proto";
 import "variable.proto";
 import "metrics.proto";
+import "common_enums.proto";
+
 
 
 
@@ -153,8 +154,13 @@ message NodeOutput {
 }
 
 message PartitionMetricWindow {
-  google.protobuf.Timestamp window_start = 1;
-  TenantId tenant_id = 2;
-  map<string, CountAndTiming> metrics = 3;
-  WfSpecId wf_spec_id = 4;
+  oneof id {
+    WfSpecId  wf_spec_id  = 1;
+    TaskDefId task_def_id = 2;
+    UserTaskDefId user_task_def_id = 3;
+  }
+  TenantId tenant_id = 5;
+  MetricWindowType metric_type = 6;
+  google.protobuf.Timestamp window_start = 7;
+  map<string, CountAndTiming> metrics = 8;
 }

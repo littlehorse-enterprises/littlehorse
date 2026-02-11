@@ -877,6 +877,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                         responseEntry.toByteArray(), out.getResultJavaClass(), requestContext()));
             }
             ctx.onNext((RP) out.toProto().build());
+            System.out.println("Search response sent to client with " + out.results.size() + " results" + out);
             ctx.onCompleted();
         } catch (StatusRuntimeException exn) {
             ctx.onError(exn);

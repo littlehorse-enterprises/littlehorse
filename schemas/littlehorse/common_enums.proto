@@ -147,3 +147,10 @@ enum LHErrorType {
   // An unexpected LittleHorse Internal error occurred. This is not expected to happen.
   INTERNAL_ERROR = 8;
 }
+
+enum MetricWindowType {
+    WORKFLOW_METRIC = 0;
+    TASK_METRIC = 1;
+    USER_TASK_METRIC = 2;
+    NODE_METRIC = 3;  
+}

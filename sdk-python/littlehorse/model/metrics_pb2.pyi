@@ -2,6 +2,7 @@ import datetime
 
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
+import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -10,39 +11,19 @@ from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-class WorkflowMetricId(_message.Message):
-    __slots__ = ("wf_spec",)
-    WF_SPEC_FIELD_NUMBER: _ClassVar[int]
-    wf_spec: _object_id_pb2.WfSpecId
-    def __init__(self, wf_spec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
-
-class TaskMetricId(_message.Message):
-    __slots__ = ("task_def",)
-    TASK_DEF_FIELD_NUMBER: _ClassVar[int]
-    task_def: _object_id_pb2.TaskDefId
-    def __init__(self, task_def: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ...) -> None: ...
-
-class NodeMetricId(_message.Message):
-    __slots__ = ("wf_spec", "node_name", "node_position")
-    WF_SPEC_FIELD_NUMBER: _ClassVar[int]
-    NODE_NAME_FIELD_NUMBER: _ClassVar[int]
-    NODE_POSITION_FIELD_NUMBER: _ClassVar[int]
-    wf_spec: _object_id_pb2.WfSpecId
-    node_name: str
-    node_position: int
-    def __init__(self, wf_spec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., node_name: _Optional[str] = ..., node_position: _Optional[int] = ...) -> None: ...
-
 class MetricWindowId(_message.Message):
-    __slots__ = ("workflow", "task", "node", "window_start")
-    WORKFLOW_FIELD_NUMBER: _ClassVar[int]
-    TASK_FIELD_NUMBER: _ClassVar[int]
-    NODE_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ("wf_spec_id", "task_def_id", "user_task_def_id", "window_start", "metric_type")
+    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
+    TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    USER_TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     WINDOW_START_FIELD_NUMBER: _ClassVar[int]
-    workflow: WorkflowMetricId
-    task: TaskMetricId
-    node: NodeMetricId
+    METRIC_TYPE_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_id: _object_id_pb2.WfSpecId
+    task_def_id: _object_id_pb2.TaskDefId
+    user_task_def_id: _object_id_pb2.UserTaskDefId
     window_start: _timestamp_pb2.Timestamp
-    def __init__(self, workflow: _Optional[_Union[WorkflowMetricId, _Mapping]] = ..., task: _Optional[_Union[TaskMetricId, _Mapping]] = ..., node: _Optional[_Union[NodeMetricId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    metric_type: _common_enums_pb2.MetricWindowType
+    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[_object_id_pb2.UserTaskDefId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., metric_type: _Optional[_Union[_common_enums_pb2.MetricWindowType, str]] = ...) -> None: ...
 
 class CountAndTiming(_message.Message):
     __slots__ = ("count", "min_latency_ms", "max_latency_ms", "total_latency_ms")

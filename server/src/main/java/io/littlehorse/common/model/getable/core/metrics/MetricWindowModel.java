@@ -11,7 +11,6 @@ import io.littlehorse.sdk.common.proto.MetricWindow;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.PartitionMetricWindowModel;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +34,8 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
         this.metrics = metrics;
     }
 
-    public void mergeFrom(PartitionMetricWindowModel partitionMetric) {
-        for (Entry<String, CountAndTimingModel> entry :
-                partitionMetric.getMetrics().entrySet()) {
+    public void mergeFrom(Map<String, CountAndTimingModel> otherMetrics) {
+        for (Entry<String, CountAndTimingModel> entry : otherMetrics.entrySet()) {
             String key = entry.getKey();
             CountAndTimingModel incoming = entry.getValue();
             CountAndTimingModel existing = metrics.get(key);

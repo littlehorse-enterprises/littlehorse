@@ -28,6 +28,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private MetricWindowId() {
+    metricType_ = 0;
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -50,9 +51,9 @@ private static final long serialVersionUID = 0L;
   public enum IdCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    WORKFLOW(1),
-    TASK(2),
-    NODE(3),
+    WF_SPEC_ID(1),
+    TASK_DEF_ID(2),
+    USER_TASK_DEF_ID(3),
     ID_NOT_SET(0);
     private final int value;
     private IdCase(int value) {
@@ -70,9 +71,9 @@ private static final long serialVersionUID = 0L;
 
     public static IdCase forNumber(int value) {
       switch (value) {
-        case 1: return WORKFLOW;
-        case 2: return TASK;
-        case 3: return NODE;
+        case 1: return WF_SPEC_ID;
+        case 2: return TASK_DEF_ID;
+        case 3: return USER_TASK_DEF_ID;
         case 0: return ID_NOT_SET;
         default: return null;
       }
@@ -88,103 +89,103 @@ private static final long serialVersionUID = 0L;
         idCase_);
   }
 
-  public static final int WORKFLOW_FIELD_NUMBER = 1;
+  public static final int WF_SPEC_ID_FIELD_NUMBER = 1;
   /**
-   * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
-   * @return Whether the workflow field is set.
+   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
+   * @return Whether the wfSpecId field is set.
    */
   @java.lang.Override
-  public boolean hasWorkflow() {
+  public boolean hasWfSpecId() {
     return idCase_ == 1;
   }
   /**
-   * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
-   * @return The workflow.
+   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
+   * @return The wfSpecId.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WorkflowMetricId getWorkflow() {
+  public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
     if (idCase_ == 1) {
-       return (io.littlehorse.sdk.common.proto.WorkflowMetricId) id_;
+       return (io.littlehorse.sdk.common.proto.WfSpecId) id_;
     }
-    return io.littlehorse.sdk.common.proto.WorkflowMetricId.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WorkflowMetricIdOrBuilder getWorkflowOrBuilder() {
+  public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
     if (idCase_ == 1) {
-       return (io.littlehorse.sdk.common.proto.WorkflowMetricId) id_;
+       return (io.littlehorse.sdk.common.proto.WfSpecId) id_;
     }
-    return io.littlehorse.sdk.common.proto.WorkflowMetricId.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
   }
 
-  public static final int TASK_FIELD_NUMBER = 2;
+  public static final int TASK_DEF_ID_FIELD_NUMBER = 2;
   /**
-   * <code>.littlehorse.TaskMetricId task = 2;</code>
-   * @return Whether the task field is set.
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+   * @return Whether the taskDefId field is set.
    */
   @java.lang.Override
-  public boolean hasTask() {
+  public boolean hasTaskDefId() {
     return idCase_ == 2;
   }
   /**
-   * <code>.littlehorse.TaskMetricId task = 2;</code>
-   * @return The task.
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+   * @return The taskDefId.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskMetricId getTask() {
+  public io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId() {
     if (idCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.TaskMetricId) id_;
+       return (io.littlehorse.sdk.common.proto.TaskDefId) id_;
     }
-    return io.littlehorse.sdk.common.proto.TaskMetricId.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.TaskMetricId task = 2;</code>
+   * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskMetricIdOrBuilder getTaskOrBuilder() {
+  public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
     if (idCase_ == 2) {
-       return (io.littlehorse.sdk.common.proto.TaskMetricId) id_;
+       return (io.littlehorse.sdk.common.proto.TaskDefId) id_;
     }
-    return io.littlehorse.sdk.common.proto.TaskMetricId.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance();
   }
 
-  public static final int NODE_FIELD_NUMBER = 3;
+  public static final int USER_TASK_DEF_ID_FIELD_NUMBER = 3;
   /**
-   * <code>.littlehorse.NodeMetricId node = 3;</code>
-   * @return Whether the node field is set.
+   * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
+   * @return Whether the userTaskDefId field is set.
    */
   @java.lang.Override
-  public boolean hasNode() {
+  public boolean hasUserTaskDefId() {
     return idCase_ == 3;
   }
   /**
-   * <code>.littlehorse.NodeMetricId node = 3;</code>
-   * @return The node.
+   * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
+   * @return The userTaskDefId.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.NodeMetricId getNode() {
+  public io.littlehorse.sdk.common.proto.UserTaskDefId getUserTaskDefId() {
     if (idCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.NodeMetricId) id_;
+       return (io.littlehorse.sdk.common.proto.UserTaskDefId) id_;
     }
-    return io.littlehorse.sdk.common.proto.NodeMetricId.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskDefId.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.NodeMetricId node = 3;</code>
+   * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.NodeMetricIdOrBuilder getNodeOrBuilder() {
+  public io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder getUserTaskDefIdOrBuilder() {
     if (idCase_ == 3) {
-       return (io.littlehorse.sdk.common.proto.NodeMetricId) id_;
+       return (io.littlehorse.sdk.common.proto.UserTaskDefId) id_;
     }
-    return io.littlehorse.sdk.common.proto.NodeMetricId.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskDefId.getDefaultInstance();
   }
 
-  public static final int WINDOW_START_FIELD_NUMBER = 4;
+  public static final int WINDOW_START_FIELD_NUMBER = 5;
   private com.google.protobuf.Timestamp windowStart_;
   /**
-   * <code>.google.protobuf.Timestamp window_start = 4;</code>
+   * <code>.google.protobuf.Timestamp window_start = 5;</code>
    * @return Whether the windowStart field is set.
    */
   @java.lang.Override
@@ -192,7 +193,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.google.protobuf.Timestamp window_start = 4;</code>
+   * <code>.google.protobuf.Timestamp window_start = 5;</code>
    * @return The windowStart.
    */
   @java.lang.Override
@@ -200,11 +201,29 @@ private static final long serialVersionUID = 0L;
     return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
   }
   /**
-   * <code>.google.protobuf.Timestamp window_start = 4;</code>
+   * <code>.google.protobuf.Timestamp window_start = 5;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
     return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
+  }
+
+  public static final int METRIC_TYPE_FIELD_NUMBER = 6;
+  private int metricType_ = 0;
+  /**
+   * <code>.littlehorse.MetricWindowType metric_type = 6;</code>
+   * @return The enum numeric value on the wire for metricType.
+   */
+  @java.lang.Override public int getMetricTypeValue() {
+    return metricType_;
+  }
+  /**
+   * <code>.littlehorse.MetricWindowType metric_type = 6;</code>
+   * @return The metricType.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.MetricWindowType getMetricType() {
+    io.littlehorse.sdk.common.proto.MetricWindowType result = io.littlehorse.sdk.common.proto.MetricWindowType.forNumber(metricType_);
+    return result == null ? io.littlehorse.sdk.common.proto.MetricWindowType.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -222,16 +241,19 @@ private static final long serialVersionUID = 0L;
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (idCase_ == 1) {
-      output.writeMessage(1, (io.littlehorse.sdk.common.proto.WorkflowMetricId) id_);
+      output.writeMessage(1, (io.littlehorse.sdk.common.proto.WfSpecId) id_);
     }
     if (idCase_ == 2) {
-      output.writeMessage(2, (io.littlehorse.sdk.common.proto.TaskMetricId) id_);
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.TaskDefId) id_);
     }
     if (idCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.sdk.common.proto.NodeMetricId) id_);
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.UserTaskDefId) id_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(4, getWindowStart());
+      output.writeMessage(5, getWindowStart());
+    }
+    if (metricType_ != io.littlehorse.sdk.common.proto.MetricWindowType.WORKFLOW_METRIC.getNumber()) {
+      output.writeEnum(6, metricType_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -244,19 +266,23 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (idCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.WorkflowMetricId) id_);
+        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.WfSpecId) id_);
     }
     if (idCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.TaskMetricId) id_);
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.TaskDefId) id_);
     }
     if (idCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.NodeMetricId) id_);
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.UserTaskDefId) id_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getWindowStart());
+        .computeMessageSize(5, getWindowStart());
+    }
+    if (metricType_ != io.littlehorse.sdk.common.proto.MetricWindowType.WORKFLOW_METRIC.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(6, metricType_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -278,19 +304,20 @@ private static final long serialVersionUID = 0L;
       if (!getWindowStart()
           .equals(other.getWindowStart())) return false;
     }
+    if (metricType_ != other.metricType_) return false;
     if (!getIdCase().equals(other.getIdCase())) return false;
     switch (idCase_) {
       case 1:
-        if (!getWorkflow()
-            .equals(other.getWorkflow())) return false;
+        if (!getWfSpecId()
+            .equals(other.getWfSpecId())) return false;
         break;
       case 2:
-        if (!getTask()
-            .equals(other.getTask())) return false;
+        if (!getTaskDefId()
+            .equals(other.getTaskDefId())) return false;
         break;
       case 3:
-        if (!getNode()
-            .equals(other.getNode())) return false;
+        if (!getUserTaskDefId()
+            .equals(other.getUserTaskDefId())) return false;
         break;
       case 0:
       default:
@@ -310,18 +337,20 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + WINDOW_START_FIELD_NUMBER;
       hash = (53 * hash) + getWindowStart().hashCode();
     }
+    hash = (37 * hash) + METRIC_TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + metricType_;
     switch (idCase_) {
       case 1:
-        hash = (37 * hash) + WORKFLOW_FIELD_NUMBER;
-        hash = (53 * hash) + getWorkflow().hashCode();
+        hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getWfSpecId().hashCode();
         break;
       case 2:
-        hash = (37 * hash) + TASK_FIELD_NUMBER;
-        hash = (53 * hash) + getTask().hashCode();
+        hash = (37 * hash) + TASK_DEF_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getTaskDefId().hashCode();
         break;
       case 3:
-        hash = (37 * hash) + NODE_FIELD_NUMBER;
-        hash = (53 * hash) + getNode().hashCode();
+        hash = (37 * hash) + USER_TASK_DEF_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getUserTaskDefId().hashCode();
         break;
       case 0:
       default:
@@ -463,20 +492,21 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      if (workflowBuilder_ != null) {
-        workflowBuilder_.clear();
+      if (wfSpecIdBuilder_ != null) {
+        wfSpecIdBuilder_.clear();
       }
-      if (taskBuilder_ != null) {
-        taskBuilder_.clear();
+      if (taskDefIdBuilder_ != null) {
+        taskDefIdBuilder_.clear();
       }
-      if (nodeBuilder_ != null) {
-        nodeBuilder_.clear();
+      if (userTaskDefIdBuilder_ != null) {
+        userTaskDefIdBuilder_.clear();
       }
       windowStart_ = null;
       if (windowStartBuilder_ != null) {
         windowStartBuilder_.dispose();
         windowStartBuilder_ = null;
       }
+      metricType_ = 0;
       idCase_ = 0;
       id_ = null;
       return this;
@@ -520,6 +550,9 @@ private static final long serialVersionUID = 0L;
             : windowStartBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.metricType_ = metricType_;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -527,16 +560,16 @@ private static final long serialVersionUID = 0L;
       result.idCase_ = idCase_;
       result.id_ = this.id_;
       if (idCase_ == 1 &&
-          workflowBuilder_ != null) {
-        result.id_ = workflowBuilder_.build();
+          wfSpecIdBuilder_ != null) {
+        result.id_ = wfSpecIdBuilder_.build();
       }
       if (idCase_ == 2 &&
-          taskBuilder_ != null) {
-        result.id_ = taskBuilder_.build();
+          taskDefIdBuilder_ != null) {
+        result.id_ = taskDefIdBuilder_.build();
       }
       if (idCase_ == 3 &&
-          nodeBuilder_ != null) {
-        result.id_ = nodeBuilder_.build();
+          userTaskDefIdBuilder_ != null) {
+        result.id_ = userTaskDefIdBuilder_.build();
       }
     }
 
@@ -555,17 +588,20 @@ private static final long serialVersionUID = 0L;
       if (other.hasWindowStart()) {
         mergeWindowStart(other.getWindowStart());
       }
+      if (other.metricType_ != 0) {
+        setMetricTypeValue(other.getMetricTypeValue());
+      }
       switch (other.getIdCase()) {
-        case WORKFLOW: {
-          mergeWorkflow(other.getWorkflow());
+        case WF_SPEC_ID: {
+          mergeWfSpecId(other.getWfSpecId());
           break;
         }
-        case TASK: {
-          mergeTask(other.getTask());
+        case TASK_DEF_ID: {
+          mergeTaskDefId(other.getTaskDefId());
           break;
         }
-        case NODE: {
-          mergeNode(other.getNode());
+        case USER_TASK_DEF_ID: {
+          mergeUserTaskDefId(other.getUserTaskDefId());
           break;
         }
         case ID_NOT_SET: {
@@ -600,32 +636,37 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               input.readMessage(
-                  internalGetWorkflowFieldBuilder().getBuilder(),
+                  internalGetWfSpecIdFieldBuilder().getBuilder(),
                   extensionRegistry);
               idCase_ = 1;
               break;
             } // case 10
             case 18: {
               input.readMessage(
-                  internalGetTaskFieldBuilder().getBuilder(),
+                  internalGetTaskDefIdFieldBuilder().getBuilder(),
                   extensionRegistry);
               idCase_ = 2;
               break;
             } // case 18
             case 26: {
               input.readMessage(
-                  internalGetNodeFieldBuilder().getBuilder(),
+                  internalGetUserTaskDefIdFieldBuilder().getBuilder(),
                   extensionRegistry);
               idCase_ = 3;
               break;
             } // case 26
-            case 34: {
+            case 42: {
               input.readMessage(
                   internalGetWindowStartFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000008;
               break;
-            } // case 34
+            } // case 42
+            case 48: {
+              metricType_ = input.readEnum();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 48
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -659,71 +700,71 @@ private static final long serialVersionUID = 0L;
     private int bitField0_;
 
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.WorkflowMetricId, io.littlehorse.sdk.common.proto.WorkflowMetricId.Builder, io.littlehorse.sdk.common.proto.WorkflowMetricIdOrBuilder> workflowBuilder_;
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
     /**
-     * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
-     * @return Whether the workflow field is set.
+     * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
+     * @return Whether the wfSpecId field is set.
      */
     @java.lang.Override
-    public boolean hasWorkflow() {
+    public boolean hasWfSpecId() {
       return idCase_ == 1;
     }
     /**
-     * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
-     * @return The workflow.
+     * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
+     * @return The wfSpecId.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WorkflowMetricId getWorkflow() {
-      if (workflowBuilder_ == null) {
+    public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
+      if (wfSpecIdBuilder_ == null) {
         if (idCase_ == 1) {
-          return (io.littlehorse.sdk.common.proto.WorkflowMetricId) id_;
+          return (io.littlehorse.sdk.common.proto.WfSpecId) id_;
         }
-        return io.littlehorse.sdk.common.proto.WorkflowMetricId.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
       } else {
         if (idCase_ == 1) {
-          return workflowBuilder_.getMessage();
+          return wfSpecIdBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.WorkflowMetricId.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
-    public Builder setWorkflow(io.littlehorse.sdk.common.proto.WorkflowMetricId value) {
-      if (workflowBuilder_ == null) {
+    public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (wfSpecIdBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         id_ = value;
         onChanged();
       } else {
-        workflowBuilder_.setMessage(value);
+        wfSpecIdBuilder_.setMessage(value);
       }
       idCase_ = 1;
       return this;
     }
     /**
-     * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
-    public Builder setWorkflow(
-        io.littlehorse.sdk.common.proto.WorkflowMetricId.Builder builderForValue) {
-      if (workflowBuilder_ == null) {
+    public Builder setWfSpecId(
+        io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
+      if (wfSpecIdBuilder_ == null) {
         id_ = builderForValue.build();
         onChanged();
       } else {
-        workflowBuilder_.setMessage(builderForValue.build());
+        wfSpecIdBuilder_.setMessage(builderForValue.build());
       }
       idCase_ = 1;
       return this;
     }
     /**
-     * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
-    public Builder mergeWorkflow(io.littlehorse.sdk.common.proto.WorkflowMetricId value) {
-      if (workflowBuilder_ == null) {
+    public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
+      if (wfSpecIdBuilder_ == null) {
         if (idCase_ == 1 &&
-            id_ != io.littlehorse.sdk.common.proto.WorkflowMetricId.getDefaultInstance()) {
-          id_ = io.littlehorse.sdk.common.proto.WorkflowMetricId.newBuilder((io.littlehorse.sdk.common.proto.WorkflowMetricId) id_)
+            id_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
+          id_ = io.littlehorse.sdk.common.proto.WfSpecId.newBuilder((io.littlehorse.sdk.common.proto.WfSpecId) id_)
               .mergeFrom(value).buildPartial();
         } else {
           id_ = value;
@@ -731,19 +772,19 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (idCase_ == 1) {
-          workflowBuilder_.mergeFrom(value);
+          wfSpecIdBuilder_.mergeFrom(value);
         } else {
-          workflowBuilder_.setMessage(value);
+          wfSpecIdBuilder_.setMessage(value);
         }
       }
       idCase_ = 1;
       return this;
     }
     /**
-     * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
-    public Builder clearWorkflow() {
-      if (workflowBuilder_ == null) {
+    public Builder clearWfSpecId() {
+      if (wfSpecIdBuilder_ == null) {
         if (idCase_ == 1) {
           idCase_ = 0;
           id_ = null;
@@ -754,118 +795,118 @@ private static final long serialVersionUID = 0L;
           idCase_ = 0;
           id_ = null;
         }
-        workflowBuilder_.clear();
+        wfSpecIdBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.WorkflowMetricId.Builder getWorkflowBuilder() {
-      return internalGetWorkflowFieldBuilder().getBuilder();
+    public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
+      return internalGetWfSpecIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WorkflowMetricIdOrBuilder getWorkflowOrBuilder() {
-      if ((idCase_ == 1) && (workflowBuilder_ != null)) {
-        return workflowBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
+      if ((idCase_ == 1) && (wfSpecIdBuilder_ != null)) {
+        return wfSpecIdBuilder_.getMessageOrBuilder();
       } else {
         if (idCase_ == 1) {
-          return (io.littlehorse.sdk.common.proto.WorkflowMetricId) id_;
+          return (io.littlehorse.sdk.common.proto.WfSpecId) id_;
         }
-        return io.littlehorse.sdk.common.proto.WorkflowMetricId.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.WorkflowMetricId workflow = 1;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.WorkflowMetricId, io.littlehorse.sdk.common.proto.WorkflowMetricId.Builder, io.littlehorse.sdk.common.proto.WorkflowMetricIdOrBuilder> 
-        internalGetWorkflowFieldBuilder() {
-      if (workflowBuilder_ == null) {
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
+        internalGetWfSpecIdFieldBuilder() {
+      if (wfSpecIdBuilder_ == null) {
         if (!(idCase_ == 1)) {
-          id_ = io.littlehorse.sdk.common.proto.WorkflowMetricId.getDefaultInstance();
+          id_ = io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
         }
-        workflowBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.WorkflowMetricId, io.littlehorse.sdk.common.proto.WorkflowMetricId.Builder, io.littlehorse.sdk.common.proto.WorkflowMetricIdOrBuilder>(
-                (io.littlehorse.sdk.common.proto.WorkflowMetricId) id_,
+        wfSpecIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder>(
+                (io.littlehorse.sdk.common.proto.WfSpecId) id_,
                 getParentForChildren(),
                 isClean());
         id_ = null;
       }
       idCase_ = 1;
       onChanged();
-      return workflowBuilder_;
+      return wfSpecIdBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.TaskMetricId, io.littlehorse.sdk.common.proto.TaskMetricId.Builder, io.littlehorse.sdk.common.proto.TaskMetricIdOrBuilder> taskBuilder_;
+        io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> taskDefIdBuilder_;
     /**
-     * <code>.littlehorse.TaskMetricId task = 2;</code>
-     * @return Whether the task field is set.
+     * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+     * @return Whether the taskDefId field is set.
      */
     @java.lang.Override
-    public boolean hasTask() {
+    public boolean hasTaskDefId() {
       return idCase_ == 2;
     }
     /**
-     * <code>.littlehorse.TaskMetricId task = 2;</code>
-     * @return The task.
+     * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
+     * @return The taskDefId.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskMetricId getTask() {
-      if (taskBuilder_ == null) {
+    public io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId() {
+      if (taskDefIdBuilder_ == null) {
         if (idCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.TaskMetricId) id_;
+          return (io.littlehorse.sdk.common.proto.TaskDefId) id_;
         }
-        return io.littlehorse.sdk.common.proto.TaskMetricId.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance();
       } else {
         if (idCase_ == 2) {
-          return taskBuilder_.getMessage();
+          return taskDefIdBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.TaskMetricId.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.TaskMetricId task = 2;</code>
+     * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
-    public Builder setTask(io.littlehorse.sdk.common.proto.TaskMetricId value) {
-      if (taskBuilder_ == null) {
+    public Builder setTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
+      if (taskDefIdBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         id_ = value;
         onChanged();
       } else {
-        taskBuilder_.setMessage(value);
+        taskDefIdBuilder_.setMessage(value);
       }
       idCase_ = 2;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskMetricId task = 2;</code>
+     * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
-    public Builder setTask(
-        io.littlehorse.sdk.common.proto.TaskMetricId.Builder builderForValue) {
-      if (taskBuilder_ == null) {
+    public Builder setTaskDefId(
+        io.littlehorse.sdk.common.proto.TaskDefId.Builder builderForValue) {
+      if (taskDefIdBuilder_ == null) {
         id_ = builderForValue.build();
         onChanged();
       } else {
-        taskBuilder_.setMessage(builderForValue.build());
+        taskDefIdBuilder_.setMessage(builderForValue.build());
       }
       idCase_ = 2;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskMetricId task = 2;</code>
+     * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
-    public Builder mergeTask(io.littlehorse.sdk.common.proto.TaskMetricId value) {
-      if (taskBuilder_ == null) {
+    public Builder mergeTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
+      if (taskDefIdBuilder_ == null) {
         if (idCase_ == 2 &&
-            id_ != io.littlehorse.sdk.common.proto.TaskMetricId.getDefaultInstance()) {
-          id_ = io.littlehorse.sdk.common.proto.TaskMetricId.newBuilder((io.littlehorse.sdk.common.proto.TaskMetricId) id_)
+            id_ != io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance()) {
+          id_ = io.littlehorse.sdk.common.proto.TaskDefId.newBuilder((io.littlehorse.sdk.common.proto.TaskDefId) id_)
               .mergeFrom(value).buildPartial();
         } else {
           id_ = value;
@@ -873,19 +914,19 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (idCase_ == 2) {
-          taskBuilder_.mergeFrom(value);
+          taskDefIdBuilder_.mergeFrom(value);
         } else {
-          taskBuilder_.setMessage(value);
+          taskDefIdBuilder_.setMessage(value);
         }
       }
       idCase_ = 2;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskMetricId task = 2;</code>
+     * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
-    public Builder clearTask() {
-      if (taskBuilder_ == null) {
+    public Builder clearTaskDefId() {
+      if (taskDefIdBuilder_ == null) {
         if (idCase_ == 2) {
           idCase_ = 0;
           id_ = null;
@@ -896,118 +937,118 @@ private static final long serialVersionUID = 0L;
           idCase_ = 0;
           id_ = null;
         }
-        taskBuilder_.clear();
+        taskDefIdBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.littlehorse.TaskMetricId task = 2;</code>
+     * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.TaskMetricId.Builder getTaskBuilder() {
-      return internalGetTaskFieldBuilder().getBuilder();
+    public io.littlehorse.sdk.common.proto.TaskDefId.Builder getTaskDefIdBuilder() {
+      return internalGetTaskDefIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.TaskMetricId task = 2;</code>
+     * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskMetricIdOrBuilder getTaskOrBuilder() {
-      if ((idCase_ == 2) && (taskBuilder_ != null)) {
-        return taskBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
+      if ((idCase_ == 2) && (taskDefIdBuilder_ != null)) {
+        return taskDefIdBuilder_.getMessageOrBuilder();
       } else {
         if (idCase_ == 2) {
-          return (io.littlehorse.sdk.common.proto.TaskMetricId) id_;
+          return (io.littlehorse.sdk.common.proto.TaskDefId) id_;
         }
-        return io.littlehorse.sdk.common.proto.TaskMetricId.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.TaskMetricId task = 2;</code>
+     * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.TaskMetricId, io.littlehorse.sdk.common.proto.TaskMetricId.Builder, io.littlehorse.sdk.common.proto.TaskMetricIdOrBuilder> 
-        internalGetTaskFieldBuilder() {
-      if (taskBuilder_ == null) {
+        io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> 
+        internalGetTaskDefIdFieldBuilder() {
+      if (taskDefIdBuilder_ == null) {
         if (!(idCase_ == 2)) {
-          id_ = io.littlehorse.sdk.common.proto.TaskMetricId.getDefaultInstance();
+          id_ = io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance();
         }
-        taskBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.TaskMetricId, io.littlehorse.sdk.common.proto.TaskMetricId.Builder, io.littlehorse.sdk.common.proto.TaskMetricIdOrBuilder>(
-                (io.littlehorse.sdk.common.proto.TaskMetricId) id_,
+        taskDefIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder>(
+                (io.littlehorse.sdk.common.proto.TaskDefId) id_,
                 getParentForChildren(),
                 isClean());
         id_ = null;
       }
       idCase_ = 2;
       onChanged();
-      return taskBuilder_;
+      return taskDefIdBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.NodeMetricId, io.littlehorse.sdk.common.proto.NodeMetricId.Builder, io.littlehorse.sdk.common.proto.NodeMetricIdOrBuilder> nodeBuilder_;
+        io.littlehorse.sdk.common.proto.UserTaskDefId, io.littlehorse.sdk.common.proto.UserTaskDefId.Builder, io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder> userTaskDefIdBuilder_;
     /**
-     * <code>.littlehorse.NodeMetricId node = 3;</code>
-     * @return Whether the node field is set.
+     * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
+     * @return Whether the userTaskDefId field is set.
      */
     @java.lang.Override
-    public boolean hasNode() {
+    public boolean hasUserTaskDefId() {
       return idCase_ == 3;
     }
     /**
-     * <code>.littlehorse.NodeMetricId node = 3;</code>
-     * @return The node.
+     * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
+     * @return The userTaskDefId.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.NodeMetricId getNode() {
-      if (nodeBuilder_ == null) {
+    public io.littlehorse.sdk.common.proto.UserTaskDefId getUserTaskDefId() {
+      if (userTaskDefIdBuilder_ == null) {
         if (idCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.NodeMetricId) id_;
+          return (io.littlehorse.sdk.common.proto.UserTaskDefId) id_;
         }
-        return io.littlehorse.sdk.common.proto.NodeMetricId.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskDefId.getDefaultInstance();
       } else {
         if (idCase_ == 3) {
-          return nodeBuilder_.getMessage();
+          return userTaskDefIdBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.NodeMetricId.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskDefId.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.NodeMetricId node = 3;</code>
+     * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
      */
-    public Builder setNode(io.littlehorse.sdk.common.proto.NodeMetricId value) {
-      if (nodeBuilder_ == null) {
+    public Builder setUserTaskDefId(io.littlehorse.sdk.common.proto.UserTaskDefId value) {
+      if (userTaskDefIdBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         id_ = value;
         onChanged();
       } else {
-        nodeBuilder_.setMessage(value);
+        userTaskDefIdBuilder_.setMessage(value);
       }
       idCase_ = 3;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeMetricId node = 3;</code>
+     * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
      */
-    public Builder setNode(
-        io.littlehorse.sdk.common.proto.NodeMetricId.Builder builderForValue) {
-      if (nodeBuilder_ == null) {
+    public Builder setUserTaskDefId(
+        io.littlehorse.sdk.common.proto.UserTaskDefId.Builder builderForValue) {
+      if (userTaskDefIdBuilder_ == null) {
         id_ = builderForValue.build();
         onChanged();
       } else {
-        nodeBuilder_.setMessage(builderForValue.build());
+        userTaskDefIdBuilder_.setMessage(builderForValue.build());
       }
       idCase_ = 3;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeMetricId node = 3;</code>
+     * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
      */
-    public Builder mergeNode(io.littlehorse.sdk.common.proto.NodeMetricId value) {
-      if (nodeBuilder_ == null) {
+    public Builder mergeUserTaskDefId(io.littlehorse.sdk.common.proto.UserTaskDefId value) {
+      if (userTaskDefIdBuilder_ == null) {
         if (idCase_ == 3 &&
-            id_ != io.littlehorse.sdk.common.proto.NodeMetricId.getDefaultInstance()) {
-          id_ = io.littlehorse.sdk.common.proto.NodeMetricId.newBuilder((io.littlehorse.sdk.common.proto.NodeMetricId) id_)
+            id_ != io.littlehorse.sdk.common.proto.UserTaskDefId.getDefaultInstance()) {
+          id_ = io.littlehorse.sdk.common.proto.UserTaskDefId.newBuilder((io.littlehorse.sdk.common.proto.UserTaskDefId) id_)
               .mergeFrom(value).buildPartial();
         } else {
           id_ = value;
@@ -1015,19 +1056,19 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (idCase_ == 3) {
-          nodeBuilder_.mergeFrom(value);
+          userTaskDefIdBuilder_.mergeFrom(value);
         } else {
-          nodeBuilder_.setMessage(value);
+          userTaskDefIdBuilder_.setMessage(value);
         }
       }
       idCase_ = 3;
       return this;
     }
     /**
-     * <code>.littlehorse.NodeMetricId node = 3;</code>
+     * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
      */
-    public Builder clearNode() {
-      if (nodeBuilder_ == null) {
+    public Builder clearUserTaskDefId() {
+      if (userTaskDefIdBuilder_ == null) {
         if (idCase_ == 3) {
           idCase_ = 0;
           id_ = null;
@@ -1038,64 +1079,64 @@ private static final long serialVersionUID = 0L;
           idCase_ = 0;
           id_ = null;
         }
-        nodeBuilder_.clear();
+        userTaskDefIdBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.littlehorse.NodeMetricId node = 3;</code>
+     * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
      */
-    public io.littlehorse.sdk.common.proto.NodeMetricId.Builder getNodeBuilder() {
-      return internalGetNodeFieldBuilder().getBuilder();
+    public io.littlehorse.sdk.common.proto.UserTaskDefId.Builder getUserTaskDefIdBuilder() {
+      return internalGetUserTaskDefIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.NodeMetricId node = 3;</code>
+     * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.NodeMetricIdOrBuilder getNodeOrBuilder() {
-      if ((idCase_ == 3) && (nodeBuilder_ != null)) {
-        return nodeBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder getUserTaskDefIdOrBuilder() {
+      if ((idCase_ == 3) && (userTaskDefIdBuilder_ != null)) {
+        return userTaskDefIdBuilder_.getMessageOrBuilder();
       } else {
         if (idCase_ == 3) {
-          return (io.littlehorse.sdk.common.proto.NodeMetricId) id_;
+          return (io.littlehorse.sdk.common.proto.UserTaskDefId) id_;
         }
-        return io.littlehorse.sdk.common.proto.NodeMetricId.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskDefId.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.NodeMetricId node = 3;</code>
+     * <code>.littlehorse.UserTaskDefId user_task_def_id = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.NodeMetricId, io.littlehorse.sdk.common.proto.NodeMetricId.Builder, io.littlehorse.sdk.common.proto.NodeMetricIdOrBuilder> 
-        internalGetNodeFieldBuilder() {
-      if (nodeBuilder_ == null) {
+        io.littlehorse.sdk.common.proto.UserTaskDefId, io.littlehorse.sdk.common.proto.UserTaskDefId.Builder, io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder> 
+        internalGetUserTaskDefIdFieldBuilder() {
+      if (userTaskDefIdBuilder_ == null) {
         if (!(idCase_ == 3)) {
-          id_ = io.littlehorse.sdk.common.proto.NodeMetricId.getDefaultInstance();
+          id_ = io.littlehorse.sdk.common.proto.UserTaskDefId.getDefaultInstance();
         }
-        nodeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.NodeMetricId, io.littlehorse.sdk.common.proto.NodeMetricId.Builder, io.littlehorse.sdk.common.proto.NodeMetricIdOrBuilder>(
-                (io.littlehorse.sdk.common.proto.NodeMetricId) id_,
+        userTaskDefIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.UserTaskDefId, io.littlehorse.sdk.common.proto.UserTaskDefId.Builder, io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskDefId) id_,
                 getParentForChildren(),
                 isClean());
         id_ = null;
       }
       idCase_ = 3;
       onChanged();
-      return nodeBuilder_;
+      return userTaskDefIdBuilder_;
     }
 
     private com.google.protobuf.Timestamp windowStart_;
     private com.google.protobuf.SingleFieldBuilder<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> windowStartBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>.google.protobuf.Timestamp window_start = 5;</code>
      * @return Whether the windowStart field is set.
      */
     public boolean hasWindowStart() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>.google.protobuf.Timestamp window_start = 5;</code>
      * @return The windowStart.
      */
     public com.google.protobuf.Timestamp getWindowStart() {
@@ -1106,7 +1147,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>.google.protobuf.Timestamp window_start = 5;</code>
      */
     public Builder setWindowStart(com.google.protobuf.Timestamp value) {
       if (windowStartBuilder_ == null) {
@@ -1122,7 +1163,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>.google.protobuf.Timestamp window_start = 5;</code>
      */
     public Builder setWindowStart(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -1136,7 +1177,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>.google.protobuf.Timestamp window_start = 5;</code>
      */
     public Builder mergeWindowStart(com.google.protobuf.Timestamp value) {
       if (windowStartBuilder_ == null) {
@@ -1157,7 +1198,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>.google.protobuf.Timestamp window_start = 5;</code>
      */
     public Builder clearWindowStart() {
       bitField0_ = (bitField0_ & ~0x00000008);
@@ -1170,7 +1211,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>.google.protobuf.Timestamp window_start = 5;</code>
      */
     public com.google.protobuf.Timestamp.Builder getWindowStartBuilder() {
       bitField0_ |= 0x00000008;
@@ -1178,7 +1219,7 @@ private static final long serialVersionUID = 0L;
       return internalGetWindowStartFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>.google.protobuf.Timestamp window_start = 5;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
       if (windowStartBuilder_ != null) {
@@ -1189,7 +1230,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>.google.protobuf.Timestamp window_start = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -1203,6 +1244,57 @@ private static final long serialVersionUID = 0L;
         windowStart_ = null;
       }
       return windowStartBuilder_;
+    }
+
+    private int metricType_ = 0;
+    /**
+     * <code>.littlehorse.MetricWindowType metric_type = 6;</code>
+     * @return The enum numeric value on the wire for metricType.
+     */
+    @java.lang.Override public int getMetricTypeValue() {
+      return metricType_;
+    }
+    /**
+     * <code>.littlehorse.MetricWindowType metric_type = 6;</code>
+     * @param value The enum numeric value on the wire for metricType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMetricTypeValue(int value) {
+      metricType_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.MetricWindowType metric_type = 6;</code>
+     * @return The metricType.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.MetricWindowType getMetricType() {
+      io.littlehorse.sdk.common.proto.MetricWindowType result = io.littlehorse.sdk.common.proto.MetricWindowType.forNumber(metricType_);
+      return result == null ? io.littlehorse.sdk.common.proto.MetricWindowType.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.littlehorse.MetricWindowType metric_type = 6;</code>
+     * @param value The metricType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMetricType(io.littlehorse.sdk.common.proto.MetricWindowType value) {
+      if (value == null) { throw new NullPointerException(); }
+      bitField0_ |= 0x00000010;
+      metricType_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.MetricWindowType metric_type = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMetricType() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      metricType_ = 0;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetricWindowId)

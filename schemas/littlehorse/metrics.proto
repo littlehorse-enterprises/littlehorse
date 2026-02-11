@@ -3,51 +3,39 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
+import "common_enums.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
-message WorkflowMetricId {
-    optional WfSpecId wf_spec = 1; // If null, tenant-level aggregate
-}
-
-message TaskMetricId {
-    optional TaskDefId task_def = 1; // If null, tenant-level aggregate
-}
-
-message NodeMetricId {
-    WfSpecId wf_spec = 1;
-    string node_name = 2;
-    int32 node_position = 3; // Position within the ThreadSpec for ordering
-}
-
 message MetricWindowId {
   oneof id {
-    WorkflowMetricId workflow = 1;
-    TaskMetricId task = 2;
-    NodeMetricId node = 3;
+    WfSpecId  wf_spec_id  = 1;
+    TaskDefId task_def_id = 2;
+    UserTaskDefId user_task_def_id = 3;
   }
-  google.protobuf.Timestamp window_start = 4;
+  google.protobuf.Timestamp window_start = 5;
+  MetricWindowType          metric_type  = 6;
 }
 
 message CountAndTiming {
-  int32 count = 1;
-  int64 min_latency_ms = 2;
-  int64 max_latency_ms = 3;
+  int32 count            = 1;
+  int64 min_latency_ms   = 2;
+  int64 max_latency_ms   = 3;
   int64 total_latency_ms = 4;
 }
 
 message MetricWindow {
-  MetricWindowId id = 1;
+  MetricWindowId              id      = 1;
   map<string, CountAndTiming> metrics = 2;
 }
 
 message ListWfMetricsRequest {
-  WfSpecId wf_spec = 1;
+  WfSpecId                           wf_spec      = 1;
   optional google.protobuf.Timestamp window_start = 2;
-  optional google.protobuf.Timestamp window_end = 3;
+  optional google.protobuf.Timestamp window_end   = 3;
 }
 
 message MetricsList {

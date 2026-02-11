@@ -5,7 +5,9 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.core.metrics.CountAndTimingModel;
 import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.PartitionMetricWindow;
 import io.littlehorse.common.proto.StoreableType;
@@ -14,7 +16,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.CountAndTiming;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.MetricWindow;
-import io.littlehorse.sdk.common.proto.MetricWindowId;
+import io.littlehorse.sdk.common.proto.MetricWindowType;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,14 +28,13 @@ import lombok.Setter;
 @Setter
 public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow> {
 
-    private MetricWindowId.IdCase metricType;
-
     private WfSpecIdModel wfSpecId;
+    private TaskDefIdModel taskDefId;
+    private UserTaskDefIdModel userTaskDefId;
 
+    private MetricWindowType metricType;
     private Date windowStart;
-
     private Map<String, CountAndTimingModel> metrics;
-
     private TenantIdModel tenantId;
 
     public PartitionMetricWindowModel() {}
@@ -42,7 +43,7 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         this.wfSpecId = wfSpecId;
         this.tenantId = tenantId;
         this.windowStart = windowStart;
-        this.metricType = MetricWindowId.IdCase.WORKFLOW;
+        this.metricType = MetricWindowType.WORKFLOW_METRIC;
         this.metrics = new HashMap<>();
     }
 
@@ -95,16 +96,14 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
             Date endTime) {
         Date windowStart = LHUtil.getCurrentWindowTime();
         TenantIdModel tenantId = processorContext.authorization().tenantId();
-
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
-
-        PartitionMetricWindowModel metricWindow = clusterScopedStore.get(
-                buildStoreKey(windowStart, tenantId, wfSpecId), PartitionMetricWindowModel.class);
-        if (metricWindow == null) {
-            metricWindow = new PartitionMetricWindowModel(wfSpecId, tenantId);
+        PartitionMetricWindowModel metricWindow = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
+        PartitionMetricWindowModel existingWindow =
+                clusterScopedStore.get(metricWindow.getStoreKey(), PartitionMetricWindowModel.class);
+        if (existingWindow != null) {
+            metricWindow = existingWindow;
         }
-
         metricWindow.incrementWfCount(previousStatus, newStatus, startTime, endTime);
         clusterScopedStore.put(metricWindow);
     }
@@ -121,11 +120,23 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
             this.tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
         }
 
-        if (p.hasWfSpecId()) {
-            this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+        // Handle oneof id
+        switch (p.getIdCase()) {
+            case WF_SPEC_ID:
+                this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+                break;
+            case TASK_DEF_ID:
+                this.taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
+                break;
+            case USER_TASK_DEF_ID:
+                this.userTaskDefId = LHSerializable.fromProto(p.getUserTaskDefId(), UserTaskDefIdModel.class, context);
+                break;
+            case ID_NOT_SET:
+                break;
         }
 
-        this.metricType = MetricWindowId.IdCase.WORKFLOW;
+        this.metricType = p.getMetricType();
+
         this.metrics = new HashMap<>();
         for (Map.Entry<String, CountAndTiming> entry : p.getMetricsMap().entrySet()) {
             CountAndTimingModel model = new CountAndTimingModel();
@@ -140,19 +151,22 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
     @Override
     public PartitionMetricWindow.Builder toProto() {
         PartitionMetricWindow.Builder builder = PartitionMetricWindow.newBuilder();
-
         if (windowStart != null) {
             builder.setWindowStart(LHUtil.fromDate(windowStart));
         }
-
         if (tenantId != null) {
             builder.setTenantId(tenantId.toProto());
         }
-
         if (wfSpecId != null) {
             builder.setWfSpecId(wfSpecId.toProto());
+        } else if (taskDefId != null) {
+            builder.setTaskDefId(taskDefId.toProto());
+        } else if (userTaskDefId != null) {
+            builder.setUserTaskDefId(userTaskDefId.toProto());
         }
-
+        if (metricType != null) {
+            builder.setMetricType(metricType);
+        }
         for (Map.Entry<String, CountAndTimingModel> entry : metrics.entrySet()) {
             builder.putMetrics(entry.getKey(), entry.getValue().toProto().build());
         }
@@ -161,8 +175,12 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
 
     public MetricWindow.Builder toMetricWindowProto() {
         MetricWindow.Builder builder = MetricWindow.newBuilder();
-        WfSpecIdModel wfSpecId = this.wfSpecId;
-        MetricWindowIdModel id = new MetricWindowIdModel(wfSpecId, this.windowStart);
+        MetricWindowIdModel id = new MetricWindowIdModel();
+        id.setWfSpecId(this.wfSpecId);
+        id.setTaskDefId(this.taskDefId);
+        id.setUserTaskDefId(this.userTaskDefId);
+        id.setWindowStart(this.windowStart);
+        id.setMetricType(this.metricType);
         builder.setId(id.toProto());
         this.metrics.forEach((key, val) -> {
             builder.putMetrics(key, val.toProto().build());
@@ -177,40 +195,21 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
 
     @Override
     public String getStoreKey() {
-        return buildStoreKey(windowStart, tenantId, wfSpecId);
-    }
-
-    public static String buildStoreKey(Date windowStart, TenantIdModel tenantId, WfSpecIdModel wfSpecId) {
-        String typeStr = "wf";
-        String tenantStr = tenantId != null ? tenantId.toString() : "null";
-        String idStr = wfSpecId != null ? wfSpecId.toString() : "null";
-        String windowStr = windowStart != null ? LHUtil.toLhDbFormat(windowStart) : "0";
-        return String.format("metrics/partition/%s/%s/%s/%s", windowStr, tenantStr, typeStr, idStr);
-    }
-
-    private String getMetricTypeString() {
-        if (metricType == null) {
-            return "wf"; // default to workflow
+        String idPart = "";
+        if (wfSpecId != null) {
+            idPart = wfSpecId.toString();
+        } else if (taskDefId != null) {
+            idPart = taskDefId.toString();
+        } else if (userTaskDefId != null) {
+            idPart = userTaskDefId.toString();
         }
-        switch (metricType) {
-            case WORKFLOW:
-                return "wf";
-            case TASK:
-                return "task";
-            case NODE:
-                return "node";
-            default:
-                return "unknown";
-        }
+        return String.format(
+                "metrics/partition/%s/%s/%s/%s",
+                LHUtil.toLhDbFormat(windowStart), getMetricType().name(), tenantId, idPart);
     }
 
     @Override
     public StoreableType getType() {
         return StoreableType.PARTITION_METRICS;
-    }
-
-    @Override
-    public String toString() {
-        return " {" + "\nwindowStart=" + windowStart + ",\nmetrics=" + metrics + "\n}";
     }
 }
