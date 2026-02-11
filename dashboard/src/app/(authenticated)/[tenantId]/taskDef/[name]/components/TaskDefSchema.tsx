@@ -1,4 +1,4 @@
-import { TypeDisplay } from '@/app/(authenticated)/[tenantId]/components/TypeDisplay'
+import { OutputTypeDisplay } from '@/app/(authenticated)/[tenantId]/components/OutputTypeDisplay'
 import { VARIABLE_TYPES } from '@/app/constants'
 import { getVariableDefType } from '@/app/utils/variables'
 import { TaskDef } from 'littlehorse-client/proto'
@@ -9,18 +9,14 @@ type Props = {
 }
 
 export const TaskDefSchema: FC<Props> = ({ spec }) => {
-  const definedType = spec.returnType?.returnType?.definedType
+  const outputType = spec.returnType
 
   return (
     <div className="space-y-4">
       <div>
         <h2 className="mb-2 text-lg font-bold">Output</h2>
         <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
-          {definedType ? (
-            <TypeDisplay definedType={definedType} />
-          ) : (
-            <span className="font-mono text-gray-400">void</span>
-          )}
+          <OutputTypeDisplay outputType={outputType} />
         </div>
       </div>
 
