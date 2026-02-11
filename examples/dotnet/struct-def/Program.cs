@@ -6,6 +6,7 @@ using LittleHorse.Sdk.Workflow.Spec;
 using LittleHorse.Sdk.Worker;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
 namespace StructDefExample;
 
@@ -62,7 +63,7 @@ public class Program
 
     private static async Task RegisterStructDefs(LittleHorseClient client, ILogger logger)
     {
-        var types = new[] { typeof(Person), typeof(Address), typeof(ParkingTicketReport) };
+        var types = new[] { typeof(Address), typeof(Person), typeof(ParkingTicketReport) };
 
         foreach (var type in types)
         {
