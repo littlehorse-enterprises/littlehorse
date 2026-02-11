@@ -198,12 +198,25 @@ public class LHStructProperty
   private string FindFieldName()
   {
     var lhStructField = GetAnnotation<LHStructFieldAttribute>();
+    string fieldName;
     if (lhStructField == null || string.IsNullOrWhiteSpace(lhStructField.Name))
     {
-      return _pd.Name;
+      fieldName = _pd.Name;
+    }
+    else
+    {
+      fieldName = lhStructField.Name;
     }
 
-    return lhStructField.Name;
+    return LowercaseFirstLetter(fieldName);
+  }
+
+  private static string LowercaseFirstLetter(string value)
+  {
+    if (string.IsNullOrEmpty(value)) return value;
+    if (char.IsLower(value[0])) return value;
+
+    return char.ToLowerInvariant(value[0]) + value.Substring(1);
   }
 
   private bool HasReadMethod()

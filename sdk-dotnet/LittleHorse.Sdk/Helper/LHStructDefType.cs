@@ -76,6 +76,10 @@ public class LHStructDefType : LHClassType
     };
   }
 
+  /// <summary>
+  /// Gets the description for this StructDef from its annotation.
+  /// </summary>
+  /// <returns>The description for this StructDef</returns>
   public string GetStructDefDescription()
   {
     return GetStructDefAnnotation().Description;
