@@ -1,0 +1,114 @@
+name: Documentation Trigger
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  dispatch-to-lh-site:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for docs-required commits
+        id: check-commits
+        run: |
+          # Get commits in this push
+          COMMITS=$(git log --format="%H" ${{ github.event.before }}..${{ github.event.after }} 2>/dev/null || git log --format="%H" -1 HEAD)
+
+          DOCS_REQUIRED_COMMITS=""
+
+          for COMMIT in $COMMITS; do
+            COMMIT_MSG=$(git log --format="%B" -1 $COMMIT)
+            if echo "$COMMIT_MSG" | grep -qi "docs-required: true"; then
+              if [ -z "$DOCS_REQUIRED_COMMITS" ]; then
+                DOCS_REQUIRED_COMMITS="$COMMIT"
+              else
+                DOCS_REQUIRED_COMMITS="$DOCS_REQUIRED_COMMITS $COMMIT"
+              fi
+            fi
+          done
+
+          if [ -n "$DOCS_REQUIRED_COMMITS" ]; then
+            echo "docs_required=true" >> $GITHUB_OUTPUT
+            echo "commits<<EOF" >> $GITHUB_OUTPUT
+            echo "$DOCS_REQUIRED_COMMITS" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            echo "Found commits requiring documentation: $DOCS_REQUIRED_COMMITS"
+          else
+            echo "docs_required=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Dispatch to lh-site workflow
+        if: steps.check-commits.outputs.docs_required == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.LH_SITE_ISSUE_PAT }}
+          LH_SITE_REPO: ${{ vars.LH_SITE_REPO || 'littlehorse-enterprises/lh-site' }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "⚠️ GitHub PAT (LH_SITE_ISSUE_PAT) not configured. Cannot dispatch to lh-site."
+            exit 1
+          fi
+
+          COMMITS="${{ steps.check-commits.outputs.commits }}"
+
+          for COMMIT in $COMMITS; do
+            echo "Dispatching workflow for commit: $COMMIT"
+            
+            # Get commit details
+            COMMIT_MESSAGE=$(git log --format="%B" -1 $COMMIT)
+            COMMIT_AUTHOR=$(git log --format="%an" -1 $COMMIT)
+            COMMIT_DATE=$(git log --format="%ai" -1 $COMMIT)
+            COMMIT_TITLE=$(echo "$COMMIT_MESSAGE" | head -n 1)
+            
+            # Prepare dispatch payload
+            DISPATCH_PAYLOAD=$(jq -n \
+              --arg commit "$COMMIT" \
+              --arg commit_message "$COMMIT_MESSAGE" \
+              --arg commit_author "$COMMIT_AUTHOR" \
+              --arg commit_date "$COMMIT_DATE" \
+              --arg commit_title "$COMMIT_TITLE" \
+              --arg source_repo "${{ github.repository }}" \
+              --arg source_ref "${{ github.ref }}" \
+              --arg source_sha "${{ github.sha }}" \
+              '{
+                event_type: "documentation-request",
+                client_payload: {
+                  commit: $commit,
+                  commit_message: $commit_message,
+                  commit_author: $commit_author,
+                  commit_date: $commit_date,
+                  commit_title: $commit_title,
+                  source_repo: $source_repo,
+                  source_ref: $source_ref,
+                  source_sha: $source_sha
+                }
+              }')
+            
+            # Dispatch workflow
+            RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST \
+              -H "Authorization: token $GH_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              -H "Content-Type: application/json" \
+              "https://api.github.com/repos/$LH_SITE_REPO/dispatches" \
+              -d "$DISPATCH_PAYLOAD")
+            
+            HTTP_CODE=$(echo "$RESPONSE" | grep -o "HTTP_CODE:[0-9]*" | cut -d: -f2)
+            RESPONSE_BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d')
+            
+            if [ "$HTTP_CODE" = "204" ]; then
+              echo "✅ Successfully dispatched workflow to $LH_SITE_REPO for commit $COMMIT"
+            else
+              ERROR_MSG=$(echo "$RESPONSE_BODY" | jq -r '.message // "Unknown error"')
+              echo "❌ Failed to dispatch workflow (HTTP $HTTP_CODE): $ERROR_MSG"
+              echo "Response: $RESPONSE_BODY"
+              exit 1
+            fi
+          done
