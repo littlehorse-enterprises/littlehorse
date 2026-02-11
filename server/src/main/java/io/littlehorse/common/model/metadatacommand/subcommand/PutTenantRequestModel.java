@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
@@ -18,7 +19,6 @@ import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
-import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -79,8 +79,9 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
 
         TenantModel tenant = metadataManager.get(new TenantIdModel(id));
         if (tenant == null) {
-            if (Pattern.matches(".*[\\\\/].*", this.id)) {
-                throw new LHApiException(Status.INVALID_ARGUMENT, "/ and \\ are not valid characters for Tenant");
+            if (this.id.isEmpty() || !LHUtil.isValidLHName(this.id) || Character.isDigit(this.id.charAt(0))) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "Tenant id must be a valid hostname and not start with a digit");
             }
             tenant = new TenantModel(id);
             tenant.setCreatedAt(context.currentCommand().getTime());

@@ -3,7 +3,6 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
 import io.littlehorse.sdk.wfsdk.*;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -39,7 +38,7 @@ public class UserTasksExample {
             String email = "test-ut-support@gmail.com";
             handler.execute(EMAIL_TASK_NAME, email, "Task cancelled");
         });
-        wf.mutate(itRequest, VariableMutationType.ASSIGN, formOutput);
+        itRequest.assign(formOutput);
 
         // Have Finance approve the request
         UserTaskOutput financeUserTaskOutput = wf.assignUserTask(APPROVAL_FORM, null, "finance")
@@ -51,7 +50,7 @@ public class UserTasksExample {
         wf.scheduleReminderTask(financeUserTaskOutput, 2, EMAIL_TASK_NAME, financeTeamEmail, financeTeamEmailBody);
         wf.reassignUserTask(financeUserTaskOutput, "test-eduwer", null, 60);
 
-        wf.mutate(isApproved, VariableMutationType.ASSIGN, financeUserTaskOutput.jsonPath("$.isApproved"));
+        isApproved.assign(financeUserTaskOutput.jsonPath("$.isApproved"));
 
         wf.doIf(
                         wf.condition(isApproved, Comparator.EQUALS, true),
