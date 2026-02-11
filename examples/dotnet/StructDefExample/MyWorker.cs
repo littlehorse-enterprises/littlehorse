@@ -5,13 +5,13 @@ namespace StructDefExample;
 public class MyWorker
 {
     [LHTaskMethod("get-car-owner")]
-    public Task<Person> GetCarOwner(ParkingTicketReport report)
+    public async Task<Person> GetCarOwner(ParkingTicketReport report)
     {
         return Task.FromResult(LookupCarOwnerInDb(report.LicensePlateNumber));
     }
 
     [LHTaskMethod("mail-ticket")]
-    public Task<string> MailTicket(Person person)
+    public async Task<string> MailTicket(Person person)
     {
         Console.WriteLine($"Notifying {person} of parking ticket.");
         return Task.FromResult($"Ticket sent to {person} at {person.HomeAddress}");

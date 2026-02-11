@@ -41,10 +41,10 @@ public class Program
     {
         void MyEntryPoint(WorkflowThread wf)
         {
-            WfRunVariable carInput = wf.DeclareStruct("car-input", typeof(ParkingTicketReport)).Required();
+            WfRunVariable ticketReport = wf.DeclareStruct("ticket-report", typeof(ParkingTicketReport)).Required();
             WfRunVariable carOwner = wf.DeclareStruct("car-owner", typeof(Person));
 
-            carOwner.Assign(wf.Execute("get-car-owner", carInput));
+            carOwner.Assign(wf.Execute("get-car-owner", ticketReport));
             wf.Execute("mail-ticket", carOwner);
         }
 
