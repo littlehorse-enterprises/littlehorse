@@ -194,8 +194,15 @@ message StartMultipleThreadsNode {
 
 // This node spawns a child `WfRun` and returns the associated WfRunId.
 message RunChildWfNode {
-  // The name of the WfSpec to spawn.
-  string wf_spec_name = 1;
+  // Specifies how to determine the name of the WfSpec that should be executed as a child workflow.
+  // This can be either a static name known at WfSpec compile time or dynamically determined at runtime.
+  oneof wf_spec {
+    // Static reference to a WfSpec by its exact name that will be executed as a child workflow.
+    string wf_spec_name = 1;
+    // Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+    // that resolves to a STR containing the WfSpec name to execute
+    VariableAssignment wf_spec_var = 4;
+  }
 
   // The major version of the WfSpec to spawn.
   int32 major_version = 2;
@@ -286,7 +293,33 @@ message WaitForThreadsNode {
   // ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
   // failed.
   repeated FailureHandlerDef per_thread_failure_handlers = 3;
+
+  // Determines the strategy to wait for different threads in parallel.
+  WaitForThreadsStrategy strategy = 4;
 }
+
+// Determines the behavior of a `WaitForThreadsNode` with multiple children.
+enum WaitForThreadsStrategy {
+  // By default, the `WaitForThreadsNode` only completes once all of the specified child
+  // `ThreadRun`s have completed.
+  WAIT_FOR_ALL = 0;
+
+  // This strategy causes the `WfRun` to wait for the first of the child `ThreadRun`s to
+  // fail or complete. If the first finisher is `COMPLETED`, then the `NodeRun` completes
+  // and the other threads are `HALTED`.
+  //
+  // If the first child to terminate fails, then the failure propagates to the `NodeRun`
+  // and the other threads are `HALTED`.
+  WAIT_FOR_FIRST = 1;
+
+  // This strategy waits for the any of the child `ThreadRun`s to complete, ignoring the
+  // failures of prior children. If all children fail, then the `CHILD_FAILURE` error is
+  // thrown upwards.
+  //
+  // Once any of the children reaches `COMPLETED`, the others are moved to `HALTED`.
+  WAIT_FOR_ANY = 2;
+}
+
 
 // An ExternalEventNode causes the WfRun to stop and wait for an ExternalEvent
 // to arrive before continuing onwards.

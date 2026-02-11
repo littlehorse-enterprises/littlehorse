@@ -42,7 +42,7 @@ public class FixedSpawnedThreadsTest
             wfRunVariable2);
         var fixedSpawnedThreads = new FixedSpawnedThreads(spawnedThread1, spawnedThread2);
         
-        var actualWaitForThreadNode = fixedSpawnedThreads.BuildNode();
+        var actualWaitForThreadNode = fixedSpawnedThreads.BuildNode(WaitForThreadsStrategy.WaitForAll);
         
         var expectedWaitForThreadNode = new WaitForThreadsNode();
         var threads = new List<WaitForThreadsNode.Types.ThreadToWaitFor>();
@@ -87,7 +87,7 @@ public class FixedSpawnedThreadsTest
         var fixedSpawnedThreads = new FixedSpawnedThreads(spawnedThread1);
         
         var exception = Assert.Throws<ArgumentException>(
-            () => fixedSpawnedThreads.BuildNode());
+            () => fixedSpawnedThreads.BuildNode(WaitForThreadsStrategy.WaitForAll));
             
         Assert.Equal("Only int variables are supported.", exception.Message);
     }

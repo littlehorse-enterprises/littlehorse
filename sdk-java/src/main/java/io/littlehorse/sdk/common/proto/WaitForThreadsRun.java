@@ -93,6 +93,14 @@ private static final long serialVersionUID = 0L;
      * <code>THREAD_UNSUCCESSFUL = 3;</code>
      */
     THREAD_UNSUCCESSFUL(3),
+    /**
+     * <pre>
+     * The `ThreadRun` was halted because another sibling thread completed or failed.
+     * </pre>
+     *
+     * <code>THREAD_STOPPED = 4;</code>
+     */
+    THREAD_STOPPED(4),
     UNRECOGNIZED(-1),
     ;
 
@@ -141,6 +149,14 @@ private static final long serialVersionUID = 0L;
      * <code>THREAD_UNSUCCESSFUL = 3;</code>
      */
     public static final int THREAD_UNSUCCESSFUL_VALUE = 3;
+    /**
+     * <pre>
+     * The `ThreadRun` was halted because another sibling thread completed or failed.
+     * </pre>
+     *
+     * <code>THREAD_STOPPED = 4;</code>
+     */
+    public static final int THREAD_STOPPED_VALUE = 4;
 
 
     public final int getNumber() {
@@ -171,6 +187,7 @@ private static final long serialVersionUID = 0L;
         case 1: return THREAD_HANDLING_FAILURE;
         case 2: return THREAD_COMPLETED_OR_FAILURE_HANDLED;
         case 3: return THREAD_UNSUCCESSFUL;
+        case 4: return THREAD_STOPPED;
         default: return null;
       }
     }

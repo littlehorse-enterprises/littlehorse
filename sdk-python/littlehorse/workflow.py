@@ -6,7 +6,7 @@ import typing
 from collections import deque
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, List, Optional, Protocol, Union
 
 from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
@@ -54,13 +54,14 @@ from littlehorse.model import (
     UserTaskNode,
     WaitForThreadsNode,
     FailureHandlerDef,
+    WaitForThreadsStrategy,
     WfSpec,
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
     RunChildWfNode,
     WaitForChildWfNode,
 )
-from littlehorse.model.wf_spec_pb2 import PRIVATE_VAR
+from littlehorse.model.wf_spec_pb2 import PRIVATE_VAR, WaitForConditionNode
 from littlehorse.utils import negate_comparator, to_variable_value
 from littlehorse.worker import _create_task_def
 
@@ -80,6 +81,7 @@ NodeType = Union[
     ThrowEventNode,
     RunChildWfNode,
     WaitForChildWfNode,
+    WaitForConditionNode,
 ]
 
 
@@ -262,6 +264,7 @@ class NodeCase(Enum):
     THROW_EVENT = "THROW_EVENT"
     RUN_CHILD_WF = "RUN_CHILD_WF"
     WAIT_FOR_CHILD_WF = "WAIT_FOR_CHILD_WF"
+    WAIT_FOR_CONDITION = "WAIT_FOR_CONDITION"
 
     @classmethod
     def from_node(cls, node: NodeType) -> "NodeCase":
@@ -291,6 +294,8 @@ class NodeCase(Enum):
             return cls.RUN_CHILD_WF
         if isinstance(node, WaitForChildWfNode):
             return cls.WAIT_FOR_CHILD_WF
+        if isinstance(node, WaitForConditionNode):
+            return cls.WAIT_FOR_CONDITION
 
         raise TypeError("Unrecognized node type")
 
@@ -798,6 +803,13 @@ class WaitForThreadsNodeOutput(NodeOutput):
         return self
 
 
+class WaitForConditionNodeOutput(NodeOutput):
+    def __init__(self, node_name: str, builder: "WorkflowThread") -> None:
+        super().__init__(node_name)
+        self.node_name = node_name
+        self.builder = builder
+
+
 class ThrowEventNodeOutput:
     """
     Represents the output of a ThrowEvent node in a workflow, allowing event definition registration.
@@ -889,6 +901,25 @@ class ExternalEventNodeOutput(NodeOutput):
         return request
 
 
+class ExternalEventDefRegistration(Protocol):
+    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest:
+        ...
+
+
+class InterruptExternalEventDefRegistration:
+    def __init__(self, event_name: str, payload_type: Optional[type]) -> None:
+        self._event_name = event_name
+        self._payload_type = payload_type
+
+    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest:
+        request = PutExternalEventDefRequest(name=self._event_name)
+        if self._payload_type is not None:
+            request.content_type.CopyFrom(
+                python_type_to_return_type(self._payload_type)
+            )
+        return request
+
+
 class WorkflowNode:
     def __init__(
         self,
@@ -955,6 +986,8 @@ class WorkflowNode:
             return new_node(run_child_wf=self.sub_node)
         if self.node_case == NodeCase.WAIT_FOR_CHILD_WF:
             return new_node(wait_for_child_wf=self.sub_node)
+        if self.node_case == NodeCase.WAIT_FOR_CONDITION:
+            return new_node(wait_for_condition=self.sub_node)
 
         raise ValueError("Node type not supported")
 
@@ -977,6 +1010,24 @@ class WorkflowInterruption:
 
     def __str__(self) -> str:
         return to_json(self.compile())
+
+
+class InterruptHandler:
+    def __init__(self, workflow: "Workflow", event_name: str) -> None:
+        self._workflow = workflow
+        self._event_name = event_name
+        self._event_type_registered = False
+
+    def with_event_type(self, event_type: Optional[type]) -> "InterruptHandler":
+        if self._event_type_registered:
+            raise ValueError(
+                f"Interrupt event type already registered: {self._event_name}"
+            )
+        self._event_type_registered = True
+        self._workflow.add_external_event_def_to_register(
+            InterruptExternalEventDefRegistration(self._event_name, event_type)
+        )
+        return self
 
 
 class SpawnedChildWf:
@@ -1004,7 +1055,7 @@ class SpawnedThreads:
     def from_list(cls, *spawned_threads: SpawnedThread) -> "SpawnedThreads":
         return SpawnedThreads(iterable=None, fixed_threads=list(spawned_threads))
 
-    def compile(self) -> WaitForThreadsNode:
+    def compile(self, strategy: WaitForThreadsStrategy) -> WaitForThreadsNode:
         def build_fixed_threads(
             fixed_threads: Optional[list[SpawnedThread]],
         ) -> WaitForThreadsNode:
@@ -1017,6 +1068,7 @@ class SpawnedThreads:
                     threads.append(thread_to_wait_for)
             return WaitForThreadsNode(
                 threads=WaitForThreadsNode.ThreadsToWaitFor(threads=threads),
+                strategy=strategy,
             )
 
         def build_iterator_threads(
@@ -1024,6 +1076,7 @@ class SpawnedThreads:
         ) -> WaitForThreadsNode:
             return WaitForThreadsNode(
                 thread_list=to_variable_assignment(iterable),
+                strategy=strategy,
             )
 
         return (
@@ -1234,7 +1287,7 @@ class WorkflowThread:
         self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
         return SpawnedThreads(thread_number, None)
 
-    def wait_for_threads(self, wait_for: SpawnedThreads) -> WaitForThreadsNodeOutput:
+    def wait_for_threads(self, wait_for: SpawnedThreads, strategy: WaitForThreadsStrategy = WaitForThreadsStrategy.WAIT_FOR_ALL) -> WaitForThreadsNodeOutput:
         """Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
 
         Args:
@@ -1246,9 +1299,28 @@ class WorkflowThread:
             or exception handling.
         """
         self._check_if_active()
-        node = wait_for.compile()
+        node = wait_for.compile(strategy)
         node_name = self.add_node("threads", node)
         return WaitForThreadsNodeOutput(node_name, self)
+
+    def wait_for_condition(
+        self, condition: WorkflowCondition
+    ) -> WaitForConditionNodeOutput:
+        """
+        Waits for the specified workflow condition to become true.
+
+        Args:
+            condition (WorkflowCondition): The workflow condition to wait for.
+
+        Returns:
+            The output of the WAIT_FOR_CONDITION node.
+        """
+        self._check_if_active()
+        node = WaitForConditionNode(
+            condition=condition.compile(),
+        )
+        node_name = self.add_node("wait-for-condition", node)
+        return WaitForConditionNodeOutput(node_name, self)
 
     def sleep(self, seconds: Union[int, WfRunVariable]) -> None:
         """Adds a SLEEP node which makes the ThreadRun sleep
@@ -1295,7 +1367,9 @@ class WorkflowThread:
         """
         self._retention_policy = policy
 
-    def add_interrupt_handler(self, name: str, handler: "ThreadInitializer") -> None:
+    def add_interrupt_handler(
+        self, name: str, handler: "ThreadInitializer"
+    ) -> InterruptHandler:
         """Registers an Interrupt Handler, such that when an ExternalEvent
         arrives with the specified type, this ThreadRun is interrupted.
 
@@ -1303,17 +1377,23 @@ class WorkflowThread:
             name (str): The name of the ExternalEventDef to listen for.
             handler (ThreadInitializer): A Thread Function defining a
             ThreadSpec to use to handle the Interrupt.
+
+        Returns:
+            InterruptHandler: A handle for registering the interrupt payload type.
         """
         self._check_if_active()
         thread_name = self._workflow.add_sub_thread(f"interrupt-{name}", handler)
         self._wf_interruptions.append(WorkflowInterruption(name, thread_name))
+        return InterruptHandler(self._workflow, name)
 
-    def register_external_event_def(self, node_output: ExternalEventNodeOutput) -> None:
+    def register_external_event_def(
+        self, node_output: ExternalEventDefRegistration
+    ) -> None:
         """
         Registers an external event definition for the parent workflow.
 
         Args:
-            node_output (ExternalEventNodeOutput): The external event node output.
+            node_output (ExternalEventDefRegistration): The external event registration.
         """
         self._workflow.add_external_event_def_to_register(node_output)
 
@@ -1531,6 +1611,16 @@ class WorkflowThread:
     def declare_json_obj(self, name: str, default_value: Any = None) -> WfRunVariable:
         return self.add_variable(
             name, VariableType.JSON_OBJ, default_value=default_value
+        )
+
+    def declare_timestamp(self, name: str, default_value: Any = None) -> WfRunVariable:
+        return self.add_variable(
+            name, VariableType.TIMESTAMP, default_value=default_value
+        )
+
+    def declare_wf_run_id(self, name: str, default_value: Any = None) -> WfRunVariable:
+        return self.add_variable(
+            name, VariableType.WF_RUN_ID, default_value=default_value
         )
 
     def handle_any_failure(
@@ -2417,7 +2507,7 @@ class Workflow:
         )
         self._default_retries: Optional[int] = None
         self._workflow_events_to_register: list[ThrowEventNodeOutput] = []
-        self._external_events_to_register: list[ExternalEventNodeOutput] = []
+        self._external_events_to_register: list[ExternalEventDefRegistration] = []
         if parent_wf is not None:
             self._parent_wf = WfSpec.ParentWfSpecReference(wf_spec_name=parent_wf)
 
@@ -2560,17 +2650,19 @@ class Workflow:
         """
         self._workflow_events_to_register.append(node)
 
-    def add_external_event_def_to_register(self, node: ExternalEventNodeOutput) -> None:
+    def add_external_event_def_to_register(
+        self, node: ExternalEventDefRegistration
+    ) -> None:
         """
         Adds an external event definition to the list for registration.
 
         Args:
-            node (ExternalEventNodeOutput): The external event node to register.
+            node (ExternalEventDefRegistration): The external event registration.
         """
         self._external_events_to_register.append(node)
 
     @property
-    def external_events_to_register(self) -> list[ExternalEventNodeOutput]:
+    def external_events_to_register(self) -> list[ExternalEventDefRegistration]:
         return self._external_events_to_register
 
     @property

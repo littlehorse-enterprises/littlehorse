@@ -10,11 +10,12 @@ import io.littlehorse.sdk.common.proto.AllowedUpdateType;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
-import io.littlehorse.sdk.wfsdk.internal.ExternalEventNodeOutputImpl;
 import io.littlehorse.sdk.wfsdk.internal.ThrowEventNodeOutputImpl;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import java.io.File;
@@ -44,7 +45,6 @@ public abstract class Workflow {
 
     protected ExponentialBackoffRetryPolicy defaultExponentialBackoff;
     protected int defaultSimpleRetries;
-    protected Set<ExternalEventNodeOutputImpl> externalEventsToRegister;
     protected Set<ThrowEventNodeOutputImpl> workflowEventsToRegister;
 
     /**
@@ -58,7 +58,6 @@ public abstract class Workflow {
         this.entrypointThread = entrypointThreadFunc;
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
-        this.externalEventsToRegister = new HashSet<>();
         this.workflowEventsToRegister = new HashSet<>();
     }
 
@@ -193,12 +192,28 @@ public abstract class Workflow {
     public abstract Set<String> getRequiredExternalEventDefNames();
 
     /**
+     * Returns ExternalEventDef registrations declared via ExternalEventNodeOutput#registeredAs.
+     *
+     * @return a Set of PutExternalEventDefRequest for ExternalEventDefs that will be registered
+     *     with this workflow.
+     */
+    public abstract Set<PutExternalEventDefRequest> getExternalEventDefsToRegister();
+
+    /**
      * Returns the names of all `WorkflowEventDef`s used by this workflow.
      *
      * @return a Set of Strings containing the names of all `WorkflowEventDef`s thrown by this
      *      workflow.
      */
     public abstract Set<String> getRequiredWorkflowEventDefNames();
+
+    /**
+     * Returns WorkflowEventDef registrations declared via ThrowEventNodeOutput#registeredAs.
+     *
+     * @return a Set of PutWorkflowEventDefRequest for WorkflowEventDefs that will be registered
+     *     with this workflow.
+     */
+    public abstract Set<PutWorkflowEventDefRequest> getWorkflowEventDefsToRegister();
 
     /**
      * Returns the associated PutWfSpecRequest in JSON form.

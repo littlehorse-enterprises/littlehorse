@@ -306,8 +306,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         ExternalEventDefIdModel extEvtId = e.getId().getExternalEventDefId();
         InterruptDefModel idef = getThreadSpec().getInterruptDefFor(extEvtId.getName());
         if (idef != null) {
-            // trigger interrupt
-            initializeInterrupt(e, idef);
+            if (!isTerminated()) {
+                // trigger interrupt
+                initializeInterrupt(e, idef);
+            }
         }
     }
 
@@ -801,6 +803,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public boolean isTerminated() {
         return status == LHStatus.COMPLETED || status == LHStatus.ERROR || status == LHStatus.EXCEPTION;
+    }
+
+    public boolean isHalted() {
+        return status == LHStatus.HALTED;
     }
 
     public VariableValueModel assignVariable(VariableAssignmentModel assn) throws LHVarSubError {

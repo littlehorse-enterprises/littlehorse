@@ -3,12 +3,13 @@
 import json
 from pathlib import Path
 import sys
+import datetime
 from typing import Any, Union, Annotated, get_args
 
 from typing_extensions import get_origin
 
 from littlehorse.exceptions import SerdeException
-from littlehorse.model import VariableType, Comparator, VariableValue
+from littlehorse.model import VariableType, Comparator, VariableValue, WfRunId
 
 
 def read_binary(file_path: Union[str, Path]) -> bytes:
@@ -65,6 +66,10 @@ def to_variable_value(value: Any) -> VariableValue:
         return VariableValue(double=value)
     if isinstance(value, bytes):
         return VariableValue(bytes=value)
+    if isinstance(value, WfRunId):
+        return VariableValue(wf_run_id=value)
+    if isinstance(value, datetime.datetime):
+        return VariableValue(utc_timestamp=value)
 
     try:
         if isinstance(value, dict):
@@ -104,6 +109,10 @@ def extract_value(lh_value: VariableValue) -> Any:
         return lh_value.bytes
     if set_oneof == "bool":
         return lh_value.bool
+    if set_oneof == "utc_timestamp":
+        return lh_value.utc_timestamp.ToDatetime()
+    if set_oneof == "wf_run_id":
+        return lh_value.wf_run_id
     if set_oneof is None:
         return None
 
@@ -127,6 +136,8 @@ VARIABLE_TYPE_TO_TYPE_MAP = {
     VariableType.STR: str,
     VariableType.INT: int,
     VariableType.BYTES: bytes,
+    VariableType.TIMESTAMP: type(datetime.datetime),
+    VariableType.WF_RUN_ID: type(WfRunId),
 }
 
 

@@ -142,6 +142,19 @@ func TestShouldCompileWorkflowWithInCondition(t *testing.T) {
 	assert.True(t, proto.Equal(&expectedNode, actualNode))
 }
 
+func TestShouldCompileWorkflowWithWaitForConditionNodes(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
+		thread.WaitForCondition(thread.Condition("some-value", lhproto.Comparator_EQUALS, "some-other-value"))
+	}, "my-workflow")
+	compiledWorkflow, _ := wf.Compile()
+	entrypoint := compiledWorkflow.ThreadSpecs["entrypoint"]
+	assert.Equal(t, 3, len(entrypoint.Nodes))
+	wfcn := entrypoint.Nodes["1-wait-for-condition-WAIT_FOR_CONDITION"].Node.(*lhproto.Node_WaitForCondition).WaitForCondition
+	assert.Equal(t, lhproto.Comparator_EQUALS, wfcn.Condition.Comparator)
+	assert.Equal(t, "some-value", wfcn.Condition.Left.Source.(*lhproto.VariableAssignment_LiteralValue).LiteralValue.Value.(*lhproto.VariableValue_Str).Str)
+	assert.Equal(t, "some-other-value", wfcn.Condition.Right.Source.(*lhproto.VariableAssignment_LiteralValue).LiteralValue.Value.(*lhproto.VariableValue_Str).Str)
+}
+
 func TestShouldCompileWorkflowWithNotInCondition(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
 		myVar := thread.DeclareStr("my-var")

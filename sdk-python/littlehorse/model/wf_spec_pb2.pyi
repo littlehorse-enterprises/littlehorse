@@ -18,9 +18,18 @@ class WfRunVariableAccessLevel(int, metaclass=_enum_type_wrapper.EnumTypeWrapper
     PUBLIC_VAR: _ClassVar[WfRunVariableAccessLevel]
     PRIVATE_VAR: _ClassVar[WfRunVariableAccessLevel]
     INHERITED_VAR: _ClassVar[WfRunVariableAccessLevel]
+
+class WaitForThreadsStrategy(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = ()
+    WAIT_FOR_ALL: _ClassVar[WaitForThreadsStrategy]
+    WAIT_FOR_FIRST: _ClassVar[WaitForThreadsStrategy]
+    WAIT_FOR_ANY: _ClassVar[WaitForThreadsStrategy]
 PUBLIC_VAR: WfRunVariableAccessLevel
 PRIVATE_VAR: WfRunVariableAccessLevel
 INHERITED_VAR: WfRunVariableAccessLevel
+WAIT_FOR_ALL: WaitForThreadsStrategy
+WAIT_FOR_FIRST: WaitForThreadsStrategy
+WAIT_FOR_ANY: WaitForThreadsStrategy
 
 class WfSpec(_message.Message):
     __slots__ = ("id", "created_at", "frozen_variables", "status", "thread_specs", "entrypoint_thread_name", "retention_policy", "migration", "parent_wf_spec")
@@ -152,7 +161,7 @@ class StartMultipleThreadsNode(_message.Message):
     def __init__(self, thread_spec_name: _Optional[str] = ..., variables: _Optional[_Mapping[str, _common_wfspec_pb2.VariableAssignment]] = ..., iterable: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class RunChildWfNode(_message.Message):
-    __slots__ = ("wf_spec_name", "major_version", "inputs")
+    __slots__ = ("wf_spec_name", "wf_spec_var", "major_version", "inputs")
     class InputsEntry(_message.Message):
         __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -161,12 +170,14 @@ class RunChildWfNode(_message.Message):
         value: _common_wfspec_pb2.VariableAssignment
         def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
     WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_VAR_FIELD_NUMBER: _ClassVar[int]
     MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
     INPUTS_FIELD_NUMBER: _ClassVar[int]
     wf_spec_name: str
+    wf_spec_var: _common_wfspec_pb2.VariableAssignment
     major_version: int
     inputs: _containers.MessageMap[str, _common_wfspec_pb2.VariableAssignment]
-    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., inputs: _Optional[_Mapping[str, _common_wfspec_pb2.VariableAssignment]] = ...) -> None: ...
+    def __init__(self, wf_spec_name: _Optional[str] = ..., wf_spec_var: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., major_version: _Optional[int] = ..., inputs: _Optional[_Mapping[str, _common_wfspec_pb2.VariableAssignment]] = ...) -> None: ...
 
 class WaitForChildWfNode(_message.Message):
     __slots__ = ("child_wf_run_id", "child_wf_run_source_node")
@@ -193,7 +204,7 @@ class FailureHandlerDef(_message.Message):
     def __init__(self, handler_spec_name: _Optional[str] = ..., specific_failure: _Optional[str] = ..., any_failure_of_type: _Optional[_Union[FailureHandlerDef.LHFailureType, str]] = ...) -> None: ...
 
 class WaitForThreadsNode(_message.Message):
-    __slots__ = ("threads", "thread_list", "per_thread_failure_handlers")
+    __slots__ = ("threads", "thread_list", "per_thread_failure_handlers", "strategy")
     class ThreadToWaitFor(_message.Message):
         __slots__ = ("thread_run_number",)
         THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
@@ -207,10 +218,12 @@ class WaitForThreadsNode(_message.Message):
     THREADS_FIELD_NUMBER: _ClassVar[int]
     THREAD_LIST_FIELD_NUMBER: _ClassVar[int]
     PER_THREAD_FAILURE_HANDLERS_FIELD_NUMBER: _ClassVar[int]
+    STRATEGY_FIELD_NUMBER: _ClassVar[int]
     threads: WaitForThreadsNode.ThreadsToWaitFor
     thread_list: _common_wfspec_pb2.VariableAssignment
     per_thread_failure_handlers: _containers.RepeatedCompositeFieldContainer[FailureHandlerDef]
-    def __init__(self, threads: _Optional[_Union[WaitForThreadsNode.ThreadsToWaitFor, _Mapping]] = ..., thread_list: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., per_thread_failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ...) -> None: ...
+    strategy: WaitForThreadsStrategy
+    def __init__(self, threads: _Optional[_Union[WaitForThreadsNode.ThreadsToWaitFor, _Mapping]] = ..., thread_list: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., per_thread_failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ..., strategy: _Optional[_Union[WaitForThreadsStrategy, str]] = ...) -> None: ...
 
 class ExternalEventNode(_message.Message):
     __slots__ = ("external_event_def_id", "timeout_seconds", "correlation_key", "mask_correlation_key")

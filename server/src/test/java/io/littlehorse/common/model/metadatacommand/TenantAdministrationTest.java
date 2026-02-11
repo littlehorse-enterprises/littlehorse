@@ -118,7 +118,7 @@ public class TenantAdministrationTest {
 
     @Test
     void shouldThrowExceptionWhenTenantHasABackSlashInvalidCharacter() {
-        String invalidTenant = "///Tenant";
+        String invalidTenant = "Tenant\\bad";
         PutTenantRequestModel putTenantRequestModel =
                 PutTenantRequestModel.fromProto(putTenantRequest(invalidTenant), PutTenantRequestModel.class, mock());
         MetadataCommandModel command = new MetadataCommandModel(putTenantRequestModel);
@@ -129,12 +129,12 @@ public class TenantAdministrationTest {
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
         assertThatThrownBy(() -> futureResponse.getNow(null))
                 .hasCauseInstanceOf(LHApiException.class)
-                .hasRootCauseMessage("INVALID_ARGUMENT: / and \\ are not valid characters for Tenant");
+                .hasRootCauseMessage("INVALID_ARGUMENT: Tenant id must be a valid hostname and not start with a digit");
     }
 
     @Test
     void shouldThrowExceptionWhenTenantHasAForwardSlashInvalidCharacter() {
-        String invalidTenant = "Tenanṭ\\";
+        String invalidTenant = "Tenant/bad";
         PutTenantRequestModel putTenantRequestModel =
                 PutTenantRequestModel.fromProto(putTenantRequest(invalidTenant), PutTenantRequestModel.class, mock());
         MetadataCommandModel command = new MetadataCommandModel(putTenantRequestModel);
@@ -146,7 +146,7 @@ public class TenantAdministrationTest {
 
         assertThatThrownBy(() -> futureResponse.getNow(null))
                 .hasCauseInstanceOf(LHApiException.class)
-                .hasRootCauseMessage("INVALID_ARGUMENT: / and \\ are not valid characters for Tenant");
+                .hasRootCauseMessage("INVALID_ARGUMENT: Tenant id must be a valid hostname and not start with a digit");
     }
 
     private TenantModel storedTenant() {

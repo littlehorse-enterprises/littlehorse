@@ -69,6 +69,14 @@ public interface WorkflowThread {
     SpawnedChildWf runWf(String wfSpecName, Map<String, Serializable> inputs);
 
     /**
+     * Adds a RUN_CHILD_WF node to the ThreadSpec, starts a child WfRun and waits for it to complete.
+     * @param wfSpecName a WfRunVariable containing the name of the WfSpec to execute as a child workflow.
+     * @param inputs are the inputs that we will pass into the entrypoint ThreadRun.
+     * @return a SpawnedChildWf which allows us to later wait for the child WfRun.
+     */
+    SpawnedChildWf runWf(Serializable wfSpecName, Map<String, Serializable> inputs);
+
+    /**
      * Adds a WAIT_FOR_CHILD_WF node which waits for a specified WfRun to complete and
      * returns its output. As of 0.15 the SpawnedChildWf must come from the same ThreadSpec.
      * @param childToWaitFor is a handle to the child WfRun to wait for.
@@ -123,7 +131,7 @@ public interface WorkflowThread {
      * @param args are the format args.
      * @return an LHFormatString object which can be used as a variable assignment in a WfSpec.
      */
-    LHFormatString format(String format, WfRunVariable... args);
+    LHFormatString format(String format, Serializable... args);
 
     /**
      * Creates a variable of type INT in the ThreadSpec.
@@ -335,6 +343,29 @@ public interface WorkflowThread {
     WaitForThreadsNodeOutput waitForThreads(SpawnedThreads threadsToWaitFor);
 
     /**
+     * Adds a WAIT_FOR_THREADS node that waits for the first child ThreadRun to complete or fail.
+     * Once the first thread completes, all other threads are halted.
+     * If the first thread to finish fails, the failure propagates and other threads are halted.
+     *
+     * @param threadsToWaitFor set of SpawnedThread objects returned one or more calls to
+     *     spawnThread.
+     * @return a WaitForThreadsNodeOutput that can be used for exception handling.
+     */
+    WaitForThreadsNodeOutput waitForFirstOf(SpawnedThreads threadsToWaitFor);
+
+    /**
+     * Adds a WAIT_FOR_THREADS node that waits for any child ThreadRun to complete successfully,
+     * ignoring failures. If a thread fails, it waits for other threads to complete.
+     * Once any thread completes successfully, all other threads are halted.
+     * If all threads fail, a CHILD_FAILURE error is thrown.
+     *
+     * @param threadsToWaitFor set of SpawnedThread objects returned one or more calls to
+     *     spawnThread.
+     * @return a WaitForThreadsNodeOutput that can be used for exception handling.
+     */
+    WaitForThreadsNodeOutput waitForAnyOf(SpawnedThreads threadsToWaitFor);
+
+    /**
      * Adds an EXTERNAL_EVENT node which blocks until an 'ExternalEvent' of the specified type
      * arrives.
      *
@@ -392,7 +423,7 @@ public interface WorkflowThread {
      * @param interruptName The name of the ExternalEventDef to listen for.
      * @param handler A Thread Function defining a ThreadSpec to use to handle the Interrupt.
      */
-    void registerInterruptHandler(String interruptName, ThreadFunc handler);
+    InterruptHandler registerInterruptHandler(String interruptName, ThreadFunc handler);
 
     /**
      * Adds a SLEEP node which makes the ThreadRun sleep for a specified number of seconds.

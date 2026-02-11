@@ -23,7 +23,11 @@ type LHWorkflow struct {
 	spec                     lhproto.PutWfSpecRequest
 	funcs                    map[string]ThreadFunc
 	workflowEventsToRegister []*ThrowEventNodeOutput
-	externalEventsToRegister []*ExternalEventNodeOutput
+	externalEventsToRegister []externalEventDefRegistration
+}
+
+type externalEventDefRegistration interface {
+	ToPutExternalEventDefRequest() *lhproto.PutExternalEventDefRequest
 }
 
 type WorkflowThread struct {
@@ -90,6 +94,18 @@ type ExternalEventNodeOutput struct {
 	correlatedEventConfig *lhproto.CorrelatedEventConfig
 }
 
+type InterruptHandler struct {
+	thread        *WorkflowThread
+	interruptName string
+	eventTypeSet  bool
+}
+
+type WaitForConditionNodeOutput struct {
+	nodeName string
+	jsonPath *string
+	thread   *WorkflowThread
+}
+
 func (n *ExternalEventNodeOutput) JsonPath(jsonPath string) NodeOutput {
 	return &ExternalEventNodeOutput{
 		nodeName:              n.nodeName,
@@ -107,6 +123,16 @@ func (n *ExternalEventNodeOutput) RegisteredAs(payloadType lhproto.VariableType)
 
 func (n *ExternalEventNodeOutput) RegisteredAsEmpty() *ExternalEventNodeOutput {
 	return n.thread.registerExternalEventDefAsEmpty(n)
+}
+
+func (h *InterruptHandler) RegisteredAs(payloadType lhproto.VariableType) *InterruptHandler {
+	h.thread.registerInterruptExternalEventDefAs(h, payloadType)
+	return h
+}
+
+func (h *InterruptHandler) RegisteredAsEmpty() *InterruptHandler {
+	h.thread.registerInterruptExternalEventDefAsEmpty(h)
+	return h
 }
 
 func (n *ExternalEventNodeOutput) Timeout(timeout int64) *ExternalEventNodeOutput {
@@ -577,7 +603,15 @@ func (t *WorkflowThread) SpawnThread(
 }
 
 func (t *WorkflowThread) WaitForThreads(s ...*SpawnedThread) WaitForThreadsNodeOutput {
-	return *t.waitForThreads(s...)
+	return *t.waitForThreads(lhproto.WaitForThreadsStrategy_WAIT_FOR_ALL, s...)
+}
+
+func (t *WorkflowThread) WaitForFirstOf(s ...*SpawnedThread) WaitForThreadsNodeOutput {
+	return *t.waitForThreads(lhproto.WaitForThreadsStrategy_WAIT_FOR_FIRST, s...)
+}
+
+func (t *WorkflowThread) WaitForAnyOf(s ...*SpawnedThread) WaitForThreadsNodeOutput {
+	return *t.waitForThreads(lhproto.WaitForThreadsStrategy_WAIT_FOR_ANY, s...)
 }
 
 func (t *WorkflowThread) SpawnThreadForEach(
@@ -587,7 +621,15 @@ func (t *WorkflowThread) SpawnThreadForEach(
 }
 
 func (t *WorkflowThread) WaitForThreadsList(s *SpawnedThreads) *WaitForThreadsNodeOutput {
-	return t.waitForThreadsList(s)
+	return t.waitForThreadsList(lhproto.WaitForThreadsStrategy_WAIT_FOR_ALL, s)
+}
+
+func (t *WorkflowThread) WaitForFirstOfList(s *SpawnedThreads) *WaitForThreadsNodeOutput {
+	return t.waitForThreadsList(lhproto.WaitForThreadsStrategy_WAIT_FOR_FIRST, s)
+}
+
+func (t *WorkflowThread) WaitForAnyOfList(s *SpawnedThreads) *WaitForThreadsNodeOutput {
+	return t.waitForThreadsList(lhproto.WaitForThreadsStrategy_WAIT_FOR_ANY, s)
 }
 
 func (t *WorkflowThread) AssignUserTask(
@@ -638,6 +680,10 @@ func (t *WorkflowThread) WaitForEvent(eventName string) *ExternalEventNodeOutput
 	return t.waitForEvent(eventName)
 }
 
+func (t *WorkflowThread) WaitForCondition(condition *WorkflowCondition) *WaitForConditionNodeOutput {
+	return t.waitForCondition(condition)
+}
+
 func (t *WorkflowThread) Sleep(sleepSeconds int) {
 	t.sleep(sleepSeconds)
 }
@@ -646,8 +692,8 @@ func (t *WorkflowThread) Fail(content interface{}, failureName string, msg *stri
 	t.fail(content, failureName, msg)
 }
 
-func (t *WorkflowThread) HandleInterrupt(interruptName string, handler ThreadFunc) {
-	t.handleInterrupt(interruptName, handler)
+func (t *WorkflowThread) HandleInterrupt(interruptName string, handler ThreadFunc) *InterruptHandler {
+	return t.handleInterrupt(interruptName, handler)
 }
 
 func (t *WorkflowThread) HandleError(

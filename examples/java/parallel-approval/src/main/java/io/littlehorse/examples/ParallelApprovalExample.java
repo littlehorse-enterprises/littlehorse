@@ -38,10 +38,10 @@ public class ParallelApprovalExample {
             WfRunVariable allApproved = wf.declareBool("all-approved");
 
             // Variables are initialized to NULL. Need to set to a real value.
-            wf.mutate(allApproved, VariableMutationType.ASSIGN, false);
-            wf.mutate(person1Approved, VariableMutationType.ASSIGN, false);
-            wf.mutate(person2Approved, VariableMutationType.ASSIGN, false);
-            wf.mutate(person3Approved, VariableMutationType.ASSIGN, false);
+            allApproved.assign(false);
+            person1Approved.assign(false);
+            person2Approved.assign(false);
+            person3Approved.assign(false);
 
             // Kick off the reminder workflow
             wf.spawnThread(sendReminders(allApproved), "send-reminders", null);
@@ -61,20 +61,19 @@ public class ParallelApprovalExample {
             });
 
             // Tell the reminder workflow to stop
-            wf.mutate(allApproved, VariableMutationType.ASSIGN, true);
+            allApproved.assign(true);
         });
     }
 
     private static ThreadFunc waitForPerson3(WfRunVariable person3Approved) {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.declareJsonObj("person-3-response");
-            approvalThread.mutate(
-                    jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-3-approves"));
+            jsonVariable.assign(approvalThread.waitForEvent("person-3-approves"));
             approvalThread
                     .doIf(
                             approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
                             ifHandler -> {
-                                approvalThread.mutate(person3Approved, VariableMutationType.ASSIGN, true);
+                                person3Approved.assign(true);
                             })
                     .doElse(elseHandler -> {
                         approvalThread.fail("denied-by-user", "message here");
@@ -85,13 +84,12 @@ public class ParallelApprovalExample {
     private static ThreadFunc waitForPerson2(WfRunVariable person2Approved) {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.declareJsonObj("person-2-response");
-            approvalThread.mutate(
-                    jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-2-approves"));
+            jsonVariable.assign(approvalThread.waitForEvent("person-2-approves"));
             approvalThread
                     .doIf(
                             approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
                             ifHandler -> {
-                                approvalThread.mutate(person2Approved, VariableMutationType.ASSIGN, true);
+                                person2Approved.assign(true);
                             })
                     .doElse(elseHandler -> {
                         approvalThread.fail("denied-by-user", "message here");
@@ -102,13 +100,12 @@ public class ParallelApprovalExample {
     private static ThreadFunc waitForPerson1(WfRunVariable person1Approved) {
         return approvalThread -> {
             WfRunVariable jsonVariable = approvalThread.declareJsonObj("person-1-response");
-            approvalThread.mutate(
-                    jsonVariable, VariableMutationType.ASSIGN, approvalThread.waitForEvent("person-1-approves"));
+            jsonVariable.assign(approvalThread.waitForEvent("person-1-approves"));
             approvalThread
                     .doIf(
                             approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
                             ifHandler -> {
-                                approvalThread.mutate(person1Approved, VariableMutationType.ASSIGN, true);
+                                person1Approved.assign(true);
                             })
                     .doElse(elseHandler -> {
                         approvalThread.fail("denied-by-user", "message here");
@@ -121,10 +118,7 @@ public class ParallelApprovalExample {
             WfRunVariable nextReminderTime = reminderThread.declareInt("next-reminder");
 
             // Calculate next time to send notification
-            reminderThread.mutate(
-                    nextReminderTime,
-                    VariableMutationType.ASSIGN,
-                    reminderThread.execute("calculate-next-notification"));
+            nextReminderTime.assign(reminderThread.execute("calculate-next-notification"));
 
             reminderThread.sleepUntil(nextReminderTime);
 
@@ -133,10 +127,7 @@ public class ParallelApprovalExample {
                 reminderThread.execute("reminder-task");
 
                 // Calculate next reminder
-                reminderThread.mutate(
-                        nextReminderTime,
-                        VariableMutationType.ASSIGN,
-                        reminderThread.execute("calculate-next-notification"));
+                nextReminderTime.assign(reminderThread.execute("calculate-next-notification"));
 
                 // Wait until next reminder
                 reminderThread.sleepUntil(nextReminderTime);

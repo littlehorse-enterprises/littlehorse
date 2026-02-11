@@ -35,3 +35,8 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 007 | [`ExternalEvent`s `wfspec` and `wfRun` validations](./007-extending-external-event-validations.md) | Jake Rose | [#588](https://github.com/littlehorse-enterprises/littlehorse/issues/588) |
 | 008 | [Type casting](./008-type-casting.md) | Christian Caicedo | [#1543](https://github.com/littlehorse-enterprises/littlehorse/issues/1543)|
 | 009 | [Checkpointed Tasks](./009-checkpointed-task-run.md) | Colt McNealy | [#1765](https://github.com/littlehorse-enterprises/littlehorse/issues/1765) |
+| 010 | [New Store Prefix](./010-new-store-prefix-format.md) | Colt McNealy & Christian Caicedo | [#1842](https://github.com/littlehorse-enterprises/littlehorse/pull/1842) |
+| 011 | [Type-Safe `StructPath`s](./011-type-safe-structpaths.md) | Jacob Snarr | [#1884](https://github.com/littlehorse-enterprises/littlehorse/issues/1884) |
+| 012 | [`ThreadRun` Archival](./012-archive-thread-run.md) | Jacob Snarr | [#2038](https://github.com/littlehorse-enterprises/littlehorse/issues/2038) |
+| 013 | [Wait For One Of Many Threads](./013-wait-for-one-of.md) | Colt McNealy | [#2037](https://github.com/littlehorse-enterprises/littlehorse/issues/2037) |
+| 014 | [Conditions Refactor](./014-conditions-refactor.md) | Colt McNealy | [#1458](https://github.com/littlehorse-enterprises/littlehorse/issues/1458) |
