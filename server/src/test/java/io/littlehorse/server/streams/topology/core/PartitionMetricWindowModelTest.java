@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.topology.core;
 
 import static org.assertj.core.api.Assertions.*;
-
+import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.getable.core.metrics.CountAndTimingModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;

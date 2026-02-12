@@ -3,6 +3,7 @@ package io.littlehorse.common.model.wfrun;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -18,7 +19,6 @@ import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.PartitionMetricWindowModel;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
 import java.util.UUID;

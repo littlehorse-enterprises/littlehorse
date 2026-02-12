@@ -1,4 +1,4 @@
-package io.littlehorse.server.streams.topology.core;
+package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
@@ -18,6 +18,8 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.MetricWindow;
 import io.littlehorse.sdk.common.proto.MetricWindowType;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
