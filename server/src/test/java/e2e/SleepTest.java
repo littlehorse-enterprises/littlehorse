@@ -3,7 +3,7 @@ package e2e;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.SleepNodeRun;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -109,7 +109,7 @@ public class SleepTest {
             WfRunVariable myVar = wf.addVariable("timestamp-to-wait-for", VariableType.INT);
             wf.registerInterruptHandler(INTERRUPT_EVENT, handler -> {
                 WfRunVariable updatedTimestamp = handler.declareInt(WorkflowThread.HANDLER_INPUT_VAR);
-                handler.mutate(myVar, VariableMutationType.ASSIGN, updatedTimestamp);
+                handler.mutate(myVar, Operation.ASSIGN, updatedTimestamp);
             });
             wf.sleepUntil(myVar);
         });

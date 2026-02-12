@@ -1,7 +1,7 @@
 package e2e;
 
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.LHTest;
@@ -21,7 +21,7 @@ public class StackOverflowTest {
     @LHWorkflow("infinite-tight-loop")
     public Workflow getTightLoop() {
         return Workflow.newWorkflow("infinite-tight-loop", wf -> {
-            wf.doWhile(wf.condition(true, Comparator.EQUALS, true), loop -> {});
+            wf.doWhile(wf.condition(true, Operation.EQUALS, true), loop -> {});
         });
     }
 

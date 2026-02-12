@@ -1,8 +1,8 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -27,11 +27,14 @@ public class ConditionalsExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-conditionals", wf -> {
+            WfRunVariable mynb = wf.declareInt("mynumber");
+            WfRunVariable varBool = wf.declareBool("lessThan");
+            varBool.assign(mynb.isLessThan(10).or(varBool));
             WfRunVariable foo = wf.declareJsonObj("foo");
 
             wf.execute("task-a");
 
-            wf.doIf(wf.condition(foo.jsonPath("$.bar"), Comparator.GREATER_THAN, 10), ifHandler -> {
+            wf.doIf(wf.condition(foo.jsonPath("$.bar"), Operation.GREATER_THAN, 10), ifHandler -> {
                         ifHandler.execute("task-b");
                     })
                     .doElse(elseHandler -> {

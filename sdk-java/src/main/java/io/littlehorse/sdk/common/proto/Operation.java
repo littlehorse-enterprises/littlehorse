@@ -10,10 +10,10 @@ package io.littlehorse.sdk.common.proto;
  * Enumerates the available operations to mutate a variable in a WfRun.
  * </pre>
  *
- * Protobuf enum {@code littlehorse.VariableMutationType}
+ * Protobuf enum {@code littlehorse.Operation}
  */
 @com.google.protobuf.Generated
-public enum VariableMutationType
+public enum Operation
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
    * <pre>
@@ -87,6 +87,78 @@ public enum VariableMutationType
    * <code>REMOVE_KEY = 8;</code>
    */
   REMOVE_KEY(8),
+  /**
+   * <pre>
+   * Equivalent to `&lt;`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
+   * <code>LESS_THAN = 9;</code>
+   */
+  LESS_THAN(9),
+  /**
+   * <pre>
+   * Equivalent to `&gt;`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
+   * <code>GREATER_THAN = 10;</code>
+   */
+  GREATER_THAN(10),
+  /**
+   * <pre>
+   * Equivalent to `&lt;=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
+   * <code>LESS_THAN_EQ = 11;</code>
+   */
+  LESS_THAN_EQ(11),
+  /**
+   * <pre>
+   * Equivalent to `&gt;=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
+   * <code>GREATER_THAN_EQ = 12;</code>
+   */
+  GREATER_THAN_EQ(12),
+  /**
+   * <pre>
+   * This is valid for any variable type, and is similar to .equals() in Java.
+   *
+   * One note: if the RHS is a different type from the LHS, then LittleHorse will
+   * try to cast the RHS to the same type as the LHS. If the cast fails, then the
+   * ThreadRun fails with a VAR_SUB_ERROR.
+   * </pre>
+   *
+   * <code>EQUALS = 13;</code>
+   */
+  EQUALS(13),
+  /**
+   * <pre>
+   * This is the inverse of `EQUALS`
+   * </pre>
+   *
+   * <code>NOT_EQUALS = 14;</code>
+   */
+  NOT_EQUALS(14),
+  /**
+   * <pre>
+   * Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
+   *
+   * For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
+   * RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
+   * is equal to the LHS.
+   * </pre>
+   *
+   * <code>IN = 15;</code>
+   */
+  IN(15),
+  /**
+   * <pre>
+   * The inverse of IN.
+   * </pre>
+   *
+   * <code>NOT_IN = 16;</code>
+   */
+  NOT_IN(16),
   UNRECOGNIZED(-1),
   ;
 
@@ -97,7 +169,7 @@ public enum VariableMutationType
       /* minor= */ 32,
       /* patch= */ 1,
       /* suffix= */ "",
-      VariableMutationType.class.getName());
+      Operation.class.getName());
   }
   /**
    * <pre>
@@ -171,6 +243,78 @@ public enum VariableMutationType
    * <code>REMOVE_KEY = 8;</code>
    */
   public static final int REMOVE_KEY_VALUE = 8;
+  /**
+   * <pre>
+   * Equivalent to `&lt;`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
+   * <code>LESS_THAN = 9;</code>
+   */
+  public static final int LESS_THAN_VALUE = 9;
+  /**
+   * <pre>
+   * Equivalent to `&gt;`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
+   * <code>GREATER_THAN = 10;</code>
+   */
+  public static final int GREATER_THAN_VALUE = 10;
+  /**
+   * <pre>
+   * Equivalent to `&lt;=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
+   * <code>LESS_THAN_EQ = 11;</code>
+   */
+  public static final int LESS_THAN_EQ_VALUE = 11;
+  /**
+   * <pre>
+   * Equivalent to `&gt;=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+   * </pre>
+   *
+   * <code>GREATER_THAN_EQ = 12;</code>
+   */
+  public static final int GREATER_THAN_EQ_VALUE = 12;
+  /**
+   * <pre>
+   * This is valid for any variable type, and is similar to .equals() in Java.
+   *
+   * One note: if the RHS is a different type from the LHS, then LittleHorse will
+   * try to cast the RHS to the same type as the LHS. If the cast fails, then the
+   * ThreadRun fails with a VAR_SUB_ERROR.
+   * </pre>
+   *
+   * <code>EQUALS = 13;</code>
+   */
+  public static final int EQUALS_VALUE = 13;
+  /**
+   * <pre>
+   * This is the inverse of `EQUALS`
+   * </pre>
+   *
+   * <code>NOT_EQUALS = 14;</code>
+   */
+  public static final int NOT_EQUALS_VALUE = 14;
+  /**
+   * <pre>
+   * Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
+   *
+   * For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
+   * RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
+   * is equal to the LHS.
+   * </pre>
+   *
+   * <code>IN = 15;</code>
+   */
+  public static final int IN_VALUE = 15;
+  /**
+   * <pre>
+   * The inverse of IN.
+   * </pre>
+   *
+   * <code>NOT_IN = 16;</code>
+   */
+  public static final int NOT_IN_VALUE = 16;
 
 
   public final int getNumber() {
@@ -187,7 +331,7 @@ public enum VariableMutationType
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static VariableMutationType valueOf(int value) {
+  public static Operation valueOf(int value) {
     return forNumber(value);
   }
 
@@ -195,7 +339,7 @@ public enum VariableMutationType
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static VariableMutationType forNumber(int value) {
+  public static Operation forNumber(int value) {
     switch (value) {
       case 0: return ASSIGN;
       case 1: return ADD;
@@ -206,19 +350,27 @@ public enum VariableMutationType
       case 6: return REMOVE_IF_PRESENT;
       case 7: return REMOVE_INDEX;
       case 8: return REMOVE_KEY;
+      case 9: return LESS_THAN;
+      case 10: return GREATER_THAN;
+      case 11: return LESS_THAN_EQ;
+      case 12: return GREATER_THAN_EQ;
+      case 13: return EQUALS;
+      case 14: return NOT_EQUALS;
+      case 15: return IN;
+      case 16: return NOT_IN;
       default: return null;
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<VariableMutationType>
+  public static com.google.protobuf.Internal.EnumLiteMap<Operation>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      VariableMutationType> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<VariableMutationType>() {
-          public VariableMutationType findValueByNumber(int number) {
-            return VariableMutationType.forNumber(number);
+      Operation> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<Operation>() {
+          public Operation findValueByNumber(int number) {
+            return Operation.forNumber(number);
           }
         };
 
@@ -239,9 +391,9 @@ public enum VariableMutationType
     return io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor().getEnumTypes().get(0);
   }
 
-  private static final VariableMutationType[] VALUES = values();
+  private static final Operation[] VALUES = values();
 
-  public static VariableMutationType valueOf(
+  public static Operation valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -255,10 +407,10 @@ public enum VariableMutationType
 
   private final int value;
 
-  private VariableMutationType(int value) {
+  private Operation(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:littlehorse.VariableMutationType)
+  // @@protoc_insertion_point(enum_scope:littlehorse.Operation)
 }
 

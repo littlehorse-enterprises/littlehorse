@@ -1,8 +1,7 @@
 package e2e;
 
-import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -49,9 +48,9 @@ public class WhileLoopTest {
     public Workflow getWorkflow() {
         return Workflow.newWorkflow("while-loop-wf", wf -> {
             WfRunVariable counter = wf.addVariable("counter", 3);
-            wf.doWhile(wf.condition(counter, Comparator.GREATER_THAN, 0), loop -> {
+            wf.doWhile(wf.condition(counter, Operation.GREATER_THAN, 0), loop -> {
                 loop.execute("while-loop-obiwan");
-                loop.mutate(counter, VariableMutationType.SUBTRACT, 1);
+                loop.mutate(counter, Operation.SUBTRACT, 1);
             });
         });
     }

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableId;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
@@ -155,8 +155,8 @@ public class SharedVariablesTest {
                     thread.addVariable("input-number", VariableType.INT).required();
             WfRunVariable publicVariable = thread.addVariable("public-variable", VariableType.INT)
                     .withAccessLevel(WfRunVariableAccessLevel.PUBLIC_VAR);
-            thread.mutate(inputNumber, VariableMutationType.MULTIPLY, 2);
-            thread.mutate(publicVariable, VariableMutationType.ASSIGN, inputNumber);
+            thread.mutate(inputNumber, Operation.MULTIPLY, 2);
+            thread.mutate(publicVariable, Operation.ASSIGN, inputNumber);
         });
     }
 
@@ -168,9 +168,9 @@ public class SharedVariablesTest {
 
             WfRunVariable calculatedValue =
                     thread.addVariable("calculated-value", VariableType.INT).searchable();
-            thread.mutate(publicVariable, VariableMutationType.MULTIPLY, 2);
+            thread.mutate(publicVariable, Operation.MULTIPLY, 2);
             thread.execute("print-output", publicVariable);
-            thread.mutate(calculatedValue, VariableMutationType.ASSIGN, publicVariable);
+            thread.mutate(calculatedValue, Operation.ASSIGN, publicVariable);
         });
         out.setParent("shared-variables-parent-wf");
         return out;

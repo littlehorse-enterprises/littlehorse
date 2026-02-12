@@ -7,7 +7,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -45,7 +45,7 @@ public class RescueThreadRunTest {
 
             // Fail a configurable amount of times
             wf.execute("throw-error-x-times", timesToFail);
-            wf.mutate(didMutationHappen, VariableMutationType.ASSIGN, true);
+            wf.mutate(didMutationHappen, Operation.ASSIGN, true);
 
             // Should continue on for free
             wf.execute("no-rescue-needed");

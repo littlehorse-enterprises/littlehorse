@@ -3,7 +3,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.JsonIndex;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.common.proto.StructDefId;
@@ -11,7 +11,6 @@ import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableDef;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
@@ -209,53 +208,53 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
-    public WorkflowConditionImpl isEqualTo(Serializable rhs) {
-        return parent.condition(this, Comparator.EQUALS, rhs);
+    public LHExpression isEqualTo(Serializable rhs) {
+        return parent.condition(this, Operation.EQUALS, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isNotEqualTo(Serializable rhs) {
-        return parent.condition(this, Comparator.NOT_EQUALS, rhs);
+    public LHExpression isNotEqualTo(Serializable rhs) {
+        return parent.condition(this, Operation.NOT_EQUALS, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isGreaterThan(Serializable rhs) {
-        return parent.condition(this, Comparator.GREATER_THAN, rhs);
+    public LHExpression isGreaterThan(Serializable rhs) {
+        return parent.condition(this, Operation.GREATER_THAN, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isGreaterThanEq(Serializable rhs) {
-        return parent.condition(this, Comparator.GREATER_THAN_EQ, rhs);
+    public LHExpression isGreaterThanEq(Serializable rhs) {
+        return parent.condition(this, Operation.GREATER_THAN_EQ, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isLessThanEq(Serializable rhs) {
-        return parent.condition(this, Comparator.LESS_THAN_EQ, rhs);
+    public LHExpression isLessThanEq(Serializable rhs) {
+        return parent.condition(this, Operation.LESS_THAN_EQ, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isLessThan(Serializable rhs) {
-        return parent.condition(this, Comparator.LESS_THAN, rhs);
+    public LHExpression isLessThan(Serializable rhs) {
+        return parent.condition(this, Operation.LESS_THAN, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl doesContain(Serializable rhs) {
-        return parent.condition(rhs, Comparator.IN, this);
+    public LHExpression doesContain(Serializable rhs) {
+        return parent.condition(rhs, Operation.IN, this);
     }
 
     @Override
-    public WorkflowConditionImpl doesNotContain(Serializable rhs) {
-        return parent.condition(rhs, Comparator.NOT_IN, this);
+    public LHExpression doesNotContain(Serializable rhs) {
+        return parent.condition(rhs, Operation.NOT_IN, this);
     }
 
     @Override
-    public WorkflowConditionImpl isIn(Serializable rhs) {
-        return parent.condition(this, Comparator.IN, rhs);
+    public LHExpression isIn(Serializable rhs) {
+        return parent.condition(this, Operation.IN, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isNotIn(Serializable rhs) {
-        return parent.condition(this, Comparator.NOT_IN, rhs);
+    public LHExpression isNotIn(Serializable rhs) {
+        return parent.condition(this, Operation.NOT_IN, rhs);
     }
 
     @Override
@@ -268,52 +267,52 @@ class WfRunVariableImpl implements WfRunVariable {
             activeThread = lastThread;
         }
 
-        activeThread.mutate(this, VariableMutationType.ASSIGN, rhs);
+        activeThread.mutate(this, Operation.ASSIGN, rhs);
     }
 
     @Override
     public LHExpression add(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.ADD, other);
+        return new LHExpressionImpl(this, Operation.ADD, other);
     }
 
     @Override
     public LHExpression subtract(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.SUBTRACT, other);
+        return new LHExpressionImpl(this, Operation.SUBTRACT, other);
     }
 
     @Override
     public LHExpression multiply(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.MULTIPLY, other);
+        return new LHExpressionImpl(this, Operation.MULTIPLY, other);
     }
 
     @Override
     public LHExpression divide(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.DIVIDE, other);
+        return new LHExpressionImpl(this, Operation.DIVIDE, other);
     }
 
     @Override
     public LHExpression extend(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.EXTEND, other);
+        return new LHExpressionImpl(this, Operation.EXTEND, other);
     }
 
     @Override
     public LHExpression removeIfPresent(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.REMOVE_IF_PRESENT, other);
+        return new LHExpressionImpl(this, Operation.REMOVE_IF_PRESENT, other);
     }
 
     @Override
     public LHExpression removeIndex(int index) {
-        return new LHExpressionImpl(this, VariableMutationType.REMOVE_INDEX, index);
+        return new LHExpressionImpl(this, Operation.REMOVE_INDEX, index);
     }
 
     @Override
     public LHExpression removeIndex(LHExpression index) {
-        return new LHExpressionImpl(this, VariableMutationType.REMOVE_INDEX, index);
+        return new LHExpressionImpl(this, Operation.REMOVE_INDEX, index);
     }
 
     @Override
     public LHExpression removeKey(Serializable key) {
-        return new LHExpressionImpl(this, VariableMutationType.REMOVE_KEY, key);
+        return new LHExpressionImpl(this, Operation.REMOVE_KEY, key);
     }
 
     public ThreadVarDef getSpec() {
@@ -346,6 +345,11 @@ class WfRunVariableImpl implements WfRunVariable {
     @Override
     public LHExpression castTo(VariableType targetType) {
         return new CastExpressionImpl(this, targetType);
+    }
+
+    @Override
+    public LHExpression or(LHExpression elseExpr) {
+        return null;
     }
 
     public WfRunVariableImpl clone() {

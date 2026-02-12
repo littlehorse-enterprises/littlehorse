@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.global.wfspec.variable.expression;
 
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import java.util.Optional;
 
@@ -13,7 +13,7 @@ public interface LHTypeStrategy {
     }
 
     default Optional<TypeDefinitionModel> resolveOperation(
-            ReadOnlyMetadataManager manager, VariableMutationType mutation, LHTypeStrategy other)
+            ReadOnlyMetadataManager manager, Operation mutation, LHTypeStrategy other)
             throws InvalidExpressionException {
         switch (mutation) {
             case ASSIGN:

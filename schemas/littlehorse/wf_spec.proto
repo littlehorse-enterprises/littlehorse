@@ -441,7 +441,7 @@ message Node {
 // There is no output.
 message WaitForConditionNode {
   // The condition that this node will block for.
-  EdgeCondition condition = 1;
+  LegacyEdgeCondition condition = 1;
 }
 
 // A SubNode that throws a WorkflowEvent of a specific type. There is no output.
@@ -487,9 +487,9 @@ message UserTaskNode {
 }
 
 // This is a boolean expression used to evaluate whether an Edge is valid.
-message EdgeCondition {
+message LegacyEdgeCondition {
   // The Operator used to evaluate the left versus the right.
-  Comparator comparator = 1;
+  Operation comparator = 1;
 
   // The left side of the boolean expression.
   VariableAssignment left = 2;
@@ -507,7 +507,7 @@ message Edge {
   // to travel after the completion of a NodeRun, the Edges are evaluated in
   // order. The first one to either have no condition or have a condition which
   // evaluates to `true` is taken.
-  optional EdgeCondition condition = 2;
+  optional LegacyEdgeCondition legacy_condition = 2;
 
   // Ordered list of Variable Mutations to execute when traversing this Edge.
   repeated VariableMutation variable_mutations = 3;

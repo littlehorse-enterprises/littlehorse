@@ -67,7 +67,7 @@ public interface VariableMutationOrBuilder extends
    * Defines the operation that we are executing.
    * </pre>
    *
-   * <code>.littlehorse.VariableMutationType operation = 3;</code>
+   * <code>.littlehorse.Operation operation = 3;</code>
    * @return The enum numeric value on the wire for operation.
    */
   int getOperationValue();
@@ -76,10 +76,10 @@ public interface VariableMutationOrBuilder extends
    * Defines the operation that we are executing.
    * </pre>
    *
-   * <code>.littlehorse.VariableMutationType operation = 3;</code>
+   * <code>.littlehorse.Operation operation = 3;</code>
    * @return The operation.
    */
-  io.littlehorse.sdk.common.proto.VariableMutationType getOperation();
+  io.littlehorse.sdk.common.proto.Operation getOperation();
 
   /**
    * <pre>

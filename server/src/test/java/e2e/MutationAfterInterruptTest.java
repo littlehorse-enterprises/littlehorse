@@ -2,7 +2,7 @@ package e2e;
 
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskStatus;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -77,7 +77,7 @@ public class MutationAfterInterruptTest {
             WfRunVariable taskOutputVar = wf.addVariable("task-output", VariableType.STR);
 
             NodeOutput taskOutput = wf.execute("mutation-after-interrupt-return-string-slowly");
-            wf.mutate(taskOutputVar, VariableMutationType.ASSIGN, taskOutput);
+            wf.mutate(taskOutputVar, Operation.ASSIGN, taskOutput);
 
             wf.registerInterruptHandler(INTERRUPT_TRIGGER, handler -> {
                 handler.execute("mutation-after-interrupt-return-string-slowly");
@@ -97,7 +97,7 @@ public class MutationAfterInterruptTest {
             WfRunVariable extEvtOutputVar = wf.addVariable("event-content", VariableType.STR);
 
             NodeOutput extEvtOutput = wf.waitForEvent(PARENT_EVENT);
-            wf.mutate(extEvtOutputVar, VariableMutationType.ASSIGN, extEvtOutput);
+            wf.mutate(extEvtOutputVar, Operation.ASSIGN, extEvtOutput);
 
             wf.registerInterruptHandler(INTERRUPT_TRIGGER, handler -> {
                 handler.waitForEvent(COMPLETE_INTERRUPT_EVENT);

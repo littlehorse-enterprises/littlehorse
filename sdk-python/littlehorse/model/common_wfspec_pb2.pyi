@@ -10,45 +10,42 @@ from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-class VariableMutationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+class Operation(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
-    ASSIGN: _ClassVar[VariableMutationType]
-    ADD: _ClassVar[VariableMutationType]
-    EXTEND: _ClassVar[VariableMutationType]
-    SUBTRACT: _ClassVar[VariableMutationType]
-    MULTIPLY: _ClassVar[VariableMutationType]
-    DIVIDE: _ClassVar[VariableMutationType]
-    REMOVE_IF_PRESENT: _ClassVar[VariableMutationType]
-    REMOVE_INDEX: _ClassVar[VariableMutationType]
-    REMOVE_KEY: _ClassVar[VariableMutationType]
-
-class Comparator(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = ()
-    LESS_THAN: _ClassVar[Comparator]
-    GREATER_THAN: _ClassVar[Comparator]
-    LESS_THAN_EQ: _ClassVar[Comparator]
-    GREATER_THAN_EQ: _ClassVar[Comparator]
-    EQUALS: _ClassVar[Comparator]
-    NOT_EQUALS: _ClassVar[Comparator]
-    IN: _ClassVar[Comparator]
-    NOT_IN: _ClassVar[Comparator]
-ASSIGN: VariableMutationType
-ADD: VariableMutationType
-EXTEND: VariableMutationType
-SUBTRACT: VariableMutationType
-MULTIPLY: VariableMutationType
-DIVIDE: VariableMutationType
-REMOVE_IF_PRESENT: VariableMutationType
-REMOVE_INDEX: VariableMutationType
-REMOVE_KEY: VariableMutationType
-LESS_THAN: Comparator
-GREATER_THAN: Comparator
-LESS_THAN_EQ: Comparator
-GREATER_THAN_EQ: Comparator
-EQUALS: Comparator
-NOT_EQUALS: Comparator
-IN: Comparator
-NOT_IN: Comparator
+    ASSIGN: _ClassVar[Operation]
+    ADD: _ClassVar[Operation]
+    EXTEND: _ClassVar[Operation]
+    SUBTRACT: _ClassVar[Operation]
+    MULTIPLY: _ClassVar[Operation]
+    DIVIDE: _ClassVar[Operation]
+    REMOVE_IF_PRESENT: _ClassVar[Operation]
+    REMOVE_INDEX: _ClassVar[Operation]
+    REMOVE_KEY: _ClassVar[Operation]
+    LESS_THAN: _ClassVar[Operation]
+    GREATER_THAN: _ClassVar[Operation]
+    LESS_THAN_EQ: _ClassVar[Operation]
+    GREATER_THAN_EQ: _ClassVar[Operation]
+    EQUALS: _ClassVar[Operation]
+    NOT_EQUALS: _ClassVar[Operation]
+    IN: _ClassVar[Operation]
+    NOT_IN: _ClassVar[Operation]
+ASSIGN: Operation
+ADD: Operation
+EXTEND: Operation
+SUBTRACT: Operation
+MULTIPLY: Operation
+DIVIDE: Operation
+REMOVE_IF_PRESENT: Operation
+REMOVE_INDEX: Operation
+REMOVE_KEY: Operation
+LESS_THAN: Operation
+GREATER_THAN: Operation
+LESS_THAN_EQ: Operation
+GREATER_THAN_EQ: Operation
+EQUALS: Operation
+NOT_EQUALS: Operation
+IN: Operation
+NOT_IN: Operation
 
 class VariableAssignment(_message.Message):
     __slots__ = ("json_path", "lh_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "target_type")
@@ -70,9 +67,9 @@ class VariableAssignment(_message.Message):
         OPERATION_FIELD_NUMBER: _ClassVar[int]
         RHS_FIELD_NUMBER: _ClassVar[int]
         lhs: VariableAssignment
-        operation: VariableMutationType
+        operation: Operation
         rhs: VariableAssignment
-        def __init__(self, lhs: _Optional[_Union[VariableAssignment, _Mapping]] = ..., operation: _Optional[_Union[VariableMutationType, str]] = ..., rhs: _Optional[_Union[VariableAssignment, _Mapping]] = ...) -> None: ...
+        def __init__(self, lhs: _Optional[_Union[VariableAssignment, _Mapping]] = ..., operation: _Optional[_Union[Operation, str]] = ..., rhs: _Optional[_Union[VariableAssignment, _Mapping]] = ...) -> None: ...
     JSON_PATH_FIELD_NUMBER: _ClassVar[int]
     LH_PATH_FIELD_NUMBER: _ClassVar[int]
     VARIABLE_NAME_FIELD_NUMBER: _ClassVar[int]
@@ -108,11 +105,11 @@ class VariableMutation(_message.Message):
     NODE_OUTPUT_FIELD_NUMBER: _ClassVar[int]
     lhs_name: str
     lhs_json_path: str
-    operation: VariableMutationType
+    operation: Operation
     rhs_assignment: VariableAssignment
     literal_value: _variable_pb2.VariableValue
     node_output: VariableMutation.NodeOutputSource
-    def __init__(self, lhs_name: _Optional[str] = ..., lhs_json_path: _Optional[str] = ..., operation: _Optional[_Union[VariableMutationType, str]] = ..., rhs_assignment: _Optional[_Union[VariableAssignment, _Mapping]] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., node_output: _Optional[_Union[VariableMutation.NodeOutputSource, _Mapping]] = ...) -> None: ...
+    def __init__(self, lhs_name: _Optional[str] = ..., lhs_json_path: _Optional[str] = ..., operation: _Optional[_Union[Operation, str]] = ..., rhs_assignment: _Optional[_Union[VariableAssignment, _Mapping]] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., node_output: _Optional[_Union[VariableMutation.NodeOutputSource, _Mapping]] = ...) -> None: ...
 
 class VariableDef(_message.Message):
     __slots__ = ("type", "name", "default_value", "masked_value", "type_def")

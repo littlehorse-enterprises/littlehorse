@@ -28,7 +28,7 @@ import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
@@ -130,7 +130,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     public Optional<TypeDefinitionModel> resolveTypeAfterMutationWith(
-            VariableMutationType operation, TypeDefinitionModel rhs, ReadOnlyMetadataManager manager)
+            Operation operation, TypeDefinitionModel rhs, ReadOnlyMetadataManager manager)
             throws InvalidExpressionException {
         return getTypeStrategy().resolveOperation(manager, operation, rhs.getTypeStrategy());
     }

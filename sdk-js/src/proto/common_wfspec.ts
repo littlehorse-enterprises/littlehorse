@@ -12,7 +12,7 @@ import { StructDefId, TaskDefId } from "./object_id";
 import { VariableValue } from "./variable";
 
 /** Enumerates the available operations to mutate a variable in a WfRun. */
-export enum VariableMutationType {
+export enum Operation {
   /** ASSIGN - Set the variable specified by the LHS to the value of the RHS. */
   ASSIGN = "ASSIGN",
   /** ADD - Add the RHS to the LHS. */
@@ -31,99 +31,6 @@ export enum VariableMutationType {
   REMOVE_INDEX = "REMOVE_INDEX",
   /** REMOVE_KEY - Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ) */
   REMOVE_KEY = "REMOVE_KEY",
-  UNRECOGNIZED = "UNRECOGNIZED",
-}
-
-export function variableMutationTypeFromJSON(object: any): VariableMutationType {
-  switch (object) {
-    case 0:
-    case "ASSIGN":
-      return VariableMutationType.ASSIGN;
-    case 1:
-    case "ADD":
-      return VariableMutationType.ADD;
-    case 2:
-    case "EXTEND":
-      return VariableMutationType.EXTEND;
-    case 3:
-    case "SUBTRACT":
-      return VariableMutationType.SUBTRACT;
-    case 4:
-    case "MULTIPLY":
-      return VariableMutationType.MULTIPLY;
-    case 5:
-    case "DIVIDE":
-      return VariableMutationType.DIVIDE;
-    case 6:
-    case "REMOVE_IF_PRESENT":
-      return VariableMutationType.REMOVE_IF_PRESENT;
-    case 7:
-    case "REMOVE_INDEX":
-      return VariableMutationType.REMOVE_INDEX;
-    case 8:
-    case "REMOVE_KEY":
-      return VariableMutationType.REMOVE_KEY;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return VariableMutationType.UNRECOGNIZED;
-  }
-}
-
-export function variableMutationTypeToJSON(object: VariableMutationType): string {
-  switch (object) {
-    case VariableMutationType.ASSIGN:
-      return "ASSIGN";
-    case VariableMutationType.ADD:
-      return "ADD";
-    case VariableMutationType.EXTEND:
-      return "EXTEND";
-    case VariableMutationType.SUBTRACT:
-      return "SUBTRACT";
-    case VariableMutationType.MULTIPLY:
-      return "MULTIPLY";
-    case VariableMutationType.DIVIDE:
-      return "DIVIDE";
-    case VariableMutationType.REMOVE_IF_PRESENT:
-      return "REMOVE_IF_PRESENT";
-    case VariableMutationType.REMOVE_INDEX:
-      return "REMOVE_INDEX";
-    case VariableMutationType.REMOVE_KEY:
-      return "REMOVE_KEY";
-    case VariableMutationType.UNRECOGNIZED:
-    default:
-      return "UNRECOGNIZED";
-  }
-}
-
-export function variableMutationTypeToNumber(object: VariableMutationType): number {
-  switch (object) {
-    case VariableMutationType.ASSIGN:
-      return 0;
-    case VariableMutationType.ADD:
-      return 1;
-    case VariableMutationType.EXTEND:
-      return 2;
-    case VariableMutationType.SUBTRACT:
-      return 3;
-    case VariableMutationType.MULTIPLY:
-      return 4;
-    case VariableMutationType.DIVIDE:
-      return 5;
-    case VariableMutationType.REMOVE_IF_PRESENT:
-      return 6;
-    case VariableMutationType.REMOVE_INDEX:
-      return 7;
-    case VariableMutationType.REMOVE_KEY:
-      return 8;
-    case VariableMutationType.UNRECOGNIZED:
-    default:
-      return -1;
-  }
-}
-
-/** Operator for comparing two values to create a boolean expression. */
-export enum Comparator {
   /** LESS_THAN - Equivalent to `<`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
   LESS_THAN = "LESS_THAN",
   /** GREATER_THAN - Equivalent to `>`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
@@ -155,82 +62,145 @@ export enum Comparator {
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
-export function comparatorFromJSON(object: any): Comparator {
+export function operationFromJSON(object: any): Operation {
   switch (object) {
     case 0:
-    case "LESS_THAN":
-      return Comparator.LESS_THAN;
+    case "ASSIGN":
+      return Operation.ASSIGN;
     case 1:
-    case "GREATER_THAN":
-      return Comparator.GREATER_THAN;
+    case "ADD":
+      return Operation.ADD;
     case 2:
-    case "LESS_THAN_EQ":
-      return Comparator.LESS_THAN_EQ;
+    case "EXTEND":
+      return Operation.EXTEND;
     case 3:
-    case "GREATER_THAN_EQ":
-      return Comparator.GREATER_THAN_EQ;
+    case "SUBTRACT":
+      return Operation.SUBTRACT;
     case 4:
-    case "EQUALS":
-      return Comparator.EQUALS;
+    case "MULTIPLY":
+      return Operation.MULTIPLY;
     case 5:
-    case "NOT_EQUALS":
-      return Comparator.NOT_EQUALS;
+    case "DIVIDE":
+      return Operation.DIVIDE;
     case 6:
-    case "IN":
-      return Comparator.IN;
+    case "REMOVE_IF_PRESENT":
+      return Operation.REMOVE_IF_PRESENT;
     case 7:
+    case "REMOVE_INDEX":
+      return Operation.REMOVE_INDEX;
+    case 8:
+    case "REMOVE_KEY":
+      return Operation.REMOVE_KEY;
+    case 9:
+    case "LESS_THAN":
+      return Operation.LESS_THAN;
+    case 10:
+    case "GREATER_THAN":
+      return Operation.GREATER_THAN;
+    case 11:
+    case "LESS_THAN_EQ":
+      return Operation.LESS_THAN_EQ;
+    case 12:
+    case "GREATER_THAN_EQ":
+      return Operation.GREATER_THAN_EQ;
+    case 13:
+    case "EQUALS":
+      return Operation.EQUALS;
+    case 14:
+    case "NOT_EQUALS":
+      return Operation.NOT_EQUALS;
+    case 15:
+    case "IN":
+      return Operation.IN;
+    case 16:
     case "NOT_IN":
-      return Comparator.NOT_IN;
+      return Operation.NOT_IN;
     case -1:
     case "UNRECOGNIZED":
     default:
-      return Comparator.UNRECOGNIZED;
+      return Operation.UNRECOGNIZED;
   }
 }
 
-export function comparatorToJSON(object: Comparator): string {
+export function operationToJSON(object: Operation): string {
   switch (object) {
-    case Comparator.LESS_THAN:
+    case Operation.ASSIGN:
+      return "ASSIGN";
+    case Operation.ADD:
+      return "ADD";
+    case Operation.EXTEND:
+      return "EXTEND";
+    case Operation.SUBTRACT:
+      return "SUBTRACT";
+    case Operation.MULTIPLY:
+      return "MULTIPLY";
+    case Operation.DIVIDE:
+      return "DIVIDE";
+    case Operation.REMOVE_IF_PRESENT:
+      return "REMOVE_IF_PRESENT";
+    case Operation.REMOVE_INDEX:
+      return "REMOVE_INDEX";
+    case Operation.REMOVE_KEY:
+      return "REMOVE_KEY";
+    case Operation.LESS_THAN:
       return "LESS_THAN";
-    case Comparator.GREATER_THAN:
+    case Operation.GREATER_THAN:
       return "GREATER_THAN";
-    case Comparator.LESS_THAN_EQ:
+    case Operation.LESS_THAN_EQ:
       return "LESS_THAN_EQ";
-    case Comparator.GREATER_THAN_EQ:
+    case Operation.GREATER_THAN_EQ:
       return "GREATER_THAN_EQ";
-    case Comparator.EQUALS:
+    case Operation.EQUALS:
       return "EQUALS";
-    case Comparator.NOT_EQUALS:
+    case Operation.NOT_EQUALS:
       return "NOT_EQUALS";
-    case Comparator.IN:
+    case Operation.IN:
       return "IN";
-    case Comparator.NOT_IN:
+    case Operation.NOT_IN:
       return "NOT_IN";
-    case Comparator.UNRECOGNIZED:
+    case Operation.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
   }
 }
 
-export function comparatorToNumber(object: Comparator): number {
+export function operationToNumber(object: Operation): number {
   switch (object) {
-    case Comparator.LESS_THAN:
+    case Operation.ASSIGN:
       return 0;
-    case Comparator.GREATER_THAN:
+    case Operation.ADD:
       return 1;
-    case Comparator.LESS_THAN_EQ:
+    case Operation.EXTEND:
       return 2;
-    case Comparator.GREATER_THAN_EQ:
+    case Operation.SUBTRACT:
       return 3;
-    case Comparator.EQUALS:
+    case Operation.MULTIPLY:
       return 4;
-    case Comparator.NOT_EQUALS:
+    case Operation.DIVIDE:
       return 5;
-    case Comparator.IN:
+    case Operation.REMOVE_IF_PRESENT:
       return 6;
-    case Comparator.NOT_IN:
+    case Operation.REMOVE_INDEX:
       return 7;
-    case Comparator.UNRECOGNIZED:
+    case Operation.REMOVE_KEY:
+      return 8;
+    case Operation.LESS_THAN:
+      return 9;
+    case Operation.GREATER_THAN:
+      return 10;
+    case Operation.LESS_THAN_EQ:
+      return 11;
+    case Operation.GREATER_THAN_EQ:
+      return 12;
+    case Operation.EQUALS:
+      return 13;
+    case Operation.NOT_EQUALS:
+      return 14;
+    case Operation.IN:
+      return 15;
+    case Operation.NOT_IN:
+      return 16;
+    case Operation.UNRECOGNIZED:
     default:
       return -1;
   }
@@ -294,7 +264,7 @@ export interface VariableAssignment_Expression {
     | VariableAssignment
     | undefined;
   /** The operator in the expression. */
-  operation: VariableMutationType;
+  operation: Operation;
   /** The right-hand-side of the expression. */
   rhs: VariableAssignment | undefined;
 }
@@ -318,7 +288,7 @@ export interface VariableMutation {
     | string
     | undefined;
   /** Defines the operation that we are executing. */
-  operation: VariableMutationType;
+  operation: Operation;
   rhsValue?: { $case: "rhsAssignment"; value: VariableAssignment } | { $case: "literalValue"; value: VariableValue } | {
     $case: "nodeOutput";
     value: VariableMutation_NodeOutputSource;
@@ -949,7 +919,7 @@ export const VariableAssignment_NodeOutputReference = {
 };
 
 function createBaseVariableAssignment_Expression(): VariableAssignment_Expression {
-  return { lhs: undefined, operation: VariableMutationType.ASSIGN, rhs: undefined };
+  return { lhs: undefined, operation: Operation.ASSIGN, rhs: undefined };
 }
 
 export const VariableAssignment_Expression = {
@@ -957,8 +927,8 @@ export const VariableAssignment_Expression = {
     if (message.lhs !== undefined) {
       VariableAssignment.encode(message.lhs, writer.uint32(10).fork()).ldelim();
     }
-    if (message.operation !== VariableMutationType.ASSIGN) {
-      writer.uint32(16).int32(variableMutationTypeToNumber(message.operation));
+    if (message.operation !== Operation.ASSIGN) {
+      writer.uint32(16).int32(operationToNumber(message.operation));
     }
     if (message.rhs !== undefined) {
       VariableAssignment.encode(message.rhs, writer.uint32(26).fork()).ldelim();
@@ -985,7 +955,7 @@ export const VariableAssignment_Expression = {
             break;
           }
 
-          message.operation = variableMutationTypeFromJSON(reader.int32());
+          message.operation = operationFromJSON(reader.int32());
           continue;
         case 3:
           if (tag !== 26) {
@@ -1006,7 +976,7 @@ export const VariableAssignment_Expression = {
   fromJSON(object: any): VariableAssignment_Expression {
     return {
       lhs: isSet(object.lhs) ? VariableAssignment.fromJSON(object.lhs) : undefined,
-      operation: isSet(object.operation) ? variableMutationTypeFromJSON(object.operation) : VariableMutationType.ASSIGN,
+      operation: isSet(object.operation) ? operationFromJSON(object.operation) : Operation.ASSIGN,
       rhs: isSet(object.rhs) ? VariableAssignment.fromJSON(object.rhs) : undefined,
     };
   },
@@ -1016,8 +986,8 @@ export const VariableAssignment_Expression = {
     if (message.lhs !== undefined) {
       obj.lhs = VariableAssignment.toJSON(message.lhs);
     }
-    if (message.operation !== VariableMutationType.ASSIGN) {
-      obj.operation = variableMutationTypeToJSON(message.operation);
+    if (message.operation !== Operation.ASSIGN) {
+      obj.operation = operationToJSON(message.operation);
     }
     if (message.rhs !== undefined) {
       obj.rhs = VariableAssignment.toJSON(message.rhs);
@@ -1033,7 +1003,7 @@ export const VariableAssignment_Expression = {
     message.lhs = (object.lhs !== undefined && object.lhs !== null)
       ? VariableAssignment.fromPartial(object.lhs)
       : undefined;
-    message.operation = object.operation ?? VariableMutationType.ASSIGN;
+    message.operation = object.operation ?? Operation.ASSIGN;
     message.rhs = (object.rhs !== undefined && object.rhs !== null)
       ? VariableAssignment.fromPartial(object.rhs)
       : undefined;
@@ -1042,7 +1012,7 @@ export const VariableAssignment_Expression = {
 };
 
 function createBaseVariableMutation(): VariableMutation {
-  return { lhsName: "", lhsJsonPath: undefined, operation: VariableMutationType.ASSIGN, rhsValue: undefined };
+  return { lhsName: "", lhsJsonPath: undefined, operation: Operation.ASSIGN, rhsValue: undefined };
 }
 
 export const VariableMutation = {
@@ -1053,8 +1023,8 @@ export const VariableMutation = {
     if (message.lhsJsonPath !== undefined) {
       writer.uint32(18).string(message.lhsJsonPath);
     }
-    if (message.operation !== VariableMutationType.ASSIGN) {
-      writer.uint32(24).int32(variableMutationTypeToNumber(message.operation));
+    if (message.operation !== Operation.ASSIGN) {
+      writer.uint32(24).int32(operationToNumber(message.operation));
     }
     switch (message.rhsValue?.$case) {
       case "rhsAssignment":
@@ -1096,7 +1066,7 @@ export const VariableMutation = {
             break;
           }
 
-          message.operation = variableMutationTypeFromJSON(reader.int32());
+          message.operation = operationFromJSON(reader.int32());
           continue;
         case 4:
           if (tag !== 34) {
@@ -1135,7 +1105,7 @@ export const VariableMutation = {
     return {
       lhsName: isSet(object.lhsName) ? globalThis.String(object.lhsName) : "",
       lhsJsonPath: isSet(object.lhsJsonPath) ? globalThis.String(object.lhsJsonPath) : undefined,
-      operation: isSet(object.operation) ? variableMutationTypeFromJSON(object.operation) : VariableMutationType.ASSIGN,
+      operation: isSet(object.operation) ? operationFromJSON(object.operation) : Operation.ASSIGN,
       rhsValue: isSet(object.rhsAssignment)
         ? { $case: "rhsAssignment", value: VariableAssignment.fromJSON(object.rhsAssignment) }
         : isSet(object.literalValue)
@@ -1154,8 +1124,8 @@ export const VariableMutation = {
     if (message.lhsJsonPath !== undefined) {
       obj.lhsJsonPath = message.lhsJsonPath;
     }
-    if (message.operation !== VariableMutationType.ASSIGN) {
-      obj.operation = variableMutationTypeToJSON(message.operation);
+    if (message.operation !== Operation.ASSIGN) {
+      obj.operation = operationToJSON(message.operation);
     }
     if (message.rhsValue?.$case === "rhsAssignment") {
       obj.rhsAssignment = VariableAssignment.toJSON(message.rhsValue.value);
@@ -1176,7 +1146,7 @@ export const VariableMutation = {
     const message = createBaseVariableMutation();
     message.lhsName = object.lhsName ?? "";
     message.lhsJsonPath = object.lhsJsonPath ?? undefined;
-    message.operation = object.operation ?? VariableMutationType.ASSIGN;
+    message.operation = object.operation ?? Operation.ASSIGN;
     if (
       object.rhsValue?.$case === "rhsAssignment" &&
       object.rhsValue?.value !== undefined &&

@@ -10,7 +10,7 @@ import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -22,7 +22,7 @@ public class ExpressionModel extends LHSerializable<Expression> {
 
     private VariableAssignmentModel lhs;
     private VariableAssignmentModel rhs;
-    private VariableMutationType operation;
+    private Operation operation;
 
     @Override
     public Class<Expression> getProtoBaseClass() {

@@ -24,7 +24,7 @@ import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
@@ -682,7 +682,7 @@ public class UserTaskTest {
 
             entrypointThread.releaseToGroupOnDeadline(formOutput, 1);
 
-            entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
+            entrypointThread.mutate(formVar, Operation.ASSIGN, formOutput);
 
             entrypointThread.execute("my-custom-task", formVar);
         });
@@ -721,7 +721,7 @@ public class UserTaskTest {
 
             entrypointThread.reassignUserTask(formOutput, null, "test-it-department", 1);
 
-            entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
+            entrypointThread.mutate(formVar, Operation.ASSIGN, formOutput);
 
             entrypointThread.execute("my-custom-task", formVar);
         });

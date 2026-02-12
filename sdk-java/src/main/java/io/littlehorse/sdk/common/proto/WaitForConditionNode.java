@@ -50,13 +50,13 @@ private static final long serialVersionUID = 0L;
 
   private int bitField0_;
   public static final int CONDITION_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.EdgeCondition condition_;
+  private io.littlehorse.sdk.common.proto.LegacyEdgeCondition condition_;
   /**
    * <pre>
    * The condition that this node will block for.
    * </pre>
    *
-   * <code>.littlehorse.EdgeCondition condition = 1;</code>
+   * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
    * @return Whether the condition field is set.
    */
   @java.lang.Override
@@ -68,23 +68,23 @@ private static final long serialVersionUID = 0L;
    * The condition that this node will block for.
    * </pre>
    *
-   * <code>.littlehorse.EdgeCondition condition = 1;</code>
+   * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
    * @return The condition.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.EdgeCondition getCondition() {
-    return condition_ == null ? io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance() : condition_;
+  public io.littlehorse.sdk.common.proto.LegacyEdgeCondition getCondition() {
+    return condition_ == null ? io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance() : condition_;
   }
   /**
    * <pre>
    * The condition that this node will block for.
    * </pre>
    *
-   * <code>.littlehorse.EdgeCondition condition = 1;</code>
+   * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder getConditionOrBuilder() {
-    return condition_ == null ? io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance() : condition_;
+  public io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder getConditionOrBuilder() {
+    return condition_ == null ? io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance() : condition_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -407,15 +407,15 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.EdgeCondition condition_;
+    private io.littlehorse.sdk.common.proto.LegacyEdgeCondition condition_;
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.EdgeCondition, io.littlehorse.sdk.common.proto.EdgeCondition.Builder, io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder> conditionBuilder_;
+        io.littlehorse.sdk.common.proto.LegacyEdgeCondition, io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder, io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder> conditionBuilder_;
     /**
      * <pre>
      * The condition that this node will block for.
      * </pre>
      *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
      * @return Whether the condition field is set.
      */
     public boolean hasCondition() {
@@ -426,12 +426,12 @@ private static final long serialVersionUID = 0L;
      * The condition that this node will block for.
      * </pre>
      *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
      * @return The condition.
      */
-    public io.littlehorse.sdk.common.proto.EdgeCondition getCondition() {
+    public io.littlehorse.sdk.common.proto.LegacyEdgeCondition getCondition() {
       if (conditionBuilder_ == null) {
-        return condition_ == null ? io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance() : condition_;
+        return condition_ == null ? io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance() : condition_;
       } else {
         return conditionBuilder_.getMessage();
       }
@@ -441,9 +441,9 @@ private static final long serialVersionUID = 0L;
      * The condition that this node will block for.
      * </pre>
      *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
      */
-    public Builder setCondition(io.littlehorse.sdk.common.proto.EdgeCondition value) {
+    public Builder setCondition(io.littlehorse.sdk.common.proto.LegacyEdgeCondition value) {
       if (conditionBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -461,10 +461,10 @@ private static final long serialVersionUID = 0L;
      * The condition that this node will block for.
      * </pre>
      *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
      */
     public Builder setCondition(
-        io.littlehorse.sdk.common.proto.EdgeCondition.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder builderForValue) {
       if (conditionBuilder_ == null) {
         condition_ = builderForValue.build();
       } else {
@@ -479,13 +479,13 @@ private static final long serialVersionUID = 0L;
      * The condition that this node will block for.
      * </pre>
      *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
      */
-    public Builder mergeCondition(io.littlehorse.sdk.common.proto.EdgeCondition value) {
+    public Builder mergeCondition(io.littlehorse.sdk.common.proto.LegacyEdgeCondition value) {
       if (conditionBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
           condition_ != null &&
-          condition_ != io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance()) {
+          condition_ != io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance()) {
           getConditionBuilder().mergeFrom(value);
         } else {
           condition_ = value;
@@ -504,7 +504,7 @@ private static final long serialVersionUID = 0L;
      * The condition that this node will block for.
      * </pre>
      *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
      */
     public Builder clearCondition() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -521,9 +521,9 @@ private static final long serialVersionUID = 0L;
      * The condition that this node will block for.
      * </pre>
      *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.EdgeCondition.Builder getConditionBuilder() {
+    public io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder getConditionBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
       return internalGetConditionFieldBuilder().getBuilder();
@@ -533,14 +533,14 @@ private static final long serialVersionUID = 0L;
      * The condition that this node will block for.
      * </pre>
      *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder getConditionOrBuilder() {
+    public io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder getConditionOrBuilder() {
       if (conditionBuilder_ != null) {
         return conditionBuilder_.getMessageOrBuilder();
       } else {
         return condition_ == null ?
-            io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance() : condition_;
+            io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance() : condition_;
       }
     }
     /**
@@ -548,14 +548,14 @@ private static final long serialVersionUID = 0L;
      * The condition that this node will block for.
      * </pre>
      *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.EdgeCondition, io.littlehorse.sdk.common.proto.EdgeCondition.Builder, io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder> 
+        io.littlehorse.sdk.common.proto.LegacyEdgeCondition, io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder, io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder> 
         internalGetConditionFieldBuilder() {
       if (conditionBuilder_ == null) {
         conditionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.EdgeCondition, io.littlehorse.sdk.common.proto.EdgeCondition.Builder, io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder>(
+            io.littlehorse.sdk.common.proto.LegacyEdgeCondition, io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder, io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder>(
                 getCondition(),
                 getParentForChildren(),
                 isClean());

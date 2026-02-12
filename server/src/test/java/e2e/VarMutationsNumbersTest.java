@@ -3,7 +3,7 @@ package e2e;
 import static org.assertj.core.api.Assertions.*;
 
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
@@ -65,15 +65,15 @@ public class VarMutationsNumbersTest {
             WfRunVariable myOtherInt = thread.addVariable("my-other-int", VariableType.INT);
 
             NodeOutput output = thread.execute("ad-simple");
-            thread.mutate(myInt, VariableMutationType.ADD, output);
-            thread.mutate(myInt, VariableMutationType.SUBTRACT, 2);
+            thread.mutate(myInt, Operation.ADD, output);
+            thread.mutate(myInt, Operation.SUBTRACT, 2);
 
             // ensure that we can cast from double to int, and that the
             // original type is respected
-            thread.mutate(myOtherInt, VariableMutationType.ASSIGN, myDouble.castToInt());
+            thread.mutate(myOtherInt, Operation.ASSIGN, myDouble.castToInt());
 
             // Do some math, and divide by zero to show that failures work
-            thread.mutate(myOtherInt, VariableMutationType.DIVIDE, myInt);
+            thread.mutate(myOtherInt, Operation.DIVIDE, myInt);
         });
     }
 

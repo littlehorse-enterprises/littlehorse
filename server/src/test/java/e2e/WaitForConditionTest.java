@@ -1,8 +1,7 @@
 package e2e;
 
-import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -48,11 +47,11 @@ public class WaitForConditionTest {
         return Workflow.newWorkflow("wait-for-condition", wf -> {
             WfRunVariable counter = wf.addVariable("counter", 2);
 
-            wf.waitForCondition(wf.condition(counter, Comparator.EQUALS, 0));
+            wf.waitForCondition(wf.condition(counter, Operation.EQUALS, 0));
 
             // Interrupt handler which mutates the parent variable
             wf.registerInterruptHandler(EVENT_NAME, handler -> {
-                handler.mutate(counter, VariableMutationType.SUBTRACT, 1);
+                handler.mutate(counter, Operation.SUBTRACT, 1);
             });
         });
     }

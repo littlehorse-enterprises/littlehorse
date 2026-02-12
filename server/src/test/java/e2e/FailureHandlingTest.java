@@ -3,7 +3,7 @@ package e2e;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.LHTaskException;
-import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -231,7 +231,7 @@ public class FailureHandlingTest {
                     subThread -> {
                         WfRunVariable shouldItFails = subThread.addVariable("should-it-fails", VariableType.BOOL);
                         subThread.doIfElse(
-                                subThread.condition(shouldItFails, Comparator.EQUALS, true),
+                                subThread.condition(shouldItFails, Operation.EQUALS, true),
                                 ifBody -> subThread.fail("custom-exception", "this is a exception"),
                                 elseBody -> subThread.execute("fail"));
                     },
@@ -253,7 +253,7 @@ public class FailureHandlingTest {
                     subThread -> {
                         WfRunVariable shouldItFails = subThread.addVariable("should-it-fails", VariableType.BOOL);
                         subThread.doIfElse(
-                                subThread.condition(shouldItFails, Comparator.EQUALS, true),
+                                subThread.condition(shouldItFails, Operation.EQUALS, true),
                                 ifBody -> subThread.fail("custom-exception", "this is a exception"),
                                 elseBody -> subThread.execute("fail"));
                     },
@@ -283,7 +283,7 @@ public class FailureHandlingTest {
                     subThread -> {
                         WfRunVariable shouldItFails = subThread.addVariable("should-it-fails", VariableType.BOOL);
                         subThread.doIfElse(
-                                subThread.condition(shouldItFails, Comparator.EQUALS, true),
+                                subThread.condition(shouldItFails, Operation.EQUALS, true),
                                 ifBody -> ifBody.fail("custom-exception", "this is a exception"),
                                 elseBody -> elseBody.execute("fail"));
                     },

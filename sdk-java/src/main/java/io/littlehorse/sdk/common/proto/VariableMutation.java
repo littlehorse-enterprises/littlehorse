@@ -1211,7 +1211,7 @@ private static final long serialVersionUID = 0L;
    * Defines the operation that we are executing.
    * </pre>
    *
-   * <code>.littlehorse.VariableMutationType operation = 3;</code>
+   * <code>.littlehorse.Operation operation = 3;</code>
    * @return The enum numeric value on the wire for operation.
    */
   @java.lang.Override public int getOperationValue() {
@@ -1222,12 +1222,12 @@ private static final long serialVersionUID = 0L;
    * Defines the operation that we are executing.
    * </pre>
    *
-   * <code>.littlehorse.VariableMutationType operation = 3;</code>
+   * <code>.littlehorse.Operation operation = 3;</code>
    * @return The operation.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableMutationType getOperation() {
-    io.littlehorse.sdk.common.proto.VariableMutationType result = io.littlehorse.sdk.common.proto.VariableMutationType.forNumber(operation_);
-    return result == null ? io.littlehorse.sdk.common.proto.VariableMutationType.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.Operation getOperation() {
+    io.littlehorse.sdk.common.proto.Operation result = io.littlehorse.sdk.common.proto.Operation.forNumber(operation_);
+    return result == null ? io.littlehorse.sdk.common.proto.Operation.UNRECOGNIZED : result;
   }
 
   public static final int RHS_ASSIGNMENT_FIELD_NUMBER = 4;
@@ -1385,7 +1385,7 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 2, lhsJsonPath_);
     }
-    if (operation_ != io.littlehorse.sdk.common.proto.VariableMutationType.ASSIGN.getNumber()) {
+    if (operation_ != io.littlehorse.sdk.common.proto.Operation.ASSIGN.getNumber()) {
       output.writeEnum(3, operation_);
     }
     if (rhsValueCase_ == 4) {
@@ -1412,7 +1412,7 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(2, lhsJsonPath_);
     }
-    if (operation_ != io.littlehorse.sdk.common.proto.VariableMutationType.ASSIGN.getNumber()) {
+    if (operation_ != io.littlehorse.sdk.common.proto.Operation.ASSIGN.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(3, operation_);
     }
@@ -2065,7 +2065,7 @@ private static final long serialVersionUID = 0L;
      * Defines the operation that we are executing.
      * </pre>
      *
-     * <code>.littlehorse.VariableMutationType operation = 3;</code>
+     * <code>.littlehorse.Operation operation = 3;</code>
      * @return The enum numeric value on the wire for operation.
      */
     @java.lang.Override public int getOperationValue() {
@@ -2076,7 +2076,7 @@ private static final long serialVersionUID = 0L;
      * Defines the operation that we are executing.
      * </pre>
      *
-     * <code>.littlehorse.VariableMutationType operation = 3;</code>
+     * <code>.littlehorse.Operation operation = 3;</code>
      * @param value The enum numeric value on the wire for operation to set.
      * @return This builder for chaining.
      */
@@ -2091,24 +2091,24 @@ private static final long serialVersionUID = 0L;
      * Defines the operation that we are executing.
      * </pre>
      *
-     * <code>.littlehorse.VariableMutationType operation = 3;</code>
+     * <code>.littlehorse.Operation operation = 3;</code>
      * @return The operation.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableMutationType getOperation() {
-      io.littlehorse.sdk.common.proto.VariableMutationType result = io.littlehorse.sdk.common.proto.VariableMutationType.forNumber(operation_);
-      return result == null ? io.littlehorse.sdk.common.proto.VariableMutationType.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.Operation getOperation() {
+      io.littlehorse.sdk.common.proto.Operation result = io.littlehorse.sdk.common.proto.Operation.forNumber(operation_);
+      return result == null ? io.littlehorse.sdk.common.proto.Operation.UNRECOGNIZED : result;
     }
     /**
      * <pre>
      * Defines the operation that we are executing.
      * </pre>
      *
-     * <code>.littlehorse.VariableMutationType operation = 3;</code>
+     * <code>.littlehorse.Operation operation = 3;</code>
      * @param value The operation to set.
      * @return This builder for chaining.
      */
-    public Builder setOperation(io.littlehorse.sdk.common.proto.VariableMutationType value) {
+    public Builder setOperation(io.littlehorse.sdk.common.proto.Operation value) {
       if (value == null) { throw new NullPointerException(); }
       bitField0_ |= 0x00000004;
       operation_ = value.getNumber();
@@ -2120,7 +2120,7 @@ private static final long serialVersionUID = 0L;
      * Defines the operation that we are executing.
      * </pre>
      *
-     * <code>.littlehorse.VariableMutationType operation = 3;</code>
+     * <code>.littlehorse.Operation operation = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearOperation() {

@@ -17,7 +17,6 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
-import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -33,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+
+import io.littlehorse.sdk.common.proto.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -389,7 +390,7 @@ public class LHUtil {
         INCLUDES,
     }
 
-    public static LHComparisonRule getRuleFromComparator(Comparator comparator) {
+    public static LHComparisonRule getRuleFromComparator(Operation comparator) {
         switch (comparator) {
             case EQUALS:
             case NOT_EQUALS:

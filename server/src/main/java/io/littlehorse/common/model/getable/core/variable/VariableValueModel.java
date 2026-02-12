@@ -17,8 +17,9 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
@@ -271,10 +272,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel operate(
-            VariableMutationType operation, VariableValueModel rhs, TypeDefinitionModel typeToCoerceTo)
+            Operation operation, VariableValueModel rhs, TypeDefinitionModel typeToCoerceTo)
             throws LHVarSubError {
 
-        if (operation == VariableMutationType.ASSIGN) {
+        if (operation == Operation.ASSIGN) {
             if (rhs.isNull()) {
                 return new VariableValueModel();
             } else {
@@ -287,29 +288,29 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             throw new RuntimeException("Unsupported operation: " + operation);
         }
 
-        if (operation == VariableMutationType.ADD) {
+        if (operation == Operation.ADD) {
             return typeToCoerceTo.getPrimitiveType() == VariableType.DOUBLE
                     ? asDouble().add(rhs)
                     : add(rhs);
-        } else if (operation == VariableMutationType.SUBTRACT) {
+        } else if (operation == Operation.SUBTRACT) {
             return typeToCoerceTo.getPrimitiveType() == VariableType.DOUBLE
                     ? asDouble().subtract(rhs)
                     : subtract(rhs);
-        } else if (operation == VariableMutationType.MULTIPLY) {
+        } else if (operation == Operation.MULTIPLY) {
             return typeToCoerceTo.getPrimitiveType() == VariableType.DOUBLE
                     ? asDouble().multiply(rhs)
                     : multiply(rhs);
-        } else if (operation == VariableMutationType.DIVIDE) {
+        } else if (operation == Operation.DIVIDE) {
             return typeToCoerceTo.getPrimitiveType() == VariableType.DOUBLE
                     ? asDouble().divide(rhs)
                     : divide(rhs);
-        } else if (operation == VariableMutationType.EXTEND) {
+        } else if (operation == Operation.EXTEND) {
             return extend(rhs);
-        } else if (operation == VariableMutationType.REMOVE_IF_PRESENT) {
+        } else if (operation == Operation.REMOVE_IF_PRESENT) {
             return removeIfPresent(rhs);
-        } else if (operation == VariableMutationType.REMOVE_INDEX) {
+        } else if (operation == Operation.REMOVE_INDEX) {
             return removeIndex(rhs);
-        } else if (operation == VariableMutationType.REMOVE_KEY) {
+        } else if (operation == Operation.REMOVE_KEY) {
             return removeKey(rhs);
         }
         throw new RuntimeException("Unsupported operation: " + operation);

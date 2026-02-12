@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread;
@@ -182,7 +182,7 @@ public class ChildThreadTest {
                     child -> {
                         child.mutate(
                                 sharedVar,
-                                VariableMutationType.ASSIGN,
+                                Operation.ASSIGN,
                                 child.waitForEvent(COMPLETE_CHILD).jsonPath("$.result"));
                     },
                     "child-thread",
@@ -190,7 +190,7 @@ public class ChildThreadTest {
 
             wf.mutate(
                     sharedVar,
-                    VariableMutationType.ASSIGN,
+                    Operation.ASSIGN,
                     wf.waitForEvent(COMPLETE_PARENT).jsonPath("$.result"));
 
             wf.waitForThreads(SpawnedThreads.of(childThread));

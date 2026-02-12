@@ -9,7 +9,7 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
@@ -30,7 +30,7 @@ public class VariableValueModelTest {
     public void shouldAssignNullValueWhenRhsIsNull() throws Exception {
         VariableValueModel lhs = new VariableValueModel("hi there");
         VariableValueModel rhs = new VariableValueModel();
-        VariableValueModel variableOutput = lhs.operate(VariableMutationType.ASSIGN, rhs, rhs.getTypeDefinition());
+        VariableValueModel variableOutput = lhs.operate(Operation.ASSIGN, rhs, rhs.getTypeDefinition());
         assertThat(variableOutput.isNull()).isTrue();
     }
 

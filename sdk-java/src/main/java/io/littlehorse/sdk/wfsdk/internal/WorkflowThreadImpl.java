@@ -3,9 +3,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 import com.google.protobuf.Message;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Edge;
-import io.littlehorse.sdk.common.proto.EdgeCondition;
 import io.littlehorse.sdk.common.proto.EntrypointNode;
 import io.littlehorse.sdk.common.proto.ExitNode;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
@@ -15,9 +13,11 @@ import io.littlehorse.sdk.common.proto.FailureDef;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.InterruptDef;
 import io.littlehorse.sdk.common.proto.LHErrorType;
+import io.littlehorse.sdk.common.proto.LegacyEdgeCondition;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.RunChildWfNode;
 import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsNode;
@@ -35,7 +35,6 @@ import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableMutation;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WaitForChildWfNode;
@@ -78,7 +77,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     private List<WfRunVariableImpl> wfRunVariables = new ArrayList<>();
     public String lastNodeName;
     public String name;
-    private EdgeCondition lastNodeCondition;
+    private LegacyEdgeCondition lastNodeCondition;
     private boolean isActive;
     private ThreadRetentionPolicy retentionPolicy;
     private Queue<VariableMutation> variableMutations;
@@ -445,42 +444,42 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     @Override
     public LHExpression multiply(Serializable lhs, Serializable rhs) {
-        return new LHExpressionImpl(lhs, VariableMutationType.MULTIPLY, rhs);
+        return new LHExpressionImpl(lhs, Operation.MULTIPLY, rhs);
     }
 
     @Override
     public LHExpression add(Serializable lhs, Serializable rhs) {
-        return new LHExpressionImpl(lhs, VariableMutationType.ADD, rhs);
+        return new LHExpressionImpl(lhs, Operation.ADD, rhs);
     }
 
     @Override
     public LHExpression divide(Serializable lhs, Serializable rhs) {
-        return new LHExpressionImpl(lhs, VariableMutationType.DIVIDE, rhs);
+        return new LHExpressionImpl(lhs, Operation.DIVIDE, rhs);
     }
 
     @Override
     public LHExpression subtract(Serializable lhs, Serializable rhs) {
-        return new LHExpressionImpl(lhs, VariableMutationType.SUBTRACT, rhs);
+        return new LHExpressionImpl(lhs, Operation.SUBTRACT, rhs);
     }
 
     @Override
     public LHExpression extend(Serializable lhs, Serializable rhs) {
-        return new LHExpressionImpl(lhs, VariableMutationType.EXTEND, rhs);
+        return new LHExpressionImpl(lhs, Operation.EXTEND, rhs);
     }
 
     @Override
     public LHExpression removeIfPresent(Serializable lhs, Serializable rhs) {
-        return new LHExpressionImpl(lhs, VariableMutationType.REMOVE_IF_PRESENT, rhs);
+        return new LHExpressionImpl(lhs, Operation.REMOVE_IF_PRESENT, rhs);
     }
 
     @Override
     public LHExpression removeIndex(Serializable lhs, Serializable index) {
-        return new LHExpressionImpl(lhs, VariableMutationType.REMOVE_INDEX, index);
+        return new LHExpressionImpl(lhs, Operation.REMOVE_INDEX, index);
     }
 
     @Override
     public LHExpression removeKey(Serializable lhs, Serializable key) {
-        return new LHExpressionImpl(lhs, VariableMutationType.REMOVE_KEY, key);
+        return new LHExpressionImpl(lhs, Operation.REMOVE_KEY, key);
     }
 
     public WfRunVariableImpl addVariable(String name, Object typeOrDefaultVal) {
@@ -550,12 +549,12 @@ final class WorkflowThreadImpl implements WorkflowThread {
     // }
 
     @Override
-    public WorkflowIfStatement doIf(WorkflowCondition condition, IfElseBody ifBody) {
-        WorkflowConditionImpl cond = (WorkflowConditionImpl) condition;
+    public WorkflowIfStatement doIf(LHExpression condition, IfElseBody ifBody) {
+        LHExpressionImpl cond = (LHExpressionImpl) condition;
 
         addNopNode();
         String firstNopNodeName = lastNodeName;
-        lastNodeCondition = cond.getSpec();
+        lastNodeCondition = cond.getLegacySpec();
 
         ifBody.body(this);
 
@@ -590,7 +589,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                     .addAllVariableMutations(this.collectVariableMutations());
 
             if (inputCondition != null) {
-                edgeToNopNode.setCondition(((WorkflowConditionImpl) inputCondition).getSpec());
+                edgeToNopNode.setLegacyCondition(((LHExpressionImpl) inputCondition).getLegacySpec());
             }
 
             addOutgoingEdgeToNode(ifStatement.getFirstNopNodeName(), edgeToNopNode.build());
@@ -606,7 +605,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                     .addAllVariableMutations(lastOutgoingEdge.getVariableMutationsList());
 
             if (inputCondition != null) {
-                edgeToBody.setCondition(((WorkflowConditionImpl) inputCondition).getSpec());
+                edgeToBody.setLegacyCondition(((LHExpressionImpl) inputCondition).getLegacySpec());
             }
 
             addOutgoingEdgeToNode(ifStatement.getFirstNopNodeName(), edgeToBody.build());
@@ -652,7 +651,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public void doIfElse(WorkflowCondition condition, IfElseBody ifBody, IfElseBody elseBody) {
+    public void doIfElse(LHExpression condition, IfElseBody ifBody, IfElseBody elseBody) {
         checkIfIsActive();
 
         this.doIf(condition, ifBody).doElse(elseBody);
@@ -667,16 +666,16 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public void doWhile(WorkflowCondition condition, ThreadFunc whileBody) {
+    public void doWhile(LHExpression condition, ThreadFunc whileBody) {
         checkIfIsActive();
-        WorkflowConditionImpl cond = (WorkflowConditionImpl) condition;
+        LHExpressionImpl cond = (LHExpressionImpl) condition;
 
         // Start a new tree. Basically, we gotta take the last node we ran
         // then we need to put a condition on it...
         addNopNode();
         String treeRootNodeName = lastNodeName;
 
-        lastNodeCondition = cond.getSpec();
+        lastNodeCondition = cond.getLegacySpec();
         // execute the tasks
         whileBody.threadFunction(this);
 
@@ -688,7 +687,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         Node.Builder treeRoot = spec.getNodesOrThrow(treeRootNodeName).toBuilder();
         treeRoot.addOutgoingEdges(Edge.newBuilder()
                 .setSinkNodeName(treeLastNodeName)
-                .setCondition(cond.getReverse())
+                .setLegacyCondition(cond.getReverse())
                 .build());
         spec.putNodes(treeRootNodeName, treeRoot.build());
 
@@ -696,7 +695,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         Node.Builder treeLast = spec.getNodesOrThrow(treeLastNodeName).toBuilder();
         treeLast.addOutgoingEdges(Edge.newBuilder()
                 .setSinkNodeName(treeRootNodeName)
-                .setCondition(cond.getSpec())
+                .setLegacyCondition(cond.getLegacySpec())
                 .build());
 
         spec.putNodes(treeLastNodeName, treeLast.build());
@@ -723,7 +722,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         String nodeName = addNode(threadName, NodeCase.START_MULTIPLE_THREADS, startMultiplesThreadNode.build());
         WfRunVariableImpl internalStartedThreadVar = addVariable(nodeName, VariableType.JSON_ARR);
-        mutate(internalStartedThreadVar, VariableMutationType.ASSIGN, new NodeOutputImpl(nodeName, this));
+        mutate(internalStartedThreadVar, Operation.ASSIGN, new NodeOutputImpl(nodeName, this));
         return new SpawnedThreadsIterator(internalStartedThreadVar);
     }
 
@@ -764,7 +763,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         // The output of a StartThreadNode is just an integer containing the name
         // of the thread.
-        mutate(internalStartedThreadVar, VariableMutationType.ASSIGN, new NodeOutputImpl(nodeName, this));
+        mutate(internalStartedThreadVar, Operation.ASSIGN, new NodeOutputImpl(nodeName, this));
 
         return new SpawnedThreadImpl(this, threadName, internalStartedThreadVar);
     }
@@ -853,7 +852,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public void mutate(WfRunVariable lhsVar, VariableMutationType type, Object rhs) {
+    public void mutate(WfRunVariable lhsVar, Operation type, Object rhs) {
         checkIfIsActive();
         WfRunVariableImpl lhs = (WfRunVariableImpl) lhsVar;
         VariableMutation.Builder mutation =
@@ -920,11 +919,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public WaitForConditionNodeOutputImpl waitForCondition(WorkflowCondition condition) {
+    public WaitForConditionNodeOutputImpl waitForCondition(LHExpression condition) {
         checkIfIsActive();
-        WorkflowConditionImpl condImpl = (WorkflowConditionImpl) condition;
+        LHExpressionImpl condImpl = (LHExpressionImpl) condition;
         WaitForConditionNode waitNode = WaitForConditionNode.newBuilder()
-                .setCondition(condImpl.getSpec())
+                .setCondition(condImpl.getLegacySpec())
                 .build();
 
         String nodeName = addNode("wait-for-condition", NodeCase.WAIT_FOR_CONDITION, waitNode);
@@ -1040,13 +1039,9 @@ final class WorkflowThreadImpl implements WorkflowThread {
         addFailureHandlerDef(handlerDef.build(), node);
     }
 
-    public WorkflowConditionImpl condition(Object lhs, Comparator comparator, Object rhs) {
-        EdgeCondition.Builder edge = EdgeCondition.newBuilder()
-                .setComparator(comparator)
-                .setLeft(assignVariable(lhs))
-                .setRight(assignVariable(rhs));
-
-        return new WorkflowConditionImpl(edge.build());
+    @Override
+    public LHExpression condition(Serializable lhs, Operation comparator, Serializable rhs) {
+        return new LHExpressionImpl(lhs, comparator, rhs);
     }
 
     private String addNode(String name, NodeCase type, Message subNode) {
@@ -1063,7 +1058,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         edge.addAllVariableMutations(collectVariableMutations());
 
         if (lastNodeCondition != null) {
-            edge.setCondition(lastNodeCondition);
+            edge.setLegacyCondition(lastNodeCondition);
             lastNodeCondition = null;
         }
         if (feederNode.getNodeCase() != NodeCase.EXIT) {

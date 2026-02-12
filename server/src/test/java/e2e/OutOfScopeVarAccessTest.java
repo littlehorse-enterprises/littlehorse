@@ -1,7 +1,7 @@
 package e2e;
 
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
@@ -60,7 +60,7 @@ public class OutOfScopeVarAccessTest {
             wf.handleException(nodeThatWillFail, handler -> {
                 // We once had an NPE in which accessing a variable from the child in this thread
                 // was permitted by the SDK but the server threw an orzdash.
-                handler.mutate(variableOnlyAccessibleInChild, VariableMutationType.ASSIGN, true);
+                handler.mutate(variableOnlyAccessibleInChild, Operation.ASSIGN, true);
             });
         });
     }

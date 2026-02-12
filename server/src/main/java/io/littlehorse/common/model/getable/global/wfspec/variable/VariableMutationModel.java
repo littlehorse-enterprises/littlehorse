@@ -12,9 +12,10 @@ import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.util.TypeCastingUtils;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -31,7 +32,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
 
     private String lhsName;
     private String lhsJsonPath;
-    private VariableMutationType operation;
+    private Operation operation;
 
     private RhsValueCase rhsValueType;
     private VariableAssignmentModel rhsRhsAssignment;
@@ -208,7 +209,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                 return;
             }
 
-            if (operation == VariableMutationType.ASSIGN) {
+            if (operation == Operation.ASSIGN) {
                 if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT && rhsRhsAssignment.getTargetType() != null) {
                     // Step 1: Validate the explicit cast (original type -> cast target)
                     Optional<TypeDefinitionModel> sourceTypeOpt =

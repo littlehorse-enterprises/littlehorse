@@ -38,10 +38,10 @@ public interface EdgeOrBuilder extends
    * evaluates to `true` is taken.
    * </pre>
    *
-   * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
-   * @return Whether the condition field is set.
+   * <code>optional .littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
+   * @return Whether the legacyCondition field is set.
    */
-  boolean hasCondition();
+  boolean hasLegacyCondition();
   /**
    * <pre>
    * The Condition on which this Edge will be traversed. When choosing an Edge
@@ -50,10 +50,10 @@ public interface EdgeOrBuilder extends
    * evaluates to `true` is taken.
    * </pre>
    *
-   * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
-   * @return The condition.
+   * <code>optional .littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
+   * @return The legacyCondition.
    */
-  io.littlehorse.sdk.common.proto.EdgeCondition getCondition();
+  io.littlehorse.sdk.common.proto.LegacyEdgeCondition getLegacyCondition();
   /**
    * <pre>
    * The Condition on which this Edge will be traversed. When choosing an Edge
@@ -62,9 +62,9 @@ public interface EdgeOrBuilder extends
    * evaluates to `true` is taken.
    * </pre>
    *
-   * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
+   * <code>optional .littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder getConditionOrBuilder();
+  io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder getLegacyConditionOrBuilder();
 
   /**
    * <pre>

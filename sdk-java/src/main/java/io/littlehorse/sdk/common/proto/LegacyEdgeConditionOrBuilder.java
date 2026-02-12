@@ -6,8 +6,8 @@
 package io.littlehorse.sdk.common.proto;
 
 @com.google.protobuf.Generated
-public interface EdgeConditionOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.EdgeCondition)
+public interface LegacyEdgeConditionOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.LegacyEdgeCondition)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -15,7 +15,7 @@ public interface EdgeConditionOrBuilder extends
    * The Operator used to evaluate the left versus the right.
    * </pre>
    *
-   * <code>.littlehorse.Comparator comparator = 1;</code>
+   * <code>.littlehorse.Operation comparator = 1;</code>
    * @return The enum numeric value on the wire for comparator.
    */
   int getComparatorValue();
@@ -24,10 +24,10 @@ public interface EdgeConditionOrBuilder extends
    * The Operator used to evaluate the left versus the right.
    * </pre>
    *
-   * <code>.littlehorse.Comparator comparator = 1;</code>
+   * <code>.littlehorse.Operation comparator = 1;</code>
    * @return The comparator.
    */
-  io.littlehorse.sdk.common.proto.Comparator getComparator();
+  io.littlehorse.sdk.common.proto.Operation getComparator();
 
   /**
    * <pre>

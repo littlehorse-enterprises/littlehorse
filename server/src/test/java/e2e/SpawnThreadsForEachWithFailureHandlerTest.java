@@ -3,14 +3,13 @@ package e2e;
 import static io.littlehorse.sdk.common.proto.LHStatus.COMPLETED;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.ThreadType;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitForThread;
@@ -268,35 +267,35 @@ public class SpawnThreadsForEachWithFailureHandlerTest {
                         // Putting in a TaskRun that is optionally executed allows us to test both cases with the
                         // same WfSpec.
                         child.doIf(
-                                child.condition(input.jsonPath("$.executeTask"), Comparator.EQUALS, true), ifBody -> {
+                                child.condition(input.jsonPath("$.executeTask"), Operation.EQUALS, true), ifBody -> {
                                     ifBody.execute("dummy-task-spawnthreadtest");
                                 });
 
                         child.doIf(
                                 child.condition(
-                                        input.jsonPath("$.endResult"), Comparator.EQUALS, EXCEPTION_BUT_RECOVER),
+                                        input.jsonPath("$.endResult"), Operation.EQUALS, EXCEPTION_BUT_RECOVER),
                                 ifBody -> {
                                     ifBody.fail(EXCEPTION_BUT_RECOVER, "failed due to exception");
                                 });
                         child.doIf(
                                 child.condition(
-                                        input.jsonPath("$.endResult"), Comparator.EQUALS, EXCEPTION_BUT_STILL_FAIL),
+                                        input.jsonPath("$.endResult"), Operation.EQUALS, EXCEPTION_BUT_STILL_FAIL),
                                 ifBody -> {
                                     ifBody.fail(EXCEPTION_BUT_STILL_FAIL, "failed due to exception");
                                 });
                         child.doIf(
                                 child.condition(
-                                        input.jsonPath("$.endResult"), Comparator.EQUALS, EXCEPTION_DONT_HANDLE),
+                                        input.jsonPath("$.endResult"), Operation.EQUALS, EXCEPTION_DONT_HANDLE),
                                 ifBody -> {
                                     ifBody.fail(EXCEPTION_DONT_HANDLE, "failed due to exception");
                                 });
 
                         child.doIf(
-                                child.condition(input.jsonPath("$.endResult"), Comparator.EQUALS, "error"), ifBody -> {
+                                child.condition(input.jsonPath("$.endResult"), Operation.EQUALS, "error"), ifBody -> {
                                     // Cause a VarSubError
                                     ifBody.mutate(
                                             emptyJson.jsonPath("$.notarealpath"),
-                                            VariableMutationType.MULTIPLY,
+                                            Operation.MULTIPLY,
                                             emptyJson.jsonPath("$.asdfasdf"));
                                 });
                     },

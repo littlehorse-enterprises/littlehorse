@@ -12,8 +12,8 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.util.LHUtil.LHComparisonRule;
-import io.littlehorse.sdk.common.proto.Comparator;
-import io.littlehorse.sdk.common.proto.EdgeCondition;
+import io.littlehorse.sdk.common.proto.LegacyEdgeCondition;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
@@ -23,26 +23,26 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
+public class LegacyEdgeConditionModel extends LHSerializable<LegacyEdgeCondition> {
 
-    public Comparator comparator;
+    public Operation comparator;
     public VariableAssignmentModel left;
     public VariableAssignmentModel right;
 
-    public Class<EdgeCondition> getProtoBaseClass() {
-        return EdgeCondition.class;
+    public Class<LegacyEdgeCondition> getProtoBaseClass() {
+        return LegacyEdgeCondition.class;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
-        EdgeCondition p = (EdgeCondition) proto;
+        LegacyEdgeCondition p = (LegacyEdgeCondition) proto;
         comparator = p.getComparator();
         left = VariableAssignmentModel.fromProto(p.getLeft(), context);
         right = VariableAssignmentModel.fromProto(p.getRight(), context);
     }
 
-    public EdgeCondition.Builder toProto() {
-        EdgeCondition.Builder out = EdgeCondition.newBuilder();
+    public LegacyEdgeCondition.Builder toProto() {
+        LegacyEdgeCondition.Builder out = LegacyEdgeCondition.newBuilder();
         out.setComparator(comparator);
         out.setRight(right.toProto());
         out.setLeft(left.toProto());
@@ -50,8 +50,8 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
         return out;
     }
 
-    public static EdgeConditionModel fromProto(EdgeCondition p, ExecutionContext context) {
-        EdgeConditionModel out = new EdgeConditionModel();
+    public static LegacyEdgeConditionModel fromProto(LegacyEdgeCondition p, ExecutionContext context) {
+        LegacyEdgeConditionModel out = new LegacyEdgeConditionModel();
         out.initFrom(p, context);
         return out;
     }
@@ -87,7 +87,7 @@ public class EdgeConditionModel extends LHSerializable<EdgeCondition> {
     }
 
     public static Optional<String> checkTypeComparisonIncompatibility(
-            TypeDefinitionModel lhsType, Comparator comparator, TypeDefinitionModel rhsType) {
+            TypeDefinitionModel lhsType, Operation comparator, TypeDefinitionModel rhsType) {
         LHComparisonRule rule = LHUtil.getRuleFromComparator(comparator);
 
         // All types can be compared agaisnt NULL

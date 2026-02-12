@@ -1,9 +1,9 @@
 package io.littlehorse.sdk.wfsdk;
 
-import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHErrorType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+
 import java.io.Serializable;
 import java.util.Map;
 
@@ -226,7 +226,7 @@ public interface WorkflowThread {
      *     is satisfied.
      * @return Returns a {@link WorkflowIfStatement} object that allows you to chain {@link WorkflowIfStatement#doElseIf(WorkflowCondition, IfElseBody)} and {@link WorkflowIfStatement#doElse(IfElseBody)} method calls.
      */
-    WorkflowIfStatement doIf(WorkflowCondition condition, IfElseBody doIf);
+    WorkflowIfStatement doIf(LHExpression condition, IfElseBody doIf);
 
     /**
      * Conditionally executes one of two workflow code branches; equivalent to an if/else statement
@@ -239,7 +239,7 @@ public interface WorkflowThread {
      *     WorkflowCondition is NOT satisfied.
      * @see WorkflowThread#doIf
      */
-    void doIfElse(WorkflowCondition condition, IfElseBody doIf, IfElseBody doElse);
+    void doIfElse(LHExpression condition, IfElseBody doIf, IfElseBody doElse);
 
     /**
      * Adds a Reminder Task to a User Task Node.
@@ -317,7 +317,7 @@ public interface WorkflowThread {
      * @param whileBody is the block of ThreadFunc code to be executed while the provided
      *     WorkflowCondition is satisfied.
      */
-    void doWhile(WorkflowCondition condition, ThreadFunc whileBody);
+    void doWhile(LHExpression condition, ThreadFunc whileBody);
 
     /**
      * Adds a SPAWN_THREAD node to the ThreadSpec, which spawns a Child ThreadRun whose ThreadSpec
@@ -381,7 +381,7 @@ public interface WorkflowThread {
      * @return a handle to the WaitForConditionNodeOutput, which may only be used for error handling since
      * the output of this node is empty.
      */
-    WaitForConditionNodeOutput waitForCondition(WorkflowCondition condition);
+    WaitForConditionNodeOutput waitForCondition(LHExpression condition);
 
     /**
      * Adds an EXIT node with a Failure defined. This causes a ThreadRun to fail, and the resulting
@@ -503,7 +503,7 @@ public interface WorkflowThread {
      *     `WfRunVariable` representing the RHS of the expression.
      * @return a WorkflowCondition.
      */
-    WorkflowCondition condition(Object lhs, Comparator comparator, Object rhs);
+    LHExpression condition(Serializable lhs, Operation comparator, Serializable rhs);
 
     /**
      * Adds a VariableMutation to the last Node
@@ -514,7 +514,7 @@ public interface WorkflowThread {
      *     `WfRunVariable` which determines the right hand side of the expression, or a `NodeOutput`
      *     (which allows you to use the output of a Node Run to mutate variables).
      */
-    void mutate(WfRunVariable lhs, VariableMutationType type, Object rhs);
+    void mutate(WfRunVariable lhs, Operation type, Object rhs);
 
     /**
      * EXPERIMENTAL: Makes the active ThreadSpec throw a WorkflowEvent with a specific WorkflowEventDef

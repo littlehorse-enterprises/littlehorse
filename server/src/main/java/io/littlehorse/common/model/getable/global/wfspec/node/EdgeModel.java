@@ -28,7 +28,7 @@ import lombok.Setter;
 public class EdgeModel extends LHSerializable<Edge> {
 
     private String sinkNodeName;
-    private EdgeConditionModel condition;
+    private LegacyEdgeConditionModel condition;
 
     @Getter
     public List<VariableMutationModel> variableMutations;
@@ -51,7 +51,7 @@ public class EdgeModel extends LHSerializable<Edge> {
         }
 
         if (condition != null) {
-            out.setCondition(condition.toProto());
+            out.setLegacyCondition(condition.toProto());
         }
         return out;
     }
@@ -60,8 +60,8 @@ public class EdgeModel extends LHSerializable<Edge> {
     public void initFrom(Message p, ExecutionContext context) {
         Edge proto = (Edge) p;
         sinkNodeName = proto.getSinkNodeName();
-        if (proto.hasCondition()) {
-            condition = EdgeConditionModel.fromProto(proto.getCondition(), context);
+        if (proto.hasLegacyCondition()) {
+            condition = LegacyEdgeConditionModel.fromProto(proto.getLegacyCondition(), context);
             condition.edge = this;
         }
 

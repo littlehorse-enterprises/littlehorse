@@ -10,13 +10,13 @@ package io.littlehorse.sdk.common.proto;
  * This is a boolean expression used to evaluate whether an Edge is valid.
  * </pre>
  *
- * Protobuf type {@code littlehorse.EdgeCondition}
+ * Protobuf type {@code littlehorse.LegacyEdgeCondition}
  */
 @com.google.protobuf.Generated
-public final class EdgeCondition extends
+public final class LegacyEdgeCondition extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:littlehorse.EdgeCondition)
-    EdgeConditionOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.LegacyEdgeCondition)
+    LegacyEdgeConditionOrBuilder {
 private static final long serialVersionUID = 0L;
   static {
     com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -25,27 +25,27 @@ private static final long serialVersionUID = 0L;
       /* minor= */ 32,
       /* patch= */ 1,
       /* suffix= */ "",
-      EdgeCondition.class.getName());
+      LegacyEdgeCondition.class.getName());
   }
-  // Use EdgeCondition.newBuilder() to construct.
-  private EdgeCondition(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  // Use LegacyEdgeCondition.newBuilder() to construct.
+  private LegacyEdgeCondition(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
-  private EdgeCondition() {
+  private LegacyEdgeCondition() {
     comparator_ = 0;
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_EdgeCondition_descriptor;
+    return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_LegacyEdgeCondition_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_EdgeCondition_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_LegacyEdgeCondition_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.EdgeCondition.class, io.littlehorse.sdk.common.proto.EdgeCondition.Builder.class);
+            io.littlehorse.sdk.common.proto.LegacyEdgeCondition.class, io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder.class);
   }
 
   private int bitField0_;
@@ -56,7 +56,7 @@ private static final long serialVersionUID = 0L;
    * The Operator used to evaluate the left versus the right.
    * </pre>
    *
-   * <code>.littlehorse.Comparator comparator = 1;</code>
+   * <code>.littlehorse.Operation comparator = 1;</code>
    * @return The enum numeric value on the wire for comparator.
    */
   @java.lang.Override public int getComparatorValue() {
@@ -67,12 +67,12 @@ private static final long serialVersionUID = 0L;
    * The Operator used to evaluate the left versus the right.
    * </pre>
    *
-   * <code>.littlehorse.Comparator comparator = 1;</code>
+   * <code>.littlehorse.Operation comparator = 1;</code>
    * @return The comparator.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.Comparator getComparator() {
-    io.littlehorse.sdk.common.proto.Comparator result = io.littlehorse.sdk.common.proto.Comparator.forNumber(comparator_);
-    return result == null ? io.littlehorse.sdk.common.proto.Comparator.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.Operation getComparator() {
+    io.littlehorse.sdk.common.proto.Operation result = io.littlehorse.sdk.common.proto.Operation.forNumber(comparator_);
+    return result == null ? io.littlehorse.sdk.common.proto.Operation.UNRECOGNIZED : result;
   }
 
   public static final int LEFT_FIELD_NUMBER = 2;
@@ -165,7 +165,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (comparator_ != io.littlehorse.sdk.common.proto.Comparator.LESS_THAN.getNumber()) {
+    if (comparator_ != io.littlehorse.sdk.common.proto.Operation.ASSIGN.getNumber()) {
       output.writeEnum(1, comparator_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
@@ -183,7 +183,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (comparator_ != io.littlehorse.sdk.common.proto.Comparator.LESS_THAN.getNumber()) {
+    if (comparator_ != io.littlehorse.sdk.common.proto.Operation.ASSIGN.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(1, comparator_);
     }
@@ -205,10 +205,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.EdgeCondition)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.LegacyEdgeCondition)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.EdgeCondition other = (io.littlehorse.sdk.common.proto.EdgeCondition) obj;
+    io.littlehorse.sdk.common.proto.LegacyEdgeCondition other = (io.littlehorse.sdk.common.proto.LegacyEdgeCondition) obj;
 
     if (comparator_ != other.comparator_) return false;
     if (hasLeft() != other.hasLeft()) return false;
@@ -247,44 +247,44 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.EdgeCondition parseFrom(
+  public static io.littlehorse.sdk.common.proto.LegacyEdgeCondition parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.EdgeCondition parseFrom(
+  public static io.littlehorse.sdk.common.proto.LegacyEdgeCondition parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.EdgeCondition parseFrom(
+  public static io.littlehorse.sdk.common.proto.LegacyEdgeCondition parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.EdgeCondition parseFrom(
+  public static io.littlehorse.sdk.common.proto.LegacyEdgeCondition parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.EdgeCondition parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.LegacyEdgeCondition parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.EdgeCondition parseFrom(
+  public static io.littlehorse.sdk.common.proto.LegacyEdgeCondition parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.EdgeCondition parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.LegacyEdgeCondition parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.EdgeCondition parseFrom(
+  public static io.littlehorse.sdk.common.proto.LegacyEdgeCondition parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -292,26 +292,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.EdgeCondition parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.LegacyEdgeCondition parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.EdgeCondition parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.LegacyEdgeCondition parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.EdgeCondition parseFrom(
+  public static io.littlehorse.sdk.common.proto.LegacyEdgeCondition parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.EdgeCondition parseFrom(
+  public static io.littlehorse.sdk.common.proto.LegacyEdgeCondition parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -324,7 +324,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.EdgeCondition prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.LegacyEdgeCondition prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -344,26 +344,26 @@ private static final long serialVersionUID = 0L;
    * This is a boolean expression used to evaluate whether an Edge is valid.
    * </pre>
    *
-   * Protobuf type {@code littlehorse.EdgeCondition}
+   * Protobuf type {@code littlehorse.LegacyEdgeCondition}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.EdgeCondition)
-      io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.LegacyEdgeCondition)
+      io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_EdgeCondition_descriptor;
+      return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_LegacyEdgeCondition_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_EdgeCondition_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_LegacyEdgeCondition_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.EdgeCondition.class, io.littlehorse.sdk.common.proto.EdgeCondition.Builder.class);
+              io.littlehorse.sdk.common.proto.LegacyEdgeCondition.class, io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.EdgeCondition.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.LegacyEdgeCondition.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -401,17 +401,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_EdgeCondition_descriptor;
+      return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_LegacyEdgeCondition_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.EdgeCondition getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.LegacyEdgeCondition getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.EdgeCondition build() {
-      io.littlehorse.sdk.common.proto.EdgeCondition result = buildPartial();
+    public io.littlehorse.sdk.common.proto.LegacyEdgeCondition build() {
+      io.littlehorse.sdk.common.proto.LegacyEdgeCondition result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -419,14 +419,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.EdgeCondition buildPartial() {
-      io.littlehorse.sdk.common.proto.EdgeCondition result = new io.littlehorse.sdk.common.proto.EdgeCondition(this);
+    public io.littlehorse.sdk.common.proto.LegacyEdgeCondition buildPartial() {
+      io.littlehorse.sdk.common.proto.LegacyEdgeCondition result = new io.littlehorse.sdk.common.proto.LegacyEdgeCondition(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.EdgeCondition result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.LegacyEdgeCondition result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.comparator_ = comparator_;
@@ -449,16 +449,16 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.EdgeCondition) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.EdgeCondition)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.LegacyEdgeCondition) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.LegacyEdgeCondition)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.EdgeCondition other) {
-      if (other == io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.LegacyEdgeCondition other) {
+      if (other == io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance()) return this;
       if (other.comparator_ != 0) {
         setComparatorValue(other.getComparatorValue());
       }
@@ -536,7 +536,7 @@ private static final long serialVersionUID = 0L;
      * The Operator used to evaluate the left versus the right.
      * </pre>
      *
-     * <code>.littlehorse.Comparator comparator = 1;</code>
+     * <code>.littlehorse.Operation comparator = 1;</code>
      * @return The enum numeric value on the wire for comparator.
      */
     @java.lang.Override public int getComparatorValue() {
@@ -547,7 +547,7 @@ private static final long serialVersionUID = 0L;
      * The Operator used to evaluate the left versus the right.
      * </pre>
      *
-     * <code>.littlehorse.Comparator comparator = 1;</code>
+     * <code>.littlehorse.Operation comparator = 1;</code>
      * @param value The enum numeric value on the wire for comparator to set.
      * @return This builder for chaining.
      */
@@ -562,24 +562,24 @@ private static final long serialVersionUID = 0L;
      * The Operator used to evaluate the left versus the right.
      * </pre>
      *
-     * <code>.littlehorse.Comparator comparator = 1;</code>
+     * <code>.littlehorse.Operation comparator = 1;</code>
      * @return The comparator.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.Comparator getComparator() {
-      io.littlehorse.sdk.common.proto.Comparator result = io.littlehorse.sdk.common.proto.Comparator.forNumber(comparator_);
-      return result == null ? io.littlehorse.sdk.common.proto.Comparator.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.Operation getComparator() {
+      io.littlehorse.sdk.common.proto.Operation result = io.littlehorse.sdk.common.proto.Operation.forNumber(comparator_);
+      return result == null ? io.littlehorse.sdk.common.proto.Operation.UNRECOGNIZED : result;
     }
     /**
      * <pre>
      * The Operator used to evaluate the left versus the right.
      * </pre>
      *
-     * <code>.littlehorse.Comparator comparator = 1;</code>
+     * <code>.littlehorse.Operation comparator = 1;</code>
      * @param value The comparator to set.
      * @return This builder for chaining.
      */
-    public Builder setComparator(io.littlehorse.sdk.common.proto.Comparator value) {
+    public Builder setComparator(io.littlehorse.sdk.common.proto.Operation value) {
       if (value == null) { throw new NullPointerException(); }
       bitField0_ |= 0x00000001;
       comparator_ = value.getNumber();
@@ -591,7 +591,7 @@ private static final long serialVersionUID = 0L;
      * The Operator used to evaluate the left versus the right.
      * </pre>
      *
-     * <code>.littlehorse.Comparator comparator = 1;</code>
+     * <code>.littlehorse.Operation comparator = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearComparator() {
@@ -915,23 +915,23 @@ private static final long serialVersionUID = 0L;
       return rightBuilder_;
     }
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.EdgeCondition)
+    // @@protoc_insertion_point(builder_scope:littlehorse.LegacyEdgeCondition)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.EdgeCondition)
-  private static final io.littlehorse.sdk.common.proto.EdgeCondition DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.LegacyEdgeCondition)
+  private static final io.littlehorse.sdk.common.proto.LegacyEdgeCondition DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.EdgeCondition();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.LegacyEdgeCondition();
   }
 
-  public static io.littlehorse.sdk.common.proto.EdgeCondition getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.LegacyEdgeCondition getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<EdgeCondition>
-      PARSER = new com.google.protobuf.AbstractParser<EdgeCondition>() {
+  private static final com.google.protobuf.Parser<LegacyEdgeCondition>
+      PARSER = new com.google.protobuf.AbstractParser<LegacyEdgeCondition>() {
     @java.lang.Override
-    public EdgeCondition parsePartialFrom(
+    public LegacyEdgeCondition parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -950,17 +950,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<EdgeCondition> parser() {
+  public static com.google.protobuf.Parser<LegacyEdgeCondition> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<EdgeCondition> getParserForType() {
+  public com.google.protobuf.Parser<LegacyEdgeCondition> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.EdgeCondition getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.LegacyEdgeCondition getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

@@ -11,7 +11,7 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -48,7 +48,7 @@ public class ExternalEventTest {
             WfRunVariable evtOutput = thread.declareStr("evt-output");
             thread.mutate(
                     evtOutput,
-                    VariableMutationType.ASSIGN,
+                    Operation.ASSIGN,
                     thread.waitForEvent(EVT_NAME).registeredAs(String.class));
             thread.execute("basic-external-event-task", evtOutput);
         });
@@ -60,7 +60,7 @@ public class ExternalEventTest {
             WfRunVariable evtOutput = thread.declareStruct("struct-evt-output", Car.class);
             thread.mutate(
                     evtOutput,
-                    VariableMutationType.ASSIGN,
+                    Operation.ASSIGN,
                     thread.waitForEvent(STRUCT_EVT_NAME).registeredAs(Car.class));
             thread.execute("struct-external-event-task", evtOutput);
         });

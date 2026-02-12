@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.util.Arg;
@@ -73,9 +73,9 @@ public class VarMutationListsTest {
 
             thread.execute("af-simple");
 
-            thread.mutate(listOne, VariableMutationType.REMOVE_IF_PRESENT, 5);
-            thread.mutate(listOne, VariableMutationType.REMOVE_IF_PRESENT, "hello");
-            thread.mutate(listOne, VariableMutationType.REMOVE_INDEX, 3);
+            thread.mutate(listOne, Operation.REMOVE_IF_PRESENT, 5);
+            thread.mutate(listOne, Operation.REMOVE_IF_PRESENT, "hello");
+            thread.mutate(listOne, Operation.REMOVE_INDEX, 3);
         });
     }
 }

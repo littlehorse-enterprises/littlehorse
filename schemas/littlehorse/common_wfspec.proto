@@ -44,7 +44,7 @@ message VariableAssignment {
     // The left-hand-side of the expression.
     VariableAssignment lhs = 1;
     // The operator in the expression.
-    VariableMutationType operation = 2;
+    Operation operation = 2;
     // The right-hand-side of the expression.
     VariableAssignment rhs = 3;
   }
@@ -83,7 +83,7 @@ message VariableAssignment {
 }
 
 // Enumerates the available operations to mutate a variable in a WfRun.
-enum VariableMutationType {
+enum Operation {
   // Set the variable specified by the LHS to the value of the RHS.
   ASSIGN = 0;
   // Add the RHS to the LHS.
@@ -102,6 +102,38 @@ enum VariableMutationType {
   REMOVE_INDEX = 7;
   // Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ)
   REMOVE_KEY = 8;
+
+  // Equivalent to `<`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+  LESS_THAN = 9;
+
+  // Equivalent to `>`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+  GREATER_THAN = 10;
+
+  // Equivalent to `<=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+  LESS_THAN_EQ = 11;
+
+  // Equivalent to `>=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
+  GREATER_THAN_EQ = 12;
+
+  // This is valid for any variable type, and is similar to .equals() in Java.
+  //
+  // One note: if the RHS is a different type from the LHS, then LittleHorse will
+  // try to cast the RHS to the same type as the LHS. If the cast fails, then the
+  // ThreadRun fails with a VAR_SUB_ERROR.
+  EQUALS = 13;
+
+  // This is the inverse of `EQUALS`
+  NOT_EQUALS = 14;
+
+  // Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
+  //
+  // For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
+  // RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
+  // is equal to the LHS.
+  IN = 15;
+
+  // The inverse of IN.
+  NOT_IN = 16;
 }
 
 // A VariableMutation defines a modification made to one of a ThreadRun's variables.
@@ -133,7 +165,7 @@ message VariableMutation {
   optional string lhs_json_path = 2;
 
   // Defines the operation that we are executing.
-  VariableMutationType operation = 3;
+  Operation operation = 3;
 
   // The RHS of the mutation; i.e. what is operated _with_. Note the values other
   // than `rhs_assignment` are deprecated and will be removed in 2.0.
@@ -210,41 +242,6 @@ message ReturnType {
   // The type of the output. If it is not present, it is interpred as the output type
   // being void: the TaskRun output/ExternalEvent/WorkflowEvent is always empty / NULL.
   optional TypeDefinition return_type = 1;
-}
-
-// Operator for comparing two values to create a boolean expression.
-enum Comparator {
-  // Equivalent to `<`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  LESS_THAN = 0;
-
-  // Equivalent to `>`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  GREATER_THAN = 1;
-
-  // Equivalent to `<=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  LESS_THAN_EQ = 2;
-
-  // Equivalent to `>=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  GREATER_THAN_EQ = 3;
-
-  // This is valid for any variable type, and is similar to .equals() in Java.
-  //
-  // One note: if the RHS is a different type from the LHS, then LittleHorse will
-  // try to cast the RHS to the same type as the LHS. If the cast fails, then the
-  // ThreadRun fails with a VAR_SUB_ERROR.
-  EQUALS = 4;
-
-  // This is the inverse of `EQUALS`
-  NOT_EQUALS = 5;
-
-  // Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
-  //
-  // For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
-  // RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
-  // is equal to the LHS.
-  IN = 6;
-
-  // The inverse of IN.
-  NOT_IN = 7;
 }
 
 // A UTActionTrigger triggers an action upon certain lifecycle hooks

@@ -7,7 +7,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.util.Arg;
@@ -74,7 +74,7 @@ public class InputVarsTest {
             NodeOutput taskOutput = thread.execute("count-length", myVar.jsonPath("$.subObject.foo"));
 
             // Use jsonpath to edit a nested field in a big object
-            thread.mutate(myVar.jsonPath("$.subObject.bar"), VariableMutationType.ADD, taskOutput);
+            thread.mutate(myVar.jsonPath("$.subObject.bar"), Operation.ADD, taskOutput);
 
             // Pass in a JSON_OBJ to a Java task that takes in a POJO.
             // Behold the magic of the Java LH SDK!

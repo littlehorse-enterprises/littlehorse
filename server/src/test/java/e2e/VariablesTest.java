@@ -11,7 +11,7 @@ import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.sdk.common.proto.VariableIdList;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
@@ -200,7 +200,7 @@ public class VariablesTest {
                     thread.addVariable("text", VariableType.STR).masked().required();
             TaskNodeOutput lengthNodeOutput = thread.execute("get-text-length", textVariable);
             WfRunVariable length = thread.addVariable("length", VariableType.INT);
-            thread.mutate(length, VariableMutationType.ASSIGN, lengthNodeOutput);
+            thread.mutate(length, Operation.ASSIGN, lengthNodeOutput);
             thread.execute("print-number", length);
         });
     }
@@ -213,8 +213,8 @@ public class VariablesTest {
             WfRunVariable valueBVariable =
                     thread.addVariable("value-b", VariableType.INT).required();
             WfRunVariable resultVariable = thread.addVariable("result", VariableType.INT);
-            thread.mutate(valueAVariable, VariableMutationType.DIVIDE, valueBVariable);
-            thread.mutate(resultVariable, VariableMutationType.ASSIGN, valueAVariable);
+            thread.mutate(valueAVariable, Operation.DIVIDE, valueBVariable);
+            thread.mutate(resultVariable, Operation.ASSIGN, valueAVariable);
             thread.execute("print-number", resultVariable);
         });
     }

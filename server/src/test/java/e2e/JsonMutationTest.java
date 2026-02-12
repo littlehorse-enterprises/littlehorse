@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.util.Arg;
@@ -72,7 +72,7 @@ public class JsonMutationTest {
             WfRunVariable myObj = thread.addVariable("my-obj", VariableType.JSON_OBJ);
 
             thread.execute("ae-simple");
-            thread.mutate(myObj, VariableMutationType.REMOVE_KEY, "foo");
+            thread.mutate(myObj, Operation.REMOVE_KEY, "foo");
         });
     }
 

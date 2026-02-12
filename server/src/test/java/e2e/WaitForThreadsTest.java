@@ -3,11 +3,11 @@ package e2e;
 import static io.littlehorse.sdk.common.proto.LHStatus.*;
 import static org.assertj.core.api.Assertions.*;
 
-import io.littlehorse.sdk.common.proto.Comparator;
+
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.Operation;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
@@ -169,10 +169,10 @@ public class WaitForThreadsTest {
             WfRunVariable allApproved = thread.addVariable("all-approved", VariableType.BOOL);
 
             // Variables are initialized to NULL. Need to set to a real value.
-            thread.mutate(allApproved, VariableMutationType.ASSIGN, false);
-            thread.mutate(person1Approved, VariableMutationType.ASSIGN, false);
-            thread.mutate(person2Approved, VariableMutationType.ASSIGN, false);
-            thread.mutate(person3Approved, VariableMutationType.ASSIGN, false);
+            thread.mutate(allApproved, Operation.ASSIGN, false);
+            thread.mutate(person1Approved, Operation.ASSIGN, false);
+            thread.mutate(person2Approved, Operation.ASSIGN, false);
+            thread.mutate(person3Approved, Operation.ASSIGN, false);
 
             BiFunction<WfRunVariable, String, ThreadFunc> buildChildThread = (approvalVariable, approvalName) -> {
                 return approvalThread -> {
@@ -180,12 +180,12 @@ public class WaitForThreadsTest {
                             approvalThread.addVariable(approvalName + "-response", VariableType.JSON_OBJ);
                     approvalThread.mutate(
                             jsonVariable,
-                            VariableMutationType.ASSIGN,
+                            Operation.ASSIGN,
                             approvalThread.waitForEvent(approvalName + "-approves"));
                     approvalThread.doIfElse(
-                            approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                            approvalThread.condition(jsonVariable.jsonPath("$.approval"), Operation.EQUALS, true),
                             ifHandler -> {
-                                approvalThread.mutate(person2Approved, VariableMutationType.ASSIGN, true);
+                                approvalThread.mutate(person2Approved, Operation.ASSIGN, true);
                             },
                             elseHandler -> {
                                 approvalThread.fail("denied-by-user", "message here");
@@ -208,7 +208,7 @@ public class WaitForThreadsTest {
             });
 
             // Tell the reminder workflow to stop
-            thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
+            thread.mutate(allApproved, Operation.ASSIGN, true);
         });
     }
 
@@ -222,10 +222,10 @@ public class WaitForThreadsTest {
             WfRunVariable allApproved = thread.addVariable("all-approved", VariableType.BOOL);
 
             // Variables are initialized to NULL. Need to set to a real value.
-            thread.mutate(allApproved, VariableMutationType.ASSIGN, false);
-            thread.mutate(person1Approved, VariableMutationType.ASSIGN, false);
-            thread.mutate(person2Approved, VariableMutationType.ASSIGN, false);
-            thread.mutate(person3Approved, VariableMutationType.ASSIGN, false);
+            thread.mutate(allApproved, Operation.ASSIGN, false);
+            thread.mutate(person1Approved, Operation.ASSIGN, false);
+            thread.mutate(person2Approved, Operation.ASSIGN, false);
+            thread.mutate(person3Approved, Operation.ASSIGN, false);
 
             BiFunction<WfRunVariable, String, ThreadFunc> buildChildThread = (approvalVariable, approvalName) -> {
                 return approvalThread -> {
@@ -233,12 +233,12 @@ public class WaitForThreadsTest {
                             approvalThread.addVariable(approvalName + "-response", VariableType.JSON_OBJ);
                     approvalThread.mutate(
                             jsonVariable,
-                            VariableMutationType.ASSIGN,
+                            Operation.ASSIGN,
                             approvalThread.waitForEvent(approvalName + "-approves"));
                     approvalThread.doIfElse(
-                            approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                            approvalThread.condition(jsonVariable.jsonPath("$.approval"), Operation.EQUALS, true),
                             ifHandler -> {
-                                approvalThread.mutate(person2Approved, VariableMutationType.ASSIGN, true);
+                                approvalThread.mutate(person2Approved, Operation.ASSIGN, true);
                             },
                             elseHandler -> {
                                 approvalThread.fail("denied-by-user", "message here");
@@ -257,7 +257,7 @@ public class WaitForThreadsTest {
             thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
 
             // Tell the reminder workflow to stop
-            thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
+            thread.mutate(allApproved, Operation.ASSIGN, true);
         });
     }
 
@@ -267,7 +267,7 @@ public class WaitForThreadsTest {
             return spawnedThread -> {
                 WfRunVariable eventOutput = spawnedThread.addVariable(variableName, VariableType.JSON_OBJ);
                 spawnedThread.mutate(
-                        eventOutput, VariableMutationType.ASSIGN, spawnedThread.waitForEvent(externalEventName));
+                        eventOutput, Operation.ASSIGN, spawnedThread.waitForEvent(externalEventName));
                 spawnedThread.execute("add-1", eventOutput.jsonPath("$.myInt"));
             };
         };
