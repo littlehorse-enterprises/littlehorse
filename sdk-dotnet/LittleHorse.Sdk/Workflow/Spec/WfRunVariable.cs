@@ -15,70 +15,139 @@ public class WfRunVariable
     public string Name { get; private set; }
 
     /// <value>
-    /// Gets the Type of this WfRunVariable.
+    /// Gets the TypeDefinition of this WfRunVariable.
     /// </value>
-    public VariableType Type { get; private set; }
+    internal TypeDefinition TypeDef { get; private set; } = new();
+
+    internal VariableValue? defaultValue { get; private set; }
     
     /// <value>
     /// Gets the JsonPath of this WfRunVariable that is JSON_OBJ or JSON_ARR types.
     /// </value>
     public string? JsonPath { get; private set; }
     
-    private WorkflowThread _parent;
-    private readonly object _typeOrDefaultVal;
-    private WfRunVariableAccessLevel _accessLevel;
-    private VariableValue? _defaultValue;
-    private bool _required;
-    private bool _searchable;
-    private bool _masked;
+    private readonly WorkflowThread parent;
+    private WfRunVariableAccessLevel accessLevel;
+    private bool required;
+    private bool searchable;
+    private bool masked;
 
     internal bool IsMasked
     {
-        get => _masked;
+        get => masked;
     }
 
-    private readonly List<JsonIndex> _jsonIndexes;
+    private List<JsonIndex> jsonIndexes;
+
+    private List<LHPath.Types.Selector> lhPath;
     
     /// <summary>
     /// Initializes a new instance of the <see cref="WfRunVariable"/> class.
     /// </summary>
     /// <param name="name">The name of the wfRunVariable.</param>
-    /// <param name="typeOrDefaultVal">The  variable type or a default value (literal value).</param>
     /// <param name="parent">The workflow thread where the user task output belongs to.</param>
     /// <exception cref="InvalidOperationException">Throws an exception when typeOrDefault param is null.</exception>
-    public WfRunVariable(string name, object typeOrDefaultVal, WorkflowThread parent)
+    private WfRunVariable(string name, WorkflowThread parent)
     {
         Name = name;
-        _parent = parent ?? throw new ArgumentNullException(nameof(parent));
-        _jsonIndexes = new List<JsonIndex>();
-
-        _typeOrDefaultVal = typeOrDefaultVal ?? throw new InvalidOperationException(
-            "The 'typeOrDefaultVal' argument must be either a VariableType " +
-            "or a default value, but a null value was provided.");
+        this.parent = parent ?? throw new ArgumentNullException(nameof(parent));
 
         // As per GH Issue #582, the default is now PRIVATE_VAR.
-        _accessLevel = WfRunVariableAccessLevel.PrivateVar;
-        InitializeType();
+        accessLevel = WfRunVariableAccessLevel.PrivateVar;
+
+        jsonIndexes = new List<JsonIndex>();
+        lhPath = new List<LHPath.Types.Selector>();
+    }
+
+    /// <summary>
+    /// Creates a primitive type variable with the provided type or default value.
+    /// </summary>
+    /// <param name="name">The name of the WfRunVariable.</param>
+    /// <param name="typeOrDefaultVal">The variable type or a default value (literal value).</param>
+    /// <param name="parent">The WorkflowThread where the variable belongs to.</param>
+    /// <returns>A new <see cref="WfRunVariable"/> instance.</returns>
+    public static WfRunVariable CreatePrimitiveVar(string name, object? typeOrDefaultVal, WorkflowThread parent)
+    {
+        WfRunVariable wfRunVar = new WfRunVariable(name, parent);
+        wfRunVar.InitializeAsPrimitive(typeOrDefaultVal);
+        return wfRunVar;
+    }
+
+    
+    /// <summary>
+    /// Creates a Struct variable with the provided LHStructDefType.
+    /// </summary>
+    /// <param name="name">The name of the WfRunVariable.</param>
+    /// <param name="structDefType">The type of the Struct.</param>
+    /// <param name="parent">The WorkflowThread where the variable belongs to.</param>
+    /// <returns>A new <see cref="WfRunVariable"/> instance.</returns>
+    public static WfRunVariable CreateStructDefVar(string name, LHStructDefType structDefType, WorkflowThread parent)
+    {
+        WfRunVariable wfRunVar = new WfRunVariable(name, parent);
+        wfRunVar.InitializeAsStructDef(structDefType);
+        return wfRunVar;
+    }
+
+    /// <summary>
+    /// Creates a Struct variable with the provided StructDef name.
+    /// </summary>
+    /// <param name="name">The name of the WfRunVariable.</param>
+    /// <param name="structDefName">The name of the StructDef.</param>
+    /// <param name="parent">The WorkflowThread where the variable belongs to.</param>
+    /// <returns>A new <see cref="WfRunVariable"/> instance.</returns>
+    public static WfRunVariable CreateStructDefVar(string name, string structDefName, WorkflowThread parent)
+    {
+        WfRunVariable wfRunVar = new WfRunVariable(name, parent);
+        wfRunVar.InitializeAsStructDef(structDefName);
+        return wfRunVar;
     }
     
-    private void InitializeType() 
+    private void InitializeAsPrimitive(object? typeOrDefaultVal)
     {
-        if (_typeOrDefaultVal is VariableType) 
+        if (typeOrDefaultVal == null)
         {
-            Type = (VariableType) _typeOrDefaultVal;
-        } 
-        else 
-        {
-            SetDefaultValue(_typeOrDefaultVal);
-            Type = LHMappingHelper.ValueCaseToVariableType(_defaultValue!.ValueCase);
+            throw new ArgumentException(
+                "The 'typeOrDefaultVal' argument must be either a VariableType or a default value, but a null value was provided.");
         }
+
+        if (typeOrDefaultVal is VariableType variableType)
+        {
+            TypeDef = new TypeDefinition
+            {
+                PrimitiveType = variableType
+            };
+        }
+        else
+        {
+            SetDefaultValue(typeOrDefaultVal);
+            TypeDef = new TypeDefinition
+            {
+                PrimitiveType = LHMappingHelper.ValueCaseToVariableType(_defaultValue!.ValueCase)
+            };
+        }
+    }
+
+    private void InitializeAsStructDef(LHStructDefType structDefType)
+    {
+        TypeDef = structDefType.GetTypeDefinition();
+    }
+
+    private void InitializeAsStructDef(string structDefName)
+    {
+        TypeDef = new TypeDefinition
+        {
+            StructDefId = new StructDefId
+            {
+                Name = structDefName
+            }
+        };
     }
     
     private void SetDefaultValue(object defaultVal) 
     {
         try 
         {
-            _defaultValue = LHMappingHelper.ObjectToVariableValue(defaultVal);
+            defaultValue = LHMappingHelper.ObjectToVariableValue(defaultVal);
         } 
         catch (LHSerdeException e) 
         {
@@ -94,13 +163,12 @@ public class WfRunVariable
     /// </returns>
     public ThreadVarDef Compile() 
     {
+        var compiledTypeDef = TypeDef.Clone();
+        compiledTypeDef.Masked = _masked;
+
         VariableDef varDef = new VariableDef
         {
-            TypeDef = new TypeDefinition
-            {
-                PrimitiveType = Type,
-                Masked = _masked
-            },
+            TypeDef = compiledTypeDef,
             Name = Name
         };
 
@@ -112,11 +180,11 @@ public class WfRunVariable
         var threadVarDef = new ThreadVarDef
         {
             VarDef = varDef,
-            Required = _required,
-            Searchable = _searchable,
-            AccessLevel = _accessLevel
+            Required = required,
+            Searchable = searchable,
+            AccessLevel = accessLevel
         };
-        threadVarDef.JsonIndexes.Add(_jsonIndexes);
+        threadVarDef.JsonIndexes.Add(jsonIndexes);
         
         return threadVarDef;
     }
@@ -130,7 +198,7 @@ public class WfRunVariable
     /// </returns>
     public WfRunVariable Searchable() 
     {
-        _searchable = true;
+        searchable = true;
         return this;
     }
     
@@ -147,15 +215,17 @@ public class WfRunVariable
     /// <returns>
     /// Same WfRunVariable instance
     /// </returns>
-    public WfRunVariable SearchableOn(String fieldPath, VariableType fieldType)
+    public WfRunVariable SearchableOn(string fieldPath, VariableType fieldType)
     {
         if (!fieldPath.StartsWith("$.")) {
             throw new LHMisconfigurationException($"Invalid JsonPath: {fieldPath}");
         }
-        if (!Type.Equals(VariableType.JsonObj) && !Type.Equals(VariableType.JsonArr)) {
+        if (TypeDef.DefinedTypeCase != TypeDefinition.DefinedTypeOneofCase.PrimitiveType
+            || (!TypeDef.PrimitiveType.Equals(VariableType.JsonObj)
+                && !TypeDef.PrimitiveType.Equals(VariableType.JsonArr))) {
             throw new LHMisconfigurationException($"Non-Json {Name} variable contains jsonIndex.");
         }
-        _jsonIndexes.Add(new JsonIndex
+        jsonIndexes.Add(new JsonIndex
         {
             FieldPath = fieldPath,
             FieldType = fieldType
@@ -221,7 +291,7 @@ public class WfRunVariable
     /// </returns>
     public WfRunVariable Masked()
     {
-        _masked = true;
+         masked = true;
         return this;
     }
 
@@ -236,7 +306,7 @@ public class WfRunVariable
     /// </returns>
     public WfRunVariable Required()
     {
-        _required = true;
+        required = true;
         return this;
     }
     
@@ -252,6 +322,11 @@ public class WfRunVariable
     public WfRunVariable WithDefault(object defaultVal) 
     {
         SetDefaultValue(defaultVal);
+
+        if (TypeDef.DefinedTypeCase != TypeDefinition.DefinedTypeOneofCase.PrimitiveType)
+        {
+            throw new ArgumentException("Default values are only supported for primitive variables.");
+        }
 
         if (!LHMappingHelper.ValueCaseToVariableType(_defaultValue!.ValueCase).Equals(Type)) 
         {
@@ -279,14 +354,17 @@ public class WfRunVariable
         {
             throw new LHMisconfigurationException("Cannot use jsonpath() twice on same var!");
         }
-        if (Type != VariableType.JsonObj && Type != VariableType.JsonArr) 
+        if (TypeDef.DefinedTypeCase != TypeDefinition.DefinedTypeOneofCase.PrimitiveType)
         {
-            throw new LHMisconfigurationException($"JsonPath not allowed in a {Type.ToString()} variable");
+            throw new LHMisconfigurationException("JsonPath not allowed in a non-primitive variable");
         }
-        var outVariable = new WfRunVariable(Name, _typeOrDefaultVal, _parent)
+        if (TypeDef.DefinedTypeCase != TypeDefinition.DefinedTypeOneofCase.PrimitiveType
+            || (TypeDef.PrimitiveType != VariableType.JsonObj && TypeDef.PrimitiveType != VariableType.JsonArr))
         {
-            JsonPath = path
-        };
+            throw new LHMisconfigurationException($"JsonPath not allowed in a {TypeDef.PrimitiveType} variable");
+        }
+        var outVariable = clone();
+        outVariable.JsonPath = path;
         
         return outVariable;
     }
@@ -302,8 +380,8 @@ public class WfRunVariable
     /// </param>
     public void Assign(object rhs)
     {
-        WorkflowThread activeThread = _parent;
-        WorkflowThread lastThread = _parent.Parent.Threads.Peek();
+        WorkflowThread activeThread = parent;
+        WorkflowThread lastThread = parent.Parent.Threads.Peek();
 
         if (lastThread.IsActive)
         {
@@ -457,7 +535,7 @@ public class WfRunVariable
     /// </returns>
     public WorkflowCondition IsLessThan(object rhs)
     {
-        return _parent.Condition(this, Comparator.LessThan, rhs);
+        return parent.Condition(this, Comparator.LessThan, rhs);
     }
     
     /// <summary>
@@ -474,7 +552,7 @@ public class WfRunVariable
     /// </returns>
     public WorkflowCondition IsLessThanEq(object rhs)
     {
-        return _parent.Condition(this, Comparator.LessThanEq, rhs);
+        return parent.Condition(this, Comparator.LessThanEq, rhs);
     }
     
     /// <summary>
@@ -491,7 +569,7 @@ public class WfRunVariable
     /// </returns>
     public WorkflowCondition IsGreaterThanEq(object rhs)
     {
-        return _parent.Condition(this, Comparator.GreaterThanEq, rhs);
+        return parent.Condition(this, Comparator.GreaterThanEq, rhs);
     }
     
     /// <summary>
@@ -508,7 +586,7 @@ public class WfRunVariable
     /// </returns>
     public WorkflowCondition IsGreaterThan(object rhs)
     {
-        return _parent.Condition(this, Comparator.GreaterThan, rhs);
+        return parent.Condition(this, Comparator.GreaterThan, rhs);
     }
     
     /// <summary>
@@ -525,7 +603,7 @@ public class WfRunVariable
     /// </returns>
     public WorkflowCondition IsEqualTo(object rhs)
     {
-        return _parent.Condition(this, Comparator.Equals, rhs);
+        return parent.Condition(this, Comparator.Equals, rhs);
     }
     
     /// <summary>
@@ -542,7 +620,7 @@ public class WfRunVariable
     /// </returns>
     public WorkflowCondition IsNotEqualTo(object rhs)
     {
-        return _parent.Condition(this, Comparator.NotEquals, rhs);
+        return parent.Condition(this, Comparator.NotEquals, rhs);
     }
     
     /// <summary>
@@ -561,7 +639,7 @@ public class WfRunVariable
     /// </returns>
     public WorkflowCondition DoesContain(object rhs)
     {
-        return _parent.Condition(rhs, Comparator.In, this);
+        return parent.Condition(rhs, Comparator.In, this);
     }
     
     /// <summary>
@@ -580,7 +658,7 @@ public class WfRunVariable
     /// </returns>
     public WorkflowCondition DoesNotContain(object rhs)
     {
-        return _parent.Condition(rhs, Comparator.NotIn, this);
+        return parent.Condition(rhs, Comparator.NotIn, this);
     }
     
     /// <summary>
@@ -600,7 +678,7 @@ public class WfRunVariable
     /// </returns>
     public WorkflowCondition IsIn(object rhs)
     {
-        return _parent.Condition(this, Comparator.In, rhs);
+        return parent.Condition(this, Comparator.In, rhs);
     }
     
     /// <summary>
@@ -620,6 +698,34 @@ public class WfRunVariable
     /// </returns>
     public WorkflowCondition IsNotIn(object rhs)
     {
-        return _parent.Condition(this, Comparator.NotIn, rhs);
+        return parent.Condition(this, Comparator.NotIn, rhs);
+    }
+
+    public WfRunVariable clone()
+    {
+        WfRunVariable outVariable = new WfRunVariable(Name, parent);
+
+        if (defaultValue != null)
+        {
+            outVariable.SetDefaultValue(this.defaultValue);
+        }
+
+        outVariable.required = required;
+        outVariable.searchable = searchable;
+        outVariable.masked = masked;
+        outVariable.accessLevel = accessLevel;
+        outVariable.TypeDef = TypeDef;
+        outVariable.jsonIndexes.AddRange(jsonIndexes);
+
+        if (JsonPath != null)
+        {
+            outVariable.JsonPath = JsonPath;
+        }
+        else if (lhPath != null)
+        {
+            outVariable.lhPath.AddRange(lhPath);
+        }
+
+        return outVariable;
     }
 }
