@@ -7,7 +7,6 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.AggregateWindowMetrics;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.MetricWindow;
@@ -25,8 +24,7 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
 
     public AggregateWindowMetricsModel() {}
 
-    public AggregateWindowMetricsModel(
-            TenantIdModel tenantId, PartitionMetricWindowModel metricWindow) {
+    public AggregateWindowMetricsModel(TenantIdModel tenantId, PartitionMetricWindowModel metricWindow) {
         this.tenantId = tenantId;
         this.metricWindow = metricWindow;
     }
@@ -58,11 +56,16 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
 
     @SuppressWarnings("unchecked")
     public Message process(CoreProcessorContext executionContext, LHServerConfig config) {
-        MetricWindowIdModel id = new MetricWindowIdModel(metricWindow.getWfSpecId(), metricWindow.getWindowStart());
-
+        MetricWindowIdModel id;
+        switch (metricWindow.getMetricType()) {
+            case WORKFLOW_METRIC:
+                id = new MetricWindowIdModel(metricWindow.getWfSpecId(), metricWindow.getWindowStart());
+                break;
+            default:
+                throw new IllegalStateException("Not supported metric type: " + metricWindow.getMetricType());
+        }
         StoredGetable<MetricWindow, MetricWindowModel> storedMetric =
                 executionContext.getCoreStore().get(id.getStoreableKey(), StoredGetable.class);
-
         MetricWindowModel consolidatedMetric;
         if (storedMetric == null) {
             consolidatedMetric = new MetricWindowModel(id, metricWindow.getMetrics());

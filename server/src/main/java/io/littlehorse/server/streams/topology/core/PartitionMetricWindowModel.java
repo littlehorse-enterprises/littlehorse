@@ -74,7 +74,9 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
     }
 
     public void incrementWfCount(LHStatus previousStatus, LHStatus newStatus, Date startTime, Date endTime) {
-        if (previousStatus != null) {
+        if (previousStatus == null) {
+            incrementCount("started");
+        } else {
             if (endTime == null) {
                 endTime = new Date();
             }
@@ -82,8 +84,6 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
             String metricKey = previousStatus.name().toLowerCase() + "_to_"
                     + newStatus.name().toLowerCase();
             incrementCountAndLatency(metricKey, latencyMs);
-        } else {
-            incrementCount("started");
         }
     }
 

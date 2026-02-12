@@ -17,7 +17,7 @@ import (
 
 var listWfMetricsCmd = &cobra.Command{
 	Use:   "wfMetrics <wfSpecName> [wfSpecVersion]",
-	Short: "List WfSpec Metrics for the specified time window",
+	Short: "List metrics for a given WfSpec",
 	Long: `List metrics for a given WfSpec.
 
 By default, returns metrics for the last 60 minutes.

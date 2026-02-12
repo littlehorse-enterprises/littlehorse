@@ -14,9 +14,9 @@ public class WaitForExternalEventWorker {
         return "Hi what's your name?";
     }
 
-    @LHTaskMethod("greet-external-event")
+    @LHTaskMethod("greet")
     public String greet(String name) {
-        log.debug("Executing greet-external-event");
+        log.debug("Executing greet");
         return "Hello there, " + name;
     }
 }
