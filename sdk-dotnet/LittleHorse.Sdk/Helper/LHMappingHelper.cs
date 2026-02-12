@@ -102,6 +102,7 @@ namespace LittleHorse.Sdk.Helper
             else if (Attribute.IsDefined(obj.GetType(), typeof(LHStructDefAttribute)))
             {
                 result.Struct = SerializeToStruct(obj);
+            }
             else if (obj is DateTime dateTime) 
             {
                 result.UtcTimestamp = Timestamp.FromDateTime(dateTime.ToUniversalTime());
