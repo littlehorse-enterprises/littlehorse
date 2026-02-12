@@ -6,7 +6,7 @@ import typing
 from collections import deque
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, List, Optional, Protocol, Union
 
 from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
@@ -901,6 +901,25 @@ class ExternalEventNodeOutput(NodeOutput):
         return request
 
 
+class ExternalEventDefRegistration(Protocol):
+    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest:
+        ...
+
+
+class InterruptExternalEventDefRegistration:
+    def __init__(self, event_name: str, payload_type: Optional[type]) -> None:
+        self._event_name = event_name
+        self._payload_type = payload_type
+
+    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest:
+        request = PutExternalEventDefRequest(name=self._event_name)
+        if self._payload_type is not None:
+            request.content_type.CopyFrom(
+                python_type_to_return_type(self._payload_type)
+            )
+        return request
+
+
 class WorkflowNode:
     def __init__(
         self,
@@ -991,6 +1010,24 @@ class WorkflowInterruption:
 
     def __str__(self) -> str:
         return to_json(self.compile())
+
+
+class InterruptHandler:
+    def __init__(self, workflow: "Workflow", event_name: str) -> None:
+        self._workflow = workflow
+        self._event_name = event_name
+        self._event_type_registered = False
+
+    def with_event_type(self, event_type: Optional[type]) -> "InterruptHandler":
+        if self._event_type_registered:
+            raise ValueError(
+                f"Interrupt event type already registered: {self._event_name}"
+            )
+        self._event_type_registered = True
+        self._workflow.add_external_event_def_to_register(
+            InterruptExternalEventDefRegistration(self._event_name, event_type)
+        )
+        return self
 
 
 class SpawnedChildWf:
@@ -1330,7 +1367,9 @@ class WorkflowThread:
         """
         self._retention_policy = policy
 
-    def add_interrupt_handler(self, name: str, handler: "ThreadInitializer") -> None:
+    def add_interrupt_handler(
+        self, name: str, handler: "ThreadInitializer"
+    ) -> InterruptHandler:
         """Registers an Interrupt Handler, such that when an ExternalEvent
         arrives with the specified type, this ThreadRun is interrupted.
 
@@ -1338,17 +1377,23 @@ class WorkflowThread:
             name (str): The name of the ExternalEventDef to listen for.
             handler (ThreadInitializer): A Thread Function defining a
             ThreadSpec to use to handle the Interrupt.
+
+        Returns:
+            InterruptHandler: A handle for registering the interrupt payload type.
         """
         self._check_if_active()
         thread_name = self._workflow.add_sub_thread(f"interrupt-{name}", handler)
         self._wf_interruptions.append(WorkflowInterruption(name, thread_name))
+        return InterruptHandler(self._workflow, name)
 
-    def register_external_event_def(self, node_output: ExternalEventNodeOutput) -> None:
+    def register_external_event_def(
+        self, node_output: ExternalEventDefRegistration
+    ) -> None:
         """
         Registers an external event definition for the parent workflow.
 
         Args:
-            node_output (ExternalEventNodeOutput): The external event node output.
+            node_output (ExternalEventDefRegistration): The external event registration.
         """
         self._workflow.add_external_event_def_to_register(node_output)
 
@@ -2462,7 +2507,7 @@ class Workflow:
         )
         self._default_retries: Optional[int] = None
         self._workflow_events_to_register: list[ThrowEventNodeOutput] = []
-        self._external_events_to_register: list[ExternalEventNodeOutput] = []
+        self._external_events_to_register: list[ExternalEventDefRegistration] = []
         if parent_wf is not None:
             self._parent_wf = WfSpec.ParentWfSpecReference(wf_spec_name=parent_wf)
 
@@ -2605,17 +2650,19 @@ class Workflow:
         """
         self._workflow_events_to_register.append(node)
 
-    def add_external_event_def_to_register(self, node: ExternalEventNodeOutput) -> None:
+    def add_external_event_def_to_register(
+        self, node: ExternalEventDefRegistration
+    ) -> None:
         """
         Adds an external event definition to the list for registration.
 
         Args:
-            node (ExternalEventNodeOutput): The external event node to register.
+            node (ExternalEventDefRegistration): The external event registration.
         """
         self._external_events_to_register.append(node)
 
     @property
-    def external_events_to_register(self) -> list[ExternalEventNodeOutput]:
+    def external_events_to_register(self) -> list[ExternalEventDefRegistration]:
         return self._external_events_to_register
 
     @property

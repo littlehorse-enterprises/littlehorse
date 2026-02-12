@@ -74,7 +74,7 @@ public interface WorkflowThread {
      * @param inputs are the inputs that we will pass into the entrypoint ThreadRun.
      * @return a SpawnedChildWf which allows us to later wait for the child WfRun.
      */
-    SpawnedChildWf runWf(WfRunVariable wfSpecName, Map<String, Serializable> inputs);
+    SpawnedChildWf runWf(Serializable wfSpecName, Map<String, Serializable> inputs);
 
     /**
      * Adds a WAIT_FOR_CHILD_WF node which waits for a specified WfRun to complete and
@@ -131,7 +131,7 @@ public interface WorkflowThread {
      * @param args are the format args.
      * @return an LHFormatString object which can be used as a variable assignment in a WfSpec.
      */
-    LHFormatString format(String format, WfRunVariable... args);
+    LHFormatString format(String format, Serializable... args);
 
     /**
      * Creates a variable of type INT in the ThreadSpec.
@@ -423,7 +423,7 @@ public interface WorkflowThread {
      * @param interruptName The name of the ExternalEventDef to listen for.
      * @param handler A Thread Function defining a ThreadSpec to use to handle the Interrupt.
      */
-    void registerInterruptHandler(String interruptName, ThreadFunc handler);
+    InterruptHandler registerInterruptHandler(String interruptName, ThreadFunc handler);
 
     /**
      * Adds a SLEEP node which makes the ThreadRun sleep for a specified number of seconds.

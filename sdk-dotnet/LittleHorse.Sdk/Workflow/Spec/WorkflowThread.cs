@@ -447,6 +447,36 @@ public class WorkflowThread
     {
         return AddVariable(name, VariableType.Str);
     }
+
+    
+    /// <summary>
+    /// Creates a variable of type TIMESTAMP in the ThreadSpec.
+    /// </summary>
+    /// <param name="name">
+    /// The name of the variable.
+    /// </param>
+    /// <returns>
+    /// An instance of <see cref="WfRunVariable"/> that represents the created TIMESTAMP variable.
+    /// </returns>
+    public WfRunVariable DeclareTimestamp(string name)
+    {
+        return AddVariable(name, VariableType.Timestamp);
+    }
+
+    
+    /// <summary>
+    /// Creates a variable of type WF_RUN_ID in the ThreadSpec.
+    /// </summary>
+    /// <param name="name">
+    /// The name of the variable to be created.
+    /// </param>
+    /// <returns>
+    /// An instance of <see cref="WfRunVariable"/> that represents the created WF_RUN_ID variable.
+    /// </returns>
+    public WfRunVariable DeclareWfRunId(string name)
+    {
+        return AddVariable(name, VariableType.WfRunId);
+    }
     
     /// <summary>
     /// Creates a variable of type DOUBLE in the ThreadSpec.
@@ -1266,7 +1296,7 @@ public class WorkflowThread
     /// A Thread Function defining a ThreadSpec to use to handle the Interrupt.
     /// </param>
     /// <returns>A NodeOutput that can be used for timeouts or exception handling. </returns>
-    public void RegisterInterruptHandler(string interruptName, Action<WorkflowThread> handler)
+    public InterruptHandler RegisterInterruptHandler(string interruptName, Action<WorkflowThread> handler)
     {
         CheckIfWorkflowThreadIsActive();
         string threadName = "interrupt-" + interruptName;
@@ -1280,6 +1310,7 @@ public class WorkflowThread
                 HandlerSpecName = threadName
             }
         );
+        return new InterruptHandler(Parent, interruptName);
     }
     
     /// <summary>
@@ -1368,7 +1399,7 @@ public class WorkflowThread
         Parent.AddWorkflowEventDefToRegister(nodeOutput);
     }
 
-    internal void RegisterExternalEventDef(ExternalEventNodeOutput nodeOutput)
+    internal void RegisterExternalEventDef(IExternalEventDefRegistration nodeOutput)
     {
         Parent.AddExternalEventDefToRegister(nodeOutput);
     }

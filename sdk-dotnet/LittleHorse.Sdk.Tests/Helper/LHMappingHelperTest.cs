@@ -125,43 +125,6 @@ public class LHMappingHelperTest
         }
     }
 
-    [Fact]
-    public void LHHelper_WithNullProtoTimestamp_ShouldReturnNull()
-    {
-        var result = LHMappingHelper.DateTimeFromProtoTimeStamp(null!);
-
-        Assert.Null(result);
-    }
-
-    [Fact]
-    public void LHHelper_WithoutDateTicks_ShouldReturnCurrentDateTime()
-    {
-        Timestamp protoTimestamp = new Timestamp
-        {
-            Seconds = 0,
-            Nanos = 0
-        };
-
-        var result = LHMappingHelper.DateTimeFromProtoTimeStamp(protoTimestamp);
-
-        DateTime now = DateTime.Now;
-        DateTime expectedDatetimeWithoutSeconds = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
-        DateTime actualDatetimeWithoutSeconds = new DateTime(result!.Value.Year, result.Value.Month, result.Value.Day,
-            result.Value.Hour, result.Value.Minute, 0);
-        Assert.Equal(expectedDatetimeWithoutSeconds, actualDatetimeWithoutSeconds);
-    }
-
-    [Fact]
-    public void LHHelper_WithSpecificProtoTimestamp_ShouldReturnSpecificDateTime()
-    {
-        DateTime specificDateTime = new DateTime(2024, 08, 16, 13, 0, 0, DateTimeKind.Utc);
-
-        Timestamp specificTimestamp = Timestamp.FromDateTime(specificDateTime);
-
-        var result = LHMappingHelper.DateTimeFromProtoTimeStamp(specificTimestamp);
-
-        Assert.Equal(specificDateTime, result);
-    }
 
     [Fact]
     public void LHHelper_WithVariableValue_ShouldReturnSameValue()
@@ -226,6 +189,33 @@ public class LHMappingHelperTest
 
         Assert.Equal(stringValue, result.Str);
     }
+    
+    [Fact]
+    public void LHHelper_WithDateTimeValue_ShouldReturnLHUtcTimestampValue()
+    {
+        var currentDateTime = DateTime.Now;
+
+        var result = LHMappingHelper.ObjectToVariableValue(currentDateTime);
+
+        Assert.Equal(currentDateTime.ToUniversalTime().ToTimestamp(), result.UtcTimestamp);
+    }
+    
+    [Fact]
+    public void LHHelper_WithWfRunIdValue_ShouldReturnLHWfRunIdValue()
+    {
+        var wfRunId = new WfRunId()
+        {
+            Id = "test-id"
+        };
+        var expectedVariableValue = new VariableValue()
+        {
+            WfRunId = wfRunId
+        };
+
+        var result = LHMappingHelper.ObjectToVariableValue(wfRunId);
+
+        Assert.Equal(result, expectedVariableValue);
+    }
 
     [Fact]
     public void LHHelper_WithBoolValue_ShouldReturnLHBoolValue()
@@ -281,6 +271,8 @@ public class LHMappingHelperTest
         var doubleVariableValue = new VariableValue { Double = 12.35 };
         var stringVariableValue = new VariableValue { Str = "test" };
         var boolVariableValue = new VariableValue { Bool = true };
+        var timestampVariableValue = new VariableValue { UtcTimestamp = DateTime.UtcNow.ToTimestamp() };
+        var wfRunIdVariableValue = new VariableValue { WfRunId = new WfRunId() {Id = "test"} };
         var bytesVariableValue = new VariableValue { Bytes = ByteString.FromBase64("aG9sYQ==") };
         var jsonArrayVariableValue = new VariableValue { JsonArr = "[{\"name\": \"obiwan\"}, {\"name\": \"pepito\"}]" };
 
@@ -291,7 +283,9 @@ public class LHMappingHelperTest
             { VariableType.Str, stringVariableValue },
             { VariableType.Bool, boolVariableValue },
             { VariableType.Bytes, bytesVariableValue },
-            { VariableType.JsonArr, jsonArrayVariableValue }
+            { VariableType.JsonArr, jsonArrayVariableValue },
+            { VariableType.Timestamp, timestampVariableValue },
+            { VariableType.WfRunId, wfRunIdVariableValue }
         };
 
 

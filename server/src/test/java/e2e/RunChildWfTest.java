@@ -209,15 +209,17 @@ public class RunChildWfTest {
 
     @Test
     void shouldRunDynamicChildWorkflow() {
-        final String childWfName = UUID.randomUUID().toString();
-        final String invalidChildWfName = UUID.randomUUID().toString();
+        final String childSuffix = UUID.randomUUID().toString();
+        final String invalidChildSuffix = UUID.randomUUID().toString();
+        final String childWfName = "child-" + childSuffix;
+        final String invalidChildWfName = "child-" + invalidChildSuffix;
         Workflow emptyWorkflow = Workflow.newWorkflow(childWfName, wf -> {
             // Empty workflow
         });
 
         emptyWorkflow.registerWfSpec(client);
 
-        verifier.prepareRun(dynamicChildWf, Arg.of("wf-name", childWfName))
+        verifier.prepareRun(dynamicChildWf, Arg.of("wf-name-suffix", childSuffix))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     Assertions.assertThat(nodeRun.hasRunChildWf()).isTrue();
@@ -227,7 +229,7 @@ public class RunChildWfTest {
                 })
                 .start();
 
-        verifier.prepareRun(dynamicChildWf, Arg.of("wf-name", invalidChildWfName))
+        verifier.prepareRun(dynamicChildWf, Arg.of("wf-name-suffix", invalidChildSuffix))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     List<Failure> nodeRunFailures = nodeRun.getFailuresList();
@@ -246,8 +248,8 @@ public class RunChildWfTest {
     @LHWorkflow("test-dynamic-child-workflow")
     public Workflow dynamicChildWorkflow() {
         return Workflow.newWorkflow("test-dynamic-child-workflow", wf -> {
-            WfRunVariable required = wf.declareStr("wf-name").required();
-            SpawnedChildWf spawnedChildWf = wf.runWf(required, Map.of());
+            WfRunVariable suffix = wf.declareStr("wf-name-suffix").required();
+            SpawnedChildWf spawnedChildWf = wf.runWf(wf.format("child-{0}", suffix), Map.of());
             wf.waitForChildWf(spawnedChildWf);
         });
     }
