@@ -1,12 +1,14 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.GeneratedMessage;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
@@ -27,13 +29,30 @@ public class ListTaskRunsRequestModel
 
     @Override
     public GeneratedMessage.Builder<?> toProto() {
-        return ListTaskRunsRequest.newBuilder().setWfRunId(wfRunId.toProto());
+        ListTaskRunsRequest.Builder out = ListTaskRunsRequest.newBuilder().setWfRunId(wfRunId.toProto());
+        if (bookmark != null) {
+            out.setBookmark(bookmark.toByteString());
+        }
+        if (limit != null) {
+            out.setLimit(limit);
+        }
+        return out;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         ListTaskRunsRequest p = (ListTaskRunsRequest) proto;
         wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
+        if (!p.getBookmark().isEmpty()) {
+            try {
+                bookmark = BookmarkPb.parseFrom(p.getBookmark());
+            } catch (InvalidProtocolBufferException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (p.hasLimit()) {
+            limit = p.getLimit();
+        }
     }
 
     @Override

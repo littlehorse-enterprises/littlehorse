@@ -725,7 +725,7 @@ public class BackendInternalComms implements Closeable {
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();
                 if (--curLimit < 0) {
-                    bookmarkKey = next.getKey();
+                    bookmarkKey = next.getValue().getStoreKey();
                     brokenBecauseOutOfData = false;
                     break;
                 }

@@ -145,8 +145,8 @@ Lists all Variable's for a given WfRun Id.
 `,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		// bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
-		// limit, _ := cmd.Flags().GetInt32("limit")
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
 
 		if len(args) != 1 {
 			log.Fatal("Must provide one arg: the WfRun ID!")
@@ -154,7 +154,9 @@ Lists all Variable's for a given WfRun Id.
 		wfRunId := args[0]
 
 		req := &lhproto.ListVariablesRequest{
-			WfRunId: littlehorse.StrToWfRunId(wfRunId),
+			WfRunId:  littlehorse.StrToWfRunId(wfRunId),
+			Bookmark: bookmark,
+			Limit:    &limit,
 		}
 
 		littlehorse.PrintResp(getGlobalClient(cmd).ListVariables(
