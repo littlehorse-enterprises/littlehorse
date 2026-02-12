@@ -11,21 +11,6 @@ public interface AggregateWindowMetricsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
-   * @return Whether the wfSpecId field is set.
-   */
-  boolean hasWfSpecId();
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
-   * @return The wfSpecId.
-   */
-  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
-   */
-  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
-
-  /**
    * <code>.littlehorse.TenantId tenant_id = 2;</code>
    * @return Whether the tenantId field is set.
    */

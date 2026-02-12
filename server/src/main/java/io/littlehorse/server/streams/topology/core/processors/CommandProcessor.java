@@ -184,8 +184,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 LHIterKeyValue<PartitionMetricWindowModel> next = iter.next();
                 PartitionMetricWindowModel metricWindow = next.getValue();
                 if (metricWindow != null) {
-                    AggregateWindowMetricsModel aggregateMetrics = new AggregateWindowMetricsModel(
-                            metricWindow.getWfSpecId(), metricWindow.getTenantId(), metricWindow);
+                    AggregateWindowMetricsModel aggregateMetrics = new AggregateWindowMetricsModel(metricWindow.getTenantId(), metricWindow);
                     forwardSubcommand(aggregateMetrics);
                     clusterScopedStore.delete(metricWindow);
                 }

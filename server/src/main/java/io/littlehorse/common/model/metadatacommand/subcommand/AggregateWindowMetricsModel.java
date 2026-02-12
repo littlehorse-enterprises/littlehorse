@@ -20,15 +20,13 @@ import lombok.Getter;
 @Getter
 public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowMetrics> {
 
-    private WfSpecIdModel wfSpecId;
     private TenantIdModel tenantId;
     private PartitionMetricWindowModel metricWindow;
 
     public AggregateWindowMetricsModel() {}
 
     public AggregateWindowMetricsModel(
-            WfSpecIdModel wfSpecId, TenantIdModel tenantId, PartitionMetricWindowModel metricWindow) {
-        this.wfSpecId = wfSpecId;
+            TenantIdModel tenantId, PartitionMetricWindowModel metricWindow) {
         this.tenantId = tenantId;
         this.metricWindow = metricWindow;
     }
@@ -36,7 +34,6 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         AggregateWindowMetrics p = (AggregateWindowMetrics) proto;
-        this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
         this.tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
         this.metricWindow = LHSerializable.fromProto(p.getMetricWindow(), PartitionMetricWindowModel.class, context);
     }
@@ -44,7 +41,6 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
     @Override
     public AggregateWindowMetrics.Builder toProto() {
         AggregateWindowMetrics.Builder out = AggregateWindowMetrics.newBuilder();
-        out.setWfSpecId(wfSpecId.toProto());
         out.setTenantId(tenantId.toProto());
         out.setMetricWindow(metricWindow.toProto());
         return out;
@@ -57,12 +53,12 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
 
     @Override
     public String getPartitionKey() {
-        return this.metricWindow.getMetricType().name() + "/" + wfSpecId.toString();
+        return this.metricWindow.getMetricType().name() + "/" + this.metricWindow.getWfSpecId();
     }
 
     @SuppressWarnings("unchecked")
     public Message process(CoreProcessorContext executionContext, LHServerConfig config) {
-        MetricWindowIdModel id = new MetricWindowIdModel(wfSpecId, metricWindow.getWindowStart());
+        MetricWindowIdModel id = new MetricWindowIdModel(metricWindow.getWfSpecId(), metricWindow.getWindowStart());
 
         StoredGetable<MetricWindow, MetricWindowModel> storedMetric =
                 executionContext.getCoreStore().get(id.getStoreableKey(), StoredGetable.class);
