@@ -114,6 +114,12 @@ jobs:
           distribution: "corretto"
           java-version: 25
 
+      - name: Ensure Docker is running
+        run: |
+          sudo systemctl start docker || true
+          docker info
+          docker version
+
       - name: Validate Indentations
         run: ./gradlew server:spotlessCheck
 
@@ -157,6 +163,12 @@ jobs:
         with:
           distribution: "corretto"
           java-version: ${{ matrix.java-version }}
+
+      - name: Ensure Docker is running
+        run: |
+          sudo systemctl start docker || true
+          docker info
+          docker version
 
       - name: Tests
         run: ./gradlew test-utils-container:spotlessCheck test-utils-container:test test-utils-container:build
