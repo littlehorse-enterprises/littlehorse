@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.core.wfrun.ParentTriggerReferenceModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
@@ -90,6 +91,10 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
 
         WfRunModel out = new WfRunModel(ctx);
         out.setId(childWfRunId);
+
+        ParentTriggerReferenceModel trigger = new ParentTriggerReferenceModel();
+        trigger.setTriggeringNodeRun(nodeRun.getId());
+        out.setParentTrigger(trigger);
 
         out.setWfSpec(childSpec);
         out.setWfSpecId(childSpec.getId());

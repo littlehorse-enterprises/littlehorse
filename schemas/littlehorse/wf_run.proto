@@ -52,6 +52,23 @@ message WfRun {
   // A list of pending failure handlers which will fire once their appropriate ThreadRun's
   // finish halting.
   repeated PendingFailureHandler pending_failures = 10;
+
+  // Optional information about the parent WfRUn which triggered this WfRun in case
+  // it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+  // in the Parent WfRun which caused this NodeRun.
+  //
+  // Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+  optional ParentTriggerReference parent_trigger = 11;
+
+  // Information about a parent `WfRun` which triggers a child.
+  message ParentTriggerReference {
+    // Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+    NodeRunId triggering_node_run = 1;
+
+    // Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+    // Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+    optional NodeRunId waiting_node_run = 2;
+  }
 }
 
 // The type of a ThreadRUn.
