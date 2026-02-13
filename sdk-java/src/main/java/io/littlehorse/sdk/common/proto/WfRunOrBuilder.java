@@ -347,4 +347,43 @@ public interface WfRunOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder getPendingFailuresOrBuilder(
       int index);
+
+  /**
+   * <pre>
+   * Optional information about the parent WfRUn which triggered this WfRun in case
+   * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+   * in the Parent WfRun which caused this NodeRun.
+   *
+   * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+   * @return Whether the parentTrigger field is set.
+   */
+  boolean hasParentTrigger();
+  /**
+   * <pre>
+   * Optional information about the parent WfRUn which triggered this WfRun in case
+   * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+   * in the Parent WfRun which caused this NodeRun.
+   *
+   * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+   * @return The parentTrigger.
+   */
+  io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference getParentTrigger();
+  /**
+   * <pre>
+   * Optional information about the parent WfRUn which triggered this WfRun in case
+   * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+   * in the Parent WfRun which caused this NodeRun.
+   *
+   * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReferenceOrBuilder getParentTriggerOrBuilder();
 }

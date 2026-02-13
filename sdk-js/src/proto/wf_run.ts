@@ -8,7 +8,7 @@
 import _m0 from "protobufjs/minimal";
 import { LHStatus, lHStatusFromJSON, lHStatusToJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ExternalEventId, WfRunId, WfSpecId } from "./object_id";
+import { ExternalEventId, NodeRunId, WfRunId, WfSpecId } from "./object_id";
 import { VariableValue } from "./variable";
 
 /** The type of a ThreadRUn. */
@@ -129,6 +129,27 @@ export interface WfRun {
    * finish halting.
    */
   pendingFailures: PendingFailureHandler[];
+  /**
+   * Optional information about the parent WfRUn which triggered this WfRun in case
+   * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+   * in the Parent WfRun which caused this NodeRun.
+   *
+   * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+   */
+  parentTrigger?: WfRun_ParentTriggerReference | undefined;
+}
+
+/** Information about a parent `WfRun` which triggers a child. */
+export interface WfRun_ParentTriggerReference {
+  /** Reference to the `RunChildWfNodeRun` that triggered this WfRun */
+  triggeringNodeRun:
+    | NodeRunId
+    | undefined;
+  /**
+   * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+   * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+   */
+  waitingNodeRun?: NodeRunId | undefined;
 }
 
 /** A ThreadRun is a running thread of execution within a WfRun. */
@@ -329,6 +350,7 @@ function createBaseWfRun(): WfRun {
     threadRuns: [],
     pendingInterrupts: [],
     pendingFailures: [],
+    parentTrigger: undefined,
   };
 }
 
@@ -363,6 +385,9 @@ export const WfRun = {
     }
     for (const v of message.pendingFailures) {
       PendingFailureHandler.encode(v!, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.parentTrigger !== undefined) {
+      WfRun_ParentTriggerReference.encode(message.parentTrigger, writer.uint32(90).fork()).ldelim();
     }
     return writer;
   },
@@ -444,6 +469,13 @@ export const WfRun = {
 
           message.pendingFailures.push(PendingFailureHandler.decode(reader, reader.uint32()));
           continue;
+        case 11:
+          if (tag !== 90) {
+            break;
+          }
+
+          message.parentTrigger = WfRun_ParentTriggerReference.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -475,6 +507,9 @@ export const WfRun = {
       pendingFailures: globalThis.Array.isArray(object?.pendingFailures)
         ? object.pendingFailures.map((e: any) => PendingFailureHandler.fromJSON(e))
         : [],
+      parentTrigger: isSet(object.parentTrigger)
+        ? WfRun_ParentTriggerReference.fromJSON(object.parentTrigger)
+        : undefined,
     };
   },
 
@@ -510,6 +545,9 @@ export const WfRun = {
     if (message.pendingFailures?.length) {
       obj.pendingFailures = message.pendingFailures.map((e) => PendingFailureHandler.toJSON(e));
     }
+    if (message.parentTrigger !== undefined) {
+      obj.parentTrigger = WfRun_ParentTriggerReference.toJSON(message.parentTrigger);
+    }
     return obj;
   },
 
@@ -530,6 +568,87 @@ export const WfRun = {
     message.threadRuns = object.threadRuns?.map((e) => ThreadRun.fromPartial(e)) || [];
     message.pendingInterrupts = object.pendingInterrupts?.map((e) => PendingInterrupt.fromPartial(e)) || [];
     message.pendingFailures = object.pendingFailures?.map((e) => PendingFailureHandler.fromPartial(e)) || [];
+    message.parentTrigger = (object.parentTrigger !== undefined && object.parentTrigger !== null)
+      ? WfRun_ParentTriggerReference.fromPartial(object.parentTrigger)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseWfRun_ParentTriggerReference(): WfRun_ParentTriggerReference {
+  return { triggeringNodeRun: undefined, waitingNodeRun: undefined };
+}
+
+export const WfRun_ParentTriggerReference = {
+  encode(message: WfRun_ParentTriggerReference, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.triggeringNodeRun !== undefined) {
+      NodeRunId.encode(message.triggeringNodeRun, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.waitingNodeRun !== undefined) {
+      NodeRunId.encode(message.waitingNodeRun, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WfRun_ParentTriggerReference {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWfRun_ParentTriggerReference();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.triggeringNodeRun = NodeRunId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.waitingNodeRun = NodeRunId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WfRun_ParentTriggerReference {
+    return {
+      triggeringNodeRun: isSet(object.triggeringNodeRun) ? NodeRunId.fromJSON(object.triggeringNodeRun) : undefined,
+      waitingNodeRun: isSet(object.waitingNodeRun) ? NodeRunId.fromJSON(object.waitingNodeRun) : undefined,
+    };
+  },
+
+  toJSON(message: WfRun_ParentTriggerReference): unknown {
+    const obj: any = {};
+    if (message.triggeringNodeRun !== undefined) {
+      obj.triggeringNodeRun = NodeRunId.toJSON(message.triggeringNodeRun);
+    }
+    if (message.waitingNodeRun !== undefined) {
+      obj.waitingNodeRun = NodeRunId.toJSON(message.waitingNodeRun);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<WfRun_ParentTriggerReference>): WfRun_ParentTriggerReference {
+    return WfRun_ParentTriggerReference.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WfRun_ParentTriggerReference>): WfRun_ParentTriggerReference {
+    const message = createBaseWfRun_ParentTriggerReference();
+    message.triggeringNodeRun = (object.triggeringNodeRun !== undefined && object.triggeringNodeRun !== null)
+      ? NodeRunId.fromPartial(object.triggeringNodeRun)
+      : undefined;
+    message.waitingNodeRun = (object.waitingNodeRun !== undefined && object.waitingNodeRun !== null)
+      ? NodeRunId.fromPartial(object.waitingNodeRun)
+      : undefined;
     return message;
   },
 };
