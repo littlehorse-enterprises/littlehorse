@@ -39,6 +39,7 @@ enum StoreableType {
     TASK_QUEUE_HINT = 11;
     NODE_OUTPUT = 12;
     TIMER_ITERATOR_HINT = 13;
+    METRICS_HINT = 14;
 }
 
 enum GetableClassEnum {
@@ -142,6 +143,10 @@ message TaskQueueHint {
 // of a new `TimerProcessor`
 message TimerIteratorHint {
   google.protobuf.Timestamp last_processed_timer = 2;
+}
+
+message MetricsHint {
+  google.protobuf.Timestamp last_processed_timestamp = 1;
 }
 
 // Represents a persistently stored node output

@@ -1,5 +1,8 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
+import static com.google.protobuf.util.Timestamps.fromMillis;
+import static com.google.protobuf.util.Timestamps.toMillis;
+
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
@@ -18,6 +21,7 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.storeinternals.MetricsHintModel;
 import io.littlehorse.server.streams.storeinternals.TaskQueueHintModel;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -55,6 +59,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     protected KeyValueStore<String, Bytes> nativeStore;
     protected KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
+    private boolean metricsHintUsed = false;
     private final AsyncWaiters asyncWaiters;
 
     private final LHProcessingExceptionHandler exceptionHandler;
@@ -174,12 +179,23 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
 
-        long startTime = timestamp - (2 * 60 * 60 * 1000L);
-        String startKey = "metrics/partition/" + startTime;
-        String endKey = "metrics/partition/~";
+        long startTime = timestamp - (10 * 60 * 1000L); // 10 minutes ago
+        String startPrefix = PartitionMetricWindowModel.STORE_KEY_PREFIX + "/" + startTime;
+        String endPrefix = PartitionMetricWindowModel.STORE_KEY_PREFIX + "/~";
+
+        if (!metricsHintUsed) {
+            metricsHintUsed = true;
+            MetricsHintModel hint = clusterScopedStore.get(MetricsHintModel.METRICS_HINT_KEY, MetricsHintModel.class);
+            if (hint != null && hint.getLastProcessedTimestamp() != null) {
+                long hintTime = toMillis(hint.getLastProcessedTimestamp());
+                if (hintTime < startTime) {
+                    startPrefix = PartitionMetricWindowModel.STORE_KEY_PREFIX + "/" + hintTime;
+                }
+            }
+        }
 
         try (LHKeyValueIterator<PartitionMetricWindowModel> iter =
-                clusterScopedStore.range(startKey, endKey, PartitionMetricWindowModel.class)) {
+                clusterScopedStore.range(startPrefix, endPrefix, PartitionMetricWindowModel.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<PartitionMetricWindowModel> next = iter.next();
                 PartitionMetricWindowModel metricWindow = next.getValue();
@@ -191,6 +207,9 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 }
             }
         }
+
+        MetricsHintModel newHint = new MetricsHintModel(fromMillis(startTime));
+        clusterScopedStore.put(newHint);
     }
 
     private void forwardSubcommand(AggregateWindowMetricsModel subCommand) {

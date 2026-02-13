@@ -30,6 +30,8 @@ import lombok.Setter;
 @Setter
 public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow> {
 
+    public static final String STORE_KEY_PREFIX = "metrics/partition";
+
     private WfSpecIdModel wfSpecId;
     private TaskDefIdModel taskDefId;
     private UserTaskDefIdModel userTaskDefId;
@@ -206,8 +208,12 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
             idPart = userTaskDefId.toString();
         }
         return String.format(
-                "metrics/partition/%s/%s/%s/%s",
-                LHUtil.toLhDbFormat(windowStart), getMetricType().name(), tenantId, idPart);
+                "%s/%s/%s/%s/%s",
+                STORE_KEY_PREFIX,
+                LHUtil.toLhDbFormat(windowStart),
+                getMetricType().name(),
+                tenantId,
+                idPart);
     }
 
     @Override

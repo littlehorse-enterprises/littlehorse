@@ -63,6 +63,10 @@ public enum StoreableType
    * <code>TIMER_ITERATOR_HINT = 13;</code>
    */
   TIMER_ITERATOR_HINT(13),
+  /**
+   * <code>METRICS_HINT = 14;</code>
+   */
+  METRICS_HINT(14),
   UNRECOGNIZED(-1),
   ;
 
@@ -127,6 +131,10 @@ public enum StoreableType
    * <code>TIMER_ITERATOR_HINT = 13;</code>
    */
   public static final int TIMER_ITERATOR_HINT_VALUE = 13;
+  /**
+   * <code>METRICS_HINT = 14;</code>
+   */
+  public static final int METRICS_HINT_VALUE = 14;
 
 
   public final int getNumber() {
@@ -166,6 +174,7 @@ public enum StoreableType
       case 11: return TASK_QUEUE_HINT;
       case 12: return NODE_OUTPUT;
       case 13: return TIMER_ITERATOR_HINT;
+      case 14: return METRICS_HINT;
       default: return null;
     }
   }
