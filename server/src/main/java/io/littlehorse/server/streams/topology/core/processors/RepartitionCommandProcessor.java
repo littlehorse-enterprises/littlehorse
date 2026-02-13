@@ -40,7 +40,7 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
 
     public void init(final ProcessorContext<Void, Void> ctx) {
         this.ctx = ctx;
-        this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
+        this.nativeStore = ctx.getStateStore(ServerTopology.CORE_REPARTITION_STORE);
         ctx.schedule(Duration.ofMinutes(1), PunctuationType.WALL_CLOCK_TIME, this::cleanOldMetrics);
     }
 
@@ -48,6 +48,7 @@ public class RepartitionCommandProcessor implements Processor<String, Repartitio
     public void process(final Record<String, RepartitionCommand> record) {
         RepartitionExecutionContext repartitionContext = buildExecutionContext(record.headers());
         if (record.value() != null) {
+            log.debug("Received a metric update!");
             TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(record.headers());
             record.value().process(TenantScopedStore.newInstance(nativeStore, tenantId, repartitionContext), ctx);
         }
