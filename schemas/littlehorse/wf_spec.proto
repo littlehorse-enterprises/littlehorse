@@ -441,7 +441,10 @@ message Node {
 // There is no output.
 message WaitForConditionNode {
   // The condition that this node will block for.
-  LegacyEdgeCondition condition = 1;
+  oneof node_condition {
+    LegacyEdgeCondition legacy_condition = 1;
+    VariableAssignment condition = 2;
+  }
 }
 
 // A SubNode that throws a WorkflowEvent of a specific type. There is no output.

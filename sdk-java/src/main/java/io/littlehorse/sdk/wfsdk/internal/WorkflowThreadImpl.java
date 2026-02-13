@@ -14,7 +14,6 @@ import io.littlehorse.sdk.common.proto.FailureDef;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.InterruptDef;
 import io.littlehorse.sdk.common.proto.LHErrorType;
-import io.littlehorse.sdk.common.proto.LegacyEdgeCondition;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
@@ -77,7 +76,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     private List<WfRunVariableImpl> wfRunVariables = new ArrayList<>();
     public String lastNodeName;
     public String name;
-    private LegacyEdgeCondition lastNodeCondition;
+    private VariableAssignment lastNodeCondition;
     private boolean isActive;
     private ThreadRetentionPolicy retentionPolicy;
     private Queue<VariableMutation> variableMutations;
@@ -554,7 +553,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         addNopNode();
         String firstNopNodeName = lastNodeName;
-        lastNodeCondition = cond.getLegacyCondition();
+        lastNodeCondition = cond.getCondition();
 
         ifBody.body(this);
 
@@ -589,7 +588,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                     .addAllVariableMutations(this.collectVariableMutations());
 
             if (inputCondition != null) {
-                edgeToNopNode.setLegacyCondition(((LHExpressionImpl) inputCondition).getLegacyCondition());
+                edgeToNopNode.setCondition(((LHExpressionImpl) inputCondition).getCondition());
             }
 
             addOutgoingEdgeToNode(ifStatement.getFirstNopNodeName(), edgeToNopNode.build());
@@ -605,7 +604,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                     .addAllVariableMutations(lastOutgoingEdge.getVariableMutationsList());
 
             if (inputCondition != null) {
-                edgeToBody.setLegacyCondition(((LHExpressionImpl) inputCondition).getLegacyCondition());
+                edgeToBody.setCondition(((LHExpressionImpl) inputCondition).getCondition());
             }
 
             addOutgoingEdgeToNode(ifStatement.getFirstNopNodeName(), edgeToBody.build());
@@ -675,7 +674,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         addNopNode();
         String treeRootNodeName = lastNodeName;
 
-        lastNodeCondition = cond.getLegacyCondition();
+        lastNodeCondition = cond.getCondition();
         // execute the tasks
         whileBody.threadFunction(this);
 
@@ -687,7 +686,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         Node.Builder treeRoot = spec.getNodesOrThrow(treeRootNodeName).toBuilder();
         treeRoot.addOutgoingEdges(Edge.newBuilder()
                 .setSinkNodeName(treeLastNodeName)
-                .setLegacyCondition(cond.getReverse())
+                .setCondition(((LHExpressionImpl) cond.getReverse()).getCondition())
                 .build());
         spec.putNodes(treeRootNodeName, treeRoot.build());
 
@@ -695,7 +694,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         Node.Builder treeLast = spec.getNodesOrThrow(treeLastNodeName).toBuilder();
         treeLast.addOutgoingEdges(Edge.newBuilder()
                 .setSinkNodeName(treeRootNodeName)
-                .setLegacyCondition(cond.getLegacyCondition())
+                .setCondition(cond.getCondition())
                 .build());
 
         spec.putNodes(treeLastNodeName, treeLast.build());
@@ -923,7 +922,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         checkIfIsActive();
         LHExpressionImpl condImpl = (LHExpressionImpl) condition;
         WaitForConditionNode waitNode = WaitForConditionNode.newBuilder()
-                .setCondition(condImpl.getLegacyCondition())
+                .setCondition(condImpl.getCondition())
                 .build();
 
         String nodeName = addNode("wait-for-condition", NodeCase.WAIT_FOR_CONDITION, waitNode);
@@ -1057,7 +1056,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         edge.addAllVariableMutations(collectVariableMutations());
 
         if (lastNodeCondition != null) {
-            edge.setLegacyCondition(lastNodeCondition);
+            edge.setCondition(lastNodeCondition);
             lastNodeCondition = null;
         }
         if (feederNode.getNodeCase() != NodeCase.EXIT) {

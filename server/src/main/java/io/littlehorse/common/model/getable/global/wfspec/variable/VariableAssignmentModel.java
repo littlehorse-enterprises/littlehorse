@@ -24,7 +24,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
@@ -303,7 +302,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         return out;
     }
 
-    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec) throws InvalidEdgeException {
+    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
+            throws InvalidEdgeException {
         toLegacyCondition().validate(source, manager, threadSpec);
     }
 

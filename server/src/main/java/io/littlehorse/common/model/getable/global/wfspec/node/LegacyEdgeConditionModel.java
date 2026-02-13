@@ -70,7 +70,8 @@ public class LegacyEdgeConditionModel extends LHSerializable<LegacyEdgeCondition
             lhsTypeOptional = left.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
             rhsTypeOptional = right.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
         } catch (InvalidExpressionException e) {
-            throw new InvalidEdgeException("Unable to resolve type of VariableAssignment:" + e.getMessage(), edge);
+            throw new InvalidEdgeException(
+                    "Unable to resolve type of VariableAssignment:" + e.getMessage(), source.getName());
         }
 
         // Could be JSON_OBJ or JSON_ARR internal value that we can't refer the type of
@@ -82,7 +83,7 @@ public class LegacyEdgeConditionModel extends LHSerializable<LegacyEdgeCondition
         Optional<String> errorMessage = checkTypeComparisonIncompatibility(lhsType, comparator, rhsType);
 
         if (errorMessage.isPresent()) {
-            throw new InvalidEdgeException(errorMessage.get(), edge);
+            throw new InvalidEdgeException(errorMessage.get(), source.getName());
         }
     }
 

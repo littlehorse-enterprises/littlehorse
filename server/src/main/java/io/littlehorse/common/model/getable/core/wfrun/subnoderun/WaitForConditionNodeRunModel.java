@@ -1,15 +1,10 @@
 package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
-import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
-import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.LegacyEdgeConditionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForConditionNodeModel;
-import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.WaitForConditionRun;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -37,16 +32,7 @@ public class WaitForConditionNodeRunModel extends SubNodeRun<WaitForConditionRun
     public boolean checkIfProcessingCompleted(CoreProcessorContext ctx) throws NodeFailureException {
         // First, evaluate the edge conditions
         WaitForConditionNodeModel wfcNode = nodeRun.getNode().getWaitForConditionNode();
-        LegacyEdgeConditionModel condition = wfcNode.getCondition();
-        ThreadRunModel threadRun = nodeRun.getThreadRun();
-
-        try {
-            return (condition.isSatisfied(threadRun));
-        } catch (LHVarSubError exn) {
-            throw new NodeFailureException(new FailureModel(
-                    "Failed evaluating condition on WAIT_FOR_CONDITION_NODE: " + exn.getMessage(),
-                    LHErrorType.VAR_SUB_ERROR.name()));
-        }
+        return wfcNode.isSatisfied(nodeRun.getThreadRun());
     }
 
     @Override

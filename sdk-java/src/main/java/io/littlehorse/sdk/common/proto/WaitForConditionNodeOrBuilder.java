@@ -11,29 +11,34 @@ public interface WaitForConditionNodeOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * The condition that this node will block for.
-   * </pre>
-   *
-   * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+   * @return Whether the legacyCondition field is set.
+   */
+  boolean hasLegacyCondition();
+  /**
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+   * @return The legacyCondition.
+   */
+  io.littlehorse.sdk.common.proto.LegacyEdgeCondition getLegacyCondition();
+  /**
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder getLegacyConditionOrBuilder();
+
+  /**
+   * <code>.littlehorse.VariableAssignment condition = 2;</code>
    * @return Whether the condition field is set.
    */
   boolean hasCondition();
   /**
-   * <pre>
-   * The condition that this node will block for.
-   * </pre>
-   *
-   * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
+   * <code>.littlehorse.VariableAssignment condition = 2;</code>
    * @return The condition.
    */
-  io.littlehorse.sdk.common.proto.LegacyEdgeCondition getCondition();
+  io.littlehorse.sdk.common.proto.VariableAssignment getCondition();
   /**
-   * <pre>
-   * The condition that this node will block for.
-   * </pre>
-   *
-   * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
+   * <code>.littlehorse.VariableAssignment condition = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder getConditionOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getConditionOrBuilder();
+
+  io.littlehorse.sdk.common.proto.WaitForConditionNode.NodeConditionCase getNodeConditionCase();
 }

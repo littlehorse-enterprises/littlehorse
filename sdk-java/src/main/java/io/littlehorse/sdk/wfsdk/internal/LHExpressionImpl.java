@@ -2,6 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LegacyEdgeCondition;
+import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import java.io.Serializable;
@@ -127,7 +128,17 @@ public class LHExpressionImpl implements LHExpression {
                 .build();
     }
 
-    public LegacyEdgeCondition getReverse() {
-        return new WorkflowConditionImpl(getLegacyCondition()).getReverse();
+    public VariableAssignment getCondition() {
+        VariableAssignment.Expression.Builder condition = VariableAssignment.Expression.newBuilder();
+        condition.setLhs(BuilderUtil.assignVariable(lhs));
+        condition.setRhs(BuilderUtil.assignVariable(rhs));
+        condition.setComparator(comparator);
+        return VariableAssignment.newBuilder().setExpression(condition).build();
+    }
+
+    public LHExpression getReverse() {
+        LegacyEdgeCondition legacyCondition = new WorkflowConditionImpl(getLegacyCondition()).getReverse();
+        return new LHExpressionImpl(
+                legacyCondition.getRight(), legacyCondition.getComparator(), legacyCondition.getLeft());
     }
 }

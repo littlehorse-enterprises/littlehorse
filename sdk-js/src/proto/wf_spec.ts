@@ -614,8 +614,10 @@ export interface Node {
  * There is no output.
  */
 export interface WaitForConditionNode {
-  /** The condition that this node will block for. */
-  condition: LegacyEdgeCondition | undefined;
+  nodeCondition?: { $case: "legacyCondition"; value: LegacyEdgeCondition } | {
+    $case: "condition";
+    value: VariableAssignment;
+  } | undefined;
 }
 
 /** A SubNode that throws a WorkflowEvent of a specific type. There is no output. */
@@ -3453,13 +3455,18 @@ export const Node = {
 };
 
 function createBaseWaitForConditionNode(): WaitForConditionNode {
-  return { condition: undefined };
+  return { nodeCondition: undefined };
 }
 
 export const WaitForConditionNode = {
   encode(message: WaitForConditionNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.condition !== undefined) {
-      LegacyEdgeCondition.encode(message.condition, writer.uint32(10).fork()).ldelim();
+    switch (message.nodeCondition?.$case) {
+      case "legacyCondition":
+        LegacyEdgeCondition.encode(message.nodeCondition.value, writer.uint32(10).fork()).ldelim();
+        break;
+      case "condition":
+        VariableAssignment.encode(message.nodeCondition.value, writer.uint32(18).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -3476,7 +3483,17 @@ export const WaitForConditionNode = {
             break;
           }
 
-          message.condition = LegacyEdgeCondition.decode(reader, reader.uint32());
+          message.nodeCondition = {
+            $case: "legacyCondition",
+            value: LegacyEdgeCondition.decode(reader, reader.uint32()),
+          };
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.nodeCondition = { $case: "condition", value: VariableAssignment.decode(reader, reader.uint32()) };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -3488,13 +3505,22 @@ export const WaitForConditionNode = {
   },
 
   fromJSON(object: any): WaitForConditionNode {
-    return { condition: isSet(object.condition) ? LegacyEdgeCondition.fromJSON(object.condition) : undefined };
+    return {
+      nodeCondition: isSet(object.legacyCondition)
+        ? { $case: "legacyCondition", value: LegacyEdgeCondition.fromJSON(object.legacyCondition) }
+        : isSet(object.condition)
+        ? { $case: "condition", value: VariableAssignment.fromJSON(object.condition) }
+        : undefined,
+    };
   },
 
   toJSON(message: WaitForConditionNode): unknown {
     const obj: any = {};
-    if (message.condition !== undefined) {
-      obj.condition = LegacyEdgeCondition.toJSON(message.condition);
+    if (message.nodeCondition?.$case === "legacyCondition") {
+      obj.legacyCondition = LegacyEdgeCondition.toJSON(message.nodeCondition.value);
+    }
+    if (message.nodeCondition?.$case === "condition") {
+      obj.condition = VariableAssignment.toJSON(message.nodeCondition.value);
     }
     return obj;
   },
@@ -3504,9 +3530,23 @@ export const WaitForConditionNode = {
   },
   fromPartial(object: DeepPartial<WaitForConditionNode>): WaitForConditionNode {
     const message = createBaseWaitForConditionNode();
-    message.condition = (object.condition !== undefined && object.condition !== null)
-      ? LegacyEdgeCondition.fromPartial(object.condition)
-      : undefined;
+    if (
+      object.nodeCondition?.$case === "legacyCondition" &&
+      object.nodeCondition?.value !== undefined &&
+      object.nodeCondition?.value !== null
+    ) {
+      message.nodeCondition = {
+        $case: "legacyCondition",
+        value: LegacyEdgeCondition.fromPartial(object.nodeCondition.value),
+      };
+    }
+    if (
+      object.nodeCondition?.$case === "condition" &&
+      object.nodeCondition?.value !== undefined &&
+      object.nodeCondition?.value !== null
+    ) {
+      message.nodeCondition = { $case: "condition", value: VariableAssignment.fromPartial(object.nodeCondition.value) };
+    }
     return message;
   },
 };

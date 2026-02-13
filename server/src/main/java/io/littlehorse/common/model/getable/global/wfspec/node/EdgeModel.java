@@ -12,7 +12,6 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableMutationModel;
 import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
-import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -30,6 +29,7 @@ import lombok.Setter;
 public class EdgeModel extends LHSerializable<Edge> {
 
     private String sinkNodeName;
+    private LegacyEdgeConditionModel legacyCondition;
     private VariableAssignmentModel condition;
 
     @Getter
@@ -55,6 +55,10 @@ public class EdgeModel extends LHSerializable<Edge> {
         if (condition != null) {
             out.setCondition(condition.toProto());
         }
+
+        if (legacyCondition != null) {
+            out.setLegacyCondition(legacyCondition.toProto());
+        }
         return out;
     }
 
@@ -62,8 +66,14 @@ public class EdgeModel extends LHSerializable<Edge> {
     public void initFrom(Message p, ExecutionContext context) {
         Edge proto = (Edge) p;
         sinkNodeName = proto.getSinkNodeName();
-        if (proto.hasLegacyCondition()) {
+        if (proto.hasCondition()) {
             condition = VariableAssignmentModel.fromProto(proto.getCondition(), context);
+        }
+        if (proto.hasLegacyCondition()) {
+            if (true) {
+                throw new RuntimeException("Legacy condition is not supported anymore!");
+            }
+            legacyCondition = LegacyEdgeConditionModel.fromProto(proto.getLegacyCondition(), context);
         }
 
         for (VariableMutation vmpb : proto.getVariableMutationsList()) {
@@ -109,6 +119,10 @@ public class EdgeModel extends LHSerializable<Edge> {
             out.addAll(condition.getRequiredVariableNames());
         }
 
+        if (legacyCondition != null) {
+            out.addAll(legacyCondition.getRequiredVariableNames());
+        }
+
         for (VariableMutationModel mut : variableMutations) {
             out.addAll(mut.getRequiredVariableNames());
         }
@@ -123,6 +137,9 @@ public class EdgeModel extends LHSerializable<Edge> {
      * @return true if the edge condition is satisfied (or if there is no condition).
      */
     public boolean isConditionSatisfied(ThreadRunModel threadRun) throws LHVarSubError {
+        if (legacyCondition != null) {
+            return legacyCondition.isSatisfied(threadRun);
+        }
         return condition == null || condition.isSatisfied(threadRun);
     }
 
@@ -171,28 +188,32 @@ public class EdgeModel extends LHSerializable<Edge> {
     public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
             throws InvalidEdgeException {
         if (this.getSinkNodeName().equals(source.getName())) {
-            throw new InvalidEdgeException("Self loop not allowed!", this);
+            throw new InvalidEdgeException("Self loop not allowed!", this.getSinkNodeName());
         }
 
         NodeModel sink = threadSpec.nodes.get(this.getSinkNodeName());
         if (sink == null) {
             throw new InvalidEdgeException(
-                    String.format("Outgoing edge referring to missing node %s!", this.getSinkNodeName()), this);
+                    String.format("Outgoing edge referring to missing node %s!", this.getSinkNodeName()),
+                    this.getSinkNodeName());
         }
 
         if (sink.type == NodeCase.ENTRYPOINT) {
             throw new InvalidEdgeException(
                     String.format("Entrypoint node has incoming edge from node %s.", threadSpec.name, source.getName()),
-                    this);
+                    this.getSinkNodeName());
         }
         if (condition != null) {
             condition.validate(source, manager, threadSpec);
+        }
+        if (legacyCondition != null) {
+            legacyCondition.validate(source, manager, threadSpec);
         }
         for (VariableMutationModel variableMutation : variableMutations) {
             try {
                 variableMutation.validate(source, manager, threadSpec);
             } catch (InvalidMutationException exn) {
-                throw new InvalidEdgeException(exn, this);
+                throw new InvalidEdgeException(exn, this.getSinkNodeName());
             }
         }
     }

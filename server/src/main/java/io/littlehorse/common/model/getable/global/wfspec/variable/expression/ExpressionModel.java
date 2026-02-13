@@ -26,7 +26,6 @@ public class ExpressionModel extends LHSerializable<Expression> {
     private Comparator mutateByComparison;
     private VariableMutationType mutateWithOperation;
 
-
     @Override
     public Class<Expression> getProtoBaseClass() {
         return Expression.class;
@@ -34,9 +33,7 @@ public class ExpressionModel extends LHSerializable<Expression> {
 
     @Override
     public Expression.Builder toProto() {
-        Expression.Builder out = Expression.newBuilder()
-                .setLhs(lhs.toProto())
-                .setRhs(rhs.toProto());
+        Expression.Builder out = Expression.newBuilder().setLhs(lhs.toProto()).setRhs(rhs.toProto());
         if (mutateWithOperation != null) {
             out.setMutationType(mutateWithOperation);
         } else {

@@ -296,10 +296,12 @@ class Node(_message.Message):
     def __init__(self, outgoing_edges: _Optional[_Iterable[_Union[Edge, _Mapping]]] = ..., failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ..., entrypoint: _Optional[_Union[EntrypointNode, _Mapping]] = ..., exit: _Optional[_Union[ExitNode, _Mapping]] = ..., task: _Optional[_Union[_common_wfspec_pb2.TaskNode, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventNode, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadNode, _Mapping]] = ..., wait_for_threads: _Optional[_Union[WaitForThreadsNode, _Mapping]] = ..., nop: _Optional[_Union[NopNode, _Mapping]] = ..., sleep: _Optional[_Union[SleepNode, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNode, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsNode, _Mapping]] = ..., throw_event: _Optional[_Union[ThrowEventNode, _Mapping]] = ..., wait_for_condition: _Optional[_Union[WaitForConditionNode, _Mapping]] = ..., run_child_wf: _Optional[_Union[RunChildWfNode, _Mapping]] = ..., wait_for_child_wf: _Optional[_Union[WaitForChildWfNode, _Mapping]] = ...) -> None: ...
 
 class WaitForConditionNode(_message.Message):
-    __slots__ = ("condition",)
+    __slots__ = ("legacy_condition", "condition")
+    LEGACY_CONDITION_FIELD_NUMBER: _ClassVar[int]
     CONDITION_FIELD_NUMBER: _ClassVar[int]
-    condition: LegacyEdgeCondition
-    def __init__(self, condition: _Optional[_Union[LegacyEdgeCondition, _Mapping]] = ...) -> None: ...
+    legacy_condition: LegacyEdgeCondition
+    condition: _common_wfspec_pb2.VariableAssignment
+    def __init__(self, legacy_condition: _Optional[_Union[LegacyEdgeCondition, _Mapping]] = ..., condition: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class ThrowEventNode(_message.Message):
     __slots__ = ("event_def_id", "content")
