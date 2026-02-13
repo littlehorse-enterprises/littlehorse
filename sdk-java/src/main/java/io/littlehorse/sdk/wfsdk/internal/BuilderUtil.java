@@ -91,7 +91,7 @@ class BuilderUtil {
         return VariableAssignment.newBuilder()
                 .setExpression(Expression.newBuilder()
                         .setLhs(assignVariable(expresion.getLhs()))
-                        .setOperation(expresion.getOperation())
+                        .setMutationType(expresion.getOperation())
                         .setRhs(assignVariable(expresion.getRhs())))
                 .build();
     }

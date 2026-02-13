@@ -65,14 +65,16 @@ class VariableAssignment(_message.Message):
         node_name: str
         def __init__(self, node_name: _Optional[str] = ...) -> None: ...
     class Expression(_message.Message):
-        __slots__ = ("lhs", "operation", "rhs")
+        __slots__ = ("lhs", "mutation_type", "comparator", "rhs")
         LHS_FIELD_NUMBER: _ClassVar[int]
-        OPERATION_FIELD_NUMBER: _ClassVar[int]
+        MUTATION_TYPE_FIELD_NUMBER: _ClassVar[int]
+        COMPARATOR_FIELD_NUMBER: _ClassVar[int]
         RHS_FIELD_NUMBER: _ClassVar[int]
         lhs: VariableAssignment
-        operation: VariableMutationType
+        mutation_type: VariableMutationType
+        comparator: Comparator
         rhs: VariableAssignment
-        def __init__(self, lhs: _Optional[_Union[VariableAssignment, _Mapping]] = ..., operation: _Optional[_Union[VariableMutationType, str]] = ..., rhs: _Optional[_Union[VariableAssignment, _Mapping]] = ...) -> None: ...
+        def __init__(self, lhs: _Optional[_Union[VariableAssignment, _Mapping]] = ..., mutation_type: _Optional[_Union[VariableMutationType, str]] = ..., comparator: _Optional[_Union[Comparator, str]] = ..., rhs: _Optional[_Union[VariableAssignment, _Mapping]] = ...) -> None: ...
     JSON_PATH_FIELD_NUMBER: _ClassVar[int]
     LH_PATH_FIELD_NUMBER: _ClassVar[int]
     VARIABLE_NAME_FIELD_NUMBER: _ClassVar[int]

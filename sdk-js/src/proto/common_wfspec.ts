@@ -290,11 +290,11 @@ export interface VariableAssignment_NodeOutputReference {
 /** An Expression allows you to combine multiple values into one. */
 export interface VariableAssignment_Expression {
   /** The left-hand-side of the expression. */
-  lhs:
-    | VariableAssignment
+  lhs: VariableAssignment | undefined;
+  operation?:
+    | { $case: "mutationType"; value: VariableMutationType }
+    | { $case: "comparator"; value: Comparator }
     | undefined;
-  /** The operator in the expression. */
-  operation: VariableMutationType;
   /** The right-hand-side of the expression. */
   rhs: VariableAssignment | undefined;
 }
@@ -949,7 +949,7 @@ export const VariableAssignment_NodeOutputReference = {
 };
 
 function createBaseVariableAssignment_Expression(): VariableAssignment_Expression {
-  return { lhs: undefined, operation: VariableMutationType.ASSIGN, rhs: undefined };
+  return { lhs: undefined, operation: undefined, rhs: undefined };
 }
 
 export const VariableAssignment_Expression = {
@@ -957,8 +957,13 @@ export const VariableAssignment_Expression = {
     if (message.lhs !== undefined) {
       VariableAssignment.encode(message.lhs, writer.uint32(10).fork()).ldelim();
     }
-    if (message.operation !== VariableMutationType.ASSIGN) {
-      writer.uint32(16).int32(variableMutationTypeToNumber(message.operation));
+    switch (message.operation?.$case) {
+      case "mutationType":
+        writer.uint32(16).int32(variableMutationTypeToNumber(message.operation.value));
+        break;
+      case "comparator":
+        writer.uint32(32).int32(comparatorToNumber(message.operation.value));
+        break;
     }
     if (message.rhs !== undefined) {
       VariableAssignment.encode(message.rhs, writer.uint32(26).fork()).ldelim();
@@ -985,7 +990,14 @@ export const VariableAssignment_Expression = {
             break;
           }
 
-          message.operation = variableMutationTypeFromJSON(reader.int32());
+          message.operation = { $case: "mutationType", value: variableMutationTypeFromJSON(reader.int32()) };
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.operation = { $case: "comparator", value: comparatorFromJSON(reader.int32()) };
           continue;
         case 3:
           if (tag !== 26) {
@@ -1006,7 +1018,11 @@ export const VariableAssignment_Expression = {
   fromJSON(object: any): VariableAssignment_Expression {
     return {
       lhs: isSet(object.lhs) ? VariableAssignment.fromJSON(object.lhs) : undefined,
-      operation: isSet(object.operation) ? variableMutationTypeFromJSON(object.operation) : VariableMutationType.ASSIGN,
+      operation: isSet(object.mutationType)
+        ? { $case: "mutationType", value: variableMutationTypeFromJSON(object.mutationType) }
+        : isSet(object.comparator)
+        ? { $case: "comparator", value: comparatorFromJSON(object.comparator) }
+        : undefined,
       rhs: isSet(object.rhs) ? VariableAssignment.fromJSON(object.rhs) : undefined,
     };
   },
@@ -1016,8 +1032,11 @@ export const VariableAssignment_Expression = {
     if (message.lhs !== undefined) {
       obj.lhs = VariableAssignment.toJSON(message.lhs);
     }
-    if (message.operation !== VariableMutationType.ASSIGN) {
-      obj.operation = variableMutationTypeToJSON(message.operation);
+    if (message.operation?.$case === "mutationType") {
+      obj.mutationType = variableMutationTypeToJSON(message.operation.value);
+    }
+    if (message.operation?.$case === "comparator") {
+      obj.comparator = comparatorToJSON(message.operation.value);
     }
     if (message.rhs !== undefined) {
       obj.rhs = VariableAssignment.toJSON(message.rhs);
@@ -1033,7 +1052,20 @@ export const VariableAssignment_Expression = {
     message.lhs = (object.lhs !== undefined && object.lhs !== null)
       ? VariableAssignment.fromPartial(object.lhs)
       : undefined;
-    message.operation = object.operation ?? VariableMutationType.ASSIGN;
+    if (
+      object.operation?.$case === "mutationType" &&
+      object.operation?.value !== undefined &&
+      object.operation?.value !== null
+    ) {
+      message.operation = { $case: "mutationType", value: object.operation.value };
+    }
+    if (
+      object.operation?.$case === "comparator" &&
+      object.operation?.value !== undefined &&
+      object.operation?.value !== null
+    ) {
+      message.operation = { $case: "comparator", value: object.operation.value };
+    }
     message.rhs = (object.rhs !== undefined && object.rhs !== null)
       ? VariableAssignment.fromPartial(object.rhs)
       : undefined;
