@@ -95,6 +95,22 @@ public interface LHExpression extends Serializable {
      */
     LHExpression castTo(VariableType targetType);
 
+    LHExpression isLessThan(Serializable other);
+
+    LHExpression isGreaterThan(Serializable other);
+
+    LHExpression isEqualTo(Serializable other);
+
+    LHExpression isNotEqualTo(Serializable other);
+
+    LHExpression doesContain(Serializable other);
+
+    LHExpression doesNotContain(Serializable other);
+
+    LHExpression isIn(Serializable other);
+
+    LHExpression isNotIn(Serializable other);
+
     /**
      * Equivalent to cast(VariableType.INT).
      *

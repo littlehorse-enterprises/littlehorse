@@ -1,23 +1,23 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.proto.Comparator;
-import io.littlehorse.sdk.common.proto.EdgeCondition;
+import io.littlehorse.sdk.common.proto.LegacyEdgeCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 
 class WorkflowConditionImpl implements WorkflowCondition {
 
-    private EdgeCondition spec;
+    private LegacyEdgeCondition spec;
 
-    public WorkflowConditionImpl(EdgeCondition spec) {
+    public WorkflowConditionImpl(LegacyEdgeCondition spec) {
         this.spec = spec;
     }
 
-    public EdgeCondition getSpec() {
+    public LegacyEdgeCondition getSpec() {
         return spec;
     }
 
-    public EdgeCondition getReverse() {
-        EdgeCondition.Builder out = EdgeCondition.newBuilder();
+    public LegacyEdgeCondition getReverse() {
+        LegacyEdgeCondition.Builder out = LegacyEdgeCondition.newBuilder();
         out.setRight(spec.getRight());
         out.setLeft(spec.getLeft());
         switch (spec.getComparator()) {

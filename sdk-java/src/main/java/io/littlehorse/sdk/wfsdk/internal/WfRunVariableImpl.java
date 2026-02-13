@@ -209,52 +209,52 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
-    public WorkflowConditionImpl isEqualTo(Serializable rhs) {
+    public LHExpression isEqualTo(Serializable rhs) {
         return parent.condition(this, Comparator.EQUALS, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isNotEqualTo(Serializable rhs) {
+    public LHExpression isNotEqualTo(Serializable rhs) {
         return parent.condition(this, Comparator.NOT_EQUALS, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isGreaterThan(Serializable rhs) {
+    public LHExpression isGreaterThan(Serializable rhs) {
         return parent.condition(this, Comparator.GREATER_THAN, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isGreaterThanEq(Serializable rhs) {
+    public LHExpression isGreaterThanEq(Serializable rhs) {
         return parent.condition(this, Comparator.GREATER_THAN_EQ, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isLessThanEq(Serializable rhs) {
+    public LHExpression isLessThanEq(Serializable rhs) {
         return parent.condition(this, Comparator.LESS_THAN_EQ, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isLessThan(Serializable rhs) {
+    public LHExpression isLessThan(Serializable rhs) {
         return parent.condition(this, Comparator.LESS_THAN, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl doesContain(Serializable rhs) {
+    public LHExpression doesContain(Serializable rhs) {
         return parent.condition(rhs, Comparator.IN, this);
     }
 
     @Override
-    public WorkflowConditionImpl doesNotContain(Serializable rhs) {
+    public LHExpression doesNotContain(Serializable rhs) {
         return parent.condition(rhs, Comparator.NOT_IN, this);
     }
 
     @Override
-    public WorkflowConditionImpl isIn(Serializable rhs) {
+    public LHExpression isIn(Serializable rhs) {
         return parent.condition(this, Comparator.IN, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isNotIn(Serializable rhs) {
+    public LHExpression isNotIn(Serializable rhs) {
         return parent.condition(this, Comparator.NOT_IN, rhs);
     }
 

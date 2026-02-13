@@ -7,7 +7,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.EdgeConditionModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.LegacyEdgeConditionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.WaitForConditionNodeModel;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.WaitForConditionRun;
@@ -37,7 +37,7 @@ public class WaitForConditionNodeRunModel extends SubNodeRun<WaitForConditionRun
     public boolean checkIfProcessingCompleted(CoreProcessorContext ctx) throws NodeFailureException {
         // First, evaluate the edge conditions
         WaitForConditionNodeModel wfcNode = nodeRun.getNode().getWaitForConditionNode();
-        EdgeConditionModel condition = wfcNode.getCondition();
+        LegacyEdgeConditionModel condition = wfcNode.getCondition();
         ThreadRunModel threadRun = nodeRun.getThreadRun();
 
         try {

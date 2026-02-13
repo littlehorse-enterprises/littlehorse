@@ -110,7 +110,7 @@ public interface WfRunVariable extends LHExpression {
     WfRunVariable withDefault(Object defaultVal);
 
     /**
-     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
      * evaluates to true if this WfRunVariable is LESS_THAN the provided rhs.
      *
      * Equivalent to WorkflowThread#condition(this, Comparator.LESS_THAN, rhs);
@@ -118,10 +118,10 @@ public interface WfRunVariable extends LHExpression {
      * @param rhs is the RHS to compare this WfRunVariable to.
      * @return true if this WfRunVariable is LESS_THAN the provided rhs.
      */
-    WorkflowCondition isLessThan(Serializable rhs);
+    LHExpression isLessThan(Serializable rhs);
 
     /**
-     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
      * evaluates to true if this WfRunVariable is LESS_THAN_EQU the provided rhs.
      *
      * Equivalent to WorkflowThread#condition(this, Comparator.LESS_THAN_EQ, rhs);
@@ -129,10 +129,10 @@ public interface WfRunVariable extends LHExpression {
      * @param rhs is the RHS to compare this WfRunVariable to.
      * @return true if this WfRunVariable is LESS_THAN_EQ the provided rhs.
      */
-    WorkflowCondition isLessThanEq(Serializable rhs);
+    LHExpression isLessThanEq(Serializable rhs);
 
     /**
-     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
      * evaluates to true if this WfRunVariable is GREATER_THAN_EQ the provided rhs.
      *
      * Equivalent to WorkflowThread#condition(this, Comparator.GREATER_THAN_EQ, rhs);
@@ -140,10 +140,10 @@ public interface WfRunVariable extends LHExpression {
      * @param rhs is the RHS to compare this WfRunVariable to.
      * @return true if this WfRunVariable is GREATER_THAN_EQ the provided rhs.
      */
-    WorkflowCondition isGreaterThanEq(Serializable rhs);
+    LHExpression isGreaterThanEq(Serializable rhs);
 
     /**
-     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
      * evaluates to true if this WfRunVariable is GREATER_THAN the provided rhs.
      *
      * Equivalent to WorkflowThread#condition(this, Comparator.GREATER_THAN, rhs);
@@ -151,7 +151,7 @@ public interface WfRunVariable extends LHExpression {
      * @param rhs is the RHS to compare this WfRunVariable to.
      * @return true if this WfRunVariable is GREATER_THAN the provided rhs.
      */
-    WorkflowCondition isGreaterThan(Serializable rhs);
+    LHExpression isGreaterThan(Serializable rhs);
 
     /**
      * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
@@ -162,7 +162,7 @@ public interface WfRunVariable extends LHExpression {
      * @param rhs is the RHS to compare this WfRunVariable to.
      * @return true if this WfRunVariable is EQUALS the provided rhs.
      */
-    WorkflowCondition isEqualTo(Serializable rhs);
+    LHExpression isEqualTo(Serializable rhs);
 
     /**
      * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
@@ -173,7 +173,7 @@ public interface WfRunVariable extends LHExpression {
      * @param rhs is the RHS to compare this WfRunVariable to.
      * @return true if this WfRunVariable is NOT_EQUALS the provided rhs.
      */
-    WorkflowCondition isNotEqualTo(Serializable rhs);
+    LHExpression isNotEqualTo(Serializable rhs);
 
     /**
      * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
@@ -186,7 +186,7 @@ public interface WfRunVariable extends LHExpression {
      * @param rhs is the RHS to compare this WfRunVariable to.
      * @return true if the provided rhs is INSIDE this WfRunVariable.
      */
-    WorkflowCondition doesContain(Serializable rhs);
+    LHExpression doesContain(Serializable rhs);
 
     /**
      * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
@@ -199,7 +199,7 @@ public interface WfRunVariable extends LHExpression {
      * @param rhs is the RHS to compare this WfRunVariable to.
      * @return true if this WfRunVariable is NOT INSIDE the provided rhs.
      */
-    WorkflowCondition doesNotContain(Serializable rhs);
+    LHExpression doesNotContain(Serializable rhs);
 
     /**
      * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
@@ -213,7 +213,7 @@ public interface WfRunVariable extends LHExpression {
      * @param rhs is the RHS to compare this WfRunVariable to.
      * @return true if this WfRunVariable is INSIDE the provided rhs.
      */
-    WorkflowCondition isIn(Serializable rhs);
+    LHExpression isIn(Serializable rhs);
 
     /**
      * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
@@ -227,7 +227,7 @@ public interface WfRunVariable extends LHExpression {
      * @param rhs is the RHS to compare this WfRunVariable to.
      * @return true if this WfRunVariable is NOT INSIDE the provided rhs.
      */
-    WorkflowCondition isNotIn(Serializable rhs);
+    LHExpression isNotIn(Serializable rhs);
 
     /**
      * Mutates the value of this WfRunVariable and sets it to the the value provided on the RHS.

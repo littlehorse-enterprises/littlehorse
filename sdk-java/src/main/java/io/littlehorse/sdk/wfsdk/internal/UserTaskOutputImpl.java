@@ -2,9 +2,11 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.LHFormatString;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import java.io.Serializable;
 
 class UserTaskOutputImpl extends NodeOutputImpl implements UserTaskOutput {
 
@@ -61,5 +63,45 @@ class UserTaskOutputImpl extends NodeOutputImpl implements UserTaskOutput {
     public UserTaskOutput withOnCancellationException(WfRunVariable exceptionName) {
         addOnCancellationException(exceptionName);
         return this;
+    }
+
+    @Override
+    public LHExpression isLessThan(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression isGreaterThan(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression isEqualTo(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression isNotEqualTo(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression doesContain(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression doesNotContain(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression isIn(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression isNotIn(Serializable other) {
+        return null;
     }
 }

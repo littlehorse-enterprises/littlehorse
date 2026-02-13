@@ -28,7 +28,7 @@ import lombok.Setter;
 public class EdgeModel extends LHSerializable<Edge> {
 
     private String sinkNodeName;
-    private EdgeConditionModel condition;
+    private LegacyEdgeConditionModel legacyCondition;
 
     @Getter
     public List<VariableMutationModel> variableMutations;
@@ -50,8 +50,8 @@ public class EdgeModel extends LHSerializable<Edge> {
             out.addVariableMutations(v.toProto());
         }
 
-        if (condition != null) {
-            out.setCondition(condition.toProto());
+        if (legacyCondition != null) {
+            out.setLegacyCondition(legacyCondition.toProto());
         }
         return out;
     }
@@ -60,9 +60,9 @@ public class EdgeModel extends LHSerializable<Edge> {
     public void initFrom(Message p, ExecutionContext context) {
         Edge proto = (Edge) p;
         sinkNodeName = proto.getSinkNodeName();
-        if (proto.hasCondition()) {
-            condition = EdgeConditionModel.fromProto(proto.getCondition(), context);
-            condition.edge = this;
+        if (proto.hasLegacyCondition()) {
+            legacyCondition = LegacyEdgeConditionModel.fromProto(proto.getLegacyCondition(), context);
+            legacyCondition.edge = this;
         }
 
         for (VariableMutation vmpb : proto.getVariableMutationsList()) {
@@ -104,8 +104,8 @@ public class EdgeModel extends LHSerializable<Edge> {
     public Set<String> getRequiredVariableNames() {
         Set<String> out = new HashSet<>();
 
-        if (condition != null) {
-            out.addAll(condition.getRequiredVariableNames());
+        if (legacyCondition != null) {
+            out.addAll(legacyCondition.getRequiredVariableNames());
         }
 
         for (VariableMutationModel mut : variableMutations) {
@@ -122,7 +122,7 @@ public class EdgeModel extends LHSerializable<Edge> {
      * @return true if the edge condition is satisfied (or if there is no condition).
      */
     public boolean isConditionSatisfied(ThreadRunModel threadRun) throws LHVarSubError {
-        return condition == null || condition.isSatisfied(threadRun);
+        return legacyCondition == null || legacyCondition.isSatisfied(threadRun);
     }
 
     /**
@@ -184,8 +184,8 @@ public class EdgeModel extends LHSerializable<Edge> {
                     String.format("Entrypoint node has incoming edge from node %s.", threadSpec.name, source.getName()),
                     this);
         }
-        if (this.getCondition() != null) {
-            this.getCondition().validate(source, manager, threadSpec);
+        if (this.getLegacyCondition() != null) {
+            this.getLegacyCondition().validate(source, manager, threadSpec);
         }
         for (VariableMutationModel variableMutation : variableMutations) {
             try {

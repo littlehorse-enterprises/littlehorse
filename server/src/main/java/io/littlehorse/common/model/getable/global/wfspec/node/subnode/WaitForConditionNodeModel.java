@@ -6,7 +6,7 @@ import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.WaitForConditionNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.EdgeConditionModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.LegacyEdgeConditionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.sdk.common.proto.WaitForConditionNode;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
@@ -21,7 +21,7 @@ import lombok.Getter;
 public class WaitForConditionNodeModel extends SubNode<WaitForConditionNode> {
 
     @Getter
-    private EdgeConditionModel condition;
+    private LegacyEdgeConditionModel condition;
 
     @Override
     public Class<WaitForConditionNode> getProtoBaseClass() {
@@ -38,7 +38,7 @@ public class WaitForConditionNodeModel extends SubNode<WaitForConditionNode> {
     @Override
     public void initFrom(Message proto, ExecutionContext ctx) {
         WaitForConditionNode p = (WaitForConditionNode) proto;
-        this.condition = LHSerializable.fromProto(p.getCondition(), EdgeConditionModel.class, ctx);
+        this.condition = LHSerializable.fromProto(p.getCondition(), LegacyEdgeConditionModel.class, ctx);
     }
 
     @Override

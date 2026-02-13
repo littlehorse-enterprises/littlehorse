@@ -615,7 +615,7 @@ export interface Node {
  */
 export interface WaitForConditionNode {
   /** The condition that this node will block for. */
-  condition: EdgeCondition | undefined;
+  condition: LegacyEdgeCondition | undefined;
 }
 
 /** A SubNode that throws a WorkflowEvent of a specific type. There is no output. */
@@ -672,7 +672,7 @@ export interface UserTaskNode {
 }
 
 /** This is a boolean expression used to evaluate whether an Edge is valid. */
-export interface EdgeCondition {
+export interface LegacyEdgeCondition {
   /** The Operator used to evaluate the left versus the right. */
   comparator: Comparator;
   /** The left side of the boolean expression. */
@@ -687,14 +687,9 @@ export interface EdgeCondition {
 export interface Edge {
   /** The name of the Node that the Edge points to. */
   sinkNodeName: string;
-  /**
-   * The Condition on which this Edge will be traversed. When choosing an Edge
-   * to travel after the completion of a NodeRun, the Edges are evaluated in
-   * order. The first one to either have no condition or have a condition which
-   * evaluates to `true` is taken.
-   */
-  condition?:
-    | EdgeCondition
+  edgeCondition?:
+    | { $case: "legacyCondition"; value: LegacyEdgeCondition }
+    | { $case: "condition"; value: VariableAssignment }
     | undefined;
   /** Ordered list of Variable Mutations to execute when traversing this Edge. */
   variableMutations: VariableMutation[];
@@ -3464,7 +3459,7 @@ function createBaseWaitForConditionNode(): WaitForConditionNode {
 export const WaitForConditionNode = {
   encode(message: WaitForConditionNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.condition !== undefined) {
-      EdgeCondition.encode(message.condition, writer.uint32(10).fork()).ldelim();
+      LegacyEdgeCondition.encode(message.condition, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -3481,7 +3476,7 @@ export const WaitForConditionNode = {
             break;
           }
 
-          message.condition = EdgeCondition.decode(reader, reader.uint32());
+          message.condition = LegacyEdgeCondition.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -3493,13 +3488,13 @@ export const WaitForConditionNode = {
   },
 
   fromJSON(object: any): WaitForConditionNode {
-    return { condition: isSet(object.condition) ? EdgeCondition.fromJSON(object.condition) : undefined };
+    return { condition: isSet(object.condition) ? LegacyEdgeCondition.fromJSON(object.condition) : undefined };
   },
 
   toJSON(message: WaitForConditionNode): unknown {
     const obj: any = {};
     if (message.condition !== undefined) {
-      obj.condition = EdgeCondition.toJSON(message.condition);
+      obj.condition = LegacyEdgeCondition.toJSON(message.condition);
     }
     return obj;
   },
@@ -3510,7 +3505,7 @@ export const WaitForConditionNode = {
   fromPartial(object: DeepPartial<WaitForConditionNode>): WaitForConditionNode {
     const message = createBaseWaitForConditionNode();
     message.condition = (object.condition !== undefined && object.condition !== null)
-      ? EdgeCondition.fromPartial(object.condition)
+      ? LegacyEdgeCondition.fromPartial(object.condition)
       : undefined;
     return message;
   },
@@ -3764,12 +3759,12 @@ export const UserTaskNode = {
   },
 };
 
-function createBaseEdgeCondition(): EdgeCondition {
+function createBaseLegacyEdgeCondition(): LegacyEdgeCondition {
   return { comparator: Comparator.LESS_THAN, left: undefined, right: undefined };
 }
 
-export const EdgeCondition = {
-  encode(message: EdgeCondition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const LegacyEdgeCondition = {
+  encode(message: LegacyEdgeCondition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.comparator !== Comparator.LESS_THAN) {
       writer.uint32(8).int32(comparatorToNumber(message.comparator));
     }
@@ -3782,10 +3777,10 @@ export const EdgeCondition = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): EdgeCondition {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LegacyEdgeCondition {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseEdgeCondition();
+    const message = createBaseLegacyEdgeCondition();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3819,7 +3814,7 @@ export const EdgeCondition = {
     return message;
   },
 
-  fromJSON(object: any): EdgeCondition {
+  fromJSON(object: any): LegacyEdgeCondition {
     return {
       comparator: isSet(object.comparator) ? comparatorFromJSON(object.comparator) : Comparator.LESS_THAN,
       left: isSet(object.left) ? VariableAssignment.fromJSON(object.left) : undefined,
@@ -3827,7 +3822,7 @@ export const EdgeCondition = {
     };
   },
 
-  toJSON(message: EdgeCondition): unknown {
+  toJSON(message: LegacyEdgeCondition): unknown {
     const obj: any = {};
     if (message.comparator !== Comparator.LESS_THAN) {
       obj.comparator = comparatorToJSON(message.comparator);
@@ -3841,11 +3836,11 @@ export const EdgeCondition = {
     return obj;
   },
 
-  create(base?: DeepPartial<EdgeCondition>): EdgeCondition {
-    return EdgeCondition.fromPartial(base ?? {});
+  create(base?: DeepPartial<LegacyEdgeCondition>): LegacyEdgeCondition {
+    return LegacyEdgeCondition.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<EdgeCondition>): EdgeCondition {
-    const message = createBaseEdgeCondition();
+  fromPartial(object: DeepPartial<LegacyEdgeCondition>): LegacyEdgeCondition {
+    const message = createBaseLegacyEdgeCondition();
     message.comparator = object.comparator ?? Comparator.LESS_THAN;
     message.left = (object.left !== undefined && object.left !== null)
       ? VariableAssignment.fromPartial(object.left)
@@ -3858,7 +3853,7 @@ export const EdgeCondition = {
 };
 
 function createBaseEdge(): Edge {
-  return { sinkNodeName: "", condition: undefined, variableMutations: [] };
+  return { sinkNodeName: "", edgeCondition: undefined, variableMutations: [] };
 }
 
 export const Edge = {
@@ -3866,8 +3861,13 @@ export const Edge = {
     if (message.sinkNodeName !== "") {
       writer.uint32(10).string(message.sinkNodeName);
     }
-    if (message.condition !== undefined) {
-      EdgeCondition.encode(message.condition, writer.uint32(18).fork()).ldelim();
+    switch (message.edgeCondition?.$case) {
+      case "legacyCondition":
+        LegacyEdgeCondition.encode(message.edgeCondition.value, writer.uint32(18).fork()).ldelim();
+        break;
+      case "condition":
+        VariableAssignment.encode(message.edgeCondition.value, writer.uint32(34).fork()).ldelim();
+        break;
     }
     for (const v of message.variableMutations) {
       VariableMutation.encode(v!, writer.uint32(26).fork()).ldelim();
@@ -3894,7 +3894,17 @@ export const Edge = {
             break;
           }
 
-          message.condition = EdgeCondition.decode(reader, reader.uint32());
+          message.edgeCondition = {
+            $case: "legacyCondition",
+            value: LegacyEdgeCondition.decode(reader, reader.uint32()),
+          };
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.edgeCondition = { $case: "condition", value: VariableAssignment.decode(reader, reader.uint32()) };
           continue;
         case 3:
           if (tag !== 26) {
@@ -3915,7 +3925,11 @@ export const Edge = {
   fromJSON(object: any): Edge {
     return {
       sinkNodeName: isSet(object.sinkNodeName) ? globalThis.String(object.sinkNodeName) : "",
-      condition: isSet(object.condition) ? EdgeCondition.fromJSON(object.condition) : undefined,
+      edgeCondition: isSet(object.legacyCondition)
+        ? { $case: "legacyCondition", value: LegacyEdgeCondition.fromJSON(object.legacyCondition) }
+        : isSet(object.condition)
+        ? { $case: "condition", value: VariableAssignment.fromJSON(object.condition) }
+        : undefined,
       variableMutations: globalThis.Array.isArray(object?.variableMutations)
         ? object.variableMutations.map((e: any) => VariableMutation.fromJSON(e))
         : [],
@@ -3927,8 +3941,11 @@ export const Edge = {
     if (message.sinkNodeName !== "") {
       obj.sinkNodeName = message.sinkNodeName;
     }
-    if (message.condition !== undefined) {
-      obj.condition = EdgeCondition.toJSON(message.condition);
+    if (message.edgeCondition?.$case === "legacyCondition") {
+      obj.legacyCondition = LegacyEdgeCondition.toJSON(message.edgeCondition.value);
+    }
+    if (message.edgeCondition?.$case === "condition") {
+      obj.condition = VariableAssignment.toJSON(message.edgeCondition.value);
     }
     if (message.variableMutations?.length) {
       obj.variableMutations = message.variableMutations.map((e) => VariableMutation.toJSON(e));
@@ -3942,9 +3959,23 @@ export const Edge = {
   fromPartial(object: DeepPartial<Edge>): Edge {
     const message = createBaseEdge();
     message.sinkNodeName = object.sinkNodeName ?? "";
-    message.condition = (object.condition !== undefined && object.condition !== null)
-      ? EdgeCondition.fromPartial(object.condition)
-      : undefined;
+    if (
+      object.edgeCondition?.$case === "legacyCondition" &&
+      object.edgeCondition?.value !== undefined &&
+      object.edgeCondition?.value !== null
+    ) {
+      message.edgeCondition = {
+        $case: "legacyCondition",
+        value: LegacyEdgeCondition.fromPartial(object.edgeCondition.value),
+      };
+    }
+    if (
+      object.edgeCondition?.$case === "condition" &&
+      object.edgeCondition?.value !== undefined &&
+      object.edgeCondition?.value !== null
+    ) {
+      message.edgeCondition = { $case: "condition", value: VariableAssignment.fromPartial(object.edgeCondition.value) };
+    }
     message.variableMutations = object.variableMutations?.map((e) => VariableMutation.fromPartial(e)) || [];
     return message;
   },

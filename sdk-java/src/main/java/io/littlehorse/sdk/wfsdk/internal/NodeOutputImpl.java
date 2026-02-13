@@ -97,4 +97,44 @@ class NodeOutputImpl implements NodeOutput {
     public LHExpression castTo(VariableType targetType) {
         return new CastExpressionImpl(this, targetType);
     }
+
+    @Override
+    public LHExpression isLessThan(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression isGreaterThan(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression isEqualTo(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression isNotEqualTo(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression doesContain(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression doesNotContain(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression isIn(Serializable other) {
+        return null;
+    }
+
+    @Override
+    public LHExpression isNotIn(Serializable other) {
+        return null;
+    }
 }

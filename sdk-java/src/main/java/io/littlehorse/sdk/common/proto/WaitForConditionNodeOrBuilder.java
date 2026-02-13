@@ -15,7 +15,7 @@ public interface WaitForConditionNodeOrBuilder extends
    * The condition that this node will block for.
    * </pre>
    *
-   * <code>.littlehorse.EdgeCondition condition = 1;</code>
+   * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
    * @return Whether the condition field is set.
    */
   boolean hasCondition();
@@ -24,16 +24,16 @@ public interface WaitForConditionNodeOrBuilder extends
    * The condition that this node will block for.
    * </pre>
    *
-   * <code>.littlehorse.EdgeCondition condition = 1;</code>
+   * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
    * @return The condition.
    */
-  io.littlehorse.sdk.common.proto.EdgeCondition getCondition();
+  io.littlehorse.sdk.common.proto.LegacyEdgeCondition getCondition();
   /**
    * <pre>
    * The condition that this node will block for.
    * </pre>
    *
-   * <code>.littlehorse.EdgeCondition condition = 1;</code>
+   * <code>.littlehorse.LegacyEdgeCondition condition = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder getConditionOrBuilder();
+  io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder getConditionOrBuilder();
 }
