@@ -6,6 +6,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "preserveConstEnums": true,
+    "experimentalDecorators": true,
     "isolatedModules": false, // turn this off unless needed
     "skipLibCheck": true, // optional but can prevent unnecessary type errors
     "esModuleInterop": true
