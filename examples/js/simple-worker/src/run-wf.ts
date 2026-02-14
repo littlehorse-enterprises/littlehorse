@@ -15,10 +15,10 @@ async function main() {
 
   const inputVar: VariableValue = { value: { $case: 'str', value: name } }
 
-  console.log(`Running workflow "example-basic-js" with input-name="${name}"...`)
+  console.log(`Running workflow "example-basic" with input-name="${name}"...`)
 
   const result = await client.runWf({
-    wfSpecName: 'example-basic-js',
+    wfSpecName: 'example-basic',
     variables: { 'input-name': inputVar },
   })
 

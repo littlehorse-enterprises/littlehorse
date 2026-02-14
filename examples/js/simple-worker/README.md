@@ -31,29 +31,8 @@ This will:
 Before running a workflow, register the WfSpec using `lhctl`:
 
 ```bash
-# Register the WfSpec (only needed once). You can also do this with the
-# dashboard or programmatically using the gRPC client.
-lhctl deploy wfSpec '{
-  "name": "example-basic-js",
-  "threadSpecs": {
-    "entrypoint": {
-      "variableDefs": [
-        { "varDef": { "name": "input-name", "type": "STR" } }
-      ],
-      "nodes": {
-        "0-entrypoint-ENTRYPOINT": { "entrypoint": {}, "outgoingEdges": [{ "sinkNodeName": "1-greet-TASK" }] },
-        "1-greet-TASK": {
-          "task": { "taskDefId": { "name": "greet" }, "variables": [{ "variableName": "input-name" }] },
-          "outgoingEdges": [{ "sinkNodeName": "2-exit-EXIT" }]
-        },
-        "2-exit-EXIT": { "exit": {} }
-      }
-    }
-  },
-  "entrypointThreadName": "entrypoint"
-}'
+lhctl deploy wfSpec example-basic-wfspec.json
 ```
-
 Then in another terminal:
 
 ```bash
