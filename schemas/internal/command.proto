@@ -53,6 +53,7 @@ message Command {
         EditUserTaskRunCommentRequest edit_user_task_run_comment = 32;
         DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 33;
         PutCheckpointRequest put_checkpoint = 34;
+        AggregateWindowMetrics aggregate_window_metrics = 35;
     }
 }
 
@@ -113,6 +114,11 @@ message AggregateWfMetrics {
     WfSpecId wf_spec_id = 1;
     TenantId tenant_id = 2;
     repeated WfMetricUpdate metric_updates = 3;
+}
+
+message AggregateWindowMetrics {
+    TenantId tenant_id = 2;
+    PartitionMetricWindow metric_window = 3;
 }
 
 message AggregateTaskMetrics {

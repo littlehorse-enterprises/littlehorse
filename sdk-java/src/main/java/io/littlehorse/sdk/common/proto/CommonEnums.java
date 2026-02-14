@@ -54,9 +54,11 @@ public final class CommonEnums extends com.google.protobuf.GeneratedFile {
       "OR\020\001\022\026\n\022VAR_MUTATION_ERROR\020\002\022\027\n\023USER_TAS" +
       "K_CANCELLED\020\003\022\013\n\007TIMEOUT\020\004\022\020\n\014TASK_FAILU" +
       "RE\020\005\022\r\n\tVAR_ERROR\020\006\022\016\n\nTASK_ERROR\020\007\022\022\n\016I" +
-      "NTERNAL_ERROR\020\010BM\n\037io.littlehorse.sdk.co" +
-      "mmon.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sd" +
-      "k.Common.Protob\006proto3"
+      "NTERNAL_ERROR\020\010*_\n\020MetricWindowType\022\023\n\017W" +
+      "ORKFLOW_METRIC\020\000\022\017\n\013TASK_METRIC\020\001\022\024\n\020USE" +
+      "R_TASK_METRIC\020\002\022\017\n\013NODE_METRIC\020\003BM\n\037io.l" +
+      "ittlehorse.sdk.common.protoP\001Z\t.;lhproto" +
+      "\252\002\034LittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

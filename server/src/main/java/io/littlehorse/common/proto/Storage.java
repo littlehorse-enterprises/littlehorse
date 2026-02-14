@@ -72,10 +72,25 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_TimerIteratorHint_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_MetricsHint_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_MetricsHint_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_NodeOutput_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_NodeOutput_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_PartitionMetricWindow_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_PartitionMetricWindow_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_PartitionMetricWindow_MetricsEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_PartitionMetricWindow_MetricsEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -87,56 +102,72 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
     java.lang.String[] descriptorData = {
       "\n\rstorage.proto\022\013littlehorse\032\037google/pro" +
       "tobuf/timestamp.proto\032\017object_id.proto\032\016" +
-      "variable.proto\"\'\n\013AttributePb\022\013\n\003key\030\001 \001" +
-      "(\t\022\013\n\003val\030\002 \001(\t\"\365\001\n\005TagPb\0222\n\013object_type" +
-      "\030\001 \001(\0162\035.littlehorse.GetableClassEnum\022,\n" +
-      "\nattributes\030\002 \003(\0132\030.littlehorse.Attribut" +
-      "ePb\022\033\n\023described_object_id\030\003 \001(\t\022+\n\007crea" +
-      "ted\030\004 \001(\0132\032.google.protobuf.Timestamp\022-\n" +
-      "\010tag_type\030\005 \001(\0162\033.littlehorse.TagStorage" +
-      "Type\022\021\n\tstore_key\030\007 \001(\t\"v\n\024WfRunStoredIn" +
-      "ventory\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehorse" +
-      ".WfRunId\0225\n\017external_events\030\003 \003(\0132\034.litt" +
-      "lehorse.ExternalEventId\"v\n\013TagsCachePb\0229" +
-      "\n\013cached_tags\030\001 \003(\0132$.littlehorse.TagsCa" +
-      "chePb.CachedTagPb\032,\n\013CachedTagPb\022\n\n\002id\030\001" +
-      " \001(\t\022\021\n\tis_remote\030\002 \001(\010\"\206\001\n\017StoredGetabl" +
-      "ePb\022-\n\013index_cache\030\001 \001(\0132\030.littlehorse.T" +
-      "agsCachePb\022\027\n\017getable_payload\030\002 \001(\014\022+\n\004t" +
-      "ype\030\003 \001(\0162\035.littlehorse.GetableClassEnum" +
-      "\"\232\001\n\026EventCorrelationMarker\0220\n\020source_no" +
-      "de_runs\030\001 \003(\0132\026.littlehorse.NodeRunId\0225\n" +
-      "\014event_def_id\030\002 \001(\0132\037.littlehorse.Extern" +
-      "alEventDefId\022\027\n\017correlation_key\030\003 \001(\t\"M\n" +
-      "\rTaskQueueHint\022<\n\030last_processed_timesta" +
-      "mp\030\001 \001(\0132\032.google.protobuf.Timestamp\"M\n\021" +
-      "TimerIteratorHint\0228\n\024last_processed_time" +
-      "r\030\002 \001(\0132\032.google.protobuf.Timestamp\"\260\001\n\n" +
-      "NodeOutput\022\031\n\021thread_run_number\030\001 \001(\005\022\031\n" +
-      "\021node_run_position\030\002 \001(\005\022\021\n\tnode_name\030\003 " +
-      "\001(\t\022)\n\005value\030\004 \001(\0132\032.littlehorse.Variabl" +
-      "eValue\022.\n\ncreated_at\030\005 \001(\0132\032.google.prot" +
-      "obuf.Timestamp*6\n\013LHStoreType\022\010\n\004CORE\020\000\022" +
-      "\014\n\010METADATA\020\001\022\017\n\013REPARTITION\020\002*\244\002\n\rStore" +
-      "ableType\022\022\n\016STORED_GETABLE\020\000\022\022\n\016SCHEDULE" +
-      "D_TASK\020\001\022\024\n\020WF_METRIC_UPDATE\020\002\022\026\n\022TASK_M" +
-      "ETRIC_UPDATE\020\003\022\014\n\010LH_TIMER\020\004\022\007\n\003TAG\020\005\022\025\n" +
-      "\021PARTITION_METRICS\020\006\022\026\n\022INITIALIZATION_L" +
-      "OG\020\010\022\032\n\026WFRUN_STORED_INVENTORY\020\t\022\026\n\022CORR" +
-      "ELATION_MARKER\020\n\022\023\n\017TASK_QUEUE_HINT\020\013\022\017\n" +
-      "\013NODE_OUTPUT\020\014\022\027\n\023TIMER_ITERATOR_HINT\020\r\"" +
-      "\004\010\007\020\007*\212\003\n\020GetableClassEnum\022\014\n\010TASK_DEF\020\000" +
-      "\022\026\n\022EXTERNAL_EVENT_DEF\020\001\022\013\n\007WF_SPEC\020\002\022\n\n" +
-      "\006WF_RUN\020\003\022\014\n\010NODE_RUN\020\004\022\014\n\010VARIABLE\020\005\022\022\n" +
-      "\016EXTERNAL_EVENT\020\006\022\024\n\020TASK_DEF_METRICS\020\007\022" +
-      "\023\n\017WF_SPEC_METRICS\020\010\022\025\n\021TASK_WORKER_GROU" +
-      "P\020\t\022\021\n\rUSER_TASK_DEF\020\n\022\014\n\010TASK_RUN\020\013\022\021\n\r" +
-      "USER_TASK_RUN\020\014\022\r\n\tPRINCIPAL\020\r\022\n\n\006TENANT" +
-      "\020\016\022\026\n\022WORKFLOW_EVENT_DEF\020\017\022\022\n\016WORKFLOW_E" +
-      "VENT\020\020\022\024\n\020SCHEDULED_WF_RUN\020\021\022\016\n\nSTRUCT_D" +
-      "EF\020\022\022\024\n\020CORRELATED_EVENT\020\023\022\016\n\nCHECKPOINT" +
-      "\020\024*\033\n\016TagStorageType\022\t\n\005LOCAL\020\000B\037\n\033io.li" +
-      "ttlehorse.common.protoP\001b\006proto3"
+      "variable.proto\032\rmetrics.proto\032\022common_en" +
+      "ums.proto\"\'\n\013AttributePb\022\013\n\003key\030\001 \001(\t\022\013\n" +
+      "\003val\030\002 \001(\t\"\365\001\n\005TagPb\0222\n\013object_type\030\001 \001(" +
+      "\0162\035.littlehorse.GetableClassEnum\022,\n\nattr" +
+      "ibutes\030\002 \003(\0132\030.littlehorse.AttributePb\022\033" +
+      "\n\023described_object_id\030\003 \001(\t\022+\n\007created\030\004" +
+      " \001(\0132\032.google.protobuf.Timestamp\022-\n\010tag_" +
+      "type\030\005 \001(\0162\033.littlehorse.TagStorageType\022" +
+      "\021\n\tstore_key\030\007 \001(\t\"v\n\024WfRunStoredInvento" +
+      "ry\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehorse.WfRu" +
+      "nId\0225\n\017external_events\030\003 \003(\0132\034.littlehor" +
+      "se.ExternalEventId\"v\n\013TagsCachePb\0229\n\013cac" +
+      "hed_tags\030\001 \003(\0132$.littlehorse.TagsCachePb" +
+      ".CachedTagPb\032,\n\013CachedTagPb\022\n\n\002id\030\001 \001(\t\022" +
+      "\021\n\tis_remote\030\002 \001(\010\"\206\001\n\017StoredGetablePb\022-" +
+      "\n\013index_cache\030\001 \001(\0132\030.littlehorse.TagsCa" +
+      "chePb\022\027\n\017getable_payload\030\002 \001(\014\022+\n\004type\030\003" +
+      " \001(\0162\035.littlehorse.GetableClassEnum\"\232\001\n\026" +
+      "EventCorrelationMarker\0220\n\020source_node_ru" +
+      "ns\030\001 \003(\0132\026.littlehorse.NodeRunId\0225\n\014even" +
+      "t_def_id\030\002 \001(\0132\037.littlehorse.ExternalEve" +
+      "ntDefId\022\027\n\017correlation_key\030\003 \001(\t\"M\n\rTask" +
+      "QueueHint\022<\n\030last_processed_timestamp\030\001 " +
+      "\001(\0132\032.google.protobuf.Timestamp\"M\n\021Timer" +
+      "IteratorHint\0228\n\024last_processed_timer\030\002 \001" +
+      "(\0132\032.google.protobuf.Timestamp\"K\n\013Metric" +
+      "sHint\022<\n\030last_processed_timestamp\030\001 \001(\0132" +
+      "\032.google.protobuf.Timestamp\"\260\001\n\nNodeOutp" +
+      "ut\022\031\n\021thread_run_number\030\001 \001(\005\022\031\n\021node_ru" +
+      "n_position\030\002 \001(\005\022\021\n\tnode_name\030\003 \001(\t\022)\n\005v" +
+      "alue\030\004 \001(\0132\032.littlehorse.VariableValue\022." +
+      "\n\ncreated_at\030\005 \001(\0132\032.google.protobuf.Tim" +
+      "estamp\"\320\003\n\025PartitionMetricWindow\022+\n\nwf_s" +
+      "pec_id\030\001 \001(\0132\025.littlehorse.WfSpecIdH\000\022-\n" +
+      "\013task_def_id\030\002 \001(\0132\026.littlehorse.TaskDef" +
+      "IdH\000\0226\n\020user_task_def_id\030\003 \001(\0132\032.littleh" +
+      "orse.UserTaskDefIdH\000\022(\n\ttenant_id\030\005 \001(\0132" +
+      "\025.littlehorse.TenantId\0222\n\013metric_type\030\006 " +
+      "\001(\0162\035.littlehorse.MetricWindowType\0220\n\014wi" +
+      "ndow_start\030\007 \001(\0132\032.google.protobuf.Times" +
+      "tamp\022@\n\007metrics\030\010 \003(\0132/.littlehorse.Part" +
+      "itionMetricWindow.MetricsEntry\032K\n\014Metric" +
+      "sEntry\022\013\n\003key\030\001 \001(\t\022*\n\005value\030\002 \001(\0132\033.lit" +
+      "tlehorse.CountAndTiming:\0028\001B\004\n\002id*6\n\013LHS" +
+      "toreType\022\010\n\004CORE\020\000\022\014\n\010METADATA\020\001\022\017\n\013REPA" +
+      "RTITION\020\002*\266\002\n\rStoreableType\022\022\n\016STORED_GE" +
+      "TABLE\020\000\022\022\n\016SCHEDULED_TASK\020\001\022\024\n\020WF_METRIC" +
+      "_UPDATE\020\002\022\026\n\022TASK_METRIC_UPDATE\020\003\022\014\n\010LH_" +
+      "TIMER\020\004\022\007\n\003TAG\020\005\022\025\n\021PARTITION_METRICS\020\006\022" +
+      "\026\n\022INITIALIZATION_LOG\020\010\022\032\n\026WFRUN_STORED_" +
+      "INVENTORY\020\t\022\026\n\022CORRELATION_MARKER\020\n\022\023\n\017T" +
+      "ASK_QUEUE_HINT\020\013\022\017\n\013NODE_OUTPUT\020\014\022\027\n\023TIM" +
+      "ER_ITERATOR_HINT\020\r\022\020\n\014METRICS_HINT\020\016\"\004\010\007" +
+      "\020\007*\235\003\n\020GetableClassEnum\022\014\n\010TASK_DEF\020\000\022\026\n" +
+      "\022EXTERNAL_EVENT_DEF\020\001\022\013\n\007WF_SPEC\020\002\022\n\n\006WF" +
+      "_RUN\020\003\022\014\n\010NODE_RUN\020\004\022\014\n\010VARIABLE\020\005\022\022\n\016EX" +
+      "TERNAL_EVENT\020\006\022\024\n\020TASK_DEF_METRICS\020\007\022\023\n\017" +
+      "WF_SPEC_METRICS\020\010\022\025\n\021TASK_WORKER_GROUP\020\t" +
+      "\022\021\n\rUSER_TASK_DEF\020\n\022\014\n\010TASK_RUN\020\013\022\021\n\rUSE" +
+      "R_TASK_RUN\020\014\022\r\n\tPRINCIPAL\020\r\022\n\n\006TENANT\020\016\022" +
+      "\026\n\022WORKFLOW_EVENT_DEF\020\017\022\022\n\016WORKFLOW_EVEN" +
+      "T\020\020\022\024\n\020SCHEDULED_WF_RUN\020\021\022\016\n\nSTRUCT_DEF\020" +
+      "\022\022\024\n\020CORRELATED_EVENT\020\023\022\016\n\nCHECKPOINT\020\024\022" +
+      "\021\n\rMETRIC_WINDOW\020\025*\033\n\016TagStorageType\022\t\n\005" +
+      "LOCAL\020\000B\037\n\033io.littlehorse.common.protoP\001" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -144,6 +175,8 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
           com.google.protobuf.TimestampProto.getDescriptor(),
           io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
           io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor(),
+          io.littlehorse.sdk.common.proto.Metrics.getDescriptor(),
+          io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor(),
         });
     internal_static_littlehorse_AttributePb_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -199,16 +232,36 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TimerIteratorHint_descriptor,
         new java.lang.String[] { "LastProcessedTimer", });
-    internal_static_littlehorse_NodeOutput_descriptor =
+    internal_static_littlehorse_MetricsHint_descriptor =
       getDescriptor().getMessageTypes().get(8);
+    internal_static_littlehorse_MetricsHint_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_MetricsHint_descriptor,
+        new java.lang.String[] { "LastProcessedTimestamp", });
+    internal_static_littlehorse_NodeOutput_descriptor =
+      getDescriptor().getMessageTypes().get(9);
     internal_static_littlehorse_NodeOutput_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_NodeOutput_descriptor,
         new java.lang.String[] { "ThreadRunNumber", "NodeRunPosition", "NodeName", "Value", "CreatedAt", });
+    internal_static_littlehorse_PartitionMetricWindow_descriptor =
+      getDescriptor().getMessageTypes().get(10);
+    internal_static_littlehorse_PartitionMetricWindow_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_PartitionMetricWindow_descriptor,
+        new java.lang.String[] { "WfSpecId", "TaskDefId", "UserTaskDefId", "TenantId", "MetricType", "WindowStart", "Metrics", "Id", });
+    internal_static_littlehorse_PartitionMetricWindow_MetricsEntry_descriptor =
+      internal_static_littlehorse_PartitionMetricWindow_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_PartitionMetricWindow_MetricsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_PartitionMetricWindow_MetricsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();
+    io.littlehorse.sdk.common.proto.Metrics.getDescriptor();
+    io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

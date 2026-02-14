@@ -13,6 +13,7 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.InternalDeleteWfRunRequestModel;
@@ -695,6 +696,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             statusChanged = GetableUpdates.createEndEvent(
                     wfSpecId, processorContext.authorization().tenantId(), this.status, status, startTime);
         }
+        LHStatus previousStatus = this.status;
         this.status = status;
         processorContext.getableUpdates().dispatch(statusChanged);
 
@@ -716,6 +718,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 processorContext.getTaskManager().scheduleTimer(timer);
             }
         }
+        PartitionMetricWindowModel.trackWorkflow(
+                processorContext, wfSpecId, previousStatus, status, startTime, endTime);
     }
 
     private boolean isTerminated() {
@@ -769,7 +773,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
         // ThreadRuns depend on each other, for example Exception Handler Threads or
         // child threads, so we need to signal to the other threads that they might
-        // want to wake up. Ding Ding Ding! Get out of bed.
+        // want to wake up. Ding Ding Ding! Get out of bed. XD
         advance(time);
     }
 }

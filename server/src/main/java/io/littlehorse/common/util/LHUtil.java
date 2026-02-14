@@ -26,6 +26,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
@@ -341,6 +342,10 @@ public class LHUtil {
         return ExecutionTime.forCron(parsedQuartzCronExpression)
                 .nextExecution(ZonedDateTime.ofInstant(dateAt.toInstant(), ZoneId.systemDefault()))
                 .map(zonedDateTime -> Date.from(zonedDateTime.toInstant()));
+    }
+
+    public static Date getCurrentWindowTime() {
+        return Date.from(Instant.now().truncatedTo(ChronoUnit.MINUTES));
     }
 
     /**
