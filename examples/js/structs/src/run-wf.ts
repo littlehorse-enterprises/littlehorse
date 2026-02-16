@@ -1,11 +1,11 @@
 import { LHConfig, toStructVariableValue } from 'littlehorse-client'
-import { ParkingTicketReport } from './parking-ticket-report.js'
+import { ParkingTicketReport } from './schemas.js'
 
 /**
  * Runs the "issue-parking-ticket" workflow, passing a ParkingTicketReport struct as input.
  *
  * Usage:
- *   npx tsx src/run-wf.ts <vehicleMake> <vehicleModel> <licensePlateNumber>
+ *   npm run run-wf -- <vehicleMake> <vehicleModel> <licensePlateNumber>
  */
 async function main() {
   const config = LHConfig.from({})
@@ -14,20 +14,20 @@ async function main() {
   const [vehicleMake, vehicleModel, licensePlateNumber] = process.argv.slice(2)
 
   if (!vehicleMake || !vehicleModel || !licensePlateNumber) {
-    console.error('Usage: npx tsx src/run-wf.ts <vehicleMake> <vehicleModel> <licensePlateNumber>')
+    console.error('Usage: npm run run-wf -- <vehicleMake> <vehicleModel> <licensePlateNumber>')
     process.exit(1)
   }
 
-  const report = new ParkingTicketReport(
+  const report = {
     vehicleMake,
     vehicleModel,
     licensePlateNumber,
-    new Date().toISOString()
-  )
+    reportedAt: new Date().toISOString(),
+  }
 
-  console.log(`Generated parking ticket report: ${report}`)
+  console.log('Generated parking ticket report:', report)
 
-  const reportValue = toStructVariableValue({ ...report }, ParkingTicketReport)
+  const reportValue = toStructVariableValue(report, ParkingTicketReport)
 
   const result = await client.runWf({
     wfSpecName: 'issue-parking-ticket',

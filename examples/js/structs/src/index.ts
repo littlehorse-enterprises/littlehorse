@@ -5,29 +5,28 @@ import {
   buildPutStructDefRequest,
   buildStructVariableDef,
   getStructDependencies,
+  type LHStructSchema,
 } from 'littlehorse-client'
-import { ParkingTicketReport } from './parking-ticket-report.js'
-import { Person } from './person.js'
-import { Address } from './address.js'
+import { Address, Person, ParkingTicketReport } from './schemas.js'
+import type { Person as PersonType, ParkingTicketReport as ParkingTicketReportType } from './schemas.js'
 
 /**
  * Task: given a ParkingTicketReport, look up and return the car owner.
- * Returns a Person instance so the SDK automatically serializes it as a Struct.
+ * Returns a plain Person object — the worker's outputSchema handles serialization.
  */
-function getCarOwner(report: ParkingTicketReport, _ctx: WorkerContext): Person {
+function getCarOwner(report: ParkingTicketReportType, _ctx: WorkerContext): PersonType {
   console.log(`[get-car-owner] Looking up owner for plate: ${report.licensePlateNumber}`)
-  // Simulate a database lookup
-  return new Person(
-    'Obi-Wan',
-    'Kenobi',
-    new Address(124, 'Sand Dune Lane', 'Anchorhead', 'Tattooine', 97412)
-  )
+  return {
+    firstName: 'Obi-Wan',
+    lastName: 'Kenobi',
+    homeAddress: { houseNumber: 124, street: 'Sand Dune Lane', city: 'Anchorhead', state: 'Tattooine', zip: 97412 },
+  }
 }
 
 /**
  * Task: given a Person, "mail" them a parking ticket.
  */
-function mailTicket(person: Person, _ctx: WorkerContext): string {
+function mailTicket(person: PersonType, _ctx: WorkerContext): string {
   console.log(`[mail-ticket] Notifying ${person.firstName} ${person.lastName} of parking ticket.`)
   return `Ticket sent to ${person.firstName} ${person.lastName} at ${person.homeAddress?.houseNumber} ${person.homeAddress?.street}`
 }
@@ -35,36 +34,35 @@ function mailTicket(person: Person, _ctx: WorkerContext): string {
 async function main() {
   const config = LHConfig.from({})
 
-  // Build input var definitions for each task
-  const getCarOwnerInputVars = [buildStructVariableDef('report', ParkingTicketReport)]
-  const mailTicketInputVars = [buildStructVariableDef('person', Person)]
-
   const getCarOwnerWorker = new LHTaskWorker(getCarOwner, 'get-car-owner', config, {
-    inputVars: getCarOwnerInputVars,
+    inputVars: [buildStructVariableDef('report', ParkingTicketReport)],
+    outputSchema: Person,
   })
   const mailTicketWorker = new LHTaskWorker(mailTicket, 'mail-ticket', config, {
-    inputVars: mailTicketInputVars,
+    inputVars: [buildStructVariableDef('person', Person)],
   })
 
-  // 1. Register all StructDefs in dependency order.
-  //    Person depends on Address, so getStructDependencies(Person) returns [Address, Person].
-  //    We union all dependencies across all struct classes used.
-  const allStructClasses = new Set<new (...args: any[]) => any>()
-  for (const cls of getStructDependencies(Person)) allStructClasses.add(cls)
-  for (const cls of getStructDependencies(ParkingTicketReport)) allStructClasses.add(cls)
-
-  for (const cls of allStructClasses) {
-    const req = buildPutStructDefRequest(cls)
-    await getCarOwnerWorker.registerStructDef(req)
+  // Register all StructDefs in dependency order
+  const seen = new Set<string>()
+  const schemasToRegister: LHStructSchema[] = []
+  for (const schema of [...getStructDependencies(Person), ...getStructDependencies(ParkingTicketReport)]) {
+    if (!seen.has(schema.name)) {
+      seen.add(schema.name)
+      schemasToRegister.push(schema)
+    }
   }
 
-  // 2. Register TaskDefs
+  for (const schema of schemasToRegister) {
+    await getCarOwnerWorker.registerStructDef(buildPutStructDefRequest(schema))
+  }
+
+  // Register TaskDefs
   console.log('Registering TaskDef "get-car-owner"...')
   await getCarOwnerWorker.registerTaskDef()
   console.log('Registering TaskDef "mail-ticket"...')
   await mailTicketWorker.registerTaskDef()
 
-  // 3. Start both workers
+  // Start both workers
   await getCarOwnerWorker.start()
   await mailTicketWorker.start()
 

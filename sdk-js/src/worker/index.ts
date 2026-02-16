@@ -2,13 +2,19 @@ export { LHTaskWorker, LHTaskException } from './LHTaskWorker'
 export type { TaskFunction, LHTaskWorkerOptions } from './LHTaskWorker'
 export { WorkerContext } from './WorkerContext'
 export {
-  LHStruct,
-  LHField,
+  lhStruct,
+  lh,
   getStructDefName,
   buildPutStructDefRequest,
   buildStructVariableDef,
   getStructDependencies,
   toStructVariableValue,
-  trySerializeAsStruct,
-} from './decorators'
-export type { LHStructOptions, LHFieldOptions } from './decorators'
+} from './struct'
+export type {
+  LHStructSchema,
+  LHStructOptions,
+  Infer,
+  FieldDef,
+  PrimitiveField,
+  StructRefField,
+} from './struct'

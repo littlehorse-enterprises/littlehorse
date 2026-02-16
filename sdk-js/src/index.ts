@@ -3,13 +3,21 @@ export {
   LHTaskWorker,
   LHTaskException,
   WorkerContext,
-  toStructVariableValue,
-  trySerializeAsStruct,
-  LHStruct,
-  LHField,
+  lhStruct,
+  lh,
   getStructDefName,
   buildPutStructDefRequest,
   buildStructVariableDef,
   getStructDependencies,
+  toStructVariableValue,
 } from './worker'
-export type { TaskFunction, LHTaskWorkerOptions, LHStructOptions, LHFieldOptions } from './worker'
+export type {
+  TaskFunction,
+  LHTaskWorkerOptions,
+  LHStructSchema,
+  LHStructOptions,
+  Infer,
+  FieldDef,
+  PrimitiveField,
+  StructRefField,
+} from './worker'

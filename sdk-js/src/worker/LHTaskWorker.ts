@@ -21,7 +21,7 @@ import { TaskStatus, LHErrorType } from '../proto/common_enums'
 import { LHConfig } from '../LHConfig'
 import { WorkerContext } from './WorkerContext'
 import { extractTaskArgs, toVariableValue } from './variableMapping'
-import { trySerializeAsStruct } from './decorators'
+import { toStructVariableValue, LHStructSchema } from './struct'
 import { randomBytes } from 'crypto'
 
 /**
@@ -29,6 +29,39 @@ import { randomBytes } from 'crypto'
  * variables as positional arguments and an optional WorkerContext as the last argument.
  */
 export type TaskFunction = (...args: any[]) => any | Promise<any>
+
+/**
+ * Parses parameter names from a function's source text and builds VariableDefs
+ * for each parameter except the last one if it looks like a WorkerContext.
+ *
+ * This mirrors Java SDK behavior where parameter names and types are inferred
+ * via reflection. Since JS has no runtime type info, we infer only names and
+ * leave the type unset (the server accepts it).
+ *
+ * @internal
+ */
+function inferInputVars(fn: TaskFunction): VariableDef[] {
+  const source = fn.toString()
+  // Match function params: handles `function(a, b)`, `(a, b) =>`, `async (a, b) =>`
+  const match = source.match(/^(?:async\s+)?(?:function\s*\w*\s*)?\(([^)]*)\)/)
+  if (!match) return []
+
+  const params = match[1]
+    .split(',')
+    .map((p) => p.trim().replace(/[:=].*/s, '').trim()) // strip type annotations & defaults
+    .filter(Boolean)
+
+  if (params.length === 0) return []
+
+  // The last parameter is a WorkerContext by convention — exclude it
+  const inputParams = params.slice(0, -1)
+
+  return inputParams.map((name) => ({
+    name,
+    // No type information available at runtime in JS;
+    // the server will accept VariableDefs without a typeDef.
+  }))
+}
 
 const HEARTBEAT_INTERVAL_MS = 15_000
 const REPORT_TASK_MAX_RETRIES = 5
@@ -54,7 +87,8 @@ class ServerConnection {
     private readonly taskFunction: TaskFunction,
     private readonly taskWorkerVersion: string | undefined,
     private readonly tenantId: string | undefined,
-    channelCredentials?: ChannelCredentials
+    channelCredentials?: ChannelCredentials,
+    private readonly outputSchema?: LHStructSchema
   ) {
     this.host = host
     this.port = port
@@ -169,7 +203,10 @@ class ServerConnection {
       args.push(context)
 
       const result = await Promise.resolve(this.taskFunction(...args))
-      const output = trySerializeAsStruct(result) ?? toVariableValue(result)
+      const output =
+        this.outputSchema && result !== null && result !== undefined && typeof result === 'object'
+          ? toStructVariableValue(result as Record<string, unknown>, this.outputSchema)
+          : toVariableValue(result)
 
       return {
         taskRunId: task.taskRunId,
@@ -281,6 +318,19 @@ export interface LHTaskWorkerOptions {
   inputVars?: VariableDef[]
 
   /**
+   * When the task function returns a struct, provide the schema here so the
+   * worker can serialize the return value as a Struct-typed VariableValue
+   * instead of a generic JSON object.
+   *
+   * ```ts
+   * const worker = new LHTaskWorker(myFn, 'my-task', config, {
+   *   outputSchema: PersonSchema,
+   * })
+   * ```
+   */
+  outputSchema?: LHStructSchema
+
+  /**
    * Optional version string for the task worker (recorded for debugging).
    */
   taskWorkerVersion?: string
@@ -299,6 +349,7 @@ export class LHTaskWorker {
   private readonly channelCredentials?: ChannelCredentials
   private readonly tenantId?: string
   private readonly inputVars: VariableDef[]
+  private readonly outputSchema?: LHStructSchema
 
   /**
    * Creates a new LHTaskWorker.
@@ -318,7 +369,8 @@ export class LHTaskWorker {
     this.bootstrapClient = config.getClient()
     this.channelCredentials = config.getChannelCredentials()
     this.tenantId = config.getTenantId()
-    this.inputVars = options?.inputVars ?? []
+    this.inputVars = options?.inputVars ?? inferInputVars(taskFunction)
+    this.outputSchema = options?.outputSchema
     this.taskWorkerVersion = options?.taskWorkerVersion
   }
 
@@ -478,7 +530,8 @@ export class LHTaskWorker {
             this.taskFunction,
             this.taskWorkerVersion,
             this.tenantId,
-            this.channelCredentials
+            this.channelCredentials,
+            this.outputSchema
           )
           conn.start()
           this.connections.set(key, conn)
