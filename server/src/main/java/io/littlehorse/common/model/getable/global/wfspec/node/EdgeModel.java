@@ -70,9 +70,6 @@ public class EdgeModel extends LHSerializable<Edge> {
             condition = VariableAssignmentModel.fromProto(proto.getCondition(), context);
         }
         if (proto.hasLegacyCondition()) {
-            if (true) {
-                throw new RuntimeException("Legacy condition is not supported anymore!");
-            }
             legacyCondition = LegacyEdgeConditionModel.fromProto(proto.getLegacyCondition(), context);
         }
 

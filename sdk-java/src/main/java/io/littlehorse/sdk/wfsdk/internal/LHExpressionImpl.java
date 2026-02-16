@@ -139,6 +139,6 @@ public class LHExpressionImpl implements LHExpression {
     public LHExpression getReverse() {
         LegacyEdgeCondition legacyCondition = new WorkflowConditionImpl(getLegacyCondition()).getReverse();
         return new LHExpressionImpl(
-                legacyCondition.getRight(), legacyCondition.getComparator(), legacyCondition.getLeft());
+                legacyCondition.getLeft(), legacyCondition.getComparator(), legacyCondition.getRight());
     }
 }
