@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.InlineStructDefUtil;
@@ -64,7 +65,12 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
             throw new LHApiException(Status.INVALID_ARGUMENT, "StructDef name must be a valid hostname");
         }
 
-        structDef.validate(context.metadataManager());
+        try {
+            structDef.validate(context.metadataManager());
+        } catch (StructValidationException e) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, String.format("StructDef validation failed: %s", e.getMessage()));
+        }
 
         StructDefModel spec = new StructDefModel();
         spec.setStructDef(structDef);

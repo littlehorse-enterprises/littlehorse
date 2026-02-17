@@ -1,9 +1,7 @@
 package io.littlehorse.common.model.getable.global.structdef;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.InlineStructModel;
 import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
@@ -11,7 +9,6 @@ import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,17 +47,21 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
         return InlineStructDef.class;
     }
 
-    public void validate(ReadOnlyMetadataManager metadataManager) {
+    public void validate(ReadOnlyMetadataManager metadataManager) throws StructValidationException {
         for (Entry<String, StructFieldDefModel> field : fields.entrySet()) {
             try {
                 validateStructDefFieldName(field.getKey());
             } catch (InvalidStructDefFieldNameException e) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        MessageFormat.format("StructDef Field name [{0}] invalid: " + e.getMessage(), field.getKey()));
+                throw new StructValidationException(
+                        e, String.format("StructDef field name '%s' invalid: %s", field.getKey(), e.getMessage()));
             }
 
-            field.getValue().validate(metadataManager);
+            try {
+                field.getValue().validate(metadataManager);
+            } catch (StructValidationException e) {
+                throw new StructValidationException(
+                        e, String.format("StructDef field '%s' invalid: %s", field.getKey(), e.getMessage()));
+            }
         }
     }
 
