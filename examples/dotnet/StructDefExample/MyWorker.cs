@@ -7,14 +7,14 @@ public class MyWorker
     [LHTaskMethod("get-car-owner")]
     public Task<Person> GetCarOwner(ParkingTicketReport report)
     {
-        return LookupCarOwnerInDb(report.LicensePlateNumber);
+        return Task.FromResult(LookupCarOwnerInDb(report.LicensePlateNumber));
     }
 
     [LHTaskMethod("mail-ticket")]
     public Task<string> MailTicket(Person person)
     {
         Console.WriteLine($"Notifying {person} of parking ticket.");
-        return $"Ticket sent to {person} at {person.HomeAddress}";
+        return Task.FromResult($"Ticket sent to {person} at {person.HomeAddress}");
     }
 
     private static Person LookupCarOwnerInDb(string licensePlateNumber)
