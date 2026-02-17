@@ -361,6 +361,7 @@ namespace LittleHorse.Sdk.Helper
                 case VariableValue.ValueOneofCase.WfRunId:
                     return VariableType.WfRunId;
                 case VariableValue.ValueOneofCase.JsonObj:
+                    return VariableType.JsonObj;
                 case VariableValue.ValueOneofCase.None:
                 default:
                     return VariableType.JsonObj;
@@ -379,10 +380,7 @@ namespace LittleHorse.Sdk.Helper
             {
                 throw new ArgumentNullException(nameof(type),"Type cannot be null.");
             }
-            var typeDef = new TypeDefinition
-            {
-                PrimitiveType = DotNetTypeToLHVariableType(type!)
-            };
+            var typeDef = LHClassType.FromType(type).GetTypeDefinition();
             return new ReturnType { ReturnType_ = typeDef };
         }
 

@@ -246,7 +246,7 @@ public class WorkflowThread
                 "You cannot add a variable in a given thread after the thread has completed.");
         }
         
-        var wfRunVariable = new WfRunVariable(name, typeOrDefaultVal, this);
+        var wfRunVariable = WfRunVariable.CreatePrimitiveVar(name, typeOrDefaultVal, this);
         _wfRunVariables.Add(wfRunVariable);
         
         return wfRunVariable;

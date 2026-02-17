@@ -43,7 +43,7 @@ public class LHStructPropertyTest
     {
         var property = CreateProperty(nameof(Library.Books));
 
-        Assert.Equal("Books", property.FieldName);
+        Assert.Equal("books", property.FieldName);
     }
 
     [Fact]

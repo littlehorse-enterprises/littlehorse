@@ -122,7 +122,7 @@ public class WfRunVariable
             SetDefaultValue(typeOrDefaultVal);
             TypeDef = new TypeDefinition
             {
-                PrimitiveType = LHMappingHelper.ValueCaseToVariableType(_defaultValue!.ValueCase)
+                PrimitiveType = LHMappingHelper.ValueCaseToVariableType(defaultValue!.ValueCase)
             };
         }
     }
@@ -164,7 +164,7 @@ public class WfRunVariable
     public ThreadVarDef Compile() 
     {
         var compiledTypeDef = TypeDef.Clone();
-        compiledTypeDef.Masked = _masked;
+        compiledTypeDef.Masked = masked;
 
         VariableDef varDef = new VariableDef
         {
@@ -172,9 +172,9 @@ public class WfRunVariable
             Name = Name
         };
 
-        if (_defaultValue != null) 
+        if (defaultValue != null) 
         {
-            varDef.DefaultValue = _defaultValue;
+            varDef.DefaultValue = defaultValue;
         }
 
         var threadVarDef = new ThreadVarDef
@@ -245,7 +245,7 @@ public class WfRunVariable
     /// </returns>
     public WfRunVariable WithAccessLevel(WfRunVariableAccessLevel accessLevel)
     {
-        _accessLevel = accessLevel;
+        this.accessLevel = accessLevel;
         return this;
     }
     
@@ -328,9 +328,9 @@ public class WfRunVariable
             throw new ArgumentException("Default values are only supported for primitive variables.");
         }
 
-        if (!LHMappingHelper.ValueCaseToVariableType(_defaultValue!.ValueCase).Equals(Type)) 
+        if (!LHMappingHelper.ValueCaseToVariableType(defaultValue!.ValueCase).Equals(TypeDef.PrimitiveType)) 
         {
-            throw new ArgumentException($"Default value type does not match LH variable type {Type}");
+            throw new ArgumentException($"Default value type does not match LH variable type {TypeDef.PrimitiveType}");
         }
 
         return this;

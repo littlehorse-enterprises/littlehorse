@@ -325,6 +325,17 @@ public class LHMappingHelperTest
     }
 
     [Fact]
+    public void DotNetTypeToReturnType_WithStructDefType_ShouldReturnStructTypeDefinition()
+    {
+        var result = LHMappingHelper.DotNetTypeToReturnType(typeof(TestStruct));
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.ReturnType_);
+        Assert.Equal(TypeDefinition.DefinedTypeOneofCase.StructDefId, result.ReturnType_.DefinedTypeCase);
+        Assert.Equal("test-struct", result.ReturnType_.StructDefId.Name);
+    }
+
+    [Fact]
     public void DotNetTypeToReturnType_WithNull_ShouldThrowException()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => LHMappingHelper.DotNetTypeToReturnType(null!));
@@ -342,10 +353,10 @@ public class LHMappingHelperTest
 
         Assert.Equal(VariableValue.ValueOneofCase.Struct, result.ValueCase);
         Assert.Equal("test-struct", result.Struct.StructDefId.Name);
-        Assert.True(result.Struct.Struct_.Fields.ContainsKey("Name"));
-        Assert.True(result.Struct.Struct_.Fields.ContainsKey("Age"));
-        Assert.Equal("Ada", result.Struct.Struct_.Fields["Name"].Value.Str);
-        Assert.Equal(42, result.Struct.Struct_.Fields["Age"].Value.Int);
+        Assert.True(result.Struct.Struct_.Fields.ContainsKey("name"));
+        Assert.True(result.Struct.Struct_.Fields.ContainsKey("age"));
+        Assert.Equal("Ada", result.Struct.Struct_.Fields["name"].Value.Str);
+        Assert.Equal(42, result.Struct.Struct_.Fields["age"].Value.Int);
     }
 
     [Fact]
@@ -357,16 +368,16 @@ public class LHMappingHelperTest
 
         Assert.Equal(VariableValue.ValueOneofCase.Struct, result.ValueCase);
         Assert.Equal("test-struct-ignored", result.Struct.StructDefId.Name);
-        Assert.True(result.Struct.Struct_.Fields.ContainsKey("Name"));
-        Assert.False(result.Struct.Struct_.Fields.ContainsKey("Secret"));
+        Assert.True(result.Struct.Struct_.Fields.ContainsKey("name"));
+        Assert.False(result.Struct.Struct_.Fields.ContainsKey("secret"));
     }
 
     [Fact]
     public void VariableValueToObject_WithStruct_ShouldDeserializeToObject()
     {
         var inlineStruct = new InlineStruct();
-        inlineStruct.Fields.Add("Name", new StructField { Value = new VariableValue { Str = "Ada" } });
-        inlineStruct.Fields.Add("Age", new StructField { Value = new VariableValue { Int = 42 } });
+        inlineStruct.Fields.Add("name", new StructField { Value = new VariableValue { Str = "Ada" } });
+        inlineStruct.Fields.Add("age", new StructField { Value = new VariableValue { Int = 42 } });
 
         var structValue = new LhStruct
         {
@@ -385,8 +396,8 @@ public class LHMappingHelperTest
     public void VariableValueToObject_WithStructAndNonStructType_ShouldThrow()
     {
         var inlineStruct = new InlineStruct();
-        inlineStruct.Fields.Add("Name", new StructField { Value = new VariableValue { Str = "Ada" } });
-        inlineStruct.Fields.Add("Age", new StructField { Value = new VariableValue { Int = 42 } });
+        inlineStruct.Fields.Add("name", new StructField { Value = new VariableValue { Str = "Ada" } });
+        inlineStruct.Fields.Add("age", new StructField { Value = new VariableValue { Int = 42 } });
 
         var structValue = new LhStruct
         {
