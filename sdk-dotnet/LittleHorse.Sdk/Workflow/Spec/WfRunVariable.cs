@@ -19,7 +19,7 @@ public class WfRunVariable
     /// </value>
     internal TypeDefinition TypeDef { get; private set; } = new();
 
-    internal VariableValue? defaultValue { get; private set; }
+    internal VariableValue? DefaultValue { get; private set; }
     
     /// <value>
     /// Gets the JsonPath of this WfRunVariable that is JSON_OBJ or JSON_ARR types.
@@ -122,7 +122,7 @@ public class WfRunVariable
             SetDefaultValue(typeOrDefaultVal);
             TypeDef = new TypeDefinition
             {
-                PrimitiveType = LHMappingHelper.ValueCaseToVariableType(defaultValue!.ValueCase)
+                PrimitiveType = LHMappingHelper.ValueCaseToVariableType(DefaultValue!.ValueCase)
             };
         }
     }
@@ -147,7 +147,7 @@ public class WfRunVariable
     {
         try 
         {
-            defaultValue = LHMappingHelper.ObjectToVariableValue(defaultVal);
+            DefaultValue = LHMappingHelper.ObjectToVariableValue(defaultVal);
         } 
         catch (LHSerdeException e) 
         {
@@ -172,9 +172,9 @@ public class WfRunVariable
             Name = Name
         };
 
-        if (defaultValue != null) 
+        if (DefaultValue != null) 
         {
-            varDef.DefaultValue = defaultValue;
+            varDef.DefaultValue = DefaultValue;
         }
 
         var threadVarDef = new ThreadVarDef
@@ -328,7 +328,7 @@ public class WfRunVariable
             throw new ArgumentException("Default values are only supported for primitive variables.");
         }
 
-        if (!LHMappingHelper.ValueCaseToVariableType(defaultValue!.ValueCase).Equals(TypeDef.PrimitiveType)) 
+        if (!LHMappingHelper.ValueCaseToVariableType(DefaultValue!.ValueCase).Equals(TypeDef.PrimitiveType)) 
         {
             throw new ArgumentException($"Default value type does not match LH variable type {TypeDef.PrimitiveType}");
         }
@@ -354,16 +354,12 @@ public class WfRunVariable
         {
             throw new LHMisconfigurationException("Cannot use jsonpath() twice on same var!");
         }
-        if (TypeDef.DefinedTypeCase != TypeDefinition.DefinedTypeOneofCase.PrimitiveType)
-        {
-            throw new LHMisconfigurationException("JsonPath not allowed in a non-primitive variable");
-        }
         if (TypeDef.DefinedTypeCase != TypeDefinition.DefinedTypeOneofCase.PrimitiveType
             || (TypeDef.PrimitiveType != VariableType.JsonObj && TypeDef.PrimitiveType != VariableType.JsonArr))
         {
             throw new LHMisconfigurationException($"JsonPath not allowed in a {TypeDef.PrimitiveType} variable");
         }
-        var outVariable = clone();
+        var outVariable = Clone();
         outVariable.JsonPath = path;
         
         return outVariable;
@@ -701,13 +697,17 @@ public class WfRunVariable
         return parent.Condition(this, Comparator.NotIn, rhs);
     }
 
-    public WfRunVariable clone()
+    /// <summary>
+    /// Creates a copy of this WfRunVariable with the same configuration.
+    /// </summary>
+    /// <returns>A new WfRunVariable with matching settings and metadata.</returns>
+    public WfRunVariable Clone()
     {
         WfRunVariable outVariable = new WfRunVariable(Name, parent);
 
-        if (defaultValue != null)
+        if (DefaultValue != null)
         {
-            outVariable.SetDefaultValue(this.defaultValue);
+            outVariable.SetDefaultValue(this.DefaultValue);
         }
 
         outVariable.required = required;

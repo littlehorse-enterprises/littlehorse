@@ -183,11 +183,11 @@ namespace LittleHorse.Sdk.Helper
         }
 
         /// <summary>
-        /// 
+        /// Deserializes a LittleHorse Struct into a C# object of the requested type.
         /// </summary>
-        /// <param name="val"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="val">The Struct value to convert.</param>
+        /// <param name="type">The target C# type.</param>
+        /// <returns>An instance of <paramref name="type" /> populated from the Struct fields.</returns>
         private static object? DeserializeStructToObject(Common.Proto.Struct val, Type type)
         {
             var lhClassType = LHClassType.FromType(type);
