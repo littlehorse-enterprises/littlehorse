@@ -4,6 +4,7 @@ using System.ComponentModel;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
+using LittleHorse.Sdk.Worker;
 using Xunit;
 
 public class LHStructPropertyTest
