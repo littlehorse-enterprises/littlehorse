@@ -1,3 +1,5 @@
+using LittleHorse.Sdk.Worker;
+
 namespace LittleHorse.Sdk.Helper
 {
   /// <summary>

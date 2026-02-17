@@ -5,6 +5,7 @@ using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
 using Google.Protobuf.WellKnownTypes;
 using LittleHorse.Sdk.Exceptions;
+using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Tests;
 using LhStruct = LittleHorse.Sdk.Common.Proto.Struct;
 using Xunit;

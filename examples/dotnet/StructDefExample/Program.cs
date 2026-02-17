@@ -157,7 +157,7 @@ public class Program
             WfSpecName = "issue-parking-ticket",
             Variables =
             {
-                { "car-input", LHMappingHelper.ObjectToVariableValue(report) }
+                { "ticket-report", LHMappingHelper.ObjectToVariableValue(report) }
             }
         });
     }

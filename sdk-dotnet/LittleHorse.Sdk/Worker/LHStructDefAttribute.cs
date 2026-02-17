@@ -1,27 +1,32 @@
-/// <summary>
-/// Marks a class as a LittleHorse StructDef, providing its name and description.
-/// </summary>
-[AttributeUsage(AttributeTargets.Class)]
-public class LHStructDefAttribute : Attribute
+using System;
+
+namespace LittleHorse.Sdk.Worker
 {
   /// <summary>
-  /// The StructDef name.
+  /// Marks a class as a LittleHorse StructDef, providing its name and description.
   /// </summary>
-  public string Value;
-
-  /// <summary>
-  /// The StructDef description.
-  /// </summary>
-  public string Description;
-
-  /// <summary>
-  /// Creates a StructDef attribute.
-  /// </summary>
-  /// <param name="value">The StructDef name.</param>
-  /// <param name="description">The StructDef description.</param>
-  public LHStructDefAttribute(string value, string description = "")
+  [AttributeUsage(AttributeTargets.Class)]
+  public class LHStructDefAttribute : Attribute
   {
-    Value = value;
-    Description = description;
+    /// <summary>
+    /// The StructDef name.
+    /// </summary>
+    public string Value;
+
+    /// <summary>
+    /// The StructDef description.
+    /// </summary>
+    public string Description;
+
+    /// <summary>
+    /// Creates a StructDef attribute.
+    /// </summary>
+    /// <param name="value">The StructDef name.</param>
+    /// <param name="description">The StructDef description.</param>
+    public LHStructDefAttribute(string value, string description = "")
+    {
+      Value = value;
+      Description = description;
+    }
   }
 }

@@ -272,7 +272,7 @@ namespace LittleHorse.Sdk.Helper
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                throw new LHSerdeException("Failed serializing object to Struct: " + o.GetType().FullName, ex);
             }
 
             outputStruct.Struct_ = inlineStruct;
