@@ -1,4 +1,5 @@
 using Grpc.Core;
+using System.Linq;
 using LittleHorse.Sdk;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
@@ -119,10 +120,7 @@ public class Program
 
         var workers = GetTaskWorkers(config);
 
-        foreach (var worker in workers)
-        {
-            await worker.RegisterTaskDef();
-        }
+        await Task.WhenAll(workers.Select(worker => worker.RegisterTaskDef()));
 
         await workflow.RegisterWfSpec(client);
 
@@ -134,10 +132,7 @@ public class Program
             }
         };
 
-        foreach (var worker in workers)
-        {
-            await worker.Start();
-        }
+        await Task.WhenAll(workers.Select(worker => worker.Start()));
     }
 
     private static async Task RunWorkflow(LHConfig config, string[] args, ILogger logger)
@@ -153,7 +148,7 @@ public class Program
         string vehicleModel = args[1];
         string licensePlateNumber = args[2];
 
-        var report = new ParkingTicketReport(vehicleMake, vehicleModel, licensePlateNumber, DateTime.UtcNow);
+        var report = new ParkingTicketReport(vehicleMake, vehicleModel, licensePlateNumber);
 
         logger.LogInformation("Generated parking ticket report from arguments:\n{Report}", report);
 
