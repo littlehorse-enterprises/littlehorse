@@ -6,7 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
-import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
+import io.littlehorse.common.model.getable.global.structdef.StructDefValidationException;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.util.InlineStructDefUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
@@ -47,7 +47,7 @@ public class ValidateStructDefEvolutionRequestModel extends LHSerializable<Valid
     public ValidateStructDefEvolutionResponse validate(ReadOnlyMetadataManager metadataManager) {
         try {
             structDef.validate(metadataManager);
-        } catch (StructValidationException e) {
+        } catch (StructDefValidationException e) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT, String.format("StructDef evolution request invalid: %s", e.getMessage()));
         }

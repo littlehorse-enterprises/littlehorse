@@ -47,19 +47,19 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
         return InlineStructDef.class;
     }
 
-    public void validate(ReadOnlyMetadataManager metadataManager) throws StructValidationException {
+    public void validate(ReadOnlyMetadataManager metadataManager) throws StructDefValidationException {
         for (Entry<String, StructFieldDefModel> field : fields.entrySet()) {
             try {
                 validateStructDefFieldName(field.getKey());
             } catch (InvalidStructDefFieldNameException e) {
-                throw new StructValidationException(
+                throw new StructDefValidationException(
                         e, String.format("StructDef field name '%s' invalid: %s", field.getKey(), e.getMessage()));
             }
 
             try {
                 field.getValue().validate(metadataManager);
-            } catch (StructValidationException e) {
-                throw new StructValidationException(
+            } catch (StructDefValidationException e) {
+                throw new StructDefValidationException(
                         e, String.format("StructDef field '%s' invalid: %s", field.getKey(), e.getMessage()));
             }
         }

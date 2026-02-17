@@ -62,12 +62,12 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
         return defaultValue == null;
     }
 
-    public void validate(ReadOnlyMetadataManager metadataManager) throws StructValidationException {
+    public void validate(ReadOnlyMetadataManager metadataManager) throws StructDefValidationException {
         // Validates field type against default value
         if (defaultValue != null
                 && !defaultValue.isNull()
                 && !this.fieldType.isCompatibleWith(defaultValue, metadataManager)) {
-            throw new StructValidationException(String.format(
+            throw new StructDefValidationException(String.format(
                     "StructFieldDef field type [%s] is not compatible with the provided default value.",
                     this.fieldType));
         }
