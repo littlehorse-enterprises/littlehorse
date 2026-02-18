@@ -5,6 +5,7 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class ThreadRunIterator implements Iterator<ThreadRunModel> {
 
@@ -28,11 +29,15 @@ public class ThreadRunIterator implements Iterator<ThreadRunModel> {
 
     @Override
     public boolean hasNext() {
-        return currentIndex < maxThreadRunNumber;
+        return currentIndex <= maxThreadRunNumber;
     }
 
     @Override
     public ThreadRunModel next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException("No more items to iterate.");
+        }
+
         // Check local storage
         for (ThreadRunModel threadRun : threadRuns) {
             if (threadRun.getNumber() == this.currentIndex) {
@@ -50,6 +55,6 @@ public class ThreadRunIterator implements Iterator<ThreadRunModel> {
             return potentialThreadRun.getThreadRun();
         }
 
-        throw new IndexOutOfBoundsException("No more items to iterate.");
+        throw new NoSuchElementException("No ThreadRun found at index " + currentIndex + ".");
     }
 }
