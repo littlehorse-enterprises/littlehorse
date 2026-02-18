@@ -67,7 +67,7 @@
           "typeDef": {
             "masked": false,
             "structDefId": {
-              "name": "car",
+              "name": "parking-ticket-report",
               "version": 0
             }
           }

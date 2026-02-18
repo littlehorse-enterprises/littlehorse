@@ -198,7 +198,7 @@ export function buildPutStructDefRequest(
   }
 
   const unwrapped = unwrapZod(schema)
-  const shape = (unwrapped._def as any).shape?.() ?? (unwrapped._def as any).shape ?? {}
+  const shape = getShape(unwrapped)
   const structDefFields: Record<string, StructFieldDef> = {}
 
   for (const [fieldName, fieldSchema] of Object.entries(shape) as [string, ZodTypeAny][]) {
@@ -258,7 +258,7 @@ export function getStructDependencies(schema: ZodTypeAny): ZodTypeAny[] {
     visited.add(name)
 
     // Walk into object fields to find nested struct refs
-    const shape = (unwrapped._def as any).shape?.() ?? (unwrapped._def as any).shape ?? {}
+    const shape = getShape(unwrapped)
     for (const fieldSchema of Object.values(shape) as ZodTypeAny[]) {
       walk(fieldSchema)
     }
@@ -293,7 +293,7 @@ export function toStructVariableValue(
   }
 
   const unwrapped = unwrapZod(schema)
-  const shape = (unwrapped._def as any).shape?.() ?? (unwrapped._def as any).shape ?? {}
+  const shape = getShape(unwrapped)
   const fields: Record<string, StructField> = {}
 
   for (const [key, val] of Object.entries(value)) {
@@ -348,4 +348,15 @@ function unwrapZod(schema: ZodTypeAny): ZodTypeAny {
   }
 
   return current
+}
+
+/**
+ * Extracts the shape (field map) from a Zod object schema.
+ * Handles both Zod v3 (shape is a function) and Zod v4 (shape is a plain object).
+ */
+function getShape(schema: ZodTypeAny): Record<string, ZodTypeAny> {
+  const raw = (schema._def as any).shape
+  if (typeof raw === 'function') return raw()
+  if (raw && typeof raw === 'object') return raw
+  return {}
 }
