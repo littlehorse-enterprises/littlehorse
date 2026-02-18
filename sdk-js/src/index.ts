@@ -1,6 +1,6 @@
 export { LHConfig } from './LHConfig'
 export {
-  LHTaskWorker,
+  createTaskWorker,
   LHTaskException,
   WorkerContext,
   lhStruct,
@@ -14,6 +14,7 @@ export {
   toStructVariableValue,
 } from './worker'
 export type {
+  LHTaskWorker,
   TaskFunction,
   LHTaskWorkerOptions,
 } from './worker'

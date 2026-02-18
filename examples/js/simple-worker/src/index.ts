@@ -1,4 +1,4 @@
-import { LHConfig, LHTaskWorker, WorkerContext } from 'littlehorse-client'
+import { LHConfig, createTaskWorker, WorkerContext } from 'littlehorse-client'
 import { z } from 'zod'
 
 /**
@@ -17,7 +17,7 @@ async function main() {
   // Connect to the LH Server (defaults to localhost:2023)
   const config = LHConfig.from({})
 
-  const worker = new LHTaskWorker(greet, 'greet', config, {
+  const worker = createTaskWorker(greet, 'greet', config, {
     inputVars: { name: z.string() },
   })
 

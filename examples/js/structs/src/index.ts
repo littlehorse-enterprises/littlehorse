@@ -1,6 +1,6 @@
 import {
   LHConfig,
-  LHTaskWorker,
+  createTaskWorker,
   WorkerContext,
   buildPutStructDefRequest,
   getStructDependencies,
@@ -33,11 +33,11 @@ function mailTicket(person: PersonType, _ctx: WorkerContext): string {
 async function main() {
   const config = LHConfig.from({})
 
-  const getCarOwnerWorker = new LHTaskWorker(getCarOwner, 'get-car-owner', config, {
+  const getCarOwnerWorker = createTaskWorker(getCarOwner, 'get-car-owner', config, {
     inputVars: { report: ParkingTicketReport },
     outputSchema: Person,
   })
-  const mailTicketWorker = new LHTaskWorker(mailTicket, 'mail-ticket', config, {
+  const mailTicketWorker = createTaskWorker(mailTicket, 'mail-ticket', config, {
     inputVars: { person: Person },
   })
 
