@@ -32,6 +32,8 @@ export class LHConfig {
   private caCert?: string
   private channel: Channel
 
+  private channelCredentials?: ChannelCredentials
+
   private constructor(config: Config) {
     const mergedConfig = { ...DEFAULT_CONFIG, ...config } as Config
     this.apiHost = mergedConfig.LHC_API_HOST
@@ -40,13 +42,12 @@ export class LHConfig {
     this.tenantId = mergedConfig.LHC_TENANT_ID
     this.caCert = mergedConfig.LHC_CA_CERT
 
-    let channelCredentials
     if (this.protocol === 'TLS') {
       const rootCa = this.caCert ? readFileSync(this.caCert) : undefined
-      channelCredentials = ChannelCredentials.createSsl(rootCa)
+      this.channelCredentials = ChannelCredentials.createSsl(rootCa)
     }
 
-    this.channel = createChannel(`${this.apiHost}:${this.apiPort}`, channelCredentials)
+    this.channel = createChannel(`${this.apiHost}:${this.apiPort}`, this.channelCredentials)
   }
 
   /**
@@ -95,5 +96,20 @@ export class LHConfig {
     }
 
     return newMetadata
+  }
+
+  /**
+   * Returns the channel credentials for TLS connections, or undefined for plaintext.
+   * Used internally by the task worker to create per-host connections.
+   */
+  getChannelCredentials(): ChannelCredentials | undefined {
+    return this.channelCredentials
+  }
+
+  /**
+   * Returns the configured tenant ID.
+   */
+  getTenantId(): string | undefined {
+    return this.tenantId
   }
 }
