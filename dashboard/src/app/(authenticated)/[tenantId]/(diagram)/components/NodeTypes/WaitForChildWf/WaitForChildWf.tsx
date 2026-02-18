@@ -1,5 +1,5 @@
 import { WaitForChildWfNode } from 'littlehorse-client/proto'
-import { Merge, Spool } from 'lucide-react'
+import { Merge, Workflow } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
@@ -48,7 +48,7 @@ const Node: FC<NodeProps<'waitForChildWf', WaitForChildWfNode>> = ({ data }) => 
                   border: `1px solid ${SALMON_DARK}`,
                 }}
               >
-                <Spool className="h-2.5 w-2.5 stroke-black" strokeWidth={1.5} />
+                <Workflow className="h-2.5 w-2.5 stroke-black" strokeWidth={1.5} />
               </div>
             </div>
           </div>
