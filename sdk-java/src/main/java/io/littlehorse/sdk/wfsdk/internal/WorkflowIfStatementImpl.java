@@ -1,7 +1,7 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.wfsdk.IfElseBody;
-import io.littlehorse.sdk.wfsdk.WorkflowCondition;
+import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import lombok.Getter;
@@ -27,7 +27,7 @@ public class WorkflowIfStatementImpl implements WorkflowIfStatement {
     }
 
     @Override
-    public WorkflowIfStatement doElseIf(WorkflowCondition condition, IfElseBody body) {
+    public WorkflowIfStatement doElseIf(LHExpression condition, IfElseBody body) {
         return this.parentWorkflowThread.doElseIf(this, condition, body);
     }
 

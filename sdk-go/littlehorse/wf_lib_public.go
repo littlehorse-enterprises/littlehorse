@@ -187,7 +187,7 @@ func (n *UserTaskNodeOutput) JsonPath(jsonPath string) *UserTaskNodeOutput {
 }
 
 type WorkflowCondition struct {
-	spec *lhproto.EdgeCondition
+	spec *lhproto.LegacyEdgeCondition
 }
 
 type SpawnedThread struct {

@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.core.wfrun.VariableAssignerFunc;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
+import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -22,7 +23,8 @@ public class ExpressionModel extends LHSerializable<Expression> {
 
     private VariableAssignmentModel lhs;
     private VariableAssignmentModel rhs;
-    private VariableMutationType operation;
+    private Comparator mutateByComparison;
+    private VariableMutationType mutateWithOperation;
 
     @Override
     public Class<Expression> getProtoBaseClass() {
@@ -31,10 +33,13 @@ public class ExpressionModel extends LHSerializable<Expression> {
 
     @Override
     public Expression.Builder toProto() {
-        return Expression.newBuilder()
-                .setOperation(operation)
-                .setLhs(lhs.toProto())
-                .setRhs(rhs.toProto());
+        Expression.Builder out = Expression.newBuilder().setLhs(lhs.toProto()).setRhs(rhs.toProto());
+        if (mutateWithOperation != null) {
+            out.setMutationType(mutateWithOperation);
+        } else {
+            out.setComparator(mutateByComparison);
+        }
+        return out;
     }
 
     @Override
@@ -42,7 +47,12 @@ public class ExpressionModel extends LHSerializable<Expression> {
         Expression p = (Expression) proto;
         lhs = LHSerializable.fromProto(p.getLhs(), VariableAssignmentModel.class, ignored);
         rhs = LHSerializable.fromProto(p.getRhs(), VariableAssignmentModel.class, ignored);
-        operation = p.getOperation();
+        if (p.hasComparator()) {
+            mutateByComparison = p.getComparator();
+        }
+        if (p.hasMutationType()) {
+            mutateWithOperation = p.getMutationType();
+        }
     }
 
     public Optional<TypeDefinitionModel> resolveTypeDefinition(
@@ -59,7 +69,7 @@ public class ExpressionModel extends LHSerializable<Expression> {
         TypeDefinitionModel lhsType = lhsTypeOption.get();
         TypeDefinitionModel rhsType = rhsTypeOption.get();
 
-        return lhsType.resolveTypeAfterMutationWith(operation, rhsType, manager);
+        return lhsType.resolveTypeAfterMutationWith(mutateWithOperation, rhsType, manager);
     }
 
     public VariableValueModel evaluate(VariableAssignerFunc variableFinder) throws LHVarSubError {
@@ -73,6 +83,6 @@ public class ExpressionModel extends LHSerializable<Expression> {
             typeToCoerceTo = new TypeDefinitionModel(VariableType.DOUBLE);
         }
 
-        return lhsVal.operate(operation, rhsVal, typeToCoerceTo);
+        return lhsVal.operate(mutateWithOperation, rhsVal, typeToCoerceTo);
     }
 }

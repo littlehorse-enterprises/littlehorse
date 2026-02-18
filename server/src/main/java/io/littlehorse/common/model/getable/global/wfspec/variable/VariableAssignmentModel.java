@@ -5,11 +5,14 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidEdgeException;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.LegacyEdgeConditionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
@@ -18,8 +21,10 @@ import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.PathCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -287,5 +292,26 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
 
     public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
         return canBeType(new TypeDefinitionModel(type), tspec);
+    }
+
+    public LegacyEdgeConditionModel toLegacyCondition() {
+        LegacyEdgeConditionModel out = new LegacyEdgeConditionModel();
+        out.left = expression.getLhs();
+        out.comparator = expression.getMutateByComparison();
+        out.right = expression.getRhs();
+        return out;
+    }
+
+    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
+            throws InvalidEdgeException {
+        toLegacyCondition().validate(source, manager, threadSpec);
+    }
+
+    public boolean isSatisfied(ThreadRunModel threadRun) throws LHVarSubError {
+        return toLegacyCondition().isSatisfied(threadRun);
+    }
+
+    public Collection<String> getRequiredVariableNames() {
+        return toLegacyCondition().getRequiredVariableNames();
     }
 }

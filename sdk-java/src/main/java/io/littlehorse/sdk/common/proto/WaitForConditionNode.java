@@ -48,43 +48,108 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.WaitForConditionNode.class, io.littlehorse.sdk.common.proto.WaitForConditionNode.Builder.class);
   }
 
-  private int bitField0_;
-  public static final int CONDITION_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.EdgeCondition condition_;
+  private int nodeConditionCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object nodeCondition_;
+  public enum NodeConditionCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    LEGACY_CONDITION(1),
+    CONDITION(2),
+    NODECONDITION_NOT_SET(0);
+    private final int value;
+    private NodeConditionCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static NodeConditionCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static NodeConditionCase forNumber(int value) {
+      switch (value) {
+        case 1: return LEGACY_CONDITION;
+        case 2: return CONDITION;
+        case 0: return NODECONDITION_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public NodeConditionCase
+  getNodeConditionCase() {
+    return NodeConditionCase.forNumber(
+        nodeConditionCase_);
+  }
+
+  public static final int LEGACY_CONDITION_FIELD_NUMBER = 1;
   /**
-   * <pre>
-   * The condition that this node will block for.
-   * </pre>
-   *
-   * <code>.littlehorse.EdgeCondition condition = 1;</code>
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+   * @return Whether the legacyCondition field is set.
+   */
+  @java.lang.Override
+  public boolean hasLegacyCondition() {
+    return nodeConditionCase_ == 1;
+  }
+  /**
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+   * @return The legacyCondition.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LegacyEdgeCondition getLegacyCondition() {
+    if (nodeConditionCase_ == 1) {
+       return (io.littlehorse.sdk.common.proto.LegacyEdgeCondition) nodeCondition_;
+    }
+    return io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder getLegacyConditionOrBuilder() {
+    if (nodeConditionCase_ == 1) {
+       return (io.littlehorse.sdk.common.proto.LegacyEdgeCondition) nodeCondition_;
+    }
+    return io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance();
+  }
+
+  public static final int CONDITION_FIELD_NUMBER = 2;
+  /**
+   * <code>.littlehorse.VariableAssignment condition = 2;</code>
    * @return Whether the condition field is set.
    */
   @java.lang.Override
   public boolean hasCondition() {
-    return ((bitField0_ & 0x00000001) != 0);
+    return nodeConditionCase_ == 2;
   }
   /**
-   * <pre>
-   * The condition that this node will block for.
-   * </pre>
-   *
-   * <code>.littlehorse.EdgeCondition condition = 1;</code>
+   * <code>.littlehorse.VariableAssignment condition = 2;</code>
    * @return The condition.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.EdgeCondition getCondition() {
-    return condition_ == null ? io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance() : condition_;
+  public io.littlehorse.sdk.common.proto.VariableAssignment getCondition() {
+    if (nodeConditionCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) nodeCondition_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
   /**
-   * <pre>
-   * The condition that this node will block for.
-   * </pre>
-   *
-   * <code>.littlehorse.EdgeCondition condition = 1;</code>
+   * <code>.littlehorse.VariableAssignment condition = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder getConditionOrBuilder() {
-    return condition_ == null ? io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance() : condition_;
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getConditionOrBuilder() {
+    if (nodeConditionCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) nodeCondition_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -101,8 +166,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(1, getCondition());
+    if (nodeConditionCase_ == 1) {
+      output.writeMessage(1, (io.littlehorse.sdk.common.proto.LegacyEdgeCondition) nodeCondition_);
+    }
+    if (nodeConditionCase_ == 2) {
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.VariableAssignment) nodeCondition_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -113,9 +181,13 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (nodeConditionCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getCondition());
+        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.LegacyEdgeCondition) nodeCondition_);
+    }
+    if (nodeConditionCase_ == 2) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.VariableAssignment) nodeCondition_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -132,10 +204,18 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.WaitForConditionNode other = (io.littlehorse.sdk.common.proto.WaitForConditionNode) obj;
 
-    if (hasCondition() != other.hasCondition()) return false;
-    if (hasCondition()) {
-      if (!getCondition()
-          .equals(other.getCondition())) return false;
+    if (!getNodeConditionCase().equals(other.getNodeConditionCase())) return false;
+    switch (nodeConditionCase_) {
+      case 1:
+        if (!getLegacyCondition()
+            .equals(other.getLegacyCondition())) return false;
+        break;
+      case 2:
+        if (!getCondition()
+            .equals(other.getCondition())) return false;
+        break;
+      case 0:
+      default:
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -148,9 +228,17 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasCondition()) {
-      hash = (37 * hash) + CONDITION_FIELD_NUMBER;
-      hash = (53 * hash) + getCondition().hashCode();
+    switch (nodeConditionCase_) {
+      case 1:
+        hash = (37 * hash) + LEGACY_CONDITION_FIELD_NUMBER;
+        hash = (53 * hash) + getLegacyCondition().hashCode();
+        break;
+      case 2:
+        hash = (37 * hash) + CONDITION_FIELD_NUMBER;
+        hash = (53 * hash) + getCondition().hashCode();
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -276,29 +364,26 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.WaitForConditionNode.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessage
-              .alwaysUseFieldBuilders) {
-        internalGetConditionFieldBuilder();
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      condition_ = null;
-      if (conditionBuilder_ != null) {
-        conditionBuilder_.dispose();
-        conditionBuilder_ = null;
+      if (legacyConditionBuilder_ != null) {
+        legacyConditionBuilder_.clear();
       }
+      if (conditionBuilder_ != null) {
+        conditionBuilder_.clear();
+      }
+      nodeConditionCase_ = 0;
+      nodeCondition_ = null;
       return this;
     }
 
@@ -326,20 +411,26 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.WaitForConditionNode buildPartial() {
       io.littlehorse.sdk.common.proto.WaitForConditionNode result = new io.littlehorse.sdk.common.proto.WaitForConditionNode(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.WaitForConditionNode result) {
       int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.condition_ = conditionBuilder_ == null
-            ? condition_
-            : conditionBuilder_.build();
-        to_bitField0_ |= 0x00000001;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.WaitForConditionNode result) {
+      result.nodeConditionCase_ = nodeConditionCase_;
+      result.nodeCondition_ = this.nodeCondition_;
+      if (nodeConditionCase_ == 1 &&
+          legacyConditionBuilder_ != null) {
+        result.nodeCondition_ = legacyConditionBuilder_.build();
       }
-      result.bitField0_ |= to_bitField0_;
+      if (nodeConditionCase_ == 2 &&
+          conditionBuilder_ != null) {
+        result.nodeCondition_ = conditionBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -354,8 +445,18 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.WaitForConditionNode other) {
       if (other == io.littlehorse.sdk.common.proto.WaitForConditionNode.getDefaultInstance()) return this;
-      if (other.hasCondition()) {
-        mergeCondition(other.getCondition());
+      switch (other.getNodeConditionCase()) {
+        case LEGACY_CONDITION: {
+          mergeLegacyCondition(other.getLegacyCondition());
+          break;
+        }
+        case CONDITION: {
+          mergeCondition(other.getCondition());
+          break;
+        }
+        case NODECONDITION_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -385,11 +486,18 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               input.readMessage(
-                  internalGetConditionFieldBuilder().getBuilder(),
+                  internalGetLegacyConditionFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000001;
+              nodeConditionCase_ = 1;
               break;
             } // case 10
+            case 18: {
+              input.readMessage(
+                  internalGetConditionFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              nodeConditionCase_ = 2;
+              break;
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -405,162 +513,304 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int nodeConditionCase_ = 0;
+    private java.lang.Object nodeCondition_;
+    public NodeConditionCase
+        getNodeConditionCase() {
+      return NodeConditionCase.forNumber(
+          nodeConditionCase_);
+    }
+
+    public Builder clearNodeCondition() {
+      nodeConditionCase_ = 0;
+      nodeCondition_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.EdgeCondition condition_;
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.EdgeCondition, io.littlehorse.sdk.common.proto.EdgeCondition.Builder, io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder> conditionBuilder_;
+        io.littlehorse.sdk.common.proto.LegacyEdgeCondition, io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder, io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder> legacyConditionBuilder_;
     /**
-     * <pre>
-     * The condition that this node will block for.
-     * </pre>
-     *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
-     * @return Whether the condition field is set.
+     * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+     * @return Whether the legacyCondition field is set.
      */
-    public boolean hasCondition() {
-      return ((bitField0_ & 0x00000001) != 0);
+    @java.lang.Override
+    public boolean hasLegacyCondition() {
+      return nodeConditionCase_ == 1;
     }
     /**
-     * <pre>
-     * The condition that this node will block for.
-     * </pre>
-     *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
-     * @return The condition.
+     * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+     * @return The legacyCondition.
      */
-    public io.littlehorse.sdk.common.proto.EdgeCondition getCondition() {
-      if (conditionBuilder_ == null) {
-        return condition_ == null ? io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance() : condition_;
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LegacyEdgeCondition getLegacyCondition() {
+      if (legacyConditionBuilder_ == null) {
+        if (nodeConditionCase_ == 1) {
+          return (io.littlehorse.sdk.common.proto.LegacyEdgeCondition) nodeCondition_;
+        }
+        return io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance();
       } else {
-        return conditionBuilder_.getMessage();
+        if (nodeConditionCase_ == 1) {
+          return legacyConditionBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance();
       }
     }
     /**
-     * <pre>
-     * The condition that this node will block for.
-     * </pre>
-     *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
      */
-    public Builder setCondition(io.littlehorse.sdk.common.proto.EdgeCondition value) {
+    public Builder setLegacyCondition(io.littlehorse.sdk.common.proto.LegacyEdgeCondition value) {
+      if (legacyConditionBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeCondition_ = value;
+        onChanged();
+      } else {
+        legacyConditionBuilder_.setMessage(value);
+      }
+      nodeConditionCase_ = 1;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+     */
+    public Builder setLegacyCondition(
+        io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder builderForValue) {
+      if (legacyConditionBuilder_ == null) {
+        nodeCondition_ = builderForValue.build();
+        onChanged();
+      } else {
+        legacyConditionBuilder_.setMessage(builderForValue.build());
+      }
+      nodeConditionCase_ = 1;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+     */
+    public Builder mergeLegacyCondition(io.littlehorse.sdk.common.proto.LegacyEdgeCondition value) {
+      if (legacyConditionBuilder_ == null) {
+        if (nodeConditionCase_ == 1 &&
+            nodeCondition_ != io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance()) {
+          nodeCondition_ = io.littlehorse.sdk.common.proto.LegacyEdgeCondition.newBuilder((io.littlehorse.sdk.common.proto.LegacyEdgeCondition) nodeCondition_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          nodeCondition_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeConditionCase_ == 1) {
+          legacyConditionBuilder_.mergeFrom(value);
+        } else {
+          legacyConditionBuilder_.setMessage(value);
+        }
+      }
+      nodeConditionCase_ = 1;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+     */
+    public Builder clearLegacyCondition() {
+      if (legacyConditionBuilder_ == null) {
+        if (nodeConditionCase_ == 1) {
+          nodeConditionCase_ = 0;
+          nodeCondition_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeConditionCase_ == 1) {
+          nodeConditionCase_ = 0;
+          nodeCondition_ = null;
+        }
+        legacyConditionBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder getLegacyConditionBuilder() {
+      return internalGetLegacyConditionFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder getLegacyConditionOrBuilder() {
+      if ((nodeConditionCase_ == 1) && (legacyConditionBuilder_ != null)) {
+        return legacyConditionBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeConditionCase_ == 1) {
+          return (io.littlehorse.sdk.common.proto.LegacyEdgeCondition) nodeCondition_;
+        }
+        return io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.LegacyEdgeCondition, io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder, io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder> 
+        internalGetLegacyConditionFieldBuilder() {
+      if (legacyConditionBuilder_ == null) {
+        if (!(nodeConditionCase_ == 1)) {
+          nodeCondition_ = io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance();
+        }
+        legacyConditionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.LegacyEdgeCondition, io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder, io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder>(
+                (io.littlehorse.sdk.common.proto.LegacyEdgeCondition) nodeCondition_,
+                getParentForChildren(),
+                isClean());
+        nodeCondition_ = null;
+      }
+      nodeConditionCase_ = 1;
+      onChanged();
+      return legacyConditionBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> conditionBuilder_;
+    /**
+     * <code>.littlehorse.VariableAssignment condition = 2;</code>
+     * @return Whether the condition field is set.
+     */
+    @java.lang.Override
+    public boolean hasCondition() {
+      return nodeConditionCase_ == 2;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignment condition = 2;</code>
+     * @return The condition.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment getCondition() {
+      if (conditionBuilder_ == null) {
+        if (nodeConditionCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) nodeCondition_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+      } else {
+        if (nodeConditionCase_ == 2) {
+          return conditionBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.VariableAssignment condition = 2;</code>
+     */
+    public Builder setCondition(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (conditionBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        condition_ = value;
+        nodeCondition_ = value;
+        onChanged();
       } else {
         conditionBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+      nodeConditionCase_ = 2;
       return this;
     }
     /**
-     * <pre>
-     * The condition that this node will block for.
-     * </pre>
-     *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.VariableAssignment condition = 2;</code>
      */
     public Builder setCondition(
-        io.littlehorse.sdk.common.proto.EdgeCondition.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
       if (conditionBuilder_ == null) {
-        condition_ = builderForValue.build();
+        nodeCondition_ = builderForValue.build();
+        onChanged();
       } else {
         conditionBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+      nodeConditionCase_ = 2;
       return this;
     }
     /**
-     * <pre>
-     * The condition that this node will block for.
-     * </pre>
-     *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.VariableAssignment condition = 2;</code>
      */
-    public Builder mergeCondition(io.littlehorse.sdk.common.proto.EdgeCondition value) {
+    public Builder mergeCondition(io.littlehorse.sdk.common.proto.VariableAssignment value) {
       if (conditionBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
-          condition_ != null &&
-          condition_ != io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance()) {
-          getConditionBuilder().mergeFrom(value);
+        if (nodeConditionCase_ == 2 &&
+            nodeCondition_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          nodeCondition_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) nodeCondition_)
+              .mergeFrom(value).buildPartial();
         } else {
-          condition_ = value;
+          nodeCondition_ = value;
         }
-      } else {
-        conditionBuilder_.mergeFrom(value);
-      }
-      if (condition_ != null) {
-        bitField0_ |= 0x00000001;
         onChanged();
+      } else {
+        if (nodeConditionCase_ == 2) {
+          conditionBuilder_.mergeFrom(value);
+        } else {
+          conditionBuilder_.setMessage(value);
+        }
       }
+      nodeConditionCase_ = 2;
       return this;
     }
     /**
-     * <pre>
-     * The condition that this node will block for.
-     * </pre>
-     *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.VariableAssignment condition = 2;</code>
      */
     public Builder clearCondition() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      condition_ = null;
-      if (conditionBuilder_ != null) {
-        conditionBuilder_.dispose();
-        conditionBuilder_ = null;
+      if (conditionBuilder_ == null) {
+        if (nodeConditionCase_ == 2) {
+          nodeConditionCase_ = 0;
+          nodeCondition_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeConditionCase_ == 2) {
+          nodeConditionCase_ = 0;
+          nodeCondition_ = null;
+        }
+        conditionBuilder_.clear();
       }
-      onChanged();
       return this;
     }
     /**
-     * <pre>
-     * The condition that this node will block for.
-     * </pre>
-     *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.VariableAssignment condition = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.EdgeCondition.Builder getConditionBuilder() {
-      bitField0_ |= 0x00000001;
-      onChanged();
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getConditionBuilder() {
       return internalGetConditionFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * The condition that this node will block for.
-     * </pre>
-     *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.VariableAssignment condition = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder getConditionOrBuilder() {
-      if (conditionBuilder_ != null) {
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getConditionOrBuilder() {
+      if ((nodeConditionCase_ == 2) && (conditionBuilder_ != null)) {
         return conditionBuilder_.getMessageOrBuilder();
       } else {
-        return condition_ == null ?
-            io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance() : condition_;
+        if (nodeConditionCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) nodeCondition_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
-     * <pre>
-     * The condition that this node will block for.
-     * </pre>
-     *
-     * <code>.littlehorse.EdgeCondition condition = 1;</code>
+     * <code>.littlehorse.VariableAssignment condition = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.EdgeCondition, io.littlehorse.sdk.common.proto.EdgeCondition.Builder, io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder> 
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         internalGetConditionFieldBuilder() {
       if (conditionBuilder_ == null) {
+        if (!(nodeConditionCase_ == 2)) {
+          nodeCondition_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+        }
         conditionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.EdgeCondition, io.littlehorse.sdk.common.proto.EdgeCondition.Builder, io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder>(
-                getCondition(),
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableAssignment) nodeCondition_,
                 getParentForChildren(),
                 isClean());
-        condition_ = null;
+        nodeCondition_ = null;
       }
+      nodeConditionCase_ = 2;
+      onChanged();
       return conditionBuilder_;
     }
 

@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Edge;
-import io.littlehorse.sdk.common.proto.EdgeCondition;
 import io.littlehorse.sdk.common.proto.EntrypointNode;
 import io.littlehorse.sdk.common.proto.ExitNode;
+import io.littlehorse.sdk.common.proto.LegacyEdgeCondition;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.NopNode;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -45,9 +45,9 @@ public class ConditionalTest {
             assertThat(firstNOPNode.getOutgoingEdgesCount()).isEqualTo(2);
             assertThat(firstNOPNode.getOutgoingEdges(0))
                     .extracting(
-                            (edge) -> edge.getCondition().getLeft().getVariableName(),
-                            (edge) -> edge.getCondition().getComparator(),
-                            (edge) -> edge.getCondition()
+                            (edge) -> edge.getLegacyCondition().getLeft().getVariableName(),
+                            (edge) -> edge.getLegacyCondition().getComparator(),
+                            (edge) -> edge.getLegacyCondition()
                                     .getRight()
                                     .getLiteralValue()
                                     .getInt(),
@@ -60,8 +60,8 @@ public class ConditionalTest {
                     .containsExactly("my-var", Comparator.GREATER_THAN, 10L, "if-body");
             assertThat(firstNOPNode.getOutgoingEdges(1))
                     .extracting(
-                            (edge) -> edge.getCondition().getLeft(),
-                            (edge) -> edge.getCondition().getRight(),
+                            (edge) -> edge.getLegacyCondition().getLeft(),
+                            (edge) -> edge.getLegacyCondition().getRight(),
                             (edge) -> {
                                 return edge.getVariableMutations(0)
                                         .getRhsAssignment()
@@ -95,7 +95,7 @@ public class ConditionalTest {
                     .isEqualTo(Node.newBuilder()
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("2-task-a-TASK")
-                                    .setCondition(EdgeCondition.newBuilder()
+                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
                                             .setLeft(VariableAssignment.newBuilder()
                                                     .setLiteralValue(VariableValue.newBuilder()
                                                             .setInt(5)))
@@ -149,7 +149,7 @@ public class ConditionalTest {
                     .isEqualTo(Node.newBuilder()
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("2-task-a-TASK")
-                                    .setCondition(EdgeCondition.newBuilder()
+                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
                                             .setLeft(VariableAssignment.newBuilder()
                                                     .setLiteralValue(VariableValue.newBuilder()
                                                             .setInt(5)))
@@ -159,7 +159,7 @@ public class ConditionalTest {
                                                             .setInt(4)))))
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("4-task-b-TASK")
-                                    .setCondition(EdgeCondition.newBuilder()
+                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
                                             .setLeft(VariableAssignment.newBuilder()
                                                     .setLiteralValue(VariableValue.newBuilder()
                                                             .setInt(10)))
@@ -278,7 +278,7 @@ public class ConditionalTest {
                     .isEqualTo(Node.newBuilder()
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("2-task-a-TASK")
-                                    .setCondition(EdgeCondition.newBuilder()
+                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
                                             .setLeft(VariableAssignment.newBuilder()
                                                     .setLiteralValue(VariableValue.newBuilder()
                                                             .setInt(5)))
@@ -288,7 +288,7 @@ public class ConditionalTest {
                                                             .setInt(4)))))
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("4-task-b-TASK")
-                                    .setCondition(EdgeCondition.newBuilder()
+                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
                                             .setLeft(VariableAssignment.newBuilder()
                                                     .setLiteralValue(VariableValue.newBuilder()
                                                             .setInt(10)))
@@ -298,7 +298,7 @@ public class ConditionalTest {
                                                             .setInt(40)))))
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("5-task-c-TASK")
-                                    .setCondition(EdgeCondition.newBuilder()
+                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
                                             .setLeft(VariableAssignment.newBuilder()
                                                     .setVariableName("my-int"))
                                             .setComparator(Comparator.LESS_THAN)
@@ -400,7 +400,7 @@ public class ConditionalTest {
                     .isEqualTo(Node.newBuilder()
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("2-task-a-TASK")
-                                    .setCondition(EdgeCondition.newBuilder()
+                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
                                             .setLeft(VariableAssignment.newBuilder()
                                                     .setLiteralValue(VariableValue.newBuilder()
                                                             .setInt(5)))
@@ -410,7 +410,7 @@ public class ConditionalTest {
                                                             .setInt(4)))))
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("5-task-b-TASK")
-                                    .setCondition(EdgeCondition.newBuilder()
+                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
                                             .setLeft(VariableAssignment.newBuilder()
                                                     .setLiteralValue(VariableValue.newBuilder()
                                                             .setInt(10)))

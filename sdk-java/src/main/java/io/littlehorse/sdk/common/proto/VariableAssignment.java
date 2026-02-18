@@ -1793,19 +1793,44 @@ private static final long serialVersionUID = 0L;
      * The operator in the expression.
      * </pre>
      *
-     * <code>.littlehorse.VariableMutationType operation = 2;</code>
-     * @return The enum numeric value on the wire for operation.
+     * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
+     * @return Whether the mutationType field is set.
      */
-    int getOperationValue();
+    boolean hasMutationType();
     /**
      * <pre>
      * The operator in the expression.
      * </pre>
      *
-     * <code>.littlehorse.VariableMutationType operation = 2;</code>
-     * @return The operation.
+     * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
+     * @return The enum numeric value on the wire for mutationType.
      */
-    io.littlehorse.sdk.common.proto.VariableMutationType getOperation();
+    int getMutationTypeValue();
+    /**
+     * <pre>
+     * The operator in the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
+     * @return The mutationType.
+     */
+    io.littlehorse.sdk.common.proto.VariableMutationType getMutationType();
+
+    /**
+     * <code>.littlehorse.Comparator comparator = 4;</code>
+     * @return Whether the comparator field is set.
+     */
+    boolean hasComparator();
+    /**
+     * <code>.littlehorse.Comparator comparator = 4;</code>
+     * @return The enum numeric value on the wire for comparator.
+     */
+    int getComparatorValue();
+    /**
+     * <code>.littlehorse.Comparator comparator = 4;</code>
+     * @return The comparator.
+     */
+    io.littlehorse.sdk.common.proto.Comparator getComparator();
 
     /**
      * <pre>
@@ -1833,6 +1858,8 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.VariableAssignment rhs = 3;</code>
      */
     io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRhsOrBuilder();
+
+    io.littlehorse.sdk.common.proto.VariableAssignment.Expression.OperationCase getOperationCase();
   }
   /**
    * <pre>
@@ -1860,7 +1887,6 @@ private static final long serialVersionUID = 0L;
       super(builder);
     }
     private Expression() {
-      operation_ = 0;
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -1877,6 +1903,48 @@ private static final long serialVersionUID = 0L;
     }
 
     private int bitField0_;
+    private int operationCase_ = 0;
+    @SuppressWarnings("serial")
+    private java.lang.Object operation_;
+    public enum OperationCase
+        implements com.google.protobuf.Internal.EnumLite,
+            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+      MUTATION_TYPE(2),
+      COMPARATOR(4),
+      OPERATION_NOT_SET(0);
+      private final int value;
+      private OperationCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @param value The number of the enum to look for.
+       * @return The enum associated with the given number.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static OperationCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static OperationCase forNumber(int value) {
+        switch (value) {
+          case 2: return MUTATION_TYPE;
+          case 4: return COMPARATOR;
+          case 0: return OPERATION_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public OperationCase
+    getOperationCase() {
+      return OperationCase.forNumber(
+          operationCase_);
+    }
+
     public static final int LHS_FIELD_NUMBER = 1;
     private io.littlehorse.sdk.common.proto.VariableAssignment lhs_;
     /**
@@ -1915,30 +1983,78 @@ private static final long serialVersionUID = 0L;
       return lhs_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : lhs_;
     }
 
-    public static final int OPERATION_FIELD_NUMBER = 2;
-    private int operation_ = 0;
+    public static final int MUTATION_TYPE_FIELD_NUMBER = 2;
     /**
      * <pre>
      * The operator in the expression.
      * </pre>
      *
-     * <code>.littlehorse.VariableMutationType operation = 2;</code>
-     * @return The enum numeric value on the wire for operation.
+     * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
+     * @return Whether the mutationType field is set.
      */
-    @java.lang.Override public int getOperationValue() {
-      return operation_;
+    public boolean hasMutationType() {
+      return operationCase_ == 2;
     }
     /**
      * <pre>
      * The operator in the expression.
      * </pre>
      *
-     * <code>.littlehorse.VariableMutationType operation = 2;</code>
-     * @return The operation.
+     * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
+     * @return The enum numeric value on the wire for mutationType.
      */
-    @java.lang.Override public io.littlehorse.sdk.common.proto.VariableMutationType getOperation() {
-      io.littlehorse.sdk.common.proto.VariableMutationType result = io.littlehorse.sdk.common.proto.VariableMutationType.forNumber(operation_);
-      return result == null ? io.littlehorse.sdk.common.proto.VariableMutationType.UNRECOGNIZED : result;
+    public int getMutationTypeValue() {
+      if (operationCase_ == 2) {
+        return (java.lang.Integer) operation_;
+      }
+      return 0;
+    }
+    /**
+     * <pre>
+     * The operator in the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
+     * @return The mutationType.
+     */
+    public io.littlehorse.sdk.common.proto.VariableMutationType getMutationType() {
+      if (operationCase_ == 2) {
+        io.littlehorse.sdk.common.proto.VariableMutationType result = io.littlehorse.sdk.common.proto.VariableMutationType.forNumber(
+            (java.lang.Integer) operation_);
+        return result == null ? io.littlehorse.sdk.common.proto.VariableMutationType.UNRECOGNIZED : result;
+      }
+      return io.littlehorse.sdk.common.proto.VariableMutationType.ASSIGN;
+    }
+
+    public static final int COMPARATOR_FIELD_NUMBER = 4;
+    /**
+     * <code>.littlehorse.Comparator comparator = 4;</code>
+     * @return Whether the comparator field is set.
+     */
+    public boolean hasComparator() {
+      return operationCase_ == 4;
+    }
+    /**
+     * <code>.littlehorse.Comparator comparator = 4;</code>
+     * @return The enum numeric value on the wire for comparator.
+     */
+    public int getComparatorValue() {
+      if (operationCase_ == 4) {
+        return (java.lang.Integer) operation_;
+      }
+      return 0;
+    }
+    /**
+     * <code>.littlehorse.Comparator comparator = 4;</code>
+     * @return The comparator.
+     */
+    public io.littlehorse.sdk.common.proto.Comparator getComparator() {
+      if (operationCase_ == 4) {
+        io.littlehorse.sdk.common.proto.Comparator result = io.littlehorse.sdk.common.proto.Comparator.forNumber(
+            (java.lang.Integer) operation_);
+        return result == null ? io.littlehorse.sdk.common.proto.Comparator.UNRECOGNIZED : result;
+      }
+      return io.littlehorse.sdk.common.proto.Comparator.LESS_THAN;
     }
 
     public static final int RHS_FIELD_NUMBER = 3;
@@ -1996,11 +2112,14 @@ private static final long serialVersionUID = 0L;
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeMessage(1, getLhs());
       }
-      if (operation_ != io.littlehorse.sdk.common.proto.VariableMutationType.ASSIGN.getNumber()) {
-        output.writeEnum(2, operation_);
+      if (operationCase_ == 2) {
+        output.writeEnum(2, ((java.lang.Integer) operation_));
       }
       if (((bitField0_ & 0x00000002) != 0)) {
         output.writeMessage(3, getRhs());
+      }
+      if (operationCase_ == 4) {
+        output.writeEnum(4, ((java.lang.Integer) operation_));
       }
       getUnknownFields().writeTo(output);
     }
@@ -2015,13 +2134,17 @@ private static final long serialVersionUID = 0L;
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getLhs());
       }
-      if (operation_ != io.littlehorse.sdk.common.proto.VariableMutationType.ASSIGN.getNumber()) {
+      if (operationCase_ == 2) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(2, operation_);
+          .computeEnumSize(2, ((java.lang.Integer) operation_));
       }
       if (((bitField0_ & 0x00000002) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getRhs());
+      }
+      if (operationCase_ == 4) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(4, ((java.lang.Integer) operation_));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -2043,11 +2166,23 @@ private static final long serialVersionUID = 0L;
         if (!getLhs()
             .equals(other.getLhs())) return false;
       }
-      if (operation_ != other.operation_) return false;
       if (hasRhs() != other.hasRhs()) return false;
       if (hasRhs()) {
         if (!getRhs()
             .equals(other.getRhs())) return false;
+      }
+      if (!getOperationCase().equals(other.getOperationCase())) return false;
+      switch (operationCase_) {
+        case 2:
+          if (getMutationTypeValue()
+              != other.getMutationTypeValue()) return false;
+          break;
+        case 4:
+          if (getComparatorValue()
+              != other.getComparatorValue()) return false;
+          break;
+        case 0:
+        default:
       }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -2064,11 +2199,21 @@ private static final long serialVersionUID = 0L;
         hash = (37 * hash) + LHS_FIELD_NUMBER;
         hash = (53 * hash) + getLhs().hashCode();
       }
-      hash = (37 * hash) + OPERATION_FIELD_NUMBER;
-      hash = (53 * hash) + operation_;
       if (hasRhs()) {
         hash = (37 * hash) + RHS_FIELD_NUMBER;
         hash = (53 * hash) + getRhs().hashCode();
+      }
+      switch (operationCase_) {
+        case 2:
+          hash = (37 * hash) + MUTATION_TYPE_FIELD_NUMBER;
+          hash = (53 * hash) + getMutationTypeValue();
+          break;
+        case 4:
+          hash = (37 * hash) + COMPARATOR_FIELD_NUMBER;
+          hash = (53 * hash) + getComparatorValue();
+          break;
+        case 0:
+        default:
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -2217,12 +2362,13 @@ private static final long serialVersionUID = 0L;
           lhsBuilder_.dispose();
           lhsBuilder_ = null;
         }
-        operation_ = 0;
         rhs_ = null;
         if (rhsBuilder_ != null) {
           rhsBuilder_.dispose();
           rhsBuilder_ = null;
         }
+        operationCase_ = 0;
+        operation_ = null;
         return this;
       }
 
@@ -2250,6 +2396,7 @@ private static final long serialVersionUID = 0L;
       public io.littlehorse.sdk.common.proto.VariableAssignment.Expression buildPartial() {
         io.littlehorse.sdk.common.proto.VariableAssignment.Expression result = new io.littlehorse.sdk.common.proto.VariableAssignment.Expression(this);
         if (bitField0_ != 0) { buildPartial0(result); }
+        buildPartialOneofs(result);
         onBuilt();
         return result;
       }
@@ -2263,16 +2410,18 @@ private static final long serialVersionUID = 0L;
               : lhsBuilder_.build();
           to_bitField0_ |= 0x00000001;
         }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.operation_ = operation_;
-        }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
+        if (((from_bitField0_ & 0x00000008) != 0)) {
           result.rhs_ = rhsBuilder_ == null
               ? rhs_
               : rhsBuilder_.build();
           to_bitField0_ |= 0x00000002;
         }
         result.bitField0_ |= to_bitField0_;
+      }
+
+      private void buildPartialOneofs(io.littlehorse.sdk.common.proto.VariableAssignment.Expression result) {
+        result.operationCase_ = operationCase_;
+        result.operation_ = this.operation_;
       }
 
       @java.lang.Override
@@ -2290,11 +2439,21 @@ private static final long serialVersionUID = 0L;
         if (other.hasLhs()) {
           mergeLhs(other.getLhs());
         }
-        if (other.operation_ != 0) {
-          setOperationValue(other.getOperationValue());
-        }
         if (other.hasRhs()) {
           mergeRhs(other.getRhs());
+        }
+        switch (other.getOperationCase()) {
+          case MUTATION_TYPE: {
+            setMutationTypeValue(other.getMutationTypeValue());
+            break;
+          }
+          case COMPARATOR: {
+            setComparatorValue(other.getComparatorValue());
+            break;
+          }
+          case OPERATION_NOT_SET: {
+            break;
+          }
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -2330,17 +2489,24 @@ private static final long serialVersionUID = 0L;
                 break;
               } // case 10
               case 16: {
-                operation_ = input.readEnum();
-                bitField0_ |= 0x00000002;
+                int rawValue = input.readEnum();
+                operationCase_ = 2;
+                operation_ = rawValue;
                 break;
               } // case 16
               case 26: {
                 input.readMessage(
                     internalGetRhsFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00000004;
+                bitField0_ |= 0x00000008;
                 break;
               } // case 26
+              case 32: {
+                int rawValue = input.readEnum();
+                operationCase_ = 4;
+                operation_ = rawValue;
+                break;
+              } // case 32
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2356,6 +2522,21 @@ private static final long serialVersionUID = 0L;
         } // finally
         return this;
       }
+      private int operationCase_ = 0;
+      private java.lang.Object operation_;
+      public OperationCase
+          getOperationCase() {
+        return OperationCase.forNumber(
+            operationCase_);
+      }
+
+      public Builder clearOperation() {
+        operationCase_ = 0;
+        operation_ = null;
+        onChanged();
+        return this;
+      }
+
       private int bitField0_;
 
       private io.littlehorse.sdk.common.proto.VariableAssignment lhs_;
@@ -2515,30 +2696,45 @@ private static final long serialVersionUID = 0L;
         return lhsBuilder_;
       }
 
-      private int operation_ = 0;
       /**
        * <pre>
        * The operator in the expression.
        * </pre>
        *
-       * <code>.littlehorse.VariableMutationType operation = 2;</code>
-       * @return The enum numeric value on the wire for operation.
+       * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
+       * @return Whether the mutationType field is set.
        */
-      @java.lang.Override public int getOperationValue() {
-        return operation_;
+      @java.lang.Override
+      public boolean hasMutationType() {
+        return operationCase_ == 2;
       }
       /**
        * <pre>
        * The operator in the expression.
        * </pre>
        *
-       * <code>.littlehorse.VariableMutationType operation = 2;</code>
-       * @param value The enum numeric value on the wire for operation to set.
+       * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
+       * @return The enum numeric value on the wire for mutationType.
+       */
+      @java.lang.Override
+      public int getMutationTypeValue() {
+        if (operationCase_ == 2) {
+          return ((java.lang.Integer) operation_).intValue();
+        }
+        return 0;
+      }
+      /**
+       * <pre>
+       * The operator in the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
+       * @param value The enum numeric value on the wire for mutationType to set.
        * @return This builder for chaining.
        */
-      public Builder setOperationValue(int value) {
+      public Builder setMutationTypeValue(int value) {
+        operationCase_ = 2;
         operation_ = value;
-        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
@@ -2547,26 +2743,30 @@ private static final long serialVersionUID = 0L;
        * The operator in the expression.
        * </pre>
        *
-       * <code>.littlehorse.VariableMutationType operation = 2;</code>
-       * @return The operation.
+       * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
+       * @return The mutationType.
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.VariableMutationType getOperation() {
-        io.littlehorse.sdk.common.proto.VariableMutationType result = io.littlehorse.sdk.common.proto.VariableMutationType.forNumber(operation_);
-        return result == null ? io.littlehorse.sdk.common.proto.VariableMutationType.UNRECOGNIZED : result;
+      public io.littlehorse.sdk.common.proto.VariableMutationType getMutationType() {
+        if (operationCase_ == 2) {
+          io.littlehorse.sdk.common.proto.VariableMutationType result = io.littlehorse.sdk.common.proto.VariableMutationType.forNumber(
+              (java.lang.Integer) operation_);
+          return result == null ? io.littlehorse.sdk.common.proto.VariableMutationType.UNRECOGNIZED : result;
+        }
+        return io.littlehorse.sdk.common.proto.VariableMutationType.ASSIGN;
       }
       /**
        * <pre>
        * The operator in the expression.
        * </pre>
        *
-       * <code>.littlehorse.VariableMutationType operation = 2;</code>
-       * @param value The operation to set.
+       * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
+       * @param value The mutationType to set.
        * @return This builder for chaining.
        */
-      public Builder setOperation(io.littlehorse.sdk.common.proto.VariableMutationType value) {
+      public Builder setMutationType(io.littlehorse.sdk.common.proto.VariableMutationType value) {
         if (value == null) { throw new NullPointerException(); }
-        bitField0_ |= 0x00000002;
+        operationCase_ = 2;
         operation_ = value.getNumber();
         onChanged();
         return this;
@@ -2576,13 +2776,83 @@ private static final long serialVersionUID = 0L;
        * The operator in the expression.
        * </pre>
        *
-       * <code>.littlehorse.VariableMutationType operation = 2;</code>
+       * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
        * @return This builder for chaining.
        */
-      public Builder clearOperation() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        operation_ = 0;
+      public Builder clearMutationType() {
+        if (operationCase_ == 2) {
+          operationCase_ = 0;
+          operation_ = null;
+          onChanged();
+        }
+        return this;
+      }
+
+      /**
+       * <code>.littlehorse.Comparator comparator = 4;</code>
+       * @return Whether the comparator field is set.
+       */
+      @java.lang.Override
+      public boolean hasComparator() {
+        return operationCase_ == 4;
+      }
+      /**
+       * <code>.littlehorse.Comparator comparator = 4;</code>
+       * @return The enum numeric value on the wire for comparator.
+       */
+      @java.lang.Override
+      public int getComparatorValue() {
+        if (operationCase_ == 4) {
+          return ((java.lang.Integer) operation_).intValue();
+        }
+        return 0;
+      }
+      /**
+       * <code>.littlehorse.Comparator comparator = 4;</code>
+       * @param value The enum numeric value on the wire for comparator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setComparatorValue(int value) {
+        operationCase_ = 4;
+        operation_ = value;
         onChanged();
+        return this;
+      }
+      /**
+       * <code>.littlehorse.Comparator comparator = 4;</code>
+       * @return The comparator.
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.Comparator getComparator() {
+        if (operationCase_ == 4) {
+          io.littlehorse.sdk.common.proto.Comparator result = io.littlehorse.sdk.common.proto.Comparator.forNumber(
+              (java.lang.Integer) operation_);
+          return result == null ? io.littlehorse.sdk.common.proto.Comparator.UNRECOGNIZED : result;
+        }
+        return io.littlehorse.sdk.common.proto.Comparator.LESS_THAN;
+      }
+      /**
+       * <code>.littlehorse.Comparator comparator = 4;</code>
+       * @param value The comparator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setComparator(io.littlehorse.sdk.common.proto.Comparator value) {
+        if (value == null) { throw new NullPointerException(); }
+        operationCase_ = 4;
+        operation_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.littlehorse.Comparator comparator = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearComparator() {
+        if (operationCase_ == 4) {
+          operationCase_ = 0;
+          operation_ = null;
+          onChanged();
+        }
         return this;
       }
 
@@ -2598,7 +2868,7 @@ private static final long serialVersionUID = 0L;
        * @return Whether the rhs field is set.
        */
       public boolean hasRhs() {
-        return ((bitField0_ & 0x00000004) != 0);
+        return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <pre>
@@ -2631,7 +2901,7 @@ private static final long serialVersionUID = 0L;
         } else {
           rhsBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
@@ -2649,7 +2919,7 @@ private static final long serialVersionUID = 0L;
         } else {
           rhsBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
@@ -2662,7 +2932,7 @@ private static final long serialVersionUID = 0L;
        */
       public Builder mergeRhs(io.littlehorse.sdk.common.proto.VariableAssignment value) {
         if (rhsBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) != 0) &&
+          if (((bitField0_ & 0x00000008) != 0) &&
             rhs_ != null &&
             rhs_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
             getRhsBuilder().mergeFrom(value);
@@ -2673,7 +2943,7 @@ private static final long serialVersionUID = 0L;
           rhsBuilder_.mergeFrom(value);
         }
         if (rhs_ != null) {
-          bitField0_ |= 0x00000004;
+          bitField0_ |= 0x00000008;
           onChanged();
         }
         return this;
@@ -2686,7 +2956,7 @@ private static final long serialVersionUID = 0L;
        * <code>.littlehorse.VariableAssignment rhs = 3;</code>
        */
       public Builder clearRhs() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000008);
         rhs_ = null;
         if (rhsBuilder_ != null) {
           rhsBuilder_.dispose();
@@ -2703,7 +2973,7 @@ private static final long serialVersionUID = 0L;
        * <code>.littlehorse.VariableAssignment rhs = 3;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getRhsBuilder() {
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000008;
         onChanged();
         return internalGetRhsFieldBuilder().getBuilder();
       }

@@ -14,6 +14,10 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 class BuilderUtil {
 
     static VariableAssignment assignVariable(Object variable) {
+        if (variable instanceof VariableAssignment) {
+            return (VariableAssignment) variable;
+        }
+
         if (variable == null) {
             return buildNullAssignment();
         }
@@ -91,7 +95,7 @@ class BuilderUtil {
         return VariableAssignment.newBuilder()
                 .setExpression(Expression.newBuilder()
                         .setLhs(assignVariable(expresion.getLhs()))
-                        .setOperation(expresion.getOperation())
+                        .setMutationType(expresion.getOperation())
                         .setRhs(assignVariable(expresion.getRhs())))
                 .build();
     }

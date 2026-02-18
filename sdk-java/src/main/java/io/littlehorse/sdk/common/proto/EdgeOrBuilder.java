@@ -32,39 +32,57 @@ public interface EdgeOrBuilder extends
 
   /**
    * <pre>
-   * The Condition on which this Edge will be traversed. When choosing an Edge
-   * to travel after the completion of a NodeRun, the Edges are evaluated in
-   * order. The first one to either have no condition or have a condition which
-   * evaluates to `true` is taken.
+   * Support for `WfSpec`s created before 1.0
    * </pre>
    *
-   * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
+   * @return Whether the legacyCondition field is set.
+   */
+  boolean hasLegacyCondition();
+  /**
+   * <pre>
+   * Support for `WfSpec`s created before 1.0
+   * </pre>
+   *
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
+   * @return The legacyCondition.
+   */
+  io.littlehorse.sdk.common.proto.LegacyEdgeCondition getLegacyCondition();
+  /**
+   * <pre>
+   * Support for `WfSpec`s created before 1.0
+   * </pre>
+   *
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder getLegacyConditionOrBuilder();
+
+  /**
+   * <pre>
+   * Default condition
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment condition = 4;</code>
    * @return Whether the condition field is set.
    */
   boolean hasCondition();
   /**
    * <pre>
-   * The Condition on which this Edge will be traversed. When choosing an Edge
-   * to travel after the completion of a NodeRun, the Edges are evaluated in
-   * order. The first one to either have no condition or have a condition which
-   * evaluates to `true` is taken.
+   * Default condition
    * </pre>
    *
-   * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
+   * <code>.littlehorse.VariableAssignment condition = 4;</code>
    * @return The condition.
    */
-  io.littlehorse.sdk.common.proto.EdgeCondition getCondition();
+  io.littlehorse.sdk.common.proto.VariableAssignment getCondition();
   /**
    * <pre>
-   * The Condition on which this Edge will be traversed. When choosing an Edge
-   * to travel after the completion of a NodeRun, the Edges are evaluated in
-   * order. The first one to either have no condition or have a condition which
-   * evaluates to `true` is taken.
+   * Default condition
    * </pre>
    *
-   * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
+   * <code>.littlehorse.VariableAssignment condition = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder getConditionOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getConditionOrBuilder();
 
   /**
    * <pre>
@@ -109,4 +127,6 @@ public interface EdgeOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getVariableMutationsOrBuilder(
       int index);
+
+  io.littlehorse.sdk.common.proto.Edge.EdgeConditionCase getEdgeConditionCase();
 }

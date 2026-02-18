@@ -20,6 +20,11 @@ public class BasicExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-basic", wf -> {
+            WfRunVariable boolVar = wf.declareBool("hey");
+            WfRunVariable intVar = wf.declareInt("how-many");
+            boolVar.assign(intVar.isLessThan(10));
+            wf.doIf(boolVar, thread -> {});
+
             WfRunVariable theName = wf.declareStr("input-name").searchable();
             wf.execute("greet", theName);
         });
