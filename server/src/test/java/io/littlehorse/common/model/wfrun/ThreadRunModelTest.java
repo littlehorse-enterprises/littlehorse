@@ -71,11 +71,11 @@ public class ThreadRunModelTest {
             parentWfRun.setWfSpecId(parentWfSpec.getId());
             parentThreadRun.setWfRun(parentWfRun);
             parentThreadRun.setWfSpecId(parentWfSpec.getId());
-                        parentThreadRun.setNumber(0);
+            parentThreadRun.setNumber(0);
             parentWfRun.setId(new WfRunIdModel("parent-wf-id"));
-                        parentWfRun.setThreadRunsUseMeCarefully(new ArrayList<>(List.of(parentThreadRun)));
-                        parentWfRun.setGreatestThreadRunNumber(1);
-                        Assertions.assertThat(parentWfRun.getThreadRunIterator().next()).isSameAs(parentThreadRun);
+            parentWfRun.setThreadRunsUseMeCarefully(new ArrayList<>(List.of(parentThreadRun)));
+            parentWfRun.setGreatestThreadRunNumber(1);
+            Assertions.assertThat(parentWfRun.getThreadRunIterator().next()).isSameAs(parentThreadRun);
             testProcessorContext.getableManager().put(parentWfRun);
 
             // Child WfRun setup

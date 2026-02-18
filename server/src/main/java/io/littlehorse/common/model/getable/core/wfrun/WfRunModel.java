@@ -551,8 +551,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     private boolean shouldForceArchiveCompletedThreadRuns() {
-        int threshold =
-                (LHConstants.MAX_THREAD_RUNS_PER_WF_RUN * NEAR_MAX_THREAD_RUNS_THRESHOLD_PERCENT) / 100;
+        int threshold = (LHConstants.MAX_THREAD_RUNS_PER_WF_RUN * NEAR_MAX_THREAD_RUNS_THRESHOLD_PERCENT) / 100;
         return this.threadRunsUseMeCarefully.size() >= threshold;
     }
 
@@ -570,7 +569,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 case COMPLETED:
                     boolean shouldArchive = forceArchiveCompletedThreads;
                     if (!shouldArchive && threadRun.getThreadSpec().getRetentionPolicy() != null) {
-                        shouldArchive = threadRun.getThreadSpec().getRetentionPolicy().shouldGcThreadRun(threadRun);
+                        shouldArchive =
+                                threadRun.getThreadSpec().getRetentionPolicy().shouldGcThreadRun(threadRun);
                     }
                     if (shouldArchive) {
                         threadRunIterator.remove();

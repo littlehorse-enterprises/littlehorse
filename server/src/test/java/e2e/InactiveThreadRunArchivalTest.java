@@ -65,9 +65,9 @@ public class InactiveThreadRunArchivalTest {
         return Workflow.newWorkflow("inactive-thread-run-archival-workflow", wf -> {
             SpawnedThread child1 = wf.spawnThread(
                     child -> {
-                    child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
-                        .setSecondsAfterThreadTermination(0)
-                        .build());
+                        child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
+                                .setSecondsAfterThreadTermination(0)
+                                .build());
                         WfRunVariable done = child.addVariable("done-1", VariableType.BOOL);
                         child.mutate(done, VariableMutationType.ASSIGN, true);
                     },
@@ -75,9 +75,9 @@ public class InactiveThreadRunArchivalTest {
                     null);
             SpawnedThread child2 = wf.spawnThread(
                     child -> {
-                    child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
-                        .setSecondsAfterThreadTermination(0)
-                        .build());
+                        child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
+                                .setSecondsAfterThreadTermination(0)
+                                .build());
                         WfRunVariable done = child.addVariable("done-2", VariableType.BOOL);
                         child.mutate(done, VariableMutationType.ASSIGN, true);
                     },
