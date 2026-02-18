@@ -4,8 +4,10 @@ export {
   LHTaskException,
   WorkerContext,
   lhStruct,
-  lh,
-  getStructDefName,
+  getStructName,
+  isLHStruct,
+  zodToTypeDef,
+  zodToVariableDefs,
   buildPutStructDefRequest,
   buildStructVariableDef,
   getStructDependencies,
@@ -14,10 +16,4 @@ export {
 export type {
   TaskFunction,
   LHTaskWorkerOptions,
-  LHStructSchema,
-  LHStructOptions,
-  Infer,
-  FieldDef,
-  PrimitiveField,
-  StructRefField,
 } from './worker'

@@ -21,47 +21,15 @@ import { TaskStatus, LHErrorType } from '../proto/common_enums'
 import { LHConfig } from '../LHConfig'
 import { WorkerContext } from './WorkerContext'
 import { extractTaskArgs, toVariableValue } from './variableMapping'
-import { toStructVariableValue, LHStructSchema } from './struct'
+import { toStructVariableValue, getStructName, zodToVariableDefs } from './zodSchema'
 import { randomBytes } from 'crypto'
+import { type ZodTypeAny } from 'zod'
 
 /**
  * A task function that the LHTaskWorker will execute. It receives the input
  * variables as positional arguments and an optional WorkerContext as the last argument.
  */
 export type TaskFunction = (...args: any[]) => any | Promise<any>
-
-/**
- * Parses parameter names from a function's source text and builds VariableDefs
- * for each parameter except the last one if it looks like a WorkerContext.
- *
- * This mirrors Java SDK behavior where parameter names and types are inferred
- * via reflection. Since JS has no runtime type info, we infer only names and
- * leave the type unset (the server accepts it).
- *
- * @internal
- */
-function inferInputVars(fn: TaskFunction): VariableDef[] {
-  const source = fn.toString()
-  // Match function params: handles `function(a, b)`, `(a, b) =>`, `async (a, b) =>`
-  const match = source.match(/^(?:async\s+)?(?:function\s*\w*\s*)?\(([^)]*)\)/)
-  if (!match) return []
-
-  const params = match[1]
-    .split(',')
-    .map((p) => p.trim().replace(/[:=].*/s, '').trim()) // strip type annotations & defaults
-    .filter(Boolean)
-
-  if (params.length === 0) return []
-
-  // The last parameter is a WorkerContext by convention — exclude it
-  const inputParams = params.slice(0, -1)
-
-  return inputParams.map((name) => ({
-    name,
-    // No type information available at runtime in JS;
-    // the server will accept VariableDefs without a typeDef.
-  }))
-}
 
 const HEARTBEAT_INTERVAL_MS = 15_000
 const REPORT_TASK_MAX_RETRIES = 5
@@ -88,7 +56,7 @@ class ServerConnection {
     private readonly taskWorkerVersion: string | undefined,
     private readonly tenantId: string | undefined,
     channelCredentials?: ChannelCredentials,
-    private readonly outputSchema?: LHStructSchema
+    private readonly outputSchema?: ZodTypeAny
   ) {
     this.host = host
     this.port = port
@@ -204,7 +172,7 @@ class ServerConnection {
 
       const result = await Promise.resolve(this.taskFunction(...args))
       const output =
-        this.outputSchema && result !== null && result !== undefined && typeof result === 'object'
+        this.outputSchema && getStructName(this.outputSchema) && result !== null && result !== undefined && typeof result === 'object'
           ? toStructVariableValue(result as Record<string, unknown>, this.outputSchema)
           : toVariableValue(result)
 
@@ -311,24 +279,30 @@ export class LHTaskException extends Error {
  */
 export interface LHTaskWorkerOptions {
   /**
-   * Input variable definitions for the TaskDef. When provided, `registerTaskDef()`
-   * will include these in the PutTaskDefRequest so the server knows the parameter
-   * names, types, and (optionally) struct types.
-   */
-  inputVars?: VariableDef[]
-
-  /**
-   * When the task function returns a struct, provide the schema here so the
-   * worker can serialize the return value as a Struct-typed VariableValue
-   * instead of a generic JSON object.
+   * A record mapping parameter names to Zod schemas. The worker uses these
+   * to derive typed `VariableDef[]` for TaskDef registration.
    *
    * ```ts
    * const worker = new LHTaskWorker(myFn, 'my-task', config, {
+   *   inputVars: { name: z.string(), age: z.number().int() },
+   * })
+   * ```
+   */
+  inputVars: Record<string, ZodTypeAny>
+
+  /**
+   * When the task function returns a struct, provide the Zod schema
+   * (created with `lhStruct()`) here so the worker can serialize the
+   * return value as a Struct-typed VariableValue.
+   *
+   * ```ts
+   * const worker = new LHTaskWorker(myFn, 'my-task', config, {
+   *   inputVars: { report: ParkingTicketReport },
    *   outputSchema: PersonSchema,
    * })
    * ```
    */
-  outputSchema?: LHStructSchema
+  outputSchema?: ZodTypeAny
 
   /**
    * Optional version string for the task worker (recorded for debugging).
@@ -349,7 +323,7 @@ export class LHTaskWorker {
   private readonly channelCredentials?: ChannelCredentials
   private readonly tenantId?: string
   private readonly inputVars: VariableDef[]
-  private readonly outputSchema?: LHStructSchema
+  private readonly outputSchema?: ZodTypeAny
 
   /**
    * Creates a new LHTaskWorker.
@@ -359,9 +333,10 @@ export class LHTaskWorker {
    *   optionally a `WorkerContext` as the last argument.
    * @param taskDefName - The name of the TaskDef to poll for.
    * @param config - An LHConfig instance for connecting to the LH Server.
-   * @param options - Optional configuration including inputVars for typed TaskDef registration.
+   * @param options - Configuration including `inputVars` (a record of param name → Zod schema)
+   *   for typed TaskDef registration.
    */
-  constructor(taskFunction: TaskFunction, taskDefName: string, config: LHConfig, options?: LHTaskWorkerOptions) {
+  constructor(taskFunction: TaskFunction, taskDefName: string, config: LHConfig, options: LHTaskWorkerOptions) {
     this.taskFunction = taskFunction
     this.taskDefName = taskDefName
     this.config = config
@@ -369,9 +344,9 @@ export class LHTaskWorker {
     this.bootstrapClient = config.getClient()
     this.channelCredentials = config.getChannelCredentials()
     this.tenantId = config.getTenantId()
-    this.inputVars = options?.inputVars ?? inferInputVars(taskFunction)
-    this.outputSchema = options?.outputSchema
-    this.taskWorkerVersion = options?.taskWorkerVersion
+    this.inputVars = zodToVariableDefs(options.inputVars)
+    this.outputSchema = options.outputSchema
+    this.taskWorkerVersion = options.taskWorkerVersion
   }
 
   /**

@@ -44,6 +44,10 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "nice-grpc": "^2.1.12"
+    "nice-grpc": "^2.1.12",
+    "zod": "^4.3.6"
+  },
+  "peerDependencies": {
+    "zod": "^4.0.0"
   }
 }

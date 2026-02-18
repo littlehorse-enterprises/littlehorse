@@ -1,27 +1,37 @@
-import { lhStruct, lh, Infer } from 'littlehorse-client'
+import { z } from 'zod'
+import { lhStruct } from 'littlehorse-client'
 
 // ── Struct schemas ───────────────────────────────────────────────────
 
-export const Address = lhStruct('address', {
-  houseNumber: lh.INT,
-  street: lh.STR,
-  city: lh.STR,
-  state: lh.STR,
-  zip: lh.INT,
-})
-export type Address = Infer<typeof Address>
+export const Address = lhStruct(
+  'address',
+  z.object({
+    houseNumber: z.number().int(),
+    street: z.string(),
+    city: z.string(),
+    state: z.string(),
+    zip: z.number().int(),
+  }),
+)
+export type Address = z.infer<typeof Address>
 
-export const Person = lhStruct('person', {
-  firstName: lh.STR,
-  lastName: lh.STR,
-  homeAddress: lh.struct(Address),
-})
-export type Person = Infer<typeof Person>
+export const Person = lhStruct(
+  'person',
+  z.object({
+    firstName: z.string(),
+    lastName: z.string(),
+    homeAddress: Address,
+  }),
+)
+export type Person = z.infer<typeof Person>
 
-export const ParkingTicketReport = lhStruct('parking-ticket-report', {
-  vehicleMake: lh.STR,
-  vehicleModel: lh.STR,
-  licensePlateNumber: lh.STR,
-  reportedAt: lh.STR,
-})
-export type ParkingTicketReport = Infer<typeof ParkingTicketReport>
+export const ParkingTicketReport = lhStruct(
+  'parking-ticket-report',
+  z.object({
+    vehicleMake: z.string(),
+    vehicleModel: z.string(),
+    licensePlateNumber: z.string(),
+    reportedAt: z.string(),
+  }),
+)
+export type ParkingTicketReport = z.infer<typeof ParkingTicketReport>

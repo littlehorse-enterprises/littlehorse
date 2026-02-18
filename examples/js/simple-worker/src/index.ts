@@ -1,4 +1,5 @@
 import { LHConfig, LHTaskWorker, WorkerContext } from 'littlehorse-client'
+import { z } from 'zod'
 
 /**
  * This is the task function that gets executed every time the "greet" task
@@ -16,7 +17,9 @@ async function main() {
   // Connect to the LH Server (defaults to localhost:2023)
   const config = LHConfig.from({})
 
-  const worker = new LHTaskWorker(greet, 'greet', config)
+  const worker = new LHTaskWorker(greet, 'greet', config, {
+    inputVars: { name: z.string() },
+  })
 
   // Register the TaskDef if it doesn't exist yet
   if (!(await worker.doesTaskDefExist())) {

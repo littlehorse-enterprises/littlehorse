@@ -3,9 +3,8 @@ import {
   LHTaskWorker,
   WorkerContext,
   buildPutStructDefRequest,
-  buildStructVariableDef,
   getStructDependencies,
-  type LHStructSchema,
+  getStructName,
 } from 'littlehorse-client'
 import { Address, Person, ParkingTicketReport } from './schemas.js'
 import type { Person as PersonType, ParkingTicketReport as ParkingTicketReportType } from './schemas.js'
@@ -35,20 +34,21 @@ async function main() {
   const config = LHConfig.from({})
 
   const getCarOwnerWorker = new LHTaskWorker(getCarOwner, 'get-car-owner', config, {
-    inputVars: [buildStructVariableDef('report', ParkingTicketReport)],
+    inputVars: { report: ParkingTicketReport },
     outputSchema: Person,
   })
   const mailTicketWorker = new LHTaskWorker(mailTicket, 'mail-ticket', config, {
-    inputVars: [buildStructVariableDef('person', Person)],
+    inputVars: { person: Person },
   })
 
   // Register all StructDefs in dependency order
   const seen = new Set<string>()
-  const schemasToRegister: LHStructSchema[] = []
+  const schemasToRegister: typeof Person[] = []
   for (const schema of [...getStructDependencies(Person), ...getStructDependencies(ParkingTicketReport)]) {
-    if (!seen.has(schema.name)) {
-      seen.add(schema.name)
-      schemasToRegister.push(schema)
+    const name = getStructName(schema)!
+    if (!seen.has(name)) {
+      seen.add(name)
+      schemasToRegister.push(schema as typeof Person)
     }
   }
 
