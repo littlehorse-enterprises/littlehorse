@@ -7,7 +7,7 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 /// The <c>ExternalEventNodeOutput</c> class represents a specialized NodeOutput.
 /// It allows for setting timeouts and other configurations specific to external events outputs.
 /// </summary>
-public class ExternalEventNodeOutput : NodeOutput
+public class ExternalEventNodeOutput : NodeOutput, IExternalEventDefRegistration
 {
     private Type? _payloadType;
     private CorrelatedEventConfig? _correlatedEventConfig;

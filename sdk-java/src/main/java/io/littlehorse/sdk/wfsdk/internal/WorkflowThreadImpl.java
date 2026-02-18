@@ -44,6 +44,7 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsStrategy;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
+import io.littlehorse.sdk.wfsdk.InterruptHandler;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.LHFormatString;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
@@ -274,8 +275,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
         // us mutate variables
     }
 
-    public void registerExternalEventDef(ExternalEventNodeOutputImpl nodeOutputImpl) {
-        parent.addExternalEventDefToRegister(nodeOutputImpl);
+    public void registerExternalEventDef(ExternalEventDefRegistration registration) {
+        parent.addExternalEventDefToRegister(registration);
     }
 
     public void registerWorkflowEventDef(ThrowEventNodeOutputImpl nodeOutputImpl) {
@@ -310,7 +311,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         spec.putNodes(lastNodeName, curNode.build());
     }
 
-    public LHFormatStringImpl format(String format, WfRunVariable... args) {
+    public LHFormatStringImpl format(String format, Serializable... args) {
         return new LHFormatStringImpl(this, format, args);
     }
 
@@ -350,6 +351,19 @@ final class WorkflowThreadImpl implements WorkflowThread {
             node.putInputs(input.getKey(), assignVariable(input.getValue()));
         }
         String nodeName = addNode("run-" + wfSpecName, NodeCase.RUN_CHILD_WF, node.build());
+        return new SpawnedChildWfImpl(nodeName, this);
+    }
+
+    @Override
+    public SpawnedChildWf runWf(Serializable wfSpecName, Map<String, Serializable> inputs) {
+        checkIfIsActive();
+        // TODO: handle workflow versioning
+        RunChildWfNode.Builder node =
+                RunChildWfNode.newBuilder().setMajorVersion(-1).setWfSpecVar(assignVariable(wfSpecName));
+        for (Map.Entry<String, Serializable> input : inputs.entrySet()) {
+            node.putInputs(input.getKey(), assignVariable(input.getValue()));
+        }
+        String nodeName = addNode("run-child-wf", NodeCase.RUN_CHILD_WF, node.build());
         return new SpawnedChildWfImpl(nodeName, this);
     }
 
@@ -947,7 +961,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         addNode(failureName, NodeCase.EXIT, exitNode);
     }
 
-    public void registerInterruptHandler(String interruptName, ThreadFunc handler) {
+    public InterruptHandler registerInterruptHandler(String interruptName, ThreadFunc handler) {
         checkIfIsActive();
         String threadName = "interrupt-" + interruptName;
         threadName = parent.addSubThread(threadName, handler);
@@ -957,6 +971,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 .setExternalEventDefId(ExternalEventDefId.newBuilder().setName(interruptName))
                 .setHandlerSpecName(threadName)
                 .build());
+        return new InterruptHandlerImpl(interruptName, this);
     }
 
     public void handleException(NodeOutput nodeOutput, String exceptionName, ThreadFunc handler) {
