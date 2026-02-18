@@ -1,6 +1,7 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -29,21 +30,20 @@ public class ChildThreadExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-child-thread", wf -> {
-            WfRunVariable parentVar = wf.declareInt("parent-var");
+            WfRunVariable counter = wf.declareInt("counter").required();
 
-            parentVar.assign(wf.execute("parent-task-1", parentVar));
+            wf.doWhile(wf.condition(counter, Comparator.GREATER_THAN, 0), (whileBody) -> {
+                SpawnedThread childThread = whileBody.spawnThread(
+                        child -> {
+                            child.complete();
+                        },
+                        "child-thread",
+                        null);
 
-            SpawnedThread childThread = wf.spawnThread(
-                    child -> { // this is the child workflow thread
-                        WfRunVariable childVar = child.declareInt("child-var");
-                        child.execute("child-task", childVar);
-                    },
-                    "spawned-thread",
-                    Map.of("child-var", parentVar));
+                whileBody.waitForThreads(SpawnedThreads.of(childThread));
 
-            wf.waitForThreads(SpawnedThreads.of(childThread));
-
-            wf.execute("parent-task-2");
+                counter.assign(counter.subtract(1));
+            });
         });
     }
 

@@ -18,6 +18,8 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.util.HeadersUtil;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -69,8 +71,11 @@ public class ThreadRunModelTest {
             parentWfRun.setWfSpecId(parentWfSpec.getId());
             parentThreadRun.setWfRun(parentWfRun);
             parentThreadRun.setWfSpecId(parentWfSpec.getId());
+                        parentThreadRun.setNumber(0);
             parentWfRun.setId(new WfRunIdModel("parent-wf-id"));
-            parentWfRun.getThreadRunsUseMeCarefully().add(parentThreadRun);
+                        parentWfRun.setThreadRunsUseMeCarefully(new ArrayList<>(List.of(parentThreadRun)));
+                        parentWfRun.setGreatestThreadRunNumber(1);
+                        Assertions.assertThat(parentWfRun.getThreadRunIterator().next()).isSameAs(parentThreadRun);
             testProcessorContext.getableManager().put(parentWfRun);
 
             // Child WfRun setup

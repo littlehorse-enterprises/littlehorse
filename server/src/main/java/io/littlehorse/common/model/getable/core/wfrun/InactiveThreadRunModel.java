@@ -5,9 +5,12 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
+import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InactiveThreadRun;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -67,5 +70,14 @@ public class InactiveThreadRunModel extends CoreGetable<InactiveThreadRun>
     @Override
     public Class<InactiveThreadRun> getProtoBaseClass() {
         return InactiveThreadRun.class;
+    }
+
+    @Override
+    public boolean shouldProduceToOutputTopic(
+            InactiveThreadRun previousValue,
+            ReadOnlyMetadataManager metadataManager,
+            ReadOnlyGetableManager getableManager,
+            OutputTopicConfigModel config) {
+        return false;
     }
 }

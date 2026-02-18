@@ -75,6 +75,8 @@ import org.apache.commons.lang3.tuple.Pair;
 @Getter
 public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGetable<WfRun> {
 
+    private static final int NEAR_MAX_THREAD_RUNS_THRESHOLD_PERCENT = 90;
+
     private WfRunIdModel id;
     private WfSpecIdModel wfSpecId;
     private List<WfSpecIdModel> oldWfSpecVersions = new ArrayList<>();
@@ -211,6 +213,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     public ThreadRunModel getThreadRun(int threadRunNumber) {
+        if (threadRunNumber < 0) return null;
+
         ThreadRunModel localThreadRun = threadRunsUseMeCarefully.stream()
                 .filter(thread -> thread.getNumber() == threadRunNumber)
                 .findFirst()
@@ -513,6 +517,10 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         // WfRun is static, meaning that there are no more advances that can be made
         // without another Command coming in.
         while (statusChanged) {
+            if (shouldForceArchiveCompletedThreadRuns()) {
+                archiveCompletedThreadRuns(true);
+            }
+
             if (++numAdvancesInThisCommand > LHConstants.MAX_STACK_FRAMES_PER_COMMAND) {
                 putFailureOnThreadRun(
                         getThreadRun(0),
@@ -547,10 +555,16 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
         }
 
-        archiveCompletedThreadRuns();
+        archiveCompletedThreadRuns(false);
     }
 
-    private void archiveCompletedThreadRuns() {
+    private boolean shouldForceArchiveCompletedThreadRuns() {
+        int threshold =
+                (LHConstants.MAX_THREAD_RUNS_PER_WF_RUN * NEAR_MAX_THREAD_RUNS_THRESHOLD_PERCENT) / 100;
+        return this.threadRunsUseMeCarefully.size() >= threshold;
+    }
+
+    private void archiveCompletedThreadRuns(boolean forceArchiveCompletedThreads) {
         Iterator<ThreadRunModel> threadRunIterator = threadRunsUseMeCarefully.iterator();
         GetableManager getableManager =
                 this.executionContext.castOnSupport(CoreProcessorContext.class).getableManager();
@@ -562,9 +576,15 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
             switch (threadRun.getStatus()) {
                 case COMPLETED:
-                    threadRunIterator.remove();
-                    InactiveThreadRunModel inactiveThreadRunModel = new InactiveThreadRunModel(threadRun);
-                    getableManager.put(inactiveThreadRunModel);
+                    boolean shouldArchive = forceArchiveCompletedThreads;
+                    if (!shouldArchive && threadRun.getThreadSpec().getRetentionPolicy() != null) {
+                        shouldArchive = threadRun.getThreadSpec().getRetentionPolicy().shouldGcThreadRun(threadRun);
+                    }
+                    if (shouldArchive) {
+                        threadRunIterator.remove();
+                        InactiveThreadRunModel inactiveThreadRunModel = new InactiveThreadRunModel(threadRun);
+                        getableManager.put(inactiveThreadRunModel);
+                    }
                     break;
                 case ERROR:
                 case EXCEPTION:
