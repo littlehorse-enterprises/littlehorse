@@ -1,4 +1,4 @@
-chpackage e2e;
+package e2e;
 
 import static io.littlehorse.sdk.common.proto.LHStatus.COMPLETED;
 import static org.assertj.core.api.Assertions.assertThat;
