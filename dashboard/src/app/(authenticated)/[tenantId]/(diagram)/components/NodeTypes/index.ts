@@ -8,12 +8,14 @@ import { Exit } from './Exit'
 import { ExternalEvent } from './ExternalEvent/ExternalEvent'
 import { NodeType } from './extractNodes'
 import { Nop } from './Nop'
+import { RunChildWf } from './RunChildWf/RunChildWf'
 import { Sleep } from './Sleep'
 import { StartMultipleThreads } from './StartMultipleThreads'
 import { StartThread } from './StartThread'
 import { Task } from './Task'
 import { ThrowEvent } from './ThrowEvent'
 import { UserTask } from './UserTask/UserTask'
+import { WaitForChildWf } from './WaitForChildWf/WaitForChildWf'
 import { WaitForCondition } from './WaitForCondition'
 import { WaitForThreads } from './WaitForThreads'
 
@@ -22,16 +24,16 @@ const nodeTypes: Record<NodeType | 'cycle', ComponentType<any>> = {
   exit: Exit,
   externalEvent: ExternalEvent,
   nop: Nop,
+  runChildWf: RunChildWf,
   sleep: Sleep,
   startMultipleThreads: StartMultipleThreads,
   startThread: StartThread,
   task: Task,
   throwEvent: ThrowEvent,
   userTask: UserTask,
+  waitForChildWf: WaitForChildWf,
   waitForCondition: WaitForCondition,
   waitForThreads: WaitForThreads,
-  runChildWf: Nop,
-  waitForChildWf: Nop,
   cycle: Cycle,
 }
 

@@ -18,7 +18,7 @@ public class SpawnedThreadsIterator: SpawnedThreads
     public SpawnedThreadsIterator(WfRunVariable internalStartedThreadVar) 
     {
        _internalStartedThreadVar = internalStartedThreadVar;
-        if (_internalStartedThreadVar.Type != VariableType.JsonArr) 
+        if (_internalStartedThreadVar.TypeDef.DefinedTypeCase != TypeDefinition.DefinedTypeOneofCase.PrimitiveType || _internalStartedThreadVar.TypeDef.PrimitiveType != VariableType.JsonArr) 
         {
             throw new ArgumentException("Only support for json arrays.");
         }
