@@ -38,6 +38,7 @@ import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.KafkaStreams.CloseOptions;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.processor.TaskId;
 import org.apache.logging.log4j.LogManager;
@@ -208,7 +209,7 @@ public class LHServer {
 
         new Thread(() -> {
                     log.info("Closing core Kafka Streams");
-                    coreStreams.close();
+                    coreStreams.close(new CloseOptions().leaveGroup(true));
                     streamLatch.countDown();
                     log.info("Done closing core Kafka Streams");
                 })
