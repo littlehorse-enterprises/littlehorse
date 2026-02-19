@@ -1,12 +1,14 @@
 syntax = "proto3";
 package littlehorse;
-
 option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
 import "variable.proto";
+import "metrics.proto";
+import "common_enums.proto";
+
 
 
 
@@ -37,6 +39,7 @@ enum StoreableType {
     TASK_QUEUE_HINT = 11;
     NODE_OUTPUT = 12;
     TIMER_ITERATOR_HINT = 13;
+    METRICS_HINT = 14;
 }
 
 enum GetableClassEnum {
@@ -61,6 +64,7 @@ enum GetableClassEnum {
     STRUCT_DEF = 18;
     CORRELATED_EVENT = 19;
     CHECKPOINT = 20;
+    METRIC_WINDOW = 21;
 }
 
 message AttributePb {
@@ -141,6 +145,10 @@ message TimerIteratorHint {
   google.protobuf.Timestamp last_processed_timer = 2;
 }
 
+message MetricsHint {
+  google.protobuf.Timestamp last_processed_timestamp = 1;
+}
+
 // Represents a persistently stored node output
 message NodeOutput {
   int32 thread_run_number = 1;
@@ -148,4 +156,16 @@ message NodeOutput {
   string node_name = 3;
   VariableValue value = 4;
   google.protobuf.Timestamp created_at = 5;
+}
+
+message PartitionMetricWindow {
+  oneof id {
+    WfSpecId  wf_spec_id  = 1;
+    TaskDefId task_def_id = 2;
+    UserTaskDefId user_task_def_id = 3;
+  }
+  TenantId tenant_id = 5;
+  MetricWindowType metric_type = 6;
+  google.protobuf.Timestamp window_start = 7;
+  map<string, CountAndTiming> metrics = 8;
 }

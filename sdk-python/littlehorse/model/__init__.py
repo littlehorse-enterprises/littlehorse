@@ -2,6 +2,7 @@ from .acls_pb2 import *
 from .common_enums_pb2 import *
 from .common_wfspec_pb2 import *
 from .external_event_pb2 import *
+from .metrics_pb2 import *
 from .node_run_pb2 import *
 from .object_id_pb2 import *
 from .output_topic_pb2 import *

@@ -90,6 +90,9 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
     }
 
     public static String getRocksDBKey(String key, GetableClassEnum objType) {
+        if (objType == GetableClassEnum.METRIC_WINDOW) {
+            return objType.getNumber() + "/" + key;
+        }
         // Weird but needed for the new format
         var parts = key.split("/");
         String wfRun = parts[0];

@@ -33,6 +33,7 @@ import {
 } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
+import { ListWfMetricsRequest, MetricsList } from "./metrics";
 import { NodeRun } from "./node_run";
 import {
   CheckpointId,
@@ -1575,25 +1576,6 @@ export interface WfSpecMetricsQueryRequest {
     | undefined;
   /** The window size */
   windowLength: MetricsWindowLength;
-}
-
-/** Query to retrieve WfSpec Metrics over a period of time. */
-export interface ListWfMetricsRequest {
-  /** WfSpecId of metrics to get. */
-  wfSpecId:
-    | WfSpecId
-    | undefined;
-  /**
-   * This parameter is a timestamp that is used to determine the *last* window returned. The
-   * server will then return `num_windows` worth of data from before this timestamp.
-   */
-  lastWindowStart:
-    | string
-    | undefined;
-  /** The window size */
-  windowLength: MetricsWindowLength;
-  /** Number of windows to retrieve */
-  numWindows: number;
 }
 
 /** A list of WfSpec Metrics Windows */
@@ -9720,119 +9702,6 @@ export const WfSpecMetricsQueryRequest = {
   },
 };
 
-function createBaseListWfMetricsRequest(): ListWfMetricsRequest {
-  return {
-    wfSpecId: undefined,
-    lastWindowStart: undefined,
-    windowLength: MetricsWindowLength.MINUTES_5,
-    numWindows: 0,
-  };
-}
-
-export const ListWfMetricsRequest = {
-  encode(message: ListWfMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfSpecId !== undefined) {
-      WfSpecId.encode(message.wfSpecId, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.lastWindowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.lastWindowStart), writer.uint32(18).fork()).ldelim();
-    }
-    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      writer.uint32(24).int32(metricsWindowLengthToNumber(message.windowLength));
-    }
-    if (message.numWindows !== 0) {
-      writer.uint32(32).int32(message.numWindows);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ListWfMetricsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListWfMetricsRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.lastWindowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.windowLength = metricsWindowLengthFromJSON(reader.int32());
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.numWindows = reader.int32();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ListWfMetricsRequest {
-    return {
-      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
-      lastWindowStart: isSet(object.lastWindowStart) ? globalThis.String(object.lastWindowStart) : undefined,
-      windowLength: isSet(object.windowLength)
-        ? metricsWindowLengthFromJSON(object.windowLength)
-        : MetricsWindowLength.MINUTES_5,
-      numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
-    };
-  },
-
-  toJSON(message: ListWfMetricsRequest): unknown {
-    const obj: any = {};
-    if (message.wfSpecId !== undefined) {
-      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
-    }
-    if (message.lastWindowStart !== undefined) {
-      obj.lastWindowStart = message.lastWindowStart;
-    }
-    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      obj.windowLength = metricsWindowLengthToJSON(message.windowLength);
-    }
-    if (message.numWindows !== 0) {
-      obj.numWindows = Math.round(message.numWindows);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<ListWfMetricsRequest>): ListWfMetricsRequest {
-    return ListWfMetricsRequest.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ListWfMetricsRequest>): ListWfMetricsRequest {
-    const message = createBaseListWfMetricsRequest();
-    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
-      ? WfSpecId.fromPartial(object.wfSpecId)
-      : undefined;
-    message.lastWindowStart = object.lastWindowStart ?? undefined;
-    message.windowLength = object.windowLength ?? MetricsWindowLength.MINUTES_5;
-    message.numWindows = object.numWindows ?? 0;
-    return message;
-  },
-};
-
 function createBaseListWfMetricsResponse(): ListWfMetricsResponse {
   return { results: [] };
 }
@@ -12069,12 +11938,11 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Returns a list of WfSpec Metrics Windows. */
-    listWfSpecMetrics: {
-      name: "ListWfSpecMetrics",
+    listWfMetrics: {
+      name: "ListWfMetrics",
       requestType: ListWfMetricsRequest,
       requestStream: false,
-      responseType: ListWfMetricsResponse,
+      responseType: MetricsList,
       responseStream: false,
       options: {},
     },
@@ -12563,11 +12431,10 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListTaskMetricsRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ListTaskMetricsResponse>>;
-  /** Returns a list of WfSpec Metrics Windows. */
-  listWfSpecMetrics(
+  listWfMetrics(
     request: ListWfMetricsRequest,
     context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ListWfMetricsResponse>>;
+  ): Promise<DeepPartial<MetricsList>>;
   /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
   putTenant(request: PutTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
   /** EXPERIMENTAL: Gets a Tenant from the LH Server. */
@@ -13019,11 +12886,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListTaskMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ListTaskMetricsResponse>;
-  /** Returns a list of WfSpec Metrics Windows. */
-  listWfSpecMetrics(
+  listWfMetrics(
     request: DeepPartial<ListWfMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
-  ): Promise<ListWfMetricsResponse>;
+  ): Promise<MetricsList>;
   /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
   putTenant(request: DeepPartial<PutTenantRequest>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
   /** EXPERIMENTAL: Gets a Tenant from the LH Server. */

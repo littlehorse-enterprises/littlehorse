@@ -585,3 +585,64 @@ export function lHErrorTypeToNumber(object: LHErrorType): number {
       return -1;
   }
 }
+
+export enum MetricWindowType {
+  WORKFLOW_METRIC = "WORKFLOW_METRIC",
+  TASK_METRIC = "TASK_METRIC",
+  USER_TASK_METRIC = "USER_TASK_METRIC",
+  NODE_METRIC = "NODE_METRIC",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function metricWindowTypeFromJSON(object: any): MetricWindowType {
+  switch (object) {
+    case 0:
+    case "WORKFLOW_METRIC":
+      return MetricWindowType.WORKFLOW_METRIC;
+    case 1:
+    case "TASK_METRIC":
+      return MetricWindowType.TASK_METRIC;
+    case 2:
+    case "USER_TASK_METRIC":
+      return MetricWindowType.USER_TASK_METRIC;
+    case 3:
+    case "NODE_METRIC":
+      return MetricWindowType.NODE_METRIC;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return MetricWindowType.UNRECOGNIZED;
+  }
+}
+
+export function metricWindowTypeToJSON(object: MetricWindowType): string {
+  switch (object) {
+    case MetricWindowType.WORKFLOW_METRIC:
+      return "WORKFLOW_METRIC";
+    case MetricWindowType.TASK_METRIC:
+      return "TASK_METRIC";
+    case MetricWindowType.USER_TASK_METRIC:
+      return "USER_TASK_METRIC";
+    case MetricWindowType.NODE_METRIC:
+      return "NODE_METRIC";
+    case MetricWindowType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function metricWindowTypeToNumber(object: MetricWindowType): number {
+  switch (object) {
+    case MetricWindowType.WORKFLOW_METRIC:
+      return 0;
+    case MetricWindowType.TASK_METRIC:
+      return 1;
+    case MetricWindowType.USER_TASK_METRIC:
+      return 2;
+    case MetricWindowType.NODE_METRIC:
+      return 3;
+    case MetricWindowType.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}

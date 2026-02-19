@@ -64,8 +64,9 @@ public class LHConstants {
 
     public static final String PRINCIPAL_ID_HEADER_NAME = "principalId";
 
-    // Store key for metric cache
     public static final String PARTITION_METRICS_KEY = "partitionMetrics";
+    public static final long MAX_MS_PER_PARTITION_METRICS_PUNCTUATION = 1000 * 3;
+    public static final Duration PARTITION_METRICS_PUNCTUATOR_INTERVAL_MS = Duration.ofMillis(30000);
 
     public static final Duration MAX_INCOMING_REQUEST_IDLE_TIME = Duration.ofSeconds(60);
     public static final int MAX_STACK_FRAMES_PER_COMMAND = 512;

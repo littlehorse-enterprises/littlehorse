@@ -59,7 +59,7 @@ public class LHPathTest {
 
         Workflow invalid = Workflow.newWorkflow("fail-get-on-struct", wf -> {
             WfRunVariable person = wf.declareStruct("person", Person.class);
-            wf.execute("greet", person.get("age"));
+            wf.execute("greet-lh-path", person.get("age"));
         });
 
         Assertions.assertThatThrownBy(() -> {
@@ -81,7 +81,7 @@ public class LHPathTest {
             WfRunVariable personStruct =
                     wf.declareStruct("person", Person.class).required();
 
-            wf.execute("greet", personStruct.get("name"));
+            wf.execute("greet-lh-path", personStruct.get("name"));
             wf.execute("lookup-friend", personStruct.get("friends").get(0));
             wf.execute("call-phone", personStruct.get("phoneNumbers").get("home"));
         });
@@ -110,13 +110,13 @@ public class LHPathTest {
         return new WorkflowImpl("lh-path-json-obj", wf -> {
             WfRunVariable personJsonObj = wf.declareJsonObj("person").required();
 
-            wf.execute("greet", personJsonObj.get("name"));
+            wf.execute("greet-lh-path", personJsonObj.get("name"));
             wf.execute("lookup-friend", personJsonObj.get("friends").get(0));
             wf.execute("call-phone", personJsonObj.get("phoneNumbers").get("home"));
         });
     }
 
-    @LHTaskMethod("greet")
+    @LHTaskMethod("greet-lh-path")
     public String greet(String name) {
         return "Greetings " + name;
     }

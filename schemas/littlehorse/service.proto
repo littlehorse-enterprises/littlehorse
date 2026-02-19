@@ -19,6 +19,7 @@ import "struct_def.proto";
 import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
+import "metrics.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -331,8 +332,8 @@ service LittleHorse {
   rpc GetWfSpecMetricsWindow(WfSpecMetricsQueryRequest) returns (WfSpecMetrics) {}
   // Returns a list of TaskDef Metrics Windows.
   rpc ListTaskDefMetrics(ListTaskMetricsRequest) returns (ListTaskMetricsResponse) {}
-  // Returns a list of WfSpec Metrics Windows.
-  rpc ListWfSpecMetrics(ListWfMetricsRequest) returns (ListWfMetricsResponse) {}
+
+  rpc ListWfMetrics(ListWfMetricsRequest) returns (MetricsList) {}
 
   // EXPERIMENTAL: Creates another Tenant in the LH Server.
   rpc PutTenant(PutTenantRequest) returns (Tenant) {}
@@ -350,6 +351,7 @@ service LittleHorse {
 
   // Gets the version of the LH Server.
   rpc GetServerVersion(google.protobuf.Empty) returns (LittleHorseVersion) {}
+
 }
 
 // Returns the UserTaskDef with a given name and the highest version number.
@@ -1518,21 +1520,6 @@ message WfSpecMetricsQueryRequest {
 
   // The window size
   MetricsWindowLength window_length = 3;
-}
-
-// Query to retrieve WfSpec Metrics over a period of time.
-message ListWfMetricsRequest {
-  // WfSpecId of metrics to get.
-  WfSpecId wf_spec_id = 1;
-
-  // This parameter is a timestamp that is used to determine the *last* window returned. The
-  // server will then return `num_windows` worth of data from before this timestamp.
-  google.protobuf.Timestamp last_window_start = 2;
-
-  // The window size
-  MetricsWindowLength window_length = 3;
-  // Number of windows to retrieve
-  int32 num_windows = 4;
 }
 
 // A list of WfSpec Metrics Windows
