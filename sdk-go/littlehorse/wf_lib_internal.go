@@ -40,6 +40,19 @@ func (p *plainNodeOutput) JsonPath(jsonpath string) *plainNodeOutput {
 	}
 }
 
+func (p *plainNodeOutput) CastTo(targetType lhproto.VariableType) LHExpression {
+	return &castExpression{source: p, targetType: targetType}
+}
+
+func (p *plainNodeOutput) CastToInt() LHExpression    { return p.CastTo(lhproto.VariableType_INT) }
+func (p *plainNodeOutput) CastToDouble() LHExpression { return p.CastTo(lhproto.VariableType_DOUBLE) }
+func (p *plainNodeOutput) CastToStr() LHExpression    { return p.CastTo(lhproto.VariableType_STR) }
+func (p *plainNodeOutput) CastToBool() LHExpression   { return p.CastTo(lhproto.VariableType_BOOL) }
+func (p *plainNodeOutput) CastToBytes() LHExpression  { return p.CastTo(lhproto.VariableType_BYTES) }
+func (p *plainNodeOutput) CastToWfRunId() LHExpression {
+	return p.CastTo(lhproto.VariableType_WF_RUN_ID)
+}
+
 func (n *ExternalEventNodeOutput) getNodeName() string {
 	return n.nodeName
 }
@@ -609,6 +622,27 @@ func (t *WorkflowThread) assignVariable(
 				},
 			},
 		}
+
+	case *castExpression:
+		// Assign inner source, then set TargetType on the assignment
+		inner, innerErr := t.assignVariable(v.source)
+		if innerErr != nil {
+			t.throwError(innerErr)
+		}
+		inner.TargetType = &lhproto.TypeDefinition{
+			DefinedType: &lhproto.TypeDefinition_PrimitiveType{PrimitiveType: v.targetType},
+		}
+		out = inner
+
+	case castExpression:
+		inner, innerErr := t.assignVariable(v.source)
+		if innerErr != nil {
+			t.throwError(innerErr)
+		}
+		inner.TargetType = &lhproto.TypeDefinition{
+			DefinedType: &lhproto.TypeDefinition_PrimitiveType{PrimitiveType: v.targetType},
+		}
+		out = inner
 	default:
 		var tmp *lhproto.VariableValue
 		tmp, err = InterfaceToVarVal(v)
