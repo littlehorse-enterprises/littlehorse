@@ -3,6 +3,7 @@ package io.littlehorse.common.model.wfrun;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
@@ -65,8 +66,12 @@ public class WfRunModelTest {
         }
         Date windowStart = LHUtil.getCurrentWindowTime();
         String metricKey = String.format(
-                "metrics/partition/%s/%s/%s/%s",
-                LHUtil.toLhDbFormat(windowStart), MetricWindowType.WORKFLOW_METRIC.name(), this.tenantId, wfSpecId);
+                "%s/%s/%s/%s/%s",
+                LHConstants.PARTITION_METRICS_KEY,
+                LHUtil.toLhDbFormat(windowStart),
+                MetricWindowType.WORKFLOW_METRIC.name(),
+                this.tenantId,
+                wfSpecId);
 
         PartitionMetricWindowModel storedMetrics = clusterStore.get(metricKey, PartitionMetricWindowModel.class);
 

@@ -1,6 +1,7 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.core.metrics.CountAndTimingModel;
@@ -29,8 +30,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow> {
-
-    public static final String STORE_KEY_PREFIX = "metrics/partition";
 
     private WfSpecIdModel wfSpecId;
     private TaskDefIdModel taskDefId;
@@ -209,7 +208,7 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         }
         return String.format(
                 "%s/%s/%s/%s/%s",
-                STORE_KEY_PREFIX,
+                LHConstants.PARTITION_METRICS_KEY,
                 LHUtil.toLhDbFormat(windowStart),
                 getMetricType().name(),
                 tenantId,
