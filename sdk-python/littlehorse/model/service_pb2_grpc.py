@@ -353,6 +353,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.SearchStructDefRequest.SerializeToString,
                 response_deserializer=service__pb2.StructDefIdList.FromString,
                 _registered_method=True)
+        self.GetInactiveThreadRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetInactiveThreadRun',
+                request_serializer=object__id__pb2.InactiveThreadRunId.SerializeToString,
+                response_deserializer=wf__run__pb2.InactiveThreadRun.FromString,
+                _registered_method=True)
         self.RegisterTaskWorker = channel.unary_unary(
                 '/littlehorse.LittleHorse/RegisterTaskWorker',
                 request_serializer=service__pb2.RegisterTaskWorkerRequest.SerializeToString,
@@ -972,6 +977,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetInactiveThreadRun(self, request, context):
+        """Get an InactiveThreadRun
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def RegisterTaskWorker(self, request, context):
         """Used by the Task Worker to:
         1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -1498,6 +1510,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.SearchStructDef,
                     request_deserializer=service__pb2.SearchStructDefRequest.FromString,
                     response_serializer=service__pb2.StructDefIdList.SerializeToString,
+            ),
+            'GetInactiveThreadRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetInactiveThreadRun,
+                    request_deserializer=object__id__pb2.InactiveThreadRunId.FromString,
+                    response_serializer=wf__run__pb2.InactiveThreadRun.SerializeToString,
             ),
             'RegisterTaskWorker': grpc.unary_unary_rpc_method_handler(
                     servicer.RegisterTaskWorker,
@@ -3287,6 +3304,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/SearchStructDef',
             service__pb2.SearchStructDefRequest.SerializeToString,
             service__pb2.StructDefIdList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetInactiveThreadRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetInactiveThreadRun',
+            object__id__pb2.InactiveThreadRunId.SerializeToString,
+            wf__run__pb2.InactiveThreadRun.FromString,
             options,
             channel_credentials,
             insecure,
