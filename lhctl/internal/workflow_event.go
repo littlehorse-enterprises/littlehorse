@@ -88,10 +88,14 @@ Lists all WorkflowEvent's for a given WfRun Id.
 `,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
 		wfRunId := args[0]
 
 		req := &lhproto.ListWorkflowEventsRequest{
-			WfRunId: littlehorse.StrToWfRunId(wfRunId),
+			WfRunId:  littlehorse.StrToWfRunId(wfRunId),
+			Bookmark: bookmark,
+			Limit:    &limit,
 		}
 
 		littlehorse.PrintResp(getGlobalClient(cmd).ListWorkflowEvents(
