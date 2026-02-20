@@ -30,14 +30,42 @@ describe('OutputModal', () => {
   })
 
   it('renders label and message', () => {
-    render(<OutputModal label="MyLabel" message="Hello world" />)
+    render(<OutputModal label="MyLabel" message="Hello world" externalHoverState={true} />)
     expect(screen.getByText('MyLabel')).toBeInTheDocument()
     expect(screen.getByText('Hello world')).toBeInTheDocument()
     expect(screen.getByTestId('expand')).toBeInTheDocument()
   })
 
-  it('opens modal with correct payload when expand clicked and message is present', () => {
+  it('does not show expand button when not hovered', () => {
     render(<OutputModal label="MyLabel" message="Hello world" />)
+    expect(screen.queryByTestId('expand')).not.toBeInTheDocument()
+  })
+
+  it('shows expand button on hover', () => {
+    const { container } = render(<OutputModal label="MyLabel" message="Hello world" />)
+    const outerDiv = container.firstChild as HTMLElement
+
+    expect(screen.queryByTestId('expand')).not.toBeInTheDocument()
+
+    fireEvent.mouseEnter(outerDiv)
+    expect(screen.getByTestId('expand')).toBeInTheDocument()
+
+    fireEvent.mouseLeave(outerDiv)
+    expect(screen.queryByTestId('expand')).not.toBeInTheDocument()
+  })
+
+  it('shows expand button when externalHoverState is true', () => {
+    render(<OutputModal label="MyLabel" message="Hello world" externalHoverState={true} />)
+    expect(screen.getByTestId('expand')).toBeInTheDocument()
+  })
+
+  it('hides expand button when externalHoverState is false', () => {
+    render(<OutputModal label="MyLabel" message="Hello world" externalHoverState={false} />)
+    expect(screen.queryByTestId('expand')).not.toBeInTheDocument()
+  })
+
+  it('opens modal with correct payload when expand clicked and message is present', () => {
+    render(<OutputModal label="MyLabel" message="Hello world" externalHoverState={true} />)
     fireEvent.click(screen.getByTestId('expand'))
     expect(setModal).toHaveBeenCalledTimes(1)
     expect(setModal).toHaveBeenCalledWith({
@@ -48,9 +76,15 @@ describe('OutputModal', () => {
   })
 
   it('does nothing when expand clicked and message is empty', () => {
-    render(<OutputModal label="EmptyLabel" message="" />)
+    render(<OutputModal label="EmptyLabel" message="" externalHoverState={true} />)
     fireEvent.click(screen.getByTestId('expand'))
     expect(setModal).not.toHaveBeenCalled()
     expect(setShowModal).not.toHaveBeenCalled()
+  })
+
+  it('renders buttonText when provided instead of message', () => {
+    render(<OutputModal label="MyLabel" message="Full message" buttonText="JSON" externalHoverState={true} />)
+    expect(screen.getByText('JSON')).toBeInTheDocument()
+    expect(screen.queryByText('Full message')).not.toBeInTheDocument()
   })
 })
