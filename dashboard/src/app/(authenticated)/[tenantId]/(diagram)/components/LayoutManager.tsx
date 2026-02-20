@@ -1,16 +1,26 @@
 import ELK from 'elkjs/lib/elk.bundled.js'
 import { NodeRun } from 'littlehorse-client/proto'
 import { FC, useCallback, useEffect } from 'react'
-import { Edge, Node, useReactFlow, useStore } from 'reactflow'
+import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport } from 'reactflow'
 
 const elk = new ELK()
 
-export const LayoutManager: FC<{ nodeRuns?: NodeRun[] }> = ({ nodeRuns }) => {
+export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = ({ nodeRuns, viewportKey }) => {
   const nodes = useStore(store => store.getNodes())
   const edges = useStore(store => store.edges)
   const setNodes = useStore(store => store.setNodes)
   const setEdges = useStore(store => store.setEdges)
-  const { fitView } = useReactFlow()
+  const { fitView, setViewport } = useReactFlow()
+
+  useOnViewportChange({
+    onChange: useCallback(
+      (viewport: Viewport) => {
+        console.log('viewport', viewport)
+        sessionStorage.setItem(viewportKey, JSON.stringify(viewport))
+      },
+      [viewportKey]
+    ),
+  })
 
   const onLoad = useCallback(
     async (nodes: Node[], edges: Edge[]) => {
@@ -84,12 +94,23 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[] }> = ({ nodeRuns }) => {
         })
         setNodes(laidOutNodes)
         setEdges(edges)
-        setTimeout(() => fitView(), 10)
+        setTimeout(() => {
+          const saved = sessionStorage.getItem(viewportKey)
+          if (saved) {
+            try {
+              setViewport(JSON.parse(saved))
+            } catch {
+              fitView()
+            }
+          } else {
+            fitView()
+          }
+        }, 10)
       } catch (error) {
         console.error('ELK layout error:', error)
       }
     },
-    [fitView, nodeRuns, setNodes, setEdges]
+    [fitView, setViewport, viewportKey, nodeRuns, setNodes, setEdges]
   )
 
   useEffect(() => {

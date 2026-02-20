@@ -45,7 +45,11 @@ export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }
                     ...current,
                   }
                 })
-                router.replace(replaceQuery('threadRunNumber', number?.toString() ?? '0'))
+                if (number !== undefined) {
+                  router.replace(replaceQuery('threadRunNumber', number.toString()))
+                } else {
+                  router.replace(replaceQuery('thread', name))
+                }
               }}
             >
               {`${name}${number !== undefined ? `-${number}` : ''}`}
