@@ -31,7 +31,8 @@ go run .
 
 2) Register the workflow spec (in another terminal):
 ```bash
-go run examples/go/casting/deploy
+cd examples/go/casting/deploy
+go run .
 ```
 
 3) Start a workflow run (use `lhctl`):
@@ -39,7 +40,18 @@ go run examples/go/casting/deploy
 lhctl run casting-workflow
 ```
 
-Notes
+Trigger the error handler
 
-- Ensure your LH server and Kafka are running and `~/.config/littlehorse.config` is configured.
-- See the Java casting example for a higher-level overview: `examples/java/casting`.
+To make the workflow enter the error handler, run the workflow with an input that causes the server to fail when casting `hello` to a boolean. This will cause the node at thread 0 position 4 to fail and the handler thread to run; after the handler completes the workflow continues.
+
+```bash
+lhctl run casting-workflow string-bool Hello --wfRunId error-handler
+```
+
+To inspect the failed node run:
+
+```bash
+lhctl get nodeRun error-handler 0 4
+```
+
+
