@@ -40,7 +40,7 @@ public class SpawnedThread
 
     internal ThreadToWaitFor BuildThreadToWaitFor()
     {
-        if (ThreadNumberVariable.Type != VariableType.Int) 
+        if (ThreadNumberVariable.TypeDef.DefinedTypeCase != TypeDefinition.DefinedTypeOneofCase.PrimitiveType || ThreadNumberVariable.TypeDef.PrimitiveType != VariableType.Int) 
         {
             throw new ArgumentException("Only int variables are supported.");
         }
