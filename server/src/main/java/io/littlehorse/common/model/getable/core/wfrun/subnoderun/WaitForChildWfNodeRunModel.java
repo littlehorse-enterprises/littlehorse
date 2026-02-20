@@ -47,7 +47,7 @@ public class WaitForChildWfNodeRunModel extends SubNodeRun<WaitForChildWfNodeRun
     }
 
     @Override
-    public void arrive(Date time, CoreProcessorContext ctx) throws NodeFailureException {
+    public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         try {
             VariableValueModel result = nodeRun.getThreadRun()
                     .assignVariable(getNode().getWaitForChildWfNode().getChildWfRunId());
@@ -59,6 +59,12 @@ public class WaitForChildWfNodeRunModel extends SubNodeRun<WaitForChildWfNodeRun
             }
 
             this.childWfRunId = result.getWfRunId();
+
+            GetableManager manager = processorContext.getableManager();
+            WfRunModel childWf = manager.get(this.childWfRunId);
+            if (childWf != null && childWf.getParentTrigger() != null) {
+                childWf.getParentTrigger().setWaitingNodeRun(nodeRun.getId());
+            }
         } catch (LHVarSubError exn) {
             throw new NodeFailureException(new FailureModel(
                     "Failed to assign WfRunId to wait for: " + exn.getMessage(), LHErrorType.VAR_SUB_ERROR.toString()));

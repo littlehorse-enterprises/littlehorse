@@ -70,6 +70,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String CLUSTER_PARTITIONS_KEY = "LHS_CLUSTER_PARTITIONS";
     public static final String OUTPUT_TOPIC_PARTITIONS_KEY = "LHS_OUTPUT_TOPIC_PARTITIONS";
     public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
+    public static final String SHOULD_CREATE_OUTPUT_TOPICS_KEY = "LHS_SHOULD_CREATE_OUTPUT_TOPICS";
     public static final String RACK_ID_KEY = "LHS_RACK_ID";
 
     // Optional Performance-Related Configs for Kafka Streams
@@ -150,6 +151,8 @@ public class LHServerConfig extends ConfigBase {
 
     // useful for testing and might be useful for certain incidents
     public static final String X_MAX_DELETES_PER_COMMAND_KEY = "LHS_X_MAX_DELETES_PER_COMMAND";
+    // Enable timer streams processing
+    public static final String X_ENABLE_TIMER_STREAMS_KEY = "LHS_X_ENABLE_TIMER_STREAMS";
 
     // Instance configs
     private String lhsMetricsLevel;
@@ -752,6 +755,12 @@ public class LHServerConfig extends ConfigBase {
         return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "true"));
     }
 
+    public boolean shouldCreateOutputTopics() {
+        String outputTopicsValue =
+                getOrSetDefault(SHOULD_CREATE_OUTPUT_TOPICS_KEY, String.valueOf(shouldCreateTopics()));
+        return Boolean.valueOf(outputTopicsValue);
+    }
+
     public int getRocksDBCompactionThreads() {
         return Integer.valueOf(getOrSetDefault(ROCKSDB_COMPACTION_THREADS_KEY, "1"));
     }
@@ -1085,6 +1094,10 @@ public class LHServerConfig extends ConfigBase {
 
     public int getMaxDeletesPerCommand() {
         return Integer.valueOf(getOrSetDefault(X_MAX_DELETES_PER_COMMAND_KEY, "1000"));
+    }
+
+    public boolean isTimerStreamsEnabled() {
+        return Boolean.valueOf(getOrSetDefault(X_ENABLE_TIMER_STREAMS_KEY, "false"));
     }
 
     public String getRackId() {

@@ -124,10 +124,12 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         serverProperties.put(LHServerConfig.CORE_STREAM_THREADS_KEY, "2");
         serverProperties.put(LHServerConfig.LHS_CLUSTER_ID_KEY, "e2e-test-cluster");
         serverProperties.put(LHServerConfig.SHOULD_CREATE_TOPICS_KEY, "false");
+        serverProperties.put(LHServerConfig.SHOULD_CREATE_OUTPUT_TOPICS_KEY, "true");
         serverProperties.put(LHServerConfig.CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 8));
         serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, String.valueOf(1024L * 1024L * 100));
         serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 100));
         serverProperties.put(LHServerConfig.X_MAX_DELETES_PER_COMMAND_KEY, "10"); // To test wfrun deletion iteration
+        serverProperties.put(LHServerConfig.X_ENABLE_TIMER_STREAMS_KEY, "false");
         return serverProperties;
     }
 

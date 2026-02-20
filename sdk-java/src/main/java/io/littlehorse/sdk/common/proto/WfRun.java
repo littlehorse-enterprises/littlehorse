@@ -52,6 +52,919 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.WfRun.class, io.littlehorse.sdk.common.proto.WfRun.Builder.class);
   }
 
+  public interface ParentTriggerReferenceOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.WfRun.ParentTriggerReference)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+     * @return Whether the triggeringNodeRun field is set.
+     */
+    boolean hasTriggeringNodeRun();
+    /**
+     * <pre>
+     * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+     * @return The triggeringNodeRun.
+     */
+    io.littlehorse.sdk.common.proto.NodeRunId getTriggeringNodeRun();
+    /**
+     * <pre>
+     * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+     */
+    io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getTriggeringNodeRunOrBuilder();
+
+    /**
+     * <pre>
+     * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+     * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+     * @return Whether the waitingNodeRun field is set.
+     */
+    boolean hasWaitingNodeRun();
+    /**
+     * <pre>
+     * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+     * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+     * @return The waitingNodeRun.
+     */
+    io.littlehorse.sdk.common.proto.NodeRunId getWaitingNodeRun();
+    /**
+     * <pre>
+     * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+     * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+     */
+    io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getWaitingNodeRunOrBuilder();
+  }
+  /**
+   * <pre>
+   * Information about a parent `WfRun` which triggers a child.
+   * </pre>
+   *
+   * Protobuf type {@code littlehorse.WfRun.ParentTriggerReference}
+   */
+  public static final class ParentTriggerReference extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:littlehorse.WfRun.ParentTriggerReference)
+      ParentTriggerReferenceOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 32,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        ParentTriggerReference.class.getName());
+    }
+    // Use ParentTriggerReference.newBuilder() to construct.
+    private ParentTriggerReference(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private ParentTriggerReference() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.WfRunOuterClass.internal_static_littlehorse_WfRun_ParentTriggerReference_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.sdk.common.proto.WfRunOuterClass.internal_static_littlehorse_WfRun_ParentTriggerReference_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.class, io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int TRIGGERING_NODE_RUN_FIELD_NUMBER = 1;
+    private io.littlehorse.sdk.common.proto.NodeRunId triggeringNodeRun_;
+    /**
+     * <pre>
+     * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+     * @return Whether the triggeringNodeRun field is set.
+     */
+    @java.lang.Override
+    public boolean hasTriggeringNodeRun() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+     * @return The triggeringNodeRun.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.NodeRunId getTriggeringNodeRun() {
+      return triggeringNodeRun_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : triggeringNodeRun_;
+    }
+    /**
+     * <pre>
+     * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getTriggeringNodeRunOrBuilder() {
+      return triggeringNodeRun_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : triggeringNodeRun_;
+    }
+
+    public static final int WAITING_NODE_RUN_FIELD_NUMBER = 2;
+    private io.littlehorse.sdk.common.proto.NodeRunId waitingNodeRun_;
+    /**
+     * <pre>
+     * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+     * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+     * @return Whether the waitingNodeRun field is set.
+     */
+    @java.lang.Override
+    public boolean hasWaitingNodeRun() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+     * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+     * @return The waitingNodeRun.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.NodeRunId getWaitingNodeRun() {
+      return waitingNodeRun_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : waitingNodeRun_;
+    }
+    /**
+     * <pre>
+     * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+     * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getWaitingNodeRunOrBuilder() {
+      return waitingNodeRun_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : waitingNodeRun_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(1, getTriggeringNodeRun());
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeMessage(2, getWaitingNodeRun());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getTriggeringNodeRun());
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getWaitingNodeRun());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference other = (io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference) obj;
+
+      if (hasTriggeringNodeRun() != other.hasTriggeringNodeRun()) return false;
+      if (hasTriggeringNodeRun()) {
+        if (!getTriggeringNodeRun()
+            .equals(other.getTriggeringNodeRun())) return false;
+      }
+      if (hasWaitingNodeRun() != other.hasWaitingNodeRun()) return false;
+      if (hasWaitingNodeRun()) {
+        if (!getWaitingNodeRun()
+            .equals(other.getWaitingNodeRun())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasTriggeringNodeRun()) {
+        hash = (37 * hash) + TRIGGERING_NODE_RUN_FIELD_NUMBER;
+        hash = (53 * hash) + getTriggeringNodeRun().hashCode();
+      }
+      if (hasWaitingNodeRun()) {
+        hash = (37 * hash) + WAITING_NODE_RUN_FIELD_NUMBER;
+        hash = (53 * hash) + getWaitingNodeRun().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Information about a parent `WfRun` which triggers a child.
+     * </pre>
+     *
+     * Protobuf type {@code littlehorse.WfRun.ParentTriggerReference}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.WfRun.ParentTriggerReference)
+        io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReferenceOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.sdk.common.proto.WfRunOuterClass.internal_static_littlehorse_WfRun_ParentTriggerReference_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.sdk.common.proto.WfRunOuterClass.internal_static_littlehorse_WfRun_ParentTriggerReference_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.class, io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.Builder.class);
+      }
+
+      // Construct using io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetTriggeringNodeRunFieldBuilder();
+          internalGetWaitingNodeRunFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        triggeringNodeRun_ = null;
+        if (triggeringNodeRunBuilder_ != null) {
+          triggeringNodeRunBuilder_.dispose();
+          triggeringNodeRunBuilder_ = null;
+        }
+        waitingNodeRun_ = null;
+        if (waitingNodeRunBuilder_ != null) {
+          waitingNodeRunBuilder_.dispose();
+          waitingNodeRunBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.sdk.common.proto.WfRunOuterClass.internal_static_littlehorse_WfRun_ParentTriggerReference_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference build() {
+        io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference buildPartial() {
+        io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference result = new io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.triggeringNodeRun_ = triggeringNodeRunBuilder_ == null
+              ? triggeringNodeRun_
+              : triggeringNodeRunBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.waitingNodeRun_ = waitingNodeRunBuilder_ == null
+              ? waitingNodeRun_
+              : waitingNodeRunBuilder_.build();
+          to_bitField0_ |= 0x00000002;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference other) {
+        if (other == io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.getDefaultInstance()) return this;
+        if (other.hasTriggeringNodeRun()) {
+          mergeTriggeringNodeRun(other.getTriggeringNodeRun());
+        }
+        if (other.hasWaitingNodeRun()) {
+          mergeWaitingNodeRun(other.getWaitingNodeRun());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    internalGetTriggeringNodeRunFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                input.readMessage(
+                    internalGetWaitingNodeRunFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private io.littlehorse.sdk.common.proto.NodeRunId triggeringNodeRun_;
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> triggeringNodeRunBuilder_;
+      /**
+       * <pre>
+       * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+       * </pre>
+       *
+       * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+       * @return Whether the triggeringNodeRun field is set.
+       */
+      public boolean hasTriggeringNodeRun() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <pre>
+       * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+       * </pre>
+       *
+       * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+       * @return The triggeringNodeRun.
+       */
+      public io.littlehorse.sdk.common.proto.NodeRunId getTriggeringNodeRun() {
+        if (triggeringNodeRunBuilder_ == null) {
+          return triggeringNodeRun_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : triggeringNodeRun_;
+        } else {
+          return triggeringNodeRunBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+       * </pre>
+       *
+       * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+       */
+      public Builder setTriggeringNodeRun(io.littlehorse.sdk.common.proto.NodeRunId value) {
+        if (triggeringNodeRunBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          triggeringNodeRun_ = value;
+        } else {
+          triggeringNodeRunBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+       * </pre>
+       *
+       * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+       */
+      public Builder setTriggeringNodeRun(
+          io.littlehorse.sdk.common.proto.NodeRunId.Builder builderForValue) {
+        if (triggeringNodeRunBuilder_ == null) {
+          triggeringNodeRun_ = builderForValue.build();
+        } else {
+          triggeringNodeRunBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+       * </pre>
+       *
+       * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+       */
+      public Builder mergeTriggeringNodeRun(io.littlehorse.sdk.common.proto.NodeRunId value) {
+        if (triggeringNodeRunBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0) &&
+            triggeringNodeRun_ != null &&
+            triggeringNodeRun_ != io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance()) {
+            getTriggeringNodeRunBuilder().mergeFrom(value);
+          } else {
+            triggeringNodeRun_ = value;
+          }
+        } else {
+          triggeringNodeRunBuilder_.mergeFrom(value);
+        }
+        if (triggeringNodeRun_ != null) {
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+       * </pre>
+       *
+       * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+       */
+      public Builder clearTriggeringNodeRun() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        triggeringNodeRun_ = null;
+        if (triggeringNodeRunBuilder_ != null) {
+          triggeringNodeRunBuilder_.dispose();
+          triggeringNodeRunBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+       * </pre>
+       *
+       * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.NodeRunId.Builder getTriggeringNodeRunBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return internalGetTriggeringNodeRunFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+       * </pre>
+       *
+       * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getTriggeringNodeRunOrBuilder() {
+        if (triggeringNodeRunBuilder_ != null) {
+          return triggeringNodeRunBuilder_.getMessageOrBuilder();
+        } else {
+          return triggeringNodeRun_ == null ?
+              io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : triggeringNodeRun_;
+        }
+      }
+      /**
+       * <pre>
+       * Reference to the `RunChildWfNodeRun` that triggered this WfRun 
+       * </pre>
+       *
+       * <code>.littlehorse.NodeRunId triggering_node_run = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> 
+          internalGetTriggeringNodeRunFieldBuilder() {
+        if (triggeringNodeRunBuilder_ == null) {
+          triggeringNodeRunBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder>(
+                  getTriggeringNodeRun(),
+                  getParentForChildren(),
+                  isClean());
+          triggeringNodeRun_ = null;
+        }
+        return triggeringNodeRunBuilder_;
+      }
+
+      private io.littlehorse.sdk.common.proto.NodeRunId waitingNodeRun_;
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> waitingNodeRunBuilder_;
+      /**
+       * <pre>
+       * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+       * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+       * </pre>
+       *
+       * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+       * @return Whether the waitingNodeRun field is set.
+       */
+      public boolean hasWaitingNodeRun() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <pre>
+       * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+       * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+       * </pre>
+       *
+       * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+       * @return The waitingNodeRun.
+       */
+      public io.littlehorse.sdk.common.proto.NodeRunId getWaitingNodeRun() {
+        if (waitingNodeRunBuilder_ == null) {
+          return waitingNodeRun_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : waitingNodeRun_;
+        } else {
+          return waitingNodeRunBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+       * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+       * </pre>
+       *
+       * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+       */
+      public Builder setWaitingNodeRun(io.littlehorse.sdk.common.proto.NodeRunId value) {
+        if (waitingNodeRunBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          waitingNodeRun_ = value;
+        } else {
+          waitingNodeRunBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+       * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+       * </pre>
+       *
+       * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+       */
+      public Builder setWaitingNodeRun(
+          io.littlehorse.sdk.common.proto.NodeRunId.Builder builderForValue) {
+        if (waitingNodeRunBuilder_ == null) {
+          waitingNodeRun_ = builderForValue.build();
+        } else {
+          waitingNodeRunBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+       * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+       * </pre>
+       *
+       * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+       */
+      public Builder mergeWaitingNodeRun(io.littlehorse.sdk.common.proto.NodeRunId value) {
+        if (waitingNodeRunBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0) &&
+            waitingNodeRun_ != null &&
+            waitingNodeRun_ != io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance()) {
+            getWaitingNodeRunBuilder().mergeFrom(value);
+          } else {
+            waitingNodeRun_ = value;
+          }
+        } else {
+          waitingNodeRunBuilder_.mergeFrom(value);
+        }
+        if (waitingNodeRun_ != null) {
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+       * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+       * </pre>
+       *
+       * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+       */
+      public Builder clearWaitingNodeRun() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        waitingNodeRun_ = null;
+        if (waitingNodeRunBuilder_ != null) {
+          waitingNodeRunBuilder_.dispose();
+          waitingNodeRunBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+       * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+       * </pre>
+       *
+       * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+       */
+      public io.littlehorse.sdk.common.proto.NodeRunId.Builder getWaitingNodeRunBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return internalGetWaitingNodeRunFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+       * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+       * </pre>
+       *
+       * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+       */
+      public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getWaitingNodeRunOrBuilder() {
+        if (waitingNodeRunBuilder_ != null) {
+          return waitingNodeRunBuilder_.getMessageOrBuilder();
+        } else {
+          return waitingNodeRun_ == null ?
+              io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : waitingNodeRun_;
+        }
+      }
+      /**
+       * <pre>
+       * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+       * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+       * </pre>
+       *
+       * <code>optional .littlehorse.NodeRunId waiting_node_run = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> 
+          internalGetWaitingNodeRunFieldBuilder() {
+        if (waitingNodeRunBuilder_ == null) {
+          waitingNodeRunBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder>(
+                  getWaitingNodeRun(),
+                  getParentForChildren(),
+                  isClean());
+          waitingNodeRun_ = null;
+        }
+        return waitingNodeRunBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.WfRun.ParentTriggerReference)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.WfRun.ParentTriggerReference)
+    private static final io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference();
+    }
+
+    public static io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ParentTriggerReference>
+        PARSER = new com.google.protobuf.AbstractParser<ParentTriggerReference>() {
+      @java.lang.Override
+      public ParentTriggerReference parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<ParentTriggerReference> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ParentTriggerReference> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private int bitField0_;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfRunId id_;
@@ -515,6 +1428,56 @@ private static final long serialVersionUID = 0L;
     return pendingFailures_.get(index);
   }
 
+  public static final int PARENT_TRIGGER_FIELD_NUMBER = 11;
+  private io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parentTrigger_;
+  /**
+   * <pre>
+   * Optional information about the parent WfRUn which triggered this WfRun in case
+   * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+   * in the Parent WfRun which caused this NodeRun.
+   *
+   * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+   * @return Whether the parentTrigger field is set.
+   */
+  @java.lang.Override
+  public boolean hasParentTrigger() {
+    return ((bitField0_ & 0x00000010) != 0);
+  }
+  /**
+   * <pre>
+   * Optional information about the parent WfRUn which triggered this WfRun in case
+   * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+   * in the Parent WfRun which caused this NodeRun.
+   *
+   * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+   * @return The parentTrigger.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference getParentTrigger() {
+    return parentTrigger_ == null ? io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.getDefaultInstance() : parentTrigger_;
+  }
+  /**
+   * <pre>
+   * Optional information about the parent WfRUn which triggered this WfRun in case
+   * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+   * in the Parent WfRun which caused this NodeRun.
+   *
+   * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReferenceOrBuilder getParentTriggerOrBuilder() {
+    return parentTrigger_ == null ? io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.getDefaultInstance() : parentTrigger_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -558,6 +1521,9 @@ private static final long serialVersionUID = 0L;
     }
     for (int i = 0; i < pendingFailures_.size(); i++) {
       output.writeMessage(10, pendingFailures_.get(i));
+    }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      output.writeMessage(11, getParentTrigger());
     }
     getUnknownFields().writeTo(output);
   }
@@ -608,6 +1574,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, pendingFailures_.get(i));
     }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(11, getParentTrigger());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -654,6 +1624,11 @@ private static final long serialVersionUID = 0L;
         .equals(other.getPendingInterruptsList())) return false;
     if (!getPendingFailuresList()
         .equals(other.getPendingFailuresList())) return false;
+    if (hasParentTrigger() != other.hasParentTrigger()) return false;
+    if (hasParentTrigger()) {
+      if (!getParentTrigger()
+          .equals(other.getParentTrigger())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -700,6 +1675,10 @@ private static final long serialVersionUID = 0L;
     if (getPendingFailuresCount() > 0) {
       hash = (37 * hash) + PENDING_FAILURES_FIELD_NUMBER;
       hash = (53 * hash) + getPendingFailuresList().hashCode();
+    }
+    if (hasParentTrigger()) {
+      hash = (37 * hash) + PARENT_TRIGGER_FIELD_NUMBER;
+      hash = (53 * hash) + getParentTrigger().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -843,6 +1822,7 @@ private static final long serialVersionUID = 0L;
         internalGetThreadRunsFieldBuilder();
         internalGetPendingInterruptsFieldBuilder();
         internalGetPendingFailuresFieldBuilder();
+        internalGetParentTriggerFieldBuilder();
       }
     }
     @java.lang.Override
@@ -899,6 +1879,11 @@ private static final long serialVersionUID = 0L;
         pendingFailuresBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000200);
+      parentTrigger_ = null;
+      if (parentTriggerBuilder_ != null) {
+        parentTriggerBuilder_.dispose();
+        parentTriggerBuilder_ = null;
+      }
       return this;
     }
 
@@ -1002,6 +1987,12 @@ private static final long serialVersionUID = 0L;
             ? endTime_
             : endTimeBuilder_.build();
         to_bitField0_ |= 0x00000008;
+      }
+      if (((from_bitField0_ & 0x00000400) != 0)) {
+        result.parentTrigger_ = parentTriggerBuilder_ == null
+            ? parentTrigger_
+            : parentTriggerBuilder_.build();
+        to_bitField0_ |= 0x00000010;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -1140,6 +2131,9 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (other.hasParentTrigger()) {
+        mergeParentTrigger(other.getParentTrigger());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -1256,6 +2250,13 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 82
+            case 90: {
+              input.readMessage(
+                  internalGetParentTriggerFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000400;
+              break;
+            } // case 90
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3349,6 +4350,199 @@ private static final long serialVersionUID = 0L;
         pendingFailures_ = null;
       }
       return pendingFailuresBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference parentTrigger_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference, io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.Builder, io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReferenceOrBuilder> parentTriggerBuilder_;
+    /**
+     * <pre>
+     * Optional information about the parent WfRUn which triggered this WfRun in case
+     * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+     * in the Parent WfRun which caused this NodeRun.
+     *
+     * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+     * @return Whether the parentTrigger field is set.
+     */
+    public boolean hasParentTrigger() {
+      return ((bitField0_ & 0x00000400) != 0);
+    }
+    /**
+     * <pre>
+     * Optional information about the parent WfRUn which triggered this WfRun in case
+     * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+     * in the Parent WfRun which caused this NodeRun.
+     *
+     * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+     * @return The parentTrigger.
+     */
+    public io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference getParentTrigger() {
+      if (parentTriggerBuilder_ == null) {
+        return parentTrigger_ == null ? io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.getDefaultInstance() : parentTrigger_;
+      } else {
+        return parentTriggerBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Optional information about the parent WfRUn which triggered this WfRun in case
+     * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+     * in the Parent WfRun which caused this NodeRun.
+     *
+     * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+     */
+    public Builder setParentTrigger(io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference value) {
+      if (parentTriggerBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        parentTrigger_ = value;
+      } else {
+        parentTriggerBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000400;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional information about the parent WfRUn which triggered this WfRun in case
+     * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+     * in the Parent WfRun which caused this NodeRun.
+     *
+     * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+     */
+    public Builder setParentTrigger(
+        io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.Builder builderForValue) {
+      if (parentTriggerBuilder_ == null) {
+        parentTrigger_ = builderForValue.build();
+      } else {
+        parentTriggerBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000400;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional information about the parent WfRUn which triggered this WfRun in case
+     * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+     * in the Parent WfRun which caused this NodeRun.
+     *
+     * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+     */
+    public Builder mergeParentTrigger(io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference value) {
+      if (parentTriggerBuilder_ == null) {
+        if (((bitField0_ & 0x00000400) != 0) &&
+          parentTrigger_ != null &&
+          parentTrigger_ != io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.getDefaultInstance()) {
+          getParentTriggerBuilder().mergeFrom(value);
+        } else {
+          parentTrigger_ = value;
+        }
+      } else {
+        parentTriggerBuilder_.mergeFrom(value);
+      }
+      if (parentTrigger_ != null) {
+        bitField0_ |= 0x00000400;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional information about the parent WfRUn which triggered this WfRun in case
+     * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+     * in the Parent WfRun which caused this NodeRun.
+     *
+     * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+     */
+    public Builder clearParentTrigger() {
+      bitField0_ = (bitField0_ & ~0x00000400);
+      parentTrigger_ = null;
+      if (parentTriggerBuilder_ != null) {
+        parentTriggerBuilder_.dispose();
+        parentTriggerBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional information about the parent WfRUn which triggered this WfRun in case
+     * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+     * in the Parent WfRun which caused this NodeRun.
+     *
+     * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.Builder getParentTriggerBuilder() {
+      bitField0_ |= 0x00000400;
+      onChanged();
+      return internalGetParentTriggerFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Optional information about the parent WfRUn which triggered this WfRun in case
+     * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+     * in the Parent WfRun which caused this NodeRun.
+     *
+     * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReferenceOrBuilder getParentTriggerOrBuilder() {
+      if (parentTriggerBuilder_ != null) {
+        return parentTriggerBuilder_.getMessageOrBuilder();
+      } else {
+        return parentTrigger_ == null ?
+            io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.getDefaultInstance() : parentTrigger_;
+      }
+    }
+    /**
+     * <pre>
+     * Optional information about the parent WfRUn which triggered this WfRun in case
+     * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+     * in the Parent WfRun which caused this NodeRun.
+     *
+     * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+     * </pre>
+     *
+     * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference, io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.Builder, io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReferenceOrBuilder> 
+        internalGetParentTriggerFieldBuilder() {
+      if (parentTriggerBuilder_ == null) {
+        parentTriggerBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference, io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.Builder, io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReferenceOrBuilder>(
+                getParentTrigger(),
+                getParentForChildren(),
+                isClean());
+        parentTrigger_ = null;
+      }
+      return parentTriggerBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.WfRun)

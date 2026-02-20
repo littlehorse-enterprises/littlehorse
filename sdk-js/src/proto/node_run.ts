@@ -149,12 +149,22 @@ export interface StartMultipleThreadsRun {
 
 /** The RunChildWfNodeRun starts a Child `WfRun` and waits for its completion. */
 export interface RunChildWfNodeRun {
-  /** The id of the created `WfRun`. */
-  childWfRunId:
+  /**
+   * The id of the created `WfRun`.
+   * If the node failed to create the child WfRun, this field will be empty.
+   */
+  childWfRunId?:
     | WfRunId
     | undefined;
   /** A record of the variables which were used to start the `WfRun`. */
   inputs: { [key: string]: VariableValue };
+  /**
+   * The resolved WfSpecId of the child workflow that was started. This field is populated
+   * only after the child WfRun has been successfully created and started. If the node failed
+   * to create the child WfRun, this field will be empty. The ID can be used to track which
+   * version of the WfSpec was actually executed.
+   */
+  wfSpecId?: WfSpecId | undefined;
 }
 
 export interface RunChildWfNodeRun_InputsEntry {
@@ -194,6 +204,8 @@ export enum WaitForThreadsRun_WaitingThreadStatus {
    * run of a Failure Handler for the Failure that was thrown.
    */
   THREAD_UNSUCCESSFUL = "THREAD_UNSUCCESSFUL",
+  /** THREAD_STOPPED - The `ThreadRun` was halted because another sibling thread completed or failed. */
+  THREAD_STOPPED = "THREAD_STOPPED",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -211,6 +223,9 @@ export function waitForThreadsRun_WaitingThreadStatusFromJSON(object: any): Wait
     case 3:
     case "THREAD_UNSUCCESSFUL":
       return WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL;
+    case 4:
+    case "THREAD_STOPPED":
+      return WaitForThreadsRun_WaitingThreadStatus.THREAD_STOPPED;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -228,6 +243,8 @@ export function waitForThreadsRun_WaitingThreadStatusToJSON(object: WaitForThrea
       return "THREAD_COMPLETED_OR_FAILURE_HANDLED";
     case WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL:
       return "THREAD_UNSUCCESSFUL";
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_STOPPED:
+      return "THREAD_STOPPED";
     case WaitForThreadsRun_WaitingThreadStatus.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -244,6 +261,8 @@ export function waitForThreadsRun_WaitingThreadStatusToNumber(object: WaitForThr
       return 2;
     case WaitForThreadsRun_WaitingThreadStatus.THREAD_UNSUCCESSFUL:
       return 3;
+    case WaitForThreadsRun_WaitingThreadStatus.THREAD_STOPPED:
+      return 4;
     case WaitForThreadsRun_WaitingThreadStatus.UNRECOGNIZED:
     default:
       return -1;
@@ -1322,7 +1341,7 @@ export const StartMultipleThreadsRun = {
 };
 
 function createBaseRunChildWfNodeRun(): RunChildWfNodeRun {
-  return { childWfRunId: undefined, inputs: {} };
+  return { childWfRunId: undefined, inputs: {}, wfSpecId: undefined };
 }
 
 export const RunChildWfNodeRun = {
@@ -1333,6 +1352,9 @@ export const RunChildWfNodeRun = {
     Object.entries(message.inputs).forEach(([key, value]) => {
       RunChildWfNodeRun_InputsEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
     });
+    if (message.wfSpecId !== undefined) {
+      WfSpecId.encode(message.wfSpecId, writer.uint32(26).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -1360,6 +1382,13 @@ export const RunChildWfNodeRun = {
             message.inputs[entry2.key] = entry2.value;
           }
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1378,6 +1407,7 @@ export const RunChildWfNodeRun = {
           return acc;
         }, {})
         : {},
+      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
     };
   },
 
@@ -1394,6 +1424,9 @@ export const RunChildWfNodeRun = {
           obj.inputs[k] = VariableValue.toJSON(v);
         });
       }
+    }
+    if (message.wfSpecId !== undefined) {
+      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
     }
     return obj;
   },
@@ -1415,6 +1448,9 @@ export const RunChildWfNodeRun = {
       },
       {},
     );
+    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
+      ? WfSpecId.fromPartial(object.wfSpecId)
+      : undefined;
     return message;
   },
 };

@@ -74,6 +74,11 @@ public class ScheduledWfRunModel extends CoreGetable<ScheduledWfRun> {
         if (parentWfRunId != null) {
             out.setParentWfRunId(parentWfRunId.toProto());
         }
+
+        for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
+            out.putVariables(e.getKey(), e.getValue().toProto().build());
+        }
+
         return out;
     }
 

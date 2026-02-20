@@ -38,7 +38,11 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
 
     public static String getGroupedGetableStorePrefix(
             String wfRunId, StoreableType type, GetableClassEnum getableType) {
-        return GROUPED_WF_RUN_PREFIX + "/" + wfRunId + "/" + type.getNumber() + "/" + getableType.getNumber() + "/";
+        return GROUPED_WF_RUN_PREFIX + "/" + wfRunId + "/" + getStorePrefix(type, getableType);
+    }
+
+    public static String getStorePrefix(StoreableType type, GetableClassEnum getableType) {
+        return type.getNumber() + "/" + getableType.getNumber() + "/";
     }
 
     public static String getGroupedGetableStorePrefix(
@@ -80,6 +84,10 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.TASK_QUEUE_HINT;
             case "NodeOutputModel":
                 return StoreableType.NODE_OUTPUT;
+            case "TimerIteratorHintModel":
+                return StoreableType.TIMER_ITERATOR_HINT;
+            case "LHTimer":
+                return StoreableType.LH_TIMER;
         }
         throw new IllegalArgumentException("Unrecognized Storeable class: " + cls);
     }

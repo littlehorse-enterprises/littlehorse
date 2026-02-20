@@ -25,11 +25,10 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
   const { wfSpec, wfRun, variables } = data
 
   const variableDefs = useMemo(() => {
-    if (!wfSpec || !wfRun.threadRuns?.length) return []
-    const greatestThreadRun = wfRun.threadRuns[wfRun.greatestThreadrunNumber]
-    const threadSpec = wfSpec.threadSpecs[greatestThreadRun.threadSpecName]
-
-    return threadSpec?.variableDefs ?? []
+    if (!wfSpec) return []
+    const threadRun = wfRun.threadRuns.find(tr => tr.number === wfRun.greatestThreadrunNumber)
+    if (!threadRun) return []
+    return wfSpec.threadSpecs[threadRun.threadSpecName].variableDefs ?? []
   }, [wfSpec, wfRun.greatestThreadrunNumber, wfRun.threadRuns])
 
   const wfSpecUrl = useMemo(() => {

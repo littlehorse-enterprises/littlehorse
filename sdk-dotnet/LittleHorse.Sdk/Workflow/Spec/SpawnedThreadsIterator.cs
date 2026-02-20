@@ -18,7 +18,7 @@ public class SpawnedThreadsIterator: SpawnedThreads
     public SpawnedThreadsIterator(WfRunVariable internalStartedThreadVar) 
     {
        _internalStartedThreadVar = internalStartedThreadVar;
-        if (_internalStartedThreadVar.Type != VariableType.JsonArr) 
+        if (_internalStartedThreadVar.TypeDef.DefinedTypeCase != TypeDefinition.DefinedTypeOneofCase.PrimitiveType || _internalStartedThreadVar.TypeDef.PrimitiveType != VariableType.JsonArr) 
         {
             throw new ArgumentException("Only support for json arrays.");
         }
@@ -28,7 +28,7 @@ public class SpawnedThreadsIterator: SpawnedThreads
     /// Builds a <see cref="WaitForThreadsNode"/> that represents the spawned threads.
     /// </summary>
     /// <returns>WaitForThreadsNode</returns>
-    public WaitForThreadsNode BuildNode() 
+    public WaitForThreadsNode BuildNode(WaitForThreadsStrategy strategy) 
     {
         var variableAssignment = new VariableAssignment();
         if (_internalStartedThreadVar.JsonPath != null) 
@@ -39,7 +39,8 @@ public class SpawnedThreadsIterator: SpawnedThreads
         
         var waitNode = new WaitForThreadsNode
         {
-            ThreadList = variableAssignment
+            ThreadList = variableAssignment,
+            Strategy = strategy
         };
         
         return waitNode;

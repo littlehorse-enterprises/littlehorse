@@ -172,5 +172,32 @@ public interface ThreadHaltReasonOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.ManualHaltOrBuilder getManualHaltOrBuilder();
 
+  /**
+   * <pre>
+   * Stopped by a NodeRun in the parent.
+   * </pre>
+   *
+   * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+   * @return Whether the haltedByParent field is set.
+   */
+  boolean hasHaltedByParent();
+  /**
+   * <pre>
+   * Stopped by a NodeRun in the parent.
+   * </pre>
+   *
+   * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+   * @return The haltedByParent.
+   */
+  io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason getHaltedByParent();
+  /**
+   * <pre>
+   * Stopped by a NodeRun in the parent.
+   * </pre>
+   *
+   * <code>.littlehorse.HaltedByParentNodeHaltReason halted_by_parent = 7;</code>
+   */
+  io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReasonOrBuilder getHaltedByParentOrBuilder();
+
   io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase getReasonCase();
 }

@@ -8,7 +8,7 @@
 import _m0 from "protobufjs/minimal";
 import { LHStatus, lHStatusFromJSON, lHStatusToJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ExternalEventId, WfRunId, WfSpecId } from "./object_id";
+import { ExternalEventId, NodeRunId, WfRunId, WfSpecId } from "./object_id";
 import { VariableValue } from "./variable";
 
 /** The type of a ThreadRUn. */
@@ -129,6 +129,27 @@ export interface WfRun {
    * finish halting.
    */
   pendingFailures: PendingFailureHandler[];
+  /**
+   * Optional information about the parent WfRUn which triggered this WfRun in case
+   * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+   * in the Parent WfRun which caused this NodeRun.
+   *
+   * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+   */
+  parentTrigger?: WfRun_ParentTriggerReference | undefined;
+}
+
+/** Information about a parent `WfRun` which triggers a child. */
+export interface WfRun_ParentTriggerReference {
+  /** Reference to the `RunChildWfNodeRun` that triggered this WfRun */
+  triggeringNodeRun:
+    | NodeRunId
+    | undefined;
+  /**
+   * Reference to the `WaitForChildWfNodeRun` that is waiting for this NodeRun.
+   * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
+   */
+  waitingNodeRun?: NodeRunId | undefined;
 }
 
 /** A ThreadRun is a running thread of execution within a WfRun. */
@@ -272,6 +293,17 @@ export interface HandlingFailureHaltReason {
   handlerThreadId: number;
 }
 
+/**
+ * A Halt Reason denoting that a specific NodeRun in a parent ThreadRun caused this ThreadRun
+ * to halt. Could be the parent, the parent's parent, or so on.
+ */
+export interface HaltedByParentNodeHaltReason {
+  /** The ThreadRun number of the NodeRun which caused the halt. */
+  parentThreadRunNumber: number;
+  /** The specific node run position which caused the halt. */
+  waitingNodeRunPosition: number;
+}
+
 /** A Halt Reason denoting that a ThreadRun is halted because its parent is also HALTED. */
 export interface ParentHalted {
   /** The ID of the halted parent. */
@@ -302,6 +334,7 @@ export interface ThreadHaltReason {
     | { $case: "pendingFailure"; value: PendingFailureHandlerHaltReason }
     | { $case: "handlingFailure"; value: HandlingFailureHaltReason }
     | { $case: "manualHalt"; value: ManualHalt }
+    | { $case: "haltedByParent"; value: HaltedByParentNodeHaltReason }
     | undefined;
 }
 
@@ -317,6 +350,7 @@ function createBaseWfRun(): WfRun {
     threadRuns: [],
     pendingInterrupts: [],
     pendingFailures: [],
+    parentTrigger: undefined,
   };
 }
 
@@ -351,6 +385,9 @@ export const WfRun = {
     }
     for (const v of message.pendingFailures) {
       PendingFailureHandler.encode(v!, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.parentTrigger !== undefined) {
+      WfRun_ParentTriggerReference.encode(message.parentTrigger, writer.uint32(90).fork()).ldelim();
     }
     return writer;
   },
@@ -432,6 +469,13 @@ export const WfRun = {
 
           message.pendingFailures.push(PendingFailureHandler.decode(reader, reader.uint32()));
           continue;
+        case 11:
+          if (tag !== 90) {
+            break;
+          }
+
+          message.parentTrigger = WfRun_ParentTriggerReference.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -463,6 +507,9 @@ export const WfRun = {
       pendingFailures: globalThis.Array.isArray(object?.pendingFailures)
         ? object.pendingFailures.map((e: any) => PendingFailureHandler.fromJSON(e))
         : [],
+      parentTrigger: isSet(object.parentTrigger)
+        ? WfRun_ParentTriggerReference.fromJSON(object.parentTrigger)
+        : undefined,
     };
   },
 
@@ -498,6 +545,9 @@ export const WfRun = {
     if (message.pendingFailures?.length) {
       obj.pendingFailures = message.pendingFailures.map((e) => PendingFailureHandler.toJSON(e));
     }
+    if (message.parentTrigger !== undefined) {
+      obj.parentTrigger = WfRun_ParentTriggerReference.toJSON(message.parentTrigger);
+    }
     return obj;
   },
 
@@ -518,6 +568,87 @@ export const WfRun = {
     message.threadRuns = object.threadRuns?.map((e) => ThreadRun.fromPartial(e)) || [];
     message.pendingInterrupts = object.pendingInterrupts?.map((e) => PendingInterrupt.fromPartial(e)) || [];
     message.pendingFailures = object.pendingFailures?.map((e) => PendingFailureHandler.fromPartial(e)) || [];
+    message.parentTrigger = (object.parentTrigger !== undefined && object.parentTrigger !== null)
+      ? WfRun_ParentTriggerReference.fromPartial(object.parentTrigger)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseWfRun_ParentTriggerReference(): WfRun_ParentTriggerReference {
+  return { triggeringNodeRun: undefined, waitingNodeRun: undefined };
+}
+
+export const WfRun_ParentTriggerReference = {
+  encode(message: WfRun_ParentTriggerReference, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.triggeringNodeRun !== undefined) {
+      NodeRunId.encode(message.triggeringNodeRun, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.waitingNodeRun !== undefined) {
+      NodeRunId.encode(message.waitingNodeRun, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WfRun_ParentTriggerReference {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWfRun_ParentTriggerReference();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.triggeringNodeRun = NodeRunId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.waitingNodeRun = NodeRunId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WfRun_ParentTriggerReference {
+    return {
+      triggeringNodeRun: isSet(object.triggeringNodeRun) ? NodeRunId.fromJSON(object.triggeringNodeRun) : undefined,
+      waitingNodeRun: isSet(object.waitingNodeRun) ? NodeRunId.fromJSON(object.waitingNodeRun) : undefined,
+    };
+  },
+
+  toJSON(message: WfRun_ParentTriggerReference): unknown {
+    const obj: any = {};
+    if (message.triggeringNodeRun !== undefined) {
+      obj.triggeringNodeRun = NodeRunId.toJSON(message.triggeringNodeRun);
+    }
+    if (message.waitingNodeRun !== undefined) {
+      obj.waitingNodeRun = NodeRunId.toJSON(message.waitingNodeRun);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<WfRun_ParentTriggerReference>): WfRun_ParentTriggerReference {
+    return WfRun_ParentTriggerReference.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WfRun_ParentTriggerReference>): WfRun_ParentTriggerReference {
+    const message = createBaseWfRun_ParentTriggerReference();
+    message.triggeringNodeRun = (object.triggeringNodeRun !== undefined && object.triggeringNodeRun !== null)
+      ? NodeRunId.fromPartial(object.triggeringNodeRun)
+      : undefined;
+    message.waitingNodeRun = (object.waitingNodeRun !== undefined && object.waitingNodeRun !== null)
+      ? NodeRunId.fromPartial(object.waitingNodeRun)
+      : undefined;
     return message;
   },
 };
@@ -1294,6 +1425,82 @@ export const HandlingFailureHaltReason = {
   },
 };
 
+function createBaseHaltedByParentNodeHaltReason(): HaltedByParentNodeHaltReason {
+  return { parentThreadRunNumber: 0, waitingNodeRunPosition: 0 };
+}
+
+export const HaltedByParentNodeHaltReason = {
+  encode(message: HaltedByParentNodeHaltReason, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.parentThreadRunNumber !== 0) {
+      writer.uint32(8).int32(message.parentThreadRunNumber);
+    }
+    if (message.waitingNodeRunPosition !== 0) {
+      writer.uint32(16).int32(message.waitingNodeRunPosition);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): HaltedByParentNodeHaltReason {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseHaltedByParentNodeHaltReason();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.parentThreadRunNumber = reader.int32();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.waitingNodeRunPosition = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): HaltedByParentNodeHaltReason {
+    return {
+      parentThreadRunNumber: isSet(object.parentThreadRunNumber) ? globalThis.Number(object.parentThreadRunNumber) : 0,
+      waitingNodeRunPosition: isSet(object.waitingNodeRunPosition)
+        ? globalThis.Number(object.waitingNodeRunPosition)
+        : 0,
+    };
+  },
+
+  toJSON(message: HaltedByParentNodeHaltReason): unknown {
+    const obj: any = {};
+    if (message.parentThreadRunNumber !== 0) {
+      obj.parentThreadRunNumber = Math.round(message.parentThreadRunNumber);
+    }
+    if (message.waitingNodeRunPosition !== 0) {
+      obj.waitingNodeRunPosition = Math.round(message.waitingNodeRunPosition);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<HaltedByParentNodeHaltReason>): HaltedByParentNodeHaltReason {
+    return HaltedByParentNodeHaltReason.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<HaltedByParentNodeHaltReason>): HaltedByParentNodeHaltReason {
+    const message = createBaseHaltedByParentNodeHaltReason();
+    message.parentThreadRunNumber = object.parentThreadRunNumber ?? 0;
+    message.waitingNodeRunPosition = object.waitingNodeRunPosition ?? 0;
+    return message;
+  },
+};
+
 function createBaseParentHalted(): ParentHalted {
   return { parentThreadId: 0 };
 }
@@ -1490,6 +1697,9 @@ export const ThreadHaltReason = {
       case "manualHalt":
         ManualHalt.encode(message.reason.value, writer.uint32(50).fork()).ldelim();
         break;
+      case "haltedByParent":
+        HaltedByParentNodeHaltReason.encode(message.reason.value, writer.uint32(58).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -1552,6 +1762,16 @@ export const ThreadHaltReason = {
 
           message.reason = { $case: "manualHalt", value: ManualHalt.decode(reader, reader.uint32()) };
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.reason = {
+            $case: "haltedByParent",
+            value: HaltedByParentNodeHaltReason.decode(reader, reader.uint32()),
+          };
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1575,6 +1795,8 @@ export const ThreadHaltReason = {
         ? { $case: "handlingFailure", value: HandlingFailureHaltReason.fromJSON(object.handlingFailure) }
         : isSet(object.manualHalt)
         ? { $case: "manualHalt", value: ManualHalt.fromJSON(object.manualHalt) }
+        : isSet(object.haltedByParent)
+        ? { $case: "haltedByParent", value: HaltedByParentNodeHaltReason.fromJSON(object.haltedByParent) }
         : undefined,
     };
   },
@@ -1598,6 +1820,9 @@ export const ThreadHaltReason = {
     }
     if (message.reason?.$case === "manualHalt") {
       obj.manualHalt = ManualHalt.toJSON(message.reason.value);
+    }
+    if (message.reason?.$case === "haltedByParent") {
+      obj.haltedByParent = HaltedByParentNodeHaltReason.toJSON(message.reason.value);
     }
     return obj;
   },
@@ -1638,6 +1863,14 @@ export const ThreadHaltReason = {
     }
     if (object.reason?.$case === "manualHalt" && object.reason?.value !== undefined && object.reason?.value !== null) {
       message.reason = { $case: "manualHalt", value: ManualHalt.fromPartial(object.reason.value) };
+    }
+    if (
+      object.reason?.$case === "haltedByParent" && object.reason?.value !== undefined && object.reason?.value !== null
+    ) {
+      message.reason = {
+        $case: "haltedByParent",
+        value: HaltedByParentNodeHaltReason.fromPartial(object.reason.value),
+      };
     }
     return message;
   },

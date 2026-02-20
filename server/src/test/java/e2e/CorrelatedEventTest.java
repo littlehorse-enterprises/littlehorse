@@ -76,7 +76,7 @@ public class CorrelatedEventTest {
             ExternalEventNodeOutput output = wf.waitForEvent("correlated-no-deletion")
                     .registeredAs(Integer.class)
                     .withCorrelationId(key)
-                    .timeout(1)
+                    .timeout(2)
                     .withCorrelatedEventConfig(CorrelatedEventConfig.newBuilder()
                             .setDeleteAfterFirstCorrelation(false)
                             .build());
@@ -290,7 +290,7 @@ public class CorrelatedEventTest {
         // so we just hope that the timer has boomeranged in time.
         //
         // If this test becomes flaky we can remove the test and replace with unit tests.
-        Thread.sleep(500);
+        Thread.sleep(2000);
 
         // Now put a CorrelatedEvent, and ensure that there is no ExternalEvent created.
         CorrelatedEvent result = client.putCorrelatedEvent(PutCorrelatedEventRequest.newBuilder()

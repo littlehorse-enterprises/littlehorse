@@ -17,6 +17,7 @@ import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.ServerTopologyV2;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
@@ -36,6 +37,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.processor.TaskId;
 import org.apache.logging.log4j.LogManager;
@@ -74,21 +76,27 @@ public class LHServer {
         // Kafka Streams Setup
         if (config.getLHInstanceId().isPresent()) {
             overrideStreamsProcessId("core");
-            overrideStreamsProcessId("timer");
+            if (config.isTimerStreamsEnabled()) {
+                overrideStreamsProcessId("timer");
+            }
         }
-        this.coreStreams = new KafkaStreams(
-                ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager, asyncWaiters),
-                config.getCoreStreamsConfig());
-        this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
-
+        //        Topology coreTopology = ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager,
+        // asyncWaiters);
+        Topology coreTopology = new ServerTopologyV2(config, this, metadataCache, taskQueueManager, asyncWaiters);
+        this.coreStreams = new KafkaStreams(coreTopology, config.getCoreStreamsConfig());
         coreStreams.setUncaughtExceptionHandler(throwable -> {
             log.error("Uncaught exception for " + throwable.getMessage());
             return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
         });
-        timerStreams.setUncaughtExceptionHandler(throwable -> {
-            log.error("Uncaught exception for " + throwable.getMessage());
-            return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
-        });
+
+        if (config.isTimerStreamsEnabled()) {
+            this.timerStreams =
+                    new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
+            timerStreams.setUncaughtExceptionHandler(throwable -> {
+                log.error("Uncaught exception for " + throwable.getMessage());
+                return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
+            });
+        }
 
         coreStoreProvider = new CoreStoreProvider(this.coreStreams);
         this.internalComms = new BackendInternalComms(
@@ -175,7 +183,9 @@ public class LHServer {
 
     public void start() throws IOException {
         coreStreams.start();
-        timerStreams.start();
+        if (timerStreams != null) {
+            timerStreams.start();
+        }
         internalComms.start();
         for (LHServerListener listener : listeners) {
             listener.start();
@@ -185,14 +195,16 @@ public class LHServer {
 
     public void close() {
 
-        CountDownLatch streamLatch = new CountDownLatch(2);
-        new Thread(() -> {
-                    log.info("Closing timer Kafka Streams");
-                    timerStreams.close();
-                    streamLatch.countDown();
-                    log.info("Done closing timer Kafka Streams");
-                })
-                .start();
+        CountDownLatch streamLatch = new CountDownLatch(timerStreams != null ? 2 : 1);
+        if (timerStreams != null) {
+            new Thread(() -> {
+                        log.info("Closing timer Kafka Streams");
+                        timerStreams.close();
+                        streamLatch.countDown();
+                        log.info("Done closing timer Kafka Streams");
+                    })
+                    .start();
+        }
 
         new Thread(() -> {
                     log.info("Closing core Kafka Streams");

@@ -2,7 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -51,10 +50,10 @@ public class SagaExample {
             WfRunVariable flightConfirmationNumber, WfRunVariable hotelConfirmationNumber) {
         return bookThread -> {
             NodeOutput bookFlightOutput = bookThread.execute("book-flight");
-            bookThread.mutate(flightConfirmationNumber, VariableMutationType.ASSIGN, bookFlightOutput);
+            flightConfirmationNumber.assign(bookFlightOutput);
 
             NodeOutput bookHotelOutput = bookThread.execute("book-hotel");
-            bookThread.mutate(hotelConfirmationNumber, VariableMutationType.ASSIGN, bookHotelOutput);
+            hotelConfirmationNumber.assign(bookHotelOutput);
         };
     }
 

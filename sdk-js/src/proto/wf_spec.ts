@@ -91,6 +91,79 @@ export function wfRunVariableAccessLevelToNumber(object: WfRunVariableAccessLeve
   }
 }
 
+/** Determines the behavior of a `WaitForThreadsNode` with multiple children. */
+export enum WaitForThreadsStrategy {
+  /**
+   * WAIT_FOR_ALL - By default, the `WaitForThreadsNode` only completes once all of the specified child
+   * `ThreadRun`s have completed.
+   */
+  WAIT_FOR_ALL = "WAIT_FOR_ALL",
+  /**
+   * WAIT_FOR_FIRST - This strategy causes the `WfRun` to wait for the first of the child `ThreadRun`s to
+   * fail or complete. If the first finisher is `COMPLETED`, then the `NodeRun` completes
+   * and the other threads are `HALTED`.
+   *
+   * If the first child to terminate fails, then the failure propagates to the `NodeRun`
+   * and the other threads are `HALTED`.
+   */
+  WAIT_FOR_FIRST = "WAIT_FOR_FIRST",
+  /**
+   * WAIT_FOR_ANY - This strategy waits for the any of the child `ThreadRun`s to complete, ignoring the
+   * failures of prior children. If all children fail, then the `CHILD_FAILURE` error is
+   * thrown upwards.
+   *
+   * Once any of the children reaches `COMPLETED`, the others are moved to `HALTED`.
+   */
+  WAIT_FOR_ANY = "WAIT_FOR_ANY",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function waitForThreadsStrategyFromJSON(object: any): WaitForThreadsStrategy {
+  switch (object) {
+    case 0:
+    case "WAIT_FOR_ALL":
+      return WaitForThreadsStrategy.WAIT_FOR_ALL;
+    case 1:
+    case "WAIT_FOR_FIRST":
+      return WaitForThreadsStrategy.WAIT_FOR_FIRST;
+    case 2:
+    case "WAIT_FOR_ANY":
+      return WaitForThreadsStrategy.WAIT_FOR_ANY;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return WaitForThreadsStrategy.UNRECOGNIZED;
+  }
+}
+
+export function waitForThreadsStrategyToJSON(object: WaitForThreadsStrategy): string {
+  switch (object) {
+    case WaitForThreadsStrategy.WAIT_FOR_ALL:
+      return "WAIT_FOR_ALL";
+    case WaitForThreadsStrategy.WAIT_FOR_FIRST:
+      return "WAIT_FOR_FIRST";
+    case WaitForThreadsStrategy.WAIT_FOR_ANY:
+      return "WAIT_FOR_ANY";
+    case WaitForThreadsStrategy.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export function waitForThreadsStrategyToNumber(object: WaitForThreadsStrategy): number {
+  switch (object) {
+    case WaitForThreadsStrategy.WAIT_FOR_ALL:
+      return 0;
+    case WaitForThreadsStrategy.WAIT_FOR_FIRST:
+      return 1;
+    case WaitForThreadsStrategy.WAIT_FOR_ANY:
+      return 2;
+    case WaitForThreadsStrategy.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
 /**
  * A `WfSpec` defines the logic for a workflow in LittleHorse. It is a metadata object
  * and is a blueprint for a `WfRun` execution.
@@ -308,8 +381,10 @@ export interface StartMultipleThreadsNode_VariablesEntry {
 
 /** This node spawns a child `WfRun` and returns the associated WfRunId. */
 export interface RunChildWfNode {
-  /** The name of the WfSpec to spawn. */
-  wfSpecName: string;
+  wfSpec?:
+    | { $case: "wfSpecName"; value: string }
+    | { $case: "wfSpecVar"; value: VariableAssignment }
+    | undefined;
   /** The major version of the WfSpec to spawn. */
   majorVersion: number;
   /** The input variables to pass into the Child ThreadRun. */
@@ -425,6 +500,8 @@ export interface WaitForThreadsNode {
    * failed.
    */
   perThreadFailureHandlers: FailureHandlerDef[];
+  /** Determines the strategy to wait for different threads in parallel. */
+  strategy: WaitForThreadsStrategy;
 }
 
 export interface WaitForThreadsNode_ThreadToWaitFor {
@@ -2054,13 +2131,18 @@ export const StartMultipleThreadsNode_VariablesEntry = {
 };
 
 function createBaseRunChildWfNode(): RunChildWfNode {
-  return { wfSpecName: "", majorVersion: 0, inputs: {} };
+  return { wfSpec: undefined, majorVersion: 0, inputs: {} };
 }
 
 export const RunChildWfNode = {
   encode(message: RunChildWfNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfSpecName !== "") {
-      writer.uint32(10).string(message.wfSpecName);
+    switch (message.wfSpec?.$case) {
+      case "wfSpecName":
+        writer.uint32(10).string(message.wfSpec.value);
+        break;
+      case "wfSpecVar":
+        VariableAssignment.encode(message.wfSpec.value, writer.uint32(34).fork()).ldelim();
+        break;
     }
     if (message.majorVersion !== 0) {
       writer.uint32(16).int32(message.majorVersion);
@@ -2083,7 +2165,14 @@ export const RunChildWfNode = {
             break;
           }
 
-          message.wfSpecName = reader.string();
+          message.wfSpec = { $case: "wfSpecName", value: reader.string() };
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.wfSpec = { $case: "wfSpecVar", value: VariableAssignment.decode(reader, reader.uint32()) };
           continue;
         case 2:
           if (tag !== 16) {
@@ -2113,7 +2202,11 @@ export const RunChildWfNode = {
 
   fromJSON(object: any): RunChildWfNode {
     return {
-      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpec: isSet(object.wfSpecName)
+        ? { $case: "wfSpecName", value: globalThis.String(object.wfSpecName) }
+        : isSet(object.wfSpecVar)
+        ? { $case: "wfSpecVar", value: VariableAssignment.fromJSON(object.wfSpecVar) }
+        : undefined,
       majorVersion: isSet(object.majorVersion) ? globalThis.Number(object.majorVersion) : 0,
       inputs: isObject(object.inputs)
         ? Object.entries(object.inputs).reduce<{ [key: string]: VariableAssignment }>((acc, [key, value]) => {
@@ -2126,8 +2219,11 @@ export const RunChildWfNode = {
 
   toJSON(message: RunChildWfNode): unknown {
     const obj: any = {};
-    if (message.wfSpecName !== "") {
-      obj.wfSpecName = message.wfSpecName;
+    if (message.wfSpec?.$case === "wfSpecName") {
+      obj.wfSpecName = message.wfSpec.value;
+    }
+    if (message.wfSpec?.$case === "wfSpecVar") {
+      obj.wfSpecVar = VariableAssignment.toJSON(message.wfSpec.value);
     }
     if (message.majorVersion !== 0) {
       obj.majorVersion = Math.round(message.majorVersion);
@@ -2149,7 +2245,12 @@ export const RunChildWfNode = {
   },
   fromPartial(object: DeepPartial<RunChildWfNode>): RunChildWfNode {
     const message = createBaseRunChildWfNode();
-    message.wfSpecName = object.wfSpecName ?? "";
+    if (object.wfSpec?.$case === "wfSpecName" && object.wfSpec?.value !== undefined && object.wfSpec?.value !== null) {
+      message.wfSpec = { $case: "wfSpecName", value: object.wfSpec.value };
+    }
+    if (object.wfSpec?.$case === "wfSpecVar" && object.wfSpec?.value !== undefined && object.wfSpec?.value !== null) {
+      message.wfSpec = { $case: "wfSpecVar", value: VariableAssignment.fromPartial(object.wfSpec.value) };
+    }
     message.majorVersion = object.majorVersion ?? 0;
     message.inputs = Object.entries(object.inputs ?? {}).reduce<{ [key: string]: VariableAssignment }>(
       (acc, [key, value]) => {
@@ -2426,7 +2527,7 @@ export const FailureHandlerDef = {
 };
 
 function createBaseWaitForThreadsNode(): WaitForThreadsNode {
-  return { threadsToWaitFor: undefined, perThreadFailureHandlers: [] };
+  return { threadsToWaitFor: undefined, perThreadFailureHandlers: [], strategy: WaitForThreadsStrategy.WAIT_FOR_ALL };
 }
 
 export const WaitForThreadsNode = {
@@ -2441,6 +2542,9 @@ export const WaitForThreadsNode = {
     }
     for (const v of message.perThreadFailureHandlers) {
       FailureHandlerDef.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.strategy !== WaitForThreadsStrategy.WAIT_FOR_ALL) {
+      writer.uint32(32).int32(waitForThreadsStrategyToNumber(message.strategy));
     }
     return writer;
   },
@@ -2476,6 +2580,13 @@ export const WaitForThreadsNode = {
 
           message.perThreadFailureHandlers.push(FailureHandlerDef.decode(reader, reader.uint32()));
           continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.strategy = waitForThreadsStrategyFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2495,6 +2606,9 @@ export const WaitForThreadsNode = {
       perThreadFailureHandlers: globalThis.Array.isArray(object?.perThreadFailureHandlers)
         ? object.perThreadFailureHandlers.map((e: any) => FailureHandlerDef.fromJSON(e))
         : [],
+      strategy: isSet(object.strategy)
+        ? waitForThreadsStrategyFromJSON(object.strategy)
+        : WaitForThreadsStrategy.WAIT_FOR_ALL,
     };
   },
 
@@ -2508,6 +2622,9 @@ export const WaitForThreadsNode = {
     }
     if (message.perThreadFailureHandlers?.length) {
       obj.perThreadFailureHandlers = message.perThreadFailureHandlers.map((e) => FailureHandlerDef.toJSON(e));
+    }
+    if (message.strategy !== WaitForThreadsStrategy.WAIT_FOR_ALL) {
+      obj.strategy = waitForThreadsStrategyToJSON(message.strategy);
     }
     return obj;
   },
@@ -2539,6 +2656,7 @@ export const WaitForThreadsNode = {
     }
     message.perThreadFailureHandlers = object.perThreadFailureHandlers?.map((e) => FailureHandlerDef.fromPartial(e)) ||
       [];
+    message.strategy = object.strategy ?? WaitForThreadsStrategy.WAIT_FOR_ALL;
     return message;
   },
 };

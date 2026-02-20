@@ -31,13 +31,14 @@ import { Sidebar } from './Sidebar'
 import { ThreadPanel } from './ThreadPanel'
 
 type Props = {
-  wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
+  wfRun?: Omit<WfRun, 'threadRuns'> & { threadRuns: ThreadRunWithNodeRuns[] }
   spec: WfSpec
 }
 export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   const { tenantId } = useWhoAmI()
   const currentThread = wfRun
-    ? wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName
+    ? (wfRun.threadRuns.find(tr => tr.number === wfRun.greatestThreadrunNumber)?.threadSpecName ??
+      spec.entrypointThreadName)
     : spec.entrypointThreadName
 
   const [thread, setThread] = useState<ThreadType>({
@@ -58,7 +59,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
 
   const threadNodeRuns = useMemo(() => {
     if (!wfRun) return
-    return wfRun.threadRuns[thread.number].nodeRuns
+    return wfRun.threadRuns.find(tr => tr.number === thread.number)?.nodeRuns
   }, [thread.number, wfRun])
 
   useLayoutEffect(() => {

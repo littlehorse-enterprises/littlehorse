@@ -117,7 +117,7 @@ namespace LittleHorse.Sdk.Worker.Internal
 
             _logger?.LogDebug("Received task schedule request for wfRun {}", wfRunId?.Id);
 
-            var result = await ExecuteTask(scheduledTask, LHMappingHelper.DateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
+            var result = await ExecuteTask(scheduledTask, scheduledTask.CreatedAt.ToDateTime());
 
             _logger?.LogDebug("Task {} successfully executed for wfRun {}", scheduledTask.TaskRunId.TaskGuid, wfRunId?.Id);
 
@@ -163,7 +163,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                 AttemptNumber = scheduledTask.AttemptNumber
             };
 
-            var workerContext = new LHWorkerContext(scheduledTask, scheduleTime);
+            var workerContext = new LHWorkerContext(scheduledTask, scheduleTime, _client);
 
             try
             {

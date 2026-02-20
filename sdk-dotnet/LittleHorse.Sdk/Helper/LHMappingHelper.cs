@@ -58,25 +58,6 @@ namespace LittleHorse.Sdk.Helper
             return VariableType.JsonObj;
         }
         
-        /// <summary>
-        /// Converts a Timestamp from the proto lib to Dotnet Datetime.
-        /// 
-        /// </summary>
-        /// <param name="protoTimestamp"> The timestamp to convert.</param>
-        public static DateTime? DateTimeFromProtoTimeStamp(Timestamp? protoTimestamp)
-        {
-            if (protoTimestamp == null) return null;
-
-            DateTime? outDate = DateTimeOffset.FromUnixTimeSeconds(protoTimestamp.Seconds).DateTime;
-            outDate = outDate?.AddMilliseconds(protoTimestamp.Nanos / 1_000_000.0);
-
-            if (protoTimestamp is { Seconds: 0, Nanos: 0 })
-            {
-                return DateTime.Now;
-            }
-
-            return outDate;
-        }
         
         /// <summary>
         /// Converts a dotnet object to LH VariableValue.
@@ -114,6 +95,22 @@ namespace LittleHorse.Sdk.Helper
             {
                 result.Bytes = ByteString.CopyFrom(byteArray);
             }
+            else if (obj is Common.Proto.Struct lhStruct)
+            {
+                result.Struct = lhStruct;
+            }
+            else if (Attribute.IsDefined(obj.GetType(), typeof(LHStructDefAttribute)))
+            {
+                result.Struct = SerializeToStruct(obj);
+            }
+            else if (obj is DateTime dateTime) 
+            {
+                result.UtcTimestamp = Timestamp.FromDateTime(dateTime.ToUniversalTime());
+            }
+            else if (obj is WfRunId wfRunId)
+            {
+                result.WfRunId = wfRunId;
+            }
             else
             {
                 var jsonStr = JsonHandler.ObjectSerializeToJson(obj);
@@ -129,6 +126,158 @@ namespace LittleHorse.Sdk.Helper
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Converts an LH VariableValue to a C# object
+        /// </summary>
+        /// <param name="val">The value</param>
+        /// <param name="type">The type of the desired C# object</param>
+        /// <returns>The converted C# object</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Throws an exception if the VariableValue type is not recognized
+        /// </exception>
+        public static object? VariableValueToObject(VariableValue val, Type type)
+        {
+            string? jsonStr;
+
+            switch (val.ValueCase)
+            {
+                case VariableValue.ValueOneofCase.Int:
+                    if (IsInt64Type(type))
+                    {
+                        return val.Int;
+                    }
+
+                    return (int) val.Int;
+                case VariableValue.ValueOneofCase.Double:
+                    if (type == typeof(double))
+                    {
+                        return val.Double;
+                    }
+
+                    return (float) val.Double;
+                case VariableValue.ValueOneofCase.Str:
+                    return val.Str;
+                case VariableValue.ValueOneofCase.Bytes:
+                    return val.Bytes.ToByteArray();
+                case VariableValue.ValueOneofCase.Bool:
+                    return val.Bool;
+                case VariableValue.ValueOneofCase.Struct:
+                    return DeserializeStructToObject(val.Struct, type);
+                case VariableValue.ValueOneofCase.JsonArr:
+                    jsonStr = val.JsonArr;
+                    return JsonHandler.DeserializeFromJson(jsonStr, type);
+                case VariableValue.ValueOneofCase.JsonObj:
+                    jsonStr = val.JsonObj;
+                    return JsonHandler.DeserializeFromJson(jsonStr, type);
+                case VariableValue.ValueOneofCase.UtcTimestamp:
+                    return val.UtcTimestamp.ToDateTime();
+                case VariableValue.ValueOneofCase.WfRunId:
+                    return val.WfRunId;
+                case VariableValue.ValueOneofCase.None:
+                    return null;
+                default:
+                    throw new InvalidOperationException("Unrecognized variable value type");
+            }
+        }
+
+        /// <summary>
+        /// Deserializes a LittleHorse Struct into a C# object of the requested type.
+        /// </summary>
+        /// <param name="val">The Struct value to convert.</param>
+        /// <param name="type">The target C# type.</param>
+        /// <returns>An instance of <paramref name="type" /> populated from the Struct fields.</returns>
+        private static object? DeserializeStructToObject(Common.Proto.Struct val, Type type)
+        {
+            var lhClassType = LHClassType.FromType(type);
+
+            if (lhClassType is not LHStructDefType structDefType)
+            {
+                throw new LHSerdeException("Failed deserializing Struct into class of type: " + lhClassType.GetType().Name);
+            }
+
+            try
+            {
+                var structObject = lhClassType.CreateInstance();
+                if (structObject == null)
+                {
+                    throw new LHSerdeException("Failed deserializing Struct into Object: could not create instance for type " + type.FullName);
+                }
+
+                var inlineStruct = val.Struct_ ?? new Common.Proto.InlineStruct();
+                foreach (var property in structDefType.GetStructProperties())
+                {
+                    string fieldName = property.FieldName;
+                    if (!inlineStruct.Fields.ContainsKey(fieldName))
+                    {
+                        throw new LHSerdeException(
+                            string.Format(
+                                "Failed deserializing VariableValue into Struct because no such field [{0}] exists on class [{1}]",
+                                fieldName,
+                                type.FullName));
+                    }
+
+                    VariableValue fieldValue = inlineStruct.Fields[fieldName].Value;
+                    property.SetValueTo(structObject, fieldValue);
+                }
+
+                return structObject;
+            }
+            catch (Exception ex) when (ex is not LHSerdeException)
+            {
+                throw new LHSerdeException("Failed deserializing Struct into Object", ex);
+            }
+        }
+
+        /// <summary>
+        /// Serializes a C# object to a LittleHorse Struct based on its struct definition metadata.
+        /// </summary>
+        /// <param name="o">The source object.</param>
+        /// <returns>A Struct whose fields mirror the object's properties.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when the object type is not a struct definition.</exception>
+        private static Common.Proto.Struct SerializeToStruct(object o)
+        {
+            var lhClassType = LHClassType.FromType(o.GetType());
+
+            if (lhClassType is not LHStructDefType structDefType)
+            {
+                throw new InvalidOperationException("Cannot serialize given object to Struct");
+            }
+
+            var outputStruct = new Common.Proto.Struct
+            {
+                StructDefId = structDefType.GetStructDefId()
+            };
+
+            var inlineStruct = new Common.Proto.InlineStruct();
+
+            try
+            {
+                foreach (var property in structDefType.GetStructProperties())
+                {
+                    VariableValue? fieldValue = property.GetValueFrom(o);
+                    if (fieldValue == null)
+                    {
+                        continue;
+                    }
+
+                    var structField = new Common.Proto.StructField
+                    {
+                        Value = fieldValue
+                    };
+
+                    inlineStruct.Fields.Add(property.FieldName, structField);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new LHSerdeException("Failed serializing object to Struct: " + o.GetType().FullName, ex);
+            }
+
+            outputStruct.Struct_ = inlineStruct;
+
+            return outputStruct;
         }
         
         /// <summary>
@@ -207,7 +356,12 @@ namespace LittleHorse.Sdk.Helper
                     return VariableType.Bool;
                 case VariableValue.ValueOneofCase.JsonArr:
                     return VariableType.JsonArr;
+                case VariableValue.ValueOneofCase.UtcTimestamp:
+                    return VariableType.Timestamp;
+                case VariableValue.ValueOneofCase.WfRunId:
+                    return VariableType.WfRunId;
                 case VariableValue.ValueOneofCase.JsonObj:
+                    return VariableType.JsonObj;
                 case VariableValue.ValueOneofCase.None:
                 default:
                     return VariableType.JsonObj;
@@ -226,10 +380,7 @@ namespace LittleHorse.Sdk.Helper
             {
                 throw new ArgumentNullException(nameof(type),"Type cannot be null.");
             }
-            var typeDef = new TypeDefinition
-            {
-                PrimitiveType = DotNetTypeToLHVariableType(type!)
-            };
+            var typeDef = LHClassType.FromType(type).GetTypeDefinition();
             return new ReturnType { ReturnType_ = typeDef };
         }
 

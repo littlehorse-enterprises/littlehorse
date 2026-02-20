@@ -36,6 +36,7 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.PendingFailureHandler;
 import io.littlehorse.sdk.common.proto.PendingInterrupt;
@@ -85,6 +86,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
     public List<PendingInterruptModel> pendingInterrupts = new ArrayList<>();
     public List<PendingFailureHandlerModel> pendingFailures = new ArrayList<>();
+    private ParentTriggerReferenceModel parentTrigger;
     private ExecutionContext executionContext;
 
     // Not in proto
@@ -226,6 +228,9 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         for (WfSpecId oldWfSpecId : proto.getOldWfSpecVersionsList()) {
             oldWfSpecVersions.add(LHSerializable.fromProto(oldWfSpecId, WfSpecIdModel.class, context));
         }
+        if (proto.hasParentTrigger()) {
+            parentTrigger = ParentTriggerReferenceModel.fromProto(proto.getParentTrigger(), context);
+        }
         this.executionContext = context;
         this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
     }
@@ -283,6 +288,10 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         }
         for (WfSpecIdModel oldWfSpec : oldWfSpecVersions) {
             out.addOldWfSpecVersions(oldWfSpec.toProto());
+        }
+
+        if (parentTrigger != null) {
+            out.setParentTrigger(parentTrigger.toProto());
         }
 
         return out;
@@ -475,8 +484,22 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 putFailureOnThreadRun(
                         getThreadRun(0),
                         new FailureModel(
-                                LHErrorType.INTERNAL_ERROR.toString(),
-                                "Your WfSpec had a tight loop and exceeded the maximum iterations in one command."),
+                                "Your WfSpec had a tight loop and exceeded the maximum iterations in one command.",
+                                LHErrorType.INTERNAL_ERROR.toString()),
+                        time,
+                        null);
+                transitionTo(LHStatus.ERROR);
+                break;
+            }
+
+            if (this.threadRunsUseMeCarefully.size() > LHConstants.MAX_THREAD_RUNS_PER_WF_RUN) {
+                putFailureOnThreadRun(
+                        getThreadRun(0),
+                        new FailureModel(
+                                String.format(
+                                        "You exceeded the maximum number of ThreadRuns per WfRun: %s",
+                                        LHConstants.MAX_THREAD_RUNS_PER_WF_RUN),
+                                LHErrorType.INTERNAL_ERROR.toString()),
                         time,
                         null);
                 transitionTo(LHStatus.ERROR);
@@ -561,6 +584,13 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         validateCanRescueThreadRun(threadRunNumber, ctx);
         ThreadRunModel toRescue = getThreadRun(threadRunNumber);
         toRescue.rescue(skipCurrentNode, ctx);
+
+        // If this WfRun is itself a child and we rescued its entrypoint, re-open the
+        // parent WAIT_FOR_CHILD_WF node when the failure is still unhandled.
+        if (threadRunNumber == 0 && parentTrigger != null && parentTrigger.getWaitingNodeRun() != null) {
+            WfRunModel parentWfRun = ctx.getableManager().get(id.getParentWfRunId());
+            parentWfRun.rescueThreadRun(parentTrigger.getWaitingNodeRun().getThreadRunNumber(), false, ctx);
+        }
     }
 
     private void validateCanRescueThreadRun(int threadRunNumber, CoreProcessorContext ctx)
@@ -595,6 +625,17 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
             child = parent;
         }
+
+        // For child workflows, disallow rescue if parent has already handled this child failure.
+        if (threadRunNumber == 0 && parentTrigger != null && parentTrigger.getWaitingNodeRun() != null) {
+            NodeRunModel waitingNR = ctx.getableManager().get(parentTrigger.getWaitingNodeRun());
+            if (waitingNR != null) {
+                Optional<FailureModel> parentFailure = waitingNR.getLatestFailure();
+                if (parentFailure.isPresent() && parentFailure.get().isProperlyHandled()) {
+                    throw new UnRescuableThreadRunException("Parent WfRun has already handled the child failure");
+                }
+            }
+        }
     }
 
     public void processResumeRequest(ResumeWfRunRequestModel req) {
@@ -624,6 +665,20 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
         if (nodeRunPosition > thread.currentNodePosition) {
             throw new LHValidationException(null, "Reference to nonexistent nodeRun");
+        }
+
+        if (nodeRunPosition != thread.currentNodePosition) {
+            // Ignore stale timers for previous nodes.
+            return;
+        }
+
+        NodeRunModel currentNodeRun = thread.getCurrentNodeRun();
+        if (currentNodeRun.getType() == NodeTypeCase.SLEEP) {
+            Date expectedTime = currentNodeRun.getSleepNodeRun().getMaturationTime();
+            if (expectedTime != null && time.before(expectedTime)) {
+                // Ignore outdated timer firing before the updated maturation time.
+                return;
+            }
         }
 
         thread.processSleepNodeMatured(req);

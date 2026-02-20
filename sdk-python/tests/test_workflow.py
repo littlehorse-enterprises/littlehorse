@@ -34,6 +34,7 @@ from littlehorse.model import (
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
     WaitForChildWfNode,
+    WaitForThreadsStrategy,
     RunChildWfNode,
 )
 from littlehorse.workflow import (
@@ -3925,6 +3926,25 @@ class TestWaitForThreads(unittest.TestCase):
             "exn-handler-2-threads-WAIT_FOR_THREADS",
         )
 
+    def test_wait_for_threads_strategy(self):
+        def child_thread(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def wf_func(wf: WorkflowThread) -> None:
+            child1 = wf.spawn_thread(child_thread, "child-1")
+            child2 = wf.spawn_thread(child_thread, "child-2")
+            wf.wait_for_threads(SpawnedThreads(
+                fixed_threads=[child1, child2]),
+                strategy=WaitForThreadsStrategy.WAIT_FOR_FIRST,
+            )
+
+        wf_spec = Workflow("some-wf", wf_func).compile()
+
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        node = entrypoint.nodes["3-threads-WAIT_FOR_THREADS"]
+        wftn = node.wait_for_threads
+        self.assertEqual(WaitForThreadsStrategy.WAIT_FOR_FIRST, wftn.strategy)
+
     def test_wait_for_threads_handle_error_on_child(self):
         def error_handler(wf: WorkflowThread) -> None:
             wf.execute("some-task")
@@ -3964,6 +3984,33 @@ class TestWaitForThreads(unittest.TestCase):
         self.assertEqual(
             any_error_handler.handler_spec_name,
             "error-handler-2-threads-WAIT_FOR_THREADS",
+        )
+
+
+class TestWaitForCondition(unittest.TestCase):
+    def test_wait_for_condition(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            wf.wait_for_condition(
+                condition=wf.condition("some-value", Comparator.EQUALS, "other-value")
+            )
+
+        wf_spec = Workflow("some-wf", wf_func).compile()
+        self.assertEqual(len(wf_spec.thread_specs), 1)
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        self.assertEqual(3, len(entrypoint.nodes))
+        wait_for_condition_node = entrypoint.nodes[
+            "1-wait-for-condition-WAIT_FOR_CONDITION"
+        ].wait_for_condition
+        self.assertEqual(
+            Comparator.EQUALS, wait_for_condition_node.condition.comparator
+        )
+        self.assertEqual(
+            VariableAssignment(literal_value=VariableValue(str="some-value")),
+            wait_for_condition_node.condition.left,
+        )
+        self.assertEqual(
+            VariableAssignment(literal_value=VariableValue(str="other-value")),
+            wait_for_condition_node.condition.right,
         )
 
     def test_wait_for_threads_handle_any_failure_on_child(self):
