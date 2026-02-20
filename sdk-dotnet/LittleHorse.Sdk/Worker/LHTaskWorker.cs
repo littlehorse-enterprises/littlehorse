@@ -131,20 +131,18 @@ namespace LittleHorse.Sdk.Worker
                     Name = _task.TaskDefName
                 };
 
-                foreach (var lhMethodParam in signature.LhMethodParams)
+                foreach (var variableDef in signature.VariableDefs)
                 {
-                    var variableDef = new VariableDef
-                    {
-                        Name = lhMethodParam.Name,
-                        Type = lhMethodParam.Type,
-                        MaskedValue = lhMethodParam.IsMasked
-                    };
-
                     request.InputVars.Add(variableDef);
                 }
 
                 if (signature.ReturnType != null) {
                     request.ReturnType = signature.ReturnType;
+                }
+
+                if (!string.IsNullOrWhiteSpace(signature.TaskDefDescription))
+                {
+                    request.Description = signature.TaskDefDescription;
                 }
 
                 var response = await _lhClient.PutTaskDefAsync(request);

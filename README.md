@@ -45,8 +45,8 @@ docker run --name littlehorse -d -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-e
 
 ```
 -> lhctl version
-lhctl version: 0.12.1 (Git SHA homebrew)
-Server version: 0.12.1
+lhctl version: 0.16.0 (Git SHA homebrew)
+Server version: 0.16.0
 ```
 
 4. Navigate to the dashboard at `http://localhost:8080`
@@ -66,7 +66,7 @@ To run a workflow with LittleHorse, you need to:
 <img src="./img/architecture.png" width="75%">
 </p>
 
-To get started quickly with a basic workflow, try our quickstarts in [Java](https://github.com/littlehorse-enterprises/lh-quickstart-java), [Go](https://github.com/littlehorse-enterprises/lh-quickstart-go), and [Python](https://github.com/littlehorse-enterprises/lh-quickstart-python). For more detailed examples, you can check out:
+To get started quickly with a basic workflow, try our quickstarts in [Java](https://github.com/littlehorse-enterprises/lh-examples/tree/main/quickstart/java), [Go](https://github.com/littlehorse-enterprises/lh-examples/tree/main/quickstart/go), [Python](https://github.com/littlehorse-enterprises/lh-examples/tree/main/quickstart/python), and [C#](https://github.com/littlehorse-enterprises/lh-examples/tree/main/quickstart/csharp). For more detailed examples, you can check out:
 - The [examples directory](./examples) in this repo
 - The [lh-examples repository](https://github.com/littlehorse-enterprises/lh-examples), which contains more complex applications.
 
@@ -76,7 +76,7 @@ For documentation, visit [littlehorse.io/docs/server](https://www.littlehorse.io
 
 ### Lifecycle and Release Plan
 
-The LittleHorse Server plans to follow [Semantic Versioning](https://semver.org) after the release of version 1.0. You can find our (non-binding) project guidelines regarding our release schedule and deprecation strategy for after the 1.0 release in our [project lifecycle document](./PROJECT_LIFECYCLE.md). We plan to release version 1.0 in the 2025 calendar year.
+The LittleHorse Server plans to follow [Semantic Versioning](https://semver.org) after the release of version 1.0. You can find our (non-binding) project guidelines regarding our release schedule and deprecation strategy for after the 1.0 release in our [project lifecycle document](./PROJECT_LIFECYCLE.md). We plan to release version 1.0 in early 2026.
 
 ### Developing
 
