@@ -14,32 +14,34 @@ import { Variables } from './Variables'
 export const WfRun: FC<WfRunResponse> = wfRunData => {
   const { tenantId } = useWhoAmI()
   const wfRunId = wfRunData.wfRun.id
-  if (!wfRunId) return
 
-  const { data } = useSWR(
-    `wfRun/${tenantId}/${wfRunIdToPath(wfRunId)}`,
-    async () => {
-      return await getWfRun({ wfRunId, tenantId })
-    },
-    { fallbackData: wfRunData }
-  )
+  if (!wfRunId) {
+    return null
+  }
 
+  const swrKey = `wfRun/${tenantId}/${wfRunIdToPath(wfRunId)}`
+
+  const { data } = useSWR(swrKey, async () => await getWfRun({ wfRunId, tenantId }), { fallbackData: wfRunData })
   const { wfSpec, wfRun, variables } = data
 
   const variableDefs = useMemo(() => {
     if (!wfSpec) return []
     const threadRun = wfRun.threadRuns.find(tr => tr.number === wfRun.greatestThreadrunNumber)
     if (!threadRun) return []
-    return wfSpec.threadSpecs[threadRun.threadSpecName].variableDefs
-  }, [data])
+    return wfSpec.threadSpecs[threadRun.threadSpecName].variableDefs ?? []
+  }, [wfSpec, wfRun.greatestThreadrunNumber, wfRun.threadRuns])
+
+  const wfSpecUrl = useMemo(() => {
+    const { name, majorVersion, revision } = wfRun.wfSpecId ?? {}
+    return `/wfSpec/${name}/${majorVersion}/${revision}`
+  }, [wfRun.wfSpecId])
 
   return (
     <div className="mb-16">
-      <Navigation
-        href={`/wfSpec/${wfRun.wfSpecId?.name}/${wfRun.wfSpecId?.majorVersion}/${wfRun.wfSpecId?.revision}`}
-        title="Go back to WfSpec"
-      />
+      <Navigation href={wfSpecUrl} title="Go back to WfSpec" />
+
       <Details {...wfRun} />
+
       <Diagram spec={wfSpec} wfRun={wfRun} />
 
       {wfRun.id && (
