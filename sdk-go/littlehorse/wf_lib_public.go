@@ -55,6 +55,14 @@ type NodeOutput interface {
 	getThread() *WorkflowThread
 
 	JsonPath(string) NodeOutput
+
+	CastTo(targetType lhproto.VariableType) LHExpression
+	CastToInt() LHExpression
+	CastToDouble() LHExpression
+	CastToStr() LHExpression
+	CastToBool() LHExpression
+	CastToBytes() LHExpression
+	CastToWfRunId() LHExpression
 }
 
 type WaitForThreadsNodeOutput struct {
