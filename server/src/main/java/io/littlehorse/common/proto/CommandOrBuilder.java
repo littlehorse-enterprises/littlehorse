@@ -507,5 +507,20 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.PutCheckpointRequestOrBuilder getPutCheckpointOrBuilder();
 
+  /**
+   * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+   * @return Whether the aggregateWindowMetrics field is set.
+   */
+  boolean hasAggregateWindowMetrics();
+  /**
+   * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+   * @return The aggregateWindowMetrics.
+   */
+  io.littlehorse.common.proto.AggregateWindowMetrics getAggregateWindowMetrics();
+  /**
+   * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+   */
+  io.littlehorse.common.proto.AggregateWindowMetricsOrBuilder getAggregateWindowMetricsOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }
