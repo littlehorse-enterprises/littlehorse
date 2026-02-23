@@ -19,6 +19,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.MetricWindow;
 import io.littlehorse.sdk.common.proto.MetricWindowType;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
@@ -102,13 +103,19 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
         PartitionMetricWindowModel metricWindow = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
-        PartitionMetricWindowModel existingWindow =
-                clusterScopedStore.get(metricWindow.getStoreKey(), PartitionMetricWindowModel.class);
+
+        PartitionMetricsMemoryStore memStore = processorContext.getPartitionMetricsMemoryStore();
+        PartitionMetricWindowModel existingWindow = memStore.get(metricWindow.getStoreKey());
+        if (existingWindow == null) {
+            existingWindow = clusterScopedStore.get(metricWindow.getStoreKey(), PartitionMetricWindowModel.class);
+        }
         if (existingWindow != null) {
             metricWindow = existingWindow;
         }
+
         metricWindow.incrementWfCount(previousStatus, newStatus, startTime, endTime);
         clusterScopedStore.put(metricWindow);
+        memStore.put(metricWindow);
     }
 
     @Override
