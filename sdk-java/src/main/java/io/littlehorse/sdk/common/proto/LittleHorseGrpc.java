@@ -2555,34 +2555,34 @@ public final class LittleHorseGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListWfMetricsRequest,
-      io.littlehorse.sdk.common.proto.ListWfMetricsResponse> getListWfSpecMetricsMethod;
+      io.littlehorse.sdk.common.proto.MetricsList> getListWfMetricsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "ListWfSpecMetrics",
+      fullMethodName = SERVICE_NAME + '/' + "ListWfMetrics",
       requestType = io.littlehorse.sdk.common.proto.ListWfMetricsRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.ListWfMetricsResponse.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricsList.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListWfMetricsRequest,
-      io.littlehorse.sdk.common.proto.ListWfMetricsResponse> getListWfSpecMetricsMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListWfMetricsRequest, io.littlehorse.sdk.common.proto.ListWfMetricsResponse> getListWfSpecMetricsMethod;
-    if ((getListWfSpecMetricsMethod = LittleHorseGrpc.getListWfSpecMetricsMethod) == null) {
+      io.littlehorse.sdk.common.proto.MetricsList> getListWfMetricsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListWfMetricsRequest, io.littlehorse.sdk.common.proto.MetricsList> getListWfMetricsMethod;
+    if ((getListWfMetricsMethod = LittleHorseGrpc.getListWfMetricsMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
-        if ((getListWfSpecMetricsMethod = LittleHorseGrpc.getListWfSpecMetricsMethod) == null) {
-          LittleHorseGrpc.getListWfSpecMetricsMethod = getListWfSpecMetricsMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListWfMetricsRequest, io.littlehorse.sdk.common.proto.ListWfMetricsResponse>newBuilder()
+        if ((getListWfMetricsMethod = LittleHorseGrpc.getListWfMetricsMethod) == null) {
+          LittleHorseGrpc.getListWfMetricsMethod = getListWfMetricsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListWfMetricsRequest, io.littlehorse.sdk.common.proto.MetricsList>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListWfSpecMetrics"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListWfMetrics"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.ListWfMetricsRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ListWfMetricsResponse.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListWfSpecMetrics"))
+                  io.littlehorse.sdk.common.proto.MetricsList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListWfMetrics"))
               .build();
         }
       }
     }
-    return getListWfSpecMetricsMethod;
+    return getListWfMetricsMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutTenantRequest,
@@ -3710,13 +3710,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Returns a list of WfSpec Metrics Windows.
-     * </pre>
      */
-    default void listWfSpecMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListWfMetricsResponse> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListWfSpecMetricsMethod(), responseObserver);
+    default void listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListWfMetricsMethod(), responseObserver);
     }
 
     /**
@@ -4762,14 +4759,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Returns a list of WfSpec Metrics Windows.
-     * </pre>
      */
-    public void listWfSpecMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListWfMetricsResponse> responseObserver) {
+    public void listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getListWfSpecMetricsMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getListWfMetricsMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -5730,13 +5724,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Returns a list of WfSpec Metrics Windows.
-     * </pre>
      */
-    public io.littlehorse.sdk.common.proto.ListWfMetricsResponse listWfSpecMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) throws io.grpc.StatusException {
+    public io.littlehorse.sdk.common.proto.MetricsList listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
-          getChannel(), getListWfSpecMetricsMethod(), getCallOptions(), request);
+          getChannel(), getListWfMetricsMethod(), getCallOptions(), request);
     }
 
     /**
@@ -6678,13 +6669,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Returns a list of WfSpec Metrics Windows.
-     * </pre>
      */
-    public io.littlehorse.sdk.common.proto.ListWfMetricsResponse listWfSpecMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {
+    public io.littlehorse.sdk.common.proto.MetricsList listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getListWfSpecMetricsMethod(), getCallOptions(), request);
+          getChannel(), getListWfMetricsMethod(), getCallOptions(), request);
     }
 
     /**
@@ -7707,14 +7695,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Returns a list of WfSpec Metrics Windows.
-     * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ListWfMetricsResponse> listWfSpecMetrics(
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricsList> listWfMetrics(
         io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getListWfSpecMetricsMethod(), getCallOptions()), request);
+          getChannel().newCall(getListWfMetricsMethod(), getCallOptions()), request);
     }
 
     /**
@@ -7862,7 +7847,7 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 78;
   private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 79;
   private static final int METHODID_LIST_TASK_DEF_METRICS = 80;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 81;
+  private static final int METHODID_LIST_WF_METRICS = 81;
   private static final int METHODID_PUT_TENANT = 82;
   private static final int METHODID_GET_TENANT = 83;
   private static final int METHODID_PUT_PRINCIPAL = 84;
@@ -8212,9 +8197,9 @@ public final class LittleHorseGrpc {
           serviceImpl.listTaskDefMetrics((io.littlehorse.sdk.common.proto.ListTaskMetricsRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListTaskMetricsResponse>) responseObserver);
           break;
-        case METHODID_LIST_WF_SPEC_METRICS:
-          serviceImpl.listWfSpecMetrics((io.littlehorse.sdk.common.proto.ListWfMetricsRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListWfMetricsResponse>) responseObserver);
+        case METHODID_LIST_WF_METRICS:
+          serviceImpl.listWfMetrics((io.littlehorse.sdk.common.proto.ListWfMetricsRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList>) responseObserver);
           break;
         case METHODID_PUT_TENANT:
           serviceImpl.putTenant((io.littlehorse.sdk.common.proto.PutTenantRequest) request,
@@ -8836,12 +8821,12 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.ListTaskMetricsResponse>(
                 service, METHODID_LIST_TASK_DEF_METRICS)))
         .addMethod(
-          getListWfSpecMetricsMethod(),
+          getListWfMetricsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               io.littlehorse.sdk.common.proto.ListWfMetricsRequest,
-              io.littlehorse.sdk.common.proto.ListWfMetricsResponse>(
-                service, METHODID_LIST_WF_SPEC_METRICS)))
+              io.littlehorse.sdk.common.proto.MetricsList>(
+                service, METHODID_LIST_WF_METRICS)))
         .addMethod(
           getPutTenantMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -9014,7 +8999,7 @@ public final class LittleHorseGrpc {
               .addMethod(getGetTaskDefMetricsWindowMethod())
               .addMethod(getGetWfSpecMetricsWindowMethod())
               .addMethod(getListTaskDefMetricsMethod())
-              .addMethod(getListWfSpecMetricsMethod())
+              .addMethod(getListWfMetricsMethod())
               .addMethod(getPutTenantMethod())
               .addMethod(getGetTenantMethod())
               .addMethod(getPutPrincipalMethod())

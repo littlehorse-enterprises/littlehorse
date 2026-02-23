@@ -1,18 +1,18 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
+import static com.google.protobuf.util.Timestamps.fromMillis;
+import static com.google.protobuf.util.Timestamps.toMillis;
+
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.PartitionMetricsModel;
+import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
-import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateTaskMetricsModel;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.AggregateWindowMetricsModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.Tenant;
@@ -21,6 +21,7 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.storeinternals.MetricsHintModel;
 import io.littlehorse.server.streams.storeinternals.TaskQueueHintModel;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -58,6 +59,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     protected KeyValueStore<String, Bytes> nativeStore;
     protected KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
+    private boolean metricsHintUsed = false;
     private final AsyncWaiters asyncWaiters;
 
     private final LHProcessingExceptionHandler exceptionHandler;
@@ -83,7 +85,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         onPartitionClaimed();
-        ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
+        ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardWindowPartitionMetrics);
         log.info("Completed the init() process on partition {}", ctx.taskId().partition());
     }
 
@@ -173,41 +175,59 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         server.drainPartitionTaskQueue(ctx.taskId());
     }
 
-    private void forwardMetricsUpdates(long timestamp) {
-        ClusterScopedStore coreDefaultStore =
+    private void forwardWindowPartitionMetrics(long timestamp) {
+        ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
-        PartitionMetricsModel metricsOnCurrentPartition =
-                coreDefaultStore.get(LHConstants.PARTITION_METRICS_KEY, PartitionMetricsModel.class);
 
-        if (metricsOnCurrentPartition != null) {
-            for (AggregateWfMetricsModel aggregateWfMetrics : metricsOnCurrentPartition.buildWfRepartitionCommands()) {
-                forwardMetricSubcommand(aggregateWfMetrics);
+        long startTime = timestamp - (10 * 60 * 1000L); // 10 minutes ago
+        String startPrefix = PartitionMetricWindowModel.STORE_KEY_PREFIX + "/" + startTime;
+        String endPrefix = PartitionMetricWindowModel.STORE_KEY_PREFIX + "/~";
+
+        if (!metricsHintUsed) {
+            metricsHintUsed = true;
+            MetricsHintModel hint = clusterScopedStore.get(MetricsHintModel.METRICS_HINT_KEY, MetricsHintModel.class);
+            if (hint != null && hint.getLastProcessedTimestamp() != null) {
+                long hintTime = toMillis(hint.getLastProcessedTimestamp());
+                if (hintTime < startTime) {
+                    startPrefix = PartitionMetricWindowModel.STORE_KEY_PREFIX + "/" + hintTime;
+                }
             }
-            for (AggregateTaskMetricsModel aggregateTaskMetrics :
-                    metricsOnCurrentPartition.buildTaskMetricRepartitionCommand()) {
-                forwardMetricSubcommand(aggregateTaskMetrics);
-            }
-            coreDefaultStore.delete(metricsOnCurrentPartition);
         }
+
+        try (LHKeyValueIterator<PartitionMetricWindowModel> iter =
+                clusterScopedStore.range(startPrefix, endPrefix, PartitionMetricWindowModel.class)) {
+            while (iter.hasNext()) {
+                LHIterKeyValue<PartitionMetricWindowModel> next = iter.next();
+                PartitionMetricWindowModel metricWindow = next.getValue();
+                if (metricWindow != null) {
+                    AggregateWindowMetricsModel aggregateMetrics =
+                            new AggregateWindowMetricsModel(metricWindow.getTenantId(), metricWindow);
+                    forwardSubcommand(aggregateMetrics);
+                    clusterScopedStore.delete(metricWindow);
+                }
+            }
+        }
+
+        MetricsHintModel newHint = new MetricsHintModel(fromMillis(startTime));
+        clusterScopedStore.put(newHint);
     }
 
-    private void forwardMetricSubcommand(RepartitionSubCommand repartitionSubCommand) {
-        RepartitionCommand repartitionCommand =
-                new RepartitionCommand(repartitionSubCommand, new Date(), repartitionSubCommand.getPartitionKey());
+    private void forwardSubcommand(AggregateWindowMetricsModel subCommand) {
+        CommandModel command = new CommandModel(subCommand, new Date());
+        LHTimer timer = new LHTimer(command);
+        timer.maturationTime = new Date();
+        timer.setRepartition(true);
+        timer.topic = this.config.getCoreCmdTopicName();
         CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.partitionKey = repartitionSubCommand.getPartitionKey();
-        cpo.topic = this.config.getRepartitionTopicName();
-        cpo.payload = repartitionCommand;
+        cpo.partitionKey = subCommand.getPartitionKey();
+        cpo.topic = this.config.getCoreCmdTopicName();
+        cpo.payload = timer;
         Record<String, CommandProcessorOutput> out = new Record<>(
                 cpo.partitionKey,
                 cpo,
                 System.currentTimeMillis(),
-                // NOT SURE IF THIS SHOULD BE DEFAULT/ANONYMOUS.
-                // I think we should mark it as "cluster-scoped" and by the "internal system" not any external
-                // principal.
                 HeadersUtil.metadataHeadersFor(
-                        new TenantIdModel(LHConstants.DEFAULT_TENANT),
-                        new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
+                        subCommand.getTenantId(), new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
         this.ctx.forward(out);
     }
 }

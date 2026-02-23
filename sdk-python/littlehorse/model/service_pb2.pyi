@@ -17,6 +17,7 @@ import littlehorse.model.struct_def_pb2 as _struct_def_pb2
 import littlehorse.model.acls_pb2 as _acls_pb2
 import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
 import littlehorse.model.scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
+import littlehorse.model.metrics_pb2 as _metrics_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -890,18 +891,6 @@ class WfSpecMetricsQueryRequest(_message.Message):
     window_start: _timestamp_pb2.Timestamp
     window_length: _common_enums_pb2.MetricsWindowLength
     def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., window_length: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ...) -> None: ...
-
-class ListWfMetricsRequest(_message.Message):
-    __slots__ = ("wf_spec_id", "last_window_start", "window_length", "num_windows")
-    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
-    LAST_WINDOW_START_FIELD_NUMBER: _ClassVar[int]
-    WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
-    NUM_WINDOWS_FIELD_NUMBER: _ClassVar[int]
-    wf_spec_id: _object_id_pb2.WfSpecId
-    last_window_start: _timestamp_pb2.Timestamp
-    window_length: _common_enums_pb2.MetricsWindowLength
-    num_windows: int
-    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., last_window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., window_length: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., num_windows: _Optional[int] = ...) -> None: ...
 
 class ListWfMetricsResponse(_message.Message):
     __slots__ = ("results",)
