@@ -25,13 +25,13 @@ Run the example
 
 1) Start a Task Worker (in one terminal):
 ```bash
-cd examples/go/casting/worker
+cd ./examples/go/casting/worker
 go run .
 ```
 
 2) Register the workflow spec (in another terminal):
 ```bash
-cd examples/go/casting/deploy
+cd ./examples/go/casting/deploy
 go run .
 ```
 
