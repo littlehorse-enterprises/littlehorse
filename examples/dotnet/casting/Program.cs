@@ -51,19 +51,29 @@ public class Program
             var jsonInput = wf.DeclareJsonObj("json-input")
                 .WithDefault(new Dictionary<string, object> { { "int", "1" }, { "string", "hello" } });
 
-            // Cast STR -> DOUBLE for the task that expects a DOUBLE
+            // STR -> DOUBLE (explicit)
             var doubleResult = wf.Execute("double-method", stringInput.CastTo(VariableType.Double));
 
-            // Cast DOUBLE node output -> INT
-            wf.Execute("int-method", doubleResult.CastToInt());
+            // DOUBLE -> INT (explicit)
+            var intResult = wf.Execute("int-method", doubleResult.CastToInt());
 
-            // Arithmetic on a cast, then cast again to INT
+            // Double expression 
             var mathResult = doubleResult.CastToDouble().Multiply(2.0).Divide(6.0);
+            // DOUBLE -> INT (explicit) on expression result
             wf.Execute("int-method", mathResult.CastToInt());
 
-            // Cast STR -> BOOL
-            wf.Execute("bool-method", stringBool.CastToBool());
+            // STR -> BOOL (explicit)
+            var boolResult = wf.Execute("bool-method", stringBool.CastToBool());
+            wf.HandleError(boolResult, handler =>
+            {
+                // Example error handler if cast fails
+                handler.Execute("string-method", "This is how to handle casting errors");
+            });
 
+            // DOUBLE -> INT (explicit)
+            wf.Execute("int-method", doubleResult.CastToInt());
+            // INT -> DOUBLE (auto-cast, no explicit CastTo needed)
+            wf.Execute("double-method", intResult);
             // JsonPath + cast: extract an unknown-type field and cast to INT
             wf.Execute("int-method", jsonInput.WithJsonPath("$.int").CastToInt());
         }
