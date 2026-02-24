@@ -37,9 +37,9 @@ public class PollThread extends Thread implements Closeable {
                 }
             }
         } catch (InterruptedException ex) {
-            log.debug("Thread interrupted");
+            log.info("Thread {} interrupted", getName());
         } finally {
-            log.debug(String.format("Thread %s stopped", getName()));
+            log.info("Thread {} stopped", getName());
             close();
         }
     }
