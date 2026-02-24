@@ -394,8 +394,8 @@ public class ConditionalsTest {
             }
             execute(3);
              */
-            wf.doIf(wf.condition(input, Comparator.LESS_THAN, 15), ifBlock -> {
-                wf.doIf(wf.condition(input, Comparator.LESS_THAN, 10), ifBlock2 -> {
+            wf.doIf(input.isLessThan(15), ifBlock -> {
+                wf.doIf(input.isLessThan(10), ifBlock2 -> {
                     ifBlock2.execute("echo", 1);
                 });
                 ifBlock.execute("echo", 2);
@@ -447,13 +447,12 @@ public class ConditionalsTest {
                 execute(3);
             }
              */
-            wf.doIfElse(
-                    wf.condition(input, Comparator.LESS_THAN, 10),
+            wf.doIfElse(input.isLessThan(10),
                     ifBlock -> {
                         ifBlock.execute("echo", 1);
                     },
                     elseBlock -> {
-                        wf.doIf(wf.condition(input, Comparator.LESS_THAN, 15), ifBlock -> {
+                        wf.doIf(input.isLessThan(15), ifBlock -> {
                             ifBlock.execute("echo", 2);
                         });
                         elseBlock.execute("echo", 3);
@@ -476,8 +475,7 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.EQUALS, input.jsonPath("$.rhs")),
+            thread.doIfElse(input.jsonPath("$.lhs").isEqualTo(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -497,8 +495,7 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(
-                    thread.condition(structA, Comparator.EQUALS, structB),
+            thread.doIfElse(structA.isEqualTo(structB),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -521,8 +518,7 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.NOT_EQUALS, input.jsonPath("$.rhs")),
+            thread.doIfElse(input.jsonPath("$.lhs").isNotEqualTo(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -545,8 +541,7 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.LESS_THAN, input.jsonPath("$.rhs")),
+            thread.doIfElse(input.jsonPath("$.lhs").isLessThan(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -569,8 +564,7 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.LESS_THAN_EQ, input.jsonPath("$.rhs")),
+            thread.doIfElse(input.jsonPath("$.lhs").isLessThanEq(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -593,8 +587,7 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.GREATER_THAN, input.jsonPath("$.rhs")),
+            thread.doIfElse(input.jsonPath("$.lhs").isGreaterThan(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -617,8 +610,7 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.GREATER_THAN_EQ, input.jsonPath("$.rhs")),
+            thread.doIfElse(input.jsonPath("$.lhs").isGreaterThanEq(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -641,8 +633,7 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.IN, input.jsonPath("$.rhs")),
+            thread.doIfElse(input.jsonPath("$.lhs").isIn(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -665,8 +656,7 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.NOT_IN, input.jsonPath("$.rhs")),
+            thread.doIfElse(input.jsonPath("$.lhs").isNotIn(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },

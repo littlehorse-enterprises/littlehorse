@@ -12,7 +12,6 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.LegacyEdgeConditionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
@@ -294,24 +293,29 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         return canBeType(new TypeDefinitionModel(type), tspec);
     }
 
-    public LegacyEdgeConditionModel toLegacyCondition() {
-        LegacyEdgeConditionModel out = new LegacyEdgeConditionModel();
-        out.left = expression.getLhs();
-        out.comparator = expression.getMutateByComparison();
-        out.right = expression.getRhs();
-        return out;
-    }
-
     public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
             throws InvalidEdgeException {
-        toLegacyCondition().validate(source, manager, threadSpec);
+        expression.validate(source, manager, threadSpec);
     }
 
     public boolean isSatisfied(ThreadRunModel threadRun) throws LHVarSubError {
-        return toLegacyCondition().isSatisfied(threadRun);
+        return expression.isSatisfied(threadRun);
+    }
+
+    public boolean isConditional() {
+        return expression != null && expression.isConditional();
     }
 
     public Collection<String> getRequiredVariableNames() {
-        return toLegacyCondition().getRequiredVariableNames();
+        final Set<String> out = new HashSet<>();
+        if (expression != null) {
+            out.addAll(expression.getLhs().getRequiredVariableNames());
+            out.addAll(expression.getRhs().getRequiredVariableNames());
+        }
+        return out;
+    }
+
+    public void evaluate(ThreadRunModel threadRun) throws LHVarSubError {
+        expression.evaluate(threadRun, threadRun::assignVariable);
     }
 }

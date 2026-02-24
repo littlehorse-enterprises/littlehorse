@@ -137,7 +137,7 @@ public class EdgeModel extends LHSerializable<Edge> {
         if (legacyCondition != null) {
             return legacyCondition.isSatisfied(threadRun);
         }
-        return condition == null || condition.isSatisfied(threadRun);
+        return condition == null || !condition.isConditional() || condition.isSatisfied(threadRun);
     }
 
     /**
@@ -180,6 +180,10 @@ public class EdgeModel extends LHSerializable<Edge> {
         for (Map.Entry<String, VariableValueModel> entry : writeAheadBuffer.entrySet()) {
             threadRun.mutateVariable(entry.getKey(), entry.getValue());
         }
+        if (condition != null && !condition.isConditional()) {
+            condition.evaluate(threadRun);
+        }
+
     }
 
     public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)

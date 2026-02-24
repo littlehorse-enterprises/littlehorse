@@ -1,6 +1,11 @@
 package io.littlehorse.sdk.wfsdk;
 
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.wfsdk.internal.CastExpressionImpl;
+import io.littlehorse.sdk.wfsdk.internal.LHExpressionImpl;
+
 import java.io.Serializable;
 
 public interface LHExpression extends Serializable {
@@ -10,35 +15,45 @@ public interface LHExpression extends Serializable {
      * @param other the value to be added to this expression.
      * @return an expression whose value is the `other` added to this expression.
      */
-    LHExpression add(Serializable other);
+    default LHExpression add(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.ADD, other);
+    }
 
     /**
      * Returns an expression whose value is the `other` subtracted from this expression.
      * @param other the value to be subtracted from this expression.
      * @return an expression whose value is the `other` subtracted from this expression.
      */
-    LHExpression subtract(Serializable other);
+    default LHExpression subtract(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.SUBTRACT, other);
+    }
 
     /**
      * Returns an expression whose value is the `other` multiplied by this expression.
      * @param other the value to be multiplied by this expression.
      * @return an expression whose value is the `other` multiplied by this expression.
      */
-    LHExpression multiply(Serializable other);
+    default LHExpression multiply(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.MULTIPLY, other);
+    }
 
     /**
      * Returns an expression whose value is this expression divided by the `other`.
      * @param other the value to divide this expression by.
      * @return an expression whose value is this expression divided by the `other`.
      */
-    LHExpression divide(Serializable other);
+    default LHExpression divide(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.DIVIDE, other);
+    }
 
     /**
      * Returns an expression whose value is this expression extended by the `other`.
      * @param other the value to extend this expression by.
      * @return an expression whose value is this expression extended by the `other`.
      */
-    LHExpression extend(Serializable other);
+    default LHExpression extend(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.EXTEND, other);
+    }
 
     /**
      * Returns an expression whose value is this expression with all occurrences of
@@ -47,7 +62,9 @@ public interface LHExpression extends Serializable {
      * @return an expression whose value is this expression with all occurrences of
      * `other` removed.
      */
-    LHExpression removeIfPresent(Serializable other);
+    default LHExpression removeIfPresent(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.REMOVE_IF_PRESENT, other);
+    }
 
     /**
      * Returns an expression whose value is this expression with the index specified
@@ -58,7 +75,9 @@ public interface LHExpression extends Serializable {
      * @return an expression whose value is this expression with the value at the
      * specified `index` removed.
      */
-    LHExpression removeIndex(int index);
+    default LHExpression removeIndex(int index) {
+        return new LHExpressionImpl(this, VariableMutationType.REMOVE_INDEX, index);
+    }
 
     /**
      * Returns an expression whose value is this expression with the index specified
@@ -69,7 +88,9 @@ public interface LHExpression extends Serializable {
      * @return an expression whose value is this expression with the value at the
      * specified `index` removed.
      */
-    LHExpression removeIndex(LHExpression index);
+    default LHExpression removeIndex(LHExpression index) {
+        return new LHExpressionImpl(this, VariableMutationType.REMOVE_INDEX, index);
+    }
 
     /**
      * Returns an expression whose value is this expression with the key specified
@@ -80,7 +101,9 @@ public interface LHExpression extends Serializable {
      * @return an expression whose value is this expression with the value at the specified
      * `key` removed.
      */
-    LHExpression removeKey(Serializable key);
+    default LHExpression removeKey(Serializable key) {
+        return new LHExpressionImpl(this, VariableMutationType.REMOVE_KEY, key);
+    }
 
     /**
      * Returns a new LHExpression that represents this expression cast to the specified type.
@@ -93,23 +116,49 @@ public interface LHExpression extends Serializable {
      * @param targetType the type to cast this expression to
      * @return a new LHExpression representing the cast value
      */
-    LHExpression castTo(VariableType targetType);
+    default LHExpression castTo(VariableType targetType) {
+        return new CastExpressionImpl(this, targetType);
+    }
 
-    LHExpression isLessThan(Serializable other);
+    default LHExpression isLessThan(Serializable other) {
+        return new LHExpressionImpl(this, Comparator.LESS_THAN, other);
+    }
 
-    LHExpression isGreaterThan(Serializable other);
+    default LHExpression isGreaterThan(Serializable other) {
+        return new LHExpressionImpl(this, Comparator.GREATER_THAN, other);
+    }
 
-    LHExpression isEqualTo(Serializable other);
+    default LHExpression isEqualTo(Serializable other) {
+        return new LHExpressionImpl(this, Comparator.EQUALS, other);
+    }
 
-    LHExpression isNotEqualTo(Serializable other);
+    default LHExpression isNotEqualTo(Serializable other) {
+        return new LHExpressionImpl(this, Comparator.NOT_EQUALS, other);
+    }
 
-    LHExpression doesContain(Serializable other);
+    default LHExpression doesContain(Serializable other) {
+        return new LHExpressionImpl(other, Comparator.IN, this);
+    }
 
-    LHExpression doesNotContain(Serializable other);
+    default LHExpression doesNotContain(Serializable other) {
+        return new LHExpressionImpl(other, Comparator.NOT_IN, this);
+    }
 
-    LHExpression isIn(Serializable other);
+    default LHExpression isIn(Serializable other) {
+        return new LHExpressionImpl(this, Comparator.IN, other);
+    }
 
-    LHExpression isNotIn(Serializable other);
+    default LHExpression isNotIn(Serializable other) {
+        return new LHExpressionImpl(this, Comparator.NOT_IN, other);
+    }
+
+    default LHExpression and(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.AND, other);
+    }
+
+    default LHExpression or(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.OR, other);
+    }
 
     /**
      * Equivalent to cast(VariableType.INT).

@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.Semaphore;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -311,6 +313,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return removeIndex(rhs);
         } else if (operation == VariableMutationType.REMOVE_KEY) {
             return removeKey(rhs);
+        } else if (operation == VariableMutationType.AND) {
+            return and(rhs);
+        } else if (operation == VariableMutationType.OR) {
+            return or(rhs);
         }
         throw new RuntimeException("Unsupported operation: " + operation);
     }
@@ -447,6 +453,14 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return new VariableValueModel(asDouble().doubleVal - rhs.asDouble().doubleVal);
         }
         throw new LHVarSubError(null, "Cannot subtract from var of type " + valueType);
+    }
+
+    public VariableValueModel and(VariableValueModel rhs) throws LHVarSubError {
+        return new VariableValueModel(asBool().getBoolVal() && rhs.asBool().getBoolVal());
+    }
+
+    public VariableValueModel or(VariableValueModel rhs) throws LHVarSubError {
+        return new VariableValueModel(asBool().getBoolVal() || rhs.asBool().getBoolVal());
     }
 
     public VariableValueModel multiply(VariableValueModel rhs) throws LHVarSubError {
@@ -861,5 +875,35 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
         // TODO: Support json path.
         return (o.getVal().equals(getVal()));
+    }
+
+    public boolean contains(VariableValueModel other) throws LHVarSubError {
+        // Can only do for Str, Arr, and Obj
+
+        // TODO: Decide how to support StructDefs
+        if (this.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
+            throw new LHVarSubError(null, "Can't perform contains on " + this.getTypeDefinition());
+        }
+
+        if (this.getTypeDefinition().getPrimitiveType() == VariableType.STR) {
+            String rStr = other.asStr().getStrVal();
+
+            return this.asStr().getStrVal().contains(rStr);
+        } else if (this.getTypeDefinition().getPrimitiveType() == VariableType.JSON_ARR) {
+            Object rObj = other.getVal();
+            List<Object> lhs = this.asArr().getJsonArrVal();
+
+            for (Object o : lhs) {
+                if (LHUtil.deepEquals(o, rObj)) {
+                    return true;
+                }
+            }
+            return false;
+        } else if (this.getTypeDefinition().getPrimitiveType() == VariableType.JSON_OBJ) {
+            return this.asObj().getJsonObjVal().containsKey(other.asStr().getStrVal());
+        } else {
+            throw new LHVarSubError(
+                    null, "Can't do CONTAINS on " + this.getTypeDefinition().getPrimitiveType());
+        }
     }
 }

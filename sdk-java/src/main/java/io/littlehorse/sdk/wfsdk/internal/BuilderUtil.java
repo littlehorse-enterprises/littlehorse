@@ -92,12 +92,15 @@ class BuilderUtil {
     }
 
     private static VariableAssignment buildFromLHExpression(LHExpressionImpl expresion) {
-        return VariableAssignment.newBuilder()
-                .setExpression(Expression.newBuilder()
-                        .setLhs(assignVariable(expresion.getLhs()))
-                        .setMutationType(expresion.getOperation())
-                        .setRhs(assignVariable(expresion.getRhs())))
-                .build();
+        Expression.Builder builder = Expression.newBuilder()
+                .setLhs(assignVariable(expresion.getLhs()))
+                .setRhs(assignVariable(expresion.getRhs()));
+        if (expresion.getOperation() != null) {
+            builder.setMutationType(expresion.getOperation());
+        } else {
+            builder.setComparator(expresion.getComparator());
+        }
+        return VariableAssignment.newBuilder().setExpression(builder.build()).build();
     }
 
     private static VariableAssignment buildFromLiteral(Object variable) {

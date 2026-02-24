@@ -217,6 +217,47 @@ public class ExpressionTest {
                 .start();
     }
 
+    @Test
+    void shouldEvaluateLogicalAnd() {
+        verifier.prepareRun(expressionWf, Arg.of("bool-a", true), Arg.of("bool-b", false))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "and-result", variable -> {
+                    Assertions.assertFalse(variable.getBool());
+                })
+                .start();
+
+        verifier.prepareRun(expressionWf, Arg.of("bool-a", true), Arg.of("bool-b", true))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "and-result", variable -> {
+                    Assertions.assertTrue(variable.getBool());
+                })
+                .start();
+    }
+
+    @Test
+    void shouldEvaluateLogicalOr() {
+        verifier.prepareRun(expressionWf, Arg.of("bool-a", false), Arg.of("bool-b", false))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "or-result", variable -> {
+                    Assertions.assertFalse(variable.getBool());
+                })
+                .start();
+
+        verifier.prepareRun(expressionWf, Arg.of("bool-a", true), Arg.of("bool-b", false))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "or-result", variable -> {
+                    Assertions.assertTrue(variable.getBool());
+                })
+                .start();
+
+        verifier.prepareRun(expressionWf, Arg.of("bool-a", false), Arg.of("bool-b", true))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "or-result", variable -> {
+                    Assertions.assertTrue(variable.getBool());
+                })
+                .start();
+    }
+
     /*
      * Each of the tests in here *could* be their own Workflow; however, registering a
      * workflow takes ~200ms in our testing. Each of these test cases takes about 15ms
@@ -289,6 +330,16 @@ public class ExpressionTest {
             var nestedJson = wf.declareJsonObj("nested-json");
             wf.doIf(nestedJson.isNotEqualTo(null), then -> {
                 nestedJson.jsonPath("$.foo.bar").assign("baz");
+            });
+
+            // Logical AND/OR tests
+            var boolA = wf.declareBool("bool-a").withDefault(false);
+            var boolB = wf.declareBool("bool-b").withDefault(true);
+            var andResult = wf.declareBool("and-result");
+            var orResult = wf.declareBool("or-result");
+            wf.doIf(boolA.isNotEqualTo(true).and(boolB.isNotEqualTo(false)), then -> {
+                andResult.assign(boolA.and(boolB));
+                orResult.assign(boolA.or(boolB));
             });
         });
     }

@@ -31,6 +31,10 @@ export enum VariableMutationType {
   REMOVE_INDEX = "REMOVE_INDEX",
   /** REMOVE_KEY - Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ) */
   REMOVE_KEY = "REMOVE_KEY",
+  /** AND - Logical AND operation. Combines two boolean values; result is true if both LHS and RHS are true. */
+  AND = "AND",
+  /** OR - Logical OR operation. Combines two boolean values; result is true if either LHS or RHS is true. */
+  OR = "OR",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -63,6 +67,12 @@ export function variableMutationTypeFromJSON(object: any): VariableMutationType 
     case 8:
     case "REMOVE_KEY":
       return VariableMutationType.REMOVE_KEY;
+    case 9:
+    case "AND":
+      return VariableMutationType.AND;
+    case 10:
+    case "OR":
+      return VariableMutationType.OR;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -90,6 +100,10 @@ export function variableMutationTypeToJSON(object: VariableMutationType): string
       return "REMOVE_INDEX";
     case VariableMutationType.REMOVE_KEY:
       return "REMOVE_KEY";
+    case VariableMutationType.AND:
+      return "AND";
+    case VariableMutationType.OR:
+      return "OR";
     case VariableMutationType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -116,6 +130,10 @@ export function variableMutationTypeToNumber(object: VariableMutationType): numb
       return 7;
     case VariableMutationType.REMOVE_KEY:
       return 8;
+    case VariableMutationType.AND:
+      return 9;
+    case VariableMutationType.OR:
+      return 10;
     case VariableMutationType.UNRECOGNIZED:
     default:
       return -1;

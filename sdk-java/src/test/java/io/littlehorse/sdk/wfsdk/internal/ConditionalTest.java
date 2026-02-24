@@ -45,10 +45,11 @@ public class ConditionalTest {
             assertThat(firstNOPNode.getOutgoingEdgesCount()).isEqualTo(2);
             assertThat(firstNOPNode.getOutgoingEdges(0))
                     .extracting(
-                            (edge) -> edge.getLegacyCondition().getLeft().getVariableName(),
-                            (edge) -> edge.getLegacyCondition().getComparator(),
-                            (edge) -> edge.getLegacyCondition()
-                                    .getRight()
+                            (edge) -> edge.getCondition().getExpression().getLhs().getVariableName(),
+                            (edge) -> edge.getCondition().getExpression().getComparator(),
+                            (edge) -> edge.getCondition()
+                                    .getExpression()
+                                    .getRhs()
                                     .getLiteralValue()
                                     .getInt(),
                             (edge) -> {
@@ -60,8 +61,8 @@ public class ConditionalTest {
                     .containsExactly("my-var", Comparator.GREATER_THAN, 10L, "if-body");
             assertThat(firstNOPNode.getOutgoingEdges(1))
                     .extracting(
-                            (edge) -> edge.getLegacyCondition().getLeft(),
-                            (edge) -> edge.getLegacyCondition().getRight(),
+                            (edge) -> edge.getCondition().getExpression().getLhs(),
+                            (edge) -> edge.getCondition().getExpression().getRhs(),
                             (edge) -> {
                                 return edge.getVariableMutations(0)
                                         .getRhsAssignment()
@@ -91,18 +92,21 @@ public class ConditionalTest {
                             .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("1-nop-NOP"))
                             .setEntrypoint(EntrypointNode.getDefaultInstance())
                             .build());
+            VariableAssignment taskAExpectedCondition = VariableAssignment.newBuilder()
+                    .setExpression(VariableAssignment.Expression.newBuilder()
+                            .setLhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder()
+                                            .setInt(5)))
+                            .setComparator(Comparator.GREATER_THAN)
+                            .setRhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder()
+                                            .setInt(4))))
+                    .build();
             assertThat(entrypointThread.getNodesMap().get("1-nop-NOP"))
                     .isEqualTo(Node.newBuilder()
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("2-task-a-TASK")
-                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
-                                            .setLeft(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(5)))
-                                            .setComparator(Comparator.GREATER_THAN)
-                                            .setRight(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(4)))))
+                                    .setCondition(taskAExpectedCondition))
                             .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("3-nop-NOP"))
                             .setNop(NopNode.getDefaultInstance())
                             .build());
@@ -145,28 +149,37 @@ public class ConditionalTest {
                             .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("1-nop-NOP"))
                             .setEntrypoint(EntrypointNode.getDefaultInstance())
                             .build());
+
+            VariableAssignment taskAExpectedCondition = VariableAssignment.newBuilder()
+                    .setExpression(VariableAssignment.Expression.newBuilder()
+                            .setLhs(VariableAssignment.newBuilder()
+                                .setLiteralValue(VariableValue.newBuilder()
+                                        .setInt(5)))
+                            .setComparator(Comparator.GREATER_THAN)
+                            .setRhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder()
+                                            .setInt(4))))
+                            .build();
+            VariableAssignment taskBExpectedCondition = VariableAssignment.newBuilder()
+                    .setExpression(VariableAssignment.Expression.newBuilder()
+                            .setLhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder()
+                                            .setInt(10)))
+                            .setComparator(Comparator.EQUALS)
+                            .setRhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder()
+                                            .setInt(40)))
+                            .build())
+                    .build();
+
             assertThat(entrypointThread.getNodesMap().get("1-nop-NOP"))
                     .isEqualTo(Node.newBuilder()
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("2-task-a-TASK")
-                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
-                                            .setLeft(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(5)))
-                                            .setComparator(Comparator.GREATER_THAN)
-                                            .setRight(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(4)))))
+                                    .setCondition(taskAExpectedCondition))
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("4-task-b-TASK")
-                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
-                                            .setLeft(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(10)))
-                                            .setComparator(Comparator.EQUALS)
-                                            .setRight(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(40)))))
+                                    .setCondition(taskBExpectedCondition))
                             .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("3-nop-NOP"))
                             .setNop(NopNode.getDefaultInstance())
                             .build());
@@ -273,38 +286,35 @@ public class ConditionalTest {
             ThreadSpec entrypointThread = wfSpec.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
 
             assertThat(entrypointThread.getNodesMap().size()).isEqualTo(7);
+            VariableAssignment taskAExpectedCondition = VariableAssignment.newBuilder()
+                    .setExpression(VariableAssignment.Expression.newBuilder().setLhs(VariableAssignment.newBuilder()
+                            .setLiteralValue(VariableValue.newBuilder()
+                                    .setInt(5))).setComparator(Comparator.GREATER_THAN).setRhs(VariableAssignment.newBuilder()
+                            .setLiteralValue(VariableValue.newBuilder()
+                                    .setInt(4)))).build();
+            VariableAssignment taskBExpectedCondition = VariableAssignment.newBuilder()
+                    .setExpression(VariableAssignment.Expression.newBuilder().setLhs(VariableAssignment.newBuilder()
+                            .setLiteralValue(VariableValue.newBuilder()
+                                    .setInt(10))).setComparator(Comparator.EQUALS).setRhs(VariableAssignment.newBuilder()
+                            .setLiteralValue(VariableValue.newBuilder()
+                                    .setInt(40)))).build();
+            VariableAssignment taskCExpectedCondition = VariableAssignment.newBuilder()
+                    .setExpression(VariableAssignment.Expression.newBuilder().setLhs(VariableAssignment.newBuilder()
+                            .setVariableName("my-int")).setComparator(Comparator.LESS_THAN).setRhs(VariableAssignment.newBuilder()
+                            .setLiteralValue(VariableValue.newBuilder()
+                                    .setInt(100)))).build();
 
             assertThat(entrypointThread.getNodesMap().get("1-nop-NOP"))
                     .isEqualTo(Node.newBuilder()
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("2-task-a-TASK")
-                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
-                                            .setLeft(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(5)))
-                                            .setComparator(Comparator.GREATER_THAN)
-                                            .setRight(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(4)))))
+                                    .setCondition(taskAExpectedCondition))
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("4-task-b-TASK")
-                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
-                                            .setLeft(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(10)))
-                                            .setComparator(Comparator.EQUALS)
-                                            .setRight(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(40)))))
+                                    .setCondition(taskBExpectedCondition))
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("5-task-c-TASK")
-                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
-                                            .setLeft(VariableAssignment.newBuilder()
-                                                    .setVariableName("my-int"))
-                                            .setComparator(Comparator.LESS_THAN)
-                                            .setRight(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(100)))))
+                                    .setCondition(taskCExpectedCondition))
                             .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("3-nop-NOP"))
                             .setNop(NopNode.getDefaultInstance())
                             .build());
@@ -387,6 +397,19 @@ public class ConditionalTest {
                 });
             });
 
+            VariableAssignment taskAExpectedCondition = VariableAssignment.newBuilder()
+                    .setExpression(VariableAssignment.Expression.newBuilder().setLhs(VariableAssignment.newBuilder()
+                            .setLiteralValue(VariableValue.newBuilder()
+                                    .setInt(5))).setComparator(Comparator.GREATER_THAN).setRhs(VariableAssignment.newBuilder()
+                            .setLiteralValue(VariableValue.newBuilder()
+                                    .setInt(4)))).build();
+            VariableAssignment taskBExpectedCondition = VariableAssignment.newBuilder()
+                    .setExpression(VariableAssignment.Expression.newBuilder().setLhs(VariableAssignment.newBuilder()
+                            .setLiteralValue(VariableValue.newBuilder()
+                                    .setInt(10))).setComparator(Comparator.LESS_THAN_EQ).setRhs(VariableAssignment.newBuilder()
+                            .setLiteralValue(VariableValue.newBuilder()
+                                    .setInt(200)))).build();
+
             ThreadSpec entrypointThread = wfSpec.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
 
             assertThat(entrypointThread.getNodesMap().size()).isEqualTo(7);
@@ -400,24 +423,10 @@ public class ConditionalTest {
                     .isEqualTo(Node.newBuilder()
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("2-task-a-TASK")
-                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
-                                            .setLeft(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(5)))
-                                            .setComparator(Comparator.GREATER_THAN)
-                                            .setRight(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(4)))))
+                                    .setCondition(taskAExpectedCondition))
                             .addOutgoingEdges(Edge.newBuilder()
                                     .setSinkNodeName("5-task-b-TASK")
-                                    .setLegacyCondition(LegacyEdgeCondition.newBuilder()
-                                            .setLeft(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(10)))
-                                            .setComparator(Comparator.LESS_THAN_EQ)
-                                            .setRight(VariableAssignment.newBuilder()
-                                                    .setLiteralValue(VariableValue.newBuilder()
-                                                            .setInt(200)))))
+                                    .setCondition(taskBExpectedCondition))
                             .addOutgoingEdges(Edge.newBuilder().setSinkNodeName("3-nop-NOP"))
                             .setNop(NopNode.getDefaultInstance())
                             .build());

@@ -21,6 +21,8 @@ class VariableMutationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     REMOVE_IF_PRESENT: _ClassVar[VariableMutationType]
     REMOVE_INDEX: _ClassVar[VariableMutationType]
     REMOVE_KEY: _ClassVar[VariableMutationType]
+    AND: _ClassVar[VariableMutationType]
+    OR: _ClassVar[VariableMutationType]
 
 class Comparator(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
@@ -41,6 +43,8 @@ DIVIDE: VariableMutationType
 REMOVE_IF_PRESENT: VariableMutationType
 REMOVE_INDEX: VariableMutationType
 REMOVE_KEY: VariableMutationType
+AND: VariableMutationType
+OR: VariableMutationType
 LESS_THAN: Comparator
 GREATER_THAN: Comparator
 LESS_THAN_EQ: Comparator

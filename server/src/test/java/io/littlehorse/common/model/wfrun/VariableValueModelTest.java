@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.LHPath;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.StructField;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
@@ -294,4 +295,69 @@ public class VariableValueModelTest {
 
         assertThat(strVarVal.getStrVal()).isEqualTo("Obi-Wan");
     }
+
+    @Test
+    void shouldEvaluateLogicalAndOperation() throws LHVarSubError {
+        // true AND true => true
+        VariableValueModel lhsTrue = new VariableValueModel(true);
+        VariableValueModel rhsTrue = new VariableValueModel(true);
+        VariableValueModel result = lhsTrue.operate(VariableMutationType.AND, rhsTrue, lhsTrue.getTypeDefinition());
+        assertThat(result.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.BOOL);
+        assertThat(result.getBoolVal()).isTrue();
+
+        // true AND false => false
+        VariableValueModel rhsFalse = new VariableValueModel(false);
+        result = lhsTrue.operate(VariableMutationType.AND, rhsFalse, lhsTrue.getTypeDefinition());
+        assertThat(result.getBoolVal()).isFalse();
+
+        // false AND true => false
+        VariableValueModel lhsFalse = new VariableValueModel(false);
+        result = lhsFalse.operate(VariableMutationType.AND, rhsTrue, lhsFalse.getTypeDefinition());
+        assertThat(result.getBoolVal()).isFalse();
+
+        // false AND false => false
+        result = lhsFalse.operate(VariableMutationType.AND, rhsFalse, lhsFalse.getTypeDefinition());
+        assertThat(result.getBoolVal()).isFalse();
+    }
+
+    @Test
+    void shouldThrowOnNonBooleanAndOperation() {
+        VariableValueModel lhs = new VariableValueModel(1);
+        VariableValueModel rhs = new VariableValueModel(true);
+        assertThrows(LHVarSubError.class, () -> lhs.operate(VariableMutationType.AND, rhs, lhs.getTypeDefinition()));
+        assertThrows(LHVarSubError.class, () -> rhs.operate(VariableMutationType.AND, lhs, rhs.getTypeDefinition()));
+    }
+
+    @Test
+    void shouldEvaluateLogicalOrOperation() throws LHVarSubError {
+        // true OR true => true
+        VariableValueModel lhsTrue = new VariableValueModel(true);
+        VariableValueModel rhsTrue = new VariableValueModel(true);
+        VariableValueModel result = lhsTrue.operate(VariableMutationType.OR, rhsTrue, lhsTrue.getTypeDefinition());
+        assertThat(result.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.BOOL);
+        assertThat(result.getBoolVal()).isTrue();
+
+        // true OR false => true
+        VariableValueModel rhsFalse = new VariableValueModel(false);
+        result = lhsTrue.operate(VariableMutationType.OR, rhsFalse, lhsTrue.getTypeDefinition());
+        assertThat(result.getBoolVal()).isTrue();
+
+        // false OR true => true
+        VariableValueModel lhsFalse = new VariableValueModel(false);
+        result = lhsFalse.operate(VariableMutationType.OR, rhsTrue, lhsFalse.getTypeDefinition());
+        assertThat(result.getBoolVal()).isTrue();
+
+        // false OR false => false
+        result = lhsFalse.operate(VariableMutationType.OR, rhsFalse, lhsFalse.getTypeDefinition());
+        assertThat(result.getBoolVal()).isFalse();
+    }
+
+    @Test
+    void shouldThrowOnNonBooleanOrOperation() {
+        VariableValueModel lhs = new VariableValueModel(1);
+        VariableValueModel rhs = new VariableValueModel(false);
+        assertThrows(LHVarSubError.class, () -> lhs.operate(VariableMutationType.OR, rhs, lhs.getTypeDefinition()));
+        assertThrows(LHVarSubError.class, () -> rhs.operate(VariableMutationType.OR, lhs, rhs.getTypeDefinition()));
+    }
+
 }
