@@ -127,6 +127,7 @@ final class RebalanceThread extends Thread {
 
         private void maybeCleanupDanglingNonRunningThreads(List<LHHostInfo> availableHosts) {
             List<LHHostInfo> deadHosts = new ArrayList<>();
+
             for (LHHostInfo hostInfo : runningConnections.keySet()) {
                 List<PollThread> currentThreads = runningConnections.get(hostInfo);
                 List<PollThread> runningThreads = new ArrayList<>();
@@ -134,6 +135,7 @@ final class RebalanceThread extends Thread {
                     if (currentThread.isRunning()) {
                         runningThreads.add(currentThread);
                     } else {
+                        log.info("PollThread for host {}:{} was found unhealthy", hostInfo.getHost(), hostInfo.getPort());
                         currentThread.interrupt();
                         currentThread.close();
                         deadHosts.add(hostInfo);
@@ -158,7 +160,7 @@ final class RebalanceThread extends Thread {
             for (LHHostInfo deadHost : deadHosts) {
                 List<PollThread> threadsOnDeadHost = runningConnections.get(deadHost);
                 for (PollThread threadOnDeadHost : threadsOnDeadHost) {
-                    if (threadOnDeadHost.isAlive()) {
+                    if (threadOnDeadHost.isRunning()) {
                         threadOnDeadHost.interrupt();
                         threadOnDeadHost.close();
                     }
