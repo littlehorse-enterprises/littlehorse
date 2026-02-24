@@ -43,11 +43,21 @@ func (e *castExpression) RemoveKey(key interface{}) LHExpression {
 func (e *castExpression) CastTo(targetType lhproto.VariableType) LHExpression {
 	return &castExpression{source: e, targetType: targetType}
 }
-func (e *castExpression) CastToInt() LHExpression    { return e.CastTo(lhproto.VariableType_INT) }
-func (e *castExpression) CastToDouble() LHExpression { return e.CastTo(lhproto.VariableType_DOUBLE) }
-func (e *castExpression) CastToStr() LHExpression    { return e.CastTo(lhproto.VariableType_STR) }
-func (e *castExpression) CastToBool() LHExpression   { return e.CastTo(lhproto.VariableType_BOOL) }
-func (e *castExpression) CastToBytes() LHExpression  { return e.CastTo(lhproto.VariableType_BYTES) }
+func (e *castExpression) CastToInt() LHExpression {
+	return e.CastTo(lhproto.VariableType_INT)
+}
+func (e *castExpression) CastToDouble() LHExpression {
+	return e.CastTo(lhproto.VariableType_DOUBLE)
+}
+func (e *castExpression) CastToStr() LHExpression {
+	return e.CastTo(lhproto.VariableType_STR)
+}
+func (e *castExpression) CastToBool() LHExpression {
+	return e.CastTo(lhproto.VariableType_BOOL)
+}
+func (e *castExpression) CastToBytes() LHExpression {
+	return e.CastTo(lhproto.VariableType_BYTES)
+}
 func (e *castExpression) CastToWfRunId() LHExpression {
 	return e.CastTo(lhproto.VariableType_WF_RUN_ID)
 }
