@@ -1,11 +1,13 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
+import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
@@ -52,6 +54,13 @@ public class ListTaskMetricsRequestModel
                 .setWindowLength(windowLength)
                 .setTaskDefId(taskDefId.toProto());
 
+        if (bookmark != null) {
+            out.setBookmark(bookmark.toByteString());
+        }
+        if (limit != null) {
+            out.setLimit(limit);
+        }
+
         return out;
     }
 
@@ -62,7 +71,18 @@ public class ListTaskMetricsRequestModel
         numWindows = p.getNumWindows();
         windowLength = p.getWindowLength();
         taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
-        limit = numWindows;
+        if (p.hasLimit()) {
+            limit = p.getLimit();
+        } else {
+            limit = numWindows;
+        }
+        if (!p.getBookmark().isEmpty()) {
+            try {
+                bookmark = BookmarkPb.parseFrom(p.getBookmark());
+            } catch (InvalidProtocolBufferException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public GetableClassEnum getObjectType() {
