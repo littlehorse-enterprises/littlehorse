@@ -135,7 +135,10 @@ final class RebalanceThread extends Thread {
                     if (currentThread.isRunning()) {
                         runningThreads.add(currentThread);
                     } else {
-                        log.info("PollThread for host {}:{} was found unhealthy", hostInfo.getHost(), hostInfo.getPort());
+                        log.info(
+                                "PollThread for host {}:{} was found unhealthy",
+                                hostInfo.getHost(),
+                                hostInfo.getPort());
                         currentThread.interrupt();
                         currentThread.close();
                         deadHosts.add(hostInfo);
