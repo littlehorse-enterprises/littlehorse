@@ -191,56 +191,59 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     private void forwardWindowPartitionMetrics(long timestamp) {
-        ClusterScopedStore clusterScopedStore =
+        ClusterScopedStore store =
                 ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
-
-        long startWindowsTime = timestamp - (2 * 60 * 1000L);
-        String startPrefix = LHConstants.PARTITION_METRICS_KEY + "/" + startWindowsTime;
-        String endPrefix = LHConstants.PARTITION_METRICS_KEY + "/~";
-
+        long lastWindowTime = timestamp - (2 * 60 * 1000L);
         if (shouldUseMetricsHint) {
-            shouldUseMetricsHint = false;
-            MetricsHintModel hint = clusterScopedStore.get(MetricsHintModel.METRICS_HINT_KEY, MetricsHintModel.class);
-            if (hint != null && hint.getLastProcessedTimestamp() != null) {
-                long hintTime = toMillis(hint.getLastProcessedTimestamp());
-                if (hintTime < startWindowsTime) {
-                    startPrefix = LHConstants.PARTITION_METRICS_KEY + "/" + hintTime;
-                }
-            }
-            try (LHKeyValueIterator<PartitionMetricWindowModel> iter =
-                    clusterScopedStore.range(startPrefix, endPrefix, PartitionMetricWindowModel.class)) {
-                long startTimeMillis = System.currentTimeMillis();
-                while (iter.hasNext()) {
-                    LHIterKeyValue<PartitionMetricWindowModel> next = iter.next();
-                    PartitionMetricWindowModel metricWindow = next.getValue();
-                    if (metricWindow != null) {
-                        AggregateWindowMetricsModel aggregateMetrics =
-                                new AggregateWindowMetricsModel(metricWindow.getTenantId(), metricWindow);
-                        forwardSubcommand(aggregateMetrics);
-                        clusterScopedStore.delete(metricWindow);
-                    }
-
-                    if (System.currentTimeMillis() - startTimeMillis
-                            > LHConstants.MAX_MS_PER_PARTITION_METRICS_PUNCTUATION) {
-                        this.shouldUseMetricsHint = true;
-                        break;
-                    }
-                }
-            }
+            lastWindowTime = forwardFromStore(store);
         } else {
-            if (partitionMetricsMemoryStore.hasEntries()) {
-                for (PartitionMetricWindowModel metricWindow : partitionMetricsMemoryStore.values()) {
-                    AggregateWindowMetricsModel aggregateMetrics =
-                            new AggregateWindowMetricsModel(metricWindow.getTenantId(), metricWindow);
-                    forwardSubcommand(aggregateMetrics);
-                    clusterScopedStore.delete(metricWindow);
+            forwardFromMemory(store);
+        }
+        partitionMetricsMemoryStore.clear();
+        store.put(new MetricsHintModel(fromMillis(lastWindowTime)));
+    }
+
+    private void forwardFromMemory(ClusterScopedStore store) {
+        if (!partitionMetricsMemoryStore.hasEntries()) return;
+        for (PartitionMetricWindowModel metric : partitionMetricsMemoryStore.values()) {
+            forwardAndDelete(store, metric);
+        }
+    }
+
+    private long forwardFromStore(ClusterScopedStore store) {
+        shouldUseMetricsHint = false;
+        long lastWindowTime = getMetricsHintTime(store);
+        String startPrefix = LHConstants.PARTITION_METRICS_KEY + "/" + lastWindowTime;
+        String endPrefix = LHConstants.PARTITION_METRICS_KEY + "/~";
+        long startTime = System.currentTimeMillis();
+        try (LHKeyValueIterator<PartitionMetricWindowModel> iter =
+                store.range(startPrefix, endPrefix, PartitionMetricWindowModel.class)) {
+            while (iter.hasNext()) {
+                PartitionMetricWindowModel metric = iter.next().getValue();
+                if (metric == null) continue;
+                lastWindowTime = forwardAndDelete(store, metric);
+                if (System.currentTimeMillis() - startTime > LHConstants.MAX_MS_PER_PARTITION_METRICS_PUNCTUATION) {
+                    shouldUseMetricsHint = true;
+                    return lastWindowTime;
                 }
-                partitionMetricsMemoryStore.clear();
             }
         }
+        return lastWindowTime;
+    }
 
-        MetricsHintModel newHint = new MetricsHintModel(fromMillis(startWindowsTime));
-        clusterScopedStore.put(newHint);
+    private long forwardAndDelete(ClusterScopedStore store, PartitionMetricWindowModel metric) {
+        AggregateWindowMetricsModel aggregate = new AggregateWindowMetricsModel(metric.getTenantId(), metric);
+        forwardSubcommand(aggregate);
+        store.delete(metric);
+        return metric.getWindowStart().getTime();
+    }
+
+    private Long getMetricsHintTime(ClusterScopedStore store) {
+        MetricsHintModel hint = store.get(MetricsHintModel.METRICS_HINT_KEY, MetricsHintModel.class);
+        if (hint != null && hint.getLastProcessedTimestamp() != null) {
+            return toMillis(hint.getLastProcessedTimestamp());
+        }
+        return 0L;
     }
 
     private void forwardSubcommand(AggregateWindowMetricsModel subCommand) {
