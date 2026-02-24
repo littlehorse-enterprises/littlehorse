@@ -52,7 +52,7 @@ public class WfRunModelTest {
     }
 
     @Test
-    void shouldTrackMetricsWhenStateChange() {
+    void shouldTrackMetricsinStoreWhenStateChange() {
         WfSpecIdModel wfSpecId = new WfSpecIdModel("metrics-test-workflow", 1, 0);
         int numberOfWorkflows = 10;
         for (int i = 0; i < numberOfWorkflows; i++) {
@@ -86,6 +86,44 @@ public class WfRunModelTest {
         assertThat(started).isEqualTo(10);
         assertThat(completed).isEqualTo(5);
         assertThat(error).isEqualTo(5);
+    }
+
+    @Test
+    void shouldTrackMetricsinMemoryWhenStateChange() {
+        WfSpecIdModel wfSpecId = new WfSpecIdModel("metrics-test-workflow", 1, 0);
+        int numberOfWorkflows = 20;
+        for (int i = 0; i < numberOfWorkflows; i++) {
+            WfRunModel wfRun = createWfRun("wf-run-" + i, wfSpecId, testContext);
+            wfRun.transitionTo(LHStatus.RUNNING);
+            if (i % 2 == 0) {
+                wfRun.transitionTo(LHStatus.COMPLETED);
+            } else {
+                wfRun.transitionTo(LHStatus.ERROR);
+            }
+        }
+        Date windowStart = LHUtil.getCurrentWindowTime();
+        String metricKey = String.format(
+                "%s/%s/%s/%s/%s",
+                LHConstants.PARTITION_METRICS_KEY,
+                LHUtil.toLhDbFormat(windowStart),
+                MetricWindowType.WORKFLOW_METRIC.name(),
+                this.tenantId,
+                wfSpecId);
+
+        PartitionMetricWindowModel storedMetrics =
+                testContext.getPartitionMetricsMemoryStore().get(metricKey);
+
+        assertThat(storedMetrics).isNotNull();
+        assertThat(storedMetrics.getMetrics()).isNotEmpty();
+        assertThat(storedMetrics.getMetrics()).containsKeys("started", "running_to_completed", "running_to_error");
+
+        long started = storedMetrics.getMetrics().get("started").getCount();
+        long completed = storedMetrics.getMetrics().get("running_to_completed").getCount();
+        long error = storedMetrics.getMetrics().get("running_to_error").getCount();
+
+        assertThat(started).isEqualTo(20);
+        assertThat(completed).isEqualTo(10);
+        assertThat(error).isEqualTo(10);
     }
 
     private WfRunModel createWfRun(String wfRunId, WfSpecIdModel wfSpecId, TestCoreProcessorContext context) {

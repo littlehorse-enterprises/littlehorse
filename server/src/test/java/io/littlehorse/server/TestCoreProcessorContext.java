@@ -84,7 +84,7 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
         TaskQueueManager globalTaskQueueManager = Mockito.mock();
         MetadataCache metadataCache = new MetadataCache();
         LHServer server = Mockito.mock();
-        PartitionMetricsMemoryStore partitionMetricsMemoryStore = Mockito.mock(PartitionMetricsMemoryStore.class);
+        PartitionMetricsMemoryStore partitionMetricsMemoryStore = new PartitionMetricsMemoryStore();
         KeyValueStore<String, Bytes> nativeMetadataStore = Mockito.spy(Stores.keyValueStoreBuilder(
                         Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
                 .withLoggingDisabled()
