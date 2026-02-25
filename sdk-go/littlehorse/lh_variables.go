@@ -207,7 +207,22 @@ func InterfaceToVarVal(someInterface interface{}) (*lhproto.VariableValue, error
 	case []byte:
 		out.Value = &lhproto.VariableValue_Bytes{Bytes: e}
 	default:
-		isAList := reflect.TypeOf(e).Kind() == reflect.Slice
+		eType := reflect.TypeOf(e)
+		isAList := eType.Kind() == reflect.Slice
+
+		// Check if the struct implements LHStructName() — if so, serialize as a Struct proto.
+		if eType.Kind() == reflect.Struct {
+			structDefName := getStructDefName(eType)
+			if structDefName != "" {
+				structProto, structErr := GoStructToStructProto(e)
+				if structErr != nil {
+					return nil, structErr
+				}
+				out.Value = &lhproto.VariableValue_Struct{Struct: structProto}
+				return out, nil
+			}
+		}
+
 		var b []byte
 		b, err = json.Marshal(e)
 		if err == nil {
@@ -337,6 +352,9 @@ func VarValToType(varVal *lhproto.VariableValue, targetType reflect.Type) (inter
 			panic("task accepts a struct as an input variable; only pointers to struct are supported")
 		}
 		return loadJsonObj(varVal, targetType)
+
+	case *lhproto.VariableValue_Struct:
+		return StructProtoToGoStruct(varVal.GetStruct(), targetType)
 
 	case *lhproto.VariableValue_Bytes:
 		return loadByteArr(varVal, targetType)
@@ -476,5 +494,37 @@ func ReflectTypeToVarType(rt reflect.Type) lhproto.VariableType {
 		}
 	default:
 		return lhproto.VariableType_JSON_OBJ
+	}
+}
+
+// ReflectTypeToTypeDef converts a Go reflect.Type to a TypeDefinition proto.
+// Unlike ReflectTypeToVarType, this detects struct types that implement LHStructName()
+// and returns a TypeDefinition with StructDefId instead of falling back to JSON_OBJ.
+func ReflectTypeToTypeDef(rt reflect.Type) *lhproto.TypeDefinition {
+	// Unwrap pointer
+	if rt.Kind() == reflect.Ptr {
+		rt = rt.Elem()
+	}
+
+	// Check if it's a struct with LHStructName
+	if rt.Kind() == reflect.Struct {
+		structDefName := getStructDefName(rt)
+		if structDefName != "" {
+			return &lhproto.TypeDefinition{
+				DefinedType: &lhproto.TypeDefinition_StructDefId{
+					StructDefId: &lhproto.StructDefId{
+						Name: structDefName,
+					},
+				},
+			}
+		}
+	}
+
+	// Fall back to primitive type
+	primType := ReflectTypeToVarType(rt)
+	return &lhproto.TypeDefinition{
+		DefinedType: &lhproto.TypeDefinition_PrimitiveType{
+			PrimitiveType: primType,
+		},
 	}
 }

@@ -44,9 +44,10 @@ type WfRunVariable struct {
 	Name    string
 	VarType *lhproto.VariableType
 
-	thread       *WorkflowThread
-	jsonPath     *string
-	threadVarDef *lhproto.ThreadVarDef
+	thread        *WorkflowThread
+	jsonPath      *string
+	threadVarDef  *lhproto.ThreadVarDef
+	structDefName *string
 }
 
 type NodeOutput interface {
@@ -444,6 +445,15 @@ func (t *WorkflowThread) DeclareJsonArr(name string) *WfRunVariable {
 
 func (t *WorkflowThread) DeclareJsonObj(name string) *WfRunVariable {
 	return t.addVariable(name, lhproto.VariableType_JSON_OBJ)
+}
+
+// DeclareStruct declares a Struct variable in the ThreadSpec. The structDefName is the
+// name of the StructDef that has been (or will be) registered with the server.
+//
+// Unlike ExternalEventDefs, StructDefs are NOT automatically registered by RegisterWfSpec.
+// You must register them manually using RegisterStructDef before calling RegisterWfSpec.
+func (t *WorkflowThread) DeclareStruct(name string, structDefName string) *WfRunVariable {
+	return t.addStructVariable(name, structDefName)
 }
 
 func (t *WorkflowThread) Complete(result interface{}) {

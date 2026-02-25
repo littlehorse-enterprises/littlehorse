@@ -724,10 +724,11 @@ func (w *WfRunVariable) jsonPathImpl(path string) *WfRunVariable {
 		))
 	}
 	return &WfRunVariable{
-		Name:     w.Name,
-		thread:   w.thread,
-		VarType:  w.VarType,
-		jsonPath: &path,
+		Name:          w.Name,
+		thread:        w.thread,
+		VarType:       w.VarType,
+		jsonPath:      &path,
+		structDefName: w.structDefName,
 	}
 }
 
@@ -880,6 +881,37 @@ func (t *WorkflowThread) addVariable(
 		VarType:      &varType,
 		thread:       t,
 		threadVarDef: threadVarDef,
+	}
+}
+
+func (t *WorkflowThread) addStructVariable(
+	name string, structDefName string,
+) *WfRunVariable {
+	t.checkIfIsActive()
+
+	varDef := &lhproto.VariableDef{
+		TypeDef: &lhproto.TypeDefinition{
+			DefinedType: &lhproto.TypeDefinition_StructDefId{
+				StructDefId: &lhproto.StructDefId{
+					Name: structDefName,
+				},
+			},
+		},
+		Name: name,
+	}
+
+	threadVarDef := &lhproto.ThreadVarDef{
+		VarDef:      varDef,
+		AccessLevel: lhproto.WfRunVariableAccessLevel_PRIVATE_VAR,
+	}
+
+	t.spec.VariableDefs = append(t.spec.VariableDefs, threadVarDef)
+
+	return &WfRunVariable{
+		Name:          name,
+		thread:        t,
+		threadVarDef:  threadVarDef,
+		structDefName: &structDefName,
 	}
 }
 
