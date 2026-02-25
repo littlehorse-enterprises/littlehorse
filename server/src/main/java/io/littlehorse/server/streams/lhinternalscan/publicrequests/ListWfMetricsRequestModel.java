@@ -1,5 +1,6 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;

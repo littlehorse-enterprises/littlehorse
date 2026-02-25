@@ -4,7 +4,6 @@ using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Worker;
-using LittleHorse.Sdk.Worker.Internal;
 using Xunit;
 
 public class LHTaskSignatureTest
@@ -17,11 +16,13 @@ public class LHTaskSignatureTest
     const string TASK_DEF_NAME_VALIDATE = "validate-task-worker";
     const string TASK_DEF_NAME_SHOW = "show-task-worker";
     const string TASK_DEF_NAME_PROCESS = "process-task-worker";
+    const string TASK_DEF_NAME_DESCRIBE = "describe-task-worker";
     const string DEFAULT_OUTPUT_VARIABLE_NAME = "output";
-    const bool TRUE_IS_MASKET = true;
+    const bool TRUE_IS_MASKED = true;
     const string VALUE_ATTR_NAME = "value";
     const string DETAIL_ATTR_NAME = "detail";
     const string TELEPHONE_ATTR_NAME = "telephone";
+    const string TASK_DEF_DESCRIPTION = "Adds description metadata";
     
     public LHTaskSignatureTest()
     {
@@ -35,25 +36,27 @@ public class LHTaskSignatureTest
         
         var taskSignature = new LHTaskSignature<TestWorker>(TASK_DEF_NAME_ADD, new TestWorker());
         
-        var expectedLHMethodParam = new LHMethodParam
+        var expectedLHMethodParam = new VariableDef
         {
-            Type = VariableType.Str,
             Name = "name",
-            IsMasked = TRUE_IS_MASKET
+            TypeDef = new TypeDefinition
+            {
+                PrimitiveType = VariableType.Str,
+                Masked = TRUE_IS_MASKED
+            }
         };
         var expectedOutput = new ReturnType{
             ReturnType_ = new TypeDefinition{
                 PrimitiveType = VariableType.Str,
-                Masked = TRUE_IS_MASKET
+                Masked = TRUE_IS_MASKED
             }
         };
 
-        Assert.True(taskSignature.LhMethodParams.Count == number_of_method_params);
-        foreach (var actualLHMethodParam in taskSignature.LhMethodParams)
+        Assert.True(taskSignature.VariableDefs.Count == number_of_method_params);
+        foreach (var actualLHMethodParam in taskSignature.VariableDefs)
         {
             Assert.Equal(expectedLHMethodParam.Name, actualLHMethodParam.Name);
-            Assert.Equal(expectedLHMethodParam.Type, actualLHMethodParam.Type);
-            Assert.Equal(expectedLHMethodParam.IsMasked, actualLHMethodParam.IsMasked);
+            Assert.Equal(expectedLHMethodParam.TypeDef, actualLHMethodParam.TypeDef);
         }
         
         Assert.Equal(expectedOutput, taskSignature.ReturnType);
@@ -67,19 +70,21 @@ public class LHTaskSignatureTest
         
         var taskSignature = new LHTaskSignature<TestWorker>(TASK_DEF_NAME_INFORM, new TestWorker());
         
-        var expectedLHMethodParam = new LHMethodParam
+        var expectedLHMethodParam = new VariableDef
         {
-            Type = VariableType.Str,
             Name = "name",
-            IsMasked = TRUE_IS_MASKET
+            TypeDef = new TypeDefinition
+            {
+                PrimitiveType = VariableType.Str,
+                Masked = TRUE_IS_MASKED
+            }
         };
 
-        Assert.True(taskSignature.LhMethodParams.Count == number_of_method_params);
-        foreach (var actualLHMethodParam in taskSignature.LhMethodParams)
+        Assert.True(taskSignature.VariableDefs.Count == number_of_method_params);
+        foreach (var actualLHMethodParam in taskSignature.VariableDefs)
         {
             Assert.Equal(expectedLHMethodParam.Name, actualLHMethodParam.Name);
-            Assert.Equal(expectedLHMethodParam.Type, actualLHMethodParam.Type);
-            Assert.Equal(expectedLHMethodParam.IsMasked, actualLHMethodParam.IsMasked);
+            Assert.Equal(expectedLHMethodParam.TypeDef, actualLHMethodParam.TypeDef);
         }
         
         Assert.Equal(taskSignature.ReturnType, new ReturnType{});
@@ -98,14 +103,14 @@ public class LHTaskSignatureTest
             ReturnType_ = new TypeDefinition
             {
                 PrimitiveType = VariableType.Str,
-                Masked = TRUE_IS_MASKET
+                Masked = TRUE_IS_MASKED
             }
         };
 
-        Assert.True(taskSignature.LhMethodParams.Count == number_of_method_params); ;
-        foreach (var actualLHMethodParam in taskSignature.LhMethodParams)
+        Assert.True(taskSignature.VariableDefs.Count == number_of_method_params); ;
+        foreach (var actualLHMethodParam in taskSignature.VariableDefs)
         {
-            Assert.False(actualLHMethodParam.IsMasked);
+            Assert.False(actualLHMethodParam.TypeDef.Masked);
         }
         
         Assert.Equal(expectedOutput, taskSignature.ReturnType);
@@ -118,7 +123,7 @@ public class LHTaskSignatureTest
         int number_of_method_params = 1;
         var taskSignature = new LHTaskSignature<TestWorker>(TASK_DEF_NAME_DELETE, new TestWorker());
 
-        Assert.True(taskSignature.LhMethodParams.Count == number_of_method_params); ;
+        Assert.True(taskSignature.VariableDefs.Count == number_of_method_params); ;
         Assert.True(taskSignature.HasWorkerContextAtEnd);
     }
     
@@ -163,26 +168,35 @@ public class LHTaskSignatureTest
         
         var taskSignature = new LHTaskSignature<TestWorker>(TASK_DEF_NAME_SHOW, new TestWorker());
 
-        List<LHMethodParam> actualLHMethodParams = taskSignature.LhMethodParams;
-        List<LHMethodParam> expectedLHMethodParams = new List<LHMethodParam>
+        List<VariableDef> actualLHMethodParams = taskSignature.VariableDefs;
+        List<VariableDef> expectedLHMethodParams = new List<VariableDef>
         {
-            new LHMethodParam
+            new VariableDef
             {
-                Type = VariableType.Int,
                 Name = VALUE_ATTR_NAME,
-                IsMasked = TRUE_IS_MASKET
+                TypeDef = new TypeDefinition
+                {
+                    PrimitiveType = VariableType.Int,
+                    Masked = TRUE_IS_MASKED
+                }
             },
-            new LHMethodParam
+            new VariableDef
             {
-                Type = VariableType.Str,
                 Name = DETAIL_ATTR_NAME,
-                IsMasked = false
+                TypeDef = new TypeDefinition
+                {
+                    PrimitiveType = VariableType.Str,
+                    Masked = false
+                }
             },
-            new LHMethodParam
+            new VariableDef
             {
-                Type = VariableType.Str,
                 Name = TELEPHONE_ATTR_NAME,
-                IsMasked = TRUE_IS_MASKET
+                TypeDef = new TypeDefinition
+                {
+                    PrimitiveType = VariableType.Str,
+                    Masked = TRUE_IS_MASKED
+                }
             }
         };
 
@@ -195,39 +209,46 @@ public class LHTaskSignatureTest
             }
         };
 
-        Assert.True(taskSignature.LhMethodParams.Count == number_of_method_params);
+        Assert.True(taskSignature.VariableDefs.Count == number_of_method_params);
         if (actualLHMethodParams.Count == number_of_method_params && expectedLHMethodParams.Count == number_of_method_params)
         {
             for (int i = 0; i < actualLHMethodParams.Count; i++) 
             {
                 Assert.Equal(expectedLHMethodParams[i].Name, actualLHMethodParams[i].Name);
-                Assert.Equal(expectedLHMethodParams[i].Type, actualLHMethodParams[i].Type);
-                Assert.Equal(expectedLHMethodParams[i].IsMasked, actualLHMethodParams[i].IsMasked);
+                Assert.Equal(expectedLHMethodParams[i].TypeDef, actualLHMethodParams[i].TypeDef);
             }
         }
 
         Assert.Equal(expectedOutput, taskSignature.ReturnType);
         Assert.False(taskSignature.HasWorkerContextAtEnd);
     }
+
+    [Fact]
+    public void TaskSignature_WithDescription_ShouldExposeTaskDefDescription()
+    {
+        var taskSignature = new LHTaskSignature<TestWorker>(TASK_DEF_NAME_DESCRIBE, new TestWorker());
+
+        Assert.Equal(TASK_DEF_DESCRIPTION, taskSignature.TaskDefDescription);
+    }
     
     class TestWorker
     {
         [LHTaskMethod(TASK_DEF_NAME_ADD)]
-        [LHType(masked: TRUE_IS_MASKET)]
-        public Task<string> Add([LHType(masked: TRUE_IS_MASKET)] string name)
+        [LHType(masked: TRUE_IS_MASKED)]
+        public Task<string> Add([LHType(masked: TRUE_IS_MASKED)] string name)
         {
             return Task.FromResult($"Output value: {name}");
         }
         
         [LHTaskMethod(TASK_DEF_NAME_INFORM)]
-        public Task Inform([LHType(masked: TRUE_IS_MASKET)] string name)
+        public Task Inform([LHType(masked: TRUE_IS_MASKED)] string name)
         {
             var test_variable = "test_variable" + name;
             return Task.CompletedTask;
         }
         
         [LHTaskMethod(TASK_DEF_NAME_UPDATE)]
-        [LHType(masked: TRUE_IS_MASKET, name: "result")]
+        [LHType(masked: TRUE_IS_MASKED, name: "result")]
         public Task<string> Update(int value)
         {
             return Task.FromResult($"Output value: {value}");
@@ -258,6 +279,12 @@ public class LHTaskSignatureTest
         public Task<string> Show([LHType(masked: true, name: VALUE_ATTR_NAME)] int value, [LHType(masked: false, name: DETAIL_ATTR_NAME)] string description, [LHType(masked: true, name:TELEPHONE_ATTR_NAME)] string phone)
         {
             return Task.FromResult($"Output value: {value}, Description: {description} and Phone: {phone}");
+        }
+
+        [LHTaskMethod(TASK_DEF_NAME_DESCRIBE, TASK_DEF_DESCRIPTION)]
+        public Task<string> Describe(string name)
+        {
+            return Task.FromResult($"Description: {name}");
         }
         
         [LHTaskMethod(TASK_DEF_NAME_PROCESS)]

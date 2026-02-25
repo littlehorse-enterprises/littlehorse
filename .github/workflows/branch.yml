@@ -33,7 +33,7 @@ jobs:
           java-version: 25
 
       - name: Tests and Build
-        run: ./gradlew server:build server:installDist
+        run: ./gradlew server:installDist
 
       - uses: actions/upload-artifact@v4
         with:
