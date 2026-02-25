@@ -3,6 +3,7 @@ name: Documentation Trigger
 on:
   push:
     branches:
+      - main
       - master
   workflow_dispatch:
     inputs:
@@ -50,7 +51,6 @@ jobs:
             echo "::error::Org variable LH_SITE_REPO is not set. Set it at Organization → Settings → Secrets and variables → Actions → Variables (repo name only, e.g. lh-site)."
             exit 1
           fi
-
       - name: Dispatch to lh-site workflow
         if: |
           steps.check-docs.outputs.docs_required == 'true' && 
