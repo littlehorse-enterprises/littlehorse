@@ -6,7 +6,9 @@ import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun;
+import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.NodeRunId;
+import io.littlehorse.sdk.common.proto.RescueThreadRunRequest;
 import io.littlehorse.sdk.common.proto.RunChildWfNodeRun;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.Variable;
@@ -18,6 +20,8 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.SpawnedChildWf;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
@@ -25,6 +29,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -37,6 +42,8 @@ public class RunChildWfTest {
 
     @LHWorkflow("test-dynamic-child-workflow")
     private Workflow dynamicChildWf;
+
+    private static final Map<String, Integer> childWfRunFailures = new ConcurrentHashMap<>();
 
     @Test
     void cannotReferToNonexistingWfSpec() {
@@ -209,15 +216,17 @@ public class RunChildWfTest {
 
     @Test
     void shouldRunDynamicChildWorkflow() {
-        final String childWfName = UUID.randomUUID().toString();
-        final String invalidChildWfName = UUID.randomUUID().toString();
+        final String childSuffix = UUID.randomUUID().toString();
+        final String invalidChildSuffix = UUID.randomUUID().toString();
+        final String childWfName = "child-" + childSuffix;
+        final String invalidChildWfName = "child-" + invalidChildSuffix;
         Workflow emptyWorkflow = Workflow.newWorkflow(childWfName, wf -> {
             // Empty workflow
         });
 
         emptyWorkflow.registerWfSpec(client);
 
-        verifier.prepareRun(dynamicChildWf, Arg.of("wf-name", childWfName))
+        verifier.prepareRun(dynamicChildWf, Arg.of("wf-name-suffix", childSuffix))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     Assertions.assertThat(nodeRun.hasRunChildWf()).isTrue();
@@ -227,7 +236,7 @@ public class RunChildWfTest {
                 })
                 .start();
 
-        verifier.prepareRun(dynamicChildWf, Arg.of("wf-name", invalidChildWfName))
+        verifier.prepareRun(dynamicChildWf, Arg.of("wf-name-suffix", invalidChildSuffix))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     List<Failure> nodeRunFailures = nodeRun.getFailuresList();
@@ -243,13 +252,83 @@ public class RunChildWfTest {
                 .start();
     }
 
+    @Test
+    void rescuingChildWfShouldResumeParentWaitingOnChild() {
+        String child = "child-rescue-" + randomString();
+        String parent = "parent-rescue-" + randomString();
+
+        Workflow.newWorkflow(child, wf -> {
+                    WfRunVariable timesToFail = wf.declareInt("times-to-fail").required();
+                    wf.execute("fail-child-x-times", timesToFail);
+                })
+                .registerWfSpec(client);
+
+        Workflow.newWorkflow(parent, wf -> {
+                    wf.waitForChildWf(wf.runWf(child, Map.of("times-to-fail", 1)));
+                })
+                .registerWfSpec(client);
+
+        Awaitility.await().ignoreExceptions().atMost(Duration.ofSeconds(1)).until(() -> {
+            client.getWfSpec(WfSpecId.newBuilder().setName(parent).build());
+            return true;
+        });
+
+        WfRunId parentWfRunId = client.runWf(
+                        RunWfRequest.newBuilder().setWfSpecName(parent).build())
+                .getId();
+
+        Awaitility.await().ignoreExceptions().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
+            NodeRun parentWaitNode = client.getNodeRun(NodeRunId.newBuilder()
+                    .setWfRunId(parentWfRunId)
+                    .setPosition(2)
+                    .build());
+            Assertions.assertThat(parentWaitNode.getStatus()).isEqualTo(LHStatus.ERROR);
+            Assertions.assertThat(parentWaitNode.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_FOR_CHILD_WF);
+        });
+
+        WfRunId childWfRunId = client.getNodeRun(NodeRunId.newBuilder()
+                        .setWfRunId(parentWfRunId)
+                        .setPosition(1)
+                        .build())
+                .getRunChildWf()
+                .getChildWfRunId();
+
+        client.rescueThreadRun(RescueThreadRunRequest.newBuilder()
+                .setWfRunId(childWfRunId)
+                .setThreadRunNumber(0)
+                .setSkipCurrentNode(false)
+                .build());
+
+        Awaitility.await().ignoreExceptions().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
+            NodeRun retriedParentWaitNode = client.getNodeRun(NodeRunId.newBuilder()
+                    .setWfRunId(parentWfRunId)
+                    .setPosition(3)
+                    .build());
+            Assertions.assertThat(retriedParentWaitNode.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_FOR_CHILD_WF);
+        });
+
+        Awaitility.await().ignoreExceptions().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
+            WfRun parentWfRun = client.getWfRun(parentWfRunId);
+            Assertions.assertThat(parentWfRun.getStatus()).isEqualTo(LHStatus.COMPLETED);
+        });
+    }
+
     @LHWorkflow("test-dynamic-child-workflow")
     public Workflow dynamicChildWorkflow() {
         return Workflow.newWorkflow("test-dynamic-child-workflow", wf -> {
-            WfRunVariable required = wf.declareStr("wf-name").required();
-            SpawnedChildWf spawnedChildWf = wf.runWf(required, Map.of());
+            WfRunVariable suffix = wf.declareStr("wf-name-suffix").required();
+            SpawnedChildWf spawnedChildWf = wf.runWf(wf.format("child-{0}", suffix), Map.of());
             wf.waitForChildWf(spawnedChildWf);
         });
+    }
+
+    @LHTaskMethod("fail-child-x-times")
+    public void failChildXTimes(int timesToFail, WorkerContext ctx) {
+        int failures = childWfRunFailures.computeIfAbsent(ctx.getWfRunId().getId(), ignored -> 0);
+        if (failures < timesToFail) {
+            childWfRunFailures.put(ctx.getWfRunId().getId(), failures + 1);
+            throw new RuntimeException("failing child workflow on purpose");
+        }
     }
 
     // Randomness guarantees that there are not conflicts between test runs.

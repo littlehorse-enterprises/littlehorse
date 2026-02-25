@@ -2,7 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -42,9 +41,9 @@ public class VariablesExample {
                     .masked();
 
             NodeOutput sentimentAnalysisOutput = wf.execute("sentiment-analysis", inputText);
-            wf.mutate(sentimentScore, VariableMutationType.ASSIGN, sentimentAnalysisOutput);
+            sentimentScore.assign(sentimentAnalysisOutput);
             NodeOutput processedTextOutput = wf.execute("process-text", inputText, sentimentScore, addLength, userId);
-            wf.mutate(processedResult, VariableMutationType.ASSIGN, processedTextOutput);
+            processedResult.assign(processedTextOutput);
             wf.execute("send", processedResult);
         });
     }

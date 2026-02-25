@@ -1,7 +1,6 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -30,7 +29,7 @@ public class ChildWorkflowExample {
 
             wf.execute("greet", theName);
 
-            wf.mutate(theName, VariableMutationType.ASSIGN, "yoda");
+            theName.assign("yoda");
         });
         out.setParent("parent");
 

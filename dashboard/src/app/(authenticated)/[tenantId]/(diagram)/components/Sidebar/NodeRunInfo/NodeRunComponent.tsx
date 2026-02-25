@@ -10,6 +10,7 @@ import { OctagonAlert } from 'lucide-react'
 import { StartThreadNodeRun } from './StartThreadNodeRun'
 import { TaskNodeRun } from './TaskNodeRun'
 import { ChildWFNodeRun } from './ChildWFNodeRun'
+import { WaitForChildWfNodeRun } from './WaitForChildWfNodeRun'
 
 export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
   const { selectedNode } = useDiagram()
@@ -34,6 +35,7 @@ export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex })
   if ($case === 'startMultipleThreads') return <StartMultipleThreadNodeRun node={value} />
   if ($case === 'throwEvent') return <ThrowEventNodeRun node={value} />
   if ($case === 'runChildWf') return <ChildWFNodeRun node={value} />
+  if ($case === 'waitForChildWf') return <WaitForChildWfNodeRun node={value} />
 
   return (
     <div className="mt-2 flex justify-center">

@@ -3,7 +3,6 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -31,7 +30,7 @@ public class WaitForConditionExample {
 
             // Interrupt handler which mutates the parent variable
             wf.registerInterruptHandler(INTERRUPT_NAME, handler -> {
-                handler.mutate(counter, VariableMutationType.SUBTRACT, 1);
+                counter.assign(counter.subtract(1));
             });
         });
     }

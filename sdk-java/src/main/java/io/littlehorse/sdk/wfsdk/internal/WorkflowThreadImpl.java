@@ -311,7 +311,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         spec.putNodes(lastNodeName, curNode.build());
     }
 
-    public LHFormatStringImpl format(String format, WfRunVariable... args) {
+    public LHFormatStringImpl format(String format, Serializable... args) {
         return new LHFormatStringImpl(this, format, args);
     }
 
@@ -355,7 +355,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public SpawnedChildWf runWf(WfRunVariable wfSpecName, Map<String, Serializable> inputs) {
+    public SpawnedChildWf runWf(Serializable wfSpecName, Map<String, Serializable> inputs) {
         checkIfIsActive();
         // TODO: handle workflow versioning
         RunChildWfNode.Builder node =

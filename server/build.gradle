@@ -172,6 +172,7 @@ test {
 }
 
 task e2e(type: Test, dependsOn: [compileJava]){
+    systemProperty("api.version", "1.44") // Docker version compatible with {testcontainersVersion}
     useJUnitPlatform()
     filter {
         includeTestsMatching "e2e.**"

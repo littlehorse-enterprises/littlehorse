@@ -2,19 +2,19 @@
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
-using LittleHorse.Sdk.Worker.Internal;
 using Microsoft.Extensions.Logging;
 
 namespace LittleHorse.Sdk.Worker
 {
     internal class LHTaskSignature<T>
     {
-        private readonly List<LHMethodParam> _lhMethodParams;
-        internal List<LHMethodParam> LhMethodParams => _lhMethodParams;
+        private readonly List<VariableDef> _variableDefs;
+        internal List<VariableDef> VariableDefs => _variableDefs;
         internal MethodInfo TaskMethod { get; init; }
         internal bool HasWorkerContextAtEnd { get; set; }
         internal string TaskDefName { get; init; }
         internal T? Executable { get; init; }
+        internal string? TaskDefDescription { get; private set; }
         
         private ILogger<LHTaskSignature<T>?> _logger;
 
@@ -25,16 +25,14 @@ namespace LittleHorse.Sdk.Worker
         internal LHTaskSignature(string taskDefName, T executable)
         {
             _logger = LHLoggerFactoryProvider.GetLogger<LHTaskSignature<T>>();
-            _lhMethodParams = new List<LHMethodParam>();
+            _variableDefs = new List<VariableDef>();
             TaskDefName = taskDefName;
             Executable = executable;
 
             var methodsWithTaskWorkerAttrsAndDefName = typeof(T).GetMethods()
-                         .Where(method => method.CustomAttributes.Any(ca => 
-                             ca.AttributeType == typeof(LHTaskMethodAttribute) 
-                             || ca.AttributeType == typeof(LHTypeAttribute)))
-                         .Where(method => IsValidLHTaskWorkerValue(
-                             method.GetCustomAttribute(typeof(LHTaskMethodAttribute)), taskDefName));
+                .Where(method => method.GetCustomAttribute(typeof(LHTaskMethodAttribute)) is LHTaskMethodAttribute)
+                .Where(method => IsValidLHTaskWorkerValue(
+                    method.GetCustomAttribute(typeof(LHTaskMethodAttribute)), taskDefName));
             
             if (!methodsWithTaskWorkerAttrsAndDefName.Any())
             {
@@ -47,6 +45,12 @@ namespace LittleHorse.Sdk.Worker
             }
 
             TaskMethod = methodsWithTaskWorkerAttrsAndDefName.Single();
+
+            if (TaskMethod.GetCustomAttribute(typeof(LHTaskMethodAttribute)) is LHTaskMethodAttribute lhTaskMethodAttr
+                && !string.IsNullOrWhiteSpace(lhTaskMethodAttr.Description))
+            {
+                TaskDefDescription = lhTaskMethodAttr.Description;
+            }
 
             var methodParams = TaskMethod.GetParameters();
 
@@ -67,11 +71,10 @@ namespace LittleHorse.Sdk.Worker
 
         private void BuildInputVarsSignature(ParameterInfo[] methodParams)
         {
+            HasWorkerContextAtEnd = false;
             for (int i = 0; i < methodParams.Length; i++)
             {
                 var paramType = methodParams[i].ParameterType;
-                var defaultParamName = methodParams[i].Name;
-                HasWorkerContextAtEnd = false;
 
                 if (paramType == typeof(LHWorkerContext))
                 {
@@ -84,54 +87,71 @@ namespace LittleHorse.Sdk.Worker
                     continue;
                 }
 
-                var paramLHType = LHMappingHelper.DotNetTypeToLHVariableType(paramType);
-
-                bool maskedParam = false;
-                var paramName = defaultParamName; 
-                
-                if (methodParams[i].GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhTypeValue)
-                {
-                    maskedParam = lhTypeValue.Masked;
-                    if (!lhTypeValue.Name.Trim().Equals(string.Empty))
-                        paramName = lhTypeValue.Name;
-                }
-
-                LHMethodParam lhMethodParam = new LHMethodParam
-                {
-                    Type = paramLHType,
-                    Name = paramName,
-                    IsMasked = maskedParam
-                };
-
-                _lhMethodParams.Add(lhMethodParam);
+                _variableDefs.Add(BuildVariableDef(methodParams[i], i));
             }
+        }
+
+        private VariableDef BuildVariableDef(ParameterInfo param, int index)
+        {
+            var paramType = param.ParameterType;
+            var lhClassType = LHClassType.FromType(paramType);
+            var typeDef = lhClassType.GetTypeDefinition();
+
+            var maskedParam = false;
+            var paramName = param.Name;
+            if (string.IsNullOrWhiteSpace(paramName))
+            {
+                _logger.LogWarning("Unable to inspect parameter names using reflection; using parameter index as name.");
+                paramName = $"param{index}";
+            }
+
+            if (param.GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhTypeValue)
+            {
+                maskedParam = lhTypeValue.Masked;
+                if (!lhTypeValue.Name.Trim().Equals(string.Empty))
+                {
+                    paramName = lhTypeValue.Name;
+                }
+            }
+
+            typeDef.Masked = maskedParam;
+
+            return new VariableDef
+            {
+                Name = paramName,
+                TypeDef = typeDef
+            };
         }
         
         private ReturnType BuildReturnType()
         {
-            if (TaskMethod.ReturnType != typeof(Task) &&
-                (!TaskMethod.ReturnType.IsGenericType || TaskMethod.ReturnType.GetGenericTypeDefinition() != typeof(Task<>)))
+            if (TaskMethod.ReturnType == typeof(void) || TaskMethod.ReturnType == typeof(Task))
             {
-                throw new LHTaskSchemaMismatchException("Task methods must return Task<type> or Task");
+                return new ReturnType { };
             }
-            if (TaskMethod.ReturnType == typeof(Task)) {
-                return new ReturnType{};
-            } else {
-                var returnType = LHMappingHelper.DotNetTypeToLHVariableType(TaskMethod.ReturnType.GetGenericArguments().First());
-                var maskedValue = false;
 
-                if (TaskMethod.GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhType) {
-                    maskedValue = lhType!.Masked;
-                }
-
-                return new ReturnType
-                {
-                    ReturnType_ = new TypeDefinition{
-                        PrimitiveType = returnType,
-                        Masked = maskedValue
-                    }
-                };
+            if (!TaskMethod.ReturnType.IsGenericType
+                || TaskMethod.ReturnType.GetGenericTypeDefinition() != typeof(Task<>))
+            {
+                throw new LHTaskSchemaMismatchException("Task methods must return Task<type>, Task, or void");
             }
+
+            var returnType = TaskMethod.ReturnType.GetGenericArguments().First();
+            var lhClassType = LHClassType.FromType(returnType);
+            var typeDef = lhClassType.GetTypeDefinition();
+            var maskedValue = false;
+
+            if (TaskMethod.GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhType)
+            {
+                maskedValue = lhType.Masked;
+            }
+
+            typeDef.Masked = maskedValue;
+
+            return new ReturnType
+            {
+                ReturnType_ = typeDef
+            };
         }
     }
 }

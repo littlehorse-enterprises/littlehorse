@@ -1,9 +1,7 @@
 package io.littlehorse.common.model.getable.global.structdef;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
@@ -11,7 +9,6 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.text.MessageFormat;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -65,16 +62,14 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
         return defaultValue == null;
     }
 
-    public void validate(ReadOnlyMetadataManager metadataManager) {
+    public void validate(ReadOnlyMetadataManager metadataManager) throws StructDefValidationException {
         // Validates field type against default value
         if (defaultValue != null
                 && !defaultValue.isNull()
                 && !this.fieldType.isCompatibleWith(defaultValue, metadataManager)) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT,
-                    MessageFormat.format(
-                            "StructFieldDef field type [{0}] is not compatible with the provided default value.",
-                            this.fieldType));
+            throw new StructDefValidationException(String.format(
+                    "StructFieldDef field type [%s] is not compatible with the provided default value.",
+                    this.fieldType));
         }
     }
 }
