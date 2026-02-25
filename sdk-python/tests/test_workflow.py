@@ -385,6 +385,39 @@ class TestThreadBuilder(unittest.TestCase):
             ),
         )
 
+
+class TestCastExpressions(unittest.TestCase):
+    def setUp(self) -> None:
+        def entrypoint_func(wf: WorkflowThread) -> None:
+            pass
+
+        workflow = Workflow("cast-test-workflow", entrypoint_func)
+        self.workflow_thread = WorkflowThread(workflow, entrypoint_func)
+
+    def test_node_output_cast_sets_target_type(self):
+        var = NodeOutput("my-node").cast_to_int()
+        assignment = to_variable_assignment(var)
+        self.assertIsNotNone(assignment.node_output)
+        self.assertEqual(assignment.node_output.node_name, "my-node")
+        self.assertIsNotNone(assignment.target_type)
+        self.assertEqual(assignment.target_type.primitive_type, VariableType.INT)
+
+    def test_expression_cast_sets_target_type(self):
+        expr = NodeOutput("n").add(5).cast_to_double()
+        assignment = to_variable_assignment(expr)
+        self.assertIsNotNone(assignment.expression)
+        self.assertIsNotNone(assignment.target_type)
+        self.assertEqual(assignment.target_type.primitive_type, VariableType.DOUBLE)
+
+    def test_wfrunvariable_cast_sets_target_type(self):
+        wfvar = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
+        casted = wfvar.cast_to_bool()
+        assignment = to_variable_assignment(casted)
+        self.assertIsNone(assignment.json_path)
+        self.assertEqual(assignment.variable_name, "my-var")
+        self.assertIsNotNone(assignment.target_type)
+        self.assertEqual(assignment.target_type.primitive_type, VariableType.BOOL)
+
     def test_fail_with_output(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             thread.fail("my_failure_name", "my message", "my output")
