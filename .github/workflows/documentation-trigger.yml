@@ -16,9 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
-      actions: write
-      issues: read
+      pull-requests: read # Required to check PR labels via API
+      actions: write # Required for workflow_dispatch to other repos in same org
+      issues: read # Required to check for existing issues (deduplication)
 
     steps:
       - name: Checkout repository
