@@ -27,14 +27,16 @@ Run the example
 
 ```bash
 cd examples/python/casting
-python3 worker.py
+poetry shell
+python -m worker
 ```
 
 2) Register the workflow spec (in another terminal):
 
 ```bash
 cd examples/python/casting
-python3 deploy.py
+poetry shell
+python -m deploy
 ```
 
 3) Start a workflow run (use `lhctl`):

@@ -1,39 +1,35 @@
-import asyncio
 import logging
-import random
 import littlehorse
+import asyncio
+
 from littlehorse.config import LHConfig
 from littlehorse.worker import LHTaskWorker
 
-from examples.python.casting.workflow import get_workflow
+from workflow import get_workflow
 
 logging.basicConfig(level=logging.INFO)
 
 
 async def string_method(value: str) -> str:
     logging.info(f"Executing string-method with value: {value}")
-    await asyncio.sleep(random.uniform(0.1, 0.3))
     return value
 
 
 async def int_method(value: int) -> int:
     result = value * 2
     logging.info(f"Executing int-method with value: {value}, doubling to: {result}")
-    await asyncio.sleep(random.uniform(0.1, 0.3))
     return result
 
 
 async def double_method(value: float) -> float:
     result = value * 0.9
     logging.info(f"Executing double-method with value: {value}, reducing to: {result}")
-    await asyncio.sleep(random.uniform(0.1, 0.3))
     return result
 
 
 async def bool_method(value: bool) -> bool:
     result = not value
     logging.info(f"Executing bool-method with value: {value}, toggling to: {result}")
-    await asyncio.sleep(random.uniform(0.1, 0.3))
     return result
 
 
