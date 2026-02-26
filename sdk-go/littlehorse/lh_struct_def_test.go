@@ -183,6 +183,54 @@ func (StructWithMultipleMaskedFields) LHStructDef() littlehorse.LHStructDefInfo 
 	return littlehorse.LHStructDefInfo{Name: "multi-masked-struct"}
 }
 
+// StructWithMaskedNestedField has a nested struct field marked as masked.
+type StructWithMaskedNestedField struct {
+	Name          string        `json:"name"`
+	SecretAddress NestedAddress `lh:"secretAddress,masked"`
+}
+
+func (StructWithMaskedNestedField) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "masked-nested-struct"}
+}
+
+// StructWithLHAndJSON has an lh tag for both name and masked, plus a json tag
+// that should be ignored when lh name is present.
+type StructWithLHAndJSON struct {
+	Field1 string `lh:"lhName" json:"jsonName"`
+	Field2 string `lh:",masked" json:"field2Json"`
+	Field3 string `json:"field3Json"`
+}
+
+func (StructWithLHAndJSON) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "lh-and-json-struct"}
+}
+
+// StructWithDescription tests that LHStructDefInfo.Description is propagated.
+type StructWithDescriptionExternal struct {
+	Value string `json:"value"`
+}
+
+func (StructWithDescriptionExternal) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{
+		Name:        "described-struct",
+		Description: "A struct with a description for testing",
+	}
+}
+
+// StructWithMixedTags exercises multiple tag combinations in one struct:
+// explicit lh name, masked-only lh, lh skip, json-only, and no tags.
+type StructWithMixedTags struct {
+	ExplicitLH string `lh:"custom"`
+	MaskedOnly string `lh:",masked"`
+	Skipped    string `lh:"-"`
+	JSONOnly   string `json:"jsonField"`
+	NoTags     string
+}
+
+func (StructWithMixedTags) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "mixed-tags-struct"}
+}
+
 // --- Tests for GoStructToInlineStructDef ---
 
 func TestGoStructToInlineStructDef_SimplePrimitiveTypes(t *testing.T) {
@@ -731,4 +779,166 @@ func TestVarValToType_StructToValue(t *testing.T) {
 
 	restored := result.(SimpleStruct)
 	assert.Equal(t, original, restored)
+}
+
+// --- Tests for lh tag + json tag interaction ---
+
+func TestGoStructToInlineStructDef_MixedTags(t *testing.T) {
+	// StructWithMixedTags exercises all tag combination scenarios in a single struct.
+	structDef, err := littlehorse.GoStructToInlineStructDef(StructWithMixedTags{})
+	assert.Nil(t, err)
+
+	// ExplicitLH should use "custom" from lh tag
+	assert.Contains(t, structDef.Fields, "custom", "expected field named 'custom' from lh tag")
+	// MaskedOnly has lh:",masked" so no lh name; no json tag; falls back to camelCase
+	assert.Contains(t, structDef.Fields, "maskedOnly", "expected field named 'maskedOnly' from camelCase fallback")
+	// Skipped has lh:"-" so must not appear
+	assert.NotContains(t, structDef.Fields, "skipped", "skipped field should not appear")
+	assert.NotContains(t, structDef.Fields, "Skipped", "skipped field should not appear")
+	// JSONOnly has json:"jsonField" and no lh tag; uses json name
+	assert.Contains(t, structDef.Fields, "jsonField", "expected field named 'jsonField' from json tag")
+	// NoTags has no lh or json tag; falls back to camelCase of "NoTags" -> "noTags"
+	assert.Contains(t, structDef.Fields, "noTags", "expected field named 'noTags' from camelCase fallback")
+
+	// Exactly 4 fields should be present (5 declared minus 1 skipped)
+	assert.Len(t, structDef.Fields, 4)
+}
+
+func TestGoStructToInlineStructDef_MixedTags_MaskedCorrectness(t *testing.T) {
+	structDef, err := littlehorse.GoStructToInlineStructDef(StructWithMixedTags{})
+	assert.Nil(t, err)
+
+	// Only "maskedOnly" should be masked
+	assert.True(t, structDef.Fields["maskedOnly"].FieldType.Masked, "maskedOnly should be masked")
+	assert.False(t, structDef.Fields["custom"].FieldType.Masked, "custom should not be masked")
+	assert.False(t, structDef.Fields["jsonField"].FieldType.Masked, "jsonField should not be masked")
+	assert.False(t, structDef.Fields["noTags"].FieldType.Masked, "noTags should not be masked")
+}
+
+func TestGoStructToInlineStructDef_LHNameOverridesJSON(t *testing.T) {
+	// StructWithLHAndJSON has `lh:"lhName" json:"jsonName"` on Field1.
+	structDef, err := littlehorse.GoStructToInlineStructDef(StructWithLHAndJSON{})
+	assert.Nil(t, err)
+
+	// Field1: lh:"lhName" must override json:"jsonName"
+	assert.Contains(t, structDef.Fields, "lhName", "lh tag name should take priority over json tag")
+	assert.NotContains(t, structDef.Fields, "jsonName", "json tag name should not be used when lh name is present")
+
+	// Field2: lh:",masked" with json:"field2Json" -> name from json, masked = true
+	assert.Contains(t, structDef.Fields, "field2Json", "empty lh name should fall back to json")
+	assert.True(t, structDef.Fields["field2Json"].FieldType.Masked, "field with lh:',masked' should be masked")
+
+	// Field3: json:"field3Json" only -> name from json, not masked
+	assert.Contains(t, structDef.Fields, "field3Json", "json tag name should be used when no lh tag")
+	assert.False(t, structDef.Fields["field3Json"].FieldType.Masked, "field without masked should not be masked")
+}
+
+func TestGoStructToInlineStructDef_MaskedNestedField(t *testing.T) {
+	// StructWithMaskedNestedField has a nested struct field marked as masked.
+	structDef, err := littlehorse.GoStructToInlineStructDef(StructWithMaskedNestedField{})
+	assert.Nil(t, err)
+
+	assert.Contains(t, structDef.Fields, "secretAddress")
+	assert.True(t, structDef.Fields["secretAddress"].FieldType.Masked,
+		"nested struct field with lh:'...,masked' should be masked")
+	// The nested struct should still resolve as a STRUCT type reference
+	assert.NotNil(t, structDef.Fields["secretAddress"].FieldType.GetStructDefId(),
+		"nested struct field should still have its struct def id")
+}
+
+// --- Tests for StructWithDescription ---
+
+func TestGoStructToStructProto_Description(t *testing.T) {
+	// StructWithDescriptionExternal has a description in its LHStructDefInfo.
+	// The description is used in RegisterStructDef; here we just verify the
+	// struct serialization still works correctly.
+	s := StructWithDescriptionExternal{Value: "test"}
+	proto, err := littlehorse.GoStructToStructProto(s)
+	assert.Nil(t, err)
+	assert.Equal(t, "test", proto.Struct.GetFields()["value"].Value.GetStr())
+	assert.Equal(t, "described-struct", proto.StructDefId.GetName())
+}
+
+// --- Tests for round-trip serialization with lh tags ---
+
+func TestGoStructToStructProto_LHTagRoundTrip(t *testing.T) {
+	// Serialize a struct with lh tags and verify field names come from the lh tag.
+	original := StructWithLHAndJSON{
+		Field1: "hello",
+		Field2: "secret",
+		Field3: "world",
+	}
+	proto, err := littlehorse.GoStructToStructProto(original)
+	assert.Nil(t, err)
+
+	fields := proto.Struct.GetFields()
+	// Field1 should be keyed by "lhName" (from lh tag), not "jsonName"
+	assert.Contains(t, fields, "lhName")
+	assert.NotContains(t, fields, "jsonName")
+	assert.Equal(t, "hello", fields["lhName"].Value.GetStr())
+
+	// Field2 should be keyed by "field2Json" (lh has empty name, falls back to json)
+	assert.Contains(t, fields, "field2Json")
+	assert.Equal(t, "secret", fields["field2Json"].Value.GetStr())
+
+	// Field3 should be keyed by "field3Json" (json tag)
+	assert.Contains(t, fields, "field3Json")
+	assert.Equal(t, "world", fields["field3Json"].Value.GetStr())
+}
+
+func TestStructProtoToGoStruct_LHTagRoundTrip(t *testing.T) {
+	// Full round-trip: Go struct -> proto -> Go struct with lh tags.
+	original := StructWithLHAndJSON{
+		Field1: "hello",
+		Field2: "secret",
+		Field3: "world",
+	}
+	proto, err := littlehorse.GoStructToStructProto(original)
+	assert.Nil(t, err)
+
+	result, err := littlehorse.StructProtoToGoStruct(proto, reflect.TypeOf(StructWithLHAndJSON{}))
+	assert.Nil(t, err)
+
+	restored := result.(StructWithLHAndJSON)
+	assert.Equal(t, original, restored)
+}
+
+func TestMaskedFieldSerializationRoundTrip_NestedStruct(t *testing.T) {
+	// Round-trip a struct with a masked nested struct field.
+	original := StructWithMaskedNestedField{
+		Name:          "Alice",
+		SecretAddress: NestedAddress{Street: "123 Secret St", City: "Hidden City"},
+	}
+	proto, err := littlehorse.GoStructToStructProto(original)
+	assert.Nil(t, err)
+
+	result, err := littlehorse.StructProtoToGoStruct(proto, reflect.TypeOf(StructWithMaskedNestedField{}))
+	assert.Nil(t, err)
+
+	restored := result.(StructWithMaskedNestedField)
+	assert.Equal(t, original, restored)
+}
+
+func TestMixedTagsSerializationRoundTrip(t *testing.T) {
+	// Round-trip a struct with mixed tag scenarios. Note: the "Skipped" field
+	// will be lost in the round trip since it is excluded by lh:"-".
+	original := StructWithMixedTags{
+		ExplicitLH: "custom_value",
+		MaskedOnly: "masked_value",
+		Skipped:    "this should be lost",
+		JSONOnly:   "json_value",
+		NoTags:     "no_tag_value",
+	}
+	proto, err := littlehorse.GoStructToStructProto(original)
+	assert.Nil(t, err)
+
+	result, err := littlehorse.StructProtoToGoStruct(proto, reflect.TypeOf(StructWithMixedTags{}))
+	assert.Nil(t, err)
+
+	restored := result.(StructWithMixedTags)
+	assert.Equal(t, "custom_value", restored.ExplicitLH)
+	assert.Equal(t, "masked_value", restored.MaskedOnly)
+	assert.Equal(t, "", restored.Skipped, "skipped field should be zero-value after round-trip")
+	assert.Equal(t, "json_value", restored.JSONOnly)
+	assert.Equal(t, "no_tag_value", restored.NoTags)
 }
