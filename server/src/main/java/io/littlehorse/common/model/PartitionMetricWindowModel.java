@@ -58,11 +58,17 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
     public void incrementCountAndLatency(String metricKey, long latencyMs) {
         CountAndTimingModel timing = metrics.computeIfAbsent(metricKey, k -> new CountAndTimingModel());
         timing.incrementCountAndLatency(latencyMs);
+        // System.out.println("Incremented metric " + metricKey + ": count=" + timing.getCount() + ", minLatency=" +
+        // timing.getMinLatencyMs() + ", maxLatency=" + timing.getMaxLatencyMs() + ", totalLatency=" +
+        // timing.getTotalLatencyMs());
     }
 
     public void incrementCount(String metricKey) {
         CountAndTimingModel timing = metrics.computeIfAbsent(metricKey, k -> new CountAndTimingModel());
         timing.incrementCount();
+        // System.out.println("Incremented metric " + metricKey + ": count=" + timing.getCount() + ", minLatency=" +
+        // timing.getMinLatencyMs() + ", maxLatency=" + timing.getMaxLatencyMs() + ", totalLatency=" +
+        // timing.getTotalLatencyMs());
     }
 
     public void mergeFrom(PartitionMetricWindowModel other) {

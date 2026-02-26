@@ -56,6 +56,7 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
 
     @SuppressWarnings("unchecked")
     public Message process(CoreProcessorContext executionContext, LHServerConfig config) {
+        var startTime = System.currentTimeMillis();
         MetricWindowIdModel id;
         switch (metricWindow.getMetricType()) {
             case WORKFLOW_METRIC:
@@ -74,6 +75,8 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
             consolidatedMetric.mergeFrom(metricWindow.getMetrics());
         }
         executionContext.getCoreStore().put(new StoredGetable<>(consolidatedMetric));
+        System.out.println("Finished agregate for window" + metricWindow.getWindowStart() + " (elapsed time: "
+                + (System.currentTimeMillis() - startTime) + " ms)");
         return null;
     }
 }

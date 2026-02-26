@@ -30,4 +30,8 @@ public class PartitionMetricsMemoryStore {
     public void clear() {
         metrics.clear();
     }
+
+    public void delete(String key) {
+        metrics.remove(key);
+    }
 }
