@@ -224,7 +224,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             }
         }
         log.info(
-                "Flushed from memory: {}, pending metrics: {} (elapsed time: {} ms)",
+                "Flushed from memory, count: {}, pending metrics: {} (elapsed time: {} ms)",
                 count,
                 partitionMetricsMemoryStore.values().size(),
                 System.currentTimeMillis() - startTime);
@@ -240,6 +240,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         try (LHKeyValueIterator<PartitionMetricWindowModel> iter =
                 store.range(startPrefix, endPrefix, PartitionMetricWindowModel.class)) {
             while (iter.hasNext()) {
+                count++;
                 PartitionMetricWindowModel windowMetrics = iter.next().getValue();
                 if (windowMetrics != null) {
                     lastWindowTime = forwardAndDeleteFromStore(store, windowMetrics);
@@ -254,18 +255,14 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 }
             }
         }
-        log.info("Flushed from store: {} (elapsed time: {} ms)", count, System.currentTimeMillis() - startTime);
+        log.info("Flushed from store, count : {} (elapsed time: {} ms)", count, System.currentTimeMillis() - startTime);
         return lastWindowTime;
     }
 
     private long forwardAndDeleteFromStore(ClusterScopedStore store, PartitionMetricWindowModel metric) {
         AggregateWindowMetricsModel aggregate = new AggregateWindowMetricsModel(metric.getTenantId(), metric);
-        var start = System.currentTimeMillis();
         forwardSubcommand(aggregate);
-        log.info("Finished forwarding 1 command (elapsed time: {} ms)", System.currentTimeMillis() - start);
-        start = System.currentTimeMillis();
         store.delete(metric);
-        log.info("Finished deleting 1 metric (elapsed time: {} ms)", System.currentTimeMillis() - start);
         return metric.getWindowStart().getTime();
     }
 
