@@ -19,11 +19,76 @@ type LHStructDefInfo struct {
 	Description string
 }
 
+// lhTagInfo holds the parsed result of a Go struct field's "lh" tag.
+// The tag format is: `lh:"fieldName,option1,option2,..."` (similar to encoding/json).
+//
+// Supported options:
+//   - "masked": marks the field as containing sensitive information. Sets TypeDefinition.Masked = true
+//     on the StructFieldDef, equivalent to Java's @LHStructField(masked = true) and
+//     .NET's [LHStructField(masked: true)].
+//   - "-": skips the field entirely (not included in the StructDef).
+//
+// Examples:
+//
+//	`lh:"firstName"`          // explicit field name, no options
+//	`lh:"ssn,masked"`         // explicit field name + masked
+//	`lh:",masked"`            // default field name + masked
+//	`lh:"-"`                  // skip this field
+type lhTagInfo struct {
+	// name is the explicit field name from the tag (empty string means use fallback resolution).
+	name string
+	// masked is true when the "masked" option is present in the tag.
+	masked bool
+	// skip is true when the tag value is "-", meaning the field should be excluded.
+	skip bool
+}
+
+// parseLHTag parses the "lh" struct tag value into an lhTagInfo.
+// The format mirrors encoding/json: "name,opt1,opt2,...".
+// A tag of "-" means the field should be skipped entirely.
+// An empty tag returns all zero values (no name override, not masked, not skipped).
+func parseLHTag(tag string) lhTagInfo {
+	if tag == "-" {
+		return lhTagInfo{skip: true}
+	}
+
+	parts := strings.Split(tag, ",")
+	info := lhTagInfo{
+		name: parts[0], // first element is always the field name (may be empty)
+	}
+
+	// Check remaining parts for known options.
+	for _, opt := range parts[1:] {
+		switch strings.TrimSpace(opt) {
+		case "masked":
+			info.masked = true
+		}
+	}
+
+	return info
+}
+
+// resolveFieldName determines the final field name for a struct field by checking
+// (in order): the lh tag name, the json tag name, or a PascalCase-to-camelCase conversion.
+func resolveFieldName(lhName string, field reflect.StructField) string {
+	if lhName != "" {
+		return lhName
+	}
+	if jsonTag := field.Tag.Get("json"); jsonTag != "" {
+		name := strings.SplitN(jsonTag, ",", 2)[0]
+		if name != "" {
+			return name
+		}
+	}
+	return goFieldNameToCamelCase(field.Name)
+}
+
 // GoStructToInlineStructDef uses reflection to convert a Go struct instance into an
 // InlineStructDef protobuf. The struct's exported fields are converted to StructFieldDef entries.
 //
 // Field names are resolved in order: "lh" struct tag, then "json" struct tag, then
 // PascalCase-to-camelCase conversion of the Go field name. Use lh:"-" to skip a field.
+// Use lh:"name,masked" to mark a field as containing sensitive data.
 //
 // Supported field types:
 //   - string -> STR
@@ -55,26 +120,25 @@ func buildInlineStructDef(t reflect.Type) (*lhproto.InlineStructDef, error) {
 			continue
 		}
 
-		// Check for lh struct tag.
-		tag := field.Tag.Get("lh")
-		if tag == "-" {
+		// Parse the "lh" struct tag for field name, masked flag, and skip directive.
+		tagInfo := parseLHTag(field.Tag.Get("lh"))
+		if tagInfo.skip {
 			continue
 		}
 
 		// Resolve field name: lh tag > json tag > PascalCase-to-camelCase.
-		fieldName := tag
-		if fieldName == "" {
-			if jsonTag := field.Tag.Get("json"); jsonTag != "" {
-				fieldName = strings.SplitN(jsonTag, ",", 2)[0]
-			}
-		}
-		if fieldName == "" {
-			fieldName = goFieldNameToCamelCase(field.Name)
-		}
+		fieldName := resolveFieldName(tagInfo.name, field)
 
 		fieldDef, err := goTypeToStructFieldDef(field.Type)
 		if err != nil {
 			return nil, fmt.Errorf("field %s: %w", field.Name, err)
+		}
+
+		// If the field is marked as masked via the "lh" tag (e.g., `lh:"ssn,masked"`),
+		// set Masked = true on the field's TypeDefinition. This is the Go equivalent of
+		// Java's @LHStructField(masked = true) and .NET's [LHStructField(masked: true)].
+		if tagInfo.masked {
+			fieldDef.FieldType.Masked = true
 		}
 
 		fields[fieldName] = fieldDef
@@ -268,6 +332,7 @@ func GoStructToStructProto(structInstance interface{}) (*lhproto.Struct, error) 
 }
 
 // goValueToInlineStruct converts a reflect.Value of a struct into an InlineStruct proto.
+// This uses the same tag parsing as buildInlineStructDef for consistent field name resolution.
 func goValueToInlineStruct(v reflect.Value) (*lhproto.InlineStruct, error) {
 	t := v.Type()
 	fields := make(map[string]*lhproto.StructField)
@@ -278,20 +343,14 @@ func goValueToInlineStruct(v reflect.Value) (*lhproto.InlineStruct, error) {
 			continue
 		}
 
-		tag := field.Tag.Get("lh")
-		if tag == "-" {
+		// Parse the "lh" tag using the shared parser (handles "masked" and skip).
+		tagInfo := parseLHTag(field.Tag.Get("lh"))
+		if tagInfo.skip {
 			continue
 		}
 
-		fieldName := tag
-		if fieldName == "" {
-			if jsonTag := field.Tag.Get("json"); jsonTag != "" {
-				fieldName = strings.SplitN(jsonTag, ",", 2)[0]
-			}
-		}
-		if fieldName == "" {
-			fieldName = goFieldNameToCamelCase(field.Name)
-		}
+		// Resolve field name consistently with buildInlineStructDef.
+		fieldName := resolveFieldName(tagInfo.name, field)
 
 		fieldVal := v.Field(i)
 		structField, err := goValueToStructField(fieldVal)
@@ -329,7 +388,7 @@ func goValueToStructField(v reflect.Value) (*lhproto.StructField, error) {
 				Value: &lhproto.VariableValue{
 					Value: &lhproto.VariableValue_Struct{
 						Struct: &lhproto.Struct{
-						StructDefId: &lhproto.StructDefId{Name: info.Name},
+							StructDefId: &lhproto.StructDefId{Name: info.Name},
 							Struct:      inlineStruct,
 						},
 					},
@@ -379,6 +438,7 @@ func StructProtoToGoStruct(s *lhproto.Struct, targetType reflect.Type) (interfac
 }
 
 // inlineStructToGoValue deserializes an InlineStruct into a reflect.Value of the given struct type.
+// This uses the same tag parsing as buildInlineStructDef for consistent field name resolution.
 func inlineStructToGoValue(inlineStruct *lhproto.InlineStruct, targetType reflect.Type) (reflect.Value, error) {
 	result := reflect.New(targetType).Elem()
 	fieldMap := inlineStruct.GetFields()
@@ -389,20 +449,14 @@ func inlineStructToGoValue(inlineStruct *lhproto.InlineStruct, targetType reflec
 			continue
 		}
 
-		tag := field.Tag.Get("lh")
-		if tag == "-" {
+		// Parse the "lh" tag using the shared parser (handles "masked" and skip).
+		tagInfo := parseLHTag(field.Tag.Get("lh"))
+		if tagInfo.skip {
 			continue
 		}
 
-		fieldName := tag
-		if fieldName == "" {
-			if jsonTag := field.Tag.Get("json"); jsonTag != "" {
-				fieldName = strings.SplitN(jsonTag, ",", 2)[0]
-			}
-		}
-		if fieldName == "" {
-			fieldName = goFieldNameToCamelCase(field.Name)
-		}
+		// Resolve field name consistently with buildInlineStructDef.
+		fieldName := resolveFieldName(tagInfo.name, field)
 
 		structField, ok := fieldMap[fieldName]
 		if !ok {

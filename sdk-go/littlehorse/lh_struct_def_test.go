@@ -148,6 +148,41 @@ func (StructWithFloatTypes) LHStructDef() littlehorse.LHStructDefInfo {
 	return littlehorse.LHStructDefInfo{Name: "float-types-struct"}
 }
 
+// StructWithMaskedField demonstrates the lh:"name,masked" tag syntax.
+// The SSN field is marked as masked because it contains sensitive information.
+type StructWithMaskedField struct {
+	Name string `json:"name"`
+	SSN  string `lh:"ssn,masked"`
+	Age  int    `json:"age"`
+}
+
+func (StructWithMaskedField) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "masked-field-struct"}
+}
+
+// StructWithMaskedAndDefaultName uses lh:",masked" to mask a field while
+// falling back to the default camelCase name resolution.
+type StructWithMaskedAndDefaultName struct {
+	SocialSecurityNumber string `lh:",masked"`
+	Name                 string `json:"name"`
+}
+
+func (StructWithMaskedAndDefaultName) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "masked-default-name-struct"}
+}
+
+// StructWithMultipleMaskedFields has several masked fields.
+type StructWithMultipleMaskedFields struct {
+	PublicName string `json:"publicName"`
+	SSN        string `lh:"ssn,masked"`
+	CreditCard string `lh:"creditCard,masked"`
+	Phone      string `json:"phone"`
+}
+
+func (StructWithMultipleMaskedFields) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "multi-masked-struct"}
+}
+
 // --- Tests for GoStructToInlineStructDef ---
 
 func TestGoStructToInlineStructDef_SimplePrimitiveTypes(t *testing.T) {
@@ -304,6 +339,90 @@ func TestGoStructToInlineStructDef_FloatTypes(t *testing.T) {
 			"field %s should be DOUBLE", fieldName,
 		)
 	}
+}
+
+// --- Tests for masked fields via lh struct tag ---
+
+func TestGoStructToInlineStructDef_MaskedField(t *testing.T) {
+	// A field tagged with lh:"ssn,masked" should have TypeDefinition.Masked = true.
+	def, err := littlehorse.GoStructToInlineStructDef(StructWithMaskedField{})
+	assert.Nil(t, err)
+	assert.Len(t, def.Fields, 3)
+
+	// The "ssn" field should be masked.
+	ssnField := def.Fields["ssn"]
+	assert.NotNil(t, ssnField)
+	assert.True(t, ssnField.FieldType.Masked, "ssn field should be masked")
+	assert.Equal(t, lhproto.VariableType_STR, ssnField.FieldType.GetPrimitiveType())
+
+	// The "name" field should NOT be masked.
+	nameField := def.Fields["name"]
+	assert.NotNil(t, nameField)
+	assert.False(t, nameField.FieldType.Masked, "name field should not be masked")
+
+	// The "age" field should NOT be masked.
+	ageField := def.Fields["age"]
+	assert.NotNil(t, ageField)
+	assert.False(t, ageField.FieldType.Masked, "age field should not be masked")
+}
+
+func TestGoStructToInlineStructDef_MaskedWithDefaultName(t *testing.T) {
+	// A field tagged with lh:",masked" should be masked and use the default camelCase name.
+	def, err := littlehorse.GoStructToInlineStructDef(StructWithMaskedAndDefaultName{})
+	assert.Nil(t, err)
+
+	// Should use PascalCase-to-camelCase since lh tag name is empty.
+	ssnField := def.Fields["socialSecurityNumber"]
+	assert.NotNil(t, ssnField, "expected field 'socialSecurityNumber' from camelCase conversion")
+	assert.True(t, ssnField.FieldType.Masked, "socialSecurityNumber field should be masked")
+
+	nameField := def.Fields["name"]
+	assert.NotNil(t, nameField)
+	assert.False(t, nameField.FieldType.Masked, "name field should not be masked")
+}
+
+func TestGoStructToInlineStructDef_MultipleMaskedFields(t *testing.T) {
+	// Multiple fields can be masked independently.
+	def, err := littlehorse.GoStructToInlineStructDef(StructWithMultipleMaskedFields{})
+	assert.Nil(t, err)
+
+	assert.True(t, def.Fields["ssn"].FieldType.Masked, "ssn should be masked")
+	assert.True(t, def.Fields["creditCard"].FieldType.Masked, "creditCard should be masked")
+	assert.False(t, def.Fields["publicName"].FieldType.Masked, "publicName should not be masked")
+	assert.False(t, def.Fields["phone"].FieldType.Masked, "phone should not be masked")
+}
+
+func TestGoStructToInlineStructDef_NonMaskedFieldsDefaultToFalse(t *testing.T) {
+	// Fields without a "masked" tag option should have Masked = false (the proto default).
+	def, err := littlehorse.GoStructToInlineStructDef(SimpleStruct{})
+	assert.Nil(t, err)
+
+	for fieldName, fieldDef := range def.Fields {
+		assert.False(t, fieldDef.FieldType.Masked, "field %s should not be masked", fieldName)
+	}
+}
+
+// --- Tests for masked fields: serialization/deserialization round-trip ---
+
+func TestGoStructToStructProto_MaskedFieldRoundTrip(t *testing.T) {
+	// Ensure that masked fields serialize and deserialize values correctly.
+	// Masking is a metadata concern on the StructDef, not on the Struct value itself.
+	original := StructWithMaskedField{Name: "Alice", SSN: "123-45-6789", Age: 30}
+	proto, err := littlehorse.GoStructToStructProto(original)
+	assert.Nil(t, err)
+
+	// Values should be present in the serialized proto (masking is enforced server-side).
+	fields := proto.Struct.GetFields()
+	assert.Equal(t, "Alice", fields["name"].Value.GetStr())
+	assert.Equal(t, "123-45-6789", fields["ssn"].Value.GetStr())
+	assert.Equal(t, int64(30), fields["age"].Value.GetInt())
+
+	// Round-trip: deserialize back to a Go struct.
+	result, err := littlehorse.StructProtoToGoStruct(proto, reflect.TypeOf(StructWithMaskedField{}))
+	assert.Nil(t, err)
+
+	restored := result.(StructWithMaskedField)
+	assert.Equal(t, original, restored)
 }
 
 // --- Tests for DeclareStruct in workflow compilation ---
