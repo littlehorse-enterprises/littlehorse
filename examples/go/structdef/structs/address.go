@@ -7,6 +7,7 @@ import (
 )
 
 const AddressStructDefName string = "address"
+const AddressStructDefDescription string = "Address represents a physical address."
 
 // Address represents a physical address.
 type Address struct {
@@ -18,7 +19,7 @@ type Address struct {
 }
 
 func (Address) LHStructDef() littlehorse.LHStructDefInfo {
-	return littlehorse.LHStructDefInfo{Name: AddressStructDefName}
+	return littlehorse.LHStructDefInfo{Name: AddressStructDefName, Description: AddressStructDefDescription}
 }
 
 func (a Address) String() string {

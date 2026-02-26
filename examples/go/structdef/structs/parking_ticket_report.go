@@ -7,6 +7,7 @@ import (
 )
 
 const ParkingTicketReportStructDefName string = "parkingTicketReport"
+const ParkingTicketReportStructDefDescription string = "ParkingTicketReport represents a parking ticket report for a vehicle."
 
 // ParkingTicketReport represents a parking ticket report for a vehicle.
 // The LicensePlateNumber field is marked as masked because it contains sensitive
@@ -19,7 +20,7 @@ type ParkingTicketReport struct {
 }
 
 func (ParkingTicketReport) LHStructDef() littlehorse.LHStructDefInfo {
-	return littlehorse.LHStructDefInfo{Name: ParkingTicketReportStructDefName}
+	return littlehorse.LHStructDefInfo{Name: ParkingTicketReportStructDefName, Description: ParkingTicketReportStructDefDescription}
 }
 
 func (r ParkingTicketReport) String() string {

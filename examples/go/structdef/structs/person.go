@@ -7,6 +7,7 @@ import (
 )
 
 const PersonStructDefName string = "person"
+const PersonStructDefDescription string = "Person represents a person with a name and home address."
 
 // Person represents a person with a name and home address.
 type Person struct {
@@ -16,7 +17,7 @@ type Person struct {
 }
 
 func (Person) LHStructDef() littlehorse.LHStructDefInfo {
-	return littlehorse.LHStructDefInfo{Name: PersonStructDefName}
+	return littlehorse.LHStructDefInfo{Name: PersonStructDefName, Description: PersonStructDefDescription}
 }
 
 func (p Person) String() string {
