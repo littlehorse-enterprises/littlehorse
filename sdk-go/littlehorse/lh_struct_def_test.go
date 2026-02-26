@@ -698,30 +698,6 @@ func TestStructProtoToGoStruct_NestedStruct(t *testing.T) {
 	assert.Equal(t, original, restored)
 }
 
-// --- Tests for GetStructDefDependencies ---
-
-func TestGetStructDefDependencies_Simple(t *testing.T) {
-	deps, err := littlehorse.GetStructDefDependencies(SimpleStruct{})
-	assert.Nil(t, err)
-	assert.Len(t, deps, 1)
-	assert.Equal(t, reflect.TypeOf(SimpleStruct{}), deps[0])
-}
-
-func TestGetStructDefDependencies_Nested(t *testing.T) {
-	deps, err := littlehorse.GetStructDefDependencies(StructWithNested{})
-	assert.Nil(t, err)
-	assert.Len(t, deps, 2)
-	// Dependencies come first (topological order)
-	assert.Equal(t, reflect.TypeOf(NestedAddress{}), deps[0])
-	assert.Equal(t, reflect.TypeOf(StructWithNested{}), deps[1])
-}
-
-func TestGetStructDefDependencies_PlainStruct(t *testing.T) {
-	deps, err := littlehorse.GetStructDefDependencies(PlainNestedStruct{})
-	assert.Nil(t, err)
-	assert.Len(t, deps, 0) // PlainNestedStruct doesn't implement LHStructDef
-}
-
 // --- Tests for InterfaceToVarVal with StructDef types ---
 
 func TestInterfaceToVarVal_StructWithLHStructDef(t *testing.T) {

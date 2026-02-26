@@ -513,64 +513,6 @@ func structFieldToGoValue(sf *lhproto.StructField, targetType reflect.Type) (ref
 	return reflect.ValueOf(val), nil
 }
 
-// GetStructDefDependencies returns a topologically-sorted list of all StructDef types
-// that the given struct type depends on (including itself). Each element is a reflect.Type
-// of a struct that implements LHStructDef().
-func GetStructDefDependencies(structInstance interface{}) ([]reflect.Type, error) {
-	t := reflect.TypeOf(structInstance)
-	if t.Kind() == reflect.Ptr {
-		t = t.Elem()
-	}
-
-	visited := make(map[reflect.Type]bool)
-	var result []reflect.Type
-	if err := collectStructDeps(t, visited, &result); err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
-// collectStructDeps performs a DFS to collect struct dependencies in topological order.
-func collectStructDeps(t reflect.Type, visited map[reflect.Type]bool, result *[]reflect.Type) error {
-	if t.Kind() == reflect.Ptr {
-		t = t.Elem()
-	}
-	if t.Kind() != reflect.Struct {
-		return nil
-	}
-
-	structDefName := getStructDefName(t)
-	if structDefName == "" {
-		return nil // not a LH struct, skip
-	}
-
-	if visited[t] {
-		return nil
-	}
-	visited[t] = true
-
-	// First, recurse into dependencies
-	for i := 0; i < t.NumField(); i++ {
-		field := t.Field(i)
-		if !field.IsExported() {
-			continue
-		}
-		ft := field.Type
-		if ft.Kind() == reflect.Ptr {
-			ft = ft.Elem()
-		}
-		if ft.Kind() == reflect.Struct {
-			if err := collectStructDeps(ft, visited, result); err != nil {
-				return err
-			}
-		}
-	}
-
-	// Then add this type (dependencies come first)
-	*result = append(*result, t)
-	return nil
-}
-
 // RegisterStructDef registers a single Go struct as a StructDef with the LittleHorse server.
 // The structInstance should be a zero value of the struct (e.g., MyStruct{}).
 // The struct must implement LHStructDef() LHStructDefInfo to provide the StructDef name and description.
