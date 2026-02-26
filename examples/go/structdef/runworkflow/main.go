@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/littlehorse-enterprises/littlehorse/examples/go/structdef"
+	"github.com/littlehorse-enterprises/littlehorse/examples/go/structdef/structs"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
@@ -30,7 +31,7 @@ func main() {
 		licensePlateNumber = os.Args[3]
 	}
 
-	report := structdef.ParkingTicketReport{
+	report := structs.ParkingTicketReport{
 		VehicleMake:        vehicleMake,
 		VehicleModel:       vehicleModel,
 		LicensePlateNumber: licensePlateNumber,

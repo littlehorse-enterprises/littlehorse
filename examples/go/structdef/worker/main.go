@@ -7,18 +7,19 @@ import (
 
 	examples "github.com/littlehorse-enterprises/littlehorse/examples/go"
 	"github.com/littlehorse-enterprises/littlehorse/examples/go/structdef"
+	"github.com/littlehorse-enterprises/littlehorse/examples/go/structdef/structs"
 )
 
 func main() {
 	config, client := examples.LoadConfigAndClient()
 
 	// Register StructDefs manually in dependency order (dependencies first).
-	structs := []interface{}{
-		structdef.Address{},
-		structdef.Person{},
-		structdef.ParkingTicketReport{},
+	structDefs := []interface{}{
+		structs.Address{},
+		structs.Person{},
+		structs.ParkingTicketReport{},
 	}
-	for _, s := range structs {
+	for _, s := range structDefs {
 		if err := littlehorse.RegisterStructDef(*client, s, nil); err != nil {
 			log.Fatal(err)
 		}
