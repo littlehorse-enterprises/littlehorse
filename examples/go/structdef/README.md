@@ -6,7 +6,7 @@ This example demonstrates how to define and use `StructDef`s in LittleHorse usin
 
 The file [workflow.go](./workflow.go) defines:
 
-- Three Go structs (`Address`, `Person`, `ParkingTicketReport`) each implementing the `LHStructName()` method to identify them as LittleHorse StructDefs.
+- Three Go structs (`Address`, `Person`, `ParkingTicketReport`) each implementing the `LHStructDef()` method to identify them as LittleHorse StructDefs.
 - Two Task Functions: `GetCarOwner` (takes a `ParkingTicketReport`, returns a `Person`) and `MailTicket` (takes a `Person`).
 - `MyWorkflow`, the Workflow Function that uses `DeclareStruct` to declare struct-typed variables.
 

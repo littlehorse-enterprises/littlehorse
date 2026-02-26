@@ -19,20 +19,26 @@ type SimpleStruct struct {
 	Valid bool    `json:"valid"`
 }
 
-func (SimpleStruct) LHStructName() string { return "simple-struct" }
+func (SimpleStruct) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "simple-struct"}
+}
 
 type StructWithLHTag struct {
 	FirstName string `lh:"first_name"`
 	LastName  string `lh:"last_name" json:"ignored"`
 }
 
-func (StructWithLHTag) LHStructName() string { return "lh-tag-struct" }
+func (StructWithLHTag) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "lh-tag-struct"}
+}
 
 type StructWithJSONTag struct {
 	MyField string `json:"my_field"`
 }
 
-func (StructWithJSONTag) LHStructName() string { return "json-tag-struct" }
+func (StructWithJSONTag) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "json-tag-struct"}
+}
 
 type StructWithNoTags struct {
 	FirstName  string
@@ -40,7 +46,9 @@ type StructWithNoTags struct {
 	ZipCode    int
 }
 
-func (StructWithNoTags) LHStructName() string { return "no-tag-struct" }
+func (StructWithNoTags) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "no-tag-struct"}
+}
 
 type StructWithIgnoredField struct {
 	Name    string `json:"name"`
@@ -48,51 +56,65 @@ type StructWithIgnoredField struct {
 	Another string `json:"another"`
 }
 
-func (StructWithIgnoredField) LHStructName() string { return "ignored-field-struct" }
+func (StructWithIgnoredField) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "ignored-field-struct"}
+}
 
 type StructWithBytes struct {
 	Data    []byte `json:"data"`
 	Payload []byte `json:"payload"`
 }
 
-func (StructWithBytes) LHStructName() string { return "bytes-struct" }
+func (StructWithBytes) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "bytes-struct"}
+}
 
 type StructWithSlice struct {
 	Tags   []string `json:"tags"`
 	Scores []int    `json:"scores"`
 }
 
-func (StructWithSlice) LHStructName() string { return "slice-struct" }
+func (StructWithSlice) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "slice-struct"}
+}
 
 type NestedAddress struct {
 	Street string `json:"street"`
 	City   string `json:"city"`
 }
 
-func (NestedAddress) LHStructName() string { return "nested-address" }
+func (NestedAddress) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "nested-address"}
+}
 
 type StructWithNested struct {
 	Name    string        `json:"name"`
 	Address NestedAddress `json:"address"`
 }
 
-func (StructWithNested) LHStructName() string { return "nested-struct" }
+func (StructWithNested) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "nested-struct"}
+}
 
 type StructWithPointerNested struct {
 	Name    string         `json:"name"`
 	Address *NestedAddress `json:"address"`
 }
 
-func (StructWithPointerNested) LHStructName() string { return "ptr-nested-struct" }
+func (StructWithPointerNested) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "ptr-nested-struct"}
+}
 
 type StructWithUnexportedField struct {
 	Name    string `json:"name"`
 	private string //nolint:unused
 }
 
-func (StructWithUnexportedField) LHStructName() string { return "unexported-field-struct" }
+func (StructWithUnexportedField) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "unexported-field-struct"}
+}
 
-// A nested struct that does NOT implement LHStructName.
+// A nested struct that does NOT implement LHStructDef.
 type PlainNestedStruct struct {
 	Value string
 }
@@ -102,7 +124,9 @@ type StructWithPlainNested struct {
 	Nested PlainNestedStruct `json:"nested"`
 }
 
-func (StructWithPlainNested) LHStructName() string { return "plain-nested-struct" }
+func (StructWithPlainNested) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "plain-nested-struct"}
+}
 
 type StructWithIntTypes struct {
 	Int16Val int16 `json:"int16Val"`
@@ -111,14 +135,18 @@ type StructWithIntTypes struct {
 	IntVal   int   `json:"intVal"`
 }
 
-func (StructWithIntTypes) LHStructName() string { return "int-types-struct" }
+func (StructWithIntTypes) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "int-types-struct"}
+}
 
 type StructWithFloatTypes struct {
 	Float32Val float32 `json:"float32Val"`
 	Float64Val float64 `json:"float64Val"`
 }
 
-func (StructWithFloatTypes) LHStructName() string { return "float-types-struct" }
+func (StructWithFloatTypes) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "float-types-struct"}
+}
 
 // --- Tests for GoStructToInlineStructDef ---
 
@@ -207,7 +235,7 @@ func TestGoStructToInlineStructDef_SliceMapsToJsonArr(t *testing.T) {
 	)
 }
 
-func TestGoStructToInlineStructDef_NestedStructWithLHStructName(t *testing.T) {
+func TestGoStructToInlineStructDef_NestedStructWithLHStructDef(t *testing.T) {
 	def, err := littlehorse.GoStructToInlineStructDef(StructWithNested{})
 	assert.Nil(t, err)
 	assert.Len(t, def.Fields, 2)
@@ -234,10 +262,10 @@ func TestGoStructToInlineStructDef_UnexportedFieldsSkipped(t *testing.T) {
 	assert.Contains(t, def.Fields, "name")
 }
 
-func TestGoStructToInlineStructDef_NestedStructWithoutLHStructName_ReturnsError(t *testing.T) {
+func TestGoStructToInlineStructDef_NestedStructWithoutLHStructDef_ReturnsError(t *testing.T) {
 	_, err := littlehorse.GoStructToInlineStructDef(StructWithPlainNested{})
 	assert.NotNil(t, err)
-	assert.Contains(t, err.Error(), "must implement LHStructName()")
+	assert.Contains(t, err.Error(), "must implement LHStructDef()")
 }
 
 func TestGoStructToInlineStructDef_NonStructInput_ReturnsError(t *testing.T) {
@@ -378,7 +406,7 @@ func TestDeclareStructSearchable(t *testing.T) {
 
 // --- Tests for ReflectTypeToTypeDef ---
 
-func TestReflectTypeToTypeDef_StructWithLHStructName(t *testing.T) {
+func TestReflectTypeToTypeDef_StructWithLHStructDef(t *testing.T) {
 	rt := reflect.TypeOf(SimpleStruct{})
 	typeDef := littlehorse.ReflectTypeToTypeDef(rt)
 
@@ -413,7 +441,7 @@ func TestReflectTypeToTypeDef_PrimitiveTypes(t *testing.T) {
 }
 
 func TestReflectTypeToTypeDef_PlainStructFallsBackToJsonObj(t *testing.T) {
-	// PlainNestedStruct does not implement LHStructName, so it should fall back to JSON_OBJ
+	// PlainNestedStruct does not implement LHStructDef, so it should fall back to JSON_OBJ
 	rt := reflect.TypeOf(PlainNestedStruct{})
 	typeDef := littlehorse.ReflectTypeToTypeDef(rt)
 
@@ -456,10 +484,10 @@ func TestGoStructToStructProto_NestedStruct(t *testing.T) {
 	assert.Equal(t, "Springfield", nestedStruct.Struct.GetFields()["city"].Value.GetStr())
 }
 
-func TestGoStructToStructProto_RequiresLHStructName(t *testing.T) {
+func TestGoStructToStructProto_RequiresLHStructDef(t *testing.T) {
 	_, err := littlehorse.GoStructToStructProto(PlainNestedStruct{Value: "test"})
 	assert.NotNil(t, err)
-	assert.Contains(t, err.Error(), "must implement LHStructName()")
+	assert.Contains(t, err.Error(), "must implement LHStructDef()")
 }
 
 func TestStructProtoToGoStruct_SimpleStruct(t *testing.T) {
@@ -524,12 +552,12 @@ func TestGetStructDefDependencies_Nested(t *testing.T) {
 func TestGetStructDefDependencies_PlainStruct(t *testing.T) {
 	deps, err := littlehorse.GetStructDefDependencies(PlainNestedStruct{})
 	assert.Nil(t, err)
-	assert.Len(t, deps, 0) // PlainNestedStruct doesn't implement LHStructName
+	assert.Len(t, deps, 0) // PlainNestedStruct doesn't implement LHStructDef
 }
 
 // --- Tests for InterfaceToVarVal with StructDef types ---
 
-func TestInterfaceToVarVal_StructWithLHStructName(t *testing.T) {
+func TestInterfaceToVarVal_StructWithLHStructDef(t *testing.T) {
 	s := SimpleStruct{Name: "Alice", Age: 30, Score: 95.5, Valid: true}
 	varVal, err := littlehorse.InterfaceToVarVal(s)
 	assert.Nil(t, err)
@@ -547,7 +575,7 @@ func TestInterfaceToVarVal_PlainStructStillUsesJsonObj(t *testing.T) {
 	varVal, err := littlehorse.InterfaceToVarVal(s)
 	assert.Nil(t, err)
 
-	// Should still be JSON_OBJ since PlainNestedStruct doesn't implement LHStructName
+	// Should still be JSON_OBJ since PlainNestedStruct doesn't implement LHStructDef
 	assert.NotEmpty(t, varVal.GetJsonObj())
 }
 

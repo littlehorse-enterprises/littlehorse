@@ -210,7 +210,7 @@ func InterfaceToVarVal(someInterface interface{}) (*lhproto.VariableValue, error
 		eType := reflect.TypeOf(e)
 		isAList := eType.Kind() == reflect.Slice
 
-		// Check if the struct implements LHStructName() — if so, serialize as a Struct proto.
+		// Check if the struct implements LHStructDef() — if so, serialize as a Struct proto.
 		if eType.Kind() == reflect.Struct {
 			structDefName := getStructDefName(eType)
 			if structDefName != "" {
@@ -498,7 +498,7 @@ func ReflectTypeToVarType(rt reflect.Type) lhproto.VariableType {
 }
 
 // ReflectTypeToTypeDef converts a Go reflect.Type to a TypeDefinition proto.
-// Unlike ReflectTypeToVarType, this detects struct types that implement LHStructName()
+// Unlike ReflectTypeToVarType, this detects struct types that implement LHStructDef()
 // and returns a TypeDefinition with StructDefId instead of falling back to JSON_OBJ.
 func ReflectTypeToTypeDef(rt reflect.Type) *lhproto.TypeDefinition {
 	// Unwrap pointer
@@ -506,7 +506,7 @@ func ReflectTypeToTypeDef(rt reflect.Type) *lhproto.TypeDefinition {
 		rt = rt.Elem()
 	}
 
-	// Check if it's a struct with LHStructName
+	// Check if it's a struct with LHStructDef
 	if rt.Kind() == reflect.Struct {
 		structDefName := getStructDefName(rt)
 		if structDefName != "" {

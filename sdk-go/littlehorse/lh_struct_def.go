@@ -10,6 +10,15 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
+// LHStructDefInfo holds the metadata returned by the LHStructDef() method on Go structs.
+// This is the Go equivalent of Java's @LHStructDef annotation and .NET's [LHStructDef] attribute.
+type LHStructDefInfo struct {
+	// Name is the StructDef name registered with the LittleHorse server.
+	Name string
+	// Description is an optional human-readable description of the StructDef.
+	Description string
+}
+
 // GoStructToInlineStructDef uses reflection to convert a Go struct instance into an
 // InlineStructDef protobuf. The struct's exported fields are converted to StructFieldDef entries.
 //
@@ -23,7 +32,7 @@ import (
 //   - bool -> BOOL
 //   - []byte -> BYTES
 //   - slices/arrays -> JSON_ARR
-//   - structs with LHStructName() -> nested StructDef reference
+//   - structs with LHStructDef() -> nested StructDef reference
 func GoStructToInlineStructDef(structInstance interface{}) (*lhproto.InlineStructDef, error) {
 	t := reflect.TypeOf(structInstance)
 	if t.Kind() == reflect.Ptr {
@@ -85,10 +94,10 @@ func goTypeToStructFieldDef(t reflect.Type) (*lhproto.StructFieldDef, error) {
 
 	// Check if it's a struct (nested StructDef).
 	if t.Kind() == reflect.Struct {
-		structDefName := getStructDefName(t)
-		if structDefName == "" {
+		info := getStructDefInfo(t)
+		if info == nil {
 			return nil, fmt.Errorf(
-				"nested struct type %s must implement LHStructName() method to be used as a StructDef field",
+				"nested struct type %s must implement LHStructDef() method to be used as a StructDef field",
 				t.Name(),
 			)
 		}
@@ -96,7 +105,7 @@ func goTypeToStructFieldDef(t reflect.Type) (*lhproto.StructFieldDef, error) {
 			FieldType: &lhproto.TypeDefinition{
 				DefinedType: &lhproto.TypeDefinition_StructDefId{
 					StructDefId: &lhproto.StructDefId{
-						Name: structDefName,
+						Name: info.Name,
 					},
 				},
 			},
@@ -186,37 +195,50 @@ func goFieldNameToCamelCase(name string) string {
 	return string(result)
 }
 
-// getStructDefName returns the StructDef name for a Go type if it implements
-// LHStructName() string, or returns empty string otherwise.
-func getStructDefName(t reflect.Type) string {
-	// Check if the type (or pointer to it) has a LHStructName method.
+// getStructDefInfo returns the StructDef info for a Go type if it implements
+// LHStructDef() LHStructDefInfo, or returns nil otherwise.
+func getStructDefInfo(t reflect.Type) *LHStructDefInfo {
+	infoType := reflect.TypeOf(LHStructDefInfo{})
+
+	// Check if the type (or pointer to it) has an LHStructDef method.
 	ptrType := reflect.PointerTo(t)
-	method, ok := ptrType.MethodByName("LHStructName")
+	method, ok := ptrType.MethodByName("LHStructDef")
 	if !ok {
-		method, ok = t.MethodByName("LHStructName")
+		method, ok = t.MethodByName("LHStructDef")
 		if !ok {
-			return ""
+			return nil
 		}
 		// Method on value receiver.
-		if method.Type.NumOut() != 1 || method.Type.Out(0).Kind() != reflect.String {
-			return ""
+		if method.Type.NumOut() != 1 || method.Type.Out(0) != infoType {
+			return nil
 		}
 		instance := reflect.New(t).Elem()
 		results := method.Func.Call([]reflect.Value{instance})
-		return results[0].String()
+		info := results[0].Interface().(LHStructDefInfo)
+		return &info
 	}
 
 	// Method on pointer receiver.
-	if method.Type.NumOut() != 1 || method.Type.Out(0).Kind() != reflect.String {
-		return ""
+	if method.Type.NumOut() != 1 || method.Type.Out(0) != infoType {
+		return nil
 	}
 	instance := reflect.New(t)
 	results := method.Func.Call([]reflect.Value{instance})
-	return results[0].String()
+	info := results[0].Interface().(LHStructDefInfo)
+	return &info
+}
+
+// getStructDefName is a convenience wrapper that returns just the name, or empty string.
+func getStructDefName(t reflect.Type) string {
+	info := getStructDefInfo(t)
+	if info == nil {
+		return ""
+	}
+	return info.Name
 }
 
 // GoStructToStructProto converts a Go struct instance into a Struct protobuf suitable for
-// use as a VariableValue. The struct must implement LHStructName() string.
+// use as a VariableValue. The struct must implement LHStructDef() LHStructDefInfo.
 // This is the Go equivalent of Java's LHLibUtil.serializeToStruct() and .NET's SerializeToStruct().
 func GoStructToStructProto(structInstance interface{}) (*lhproto.Struct, error) {
 	v := reflect.ValueOf(structInstance)
@@ -229,9 +251,9 @@ func GoStructToStructProto(structInstance interface{}) (*lhproto.Struct, error) 
 		return nil, fmt.Errorf("expected a struct type, got %s", t.Kind())
 	}
 
-	structDefName := getStructDefName(t)
-	if structDefName == "" {
-		return nil, fmt.Errorf("struct type %s must implement LHStructName() string", t.Name())
+	info := getStructDefInfo(t)
+	if info == nil {
+		return nil, fmt.Errorf("struct type %s must implement LHStructDef() LHStructDefInfo", t.Name())
 	}
 
 	inlineStruct, err := goValueToInlineStruct(v)
@@ -240,7 +262,7 @@ func GoStructToStructProto(structInstance interface{}) (*lhproto.Struct, error) 
 	}
 
 	return &lhproto.Struct{
-		StructDefId: &lhproto.StructDefId{Name: structDefName},
+		StructDefId: &lhproto.StructDefId{Name: info.Name},
 		Struct:      inlineStruct,
 	}, nil
 }
@@ -295,10 +317,10 @@ func goValueToStructField(v reflect.Value) (*lhproto.StructField, error) {
 		v = v.Elem()
 	}
 
-	// Handle nested structs with LHStructName
+	// Handle nested structs with LHStructDef
 	if v.Kind() == reflect.Struct {
-		structDefName := getStructDefName(v.Type())
-		if structDefName != "" {
+		info := getStructDefInfo(v.Type())
+		if info != nil {
 			inlineStruct, err := goValueToInlineStruct(v)
 			if err != nil {
 				return nil, err
@@ -307,7 +329,7 @@ func goValueToStructField(v reflect.Value) (*lhproto.StructField, error) {
 				Value: &lhproto.VariableValue{
 					Value: &lhproto.VariableValue_Struct{
 						Struct: &lhproto.Struct{
-							StructDefId: &lhproto.StructDefId{Name: structDefName},
+						StructDefId: &lhproto.StructDefId{Name: info.Name},
 							Struct:      inlineStruct,
 						},
 					},
@@ -439,7 +461,7 @@ func structFieldToGoValue(sf *lhproto.StructField, targetType reflect.Type) (ref
 
 // GetStructDefDependencies returns a topologically-sorted list of all StructDef types
 // that the given struct type depends on (including itself). Each element is a reflect.Type
-// of a struct that implements LHStructName().
+// of a struct that implements LHStructDef().
 func GetStructDefDependencies(structInstance interface{}) ([]reflect.Type, error) {
 	t := reflect.TypeOf(structInstance)
 	if t.Kind() == reflect.Ptr {
@@ -497,7 +519,7 @@ func collectStructDeps(t reflect.Type, visited map[reflect.Type]bool, result *[]
 
 // RegisterStructDef registers a single Go struct as a StructDef with the LittleHorse server.
 // The structInstance should be a zero value of the struct (e.g., MyStruct{}).
-// The struct must implement LHStructName() string to provide the StructDef name.
+// The struct must implement LHStructDef() LHStructDefInfo to provide the StructDef name and description.
 //
 // Nested struct dependencies are NOT automatically registered — callers must register
 // them manually in dependency order (dependencies first).
@@ -511,14 +533,14 @@ func RegisterStructDef(
 		t = t.Elem()
 	}
 
-	structDefName := getStructDefName(t)
-	if structDefName == "" {
-		return fmt.Errorf("struct type %s must implement LHStructName() string", t.Name())
+	info := getStructDefInfo(t)
+	if info == nil {
+		return fmt.Errorf("struct type %s must implement LHStructDef() LHStructDefInfo", t.Name())
 	}
 
 	inlineDef, err := GoStructToInlineStructDef(structInstance)
 	if err != nil {
-		return fmt.Errorf("failed to build InlineStructDef for %s: %w", structDefName, err)
+		return fmt.Errorf("failed to build InlineStructDef for %s: %w", info.Name, err)
 	}
 
 	updates := lhproto.StructDefCompatibilityType_NO_SCHEMA_UPDATES
@@ -527,14 +549,17 @@ func RegisterStructDef(
 	}
 
 	req := &lhproto.PutStructDefRequest{
-		Name:           structDefName,
+		Name:           info.Name,
 		StructDef:      inlineDef,
 		AllowedUpdates: updates,
+	}
+	if info.Description != "" {
+		req.Description = &info.Description
 	}
 
 	_, err = client.PutStructDef(context.Background(), req)
 	if err != nil {
-		return fmt.Errorf("failed to register StructDef '%s': %w", structDefName, err)
+		return fmt.Errorf("failed to register StructDef '%s': %w", info.Name, err)
 	}
 
 	return nil

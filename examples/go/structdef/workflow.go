@@ -23,8 +23,8 @@ type Address struct {
 	ZipCode     int    `json:"zipCode"`
 }
 
-func (Address) LHStructName() string {
-	return AddressStructDefName
+func (Address) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: AddressStructDefName}
 }
 
 func (a Address) String() string {
@@ -38,8 +38,8 @@ type Person struct {
 	HomeAddress Address `json:"homeAddress"`
 }
 
-func (Person) LHStructName() string {
-	return PersonStructDefName
+func (Person) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: PersonStructDefName}
 }
 
 func (p Person) String() string {
@@ -53,8 +53,8 @@ type ParkingTicketReport struct {
 	LicensePlateNumber string `json:"licensePlateNumber"`
 }
 
-func (ParkingTicketReport) LHStructName() string {
-	return ParkingTicketReportStructDefName
+func (ParkingTicketReport) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: ParkingTicketReportStructDefName}
 }
 
 func (r ParkingTicketReport) String() string {
