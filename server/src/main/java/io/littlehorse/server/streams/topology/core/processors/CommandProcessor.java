@@ -90,7 +90,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.shouldUseMetricsHint = true;
         onPartitionClaimed();
         ctx.schedule(
-                LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL_MS,
+                LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL,
                 PunctuationType.WALL_CLOCK_TIME,
                 this::forwardWindowPartitionMetrics);
 
@@ -192,6 +192,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     private void forwardWindowPartitionMetrics(long timestamp) {
+        var start = System.currentTimeMillis();
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
         long lastWindowTime = timestamp - (2 * 60 * 1000L);
@@ -202,19 +203,19 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             forwardFromMemory(clusterScopedStore);
         }
         clusterScopedStore.put(new MetricsHintModel(fromMillis(lastWindowTime)));
+        log.info("Finished punctuating metrics (elapsed time: {} ms)", System.currentTimeMillis() - start);
     }
 
     private void forwardFromMemory(ClusterScopedStore store) {
         if (!partitionMetricsMemoryStore.hasEntries()) {
             return;
         }
-
         long startTime = System.currentTimeMillis();
-
         Iterator<PartitionMetricWindowModel> iterator =
                 partitionMetricsMemoryStore.values().iterator();
-
+        var count = 0;
         while (iterator.hasNext()) {
+            count++;
             PartitionMetricWindowModel metric = iterator.next();
             forwardAndDeleteFromStore(store, metric);
             iterator.remove();
@@ -222,6 +223,11 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 break;
             }
         }
+        log.info(
+                "Flushed from memory: {}, pending metrics: {} (elapsed time: {} ms)",
+                count,
+                partitionMetricsMemoryStore.values().size(),
+                System.currentTimeMillis() - startTime);
     }
 
     private long forwardFromStore(ClusterScopedStore store) {
@@ -230,6 +236,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         String startPrefix = LHConstants.PARTITION_METRICS_KEY + "/" + lastWindowTime;
         String endPrefix = LHConstants.PARTITION_METRICS_KEY + "/~";
         long startTime = System.currentTimeMillis();
+        var count = 0;
         try (LHKeyValueIterator<PartitionMetricWindowModel> iter =
                 store.range(startPrefix, endPrefix, PartitionMetricWindowModel.class)) {
             while (iter.hasNext()) {
@@ -247,6 +254,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 }
             }
         }
+        log.info("Flushed from store: {} (elapsed time: {} ms)", count, System.currentTimeMillis() - startTime);
         return lastWindowTime;
     }
 
@@ -254,10 +262,10 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         AggregateWindowMetricsModel aggregate = new AggregateWindowMetricsModel(metric.getTenantId(), metric);
         var start = System.currentTimeMillis();
         forwardSubcommand(aggregate);
-        log.warn("Finished forwarding command (elapsed time: {} ms)", System.currentTimeMillis() - start);
+        log.info("Finished forwarding 1 command (elapsed time: {} ms)", System.currentTimeMillis() - start);
         start = System.currentTimeMillis();
         store.delete(metric);
-        log.warn("Finished deleting (elapsed time: {} ms)", System.currentTimeMillis() - start);
+        log.info("Finished deleting 1 metric (elapsed time: {} ms)", System.currentTimeMillis() - start);
         return metric.getWindowStart().getTime();
     }
 
