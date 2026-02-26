@@ -10,29 +10,31 @@ The file [workflow.go](./workflow.go) defines:
 - Two Task Functions: `GetCarOwner` (takes a `ParkingTicketReport`, returns a `Person`) and `MailTicket` (takes a `Person`).
 - `MyWorkflow`, the Workflow Function that uses `DeclareStruct` to declare struct-typed variables.
 
-## Deploy the Task Worker
 
-Before we can create the `WfSpec`, we need to register the `TaskDef`s. Run the task worker:
+## Deploy the Task Worker and `StructDef`s
+
+Before we can create the `WfSpec`, we need to register our `TaskDef`s. And since our `TaskDef`s depend on our `StructDef`s, we need to register those too.
+
+Run the task worker:
 
 ```
 go run ./examples/go/structdef/worker
 ```
 
-Leave that process running.
+Leave that process running. This registered our `TaskDef`s and the `address`, `person`, and `car` StructDefs.
 
-## Register the `WfSpec`
-
-In another terminal, register the StructDefs and WfSpec:
-
-```
-go run ./examples/go/structdef/deploy
-```
-
-This will register the `address`, `person`, and `car` StructDefs, then create the `WfSpec`. Verify with:
+Verify that the `StructDef`s were created in another terminal:
 
 ```
 lhctl get structDef person 0
-lhctl get wfSpec issue-parking-ticket
+```
+
+## Register the `WfSpec`
+
+In another terminal, register the WfSpec:
+
+```
+go run ./examples/go/structdef/deploy
 ```
 
 ## Run a `WfRun`

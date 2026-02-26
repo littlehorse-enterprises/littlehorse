@@ -10,7 +10,19 @@ import (
 )
 
 func main() {
-	config, _ := examples.LoadConfigAndClient()
+	config, client := examples.LoadConfigAndClient()
+
+	// Register StructDefs manually in dependency order (dependencies first).
+	structs := []interface{}{
+		structdef.Address{},
+		structdef.Person{},
+		structdef.ParkingTicketReport{},
+	}
+	for _, s := range structs {
+		if err := littlehorse.RegisterStructDef(*client, s, nil); err != nil {
+			log.Fatal(err)
+		}
+	}
 
 	getCarOwnerWorker, err := littlehorse.NewTaskWorker(
 		config, structdef.GetCarOwner, structdef.GetCarOwnerTaskName,
