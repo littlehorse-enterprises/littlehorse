@@ -27,11 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
-@Slf4j
 public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow> {
 
     private WfSpecIdModel wfSpecId;
@@ -100,7 +98,6 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
             LHStatus newStatus,
             Date startTime,
             Date endTime) {
-        var start = System.currentTimeMillis();
         Date windowStart = LHUtil.getCurrentWindowTime();
         TenantIdModel tenantId = processorContext.authorization().tenantId();
         ClusterScopedStore clusterScopedStore =
@@ -114,10 +111,6 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         metricWindow.incrementWfCount(previousStatus, newStatus, startTime, endTime);
         clusterScopedStore.put(metricWindow);
         memoryStore.put(metricWindow);
-        long elapsedTime = System.currentTimeMillis() - start;
-        if (elapsedTime > 10) {
-            log.warn("Tracking workflow metric for wfSpecId {} took {} ms", wfSpecId, elapsedTime);
-        }
     }
 
     @Override
@@ -132,7 +125,6 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
             this.tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
         }
 
-        // Handle oneof id
         switch (p.getIdCase()) {
             case WF_SPEC_ID:
                 this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);

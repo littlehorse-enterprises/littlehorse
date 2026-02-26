@@ -15,10 +15,8 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 @Getter
-@Slf4j
 public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowMetrics> {
 
     private TenantIdModel tenantId;
@@ -77,10 +75,6 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
             consolidatedMetric.mergeFrom(metricWindow.getMetrics());
         }
         executionContext.getCoreStore().put(new StoredGetable<>(consolidatedMetric));
-        log.info(
-                "Finished aggregate for window {} (elapsed time: {} ms)",
-                metricWindow.getWindowStart(),
-                System.currentTimeMillis() - startTime);
         return null;
     }
 }
