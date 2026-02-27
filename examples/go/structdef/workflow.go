@@ -27,8 +27,8 @@ func GetCarOwner(report *structs.ParkingTicketReport) structs.Person {
 }
 
 // MailTicket simulates mailing a parking ticket to a person.
-func MailTicket(person *structs.Person) string {
-	fmt.Printf("Notifying %s of parking ticket.\n", person)
+func MailTicket(person *structs.Person, city string) string {
+	fmt.Printf("Notifying %s of parking ticket in %s.\n", person, city)
 	return fmt.Sprintf("Ticket sent to %s at %s", person, &person.HomeAddress)
 }
 
@@ -38,5 +38,9 @@ func MyWorkflow(wf *littlehorse.WorkflowThread) {
 	carOwner := wf.DeclareStruct("car-owner", structs.PersonStructDefName)
 
 	carOwner.Assign(wf.Execute(GetCarOwnerTaskName, ticketReport))
-	wf.Execute(MailTicketTaskName, carOwner)
+
+	// Use LHPath to access nested struct fields in a type-safe way.
+	// This extracts carOwner.homeAddress.city via Get() chaining.
+	ownerCity := carOwner.Get("homeAddress").Get("city")
+	wf.Execute(MailTicketTaskName, carOwner, ownerCity)
 }

@@ -46,6 +46,7 @@ type WfRunVariable struct {
 
 	thread        *WorkflowThread
 	jsonPath      *string
+	lhPath        []*lhproto.LHPath_Selector
 	threadVarDef  *lhproto.ThreadVarDef
 	structDefName *string
 }
@@ -53,14 +54,17 @@ type WfRunVariable struct {
 type NodeOutput interface {
 	getNodeName() string
 	getJsonPath() *string
+	getLhPath() []*lhproto.LHPath_Selector
 	getThread() *WorkflowThread
 
 	JsonPath(string) NodeOutput
+	Get(field string) NodeOutput
 }
 
 type WaitForThreadsNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
 }
 
@@ -72,9 +76,22 @@ func (w *WaitForThreadsNodeOutput) JsonPath(jsonPath string) NodeOutput {
 	}
 }
 
+func (w *WaitForThreadsNodeOutput) Get(field string) NodeOutput {
+	newPath := copyLhPath(w.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &WaitForThreadsNodeOutput{
+		nodeName: w.nodeName,
+		lhPath:   newPath,
+		thread:   w.thread,
+	}
+}
+
 type TaskNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
 }
 
@@ -86,9 +103,22 @@ func (n *TaskNodeOutput) JsonPath(jsonPath string) NodeOutput {
 	}
 }
 
+func (n *TaskNodeOutput) Get(field string) NodeOutput {
+	newPath := copyLhPath(n.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &TaskNodeOutput{
+		nodeName: n.nodeName,
+		lhPath:   newPath,
+		thread:   n.thread,
+	}
+}
+
 type ExternalEventNodeOutput struct {
 	nodeName              string
 	jsonPath              *string
+	lhPath                []*lhproto.LHPath_Selector
 	thread                *WorkflowThread
 	externalEventDefName  string
 	payloadType           *lhproto.VariableType
@@ -104,6 +134,7 @@ type InterruptHandler struct {
 type WaitForConditionNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
 }
 
@@ -111,6 +142,21 @@ func (n *ExternalEventNodeOutput) JsonPath(jsonPath string) NodeOutput {
 	return &ExternalEventNodeOutput{
 		nodeName:              n.nodeName,
 		jsonPath:              &jsonPath,
+		thread:                n.thread,
+		externalEventDefName:  n.externalEventDefName,
+		payloadType:           n.payloadType,
+		correlatedEventConfig: n.correlatedEventConfig,
+	}
+}
+
+func (n *ExternalEventNodeOutput) Get(field string) NodeOutput {
+	newPath := copyLhPath(n.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &ExternalEventNodeOutput{
+		nodeName:              n.nodeName,
+		lhPath:                newPath,
 		thread:                n.thread,
 		externalEventDefName:  n.externalEventDefName,
 		payloadType:           n.payloadType,
@@ -175,6 +221,7 @@ func (n *TaskNodeOutput) Timeout(timeout int64) *TaskNodeOutput {
 type UserTaskNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
 	node     *lhproto.Node
 }
@@ -183,6 +230,18 @@ func (n *UserTaskNodeOutput) JsonPath(jsonPath string) *UserTaskNodeOutput {
 	return &UserTaskNodeOutput{
 		nodeName: n.nodeName,
 		jsonPath: &jsonPath,
+		thread:   n.thread,
+	}
+}
+
+func (n *UserTaskNodeOutput) Get(field string) *UserTaskNodeOutput {
+	newPath := copyLhPath(n.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &UserTaskNodeOutput{
+		nodeName: n.nodeName,
+		lhPath:   newPath,
 		thread:   n.thread,
 	}
 }
@@ -266,6 +325,20 @@ func (w *WfRunVariable) WithDefault(defaultValue interface{}) *WfRunVariable {
 
 func (w *WfRunVariable) JsonPath(path string) *WfRunVariable {
 	return w.jsonPathImpl(path)
+}
+
+// Get returns a new WfRunVariable that accesses a specific field of a Struct, JSON_OBJ,
+// or JSON_ARR variable. Can be chained: variable.Get("address").Get("city").
+// Cannot be mixed with JsonPath.
+func (w *WfRunVariable) Get(field string) *WfRunVariable {
+	return w.getImpl(field)
+}
+
+// GetIndex returns a new WfRunVariable that accesses a specific index of a JSON_ARR
+// variable. Can be chained with Get: variable.GetIndex(0).Get("name").
+// Cannot be mixed with JsonPath.
+func (w *WfRunVariable) GetIndex(index int) *WfRunVariable {
+	return w.getIndexImpl(index)
 }
 
 func (w *WfRunVariable) WithAccessLevel(accessLevel lhproto.WfRunVariableAccessLevel) WfRunVariable {
