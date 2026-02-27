@@ -214,7 +214,7 @@ func InterfaceToVarVal(someInterface interface{}) (*lhproto.VariableValue, error
 		if eType.Kind() == reflect.Struct {
 			structDefName := getStructDefName(eType)
 			if structDefName != "" {
-				structProto, structErr := GoStructToStructProto(e)
+				structProto, structErr := ToLhStruct(e)
 				if structErr != nil {
 					return nil, structErr
 				}

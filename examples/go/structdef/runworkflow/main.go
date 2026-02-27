@@ -38,7 +38,7 @@ func main() {
 	}
 
 	// Serialize Go struct as a LittleHorse Struct proto
-	reportStruct, err := littlehorse.GoStructToStructProto(report)
+	reportStruct, err := littlehorse.ToLhStruct(report)
 	if err != nil {
 		log.Fatal(err)
 	}

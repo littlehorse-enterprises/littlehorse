@@ -301,10 +301,10 @@ func getStructDefName(t reflect.Type) string {
 	return info.Name
 }
 
-// GoStructToStructProto converts a Go struct instance into a Struct protobuf suitable for
+// ToLhStruct converts a Go struct instance into a Struct protobuf suitable for
 // use as a VariableValue. The struct must implement LHStructDef() LHStructDefInfo.
 // This is the Go equivalent of Java's LHLibUtil.serializeToStruct() and .NET's SerializeToStruct().
-func GoStructToStructProto(structInstance interface{}) (*lhproto.Struct, error) {
+func ToLhStruct(structInstance interface{}) (*lhproto.Struct, error) {
 	v := reflect.ValueOf(structInstance)
 	t := v.Type()
 	if t.Kind() == reflect.Ptr {

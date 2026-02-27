@@ -452,11 +452,11 @@ func TestGoStructToInlineStructDef_NonMaskedFieldsDefaultToFalse(t *testing.T) {
 
 // --- Tests for masked fields: serialization/deserialization round-trip ---
 
-func TestGoStructToStructProto_MaskedFieldRoundTrip(t *testing.T) {
+func TestToLhStruct_MaskedFieldRoundTrip(t *testing.T) {
 	// Ensure that masked fields serialize and deserialize values correctly.
 	// Masking is a metadata concern on the StructDef, not on the Struct value itself.
 	original := StructWithMaskedField{Name: "Alice", SSN: "123-45-6789", Age: 30}
-	proto, err := littlehorse.GoStructToStructProto(original)
+	proto, err := littlehorse.ToLhStruct(original)
 	assert.Nil(t, err)
 
 	// Values should be present in the serialized proto (masking is enforced server-side).
@@ -615,11 +615,11 @@ func TestReflectTypeToTypeDef_PlainStructFallsBackToJsonObj(t *testing.T) {
 	assert.Equal(t, lhproto.VariableType_JSON_OBJ, typeDef.GetPrimitiveType())
 }
 
-// --- Tests for GoStructToStructProto and StructProtoToGoStruct ---
+// --- Tests for ToLhStruct and StructProtoToGoStruct ---
 
-func TestGoStructToStructProto_SimpleStruct(t *testing.T) {
+func TestToLhStruct_SimpleStruct(t *testing.T) {
 	s := SimpleStruct{Name: "Alice", Age: 30, Score: 95.5, Valid: true}
-	proto, err := littlehorse.GoStructToStructProto(s)
+	proto, err := littlehorse.ToLhStruct(s)
 	assert.Nil(t, err)
 	assert.Equal(t, "simple-struct", proto.StructDefId.GetName())
 
@@ -630,7 +630,7 @@ func TestGoStructToStructProto_SimpleStruct(t *testing.T) {
 	assert.Equal(t, true, fields["valid"].Value.GetBool())
 }
 
-func TestGoStructToStructProto_NestedStruct(t *testing.T) {
+func TestToLhStruct_NestedStruct(t *testing.T) {
 	s := StructWithNested{
 		Name: "Bob",
 		Address: NestedAddress{
@@ -638,7 +638,7 @@ func TestGoStructToStructProto_NestedStruct(t *testing.T) {
 			City:   "Springfield",
 		},
 	}
-	proto, err := littlehorse.GoStructToStructProto(s)
+	proto, err := littlehorse.ToLhStruct(s)
 	assert.Nil(t, err)
 
 	fields := proto.Struct.GetFields()
@@ -651,8 +651,8 @@ func TestGoStructToStructProto_NestedStruct(t *testing.T) {
 	assert.Equal(t, "Springfield", nestedStruct.Struct.GetFields()["city"].Value.GetStr())
 }
 
-func TestGoStructToStructProto_RequiresLHStructDef(t *testing.T) {
-	_, err := littlehorse.GoStructToStructProto(PlainNestedStruct{Value: "test"})
+func TestToLhStruct_RequiresLHStructDef(t *testing.T) {
+	_, err := littlehorse.ToLhStruct(PlainNestedStruct{Value: "test"})
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), "must implement LHStructDef()")
 }
@@ -660,7 +660,7 @@ func TestGoStructToStructProto_RequiresLHStructDef(t *testing.T) {
 func TestStructProtoToGoStruct_SimpleStruct(t *testing.T) {
 	// First serialize, then deserialize
 	original := SimpleStruct{Name: "Alice", Age: 30, Score: 95.5, Valid: true}
-	proto, err := littlehorse.GoStructToStructProto(original)
+	proto, err := littlehorse.ToLhStruct(original)
 	assert.Nil(t, err)
 
 	result, err := littlehorse.StructProtoToGoStruct(proto, reflect.TypeOf(SimpleStruct{}))
@@ -672,7 +672,7 @@ func TestStructProtoToGoStruct_SimpleStruct(t *testing.T) {
 
 func TestStructProtoToGoStruct_PointerTarget(t *testing.T) {
 	original := SimpleStruct{Name: "Alice", Age: 30, Score: 95.5, Valid: true}
-	proto, err := littlehorse.GoStructToStructProto(original)
+	proto, err := littlehorse.ToLhStruct(original)
 	assert.Nil(t, err)
 
 	result, err := littlehorse.StructProtoToGoStruct(proto, reflect.TypeOf(&SimpleStruct{}))
@@ -688,7 +688,7 @@ func TestStructProtoToGoStruct_NestedStruct(t *testing.T) {
 		Name:    "Bob",
 		Address: NestedAddress{Street: "123 Main St", City: "Springfield"},
 	}
-	proto, err := littlehorse.GoStructToStructProto(original)
+	proto, err := littlehorse.ToLhStruct(original)
 	assert.Nil(t, err)
 
 	result, err := littlehorse.StructProtoToGoStruct(proto, reflect.TypeOf(StructWithNested{}))
@@ -726,7 +726,7 @@ func TestInterfaceToVarVal_PlainStructStillUsesJsonObj(t *testing.T) {
 
 func TestVarValToType_StructToPointer(t *testing.T) {
 	original := SimpleStruct{Name: "Alice", Age: 30, Score: 95.5, Valid: true}
-	proto, err := littlehorse.GoStructToStructProto(original)
+	proto, err := littlehorse.ToLhStruct(original)
 	assert.Nil(t, err)
 
 	varVal := &lhproto.VariableValue{
@@ -743,7 +743,7 @@ func TestVarValToType_StructToPointer(t *testing.T) {
 
 func TestVarValToType_StructToValue(t *testing.T) {
 	original := SimpleStruct{Name: "Bob", Age: 25, Score: 80.0, Valid: false}
-	proto, err := littlehorse.GoStructToStructProto(original)
+	proto, err := littlehorse.ToLhStruct(original)
 	assert.Nil(t, err)
 
 	varVal := &lhproto.VariableValue{
@@ -824,12 +824,12 @@ func TestGoStructToInlineStructDef_MaskedNestedField(t *testing.T) {
 
 // --- Tests for StructWithDescription ---
 
-func TestGoStructToStructProto_Description(t *testing.T) {
+func TestToLhStruct_Description(t *testing.T) {
 	// StructWithDescriptionExternal has a description in its LHStructDefInfo.
 	// The description is used in RegisterStructDef; here we just verify the
 	// struct serialization still works correctly.
 	s := StructWithDescriptionExternal{Value: "test"}
-	proto, err := littlehorse.GoStructToStructProto(s)
+	proto, err := littlehorse.ToLhStruct(s)
 	assert.Nil(t, err)
 	assert.Equal(t, "test", proto.Struct.GetFields()["value"].Value.GetStr())
 	assert.Equal(t, "described-struct", proto.StructDefId.GetName())
@@ -837,14 +837,14 @@ func TestGoStructToStructProto_Description(t *testing.T) {
 
 // --- Tests for round-trip serialization with lh tags ---
 
-func TestGoStructToStructProto_LHTagRoundTrip(t *testing.T) {
+func TestToLhStruct_LHTagRoundTrip(t *testing.T) {
 	// Serialize a struct with lh tags and verify field names come from the lh tag.
 	original := StructWithLHAndJSON{
 		Field1: "hello",
 		Field2: "secret",
 		Field3: "world",
 	}
-	proto, err := littlehorse.GoStructToStructProto(original)
+	proto, err := littlehorse.ToLhStruct(original)
 	assert.Nil(t, err)
 
 	fields := proto.Struct.GetFields()
@@ -869,7 +869,7 @@ func TestStructProtoToGoStruct_LHTagRoundTrip(t *testing.T) {
 		Field2: "secret",
 		Field3: "world",
 	}
-	proto, err := littlehorse.GoStructToStructProto(original)
+	proto, err := littlehorse.ToLhStruct(original)
 	assert.Nil(t, err)
 
 	result, err := littlehorse.StructProtoToGoStruct(proto, reflect.TypeOf(StructWithLHAndJSON{}))
@@ -885,7 +885,7 @@ func TestMaskedFieldSerializationRoundTrip_NestedStruct(t *testing.T) {
 		Name:          "Alice",
 		SecretAddress: NestedAddress{Street: "123 Secret St", City: "Hidden City"},
 	}
-	proto, err := littlehorse.GoStructToStructProto(original)
+	proto, err := littlehorse.ToLhStruct(original)
 	assert.Nil(t, err)
 
 	result, err := littlehorse.StructProtoToGoStruct(proto, reflect.TypeOf(StructWithMaskedNestedField{}))
@@ -905,7 +905,7 @@ func TestMixedTagsSerializationRoundTrip(t *testing.T) {
 		JSONOnly:   "json_value",
 		NoTags:     "no_tag_value",
 	}
-	proto, err := littlehorse.GoStructToStructProto(original)
+	proto, err := littlehorse.ToLhStruct(original)
 	assert.Nil(t, err)
 
 	result, err := littlehorse.StructProtoToGoStruct(proto, reflect.TypeOf(StructWithMixedTags{}))
