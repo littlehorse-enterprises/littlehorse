@@ -30,13 +30,14 @@ public class ConditionalsExample {
             WfRunVariable isVip = wf.declareBool("is-vip");
             WfRunVariable price = wf.declareInt("price");
             WfRunVariable companyName = wf.declareStr("company-name");
-            WfRunVariable jsonArr = wf.declareStr("special-companies").withDefault(new ArrayList<>());
-            jsonArr.add("CocaCola");
-            jsonArr.add("Starbucks");
-            jsonArr.add("McDonalds");
-            jsonArr.add("Pizza Hut");
-            jsonArr.add("KFC");
-            jsonArr.add("Burger King");
+            WfRunVariable jsonArr = wf.declareJsonArr("special-companies").withDefault(new ArrayList<>());
+            jsonArr.assign(jsonArr.add("CocaCola"));
+            jsonArr.assign(jsonArr.add("Starbucks"));
+            jsonArr.assign(jsonArr.add("McDonalds"));
+            jsonArr.assign(jsonArr.add("Pizza Hut"));
+            jsonArr.assign(jsonArr.add("Burger King"));
+            jsonArr.assign(jsonArr.add("Wendy's"));
+            jsonArr.assign(jsonArr.add("KFC"));
 
             // If user is VIP and price > 10000, send special welcome
             wf.doIf(isVip.and(companyName.isIn(jsonArr)), handler -> {
