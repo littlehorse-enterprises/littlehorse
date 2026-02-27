@@ -13,8 +13,12 @@ import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
+import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
@@ -120,6 +124,41 @@ public class TaskDefLifecycleTest {
                 return caught != null && LHTestExceptionUtil.isNotFoundException(caught);
             });
         }
+    }
+
+    @Test
+    void shouldRejectTaskDefWithNonExistentStructDefInputVar() {
+        String taskDefName = "task-with-missing-struct-input-" + UUID.randomUUID();
+        PutTaskDefRequest req = PutTaskDefRequest.newBuilder()
+                .setName(taskDefName)
+                .addInputVars(VariableDef.newBuilder()
+                        .setName("my-struct-input")
+                        .setTypeDef(TypeDefinition.newBuilder()
+                                .setStructDefId(StructDefId.newBuilder()
+                                        .setName("non-existent-struct-def")
+                                        .setVersion(0))))
+                .build();
+
+        assertThatThrownBy(() -> client.putTaskDef(req))
+                .isInstanceOf(StatusRuntimeException.class)
+                .hasMessageContaining("Refers to non-existent StructDef non-existent-struct-def");
+    }
+
+    @Test
+    void shouldRejectTaskDefWithNonExistentStructDefReturnType() {
+        String taskDefName = "task-with-missing-struct-return-" + UUID.randomUUID();
+        PutTaskDefRequest req = PutTaskDefRequest.newBuilder()
+                .setName(taskDefName)
+                .setReturnType(ReturnType.newBuilder()
+                        .setReturnType(TypeDefinition.newBuilder()
+                                .setStructDefId(StructDefId.newBuilder()
+                                        .setName("non-existent-struct-def")
+                                        .setVersion(0))))
+                .build();
+
+        assertThatThrownBy(() -> client.putTaskDef(req))
+                .isInstanceOf(StatusRuntimeException.class)
+                .hasMessageContaining("Refers to non-existent StructDef non-existent-struct-def");
     }
 }
 
