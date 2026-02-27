@@ -39,12 +39,10 @@ public class ConditionalsExample {
             jsonArr.assign(jsonArr.add("Wendy's"));
             jsonArr.assign(jsonArr.add("KFC"));
 
-            // If user is VIP and price > 10000, send special welcome
             wf.doIf(isVip.and(companyName.isIn(jsonArr)), handler -> {
                 handler.execute("send-special-welcome");
             });
 
-            // If user is VIP or price == 10000, use expedited shipping
             wf.doIfElse(
                     isVip.or(price.isGreaterThan(10000)),
                     handler -> {
