@@ -14,10 +14,22 @@ public class ChildThreadWorker {
         return input * 2;
     }
 
-    @LHTaskMethod("child-task")
-    public String childTask(int input) {
-        log.debug("Executing child-task");
-        return "hi there, input was: " + input;
+    @LHTaskMethod("child-task-1")
+    public int childTask1(int input) {
+        log.debug("Executing child-task-1");
+        return input + 1;
+    }
+
+    @LHTaskMethod("child-task-2")
+    public String childTask2() {
+        log.debug("Executing child-task-2");
+        return "child done";
+    }
+
+    @LHTaskMethod("grandchild-task")
+    public String grandchildTask(int input) {
+        log.debug("Executing grandchild-task");
+        return "grandchild received: " + input;
     }
 
     @LHTaskMethod("parent-task-2")

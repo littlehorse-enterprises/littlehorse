@@ -95,4 +95,42 @@ public interface ListWfMetricsRequestOrBuilder extends
    * @return The numWindows.
    */
   int getNumWindows();
+
+  /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
+   * <code>optional bytes bookmark = 5;</code>
+   * @return Whether the bookmark field is set.
+   */
+  boolean hasBookmark();
+  /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
+   * <code>optional bytes bookmark = 5;</code>
+   * @return The bookmark.
+   */
+  com.google.protobuf.ByteString getBookmark();
+
+  /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
+   * <code>optional int32 limit = 6;</code>
+   * @return Whether the limit field is set.
+   */
+  boolean hasLimit();
+  /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
+   * <code>optional int32 limit = 6;</code>
+   * @return The limit.
+   */
+  int getLimit();
 }

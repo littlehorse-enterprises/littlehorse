@@ -1,7 +1,6 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -22,7 +21,8 @@ import org.slf4j.LoggerFactory;
 /*
  * In this example you will see how to instantiate a child thread
  * and then wait until it has finished its execution before
- * executing another task
+ * executing another task. The child thread spawns a grandchild
+ * thread, demonstrating a three-level hierarchy: parent → child → grandchild.
  */
 public class ChildThreadExample {
 
@@ -30,20 +30,21 @@ public class ChildThreadExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-child-thread", wf -> {
-            WfRunVariable counter = wf.declareInt("counter").required();
+            WfRunVariable parentVar = wf.declareInt("parent-var");
 
-            wf.doWhile(wf.condition(counter, Comparator.GREATER_THAN, 0), (whileBody) -> {
-                SpawnedThread childThread = whileBody.spawnThread(
-                        child -> {
-                            child.complete();
-                        },
-                        "child-thread",
-                        null);
+            parentVar.assign(wf.execute("parent-task-1", parentVar));
 
-                whileBody.waitForThreads(SpawnedThreads.of(childThread));
+            SpawnedThread childThread = wf.spawnThread(
+                    child -> { // this is the child workflow thread
+                        WfRunVariable childVar = child.declareInt("child-var");
+                        child.execute("child-task", childVar);
+                    },
+                    "spawned-thread",
+                    Map.of("child-var", parentVar));
 
-                counter.assign(counter.subtract(1));
-            });
+            wf.waitForThreads(SpawnedThreads.of(childThread));
+
+            wf.execute("parent-task-2");
         });
     }
 
@@ -61,7 +62,9 @@ public class ChildThreadExample {
         ChildThreadWorker executable = new ChildThreadWorker();
         List<LHTaskWorker> workers = List.of(
                 new LHTaskWorker(executable, "parent-task-1", config),
-                new LHTaskWorker(executable, "child-task", config),
+                new LHTaskWorker(executable, "child-task-1", config),
+                new LHTaskWorker(executable, "child-task-2", config),
+                new LHTaskWorker(executable, "grandchild-task", config),
                 new LHTaskWorker(executable, "parent-task-2", config));
 
         // Gracefully shutdown

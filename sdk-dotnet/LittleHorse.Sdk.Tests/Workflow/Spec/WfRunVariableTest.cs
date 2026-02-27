@@ -27,8 +27,8 @@ public class WfRunVariableTest
     [Fact]
     public void WfRunVariable_WithoutTypeOrDefaultValue_ShouldThrownAnException()
     {
-        var exception = Assert.Throws<InvalidOperationException>(() => 
-            new WfRunVariable("test-var", null!, _parentWfThread));
+        var exception = Assert.Throws<ArgumentException>(() => 
+            WfRunVariable.CreatePrimitiveVar("test-var", null, _parentWfThread));
         
         Assert.Contains("The 'typeOrDefaultVal' argument must be either a VariableType", exception.Message);
     }
@@ -38,9 +38,9 @@ public class WfRunVariableTest
     {
         var variableValue = "This is a test";
         
-        var wfRunVariable = new WfRunVariable("test-var", variableValue, _parentWfThread);
+        var wfRunVariable = WfRunVariable.CreatePrimitiveVar("test-var", variableValue, _parentWfThread);
         
-        Assert.Equal(VariableType.Str, wfRunVariable.Type);
+        Assert.Equal(VariableType.Str, wfRunVariable.TypeDef.PrimitiveType);
     }
 
     [Fact]
@@ -48,16 +48,16 @@ public class WfRunVariableTest
     {
         const VariableType expectedType = VariableType.Bool;
         
-        var wfRunVariable = new WfRunVariable("test-var", expectedType, _parentWfThread);
+        var wfRunVariable = WfRunVariable.CreatePrimitiveVar("test-var", expectedType, _parentWfThread);
         
-        Assert.Equal(expectedType, wfRunVariable.Type);
+        Assert.Equal(expectedType, wfRunVariable.TypeDef.PrimitiveType);
     }
     
     [Fact]
     public void WfRunVariable_WithThreadVarDef_ShouldCompileSuccessfully()
     {
         const VariableType expectedType = VariableType.Str;
-        var wfRunVariable = new WfRunVariable("test-var", expectedType, _parentWfThread);
+        var wfRunVariable = WfRunVariable.CreatePrimitiveVar("test-var", expectedType, _parentWfThread);
         
         var actualVarDef = wfRunVariable.Compile();
 
@@ -79,7 +79,7 @@ public class WfRunVariableTest
         const VariableType expectedType = VariableType.Str;
         
         var exception = Assert.Throws<ArgumentNullException>(() =>
-            new WfRunVariable("test-var", expectedType, null!));
+            WfRunVariable.CreatePrimitiveVar("test-var", expectedType, null!));
         
         Assert.Equal("Value cannot be null. (Parameter 'parent')", exception.Message);
     }
@@ -93,7 +93,7 @@ public class WfRunVariableTest
     public void WfRunVariable_WithSearchableOn_NonJsonVariableTypes_ShouldThrowAnException(VariableType type)
     {
         string variableName = "test-var";
-        WfRunVariable testVar = new WfRunVariable(variableName, type, _parentWfThread);
+        WfRunVariable testVar = WfRunVariable.CreatePrimitiveVar(variableName, type, _parentWfThread);
         var exception = Assert.Throws<LHMisconfigurationException>(() => 
             testVar.SearchableOn("$.Content", type)
             );
@@ -106,7 +106,7 @@ public class WfRunVariableTest
     {
         string variableName = "test-var";
         string fieldPath = "Content";
-        WfRunVariable testVar = new WfRunVariable(variableName, VariableType.JsonObj, _parentWfThread);
+        WfRunVariable testVar = WfRunVariable.CreatePrimitiveVar(variableName, VariableType.JsonObj, _parentWfThread);
         var exception = Assert.Throws<LHMisconfigurationException>(() => 
             testVar.SearchableOn(fieldPath, VariableType.JsonObj)
         );
@@ -119,7 +119,7 @@ public class WfRunVariableTest
     {
         string variableName = "test-var";
         string fieldPath = "$.Content";
-        WfRunVariable testVar = new WfRunVariable(variableName, VariableType.JsonObj, _parentWfThread);
+        WfRunVariable testVar = WfRunVariable.CreatePrimitiveVar(variableName, VariableType.JsonObj, _parentWfThread);
         testVar.SearchableOn(fieldPath, VariableType.JsonObj);
        
         var actualVarDef = testVar.Compile();
@@ -143,7 +143,7 @@ public class WfRunVariableTest
     public void WfRunVariable_WithAccessLevel_ShouldCompile(WfRunVariableAccessLevel accessLevel)
     {
         string variableName = "test-var";
-        WfRunVariable testVar = new WfRunVariable(variableName, VariableType.Str, _parentWfThread);
+        WfRunVariable testVar = WfRunVariable.CreatePrimitiveVar(variableName, VariableType.Str, _parentWfThread);
         testVar.WithAccessLevel(accessLevel);
        
         var actualVarDef = testVar.Compile();
@@ -163,7 +163,7 @@ public class WfRunVariableTest
     public void WfRunVariable_AsPublic_ShouldCompile()
     {
         string variableName = "test-var";
-        WfRunVariable testVar = new WfRunVariable(variableName, VariableType.Str, _parentWfThread);
+        WfRunVariable testVar = WfRunVariable.CreatePrimitiveVar(variableName, VariableType.Str, _parentWfThread);
         testVar.AsPublic();
        
         var actualVarDef = testVar.Compile();
@@ -183,7 +183,7 @@ public class WfRunVariableTest
     public void WfRunVariable_AsInherited_ShouldCompile()
     {
         string variableName = "test-var";
-        WfRunVariable testVar = new WfRunVariable(variableName, VariableType.Str, _parentWfThread);
+        WfRunVariable testVar = WfRunVariable.CreatePrimitiveVar(variableName, VariableType.Str, _parentWfThread);
         testVar.AsInherited();
        
         var actualVarDef = testVar.Compile();

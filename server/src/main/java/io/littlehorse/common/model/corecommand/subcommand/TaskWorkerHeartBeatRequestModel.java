@@ -104,7 +104,8 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
             try {
                 yourHosts.add(executionContext.getAdvertisedHost(hostInfo, listenerName));
             } catch (StatusRuntimeException exn) {
-                if (exn.getStatus().getCode() == Code.UNAVAILABLE) {
+                if (exn.getStatus().getCode() == Code.UNAVAILABLE
+                        || exn.getStatus().getCode() == Code.UNKNOWN) {
                     log.debug("Unable to contact server {}: ", exn.getStatus().getDescription());
                 } else {
                     throw exn;

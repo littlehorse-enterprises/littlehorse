@@ -30,12 +30,12 @@ public class FixedSpawnedThreadsTest
         }
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
         Random random = new Random();
-        var wfRunVariable1 = new WfRunVariable("ID", 
+        var wfRunVariable1 = WfRunVariable.CreatePrimitiveVar("ID",
             random.NextInt64(1111111111, 9999999999), workflowThread);
         var spawnedThread1 = new SpawnedThread(workflowThread, 
             "onboarding-new-app-old-clients", 
             wfRunVariable1);
-        var wfRunVariable2 = new WfRunVariable("ACCOUNT_NUMBER", 
+        var wfRunVariable2 = WfRunVariable.CreatePrimitiveVar("ACCOUNT_NUMBER",
             random.NextInt64(1111111111, 9999999999), workflowThread);
         var spawnedThread2 = new SpawnedThread(workflowThread, 
             "onboarding-new-app-new-clients", 
@@ -80,7 +80,7 @@ public class FixedSpawnedThreadsTest
         }
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
         string nonNumberDefaultValue = "1111111111";
-        var wfRunVariable1 = new WfRunVariable("ID", nonNumberDefaultValue, workflowThread);
+        var wfRunVariable1 = WfRunVariable.CreatePrimitiveVar("ID", nonNumberDefaultValue, workflowThread);
         var spawnedThread1 = new SpawnedThread(workflowThread, 
             "onboarding-new-app-old-clients", 
             wfRunVariable1);
@@ -89,6 +89,29 @@ public class FixedSpawnedThreadsTest
         var exception = Assert.Throws<ArgumentException>(
             () => fixedSpawnedThreads.BuildNode(WaitForThreadsStrategy.WaitForAll));
             
+        Assert.Equal("Only int variables are supported.", exception.Message);
+    }
+
+    [Fact]
+    public void FixedSpawnedThreads_WithStructThreadNumberVariables_ShouldThrowException()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+        }
+
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        var wfRunVariable1 = WfRunVariable.CreateStructDefVar("ID", "test-struct", workflowThread);
+        var spawnedThread1 = new SpawnedThread(workflowThread,
+            "onboarding-new-app-old-clients",
+            wfRunVariable1);
+        var fixedSpawnedThreads = new FixedSpawnedThreads(spawnedThread1);
+
+        var exception = Assert.Throws<ArgumentException>(
+            () => fixedSpawnedThreads.BuildNode(WaitForThreadsStrategy.WaitForAll));
+
         Assert.Equal("Only int variables are supported.", exception.Message);
     }
 }
