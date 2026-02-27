@@ -5,6 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
@@ -78,6 +79,8 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
             throw new LHApiException(Status.INVALID_ARGUMENT, "TaskDefName must be a valid hostname");
         }
 
+        validateReferencedStructDefs(context);
+
         TaskDefModel spec = new TaskDefModel();
         spec.setId(new TaskDefIdModel(name));
         spec.inputVars = inputVars;
@@ -104,5 +107,23 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         PutTaskDefRequestModel out = new PutTaskDefRequestModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    private void validateReferencedStructDefs(MetadataProcessorContext context) {
+        try {
+            for (VariableDefModel inputVar : inputVars) {
+                inputVar.getTypeDef().validateStructDefExists(context.metadataManager());
+            }
+
+            returnType.getOutputType().ifPresent(typeDef -> {
+                try {
+                    typeDef.validateStructDefExists(context.metadataManager());
+                } catch (UnknownStructDefException e) {
+                    throw new LHApiException(Status.INVALID_ARGUMENT, e.getMessage());
+                }
+            });
+        } catch (UnknownStructDefException e) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, e.getMessage());
+        }
     }
 }
