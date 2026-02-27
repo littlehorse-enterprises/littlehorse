@@ -306,7 +306,8 @@ class LHTask:
             expected_type = to_type(task_def_var.type_def.primitive_type)
             if expected_type != anno:
                 raise TaskSchemaMismatchException(
-                    f"Parameter types do not match for '{callable_param.name}'"
+                    f"Parameter types do not match for '{callable_param.name}', "
+                    f"expected: {expected_type} got: {anno}"
                 )
 
     def _validate_callable(self) -> None:

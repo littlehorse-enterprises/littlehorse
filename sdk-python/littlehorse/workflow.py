@@ -65,6 +65,7 @@ from littlehorse.model import (
 from littlehorse.model.common_wfspec_pb2 import LHPath
 from littlehorse.model.wf_spec_pb2 import PRIVATE_VAR, WaitForConditionNode
 from littlehorse.utils import negate_comparator, to_variable_value
+from littlehorse.lh_struct import get_struct_def_name, is_lh_struct
 from littlehorse.worker import _create_task_def
 
 ENTRYPOINT = "entrypoint"
@@ -462,8 +463,9 @@ class WfRunVariable:
     def __init__(
         self,
         variable_name: str,
-        variable_type: VariableType,
         parent: WorkflowThread,
+        *,
+        variable_type: Optional[VariableType] = None,
         default_value: Any = None,
         access_level: Optional[
             Union[WfRunVariableAccessLevel, str]
@@ -472,10 +474,12 @@ class WfRunVariable:
     ) -> None:
         """Defines a Variable in the ThreadSpec and returns a handle to it.
 
+        Exactly one of ``variable_type`` or ``struct_def_name`` must be provided.
+
         Args:
             variable_name (str): The name of the variable.
-            variable_type (VariableType): The variable type.
             parent (WorkflowThread): The parent WorkflowThread of this WfRunVariable.
+            variable_type (VariableType, optional): The primitive variable type.
             default_value (Any, optional): A default value. Defaults to None.
             access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable. Defaults to PRIVATE_VAR.
             struct_def_name (str, optional): The StructDef name, when this variable is a Struct.
@@ -485,9 +489,15 @@ class WfRunVariable:
 
         Raises:
             TypeError: If variable_type and type(default_value) are not compatible.
+            ValueError: If both or neither of variable_type and struct_def_name are provided.
         """
         if parent is None:
             raise ValueError("Parent workflow thread cannot be None.")
+
+        if variable_type is not None and struct_def_name is not None:
+            raise ValueError("Cannot specify both variable_type and struct_def_name")
+        if variable_type is None and struct_def_name is None:
+            raise ValueError("Must specify either variable_type or struct_def_name")
 
         self.name = variable_name
         self.type = variable_type
@@ -540,10 +550,16 @@ class WfRunVariable:
 
         if self.type != VariableType.JSON_OBJ and self.type != VariableType.JSON_ARR:
             raise ValueError(
-                f"JsonPath not allowed in a {VariableType.Name(self.type)} variable"
+                f"JsonPath not allowed in a {VariableType.Name(self.type) if self.type is not None else 'STRUCT'} variable"
             )
 
-        out = WfRunVariable(self.name, self.type, self.parent, self.default_value)
+        out = WfRunVariable(
+            self.name,
+            self.parent,
+            variable_type=self.type,
+            default_value=self.default_value,
+            struct_def_name=self._struct_def_name,
+        )
         out.json_path = json_path
         return out
 
@@ -567,8 +583,8 @@ class WfRunVariable:
 
         out = WfRunVariable(
             self.name,
-            self.type,
             self.parent,
+            variable_type=self.type,
             struct_def_name=self._struct_def_name,
         )
         out._lh_path = list(self._lh_path)
@@ -644,9 +660,9 @@ class WfRunVariable:
         if not field_path.startswith("$."):
             raise ValueError(f"Invalid JsonPath: {field_path}")
 
-        if self.type != VariableType.JSON_OBJ:
+        if self.type != VariableType.JSON_OBJ and self._struct_def_name is None:
             raise ValueError(
-                f"JsonPath not allowed in a {VariableType.Name(self.type)} variable"
+                f"JsonPath not allowed in a {VariableType.Name(self.type) if self.type is not None else 'STRUCT'} variable"
             )
 
         self._json_indexes.append(
@@ -1704,38 +1720,16 @@ class WorkflowThread:
         Returns:
             WfRunVariable: A handle to the created WfRunVariable.
         """
-        self._check_if_active()
-
-        if len(self._nodes) > 0 and self._last_node().node_case == NodeCase.EXIT:
-            raise TypeError(
-                "You cannot add a variable in a given thread after the thread has completed."
-            )
-
-        for var in self._wf_run_variables:
-            if var.name == name:
-                raise ValueError(f"Variable {name} already added")
-
         if isinstance(struct_def, str):
             struct_def_name = struct_def
         else:
-            from littlehorse.lh_struct import get_struct_def_name, is_lh_struct
-
             if not is_lh_struct(struct_def):
                 raise TypeError(
                     f"{struct_def.__name__} is not decorated with @lh_struct_def"
                 )
             struct_def_name = get_struct_def_name(struct_def)
 
-        # Use JSON_OBJ (0) as a placeholder type since compile() will use
-        # struct_def_id from _struct_def_name instead of primitive_type.
-        new_var = WfRunVariable(
-            name,
-            VariableType.JSON_OBJ,
-            self,
-            struct_def_name=struct_def_name,
-        )
-        self._wf_run_variables.append(new_var)
-        return new_var
+        return self.add_variable(name, struct_def_name=struct_def_name)
 
     def handle_any_failure(
         self, node: NodeOutput, initializer: "ThreadInitializer"
@@ -2231,17 +2225,21 @@ class WorkflowThread:
     def add_variable(
         self,
         variable_name: str,
-        variable_type: VariableType,
+        variable_type: Optional[VariableType] = None,
         access_level: Optional[Union[WfRunVariableAccessLevel, str]] = PRIVATE_VAR,
         default_value: Any = None,
+        struct_def_name: Optional[str] = None,
     ) -> WfRunVariable:
         """Defines a Variable in the ThreadSpec and returns a handle to it.
 
+        Exactly one of ``variable_type`` or ``struct_def_name`` must be provided.
+
         Args:
             variable_name (str): The name of the variable.
-            variable_type (VariableType): The variable type.
+            variable_type (VariableType, optional): The primitive variable type.
             access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable.
             default_value (Any, optional): A default value. Defaults to None.
+            struct_def_name (str, optional): The StructDef name, for struct variables.
 
         Returns:
             WfRunVariable: A handle to the created WfRunVariable.
@@ -2258,7 +2256,12 @@ class WorkflowThread:
                 raise ValueError(f"Variable {variable_name} already added")
 
         new_var = WfRunVariable(
-            variable_name, variable_type, self, default_value, access_level
+            variable_name,
+            self,
+            variable_type=variable_type,
+            default_value=default_value,
+            access_level=access_level,
+            struct_def_name=struct_def_name,
         )
         self._wf_run_variables.append(new_var)
         return new_var

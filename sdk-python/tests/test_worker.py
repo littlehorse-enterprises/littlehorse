@@ -364,7 +364,7 @@ class TestLHTask(unittest.TestCase):
             LHTask(my_method, task_def)
 
         self.assertEqual(
-            "Parameter types do not match for 'param1'",
+            "Parameter types do not match for 'param1', expected: <class 'int'> got: <class 'str'>",
             str(exception_context.exception),
         )
 
@@ -393,7 +393,7 @@ class TestLHTask(unittest.TestCase):
             LHTask(my_method, task_def)
 
         self.assertEqual(
-            "Parameter types do not match for 'param1'",
+            "Parameter types do not match for 'param1', expected: <class 'str'> got: <class 'int'>",
             str(exception_context.exception),
         )
 

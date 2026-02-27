@@ -617,7 +617,7 @@ class TestWfRunVariableGet(unittest.TestCase):
 
         workflow = Workflow("test-jpget", entrypoint)
         wf_thread = WorkflowThread(workflow, entrypoint)
-        var = WfRunVariable("x", VariableType.JSON_OBJ, wf_thread)
+        var = WfRunVariable("x", wf_thread, variable_type=VariableType.JSON_OBJ)
         var.json_path = "$.foo"
         with self.assertRaises(ValueError):
             var.get("bar")
