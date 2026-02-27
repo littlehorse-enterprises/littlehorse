@@ -196,38 +196,52 @@ public class ExpressionModel extends LHSerializable<Expression> {
      * @throws LHVarSubError if there is a problem getting variables.
      */
     public boolean isSatisfied(ThreadRunModel threadRun) throws LHVarSubError {
+
         VariableValueModel lhs = threadRun.assignVariable(this.lhs);
         VariableValueModel rhs = threadRun.assignVariable(this.rhs);
 
-        switch (this.mutateByComparison) {
-            case LESS_THAN:
-                return Comparer.compare(lhs, rhs) < 0;
-            case LESS_THAN_EQ:
-                return Comparer.compare(lhs, rhs) <= 0;
-            case GREATER_THAN:
-                return Comparer.compare(lhs, rhs) > 0;
-            case GREATER_THAN_EQ:
-                return Comparer.compare(lhs, rhs) >= 0;
-            case EQUALS:
-                return lhs != null && Comparer.compare(lhs, rhs) == 0;
-            case NOT_EQUALS:
-                return lhs != null && Comparer.compare(lhs, rhs) != 0;
-            case IN:
-                return Comparer.contains(rhs, lhs);
-            case NOT_IN:
-                return !Comparer.contains(rhs, lhs);
-            case UNRECOGNIZED:
-        }
+        if (mutateWithOperation != null) {
+            return switch (this.mutateWithOperation) {
+                case AND -> lhs != null && (lhs.getBoolVal() && rhs.getBoolVal());
+                case OR -> lhs != null && (lhs.getBoolVal() || rhs.getBoolVal());
+                default ->
+                    throw new IllegalStateException("Unknown value for VariableMutationType enum %d"
+                            .formatted(mutateWithOperation.getNumber()));
+            };
+        } else {
+            switch (this.mutateByComparison) {
+                case LESS_THAN:
+                    return Comparer.compare(lhs, rhs) < 0;
+                case LESS_THAN_EQ:
+                    return Comparer.compare(lhs, rhs) <= 0;
+                case GREATER_THAN:
+                    return Comparer.compare(lhs, rhs) > 0;
+                case GREATER_THAN_EQ:
+                    return Comparer.compare(lhs, rhs) >= 0;
+                case EQUALS:
+                    return lhs != null && Comparer.compare(lhs, rhs) == 0;
+                case NOT_EQUALS:
+                    return lhs != null && Comparer.compare(lhs, rhs) != 0;
+                case IN:
+                    return Comparer.contains(rhs, lhs);
+                case NOT_IN:
+                    return !Comparer.contains(rhs, lhs);
+                case UNRECOGNIZED:
+            }
 
-        // This is impossible; it means that we added a new value to the Comparator
-        // proto
-        // without updating the LH Server to handle it. So we can throw an
-        // IllegalStateException.
-        throw new IllegalStateException(
-                "Unknown value for Comparator enum %d".formatted(mutateByComparison.getNumber()));
+            // This is impossible; it means that we added a new value to the Comparator
+            // proto
+            // without updating the LH Server to handle it. So we can throw an
+            // IllegalStateException.
+            throw new IllegalStateException(
+                    "Unknown value for Comparator enum %d".formatted(mutateByComparison.getNumber()));
+        }
     }
 
     public boolean isConditional() {
-        return mutateByComparison != null;
+        return (mutateByComparison != null)
+                || (mutateWithOperation != null
+                        && (mutateWithOperation == VariableMutationType.AND
+                                || mutateWithOperation == VariableMutationType.OR));
     }
 }

@@ -8,21 +8,21 @@ public class ConditionalsTaskWorker {
 
     private static final Logger log = LoggerFactory.getLogger(ConditionalsTaskWorker.class);
 
-    @LHTaskMethod("task-a")
+    @LHTaskMethod("send-special-welcome")
     public String taskA() {
-        log.debug("Executing task-a");
+        log.info("Special welcome for A");
         return "hello there A";
     }
 
-    @LHTaskMethod("task-b")
+    @LHTaskMethod("use-expedited-shipping")
     public String taskB() {
-        log.debug("Executing task-b");
+        log.debug("Expedited shipping for B");
         return "hello there B";
     }
 
-    @LHTaskMethod("task-c")
+    @LHTaskMethod("regular-shipping")
     public String taskC() {
-        log.debug("Executing task-c");
+        log.debug("Regular shipping for C");
         return "hello there C";
     }
 
