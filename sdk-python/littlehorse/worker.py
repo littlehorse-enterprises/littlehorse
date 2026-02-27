@@ -16,6 +16,7 @@ from typing import (
     Annotated,
     get_args,
     get_origin,
+    get_type_hints,
 )
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
@@ -39,6 +40,7 @@ from littlehorse.model import (
     ScheduledTask,
     TaskDef,
     TypeDefinition,
+    StructDefId,
     LHTaskError,
     LHTaskException,
     VariableValue,
@@ -57,6 +59,26 @@ REPORT_TASK_FAIL_RETRIES = 15
 HEARTBEAT_INTERVAL_SECONDS = 60
 POLL_TASK_INTERVAL_SECONDS = 5
 GRPC_UNARY_CALL_TIMEOUT_SECONDS = 30
+
+
+def _resolved_signature(func: Callable[..., Any]) -> inspect.Signature:
+    """Return the signature of *func* with string annotations resolved.
+
+    When ``from __future__ import annotations`` is used, all annotations
+    are stored as strings.  ``get_type_hints`` evaluates them back into
+    real types so that downstream code can do ``isinstance`` checks.
+    """
+    sig = signature(func)
+    try:
+        hints = get_type_hints(func, include_extras=True)
+    except Exception:
+        return sig
+    new_params = [
+        param.replace(annotation=hints[name]) if name in hints else param
+        for name, param in sig.parameters.items()
+    ]
+    return_annotation = hints.get("return", sig.return_annotation)
+    return sig.replace(parameters=new_params, return_annotation=return_annotation)
 
 
 class WorkerContext:
@@ -244,33 +266,47 @@ class LHTask:
         self.task_def = task_def
 
         self._callable = callable
-        self._signature = signature(callable)
+        self._signature = _resolved_signature(callable)
 
         self._validate_callable()
         self._validate_match()
 
     def _validate_match(self) -> None:
-        task_def_vars = [
-            to_type(var.type_def.primitive_type) for var in self.task_def.input_vars
-        ]
+        task_def_input_vars = self.task_def.input_vars
 
         callable_params = [
-            param.annotation
+            param
             for param in self._signature.parameters.values()
             if param.annotation is not WorkerContext
         ]
 
-        if len(task_def_vars) != len(callable_params):
+        if len(task_def_input_vars) != len(callable_params):
+            task_def_types = [var.type_def for var in task_def_input_vars]
             raise TaskSchemaMismatchException(
-                f"Incorrect parameter list, expected: {task_def_vars}"
+                f"Incorrect parameter list, expected: {task_def_types}"
             )
 
-        for task_def_var, callable_param in zip(task_def_vars, callable_params):
-            if get_origin(callable_param) is Annotated:
-                callable_param = get_args(callable_param)[0]
-            if task_def_var != callable_param:
+        from littlehorse.lh_struct import is_lh_struct
+
+        for task_def_var, callable_param in zip(task_def_input_vars, callable_params):
+            anno = callable_param.annotation
+            if get_origin(anno) is Annotated:
+                anno = get_args(anno)[0]
+
+            # Struct parameter
+            if task_def_var.type_def.HasField("struct_def_id"):
+                if not (isinstance(anno, type) and is_lh_struct(anno)):
+                    raise TaskSchemaMismatchException(
+                        f"Parameter '{callable_param.name}' expected a @lh_struct_def class "
+                        f"for struct '{task_def_var.type_def.struct_def_id.name}'"
+                    )
+                continue
+
+            # Primitive parameter
+            expected_type = to_type(task_def_var.type_def.primitive_type)
+            if expected_type != anno:
                 raise TaskSchemaMismatchException(
-                    f"Parameter types do not match, expected: {task_def_vars} got: {callable_params}"
+                    f"Parameter types do not match for '{callable_param.name}'"
                 )
 
     def _validate_callable(self) -> None:
@@ -367,7 +403,31 @@ class LHConnection:
 
     async def _execute_task(self, task: ScheduledTask) -> None:
         context = WorkerContext(task, self._stub)
-        args: Any = [extract_value(var.value) for var in task.variables]
+
+        # Deserialize task variables, handling struct types
+        from littlehorse.lh_struct import is_lh_struct, deserialize_struct
+
+        params = [
+            p
+            for p in self._task._signature.parameters.values()
+            if p.annotation is not WorkerContext
+        ]
+        args: list[Any] = []
+        for i, var in enumerate(task.variables):
+            val = var.value
+            if i < len(params):
+                anno = params[i].annotation
+                if get_origin(anno) is Annotated:
+                    anno = get_args(anno)[0]
+                # Deserialize struct into the annotated class
+                if (
+                    val.WhichOneof("value") == "struct"
+                    and isinstance(anno, type)
+                    and is_lh_struct(anno)
+                ):
+                    args.append(deserialize_struct(val.struct, anno))
+                    continue
+            args.append(extract_value(val))
 
         if self._task.has_context():
             args.append(context)
@@ -721,7 +781,7 @@ def _create_task_def(
     task: Callable[..., Any], name: str, config: LHConfig, timeout: Optional[int] = None
 ) -> None:
     stub = config.stub()
-    task_signature = signature(task)
+    task_signature = _resolved_signature(task)
     input_vars = [
         _to_variable_def(param)
         for param in task_signature.parameters.values()
@@ -736,13 +796,33 @@ def _create_task_def(
 
 
 def _to_variable_def(param: inspect.Parameter) -> VariableDef:
+    from littlehorse.lh_struct import is_lh_struct, get_struct_def_name
+
     lh_type = _param_to_lh_type(param.annotation)
     if lh_type is None:
         lh_type = LHType(param.name)
+
+    # Resolve the raw type (peel Annotated)
+    raw_type = param.annotation
+    if get_origin(raw_type) is Annotated:
+        raw_type = get_args(raw_type)[0]
+
+    # Check if it's a struct-decorated class
+    if isinstance(raw_type, type) and is_lh_struct(raw_type):
+        return VariableDef(
+            name=lh_type.name,
+            type_def=TypeDefinition(
+                struct_def_id=StructDefId(name=get_struct_def_name(raw_type)),
+                masked=lh_type.masked,
+            ),
+        )
+
     return VariableDef(
         name=lh_type.name,
-        type=to_variable_type(param.annotation),
-        masked_value=lh_type.masked,
+        type_def=TypeDefinition(
+            primitive_type=to_variable_type(param.annotation),
+            masked=lh_type.masked,
+        ),
     )
 
 
@@ -757,7 +837,25 @@ def _param_to_lh_type(annotated_type: type) -> Optional[LHType]:
 def _return_to_lh_schema(return_type: type) -> Optional[ReturnType]:
     if return_type is None:
         return None
+
+    from littlehorse.lh_struct import is_lh_struct, get_struct_def_name
+
     lh_type = _param_to_lh_type(return_type)
+
+    # Resolve the raw type (peel Annotated)
+    raw_return = return_type
+    if get_origin(raw_return) is Annotated:
+        raw_return = get_args(raw_return)[0]
+
+    # Check if return type is a struct
+    if isinstance(raw_return, type) and is_lh_struct(raw_return):
+        return ReturnType(
+            return_type=TypeDefinition(
+                struct_def_id=StructDefId(name=get_struct_def_name(raw_return)),
+                masked=lh_type.masked if lh_type else False,
+            )
+        )
+
     var = TypeDefinition(
         primitive_type=to_variable_type(return_type),
         masked=False,
