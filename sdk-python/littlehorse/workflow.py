@@ -688,6 +688,7 @@ class WfRunVariable:
                     "Default value type does not match LH variable type STRUCT"
                 )
             return
+        assert self.type is not None
         if (
             self.default_value.WhichOneof("value")
             != str(VariableType.Name(self.type)).lower()

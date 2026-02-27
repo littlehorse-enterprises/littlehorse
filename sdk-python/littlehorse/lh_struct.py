@@ -194,7 +194,7 @@ def _generate_init(cls: type) -> None:
                     f"{cls.__name__}() missing required keyword argument: '{field}'"
                 )
 
-    cls.__init__ = __init__  # type: ignore[attr-defined]
+    cls.__init__ = __init__  # type: ignore[misc]
 
 
 # ---------------------------------------------------------------------------
@@ -370,7 +370,7 @@ class _StructProperty:
                 primitive_type=(
                     self.type_def.primitive_type
                     if self.type_def.HasField("primitive_type")
-                    else 0
+                    else None
                 ),
                 struct_def_id=(
                     self.type_def.struct_def_id
@@ -523,7 +523,7 @@ def deserialize_struct(struct: Struct, cls: type) -> Any:
     if not is_lh_struct(cls):
         raise TypeError(f"{cls.__name__} is not decorated with @lh_struct_def")
 
-    instance = cls.__new__(cls)
+    instance: Any = object.__new__(cls)
     properties = _get_struct_properties(cls)
     fields_map = struct.struct.fields
 
