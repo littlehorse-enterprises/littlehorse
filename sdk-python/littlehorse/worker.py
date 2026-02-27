@@ -67,17 +67,25 @@ def _resolved_signature(func: Callable[..., Any]) -> inspect.Signature:
     When ``from __future__ import annotations`` is used, all annotations
     are stored as strings.  ``get_type_hints`` evaluates them back into
     real types so that downstream code can do ``isinstance`` checks.
+
+    Only *string* annotations are replaced so that already-resolved type
+    objects keep their identity (important for ``is WorkerContext`` checks
+    that vary across Python versions).
     """
     sig = signature(func)
     try:
         hints = get_type_hints(func, include_extras=True)
     except Exception:
         return sig
-    new_params = [
-        param.replace(annotation=hints[name]) if name in hints else param
-        for name, param in sig.parameters.items()
-    ]
-    return_annotation = hints.get("return", sig.return_annotation)
+    new_params = []
+    for name, param in sig.parameters.items():
+        if name in hints and isinstance(param.annotation, str):
+            new_params.append(param.replace(annotation=hints[name]))
+        else:
+            new_params.append(param)
+    return_annotation = sig.return_annotation
+    if isinstance(sig.return_annotation, str) and "return" in hints:
+        return_annotation = hints["return"]
     return sig.replace(parameters=new_params, return_annotation=return_annotation)
 
 
