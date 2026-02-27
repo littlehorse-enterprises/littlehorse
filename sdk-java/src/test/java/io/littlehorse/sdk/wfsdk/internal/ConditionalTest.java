@@ -7,7 +7,6 @@ import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.EntrypointNode;
 import io.littlehorse.sdk.common.proto.ExitNode;
-import io.littlehorse.sdk.common.proto.LegacyEdgeCondition;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.NopNode;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -45,7 +44,8 @@ public class ConditionalTest {
             assertThat(firstNOPNode.getOutgoingEdgesCount()).isEqualTo(2);
             assertThat(firstNOPNode.getOutgoingEdges(0))
                     .extracting(
-                            (edge) -> edge.getCondition().getExpression().getLhs().getVariableName(),
+                            (edge) ->
+                                    edge.getCondition().getExpression().getLhs().getVariableName(),
                             (edge) -> edge.getCondition().getExpression().getComparator(),
                             (edge) -> edge.getCondition()
                                     .getExpression()
@@ -95,12 +95,10 @@ public class ConditionalTest {
             VariableAssignment taskAExpectedCondition = VariableAssignment.newBuilder()
                     .setExpression(VariableAssignment.Expression.newBuilder()
                             .setLhs(VariableAssignment.newBuilder()
-                                    .setLiteralValue(VariableValue.newBuilder()
-                                            .setInt(5)))
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(5)))
                             .setComparator(Comparator.GREATER_THAN)
                             .setRhs(VariableAssignment.newBuilder()
-                                    .setLiteralValue(VariableValue.newBuilder()
-                                            .setInt(4))))
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(4))))
                     .build();
             assertThat(entrypointThread.getNodesMap().get("1-nop-NOP"))
                     .isEqualTo(Node.newBuilder()
@@ -153,22 +151,18 @@ public class ConditionalTest {
             VariableAssignment taskAExpectedCondition = VariableAssignment.newBuilder()
                     .setExpression(VariableAssignment.Expression.newBuilder()
                             .setLhs(VariableAssignment.newBuilder()
-                                .setLiteralValue(VariableValue.newBuilder()
-                                        .setInt(5)))
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(5)))
                             .setComparator(Comparator.GREATER_THAN)
                             .setRhs(VariableAssignment.newBuilder()
-                                    .setLiteralValue(VariableValue.newBuilder()
-                                            .setInt(4))))
-                            .build();
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(4))))
+                    .build();
             VariableAssignment taskBExpectedCondition = VariableAssignment.newBuilder()
                     .setExpression(VariableAssignment.Expression.newBuilder()
                             .setLhs(VariableAssignment.newBuilder()
-                                    .setLiteralValue(VariableValue.newBuilder()
-                                            .setInt(10)))
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(10)))
                             .setComparator(Comparator.EQUALS)
                             .setRhs(VariableAssignment.newBuilder()
-                                    .setLiteralValue(VariableValue.newBuilder()
-                                            .setInt(40)))
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(40)))
                             .build())
                     .build();
 
@@ -287,22 +281,28 @@ public class ConditionalTest {
 
             assertThat(entrypointThread.getNodesMap().size()).isEqualTo(7);
             VariableAssignment taskAExpectedCondition = VariableAssignment.newBuilder()
-                    .setExpression(VariableAssignment.Expression.newBuilder().setLhs(VariableAssignment.newBuilder()
-                            .setLiteralValue(VariableValue.newBuilder()
-                                    .setInt(5))).setComparator(Comparator.GREATER_THAN).setRhs(VariableAssignment.newBuilder()
-                            .setLiteralValue(VariableValue.newBuilder()
-                                    .setInt(4)))).build();
+                    .setExpression(VariableAssignment.Expression.newBuilder()
+                            .setLhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(5)))
+                            .setComparator(Comparator.GREATER_THAN)
+                            .setRhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(4))))
+                    .build();
             VariableAssignment taskBExpectedCondition = VariableAssignment.newBuilder()
-                    .setExpression(VariableAssignment.Expression.newBuilder().setLhs(VariableAssignment.newBuilder()
-                            .setLiteralValue(VariableValue.newBuilder()
-                                    .setInt(10))).setComparator(Comparator.EQUALS).setRhs(VariableAssignment.newBuilder()
-                            .setLiteralValue(VariableValue.newBuilder()
-                                    .setInt(40)))).build();
+                    .setExpression(VariableAssignment.Expression.newBuilder()
+                            .setLhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(10)))
+                            .setComparator(Comparator.EQUALS)
+                            .setRhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(40))))
+                    .build();
             VariableAssignment taskCExpectedCondition = VariableAssignment.newBuilder()
-                    .setExpression(VariableAssignment.Expression.newBuilder().setLhs(VariableAssignment.newBuilder()
-                            .setVariableName("my-int")).setComparator(Comparator.LESS_THAN).setRhs(VariableAssignment.newBuilder()
-                            .setLiteralValue(VariableValue.newBuilder()
-                                    .setInt(100)))).build();
+                    .setExpression(VariableAssignment.Expression.newBuilder()
+                            .setLhs(VariableAssignment.newBuilder().setVariableName("my-int"))
+                            .setComparator(Comparator.LESS_THAN)
+                            .setRhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(100))))
+                    .build();
 
             assertThat(entrypointThread.getNodesMap().get("1-nop-NOP"))
                     .isEqualTo(Node.newBuilder()
@@ -398,17 +398,21 @@ public class ConditionalTest {
             });
 
             VariableAssignment taskAExpectedCondition = VariableAssignment.newBuilder()
-                    .setExpression(VariableAssignment.Expression.newBuilder().setLhs(VariableAssignment.newBuilder()
-                            .setLiteralValue(VariableValue.newBuilder()
-                                    .setInt(5))).setComparator(Comparator.GREATER_THAN).setRhs(VariableAssignment.newBuilder()
-                            .setLiteralValue(VariableValue.newBuilder()
-                                    .setInt(4)))).build();
+                    .setExpression(VariableAssignment.Expression.newBuilder()
+                            .setLhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(5)))
+                            .setComparator(Comparator.GREATER_THAN)
+                            .setRhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(4))))
+                    .build();
             VariableAssignment taskBExpectedCondition = VariableAssignment.newBuilder()
-                    .setExpression(VariableAssignment.Expression.newBuilder().setLhs(VariableAssignment.newBuilder()
-                            .setLiteralValue(VariableValue.newBuilder()
-                                    .setInt(10))).setComparator(Comparator.LESS_THAN_EQ).setRhs(VariableAssignment.newBuilder()
-                            .setLiteralValue(VariableValue.newBuilder()
-                                    .setInt(200)))).build();
+                    .setExpression(VariableAssignment.Expression.newBuilder()
+                            .setLhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(10)))
+                            .setComparator(Comparator.LESS_THAN_EQ)
+                            .setRhs(VariableAssignment.newBuilder()
+                                    .setLiteralValue(VariableValue.newBuilder().setInt(200))))
+                    .build();
 
             ThreadSpec entrypointThread = wfSpec.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
 

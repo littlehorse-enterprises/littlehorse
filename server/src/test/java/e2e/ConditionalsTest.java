@@ -3,7 +3,6 @@ package e2e;
 import static org.assertj.core.api.Assertions.*;
 
 import e2e.Struct.Car;
-import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -447,7 +446,8 @@ public class ConditionalsTest {
                 execute(3);
             }
              */
-            wf.doIfElse(input.isLessThan(10),
+            wf.doIfElse(
+                    input.isLessThan(10),
                     ifBlock -> {
                         ifBlock.execute("echo", 1);
                     },
@@ -475,7 +475,8 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(input.jsonPath("$.lhs").isEqualTo(input.jsonPath("$.rhs")),
+            thread.doIfElse(
+                    input.jsonPath("$.lhs").isEqualTo(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -495,7 +496,8 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(structA.isEqualTo(structB),
+            thread.doIfElse(
+                    structA.isEqualTo(structB),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -518,7 +520,8 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(input.jsonPath("$.lhs").isNotEqualTo(input.jsonPath("$.rhs")),
+            thread.doIfElse(
+                    input.jsonPath("$.lhs").isNotEqualTo(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -541,7 +544,8 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(input.jsonPath("$.lhs").isLessThan(input.jsonPath("$.rhs")),
+            thread.doIfElse(
+                    input.jsonPath("$.lhs").isLessThan(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -564,7 +568,8 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(input.jsonPath("$.lhs").isLessThanEq(input.jsonPath("$.rhs")),
+            thread.doIfElse(
+                    input.jsonPath("$.lhs").isLessThanEq(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -587,7 +592,8 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(input.jsonPath("$.lhs").isGreaterThan(input.jsonPath("$.rhs")),
+            thread.doIfElse(
+                    input.jsonPath("$.lhs").isGreaterThan(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -610,7 +616,8 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(input.jsonPath("$.lhs").isGreaterThanEq(input.jsonPath("$.rhs")),
+            thread.doIfElse(
+                    input.jsonPath("$.lhs").isGreaterThanEq(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -633,7 +640,8 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(input.jsonPath("$.lhs").isIn(input.jsonPath("$.rhs")),
+            thread.doIfElse(
+                    input.jsonPath("$.lhs").isIn(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -656,7 +664,8 @@ public class ConditionalsTest {
             // a crash.
             thread.execute("ag-one");
 
-            thread.doIfElse(input.jsonPath("$.lhs").isNotIn(input.jsonPath("$.rhs")),
+            thread.doIfElse(
+                    input.jsonPath("$.lhs").isNotIn(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },

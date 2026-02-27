@@ -1,9 +1,7 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.LHExpression;
-import java.io.Serializable;
 import lombok.Getter;
 
 /**

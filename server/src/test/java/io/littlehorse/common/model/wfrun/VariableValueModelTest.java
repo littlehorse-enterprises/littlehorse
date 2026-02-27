@@ -359,5 +359,4 @@ public class VariableValueModelTest {
         assertThrows(LHVarSubError.class, () -> lhs.operate(VariableMutationType.OR, rhs, lhs.getTypeDefinition()));
         assertThrows(LHVarSubError.class, () -> rhs.operate(VariableMutationType.OR, lhs, rhs.getTypeDefinition()));
     }
-
 }

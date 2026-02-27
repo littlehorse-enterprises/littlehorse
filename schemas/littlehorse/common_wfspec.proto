@@ -44,8 +44,8 @@ message VariableAssignment {
     // The left-hand-side of the expression.
     VariableAssignment lhs = 1;
 
+    // The operator in the expression.
     oneof operation {
-      // The operator in the expression.
       VariableMutationType mutation_type = 2;
       Comparator comparator = 4;
     }

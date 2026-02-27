@@ -372,8 +372,4 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     public VariableValueModel applyCast(VariableValueModel sourceValue) {
         return TypeCastingUtils.applyCast(sourceValue, this.primitiveType);
     }
-
-    public Optional<TypeDefinitionModel> resolveTypeAfterComparisonWith() {
-        return Optional.of(new TypeDefinitionModel(VariableType.BOOL));
-    }
 }

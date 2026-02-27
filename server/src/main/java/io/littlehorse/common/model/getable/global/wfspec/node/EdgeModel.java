@@ -183,7 +183,6 @@ public class EdgeModel extends LHSerializable<Edge> {
         if (condition != null && !condition.isConditional()) {
             condition.evaluate(threadRun);
         }
-
     }
 
     public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)

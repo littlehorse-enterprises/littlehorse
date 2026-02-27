@@ -5,7 +5,6 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.CastExpressionImpl;
 import io.littlehorse.sdk.wfsdk.internal.LHExpressionImpl;
-
 import java.io.Serializable;
 
 public interface LHExpression extends Serializable {

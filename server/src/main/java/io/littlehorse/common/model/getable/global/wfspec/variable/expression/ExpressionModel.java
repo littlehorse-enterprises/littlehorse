@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.VariableAssignerFunc;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.Comparer;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
@@ -62,28 +63,32 @@ public class ExpressionModel extends LHSerializable<Expression> {
         }
     }
 
+    public boolean isAConditional() {
+        return mutateByComparison != null;
+    }
+
     public Optional<TypeDefinitionModel> resolveTypeDefinition(
             ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName)
             throws InvalidExpressionException {
-
-        Optional<TypeDefinitionModel> lhsTypeOption = lhs.resolveType(manager, wfSpec, threadSpecName);
-        Optional<TypeDefinitionModel> rhsTypeOption = rhs.resolveType(manager, wfSpec, threadSpecName);
-
-        if (lhsTypeOption.isEmpty() || rhsTypeOption.isEmpty()) {
-            return Optional.empty();
-        }
-
-        TypeDefinitionModel lhsType = lhsTypeOption.get();
-        TypeDefinitionModel rhsType = rhsTypeOption.get();
-
-        if (mutateWithOperation != null) {
-            return lhsType.resolveTypeAfterMutationWith(mutateWithOperation, rhsType, manager);
+        if (isAConditional()) {
+            // BOOL is the only type that can be returned from a conditional expression.
+            return Optional.of(new TypeDefinitionModel(VariableType.BOOL));
         } else {
-            return lhsType.resolveTypeAfterComparisonWith();
+            Optional<TypeDefinitionModel> lhsTypeOption = lhs.resolveType(manager, wfSpec, threadSpecName);
+            Optional<TypeDefinitionModel> rhsTypeOption = rhs.resolveType(manager, wfSpec, threadSpecName);
+
+            if (lhsTypeOption.isEmpty() || rhsTypeOption.isEmpty()) {
+                return Optional.empty();
+            }
+
+            TypeDefinitionModel lhsType = lhsTypeOption.get();
+            TypeDefinitionModel rhsType = rhsTypeOption.get();
+            return lhsType.resolveTypeAfterMutationWith(mutateWithOperation, rhsType, manager);
         }
     }
 
-    public VariableValueModel evaluate(ThreadRunModel threadRun, VariableAssignerFunc variableFinder) throws LHVarSubError {
+    public VariableValueModel evaluate(ThreadRunModel threadRun, VariableAssignerFunc variableFinder)
+            throws LHVarSubError {
         if (mutateWithOperation != null) {
             return evaluateMutationWithOperation(variableFinder);
         } else {
@@ -105,7 +110,8 @@ public class ExpressionModel extends LHSerializable<Expression> {
         return lhsVal.operate(mutateWithOperation, rhsVal, typeToCoerceTo);
     }
 
-    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec) throws InvalidEdgeException {
+    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
+            throws InvalidEdgeException {
         if (mutateByComparison == null) return;
         // TODO (#1458): after we support using VariableAssignment, make sure that the
         // resolveType() is BOOL.
@@ -195,21 +201,21 @@ public class ExpressionModel extends LHSerializable<Expression> {
 
         switch (this.mutateByComparison) {
             case LESS_THAN:
-                return lhs.compareTo(rhs) < 0;
+                return Comparer.compare(lhs, rhs) < 0;
             case LESS_THAN_EQ:
-                return lhs.compareTo(rhs) <= 0;
+                return Comparer.compare(lhs, rhs) <= 0;
             case GREATER_THAN:
-                return lhs.compareTo(rhs) > 0;
+                return Comparer.compare(lhs, rhs) > 0;
             case GREATER_THAN_EQ:
-                return lhs.compareTo(rhs) >= 0;
+                return Comparer.compare(lhs, rhs) >= 0;
             case EQUALS:
-                return lhs != null && lhs.compareTo(rhs) == 0;
+                return lhs != null && Comparer.compare(lhs, rhs) == 0;
             case NOT_EQUALS:
-                return lhs != null && lhs.compareTo(rhs) != 0;
+                return lhs != null && Comparer.compare(lhs, rhs) != 0;
             case IN:
-                return rhs.contains(lhs);
+                return Comparer.contains(rhs, lhs);
             case NOT_IN:
-                return !rhs.contains(lhs);
+                return !Comparer.contains(rhs, lhs);
             case UNRECOGNIZED:
         }
 
@@ -217,7 +223,8 @@ public class ExpressionModel extends LHSerializable<Expression> {
         // proto
         // without updating the LH Server to handle it. So we can throw an
         // IllegalStateException.
-        throw new IllegalStateException("Unknown value for Comparator enum %d".formatted(mutateByComparison.getNumber()));
+        throw new IllegalStateException(
+                "Unknown value for Comparator enum %d".formatted(mutateByComparison.getNumber()));
     }
 
     public boolean isConditional() {
