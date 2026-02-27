@@ -14,8 +14,6 @@ Usage::
     python example_structdef.py run Toyota Camry ABC-123
 """
 
-from __future__ import annotations
-
 import asyncio
 import logging
 import sys
