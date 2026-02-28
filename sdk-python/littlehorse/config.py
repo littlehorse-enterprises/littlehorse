@@ -339,7 +339,6 @@ class LHConfig:
                 AsyncUnaryStreamMetadataInterceptor(self.tenant_id),
             ]
             if async_channel and secure_channel:
-
                 return grpc.aio.secure_channel(
                     target,
                     credentials,
