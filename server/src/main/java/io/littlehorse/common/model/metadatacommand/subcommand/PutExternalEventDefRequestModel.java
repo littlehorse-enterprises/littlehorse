@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.model.getable.global.externaleventdef.CorrelatedEventConfigModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventRetentionPolicyModel;
@@ -68,6 +69,8 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
             throw new LHApiException(Status.INVALID_ARGUMENT, "ExternalEventDefName must be a valid hostname");
         }
 
+        validateReferencedStructDefs(context);
+
         ExternalEventDefModel spec = new ExternalEventDefModel(name, retentionPolicy, contentType);
         if (correlatedEventConfig != null) {
             spec.setCorrelatedEventConfig(correlatedEventConfig);
@@ -81,5 +84,17 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
         PutExternalEventDefRequestModel out = new PutExternalEventDefRequestModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    private void validateReferencedStructDefs(MetadataProcessorContext context) {
+        if (contentType == null) return;
+
+        contentType.getOutputType().ifPresent(typeDef -> {
+            try {
+                typeDef.validateStructDefExists(context.metadataManager());
+            } catch (UnknownStructDefException e) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, e.getMessage());
+            }
+        });
     }
 }
