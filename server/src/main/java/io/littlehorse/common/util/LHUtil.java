@@ -344,7 +344,7 @@ public class LHUtil {
                 .map(zonedDateTime -> Date.from(zonedDateTime.toInstant()));
     }
 
-    public static Date getCurrentWindowTime() {
+    public static Date getCurrentWindowDate() {
         return Date.from(Instant.now().truncatedTo(ChronoUnit.MINUTES));
     }
 

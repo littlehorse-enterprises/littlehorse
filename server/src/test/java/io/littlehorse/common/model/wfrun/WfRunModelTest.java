@@ -64,7 +64,7 @@ public class WfRunModelTest {
                 wfRun.transitionTo(LHStatus.ERROR);
             }
         }
-        Date windowStart = LHUtil.getCurrentWindowTime();
+        Date windowStart = LHUtil.getCurrentWindowDate();
         String metricKey = String.format(
                 "%s/%s/%s/%s/%s",
                 LHConstants.PARTITION_METRICS_KEY,
@@ -101,7 +101,7 @@ public class WfRunModelTest {
                 wfRun.transitionTo(LHStatus.ERROR);
             }
         }
-        Date windowStart = LHUtil.getCurrentWindowTime();
+        Date windowStart = LHUtil.getCurrentWindowDate();
         String metricKey = String.format(
                 "%s/%s/%s/%s/%s",
                 LHConstants.PARTITION_METRICS_KEY,

@@ -52,7 +52,7 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
     }
 
     public PartitionMetricWindowModel(WfSpecIdModel wfSpecId, TenantIdModel tenantId) {
-        this(wfSpecId, tenantId, LHUtil.getCurrentWindowTime());
+        this(wfSpecId, tenantId, LHUtil.getCurrentWindowDate());
     }
 
     public void incrementCountAndLatency(String metricKey, long latencyMs) {
@@ -98,7 +98,7 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
             LHStatus newStatus,
             Date startTime,
             Date endTime) {
-        Date windowStart = LHUtil.getCurrentWindowTime();
+        Date windowStart = LHUtil.getCurrentWindowDate();
         TenantIdModel tenantId = processorContext.authorization().tenantId();
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);

@@ -15,6 +15,7 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.AggregateWindowMetricsModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.ServerTopology;
@@ -61,6 +62,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     protected KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
     private boolean shouldUseMetricsHint;
+    private long serverStartWindowTime;
     private final AsyncWaiters asyncWaiters;
     private final PartitionMetricsMemoryStore partitionMetricsMemoryStore;
 
@@ -88,6 +90,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         this.shouldUseMetricsHint = true;
+        this.serverStartWindowTime = LHUtil.getCurrentWindowDate().getTime() - 1;
         onPartitionClaimed();
         ctx.schedule(
                 LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL,
@@ -194,10 +197,9 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void forwardWindowPartitionMetrics(long timestamp) {
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
-        long lastWindowTime = timestamp - (2 * 60 * 1000L);
+        long lastWindowTime = LHUtil.getCurrentWindowDate().getTime() - (2 * 60 * 1000L);
         if (shouldUseMetricsHint) {
             lastWindowTime = forwardFromStore(clusterScopedStore);
-            partitionMetricsMemoryStore.clear();
         } else {
             forwardFromMemory(clusterScopedStore);
         }
@@ -213,38 +215,46 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 partitionMetricsMemoryStore.values().iterator();
         while (iterator.hasNext()) {
             PartitionMetricWindowModel metric = iterator.next();
-            forwardAndDeleteFromStore(store, metric);
-            iterator.remove();
-            if (System.currentTimeMillis() - startTime > LHConstants.MAX_MS_PER_PARTITION_METRICS_PUNCTUATION) {
-                break;
+            if (metric.getWindowStart().before(LHUtil.getCurrentWindowDate())) {
+                forwardAndDeleteFromStore(store, metric);
+                iterator.remove();
+                if (System.currentTimeMillis() - startTime > LHConstants.MAX_MS_PER_PARTITION_METRICS_PUNCTUATION) {
+                    break;
+                }
             }
         }
     }
 
     private long forwardFromStore(ClusterScopedStore store) {
         shouldUseMetricsHint = false;
-        long lastWindowTime = getMetricsHintTime(store);
-        String startPrefix = LHConstants.PARTITION_METRICS_KEY + "/" + lastWindowTime;
-        String endPrefix = LHConstants.PARTITION_METRICS_KEY + "/~";
+        MetricsHintModel hint = store.get(MetricsHintModel.METRICS_HINT_KEY, MetricsHintModel.class);
+        if (hint == null || hint.getLastProcessedTimestamp() == null) {
+            return this.serverStartWindowTime;
+        }
+
+        long lastSeenWindowTime = toMillis(hint.getLastProcessedTimestamp());
+        String startPrefix = LHConstants.PARTITION_METRICS_KEY + "/" + lastSeenWindowTime;
+        String endPrefix = LHConstants.PARTITION_METRICS_KEY + "/" + serverStartWindowTime;
         long startTime = System.currentTimeMillis();
         try (LHKeyValueIterator<PartitionMetricWindowModel> iter =
                 store.range(startPrefix, endPrefix, PartitionMetricWindowModel.class)) {
             while (iter.hasNext()) {
                 PartitionMetricWindowModel windowMetrics = iter.next().getValue();
                 if (windowMetrics != null) {
-                    lastWindowTime = forwardAndDeleteFromStore(store, windowMetrics);
+                    lastSeenWindowTime = forwardAndDeleteFromStore(store, windowMetrics);
                     if (System.currentTimeMillis() - startTime > LHConstants.MAX_MS_PER_PARTITION_METRICS_PUNCTUATION) {
                         shouldUseMetricsHint = true;
                         log.warn(
-                                "Hint will be used for next punctuation  lastWindowTime: {}, elapsedTime: {} ms",
-                                new Date(lastWindowTime),
+                                "Hint will be used for next punctuation  from: {} to: {} elapsedTime: {} ms",
+                                new Date(lastSeenWindowTime),
+                                new Date(serverStartWindowTime),
                                 System.currentTimeMillis() - startTime);
-                        return lastWindowTime;
+                        return lastSeenWindowTime;
                     }
                 }
             }
         }
-        return lastWindowTime;
+        return lastSeenWindowTime;
     }
 
     private long forwardAndDeleteFromStore(ClusterScopedStore store, PartitionMetricWindowModel metric) {
@@ -252,14 +262,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         forwardSubcommand(aggregate);
         store.delete(metric);
         return metric.getWindowStart().getTime();
-    }
-
-    private Long getMetricsHintTime(ClusterScopedStore store) {
-        MetricsHintModel hint = store.get(MetricsHintModel.METRICS_HINT_KEY, MetricsHintModel.class);
-        if (hint != null && hint.getLastProcessedTimestamp() != null) {
-            return toMillis(hint.getLastProcessedTimestamp());
-        }
-        return 0L;
     }
 
     private void forwardSubcommand(AggregateWindowMetricsModel subCommand) {
