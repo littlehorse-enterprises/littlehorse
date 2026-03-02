@@ -21,13 +21,13 @@ var listWfMetricsCmd = &cobra.Command{
 	Long: `List metrics for a given WfSpec.
 
 By default, returns metrics for the last 60 minutes.
-Use --minutes to specify a different time window.
+You can use --earliestMinutesAgo and --latestMinutesAgo to specify a custom time window.
 
 Examples:
   lhctl list wfMetrics my-workflow
   lhctl list wfMetrics my-workflow 1
-  lhctl list wfMetrics my-workflow --minutes 1
-  lhctl list wfMetrics my-workflow 0 --minutes 5
+  lhctl list wfMetrics my-workflow --latestMinutesAgo 10
+  lhctl list wfMetrics my-workflow --earliestMinutesAgo 120 --latestMinutesAgo 60
 `,
 	Args: cobra.RangeArgs(1, 2),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -42,13 +42,20 @@ Examples:
 			wfSpecVersion = int32(version)
 		}
 
-		// Get minutes from flag, default to 60
-		minutes, _ := cmd.Flags().GetInt("minutes")
+		windowStart, windowEnd := loadEarliestAndLatestStart(cmd)
 
-		windowEnd := timestamppb.Now()
-		windowStart := timestamppb.New(
-			windowEnd.AsTime().Add(-time.Duration(minutes) * time.Minute),
-		)
+		if windowStart == nil && windowEnd == nil {
+			windowEnd = timestamppb.Now()
+			windowStart = timestamppb.New(
+				windowEnd.AsTime().Add(-60 * time.Minute),
+			)
+		} else if windowEnd == nil {
+			windowEnd = timestamppb.Now()
+		} else if windowStart == nil {
+			windowStart = timestamppb.New(
+				time.Now().Add(-60 * time.Minute),
+			)
+		}
 
 		littlehorse.PrintResp(getGlobalClient(cmd).ListWfMetrics(
 			requestContext(cmd),
@@ -66,5 +73,6 @@ Examples:
 
 func init() {
 	listCmd.AddCommand(listWfMetricsCmd)
-	listWfMetricsCmd.Flags().Int("minutes", 60, "Number of minutes to look back for metrics")
+	listWfMetricsCmd.Flags().Int("earliestMinutesAgo", -1, "Metrics for wfRuns that started no more than this number of minutes ago")
+	listWfMetricsCmd.Flags().Int("latestMinutesAgo", -1, "Metrics for wfRuns that started at least this number of minutes ago")
 }
