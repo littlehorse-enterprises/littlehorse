@@ -28,11 +28,11 @@ public class StructDefExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("issue-parking-ticket", wf -> {
-            WfRunVariable carInput =
-                    wf.declareStruct("car-input", ParkingTicketReport.class).required();
+            WfRunVariable ticketReport =
+                    wf.declareStruct("ticket-report", ParkingTicketReport.class).required();
             WfRunVariable carOwner = wf.declareStruct("car-owner", Person.class);
 
-            carOwner.assign(wf.execute("get-car-owner", carInput));
+            carOwner.assign(wf.execute("get-car-owner", ticketReport));
 
             wf.execute("mail-ticket", carOwner);
         });
@@ -122,7 +122,7 @@ public class StructDefExample {
 
         client.runWf(RunWfRequest.newBuilder()
                 .setWfSpecName("issue-parking-ticket")
-                .putVariables("car-input", LHLibUtil.objToVarVal(parkingTicketReport))
+                .putVariables("ticket-report", LHLibUtil.objToVarVal(parkingTicketReport))
                 .build());
     }
 }
