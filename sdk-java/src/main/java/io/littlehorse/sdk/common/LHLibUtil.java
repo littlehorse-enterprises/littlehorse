@@ -49,7 +49,6 @@ import io.littlehorse.sdk.worker.adapter.LHTimestampAdapter;
 import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
 import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.worker.adapter.LHWfRunIdAdapter;
-
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
@@ -66,7 +65,8 @@ import java.util.UUID;
 
 public class LHLibUtil {
 
-    public static Optional<LHTypeAdapter<?>> getTypeAdapterForClass(Class<?> clazz, List<LHTypeAdapter<?>> typeAdapters) {
+    public static Optional<LHTypeAdapter<?>> getTypeAdapterForClass(
+            Class<?> clazz, List<LHTypeAdapter<?>> typeAdapters) {
         return getTypeAdapterForClass(clazz, LHTypeAdapterRegistry.from(typeAdapters));
     }
 
@@ -528,7 +528,8 @@ public class LHLibUtil {
                 if (val.getValueCase() != ValueCase.BYTES) {
                     throw new LHSerdeException("Failed deserializing object with adapter: expected BYTES value");
                 }
-                return ((LHBytesAdapter<Object>) adapter).fromBytes(val.getBytes().toByteArray());
+                return ((LHBytesAdapter<Object>) adapter)
+                        .fromBytes(val.getBytes().toByteArray());
             case JSON_ARR:
                 if (!(adapter instanceof LHJsonArrAdapter)) {
                     break;
@@ -566,11 +567,12 @@ public class LHLibUtil {
                 break;
         }
 
-        throw new LHSerdeException("Unsupported type adapter configuration for " + adapter.getTypeClass().getName());
+        throw new LHSerdeException("Unsupported type adapter configuration for "
+                + adapter.getTypeClass().getName());
     }
 
-        private static Object deserializeStructToObject(Struct struct, Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry)
-            throws LHSerdeException {
+    private static Object deserializeStructToObject(
+            Struct struct, Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
         LHClassType lhClassType = LHClassType.fromJavaClass(clazz);
 
         if (!(lhClassType instanceof LHStructDefType)) {
@@ -620,7 +622,8 @@ public class LHLibUtil {
         return objToVarVal(o, LHTypeAdapterRegistry.from(typeAdapters));
     }
 
-    public static VariableValue objToVarVal(Object o, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
+    public static VariableValue objToVarVal(Object o, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
         if (o == null) {
             return VariableValue.newBuilder().build();
         }
@@ -725,10 +728,11 @@ public class LHLibUtil {
                 break;
         }
 
-        throw new LHSerdeException("Unsupported type adapter configuration for " + adapter.getTypeClass().getName());
+        throw new LHSerdeException("Unsupported type adapter configuration for "
+                + adapter.getTypeClass().getName());
     }
 
-        private static VariableValue objToVarValWithoutTypeAdapter(Object o, LHTypeAdapterRegistry typeAdapterRegistry)
+    private static VariableValue objToVarValWithoutTypeAdapter(Object o, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
         if (o instanceof VariableValue) return (VariableValue) o;
 
@@ -908,6 +912,18 @@ public class LHLibUtil {
     }
 
     public static VariableType javaClassToLHVarType(Class<?> cls) {
+        return javaClassToLHVarType(cls, LHTypeAdapterRegistry.empty());
+    }
+
+    public static VariableType javaClassToLHVarType(Class<?> cls, LHTypeAdapterRegistry typeAdapterRegistry) {
+        VariableType adapterType = getTypeAdapterForClass(cls, typeAdapterRegistry)
+                .map(LHTypeAdapter::getVariableType)
+                .orElse(VariableType.UNRECOGNIZED);
+
+        if (adapterType != VariableType.UNRECOGNIZED) {
+            return adapterType;
+        }
+
         if (isINT(cls)) return VariableType.INT;
 
         if (isDOUBLE(cls)) return VariableType.DOUBLE;

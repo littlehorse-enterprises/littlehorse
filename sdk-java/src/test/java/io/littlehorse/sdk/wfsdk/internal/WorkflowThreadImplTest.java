@@ -13,7 +13,9 @@ import io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
@@ -34,9 +36,11 @@ import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.worker.adapter.LHStringAdapter;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import net.datafaker.Faker;
@@ -249,6 +253,30 @@ public class WorkflowThreadImplTest {
 
         Assertions.assertThat(wf.getRequiredWorkflowEventDefNames()).contains("event-one");
         Assertions.assertThat(wf.getRequiredWorkflowEventDefNames()).contains("event-from-child");
+    }
+
+    @Test
+    void shouldUseTypeAdapterForWorkflowEventRegisteredAsClass() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
+            thread.throwEvent("event-one", UUID.randomUUID()).registeredAs(UUID.class);
+        });
+        wf.registerTypeAdapter(uuidAdapter());
+
+        PutWorkflowEventDefRequest eventDef =
+                wf.getWorkflowEventDefsToRegister().stream().findFirst().orElseThrow();
+        assertThat(eventDef.getContentType().getReturnType().getPrimitiveType()).isEqualTo(VariableType.STR);
+    }
+
+    @Test
+    void shouldUseTypeAdapterForExternalEventRegisteredAsClass() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
+            thread.waitForEvent("event-one").registeredAs(UUID.class);
+        });
+        wf.registerTypeAdapter(uuidAdapter());
+
+        PutExternalEventDefRequest eventDef =
+                wf.getExternalEventDefsToRegister().stream().findFirst().orElseThrow();
+        assertThat(eventDef.getContentType().getReturnType().getPrimitiveType()).isEqualTo(VariableType.STR);
     }
 
     @Test
@@ -817,5 +845,24 @@ public class WorkflowThreadImplTest {
         assertThat(exitNode.getExit().hasReturnContent()).isTrue();
         assertThat(exitNode.getExit().getReturnContent().hasNodeOutput()).isTrue();
         assertEquals(exitNode.getExit().getReturnContent().getNodeOutput().getNodeName(), "1-some-task-TASK");
+    }
+
+    private LHStringAdapter<UUID> uuidAdapter() {
+        return new LHStringAdapter<UUID>() {
+            @Override
+            public String toString(UUID src) {
+                return src.toString();
+            }
+
+            @Override
+            public UUID fromString(String src) {
+                return UUID.fromString(src);
+            }
+
+            @Override
+            public Class<UUID> getTypeClass() {
+                return UUID.class;
+            }
+        };
     }
 }
