@@ -262,7 +262,11 @@ public class LHTaskSignatureTest {
                 .findFirst()
                 .orElseThrow();
 
-        assertThat(structDef.getStructDef().getFieldsOrThrow("id").getFieldType().getPrimitiveType())
+        assertThat(structDef
+                        .getStructDef()
+                        .getFieldsOrThrow("id")
+                        .getFieldType()
+                        .getPrimitiveType())
                 .isEqualTo(VariableType.STR);
     }
 }

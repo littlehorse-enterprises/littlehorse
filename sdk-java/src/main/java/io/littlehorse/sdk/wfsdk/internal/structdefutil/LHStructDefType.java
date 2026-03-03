@@ -133,7 +133,8 @@ public class LHStructDefType extends LHClassType {
         tempMarked.add(this);
 
         for (LHStructProperty property : this.getStructProperties()) {
-            LHClassType coreType = property.getPropertyType(typeAdapterRegistry).getCoreComponentType(typeAdapterRegistry);
+            LHClassType coreType =
+                    property.getPropertyType(typeAdapterRegistry).getCoreComponentType(typeAdapterRegistry);
 
             if (coreType instanceof LHPrimitiveType) {
                 continue;
