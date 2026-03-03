@@ -16,6 +16,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.InternalDeleteWfRunRequest;
@@ -26,6 +27,7 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -95,6 +97,7 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
         int startingThread;
         int startingNodeRun;
         Set<String> nodeOutputStoreKeys = new java.util.HashSet<>();
+        List<InactiveThreadRunIdModel> inactiveThreadRunIds = new ArrayList<>();
         if (bookmark == null) {
             startingThread = 0;
             startingNodeRun = 0;
@@ -107,6 +110,9 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
 
         while (threadRunIterator.hasNext()) {
             ThreadRunModel thread = threadRunIterator.next();
+            if (thread.isInactive()) {
+                inactiveThreadRunIds.add(new InactiveThreadRunIdModel(wfRunId, thread.getNumber()));
+            }
 
             thread.getThreadSpec().getRequiredNodeNames().forEach(nodeName -> {
                 String storeKey = Storeable.getGroupedFullStoreKey(
@@ -164,6 +170,10 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
             }
         }
 
+        for (InactiveThreadRunIdModel inactiveThreadRunId : inactiveThreadRunIds) {
+            manager.delete(inactiveThreadRunId);
+        }
+
         manager.deleteNodeOutputs(nodeOutputStoreKeys);
         boolean deletedAllEvents = manager.tryToDeleteAllExternalEventsFor(wfRunId, maxDeletesInOneCommand);
         if (!deletedAllEvents) {
@@ -174,6 +184,7 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
         }
 
         log.trace("Completing WfRun deletion for {}", wfRunId);
+
         manager.delete(wfRunId);
         return null;
     }

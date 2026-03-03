@@ -26,7 +26,10 @@ public class ThreadRunIteratorTest {
         ThreadRunModel thread1 = new ThreadRunModel();
         thread1.setNumber(1);
 
-        ThreadRunIterator iterator = new ThreadRunIterator(new WfRunIdModel("wf"), List.of(thread0, thread1), 1, null);
+        WfRunModel wfRun = new WfRunModel();
+        wfRun.setId(new WfRunIdModel("wf"));
+
+        ThreadRunIterator iterator = new ThreadRunIterator(wfRun, List.of(thread0, thread1), 1, null);
 
         assertThat(iterator.hasNext()).isTrue();
         assertThat(iterator.next()).isSameAs(thread0);
@@ -47,14 +50,14 @@ public class ThreadRunIteratorTest {
 
         ThreadRunModel archivedThread = new ThreadRunModel();
         archivedThread.setNumber(1);
-        archivedThread.setWfRun(wfRun);
 
+        archivedThread.wfRun = wfRun;
         InactiveThreadRunModel inactive = new InactiveThreadRunModel(archivedThread);
 
         GetableManager getableManager = mock(GetableManager.class);
         when(getableManager.get(any(InactiveThreadRunIdModel.class))).thenReturn(inactive);
 
-        ThreadRunIterator iterator = new ThreadRunIterator(wfRunId, List.of(thread0), 1, getableManager);
+        ThreadRunIterator iterator = new ThreadRunIterator(wfRun, List.of(thread0), 1, getableManager);
 
         assertThat(iterator.next()).isSameAs(thread0);
         assertThat(iterator.next()).isSameAs(archivedThread);
@@ -66,7 +69,10 @@ public class ThreadRunIteratorTest {
         ThreadRunModel thread0 = new ThreadRunModel();
         thread0.setNumber(0);
 
-        ThreadRunIterator iterator = new ThreadRunIterator(new WfRunIdModel("wf"), List.of(thread0), 0, null);
+        WfRunModel wfRun = new WfRunModel();
+        wfRun.setId(new WfRunIdModel("wf"));
+
+        ThreadRunIterator iterator = new ThreadRunIterator(wfRun, List.of(thread0), 0, null);
 
         assertThat(iterator.next()).isSameAs(thread0);
         assertThat(iterator.hasNext()).isFalse();

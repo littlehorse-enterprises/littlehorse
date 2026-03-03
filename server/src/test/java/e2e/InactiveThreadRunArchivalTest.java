@@ -2,6 +2,7 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.InactiveThreadRun;
 import io.littlehorse.sdk.common.proto.InactiveThreadRunId;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -10,6 +11,7 @@ import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -17,7 +19,9 @@ import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import io.littlehorse.test.exception.LHTestExceptionUtil;
 import java.util.Map;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
 @LHTest(externalEventNames = {InactiveThreadRunArchivalTest.FINISH_WORKFLOW_EVENT})
@@ -58,6 +62,51 @@ public class InactiveThreadRunArchivalTest {
                 .thenSendExternalEventWithContent(FINISH_WORKFLOW_EVENT, Map.of())
                 .waitForStatus(LHStatus.COMPLETED)
                 .start();
+    }
+
+    @Test
+    void shouldDeleteArchivedThreadRunsWhenDeletingWfRun() {
+        WfRunId wfRunId = verifier.prepareRun(inactiveThreadRunArchivalWorkflow)
+                .waitForStatus(LHStatus.RUNNING)
+                .thenVerifyWfRun(wfRun -> {
+                    InactiveThreadRun firstArchived = lhClient.getInactiveThreadRun(InactiveThreadRunId.newBuilder()
+                            .setWfRunId(wfRun.getId())
+                            .setThreadRunNumber(1)
+                            .build());
+                    InactiveThreadRun secondArchived = lhClient.getInactiveThreadRun(InactiveThreadRunId.newBuilder()
+                            .setWfRunId(wfRun.getId())
+                            .setThreadRunNumber(2)
+                            .build());
+
+                    assertThat(firstArchived.getThreadRun().getStatus()).isEqualTo(LHStatus.COMPLETED);
+                    assertThat(secondArchived.getThreadRun().getStatus()).isEqualTo(LHStatus.COMPLETED);
+                })
+                .start();
+
+        InactiveThreadRunId firstArchivedId = InactiveThreadRunId.newBuilder()
+                .setWfRunId(wfRunId)
+                .setThreadRunNumber(1)
+                .build();
+        InactiveThreadRunId secondArchivedId = InactiveThreadRunId.newBuilder()
+                .setWfRunId(wfRunId)
+                .setThreadRunNumber(2)
+                .build();
+
+        lhClient.deleteWfRun(DeleteWfRunRequest.newBuilder().setId(wfRunId).build());
+
+        Awaitility.await()
+                .until(() -> LHTestExceptionUtil.throwsNotFound(() -> {
+                            lhClient.getInactiveThreadRun(firstArchivedId);
+                            return null;
+                        })
+                        && LHTestExceptionUtil.throwsNotFound(() -> {
+                            lhClient.getInactiveThreadRun(secondArchivedId);
+                            return null;
+                        })
+                        && LHTestExceptionUtil.throwsNotFound(() -> {
+                            lhClient.getWfRun(wfRunId);
+                            return null;
+                        }));
     }
 
     @LHWorkflow("inactive-thread-run-archival-workflow")

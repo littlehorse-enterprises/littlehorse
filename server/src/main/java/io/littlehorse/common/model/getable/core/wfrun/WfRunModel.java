@@ -209,7 +209,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     public ThreadRunIterator getThreadRunIterator() {
         GetableManager getableManager =
                 this.executionContext.castOnSupport(CoreProcessorContext.class).getableManager();
-        return new ThreadRunIterator(id, threadRunsUseMeCarefully, greatestThreadRunNumber, getableManager);
+        return new ThreadRunIterator(this, threadRunsUseMeCarefully, greatestThreadRunNumber, getableManager);
     }
 
     public ThreadRunModel getThreadRun(int threadRunNumber) {
@@ -229,7 +229,11 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         InactiveThreadRunModel potentialThreadRun =
                 getableManager.get(new InactiveThreadRunIdModel(id, threadRunNumber));
 
-        if (potentialThreadRun != null) return potentialThreadRun.getThreadRun();
+        if (potentialThreadRun != null) {
+            ThreadRunModel archivedThread = potentialThreadRun.getThreadRun();
+            archivedThread.wfRun = this;
+            return archivedThread;
+        }
 
         return null;
     }

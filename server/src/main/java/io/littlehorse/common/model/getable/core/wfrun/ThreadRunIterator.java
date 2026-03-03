@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
-import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import java.util.Iterator;
 import java.util.List;
@@ -9,18 +8,15 @@ import java.util.NoSuchElementException;
 
 public class ThreadRunIterator implements Iterator<ThreadRunModel> {
 
-    private WfRunIdModel wfRunId;
+    private WfRunModel wfRun;
     private List<ThreadRunModel> threadRuns;
     private int maxThreadRunNumber;
     private GetableManager getableManager;
     int currentIndex = 0;
 
     public ThreadRunIterator(
-            WfRunIdModel wfRunId,
-            List<ThreadRunModel> threadRuns,
-            int maxThreadRunNumber,
-            GetableManager getableManager) {
-        this.wfRunId = wfRunId;
+            WfRunModel wfRun, List<ThreadRunModel> threadRuns, int maxThreadRunNumber, GetableManager getableManager) {
+        this.wfRun = wfRun;
         this.threadRuns = threadRuns;
         this.maxThreadRunNumber = maxThreadRunNumber;
         this.getableManager = getableManager;
@@ -42,17 +38,21 @@ public class ThreadRunIterator implements Iterator<ThreadRunModel> {
         for (ThreadRunModel threadRun : threadRuns) {
             if (threadRun.getNumber() == this.currentIndex) {
                 currentIndex++;
+                threadRun.setInactive(false);
                 return threadRun;
             }
         }
 
         // Obtain from archived storage
         InactiveThreadRunModel potentialThreadRun =
-                getableManager.get(new InactiveThreadRunIdModel(this.wfRunId, currentIndex));
+                getableManager.get(new InactiveThreadRunIdModel(this.wfRun.getId(), currentIndex));
 
         if (potentialThreadRun != null) {
             currentIndex++;
-            return potentialThreadRun.getThreadRun();
+            ThreadRunModel threadRun = potentialThreadRun.getThreadRun();
+            threadRun.wfRun = this.wfRun;
+            threadRun.setInactive(true);
+            return threadRun;
         }
 
         throw new NoSuchElementException("No ThreadRun found at index " + currentIndex + ".");
