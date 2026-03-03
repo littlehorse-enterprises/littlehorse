@@ -285,6 +285,7 @@ public class LHExtension
         for (String taskDefName : taskDefNames) {
             LHTaskWorker taskWorker = (LHTaskWorker) store.get(taskDefName);
             taskWorker.close();
+            store.remove(taskDefName);
         }
     }
 }

@@ -1,0 +1,36 @@
+name: "Dispatch to lh-site"
+description: "Dispatch a workflow event to the lh-site repository"
+inputs:
+  commits:
+    description: "Space-separated list of commit SHAs to process"
+    required: true
+  source_repo:
+    description: "Source repository (owner/repo, e.g., littlehorse-enterprises/littlehorse)"
+    required: true
+  source_ref:
+    description: "Source ref (branch or tag)"
+    required: true
+  source_sha:
+    description: "Source commit SHA"
+    required: true
+  lh_site_repo:
+    description: "Target lh-site repository (owner/repo)"
+    required: true
+  gh_token:
+    description: "GitHub token for authentication"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Dispatch to lh-site workflow
+      id: dispatch
+      shell: bash
+      run: |
+        ${{ github.action_path }}/dispatch-to-lh-site.sh
+      env:
+        COMMITS: ${{ inputs.commits }}
+        SOURCE_REPO: ${{ inputs.source_repo }}
+        SOURCE_REF: ${{ inputs.source_ref }}
+        SOURCE_SHA: ${{ inputs.source_sha }}
+        LH_SITE_REPO: ${{ inputs.lh_site_repo }}
+        GH_TOKEN: ${{ inputs.gh_token }}

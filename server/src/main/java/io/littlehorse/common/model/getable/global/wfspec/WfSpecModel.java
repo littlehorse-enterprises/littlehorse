@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.global.wfspec;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.exceptions.validation.InvalidThreadSpecException;
 import io.littlehorse.common.exceptions.validation.InvalidWfSpecException;
 import io.littlehorse.common.model.AbstractGetable;
@@ -11,11 +12,9 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
-import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
-import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -38,7 +37,6 @@ import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
-import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -349,13 +347,15 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                     }
                 }
                 if (vd.getTypeDef().getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID) {
-                    WfService wfService = new WfService(ctx.metadataManager());
-                    StructDefIdModel structDefId = vd.getTypeDef().getStructDefId();
-                    StructDefModel structDef = wfService.getStructDef(structDefId.getName(), null);
-                    if (structDef == null) {
+                    try {
+                        vd.getTypeDef().validateStructDefExists(ctx.metadataManager());
+                    } catch (UnknownStructDefException e) {
                         throw new InvalidWfSpecException(
                                 "Var name %s defined in thread %s refers to non-existent StructDef %s"
-                                        .formatted(varName, tspec.getName(), structDefId.getName()));
+                                        .formatted(
+                                                varName,
+                                                tspec.getName(),
+                                                vd.getTypeDef().getStructDefId().getName()));
                     }
                 }
                 varToThreadSpec.put(varName, tspec.getName());

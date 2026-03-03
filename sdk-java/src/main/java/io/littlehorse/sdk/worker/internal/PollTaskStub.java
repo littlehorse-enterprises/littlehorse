@@ -77,6 +77,7 @@ public final class PollTaskStub implements AutoCloseable {
     @Override
     public void close() {
         try {
+            closed.set(true);
             observer.onCompleted();
         } catch (IllegalStateException ignored) {
             // Already completed
@@ -105,7 +106,7 @@ public final class PollTaskStub implements AutoCloseable {
         public void onError(Throwable t) {
             if (t instanceof StatusRuntimeException
                     && ((StatusRuntimeException) t).getStatus().getCode().equals(Status.CANCELLED.getCode())) {
-                log.debug("Connection closed");
+                log.info("Connection closed");
             } else {
                 log.error("Unexpected error from server", t);
             }

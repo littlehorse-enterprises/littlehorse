@@ -105,7 +105,9 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
 
     @Override
     public void onCompleted() {
-        taskQueueManager.onRequestDisconnected(this, tenantId);
+        if (taskDefId != null) {
+            taskQueueManager.onRequestDisconnected(this, tenantId);
+        }
     }
 
     RequestExecutionContext getFreshExecutionContext() {
