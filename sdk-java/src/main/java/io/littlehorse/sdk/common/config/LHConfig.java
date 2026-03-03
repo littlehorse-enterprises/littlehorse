@@ -526,6 +526,15 @@ public class LHConfig extends ConfigBase {
         return Integer.valueOf(getOrSetDefault(NUM_WORKER_THREADS_KEY, "2"));
     }
 
+    /**
+     * Registers a type adapter to this config. Type adapters registered to the config will be used by
+     * the SDK for type conversions anywhere that user defined classes can be found.
+     *
+     * Examples of where these Type Adapters may be used include TaskDef input and output variables and StructDef fields.
+     *
+     * @param <T> the custom Java type handled by this adapter
+     * @param adapter the type adapter to register
+     */
     public <T> void registerTypeAdapter(LHTypeAdapter<T> adapter) {
         if (typeAdaptersByClass.containsKey(adapter.getTypeClass())) {
             throw new IllegalArgumentException(
@@ -535,10 +544,26 @@ public class LHConfig extends ConfigBase {
         typeAdaptersByClass.put(adapter.getTypeClass(), adapter);
     }
 
+    /**
+     * Returns the currently registered type adapters.
+     *
+     * <p>This accessor is primarily intended for SDK internal use. External users should
+     * typically register adapters via {@link #registerTypeAdapter(LHTypeAdapter)}.
+     *
+     * @return an immutable list of registered type adapters
+     */
     public List<LHTypeAdapter<?>> getTypeAdapters() {
         return Collections.unmodifiableList(new ArrayList<>(typeAdaptersByClass.values()));
     }
 
+    /**
+     * Returns an immutable registry view of all currently registered type adapters.
+     *
+     * <p>This accessor is primarily intended for SDK internal use and wiring between SDK
+     * components.
+     *
+     * @return a type adapter registry for the current configuration
+     */
     public LHTypeAdapterRegistry getTypeAdapterRegistry() {
         return LHTypeAdapterRegistry.from(new ArrayList<>(typeAdaptersByClass.values()));
     }
