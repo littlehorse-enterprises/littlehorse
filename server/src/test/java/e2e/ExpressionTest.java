@@ -226,6 +226,13 @@ public class ExpressionTest {
                 })
                 .start();
 
+        verifier.prepareRun(expressionWf, Arg.of("bool-a", false), Arg.of("bool-b", true))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "and-result", variable -> {
+                    Assertions.assertFalse(variable.getBool());
+                })
+                .start();
+
         verifier.prepareRun(expressionWf, Arg.of("bool-a", true), Arg.of("bool-b", true))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "and-result", variable -> {
@@ -337,10 +344,8 @@ public class ExpressionTest {
             var boolB = wf.declareBool("bool-b").withDefault(true);
             var andResult = wf.declareBool("and-result");
             var orResult = wf.declareBool("or-result");
-            wf.doIf(boolA.isNotEqualTo(true).and(boolB.isNotEqualTo(false)), then -> {
-                andResult.assign(boolA.and(boolB));
-                orResult.assign(boolA.or(boolB));
-            });
+            andResult.assign(boolA.and(boolB));
+            orResult.assign(boolA.or(boolB));
         });
     }
 
