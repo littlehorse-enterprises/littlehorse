@@ -55,19 +55,7 @@ func (tw *LHTaskWorker) registerTaskDef() error {
 }
 
 func (tw *LHTaskWorker) start() error {
-	_, err := (*tw.grpcStub).GetTaskDef(context.Background(), tw.taskDefId)
-	if err != nil {
-		if status.Code(err) == codes.NotFound {
-			return fmt.Errorf(
-				"TaskDef '%s' was not found on the server. Register it before starting this worker",
-				tw.taskDefId.Name,
-			)
-		}
-		return err
-	}
-
-	tw.manager.start()
-	return nil
+	return tw.manager.start()
 }
 
 func (tw *LHTaskWorker) close() error {
@@ -207,7 +195,26 @@ func (controller *serverConnectionManager) notifyCallSuccess(response *lhproto.R
 	controller.workerHealthy = true
 }
 
-func (m *serverConnectionManager) start() {
+func (m *serverConnectionManager) validateTaskDef() error {
+	_, err := (*m.tw.grpcStub).GetTaskDef(context.Background(), m.tw.taskDefId)
+	if err != nil {
+		if status.Code(err) == codes.NotFound {
+			return fmt.Errorf(
+				"TaskDef '%s' was not found on the server. Register it before starting this worker",
+				m.tw.taskDefId.Name,
+			)
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (m *serverConnectionManager) start() error {
+	if err := m.validateTaskDef(); err != nil {
+		return err
+	}
+
 	m.running = true
 
 	// start worker threads
@@ -270,6 +277,8 @@ func (m *serverConnectionManager) start() {
 
 		time.Sleep(HEARTBEAT_INTERVAL)
 	}
+
+	return nil
 
 }
 
