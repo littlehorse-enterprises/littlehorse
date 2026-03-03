@@ -10,8 +10,8 @@ import io.littlehorse.common.model.getable.global.structdef.StructValidationExce
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InlineStruct;
-import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.Struct;
+import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -44,7 +44,8 @@ public class StructModel extends LHSerializable<Struct> implements Comparable<St
     private InlineStruct.Builder maskedInlineStructProto() {
         InlineStruct.Builder maskedStruct = InlineStruct.newBuilder();
 
-        for (Map.Entry<String, StructFieldModel> entry : inlineStruct.getFields().entrySet()) {
+        for (Map.Entry<String, StructFieldModel> entry :
+                inlineStruct.getFields().entrySet()) {
             StructField.Builder fieldBuilder = entry.getValue().toProto();
 
             if (shouldMaskField(entry.getKey())) {
