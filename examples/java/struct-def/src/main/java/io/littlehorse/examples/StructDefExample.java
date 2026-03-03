@@ -3,10 +3,12 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.PutStructDefRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
@@ -17,8 +19,10 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +74,26 @@ public class StructDefExample {
         return workers;
     }
 
+    private static void registerStructDefs(LittleHorseBlockingStub client, Class<?>... structDefClasses) {
+        for (Class<?> structDefClass : structDefClasses) {
+            registerStructDef(client, structDefClass);
+        }
+    }
+
+    private static void registerStructDef(LittleHorseBlockingStub client, Class<?> structDefClass) {
+        StructDefCompatibilityType compatibilityType = StructDefCompatibilityType.NO_SCHEMA_UPDATES;
+
+        LHStructDefType structDefType = new LHStructDefType(structDefClass);
+
+        PutStructDefRequest request = structDefType
+                .toPutStructDefRequest()
+                .toBuilder()
+                .setAllowedUpdates(compatibilityType)
+                .build();
+
+        client.putStructDef(request);
+    }
+
     public static void main(String[] args) throws IOException {
         if (args.length == 0) {
             runWorkers();
@@ -88,9 +112,10 @@ public class StructDefExample {
         // New worker
         List<LHTaskWorker> workers = getTaskWorkers(config);
 
+        registerStructDefs(config.getBlockingStub(), ParkingTicketReport.class, Person.class, Address.class);
+
         // Register tasks if they don't exist
         for (LHTaskWorker worker : workers) {
-            worker.registerStructDefs(StructDefCompatibilityType.NO_SCHEMA_UPDATES);
             worker.registerTaskDef();
         }
 
