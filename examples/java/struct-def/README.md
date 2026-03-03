@@ -12,6 +12,8 @@ In this example, you will find three Java classes each representing their own St
 
 Note that each class is a POJO (Plain Old Java Object) with a simple `@LHStructDef` annotation attached to it.
 
+In `Person`, the `homeAddress` field is marked with `@LHStructField(masked = true)`. This is a common privacy use case: your task workers still need the full address to deliver or mail something, but public API responses should not expose that sensitive PII.
+
 #### Task Workers
 
 In `MyWorker.java`, you will find a Task Method `get-car-owner` which takes in a `ParkingTicketReport` as its first parameter and returns the `Person` who owns the car.

@@ -35,7 +35,8 @@ public class StructModelMaskingTest {
         RequestExecutionContext requestContext = createRequestContext(structDef);
 
         Struct structProto = Struct.newBuilder()
-                .setStructDefId(StructDefId.newBuilder().setName("secret-struct").setVersion(0))
+                .setStructDefId(
+                        StructDefId.newBuilder().setName("secret-struct").setVersion(0))
                 .setStruct(InlineStruct.newBuilder()
                         .putFields(
                                 "secretCode",
@@ -55,7 +56,8 @@ public class StructModelMaskingTest {
                 .isEqualTo(1234L);
 
         ReadOnlyMetadataManager metadataManager = mock(ReadOnlyMetadataManager.class);
-        when(metadataManager.getLastFromPrefix(anyString(), eq(StructDefModel.class))).thenReturn(structDef);
+        when(metadataManager.getLastFromPrefix(anyString(), eq(StructDefModel.class)))
+                .thenReturn(structDef);
 
         assertDoesNotThrow(() -> structModel.validateAgainstStructDefId(metadataManager));
 
@@ -75,7 +77,8 @@ public class StructModelMaskingTest {
         RequestExecutionContext requestContext = createRequestContext(structDef);
 
         Struct structProto = Struct.newBuilder()
-                .setStructDefId(StructDefId.newBuilder().setName("secret-struct").setVersion(0))
+                .setStructDefId(
+                        StructDefId.newBuilder().setName("secret-struct").setVersion(0))
                 .setStruct(InlineStruct.newBuilder()
                         .putFields(
                                 "secretCode",
@@ -87,7 +90,8 @@ public class StructModelMaskingTest {
         StructModel structModel = StructModel.fromProto(structProto, StructModel.class, requestContext);
 
         ReadOnlyMetadataManager metadataManager = mock(ReadOnlyMetadataManager.class);
-        when(metadataManager.getLastFromPrefix(anyString(), eq(StructDefModel.class))).thenReturn(structDef);
+        when(metadataManager.getLastFromPrefix(anyString(), eq(StructDefModel.class)))
+                .thenReturn(structDef);
 
         assertThatThrownBy(() -> structModel.validateAgainstStructDefId(metadataManager))
                 .isInstanceOf(StructValidationException.class);

@@ -80,6 +80,23 @@ public class LHStructDefTypeTest {
         }
     }
 
+    @LHStructDef("field-annotation-demo")
+    @Getter
+    class FieldAnnotationDemo {
+        @LHStructField(masked = true)
+        public String secret;
+
+        @LHStructField(name = "publicLabel")
+        public String displayName;
+    }
+
+    @LHStructDef("boolean-field-annotation-demo")
+    @Getter
+    class BooleanFieldAnnotationDemo {
+        @LHStructField(name = "isPersonAlive")
+        public boolean isAlive;
+    }
+
     @Test
     public void getEmptyInlineStructDefWhenClassDoesNotHaveGettersOrSetters() {
         LHStructDefType authorClassType = new LHStructDefType(AuthorFieldsOnly.class);
@@ -198,6 +215,42 @@ public class LHStructDefTypeTest {
                         "customFieldName",
                         StructFieldDef.newBuilder()
                                 .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
+                                .build())
+                .build();
+
+        assertThat(actualInlineStructDef).isEqualTo(expectedInlineStructDef);
+    }
+
+    @Test
+    public void getInlineStructDefUsesLHStructFieldAnnotationOnClassFields() {
+        InlineStructDef actualInlineStructDef = new LHStructDefType(FieldAnnotationDemo.class).getInlineStructDef();
+        InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
+                .putFields(
+                        "secret",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.STR)
+                                        .setMasked(true))
+                                .build())
+                .putFields(
+                        "publicLabel",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .build())
+                .build();
+
+        assertThat(actualInlineStructDef).isEqualTo(expectedInlineStructDef);
+    }
+
+    @Test
+    public void getInlineStructDefResolvesBooleanIsPrefixFieldAnnotations() {
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(BooleanFieldAnnotationDemo.class).getInlineStructDef();
+        InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
+                .putFields(
+                        "isPersonAlive",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.BOOL))
                                 .build())
                 .build();
 

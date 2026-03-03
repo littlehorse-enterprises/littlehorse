@@ -12,7 +12,6 @@ public class ParkingTicketReport {
     private String vehicleMake;
     private String vehicleModel;
     private String licensePlateNumber;
-    private Date createdAt;
 
     public ParkingTicketReport() {}
 
@@ -20,13 +19,10 @@ public class ParkingTicketReport {
         this.vehicleMake = vehicleMake;
         this.vehicleModel = vehicleModel;
         this.licensePlateNumber = licensePlateNumber;
-        this.createdAt = createdAt;
     }
 
     @Override
     public String toString() {
-        return String.format(
-                "%s %s, Plate Number: %s, issued at %s",
-                vehicleMake, vehicleModel, licensePlateNumber, createdAt.toString());
+        return String.format("%s %s, Plate Number: %s", vehicleMake, vehicleModel, licensePlateNumber);
     }
 }
