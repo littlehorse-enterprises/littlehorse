@@ -18,12 +18,19 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TenantId;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -119,11 +126,13 @@ public class LHConfig extends ConfigBase {
     private OAuthClient oauthClient;
     private OAuthConfig oauthConfig;
     private OAuthCredentialsProvider oauthCredentialsProvider;
+    private Map<Class<?>, LHTypeAdapter<?>> typeAdaptersByClass;
 
     /** Creates an LHConfig. Loads default values for config from env vars. */
     public LHConfig() {
         super();
         createdChannels = new HashMap<>();
+        typeAdaptersByClass = new LinkedHashMap<>();
     }
 
     /**
@@ -134,6 +143,7 @@ public class LHConfig extends ConfigBase {
     public LHConfig(Properties props) {
         super(props);
         createdChannels = new HashMap<>();
+        typeAdaptersByClass = new LinkedHashMap<>();
     }
 
     /**
@@ -144,6 +154,7 @@ public class LHConfig extends ConfigBase {
     public LHConfig(Path propLocation) {
         super(propLocation);
         createdChannels = new HashMap<>();
+        typeAdaptersByClass = new LinkedHashMap<>();
     }
 
     /**
@@ -154,11 +165,13 @@ public class LHConfig extends ConfigBase {
     public LHConfig(String propLocation) {
         super(propLocation);
         createdChannels = new HashMap<>();
+        typeAdaptersByClass = new LinkedHashMap<>();
     }
 
     private LHConfig(ConfigSource configSource) {
         super(configSource);
         createdChannels = new HashMap<>();
+        typeAdaptersByClass = new LinkedHashMap<>();
     }
 
     public static LHConfigBuilder newBuilder() {
@@ -217,6 +230,7 @@ public class LHConfig extends ConfigBase {
     public LHConfig(Map<String, Object> configs) {
         super(configs);
         createdChannels = new HashMap<>();
+        typeAdaptersByClass = new LinkedHashMap<>();
     }
 
     /**
@@ -511,5 +525,22 @@ public class LHConfig extends ConfigBase {
      */
     public int getWorkerThreads() {
         return Integer.valueOf(getOrSetDefault(NUM_WORKER_THREADS_KEY, "2"));
+    }
+
+    public <T> void registerTypeAdapter(LHTypeAdapter<T> adapter) {
+        if (typeAdaptersByClass.containsKey(adapter.getTypeClass())) {
+             throw new IllegalArgumentException(
+                    "A type adapter for " + adapter.getTypeClass().getName() + " is already registered to this worker");
+        }
+
+        typeAdaptersByClass.put(adapter.getTypeClass(), adapter);
+    }
+    
+    public List<LHTypeAdapter<?>> getTypeAdapters() {
+        return Collections.unmodifiableList(new ArrayList<>(typeAdaptersByClass.values()));
+    }
+
+    public LHTypeAdapterRegistry getTypeAdapterRegistry() {
+        return LHTypeAdapterRegistry.from(new ArrayList<>(typeAdaptersByClass.values()));
     }
 }

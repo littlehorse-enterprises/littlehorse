@@ -14,6 +14,9 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.WorkerContext;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,10 +26,22 @@ public class VariableMapping {
     private String name;
     private Class<?> type;
     private int position;
+    private LHTypeAdapterRegistry typeAdapterRegistry;
 
-    public VariableMapping(TaskDef taskDef, int position, Class<?> type, String javaParamName)
+    public VariableMapping(TaskDef taskDef, int position, Class<?> type, String javaParamName, List<LHTypeAdapter<?>> typeAdapters)
+            throws TaskSchemaMismatchError {
+        this(taskDef, position, type, javaParamName, LHTypeAdapterRegistry.from(typeAdapters));
+    }
+
+    public VariableMapping(
+            TaskDef taskDef,
+            int position,
+            Class<?> type,
+            String javaParamName,
+            LHTypeAdapterRegistry typeAdapterRegistry)
             throws TaskSchemaMismatchError {
         this.type = type;
+        this.typeAdapterRegistry = typeAdapterRegistry == null ? LHTypeAdapterRegistry.empty() : typeAdapterRegistry;
 
         if (type.equals(WorkerContext.class)) return;
         this.position = position;
@@ -79,6 +94,17 @@ public class VariableMapping {
 
     private Optional<String> validatePrimitiveType(VariableType input, Class<?> type) {
         String msg = null;
+
+        Optional<LHTypeAdapter<?>> maybeAdapter = LHLibUtil.getTypeAdapterForClass(type, typeAdapterRegistry);
+        if (maybeAdapter.isPresent()) {
+            LHTypeAdapter<?> adapter = maybeAdapter.get();
+            if (adapter.getVariableType() != input) {
+                return Optional.of("TaskDef provides " + input + ", but adapter for " + type.getName()
+                        + " maps to " + adapter.getVariableType());
+            }
+            return Optional.empty();
+        }
+
         switch (input) {
             case INT:
                 if (!LHLibUtil.isINT(type)) {
@@ -138,7 +164,7 @@ public class VariableMapping {
         VariableValue val = assignment.getValue();
 
         try {
-            return LHLibUtil.varValToObj(val, this.type);
+            return LHLibUtil.varValToObj(val, this.type, this.typeAdapterRegistry);
         } catch (LHSerdeException e) {
             throw new InputVarSubstitutionException(
                     "Failed serializing Java object for variable: " + taskDefParamName, e);

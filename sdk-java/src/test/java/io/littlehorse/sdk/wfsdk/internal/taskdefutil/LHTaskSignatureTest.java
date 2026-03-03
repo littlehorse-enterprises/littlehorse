@@ -12,7 +12,10 @@ import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
+import io.littlehorse.sdk.worker.adapter.LHStringAdapter;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.util.List;
+import java.util.UUID;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +44,11 @@ public class LHTaskSignatureTest {
 
         @LHTaskMethod(value = "description-task", description = "description-test")
         public void descriptionTask() {}
+
+        @LHTaskMethod("adapter-task")
+        public UUID adapterTask(UUID in) {
+            return in;
+        }
     }
 
     @LHStructDef("car")
@@ -180,5 +188,38 @@ public class LHTaskSignatureTest {
                 new LHStructDefType(Person.class), new LHStructDefType(Garage.class), new LHStructDefType(Car.class));
 
         assertThat(actualClassList).isEqualTo(expectedClassList);
+    }
+
+    @Test
+    void shouldUseTypeAdapterForParameterAndReturnType() {
+        LHStringAdapter<UUID> uuidAdapter = new LHStringAdapter<UUID>() {
+            @Override
+            public String toString(UUID src) {
+                return src.toString();
+            }
+
+            @Override
+            public UUID fromString(String src) {
+                return UUID.fromString(src);
+            }
+
+            @Override
+            public Class<UUID> getTypeClass() {
+                return UUID.class;
+            }
+        };
+
+        LHTaskSignature taskSignature =
+            new LHTaskSignature(
+                "adapter-task",
+                new MyWorker(),
+                "adapter-task",
+                LHTypeAdapterRegistry.from(List.of(uuidAdapter)));
+
+        TypeDefinition inputTypeDef = taskSignature.getVariableDefs().get(0).getTypeDef();
+        TypeDefinition returnTypeDef = taskSignature.getReturnType().getReturnType();
+
+        assertThat(inputTypeDef.getPrimitiveType()).isEqualTo(VariableType.STR);
+        assertThat(returnTypeDef.getPrimitiveType()).isEqualTo(VariableType.STR);
     }
 }
