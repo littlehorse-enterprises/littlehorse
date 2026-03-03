@@ -86,7 +86,11 @@ public class LHStructProperty {
      * @return a StructFieldDef representing this property
      */
     public StructFieldDef toStructFieldDef() {
-        LHClassType propertyClass = this.getPropertyType();
+        return toStructFieldDef(LHTypeAdapterRegistry.empty());
+    }
+
+    public StructFieldDef toStructFieldDef(LHTypeAdapterRegistry typeAdapterRegistry) {
+        LHClassType propertyClass = this.getPropertyType(typeAdapterRegistry);
         TypeDefinition typeDef = propertyClass.getTypeDefinition().toBuilder()
                 .setMasked(this.isMasked())
                 .build();
@@ -124,7 +128,11 @@ public class LHStructProperty {
      * @return An optional LHClassType, which will be empty if the property contains the LHStructIgnore annotation on its getter or setters
      */
     public LHClassType getPropertyType() {
-        return LHClassType.fromJavaClass(pd.getPropertyType());
+        return getPropertyType(LHTypeAdapterRegistry.empty());
+    }
+
+    public LHClassType getPropertyType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry);
     }
 
     private <T extends Annotation> T getAnnotation(Class<T> annotationClass) {

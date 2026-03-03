@@ -3,6 +3,7 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.StructDef;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
@@ -49,6 +50,11 @@ public class LHTaskSignatureTest {
         public UUID adapterTask(UUID in) {
             return in;
         }
+
+        @LHTaskMethod("adapter-struct-task")
+        public UuidHolder adapterStructTask(UuidHolder in) {
+            return in;
+        }
     }
 
     @LHStructDef("car")
@@ -74,6 +80,12 @@ public class LHTaskSignatureTest {
         String address;
         int size;
         Person owner;
+    }
+
+    @LHStructDef("uuid-holder")
+    @Getter
+    class UuidHolder {
+        UUID id;
     }
 
     @Test
@@ -217,5 +229,40 @@ public class LHTaskSignatureTest {
 
         assertThat(inputTypeDef.getPrimitiveType()).isEqualTo(VariableType.STR);
         assertThat(returnTypeDef.getPrimitiveType()).isEqualTo(VariableType.STR);
+    }
+
+    @Test
+    void shouldUseTypeAdapterForStructDefFieldTypes() {
+        LHStringAdapter<UUID> uuidAdapter = new LHStringAdapter<UUID>() {
+            @Override
+            public String toString(UUID src) {
+                return src.toString();
+            }
+
+            @Override
+            public UUID fromString(String src) {
+                return UUID.fromString(src);
+            }
+
+            @Override
+            public Class<UUID> getTypeClass() {
+                return UUID.class;
+            }
+        };
+
+        LHTaskSignature taskSignature = new LHTaskSignature(
+                "adapter-struct-task",
+                new MyWorker(),
+                "adapter-struct-task",
+                LHTypeAdapterRegistry.from(List.of(uuidAdapter)));
+
+        StructDef structDef = taskSignature.getStructDefDependencies().stream()
+                .map(LHStructDefType::toStructDef)
+                .filter(sd -> sd.getId().getName().equals("uuid-holder"))
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(structDef.getStructDef().getFieldsOrThrow("id").getFieldType().getPrimitiveType())
+                .isEqualTo(VariableType.STR);
     }
 }

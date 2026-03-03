@@ -540,7 +540,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     @Override
     public WfRunVariable declareStruct(String name, Class<?> clazz) {
-        return addStructVariable(name, new LHStructDefType(clazz));
+        return addStructVariable(name, new LHStructDefType(clazz, parent.getTypeAdapterRegistry()));
     }
 
     // TODO: Complete Arrays implementation

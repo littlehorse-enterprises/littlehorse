@@ -179,7 +179,7 @@ public class LHTaskWorker implements Closeable {
      *                          their existing StructDef schemas based on this compatibility type.
      */
     public void validateStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
-        LHStructDefType lhStructDefType = new LHStructDefType(structClass);
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass, config.getTypeAdapterRegistry());
 
         validateStructDef(lhStructDefType, compatibilityType);
     }
@@ -225,7 +225,7 @@ public class LHTaskWorker implements Closeable {
      *                          according to this compatibility type.
      */
     public void registerStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
-        LHStructDefType lhStructDefType = new LHStructDefType(structClass);
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass, config.getTypeAdapterRegistry());
 
         registerStructDef(lhStructDefType, compatibilityType);
     }

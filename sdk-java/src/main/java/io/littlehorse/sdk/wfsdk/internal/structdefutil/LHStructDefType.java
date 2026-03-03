@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -21,11 +22,17 @@ import java.util.stream.Collectors;
 public class LHStructDefType extends LHClassType {
     private List<LHStructDefType> dependencyClasses;
     private InlineStructDef inlineStructDef;
+    private final LHTypeAdapterRegistry typeAdapterRegistry;
 
     private List<LHStructProperty> structProperties;
 
     public LHStructDefType(Class<?> clazz) {
+        this(clazz, LHTypeAdapterRegistry.empty());
+    }
+
+    public LHStructDefType(Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) {
         super(clazz);
+        this.typeAdapterRegistry = typeAdapterRegistry == null ? LHTypeAdapterRegistry.empty() : typeAdapterRegistry;
 
         if (!clazz.isAnnotationPresent(LHStructDef.class)) {
             throw new IllegalArgumentException(
@@ -34,6 +41,10 @@ public class LHStructDefType extends LHClassType {
         }
 
         this.inlineStructDef = this.buildInlineStructDef();
+    }
+
+    public LHTypeAdapterRegistry getTypeAdapterRegistry() {
+        return typeAdapterRegistry;
     }
 
     @Override
@@ -122,7 +133,7 @@ public class LHStructDefType extends LHClassType {
         tempMarked.add(this);
 
         for (LHStructProperty property : this.getStructProperties()) {
-            LHClassType coreType = property.getPropertyType().getCoreComponentType();
+            LHClassType coreType = property.getPropertyType(typeAdapterRegistry).getCoreComponentType(typeAdapterRegistry);
 
             if (coreType instanceof LHPrimitiveType) {
                 continue;
@@ -209,7 +220,7 @@ public class LHStructDefType extends LHClassType {
 
         try {
             for (LHStructProperty property : this.getStructProperties()) {
-                inlineStructDef.putFields(property.getFieldName(), property.toStructFieldDef());
+                inlineStructDef.putFields(property.getFieldName(), property.toStructFieldDef(typeAdapterRegistry));
             }
         } catch (IntrospectionException e) {
             throw new IllegalStateException("Cannot build InlineStructDef for type: " + this.clazz.getName(), e);
