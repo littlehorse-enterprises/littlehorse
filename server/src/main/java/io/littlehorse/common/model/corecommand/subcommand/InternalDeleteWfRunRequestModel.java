@@ -110,6 +110,12 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
 
         while (threadRunIterator.hasNext()) {
             ThreadRunModel thread = threadRunIterator.next();
+            if (thread.getNumber() < startingThread) {
+                continue;
+            }
+
+            int nodeRunPositionStart = thread.getNumber() == startingThread ? startingNodeRun : 0;
+
             if (thread.isInactive()) {
                 inactiveThreadRunIds.add(new InactiveThreadRunIdModel(wfRunId, thread.getNumber()));
             }
@@ -120,7 +126,7 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
                 nodeOutputStoreKeys.add(storeKey);
             });
 
-            for (int nodeRunPosition = startingNodeRun;
+            for (int nodeRunPosition = nodeRunPositionStart;
                     nodeRunPosition <= thread.getCurrentNodePosition();
                     nodeRunPosition++) {
                 thingsDone++;
@@ -156,8 +162,6 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
                     return result.build();
                 }
             }
-
-            startingNodeRun = 0;
 
             // Delete the variables belonging to that ThreadRun
             ThreadSpecModel threadSpec = thread.getThreadSpec();
