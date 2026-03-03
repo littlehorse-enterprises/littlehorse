@@ -35,9 +35,21 @@ public class ChildThreadExample {
             parentVar.assign(wf.execute("parent-task-1", parentVar));
 
             SpawnedThread childThread = wf.spawnThread(
-                    child -> { // this is the child workflow thread
+                    child -> {
                         WfRunVariable childVar = child.declareInt("child-var");
-                        child.execute("child-task", childVar);
+                        childVar.assign(child.execute("child-task-1", childVar));
+
+                        SpawnedThread grandchildThread = child.spawnThread(
+                                grandchild -> {
+                                    WfRunVariable grandchildVar = grandchild.declareInt("grandchild-var");
+                                    grandchild.execute("grandchild-task", grandchildVar);
+                                },
+                                "spawned-grandchild-thread",
+                                Map.of("grandchild-var", childVar));
+
+                        child.waitForThreads(SpawnedThreads.of(grandchildThread));
+
+                        child.execute("child-task-2");
                     },
                     "spawned-thread",
                     Map.of("child-var", parentVar));
