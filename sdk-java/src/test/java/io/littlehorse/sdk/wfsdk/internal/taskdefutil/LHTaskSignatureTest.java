@@ -209,12 +209,8 @@ public class LHTaskSignatureTest {
             }
         };
 
-        LHTaskSignature taskSignature =
-            new LHTaskSignature(
-                "adapter-task",
-                new MyWorker(),
-                "adapter-task",
-                LHTypeAdapterRegistry.from(List.of(uuidAdapter)));
+        LHTaskSignature taskSignature = new LHTaskSignature(
+                "adapter-task", new MyWorker(), "adapter-task", LHTypeAdapterRegistry.from(List.of(uuidAdapter)));
 
         TypeDefinition inputTypeDef = taskSignature.getVariableDefs().get(0).getTypeDef();
         TypeDefinition returnTypeDef = taskSignature.getReturnType().getReturnType();
