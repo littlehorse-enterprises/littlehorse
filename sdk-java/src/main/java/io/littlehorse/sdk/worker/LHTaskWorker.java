@@ -282,11 +282,10 @@ public class LHTaskWorker implements Closeable {
 
             } while (System.currentTimeMillis() < timeout);
 
-        if (this.taskDef == null) {
-        throw new IllegalStateException(
-            "TaskDef '" + taskDefName
-                + "' was not found on the server. Register it before starting this worker.");
-        }
+            if (this.taskDef == null) {
+                throw new IllegalStateException("TaskDef '" + taskDefName
+                        + "' was not found on the server. Register it before starting this worker.");
+            }
         }
 
         LHTaskSignature signature =
