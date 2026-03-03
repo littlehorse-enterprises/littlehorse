@@ -8,10 +8,8 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
-import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 
 class BuilderUtil {
@@ -126,16 +124,7 @@ class BuilderUtil {
             return ReturnType.newBuilder().build();
         }
 
-        if (!payloadClass.isAnnotationPresent(LHStructDef.class)) {
-            VariableType primitiveType = LHLibUtil.javaClassToLHVarType(payloadClass, typeAdapterRegistry);
-            return ReturnType.newBuilder()
-                    .setReturnType(TypeDefinition.newBuilder()
-                            .setPrimitiveType(primitiveType)
-                            .build())
-                    .build();
-        }
-
-        LHClassType lhClassType = LHClassType.fromJavaClass(payloadClass);
+        LHClassType lhClassType = LHClassType.fromJavaClass(payloadClass, typeAdapterRegistry);
 
         return ReturnType.newBuilder()
                 .setReturnType(lhClassType.getTypeDefinition())

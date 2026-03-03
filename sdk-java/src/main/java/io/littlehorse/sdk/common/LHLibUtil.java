@@ -573,7 +573,7 @@ public class LHLibUtil {
 
     private static Object deserializeStructToObject(
             Struct struct, Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
-        LHClassType lhClassType = LHClassType.fromJavaClass(clazz);
+        LHClassType lhClassType = LHClassType.fromJavaClass(clazz, typeAdapterRegistry);
 
         if (!(lhClassType instanceof LHStructDefType)) {
             throw new LHSerdeException("Failed deserializing Struct into class of type: " + lhClassType);
@@ -803,7 +803,7 @@ public class LHLibUtil {
     }
 
     public static Struct serializeToStruct(Object o, LHTypeAdapterRegistry typeAdapterRegistry) {
-        LHClassType lhClassType = LHClassType.fromJavaClass(o.getClass());
+        LHClassType lhClassType = LHClassType.fromJavaClass(o.getClass(), typeAdapterRegistry);
 
         if (!(lhClassType instanceof LHStructDefType))
             throw new IllegalStateException("Cannot serialize given object to Struct");

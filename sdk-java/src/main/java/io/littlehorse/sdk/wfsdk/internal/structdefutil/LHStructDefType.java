@@ -19,6 +19,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * LHStructDefType is a class that represents a StructDef type in the LittleHorse workflow SDK.
+ *
+ * It extends LHClassType and provides additional functionality specific to StructDefs, such as handling dependencies between StructDefs and generating StructDef definitions from Java classes.
+ */
 public class LHStructDefType extends LHClassType {
     private List<LHStructDefType> dependencyClasses;
     private InlineStructDef inlineStructDef;

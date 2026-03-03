@@ -5,6 +5,11 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 
+/**
+ * LHPrimitiveType is a class that represents a primitive type in the LittleHorse workflow SDK.
+ *
+ * It extends LHClassType and provides functionality specific to primitive types, such as generating TypeDefinitions for primitive types and handling type adapters for primitive types.
+ */
 public class LHPrimitiveType extends LHClassType {
 
     private final LHTypeAdapterRegistry typeAdapterRegistry;

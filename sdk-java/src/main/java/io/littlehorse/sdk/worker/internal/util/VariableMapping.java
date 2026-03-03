@@ -76,7 +76,7 @@ public class VariableMapping {
     private Optional<String> validateStructDefType(StructDefId input, Class<?> type) {
         String msg = null;
 
-        LHClassType lhClassType = LHClassType.fromJavaClass(type);
+        LHClassType lhClassType = LHClassType.fromJavaClass(type, typeAdapterRegistry);
 
         if (!(lhClassType instanceof LHStructDefType)) {
             msg = "TaskDef provides StructDef, func accepts non-StructDef type " + type;

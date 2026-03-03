@@ -7,13 +7,31 @@ import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
+/**
+ * LHClassType is an abstract class that represents a Java class type in the context of LittleHorse's workflow SDK.
+ *
+ * It provides methods for creating instances of the class, retrieving type definitions, and handling type adapters.
+ */
 public abstract class LHClassType {
     protected Class<?> clazz;
 
+    /**
+     * @deprecated Use {@link #fromJavaClass(Class, LHTypeAdapterRegistry)} instead, which allows for proper handling of type adapters.
+     * @param classType the Java class to convert to an LHClassType
+     * @return an LHClassType representing the provided Java class
+     */
+    @Deprecated(since = "0.16.0", forRemoval = true)
     public static LHClassType fromJavaClass(Class<?> classType) {
         return fromJavaClass(classType, LHTypeAdapterRegistry.empty());
     }
 
+    /**
+     * Creates an LHClassType from a given Java class, using the provided LHTypeAdapterRegistry to handle any type adapters.
+     *
+     * @param classType the Java class to convert to an LHClassType
+     * @param typeAdapterRegistry the LHTypeAdapterRegistry to use for handling type adapters
+     * @return an LHClassType representing the provided Java class
+     */
     public static LHClassType fromJavaClass(Class<?> classType, LHTypeAdapterRegistry typeAdapterRegistry) {
         if (classType == null) {
             throw new IllegalArgumentException("Class type should not be null");
