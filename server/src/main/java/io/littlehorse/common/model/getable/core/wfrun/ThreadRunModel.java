@@ -91,6 +91,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
     private CoreProcessorContext processorContext;
+
+    // Used to mark ThreadRuns returned by the `ThreadRunIterator` as `inactive` or not.
     private boolean inactive;
 
     public ThreadRunModel() {}

@@ -92,7 +92,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     public Date endTime;
 
     // Using this directly is dangerous; better to use `WfRunModel#getThreadRun()`.
-    // TODO: Carefully examine where this is used
     @Getter(AccessLevel.NONE)
     private List<ThreadRunModel> threadRunsUseMeCarefully = new ArrayList<>();
 
@@ -107,7 +106,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     public WfRunModel() {}
 
     public WfRunModel(CoreProcessorContext processorContext) {
-        this.executionContext = Objects.requireNonNull(processorContext);
+        this.executionContext = processorContext;
     }
 
     public Date getCreatedAt() {
@@ -268,7 +267,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         if (proto.hasParentTrigger()) {
             parentTrigger = ParentTriggerReferenceModel.fromProto(proto.getParentTrigger(), context);
         }
-        this.executionContext = Objects.requireNonNull(context);
+        this.executionContext = context;
         this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
     }
 
@@ -511,9 +510,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         nodeRun.maybeHalt(processorContext);
     }
 
-    /*
-    CONCEPT METHOD (would merge with the other advance method if things work out)
-    */
     public void advance(Date time) {
         boolean statusChanged = true;
         // We repeatedly advance each thread until we have a run wherein the entire
