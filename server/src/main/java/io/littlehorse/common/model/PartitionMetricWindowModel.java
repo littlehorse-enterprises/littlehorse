@@ -102,11 +102,14 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         TenantIdModel tenantId = processorContext.authorization().tenantId();
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
-        PartitionMetricWindowModel metricWindow = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
         PartitionMetricsMemoryStore memoryStore = processorContext.getPartitionMetricsMemoryStore();
-        PartitionMetricWindowModel existingWindow = memoryStore.get(metricWindow.getStoreKey());
-        if (existingWindow != null) {
-            metricWindow = existingWindow;
+        PartitionMetricWindowModel newWindow = new PartitionMetricWindowModel(wfSpecId, tenantId, windowStart);
+        PartitionMetricWindowModel metricWindow = memoryStore.get(newWindow.getStoreKey());
+        if (metricWindow == null) {
+            metricWindow = clusterScopedStore.get(newWindow.getStoreKey(), PartitionMetricWindowModel.class);
+        }
+        if (metricWindow == null) {
+            metricWindow = newWindow;
         }
         metricWindow.incrementWfCount(previousStatus, newStatus, startTime, endTime);
         clusterScopedStore.put(metricWindow);

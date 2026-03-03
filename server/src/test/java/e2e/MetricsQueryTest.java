@@ -43,7 +43,7 @@ public class MetricsQueryTest {
                     .start();
         }
 
-        Thread.sleep(35000);
+        Thread.sleep(65000);
 
         long now = System.currentTimeMillis();
         long oneHourAgo = now - (60 * 60 * 1000);
