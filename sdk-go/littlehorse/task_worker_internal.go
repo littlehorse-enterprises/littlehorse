@@ -2,6 +2,7 @@ package littlehorse
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"reflect"
 	"runtime/debug"
@@ -11,6 +12,8 @@ import (
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -52,6 +55,17 @@ func (tw *LHTaskWorker) registerTaskDef() error {
 }
 
 func (tw *LHTaskWorker) start() error {
+	_, err := (*tw.grpcStub).GetTaskDef(context.Background(), tw.taskDefId)
+	if err != nil {
+		if status.Code(err) == codes.NotFound {
+			return fmt.Errorf(
+				"TaskDef '%s' was not found on the server. Register it before starting this worker",
+				tw.taskDefId.Name,
+			)
+		}
+		return err
+	}
+
 	tw.manager.start()
 	return nil
 }
