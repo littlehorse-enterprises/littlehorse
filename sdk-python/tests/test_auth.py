@@ -99,7 +99,6 @@ class TestOAuthCredentialsProvider(unittest.TestCase):
 
 
 class TestMetadataInterceptor(unittest.TestCase):
-
     def setUp(self):
         self.tenant_a_interceptor = MetadataInterceptor("A")
 
@@ -107,7 +106,6 @@ class TestMetadataInterceptor(unittest.TestCase):
         self.assertEqual(client_call_details.metadata[0], (TENANT_ID_HEADER, "A"))
 
     def test_add_tenant_metadata_to_unary_unary(self):
-
         request_details = MagicMock()
         request_details.return_value.metadata = None
         request_details.return_value.method = "my-method"
