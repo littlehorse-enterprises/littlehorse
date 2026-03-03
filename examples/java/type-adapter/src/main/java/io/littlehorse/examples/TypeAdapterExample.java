@@ -63,7 +63,7 @@ public class TypeAdapterExample {
         return workers;
     }
     
-    public void registerTypeAdapters(LHConfig config) {
+    public static void registerTypeAdapters(LHConfig config) {
         config.registerTypeAdapter(new LHStringAdapter<UUID>() {
             @Override
             public String toString(UUID src) {
@@ -73,6 +73,11 @@ public class TypeAdapterExample {
             @Override
             public UUID fromString(String src) {
                 return UUID.fromString(src);
+            }
+
+            @Override
+            public Class<UUID> getTypeClass() {
+                return UUID.class;
             }
         });
     }
