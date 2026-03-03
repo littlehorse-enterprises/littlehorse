@@ -54,7 +54,7 @@ public class BasicExample {
 
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
-        
+
         // Register task
         worker.registerTaskDef();
 
