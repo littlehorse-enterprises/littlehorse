@@ -56,6 +56,12 @@ public class ConditionalsTest {
     @LHWorkflow("test-conditionals-not-in-workflow")
     private Workflow workflowNotIn;
 
+    @LHWorkflow("test-conditionals-does-contain-workflow")
+    private Workflow workflowDoesContain;
+
+    @LHWorkflow("test-conditionals-does-not-contain-workflow")
+    private Workflow workflowDoesNotContain;
+
     @LHWorkflow("test-nested-if")
     private Workflow workflowNestedIf;
 
@@ -349,6 +355,75 @@ public class ConditionalsTest {
                     Arguments.of(new ConditionalsTest.InputObj("o", "one"), false),
                     Arguments.of(new ConditionalsTest.InputObj(2, "2"), false),
                     Arguments.of(new ConditionalsTest.InputObj(2, Map.of("a", 1)), true));
+        }
+    }
+
+    @Nested
+    class DoesContain {
+        @ParameterizedTest
+        @MethodSource("provideSuccessArguments")
+        void shouldCompleteDoesContainWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
+            workflowVerifier
+                    .prepareRun(workflowDoesContain, Arg.of("input", inputObject))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(expectedOutput))
+                    .start();
+        }
+
+        private static Stream<Arguments> provideSuccessArguments() {
+            // lhs is the collection/string, rhs is the element to search for
+            return Stream.of(
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("a", 1), Map.of("a", 1)), false),
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("hi", 2), "hi"), true),
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("hi", 2), 2), false),
+                    Arguments.of(
+                            new ConditionalsTest.InputObj(Arrays.asList(0), Arrays.asList(0)),
+                            false), // Will check for '[0]'
+                    Arguments.of(new ConditionalsTest.InputObj(Arrays.asList(0), 0), true),
+                    Arguments.of(new ConditionalsTest.InputObj("one", 1), false),
+                    Arguments.of(new ConditionalsTest.InputObj("one", "o"), true),
+                    Arguments.of(new ConditionalsTest.InputObj("2", 2), true),
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("a", 1), 2), false));
+        }
+    }
+
+    @Nested
+    class DoesNotContain {
+        @ParameterizedTest
+        @MethodSource("provideSuccessArguments")
+        void shouldCompleteDoesNotContainWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
+            workflowVerifier
+                    .prepareRun(workflowDoesNotContain, Arg.of("input", inputObject))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(expectedOutput))
+                    .start();
+        }
+
+        @Test
+        void shouldFailDoesNotContainWorkflowWithInvalidArguments() {
+            InputObj inputObject = new InputObj(1.0, 1);
+            workflowVerifier
+                    .prepareRun(workflowDoesNotContain, Arg.of("input", inputObject))
+                    .waitForStatus(LHStatus.ERROR)
+                    .start();
+        }
+
+        private static Stream<Arguments> provideSuccessArguments() {
+            // lhs is the collection/string, rhs is the element to search for
+            return Stream.of(
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("a", 1), Map.of("a", 1)), true),
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("hi", 2), "hi"), false),
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("hi", 2), 2), true),
+                    Arguments.of(
+                            new ConditionalsTest.InputObj(Arrays.asList(0), Arrays.asList(0)),
+                            true), // Will check for '[0]'
+                    Arguments.of(new ConditionalsTest.InputObj(Arrays.asList(0), 0), false),
+                    Arguments.of(new ConditionalsTest.InputObj("one", 1), true),
+                    Arguments.of(new ConditionalsTest.InputObj("one", "o"), false),
+                    Arguments.of(new ConditionalsTest.InputObj("2", 2), false),
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("a", 1), 2), true));
         }
     }
 
@@ -675,6 +750,42 @@ public class ConditionalsTest {
         });
     }
 
+    @LHWorkflow("test-conditionals-does-contain-workflow")
+    public Workflow getDoesContainWorkflow() {
+        return new WorkflowImpl("test-conditionals-does-contain-workflow", thread -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // LHS is the collection/string, RHS is the element to search for.
+            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+            WfRunVariable result = thread.declareBool("result");
+            thread.doIfElse(
+                    input.jsonPath("$.lhs").doesContain(input.jsonPath("$.rhs")),
+                    ifBlock -> {
+                        result.assign(true);
+                    },
+                    elseBlock -> {
+                        result.assign(false);
+                    });
+        });
+    }
+
+    @LHWorkflow("test-conditionals-does-not-contain-workflow")
+    public Workflow getDoesNotContainWorkflow() {
+        return new WorkflowImpl("test-conditionals-does-not-contain-workflow", thread -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // LHS is the collection/string, RHS is the element to search for.
+            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+            WfRunVariable result = thread.declareBool("result");
+            thread.doIfElse(
+                    input.jsonPath("$.lhs").doesNotContain(input.jsonPath("$.rhs")),
+                    ifBlock -> {
+                        result.assign(true);
+                    },
+                    elseBlock -> {
+                        result.assign(false);
+                    });
+        });
+    }
+
     @LHTaskMethod("ag-one")
     public boolean one() {
         return true;
@@ -700,6 +811,11 @@ public class ConditionalsTest {
         public InputObj(Object lhs, Object rhs) {
             this.lhs = lhs;
             this.rhs = rhs;
+        }
+
+        @Override
+        public String toString() {
+            return "InputObj{" + "lhs=" + lhs + ", rhs=" + rhs + '}';
         }
     }
 }
