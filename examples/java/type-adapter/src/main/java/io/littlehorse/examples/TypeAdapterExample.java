@@ -62,7 +62,7 @@ public class TypeAdapterExample {
 
         return workers;
     }
-    
+
     public static void registerTypeAdapters(LHConfig config) {
         config.registerTypeAdapter(new LHStringAdapter<UUID>() {
             @Override
