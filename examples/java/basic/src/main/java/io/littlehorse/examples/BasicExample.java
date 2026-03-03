@@ -1,23 +1,15 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-import io.littlehorse.sdk.worker.adapter.LHIntegerAdapter;
-import io.littlehorse.sdk.worker.adapter.LHStringAdapter;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.Properties;
-import java.util.UUID;
 
 /*
  * This is a simple example, which does two things:
@@ -57,29 +49,11 @@ public class BasicExample {
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
 
-        config.registerTypeAdapter(new LHStringAdapter<UUID>() {
-            @Override
-            public String toString(UUID src) {
-                return src.toString();
-            }
-
-            @Override
-            public UUID fromString(String src) {
-                return UUID.fromString(src);
-            }
-
-            @Override
-            public Class<UUID> getTypeClass() {
-                return UUID.class;
-            }
-        });
-
         // New workflow
         Workflow workflow = getWorkflow();
 
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
-        
         // Register task
         worker.registerTaskDef();
 

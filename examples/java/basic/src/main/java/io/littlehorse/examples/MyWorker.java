@@ -1,9 +1,6 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.worker.LHTaskMethod;
-
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +9,8 @@ public class MyWorker {
     private static final Logger log = LoggerFactory.getLogger(MyWorker.class);
 
     @LHTaskMethod(value = "greet", description = "This task greets the user by name.")
-    public UUID greeting(UUID name) {
+    public String greeting(String name) {
         log.debug("Executing task greet");
-        return UUID.randomUUID();
+        return "hello there, " + name;
     }
 }
