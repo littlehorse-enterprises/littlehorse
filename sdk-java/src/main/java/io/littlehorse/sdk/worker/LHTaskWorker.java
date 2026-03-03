@@ -64,7 +64,7 @@ public class LHTaskWorker implements Closeable {
         this.lhTaskMethodAnnotationValue = taskDefName;
         this.grpcClient = config.getBlockingStub();
         this.tdb = new TaskDefBuilder(
-            executable, this.taskDefName, this.lhTaskMethodAnnotationValue, config.getTypeAdapterRegistry());
+                executable, this.taskDefName, this.lhTaskMethodAnnotationValue, config.getTypeAdapterRegistry());
     }
 
     /**
@@ -92,7 +92,7 @@ public class LHTaskWorker implements Closeable {
         this.grpcClient = config.getBlockingStub();
 
         this.tdb = new TaskDefBuilder(
-            executable, this.taskDefName, this.lhTaskMethodAnnotationValue, config.getTypeAdapterRegistry());
+                executable, this.taskDefName, this.lhTaskMethodAnnotationValue, config.getTypeAdapterRegistry());
     }
 
     public LHTaskWorker(
@@ -270,8 +270,7 @@ public class LHTaskWorker implements Closeable {
             } while (System.currentTimeMillis() < timeout);
         }
 
-        LHTaskSignature signature =
-            new LHTaskSignature(
+        LHTaskSignature signature = new LHTaskSignature(
                 taskDef.getId().getName(),
                 executable,
                 this.lhTaskMethodAnnotationValue,
@@ -305,18 +304,14 @@ public class LHTaskWorker implements Closeable {
 
             // This line throws a TaskSchemaMismatchError if the param can't
             // be provided properly.
-                VariableMapping mapping =
+            VariableMapping mapping =
                     new VariableMapping(taskDef, i, paramClass, javaParamName, config.getTypeAdapterRegistry());
             mappings.add(mapping);
         }
 
         if (signature.getHasWorkerContextAtEnd()) {
-                mappings.add(new VariableMapping(
-                    taskDef,
-                    numTaskMethodParams - 1,
-                    WorkerContext.class,
-                    null,
-                    config.getTypeAdapterRegistry()));
+            mappings.add(new VariableMapping(
+                    taskDef, numTaskMethodParams - 1, WorkerContext.class, null, config.getTypeAdapterRegistry()));
         }
     }
 

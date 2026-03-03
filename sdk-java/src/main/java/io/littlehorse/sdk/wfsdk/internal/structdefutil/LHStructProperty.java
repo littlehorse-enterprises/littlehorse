@@ -64,7 +64,8 @@ public class LHStructProperty {
         setValueTo(o, v, LHTypeAdapterRegistry.empty());
     }
 
-    public void setValueTo(Object o, VariableValue v, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
+    public void setValueTo(Object o, VariableValue v, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
         if (pd.getWriteMethod() == null) {
             throw new IllegalStateException(String.format(
                     "No write method for property [%s] found on object of type [%s]", this.fieldName, o.getClass()));

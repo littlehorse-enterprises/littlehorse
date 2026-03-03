@@ -20,7 +20,6 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
 import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -529,13 +528,13 @@ public class LHConfig extends ConfigBase {
 
     public <T> void registerTypeAdapter(LHTypeAdapter<T> adapter) {
         if (typeAdaptersByClass.containsKey(adapter.getTypeClass())) {
-             throw new IllegalArgumentException(
+            throw new IllegalArgumentException(
                     "A type adapter for " + adapter.getTypeClass().getName() + " is already registered to this worker");
         }
 
         typeAdaptersByClass.put(adapter.getTypeClass(), adapter);
     }
-    
+
     public List<LHTypeAdapter<?>> getTypeAdapters() {
         return Collections.unmodifiableList(new ArrayList<>(typeAdaptersByClass.values()));
     }

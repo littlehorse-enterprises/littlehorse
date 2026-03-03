@@ -28,7 +28,8 @@ public class VariableMapping {
     private int position;
     private LHTypeAdapterRegistry typeAdapterRegistry;
 
-    public VariableMapping(TaskDef taskDef, int position, Class<?> type, String javaParamName, List<LHTypeAdapter<?>> typeAdapters)
+    public VariableMapping(
+            TaskDef taskDef, int position, Class<?> type, String javaParamName, List<LHTypeAdapter<?>> typeAdapters)
             throws TaskSchemaMismatchError {
         this(taskDef, position, type, javaParamName, LHTypeAdapterRegistry.from(typeAdapters));
     }
@@ -99,8 +100,8 @@ public class VariableMapping {
         if (maybeAdapter.isPresent()) {
             LHTypeAdapter<?> adapter = maybeAdapter.get();
             if (adapter.getVariableType() != input) {
-                return Optional.of("TaskDef provides " + input + ", but adapter for " + type.getName()
-                        + " maps to " + adapter.getVariableType());
+                return Optional.of("TaskDef provides " + input + ", but adapter for " + type.getName() + " maps to "
+                        + adapter.getVariableType());
             }
             return Optional.empty();
         }

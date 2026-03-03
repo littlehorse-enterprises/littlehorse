@@ -244,9 +244,21 @@ public class LHLibUtilTest {
                 (AdapterStruct) LHLibUtil.varValToObj(serialized, AdapterStruct.class, List.of(uuidAdapter));
 
         Assertions.assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
-        Assertions.assertThat(serialized.getStruct().getStruct().getFieldsMap().get("id").getValue().getValueCase())
+        Assertions.assertThat(serialized
+                        .getStruct()
+                        .getStruct()
+                        .getFieldsMap()
+                        .get("id")
+                        .getValue()
+                        .getValueCase())
                 .isEqualTo(VariableValue.ValueCase.STR);
-        Assertions.assertThat(serialized.getStruct().getStruct().getFieldsMap().get("id").getValue().getStr())
+        Assertions.assertThat(serialized
+                        .getStruct()
+                        .getStruct()
+                        .getFieldsMap()
+                        .get("id")
+                        .getValue()
+                        .getStr())
                 .isEqualTo(uuid.toString());
         Assertions.assertThat(deserialized.getName()).isEqualTo("test-name");
         Assertions.assertThat(deserialized.getId()).isEqualTo(uuid);
