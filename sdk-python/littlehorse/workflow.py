@@ -128,16 +128,17 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
         )
 
     if isinstance(value, WfRunVariable):
-        json_path: Optional[str] = None
         variable_name = value.name
 
         if value.json_path is not None:
-            json_path = value.json_path
-
-        return VariableAssignment(
-            json_path=json_path,
-            variable_name=variable_name,
-        )
+            return VariableAssignment(
+                json_path=value.json_path,
+                variable_name=variable_name,
+            )
+        else:
+            return VariableAssignment(
+                variable_name=variable_name,
+            )
 
     if isinstance(value, CastExpression):
         inner = to_variable_assignment(value.source)

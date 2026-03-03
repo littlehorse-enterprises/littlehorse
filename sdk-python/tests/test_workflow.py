@@ -413,7 +413,7 @@ class TestCastExpressions(unittest.TestCase):
         wfvar = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
         casted = wfvar.cast_to_bool()
         assignment = to_variable_assignment(casted)
-        self.assertIsNone(assignment.json_path)
+        self.assertEqual(assignment.json_path, "")  # Protobuf string fields default to empty string
         self.assertEqual(assignment.variable_name, "my-var")
         self.assertIsNotNone(assignment.target_type)
         self.assertEqual(assignment.target_type.primitive_type, VariableType.BOOL)
