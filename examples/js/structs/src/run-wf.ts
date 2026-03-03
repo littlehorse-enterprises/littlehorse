@@ -22,7 +22,6 @@ async function main() {
     vehicleMake,
     vehicleModel,
     licensePlateNumber,
-    reportedAt: new Date().toISOString(),
   }
 
   console.log('Generated parking ticket report:', report)
