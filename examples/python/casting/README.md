@@ -2,52 +2,72 @@
 
 This example demonstrates both automatic and manual type casting in LittleHorse workflows.
 
-Overview
+## Overview
 
-The casting example shows how LittleHorse handles type conversions between different variable types.
+The casting example shows how LittleHorse handles type conversions between different variable types:
 
-Automatic Casting (no cast call required):
-- `INT` → `DOUBLE`, `INT` → `STR`, `DOUBLE` → `STR`, `BOOL` → `STR` (common automatic conversions)
+**Automatic Casting** (no cast call required):
+- `INT` → `DOUBLE`, `INT` → `STR`, `DOUBLE` → `STR`, `BOOL` → `STR`
 
-Manual Casting (requires `cast_to` calls):
+**Manual Casting** (requires `cast_to_*()` calls):
 - `STR` → `DOUBLE`
 - `DOUBLE` → `INT`
 - `STR` → `BOOL`
 - JSON path result → `INT` (when type is ambiguous)
 
-Files
+The workflow demonstrates:
+1. Declaring variables with default values (`string-number`, `string-bool`, `json-input`)
+2. Manual casting from STR to DOUBLE to INT
+3. Math expressions on DOUBLE values and casting results to INT
+4. Error handling for invalid casts (e.g., non-boolean string to BOOL)
+5. JSON path extraction with explicit type casting
 
-- `workflow.py`: the workflow definition (`my_workflow`) that demonstrates casting patterns.
-- `worker.py`: task worker that registers the task defs and runs handlers.
-- `deploy.py`: registers the `WfSpec` with the LH server.
+## Running the Example
 
-Run the example
+First, make sure to install/update dependencies (needed after any SDK changes):
 
-1) Start a Task Worker (in one terminal):
-
-```bash
-cd examples/python/casting
-poetry shell
-python -m worker
+```
+poetry install
 ```
 
-2) Register the workflow spec (in another terminal):
+Then run the example:
 
-```bash
-cd examples/python/casting
+```
 poetry shell
-python -m deploy
+python -m example_casting
 ```
 
-3) Start a workflow run (use `lhctl`):
+In another terminal, use `lhctl` to run the workflow:
 
-```bash
+```
+# Run with default values
 lhctl run casting-workflow
+
+# Run with custom string-number value
+lhctl run casting-workflow string-number 5.67
+
+# Run with custom json-input
+lhctl run casting-workflow json-input '{"int":"42","string":"world"}'
 ```
 
-Trigger the error handler
+## Checking Results
 
-To make the workflow enter the error handler, run the workflow with an input that causes the server to fail when casting `hello` to a boolean. This will cause the node at thread 0 position 4 to fail and the handler thread to run; after the handler completes the workflow continues.
+In addition, you can check the result with:
+
+```
+# This call shows the result
+lhctl get wfRun <wf_run_id>
+
+# This will show you all nodes in the run
+lhctl list nodeRun <wf_run_id>
+
+# This shows the task run information
+lhctl get taskRun <wf_run_id> <task_run_global_id>
+```
+
+## Trigger the Error Handler
+
+To test the error handler, you can try running the workflow with a `string-bool` value that cannot be cast to boolean (e.g., "hello" instead of "true"/"false"). This will trigger the error handler at the bool-method node.
 
 ```bash
 lhctl run casting-workflow string-bool Hello --wfRunId error-handler

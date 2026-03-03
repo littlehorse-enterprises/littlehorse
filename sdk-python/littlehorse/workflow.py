@@ -141,7 +141,7 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
 
     if isinstance(value, CastExpression):
         inner = to_variable_assignment(value.source)
-        inner.target_type = TypeDefinition(primitive_type=value.target_type)
+        inner.target_type.CopyFrom(TypeDefinition(primitive_type=value.target_type))
         return inner
 
     if isinstance(value, LHExpression):
@@ -217,6 +217,9 @@ class LHExpression:
 
     def rhs(self) -> Any:
         return self._rhs
+
+    def operation(self) -> VariableMutationType:
+        return self._operation
 
     def cast_to(self, target_type: VariableType) -> "CastExpression":
         return CastExpression(self, target_type)
@@ -632,7 +635,7 @@ class WfRunVariable:
                 f"JsonPath not allowed in a {VariableType.Name(self.type)} variable"
             )
 
-        out = WfRunVariable(self.name, self.type, self.parent, self.default_value)
+        out = WfRunVariable(self.name, self.type, self.parent, None)
         out.json_path = json_path
         return out
 
