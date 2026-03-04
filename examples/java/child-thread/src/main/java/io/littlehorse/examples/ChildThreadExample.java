@@ -21,7 +21,8 @@ import org.slf4j.LoggerFactory;
 /*
  * In this example you will see how to instantiate a child thread
  * and then wait until it has finished its execution before
- * executing another task
+ * executing another task. The child thread spawns a grandchild
+ * thread, demonstrating a three-level hierarchy: parent → child → grandchild.
  */
 public class ChildThreadExample {
 
@@ -34,9 +35,21 @@ public class ChildThreadExample {
             parentVar.assign(wf.execute("parent-task-1", parentVar));
 
             SpawnedThread childThread = wf.spawnThread(
-                    child -> { // this is the child workflow thread
+                    child -> {
                         WfRunVariable childVar = child.declareInt("child-var");
-                        child.execute("child-task", childVar);
+                        childVar.assign(child.execute("child-task-1", childVar));
+
+                        SpawnedThread grandchildThread = child.spawnThread(
+                                grandchild -> {
+                                    WfRunVariable grandchildVar = grandchild.declareInt("grandchild-var");
+                                    grandchild.execute("grandchild-task", grandchildVar);
+                                },
+                                "spawned-grandchild-thread",
+                                Map.of("grandchild-var", childVar));
+
+                        child.waitForThreads(SpawnedThreads.of(grandchildThread));
+
+                        child.execute("child-task-2");
                     },
                     "spawned-thread",
                     Map.of("child-var", parentVar));
@@ -61,7 +74,9 @@ public class ChildThreadExample {
         ChildThreadWorker executable = new ChildThreadWorker();
         List<LHTaskWorker> workers = List.of(
                 new LHTaskWorker(executable, "parent-task-1", config),
-                new LHTaskWorker(executable, "child-task", config),
+                new LHTaskWorker(executable, "child-task-1", config),
+                new LHTaskWorker(executable, "child-task-2", config),
+                new LHTaskWorker(executable, "grandchild-task", config),
                 new LHTaskWorker(executable, "parent-task-2", config));
 
         // Gracefully shutdown

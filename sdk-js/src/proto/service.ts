@@ -39,6 +39,7 @@ import {
   CorrelatedEventId,
   ExternalEventDefId,
   ExternalEventId,
+  InactiveThreadRunId,
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
@@ -76,7 +77,7 @@ import {
   userTaskRunStatusToNumber,
 } from "./user_tasks";
 import { Variable, VariableValue } from "./variable";
-import { WfRun } from "./wf_run";
+import { InactiveThreadRun, WfRun } from "./wf_run";
 import {
   ThreadSpec,
   WfSpec,
@@ -1201,13 +1202,27 @@ export interface NodeRunList {
  */
 export interface ListVariablesRequest {
   /** The WfRun for whom we will list Variables. */
-  wfRunId: WfRunId | undefined;
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?: number | undefined;
 }
 
 /** A list of Variables. */
 export interface VariableList {
   /** A list of Variable objects. */
   results: Variable[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
 }
 
 /**
@@ -1216,13 +1231,27 @@ export interface VariableList {
  */
 export interface ListExternalEventsRequest {
   /** The WfRunId for whom we list ExternalEvent's. */
-  wfRunId: WfRunId | undefined;
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?: number | undefined;
 }
 
 /** A list of ExternalEvents. */
 export interface ExternalEventList {
   /** A list of ExternalEvent objects. */
   results: ExternalEvent[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
 }
 
 /**
@@ -1231,13 +1260,27 @@ export interface ExternalEventList {
  */
 export interface ListWorkflowEventsRequest {
   /** The WfRunId for whom we list WorkflowEvent's. */
-  wfRunId: WfRunId | undefined;
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?: number | undefined;
 }
 
 /** A list of WorkflowEvents. */
 export interface WorkflowEventList {
   /** A list of WorkflowEvent objects. */
   results: WorkflowEvent[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
 }
 
 /**
@@ -1552,12 +1595,24 @@ export interface ListTaskMetricsRequest {
   windowLength: MetricsWindowLength;
   /** Number of windows to retrieve. */
   numWindows: number;
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?: number | undefined;
 }
 
 /** A list of TaskDef Metrics WIndows */
 export interface ListTaskMetricsResponse {
   /** List of TaskDef Metrics Windows */
   results: TaskDefMetrics[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
 }
 
 /** Query to retrieve a specific WfSpec Metrics Window. */
@@ -1594,12 +1649,24 @@ export interface ListWfMetricsRequest {
   windowLength: MetricsWindowLength;
   /** Number of windows to retrieve */
   numWindows: number;
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?: number | undefined;
 }
 
 /** A list of WfSpec Metrics Windows */
 export interface ListWfMetricsResponse {
   /** List of WfSpec Metrics Windows */
   results: WfSpecMetrics[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
 }
 
 /** Metrics for a TaskDef in a certain time period. */
@@ -1659,13 +1726,27 @@ export interface WfSpecMetrics {
 /** List UserTaskRun's for a specific WfRun */
 export interface ListUserTaskRunRequest {
   /** The WfRun for which to list UserTaskRuns */
-  wfRunId: WfRunId | undefined;
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?: number | undefined;
 }
 
 /** List of UserTaskRuns */
 export interface UserTaskRunList {
   /** A list of UserTaskRun Objects */
   results: UserTaskRun[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
 }
 
 /** List of ScheduledWfRun */
@@ -1720,13 +1801,27 @@ export interface TaskWorkerGroup_TaskWorkersEntry {
 /** List TaskRun's for a specific WfRun */
 export interface ListTaskRunsRequest {
   /** The WfRun for which to list TaskRun's */
-  wfRunId: WfRunId | undefined;
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?: number | undefined;
 }
 
 /** A list of TaskRun's */
 export interface TaskRunList {
   /** A list of TaskRun Objects */
   results: TaskRun[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
 }
 
 /** EXPERIMENTAL: migrate live WfRun's from one version of a WfSpec to another. */
@@ -7735,13 +7830,19 @@ export const NodeRunList = {
 };
 
 function createBaseListVariablesRequest(): ListVariablesRequest {
-  return { wfRunId: undefined };
+  return { wfRunId: undefined, bookmark: undefined, limit: undefined };
 }
 
 export const ListVariablesRequest = {
   encode(message: ListVariablesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.wfRunId !== undefined) {
       WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(24).int32(message.limit);
     }
     return writer;
   },
@@ -7760,6 +7861,20 @@ export const ListVariablesRequest = {
 
           message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -7770,13 +7885,23 @@ export const ListVariablesRequest = {
   },
 
   fromJSON(object: any): ListVariablesRequest {
-    return { wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined };
+    return {
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+    };
   },
 
   toJSON(message: ListVariablesRequest): unknown {
     const obj: any = {};
     if (message.wfRunId !== undefined) {
       obj.wfRunId = WfRunId.toJSON(message.wfRunId);
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
     }
     return obj;
   },
@@ -7789,18 +7914,23 @@ export const ListVariablesRequest = {
     message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
       ? WfRunId.fromPartial(object.wfRunId)
       : undefined;
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
     return message;
   },
 };
 
 function createBaseVariableList(): VariableList {
-  return { results: [] };
+  return { results: [], bookmark: undefined };
 }
 
 export const VariableList = {
   encode(message: VariableList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.results) {
       Variable.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
     }
     return writer;
   },
@@ -7819,6 +7949,13 @@ export const VariableList = {
 
           message.results.push(Variable.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -7831,6 +7968,7 @@ export const VariableList = {
   fromJSON(object: any): VariableList {
     return {
       results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => Variable.fromJSON(e)) : [],
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
     };
   },
 
@@ -7838,6 +7976,9 @@ export const VariableList = {
     const obj: any = {};
     if (message.results?.length) {
       obj.results = message.results.map((e) => Variable.toJSON(e));
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
     }
     return obj;
   },
@@ -7848,18 +7989,25 @@ export const VariableList = {
   fromPartial(object: DeepPartial<VariableList>): VariableList {
     const message = createBaseVariableList();
     message.results = object.results?.map((e) => Variable.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
     return message;
   },
 };
 
 function createBaseListExternalEventsRequest(): ListExternalEventsRequest {
-  return { wfRunId: undefined };
+  return { wfRunId: undefined, bookmark: undefined, limit: undefined };
 }
 
 export const ListExternalEventsRequest = {
   encode(message: ListExternalEventsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.wfRunId !== undefined) {
       WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(24).int32(message.limit);
     }
     return writer;
   },
@@ -7878,6 +8026,20 @@ export const ListExternalEventsRequest = {
 
           message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -7888,13 +8050,23 @@ export const ListExternalEventsRequest = {
   },
 
   fromJSON(object: any): ListExternalEventsRequest {
-    return { wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined };
+    return {
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+    };
   },
 
   toJSON(message: ListExternalEventsRequest): unknown {
     const obj: any = {};
     if (message.wfRunId !== undefined) {
       obj.wfRunId = WfRunId.toJSON(message.wfRunId);
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
     }
     return obj;
   },
@@ -7907,18 +8079,23 @@ export const ListExternalEventsRequest = {
     message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
       ? WfRunId.fromPartial(object.wfRunId)
       : undefined;
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
     return message;
   },
 };
 
 function createBaseExternalEventList(): ExternalEventList {
-  return { results: [] };
+  return { results: [], bookmark: undefined };
 }
 
 export const ExternalEventList = {
   encode(message: ExternalEventList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.results) {
       ExternalEvent.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
     }
     return writer;
   },
@@ -7937,6 +8114,13 @@ export const ExternalEventList = {
 
           message.results.push(ExternalEvent.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -7951,6 +8135,7 @@ export const ExternalEventList = {
       results: globalThis.Array.isArray(object?.results)
         ? object.results.map((e: any) => ExternalEvent.fromJSON(e))
         : [],
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
     };
   },
 
@@ -7958,6 +8143,9 @@ export const ExternalEventList = {
     const obj: any = {};
     if (message.results?.length) {
       obj.results = message.results.map((e) => ExternalEvent.toJSON(e));
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
     }
     return obj;
   },
@@ -7968,18 +8156,25 @@ export const ExternalEventList = {
   fromPartial(object: DeepPartial<ExternalEventList>): ExternalEventList {
     const message = createBaseExternalEventList();
     message.results = object.results?.map((e) => ExternalEvent.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
     return message;
   },
 };
 
 function createBaseListWorkflowEventsRequest(): ListWorkflowEventsRequest {
-  return { wfRunId: undefined };
+  return { wfRunId: undefined, bookmark: undefined, limit: undefined };
 }
 
 export const ListWorkflowEventsRequest = {
   encode(message: ListWorkflowEventsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.wfRunId !== undefined) {
       WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(24).int32(message.limit);
     }
     return writer;
   },
@@ -7998,6 +8193,20 @@ export const ListWorkflowEventsRequest = {
 
           message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -8008,13 +8217,23 @@ export const ListWorkflowEventsRequest = {
   },
 
   fromJSON(object: any): ListWorkflowEventsRequest {
-    return { wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined };
+    return {
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+    };
   },
 
   toJSON(message: ListWorkflowEventsRequest): unknown {
     const obj: any = {};
     if (message.wfRunId !== undefined) {
       obj.wfRunId = WfRunId.toJSON(message.wfRunId);
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
     }
     return obj;
   },
@@ -8027,18 +8246,23 @@ export const ListWorkflowEventsRequest = {
     message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
       ? WfRunId.fromPartial(object.wfRunId)
       : undefined;
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
     return message;
   },
 };
 
 function createBaseWorkflowEventList(): WorkflowEventList {
-  return { results: [] };
+  return { results: [], bookmark: undefined };
 }
 
 export const WorkflowEventList = {
   encode(message: WorkflowEventList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.results) {
       WorkflowEvent.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
     }
     return writer;
   },
@@ -8057,6 +8281,13 @@ export const WorkflowEventList = {
 
           message.results.push(WorkflowEvent.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -8071,6 +8302,7 @@ export const WorkflowEventList = {
       results: globalThis.Array.isArray(object?.results)
         ? object.results.map((e: any) => WorkflowEvent.fromJSON(e))
         : [],
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
     };
   },
 
@@ -8078,6 +8310,9 @@ export const WorkflowEventList = {
     const obj: any = {};
     if (message.results?.length) {
       obj.results = message.results.map((e) => WorkflowEvent.toJSON(e));
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
     }
     return obj;
   },
@@ -8088,6 +8323,7 @@ export const WorkflowEventList = {
   fromPartial(object: DeepPartial<WorkflowEventList>): WorkflowEventList {
     const message = createBaseWorkflowEventList();
     message.results = object.results?.map((e) => WorkflowEvent.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
     return message;
   },
 };
@@ -9459,6 +9695,8 @@ function createBaseListTaskMetricsRequest(): ListTaskMetricsRequest {
     lastWindowStart: undefined,
     windowLength: MetricsWindowLength.MINUTES_5,
     numWindows: 0,
+    bookmark: undefined,
+    limit: undefined,
   };
 }
 
@@ -9475,6 +9713,12 @@ export const ListTaskMetricsRequest = {
     }
     if (message.numWindows !== 0) {
       writer.uint32(32).int32(message.numWindows);
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(42).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(48).int32(message.limit);
     }
     return writer;
   },
@@ -9514,6 +9758,20 @@ export const ListTaskMetricsRequest = {
 
           message.numWindows = reader.int32();
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -9531,6 +9789,8 @@ export const ListTaskMetricsRequest = {
         ? metricsWindowLengthFromJSON(object.windowLength)
         : MetricsWindowLength.MINUTES_5,
       numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
     };
   },
 
@@ -9548,6 +9808,12 @@ export const ListTaskMetricsRequest = {
     if (message.numWindows !== 0) {
       obj.numWindows = Math.round(message.numWindows);
     }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
+    }
     return obj;
   },
 
@@ -9562,18 +9828,23 @@ export const ListTaskMetricsRequest = {
     message.lastWindowStart = object.lastWindowStart ?? undefined;
     message.windowLength = object.windowLength ?? MetricsWindowLength.MINUTES_5;
     message.numWindows = object.numWindows ?? 0;
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
     return message;
   },
 };
 
 function createBaseListTaskMetricsResponse(): ListTaskMetricsResponse {
-  return { results: [] };
+  return { results: [], bookmark: undefined };
 }
 
 export const ListTaskMetricsResponse = {
   encode(message: ListTaskMetricsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.results) {
       TaskDefMetrics.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
     }
     return writer;
   },
@@ -9592,6 +9863,13 @@ export const ListTaskMetricsResponse = {
 
           message.results.push(TaskDefMetrics.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -9606,6 +9884,7 @@ export const ListTaskMetricsResponse = {
       results: globalThis.Array.isArray(object?.results)
         ? object.results.map((e: any) => TaskDefMetrics.fromJSON(e))
         : [],
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
     };
   },
 
@@ -9613,6 +9892,9 @@ export const ListTaskMetricsResponse = {
     const obj: any = {};
     if (message.results?.length) {
       obj.results = message.results.map((e) => TaskDefMetrics.toJSON(e));
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
     }
     return obj;
   },
@@ -9623,6 +9905,7 @@ export const ListTaskMetricsResponse = {
   fromPartial(object: DeepPartial<ListTaskMetricsResponse>): ListTaskMetricsResponse {
     const message = createBaseListTaskMetricsResponse();
     message.results = object.results?.map((e) => TaskDefMetrics.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
     return message;
   },
 };
@@ -9726,6 +10009,8 @@ function createBaseListWfMetricsRequest(): ListWfMetricsRequest {
     lastWindowStart: undefined,
     windowLength: MetricsWindowLength.MINUTES_5,
     numWindows: 0,
+    bookmark: undefined,
+    limit: undefined,
   };
 }
 
@@ -9742,6 +10027,12 @@ export const ListWfMetricsRequest = {
     }
     if (message.numWindows !== 0) {
       writer.uint32(32).int32(message.numWindows);
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(42).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(48).int32(message.limit);
     }
     return writer;
   },
@@ -9781,6 +10072,20 @@ export const ListWfMetricsRequest = {
 
           message.numWindows = reader.int32();
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -9798,6 +10103,8 @@ export const ListWfMetricsRequest = {
         ? metricsWindowLengthFromJSON(object.windowLength)
         : MetricsWindowLength.MINUTES_5,
       numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
     };
   },
 
@@ -9815,6 +10122,12 @@ export const ListWfMetricsRequest = {
     if (message.numWindows !== 0) {
       obj.numWindows = Math.round(message.numWindows);
     }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
+    }
     return obj;
   },
 
@@ -9829,18 +10142,23 @@ export const ListWfMetricsRequest = {
     message.lastWindowStart = object.lastWindowStart ?? undefined;
     message.windowLength = object.windowLength ?? MetricsWindowLength.MINUTES_5;
     message.numWindows = object.numWindows ?? 0;
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
     return message;
   },
 };
 
 function createBaseListWfMetricsResponse(): ListWfMetricsResponse {
-  return { results: [] };
+  return { results: [], bookmark: undefined };
 }
 
 export const ListWfMetricsResponse = {
   encode(message: ListWfMetricsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.results) {
       WfSpecMetrics.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
     }
     return writer;
   },
@@ -9859,6 +10177,13 @@ export const ListWfMetricsResponse = {
 
           message.results.push(WfSpecMetrics.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -9873,6 +10198,7 @@ export const ListWfMetricsResponse = {
       results: globalThis.Array.isArray(object?.results)
         ? object.results.map((e: any) => WfSpecMetrics.fromJSON(e))
         : [],
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
     };
   },
 
@@ -9880,6 +10206,9 @@ export const ListWfMetricsResponse = {
     const obj: any = {};
     if (message.results?.length) {
       obj.results = message.results.map((e) => WfSpecMetrics.toJSON(e));
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
     }
     return obj;
   },
@@ -9890,6 +10219,7 @@ export const ListWfMetricsResponse = {
   fromPartial(object: DeepPartial<ListWfMetricsResponse>): ListWfMetricsResponse {
     const message = createBaseListWfMetricsResponse();
     message.results = object.results?.map((e) => WfSpecMetrics.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
     return message;
   },
 };
@@ -10293,13 +10623,19 @@ export const WfSpecMetrics = {
 };
 
 function createBaseListUserTaskRunRequest(): ListUserTaskRunRequest {
-  return { wfRunId: undefined };
+  return { wfRunId: undefined, bookmark: undefined, limit: undefined };
 }
 
 export const ListUserTaskRunRequest = {
   encode(message: ListUserTaskRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.wfRunId !== undefined) {
       WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(24).int32(message.limit);
     }
     return writer;
   },
@@ -10318,6 +10654,20 @@ export const ListUserTaskRunRequest = {
 
           message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -10328,13 +10678,23 @@ export const ListUserTaskRunRequest = {
   },
 
   fromJSON(object: any): ListUserTaskRunRequest {
-    return { wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined };
+    return {
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+    };
   },
 
   toJSON(message: ListUserTaskRunRequest): unknown {
     const obj: any = {};
     if (message.wfRunId !== undefined) {
       obj.wfRunId = WfRunId.toJSON(message.wfRunId);
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
     }
     return obj;
   },
@@ -10347,18 +10707,23 @@ export const ListUserTaskRunRequest = {
     message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
       ? WfRunId.fromPartial(object.wfRunId)
       : undefined;
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
     return message;
   },
 };
 
 function createBaseUserTaskRunList(): UserTaskRunList {
-  return { results: [] };
+  return { results: [], bookmark: undefined };
 }
 
 export const UserTaskRunList = {
   encode(message: UserTaskRunList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.results) {
       UserTaskRun.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
     }
     return writer;
   },
@@ -10377,6 +10742,13 @@ export const UserTaskRunList = {
 
           message.results.push(UserTaskRun.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -10389,6 +10761,7 @@ export const UserTaskRunList = {
   fromJSON(object: any): UserTaskRunList {
     return {
       results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => UserTaskRun.fromJSON(e)) : [],
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
     };
   },
 
@@ -10396,6 +10769,9 @@ export const UserTaskRunList = {
     const obj: any = {};
     if (message.results?.length) {
       obj.results = message.results.map((e) => UserTaskRun.toJSON(e));
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
     }
     return obj;
   },
@@ -10406,6 +10782,7 @@ export const UserTaskRunList = {
   fromPartial(object: DeepPartial<UserTaskRunList>): UserTaskRunList {
     const message = createBaseUserTaskRunList();
     message.results = object.results?.map((e) => UserTaskRun.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
     return message;
   },
 };
@@ -10837,13 +11214,19 @@ export const TaskWorkerGroup_TaskWorkersEntry = {
 };
 
 function createBaseListTaskRunsRequest(): ListTaskRunsRequest {
-  return { wfRunId: undefined };
+  return { wfRunId: undefined, bookmark: undefined, limit: undefined };
 }
 
 export const ListTaskRunsRequest = {
   encode(message: ListTaskRunsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.wfRunId !== undefined) {
       WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(24).int32(message.limit);
     }
     return writer;
   },
@@ -10862,6 +11245,20 @@ export const ListTaskRunsRequest = {
 
           message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -10872,13 +11269,23 @@ export const ListTaskRunsRequest = {
   },
 
   fromJSON(object: any): ListTaskRunsRequest {
-    return { wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined };
+    return {
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+    };
   },
 
   toJSON(message: ListTaskRunsRequest): unknown {
     const obj: any = {};
     if (message.wfRunId !== undefined) {
       obj.wfRunId = WfRunId.toJSON(message.wfRunId);
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
     }
     return obj;
   },
@@ -10891,18 +11298,23 @@ export const ListTaskRunsRequest = {
     message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
       ? WfRunId.fromPartial(object.wfRunId)
       : undefined;
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
     return message;
   },
 };
 
 function createBaseTaskRunList(): TaskRunList {
-  return { results: [] };
+  return { results: [], bookmark: undefined };
 }
 
 export const TaskRunList = {
   encode(message: TaskRunList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.results) {
       TaskRun.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
     }
     return writer;
   },
@@ -10921,6 +11333,13 @@ export const TaskRunList = {
 
           message.results.push(TaskRun.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -10933,6 +11352,7 @@ export const TaskRunList = {
   fromJSON(object: any): TaskRunList {
     return {
       results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => TaskRun.fromJSON(e)) : [],
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
     };
   },
 
@@ -10940,6 +11360,9 @@ export const TaskRunList = {
     const obj: any = {};
     if (message.results?.length) {
       obj.results = message.results.map((e) => TaskRun.toJSON(e));
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
     }
     return obj;
   },
@@ -10950,6 +11373,7 @@ export const TaskRunList = {
   fromPartial(object: DeepPartial<TaskRunList>): TaskRunList {
     const message = createBaseTaskRunList();
     message.results = object.results?.map((e) => TaskRun.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
     return message;
   },
 };
@@ -11844,6 +12268,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Get an InactiveThreadRun */
+    getInactiveThreadRun: {
+      name: "GetInactiveThreadRun",
+      requestType: InactiveThreadRunId,
+      requestStream: false,
+      responseType: InactiveThreadRun,
+      responseStream: false,
+      options: {},
+    },
     /**
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -12452,6 +12885,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: SearchStructDefRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<StructDefIdList>>;
+  /** Get an InactiveThreadRun */
+  getInactiveThreadRun(
+    request: InactiveThreadRunId,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<InactiveThreadRun>>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -12908,6 +13346,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchStructDefRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<StructDefIdList>;
+  /** Get an InactiveThreadRun */
+  getInactiveThreadRun(
+    request: DeepPartial<InactiveThreadRunId>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<InactiveThreadRun>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.

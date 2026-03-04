@@ -79,7 +79,6 @@ class TestNodeOutput(unittest.TestCase):
 
 
 class TestWfRunVariable(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         def entrypoint_func(wf: WorkflowThread) -> None:
@@ -90,24 +89,36 @@ class TestWfRunVariable(unittest.TestCase):
 
     def test_value_is_not_none(self):
         variable = WfRunVariable(
-            "my-var", VariableType.STR, self.workflow_thread, default_value="my-str"
+            "my-var",
+            self.workflow_thread,
+            variable_type=VariableType.STR,
+            default_value="my-str",
         )
         self.assertEqual(variable.default_value.WhichOneof("value"), "str")
         self.assertEqual(variable.default_value.str, "my-str")
 
-        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
+        variable = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.STR
+        )
         self.assertEqual(variable.default_value, None)
 
     def test_validate_are_same_type(self):
         with self.assertRaises(TypeError) as exception_context:
-            WfRunVariable("my-var", VariableType.STR, self.workflow_thread, 10)
+            WfRunVariable(
+                "my-var",
+                self.workflow_thread,
+                variable_type=VariableType.STR,
+                default_value=10,
+            )
         self.assertEqual(
             "Default value type does not match LH variable type STR",
             str(exception_context.exception),
         )
 
     def test_validate_with_json_path_already_set(self):
-        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
+        variable = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.STR
+        )
         variable.json_path = "$.myPath"
         with self.assertRaises(ValueError) as exception_context:
             variable.with_json_path("$.myNewOne")
@@ -117,7 +128,9 @@ class TestWfRunVariable(unittest.TestCase):
         )
 
     def test_validate_json_path_already_set(self):
-        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
+        variable = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.STR
+        )
         variable.json_path = "$.myPath"
         with self.assertRaises(ValueError) as exception_context:
             variable.json_path = "$.myNewOne"
@@ -127,7 +140,9 @@ class TestWfRunVariable(unittest.TestCase):
         )
 
     def test_validate_json_path_format(self):
-        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
+        variable = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.STR
+        )
         with self.assertRaises(ValueError) as exception_context:
             variable.json_path = "$myNewOne"
         self.assertEqual(
@@ -136,7 +151,9 @@ class TestWfRunVariable(unittest.TestCase):
         )
 
     def test_validate_is_json_obj_when_using_json_index(self):
-        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
+        variable = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.STR
+        )
         with self.assertRaises(ValueError) as exception_context:
             variable.searchable_on("$.myPath", VariableType.STR)
         self.assertEqual(
@@ -146,12 +163,14 @@ class TestWfRunVariable(unittest.TestCase):
 
     def test_persistent(self):
         variable = WfRunVariable(
-            "my-var", VariableType.STR, self.workflow_thread
+            "my-var", self.workflow_thread, variable_type=VariableType.STR
         ).searchable()
         self.assertEqual(variable.compile().searchable, True)
 
     def test_validate_is_json_obj_when_using_json_pth(self):
-        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
+        variable = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.STR
+        )
         with self.assertRaises(ValueError) as exception_context:
             variable.with_json_path("$.myPath")
         self.assertEqual(
@@ -159,19 +178,27 @@ class TestWfRunVariable(unittest.TestCase):
             str(exception_context.exception),
         )
 
-        variable = WfRunVariable("my-var", VariableType.JSON_OBJ, self.workflow_thread)
+        variable = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.JSON_OBJ
+        )
         variable.with_json_path("$.myPath")
 
-        variable = WfRunVariable("my-var", VariableType.JSON_ARR, self.workflow_thread)
+        variable = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.JSON_ARR
+        )
         variable.with_json_path("$.myPath")
 
     def test_json_path_creates_new(self):
-        variable = WfRunVariable("my-var", VariableType.JSON_ARR, self.workflow_thread)
+        variable = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.JSON_ARR
+        )
         with_json = variable.with_json_path("$.myPath")
         self.assertIsNot(variable, with_json)
 
     def test_compile_variable(self):
-        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
+        variable = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.STR
+        )
         self.assertEqual(
             variable.compile(),
             ThreadVarDef(
@@ -185,7 +212,9 @@ class TestWfRunVariable(unittest.TestCase):
             ),
         )
 
-        variable = WfRunVariable("my-var", VariableType.JSON_OBJ, self.workflow_thread)
+        variable = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.JSON_OBJ
+        )
         variable.searchable_on("$.myPath", VariableType.STR)
         expected_output = ThreadVarDef(
             var_def=VariableDef(
@@ -203,7 +232,10 @@ class TestWfRunVariable(unittest.TestCase):
 
     def test_compile_private_variable(self):
         variable = WfRunVariable(
-            "my-var", VariableType.STR, self.workflow_thread, access_level="PRIVATE_VAR"
+            "my-var",
+            self.workflow_thread,
+            variable_type=VariableType.STR,
+            access_level="PRIVATE_VAR",
         )
         expected_output = ThreadVarDef(
             var_def=VariableDef(
@@ -215,7 +247,9 @@ class TestWfRunVariable(unittest.TestCase):
         self.assertEqual(variable.compile(), expected_output)
 
     def test_compile_inherited_variable(self):
-        variable = WfRunVariable("my-var", VariableType.STR, self.workflow_thread)
+        variable = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.STR
+        )
         variable.with_access_level(WfRunVariableAccessLevel.INHERITED_VAR)
         expected_output = ThreadVarDef(
             var_def=VariableDef(
@@ -2163,7 +2197,7 @@ class TestThreadBuilder(unittest.TestCase):
 
     def test_initializing_variable_without_parent_thread_should_raise_an_error(self):
         with self.assertRaises(ValueError) as exception_context:
-            WfRunVariable("my-var", VariableType.STR, parent=None)
+            WfRunVariable("my-var", None, variable_type=VariableType.STR)
 
         self.assertEqual(
             "Parent workflow thread cannot be None.",
@@ -3506,7 +3540,7 @@ class TestUserTasks(unittest.TestCase):
 
     def test_reassign_to_user_var(self):
         def wf_func(thread: WorkflowThread) -> None:
-            user_var = WfRunVariable("my-var", VariableType.STR, thread)
+            user_var = WfRunVariable("my-var", thread, variable_type=VariableType.STR)
             uto = thread.assign_user_task(
                 "my-user-task",
                 user_id="asdf",
@@ -3532,7 +3566,7 @@ class TestUserTasks(unittest.TestCase):
 
     def test_reassign_to_group(self):
         def wf_func(thread: WorkflowThread) -> None:
-            user_var = WfRunVariable("my-var", VariableType.STR, thread)
+            user_var = WfRunVariable("my-var", thread, variable_type=VariableType.STR)
             uto = thread.assign_user_task(
                 "my-user-task",
                 user_id="asdf",
@@ -3886,7 +3920,6 @@ class TestWaitForChildWf(unittest.TestCase):
 
 
 class TestWaitForThreads(unittest.TestCase):
-
     def test_wait_for_threads_handle_exception_on_child(self):
         def failure_handler(wf: WorkflowThread) -> None:
             wf.execute("some-task")
