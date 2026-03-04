@@ -8,8 +8,8 @@ import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
@@ -19,10 +19,8 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,9 +83,7 @@ public class StructDefExample {
 
         LHStructDefType structDefType = new LHStructDefType(structDefClass);
 
-        PutStructDefRequest request = structDefType
-                .toPutStructDefRequest()
-                .toBuilder()
+        PutStructDefRequest request = structDefType.toPutStructDefRequest().toBuilder()
                 .setAllowedUpdates(compatibilityType)
                 .build();
 

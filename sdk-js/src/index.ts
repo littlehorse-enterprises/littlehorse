@@ -14,8 +14,4 @@ export {
   getStructDependencies,
   toStructVariableValue,
 } from './worker'
-export type {
-  LHTaskWorker,
-  TaskFunction,
-  LHTaskWorkerOptions,
-} from './worker'
+export type { LHTaskWorker, TaskFunction, LHTaskWorkerOptions } from './worker'
