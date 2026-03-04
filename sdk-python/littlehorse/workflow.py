@@ -636,9 +636,9 @@ class WfRunVariable:
             self.name,
             self.parent,
             variable_type=self.type,
-            default_value=self.default_value,
             struct_def_name=self._struct_def_name,
         )
+        out.default_value = self.default_value
         out.json_path = json_path
         return out
 
