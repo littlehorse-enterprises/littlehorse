@@ -6,9 +6,7 @@ import { ThreadSpec } from 'littlehorse-client/proto'
  */
 export const getNodeIdAtPosition = (threadSpec: ThreadSpec, position: number): string | undefined => {
   const { nodes } = threadSpec
-  const entrypointId = Object.entries(nodes).find(
-    ([, node]) => node.node?.$case === 'entrypoint'
-  )?.[0]
+  const entrypointId = Object.entries(nodes).find(([, node]) => node.node?.$case === 'entrypoint')?.[0]
   if (!entrypointId) return undefined
 
   let currentId = entrypointId

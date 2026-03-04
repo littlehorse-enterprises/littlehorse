@@ -18,14 +18,17 @@ export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
 
   const nodeRunsList = selectedNode.data.nodeRunsList
   const nodeRun = nodeRunsList[nodeRunIndex]
-  const isFailedNodeWithNoRun =
-    failedNodeId === selectedNode.id && (!nodeRunsList || nodeRunsList.length === 0)
+  const isFailedNodeWithNoRun = failedNodeId === selectedNode.id && (!nodeRunsList || nodeRunsList.length === 0)
 
   if (isFailedNodeWithNoRun && threadRun?.errorMessage) {
     return (
       <div className="ml-1 flex max-w-full flex-1 flex-col">
         <NodeStatus status={LHStatus.ERROR} errorMessage={threadRun.errorMessage} />
-        <NodeTypeDocumentation nodeType={selectedNode.type} showNodeRun={true} className="ml-1 mt-1 text-sm font-bold" />
+        <NodeTypeDocumentation
+          nodeType={selectedNode.type}
+          showNodeRun={true}
+          className="ml-1 mt-1 text-sm font-bold"
+        />
       </div>
     )
   }
@@ -42,10 +45,7 @@ export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
   return (
     <div className="ml-1 flex max-w-full flex-1 flex-col">
       {nodeRun.status && (
-        <NodeStatus
-          status={nodeRun.status}
-          errorMessage={isFailedNode ? threadRun?.errorMessage : undefined}
-        />
+        <NodeStatus status={nodeRun.status} errorMessage={isFailedNode ? threadRun?.errorMessage : undefined} />
       )}
       <NodeTypeDocumentation nodeType={selectedNode.type} showNodeRun={true} className="ml-1 mt-1 text-sm font-bold" />
       <NodeVariable label="position:" text={`${nodeRun.id?.position}`} />

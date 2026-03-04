@@ -94,7 +94,9 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
           ? 'Rescue'
           : ''
   return (
-    <DiagramProvider value={{ thread, setThread, selectedNode: node, setSelectedNode: setNode, threadRun, failedNodeId }}>
+    <DiagramProvider
+      value={{ thread, setThread, selectedNode: node, setSelectedNode: setNode, threadRun, failedNodeId }}
+    >
       <div className="flex justify-between gap-3">
         <ThreadPanel spec={spec} wfRun={wfRun} />
         {wfRun && (
