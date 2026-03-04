@@ -38,7 +38,11 @@ const InputVariableRow = ({ variable }: { variable: VarNameAndVal }) => {
         <span className="font-medium text-gray-400">=</span>
         <span className="truncate">{rawValue}</span>
         {isHovered && rawValue && (
-          <Expand className="shrink-0 cursor-pointer text-gray-500 hover:text-gray-700" size={14} onClick={onExpand} />
+          <Expand
+            className="shrink-0 cursor-pointer text-gray-500 hover:text-gray-700"
+            size={14}
+            onClick={onExpand}
+          />
         )}
       </span>
     </div>

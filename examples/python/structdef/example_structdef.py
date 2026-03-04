@@ -52,7 +52,7 @@ class Address:
 class Person:
     first_name: str
     last_name: str
-    home_address: Address
+    home_address: Annotated[Address, LHStructField(masked=True)]
 
 
 @lh_struct_def(
@@ -62,7 +62,7 @@ class Person:
 class ParkingTicketReport:
     vehicle_make: str
     vehicle_model: str
-    license_plate_number: Annotated[str, LHStructField(masked=True)]
+    license_plate_number: str
 
 
 # ---------------------------------------------------------------------------

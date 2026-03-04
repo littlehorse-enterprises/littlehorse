@@ -8,15 +8,15 @@ import lombok.Setter;
 @Setter
 @LHStructDef("address")
 public class Address {
-    private int houseNumber;
+    private Integer houseNumber;
     private String street;
     private String city;
     private String planet;
-    private int zipCode;
+    private Integer zipCode;
 
     public Address() {}
 
-    public Address(int houseNumber, String street, String city, String planet, int zipCode) {
+    public Address(Integer houseNumber, String street, String city, String planet, Integer zipCode) {
         this.houseNumber = houseNumber;
         this.street = street;
         this.city = city;
