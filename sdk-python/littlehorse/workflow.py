@@ -128,17 +128,16 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
         )
 
     if isinstance(value, WfRunVariable):
+        json_path: Optional[str] = None
         variable_name = value.name
 
         if value.json_path is not None:
-            return VariableAssignment(
-                json_path=value.json_path,
-                variable_name=variable_name,
-            )
-        else:
-            return VariableAssignment(
-                variable_name=variable_name,
-            )
+            json_path = value.json_path
+
+        return VariableAssignment(
+            json_path=json_path,
+            variable_name=variable_name,
+        )
 
     if isinstance(value, CastExpression):
         inner = to_variable_assignment(value.source)
@@ -198,9 +197,9 @@ class LHExpression:
     def rhs(self) -> Any:
         return self._rhs
 
-    def operation(self) -> VariableMutationType:
+    def operation(self) -> Any:
         return self._operation
-
+        
     def cast_to(self, target_type: VariableType) -> "CastExpression":
         return CastExpression(self, target_type)
 
