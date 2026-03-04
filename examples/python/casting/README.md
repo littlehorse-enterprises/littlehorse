@@ -39,7 +39,7 @@ python -m example_casting
 
 In another terminal, use `lhctl` to run the workflow:
 
-```
+``` bash
 # Run with default values
 lhctl run casting-workflow
 
@@ -54,7 +54,7 @@ lhctl run casting-workflow json-input '{"int":"42","string":"world"}'
 
 In addition, you can check the result with:
 
-```
+```bash
 # This call shows the result
 lhctl get wfRun <wf_run_id>
 

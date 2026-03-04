@@ -192,27 +192,6 @@ class LHExpression:
     def remove_key(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_KEY, other)
 
-    def cast_to(self, target_type: VariableType) -> "CastExpression":
-        return CastExpression(self, target_type)
-
-    def cast_to_int(self) -> "CastExpression":
-        return self.cast_to(VariableType.INT)
-
-    def cast_to_double(self) -> "CastExpression":
-        return self.cast_to(VariableType.DOUBLE)
-
-    def cast_to_str(self) -> "CastExpression":
-        return self.cast_to(VariableType.STR)
-
-    def cast_to_bool(self) -> "CastExpression":
-        return self.cast_to(VariableType.BOOL)
-
-    def cast_to_bytes(self) -> "CastExpression":
-        return self.cast_to(VariableType.BYTES)
-
-    def cast_to_wf_run_id(self) -> "CastExpression":
-        return self.cast_to(VariableType.WF_RUN_ID)
-
     def lhs(self) -> Any:
         return self._lhs
 
@@ -241,7 +220,7 @@ class LHExpression:
         return self.cast_to(VariableType.BYTES)
 
     def cast_to_wf_run_id(self) -> "CastExpression":
-        return self.cast_to(VariableType.WF_RUN_ID)
+        return self.cast_to(VariableType.WF_RUN_ID)        
 
 
 class CastExpression:
@@ -295,9 +274,6 @@ class CastExpression:
 
     def cast_to_wf_run_id(self) -> "CastExpression":
         return self.cast_to(VariableType.WF_RUN_ID)
-
-    def operation(self) -> Any:
-        return self._operation
 
 
 class WorkflowCondition:
