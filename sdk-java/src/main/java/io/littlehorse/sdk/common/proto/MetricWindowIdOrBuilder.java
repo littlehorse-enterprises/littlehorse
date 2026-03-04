@@ -56,30 +56,34 @@ public interface MetricWindowIdOrBuilder extends
   io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder getUserTaskDefIdOrBuilder();
 
   /**
-   * <code>.google.protobuf.Timestamp window_start = 5;</code>
+   * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
+   * @return Whether the tenantId field is set.
+   */
+  boolean hasTenantId();
+  /**
+   * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
+   * @return The tenantId.
+   */
+  io.littlehorse.sdk.common.proto.TenantId getTenantId();
+  /**
+   * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
+   */
+  io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder();
+
+  /**
+   * <code>.google.protobuf.Timestamp window_start = 7;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 5;</code>
+   * <code>.google.protobuf.Timestamp window_start = 7;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 5;</code>
+   * <code>.google.protobuf.Timestamp window_start = 7;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
-
-  /**
-   * <code>.littlehorse.MetricWindowType metric_type = 6;</code>
-   * @return The enum numeric value on the wire for metricType.
-   */
-  int getMetricTypeValue();
-  /**
-   * <code>.littlehorse.MetricWindowType metric_type = 6;</code>
-   * @return The metricType.
-   */
-  io.littlehorse.sdk.common.proto.MetricWindowType getMetricType();
 
   io.littlehorse.sdk.common.proto.MetricWindowId.IdCase getIdCase();
 }

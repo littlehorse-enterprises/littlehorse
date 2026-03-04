@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
@@ -26,10 +27,12 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
 
     private Date windowStart;
     private MetricWindowType metricType;
+    private TenantIdModel tenantId;
 
     public MetricWindowIdModel() {}
 
-    public MetricWindowIdModel(WfSpecIdModel wfSpecId, Date windowStart) {
+    public MetricWindowIdModel(TenantIdModel tenantId, WfSpecIdModel wfSpecId, Date windowStart) {
+        this.tenantId = tenantId;
         this.wfSpecId = wfSpecId;
         this.windowStart = windowStart;
         this.metricType = MetricWindowType.WORKFLOW_METRIC;
@@ -53,6 +56,24 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
         return Optional.of(parritionKey);
     }
 
+    public String getPartitionMetricStoreKey() {
+        String idPart = "";
+        if (wfSpecId != null) {
+            idPart = wfSpecId.toString();
+        } else if (taskDefId != null) {
+            idPart = taskDefId.toString();
+        } else if (userTaskDefId != null) {
+            idPart = userTaskDefId.toString();
+        }
+        return String.format(
+                "%s/%s/%s/%s/%s",
+                LHConstants.PARTITION_METRICS_KEY,
+                LHUtil.toLhDbFormat(windowStart),
+                getMetricType().name(),
+                tenantId,
+                idPart);
+    }
+
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         MetricWindowId p = (MetricWindowId) proto;
@@ -60,12 +81,15 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
         switch (p.getIdCase()) {
             case WF_SPEC_ID:
                 this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+                this.metricType = MetricWindowType.WORKFLOW_METRIC;
                 break;
             case TASK_DEF_ID:
                 this.taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
+                this.metricType = MetricWindowType.TASK_METRIC;
                 break;
             case USER_TASK_DEF_ID:
                 this.userTaskDefId = LHSerializable.fromProto(p.getUserTaskDefId(), UserTaskDefIdModel.class, context);
+                this.metricType = MetricWindowType.USER_TASK_METRIC;
                 break;
             case ID_NOT_SET:
                 break;
@@ -74,8 +98,6 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
         if (p.hasWindowStart()) {
             windowStart = LHUtil.fromProtoTs(p.getWindowStart());
         }
-
-        metricType = p.getMetricType();
     }
 
     @Override
@@ -84,7 +106,6 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
         if (windowStart != null) {
             out.setWindowStart(LHUtil.fromDate(windowStart));
         }
-
         if (wfSpecId != null) {
             out.setWfSpecId(wfSpecId.toProto());
         } else if (taskDefId != null) {
@@ -92,11 +113,9 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
         } else if (userTaskDefId != null) {
             out.setUserTaskDefId(userTaskDefId.toProto());
         }
-
-        if (metricType != null) {
-            out.setMetricType(metricType);
+        if (tenantId != null) {
+            out.setTenantId(tenantId.toProto());
         }
-
         return out;
     }
 

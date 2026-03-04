@@ -2,7 +2,6 @@ import datetime
 
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
-import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -12,18 +11,18 @@ from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class MetricWindowId(_message.Message):
-    __slots__ = ("wf_spec_id", "task_def_id", "user_task_def_id", "window_start", "metric_type")
+    __slots__ = ("wf_spec_id", "task_def_id", "user_task_def_id", "tenant_id", "window_start")
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     USER_TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    TENANT_ID_FIELD_NUMBER: _ClassVar[int]
     WINDOW_START_FIELD_NUMBER: _ClassVar[int]
-    METRIC_TYPE_FIELD_NUMBER: _ClassVar[int]
     wf_spec_id: _object_id_pb2.WfSpecId
     task_def_id: _object_id_pb2.TaskDefId
     user_task_def_id: _object_id_pb2.UserTaskDefId
+    tenant_id: _object_id_pb2.TenantId
     window_start: _timestamp_pb2.Timestamp
-    metric_type: _common_enums_pb2.MetricWindowType
-    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[_object_id_pb2.UserTaskDefId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., metric_type: _Optional[_Union[_common_enums_pb2.MetricWindowType, str]] = ...) -> None: ...
+    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[_object_id_pb2.UserTaskDefId, _Mapping]] = ..., tenant_id: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class CountAndTiming(_message.Message):
     __slots__ = ("count", "min_latency_ms", "max_latency_ms", "total_latency_ms")

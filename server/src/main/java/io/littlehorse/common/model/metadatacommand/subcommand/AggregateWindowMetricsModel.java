@@ -48,20 +48,13 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
 
     @Override
     public String getPartitionKey() {
-        return this.metricWindow.getMetricType().name() + "/" + this.metricWindow.getWfSpecId();
+        return this.metricWindow.getId().getMetricType().name() + "/"
+                + this.metricWindow.getId().getWfSpecId();
     }
 
     @SuppressWarnings("unchecked")
     public Message process(CoreProcessorContext executionContext, LHServerConfig config) {
-        MetricWindowIdModel id;
-        switch (metricWindow.getMetricType()) {
-            case WORKFLOW_METRIC:
-                id = new MetricWindowIdModel(metricWindow.getWfSpecId(), metricWindow.getWindowStart());
-                break;
-            default:
-                throw new IllegalStateException("Not supported metric type: " + metricWindow.getMetricType());
-        }
-        System.out.println("Processing aggregate for metric window: " + id);
+        MetricWindowIdModel id = metricWindow.getId();
         StoredGetable<MetricWindow, MetricWindowModel> storedMetric =
                 executionContext.getCoreStore().get(id.getStoreableKey(), StoredGetable.class);
         MetricWindowModel consolidatedMetric;

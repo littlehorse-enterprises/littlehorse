@@ -216,7 +216,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 partitionMetricsMemoryStore.values().iterator();
         while (iterator.hasNext()) {
             PartitionMetricWindowModel metric = iterator.next();
-            if (metric.getWindowStart().before(currentWindow)) {
+            if (metric.getId().getWindowStart().before(currentWindow)) {
                 forwardAndDeleteFromStore(store, metric);
                 iterator.remove();
                 if (System.currentTimeMillis() - startTime > LHConstants.MAX_MS_PER_PARTITION_METRICS_PUNCTUATION) {
@@ -262,7 +262,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         AggregateWindowMetricsModel aggregate = new AggregateWindowMetricsModel(metric);
         forwardSubcommand(aggregate);
         store.delete(metric);
-        return metric.getWindowStart().getTime();
+        return metric.getId().getWindowStart().getTime();
     }
 
     private void forwardSubcommand(AggregateWindowMetricsModel subCommand) {
@@ -280,7 +280,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 cpo,
                 System.currentTimeMillis(),
                 HeadersUtil.metadataHeadersFor(
-                        subCommand.getMetricWindow().getTenantId(), new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
+                        subCommand.getMetricWindow().getId().getTenantId(),
+                        new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
         this.ctx.forward(out);
     }
 }

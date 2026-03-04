@@ -7,22 +7,16 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import {
-  MetricWindowType,
-  metricWindowTypeFromJSON,
-  metricWindowTypeToJSON,
-  metricWindowTypeToNumber,
-} from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { TaskDefId, UserTaskDefId, WfSpecId } from "./object_id";
+import { TaskDefId, TenantId, UserTaskDefId, WfSpecId } from "./object_id";
 
 export interface MetricWindowId {
   id?: { $case: "wfSpecId"; value: WfSpecId } | { $case: "taskDefId"; value: TaskDefId } | {
     $case: "userTaskDefId";
     value: UserTaskDefId;
   } | undefined;
+  tenantId?: TenantId | undefined;
   windowStart: string | undefined;
-  metricType: MetricWindowType;
 }
 
 export interface CountAndTiming {
@@ -53,7 +47,7 @@ export interface MetricsList {
 }
 
 function createBaseMetricWindowId(): MetricWindowId {
-  return { id: undefined, windowStart: undefined, metricType: MetricWindowType.WORKFLOW_METRIC };
+  return { id: undefined, tenantId: undefined, windowStart: undefined };
 }
 
 export const MetricWindowId = {
@@ -69,11 +63,11 @@ export const MetricWindowId = {
         UserTaskDefId.encode(message.id.value, writer.uint32(26).fork()).ldelim();
         break;
     }
-    if (message.windowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(42).fork()).ldelim();
+    if (message.tenantId !== undefined) {
+      TenantId.encode(message.tenantId, writer.uint32(50).fork()).ldelim();
     }
-    if (message.metricType !== MetricWindowType.WORKFLOW_METRIC) {
-      writer.uint32(48).int32(metricWindowTypeToNumber(message.metricType));
+    if (message.windowStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(58).fork()).ldelim();
     }
     return writer;
   },
@@ -106,19 +100,19 @@ export const MetricWindowId = {
 
           message.id = { $case: "userTaskDefId", value: UserTaskDefId.decode(reader, reader.uint32()) };
           continue;
-        case 5:
-          if (tag !== 42) {
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.tenantId = TenantId.decode(reader, reader.uint32());
+          continue;
+        case 7:
+          if (tag !== 58) {
             break;
           }
 
           message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 6:
-          if (tag !== 48) {
-            break;
-          }
-
-          message.metricType = metricWindowTypeFromJSON(reader.int32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -138,10 +132,8 @@ export const MetricWindowId = {
         : isSet(object.userTaskDefId)
         ? { $case: "userTaskDefId", value: UserTaskDefId.fromJSON(object.userTaskDefId) }
         : undefined,
+      tenantId: isSet(object.tenantId) ? TenantId.fromJSON(object.tenantId) : undefined,
       windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
-      metricType: isSet(object.metricType)
-        ? metricWindowTypeFromJSON(object.metricType)
-        : MetricWindowType.WORKFLOW_METRIC,
     };
   },
 
@@ -156,11 +148,11 @@ export const MetricWindowId = {
     if (message.id?.$case === "userTaskDefId") {
       obj.userTaskDefId = UserTaskDefId.toJSON(message.id.value);
     }
+    if (message.tenantId !== undefined) {
+      obj.tenantId = TenantId.toJSON(message.tenantId);
+    }
     if (message.windowStart !== undefined) {
       obj.windowStart = message.windowStart;
-    }
-    if (message.metricType !== MetricWindowType.WORKFLOW_METRIC) {
-      obj.metricType = metricWindowTypeToJSON(message.metricType);
     }
     return obj;
   },
@@ -179,8 +171,10 @@ export const MetricWindowId = {
     if (object.id?.$case === "userTaskDefId" && object.id?.value !== undefined && object.id?.value !== null) {
       message.id = { $case: "userTaskDefId", value: UserTaskDefId.fromPartial(object.id.value) };
     }
+    message.tenantId = (object.tenantId !== undefined && object.tenantId !== null)
+      ? TenantId.fromPartial(object.tenantId)
+      : undefined;
     message.windowStart = object.windowStart ?? undefined;
-    message.metricType = object.metricType ?? MetricWindowType.WORKFLOW_METRIC;
     return message;
   },
 };

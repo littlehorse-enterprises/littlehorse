@@ -3,7 +3,6 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
-import "common_enums.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -16,8 +15,9 @@ message MetricWindowId {
     TaskDefId task_def_id = 2;
     UserTaskDefId user_task_def_id = 3;
   }
-  google.protobuf.Timestamp window_start = 5;
-  MetricWindowType          metric_type  = 6;
+  optional TenantId tenant_id = 6;
+  google.protobuf.Timestamp window_start = 7;
+
 }
 
 message CountAndTiming {
