@@ -902,8 +902,7 @@ class ExternalEventNodeOutput(NodeOutput):
 
 
 class ExternalEventDefRegistration(Protocol):
-    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest:
-        ...
+    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest: ...
 
 
 class InterruptExternalEventDefRegistration:
@@ -1287,7 +1286,11 @@ class WorkflowThread:
         self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
         return SpawnedThreads(thread_number, None)
 
-    def wait_for_threads(self, wait_for: SpawnedThreads, strategy: WaitForThreadsStrategy = WaitForThreadsStrategy.WAIT_FOR_ALL) -> WaitForThreadsNodeOutput:
+    def wait_for_threads(
+        self,
+        wait_for: SpawnedThreads,
+        strategy: WaitForThreadsStrategy = WaitForThreadsStrategy.WAIT_FOR_ALL,
+    ) -> WaitForThreadsNodeOutput:
         """Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
 
         Args:

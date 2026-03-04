@@ -95,7 +95,9 @@ class TestWorkerContext(unittest.IsolatedAsyncioTestCase):
 
         ctx = WorkerContext(scheduled_task, mock_client)
 
-        result = await ctx.execute_and_checkpoint(lambda checkpoint_ctx: "checkpoint_value")
+        result = await ctx.execute_and_checkpoint(
+            lambda checkpoint_ctx: "checkpoint_value"
+        )
 
         self.assertEqual(result, "checkpoint_value")
         mock_client.PutCheckpoint.assert_called_once()

@@ -3933,8 +3933,8 @@ class TestWaitForThreads(unittest.TestCase):
         def wf_func(wf: WorkflowThread) -> None:
             child1 = wf.spawn_thread(child_thread, "child-1")
             child2 = wf.spawn_thread(child_thread, "child-2")
-            wf.wait_for_threads(SpawnedThreads(
-                fixed_threads=[child1, child2]),
+            wf.wait_for_threads(
+                SpawnedThreads(fixed_threads=[child1, child2]),
                 strategy=WaitForThreadsStrategy.WAIT_FOR_FIRST,
             )
 
