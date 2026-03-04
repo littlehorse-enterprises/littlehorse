@@ -9,8 +9,7 @@ const getWhoAmI = async (): Promise<WhoAmI> => {
   const client = lhConfig.getClient(session?.accessToken)
 
   const { id, perTenantAcls, globalAcls } = await client.whoami({})
-
-  const tenants = getTenants({ perTenantAcls, globalAcls })
+  const tenants = await getTenants(client, { perTenantAcls, globalAcls })
 
   return {
     user: session?.user || { name: id?.id },
@@ -18,19 +17,22 @@ const getWhoAmI = async (): Promise<WhoAmI> => {
   }
 }
 
-const getTenants = ({ perTenantAcls, globalAcls }: Pick<Principal, 'globalAcls' | 'perTenantAcls'>): string[] => {
-  let tenants: string[] = []
-  if (globalAcls && hasDefaultAccess(globalAcls)) {
-    tenants = ['default']
+const getTenants = async (
+  client: ReturnType<typeof lhConfig.getClient>,
+  { perTenantAcls, globalAcls }: Pick<Principal, 'globalAcls' | 'perTenantAcls'>
+): Promise<string[]> => {
+  if (globalAcls && hasGlobalAccess(globalAcls)) {
+    const { results } = await client.searchTenant({})
+    return results.map(t => t.id).filter((id): id is string => id !== undefined)
   }
-  return [...tenants, ...Object.keys(perTenantAcls)]
+  return Object.keys(perTenantAcls)
 }
 
-const hasDefaultAccess = ({ acls }: ServerACLs): boolean => {
-  const result = acls.filter(({ resources, allowedActions }) => {
-    return resources.includes(ACLResource.ACL_ALL_RESOURCES) && allowedActions.includes(ACLAction.ALL_ACTIONS)
-  })
-  return result.length > 0
+const hasGlobalAccess = ({ acls }: ServerACLs): boolean => {
+  return acls.some(
+    ({ resources, allowedActions }) =>
+      resources.includes(ACLResource.ACL_TENANT) && allowedActions.includes(ACLAction.ALL_ACTIONS)
+  )
 }
 
 export default getWhoAmI
