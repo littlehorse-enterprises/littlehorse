@@ -43,6 +43,7 @@ import { toVariableValue } from './variableMapping'
 // ── Metadata key for struct name ─────────────────────────────────────
 
 const LH_STRUCT_NAME_KEY = '__lh_struct_name'
+const LH_MASKED_KEY = '__lh_masked'
 
 /**
  * Wraps a Zod object schema and associates it with a LittleHorse StructDef name.
@@ -72,6 +73,22 @@ export function lhStruct<T extends ZodRawShape>(
   // because it overwrites. Instead we store it as a property on the schema.
   const tagged = schema as ZodObject<T> & { [LH_STRUCT_NAME_KEY]?: string }
   tagged[LH_STRUCT_NAME_KEY] = name
+  return tagged
+}
+
+/**
+ * Marks a Zod field schema as masked for StructDef registration.
+ *
+ * ```ts
+ * const Person = lhStruct('person', z.object({
+ *   firstName: z.string(),
+ *   homeAddress: lhMasked(Address),
+ * }))
+ * ```
+ */
+export function lhMasked<T extends ZodTypeAny>(schema: T): T {
+  const tagged = schema as T & { [LH_MASKED_KEY]?: boolean }
+  tagged[LH_MASKED_KEY] = true
   return tagged
 }
 
@@ -109,6 +126,7 @@ export function isLHStruct(schema: ZodTypeAny): boolean {
 export function zodToTypeDef(schema: ZodTypeAny): TypeDefinition {
   // Unwrap optionals/nullables/defaults
   const unwrapped = unwrapZod(schema)
+  const masked = isMasked(schema) || isMasked(unwrapped)
 
   // Check for LH struct
   const structName = getStructName(unwrapped)
@@ -118,7 +136,7 @@ export function zodToTypeDef(schema: ZodTypeAny): TypeDefinition {
         $case: 'structDefId',
         value: { name: structName, version: 0 },
       },
-      masked: false,
+      masked,
     }
   }
 
@@ -126,32 +144,32 @@ export function zodToTypeDef(schema: ZodTypeAny): TypeDefinition {
 
   switch (typeName) {
     case 'string':
-      return primitiveDef(VariableType.STR)
+      return primitiveDef(VariableType.STR, masked)
 
     case 'number': {
       // Check if there's a `.int()` check on the number (Zod v4 stores checks array)
       const checks = (unwrapped._def as any).checks as Array<{ isInt?: boolean }> | undefined
       const isInt = checks?.some((c) => c.isInt) ?? false
-      return primitiveDef(isInt ? VariableType.INT : VariableType.DOUBLE)
+      return primitiveDef(isInt ? VariableType.INT : VariableType.DOUBLE, masked)
     }
 
     case 'boolean':
-      return primitiveDef(VariableType.BOOL)
+      return primitiveDef(VariableType.BOOL, masked)
 
     case 'uint8Array':
       // z.instanceof(Uint8Array) or z.instanceof(Buffer)
-      return primitiveDef(VariableType.BYTES)
+      return primitiveDef(VariableType.BYTES, masked)
 
     case 'object':
       // Plain z.object() without lhStruct → JSON_OBJ
-      return primitiveDef(VariableType.JSON_OBJ)
+      return primitiveDef(VariableType.JSON_OBJ, masked)
 
     case 'array':
-      return primitiveDef(VariableType.JSON_ARR)
+      return primitiveDef(VariableType.JSON_ARR, masked)
 
     default:
       // Fall back to STR for enums, literals, unions, etc.
-      return primitiveDef(VariableType.STR)
+      return primitiveDef(VariableType.STR, masked)
   }
 }
 
@@ -321,11 +339,15 @@ export function toStructVariableValue(
 
 // ── Internal helpers ─────────────────────────────────────────────────
 
-function primitiveDef(type: VariableType): TypeDefinition {
+function primitiveDef(type: VariableType, masked: boolean = false): TypeDefinition {
   return {
     definedType: { $case: 'primitiveType', value: type },
-    masked: false,
+    masked,
   }
+}
+
+function isMasked(schema: ZodTypeAny): boolean {
+  return (schema as any)[LH_MASKED_KEY] === true
 }
 
 /**
@@ -335,6 +357,7 @@ function primitiveDef(type: VariableType): TypeDefinition {
 function unwrapZod(schema: ZodTypeAny): ZodTypeAny {
   // Preserve struct name through unwrapping
   const name = (schema as any)[LH_STRUCT_NAME_KEY]
+  const masked = isMasked(schema)
 
   let current = schema
   const typeName = (current._def as any).type as string
@@ -345,6 +368,9 @@ function unwrapZod(schema: ZodTypeAny): ZodTypeAny {
   // Re-attach struct name if present on the outer schema
   if (name && !getStructName(current)) {
     ;(current as any)[LH_STRUCT_NAME_KEY] = name
+  }
+  if (masked && !isMasked(current)) {
+    ;(current as any)[LH_MASKED_KEY] = true
   }
 
   return current

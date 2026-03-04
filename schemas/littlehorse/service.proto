@@ -259,6 +259,9 @@ service LittleHorse {
   // Search for StructDef's
   rpc SearchStructDef(SearchStructDefRequest) returns (StructDefIdList) {}
 
+  // Get an InactiveThreadRun
+  rpc GetInactiveThreadRun(InactiveThreadRunId) returns (InactiveThreadRun) {}
+
   // Used by the Task Worker to:
   // 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
   // 2. Receive the assignemnt of LH Server's to poll from.
@@ -351,7 +354,6 @@ service LittleHorse {
   // Gets the version of the LH Server.
   rpc GetServerVersion(google.protobuf.Empty) returns (LittleHorseVersion) {}
 }
-
 // Returns the UserTaskDef with a given name and the highest version number.
 message GetLatestUserTaskDefRequest {
   // The name of the UserTaskDef to search for.

@@ -30,22 +30,19 @@ func (tw *LHTaskWorker) registerTaskDef() error {
 		return false
 	}
 	for i, arg := range tw.taskSig.Args {
-		tempType := ReflectTypeToVarType(arg.Type)
+		typeDef := ReflectTypeToTypeDef(arg.Type)
 		tempMasked := isMaskedField(i)
+		typeDef.Masked = tempMasked
 		ptd.InputVars = append(ptd.InputVars, &lhproto.VariableDef{
-			Name:        strconv.Itoa(i) + "-" + arg.Name,
-			Type:        &tempType,
-			MaskedValue: &tempMasked,
+			Name:    strconv.Itoa(i) + "-" + arg.Name,
+			TypeDef: typeDef,
 		})
 	}
 	if tw.taskSig.HasOutput {
+		outputTypeDef := ReflectTypeToTypeDef(*tw.taskSig.OutputType)
+		outputTypeDef.Masked = tw.maskedOutput
 		ptd.ReturnType = &lhproto.ReturnType{
-			ReturnType: &lhproto.TypeDefinition{
-				DefinedType: &lhproto.TypeDefinition_PrimitiveType{
-					PrimitiveType: ReflectTypeToVarType(*tw.taskSig.OutputType),
-				},
-				Masked: tw.maskedOutput,
-			},
+			ReturnType: outputTypeDef,
 		}
 	}
 
