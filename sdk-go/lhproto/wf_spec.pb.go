@@ -1843,7 +1843,10 @@ type WaitForConditionNode struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The condition that this node will block for.
+	// The condition that this node will block for. Must resolve to a BOOL value.
+	//
+	// A `oneof` is used to support the legacy condition format from WfSpec's
+	// created before 1.0.
 	//
 	// Types that are assignable to NodeCondition:
 	//
@@ -1910,10 +1913,15 @@ type isWaitForConditionNode_NodeCondition interface {
 }
 
 type WaitForConditionNode_LegacyCondition struct {
+	// Support for `WfSpec`s created before 1.0
 	LegacyCondition *LegacyEdgeCondition `protobuf:"bytes,1,opt,name=legacy_condition,json=legacyCondition,proto3,oneof"`
 }
 
 type WaitForConditionNode_Condition struct {
+	// A VariableAssignment that must resolve to a BOOL. The node will block
+	// until this evaluates to true. This can be a simple boolean variable
+	// reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+	// a compound boolean expression using AND/OR.
 	Condition *VariableAssignment `protobuf:"bytes,2,opt,name=condition,proto3,oneof"`
 }
 
@@ -2166,13 +2174,11 @@ type Edge struct {
 
 	// The name of the Node that the Edge points to.
 	SinkNodeName string `protobuf:"bytes,1,opt,name=sink_node_name,json=sinkNodeName,proto3" json:"sink_node_name,omitempty"`
-	// The Condition on which this Edge will be traversed. When choosing an Edge
-	// to travel after the completion of a NodeRun, the Edges are evaluated in
-	// order. The first one to pass is taken.
+	// The Condition on which this Edge will be traversed. Must resolve to a BOOL value.
 	//
-	// If none of the conditions are set, then this `Edge` automatically passes.
+	// If no condition is set, then this `Edge` is unconditional and automatically passes.
 	//
-	// A `oneof` is used to support the legacy edge condition.
+	// A `oneof` is used to support the legacy condition format from an older API version.
 	//
 	// Types that are assignable to EdgeCondition:
 	//
@@ -2255,12 +2261,14 @@ type isEdge_EdgeCondition interface {
 }
 
 type Edge_LegacyCondition struct {
-	// Support for `WfSpec`s created before 1.0
+	// Support for old client versions that use the legacy condition format.
 	LegacyCondition *LegacyEdgeCondition `protobuf:"bytes,2,opt,name=legacy_condition,json=legacyCondition,proto3,oneof"`
 }
 
 type Edge_Condition struct {
-	// Default condition
+	// A VariableAssignment that must resolve to a BOOL. This can be a simple
+	// boolean variable reference, a comparison expression (e.g.
+	// myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
 	Condition *VariableAssignment `protobuf:"bytes,4,opt,name=condition,proto3,oneof"`
 }
 

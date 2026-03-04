@@ -1429,6 +1429,14 @@ type VariableAssignment_Expression struct {
 
 	// The left-hand-side of the expression.
 	Lhs *VariableAssignment `protobuf:"bytes,1,opt,name=lhs,proto3" json:"lhs,omitempty"`
+	// The operator in the expression. Determines how lhs and rhs are evaluated.
+	//
+	//   - Use `mutation_type` for arithmetic, collection, or logical boolean operations (AND, OR).
+	//     These produce a value whose type depends on the operands and operation.
+	//
+	//   - Use `comparator` for comparison operations. These always evaluate to a BOOL.
+	//     These two operation types are kept separate because of compatibility reasons.
+	//
 	// Types that are assignable to Operation:
 	//
 	//	*VariableAssignment_Expression_MutationType
@@ -1510,7 +1518,6 @@ type isVariableAssignment_Expression_Operation interface {
 }
 
 type VariableAssignment_Expression_MutationType struct {
-	// The operator in the expression.
 	MutationType VariableMutationType `protobuf:"varint,2,opt,name=mutation_type,json=mutationType,proto3,enum=littlehorse.VariableMutationType,oneof"`
 }
 

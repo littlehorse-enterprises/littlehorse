@@ -92,6 +92,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int LEGACY_CONDITION_FIELD_NUMBER = 1;
   /**
+   * <pre>
+   * Support for `WfSpec`s created before 1.0
+   * </pre>
+   *
    * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
    * @return Whether the legacyCondition field is set.
    */
@@ -100,6 +104,10 @@ private static final long serialVersionUID = 0L;
     return nodeConditionCase_ == 1;
   }
   /**
+   * <pre>
+   * Support for `WfSpec`s created before 1.0
+   * </pre>
+   *
    * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
    * @return The legacyCondition.
    */
@@ -111,6 +119,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.LegacyEdgeCondition.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Support for `WfSpec`s created before 1.0
+   * </pre>
+   *
    * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
    */
   @java.lang.Override
@@ -123,6 +135,13 @@ private static final long serialVersionUID = 0L;
 
   public static final int CONDITION_FIELD_NUMBER = 2;
   /**
+   * <pre>
+   * A VariableAssignment that must resolve to a BOOL. The node will block
+   * until this evaluates to true. This can be a simple boolean variable
+   * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+   * a compound boolean expression using AND/OR.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment condition = 2;</code>
    * @return Whether the condition field is set.
    */
@@ -131,6 +150,13 @@ private static final long serialVersionUID = 0L;
     return nodeConditionCase_ == 2;
   }
   /**
+   * <pre>
+   * A VariableAssignment that must resolve to a BOOL. The node will block
+   * until this evaluates to true. This can be a simple boolean variable
+   * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+   * a compound boolean expression using AND/OR.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment condition = 2;</code>
    * @return The condition.
    */
@@ -142,6 +168,13 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
   /**
+   * <pre>
+   * A VariableAssignment that must resolve to a BOOL. The node will block
+   * until this evaluates to true. This can be a simple boolean variable
+   * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+   * a compound boolean expression using AND/OR.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment condition = 2;</code>
    */
   @java.lang.Override
@@ -533,6 +566,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.LegacyEdgeCondition, io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder, io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder> legacyConditionBuilder_;
     /**
+     * <pre>
+     * Support for `WfSpec`s created before 1.0
+     * </pre>
+     *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
      * @return Whether the legacyCondition field is set.
      */
@@ -541,6 +578,10 @@ private static final long serialVersionUID = 0L;
       return nodeConditionCase_ == 1;
     }
     /**
+     * <pre>
+     * Support for `WfSpec`s created before 1.0
+     * </pre>
+     *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
      * @return The legacyCondition.
      */
@@ -559,6 +600,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Support for `WfSpec`s created before 1.0
+     * </pre>
+     *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
      */
     public Builder setLegacyCondition(io.littlehorse.sdk.common.proto.LegacyEdgeCondition value) {
@@ -575,6 +620,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Support for `WfSpec`s created before 1.0
+     * </pre>
+     *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
      */
     public Builder setLegacyCondition(
@@ -589,6 +638,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Support for `WfSpec`s created before 1.0
+     * </pre>
+     *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
      */
     public Builder mergeLegacyCondition(io.littlehorse.sdk.common.proto.LegacyEdgeCondition value) {
@@ -612,6 +665,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Support for `WfSpec`s created before 1.0
+     * </pre>
+     *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
      */
     public Builder clearLegacyCondition() {
@@ -631,12 +688,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Support for `WfSpec`s created before 1.0
+     * </pre>
+     *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder getLegacyConditionBuilder() {
       return internalGetLegacyConditionFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Support for `WfSpec`s created before 1.0
+     * </pre>
+     *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
      */
     @java.lang.Override
@@ -651,6 +716,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Support for `WfSpec`s created before 1.0
+     * </pre>
+     *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -675,6 +744,13 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> conditionBuilder_;
     /**
+     * <pre>
+     * A VariableAssignment that must resolve to a BOOL. The node will block
+     * until this evaluates to true. This can be a simple boolean variable
+     * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+     * a compound boolean expression using AND/OR.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment condition = 2;</code>
      * @return Whether the condition field is set.
      */
@@ -683,6 +759,13 @@ private static final long serialVersionUID = 0L;
       return nodeConditionCase_ == 2;
     }
     /**
+     * <pre>
+     * A VariableAssignment that must resolve to a BOOL. The node will block
+     * until this evaluates to true. This can be a simple boolean variable
+     * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+     * a compound boolean expression using AND/OR.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment condition = 2;</code>
      * @return The condition.
      */
@@ -701,6 +784,13 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A VariableAssignment that must resolve to a BOOL. The node will block
+     * until this evaluates to true. This can be a simple boolean variable
+     * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+     * a compound boolean expression using AND/OR.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment condition = 2;</code>
      */
     public Builder setCondition(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -717,6 +807,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A VariableAssignment that must resolve to a BOOL. The node will block
+     * until this evaluates to true. This can be a simple boolean variable
+     * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+     * a compound boolean expression using AND/OR.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment condition = 2;</code>
      */
     public Builder setCondition(
@@ -731,6 +828,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A VariableAssignment that must resolve to a BOOL. The node will block
+     * until this evaluates to true. This can be a simple boolean variable
+     * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+     * a compound boolean expression using AND/OR.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment condition = 2;</code>
      */
     public Builder mergeCondition(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -754,6 +858,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A VariableAssignment that must resolve to a BOOL. The node will block
+     * until this evaluates to true. This can be a simple boolean variable
+     * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+     * a compound boolean expression using AND/OR.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment condition = 2;</code>
      */
     public Builder clearCondition() {
@@ -773,12 +884,26 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A VariableAssignment that must resolve to a BOOL. The node will block
+     * until this evaluates to true. This can be a simple boolean variable
+     * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+     * a compound boolean expression using AND/OR.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment condition = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getConditionBuilder() {
       return internalGetConditionFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * A VariableAssignment that must resolve to a BOOL. The node will block
+     * until this evaluates to true. This can be a simple boolean variable
+     * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+     * a compound boolean expression using AND/OR.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment condition = 2;</code>
      */
     @java.lang.Override
@@ -793,6 +918,13 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A VariableAssignment that must resolve to a BOOL. The node will block
+     * until this evaluates to true. This can be a simple boolean variable
+     * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+     * a compound boolean expression using AND/OR.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment condition = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<

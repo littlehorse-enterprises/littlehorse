@@ -44,7 +44,13 @@ message VariableAssignment {
     // The left-hand-side of the expression.
     VariableAssignment lhs = 1;
 
-    // The operator in the expression.
+    // The operator in the expression. Determines how lhs and rhs are evaluated.
+    //
+    // - Use `mutation_type` for arithmetic, collection, or logical boolean operations (AND, OR).
+    //   These produce a value whose type depends on the operands and operation.
+    //
+    // - Use `comparator` for comparison operations. These always evaluate to a BOOL.
+    //   These two operation types are kept separate because of compatibility reasons.
     oneof operation {
       VariableMutationType mutation_type = 2;
       Comparator comparator = 4;

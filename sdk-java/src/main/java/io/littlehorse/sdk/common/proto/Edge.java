@@ -141,7 +141,7 @@ private static final long serialVersionUID = 0L;
   public static final int LEGACY_CONDITION_FIELD_NUMBER = 2;
   /**
    * <pre>
-   * Support for `WfSpec`s created before 1.0
+   * Support for old client versions that use the legacy condition format.
    * </pre>
    *
    * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -153,7 +153,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Support for `WfSpec`s created before 1.0
+   * Support for old client versions that use the legacy condition format.
    * </pre>
    *
    * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -168,7 +168,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Support for `WfSpec`s created before 1.0
+   * Support for old client versions that use the legacy condition format.
    * </pre>
    *
    * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -184,7 +184,9 @@ private static final long serialVersionUID = 0L;
   public static final int CONDITION_FIELD_NUMBER = 4;
   /**
    * <pre>
-   * Default condition
+   * A VariableAssignment that must resolve to a BOOL. This can be a simple
+   * boolean variable reference, a comparison expression (e.g.
+   * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment condition = 4;</code>
@@ -196,7 +198,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Default condition
+   * A VariableAssignment that must resolve to a BOOL. This can be a simple
+   * boolean variable reference, a comparison expression (e.g.
+   * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment condition = 4;</code>
@@ -211,7 +215,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Default condition
+   * A VariableAssignment that must resolve to a BOOL. This can be a simple
+   * boolean variable reference, a comparison expression (e.g.
+   * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment condition = 4;</code>
@@ -854,7 +860,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.LegacyEdgeCondition, io.littlehorse.sdk.common.proto.LegacyEdgeCondition.Builder, io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder> legacyConditionBuilder_;
     /**
      * <pre>
-     * Support for `WfSpec`s created before 1.0
+     * Support for old client versions that use the legacy condition format.
      * </pre>
      *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -866,7 +872,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Support for `WfSpec`s created before 1.0
+     * Support for old client versions that use the legacy condition format.
      * </pre>
      *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -888,7 +894,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Support for `WfSpec`s created before 1.0
+     * Support for old client versions that use the legacy condition format.
      * </pre>
      *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -908,7 +914,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Support for `WfSpec`s created before 1.0
+     * Support for old client versions that use the legacy condition format.
      * </pre>
      *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -926,7 +932,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Support for `WfSpec`s created before 1.0
+     * Support for old client versions that use the legacy condition format.
      * </pre>
      *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -953,7 +959,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Support for `WfSpec`s created before 1.0
+     * Support for old client versions that use the legacy condition format.
      * </pre>
      *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -976,7 +982,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Support for `WfSpec`s created before 1.0
+     * Support for old client versions that use the legacy condition format.
      * </pre>
      *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -986,7 +992,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Support for `WfSpec`s created before 1.0
+     * Support for old client versions that use the legacy condition format.
      * </pre>
      *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -1004,7 +1010,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Support for `WfSpec`s created before 1.0
+     * Support for old client versions that use the legacy condition format.
      * </pre>
      *
      * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -1032,7 +1038,9 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> conditionBuilder_;
     /**
      * <pre>
-     * Default condition
+     * A VariableAssignment that must resolve to a BOOL. This can be a simple
+     * boolean variable reference, a comparison expression (e.g.
+     * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment condition = 4;</code>
@@ -1044,7 +1052,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Default condition
+     * A VariableAssignment that must resolve to a BOOL. This can be a simple
+     * boolean variable reference, a comparison expression (e.g.
+     * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment condition = 4;</code>
@@ -1066,7 +1076,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Default condition
+     * A VariableAssignment that must resolve to a BOOL. This can be a simple
+     * boolean variable reference, a comparison expression (e.g.
+     * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment condition = 4;</code>
@@ -1086,7 +1098,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Default condition
+     * A VariableAssignment that must resolve to a BOOL. This can be a simple
+     * boolean variable reference, a comparison expression (e.g.
+     * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment condition = 4;</code>
@@ -1104,7 +1118,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Default condition
+     * A VariableAssignment that must resolve to a BOOL. This can be a simple
+     * boolean variable reference, a comparison expression (e.g.
+     * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment condition = 4;</code>
@@ -1131,7 +1147,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Default condition
+     * A VariableAssignment that must resolve to a BOOL. This can be a simple
+     * boolean variable reference, a comparison expression (e.g.
+     * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment condition = 4;</code>
@@ -1154,7 +1172,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Default condition
+     * A VariableAssignment that must resolve to a BOOL. This can be a simple
+     * boolean variable reference, a comparison expression (e.g.
+     * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment condition = 4;</code>
@@ -1164,7 +1184,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Default condition
+     * A VariableAssignment that must resolve to a BOOL. This can be a simple
+     * boolean variable reference, a comparison expression (e.g.
+     * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment condition = 4;</code>
@@ -1182,7 +1204,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Default condition
+     * A VariableAssignment that must resolve to a BOOL. This can be a simple
+     * boolean variable reference, a comparison expression (e.g.
+     * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment condition = 4;</code>

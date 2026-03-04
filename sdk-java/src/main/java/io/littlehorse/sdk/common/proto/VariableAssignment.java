@@ -1789,28 +1789,16 @@ private static final long serialVersionUID = 0L;
     io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getLhsOrBuilder();
 
     /**
-     * <pre>
-     * The operator in the expression.
-     * </pre>
-     *
      * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
      * @return Whether the mutationType field is set.
      */
     boolean hasMutationType();
     /**
-     * <pre>
-     * The operator in the expression.
-     * </pre>
-     *
      * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
      * @return The enum numeric value on the wire for mutationType.
      */
     int getMutationTypeValue();
     /**
-     * <pre>
-     * The operator in the expression.
-     * </pre>
-     *
      * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
      * @return The mutationType.
      */
@@ -1985,10 +1973,6 @@ private static final long serialVersionUID = 0L;
 
     public static final int MUTATION_TYPE_FIELD_NUMBER = 2;
     /**
-     * <pre>
-     * The operator in the expression.
-     * </pre>
-     *
      * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
      * @return Whether the mutationType field is set.
      */
@@ -1996,10 +1980,6 @@ private static final long serialVersionUID = 0L;
       return operationCase_ == 2;
     }
     /**
-     * <pre>
-     * The operator in the expression.
-     * </pre>
-     *
      * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
      * @return The enum numeric value on the wire for mutationType.
      */
@@ -2010,10 +1990,6 @@ private static final long serialVersionUID = 0L;
       return 0;
     }
     /**
-     * <pre>
-     * The operator in the expression.
-     * </pre>
-     *
      * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
      * @return The mutationType.
      */
@@ -2697,10 +2673,6 @@ private static final long serialVersionUID = 0L;
       }
 
       /**
-       * <pre>
-       * The operator in the expression.
-       * </pre>
-       *
        * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
        * @return Whether the mutationType field is set.
        */
@@ -2709,10 +2681,6 @@ private static final long serialVersionUID = 0L;
         return operationCase_ == 2;
       }
       /**
-       * <pre>
-       * The operator in the expression.
-       * </pre>
-       *
        * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
        * @return The enum numeric value on the wire for mutationType.
        */
@@ -2724,10 +2692,6 @@ private static final long serialVersionUID = 0L;
         return 0;
       }
       /**
-       * <pre>
-       * The operator in the expression.
-       * </pre>
-       *
        * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
        * @param value The enum numeric value on the wire for mutationType to set.
        * @return This builder for chaining.
@@ -2739,10 +2703,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * The operator in the expression.
-       * </pre>
-       *
        * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
        * @return The mutationType.
        */
@@ -2756,10 +2716,6 @@ private static final long serialVersionUID = 0L;
         return io.littlehorse.sdk.common.proto.VariableMutationType.ASSIGN;
       }
       /**
-       * <pre>
-       * The operator in the expression.
-       * </pre>
-       *
        * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
        * @param value The mutationType to set.
        * @return This builder for chaining.
@@ -2772,10 +2728,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * The operator in the expression.
-       * </pre>
-       *
        * <code>.littlehorse.VariableMutationType mutation_type = 2;</code>
        * @return This builder for chaining.
        */

@@ -51,8 +51,23 @@ public class LHExpressionImpl implements LHExpression {
     }
 
     public LHExpression getReverse() {
-        LegacyEdgeCondition legacyCondition = new WorkflowConditionImpl(getLegacyCondition()).getReverse();
-        return new LHExpressionImpl(
-                legacyCondition.getLeft(), legacyCondition.getComparator(), legacyCondition.getRight());
+        if (comparator == null) {
+            throw new RuntimeException("Cannot reverse non-comparator expression!");
+        }
+        return new LHExpressionImpl(lhs, reverseComparator(comparator), rhs);
+    }
+
+    private static Comparator reverseComparator(Comparator comparator) {
+        return switch (comparator) {
+            case LESS_THAN -> Comparator.GREATER_THAN_EQ;
+            case GREATER_THAN -> Comparator.LESS_THAN_EQ;
+            case LESS_THAN_EQ -> Comparator.GREATER_THAN;
+            case GREATER_THAN_EQ -> Comparator.LESS_THAN;
+            case IN -> Comparator.NOT_IN;
+            case NOT_IN -> Comparator.IN;
+            case EQUALS -> Comparator.NOT_EQUALS;
+            case NOT_EQUALS -> Comparator.EQUALS;
+            case UNRECOGNIZED -> throw new RuntimeException("Unexpect comparator: " + comparator);
+        };
     }
 }

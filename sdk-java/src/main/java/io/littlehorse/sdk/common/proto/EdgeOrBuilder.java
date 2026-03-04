@@ -32,7 +32,7 @@ public interface EdgeOrBuilder extends
 
   /**
    * <pre>
-   * Support for `WfSpec`s created before 1.0
+   * Support for old client versions that use the legacy condition format.
    * </pre>
    *
    * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -41,7 +41,7 @@ public interface EdgeOrBuilder extends
   boolean hasLegacyCondition();
   /**
    * <pre>
-   * Support for `WfSpec`s created before 1.0
+   * Support for old client versions that use the legacy condition format.
    * </pre>
    *
    * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -50,7 +50,7 @@ public interface EdgeOrBuilder extends
   io.littlehorse.sdk.common.proto.LegacyEdgeCondition getLegacyCondition();
   /**
    * <pre>
-   * Support for `WfSpec`s created before 1.0
+   * Support for old client versions that use the legacy condition format.
    * </pre>
    *
    * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
@@ -59,7 +59,9 @@ public interface EdgeOrBuilder extends
 
   /**
    * <pre>
-   * Default condition
+   * A VariableAssignment that must resolve to a BOOL. This can be a simple
+   * boolean variable reference, a comparison expression (e.g.
+   * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment condition = 4;</code>
@@ -68,7 +70,9 @@ public interface EdgeOrBuilder extends
   boolean hasCondition();
   /**
    * <pre>
-   * Default condition
+   * A VariableAssignment that must resolve to a BOOL. This can be a simple
+   * boolean variable reference, a comparison expression (e.g.
+   * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment condition = 4;</code>
@@ -77,7 +81,9 @@ public interface EdgeOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableAssignment getCondition();
   /**
    * <pre>
-   * Default condition
+   * A VariableAssignment that must resolve to a BOOL. This can be a simple
+   * boolean variable reference, a comparison expression (e.g.
+   * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment condition = 4;</code>
