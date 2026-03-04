@@ -215,10 +215,7 @@ public class ConditionalsTest {
             workflowVerifier
                     .prepareRun(workflowLessThanEquals, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
-                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(true))
-                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(expectedOutput))
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool()).isEqualTo(expectedOutput))
                     .start();
         }
 
@@ -241,10 +238,7 @@ public class ConditionalsTest {
             workflowVerifier
                     .prepareRun(workflowGreaterThan, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
-                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(true))
-                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(expectedOutput))
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool()).isEqualTo(expectedOutput))
                     .start();
         }
 
@@ -295,10 +289,7 @@ public class ConditionalsTest {
             workflowVerifier
                     .prepareRun(workflowIsIn, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
-                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(true))
-                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(expectedOutput))
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool()).isEqualTo(expectedOutput))
                     .start();
         }
 
@@ -326,10 +317,7 @@ public class ConditionalsTest {
             workflowVerifier
                     .prepareRun(workflowNotIn, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
-                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(true))
-                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(expectedOutput))
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool()).isEqualTo(expectedOutput))
                     .start();
         }
 
@@ -639,17 +627,15 @@ public class ConditionalsTest {
             // schema.
             WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            // So that the run request succeeds even on workflows where we want
-            // a crash.
-            thread.execute("ag-one");
+            WfRunVariable result = thread.declareBool("result");
 
             thread.doIfElse(
                     input.jsonPath("$.lhs").isLessThanEq(input.jsonPath("$.rhs")),
                     ifBlock -> {
-                        ifBlock.execute("ag-one");
+                        result.assign(true);
                     },
                     elseBlock -> {
-                        elseBlock.execute("ag-two");
+                        result.assign(false);
                     });
         });
     }
@@ -663,17 +649,15 @@ public class ConditionalsTest {
             // schema.
             WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            // So that the run request succeeds even on workflows where we want
-            // a crash.
-            thread.execute("ag-one");
+            WfRunVariable result = thread.declareBool("result");
 
             thread.doIfElse(
                     input.jsonPath("$.lhs").isGreaterThan(input.jsonPath("$.rhs")),
                     ifBlock -> {
-                        ifBlock.execute("ag-one");
+                        result.assign(true);
                     },
                     elseBlock -> {
-                        elseBlock.execute("ag-two");
+                        result.assign(false);
                     });
         });
     }
@@ -711,17 +695,15 @@ public class ConditionalsTest {
             // schema.
             WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            // So that the run request succeeds even on workflows where we want
-            // a crash.
-            thread.execute("ag-one");
+            WfRunVariable result = thread.declareBool("result");
 
             thread.doIfElse(
                     input.jsonPath("$.lhs").isIn(input.jsonPath("$.rhs")),
                     ifBlock -> {
-                        ifBlock.execute("ag-one");
+                        result.assign(true);
                     },
                     elseBlock -> {
-                        elseBlock.execute("ag-two");
+                        result.assign(false);
                     });
         });
     }
@@ -735,17 +717,15 @@ public class ConditionalsTest {
             // schema.
             WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            // So that the run request succeeds even on workflows where we want
-            // a crash.
-            thread.execute("ag-one");
+            WfRunVariable result = thread.declareBool("result");
 
             thread.doIfElse(
                     input.jsonPath("$.lhs").isNotIn(input.jsonPath("$.rhs")),
                     ifBlock -> {
-                        ifBlock.execute("ag-one");
+                        result.assign(true);
                     },
                     elseBlock -> {
-                        elseBlock.execute("ag-two");
+                        result.assign(false);
                     });
         });
     }
