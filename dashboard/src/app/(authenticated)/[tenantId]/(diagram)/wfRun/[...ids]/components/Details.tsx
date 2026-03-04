@@ -1,14 +1,38 @@
 'use client'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { flattenWfRunId, formatDate, wfRunIdToPath } from '@/app/utils'
+import { ThreadType } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
+import { useModal } from '@/app/(authenticated)/[tenantId]/(diagram)/hooks/useModal'
 import { WfRun } from 'littlehorse-client/proto'
-import { FC } from 'react'
+import { Expand } from 'lucide-react'
+import { FC, useCallback, useState } from 'react'
 import { CopyToClipboard } from './CopyToClipboard'
 import { WF_RUN_STATUS } from '../../../components/Sidebar/Components/StatusColor'
 
-type DetailsProps = WfRun
+type DetailsProps = WfRun & { selectedThread?: ThreadType }
 
-export const Details: FC<DetailsProps> = ({ id, status, wfSpecId, startTime }) => {
+const getSelectedThreadError = (wfRun: WfRun, selectedThread?: ThreadType): { errorMessage: string; threadName: string } | undefined => {
+  if (!selectedThread) {
+    const failedThread = wfRun.threadRuns?.find(tr => tr.errorMessage)
+    return failedThread ? { errorMessage: failedThread.errorMessage!, threadName: failedThread.threadSpecName ?? '' } : undefined
+  }
+  const threadRun = wfRun.threadRuns?.find(tr => tr.number === selectedThread.number)
+  if (!threadRun?.errorMessage) return undefined
+  return { errorMessage: threadRun.errorMessage, threadName: threadRun.threadSpecName ?? selectedThread.name }
+}
+
+export const Details: FC<DetailsProps> = ({ selectedThread, ...wfRun }) => {
+  const { id, status, wfSpecId, startTime } = wfRun
+  const threadError = getSelectedThreadError(wfRun, selectedThread)
+  const { setModal, setShowModal } = useModal()
+  const [isHovered, setIsHovered] = useState(false)
+
+  const onExpandError = useCallback(() => {
+    if (!threadError) return
+    setModal({ type: 'output', data: { message: threadError.errorMessage, label: 'Error' } })
+    setShowModal(true)
+  }, [threadError, setModal, setShowModal])
+
   if (!id || !wfSpecId) return null
 
   return (
@@ -43,6 +67,32 @@ export const Details: FC<DetailsProps> = ({ id, status, wfSpecId, startTime }) =
           Started: <span className={` ml-2`}>{`${formatDate(Date.parse(startTime || ''))}`}</span>
         </div>
       </div>
+      {threadError && (
+        <div
+          className="mt-2 flex items-center gap-3 rounded border border-yellow-200 bg-yellow-50 px-3 py-2"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <span
+            className={`shrink-0 rounded px-2 py-0.5 text-sm font-medium ${WF_RUN_STATUS[status].backgroundColor} ${WF_RUN_STATUS[status].textColor}`}
+          >
+            {status}
+          </span>
+          {threadError.threadName && (
+            <span className="shrink-0 rounded bg-yellow-100 px-2 py-0.5 text-sm font-medium text-yellow-800">
+              {threadError.threadName}
+            </span>
+          )}
+          <button
+            type="button"
+            className="flex min-w-0 flex-1 cursor-pointer items-center gap-1 border-0 bg-transparent p-0 text-left text-sm text-yellow-900 hover:underline"
+            onClick={onExpandError}
+          >
+            <span className="truncate">{threadError.errorMessage}</span>
+            {isHovered && <Expand className="shrink-0 text-yellow-700" size={14} />}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

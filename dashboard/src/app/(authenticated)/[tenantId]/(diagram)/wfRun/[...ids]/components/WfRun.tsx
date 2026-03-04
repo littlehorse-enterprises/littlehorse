@@ -55,7 +55,7 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
     <div className="mb-16">
       <Navigation href={wfSpecUrl} title="Go back to WfSpec" />
 
-      <Details {...wfRun} />
+      <Details {...wfRun} selectedThread={selectedThread} />
 
       <Diagram spec={wfSpec} wfRun={wfRun} onThreadChange={onThreadChange} />
 

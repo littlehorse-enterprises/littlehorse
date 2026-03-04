@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { useDiagram } from '../../hooks/useDiagram'
 import { Node } from './Node'
 import { NodeInfo } from './NodeInfo/NodeInfo'
@@ -9,25 +9,16 @@ import { NodeRunComponent } from './NodeRunInfo/NodeRunComponent'
 import { NodeRunInfo } from './NodeRunInfo/NodeRunInfo'
 
 export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
-  const { selectedNode, failedNodeId } = useDiagram()
+  const { selectedNode } = useDiagram()
   const [currentTab, setCurrentTab] = useState('overview')
   const [nodeRunIndex, setNodeRunIndex] = useState<number>(0)
-
-  const hasNodeRuns = useMemo(() => {
-    if (!selectedNode || !('nodeRunsList' in selectedNode.data)) return false
-    return (selectedNode.data.nodeRunsList?.length ?? 0) > 0
-  }, [selectedNode])
 
   const isValidNode = useMemo(() => {
     if (!selectedNode) return false
     if (!showNodeRun) return true
     if (!('nodeRunsList' in selectedNode.data)) return false
-    return hasNodeRuns || (failedNodeId !== undefined && selectedNode.id === failedNodeId)
-  }, [selectedNode, showNodeRun, hasNodeRuns, failedNodeId])
-
-  useEffect(() => {
-    if (!hasNodeRuns && currentTab === 'nodeRun') setCurrentTab('overview')
-  }, [hasNodeRuns, currentTab])
+    return selectedNode.data.nodeRunsList?.length > 0
+  }, [selectedNode, showNodeRun])
 
   const maxHeightClass = `max-h-[600px]`
   const hasFailures = useMemo(() => {
@@ -60,7 +51,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
     <aside className={`flex max-w-full flex-col overflow-hidden pl-4 ${maxHeightClass}`}>
       {isValidNode && selectedNode && (selectedNode as { type?: string }).type !== 'cycle' && (
         <>
-          {showNodeRun && hasNodeRuns && (
+          {showNodeRun && (
             <SelectedNodeRun nodeRunIndex={nodeRunIndex} setNodeRunIndex={setNodeRunIndex} />
           )}
           <Tabs
@@ -75,7 +66,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
               <TabsTrigger value="node" className="flex-1">
                 Node
               </TabsTrigger>
-              {showNodeRun && hasNodeRuns && (
+              {showNodeRun && (
                 <TabsTrigger value="nodeRun" className="flex-1">
                   NodeRun
                 </TabsTrigger>
@@ -93,7 +84,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
               <TabsContent value="node" className="mt-0">
                 <Node />
               </TabsContent>
-              {showNodeRun && hasNodeRuns && (
+              {showNodeRun && (
                 <TabsContent value="nodeRun" className="mt-0">
                   <NodeRunComponent nodeRunIndex={nodeRunIndex} />
                 </TabsContent>
