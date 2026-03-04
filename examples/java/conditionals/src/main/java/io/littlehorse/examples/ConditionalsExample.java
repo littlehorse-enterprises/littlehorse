@@ -1,6 +1,7 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -10,7 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import org.slf4j.Logger;
@@ -27,30 +27,18 @@ public class ConditionalsExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-conditionals", wf -> {
-            WfRunVariable isVip = wf.declareBool("is-vip");
-            WfRunVariable price = wf.declareInt("price");
-            WfRunVariable companyName = wf.declareStr("company-name");
-            WfRunVariable jsonArr = wf.declareJsonArr("special-companies").withDefault(new ArrayList<>());
-            jsonArr.assign(jsonArr.add("CocaCola"));
-            jsonArr.assign(jsonArr.add("Starbucks"));
-            jsonArr.assign(jsonArr.add("McDonalds"));
-            jsonArr.assign(jsonArr.add("Pizza Hut"));
-            jsonArr.assign(jsonArr.add("Burger King"));
-            jsonArr.assign(jsonArr.add("Wendy's"));
-            jsonArr.assign(jsonArr.add("KFC"));
+            WfRunVariable foo = wf.declareJsonObj("foo");
 
-            wf.doIf(isVip.and(companyName.isIn(jsonArr)), handler -> {
-                handler.execute("send-special-welcome");
-            });
+            wf.execute("task-a");
 
-            wf.doIfElse(
-                    isVip.or(price.isGreaterThan(10000)),
-                    handler -> {
-                        handler.execute("use-expedited-shipping");
-                    },
-                    handler -> {
-                        handler.execute("regular-shipping");
+            wf.doIf(wf.condition(foo.jsonPath("$.bar"), Comparator.GREATER_THAN, 10), ifHandler -> {
+                        ifHandler.execute("task-b");
+                    })
+                    .doElse(elseHandler -> {
+                        elseHandler.execute("task-c");
                     });
+
+            wf.execute("task-d");
         });
     }
 
@@ -67,9 +55,9 @@ public class ConditionalsExample {
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
         ConditionalsTaskWorker executable = new ConditionalsTaskWorker();
         List<LHTaskWorker> workers = List.of(
-                new LHTaskWorker(executable, "send-special-welcome", config),
-                new LHTaskWorker(executable, "use-expedited-shipping", config),
-                new LHTaskWorker(executable, "regular-shipping", config),
+                new LHTaskWorker(executable, "task-a", config),
+                new LHTaskWorker(executable, "task-b", config),
+                new LHTaskWorker(executable, "task-c", config),
                 new LHTaskWorker(executable, "task-d", config));
 
         // Gracefully shutdown
