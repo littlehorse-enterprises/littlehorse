@@ -1,11 +1,4 @@
-import {
-  Channel,
-  ChannelCredentials,
-  Client,
-  Metadata,
-  createChannel,
-  createClientFactory,
-} from 'nice-grpc'
+import { Channel, ChannelCredentials, Client, Metadata, createChannel, createClientFactory } from 'nice-grpc'
 import {
   LittleHorseDefinition,
   PollTaskRequest,
@@ -136,7 +129,7 @@ class ServerConnection {
         }
         // Set up flow control: we won't yield the next request until the
         // current response is processed
-        readyPromise = new Promise<void>((resolve) => {
+        readyPromise = new Promise<void>(resolve => {
           resolveReady = resolve
         })
       }
@@ -147,7 +140,7 @@ class ServerConnection {
     for await (const response of responseStream) {
       if (response.result) {
         // Execute task in the background (don't await—allow the next poll)
-        this.executeAndReport(response.result).catch((err) => {
+        this.executeAndReport(response.result).catch(err => {
           console.error(`[LHTaskWorker] Unhandled error executing task:`, err)
         })
       }
@@ -172,7 +165,11 @@ class ServerConnection {
 
       const result = await Promise.resolve(this.taskFunction(...args))
       const output =
-        this.outputSchema && getStructName(this.outputSchema) && result !== null && result !== undefined && typeof result === 'object'
+        this.outputSchema &&
+        getStructName(this.outputSchema) &&
+        result !== null &&
+        result !== undefined &&
+        typeof result === 'object'
           ? toStructVariableValue(result as Record<string, unknown>, this.outputSchema)
           : toVariableValue(result)
 
@@ -236,9 +233,7 @@ class ServerConnection {
       await this.client.reportTask(report)
     } catch (err) {
       if (retriesLeft > 0) {
-        console.warn(
-          `[LHTaskWorker] Failed to report task on ${this.hostKey}, retrying (${retriesLeft} left)...`
-        )
+        console.warn(`[LHTaskWorker] Failed to report task on ${this.hostKey}, retrying (${retriesLeft} left)...`)
         await sleep(REPORT_TASK_RETRY_DELAY_MS)
         await this.reportTaskWithRetries(report, retriesLeft - 1)
       } else {
@@ -367,7 +362,7 @@ export function createTaskWorker(
         taskDefId: { name: taskDefName },
       })
 
-      const newHosts = new Set(response.yourHosts.map((h) => `${h.host}:${h.port}`))
+      const newHosts = new Set(response.yourHosts.map(h => `${h.host}:${h.port}`))
 
       // Remove connections for hosts no longer in the list
       for (const [key, conn] of connections) {
@@ -467,7 +462,7 @@ export function createTaskWorker(
       // Run heartbeat immediately, then on an interval
       await heartbeat()
       heartbeatTimer = setInterval(() => {
-        heartbeat().catch((err) => {
+        heartbeat().catch(err => {
           console.error('[LHTaskWorker] Heartbeat error:', err)
         })
       }, HEARTBEAT_INTERVAL_MS)
@@ -499,5 +494,5 @@ export function createTaskWorker(
 }
 
 function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+  return new Promise(resolve => setTimeout(resolve, ms))
 }

@@ -33,10 +33,7 @@
 import { z, type ZodTypeAny, type ZodObject, type ZodRawShape } from 'zod'
 import { VariableType } from '../proto/common_enums'
 import { VariableDef, TypeDefinition, StructFieldDef } from '../proto/common_wfspec'
-import {
-  PutStructDefRequest,
-  StructDefCompatibilityType,
-} from '../proto/service'
+import { PutStructDefRequest, StructDefCompatibilityType } from '../proto/service'
 import { VariableValue, StructField } from '../proto/variable'
 import { toVariableValue } from './variableMapping'
 
@@ -65,10 +62,7 @@ const LH_MASKED_KEY = '__lh_masked'
  * @param schema - A Zod object schema describing the struct fields.
  * @returns A Zod schema with LH struct metadata attached.
  */
-export function lhStruct<T extends ZodRawShape>(
-  name: string,
-  schema: ZodObject<T>,
-): ZodObject<T> {
+export function lhStruct<T extends ZodRawShape>(name: string, schema: ZodObject<T>): ZodObject<T> {
   // Attach the struct name as Zod metadata using .describe() isn't ideal
   // because it overwrites. Instead we store it as a property on the schema.
   const tagged = schema as ZodObject<T> & { [LH_STRUCT_NAME_KEY]?: string }
@@ -149,7 +143,7 @@ export function zodToTypeDef(schema: ZodTypeAny): TypeDefinition {
     case 'number': {
       // Check if there's a `.int()` check on the number (Zod v4 stores checks array)
       const checks = (unwrapped._def as any).checks as Array<{ isInt?: boolean }> | undefined
-      const isInt = checks?.some((c) => c.isInt) ?? false
+      const isInt = checks?.some(c => c.isInt) ?? false
       return primitiveDef(isInt ? VariableType.INT : VariableType.DOUBLE, masked)
     }
 
@@ -208,7 +202,7 @@ export function zodToVariableDefs(inputs: Record<string, ZodTypeAny>): VariableD
  */
 export function buildPutStructDefRequest(
   schema: ZodTypeAny,
-  allowedUpdates: StructDefCompatibilityType = StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES,
+  allowedUpdates: StructDefCompatibilityType = StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES
 ): PutStructDefRequest {
   const name = getStructName(schema)
   if (!name) {
@@ -237,10 +231,7 @@ export function buildPutStructDefRequest(
  * const inputVars = [buildStructVariableDef('car', CarSchema)]
  * ```
  */
-export function buildStructVariableDef(
-  paramName: string,
-  schema: ZodTypeAny,
-): VariableDef {
+export function buildStructVariableDef(paramName: string, schema: ZodTypeAny): VariableDef {
   const name = getStructName(schema)
   if (!name) {
     throw new Error('buildStructVariableDef requires a schema created with lhStruct()')
@@ -303,7 +294,7 @@ export function getStructDependencies(schema: ZodTypeAny): ZodTypeAny[] {
 export function toStructVariableValue(
   value: Record<string, unknown>,
   schema: ZodTypeAny,
-  structDefVersion: number = 0,
+  structDefVersion: number = 0
 ): VariableValue {
   const name = getStructName(schema)
   if (!name) {
@@ -317,7 +308,13 @@ export function toStructVariableValue(
   for (const [key, val] of Object.entries(value)) {
     const fieldSchema = (shape as Record<string, ZodTypeAny>)[key]
     const unwrappedField = fieldSchema ? unwrapZod(fieldSchema) : undefined
-    if (unwrappedField && getStructName(unwrappedField) && val !== null && val !== undefined && typeof val === 'object') {
+    if (
+      unwrappedField &&
+      getStructName(unwrappedField) &&
+      val !== null &&
+      val !== undefined &&
+      typeof val === 'object'
+    ) {
       fields[key] = {
         value: toStructVariableValue(val as Record<string, unknown>, unwrappedField, structDefVersion),
       }
