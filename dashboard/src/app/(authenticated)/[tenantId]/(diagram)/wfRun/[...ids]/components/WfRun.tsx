@@ -1,11 +1,12 @@
 'use client'
 import { Diagram } from '@/app/(authenticated)/[tenantId]/(diagram)/components/Diagram'
+import { ThreadType } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { getWfRun, WfRunResponse } from '@/app/actions/getWfRun'
 import { wfRunIdToPath } from '@/app/utils'
 import { Separator } from '@/components/ui/separator'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { FC, useMemo } from 'react'
+import { FC, useCallback, useMemo, useState } from 'react'
 import useSWR from 'swr'
 import { ChildWorkflows } from './ChildWorkflows'
 import { Details } from './Details'
@@ -24,12 +25,26 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
   const { data } = useSWR(swrKey, async () => await getWfRun({ wfRunId, tenantId }), { fallbackData: wfRunData })
   const { wfSpec, wfRun, variables } = data
 
+  const initialThread = useMemo<ThreadType>(() => {
+    const tr = wfRun.threadRuns.find(t => t.number === wfRun.greatestThreadrunNumber)
+    return {
+      name: tr?.threadSpecName ?? wfSpec.entrypointThreadName,
+      number: wfRun.greatestThreadrunNumber,
+    }
+  }, [wfRun.greatestThreadrunNumber, wfRun.threadRuns, wfSpec.entrypointThreadName])
+
+  const [selectedThread, setSelectedThread] = useState<ThreadType>(initialThread)
+
+  const onThreadChange = useCallback((thread: ThreadType) => {
+    setSelectedThread(thread)
+  }, [])
+
   const variableDefs = useMemo(() => {
     if (!wfSpec) return []
-    const threadRun = wfRun.threadRuns.find(tr => tr.number === wfRun.greatestThreadrunNumber)
-    if (!threadRun) return []
-    return wfSpec.threadSpecs[threadRun.threadSpecName].variableDefs ?? []
-  }, [wfSpec, wfRun.greatestThreadrunNumber, wfRun.threadRuns])
+    const threadSpec = wfSpec.threadSpecs[selectedThread.name]
+    if (!threadSpec) return []
+    return threadSpec.variableDefs ?? []
+  }, [wfSpec, selectedThread.name])
 
   const wfSpecUrl = useMemo(() => {
     const { name, majorVersion, revision } = wfRun.wfSpecId ?? {}
@@ -42,11 +57,11 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
 
       <Details {...wfRun} />
 
-      <Diagram spec={wfSpec} wfRun={wfRun} />
+      <Diagram spec={wfSpec} wfRun={wfRun} onThreadChange={onThreadChange} />
 
       {wfRun.id && (
         <>
-          <Variables variableDefs={variableDefs} variables={variables} />
+          <Variables variableDefs={variableDefs} variables={variables} thread={selectedThread} wfRunId={wfRun.id} />
           <Separator className="mb-4 mt-4" />
           <ChildWorkflows parentWfRunId={wfRun.id} spec={wfSpec} />
         </>

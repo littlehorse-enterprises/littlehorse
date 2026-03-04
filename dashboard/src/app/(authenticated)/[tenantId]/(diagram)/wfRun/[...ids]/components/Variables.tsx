@@ -1,12 +1,15 @@
-import { getVariableValue } from '@/app/utils'
-import { ThreadVarDef, Variable, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
-import { FC } from 'react'
+import { ThreadType } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
+import { getVariableValue, wfRunIdToPath } from '@/app/utils'
+import { ThreadVarDef, Variable, WfRunId, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
+import { FC, useMemo } from 'react'
 import { OverflowText } from '../../../../components/OverflowText'
 import { TypeDisplay } from '../../../../components/TypeDisplay'
 
 type VariablesProps = {
   variableDefs: ThreadVarDef[]
   variables: Variable[]
+  thread: ThreadType
+  wfRunId?: WfRunId
 }
 
 const accessLevels: { [key in WfRunVariableAccessLevel]: string } = {
@@ -16,12 +19,23 @@ const accessLevels: { [key in WfRunVariableAccessLevel]: string } = {
   UNRECOGNIZED: '',
 }
 
-export const Variables: FC<VariablesProps> = ({ variableDefs, variables }) => {
+export const Variables: FC<VariablesProps> = ({ variableDefs, variables, thread, wfRunId }) => {
+  const currentWfRunPath = wfRunId ? wfRunIdToPath(wfRunId) : ''
+  const threadVariables = useMemo(() => {
+    return variables.filter(v => {
+      const sameThread = v?.id?.threadRunNumber === thread.number
+      const inherited = wfRunId && v?.id?.wfRunId && wfRunIdToPath(v.id.wfRunId) !== currentWfRunPath
+      return sameThread || inherited
+    })
+  }, [variables, thread.number, wfRunId, currentWfRunPath])
+
   if (variableDefs.length === 0) return <></>
+
+  const threadLabel = `${thread.name}${thread.number !== 0 ? `-${thread.number}` : ''}`
 
   return (
     <div>
-      <h2 className="text-md mb-2 font-bold">Variables</h2>
+      <h2 className="text-md mb-2 font-bold">Variables ({threadLabel})</h2>
       {variableDefs.map(variable => (
         <div key={variable.varDef?.name} className="mb-1 flex items-center gap-1">
           <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{variable.varDef?.name}</span>
@@ -31,7 +45,7 @@ export const Variables: FC<VariablesProps> = ({ variableDefs, variables }) => {
           <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[variable.accessLevel]}</span>
           <span>=</span>
           <span className="truncate">
-            <OverflowText className="max-w-96" text={getVariableValueForVariableDef(variable, variables)} />
+            <OverflowText className="max-w-96" text={getVariableValueForVariableDef(variable, threadVariables)} />
           </span>
         </div>
       ))}

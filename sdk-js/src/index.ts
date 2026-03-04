@@ -4,6 +4,7 @@ export {
   LHTaskException,
   WorkerContext,
   lhStruct,
+  lhMasked,
   getStructName,
   isLHStruct,
   zodToTypeDef,
