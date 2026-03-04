@@ -24,6 +24,7 @@ import 'reactflow/dist/base.css'
 import { DiagramProvider, NodeInContext, ThreadType } from '../context'
 import edgeTypes from './EdgeTypes'
 import { extractEdges } from './EdgeTypes/extractEdges'
+import { getNodeIdAtPosition } from '../utils/getNodeIdAtPosition'
 import { LayoutManager } from './LayoutManager'
 import nodeTypes from './NodeTypes'
 import { extractNodes, getCycleNodes } from './NodeTypes/extractNodes'
@@ -63,6 +64,16 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
     return wfRun.threadRuns.find(tr => tr.number === thread.number)?.nodeRuns
   }, [thread.number, wfRun])
 
+  const threadRun = useMemo(() => {
+    if (!wfRun) return undefined
+    return wfRun.threadRuns.find(tr => tr.number === thread.number)
+  }, [thread.number, wfRun])
+
+  const failedNodeId = useMemo(() => {
+    if (!threadRun?.errorMessage || threadRun.currentNodePosition === undefined) return undefined
+    return getNodeIdAtPosition(threadSpec, threadRun.currentNodePosition)
+  }, [threadRun, threadSpec])
+
   useLayoutEffect(() => {
     const nodes = extractNodes(threadSpec)
     const edges = extractEdges(threadSpec)
@@ -83,7 +94,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
           ? 'Rescue'
           : ''
   return (
-    <DiagramProvider value={{ thread, setThread, selectedNode: node, setSelectedNode: setNode }}>
+    <DiagramProvider value={{ thread, setThread, selectedNode: node, setSelectedNode: setNode, threadRun, failedNodeId }}>
       <div className="flex justify-between gap-3">
         <ThreadPanel spec={spec} wfRun={wfRun} />
         {wfRun && (
