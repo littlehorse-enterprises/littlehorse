@@ -44,44 +44,18 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int TENANT_ID_FIELD_NUMBER = 2;
-  private io.littlehorse.sdk.common.proto.TenantId tenantId_;
-  /**
-   * <code>.littlehorse.TenantId tenant_id = 2;</code>
-   * @return Whether the tenantId field is set.
-   */
-  @java.lang.Override
-  public boolean hasTenantId() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>.littlehorse.TenantId tenant_id = 2;</code>
-   * @return The tenantId.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TenantId getTenantId() {
-    return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
-  }
-  /**
-   * <code>.littlehorse.TenantId tenant_id = 2;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder() {
-    return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
-  }
-
-  public static final int METRIC_WINDOW_FIELD_NUMBER = 3;
+  public static final int METRIC_WINDOW_FIELD_NUMBER = 1;
   private io.littlehorse.common.proto.PartitionMetricWindow metricWindow_;
   /**
-   * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+   * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
    * @return Whether the metricWindow field is set.
    */
   @java.lang.Override
   public boolean hasMetricWindow() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+   * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
    * @return The metricWindow.
    */
   @java.lang.Override
@@ -89,7 +63,7 @@ private static final long serialVersionUID = 0L;
     return metricWindow_ == null ? io.littlehorse.common.proto.PartitionMetricWindow.getDefaultInstance() : metricWindow_;
   }
   /**
-   * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+   * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.PartitionMetricWindowOrBuilder getMetricWindowOrBuilder() {
@@ -111,10 +85,7 @@ private static final long serialVersionUID = 0L;
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(2, getTenantId());
-    }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(3, getMetricWindow());
+      output.writeMessage(1, getMetricWindow());
     }
     getUnknownFields().writeTo(output);
   }
@@ -127,11 +98,7 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getTenantId());
-    }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getMetricWindow());
+        .computeMessageSize(1, getMetricWindow());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -148,11 +115,6 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.AggregateWindowMetrics other = (io.littlehorse.common.proto.AggregateWindowMetrics) obj;
 
-    if (hasTenantId() != other.hasTenantId()) return false;
-    if (hasTenantId()) {
-      if (!getTenantId()
-          .equals(other.getTenantId())) return false;
-    }
     if (hasMetricWindow() != other.hasMetricWindow()) return false;
     if (hasMetricWindow()) {
       if (!getMetricWindow()
@@ -169,10 +131,6 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasTenantId()) {
-      hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getTenantId().hashCode();
-    }
     if (hasMetricWindow()) {
       hash = (37 * hash) + METRIC_WINDOW_FIELD_NUMBER;
       hash = (53 * hash) + getMetricWindow().hashCode();
@@ -307,7 +265,6 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessage
               .alwaysUseFieldBuilders) {
-        internalGetTenantIdFieldBuilder();
         internalGetMetricWindowFieldBuilder();
       }
     }
@@ -315,11 +272,6 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      tenantId_ = null;
-      if (tenantIdBuilder_ != null) {
-        tenantIdBuilder_.dispose();
-        tenantIdBuilder_ = null;
-      }
       metricWindow_ = null;
       if (metricWindowBuilder_ != null) {
         metricWindowBuilder_.dispose();
@@ -360,16 +312,10 @@ private static final long serialVersionUID = 0L;
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.tenantId_ = tenantIdBuilder_ == null
-            ? tenantId_
-            : tenantIdBuilder_.build();
-        to_bitField0_ |= 0x00000001;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.metricWindow_ = metricWindowBuilder_ == null
             ? metricWindow_
             : metricWindowBuilder_.build();
-        to_bitField0_ |= 0x00000002;
+        to_bitField0_ |= 0x00000001;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -386,9 +332,6 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.AggregateWindowMetrics other) {
       if (other == io.littlehorse.common.proto.AggregateWindowMetrics.getDefaultInstance()) return this;
-      if (other.hasTenantId()) {
-        mergeTenantId(other.getTenantId());
-      }
       if (other.hasMetricWindow()) {
         mergeMetricWindow(other.getMetricWindow());
       }
@@ -418,20 +361,13 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 18: {
-              input.readMessage(
-                  internalGetTenantIdFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 18
-            case 26: {
+            case 10: {
               input.readMessage(
                   internalGetMetricWindowFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000001;
               break;
-            } // case 26
+            } // case 10
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -449,139 +385,18 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.TenantId tenantId_;
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> tenantIdBuilder_;
-    /**
-     * <code>.littlehorse.TenantId tenant_id = 2;</code>
-     * @return Whether the tenantId field is set.
-     */
-    public boolean hasTenantId() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>.littlehorse.TenantId tenant_id = 2;</code>
-     * @return The tenantId.
-     */
-    public io.littlehorse.sdk.common.proto.TenantId getTenantId() {
-      if (tenantIdBuilder_ == null) {
-        return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
-      } else {
-        return tenantIdBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.littlehorse.TenantId tenant_id = 2;</code>
-     */
-    public Builder setTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
-      if (tenantIdBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        tenantId_ = value;
-      } else {
-        tenantIdBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.TenantId tenant_id = 2;</code>
-     */
-    public Builder setTenantId(
-        io.littlehorse.sdk.common.proto.TenantId.Builder builderForValue) {
-      if (tenantIdBuilder_ == null) {
-        tenantId_ = builderForValue.build();
-      } else {
-        tenantIdBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.TenantId tenant_id = 2;</code>
-     */
-    public Builder mergeTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
-      if (tenantIdBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
-          tenantId_ != null &&
-          tenantId_ != io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance()) {
-          getTenantIdBuilder().mergeFrom(value);
-        } else {
-          tenantId_ = value;
-        }
-      } else {
-        tenantIdBuilder_.mergeFrom(value);
-      }
-      if (tenantId_ != null) {
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.TenantId tenant_id = 2;</code>
-     */
-    public Builder clearTenantId() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      tenantId_ = null;
-      if (tenantIdBuilder_ != null) {
-        tenantIdBuilder_.dispose();
-        tenantIdBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.TenantId tenant_id = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.TenantId.Builder getTenantIdBuilder() {
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return internalGetTenantIdFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.TenantId tenant_id = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder() {
-      if (tenantIdBuilder_ != null) {
-        return tenantIdBuilder_.getMessageOrBuilder();
-      } else {
-        return tenantId_ == null ?
-            io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
-      }
-    }
-    /**
-     * <code>.littlehorse.TenantId tenant_id = 2;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> 
-        internalGetTenantIdFieldBuilder() {
-      if (tenantIdBuilder_ == null) {
-        tenantIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder>(
-                getTenantId(),
-                getParentForChildren(),
-                isClean());
-        tenantId_ = null;
-      }
-      return tenantIdBuilder_;
-    }
-
     private io.littlehorse.common.proto.PartitionMetricWindow metricWindow_;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.common.proto.PartitionMetricWindow, io.littlehorse.common.proto.PartitionMetricWindow.Builder, io.littlehorse.common.proto.PartitionMetricWindowOrBuilder> metricWindowBuilder_;
     /**
-     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      * @return Whether the metricWindow field is set.
      */
     public boolean hasMetricWindow() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      * @return The metricWindow.
      */
     public io.littlehorse.common.proto.PartitionMetricWindow getMetricWindow() {
@@ -592,7 +407,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     public Builder setMetricWindow(io.littlehorse.common.proto.PartitionMetricWindow value) {
       if (metricWindowBuilder_ == null) {
@@ -603,12 +418,12 @@ private static final long serialVersionUID = 0L;
       } else {
         metricWindowBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     public Builder setMetricWindow(
         io.littlehorse.common.proto.PartitionMetricWindow.Builder builderForValue) {
@@ -617,16 +432,16 @@ private static final long serialVersionUID = 0L;
       } else {
         metricWindowBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     public Builder mergeMetricWindow(io.littlehorse.common.proto.PartitionMetricWindow value) {
       if (metricWindowBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
+        if (((bitField0_ & 0x00000001) != 0) &&
           metricWindow_ != null &&
           metricWindow_ != io.littlehorse.common.proto.PartitionMetricWindow.getDefaultInstance()) {
           getMetricWindowBuilder().mergeFrom(value);
@@ -637,16 +452,16 @@ private static final long serialVersionUID = 0L;
         metricWindowBuilder_.mergeFrom(value);
       }
       if (metricWindow_ != null) {
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000001;
         onChanged();
       }
       return this;
     }
     /**
-     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     public Builder clearMetricWindow() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000001);
       metricWindow_ = null;
       if (metricWindowBuilder_ != null) {
         metricWindowBuilder_.dispose();
@@ -656,15 +471,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     public io.littlehorse.common.proto.PartitionMetricWindow.Builder getMetricWindowBuilder() {
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return internalGetMetricWindowFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     public io.littlehorse.common.proto.PartitionMetricWindowOrBuilder getMetricWindowOrBuilder() {
       if (metricWindowBuilder_ != null) {
@@ -675,7 +490,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+     * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.common.proto.PartitionMetricWindow, io.littlehorse.common.proto.PartitionMetricWindow.Builder, io.littlehorse.common.proto.PartitionMetricWindowOrBuilder> 

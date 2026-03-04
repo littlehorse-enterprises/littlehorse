@@ -117,8 +117,7 @@ message AggregateWfMetrics {
 }
 
 message AggregateWindowMetrics {
-    TenantId tenant_id = 2;
-    PartitionMetricWindow metric_window = 3;
+    PartitionMetricWindow metric_window = 1;
 }
 
 message AggregateTaskMetrics {

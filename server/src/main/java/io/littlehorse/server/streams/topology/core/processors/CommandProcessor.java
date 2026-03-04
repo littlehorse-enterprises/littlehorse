@@ -211,11 +211,12 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             return;
         }
         long startTime = System.currentTimeMillis();
+        Date currentWindow = LHUtil.getCurrentWindowDate();
         Iterator<PartitionMetricWindowModel> iterator =
                 partitionMetricsMemoryStore.values().iterator();
         while (iterator.hasNext()) {
             PartitionMetricWindowModel metric = iterator.next();
-            if (metric.getWindowStart().before(LHUtil.getCurrentWindowDate())) {
+            if (metric.getWindowStart().before(currentWindow)) {
                 forwardAndDeleteFromStore(store, metric);
                 iterator.remove();
                 if (System.currentTimeMillis() - startTime > LHConstants.MAX_MS_PER_PARTITION_METRICS_PUNCTUATION) {
@@ -258,7 +259,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     private long forwardAndDeleteFromStore(ClusterScopedStore store, PartitionMetricWindowModel metric) {
-        AggregateWindowMetricsModel aggregate = new AggregateWindowMetricsModel(metric.getTenantId(), metric);
+        AggregateWindowMetricsModel aggregate = new AggregateWindowMetricsModel(metric);
         forwardSubcommand(aggregate);
         store.delete(metric);
         return metric.getWindowStart().getTime();
@@ -279,7 +280,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 cpo,
                 System.currentTimeMillis(),
                 HeadersUtil.metadataHeadersFor(
-                        subCommand.getTenantId(), new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
+                        subCommand.getMetricWindow().getTenantId(), new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
         this.ctx.forward(out);
     }
 }

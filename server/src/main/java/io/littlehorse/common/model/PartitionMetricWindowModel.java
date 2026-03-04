@@ -131,18 +131,20 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         switch (p.getIdCase()) {
             case WF_SPEC_ID:
                 this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+                this.metricType = MetricWindowType.WORKFLOW_METRIC;
                 break;
             case TASK_DEF_ID:
                 this.taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
+                this.metricType = MetricWindowType.TASK_METRIC;
                 break;
             case USER_TASK_DEF_ID:
                 this.userTaskDefId = LHSerializable.fromProto(p.getUserTaskDefId(), UserTaskDefIdModel.class, context);
+                this.metricType = MetricWindowType.USER_TASK_METRIC;
                 break;
             case ID_NOT_SET:
                 break;
         }
 
-        this.metricType = p.getMetricType();
 
         this.metrics = new HashMap<>();
         for (Map.Entry<String, CountAndTiming> entry : p.getMetricsMap().entrySet()) {

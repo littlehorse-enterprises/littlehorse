@@ -11,32 +11,17 @@ public interface AggregateWindowMetricsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.TenantId tenant_id = 2;</code>
-   * @return Whether the tenantId field is set.
-   */
-  boolean hasTenantId();
-  /**
-   * <code>.littlehorse.TenantId tenant_id = 2;</code>
-   * @return The tenantId.
-   */
-  io.littlehorse.sdk.common.proto.TenantId getTenantId();
-  /**
-   * <code>.littlehorse.TenantId tenant_id = 2;</code>
-   */
-  io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder();
-
-  /**
-   * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+   * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
    * @return Whether the metricWindow field is set.
    */
   boolean hasMetricWindow();
   /**
-   * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+   * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
    * @return The metricWindow.
    */
   io.littlehorse.common.proto.PartitionMetricWindow getMetricWindow();
   /**
-   * <code>.littlehorse.PartitionMetricWindow metric_window = 3;</code>
+   * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
    */
   io.littlehorse.common.proto.PartitionMetricWindowOrBuilder getMetricWindowOrBuilder();
 }
