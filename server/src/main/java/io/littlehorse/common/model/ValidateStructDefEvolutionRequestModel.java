@@ -1,9 +1,12 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefValidationException;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.util.InlineStructDefUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
@@ -42,7 +45,12 @@ public class ValidateStructDefEvolutionRequestModel extends LHSerializable<Valid
     }
 
     public ValidateStructDefEvolutionResponse validate(ReadOnlyMetadataManager metadataManager) {
-        structDef.validate(metadataManager);
+        try {
+            structDef.validate(metadataManager);
+        } catch (StructDefValidationException e) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, String.format("StructDef evolution request invalid: %s", e.getMessage()));
+        }
 
         StructDefModel existingStructDef = new WfService(metadataManager).getStructDef(structDefId.getName(), null);
 

@@ -14,12 +14,19 @@
         public string Value;
 
         /// <summary>
+        /// Optional description for the TaskDef.
+        /// </summary>
+        public string Description { get; }
+
+        /// <summary>
         /// Constructor of the attribute.
         /// </summary>
         /// <param name="value">This is the name of the TaskDef.</param>
-        public LHTaskMethodAttribute(string value)
+        /// <param name="description">Optional description for the TaskDef.</param>
+        public LHTaskMethodAttribute(string value, string description = "")
         {
             Value = value;
+            Description = description;
         }
     }
 }

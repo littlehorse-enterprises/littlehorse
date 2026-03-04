@@ -1,0 +1,65 @@
+name: Documentation Trigger
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: "Commit SHA to check (optional, defaults to HEAD)"
+        required: false
+        type: string
+
+jobs:
+  check-and-dispatch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read # Required to check PR labels via API
+      actions: write # Required for workflow_dispatch to other repos in same org
+      issues: read # Required to check for existing issues (deduplication)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.DOCS_DISPATCHER_APP_ID }}
+          private-key: ${{ secrets.DOCS_DISPATCHER_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Check for docs-required
+        id: check-docs
+        uses: ./.github/actions/check-docs-required
+        with:
+          check_mode: both
+          commit_sha: ${{ github.event.inputs.commit_sha }}
+
+      - name: Require LH_SITE_REPO
+        if: |
+          steps.check-docs.outputs.docs_required == 'true' && 
+          (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        run: |
+          if [ -z "${{ vars.LH_SITE_REPO }}" ]; then
+            echo "::error::Org variable LH_SITE_REPO is not set. Set it at Organization → Settings → Secrets and variables → Actions → Variables (repo name only, e.g. lh-site)."
+            exit 1
+          fi
+      - name: Dispatch to lh-site workflow
+        if: |
+          steps.check-docs.outputs.docs_required == 'true' && 
+          (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        uses: ./.github/actions/dispatch-to-lh-site
+        with:
+          commits: ${{ steps.check-docs.outputs.commits }}
+          source_repo: ${{ github.repository }}
+          source_ref: ${{ github.ref }}
+          source_sha: ${{ github.sha }}
+          lh_site_repo: ${{ format('{0}/{1}', github.repository_owner, vars.LH_SITE_REPO) }}
+          gh_token: ${{ steps.app-token.outputs.token }}

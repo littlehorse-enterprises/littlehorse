@@ -246,9 +246,25 @@ public class WorkflowThread
                 "You cannot add a variable in a given thread after the thread has completed.");
         }
         
-        var wfRunVariable = new WfRunVariable(name, typeOrDefaultVal, this);
+        var wfRunVariable = WfRunVariable.CreatePrimitiveVar(name, typeOrDefaultVal, this);
         _wfRunVariables.Add(wfRunVariable);
         
+        return wfRunVariable;
+    }
+
+    private WfRunVariable AddStructVariable(string name, LHStructDefType structDefType)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var lastNode = FindNode(LastNodeName);
+        if (lastNode.NodeCase == Node.NodeOneofCase.Exit)
+        {
+            throw new InvalidOperationException(
+                "You cannot add a variable in a given thread after the thread has completed.");
+        }
+
+        var wfRunVariable = WfRunVariable.CreateStructDefVar(name, structDefType, this);
+        _wfRunVariables.Add(wfRunVariable);
+
         return wfRunVariable;
     }
     
@@ -509,6 +525,23 @@ public class WorkflowThread
     {
         return AddVariable(name, VariableType.JsonObj);
     }
+
+    /// <summary>
+    /// Creates a Struct variable based on a StructDef-annotated class.
+    /// </summary>
+    /// <param name="name">
+    /// It is the name of the variable.
+    /// </param>
+    /// <param name="structType">
+    /// It is the StructDef class that defines your StructDef.
+    /// </param>
+    /// <returns>The value of WfRunVariable.</returns>
+    public WfRunVariable DeclareStruct(string name, Type structType)
+    {
+        return AddStructVariable(name, new LHStructDefType(structType));
+    }
+
+    
     
     private List<VariableMutation> CollectVariableMutations() 
     {

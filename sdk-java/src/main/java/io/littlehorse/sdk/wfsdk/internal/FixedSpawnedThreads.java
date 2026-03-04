@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsStrategy;
@@ -23,7 +24,8 @@ public final class FixedSpawnedThreads implements SpawnedThreads {
         WaitForThreadsNode.Builder waitNode = WaitForThreadsNode.newBuilder().setStrategy(strategy);
         for (SpawnedThread spawnedThread : spawnedThreads) {
             WfRunVariableImpl threadNumberVariable = (WfRunVariableImpl) spawnedThread.getThreadNumberVariable();
-            if (!threadNumberVariable.getTypeDef().getPrimitiveType().equals(VariableType.INT)) {
+            if (threadNumberVariable.getTypeDef().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE
+                    || threadNumberVariable.getTypeDef().getPrimitiveType() != VariableType.INT) {
                 throw new IllegalArgumentException("Only int variables are supported");
             }
             WaitForThreadsNode.ThreadToWaitFor threadToWaitFor = WaitForThreadsNode.ThreadToWaitFor.newBuilder()

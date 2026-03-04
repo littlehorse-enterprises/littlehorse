@@ -1,0 +1,100 @@
+{
+  "name": "issue-parking-ticket",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-get-car-owner-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-get-car-owner-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-mail-ticket-TASK",
+            "variableMutations": [{
+              "lhsName": "car-owner",
+              "operation": "ASSIGN",
+              "rhsAssignment": {
+                "nodeOutput": {
+                  "nodeName": "1-get-car-owner-TASK"
+                }
+              }
+            }]
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "get-car-owner"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": [{
+              "variableName": "car-input"
+            }]
+          }
+        },
+        "2-mail-ticket-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "3-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "mail-ticket"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": [{
+              "variableName": "car-owner"
+            }]
+          }
+        },
+        "3-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [{
+        "varDef": {
+          "name": "car-input",
+          "typeDef": {
+            "masked": false,
+            "structDefId": {
+              "name": "parking-ticket-report",
+              "version": 0
+            }
+          }
+        },
+        "required": true,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "car-owner",
+          "typeDef": {
+            "masked": false,
+            "structDefId": {
+              "name": "person",
+              "version": 0
+            }
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

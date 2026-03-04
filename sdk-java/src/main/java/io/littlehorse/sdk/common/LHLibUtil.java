@@ -460,7 +460,8 @@ public class LHLibUtil {
                 inlineStruct.putFields(property.getFieldName(), structField);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new LHSerdeException(
+                    e, "Failed serializing object to Struct: " + o.getClass().getName());
         }
 
         outputStruct.setStruct(inlineStruct);

@@ -4,12 +4,37 @@ using Google.Protobuf;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
 using Google.Protobuf.WellKnownTypes;
+using LittleHorse.Sdk.Exceptions;
+using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Tests;
+using LhStruct = LittleHorse.Sdk.Common.Proto.Struct;
 using Xunit;
 using Type = System.Type;
 
 public class LHMappingHelperTest
 {
+    [LHStructDef("test-struct")]
+    private class TestStruct
+    {
+        public string? Name { get; set; }
+        public int Age { get; set; }
+    }
+
+    [LHStructDef("test-struct-ignored")]
+    private class TestStructWithIgnored
+    {
+        public string? Name { get; set; }
+
+        [LHStructIgnore]
+        public string? Secret { get; set; }
+    }
+
+    private class NonStruct
+    {
+        public string? Name { get; set; }
+        public int Age { get; set; }
+    }
+
     [Fact]
     public void LHHelper_WithSystemIntegralVariableType_ShouldReturnLHVariableIntType()
     {
@@ -301,11 +326,103 @@ public class LHMappingHelperTest
     }
 
     [Fact]
+    public void DotNetTypeToReturnType_WithStructDefType_ShouldReturnStructTypeDefinition()
+    {
+        var result = LHMappingHelper.DotNetTypeToReturnType(typeof(TestStruct));
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.ReturnType_);
+        Assert.Equal(TypeDefinition.DefinedTypeOneofCase.StructDefId, result.ReturnType_.DefinedTypeCase);
+        Assert.Equal("test-struct", result.ReturnType_.StructDefId.Name);
+    }
+
+    [Fact]
     public void DotNetTypeToReturnType_WithNull_ShouldThrowException()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => LHMappingHelper.DotNetTypeToReturnType(null!));
 
         Assert.Equal("type", exception.ParamName);
         Assert.Equal("Type cannot be null. (Parameter 'type')", exception.Message);
+    }
+
+    [Fact]
+    public void ObjectToVariableValue_WithStructDefObject_ShouldSerializeStruct()
+    {
+        var obj = new TestStruct { Name = "Ada", Age = 42 };
+
+        var result = LHMappingHelper.ObjectToVariableValue(obj);
+
+        Assert.Equal(VariableValue.ValueOneofCase.Struct, result.ValueCase);
+        Assert.Equal("test-struct", result.Struct.StructDefId.Name);
+        Assert.True(result.Struct.Struct_.Fields.ContainsKey("name"));
+        Assert.True(result.Struct.Struct_.Fields.ContainsKey("age"));
+        Assert.Equal("Ada", result.Struct.Struct_.Fields["name"].Value.Str);
+        Assert.Equal(42, result.Struct.Struct_.Fields["age"].Value.Int);
+    }
+
+    [Fact]
+    public void ObjectToVariableValue_WithStructDefObject_ShouldSkipIgnoredFields()
+    {
+        var obj = new TestStructWithIgnored { Name = "Leia", Secret = "hidden" };
+
+        var result = LHMappingHelper.ObjectToVariableValue(obj);
+
+        Assert.Equal(VariableValue.ValueOneofCase.Struct, result.ValueCase);
+        Assert.Equal("test-struct-ignored", result.Struct.StructDefId.Name);
+        Assert.True(result.Struct.Struct_.Fields.ContainsKey("name"));
+        Assert.False(result.Struct.Struct_.Fields.ContainsKey("secret"));
+    }
+
+    [Fact]
+    public void VariableValueToObject_WithStruct_ShouldDeserializeToObject()
+    {
+        var inlineStruct = new InlineStruct();
+        inlineStruct.Fields.Add("name", new StructField { Value = new VariableValue { Str = "Ada" } });
+        inlineStruct.Fields.Add("age", new StructField { Value = new VariableValue { Int = 42 } });
+
+        var structValue = new LhStruct
+        {
+            Struct_ = inlineStruct
+        };
+
+        var variableValue = new VariableValue { Struct = structValue };
+
+        var result = (TestStruct)LHMappingHelper.VariableValueToObject(variableValue, typeof(TestStruct))!;
+
+        Assert.Equal("Ada", result.Name);
+        Assert.Equal(42, result.Age);
+    }
+
+    [Fact]
+    public void VariableValueToObject_WithStructAndNonStructType_ShouldThrow()
+    {
+        var inlineStruct = new InlineStruct();
+        inlineStruct.Fields.Add("name", new StructField { Value = new VariableValue { Str = "Ada" } });
+        inlineStruct.Fields.Add("age", new StructField { Value = new VariableValue { Int = 42 } });
+
+        var structValue = new LhStruct
+        {
+            Struct_ = inlineStruct
+        };
+
+        var variableValue = new VariableValue { Struct = structValue };
+
+        Assert.Throws<LHSerdeException>(() => LHMappingHelper.VariableValueToObject(variableValue, typeof(NonStruct)));
+    }
+
+    [Fact]
+    public void VariableValueToObject_WithStructMissingField_ShouldThrow()
+    {
+        var inlineStruct = new InlineStruct();
+        inlineStruct.Fields.Add("Name", new StructField { Value = new VariableValue { Str = "Ada" } });
+
+        var structValue = new LhStruct
+        {
+            Struct_ = inlineStruct
+        };
+
+        var variableValue = new VariableValue { Struct = structValue };
+
+        Assert.Throws<LHSerdeException>(() => LHMappingHelper.VariableValueToObject(variableValue, typeof(TestStruct)));
     }
 }
