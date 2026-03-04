@@ -229,6 +229,16 @@ public interface WorkflowThread {
     WorkflowIfStatement doIf(LHExpression condition, IfElseBody doIf);
 
     /**
+     * Conditionally executes some workflow code; equivalent to an if() statement in programming.
+     *
+     * @param condition is the WorkflowCondition to be satisfied.
+     * @param doIf is the block of ThreadSpec code to be executed if the provided WorkflowCondition
+     *     is satisfied.
+     * @return Returns a {@link WorkflowIfStatement} object that allows you to chain {@link WorkflowIfStatement#doElseIf(LHExpression, IfElseBody)} and {@link WorkflowIfStatement#doElse(IfElseBody)} method calls.
+     */
+    WorkflowIfStatement doIf(WfRunVariable condition, IfElseBody doIf);
+
+    /**
      * Conditionally executes one of two workflow code branches; equivalent to an if/else statement
      * in programming.
      *
@@ -240,6 +250,19 @@ public interface WorkflowThread {
      * @see WorkflowThread#doIf
      */
     void doIfElse(LHExpression condition, IfElseBody doIf, IfElseBody doElse);
+
+    /**
+     * Conditionally executes one of two workflow code branches; equivalent to an if/else statement
+     * in programming.
+     *
+     * @param condition is the WorkflowCondition to be satisfied.
+     * @param doIf is the block of ThreadSpec code to be executed if the provided WorkflowCondition
+     *     is satisfied.
+     * @param doElse is the block of ThreadSpec code to be executed if the provided
+     *     WorkflowCondition is NOT satisfied.
+     * @see WorkflowThread#doIf
+     */
+    void doIfElse(WfRunVariable boolVar, IfElseBody doIf, IfElseBody doElse);
 
     /**
      * Adds a Reminder Task to a User Task Node.

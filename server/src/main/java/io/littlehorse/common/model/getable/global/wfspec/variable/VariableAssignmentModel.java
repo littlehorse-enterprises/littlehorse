@@ -294,16 +294,24 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     }
 
     public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
-            throws InvalidEdgeException {
-        expression.validate(source, manager, threadSpec);
+            throws InvalidEdgeException, InvalidExpressionException {
+        if (expression != null) {
+            expression.validate(source, manager, threadSpec);
+        } else {
+            Optional<TypeDefinitionModel> sourceType = getSourceType(manager, threadSpec.wfSpec, threadSpec.getName());
+            if (sourceType.isEmpty()
+                    || !sourceType.get().isCompatibleWith(new TypeDefinitionModel(VariableType.BOOL))) {
+                throw new InvalidExpressionException(source.getName() + " Does not resolve to a BOOL value");
+            }
+        }
     }
 
     public boolean isSatisfied(ThreadRunModel threadRun) throws LHVarSubError {
-        return expression.isSatisfied(threadRun);
-    }
-
-    public boolean isConditional() {
-        return expression != null && expression.isConditional();
+        if (expression != null) {
+            return expression.isSatisfied(threadRun);
+        } else {
+            return threadRun.assignVariable(this).getBoolVal();
+        }
     }
 
     public Collection<String> getRequiredVariableNames() {
@@ -313,9 +321,5 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             out.addAll(expression.getRhs().getRequiredVariableNames());
         }
         return out;
-    }
-
-    public void evaluate(ThreadRunModel threadRun) throws LHVarSubError {
-        expression.evaluate(threadRun, threadRun::assignVariable);
     }
 }

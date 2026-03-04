@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.validation.InvalidEdgeException;
+import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.exceptions.validation.InvalidMutationException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -137,7 +138,7 @@ public class EdgeModel extends LHSerializable<Edge> {
         if (legacyCondition != null) {
             return legacyCondition.isSatisfied(threadRun);
         }
-        return condition == null || !condition.isConditional() || condition.isSatisfied(threadRun);
+        return condition == null || condition.isSatisfied(threadRun);
     }
 
     /**
@@ -180,13 +181,10 @@ public class EdgeModel extends LHSerializable<Edge> {
         for (Map.Entry<String, VariableValueModel> entry : writeAheadBuffer.entrySet()) {
             threadRun.mutateVariable(entry.getKey(), entry.getValue());
         }
-        if (condition != null && !condition.isConditional()) {
-            condition.evaluate(threadRun);
-        }
     }
 
     public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
-            throws InvalidEdgeException {
+            throws InvalidEdgeException, InvalidExpressionException {
         if (this.getSinkNodeName().equals(source.getName())) {
             throw new InvalidEdgeException("Self loop not allowed!", this.getSinkNodeName());
         }

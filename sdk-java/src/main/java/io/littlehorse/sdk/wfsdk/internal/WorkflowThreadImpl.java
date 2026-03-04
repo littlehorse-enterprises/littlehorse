@@ -568,6 +568,22 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new WorkflowIfStatementImpl(this, firstNopNodeName, lastNopNodeName);
     }
 
+    @Override
+    public WorkflowIfStatement doIf(WfRunVariable condition, IfElseBody ifBody) {
+        addNopNode();
+        String firstNopNodeName = lastNodeName;
+        lastNodeCondition = assignVariable(condition);
+        ifBody.body(this);
+
+        addNopNode();
+        String lastNopNodeName = lastNodeName;
+        Node.Builder treeRoot = spec.getNodesOrThrow(firstNopNodeName).toBuilder();
+        treeRoot.addOutgoingEdges(
+                Edge.newBuilder().setSinkNodeName(lastNopNodeName).build());
+        spec.putNodes(firstNopNodeName, treeRoot.build());
+        return new WorkflowIfStatementImpl(this, firstNopNodeName, lastNopNodeName);
+    }
+
     WorkflowIfStatement doElseIf(
             WorkflowIfStatement inputIfStatement, LHExpression inputCondition, IfElseBody ifElseBody) {
         WorkflowIfStatementImpl ifStatement = (WorkflowIfStatementImpl) inputIfStatement;
@@ -654,6 +670,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
         checkIfIsActive();
 
         this.doIf(condition, ifBody).doElse(elseBody);
+    }
+
+    @Override
+    public void doIfElse(WfRunVariable boolVar, IfElseBody doIf, IfElseBody doElse) {
+        this.doIf(boolVar, doIf).doElse(doElse);
     }
 
     private List<VariableMutation> collectVariableMutations() {

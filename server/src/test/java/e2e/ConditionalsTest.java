@@ -62,6 +62,12 @@ public class ConditionalsTest {
     @LHWorkflow("test-conditionals-does-not-contain-workflow")
     private Workflow workflowDoesNotContain;
 
+    @LHWorkflow("test-conditionals-bool-var-do-if")
+    private Workflow workflowBoolVarDoIf;
+
+    @LHWorkflow("test-conditionals-bool-var-do-if-else")
+    private Workflow workflowBoolVarDoIfElse;
+
     @LHWorkflow("test-nested-if")
     private Workflow workflowNestedIf;
 
@@ -419,6 +425,49 @@ public class ConditionalsTest {
         }
     }
 
+    @Nested
+    class BooleanVariable {
+        @Test
+        void shouldExecuteIfBlockWhenBoolVarIsTrue() {
+            workflowVerifier
+                    .prepareRun(workflowBoolVarDoIf, Arg.of("my-bool", true))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isTrue())
+                    .start();
+        }
+
+        @Test
+        void shouldSkipIfBlockWhenBoolVarIsFalse() {
+            workflowVerifier
+                    .prepareRun(workflowBoolVarDoIf, Arg.of("my-bool", false))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.hasBool())
+                            .isFalse())
+                    .start();
+        }
+
+        @Test
+        void shouldExecuteIfBlockWhenBoolVarIsTrueWithIfElse() {
+            workflowVerifier
+                    .prepareRun(workflowBoolVarDoIfElse, Arg.of("my-bool", true))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isTrue())
+                    .start();
+        }
+
+        @Test
+        void shouldExecuteElseBlockWhenBoolVarIsFalseWithIfElse() {
+            workflowVerifier
+                    .prepareRun(workflowBoolVarDoIfElse, Arg.of("my-bool", false))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isFalse())
+                    .start();
+        }
+    }
+
     @Test
     void testThatWholeIfBlockIsSkipped() {
         workflowVerifier
@@ -761,6 +810,33 @@ public class ConditionalsTest {
             WfRunVariable result = thread.declareBool("result");
             thread.doIfElse(
                     input.jsonPath("$.lhs").doesNotContain(input.jsonPath("$.rhs")),
+                    ifBlock -> {
+                        result.assign(true);
+                    },
+                    elseBlock -> {
+                        result.assign(false);
+                    });
+        });
+    }
+
+    @LHWorkflow("test-conditionals-bool-var-do-if")
+    public Workflow getBoolVarDoIfWorkflow() {
+        return new WorkflowImpl("test-conditionals-bool-var-do-if", thread -> {
+            WfRunVariable myBool = thread.declareBool("my-bool");
+            WfRunVariable result = thread.declareBool("result");
+            thread.doIf(myBool, ifBlock -> {
+                result.assign(true);
+            });
+        });
+    }
+
+    @LHWorkflow("test-conditionals-bool-var-do-if-else")
+    public Workflow getBoolVarDoIfElseWorkflow() {
+        return new WorkflowImpl("test-conditionals-bool-var-do-if-else", thread -> {
+            WfRunVariable myBool = thread.declareBool("my-bool");
+            WfRunVariable result = thread.declareBool("result");
+            thread.doIfElse(
+                    myBool,
                     ifBlock -> {
                         result.assign(true);
                     },
