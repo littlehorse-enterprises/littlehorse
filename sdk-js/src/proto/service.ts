@@ -39,6 +39,7 @@ import {
   CorrelatedEventId,
   ExternalEventDefId,
   ExternalEventId,
+  InactiveThreadRunId,
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
@@ -76,7 +77,7 @@ import {
   userTaskRunStatusToNumber,
 } from "./user_tasks";
 import { Variable, VariableValue } from "./variable";
-import { WfRun } from "./wf_run";
+import { InactiveThreadRun, WfRun } from "./wf_run";
 import {
   ThreadSpec,
   WfSpec,
@@ -12267,6 +12268,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Get an InactiveThreadRun */
+    getInactiveThreadRun: {
+      name: "GetInactiveThreadRun",
+      requestType: InactiveThreadRunId,
+      requestStream: false,
+      responseType: InactiveThreadRun,
+      responseStream: false,
+      options: {},
+    },
     /**
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -12875,6 +12885,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: SearchStructDefRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<StructDefIdList>>;
+  /** Get an InactiveThreadRun */
+  getInactiveThreadRun(
+    request: InactiveThreadRunId,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<InactiveThreadRun>>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -13331,6 +13346,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchStructDefRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<StructDefIdList>;
+  /** Get an InactiveThreadRun */
+  getInactiveThreadRun(
+    request: DeepPartial<InactiveThreadRunId>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<InactiveThreadRun>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.

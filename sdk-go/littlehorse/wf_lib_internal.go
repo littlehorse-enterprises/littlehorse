@@ -17,7 +17,18 @@ import (
 type plainNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
+}
+
+// copyLhPath returns a shallow copy of the given LHPath selector slice.
+func copyLhPath(src []*lhproto.LHPath_Selector) []*lhproto.LHPath_Selector {
+	if src == nil {
+		return nil
+	}
+	dst := make([]*lhproto.LHPath_Selector, len(src))
+	copy(dst, src)
+	return dst
 }
 
 func (p *plainNodeOutput) getNodeName() string {
@@ -28,11 +39,15 @@ func (p *plainNodeOutput) getJsonPath() *string {
 	return p.jsonPath
 }
 
+func (p *plainNodeOutput) getLhPath() []*lhproto.LHPath_Selector {
+	return p.lhPath
+}
+
 func (p *plainNodeOutput) getThread() *WorkflowThread {
 	return p.thread
 }
 
-func (p *plainNodeOutput) JsonPath(jsonpath string) *plainNodeOutput {
+func (p *plainNodeOutput) JsonPath(jsonpath string) NodeOutput {
 	return &plainNodeOutput{
 		nodeName: p.nodeName,
 		jsonPath: &jsonpath,
@@ -60,6 +75,16 @@ func (p *plainNodeOutput) CastToBytes() LHExpression {
 }
 func (p *plainNodeOutput) CastToWfRunId() LHExpression {
 	return p.CastTo(lhproto.VariableType_WF_RUN_ID)
+func (p *plainNodeOutput) Get(field string) NodeOutput {
+	newPath := copyLhPath(p.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &plainNodeOutput{
+		nodeName: p.nodeName,
+		lhPath:   newPath,
+		thread:   p.thread,
+	}
 }
 
 func (n *ExternalEventNodeOutput) getNodeName() string {
@@ -68,6 +93,10 @@ func (n *ExternalEventNodeOutput) getNodeName() string {
 
 func (n *ExternalEventNodeOutput) getJsonPath() *string {
 	return n.jsonPath
+}
+
+func (n *ExternalEventNodeOutput) getLhPath() []*lhproto.LHPath_Selector {
+	return n.lhPath
 }
 
 func (n *ExternalEventNodeOutput) getThread() *WorkflowThread {
@@ -82,6 +111,10 @@ func (n *UserTaskNodeOutput) getJsonPath() *string {
 	return n.jsonPath
 }
 
+func (n *UserTaskNodeOutput) getLhPath() []*lhproto.LHPath_Selector {
+	return n.lhPath
+}
+
 func (n *UserTaskNodeOutput) getThread() *WorkflowThread {
 	return n.thread
 }
@@ -94,6 +127,10 @@ func (n *TaskNodeOutput) getJsonPath() *string {
 	return n.jsonPath
 }
 
+func (n *TaskNodeOutput) getLhPath() []*lhproto.LHPath_Selector {
+	return n.lhPath
+}
+
 func (n *TaskNodeOutput) getThread() *WorkflowThread {
 	return n.thread
 }
@@ -104,6 +141,10 @@ func (n *WaitForThreadsNodeOutput) getNodeName() string {
 
 func (n *WaitForThreadsNodeOutput) getJsonPath() *string {
 	return n.jsonPath
+}
+
+func (n *WaitForThreadsNodeOutput) getLhPath() []*lhproto.LHPath_Selector {
+	return n.lhPath
 }
 
 func (n *WaitForThreadsNodeOutput) getThread() *WorkflowThread {
@@ -528,6 +569,10 @@ func (t *WorkflowThread) assignVariable(
 			out.Path = &lhproto.VariableAssignment_JsonPath{
 				JsonPath: *v.jsonPath,
 			}
+		} else if len(v.lhPath) > 0 {
+			out.Path = &lhproto.VariableAssignment_LhPath{
+				LhPath: &lhproto.LHPath{Path: v.lhPath},
+			}
 		}
 	case WfRunVariable:
 		out = &lhproto.VariableAssignment{
@@ -538,6 +583,10 @@ func (t *WorkflowThread) assignVariable(
 		if v.jsonPath != nil {
 			out.Path = &lhproto.VariableAssignment_JsonPath{
 				JsonPath: *v.jsonPath,
+			}
+		} else if len(v.lhPath) > 0 {
+			out.Path = &lhproto.VariableAssignment_LhPath{
+				LhPath: &lhproto.LHPath{Path: v.lhPath},
 			}
 		}
 	case *LHFormatString:
@@ -571,6 +620,10 @@ func (t *WorkflowThread) assignVariable(
 			out.Path = &lhproto.VariableAssignment_JsonPath{
 				JsonPath: *(*v).getJsonPath(),
 			}
+		} else if len((*v).getLhPath()) > 0 {
+			out.Path = &lhproto.VariableAssignment_LhPath{
+				LhPath: &lhproto.LHPath{Path: (*v).getLhPath()},
+			}
 		}
 	case NodeOutput:
 		out = &lhproto.VariableAssignment{
@@ -583,6 +636,10 @@ func (t *WorkflowThread) assignVariable(
 		if v.getJsonPath() != nil {
 			out.Path = &lhproto.VariableAssignment_JsonPath{
 				JsonPath: *v.getJsonPath(),
+			}
+		} else if len(v.getLhPath()) > 0 {
+			out.Path = &lhproto.VariableAssignment_LhPath{
+				LhPath: &lhproto.LHPath{Path: v.getLhPath()},
 			}
 		}
 	case *lhExpression:
@@ -760,16 +817,71 @@ func (w *WfRunVariable) jsonPathImpl(path string) *WfRunVariable {
 			errors.New("Variable " + w.Name + " was jsonpath'ed twice!"),
 		)
 	}
+	if len(w.lhPath) > 0 {
+		w.thread.throwError(
+			errors.New("Variable " + w.Name + " already has an LHPath set; cannot mix with JsonPath"),
+		)
+	}
 	if w.VarType != nil && *w.VarType != lhproto.VariableType_JSON_ARR && *w.VarType != lhproto.VariableType_JSON_OBJ {
 		w.thread.throwError(errors.New(
 			"Cannot jsonpath on var of type " + w.VarType.String(),
 		))
 	}
 	return &WfRunVariable{
-		Name:     w.Name,
-		thread:   w.thread,
-		VarType:  w.VarType,
-		jsonPath: &path,
+		Name:          w.Name,
+		thread:        w.thread,
+		VarType:       w.VarType,
+		jsonPath:      &path,
+		structDefName: w.structDefName,
+	}
+}
+
+func (w *WfRunVariable) getImpl(field string) *WfRunVariable {
+	if w.jsonPath != nil {
+		w.thread.throwError(
+			errors.New("Variable " + w.Name + " already has a JsonPath set; cannot mix with LHPath"),
+		)
+	}
+	// Only allow Get on JSON_OBJ, JSON_ARR, or Struct (structDefName != nil means Struct)
+	if w.VarType != nil && *w.VarType != lhproto.VariableType_JSON_OBJ && *w.VarType != lhproto.VariableType_JSON_ARR {
+		w.thread.throwError(errors.New(
+			"Cannot use Get on var of type " + w.VarType.String(),
+		))
+	}
+	newPath := copyLhPath(w.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &WfRunVariable{
+		Name:          w.Name,
+		thread:        w.thread,
+		VarType:       w.VarType,
+		lhPath:        newPath,
+		structDefName: w.structDefName,
+	}
+}
+
+func (w *WfRunVariable) getIndexImpl(index int) *WfRunVariable {
+	if w.jsonPath != nil {
+		w.thread.throwError(
+			errors.New("Variable " + w.Name + " already has a JsonPath set; cannot mix with LHPath"),
+		)
+	}
+	if w.VarType != nil && *w.VarType != lhproto.VariableType_JSON_OBJ && *w.VarType != lhproto.VariableType_JSON_ARR {
+		w.thread.throwError(errors.New(
+			"Cannot use GetIndex on var of type " + w.VarType.String(),
+		))
+	}
+	newPath := copyLhPath(w.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Index{Index: int32(index)},
+	})
+	return &WfRunVariable{
+		Name:          w.Name,
+		thread:        w.thread,
+		VarType:       w.VarType,
+		lhPath:        newPath,
+		structDefName: w.structDefName,
 	}
 }
 
@@ -922,6 +1034,37 @@ func (t *WorkflowThread) addVariable(
 		VarType:      &varType,
 		thread:       t,
 		threadVarDef: threadVarDef,
+	}
+}
+
+func (t *WorkflowThread) addStructVariable(
+	name string, structDefName string,
+) *WfRunVariable {
+	t.checkIfIsActive()
+
+	varDef := &lhproto.VariableDef{
+		TypeDef: &lhproto.TypeDefinition{
+			DefinedType: &lhproto.TypeDefinition_StructDefId{
+				StructDefId: &lhproto.StructDefId{
+					Name: structDefName,
+				},
+			},
+		},
+		Name: name,
+	}
+
+	threadVarDef := &lhproto.ThreadVarDef{
+		VarDef:      varDef,
+		AccessLevel: lhproto.WfRunVariableAccessLevel_PRIVATE_VAR,
+	}
+
+	t.spec.VariableDefs = append(t.spec.VariableDefs, threadVarDef)
+
+	return &WfRunVariable{
+		Name:          name,
+		thread:        t,
+		threadVarDef:  threadVarDef,
+		structDefName: &structDefName,
 	}
 }
 
@@ -1390,7 +1533,9 @@ func (t *WorkflowThread) spawnThread(
 		cachedThreadVar,
 		lhproto.VariableMutationType_ASSIGN,
 		plainNodeOutput{
-			nodeName, nil, t,
+			nodeName: nodeName,
+			jsonPath: nil,
+			thread:   t,
 		},
 	)
 

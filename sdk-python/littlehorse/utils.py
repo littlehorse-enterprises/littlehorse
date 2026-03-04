@@ -71,6 +71,12 @@ def to_variable_value(value: Any) -> VariableValue:
     if isinstance(value, datetime.datetime):
         return VariableValue(utc_timestamp=value)
 
+    # Check for @lh_struct_def-decorated objects
+    from littlehorse.lh_struct import is_lh_struct, serialize_to_struct
+
+    if is_lh_struct(type(value)):
+        return VariableValue(struct=serialize_to_struct(value))
+
     try:
         if isinstance(value, dict):
             return VariableValue(
@@ -115,6 +121,12 @@ def extract_value(lh_value: VariableValue) -> Any:
         return lh_value.wf_run_id
     if set_oneof is None:
         return None
+
+    if set_oneof == "struct":
+        # Return the struct as a dict (field_name -> value)
+        from littlehorse.lh_struct import _extract_struct_to_dict
+
+        return _extract_struct_to_dict(lh_value.struct)
 
     try:
         if set_oneof == "json_obj":

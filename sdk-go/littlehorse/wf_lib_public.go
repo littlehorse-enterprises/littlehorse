@@ -44,14 +44,17 @@ type WfRunVariable struct {
 	Name    string
 	VarType *lhproto.VariableType
 
-	thread       *WorkflowThread
-	jsonPath     *string
-	threadVarDef *lhproto.ThreadVarDef
+	thread        *WorkflowThread
+	jsonPath      *string
+	lhPath        []*lhproto.LHPath_Selector
+	threadVarDef  *lhproto.ThreadVarDef
+	structDefName *string
 }
 
 type NodeOutput interface {
 	getNodeName() string
 	getJsonPath() *string
+	getLhPath() []*lhproto.LHPath_Selector
 	getThread() *WorkflowThread
 
 	JsonPath(string) NodeOutput
@@ -63,11 +66,13 @@ type NodeOutput interface {
 	CastToBool() LHExpression
 	CastToBytes() LHExpression
 	CastToWfRunId() LHExpression
+	Get(field string) NodeOutput
 }
 
 type WaitForThreadsNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
 }
 
@@ -79,9 +84,22 @@ func (w *WaitForThreadsNodeOutput) JsonPath(jsonPath string) NodeOutput {
 	}
 }
 
+func (w *WaitForThreadsNodeOutput) Get(field string) NodeOutput {
+	newPath := copyLhPath(w.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &WaitForThreadsNodeOutput{
+		nodeName: w.nodeName,
+		lhPath:   newPath,
+		thread:   w.thread,
+	}
+}
+
 type TaskNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
 }
 
@@ -93,9 +111,22 @@ func (n *TaskNodeOutput) JsonPath(jsonPath string) NodeOutput {
 	}
 }
 
+func (n *TaskNodeOutput) Get(field string) NodeOutput {
+	newPath := copyLhPath(n.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &TaskNodeOutput{
+		nodeName: n.nodeName,
+		lhPath:   newPath,
+		thread:   n.thread,
+	}
+}
+
 type ExternalEventNodeOutput struct {
 	nodeName              string
 	jsonPath              *string
+	lhPath                []*lhproto.LHPath_Selector
 	thread                *WorkflowThread
 	externalEventDefName  string
 	payloadType           *lhproto.VariableType
@@ -111,6 +142,7 @@ type InterruptHandler struct {
 type WaitForConditionNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
 }
 
@@ -118,6 +150,21 @@ func (n *ExternalEventNodeOutput) JsonPath(jsonPath string) NodeOutput {
 	return &ExternalEventNodeOutput{
 		nodeName:              n.nodeName,
 		jsonPath:              &jsonPath,
+		thread:                n.thread,
+		externalEventDefName:  n.externalEventDefName,
+		payloadType:           n.payloadType,
+		correlatedEventConfig: n.correlatedEventConfig,
+	}
+}
+
+func (n *ExternalEventNodeOutput) Get(field string) NodeOutput {
+	newPath := copyLhPath(n.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &ExternalEventNodeOutput{
+		nodeName:              n.nodeName,
+		lhPath:                newPath,
 		thread:                n.thread,
 		externalEventDefName:  n.externalEventDefName,
 		payloadType:           n.payloadType,
@@ -182,6 +229,7 @@ func (n *TaskNodeOutput) Timeout(timeout int64) *TaskNodeOutput {
 type UserTaskNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
 	node     *lhproto.Node
 }
@@ -190,6 +238,18 @@ func (n *UserTaskNodeOutput) JsonPath(jsonPath string) *UserTaskNodeOutput {
 	return &UserTaskNodeOutput{
 		nodeName: n.nodeName,
 		jsonPath: &jsonPath,
+		thread:   n.thread,
+	}
+}
+
+func (n *UserTaskNodeOutput) Get(field string) *UserTaskNodeOutput {
+	newPath := copyLhPath(n.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &UserTaskNodeOutput{
+		nodeName: n.nodeName,
+		lhPath:   newPath,
 		thread:   n.thread,
 	}
 }
@@ -280,6 +340,20 @@ func (w *WfRunVariable) WithDefault(defaultValue interface{}) *WfRunVariable {
 
 func (w *WfRunVariable) JsonPath(path string) *WfRunVariable {
 	return w.jsonPathImpl(path)
+}
+
+// Get returns a new WfRunVariable that accesses a specific field of a Struct, JSON_OBJ,
+// or JSON_ARR variable. Can be chained: variable.Get("address").Get("city").
+// Cannot be mixed with JsonPath.
+func (w *WfRunVariable) Get(field string) *WfRunVariable {
+	return w.getImpl(field)
+}
+
+// GetIndex returns a new WfRunVariable that accesses a specific index of a JSON_ARR
+// variable. Can be chained with Get: variable.GetIndex(0).Get("name").
+// Cannot be mixed with JsonPath.
+func (w *WfRunVariable) GetIndex(index int) *WfRunVariable {
+	return w.getIndexImpl(index)
 }
 
 func (w *WfRunVariable) WithAccessLevel(accessLevel lhproto.WfRunVariableAccessLevel) WfRunVariable {
@@ -487,6 +561,15 @@ func (t *WorkflowThread) DeclareJsonArr(name string) *WfRunVariable {
 
 func (t *WorkflowThread) DeclareJsonObj(name string) *WfRunVariable {
 	return t.addVariable(name, lhproto.VariableType_JSON_OBJ)
+}
+
+// DeclareStruct declares a Struct variable in the ThreadSpec. The structDefName is the
+// name of the StructDef that has been (or will be) registered with the server.
+//
+// Unlike ExternalEventDefs, StructDefs are NOT automatically registered by RegisterWfSpec.
+// You must register them manually using RegisterStructDef before calling RegisterWfSpec.
+func (t *WorkflowThread) DeclareStruct(name string, structDefName string) *WfRunVariable {
+	return t.addStructVariable(name, structDefName)
 }
 
 func (t *WorkflowThread) Complete(result interface{}) {

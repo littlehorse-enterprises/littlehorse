@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
-import { FC, useLayoutEffect, useMemo, useState } from 'react'
+import { FC, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
 import 'reactflow/dist/base.css'
 import { DiagramProvider, NodeInContext, ThreadType } from '../context'
@@ -33,8 +33,9 @@ import { ThreadPanel } from './ThreadPanel'
 type Props = {
   wfRun?: Omit<WfRun, 'threadRuns'> & { threadRuns: ThreadRunWithNodeRuns[] }
   spec: WfSpec
+  onThreadChange?: (thread: ThreadType) => void
 }
-export const Diagram: FC<Props> = ({ spec, wfRun }) => {
+export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
   const { tenantId } = useWhoAmI()
   const currentThread = wfRun
     ? (wfRun.threadRuns.find(tr => tr.number === wfRun.greatestThreadrunNumber)?.threadSpecName ??
@@ -68,6 +69,10 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
     setNodes(nodes)
     setEdges(edges)
   }, [thread.name, setNodes, setEdges])
+
+  useEffect(() => {
+    onThreadChange?.(thread)
+  }, [thread, onThreadChange])
 
   const verb =
     wfRun?.status === LHStatus.RUNNING

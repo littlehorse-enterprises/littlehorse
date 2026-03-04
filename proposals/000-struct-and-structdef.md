@@ -1,6 +1,6 @@
-# Proposal: `StructDef` and `Struct`
+# Proposal: `Struct` and `StructDef`
 
-- [Proposal: `StructDef` and `Struct`](#proposal-structdef-and-struct)
+- [Proposal: `Struct` and `StructDef`](#proposal-struct-and-structdef)
   - [Server-Side Changes](#server-side-changes)
     - [`Struct` and `StructDef` Protobuf](#struct-and-structdef-protobuf)
       - [Inline Structs](#inline-structs)
@@ -14,7 +14,7 @@
       - [`StructDef` References](#structdef-references)
       - [Automatic `StructDef` Creation](#automatic-structdef-creation)
     - [Creating `VariableValue`s](#creating-variablevalues)
-      - [Using an `@LHStruct` Annotated Class](#using-an-lhstruct-annotated-class)
+      - [Using an `@LHStructDef` Annotated Class](#using-an-lhstructdef-annotated-class)
       - [Using a Struct Name](#using-a-struct-name)
     - [The `WfSpec` DSL](#the-wfspec-dsl)
       - [Using and Creating `StructDef`s](#using-and-creating-structdefs)
@@ -37,7 +37,7 @@
     - [Further Work](#further-work)
 
 
-Author: Colt McNealy
+Authors: Colt McNealy, Jacob Snarr
 
 We want schemas on the LH Server for several reasons:
 
@@ -483,17 +483,15 @@ class MyWorker {
 
 It should be easy to create a `VariableValue` of type `STRUCT` using our SDK's. We will provide two mechanisms. Note again that this is the Java proposal; other SDK's will follow shortly after.
 
-#### Using an `@LHStruct` Annotated Class
+#### Using an `@LHStructDef` Annotated Class
 
 Let's say I have the following Java class which is used to create a `StructDef`:
 
 ```java
 @LHStructDef(name = "car")
 class Car {
-    @LHStructField(required = true)
     String make;
 
-    @LHStructField(required = false)
     String model;
 }
 ```
@@ -548,19 +546,15 @@ Note that `Struct`s are nested object structures. You can have a field inside a 
 ```java
 @LHStructDef(name = "car")
 class Car {
-    @LHStructField(required = true)
     public String make;
 
-    @LHStructField(required = false)
     public String model;
 }
 
 @LHStructDef(name = "person")
 class Person {
-    @LHStructField(required = true)
     public String name;
 
-    @LHStructField(required = true)
     public List<Car> cars;
 }
 ```
@@ -648,23 +642,21 @@ class Car:
 
 **Go**
 
-In Go, we will pass in the name to whichever method registers the `StructDef`:
+In Go, structs will implement the `LHStructDef` method which returns an `LHStructDefInfo` object:
 
 ```go
-
-const StructDefName string = "car"
-
 type Car struct {
   ...
 }
 
+func (Car) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "car", Description: "This struct represents a Car."}
+}
+
 func main() {
-  littlehorse.RegisterStructDef(config, Car{}, StructDefName)
+  littlehorse.RegisterStructDef(*client, Car{}, nil)
 }
 ```
-
-> [!NOTE]  
-> Go does include support for Field Tags, which when used effectively can emulate Field Annotations or Decorators available in other languages. Unfortunately, however, these Field Tags cannot be added to an entire struct. There are work arounds, like asking users to define a field `StructDefName string` inside of a struct, and then adding a tag to the type struct to give the entire struct a name. But in an effort to have no "special" or "reserved" field names, I don't think this is a good solution.
 
 **.NET/C#**
 
