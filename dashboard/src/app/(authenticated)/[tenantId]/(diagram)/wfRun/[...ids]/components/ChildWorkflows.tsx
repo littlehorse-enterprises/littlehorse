@@ -13,9 +13,9 @@ import { RefreshCwIcon } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { FC, useMemo, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite'
+import { WF_RUN_STATUS } from '../../../components/Sidebar/Components/StatusColor'
 import { PaginatedWfRunResponseList, searchWfRun } from '../../../wfSpec/[...props]/actions/searchWfRun'
 import { WfRunsHeader } from '../../../wfSpec/[...props]/components/WfRunsHeader'
-import { WF_RUN_STATUS } from '../../../components/Sidebar/Components/StatusColor'
 
 type ChildWfRunsKey = ['childWfRuns', LHStatus | 'ALL', string, number, StartTimeWindow, string | undefined, WfRunId]
 

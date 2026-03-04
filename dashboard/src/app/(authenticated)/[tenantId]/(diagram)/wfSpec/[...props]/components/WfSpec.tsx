@@ -1,9 +1,10 @@
 'use client'
+import { DiagramProvider, NodeInContext } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { WfSpec as Spec } from 'littlehorse-client/proto'
 import { LucidePlayCircle } from 'lucide-react'
-import { FC, useCallback } from 'react'
+import { FC, useCallback, useState } from 'react'
 import { Diagram } from '../../../components/Diagram'
 import { useModal } from '../../../hooks/useModal'
 import { Details } from './Details'
@@ -16,6 +17,8 @@ type WfSpecProps = {
 }
 export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
   const { setModal, setShowModal } = useModal()
+  const [thread, setThread] = useState({ name: spec.entrypointThreadName, number: 0 })
+  const [selectedNode, setSelectedNode] = useState<NodeInContext>(undefined)
 
   const onClick = useCallback(() => {
     if (!spec) return
@@ -32,7 +35,9 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
           Execute
         </button>
       </div>
-      <Diagram spec={spec} />
+      <DiagramProvider value={{ thread, setThread, selectedNode, setSelectedNode }}>
+        <Diagram spec={spec} />
+      </DiagramProvider>
       {Object.keys(spec.threadSpecs)
         .reverse()
         .map(name => (

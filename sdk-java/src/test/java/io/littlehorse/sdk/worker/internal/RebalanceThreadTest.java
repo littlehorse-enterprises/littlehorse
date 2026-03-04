@@ -138,31 +138,35 @@ final class RebalanceThreadTest {
 
     @Test
     public void shouldReCreateFailedPollingThreads() {
-        when(livenessController.keepWorkerRunning()).thenReturn(true, true, true, false);
+        when(livenessController.keepWorkerRunning()).thenReturn(true, true, false);
         when(config.getWorkerThreads()).thenReturn(3);
         LHHostInfo serverA = LHHostInfo.newBuilder().setHost("a").setPort(1234).build();
         RegisterTaskWorkerResponse.Builder response1 =
                 RegisterTaskWorkerResponse.newBuilder().addYourHosts(serverA);
         RegisterTaskWorkerResponse.Builder response2 =
                 RegisterTaskWorkerResponse.newBuilder().addYourHosts(serverA);
-        RegisterTaskWorkerResponse.Builder response3 =
-                RegisterTaskWorkerResponse.newBuilder().addYourHosts(serverA);
         PollThread pollThread1 = mock("pollThread1");
         PollThread pollThread2 = mock("pollThread2");
         PollThread pollThread3 = mock("pollThread3");
-        PollThread pollThreadRecreated = mock("recreated");
+        // Created inside maybeCleanupDanglingNonRunningThreads as a replacement,
+        // but then discarded when the deadHosts loop tears down the entire host
+        PollThread cleanupReplacement = mock("cleanupReplacement");
+        // After deadHosts removes serverA, the onNext loop rebuilds it from scratch
+        PollThread fresh1 = mock("fresh1");
+        PollThread fresh2 = mock("fresh2");
+        PollThread fresh3 = mock("fresh3");
         when(pollThread1.isRunning()).thenReturn(false);
         when(pollThread2.isRunning()).thenReturn(true);
         when(pollThread3.isRunning()).thenReturn(true);
         when(pollThreadFactory.create(any(), any()))
-                .thenReturn(pollThread1, pollThread2, pollThread3, pollThreadRecreated);
-        registerFakeResponses(response1.build(), response2.build(), response3.build())
+                .thenReturn(pollThread1, pollThread2, pollThread3, cleanupReplacement, fresh1, fresh2, fresh3);
+        registerFakeResponses(response1.build(), response2.build())
                 .when(bootstrapStub)
                 .registerTaskWorker(any(), any());
         rebalanceThread.start();
         Awaitility.await().ignoreExceptions().until(() -> !rebalanceThread.isAlive());
         Assertions.assertThat(rebalanceThread.runningConnections.get(serverA))
-                .containsExactlyInAnyOrder(pollThread2, pollThread3, pollThreadRecreated);
+                .containsExactlyInAnyOrder(fresh1, fresh2, fresh3);
     }
 
     private Stubber registerFakeResponses(RegisterTaskWorkerResponse... responses) {

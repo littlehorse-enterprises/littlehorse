@@ -119,9 +119,13 @@ Lists all TaskRun's for a given WfRun Id.
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		wfRunId := args[0]
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
 
 		req := &lhproto.ListTaskRunsRequest{
-			WfRunId: littlehorse.StrToWfRunId(wfRunId),
+			WfRunId:  littlehorse.StrToWfRunId(wfRunId),
+			Bookmark: bookmark,
+			Limit:    &limit,
 		}
 
 		littlehorse.PrintResp(getGlobalClient(cmd).ListTaskRuns(

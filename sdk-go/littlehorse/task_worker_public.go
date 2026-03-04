@@ -2,6 +2,7 @@ package littlehorse
 
 import (
 	"fmt"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
