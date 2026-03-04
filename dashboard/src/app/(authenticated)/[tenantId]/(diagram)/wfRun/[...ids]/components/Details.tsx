@@ -2,36 +2,19 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { flattenWfRunId, formatDate, wfRunIdToPath } from '@/app/utils'
 import { ThreadType } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
-import { useModal } from '@/app/(authenticated)/[tenantId]/(diagram)/hooks/useModal'
+import { useSelectedThreadError } from '@/app/(authenticated)/[tenantId]/(diagram)/hooks/useSelectedThreadError'
 import { WfRun } from 'littlehorse-client/proto'
 import { Expand } from 'lucide-react'
-import { FC, useCallback, useState } from 'react'
+import { FC, useState } from 'react'
 import { CopyToClipboard } from './CopyToClipboard'
 import { WF_RUN_STATUS } from '../../../components/Sidebar/Components/StatusColor'
 
 type DetailsProps = WfRun & { selectedThread?: ThreadType }
 
-const getSelectedThreadError = (wfRun: WfRun, selectedThread?: ThreadType): { errorMessage: string; threadName: string } | undefined => {
-  if (!selectedThread) {
-    const failedThread = wfRun.threadRuns?.find(tr => tr.errorMessage)
-    return failedThread ? { errorMessage: failedThread.errorMessage!, threadName: failedThread.threadSpecName ?? '' } : undefined
-  }
-  const threadRun = wfRun.threadRuns?.find(tr => tr.number === selectedThread.number)
-  if (!threadRun?.errorMessage) return undefined
-  return { errorMessage: threadRun.errorMessage, threadName: threadRun.threadSpecName ?? selectedThread.name }
-}
-
 export const Details: FC<DetailsProps> = ({ selectedThread, ...wfRun }) => {
   const { id, status, wfSpecId, startTime } = wfRun
-  const threadError = getSelectedThreadError(wfRun, selectedThread)
-  const { setModal, setShowModal } = useModal()
+  const { threadError, onExpandError } = useSelectedThreadError(wfRun, selectedThread)
   const [isHovered, setIsHovered] = useState(false)
-
-  const onExpandError = useCallback(() => {
-    if (!threadError) return
-    setModal({ type: 'output', data: { message: threadError.errorMessage, label: 'Error' } })
-    setShowModal(true)
-  }, [threadError, setModal, setShowModal])
 
   if (!id || !wfSpecId) return null
 
