@@ -75,6 +75,7 @@ func (p *plainNodeOutput) CastToBytes() LHExpression {
 }
 func (p *plainNodeOutput) CastToWfRunId() LHExpression {
 	return p.CastTo(lhproto.VariableType_WF_RUN_ID)
+}
 func (p *plainNodeOutput) Get(field string) NodeOutput {
 	newPath := copyLhPath(p.lhPath)
 	newPath = append(newPath, &lhproto.LHPath_Selector{
