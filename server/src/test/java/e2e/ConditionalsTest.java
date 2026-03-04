@@ -215,7 +215,8 @@ public class ConditionalsTest {
             workflowVerifier
                     .prepareRun(workflowLessThanEquals, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
-                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool()).isEqualTo(expectedOutput))
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(expectedOutput))
                     .start();
         }
 
@@ -238,7 +239,8 @@ public class ConditionalsTest {
             workflowVerifier
                     .prepareRun(workflowGreaterThan, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
-                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool()).isEqualTo(expectedOutput))
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(expectedOutput))
                     .start();
         }
 
@@ -289,7 +291,8 @@ public class ConditionalsTest {
             workflowVerifier
                     .prepareRun(workflowIsIn, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
-                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool()).isEqualTo(expectedOutput))
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(expectedOutput))
                     .start();
         }
 
@@ -317,7 +320,8 @@ public class ConditionalsTest {
             workflowVerifier
                     .prepareRun(workflowNotIn, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
-                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool()).isEqualTo(expectedOutput))
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(expectedOutput))
                     .start();
         }
 
