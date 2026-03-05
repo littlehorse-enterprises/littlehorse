@@ -22,6 +22,7 @@ Define distributed processes in code, and let LittleHorse orchestrate, track, an
 Let LittleHorse take the reins and ditch the headaches of:
 
 * Wiring microservices together with RPC calls or message queues.
+* Managing the coordination and sequencing of your applications.
 * Retries, timeouts, dead-letter queues.
 * Distributed tracing and debugging across multiple microservices.
 * Scheduling actions to asychronously happen in the future.
