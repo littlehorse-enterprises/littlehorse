@@ -262,12 +262,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         return out;
     }
 
-    public void disableResponseMaskingRecursively() {
-        if (this.struct != null) {
-            this.struct.disableResponseMaskingRecursively();
-        }
-    }
-
     /**
      * Returns true if the value is empty, which is the LittleHorse equivalent of
      * `null`.

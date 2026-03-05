@@ -80,7 +80,6 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
         for (Map.Entry<String, VariableValue> e : p.getVariablesMap().entrySet()) {
             VariableValueModel variableValue = VariableValueModel.fromProto(e.getValue(), context);
-            variableValue.disableResponseMaskingRecursively();
             variables.put(e.getKey(), variableValue);
         }
 

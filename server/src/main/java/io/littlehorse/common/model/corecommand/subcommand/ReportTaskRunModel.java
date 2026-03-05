@@ -84,12 +84,10 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
 
         if (p.hasOutput()) {
             this.output = VariableValueModel.fromProto(p.getOutput(), context);
-            this.output.disableResponseMaskingRecursively();
         }
 
         if (p.hasLogOutput()) {
             this.logOutput = VariableValueModel.fromProto(p.getLogOutput(), context);
-            this.logOutput.disableResponseMaskingRecursively();
         }
 
         if (p.hasError()) {
