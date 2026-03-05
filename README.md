@@ -1,5 +1,5 @@
 <div align="center">
-<h1>LittleHorse: A Distributed Harness</h1>
+<h1>LittleHorse: Command Center for Business-as-Code</h1>
 
 Define distributed processes in code, and let LittleHorse orchestrate, track, and govern them. 
 
@@ -17,7 +17,7 @@ Define distributed processes in code, and let LittleHorse orchestrate, track, an
 
 ## About LittleHorse
 
-[LittleHorse](https://littlehorse.io) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications.
+[LittleHorse](https://littlehorse.io) is a high-throughput, low-latency microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. LittleHorse's _Business-as-Code_ approach allows you to write code that closely mirrors your business processes, creating better alignment between product & engineering while providing a robust durable execution platform.
 
 Let LittleHorse take the reins and ditch the headaches of:
 
@@ -70,6 +70,8 @@ public void quickstartWf(WorkflowThread wf) {
     });
 }
 ```
+
+As you can see, the code above closely mirrors our example KYC business process. LittleHorse handles retries, timeouts, and orchestration across services for you, allowing your `WfSpec` to focus just on what matters to the business. Task workers handle integrations with external systems and databases.
 
 ## Getting Started
 
