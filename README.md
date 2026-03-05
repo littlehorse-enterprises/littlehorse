@@ -32,9 +32,7 @@ LittleHorse is built on Apache Kafka and Kafka Streams, and has [rich integratio
 
 ## Business-as-Code
 
-<p align="center">
-<img alt="LH" src="./img/wfRun.png" width="100%">
-</p>
+<img alt="LH" src="./img/wideWfRun.png" width="100%">
 
 :point_up: This picture shows a running instance (`WfRun`) for the process (`WfSpec`) defined by this code :point_down:
 
