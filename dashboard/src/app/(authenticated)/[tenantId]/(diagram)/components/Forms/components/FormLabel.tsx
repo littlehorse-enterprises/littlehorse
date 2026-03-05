@@ -12,8 +12,9 @@ interface FormLabelProps {
   structDefId?: StructDefId
   accessLevel?: WfRunVariableAccessLevel
   required?: boolean
+  masked?: boolean
 }
-const FormLabel: FC<FormLabelProps> = ({ label, variableType, structDefId, accessLevel, required }) => {
+const FormLabel: FC<FormLabelProps> = ({ label, variableType, structDefId, accessLevel, required, masked }) => {
   return (
     <FieldLabel className="flex gap-2">
       <p className="font-semibold">{label}</p>
@@ -30,6 +31,7 @@ const FormLabel: FC<FormLabelProps> = ({ label, variableType, structDefId, acces
           >{`Struct<${structDefId.name},${structDefId.version}>`}</LinkWithTenant>
         )}
         {accessLevel && <span className={'rounded bg-green-300 p-1 text-xs'}>{accessLevels[accessLevel]}</span>}
+        {masked && <span className={'rounded bg-violet-300 p-1 text-xs'}>Masked</span>}
         <span className={cn('rounded p-1 text-xs', { 'bg-red-300': required, 'bg-gray-300': !required })}>
           {required ? 'Required' : 'Optional'}
         </span>

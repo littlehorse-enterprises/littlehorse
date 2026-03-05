@@ -22,6 +22,7 @@ export const Variables: FC<VariablesProps> = ({ variableDefs }) => {
           <TypeDisplay definedType={variable.varDef?.typeDef?.definedType} />
           {variable.required && <span className="rounded bg-orange-300 p-1 text-xs">Required</span>}
           {variable.searchable && <span className="rounded bg-blue-300 p-1 text-xs">Searchable</span>}
+          {variable.varDef?.typeDef?.masked && <span className="rounded bg-violet-300 p-1 text-xs">Masked</span>}
           <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[variable.accessLevel]}</span>
         </div>
       ))}

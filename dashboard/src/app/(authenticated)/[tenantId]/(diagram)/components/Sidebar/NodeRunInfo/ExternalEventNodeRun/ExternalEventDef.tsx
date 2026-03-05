@@ -20,9 +20,9 @@ export const ExternalEventDef = ({ event }: { event: ExternalEventDefProto }) =>
               {event.typeInformation.returnType?.definedType?.$case}
             </span>
             <TypeDisplay definedType={event.typeInformation.returnType?.definedType} />
-            <p className="rounded bg-blue-300 p-1 text-xs ">
-              {event.typeInformation.returnType?.masked ? ' Masked' : 'Unmasked'}
-            </p>
+            {event.typeInformation.returnType?.masked && (
+              <span className="rounded bg-violet-300 p-1 text-xs">Masked</span>
+            )}
           </div>
         </div>
       )}

@@ -27,13 +27,7 @@ const InputVariableRow = ({ variable }: { variable: VarNameAndVal }) => {
       <span className="rounded bg-gray-100 px-2 py-1 font-mono text-sm font-medium text-purple-600">
         {variable.varName}
       </span>
-      <span
-        className={`rounded px-2 py-0.5 text-xs font-medium ${
-          variable.masked ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'
-        }`}
-      >
-        {variable.masked ? 'Masked' : 'Unmasked'}
-      </span>
+      {variable.masked && <span className="rounded bg-violet-300 p-1 text-xs">Masked</span>}
       <span className="flex min-w-0 flex-1 items-center gap-1 text-sm text-gray-600">
         <span className="font-medium text-gray-400">=</span>
         <span className="truncate">{rawValue}</span>

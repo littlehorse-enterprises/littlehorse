@@ -76,6 +76,7 @@ export function VariableLabel(threadVarDef: ThreadVarDef) {
     <Label htmlFor={name} className="flex items-center gap-2">
       {name}
       <span className="rounded bg-green-300 p-1 text-xs"> {accessLevels[threadVarDef.accessLevel]}</span>
+      {threadVarDef.varDef?.typeDef?.masked && <span className="rounded bg-violet-300 p-1 text-xs">Masked</span>}
       {threadVarDef.required ? (
         <span className="rounded bg-red-300 p-1 text-xs"> Required</span>
       ) : (
