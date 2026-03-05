@@ -95,6 +95,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
     public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
     public static final String STATE_CLEANUP_DELAY_MS_KEY = "LHS_STREAMS_STATE_CLEANUP_DELAY_MS";
+    public static final String KAFKA_CLIENT_OVERRIDE_PREFIX = "LHS_KAFKA_CONFIG_";
+    public static final String CORE_KAFKA_PRODUCER_OVERRIDE_PREFIX = "LHS_KAFKA_PRODUCER_CONFIG_";
     public static final String CORE_KAFKA_STREAMS_OVERRIDE_PREFIX = "LHS_CORE_KS_CONFIG_";
 
     // General LittleHorse Runtime Behavior Config Env Vars
@@ -744,7 +746,7 @@ public class LHServerConfig extends ConfigBase {
 
     public LHProducer getCommandProducer() {
         if (commandProducer == null) {
-            commandProducer = new LHProducer(this.getKafkaProducerConfig(this.getLHInstanceName()));
+            commandProducer = new LHProducer(this.getCoreCommandProducerConfig(this.getLHInstanceName()));
         }
         return commandProducer;
     }
@@ -797,6 +799,13 @@ public class LHServerConfig extends ConfigBase {
         conf.put(ProducerConfig.LINGER_MS_CONFIG, getOrSetDefault(LINGER_MS_KEY, "0"));
         conf.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, getProducerMaxRequestSize());
         addKafkaSecuritySettings(conf);
+        applyKafkaConfigOverrides(conf, KAFKA_CLIENT_OVERRIDE_PREFIX);
+        return conf;
+    }
+
+    private Properties getCoreCommandProducerConfig(String component) {
+        Properties conf = getKafkaProducerConfig(component);
+        applyKafkaConfigOverrides(conf, CORE_KAFKA_PRODUCER_OVERRIDE_PREFIX);
         return conf;
     }
 
@@ -935,15 +944,7 @@ public class LHServerConfig extends ConfigBase {
         // 1-second precision on timers.
         result.put(StreamsConfig.producerPrefix("linger.ms"), LHConstants.TIMER_PUNCTUATOR_INTERVAL.toMillis());
 
-        for (Object keyObj : props.keySet()) {
-            String key = (String) keyObj;
-            if (key.startsWith(CORE_KAFKA_STREAMS_OVERRIDE_PREFIX)) {
-                String kafkaKey = key.substring(CORE_KAFKA_STREAMS_OVERRIDE_PREFIX.length())
-                        .replace("_", ".")
-                        .toLowerCase();
-                result.put(kafkaKey, props.get(key));
-            }
-        }
+        applyKafkaConfigOverrides(result, CORE_KAFKA_STREAMS_OVERRIDE_PREFIX);
         result.put(StreamsConfig.consumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG), "100");
         return result;
     }
@@ -1061,8 +1062,20 @@ public class LHServerConfig extends ConfigBase {
 
         // In case we need to authenticate to Kafka, this sets it.
         addKafkaSecuritySettings(props);
+        applyKafkaConfigOverrides(props, KAFKA_CLIENT_OVERRIDE_PREFIX);
 
         return props;
+    }
+
+    private void applyKafkaConfigOverrides(Properties target, String overridePrefix) {
+        for (Object keyObj : props.keySet()) {
+            String key = (String) keyObj;
+            if (!key.startsWith(overridePrefix)) continue;
+
+            String kafkaKey =
+                    key.substring(overridePrefix.length()).replace("_", ".").toLowerCase();
+            target.put(kafkaKey, props.get(key));
+        }
     }
 
     private String getClientId(String component) {
@@ -1163,6 +1176,7 @@ public class LHServerConfig extends ConfigBase {
         Properties kafkaSettings = new Properties();
         kafkaSettings.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         addKafkaSecuritySettings(kafkaSettings);
+        applyKafkaConfigOverrides(kafkaSettings, KAFKA_CLIENT_OVERRIDE_PREFIX);
         kafkaAdmin = Admin.create(kafkaSettings);
     }
 
