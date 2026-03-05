@@ -18,6 +18,8 @@ Define distributed processes in code, and let LittleHorse orchestrate, track, an
 <img alt="LH" src="./img/wfRun.png" width="100%">
 </p>
 
+:point_up: This picture shows a running instance (`WfRun`) for the process (`WfSpec`) defined by this code :point_down:
+
 ```java
 public void quickstartWf(WorkflowThread wf) {
     WfRunVariable fullName = wf.declareStr("full-name").searchable().required();
