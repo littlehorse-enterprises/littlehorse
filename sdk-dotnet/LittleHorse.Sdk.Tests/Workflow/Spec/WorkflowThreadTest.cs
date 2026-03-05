@@ -819,7 +819,7 @@ public class WorkflowThreadTest
         {
             WaitForCondition = new WaitForConditionNode
             {
-                Condition = new EdgeCondition
+                LegacyCondition = new LegacyEdgeCondition
                 {
                     Left = new VariableAssignment { VariableName = "counter" },
                     Comparator = Comparator.Equals,
@@ -1301,7 +1301,7 @@ public class WorkflowThreadTest
                 new Edge
                 {
                     SinkNodeName = "2-add-address-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
@@ -1355,7 +1355,7 @@ public class WorkflowThreadTest
                 new Edge
                 {
                     SinkNodeName = "2-add-address-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
@@ -1409,7 +1409,7 @@ public class WorkflowThreadTest
                 new Edge
                 {
                     SinkNodeName = "2-task-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
@@ -1463,7 +1463,7 @@ public class WorkflowThreadTest
                 new Edge
                 {
                     SinkNodeName = "2-task-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
@@ -1523,7 +1523,7 @@ public class WorkflowThreadTest
                 new Edge
                 {
                     SinkNodeName = "2-task-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
