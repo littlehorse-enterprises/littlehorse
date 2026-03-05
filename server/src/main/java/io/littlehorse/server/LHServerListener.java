@@ -338,6 +338,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             ctx.onNext(td.toProto().build());
             ctx.onCompleted();
         }
+        // trigger workflows
     }
 
     @Override
