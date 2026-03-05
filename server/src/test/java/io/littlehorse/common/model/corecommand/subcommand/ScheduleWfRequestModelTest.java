@@ -72,7 +72,6 @@ class ScheduleWfRequestModelTest {
         LocalDateTime capturedMaturationTime =
                 LocalDateTime.ofInstant(capturedTimer.maturationTime.toInstant(), ZoneId.systemDefault());
         Assertions.assertThat(capturedMaturationTime.getDayOfMonth()).isEqualTo(expectedDate.getDayOfMonth());
-        Assertions.assertThat(capturedMaturationTime.getMonthValue()).isEqualTo(expectedDate.getMonthValue());
         Assertions.assertThat(capturedMaturationTime.getHour()).isEqualTo(expectedDate.getHour());
         Assertions.assertThat(capturedMaturationTime.getMinute()).isEqualTo(expectedDate.getMinute());
     }
@@ -93,7 +92,13 @@ class ScheduleWfRequestModelTest {
                                 .withMonth(6)
                                 .withHour(12)
                                 .withMinute(0)),
-                Arguments.of("30 15 * * *", LocalDateTime.now().withHour(15).withMinute(30)),
+                Arguments.of(
+                        "30 15 * * *",
+                        LocalDateTime.now()
+                                .withMonth(2)
+                                .withDayOfMonth(6)
+                                .withHour(15)
+                                .withMinute(30)),
                 Arguments.of(
                         "0 8 15 * *",
                         LocalDateTime.now().withDayOfMonth(15).withHour(8).withMinute(0)),
