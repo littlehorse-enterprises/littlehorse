@@ -20,6 +20,7 @@ public class InterruptHandlerImpl implements InterruptHandler {
             throw new LHMisconfigurationException("Interrupt event type already registered: " + interruptName);
         }
         eventTypeRegistered = true;
-        parentThread.registerExternalEventDef(new InterruptExternalEventDefRegistration(interruptName, eventType));
+        parentThread.registerExternalEventDef(new InterruptExternalEventDefRegistration(
+                interruptName, eventType, parentThread.getParent().getTypeAdapterRegistry()));
     }
 }
