@@ -1,21 +1,38 @@
-# LittleHorse: A Distributed Harness
+<div align="center">
+<h1>LittleHorse: A Distributed Harness</h1>
+
+Define distributed processes in code, and let LittleHorse orchestrate, track, and govern them. 
 
 <a href="https://littlehorse.io/"><img alt="littlehorse.io" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/site-badge.svg"/></a>
 <a href="https://littlehorse.io/docs/getting-started/quickstart"><img alt="littlehorse.io/docs/server/concepts" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/learn-badge.svg"/></a>
 <a href="https://littlehorse.io/docs"><img alt="littlehorse.io/docs" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/docs-badge.svg"/></a>
-[![slack](https://img.shields.io/badge/Slack-511651.svg?logo=slack)](https://launchpass.com/littlehorsecommunity/free)
+[![slack](https://custom-icon-badges.demolab.com/badge/Slack-4A154B?logo=slack&logoColor=fff)](https://launchpass.com/littlehorsecommunity/free)
 
 <a href="https://central.sonatype.com/artifact/io.littlehorse/littlehorse-client"><img alt="java" src="https://img.shields.io/maven-central/v/io.littlehorse/littlehorse-client?logo=openjdk&logoColor=white&color=orange&label=java"></a>
 <a href="https://pkg.go.dev/github.com/littlehorse-enterprises/littlehorse"><img alt="go" src="https://img.shields.io/github/v/release/littlehorse-enterprises/littlehorse?logo=go&logoColor=white&color=00aed8&label=go"></a>
 <a href="https://pypi.org/project/littlehorse-client/"><img alt="python" src="https://img.shields.io/pypi/v/littlehorse-client?logo=python&logoColor=white&color=success&label=python"></a>
-<a href="https://www.npmjs.com/package/littlehorse-client"><img alt="js" src="https://img.shields.io/npm/v/littlehorse-client?logo=npm&logoColor=white&color=red&label=js"></a>
+<a href="https://www.npmjs.com/package/littlehorse-client"><img alt="js" src="https://img.shields.io/npm/v/littlehorse-client?logo=javascript&logoColor=white&color=F7DF1E&label=js"></a>
 <a href="https://www.nuget.org/packages/LittleHorse.Sdk"><img alt="dotnet" src="https://img.shields.io/nuget/v/LittleHorse.Sdk?logo=dotnet&logoColor=white&color=purple&label=dotnet"></a>
+</div>
 
-Define distributed processes in code, and let LittleHorse orchestrate, track, and govern them.
+## About LittleHorse
 
+[LittleHorse](https://littlehorse.io) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications.
+
+Let LittleHorse take the reins and ditch the headaches of:
+
+* Wiring microservices together with RPC calls or message queues.
+* Retries, timeouts, dead-letter queues.
+* Distributed tracing and debugging across multiple microservices.
+* Scheduling actions to asychronously happen in the future.
+* Backpressure and scalability.
+
+LittleHorse is built on Apache Kafka and Kafka Streams, and has [rich integrations](https://github.com/littlehorse-enterprises/lh-kafka-connect) with the Kafka Ecosystem.
+
+## Business-as-Code
 
 <p align="center">
-<img alt="LH" src="./img/wfRun.png" width="100%">
+<img alt="LH" src="./img/wfRun.png" width="75%">
 </p>
 
 :point_up: This picture shows a running instance (`WfRun`) for the process (`WfSpec`) defined by this code :point_down:
@@ -45,23 +62,13 @@ public void quickstartWf(WorkflowThread wf) {
     identityVerified.assign(identityVerificationResult);
 
     wf.doIf(identityVerified.isEqualTo(true), ifBody -> {
-                ifBody.execute(NOTIFY_CUSTOMER_VERIFIED_TASK, fullName, email);
-            })
-            .doElse(elseBody -> {
-                elseBody.execute(NOTIFY_CUSTOMER_NOT_VERIFIED_TASK, fullName, email);
-            });
+        ifBody.execute(NOTIFY_CUSTOMER_VERIFIED_TASK, fullName, email);
+    })
+    .doElse(elseBody -> {
+        elseBody.execute(NOTIFY_CUSTOMER_NOT_VERIFIED_TASK, fullName, email);
+    });
 }
 ```
-
-[LittleHorse](https://littlehorse.io) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. By allowing LittleHorse to manage coordination and sequencing of your applications, you no longer have to worry about:
-
-* Wiring microservices together with RPC calls or message queues.
-* Retries, timeouts, dead-letter queues.
-* Distributed tracing and debugging across multiple microservices.
-* Scheduling actions to asychronously happen in the future.
-* Backpressure and scalability.
-
-LittleHorse is built on Apache Kafka and Kafka Streams, and has [rich integrations](https://github.com/littlehorse-enterprises/lh-kafka-connect) with the Kafka Ecosystem.
 
 ## Getting Started
 
@@ -75,7 +82,7 @@ Run the LittleHorse Server and Dashboard using our standalone docker image:
 docker run --rm --pull=always --name littlehorse -d -p 9092:9092 -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:latest
 ```
 
-> Note: if you want to play with the [output topic](./examples/java/output-topic/), which sends workflow updates to kafka in real time, this also exposes a Kafka broker on `localhost:9092`.
+> Note: if you want to play with the [output topic](./examples/java/output-topic/), which sends workflow updates to Kafka in real time, this also exposes a Kafka broker on `localhost:9092`.
 
 ### Install the LittleHorse CLI
 
@@ -88,8 +95,10 @@ Alternatively, you can install it from our [GitHub Releases page](https://github
 
 Once you have `lhctl` ready, let's use the `whoami` command to verify that the LittleHorse Server is up and running:
 
+```sh
+lhctl whoami
 ```
-->lhctl whoami
+```json
 {
   "id": {
     "id": "anonymous"
@@ -152,7 +161,7 @@ go run ./examples/go/basic/deploy
 
 #### C#
 
-```
+```sh
 cd examples/dotnet/BasicExample
 dotnet run
 ```
@@ -161,7 +170,7 @@ dotnet run
 
 First, install dependencies and register the `WfSpec`:
 
-```
+```sh
 cd examples/js/simple-worker
 npm install
 npm start
@@ -169,7 +178,7 @@ npm start
 
 Then in another terminal, register the `WfSpec` (note that our JS sdk does not yet support creation of `WfSpec`s, so we use `lhctl` here)
 
-```
+```sh
 cd examples/js/simple-worker
 lhctl deploy wfSpec example-basic-wfspec.json
 ```
@@ -178,7 +187,7 @@ lhctl deploy wfSpec example-basic-wfspec.json
 
 Now let's run your first `WfRun` with `lhctl`, setting the value of the `input-name` variable to `"Obi-Wan"`:
 
-```
+```sh
 lhctl run example-basic input-name Obi-Wan
 ```
 
@@ -190,7 +199,7 @@ You can also use `lhctl` to investigate! For starters:
 * `lhctl get nodeRun <wfRunId> 0 1`
 * `lhctl list taskRun <wfRunId>`
 
-### Learn More
+## Learn More
 
 * Check out our [Concepts Documentation](https://littlehorse.io/docs/server/concepts)!
 * Run more examples in our [examples](./examples/) directory.
