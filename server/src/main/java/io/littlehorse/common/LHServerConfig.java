@@ -121,6 +121,9 @@ public class LHServerConfig extends ConfigBase {
     public static final String KAFKA_SASL_MECHANISM_KEY = "LHS_KAFKA_SASL_MECHANISM";
     public static final String KAFKA_SASL_JAAS_CONFIG_KEY = "LHS_KAFKA_SASL_JAAS_CONFIG";
     public static final String KAFKA_SASL_JAAS_CONFIG_FILE_KEY = "LHS_KAFKA_SASL_JAAS_CONFIG_FILE";
+    public static final String KAFKA_SASL_CLIENT_CALLBACK_HANDLER_CLASS =
+            "LHS_KAFKA_SASL_CLIENT_CALLBACK_HANDLER_CLASS";
+    public static final String KAFKA_SASL_LOGIN_CALLBACK_HANDLER_CLASS = "LHS_KAFKA_SASL_LOGIN_CALLBACK_HANDLER_CLASS";
 
     // PROMETHEUS
     public static final String HEALTH_SERVICE_PORT_KEY = "LHS_HEALTH_SERVICE_PORT";
@@ -823,6 +826,8 @@ public class LHServerConfig extends ConfigBase {
 
         String saslMechanism = getOrSetDefault(KAFKA_SASL_MECHANISM_KEY, null);
         String jaasConfig = getFromConfigOrFile(KAFKA_SASL_JAAS_CONFIG_KEY, KAFKA_SASL_JAAS_CONFIG_FILE_KEY, null);
+        String saslClientCallbackHandlerClass = getOrSetDefault(KAFKA_SASL_CLIENT_CALLBACK_HANDLER_CLASS, null);
+        String saslLoginCallbackHandlerClass = getOrSetDefault(KAFKA_SASL_LOGIN_CALLBACK_HANDLER_CLASS, null);
 
         conf.put("security.protocol", securityProtocol);
         if (securityProtocol.equals("PLAINTEXT")) {
@@ -858,6 +863,8 @@ public class LHServerConfig extends ConfigBase {
             }
             conf.put("sasl.mechanism", saslMechanism);
             conf.put("sasl.jaas.config", jaasConfig);
+            conf.put("sasl.client.callback.handler.class", saslClientCallbackHandlerClass);
+            conf.put("sasl.login.callback.handler.class", saslLoginCallbackHandlerClass);
         } else {
             throw new LHMisconfigurationException(
                     "Only SASL_SSL, PLAINTEXT, and SSL supported for LHS_KAFKA_SECURITY_PROTOCOL");
