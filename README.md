@@ -1,4 +1,4 @@
-# LittleHorse
+# LittleHorse: A Distributed Harness
 
 <a href="https://littlehorse.io/"><img alt="littlehorse.io" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/site-badge.svg"/></a>
 <a href="https://littlehorse.io/docs/getting-started/quickstart"><img alt="littlehorse.io/docs/server/concepts" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/learn-badge.svg"/></a>
@@ -11,7 +11,12 @@
 <a href="https://www.npmjs.com/package/littlehorse-client"><img alt="js" src="https://img.shields.io/npm/v/littlehorse-client?logo=npm&logoColor=white&color=red&label=js"></a>
 <a href="https://www.nuget.org/packages/LittleHorse.Sdk"><img alt="dotnet" src="https://img.shields.io/nuget/v/LittleHorse.Sdk?logo=dotnet&logoColor=white&color=purple&label=dotnet"></a>
 
-Define distributed processes in code...
+Define distributed processes in code, and let LittleHorse orchestrate, track, and govern them.
+
+
+<p align="center">
+<img alt="LH" src="./img/wfRun.png" width="80%">
+</p>
 
 ```java
 public void quickstartWf(WorkflowThread wf) {
@@ -44,14 +49,7 @@ public void quickstartWf(WorkflowThread wf) {
                 elseBody.execute(NOTIFY_CUSTOMER_NOT_VERIFIED_TASK, fullName, email);
             });
 }
-
 ```
-
-...and let LittleHorse orchestrate and track them.
-
-<p align="center">
-<img alt="LH" src="./img/wfRun.png" width="80%">
-</p>
 
 [LittleHorse](https://littlehorse.io) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. By allowing LittleHorse to manage coordination and sequencing of your applications, you no longer have to worry about:
 
@@ -61,12 +59,23 @@ public void quickstartWf(WorkflowThread wf) {
 * Scheduling actions to asychronously happen in the future.
 * Backpressure and scalability.
 
+LittleHorse is built on Apache Kafka and Kafka Streams, and has [rich integrations](https://github.com/littlehorse-enterprises/lh-kafka-connect) with the Kafka Ecosystem.
 
 ## Getting Started
 
-### Installing LittleHorse
+Run your first `WfRun` in 120 seconds or less.
 
-1. Install the LittleHorse CLI:
+### Start the LittleHorse Server
+
+Run the LittleHorse Server and Dashboard using our standalone docker image:
+
+```
+docker run --rm --pull=always --name littlehorse -d -p 9092:9092 -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:latest
+```
+
+> Note: if you want to play with the [output topic](./examples/java/output-topic/), which sends workflow updates to kafka in real time, this also exposes a Kafka broker on `localhost:9092`.
+
+### Install the LittleHorse CLI
 
 ```sh
 brew install littlehorse-enterprises/lh/lhctl
@@ -74,13 +83,8 @@ brew install littlehorse-enterprises/lh/lhctl
 
 Alternatively, you can install it from our [GitHub Releases page](https://github.com/littlehorse-enterprises/littlehorse/releases)
 
-2. Next, run LittleHorse Server and Dashboard using our standalone docker image:
 
-```
-docker run --rm --pull=always --name littlehorse -d -p 9092:9092 -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:latest
-```
-
-3. Verify the server is installed and running using lhctl
+Once you have `lhctl` ready, let's use the `whoami` command to verify that the LittleHorse Server is up and running:
 
 ```
 ->lhctl whoami
@@ -106,25 +110,89 @@ docker run --rm --pull=always --name littlehorse -d -p 9092:9092 -p 2023:2023 -p
 }
 ```
 
-4. Start an example in a language of your choice. For example
+### Register a `TaskDef` and `WfSpec`
 
-In Java:
+Start an example in a language of your choice. This will do three things:
+
+1. Register a `TaskDef` (Task Definition) in the LittleHorse Server.
+2. Start a [Task Worker](https://littlehorse.io/docs/server/concepts/tasks) which polls the LittleHorse Server, waiting to be told to execute a `TaskRun`.
+3. Register a `WfSpec` (Workflow Specification) which simply invokes a the above task worker.
+
+The `WfSpec` has a single input variable (`input-name`), and that name is passed into the `greet` task worker.
+
+#### Java
 
 ```
 ./gradlew example-basic:run
 ```
 
-In Python:
+#### Python
 
 ```
-cd examples/python
+cd examples/python/basic
 poetry shell
+python -m example_basic
 ```
-5. Start your first `WfRun` with `lhctl`
 
-6. Navigate to the dashboard at [`http://localhost:8080`](http://localhost:8080) and inspect your first workflow's results!
+#### GoLang
 
-7. Check out our [Concepts Documentation](https://littlehorse.io/docs/server/concepts)!
+In one terminal, start the task worker (leave it running):
+
+```
+go run ./examples/go/basic/worker
+```
+
+Then in another terminal, register the `WfSpec`:
+
+```
+go run ./examples/go/basic/deploy
+```
+
+#### C#
+
+```
+cd examples/dotnet/BasicExample
+dotnet run
+```
+
+#### JavaScript
+
+First, install dependencies and register the `WfSpec`:
+
+```
+cd examples/js/simple-worker
+npm install
+npm start
+```
+
+Then in another terminal, register the `WfSpec` (note that our JS sdk does not yet support creation of `WfSpec`s, so we use `lhctl` here)
+
+```
+cd examples/js/simple-worker
+lhctl deploy wfSpec example-basic-wfspec.json
+```
+
+### Run a `WfRun` (Workflow Run)
+
+Now let's run your first `WfRun` with `lhctl`, setting the value of the `input-name` variable to `"Obi-Wan"`:
+
+```
+lhctl run example-basic input-name Obi-Wan
+```
+
+Now, navigate to the dashboard at [`http://localhost:8080`](http://localhost:8080) and inspect your first `WfRun`!
+
+You can also use `lhctl` to investigate! For starters:
+
+* `lhctl get wfRun <wfRunId>`
+* `lhctl get nodeRun <wfRunId> 0 1`
+* `lhctl list taskRun <wfRunId>`
+
+### Learn More
+
+* Check out our [Concepts Documentation](https://littlehorse.io/docs/server/concepts)!
+* Run more examples in our [examples](./examples/) directory.
+* Join our [Slack Community](https://launchpass.com/littlehorsecommunity/free)
 
 ## Architecture
 
@@ -147,9 +215,11 @@ For documentation, visit [littlehorse.io/docs/server](https://www.littlehorse.io
 
 ## About the Project
 
+LittleHorse is developed with love by engineers, for engineers.
+
 ### Lifecycle and Release Plan
 
-The LittleHorse Server plans to follow [Semantic Versioning](https://semver.org) after the release of version 1.0. You can find our (non-binding) project guidelines regarding our release schedule and deprecation strategy for after the 1.0 release in our [project lifecycle document](./PROJECT_LIFECYCLE.md). We plan to release version 1.0 in early 2026.
+The LittleHorse Server follows [Semantic Versioning](https://semver.org) after the release of version 1.0. You can find our (non-binding) project guidelines regarding our release schedule and deprecation strategy in our [project lifecycle document](./PROJECT_LIFECYCLE.md).
 
 ### Developing
 
