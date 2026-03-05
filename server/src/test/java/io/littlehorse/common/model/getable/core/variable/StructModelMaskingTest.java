@@ -62,6 +62,8 @@ public class StructModelMaskingTest {
         assertDoesNotThrow(() -> structModel.validateAgainstStructDefId(metadataManager));
 
         Struct outputProto = structModel.toProto().build();
+        assertThat(outputProto.getStruct().getFieldsMap().get("secretCode").getMasked())
+                .isTrue();
         assertThat(outputProto
                         .getStruct()
                         .getFieldsMap()
@@ -97,6 +99,8 @@ public class StructModelMaskingTest {
                 .isInstanceOf(StructValidationException.class);
 
         Struct outputProto = structModel.toProto().build();
+        assertThat(outputProto.getStruct().getFieldsMap().get("secretCode").getMasked())
+                .isTrue();
         assertThat(outputProto
                         .getStruct()
                         .getFieldsMap()

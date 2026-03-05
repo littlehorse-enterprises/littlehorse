@@ -70,7 +70,9 @@ class InlineStruct(_message.Message):
     def __init__(self, fields: _Optional[_Mapping[str, StructField]] = ...) -> None: ...
 
 class StructField(_message.Message):
-    __slots__ = ("value",)
+    __slots__ = ("value", "masked")
     VALUE_FIELD_NUMBER: _ClassVar[int]
+    MASKED_FIELD_NUMBER: _ClassVar[int]
     value: VariableValue
-    def __init__(self, value: _Optional[_Union[VariableValue, _Mapping]] = ...) -> None: ...
+    masked: bool
+    def __init__(self, value: _Optional[_Union[VariableValue, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
