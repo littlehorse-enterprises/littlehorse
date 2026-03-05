@@ -2,7 +2,7 @@ FROM amazoncorretto:25
 
 LABEL maintainer="engineering@littlehorse.io"
 
-ARG KAFKA_VERSION=4.1.1
+ARG KAFKA_VERSION=4.2.0
 
 ENV PATH=${PATH}:/kafka/bin:/lh
 ENV LHD_API_HOST=localhost
