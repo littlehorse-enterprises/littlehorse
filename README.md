@@ -15,7 +15,7 @@ Define distributed processes in code, and let LittleHorse orchestrate, track, an
 
 
 <p align="center">
-<img alt="LH" src="./img/wfRun.png" width="80%">
+<img alt="LH" src="./img/wfRun.png" width="100%">
 </p>
 
 ```java
