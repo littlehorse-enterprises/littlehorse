@@ -13,7 +13,10 @@ import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This class contains runtime information about the specific WfRun and NodeRun that is being
@@ -28,6 +31,7 @@ public class WorkerContext {
     private String logOutput;
     private int checkpointsSoFarInThisRun;
     private LittleHorseBlockingStub client;
+    private final LHTypeAdapterRegistry typeAdapterRegistry;
 
     /**
      * Constructor for internal use by the Task Worker Library.
@@ -36,11 +40,28 @@ public class WorkerContext {
      * @param scheduleTime is the time that the task was actually scheduled.
      */
     public WorkerContext(ScheduledTask scheduledTask, Date scheduleTime, LittleHorseBlockingStub client) {
+        this(scheduledTask, scheduleTime, client, LHTypeAdapterRegistry.empty());
+    }
+
+    public WorkerContext(
+            ScheduledTask scheduledTask,
+            Date scheduleTime,
+            LittleHorseBlockingStub client,
+            List<LHTypeAdapter<?>> typeAdapters) {
+        this(scheduledTask, scheduleTime, client, LHTypeAdapterRegistry.from(typeAdapters));
+    }
+
+    public WorkerContext(
+            ScheduledTask scheduledTask,
+            Date scheduleTime,
+            LittleHorseBlockingStub client,
+            LHTypeAdapterRegistry typeAdapterRegistry) {
         this.scheduledTask = scheduledTask;
         this.scheduleTime = scheduleTime;
         this.logOutput = "";
         checkpointsSoFarInThisRun = 0;
         this.client = client;
+        this.typeAdapterRegistry = typeAdapterRegistry == null ? LHTypeAdapterRegistry.empty() : typeAdapterRegistry;
     }
 
     /**
@@ -178,13 +199,14 @@ public class WorkerContext {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private <T> T fetchCheckpoint(int checkpointNumber, Class<T> clazz) {
         CheckpointId id = CheckpointId.newBuilder()
                 .setTaskRun(scheduledTask.getTaskRunId())
                 .setCheckpointNumber(checkpointNumber)
                 .build();
         Checkpoint checkpoint = client.getCheckpoint(id);
-        return (T) LHLibUtil.varValToObj(checkpoint.getValue(), clazz);
+        return (T) LHLibUtil.varValToObj(checkpoint.getValue(), clazz, typeAdapterRegistry);
     }
 
     private <T> T saveCheckpoint(CheckpointableFunction<T> runnable, Class<T> clazz) {
@@ -194,7 +216,7 @@ public class WorkerContext {
         PutCheckpointResponse response = client.putCheckpoint(PutCheckpointRequest.newBuilder()
                 .setTaskAttempt(scheduledTask.getAttemptNumber())
                 .setTaskRunId(scheduledTask.getTaskRunId())
-                .setValue(LHLibUtil.objToVarVal(result))
+                .setValue(LHLibUtil.objToVarVal(result, clazz, typeAdapterRegistry))
                 .setLogs(checkpointContext.getLogOutput())
                 .build());
 

@@ -65,7 +65,8 @@ public class ExternalEventNodeOutputImpl extends NodeOutputImpl
     public PutExternalEventDefRequest toPutExtDefRequest() {
         PutExternalEventDefRequest.Builder builder = PutExternalEventDefRequest.newBuilder()
                 .setName(externalEventDefName)
-                .setContentType(BuilderUtil.javaTypeToReturnType(payloadClass));
+                .setContentType(BuilderUtil.javaTypeToReturnType(
+                        payloadClass, parent.getParent().getTypeAdapterRegistry()));
 
         if (correlatedEventConfig != null) {
             builder.setCorrelatedEventConfig(correlatedEventConfig);

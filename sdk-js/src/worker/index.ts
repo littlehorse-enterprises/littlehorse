@@ -3,6 +3,7 @@ export type { LHTaskWorker, TaskFunction, LHTaskWorkerOptions } from './LHTaskWo
 export { WorkerContext } from './WorkerContext'
 export {
   lhStruct,
+  lhMasked,
   getStructName,
   isLHStruct,
   zodToTypeDef,

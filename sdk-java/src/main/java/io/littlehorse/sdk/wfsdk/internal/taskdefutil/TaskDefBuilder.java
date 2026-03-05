@@ -3,6 +3,8 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +18,25 @@ public class TaskDefBuilder {
 
     public TaskDefBuilder(Object executable, String taskDefName, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
-        signature = new LHTaskSignature(taskDefName, executable, lhTaskMethodAnnotationValue);
+        this(executable, taskDefName, lhTaskMethodAnnotationValue, LHTypeAdapterRegistry.empty());
+    }
+
+    public TaskDefBuilder(
+            Object executable,
+            String taskDefName,
+            String lhTaskMethodAnnotationValue,
+            List<LHTypeAdapter<?>> typeAdapters)
+            throws TaskSchemaMismatchError {
+        this(executable, taskDefName, lhTaskMethodAnnotationValue, LHTypeAdapterRegistry.from(typeAdapters));
+    }
+
+    public TaskDefBuilder(
+            Object executable,
+            String taskDefName,
+            String lhTaskMethodAnnotationValue,
+            LHTypeAdapterRegistry typeAdapterRegistry)
+            throws TaskSchemaMismatchError {
+        signature = new LHTaskSignature(taskDefName, executable, lhTaskMethodAnnotationValue, typeAdapterRegistry);
         this.executable = executable;
         this.structDefDependencies = signature.getStructDefDependencies();
     }

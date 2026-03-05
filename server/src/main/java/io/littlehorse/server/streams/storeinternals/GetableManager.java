@@ -244,7 +244,9 @@ public class GetableManager extends ReadOnlyGetableManager {
     public void commit() {
         List<OutputTopicRecordModel> outputTopicRecords = new ArrayList<>();
 
-        for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
+        Map<String, GetableToStore<?, ?>> uncommittedChangesCopy = Map.copyOf(uncommittedChanges);
+
+        for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChangesCopy.entrySet()) {
             String storeableKey = entry.getKey();
             GetableToStore entity = entry.getValue();
             Optional<OutputTopicRecordModel> newRecord = processEntity(storeableKey, entity);

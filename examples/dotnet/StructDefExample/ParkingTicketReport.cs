@@ -2,7 +2,7 @@ using LittleHorse.Sdk.Worker;
 
 namespace StructDefExample;
 
-[LHStructDef("car")]
+[LHStructDef("parking-ticket-report")]
 public class ParkingTicketReport
 {
     public string VehicleMake { get; set; } = string.Empty;

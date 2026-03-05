@@ -18,7 +18,7 @@ function getCarOwner(report: ParkingTicketReportType, _ctx: WorkerContext): Pers
   return {
     firstName: 'Obi-Wan',
     lastName: 'Kenobi',
-    homeAddress: { houseNumber: 124, street: 'Sand Dune Lane', city: 'Anchorhead', state: 'Tattooine', zip: 97412 },
+    homeAddress: { houseNumber: 124, street: 'Sand Dune Lane', city: 'Anchorhead', planet: 'Tattooine', zipCode: 97412 },
   }
 }
 

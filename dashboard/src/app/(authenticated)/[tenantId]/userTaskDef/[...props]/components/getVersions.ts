@@ -1,30 +1,30 @@
 'use server'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { lhClient } from '@/app/lhClient'
-import { VersionList, WithBookmark, WithTenant } from '@/types'
+import { VersionList, WithTenant } from '@/types'
 
 type Props = {
   name: string
-} & WithBookmark &
-  WithTenant
+} & WithTenant
 
 export const getVersions = async (props: Props): Promise<VersionList> => {
   const { tenantId, name } = props
-  const bookmark = props.bookmark ? Buffer.from(props.bookmark) : undefined
   const client = await lhClient({ tenantId })
 
-  const specs = await client.searchUserTaskDef({
-    userTaskDefCriteria: { $case: 'name', value: name },
-    bookmark,
-    limit: SEARCH_DEFAULT_LIMIT,
-  })
+  const allVersions: string[] = []
+  let bookmark: Buffer | undefined
 
-  const versions = specs.results.map(({ version }) => {
-    return version.toString()
-  })
+  do {
+    const specs = await client.searchUserTaskDef({
+      userTaskDefCriteria: { $case: 'name', value: name },
+      bookmark,
+      limit: SEARCH_DEFAULT_LIMIT,
+    })
 
-  return {
-    bookmark: specs.bookmark?.toString('base64'),
-    versions,
-  }
+    const versions = specs.results.map(({ version }) => version.toString())
+    allVersions.push(...versions)
+    bookmark = specs.bookmark ?? undefined
+  } while (bookmark && bookmark.length > 0)
+
+  return { versions: allVersions }
 }

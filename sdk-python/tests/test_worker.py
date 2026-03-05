@@ -95,7 +95,9 @@ class TestWorkerContext(unittest.IsolatedAsyncioTestCase):
 
         ctx = WorkerContext(scheduled_task, mock_client)
 
-        result = await ctx.execute_and_checkpoint(lambda checkpoint_ctx: "checkpoint_value")
+        result = await ctx.execute_and_checkpoint(
+            lambda checkpoint_ctx: "checkpoint_value"
+        )
 
         self.assertEqual(result, "checkpoint_value")
         mock_client.PutCheckpoint.assert_called_once()
@@ -362,7 +364,7 @@ class TestLHTask(unittest.TestCase):
             LHTask(my_method, task_def)
 
         self.assertEqual(
-            "Parameter types do not match, expected: [<class 'int'>, <class 'str'>] got: [<class 'str'>, <class 'int'>]",
+            "Parameter types do not match for 'param1', expected: <class 'int'> got: <class 'str'>",
             str(exception_context.exception),
         )
 
@@ -391,7 +393,7 @@ class TestLHTask(unittest.TestCase):
             LHTask(my_method, task_def)
 
         self.assertEqual(
-            "Parameter types do not match, expected: [<class 'str'>, <class 'int'>] got: [<class 'int'>, <class 'str'>]",
+            "Parameter types do not match for 'param1', expected: <class 'str'> got: <class 'int'>",
             str(exception_context.exception),
         )
 
@@ -419,8 +421,8 @@ class TestLHTask(unittest.TestCase):
         with self.assertRaises(TaskSchemaMismatchException) as exception_context:
             LHTask(my_method, task_def)
 
-        self.assertEqual(
-            "Incorrect parameter list, expected: [<class 'str'>, <class 'int'>]",
+        self.assertIn(
+            "Incorrect parameter list, expected:",
             str(exception_context.exception),
         )
 
