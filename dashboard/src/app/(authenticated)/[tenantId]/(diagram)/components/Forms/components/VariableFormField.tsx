@@ -1,9 +1,9 @@
-import { VariableTypeToFieldComponent } from '@/app/utils'
 import { ThreadVarDef, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import FormField from './FormField'
 import FormLabel from './FormLabel'
 import { StructDefGroup } from './StructDefGroup'
+import { VariableTypeToFieldComponent } from './VariableTypeToFieldComponent'
 
 interface VariableFormFieldProps {
   variable: ThreadVarDef
