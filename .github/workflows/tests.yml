@@ -101,7 +101,7 @@ jobs:
       - name: Tests
         run: ./gradlew canary:spotlessCheck canary:test canary:build
 
-  tests-server-unit:
+  tests-server:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
     runs-on: ubuntu-latest
     steps:
@@ -117,24 +117,8 @@ jobs:
       - name: Validate Indentations
         run: ./gradlew server:spotlessCheck
 
-      - name: Unit Tests
-        run: ./gradlew server:test
-
-  tests-server-e2e:
-    if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: "corretto"
-          java-version: 25
-
-      - name: E2E Tests
-        run: ./gradlew server:e2e
+      - name: Tests
+        run: ./gradlew server:test server:e2e
 
   tests-test-utils:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
