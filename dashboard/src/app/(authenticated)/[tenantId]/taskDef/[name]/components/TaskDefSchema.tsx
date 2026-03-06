@@ -1,4 +1,5 @@
 import { TypeDisplay } from '@/app/(authenticated)/[tenantId]/components/TypeDisplay'
+import { IdentifierBadge } from '@/components/ui/badge'
 import { TaskDef } from 'littlehorse-client/proto'
 import { FC } from 'react'
 
@@ -30,7 +31,7 @@ export const TaskDefSchema: FC<Props> = ({ spec }) => {
           <div className="space-y-1">
             {spec.inputVars.map(varDef => (
               <div key={varDef.name} className="flex items-center gap-1">
-                <div className="rounded bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{varDef.name}</div>
+                <IdentifierBadge name={varDef.name} />
                 <TypeDisplay definedType={varDef.typeDef?.definedType} />
                 {varDef.defaultValue && <div>{Object.values(varDef.defaultValue)[0]}</div>}
               </div>

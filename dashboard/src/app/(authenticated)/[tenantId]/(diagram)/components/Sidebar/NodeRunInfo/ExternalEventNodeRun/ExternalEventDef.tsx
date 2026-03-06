@@ -1,4 +1,5 @@
 import { ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client/proto'
+import { IdentifierBadge, MaskedBadge } from '@/components/ui/badge'
 import { NodeVariable } from '../../Components/NodeVariable'
 import { TypeDisplay } from '@/app/(authenticated)/[tenantId]/components/TypeDisplay'
 import { Divider } from '../../Components/Divider'
@@ -16,13 +17,11 @@ export const ExternalEventDef = ({ event }: { event: ExternalEventDefProto }) =>
         <div className="ml-1">
           <div className=" mb-1 text-sm font-bold"> typeInformation</div>
           <div className=" flex items-center gap-1">
-            <span className="rounded	bg-gray-100 px-2  font-mono text-xs text-fuchsia-500">
-              {event.typeInformation.returnType?.definedType?.$case}
-            </span>
-            <TypeDisplay definedType={event.typeInformation.returnType?.definedType} />
-            {event.typeInformation.returnType?.masked && (
-              <span className="rounded bg-violet-300 p-1 text-xs">Masked</span>
+            {event.typeInformation.returnType?.definedType?.$case && (
+              <IdentifierBadge name={event.typeInformation.returnType.definedType.$case} />
             )}
+            <TypeDisplay definedType={event.typeInformation.returnType?.definedType} />
+            {event.typeInformation.returnType?.masked && <MaskedBadge />}
           </div>
         </div>
       )}
