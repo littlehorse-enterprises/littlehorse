@@ -316,17 +316,15 @@ export function toStructVariableValue(
       val !== undefined &&
       typeof val === 'object'
     ) {
-      const field = {
+      fields[key] = {
         value: toStructVariableValue(val as Record<string, unknown>, unwrappedField, structDefVersion),
-      } as StructField & { masked?: boolean }
-      field.masked = masked
-      fields[key] = field
+        masked,
+      }
     } else {
-      const field = {
+      fields[key] = {
         value: toVariableValue(val),
-      } as StructField & { masked?: boolean }
-      field.masked = masked
-      fields[key] = field
+        masked,
+      }
     }
   }
 

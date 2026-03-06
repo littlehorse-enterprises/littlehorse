@@ -1,5 +1,5 @@
 import { getStructDef } from '@/app/actions/getStructDef'
-import { getVariableCaseFromType, VariableTypeToFieldComponent } from '@/app/utils'
+import { getVariableCaseFromType } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 import { FieldGroup } from '@/components/ui/field'
 import { StructDefId, StructField, VariableType, VariableValue } from 'littlehorse-client/proto'
@@ -11,6 +11,7 @@ import { STRUCT_FORM_FIELD_PREFIX, useStructFormContext, VariableCase } from '..
 import { FormValues } from '../WfRunForm'
 import FormField from './FormField'
 import FormLabel from './FormLabel'
+import { VariableTypeToFieldComponent } from './VariableTypeToFieldComponent'
 
 const StructDefParentContext = createContext<{ parentDisabled: boolean; nestedStructPath: string[] }>({
   parentDisabled: false,

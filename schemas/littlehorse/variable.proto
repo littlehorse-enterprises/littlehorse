@@ -90,4 +90,8 @@ message InlineStruct {
 message StructField {
   // The `value` of the field is an untyped `VariableValue`.
   VariableValue value = 1;
+
+  // Whether or not this StructField value is masked.
+  // Set by the server based on the StructDef's field definition for this configuration.
+  bool masked = 2;
 }
