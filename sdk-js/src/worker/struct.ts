@@ -282,9 +282,13 @@ export function toStructVariableValue(
     if (fieldDef?._tag === 'struct' && val !== null && val !== undefined && typeof val === 'object') {
       fields[key] = {
         value: toStructVariableValue(val as Record<string, unknown>, fieldDef.schema),
+        masked: fieldDef.masked,
       }
     } else {
-      fields[key] = { value: toVariableValue(val) }
+      fields[key] = {
+        value: toVariableValue(val),
+        masked: fieldDef?.masked ?? false,
+      }
     }
   }
 

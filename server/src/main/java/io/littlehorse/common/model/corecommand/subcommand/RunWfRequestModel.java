@@ -79,7 +79,8 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         if (p.hasRevision()) revision = p.getRevision();
 
         for (Map.Entry<String, VariableValue> e : p.getVariablesMap().entrySet()) {
-            variables.put(e.getKey(), VariableValueModel.fromProto(e.getValue(), context));
+            VariableValueModel variableValue = VariableValueModel.fromProto(e.getValue(), context);
+            variables.put(e.getKey(), variableValue);
         }
 
         if (p.hasParentWfRunId()) {
