@@ -10,10 +10,15 @@ import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 
 class BuilderUtil {
 
     static VariableAssignment assignVariable(Object variable) {
+        return assignVariable(variable, LHTypeAdapterRegistry.empty());
+    }
+
+    static VariableAssignment assignVariable(Object variable, LHTypeAdapterRegistry typeAdapterRegistry) {
         if (variable == null) {
             return buildNullAssignment();
         }
@@ -25,16 +30,16 @@ class BuilderUtil {
             return buildFromNodeOutput((NodeOutputImpl) variable);
         }
         if (LHFormatStringImpl.class.equals(variable.getClass())) {
-            return buildFromFormatString((LHFormatStringImpl) variable);
+            return buildFromFormatString((LHFormatStringImpl) variable, typeAdapterRegistry);
         }
         if (variable instanceof CastExpressionImpl) {
-            return buildFromCastExpression((CastExpressionImpl) variable);
+            return buildFromCastExpression((CastExpressionImpl) variable, typeAdapterRegistry);
         }
         if (variable instanceof LHExpressionImpl) {
-            return buildFromLHExpression((LHExpressionImpl) variable);
+            return buildFromLHExpression((LHExpressionImpl) variable, typeAdapterRegistry);
         }
 
-        return buildFromLiteral(variable);
+        return buildFromLiteral(variable, typeAdapterRegistry);
     }
 
     private static VariableAssignment buildNullAssignment() {
@@ -69,16 +74,18 @@ class BuilderUtil {
         return builder.build();
     }
 
-    private static VariableAssignment buildFromFormatString(LHFormatStringImpl inputFormat) {
+    private static VariableAssignment buildFromFormatString(
+            LHFormatStringImpl inputFormat, LHTypeAdapterRegistry typeAdapterRegistry) {
         return VariableAssignment.newBuilder()
                 .setFormatString(VariableAssignment.FormatString.newBuilder()
-                        .setFormat(assignVariable(inputFormat.getFormat()))
+                        .setFormat(assignVariable(inputFormat.getFormat(), typeAdapterRegistry))
                         .addAllArgs(inputFormat.getArgs()))
                 .build();
     }
 
-    private static VariableAssignment buildFromCastExpression(CastExpressionImpl castingExpresion) {
-        VariableAssignment sourceAssignment = assignVariable(castingExpresion.getSource());
+    private static VariableAssignment buildFromCastExpression(
+            CastExpressionImpl castingExpresion, LHTypeAdapterRegistry typeAdapterRegistry) {
+        VariableAssignment sourceAssignment = assignVariable(castingExpresion.getSource(), typeAdapterRegistry);
         return sourceAssignment.toBuilder()
                 .setTargetType(TypeDefinition.newBuilder()
                         .setPrimitiveType(castingExpresion.getTargetType())
@@ -87,18 +94,19 @@ class BuilderUtil {
                 .build();
     }
 
-    private static VariableAssignment buildFromLHExpression(LHExpressionImpl expresion) {
+    private static VariableAssignment buildFromLHExpression(
+            LHExpressionImpl expresion, LHTypeAdapterRegistry typeAdapterRegistry) {
         return VariableAssignment.newBuilder()
                 .setExpression(Expression.newBuilder()
-                        .setLhs(assignVariable(expresion.getLhs()))
+                        .setLhs(assignVariable(expresion.getLhs(), typeAdapterRegistry))
                         .setOperation(expresion.getOperation())
-                        .setRhs(assignVariable(expresion.getRhs())))
+                        .setRhs(assignVariable(expresion.getRhs(), typeAdapterRegistry)))
                 .build();
     }
 
-    private static VariableAssignment buildFromLiteral(Object variable) {
+    private static VariableAssignment buildFromLiteral(Object variable, LHTypeAdapterRegistry typeAdapterRegistry) {
         try {
-            VariableValue defVal = LHLibUtil.objToVarVal(variable);
+            VariableValue defVal = LHLibUtil.objToVarVal(variable, typeAdapterRegistry);
             return VariableAssignment.newBuilder().setLiteralValue(defVal).build();
         } catch (LHSerdeException exn) {
             throw new IllegalArgumentException(
@@ -107,12 +115,16 @@ class BuilderUtil {
     }
 
     static ReturnType javaTypeToReturnType(Class<?> payloadClass) {
+        return javaTypeToReturnType(payloadClass, LHTypeAdapterRegistry.empty());
+    }
+
+    static ReturnType javaTypeToReturnType(Class<?> payloadClass, LHTypeAdapterRegistry typeAdapterRegistry) {
         if (payloadClass == null) {
             // We don't set the typeDef: the event has no payload
             return ReturnType.newBuilder().build();
         }
 
-        LHClassType lhClassType = LHClassType.fromJavaClass(payloadClass);
+        LHClassType lhClassType = LHClassType.fromJavaClass(payloadClass, typeAdapterRegistry);
 
         return ReturnType.newBuilder()
                 .setReturnType(lhClassType.getTypeDefinition())
