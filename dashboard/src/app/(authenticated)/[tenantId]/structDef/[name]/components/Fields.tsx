@@ -1,4 +1,5 @@
 import { getVariableValue } from '@/app/utils'
+import { Badge, IdentifierBadge, MaskedBadge, RequiredBadge } from '@/components/ui/badge'
 import { InlineStructDef } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { TypeDisplay } from '../../../components/TypeDisplay'
@@ -20,14 +21,12 @@ export const Fields: FC<Props> = ({ fields }) => {
 
         return (
           <div key={name} className="mb-1 flex items-center gap-1">
-            <span className="rounded bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{name}</span>
+            <IdentifierBadge name={name} />
             <TypeDisplay definedType={fieldType} />
-            {isRequired && <span className="rounded bg-orange-300 p-1 text-xs">Required</span>}
-            {fieldDef.fieldType.masked && <span className="rounded bg-red-100 p-1 text-xs">Masked</span>}
+            {isRequired && <RequiredBadge />}
+            {fieldDef.fieldType.masked && <MaskedBadge />}
             {fieldDef.defaultValue && (
-              <span className="rounded bg-green-100 p-1 text-xs">
-                Default: {getVariableValue(fieldDef.defaultValue)}
-              </span>
+              <Badge className="bg-green-100">Default: {getVariableValue(fieldDef.defaultValue)}</Badge>
             )}
           </div>
         )
