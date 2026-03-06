@@ -61,7 +61,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 public class LHLibUtil {
 
@@ -79,23 +78,6 @@ public class LHLibUtil {
 
     public static Map<Class<?>, LHTypeAdapter<?>> getDefaultTypeAdapters() {
         Map<Class<?>, LHTypeAdapter<?>> typeAdapters = new HashMap<>();
-
-        typeAdapters.put(Integer.class, new LHLongAdapter<Integer>() {
-            @Override
-            public Long toLong(Integer src) {
-                return src.longValue();
-            }
-
-            @Override
-            public Integer fromLong(Long src) {
-                return src.intValue();
-            }
-
-            @Override
-            public Class<Integer> getTypeClass() {
-                return Integer.class;
-            }
-        });
 
         typeAdapters.put(Instant.class, new LHTimestampAdapter<Instant>() {
             @Override
@@ -162,23 +144,6 @@ public class LHLibUtil {
             @Override
             public Class<java.sql.Timestamp> getTypeClass() {
                 return java.sql.Timestamp.class;
-            }
-        });
-
-        typeAdapters.put(UUID.class, new LHStringAdapter<UUID>() {
-            @Override
-            public String toString(UUID src) {
-                return src.toString();
-            }
-
-            @Override
-            public UUID fromString(String src) {
-                return UUID.fromString(src);
-            }
-
-            @Override
-            public Class<UUID> getTypeClass() {
-                return UUID.class;
             }
         });
 
