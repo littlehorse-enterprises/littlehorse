@@ -1,5 +1,6 @@
 import { VARIABLE_TYPES } from '@/app/constants'
 import { getVariableValue } from '@/app/utils'
+import { IdentifierBadge, TypeBadge } from '@/components/ui/badge'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { ThrowEventNodeRun as ThrowEventNodeRunProto, WorkflowEvent } from 'littlehorse-client/proto'
 import { FC } from 'react'
@@ -32,9 +33,9 @@ export const ThrowEventNodeRun: FC<{ node: ThrowEventNodeRunProto }> = ({ node }
         <>
           <div className=" mb-1 ml-1 text-sm font-bold">content:</div>
           <div className="ml-1 flex w-full items-center gap-1">
-            <p className="rounded bg-gray-100 px-1 py-1 font-mono text-xs text-fuchsia-500">{variable.value?.$case}</p>
+            {variable.value?.$case && <IdentifierBadge name={variable.value.$case} />}
 
-            {variableType && <span className="rounded bg-yellow-100 p-1 text-xs">{VARIABLE_TYPES[variableType]}</span>}
+            {variableType && <TypeBadge>{VARIABLE_TYPES[variableType]}</TypeBadge>}
             <p> = </p>
             <div className={'px-2  text-center text-xs'}>
               <p className="text-sx">{getVariableValue(variable)}</p>

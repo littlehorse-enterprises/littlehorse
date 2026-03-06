@@ -126,7 +126,10 @@ export const StructFormProvider: FC<StructFormProviderProps> = ({ children, cont
 
       const existingField = currentFields[segment]
       if (!existingField) {
-        currentFields[segment] = { value: createStructVariableValue(segmentDefId) }
+        currentFields[segment] = {
+          value: createStructVariableValue(segmentDefId),
+          masked: false,
+        }
       } else if (!existingField.value) {
         existingField.value = createStructVariableValue(segmentDefId)
       }
@@ -231,6 +234,7 @@ export const StructFormProvider: FC<StructFormProviderProps> = ({ children, cont
             value: value as any,
           },
         },
+        masked: false,
       }
     },
     [ensureStructAtPath]

@@ -5,6 +5,7 @@ import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
 import { FC, Fragment } from 'react'
 
 import { getVariableValue, utcToLocalDateTime } from '@/app/utils'
+import { IdentifierBadge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
@@ -43,7 +44,7 @@ export const TaskDefDetail: FC<AccordionNode<'task'>> = ({ nodeRun }) => {
             {data.inputVariables?.map(({ varName, value }) => {
               return (
                 <div key={varName} className="mb-1 flex items-center gap-1">
-                  <div className="rounded bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{varName}</div>
+                  {varName && <IdentifierBadge name={varName} />}
                   {value && <div className="">= {getVariableValue(value)}</div>}
                 </div>
               )

@@ -15,8 +15,8 @@ public class MyWorker {
 
     @LHTaskMethod("mail-ticket")
     public String mailTicket(Person person) {
-        log.debug("Notifying %s of parking ticket.".formatted(person.toString()));
-        return "Ticket sent to %s at %s".formatted(person, person.getHomeAddress());
+        log.debug("Sending mail to %s at address %s".formatted(person, person.getHomeAddress()));
+        return "Ticket sent to %s".formatted(person);
     }
 
     // Simulates a database lookup...

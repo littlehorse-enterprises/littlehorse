@@ -82,7 +82,14 @@ export interface InlineStruct_FieldsEntry {
 /** A StructField represents the value for a single field in a struct. */
 export interface StructField {
   /** The `value` of the field is an untyped `VariableValue`. */
-  value: VariableValue | undefined;
+  value:
+    | VariableValue
+    | undefined;
+  /**
+   * Whether or not this StructField value is masked.
+   * Set by the server based on the StructDef's field definition for this configuration.
+   */
+  masked: boolean;
 }
 
 function createBaseVariableValue(): VariableValue {
@@ -668,13 +675,16 @@ export const InlineStruct_FieldsEntry = {
 };
 
 function createBaseStructField(): StructField {
-  return { value: undefined };
+  return { value: undefined, masked: false };
 }
 
 export const StructField = {
   encode(message: StructField, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.value !== undefined) {
       VariableValue.encode(message.value, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.masked !== false) {
+      writer.uint32(16).bool(message.masked);
     }
     return writer;
   },
@@ -693,6 +703,13 @@ export const StructField = {
 
           message.value = VariableValue.decode(reader, reader.uint32());
           continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.masked = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -703,13 +720,19 @@ export const StructField = {
   },
 
   fromJSON(object: any): StructField {
-    return { value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined };
+    return {
+      value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
+      masked: isSet(object.masked) ? globalThis.Boolean(object.masked) : false,
+    };
   },
 
   toJSON(message: StructField): unknown {
     const obj: any = {};
     if (message.value !== undefined) {
       obj.value = VariableValue.toJSON(message.value);
+    }
+    if (message.masked !== false) {
+      obj.masked = message.masked;
     }
     return obj;
   },
@@ -722,6 +745,7 @@ export const StructField = {
     message.value = (object.value !== undefined && object.value !== null)
       ? VariableValue.fromPartial(object.value)
       : undefined;
+    message.masked = object.masked ?? false;
     return message;
   },
 };

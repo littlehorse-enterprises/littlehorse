@@ -15,6 +15,7 @@ interface FormFieldProps {
   variableType?: VariableType
   as: React.ElementType
   accessLevel?: WfRunVariableAccessLevel
+  masked?: boolean
   disabled?: boolean
 }
 
@@ -27,6 +28,7 @@ const FormField: FC<FormFieldProps> = ({
   type,
   accessLevel,
   variableType,
+  masked,
   disabled = false,
 }) => {
   const {
@@ -37,7 +39,13 @@ const FormField: FC<FormFieldProps> = ({
 
   return (
     <Field>
-      <FormLabel label={label} variableType={variableType} accessLevel={accessLevel} required={protoRequired} />
+      <FormLabel
+        label={label}
+        variableType={variableType}
+        accessLevel={accessLevel}
+        required={protoRequired}
+        masked={masked}
+      />
 
       <As
         id={id}
