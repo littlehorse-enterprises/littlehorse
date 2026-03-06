@@ -70,15 +70,6 @@ public abstract class Workflow {
         this.wfTypeAdaptersByClass = new LinkedHashMap<>();
     }
 
-    public <T> void registerTypeAdapter(LHTypeAdapter<T> adapter) {
-        if (wfTypeAdaptersByClass.containsKey(adapter.getTypeClass())) {
-            throw new IllegalArgumentException("A type adapter for "
-                    + adapter.getTypeClass().getName() + " is already registered to this workflow");
-        }
-
-        wfTypeAdaptersByClass.put(adapter.getTypeClass(), adapter);
-    }
-
     public List<LHTypeAdapter<?>> getTypeAdapters() {
         return new ArrayList<>(wfTypeAdaptersByClass.values());
     }
@@ -196,6 +187,8 @@ public abstract class Workflow {
 
     /**
      * Compiles this Workflow into a `WfSpec`.
+     * 
+     * <p> <b> If you have type adapters configured in your LHConfig that you want to apply to the Workflow, use {@link #compileWorkflow(LHConfig)} instead. </b>
      *
      * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
      */
@@ -203,6 +196,8 @@ public abstract class Workflow {
 
     /**
      * Compiles this Workflow into a `WfSpec`, applying configured type adapters from the provided config first.
+     * 
+     * <p> <b> Use this method overload if you have type adapters configured in your {@link LHConfig} that you want to apply to the Workflow before registration. </b>
      *
      * @param config source for dynamically configured type adapters
      * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
@@ -315,6 +310,8 @@ public abstract class Workflow {
     /**
      * Deploys the WfSpec object to the LH Server. Registering the WfSpec via
      * Workflow::registerWfSpec() is the same as client.putWfSpec(workflow.compileWorkflow()).
+     * 
+     * <p> <b> If you have type adapters configured in your {@link LHConfig} that you want to apply to the Workflow, use {@link #registerWfSpec(LHConfig)} instead. </b>
      *
      * @param client is an LHClient.
      */
@@ -323,7 +320,7 @@ public abstract class Workflow {
     /**
      * Deploys the WfSpec object to the LH Server using the provided config.
      *
-     * <p>This applies all type adapters configured in `config` to the workflow before registration.
+     * <p> <b> Use this method if you have type adapters configured in your {@link LHConfig} that you want to apply to the Workflow. </b>
      *
      * @param config contains server connection settings and optional configured type adapters.
      */
