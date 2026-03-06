@@ -1,3 +1,5 @@
+using LittleHorse.Sdk.Common.Proto;
+
 namespace LittleHorse.Sdk.Workflow.Spec;
 
 /// <summary>
@@ -60,4 +62,21 @@ public class NodeOutput
 
         return nodeOutput;
     }
+
+    /// <summary>
+    /// Returns a CastExpression representing this node output cast to the specified target type.
+    /// </summary>
+    /// <param name="targetType">The VariableType to cast this output to.</param>
+    /// <returns>A CastExpression wrapping this node output.</returns>
+    public CastExpression CastTo(VariableType targetType)
+    {
+        return new CastExpression(this, targetType);
+    }
+
+    public CastExpression CastToInt() => CastTo(VariableType.Int);
+    public CastExpression CastToDouble() => CastTo(VariableType.Double);
+    public CastExpression CastToStr() => CastTo(VariableType.Str);
+    public CastExpression CastToBool() => CastTo(VariableType.Bool);
+    public CastExpression CastToBytes() => CastTo(VariableType.Bytes);
+    public CastExpression CastToWfRunId() => CastTo(VariableType.WfRunId);
 }

@@ -790,6 +790,13 @@ public class WorkflowThread
     {
         var variableAssignment = new VariableAssignment();
 
+        if (value is CastExpression castExpr)
+        {
+            var inner = AssignVariableHelper(castExpr.Lhs);
+            inner.TargetType = new TypeDefinition { PrimitiveType = castExpr.TargetType };
+            return inner;
+        }
+
         if (value == null)
         {
             variableAssignment.LiteralValue = new VariableValue();
