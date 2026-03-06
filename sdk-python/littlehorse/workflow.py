@@ -147,6 +147,11 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
             variable_name=variable_name,
         )
 
+    if isinstance(value, CastExpression):
+        inner = to_variable_assignment(value.source)
+        inner.target_type.CopyFrom(TypeDefinition(primitive_type=value.target_type))
+        return inner
+
     if isinstance(value, LHExpression):
         expression: LHExpression = value
         return VariableAssignment(
@@ -202,6 +207,80 @@ class LHExpression:
 
     def operation(self) -> Any:
         return self._operation
+        
+    def cast_to(self, target_type: VariableType) -> "CastExpression":
+        return CastExpression(self, target_type)
+
+    def cast_to_int(self) -> "CastExpression":
+        return self.cast_to(VariableType.INT)
+
+    def cast_to_double(self) -> "CastExpression":
+        return self.cast_to(VariableType.DOUBLE)
+
+    def cast_to_str(self) -> "CastExpression":
+        return self.cast_to(VariableType.STR)
+
+    def cast_to_bool(self) -> "CastExpression":
+        return self.cast_to(VariableType.BOOL)
+
+    def cast_to_bytes(self) -> "CastExpression":
+        return self.cast_to(VariableType.BYTES)
+
+    def cast_to_wf_run_id(self) -> "CastExpression":
+        return self.cast_to(VariableType.WF_RUN_ID)        
+
+
+class CastExpression:
+    def __init__(self, source: Any, target_type: VariableType) -> None:
+        self.source = source
+        self.target_type = target_type
+
+    def add(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.ADD, other)
+
+    def subtract(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.SUBTRACT, other)
+
+    def multiply(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.MULTIPLY, other)
+
+    def divide(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.DIVIDE, other)
+
+    def extend(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.EXTEND, other)
+
+    def remove_if_present(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.REMOVE_IF_PRESENT, other)
+
+    def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
+        if index is None:
+            raise ValueError("Expected 'index' to be set, but it was None.")
+        return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
+
+    def remove_key(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.REMOVE_KEY, other)
+
+    def cast_to(self, target_type: VariableType) -> "CastExpression":
+        return CastExpression(self, target_type)
+
+    def cast_to_int(self) -> "CastExpression":
+        return self.cast_to(VariableType.INT)
+
+    def cast_to_double(self) -> "CastExpression":
+        return self.cast_to(VariableType.DOUBLE)
+
+    def cast_to_str(self) -> "CastExpression":
+        return self.cast_to(VariableType.STR)
+
+    def cast_to_bool(self) -> "CastExpression":
+        return self.cast_to(VariableType.BOOL)
+
+    def cast_to_bytes(self) -> "CastExpression":
+        return self.cast_to(VariableType.BYTES)
+
+    def cast_to_wf_run_id(self) -> "CastExpression":
+        return self.cast_to(VariableType.WF_RUN_ID)
 
 
 class WorkflowCondition:
@@ -557,9 +636,9 @@ class WfRunVariable:
             self.name,
             self.parent,
             variable_type=self.type,
-            default_value=self.default_value,
             struct_def_name=self._struct_def_name,
         )
+        out.default_value = self.default_value
         out.json_path = json_path
         return out
 
@@ -790,6 +869,27 @@ class WfRunVariable:
 
     def remove_key(self, key: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_KEY, key)
+
+    def cast_to(self, target_type: VariableType) -> "CastExpression":
+        return CastExpression(self, target_type)
+
+    def cast_to_int(self) -> "CastExpression":
+        return self.cast_to(VariableType.INT)
+
+    def cast_to_double(self) -> "CastExpression":
+        return self.cast_to(VariableType.DOUBLE)
+
+    def cast_to_str(self) -> "CastExpression":
+        return self.cast_to(VariableType.STR)
+
+    def cast_to_bool(self) -> "CastExpression":
+        return self.cast_to(VariableType.BOOL)
+
+    def cast_to_bytes(self) -> "CastExpression":
+        return self.cast_to(VariableType.BYTES)
+
+    def cast_to_wf_run_id(self) -> "CastExpression":
+        return self.cast_to(VariableType.WF_RUN_ID)
 
     def __str__(self) -> str:
         return to_json(self.compile())
