@@ -21,7 +21,7 @@ Run the task worker:
 go run ./examples/go/structdef/worker
 ```
 
-Leave that process running. This registered our `TaskDef`s and the `address`, `person`, and `car` StructDefs.
+Leave that process running. This registered our `TaskDef`s and the `address`, `person`, and `parking-ticket-report` StructDefs.
 
 Verify that the `StructDef`s were created in another terminal:
 

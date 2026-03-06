@@ -532,13 +532,14 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 break;
             }
 
-            if (this.threadRunsUseMeCarefully.size() > LHConstants.MAX_THREAD_RUNS_PER_WF_RUN) {
+            if (this.threadRunsUseMeCarefully.size()
+                    > this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()) {
                 putFailureOnThreadRun(
                         getThreadRun(0),
                         new FailureModel(
                                 String.format(
                                         "You exceeded the maximum number of ThreadRuns per WfRun: %s",
-                                        LHConstants.MAX_THREAD_RUNS_PER_WF_RUN),
+                                        this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()),
                                 LHErrorType.INTERNAL_ERROR.toString()),
                         time,
                         null);
@@ -558,7 +559,9 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     private boolean shouldForceArchiveCompletedThreadRuns() {
-        int threshold = (LHConstants.MAX_THREAD_RUNS_PER_WF_RUN * NEAR_MAX_THREAD_RUNS_THRESHOLD_PERCENT) / 100;
+        int threshold = (this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()
+                        * NEAR_MAX_THREAD_RUNS_THRESHOLD_PERCENT)
+                / 100;
         return this.threadRunsUseMeCarefully.size() >= threshold;
     }
 

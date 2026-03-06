@@ -16,6 +16,8 @@ import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -30,11 +32,27 @@ public class ScheduledTaskExecutor {
     private final int MAX_RETRY_ATTEMPTS = 5;
     private final LittleHorseGrpc.LittleHorseStub retriesStub;
     private final LittleHorseGrpc.LittleHorseBlockingStub blockingStub;
+    private final LHTypeAdapterRegistry typeAdapterRegistry;
 
     public ScheduledTaskExecutor(
             final LittleHorseGrpc.LittleHorseStub retriesStub, final LittleHorseBlockingStub blockingStub) {
+        this(retriesStub, blockingStub, LHTypeAdapterRegistry.empty());
+    }
+
+    public ScheduledTaskExecutor(
+            final LittleHorseGrpc.LittleHorseStub retriesStub,
+            final LittleHorseBlockingStub blockingStub,
+            final List<LHTypeAdapter<?>> typeAdapters) {
+        this(retriesStub, blockingStub, LHTypeAdapterRegistry.from(typeAdapters));
+    }
+
+    public ScheduledTaskExecutor(
+            final LittleHorseGrpc.LittleHorseStub retriesStub,
+            final LittleHorseBlockingStub blockingStub,
+            final LHTypeAdapterRegistry typeAdapterRegistry) {
         this.retriesStub = retriesStub;
         this.blockingStub = blockingStub;
+        this.typeAdapterRegistry = typeAdapterRegistry == null ? LHTypeAdapterRegistry.empty() : typeAdapterRegistry;
     }
 
     public void doTask(
@@ -66,12 +84,12 @@ public class ScheduledTaskExecutor {
                 .setTaskRunId(scheduledTask.getTaskRunId())
                 .setAttemptNumber(scheduledTask.getAttemptNumber());
 
-        WorkerContext wc = new WorkerContext(scheduledTask, scheduleTime, blockingStub);
+        WorkerContext wc = new WorkerContext(scheduledTask, scheduleTime, blockingStub, typeAdapterRegistry);
 
         try {
             Object rawResult = invoke(scheduledTask, wc, mappings, executable, taskMethod);
             log.debug("Task executed for: " + scheduledTask.getTaskDefId().getName());
-            VariableValue serialized = LHLibUtil.objToVarVal(rawResult);
+            VariableValue serialized = serializeResult(rawResult, taskMethod.getReturnType());
             taskResult.setOutput(serialized.toBuilder()).setStatus(TaskStatus.TASK_SUCCESS);
         } catch (InputVarSubstitutionException exn) {
             log.error("Failed calculating task input variables", exn);
@@ -116,6 +134,14 @@ public class ScheduledTaskExecutor {
             inputs.add(mapping.assign(scheduledTask, context));
         }
         return taskMethod.invoke(executable, inputs.toArray());
+    }
+
+    /**
+     * Bridges the reflection boundary: Method.getReturnType() is a raw Class<?>, so
+     * the cast to Class<T> is unchecked but safe—returnType always matches the actual object.
+     */
+    private VariableValue serializeResult(Object result, Class<?> returnType) {
+        return LHLibUtil.objToVarVal(result, returnType, typeAdapterRegistry);
     }
 
     private LHTaskError exnToTaskError(Throwable throwable, TaskStatus taskStatus) {

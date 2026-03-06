@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
 
@@ -259,7 +260,7 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getStructDefTypeDefinition() {
-        LHClassType structDefType = LHClassType.fromJavaClass(Author.class);
+        LHClassType structDefType = LHClassType.fromJavaClass(Author.class, LHTypeAdapterRegistry.empty());
 
         TypeDefinition actualTypeDefinition = structDefType.getTypeDefinition();
         TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()

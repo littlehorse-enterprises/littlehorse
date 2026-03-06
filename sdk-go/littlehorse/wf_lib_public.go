@@ -247,7 +247,7 @@ func (n *UserTaskNodeOutput) Get(field string) *UserTaskNodeOutput {
 }
 
 type WorkflowCondition struct {
-	spec *lhproto.EdgeCondition
+	spec *lhproto.LegacyEdgeCondition
 }
 
 type SpawnedThread struct {
@@ -510,6 +510,14 @@ func (t *WorkflowThread) DeclareDouble(name string) *WfRunVariable {
 
 func (t *WorkflowThread) DeclareBytes(name string) *WfRunVariable {
 	return t.addVariable(name, lhproto.VariableType_BYTES)
+}
+
+func (t *WorkflowThread) DeclareTimestamp(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_TIMESTAMP)
+}
+
+func (t *WorkflowThread) DeclareWfRunId(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_WF_RUN_ID)
 }
 
 func (t *WorkflowThread) DeclareJsonArr(name string) *WfRunVariable {

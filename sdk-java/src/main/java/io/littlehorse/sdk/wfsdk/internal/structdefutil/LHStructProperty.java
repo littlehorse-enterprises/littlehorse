@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.LHStructField;
 import io.littlehorse.sdk.worker.LHStructIgnore;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -43,6 +44,10 @@ public class LHStructProperty {
     }
 
     public VariableValue getValueFrom(Object o) throws LHSerdeException {
+        return getValueFrom(o, LHTypeAdapterRegistry.empty());
+    }
+
+    public VariableValue getValueFrom(Object o, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
         if (pd.getReadMethod() == null) {
             throw new IllegalStateException(
                     "No read method for property " + this.fieldName + " found on object of type: " + o.getClass());
@@ -51,7 +56,7 @@ public class LHStructProperty {
         try {
             Object val = pd.getReadMethod().invoke(o);
             if (val == null) return null;
-            return LHLibUtil.objToVarVal(val);
+            return LHLibUtil.objToVarVal(val, pd.getPropertyType(), typeAdapterRegistry);
         } catch (LHSerdeException | IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
                     e, "Failed getting value of property " + this.fieldName + "from object of type: " + o.getClass());
@@ -59,13 +64,18 @@ public class LHStructProperty {
     }
 
     public void setValueTo(Object o, VariableValue v) throws LHSerdeException {
+        setValueTo(o, v, LHTypeAdapterRegistry.empty());
+    }
+
+    public void setValueTo(Object o, VariableValue v, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
         if (pd.getWriteMethod() == null) {
             throw new IllegalStateException(String.format(
                     "No write method for property [%s] found on object of type [%s]", this.fieldName, o.getClass()));
         }
 
         try {
-            pd.getWriteMethod().invoke(o, LHLibUtil.varValToObj(v, pd.getPropertyType()));
+            pd.getWriteMethod().invoke(o, LHLibUtil.varValToObj(v, pd.getPropertyType(), typeAdapterRegistry));
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
                     e,
@@ -79,7 +89,11 @@ public class LHStructProperty {
      * @return a StructFieldDef representing this property
      */
     public StructFieldDef toStructFieldDef() {
-        LHClassType propertyClass = this.getPropertyType();
+        return toStructFieldDef(LHTypeAdapterRegistry.empty());
+    }
+
+    public StructFieldDef toStructFieldDef(LHTypeAdapterRegistry typeAdapterRegistry) {
+        LHClassType propertyClass = this.getPropertyType(typeAdapterRegistry);
         TypeDefinition typeDef = propertyClass.getTypeDefinition().toBuilder()
                 .setMasked(this.isMasked())
                 .build();
@@ -95,10 +109,14 @@ public class LHStructProperty {
     }
 
     public Optional<VariableValue> getDefaultValue() {
+        return getDefaultValue(LHTypeAdapterRegistry.empty());
+    }
+
+    public Optional<VariableValue> getDefaultValue(LHTypeAdapterRegistry typeAdapterRegistry) {
         try {
             Object defaultInstance = parentStructDef.createInstance();
 
-            return Optional.ofNullable(getValueFrom(defaultInstance));
+            return Optional.ofNullable(getValueFrom(defaultInstance, typeAdapterRegistry));
         } catch (Exception e) {
             log.warn(String.format(
                     "Unable to retrieve default value for Struct Property %s. Blank constructor may not be visible.",
@@ -113,7 +131,11 @@ public class LHStructProperty {
      * @return An optional LHClassType, which will be empty if the property contains the LHStructIgnore annotation on its getter or setters
      */
     public LHClassType getPropertyType() {
-        return LHClassType.fromJavaClass(pd.getPropertyType());
+        return getPropertyType(LHTypeAdapterRegistry.empty());
+    }
+
+    public LHClassType getPropertyType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry);
     }
 
     /// The following methods are used to find annotations on the property, whether they are on the getter, setter, or
