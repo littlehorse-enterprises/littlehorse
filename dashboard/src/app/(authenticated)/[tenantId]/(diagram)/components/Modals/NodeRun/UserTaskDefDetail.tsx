@@ -1,4 +1,5 @@
 import { getVariable, getVariableValue, hasEventCase, utcToLocalDateTime } from '@/app/utils'
+import { Badge } from '@/components/ui/badge'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useQuery } from '@tanstack/react-query'
 import { UserTaskRun as LHUserTaskRun, UserTaskRunStatus } from 'littlehorse-client/proto'
@@ -81,9 +82,7 @@ export const UserTaskDefDetail: FC<AccordionNode<'userTask'>> = ({ nodeRun, user
         {userTaskNode?.onCancellationExceptionName !== undefined && (
           <div className="ml-3">
             <span className="font-bold">Exception upon cancellation: </span>
-            <span className="rounded bg-red-300 p-1 text-xs">
-              {getVariable(userTaskNode?.onCancellationExceptionName)}
-            </span>
+            <Badge className="bg-red-300">{getVariable(userTaskNode?.onCancellationExceptionName)}</Badge>
           </div>
         )}
       </div>

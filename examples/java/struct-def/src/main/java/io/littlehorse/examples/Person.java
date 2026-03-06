@@ -1,6 +1,7 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.LHStructField;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,8 @@ import lombok.Setter;
 public class Person {
     private String firstName;
     private String lastName;
+
+    @LHStructField(masked = true)
     private Address homeAddress;
 
     public Person() {}
