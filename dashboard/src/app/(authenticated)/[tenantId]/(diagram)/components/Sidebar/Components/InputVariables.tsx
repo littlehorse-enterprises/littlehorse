@@ -1,5 +1,6 @@
 import { VarNameAndVal } from 'littlehorse-client/proto'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { IdentifierBadge, MaskedBadge } from '@/components/ui/badge'
 import { getVariableValue } from '@/app/utils'
 import { tryFormatAsJson } from '@/app/utils/tryFormatAsJson'
 import { useModal } from '../../../hooks/useModal'
@@ -24,16 +25,8 @@ const InputVariableRow = ({ variable }: { variable: VarNameAndVal }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <span className="rounded bg-gray-100 px-2 py-1 font-mono text-sm font-medium text-purple-600">
-        {variable.varName}
-      </span>
-      <span
-        className={`rounded px-2 py-0.5 text-xs font-medium ${
-          variable.masked ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'
-        }`}
-      >
-        {variable.masked ? 'Masked' : 'Unmasked'}
-      </span>
+      {variable.varName && <IdentifierBadge name={variable.varName} />}
+      {variable.masked && <MaskedBadge />}
       <span className="flex min-w-0 flex-1 items-center gap-1 text-sm text-gray-600">
         <span className="font-medium text-gray-400">=</span>
         <span className="truncate">{rawValue}</span>

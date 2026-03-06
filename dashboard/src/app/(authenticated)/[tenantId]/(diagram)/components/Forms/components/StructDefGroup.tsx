@@ -29,6 +29,7 @@ interface StructPrimitiveFieldProps {
   structDefId: StructDefId
   protoRequired: boolean
   formRequired: boolean
+  masked: boolean
   disabled: boolean
   defaultValue?: VariableValue
 }
@@ -44,6 +45,7 @@ const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
   structDefId,
   protoRequired,
   formRequired,
+  masked,
   disabled,
   defaultValue,
 }) => {
@@ -106,6 +108,7 @@ const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
       protoRequired={protoRequired}
       formRequired={formRequired}
       variableType={variableType}
+      masked={masked}
       disabled={disabled}
     />
   )
@@ -115,10 +118,17 @@ type StructDefGroupProps = {
   structDefId: StructDefId
   name: string
   required: boolean
+  masked?: boolean
   defaultValue?: VariableValue
 }
 
-export const StructDefGroup: FC<StructDefGroupProps> = ({ structDefId, name: structName, required, defaultValue }) => {
+export const StructDefGroup: FC<StructDefGroupProps> = ({
+  structDefId,
+  name: structName,
+  required,
+  masked,
+  defaultValue,
+}) => {
   const tenantId = useParams().tenantId as string
   const { unregister } = useFormContext<FormValues>()
   const { parentDisabled, nestedStructPath } = useContext(StructDefParentContext)
@@ -170,7 +180,7 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({ structDefId, name: str
     <FieldGroup className="rounded-md border">
       <div className="w-full border-b bg-gray-100">
         <div className="flex items-center justify-between p-2">
-          <FormLabel label={structName} structDefId={structDefId} required={required} />
+          <FormLabel label={structName} structDefId={structDefId} required={required} masked={masked} />
           {!required && (
             <Button
               variant="outline"
@@ -211,6 +221,7 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({ structDefId, name: str
                   type={type}
                   protoRequired={!hasDefaultValue}
                   formRequired={!isDisabled}
+                  masked={Boolean(fieldType?.masked)}
                   variableType={variableType}
                   variableCase={variableCase as VariableCase}
                   structPath={currentStructPath}
@@ -232,6 +243,7 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({ structDefId, name: str
                     structDefId={definedType.value}
                     name={name}
                     required={!hasDefaultValue}
+                    masked={fieldType?.masked}
                     defaultValue={effectiveDefaultValue}
                   />
                 </StructDefParentContext.Provider>
