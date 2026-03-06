@@ -261,7 +261,8 @@ public class WorkflowThreadImplTest {
         WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
             thread.throwEvent("event-one", UUID.randomUUID()).registeredAs(UUID.class);
         });
-        LHConfig config = new LHConfig(Map.of(LHConfig.TYPE_ADAPTERS_KEY, UUIDConfigAdapter.class.getName()));
+        LHConfig config = new LHConfig(Map.of());
+        config.registerTypeAdapter(new UUIDConfigAdapter());
 
         wf.compileWorkflow(config);
 
@@ -275,7 +276,8 @@ public class WorkflowThreadImplTest {
         WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
             thread.waitForEvent("event-one").registeredAs(UUID.class);
         });
-        LHConfig config = new LHConfig(Map.of(LHConfig.TYPE_ADAPTERS_KEY, UUIDConfigAdapter.class.getName()));
+        LHConfig config = new LHConfig(Map.of());
+        config.registerTypeAdapter(new UUIDConfigAdapter());
 
         wf.compileWorkflow(config);
 
