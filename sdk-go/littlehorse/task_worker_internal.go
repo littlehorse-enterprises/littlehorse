@@ -196,18 +196,27 @@ func (controller *serverConnectionManager) notifyCallSuccess(response *lhproto.R
 }
 
 func (m *serverConnectionManager) validateTaskDef() error {
-	_, err := (*m.tw.grpcStub).GetTaskDef(context.Background(), m.tw.taskDefId)
-	if err != nil {
-		if status.Code(err) == codes.NotFound {
+	deadline := time.Now().Add(2 * time.Second)
+
+	for {
+		_, err := (*m.tw.grpcStub).GetTaskDef(context.Background(), m.tw.taskDefId)
+		if err == nil {
+			return nil
+		}
+
+		if status.Code(err) != codes.NotFound {
+			return err
+		}
+
+		if time.Now().After(deadline) {
 			return fmt.Errorf(
 				"TaskDef '%s' was not found on the server. Register it before starting this worker",
 				m.tw.taskDefId.Name,
 			)
 		}
-		return err
-	}
 
-	return nil
+		time.Sleep(10 * time.Millisecond)
+	}
 }
 
 func (m *serverConnectionManager) start() error {
