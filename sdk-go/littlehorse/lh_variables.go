@@ -460,7 +460,18 @@ func VarValToType(varVal *lhproto.VariableValue, targetType reflect.Type) (inter
 		}
 		return strVal, nil
 	case *lhproto.VariableValue_UtcTimestamp:
-		return varVal.GetUtcTimestamp().AsTime(), nil
+		res := varVal.GetUtcTimestamp().AsTime()
+		if isPtr {
+			return &res, nil
+		}
+		return res, nil
+
+	case *lhproto.VariableValue_WfRunId:
+		workflowRunId := varVal.GetWfRunId()
+		if isPtr {
+			return &workflowRunId, nil
+		}
+		return workflowRunId, nil
 	}
 
 	return nil, fmt.Errorf("unknown VariableValue type")
