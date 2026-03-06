@@ -152,7 +152,7 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
         return VariableAssignment(
             expression=VariableAssignment.Expression(
                 lhs=to_variable_assignment(expression.lhs()),
-                operation=expression.operation(),
+                mutation_type=expression.operation(),
                 rhs=to_variable_assignment(expression.rhs()),
             )
         )
