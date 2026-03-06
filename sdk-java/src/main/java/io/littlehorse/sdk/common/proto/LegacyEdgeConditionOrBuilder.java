@@ -6,8 +6,8 @@
 package io.littlehorse.sdk.common.proto;
 
 @com.google.protobuf.Generated
-public interface EdgeConditionOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.EdgeCondition)
+public interface LegacyEdgeConditionOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.LegacyEdgeCondition)
     com.google.protobuf.MessageOrBuilder {
 
   /**

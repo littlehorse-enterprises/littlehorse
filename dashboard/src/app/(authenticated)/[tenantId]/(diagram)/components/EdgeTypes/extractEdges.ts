@@ -38,9 +38,9 @@ export const extractEdges = (spec: ThreadSpec): Edge[] => {
   })
 }
 
-const extractEdgeLabel = ({ condition }: EdgeProto) => {
-  if (!condition) return
+const extractEdgeLabel = ({ edgeCondition }: EdgeProto) => {
+  if (edgeCondition?.$case !== 'legacyCondition') return
 
-  const { left, right, comparator } = condition
+  const { left, right, comparator } = edgeCondition.value
   return `${getVariable(left!)} ${getComparatorSymbol(comparator)} ${getVariable(right!)}`
 }
