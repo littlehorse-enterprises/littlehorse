@@ -3,6 +3,7 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.StructDef;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
@@ -12,7 +13,10 @@ import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
+import io.littlehorse.sdk.worker.adapter.LHStringAdapter;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.util.List;
+import java.util.UUID;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +45,16 @@ public class LHTaskSignatureTest {
 
         @LHTaskMethod(value = "description-task", description = "description-test")
         public void descriptionTask() {}
+
+        @LHTaskMethod("adapter-task")
+        public UUID adapterTask(UUID in) {
+            return in;
+        }
+
+        @LHTaskMethod("adapter-struct-task")
+        public UuidHolder adapterStructTask(UuidHolder in) {
+            return in;
+        }
     }
 
     @LHStructDef("car")
@@ -66,6 +80,12 @@ public class LHTaskSignatureTest {
         String address;
         int size;
         Person owner;
+    }
+
+    @LHStructDef("uuid-holder")
+    @Getter
+    class UuidHolder {
+        UUID id;
     }
 
     @Test
@@ -180,5 +200,73 @@ public class LHTaskSignatureTest {
                 new LHStructDefType(Person.class), new LHStructDefType(Garage.class), new LHStructDefType(Car.class));
 
         assertThat(actualClassList).isEqualTo(expectedClassList);
+    }
+
+    @Test
+    void shouldUseTypeAdapterForParameterAndReturnType() {
+        LHStringAdapter<UUID> uuidAdapter = new LHStringAdapter<UUID>() {
+            @Override
+            public String toString(UUID src) {
+                return src.toString();
+            }
+
+            @Override
+            public UUID fromString(String src) {
+                return UUID.fromString(src);
+            }
+
+            @Override
+            public Class<UUID> getTypeClass() {
+                return UUID.class;
+            }
+        };
+
+        LHTaskSignature taskSignature = new LHTaskSignature(
+                "adapter-task", new MyWorker(), "adapter-task", LHTypeAdapterRegistry.from(List.of(uuidAdapter)));
+
+        TypeDefinition inputTypeDef = taskSignature.getVariableDefs().get(0).getTypeDef();
+        TypeDefinition returnTypeDef = taskSignature.getReturnType().getReturnType();
+
+        assertThat(inputTypeDef.getPrimitiveType()).isEqualTo(VariableType.STR);
+        assertThat(returnTypeDef.getPrimitiveType()).isEqualTo(VariableType.STR);
+    }
+
+    @Test
+    void shouldUseTypeAdapterForStructDefFieldTypes() {
+        LHStringAdapter<UUID> uuidAdapter = new LHStringAdapter<UUID>() {
+            @Override
+            public String toString(UUID src) {
+                return src.toString();
+            }
+
+            @Override
+            public UUID fromString(String src) {
+                return UUID.fromString(src);
+            }
+
+            @Override
+            public Class<UUID> getTypeClass() {
+                return UUID.class;
+            }
+        };
+
+        LHTaskSignature taskSignature = new LHTaskSignature(
+                "adapter-struct-task",
+                new MyWorker(),
+                "adapter-struct-task",
+                LHTypeAdapterRegistry.from(List.of(uuidAdapter)));
+
+        StructDef structDef = taskSignature.getStructDefDependencies().stream()
+                .map(LHStructDefType::toStructDef)
+                .filter(sd -> sd.getId().getName().equals("uuid-holder"))
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(structDef
+                        .getStructDef()
+                        .getFieldsOrThrow("id")
+                        .getFieldType()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.STR);
     }
 }

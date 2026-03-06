@@ -8,7 +8,7 @@ This example shows you how to define a `StructDef` and use it in a workflow.
 
 In this example, you will find three Python classes each representing their own StructDef: `Address`, `Person`, and `ParkingTicketReport`.
 
-Each class is decorated with `@lh_struct_def` and uses standard Python type annotations for its fields. Field names are automatically converted from `snake_case` to `camelCase`. You can use `Annotated` with `LHStructField(masked=True)` to mark sensitive fields.
+Each class is decorated with `@lh_struct_def` and uses standard Python type annotations for its fields. Field names are automatically converted from `snake_case` to `camelCase`. In this example, `Person.home_address` is marked with `LHStructField(masked=True)`.
 
 ### Task Functions
 
