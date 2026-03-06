@@ -308,6 +308,7 @@ export function toStructVariableValue(
   for (const [key, val] of Object.entries(value)) {
     const fieldSchema = (shape as Record<string, ZodTypeAny>)[key]
     const unwrappedField = fieldSchema ? unwrapZod(fieldSchema) : undefined
+    const masked = fieldSchema ? isMasked(fieldSchema) : false
     if (
       unwrappedField &&
       getStructName(unwrappedField) &&
@@ -315,11 +316,17 @@ export function toStructVariableValue(
       val !== undefined &&
       typeof val === 'object'
     ) {
-      fields[key] = {
+      const field = {
         value: toStructVariableValue(val as Record<string, unknown>, unwrappedField, structDefVersion),
-      }
+      } as StructField & { masked?: boolean }
+      field.masked = masked
+      fields[key] = field
     } else {
-      fields[key] = { value: toVariableValue(val) }
+      const field = {
+        value: toVariableValue(val),
+      } as StructField & { masked?: boolean }
+      field.masked = masked
+      fields[key] = field
     }
   }
 
