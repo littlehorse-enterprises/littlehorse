@@ -1,16 +1,9 @@
 import { VARIABLE_TYPES } from '@/app/constants'
 import { getVariableCaseFromType } from '@/app/utils'
+import { TypeBadge } from '@/components/ui/badge'
 import { TypeDefinition } from 'littlehorse-client/proto'
-import { FC, ReactNode } from 'react'
+import { FC } from 'react'
 import LinkWithTenant from './LinkWithTenant'
-
-type TypeBadgeProps = {
-  children: ReactNode
-}
-
-const TypeBadge: FC<TypeBadgeProps> = ({ children }) => (
-  <span className="rounded bg-yellow-100 p-1 text-xs">{children}</span>
-)
 
 type Props = {
   definedType?: TypeDefinition['definedType']

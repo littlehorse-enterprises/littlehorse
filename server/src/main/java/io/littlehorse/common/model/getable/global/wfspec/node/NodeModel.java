@@ -243,7 +243,7 @@ public class NodeModel extends LHSerializable<Node> {
         for (EdgeModel e : outgoingEdges) {
             try {
                 e.validate(this, ctx.metadataManager(), threadSpec);
-            } catch (InvalidEdgeException exn) {
+            } catch (InvalidEdgeException | InvalidExpressionException exn) {
                 throw new InvalidNodeException(exn.getMessage(), this);
             }
         }

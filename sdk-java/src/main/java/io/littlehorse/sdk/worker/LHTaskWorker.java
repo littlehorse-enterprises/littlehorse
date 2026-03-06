@@ -13,7 +13,6 @@ import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
@@ -25,7 +24,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -38,18 +36,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class LHTaskWorker implements Closeable {
-
-    public static HashMap<Class<?>, VariableType> javaTypeToLHType = new HashMap<>() {
-        {
-            put(Integer.class, VariableType.INT);
-            put(Long.class, VariableType.INT);
-            put(Boolean.class, VariableType.BOOL);
-            put(Double.class, VariableType.DOUBLE);
-            put(byte[].class, VariableType.BYTES);
-            put(String.class, VariableType.STR);
-        }
-    };
-
     private Object executable;
     private LHConfig config;
     private TaskDef taskDef;
@@ -77,7 +63,8 @@ public class LHTaskWorker implements Closeable {
         this.taskDefName = taskDefName;
         this.lhTaskMethodAnnotationValue = taskDefName;
         this.grpcClient = config.getBlockingStub();
-        this.tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
+        this.tdb = new TaskDefBuilder(
+                executable, this.taskDefName, this.lhTaskMethodAnnotationValue, config.getTypeAdapterRegistry());
     }
 
     /**
@@ -104,7 +91,8 @@ public class LHTaskWorker implements Closeable {
         this.lhTaskMethodAnnotationValue = taskDefNameTemplate;
         this.grpcClient = config.getBlockingStub();
 
-        this.tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
+        this.tdb = new TaskDefBuilder(
+                executable, this.taskDefName, this.lhTaskMethodAnnotationValue, config.getTypeAdapterRegistry());
     }
 
     public LHTaskWorker(
@@ -115,7 +103,6 @@ public class LHTaskWorker implements Closeable {
             LHServerConnectionManager manager) {
         this(executable, taskDefName, config, valuesForPlaceHolders);
         this.manager = manager;
-        this.tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
     }
 
     /**
@@ -192,7 +179,7 @@ public class LHTaskWorker implements Closeable {
      *                          their existing StructDef schemas based on this compatibility type.
      */
     public void validateStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
-        LHStructDefType lhStructDefType = new LHStructDefType(structClass);
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass, config.getTypeAdapterRegistry());
 
         validateStructDef(lhStructDefType, compatibilityType);
     }
@@ -238,7 +225,7 @@ public class LHTaskWorker implements Closeable {
      *                          according to this compatibility type.
      */
     public void registerStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
-        LHStructDefType lhStructDefType = new LHStructDefType(structClass);
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass, config.getTypeAdapterRegistry());
 
         registerStructDef(lhStructDefType, compatibilityType);
     }
@@ -288,8 +275,11 @@ public class LHTaskWorker implements Closeable {
             }
         }
 
-        LHTaskSignature signature =
-                new LHTaskSignature(taskDef.getId().getName(), executable, this.lhTaskMethodAnnotationValue);
+        LHTaskSignature signature = new LHTaskSignature(
+                taskDef.getId().getName(),
+                executable,
+                this.lhTaskMethodAnnotationValue,
+                config.getTypeAdapterRegistry());
         taskMethod = signature.getTaskMethod();
 
         int numTaskMethodParams = taskMethod.getParameterCount();
@@ -319,12 +309,14 @@ public class LHTaskWorker implements Closeable {
 
             // This line throws a TaskSchemaMismatchError if the param can't
             // be provided properly.
-            VariableMapping mapping = new VariableMapping(taskDef, i, paramClass, javaParamName);
+            VariableMapping mapping =
+                    new VariableMapping(taskDef, i, paramClass, javaParamName, config.getTypeAdapterRegistry());
             mappings.add(mapping);
         }
 
         if (signature.getHasWorkerContextAtEnd()) {
-            mappings.add(new VariableMapping(taskDef, numTaskMethodParams - 1, WorkerContext.class, null));
+            mappings.add(new VariableMapping(
+                    taskDef, numTaskMethodParams - 1, WorkerContext.class, null, config.getTypeAdapterRegistry()));
         }
     }
 

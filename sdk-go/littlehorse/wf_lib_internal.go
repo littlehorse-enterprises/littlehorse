@@ -639,9 +639,11 @@ func (t *WorkflowThread) assignVariable(
 			Path: nil,
 			Source: &lhproto.VariableAssignment_Expression_{
 				Expression: &lhproto.VariableAssignment_Expression{
-					Lhs:       lhs,
-					Operation: v.operation,
-					Rhs:       rhs,
+					Lhs: lhs,
+					Operation: &lhproto.VariableAssignment_Expression_MutationType{
+						MutationType: v.operation,
+					},
+					Rhs: rhs,
 				},
 			},
 		}
@@ -662,9 +664,11 @@ func (t *WorkflowThread) assignVariable(
 			Path: nil,
 			Source: &lhproto.VariableAssignment_Expression_{
 				Expression: &lhproto.VariableAssignment_Expression{
-					Lhs:       lhs,
-					Operation: v.operation,
-					Rhs:       rhs,
+					Lhs: lhs,
+					Operation: &lhproto.VariableAssignment_Expression_MutationType{
+						MutationType: v.operation,
+					},
+					Rhs: rhs,
 				},
 			},
 		}
@@ -701,7 +705,9 @@ func (t *WorkflowThread) createBlankNode(name, nType string) (string, *lhproto.N
 	}
 
 	if t.lastNodeCondition != nil {
-		edge.Condition = t.lastNodeCondition.spec
+		edge.EdgeCondition = &lhproto.Edge_LegacyCondition{
+			LegacyCondition: t.lastNodeCondition.spec,
+		}
 		t.lastNodeCondition = nil
 	}
 	lastNode.OutgoingEdges = append(lastNode.OutgoingEdges, &edge)
@@ -1052,7 +1058,7 @@ func (t *WorkflowThread) condition(
 	lhs interface{}, op lhproto.Comparator, rhs interface{},
 ) *WorkflowCondition {
 	t.checkIfIsActive()
-	cond := &lhproto.EdgeCondition{
+	cond := &lhproto.LegacyEdgeCondition{
 		Comparator: op,
 	}
 
@@ -1194,7 +1200,9 @@ func (t *WorkflowThread) buildNewEdge(sinkNodeName string, cond *WorkflowConditi
 		return &lhproto.Edge{
 			SinkNodeName:      sinkNodeName,
 			VariableMutations: variableMutations,
-			Condition:         cond.spec,
+			EdgeCondition: &lhproto.Edge_LegacyCondition{
+				LegacyCondition: cond.spec,
+			},
 		}
 	}
 
@@ -1234,7 +1242,9 @@ func (t *WorkflowThread) doIfElse(
 	// no node was created within the if block, thus the edge of the starting NOP should be created
 	// with the appropriate conditional
 	if lastNodeFromIfBlockName == treeRootNodeName {
-		ifBlockEdge.Condition = lastConditionFromIfBlock.spec
+		ifBlockEdge.EdgeCondition = &lhproto.Edge_LegacyCondition{
+			LegacyCondition: lastConditionFromIfBlock.spec,
+		}
 	}
 
 	t.spec.Nodes[*lastNodeFromIfBlockName].OutgoingEdges = append(
@@ -1283,7 +1293,9 @@ func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) 
 		topOfTreeNode.OutgoingEdges,
 		&lhproto.Edge{
 			SinkNodeName: *bottomOfTreeNodeName,
-			Condition:    cond.getReverse(),
+			EdgeCondition: &lhproto.Edge_LegacyCondition{
+				LegacyCondition: cond.spec,
+			},
 		},
 	)
 
@@ -1292,13 +1304,15 @@ func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) 
 		bottomOfTreeNode.OutgoingEdges,
 		&lhproto.Edge{
 			SinkNodeName: *topOfTreeNodeName,
-			Condition:    cond.spec,
+			EdgeCondition: &lhproto.Edge_LegacyCondition{
+				LegacyCondition: cond.spec,
+			},
 		},
 	)
 }
 
-func (c *WorkflowCondition) getReverse() *lhproto.EdgeCondition {
-	out := &lhproto.EdgeCondition{}
+func (c *WorkflowCondition) getReverse() *lhproto.LegacyEdgeCondition {
+	out := &lhproto.LegacyEdgeCondition{}
 	out.Left = c.spec.Left
 	out.Right = c.spec.Right
 	switch c.spec.Comparator {
@@ -1633,7 +1647,9 @@ func (t *WorkflowThread) waitForCondition(condition *WorkflowCondition) *WaitFor
 	nodeName, node := t.createBlankNode("wait-for-condition", "WAIT_FOR_CONDITION")
 	node.Node = &lhproto.Node_WaitForCondition{
 		WaitForCondition: &lhproto.WaitForConditionNode{
-			Condition: condition.spec,
+			NodeCondition: &lhproto.WaitForConditionNode_LegacyCondition{
+				LegacyCondition: condition.spec,
+			},
 		},
 	}
 

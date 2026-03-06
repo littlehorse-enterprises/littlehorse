@@ -186,7 +186,8 @@ class WfRunVariableImpl implements WfRunVariable {
 
     private void setDefaultValue(Object defaultVal) {
         try {
-            this.defaultValue = LHLibUtil.objToVarVal(defaultVal);
+            this.defaultValue =
+                    LHLibUtil.objToVarVal(defaultVal, parent.getParent().getTypeAdapterRegistry());
         } catch (LHSerdeException e) {
             throw new IllegalArgumentException("Was unable to convert provided default value to LH Variable Type", e);
         }
@@ -209,52 +210,52 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
-    public WorkflowConditionImpl isEqualTo(Serializable rhs) {
+    public LHExpression isEqualTo(Serializable rhs) {
         return parent.condition(this, Comparator.EQUALS, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isNotEqualTo(Serializable rhs) {
+    public LHExpression isNotEqualTo(Serializable rhs) {
         return parent.condition(this, Comparator.NOT_EQUALS, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isGreaterThan(Serializable rhs) {
+    public LHExpression isGreaterThan(Serializable rhs) {
         return parent.condition(this, Comparator.GREATER_THAN, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isGreaterThanEq(Serializable rhs) {
+    public LHExpression isGreaterThanEq(Serializable rhs) {
         return parent.condition(this, Comparator.GREATER_THAN_EQ, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isLessThanEq(Serializable rhs) {
+    public LHExpression isLessThanEq(Serializable rhs) {
         return parent.condition(this, Comparator.LESS_THAN_EQ, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isLessThan(Serializable rhs) {
+    public LHExpression isLessThan(Serializable rhs) {
         return parent.condition(this, Comparator.LESS_THAN, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl doesContain(Serializable rhs) {
+    public LHExpression doesContain(Serializable rhs) {
         return parent.condition(rhs, Comparator.IN, this);
     }
 
     @Override
-    public WorkflowConditionImpl doesNotContain(Serializable rhs) {
+    public LHExpression doesNotContain(Serializable rhs) {
         return parent.condition(rhs, Comparator.NOT_IN, this);
     }
 
     @Override
-    public WorkflowConditionImpl isIn(Serializable rhs) {
+    public LHExpression isIn(Serializable rhs) {
         return parent.condition(this, Comparator.IN, rhs);
     }
 
     @Override
-    public WorkflowConditionImpl isNotIn(Serializable rhs) {
+    public LHExpression isNotIn(Serializable rhs) {
         return parent.condition(this, Comparator.NOT_IN, rhs);
     }
 
@@ -269,51 +270,6 @@ class WfRunVariableImpl implements WfRunVariable {
         }
 
         activeThread.mutate(this, VariableMutationType.ASSIGN, rhs);
-    }
-
-    @Override
-    public LHExpression add(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.ADD, other);
-    }
-
-    @Override
-    public LHExpression subtract(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.SUBTRACT, other);
-    }
-
-    @Override
-    public LHExpression multiply(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.MULTIPLY, other);
-    }
-
-    @Override
-    public LHExpression divide(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.DIVIDE, other);
-    }
-
-    @Override
-    public LHExpression extend(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.EXTEND, other);
-    }
-
-    @Override
-    public LHExpression removeIfPresent(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.REMOVE_IF_PRESENT, other);
-    }
-
-    @Override
-    public LHExpression removeIndex(int index) {
-        return new LHExpressionImpl(this, VariableMutationType.REMOVE_INDEX, index);
-    }
-
-    @Override
-    public LHExpression removeIndex(LHExpression index) {
-        return new LHExpressionImpl(this, VariableMutationType.REMOVE_INDEX, index);
-    }
-
-    @Override
-    public LHExpression removeKey(Serializable key) {
-        return new LHExpressionImpl(this, VariableMutationType.REMOVE_KEY, key);
     }
 
     public ThreadVarDef getSpec() {

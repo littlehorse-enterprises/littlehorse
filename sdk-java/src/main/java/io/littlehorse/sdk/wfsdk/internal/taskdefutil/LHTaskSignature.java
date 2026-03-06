@@ -1,14 +1,18 @@
 package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -32,11 +36,30 @@ public class LHTaskSignature {
     String lhTaskMethodAnnotationValue;
     Object executable;
     ReturnType outputSchema;
+    private final LHTypeAdapterRegistry typeAdapterRegistry;
 
     @Getter
     private String taskDefDescription;
 
     public LHTaskSignature(String taskDefName, Object executable, String lhTaskMethodAnnotationValue)
+            throws TaskSchemaMismatchError {
+        this(taskDefName, executable, lhTaskMethodAnnotationValue, LHTypeAdapterRegistry.empty());
+    }
+
+    public LHTaskSignature(
+            String taskDefName,
+            Object executable,
+            String lhTaskMethodAnnotationValue,
+            List<LHTypeAdapter<?>> typeAdapters)
+            throws TaskSchemaMismatchError {
+        this(taskDefName, executable, lhTaskMethodAnnotationValue, LHTypeAdapterRegistry.from(typeAdapters));
+    }
+
+    public LHTaskSignature(
+            String taskDefName,
+            Object executable,
+            String lhTaskMethodAnnotationValue,
+            LHTypeAdapterRegistry typeAdapterRegistry)
             throws TaskSchemaMismatchError {
         variableDefs = new ArrayList<>();
         hasWorkerContextAtEnd = false;
@@ -44,6 +67,7 @@ public class LHTaskSignature {
         this.executable = executable;
         this.lhTaskMethodAnnotationValue = lhTaskMethodAnnotationValue;
         this.structDefClasses = new LinkedHashSet<>();
+        this.typeAdapterRegistry = typeAdapterRegistry == null ? LHTypeAdapterRegistry.empty() : typeAdapterRegistry;
 
         for (Method method : executable.getClass().getMethods()) {
             if (method.isAnnotationPresent(LHTaskMethod.class)) {
@@ -92,14 +116,14 @@ public class LHTaskSignature {
 
     private VariableDef buildVariableDef(Parameter param) {
         VariableDef.Builder varDef = VariableDef.newBuilder();
-        LHClassType lhClassType = LHClassType.fromJavaClass(param.getType());
+        LHClassType lhClassType = LHClassType.fromJavaClass(param.getType(), typeAdapterRegistry);
 
         if (lhClassType instanceof LHStructDefType) {
             LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
             structDefClasses.addAll(lhStructDefType.getDependencyClasses());
         }
 
-        TypeDefinition.Builder typeDef = lhClassType.getTypeDefinition().toBuilder();
+        TypeDefinition.Builder typeDef = getAdaptedTypeDefinition(param.getType(), lhClassType);
 
         // If param has `LHType` annotation...
         if (param.isAnnotationPresent(LHType.class)) {
@@ -120,14 +144,14 @@ public class LHTaskSignature {
             // Empty `type` field signifies that it's void.
             return ReturnType.newBuilder().build();
         } else {
-            LHClassType lhClassType = LHClassType.fromJavaClass(classReturnType);
+            LHClassType lhClassType = LHClassType.fromJavaClass(classReturnType, typeAdapterRegistry);
 
             if (lhClassType instanceof LHStructDefType) {
                 LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
                 structDefClasses.addAll(lhStructDefType.getDependencyClasses());
             }
 
-            TypeDefinition.Builder typeDef = lhClassType.getTypeDefinition().toBuilder();
+            TypeDefinition.Builder typeDef = getAdaptedTypeDefinition(classReturnType, lhClassType);
 
             if (taskMethod.isAnnotationPresent(LHType.class)) {
                 LHType type = taskMethod.getAnnotation(LHType.class);
@@ -146,6 +170,18 @@ public class LHTaskSignature {
                             + "Using the parameter position as its name, which makes the resulting TaskDef harder to understand.");
         }
         return param.getName();
+    }
+
+    private TypeDefinition.Builder getAdaptedTypeDefinition(Class<?> javaClass, LHClassType lhClassType) {
+        VariableType adapterType = LHLibUtil.getTypeAdapterForClass(javaClass, typeAdapterRegistry)
+                .map(LHTypeAdapter::getVariableType)
+                .orElse(VariableType.UNRECOGNIZED);
+
+        if (adapterType != VariableType.UNRECOGNIZED) {
+            return TypeDefinition.newBuilder().setPrimitiveType(adapterType);
+        }
+
+        return lhClassType.getTypeDefinition().toBuilder();
     }
 
     public boolean getHasWorkerContextAtEnd() {
@@ -175,7 +211,6 @@ public class LHTaskSignature {
     @Override
     public boolean equals(Object other) {
         if (!(other instanceof LHTaskSignature)) return false;
-        LHTaskSignature o = (LHTaskSignature) other;
 
         // TODO: Improve TaskSignature equals!
 

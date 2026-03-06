@@ -4,6 +4,7 @@ export {
   LHTaskException,
   WorkerContext,
   lhStruct,
+  lhMasked,
   getStructName,
   isLHStruct,
   zodToTypeDef,
@@ -13,8 +14,4 @@ export {
   getStructDependencies,
   toStructVariableValue,
 } from './worker'
-export type {
-  LHTaskWorker,
-  TaskFunction,
-  LHTaskWorkerOptions,
-} from './worker'
+export type { LHTaskWorker, TaskFunction, LHTaskWorkerOptions } from './worker'

@@ -39,6 +39,7 @@ include(
         'spawn-thread-foreach',
         'struct-def',
         'timestamp',
+        'type-adapter',
         'user-tasks',
         'variables',
         'wait-for-condition',

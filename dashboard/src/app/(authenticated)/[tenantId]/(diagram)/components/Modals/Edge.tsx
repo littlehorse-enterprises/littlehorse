@@ -1,3 +1,4 @@
+import { IdentifierBadge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Edge as EdgeProto } from 'littlehorse-client/proto'
 import { FC } from 'react'
@@ -23,7 +24,7 @@ export const Edge: FC<Modal<EdgeProto>> = ({ data }) => {
           >
             <div className="flex flex-col gap-2">
               <small className="text-[0.75em] text-slate-400">Variable</small>
-              <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{`${mutation.lhsName}${mutation.lhsJsonPath ? `.${mutation.lhsJsonPath}` : ''}`}</span>
+              <IdentifierBadge name={`${mutation.lhsName}${mutation.lhsJsonPath ? `.${mutation.lhsJsonPath}` : ''}`} />
             </div>
             <div className="flex flex-col gap-2">
               <small className="text-[0.75em] text-slate-400">Operation</small>
