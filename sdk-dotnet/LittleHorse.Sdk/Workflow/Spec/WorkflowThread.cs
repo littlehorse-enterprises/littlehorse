@@ -29,7 +29,7 @@ public class WorkflowThread
     
     private readonly ThreadSpec _spec;
     private readonly List<WfRunVariable> _wfRunVariables;
-    private EdgeCondition? _lastNodeCondition;
+    private LegacyEdgeCondition? _lastNodeCondition;
     private readonly Queue<VariableMutation> _variableMutations;
     private ThreadRetentionPolicy? _retentionPolicy;
     private bool _isStartNopActive;
@@ -187,7 +187,7 @@ public class WorkflowThread
     
         if (_lastNodeCondition != null) 
         {
-            edge.Condition = _lastNodeCondition;
+            edge.LegacyCondition = _lastNodeCondition;
             _lastNodeCondition = null;
         }
     
@@ -679,7 +679,7 @@ public class WorkflowThread
             return new Edge
             {
                 SinkNodeName = sinkNodeName,
-                Condition = compiledCondition,
+                LegacyCondition = compiledCondition,
                 VariableMutations = { variableMutations }
             };
         }
@@ -719,14 +719,14 @@ public class WorkflowThread
         treeRoot.OutgoingEdges.Add(new Edge
         {
             SinkNodeName = treeLastNodeName,
-            Condition = condition.GetOpposite()
+            LegacyCondition = condition.GetOpposite()
         });
 
         var treeLast = FindNode(treeLastNodeName);
         treeLast.OutgoingEdges.Add(new Edge
         {
             SinkNodeName = treeRootNodeName,
-            Condition = condition.Compile()
+            LegacyCondition = condition.Compile()
         });
     }
 
@@ -830,7 +830,7 @@ public class WorkflowThread
             variableAssignment.Expression = new VariableAssignment.Types.Expression
             {
                 Lhs = AssignVariableHelper(expr.Lhs),
-                Operation = expr.Operation,
+                MutationType = expr.Operation,
                 Rhs = AssignVariableHelper(expr.Rhs),
             };
         }
@@ -1366,7 +1366,7 @@ public class WorkflowThread
         CheckIfWorkflowThreadIsActive();
         WaitForConditionNode waitNode = new WaitForConditionNode
         {
-            Condition = condition.Compile()
+            LegacyCondition = condition.Compile()
         };
 
         string nodeName = AddNode("wait-for-condition", Node.NodeOneofCase.WaitForCondition, waitNode);

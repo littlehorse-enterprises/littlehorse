@@ -19,9 +19,9 @@ public class WorkflowCondition
         _rightHandSide = rightHandSide;
     }
 
-    internal EdgeCondition GetOpposite()
+    internal LegacyEdgeCondition GetOpposite()
     {
-        var output = new EdgeCondition
+        var output = new LegacyEdgeCondition
         {
             Left = _leftHandSide,
             Right = _rightHandSide
@@ -59,9 +59,9 @@ public class WorkflowCondition
         return output;
     }
 
-    internal EdgeCondition Compile()
+    internal LegacyEdgeCondition Compile()
     {
-        return new EdgeCondition
+        return new LegacyEdgeCondition
         {
             Left = _leftHandSide,
             Comparator = _comparator,

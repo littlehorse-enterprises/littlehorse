@@ -7,8 +7,8 @@ import { NodeProps } from '.'
 import { Fade } from './Fade'
 import { SelectedNode } from './SelectedNode'
 const Node: FC<NodeProps<'waitForCondition', WaitForConditionNode>> = ({ data }) => {
-  const { fade, condition, nodeRunsList } = data
-  if (!condition) return null
+  const { fade, nodeCondition, nodeRunsList } = data
+  if (!nodeCondition) return null
   const nodeRun = nodeRunsList?.[0]
   return (
     <>
