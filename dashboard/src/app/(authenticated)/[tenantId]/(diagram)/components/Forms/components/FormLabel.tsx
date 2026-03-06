@@ -1,10 +1,9 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { getVariableCaseFromType, VARIABLE_CASE_LABELS } from '@/app/utils'
+import { AccessLevelBadge, MaskedBadge, OptionalBadge, RequiredBadge, TypeBadge } from '@/components/ui/badge'
 import { FieldLabel } from '@/components/ui/field'
-import { cn } from '@/components/utils'
 import { StructDefId, VariableType, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
-import { accessLevels } from '../../../wfSpec/[...props]/components/Variables'
 
 interface FormLabelProps {
   label: string
@@ -19,22 +18,18 @@ const FormLabel: FC<FormLabelProps> = ({ label, variableType, structDefId, acces
     <FieldLabel className="flex gap-2">
       <p className="font-semibold">{label}</p>
       <div className="space-x-2">
-        {variableType && (
-          <span className={'rounded bg-blue-300 p-1 text-xs'}>
-            {VARIABLE_CASE_LABELS[getVariableCaseFromType(variableType)]}
-          </span>
-        )}
+        {variableType && <TypeBadge>{VARIABLE_CASE_LABELS[getVariableCaseFromType(variableType)]}</TypeBadge>}
         {structDefId && (
-          <LinkWithTenant
-            className={'rounded bg-blue-300 p-1 text-xs underline'}
-            href={`/structDef/${structDefId.name}/${structDefId.version}`}
-          >{`Struct<${structDefId.name},${structDefId.version}>`}</LinkWithTenant>
+          <TypeBadge>
+            <LinkWithTenant
+              className="underline"
+              href={`/structDef/${structDefId.name}/${structDefId.version}`}
+            >{`Struct<${structDefId.name},${structDefId.version}>`}</LinkWithTenant>
+          </TypeBadge>
         )}
-        {accessLevel && <span className={'rounded bg-green-300 p-1 text-xs'}>{accessLevels[accessLevel]}</span>}
-        {masked && <span className={'rounded bg-violet-300 p-1 text-xs'}>Masked</span>}
-        <span className={cn('rounded p-1 text-xs', { 'bg-red-300': required, 'bg-gray-300': !required })}>
-          {required ? 'Required' : 'Optional'}
-        </span>
+        {accessLevel && <AccessLevelBadge accessLevel={accessLevel} />}
+        {masked && <MaskedBadge />}
+        {required ? <RequiredBadge /> : <OptionalBadge />}
       </div>
     </FieldLabel>
   )

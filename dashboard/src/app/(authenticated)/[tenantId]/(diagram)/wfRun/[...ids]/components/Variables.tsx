@@ -1,6 +1,7 @@
 import { ThreadType } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
 import { getVariableValue, wfRunIdToPath } from '@/app/utils'
-import { ThreadVarDef, Variable, WfRunId, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
+import { AccessLevelBadge, IdentifierBadge, MaskedBadge, RequiredBadge, SearchableBadge } from '@/components/ui/badge'
+import { ThreadVarDef, Variable, WfRunId } from 'littlehorse-client/proto'
 import { FC, useMemo } from 'react'
 import { OverflowText } from '../../../../components/OverflowText'
 import { TypeDisplay } from '../../../../components/TypeDisplay'
@@ -10,13 +11,6 @@ type VariablesProps = {
   variables: Variable[]
   thread: ThreadType
   wfRunId?: WfRunId
-}
-
-const accessLevels: { [key in WfRunVariableAccessLevel]: string } = {
-  PUBLIC_VAR: 'Public',
-  INHERITED_VAR: 'Inherited',
-  PRIVATE_VAR: 'Private',
-  UNRECOGNIZED: '',
 }
 
 export const Variables: FC<VariablesProps> = ({ variableDefs, variables, thread, wfRunId }) => {
@@ -38,12 +32,12 @@ export const Variables: FC<VariablesProps> = ({ variableDefs, variables, thread,
       <h2 className="text-md mb-2 font-bold">Variables ({threadLabel})</h2>
       {variableDefs.map(variable => (
         <div key={variable.varDef?.name} className="mb-1 flex items-center gap-1">
-          <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{variable.varDef?.name}</span>
+          {variable.varDef?.name && <IdentifierBadge name={variable.varDef.name} />}
           <TypeDisplay definedType={variable.varDef?.typeDef?.definedType} />
-          {variable.required && <span className="rounded bg-orange-300 p-1 text-xs">Required</span>}
-          {variable.searchable && <span className="rounded bg-blue-300 p-1 text-xs">Searchable</span>}
-          {variable.varDef?.typeDef?.masked && <span className="rounded bg-violet-300 p-1 text-xs">Masked</span>}
-          <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[variable.accessLevel]}</span>
+          {variable.required && <RequiredBadge />}
+          {variable.searchable && <SearchableBadge />}
+          {variable.varDef?.typeDef?.masked && <MaskedBadge />}
+          <AccessLevelBadge accessLevel={variable.accessLevel} />
           <span>=</span>
           <span className="truncate">
             <OverflowText className="max-w-96" text={getVariableValueForVariableDef(variable, threadVariables)} />
