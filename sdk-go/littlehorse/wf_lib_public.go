@@ -247,7 +247,7 @@ func (n *UserTaskNodeOutput) Get(field string) *UserTaskNodeOutput {
 }
 
 type WorkflowCondition struct {
-	spec *lhproto.EdgeCondition
+	spec *lhproto.LegacyEdgeCondition
 }
 
 type SpawnedThread struct {
