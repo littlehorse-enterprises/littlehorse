@@ -28,7 +28,7 @@ public class SpawnedThreadsIteratorTest
         {
         }
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
-        var wfRunVariable = new WfRunVariable("Person", 
+        var wfRunVariable = WfRunVariable.CreatePrimitiveVar("Person",
             VariableType.JsonArr, workflowThread);
        
         var spawnedThreadsIterator = new SpawnedThreadsIterator(wfRunVariable);
@@ -58,12 +58,31 @@ public class SpawnedThreadsIteratorTest
         }
 
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
-        var wfRunVariable = new WfRunVariable("Person",
+        var wfRunVariable = WfRunVariable.CreatePrimitiveVar("Person",
             VariableType.Str, workflowThread);
 
         var exception = Assert.Throws<ArgumentException>(
             () => new SpawnedThreadsIterator(wfRunVariable));
             
+        Assert.Equal("Only support for json arrays.", exception.Message);
+    }
+
+    [Fact]
+    public void SpawnedThreadsIterator_WithStructVariable_ShouldThrowAnException()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+        }
+
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        var wfRunVariable = WfRunVariable.CreateStructDefVar("Person", "test-struct", workflowThread);
+
+        var exception = Assert.Throws<ArgumentException>(
+            () => new SpawnedThreadsIterator(wfRunVariable));
+
         Assert.Equal("Only support for json arrays.", exception.Message);
     }
 }

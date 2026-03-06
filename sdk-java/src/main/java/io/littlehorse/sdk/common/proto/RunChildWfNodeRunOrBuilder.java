@@ -13,27 +13,30 @@ public interface RunChildWfNodeRunOrBuilder extends
   /**
    * <pre>
    * The id of the created `WfRun`.
+   * If the node failed to create the child WfRun, this field will be empty.
    * </pre>
    *
-   * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+   * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
    * @return Whether the childWfRunId field is set.
    */
   boolean hasChildWfRunId();
   /**
    * <pre>
    * The id of the created `WfRun`.
+   * If the node failed to create the child WfRun, this field will be empty.
    * </pre>
    *
-   * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+   * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
    * @return The childWfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getChildWfRunId();
   /**
    * <pre>
    * The id of the created `WfRun`.
+   * If the node failed to create the child WfRun, this field will be empty.
    * </pre>
    *
-   * <code>.littlehorse.WfRunId child_wf_run_id = 1;</code>
+   * <code>optional .littlehorse.WfRunId child_wf_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getChildWfRunIdOrBuilder();
 
@@ -90,4 +93,40 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    */
   io.littlehorse.sdk.common.proto.VariableValue getInputsOrThrow(
       java.lang.String key);
+
+  /**
+   * <pre>
+   * The resolved WfSpecId of the child workflow that was started. This field is populated
+   * only after the child WfRun has been successfully created and started. If the node failed
+   * to create the child WfRun, this field will be empty. The ID can be used to track which
+   * version of the WfSpec was actually executed.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return Whether the wfSpecId field is set.
+   */
+  boolean hasWfSpecId();
+  /**
+   * <pre>
+   * The resolved WfSpecId of the child workflow that was started. This field is populated
+   * only after the child WfRun has been successfully created and started. If the node failed
+   * to create the child WfRun, this field will be empty. The ID can be used to track which
+   * version of the WfSpec was actually executed.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+   * @return The wfSpecId.
+   */
+  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
+  /**
+   * <pre>
+   * The resolved WfSpecId of the child workflow that was started. This field is populated
+   * only after the child WfRun has been successfully created and started. If the node failed
+   * to create the child WfRun, this field will be empty. The ID can be used to track which
+   * version of the WfSpec was actually executed.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfSpecId wf_spec_id = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 }

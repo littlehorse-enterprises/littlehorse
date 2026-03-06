@@ -176,3 +176,11 @@ class ScheduledWfRunId(_message.Message):
     ID_FIELD_NUMBER: _ClassVar[int]
     id: str
     def __init__(self, id: _Optional[str] = ...) -> None: ...
+
+class InactiveThreadRunId(_message.Message):
+    __slots__ = ("wf_run_id", "thread_run_number")
+    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
+    wf_run_id: WfRunId
+    thread_run_number: int
+    def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., thread_run_number: _Optional[int] = ...) -> None: ...

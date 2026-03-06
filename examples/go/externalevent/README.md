@@ -7,7 +7,7 @@ This is a simple example of a workflow that waits for an `ExternalEvent`.
 We have two `TaskDef`'s and thus two Task Functions. Note that `worker/main.go` kicks off two threads, one for each Task Worker.
 
 ```
-go run ./examples/externalevent/worker
+go run ./examples/go/externalevent/worker
 ```
 
 ## Register the `WfSpec`
@@ -15,7 +15,7 @@ go run ./examples/externalevent/worker
 In another terminal, run:
 
 ```
-go run ./examples/externalevent/deploy
+go run ./examples/go/externalevent/deploy
 ```
 
 ## Run a `WfRun`

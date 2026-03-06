@@ -32,7 +32,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private RunChildWfNode() {
-    wfSpecName_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -60,51 +59,156 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.RunChildWfNode.class, io.littlehorse.sdk.common.proto.RunChildWfNode.Builder.class);
   }
 
-  public static final int WF_SPEC_NAME_FIELD_NUMBER = 1;
+  private int wfSpecCase_ = 0;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object wfSpecName_ = "";
+  private java.lang.Object wfSpec_;
+  public enum WfSpecCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    WF_SPEC_NAME(1),
+    WF_SPEC_VAR(4),
+    WFSPEC_NOT_SET(0);
+    private final int value;
+    private WfSpecCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static WfSpecCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static WfSpecCase forNumber(int value) {
+      switch (value) {
+        case 1: return WF_SPEC_NAME;
+        case 4: return WF_SPEC_VAR;
+        case 0: return WFSPEC_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public WfSpecCase
+  getWfSpecCase() {
+    return WfSpecCase.forNumber(
+        wfSpecCase_);
+  }
+
+  public static final int WF_SPEC_NAME_FIELD_NUMBER = 1;
   /**
    * <pre>
-   * The name of the WfSpec to spawn.
+   * Static reference to a WfSpec by its exact name that will be executed as a child workflow.
+   * </pre>
+   *
+   * <code>string wf_spec_name = 1;</code>
+   * @return Whether the wfSpecName field is set.
+   */
+  public boolean hasWfSpecName() {
+    return wfSpecCase_ == 1;
+  }
+  /**
+   * <pre>
+   * Static reference to a WfSpec by its exact name that will be executed as a child workflow.
    * </pre>
    *
    * <code>string wf_spec_name = 1;</code>
    * @return The wfSpecName.
    */
-  @java.lang.Override
   public java.lang.String getWfSpecName() {
-    java.lang.Object ref = wfSpecName_;
+    java.lang.Object ref = "";
+    if (wfSpecCase_ == 1) {
+      ref = wfSpec_;
+    }
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      wfSpecName_ = s;
+      if (wfSpecCase_ == 1) {
+        wfSpec_ = s;
+      }
       return s;
     }
   }
   /**
    * <pre>
-   * The name of the WfSpec to spawn.
+   * Static reference to a WfSpec by its exact name that will be executed as a child workflow.
    * </pre>
    *
    * <code>string wf_spec_name = 1;</code>
    * @return The bytes for wfSpecName.
    */
-  @java.lang.Override
   public com.google.protobuf.ByteString
       getWfSpecNameBytes() {
-    java.lang.Object ref = wfSpecName_;
+    java.lang.Object ref = "";
+    if (wfSpecCase_ == 1) {
+      ref = wfSpec_;
+    }
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      wfSpecName_ = b;
+      if (wfSpecCase_ == 1) {
+        wfSpec_ = b;
+      }
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
+  }
+
+  public static final int WF_SPEC_VAR_FIELD_NUMBER = 4;
+  /**
+   * <pre>
+   * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+   * that resolves to a STR containing the WfSpec name to execute
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+   * @return Whether the wfSpecVar field is set.
+   */
+  @java.lang.Override
+  public boolean hasWfSpecVar() {
+    return wfSpecCase_ == 4;
+  }
+  /**
+   * <pre>
+   * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+   * that resolves to a STR containing the WfSpec name to execute
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+   * @return The wfSpecVar.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignment getWfSpecVar() {
+    if (wfSpecCase_ == 4) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) wfSpec_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+   * that resolves to a STR containing the WfSpec name to execute
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getWfSpecVarOrBuilder() {
+    if (wfSpecCase_ == 4) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) wfSpec_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
 
   public static final int MAJOR_VERSION_FIELD_NUMBER = 2;
@@ -231,8 +335,8 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(wfSpecName_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 1, wfSpecName_);
+    if (wfSpecCase_ == 1) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, wfSpec_);
     }
     if (majorVersion_ != 0) {
       output.writeInt32(2, majorVersion_);
@@ -243,6 +347,9 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
         internalGetInputs(),
         InputsDefaultEntryHolder.defaultEntry,
         3);
+    if (wfSpecCase_ == 4) {
+      output.writeMessage(4, (io.littlehorse.sdk.common.proto.VariableAssignment) wfSpec_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -252,8 +359,8 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(wfSpecName_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, wfSpecName_);
+    if (wfSpecCase_ == 1) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, wfSpec_);
     }
     if (majorVersion_ != 0) {
       size += com.google.protobuf.CodedOutputStream
@@ -268,6 +375,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
           .build();
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, inputs__);
+    }
+    if (wfSpecCase_ == 4) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.VariableAssignment) wfSpec_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -284,12 +395,23 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     }
     io.littlehorse.sdk.common.proto.RunChildWfNode other = (io.littlehorse.sdk.common.proto.RunChildWfNode) obj;
 
-    if (!getWfSpecName()
-        .equals(other.getWfSpecName())) return false;
     if (getMajorVersion()
         != other.getMajorVersion()) return false;
     if (!internalGetInputs().equals(
         other.internalGetInputs())) return false;
+    if (!getWfSpecCase().equals(other.getWfSpecCase())) return false;
+    switch (wfSpecCase_) {
+      case 1:
+        if (!getWfSpecName()
+            .equals(other.getWfSpecName())) return false;
+        break;
+      case 4:
+        if (!getWfSpecVar()
+            .equals(other.getWfSpecVar())) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -301,13 +423,23 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getWfSpecName().hashCode();
     hash = (37 * hash) + MAJOR_VERSION_FIELD_NUMBER;
     hash = (53 * hash) + getMajorVersion();
     if (!internalGetInputs().getMap().isEmpty()) {
       hash = (37 * hash) + INPUTS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetInputs().hashCode();
+    }
+    switch (wfSpecCase_) {
+      case 1:
+        hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getWfSpecName().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + WF_SPEC_VAR_FIELD_NUMBER;
+        hash = (53 * hash) + getWfSpecVar().hashCode();
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -466,9 +598,13 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      wfSpecName_ = "";
+      if (wfSpecVarBuilder_ != null) {
+        wfSpecVarBuilder_.clear();
+      }
       majorVersion_ = 0;
       internalGetMutableInputs().clear();
+      wfSpecCase_ = 0;
+      wfSpec_ = null;
       return this;
     }
 
@@ -496,20 +632,27 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     public io.littlehorse.sdk.common.proto.RunChildWfNode buildPartial() {
       io.littlehorse.sdk.common.proto.RunChildWfNode result = new io.littlehorse.sdk.common.proto.RunChildWfNode(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.RunChildWfNode result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.wfSpecName_ = wfSpecName_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.majorVersion_ = majorVersion_;
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.inputs_ = internalGetInputs().build(InputsDefaultEntryHolder.defaultEntry);
+      }
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.RunChildWfNode result) {
+      result.wfSpecCase_ = wfSpecCase_;
+      result.wfSpec_ = this.wfSpec_;
+      if (wfSpecCase_ == 4 &&
+          wfSpecVarBuilder_ != null) {
+        result.wfSpec_ = wfSpecVarBuilder_.build();
       }
     }
 
@@ -525,17 +668,27 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.RunChildWfNode other) {
       if (other == io.littlehorse.sdk.common.proto.RunChildWfNode.getDefaultInstance()) return this;
-      if (!other.getWfSpecName().isEmpty()) {
-        wfSpecName_ = other.wfSpecName_;
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
       if (other.getMajorVersion() != 0) {
         setMajorVersion(other.getMajorVersion());
       }
       internalGetMutableInputs().mergeFrom(
           other.internalGetInputs());
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
+      switch (other.getWfSpecCase()) {
+        case WF_SPEC_NAME: {
+          wfSpecCase_ = 1;
+          wfSpec_ = other.wfSpec_;
+          onChanged();
+          break;
+        }
+        case WF_SPEC_VAR: {
+          mergeWfSpecVar(other.getWfSpecVar());
+          break;
+        }
+        case WFSPEC_NOT_SET: {
+          break;
+        }
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -563,13 +716,14 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
               done = true;
               break;
             case 10: {
-              wfSpecName_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
+              java.lang.String s = input.readStringRequireUtf8();
+              wfSpecCase_ = 1;
+              wfSpec_ = s;
               break;
             } // case 10
             case 16: {
               majorVersion_ = input.readInt32();
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               break;
             } // case 16
             case 26: {
@@ -578,9 +732,16 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
                   InputsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               internalGetMutableInputs().ensureBuilderMap().put(
                   inputs__.getKey(), inputs__.getValue());
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000008;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  internalGetWfSpecVarFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              wfSpecCase_ = 4;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -596,24 +757,56 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       } // finally
       return this;
     }
+    private int wfSpecCase_ = 0;
+    private java.lang.Object wfSpec_;
+    public WfSpecCase
+        getWfSpecCase() {
+      return WfSpecCase.forNumber(
+          wfSpecCase_);
+    }
+
+    public Builder clearWfSpec() {
+      wfSpecCase_ = 0;
+      wfSpec_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
-    private java.lang.Object wfSpecName_ = "";
     /**
      * <pre>
-     * The name of the WfSpec to spawn.
+     * Static reference to a WfSpec by its exact name that will be executed as a child workflow.
+     * </pre>
+     *
+     * <code>string wf_spec_name = 1;</code>
+     * @return Whether the wfSpecName field is set.
+     */
+    @java.lang.Override
+    public boolean hasWfSpecName() {
+      return wfSpecCase_ == 1;
+    }
+    /**
+     * <pre>
+     * Static reference to a WfSpec by its exact name that will be executed as a child workflow.
      * </pre>
      *
      * <code>string wf_spec_name = 1;</code>
      * @return The wfSpecName.
      */
+    @java.lang.Override
     public java.lang.String getWfSpecName() {
-      java.lang.Object ref = wfSpecName_;
+      java.lang.Object ref = "";
+      if (wfSpecCase_ == 1) {
+        ref = wfSpec_;
+      }
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        wfSpecName_ = s;
+        if (wfSpecCase_ == 1) {
+          wfSpec_ = s;
+        }
         return s;
       } else {
         return (java.lang.String) ref;
@@ -621,20 +814,26 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     }
     /**
      * <pre>
-     * The name of the WfSpec to spawn.
+     * Static reference to a WfSpec by its exact name that will be executed as a child workflow.
      * </pre>
      *
      * <code>string wf_spec_name = 1;</code>
      * @return The bytes for wfSpecName.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getWfSpecNameBytes() {
-      java.lang.Object ref = wfSpecName_;
+      java.lang.Object ref = "";
+      if (wfSpecCase_ == 1) {
+        ref = wfSpec_;
+      }
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        wfSpecName_ = b;
+        if (wfSpecCase_ == 1) {
+          wfSpec_ = b;
+        }
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -642,7 +841,7 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     }
     /**
      * <pre>
-     * The name of the WfSpec to spawn.
+     * Static reference to a WfSpec by its exact name that will be executed as a child workflow.
      * </pre>
      *
      * <code>string wf_spec_name = 1;</code>
@@ -652,28 +851,30 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     public Builder setWfSpecName(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      wfSpecName_ = value;
-      bitField0_ |= 0x00000001;
+      wfSpecCase_ = 1;
+      wfSpec_ = value;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * The name of the WfSpec to spawn.
+     * Static reference to a WfSpec by its exact name that will be executed as a child workflow.
      * </pre>
      *
      * <code>string wf_spec_name = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearWfSpecName() {
-      wfSpecName_ = getDefaultInstance().getWfSpecName();
-      bitField0_ = (bitField0_ & ~0x00000001);
-      onChanged();
+      if (wfSpecCase_ == 1) {
+        wfSpecCase_ = 0;
+        wfSpec_ = null;
+        onChanged();
+      }
       return this;
     }
     /**
      * <pre>
-     * The name of the WfSpec to spawn.
+     * Static reference to a WfSpec by its exact name that will be executed as a child workflow.
      * </pre>
      *
      * <code>string wf_spec_name = 1;</code>
@@ -684,10 +885,197 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      wfSpecName_ = value;
-      bitField0_ |= 0x00000001;
+      wfSpecCase_ = 1;
+      wfSpec_ = value;
       onChanged();
       return this;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> wfSpecVarBuilder_;
+    /**
+     * <pre>
+     * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+     * that resolves to a STR containing the WfSpec name to execute
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+     * @return Whether the wfSpecVar field is set.
+     */
+    @java.lang.Override
+    public boolean hasWfSpecVar() {
+      return wfSpecCase_ == 4;
+    }
+    /**
+     * <pre>
+     * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+     * that resolves to a STR containing the WfSpec name to execute
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+     * @return The wfSpecVar.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment getWfSpecVar() {
+      if (wfSpecVarBuilder_ == null) {
+        if (wfSpecCase_ == 4) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) wfSpec_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+      } else {
+        if (wfSpecCase_ == 4) {
+          return wfSpecVarBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+     * that resolves to a STR containing the WfSpec name to execute
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+     */
+    public Builder setWfSpecVar(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (wfSpecVarBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        wfSpec_ = value;
+        onChanged();
+      } else {
+        wfSpecVarBuilder_.setMessage(value);
+      }
+      wfSpecCase_ = 4;
+      return this;
+    }
+    /**
+     * <pre>
+     * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+     * that resolves to a STR containing the WfSpec name to execute
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+     */
+    public Builder setWfSpecVar(
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
+      if (wfSpecVarBuilder_ == null) {
+        wfSpec_ = builderForValue.build();
+        onChanged();
+      } else {
+        wfSpecVarBuilder_.setMessage(builderForValue.build());
+      }
+      wfSpecCase_ = 4;
+      return this;
+    }
+    /**
+     * <pre>
+     * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+     * that resolves to a STR containing the WfSpec name to execute
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+     */
+    public Builder mergeWfSpecVar(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (wfSpecVarBuilder_ == null) {
+        if (wfSpecCase_ == 4 &&
+            wfSpec_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          wfSpec_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) wfSpec_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          wfSpec_ = value;
+        }
+        onChanged();
+      } else {
+        if (wfSpecCase_ == 4) {
+          wfSpecVarBuilder_.mergeFrom(value);
+        } else {
+          wfSpecVarBuilder_.setMessage(value);
+        }
+      }
+      wfSpecCase_ = 4;
+      return this;
+    }
+    /**
+     * <pre>
+     * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+     * that resolves to a STR containing the WfSpec name to execute
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+     */
+    public Builder clearWfSpecVar() {
+      if (wfSpecVarBuilder_ == null) {
+        if (wfSpecCase_ == 4) {
+          wfSpecCase_ = 0;
+          wfSpec_ = null;
+          onChanged();
+        }
+      } else {
+        if (wfSpecCase_ == 4) {
+          wfSpecCase_ = 0;
+          wfSpec_ = null;
+        }
+        wfSpecVarBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+     * that resolves to a STR containing the WfSpec name to execute
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getWfSpecVarBuilder() {
+      return internalGetWfSpecVarFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+     * that resolves to a STR containing the WfSpec name to execute
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getWfSpecVarOrBuilder() {
+      if ((wfSpecCase_ == 4) && (wfSpecVarBuilder_ != null)) {
+        return wfSpecVarBuilder_.getMessageOrBuilder();
+      } else {
+        if (wfSpecCase_ == 4) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) wfSpec_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+     * that resolves to a STR containing the WfSpec name to execute
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
+        internalGetWfSpecVarFieldBuilder() {
+      if (wfSpecVarBuilder_ == null) {
+        if (!(wfSpecCase_ == 4)) {
+          wfSpec_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+        }
+        wfSpecVarBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableAssignment) wfSpec_,
+                getParentForChildren(),
+                isClean());
+        wfSpec_ = null;
+      }
+      wfSpecCase_ = 4;
+      onChanged();
+      return wfSpecVarBuilder_;
     }
 
     private int majorVersion_ ;
@@ -715,7 +1103,7 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     public Builder setMajorVersion(int value) {
 
       majorVersion_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -728,7 +1116,7 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
      * @return This builder for chaining.
      */
     public Builder clearMajorVersion() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000004);
       majorVersion_ = 0;
       onChanged();
       return this;
@@ -762,7 +1150,7 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       if (inputs_ == null) {
         inputs_ = new com.google.protobuf.MapFieldBuilder<>(inputsConverter);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return inputs_;
     }
@@ -836,7 +1224,7 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return inputsConverter.build(map.get(key));
     }
     public Builder clearInputs() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       internalGetMutableInputs().clear();
       return this;
     }
@@ -860,7 +1248,7 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
         getMutableInputs() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       return internalGetMutableInputs().ensureMessageMap();
     }
     /**
@@ -877,7 +1265,7 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableInputs().ensureBuilderMap()
           .put(key, value);
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       return this;
     }
     /**
@@ -896,7 +1284,7 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       }
       internalGetMutableInputs().ensureBuilderMap()
           .putAll(values);
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       return this;
     }
     /**

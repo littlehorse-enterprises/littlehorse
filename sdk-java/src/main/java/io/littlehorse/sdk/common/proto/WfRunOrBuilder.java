@@ -133,15 +133,6 @@ public interface WfRunOrBuilder extends
   io.littlehorse.sdk.common.proto.LHStatus getStatus();
 
   /**
-   * <pre>
-   * The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
-   * is given by greatest_thread_run_number + 1.
-   *
-   * Introduced now since with ThreadRun-level retention, we can't rely upon
-   * thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
-   * from the thread_runs list once its retention period expires.
-   * </pre>
-   *
    * <code>int32 greatest_threadrun_number = 5;</code>
    * @return The greatestThreadrunNumber.
    */
@@ -347,4 +338,43 @@ public interface WfRunOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder getPendingFailuresOrBuilder(
       int index);
+
+  /**
+   * <pre>
+   * Optional information about the parent WfRUn which triggered this WfRun in case
+   * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+   * in the Parent WfRun which caused this NodeRun.
+   *
+   * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+   * @return Whether the parentTrigger field is set.
+   */
+  boolean hasParentTrigger();
+  /**
+   * <pre>
+   * Optional information about the parent WfRUn which triggered this WfRun in case
+   * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+   * in the Parent WfRun which caused this NodeRun.
+   *
+   * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+   * @return The parentTrigger.
+   */
+  io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference getParentTrigger();
+  /**
+   * <pre>
+   * Optional information about the parent WfRUn which triggered this WfRun in case
+   * it was created by a `RunChildWfNode`. Allows jumping back to the specific NodeRun
+   * in the Parent WfRun which caused this NodeRun.
+   *
+   * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
+   * </pre>
+   *
+   * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
+   */
+  io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReferenceOrBuilder getParentTriggerOrBuilder();
 }

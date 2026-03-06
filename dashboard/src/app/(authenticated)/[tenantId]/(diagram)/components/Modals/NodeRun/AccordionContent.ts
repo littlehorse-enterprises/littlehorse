@@ -9,6 +9,8 @@ import {
   WaitForThreadDefDetail,
   WorkflowEventDefDetail,
 } from './'
+import { RunChildWfDefDetail } from './RunChildWfDefDetail'
+import { WaitForChildWfDefDetail } from './WaitForChildWfDefDetail'
 import { WaitForConditionDefDetail } from './WaitForConditionDefDetail'
 
 export type NodeRunCase<C extends NonNullable<NodeRun['nodeType']>['$case']> = Omit<NodeRun, 'nodeType'> & {
@@ -33,12 +35,13 @@ export const AccordionComponents: AccordionNodes = {
   waitForCondition: WaitForConditionDefDetail,
   waitForThreads: WaitForThreadDefDetail,
 
+  runChildWf: RunChildWfDefDetail,
+  waitForChildWf: WaitForChildWfDefDetail,
+
   // Not supported but required for type safety
   entrypoint: () => null,
   exit: () => null,
   startMultipleThreads: () => null,
-  waitForChildWf: () => null,
-  runChildWf: () => null,
 } as const
 
 export type AccordionConentType = keyof typeof AccordionComponents

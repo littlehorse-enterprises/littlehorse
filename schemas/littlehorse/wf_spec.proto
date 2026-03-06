@@ -194,8 +194,15 @@ message StartMultipleThreadsNode {
 
 // This node spawns a child `WfRun` and returns the associated WfRunId.
 message RunChildWfNode {
-  // The name of the WfSpec to spawn.
-  string wf_spec_name = 1;
+  // Specifies how to determine the name of the WfSpec that should be executed as a child workflow.
+  // This can be either a static name known at WfSpec compile time or dynamically determined at runtime.
+  oneof wf_spec {
+    // Static reference to a WfSpec by its exact name that will be executed as a child workflow.
+    string wf_spec_name = 1;
+    // Dynamic way to specify the child WfSpec name at runtime by providing a variable assignment 
+    // that resolves to a STR containing the WfSpec name to execute
+    VariableAssignment wf_spec_var = 4;
+  }
 
   // The major version of the WfSpec to spawn.
   int32 major_version = 2;

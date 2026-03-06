@@ -2,32 +2,32 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { getClient } from '@/lhConfig'
-import { VersionList, WithBookmark, WithTenant } from '@/types'
+import { VersionList, WithTenant } from '@/types'
 import { getServerSession } from 'next-auth'
 
 type GetWfSpecProps = {
   name: string
-} & WithBookmark &
-  WithTenant
+} & WithTenant
 
 export const getWfSpecVersions = async (props: GetWfSpecProps): Promise<VersionList> => {
   const session = await getServerSession(authOptions)
   const { tenantId, name } = props
-  const bookmark = props.bookmark ? Buffer.from(props.bookmark) : undefined
   const client = getClient({ tenantId, accessToken: session?.accessToken })
 
-  const specs = await client.searchWfSpec({
-    wfSpecCriteria: { $case: 'name', value: name },
-    bookmark,
-    limit: SEARCH_DEFAULT_LIMIT,
-  })
+  const allVersions: string[] = []
+  let bookmark: Buffer | undefined
 
-  const versions = specs.results.map(({ majorVersion, revision }) => {
-    return `${majorVersion}.${revision}`
-  })
+  do {
+    const specs = await client.searchWfSpec({
+      wfSpecCriteria: { $case: 'name', value: name },
+      bookmark,
+      limit: SEARCH_DEFAULT_LIMIT,
+    })
 
-  return {
-    bookmark: specs.bookmark?.toString('base64'),
-    versions,
-  }
+    const versions = specs.results.map(({ majorVersion, revision }) => `${majorVersion}.${revision}`)
+    allVersions.push(...versions)
+    bookmark = specs.bookmark ?? undefined
+  } while (bookmark && bookmark.length > 0)
+
+  return { versions: allVersions }
 }

@@ -23,7 +23,8 @@ public class ThrowEventNodeOutputImpl implements ThrowEventNodeOutput {
     public PutWorkflowEventDefRequest toPutWorkflowEventDefRequest() {
         return PutWorkflowEventDefRequest.newBuilder()
                 .setName(workflowEventDefName)
-                .setContentType(BuilderUtil.javaTypeToReturnType(payloadClass))
+                .setContentType(BuilderUtil.javaTypeToReturnType(
+                        payloadClass, parent.getParent().getTypeAdapterRegistry()))
                 .build();
     }
 }

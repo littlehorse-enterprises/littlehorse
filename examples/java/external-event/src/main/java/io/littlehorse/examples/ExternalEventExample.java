@@ -3,7 +3,6 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -33,7 +32,7 @@ public class ExternalEventExample {
 
             wf.execute("ask-for-name");
 
-            wf.mutate(name, VariableMutationType.ASSIGN, wf.waitForEvent("name-event"));
+            name.assign(wf.waitForEvent("name-event"));
 
             wf.execute("greet", name);
         });

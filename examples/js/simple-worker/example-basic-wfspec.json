@@ -1,0 +1,57 @@
+{
+  "name": "example-basic",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-greet-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-greet-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": [{
+              "variableName": "input-name"
+            }]
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [{
+        "varDef": {
+          "name": "input-name",
+          "typeDef": {
+            "primitiveType": "STR",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": true,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

@@ -1,6 +1,7 @@
 import { FC } from 'react'
 import { useDiagram } from '../../../hooks/useDiagram'
 import { NodeStatus } from '../Components/NodeStatus'
+import { NodeTypeDocumentation } from '../Components/NodeTypeDocumentation'
 import { NodeVariable } from '../Components/NodeVariable'
 
 export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
@@ -15,9 +16,14 @@ export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
   }
 
   const nodeRun = selectedNode.data.nodeRunsList[nodeRunIndex]
+  if (!nodeRun) {
+    return null
+  }
+
   return (
     <div className="ml-1 flex max-w-full flex-1 flex-col">
       {nodeRun.status && <NodeStatus status={nodeRun.status} />}
+      <NodeTypeDocumentation nodeType={selectedNode.type} showNodeRun={true} className="ml-1 mt-1 text-sm font-bold" />
       <NodeVariable label="position:" text={`${nodeRun.id?.position}`} />
       <NodeVariable label="wfRunId:" text={nodeRun.id?.wfRunId?.id} />
       <NodeVariable label="wfSpecId:" text={nodeRun.wfSpecId?.name ?? 'N/A'} />

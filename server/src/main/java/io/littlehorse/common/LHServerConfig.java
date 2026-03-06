@@ -70,6 +70,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String CLUSTER_PARTITIONS_KEY = "LHS_CLUSTER_PARTITIONS";
     public static final String OUTPUT_TOPIC_PARTITIONS_KEY = "LHS_OUTPUT_TOPIC_PARTITIONS";
     public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
+    public static final String SHOULD_CREATE_OUTPUT_TOPICS_KEY = "LHS_SHOULD_CREATE_OUTPUT_TOPICS";
     public static final String RACK_ID_KEY = "LHS_RACK_ID";
 
     // Optional Performance-Related Configs for Kafka Streams
@@ -94,6 +95,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
     public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
     public static final String STATE_CLEANUP_DELAY_MS_KEY = "LHS_STREAMS_STATE_CLEANUP_DELAY_MS";
+    public static final String KAFKA_CLIENT_OVERRIDE_PREFIX = "LHS_KAFKA_CONFIG_";
+    public static final String CORE_KAFKA_PRODUCER_OVERRIDE_PREFIX = "LHS_KAFKA_PRODUCER_CONFIG_";
     public static final String CORE_KAFKA_STREAMS_OVERRIDE_PREFIX = "LHS_CORE_KS_CONFIG_";
 
     // General LittleHorse Runtime Behavior Config Env Vars
@@ -152,7 +155,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_MAX_DELETES_PER_COMMAND_KEY = "LHS_X_MAX_DELETES_PER_COMMAND";
     // Enable timer streams processing
     public static final String X_ENABLE_TIMER_STREAMS_KEY = "LHS_X_ENABLE_TIMER_STREAMS";
-
+    // Maximum number of thread runs per workflow run.
+    public static final String X_MAX_THREAD_RUNS_PER_WF_RUN = "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN";
     // Instance configs
     private String lhsMetricsLevel;
 
@@ -506,6 +510,10 @@ public class LHServerConfig extends ConfigBase {
         return Integer.parseInt(getOrSetDefault(LHServerConfig.INTERNAL_BIND_PORT_KEY, "2011"));
     }
 
+    public int getMaxThreadRunsPerWfRun() {
+        return Integer.parseInt(getOrSetDefault(LHServerConfig.X_MAX_THREAD_RUNS_PER_WF_RUN, "65"));
+    }
+
     public OAuthConfig getOAuthConfig() {
 
         String clientId = getOrSetDefault(OAUTH_CLIENT_ID, null);
@@ -738,7 +746,7 @@ public class LHServerConfig extends ConfigBase {
 
     public LHProducer getCommandProducer() {
         if (commandProducer == null) {
-            commandProducer = new LHProducer(this.getKafkaProducerConfig(this.getLHInstanceName()));
+            commandProducer = new LHProducer(this.getCoreCommandProducerConfig(this.getLHInstanceName()));
         }
         return commandProducer;
     }
@@ -752,6 +760,12 @@ public class LHServerConfig extends ConfigBase {
 
     public boolean shouldCreateTopics() {
         return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "true"));
+    }
+
+    public boolean shouldCreateOutputTopics() {
+        String outputTopicsValue =
+                getOrSetDefault(SHOULD_CREATE_OUTPUT_TOPICS_KEY, String.valueOf(shouldCreateTopics()));
+        return Boolean.valueOf(outputTopicsValue);
     }
 
     public int getRocksDBCompactionThreads() {
@@ -785,6 +799,13 @@ public class LHServerConfig extends ConfigBase {
         conf.put(ProducerConfig.LINGER_MS_CONFIG, getOrSetDefault(LINGER_MS_KEY, "0"));
         conf.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, getProducerMaxRequestSize());
         addKafkaSecuritySettings(conf);
+        applyKafkaConfigOverrides(conf, KAFKA_CLIENT_OVERRIDE_PREFIX);
+        return conf;
+    }
+
+    private Properties getCoreCommandProducerConfig(String component) {
+        Properties conf = getKafkaProducerConfig(component);
+        applyKafkaConfigOverrides(conf, CORE_KAFKA_PRODUCER_OVERRIDE_PREFIX);
         return conf;
     }
 
@@ -923,15 +944,7 @@ public class LHServerConfig extends ConfigBase {
         // 1-second precision on timers.
         result.put(StreamsConfig.producerPrefix("linger.ms"), LHConstants.TIMER_PUNCTUATOR_INTERVAL.toMillis());
 
-        for (Object keyObj : props.keySet()) {
-            String key = (String) keyObj;
-            if (key.startsWith(CORE_KAFKA_STREAMS_OVERRIDE_PREFIX)) {
-                String kafkaKey = key.substring(CORE_KAFKA_STREAMS_OVERRIDE_PREFIX.length())
-                        .replace("_", ".")
-                        .toLowerCase();
-                result.put(kafkaKey, props.get(key));
-            }
-        }
+        applyKafkaConfigOverrides(result, CORE_KAFKA_STREAMS_OVERRIDE_PREFIX);
         result.put(StreamsConfig.consumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG), "100");
         return result;
     }
@@ -989,14 +1002,6 @@ public class LHServerConfig extends ConfigBase {
 
         // Reduce the chattiness of the logs to once every 15 minutes (Streams default 2 minutes).
         props.put(StreamsConfig.LOG_SUMMARY_INTERVAL_MS_CONFIG, 1000 * 60 * 15);
-
-        // Due to bug in Kafka Streams, the only way to get the server to leave the group on shutdown is to use this
-        // internal flag. We actually want to leave the group when we close() so that tasks can be reassigned during
-        // a rolling restart. Our optimization in this ticket #497 relies on leaving the group during a rolling bounce.
-        //
-        // https://github.com/littlehorse-enterprises/littlehorse/issues/497
-        // https://github.com/littlehorse-enterprises/littlehorse/pull/838
-        props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), true);
 
         props.put(
                 "application.server",
@@ -1057,8 +1062,20 @@ public class LHServerConfig extends ConfigBase {
 
         // In case we need to authenticate to Kafka, this sets it.
         addKafkaSecuritySettings(props);
+        applyKafkaConfigOverrides(props, KAFKA_CLIENT_OVERRIDE_PREFIX);
 
         return props;
+    }
+
+    private void applyKafkaConfigOverrides(Properties target, String overridePrefix) {
+        for (Object keyObj : props.keySet()) {
+            String key = (String) keyObj;
+            if (!key.startsWith(overridePrefix)) continue;
+
+            String kafkaKey =
+                    key.substring(overridePrefix.length()).replace("_", ".").toLowerCase();
+            target.put(kafkaKey, props.get(key));
+        }
     }
 
     private String getClientId(String component) {
@@ -1159,6 +1176,7 @@ public class LHServerConfig extends ConfigBase {
         Properties kafkaSettings = new Properties();
         kafkaSettings.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         addKafkaSecuritySettings(kafkaSettings);
+        applyKafkaConfigOverrides(kafkaSettings, KAFKA_CLIENT_OVERRIDE_PREFIX);
         kafkaAdmin = Admin.create(kafkaSettings);
     }
 

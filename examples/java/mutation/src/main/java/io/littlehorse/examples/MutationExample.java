@@ -2,7 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -26,7 +25,7 @@ public class MutationExample {
             NodeOutput output = wf.execute("spider-bite", theName);
 
             // We save the output in the variable
-            wf.mutate(theName, VariableMutationType.ASSIGN, output);
+            theName.assign(output);
         });
     }
 

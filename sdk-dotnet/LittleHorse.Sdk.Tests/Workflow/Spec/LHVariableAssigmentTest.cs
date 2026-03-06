@@ -31,7 +31,7 @@ public class LHVariableAssignmentTest
     [Fact]
     public void VariableAssignment_WithWfRunVariable_ShouldAssignNameToVariable()
     {
-        var wfRunVariable = new WfRunVariable("TestVariable", VariableType.Str, _parentWfThread);
+        var wfRunVariable = WfRunVariable.CreatePrimitiveVar("TestVariable", VariableType.Str, _parentWfThread);
 
         var variableAssigment = _parentWfThread.AssignVariableHelper(wfRunVariable);
 
@@ -42,7 +42,7 @@ public class LHVariableAssignmentTest
     [Fact]
     public void VariableAssignment_WithWfRunVariableContainingJson_ShouldAssignDetailsToVariable()
     {
-        var wfRunVariable = new WfRunVariable("TestVariable", VariableType.JsonObj, _parentWfThread);
+        var wfRunVariable = WfRunVariable.CreatePrimitiveVar("TestVariable", VariableType.JsonObj, _parentWfThread);
         var wfRunVariableWithJson = wfRunVariable.WithJsonPath("$.order");
 
         var variableAssigment = _parentWfThread.AssignVariableHelper(wfRunVariableWithJson);

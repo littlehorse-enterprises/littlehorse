@@ -246,9 +246,25 @@ public class WorkflowThread
                 "You cannot add a variable in a given thread after the thread has completed.");
         }
         
-        var wfRunVariable = new WfRunVariable(name, typeOrDefaultVal, this);
+        var wfRunVariable = WfRunVariable.CreatePrimitiveVar(name, typeOrDefaultVal, this);
         _wfRunVariables.Add(wfRunVariable);
         
+        return wfRunVariable;
+    }
+
+    private WfRunVariable AddStructVariable(string name, LHStructDefType structDefType)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var lastNode = FindNode(LastNodeName);
+        if (lastNode.NodeCase == Node.NodeOneofCase.Exit)
+        {
+            throw new InvalidOperationException(
+                "You cannot add a variable in a given thread after the thread has completed.");
+        }
+
+        var wfRunVariable = WfRunVariable.CreateStructDefVar(name, structDefType, this);
+        _wfRunVariables.Add(wfRunVariable);
+
         return wfRunVariable;
     }
     
@@ -431,6 +447,36 @@ public class WorkflowThread
     {
         return AddVariable(name, VariableType.Str);
     }
+
+    
+    /// <summary>
+    /// Creates a variable of type TIMESTAMP in the ThreadSpec.
+    /// </summary>
+    /// <param name="name">
+    /// The name of the variable.
+    /// </param>
+    /// <returns>
+    /// An instance of <see cref="WfRunVariable"/> that represents the created TIMESTAMP variable.
+    /// </returns>
+    public WfRunVariable DeclareTimestamp(string name)
+    {
+        return AddVariable(name, VariableType.Timestamp);
+    }
+
+    
+    /// <summary>
+    /// Creates a variable of type WF_RUN_ID in the ThreadSpec.
+    /// </summary>
+    /// <param name="name">
+    /// The name of the variable to be created.
+    /// </param>
+    /// <returns>
+    /// An instance of <see cref="WfRunVariable"/> that represents the created WF_RUN_ID variable.
+    /// </returns>
+    public WfRunVariable DeclareWfRunId(string name)
+    {
+        return AddVariable(name, VariableType.WfRunId);
+    }
     
     /// <summary>
     /// Creates a variable of type DOUBLE in the ThreadSpec.
@@ -479,6 +525,23 @@ public class WorkflowThread
     {
         return AddVariable(name, VariableType.JsonObj);
     }
+
+    /// <summary>
+    /// Creates a Struct variable based on a StructDef-annotated class.
+    /// </summary>
+    /// <param name="name">
+    /// It is the name of the variable.
+    /// </param>
+    /// <param name="structType">
+    /// It is the StructDef class that defines your StructDef.
+    /// </param>
+    /// <returns>The value of WfRunVariable.</returns>
+    public WfRunVariable DeclareStruct(string name, Type structType)
+    {
+        return AddStructVariable(name, new LHStructDefType(structType));
+    }
+
+    
     
     private List<VariableMutation> CollectVariableMutations() 
     {
@@ -1233,7 +1296,7 @@ public class WorkflowThread
     /// A Thread Function defining a ThreadSpec to use to handle the Interrupt.
     /// </param>
     /// <returns>A NodeOutput that can be used for timeouts or exception handling. </returns>
-    public void RegisterInterruptHandler(string interruptName, Action<WorkflowThread> handler)
+    public InterruptHandler RegisterInterruptHandler(string interruptName, Action<WorkflowThread> handler)
     {
         CheckIfWorkflowThreadIsActive();
         string threadName = "interrupt-" + interruptName;
@@ -1247,6 +1310,7 @@ public class WorkflowThread
                 HandlerSpecName = threadName
             }
         );
+        return new InterruptHandler(Parent, interruptName);
     }
     
     /// <summary>
@@ -1335,7 +1399,7 @@ public class WorkflowThread
         Parent.AddWorkflowEventDefToRegister(nodeOutput);
     }
 
-    internal void RegisterExternalEventDef(ExternalEventNodeOutput nodeOutput)
+    internal void RegisterExternalEventDef(IExternalEventDefRegistration nodeOutput)
     {
         Parent.AddExternalEventDefToRegister(nodeOutput);
     }

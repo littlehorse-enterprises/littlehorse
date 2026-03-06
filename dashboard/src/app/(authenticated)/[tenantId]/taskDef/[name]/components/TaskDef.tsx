@@ -15,7 +15,7 @@ import { useParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
 import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
 import { Details } from './Details'
-import { InputVars } from './InputVars'
+import { TaskDefSchema } from './TaskDefSchema'
 
 import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
 import { Separator } from '@/components/ui/separator'
@@ -72,8 +72,8 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   return (
     <>
       <Navigation href="/?type=TaskDef" title="Go back to TaskDefs" />
-      <Details id={spec.id} />
-      <InputVars inputVars={spec.inputVars} />
+      <Details spec={spec} />
+      <TaskDefSchema spec={spec} />
 
       <Separator className="my-4" />
 

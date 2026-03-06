@@ -16,7 +16,7 @@ else:
 We have two `TaskDef`'s and thus two Task Functions. Note that `worker/main.go` kicks off two threads, one for each Task Worker.
 
 ```
-go run ./examples/conditionals/ifelse/worker
+go run ./examples/go/conditionals/ifelse/worker
 ```
 
 ## Register the `WfSpec`
@@ -24,7 +24,7 @@ go run ./examples/conditionals/ifelse/worker
 In another terminal, run:
 
 ```
-go run ./examples/conditionals/ifelse/deploy
+go run ./examples/go/conditionals/ifelse/deploy
 ```
 
 ## Run a `WfRun`

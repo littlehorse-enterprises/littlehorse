@@ -6,7 +6,7 @@ import typing
 from collections import deque
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, List, Optional, Protocol, Union
 
 from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
@@ -46,6 +46,7 @@ from littlehorse.model import (
     SleepNode,
     StartThreadNode,
     StartMultipleThreadsNode,
+    StructDefId,
     ThreadRetentionPolicy,
     ThreadSpec,
     ThreadVarDef,
@@ -61,8 +62,10 @@ from littlehorse.model import (
     RunChildWfNode,
     WaitForChildWfNode,
 )
+from littlehorse.model.common_wfspec_pb2 import LHPath
 from littlehorse.model.wf_spec_pb2 import PRIVATE_VAR, WaitForConditionNode
 from littlehorse.utils import negate_comparator, to_variable_value
+from littlehorse.lh_struct import get_struct_def_name, is_lh_struct
 from littlehorse.worker import _create_task_def
 
 ENTRYPOINT = "entrypoint"
@@ -134,8 +137,13 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
         if value.json_path is not None:
             json_path = value.json_path
 
+        lh_path_proto: Optional[LHPath] = None
+        if value._lh_path:
+            lh_path_proto = LHPath(path=value._lh_path)
+
         return VariableAssignment(
             json_path=json_path,
+            lh_path=lh_path_proto,
             variable_name=variable_name,
         )
 
@@ -455,41 +463,54 @@ class WfRunVariable:
     def __init__(
         self,
         variable_name: str,
-        variable_type: VariableType,
         parent: WorkflowThread,
+        *,
+        variable_type: Optional[VariableType] = None,
         default_value: Any = None,
         access_level: Optional[
             Union[WfRunVariableAccessLevel, str]
         ] = WfRunVariableAccessLevel.PRIVATE_VAR,
+        struct_def_name: Optional[str] = None,
     ) -> None:
         """Defines a Variable in the ThreadSpec and returns a handle to it.
 
+        Exactly one of ``variable_type`` or ``struct_def_name`` must be provided.
+
         Args:
             variable_name (str): The name of the variable.
-            variable_type (VariableType): The variable type.
             parent (WorkflowThread): The parent WorkflowThread of this WfRunVariable.
+            variable_type (VariableType, optional): The primitive variable type.
             default_value (Any, optional): A default value. Defaults to None.
             access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable. Defaults to PRIVATE_VAR.
+            struct_def_name (str, optional): The StructDef name, when this variable is a Struct.
 
         Returns:
             WfRunVariable: A handle to the created WfRunVariable.
 
         Raises:
             TypeError: If variable_type and type(default_value) are not compatible.
+            ValueError: If both or neither of variable_type and struct_def_name are provided.
         """
         if parent is None:
             raise ValueError("Parent workflow thread cannot be None.")
+
+        if variable_type is not None and struct_def_name is not None:
+            raise ValueError("Cannot specify both variable_type and struct_def_name")
+        if variable_type is None and struct_def_name is None:
+            raise ValueError("Must specify either variable_type or struct_def_name")
 
         self.name = variable_name
         self.type = variable_type
         self.parent = parent
         self.default_value: Optional[VariableValue] = None
         self._json_path: Optional[str] = None
+        self._lh_path: List[LHPath.Selector] = []
         self._required = False
         self._masked = False
         self._searchable = False
         self._json_indexes: List[JsonIndex] = []
         self._access_level = access_level
+        self._struct_def_name: Optional[str] = struct_def_name
 
         if default_value is not None:
             self._set_default(default_value)
@@ -529,11 +550,54 @@ class WfRunVariable:
 
         if self.type != VariableType.JSON_OBJ and self.type != VariableType.JSON_ARR:
             raise ValueError(
-                f"JsonPath not allowed in a {VariableType.Name(self.type)} variable"
+                f"JsonPath not allowed in a {VariableType.Name(self.type) if self.type is not None else 'STRUCT'} variable"
             )
 
-        out = WfRunVariable(self.name, self.type, self.parent, self.default_value)
+        out = WfRunVariable(
+            self.name,
+            self.parent,
+            variable_type=self.type,
+            default_value=self.default_value,
+            struct_def_name=self._struct_def_name,
+        )
         out.json_path = json_path
+        return out
+
+    def get(self, field: Union[str, int]) -> "WfRunVariable":
+        """Access a sub-field of a Struct variable (by key) or an element
+        of an array variable (by index).
+
+        Can be chained: ``my_person.get("home_address").get("city")``.
+
+        Args:
+            field: A string key for struct field access,
+                   or an int index for array element access.
+
+        Returns:
+            WfRunVariable: A new handle pointing to the sub-field.
+        """
+        if self._json_path is not None:
+            raise ValueError(
+                "Cannot use .get() on a variable that already uses json_path"
+            )
+
+        out = WfRunVariable(
+            self.name,
+            self.parent,
+            variable_type=self.type,
+            struct_def_name=self._struct_def_name,
+        )
+        out._lh_path = list(self._lh_path)
+        out._masked = self._masked
+        out._access_level = self._access_level
+
+        if isinstance(field, str):
+            out._lh_path.append(LHPath.Selector(key=field))
+        elif isinstance(field, int):
+            out._lh_path.append(LHPath.Selector(index=field))
+        else:
+            raise TypeError(f"Expected str or int, got {type(field)}")
+
         return out
 
     def as_public(self) -> "WfRunVariable":
@@ -596,9 +660,9 @@ class WfRunVariable:
         if not field_path.startswith("$."):
             raise ValueError(f"Invalid JsonPath: {field_path}")
 
-        if self.type != VariableType.JSON_OBJ:
+        if self.type != VariableType.JSON_OBJ and self._struct_def_name is None:
             raise ValueError(
-                f"JsonPath not allowed in a {VariableType.Name(self.type)} variable"
+                f"JsonPath not allowed in a {VariableType.Name(self.type) if self.type is not None else 'STRUCT'} variable"
             )
 
         self._json_indexes.append(
@@ -617,6 +681,14 @@ class WfRunVariable:
 
     def _set_default(self, default_value: Any) -> None:
         self.default_value = to_variable_value(default_value)
+        # For struct variables, verify the serialized value is a struct
+        if self._struct_def_name is not None:
+            if self.default_value.WhichOneof("value") != "struct":
+                raise TypeError(
+                    "Default value type does not match LH variable type STRUCT"
+                )
+            return
+        assert self.type is not None
         if (
             self.default_value.WhichOneof("value")
             != str(VariableType.Name(self.type)).lower()
@@ -635,9 +707,17 @@ class WfRunVariable:
         Returns:
             VariableDef: Spec.
         """
+        if self._struct_def_name is not None:
+            type_def = TypeDefinition(
+                struct_def_id=StructDefId(name=self._struct_def_name),
+                masked=self._masked,
+            )
+        else:
+            type_def = TypeDefinition(primitive_type=self.type, masked=self._masked)
+
         return ThreadVarDef(
             var_def=VariableDef(
-                type_def=TypeDefinition(primitive_type=self.type, masked=self._masked),
+                type_def=type_def,
                 name=self.name,
                 default_value=self.default_value,
             ),
@@ -901,6 +981,24 @@ class ExternalEventNodeOutput(NodeOutput):
         return request
 
 
+class ExternalEventDefRegistration(Protocol):
+    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest: ...
+
+
+class InterruptExternalEventDefRegistration:
+    def __init__(self, event_name: str, payload_type: Optional[type]) -> None:
+        self._event_name = event_name
+        self._payload_type = payload_type
+
+    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest:
+        request = PutExternalEventDefRequest(name=self._event_name)
+        if self._payload_type is not None:
+            request.content_type.CopyFrom(
+                python_type_to_return_type(self._payload_type)
+            )
+        return request
+
+
 class WorkflowNode:
     def __init__(
         self,
@@ -991,6 +1089,24 @@ class WorkflowInterruption:
 
     def __str__(self) -> str:
         return to_json(self.compile())
+
+
+class InterruptHandler:
+    def __init__(self, workflow: "Workflow", event_name: str) -> None:
+        self._workflow = workflow
+        self._event_name = event_name
+        self._event_type_registered = False
+
+    def with_event_type(self, event_type: Optional[type]) -> "InterruptHandler":
+        if self._event_type_registered:
+            raise ValueError(
+                f"Interrupt event type already registered: {self._event_name}"
+            )
+        self._event_type_registered = True
+        self._workflow.add_external_event_def_to_register(
+            InterruptExternalEventDefRegistration(self._event_name, event_type)
+        )
+        return self
 
 
 class SpawnedChildWf:
@@ -1250,7 +1366,11 @@ class WorkflowThread:
         self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
         return SpawnedThreads(thread_number, None)
 
-    def wait_for_threads(self, wait_for: SpawnedThreads, strategy: WaitForThreadsStrategy = WaitForThreadsStrategy.WAIT_FOR_ALL) -> WaitForThreadsNodeOutput:
+    def wait_for_threads(
+        self,
+        wait_for: SpawnedThreads,
+        strategy: WaitForThreadsStrategy = WaitForThreadsStrategy.WAIT_FOR_ALL,
+    ) -> WaitForThreadsNodeOutput:
         """Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
 
         Args:
@@ -1330,7 +1450,9 @@ class WorkflowThread:
         """
         self._retention_policy = policy
 
-    def add_interrupt_handler(self, name: str, handler: "ThreadInitializer") -> None:
+    def add_interrupt_handler(
+        self, name: str, handler: "ThreadInitializer"
+    ) -> InterruptHandler:
         """Registers an Interrupt Handler, such that when an ExternalEvent
         arrives with the specified type, this ThreadRun is interrupted.
 
@@ -1338,17 +1460,23 @@ class WorkflowThread:
             name (str): The name of the ExternalEventDef to listen for.
             handler (ThreadInitializer): A Thread Function defining a
             ThreadSpec to use to handle the Interrupt.
+
+        Returns:
+            InterruptHandler: A handle for registering the interrupt payload type.
         """
         self._check_if_active()
         thread_name = self._workflow.add_sub_thread(f"interrupt-{name}", handler)
         self._wf_interruptions.append(WorkflowInterruption(name, thread_name))
+        return InterruptHandler(self._workflow, name)
 
-    def register_external_event_def(self, node_output: ExternalEventNodeOutput) -> None:
+    def register_external_event_def(
+        self, node_output: ExternalEventDefRegistration
+    ) -> None:
         """
         Registers an external event definition for the parent workflow.
 
         Args:
-            node_output (ExternalEventNodeOutput): The external event node output.
+            node_output (ExternalEventDefRegistration): The external event registration.
         """
         self._workflow.add_external_event_def_to_register(node_output)
 
@@ -1577,6 +1705,32 @@ class WorkflowThread:
         return self.add_variable(
             name, VariableType.WF_RUN_ID, default_value=default_value
         )
+
+    def declare_struct(
+        self,
+        name: str,
+        struct_def: Union[str, type],
+    ) -> WfRunVariable:
+        """Declares a Struct variable in the ThreadSpec.
+
+        Args:
+            name (str): The name of the variable.
+            struct_def (Union[str, type]): Either the StructDef name as a string,
+                or a class decorated with ``@lh_struct_def``.
+
+        Returns:
+            WfRunVariable: A handle to the created WfRunVariable.
+        """
+        if isinstance(struct_def, str):
+            struct_def_name = struct_def
+        else:
+            if not is_lh_struct(struct_def):
+                raise TypeError(
+                    f"{struct_def.__name__} is not decorated with @lh_struct_def"
+                )
+            struct_def_name = get_struct_def_name(struct_def)
+
+        return self.add_variable(name, struct_def_name=struct_def_name)
 
     def handle_any_failure(
         self, node: NodeOutput, initializer: "ThreadInitializer"
@@ -2072,17 +2226,21 @@ class WorkflowThread:
     def add_variable(
         self,
         variable_name: str,
-        variable_type: VariableType,
+        variable_type: Optional[VariableType] = None,
         access_level: Optional[Union[WfRunVariableAccessLevel, str]] = PRIVATE_VAR,
         default_value: Any = None,
+        struct_def_name: Optional[str] = None,
     ) -> WfRunVariable:
         """Defines a Variable in the ThreadSpec and returns a handle to it.
 
+        Exactly one of ``variable_type`` or ``struct_def_name`` must be provided.
+
         Args:
             variable_name (str): The name of the variable.
-            variable_type (VariableType): The variable type.
+            variable_type (VariableType, optional): The primitive variable type.
             access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable.
             default_value (Any, optional): A default value. Defaults to None.
+            struct_def_name (str, optional): The StructDef name, for struct variables.
 
         Returns:
             WfRunVariable: A handle to the created WfRunVariable.
@@ -2099,7 +2257,12 @@ class WorkflowThread:
                 raise ValueError(f"Variable {variable_name} already added")
 
         new_var = WfRunVariable(
-            variable_name, variable_type, self, default_value, access_level
+            variable_name,
+            self,
+            variable_type=variable_type,
+            default_value=default_value,
+            access_level=access_level,
+            struct_def_name=struct_def_name,
         )
         self._wf_run_variables.append(new_var)
         return new_var
@@ -2462,7 +2625,7 @@ class Workflow:
         )
         self._default_retries: Optional[int] = None
         self._workflow_events_to_register: list[ThrowEventNodeOutput] = []
-        self._external_events_to_register: list[ExternalEventNodeOutput] = []
+        self._external_events_to_register: list[ExternalEventDefRegistration] = []
         if parent_wf is not None:
             self._parent_wf = WfSpec.ParentWfSpecReference(wf_spec_name=parent_wf)
 
@@ -2605,17 +2768,19 @@ class Workflow:
         """
         self._workflow_events_to_register.append(node)
 
-    def add_external_event_def_to_register(self, node: ExternalEventNodeOutput) -> None:
+    def add_external_event_def_to_register(
+        self, node: ExternalEventDefRegistration
+    ) -> None:
         """
         Adds an external event definition to the list for registration.
 
         Args:
-            node (ExternalEventNodeOutput): The external event node to register.
+            node (ExternalEventDefRegistration): The external event registration.
         """
         self._external_events_to_register.append(node)
 
     @property
-    def external_events_to_register(self) -> list[ExternalEventNodeOutput]:
+    def external_events_to_register(self) -> list[ExternalEventDefRegistration]:
         return self._external_events_to_register
 
     @property
@@ -2710,3 +2875,30 @@ def create_workflow_event_def(
     )
     stub.PutWorkflowEventDef(request, timeout=timeout)
     logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")
+
+
+def create_struct_def(
+    cls: type,
+    config: LHConfig,
+    allowed_updates: Any = None,
+    timeout: Optional[int] = None,
+) -> None:
+    """Register a ``@lh_struct_def``-decorated class as a ``StructDef``
+    on the LH Server.
+
+    This will also recursively register any nested ``@lh_struct_def``
+    dependencies in the correct order.
+
+    Args:
+        cls: A class decorated with ``@lh_struct_def``.
+        config: The LHConfig for connecting to the server.
+        allowed_updates: Schema evolution compatibility type.
+            Defaults to ``NO_SCHEMA_UPDATES``.
+        timeout: gRPC timeout in seconds.
+    """
+    from littlehorse.lh_struct import create_struct_def as _create_struct_def
+    from littlehorse.model import StructDefCompatibilityType
+
+    if allowed_updates is None:
+        allowed_updates = StructDefCompatibilityType.NO_SCHEMA_UPDATES
+    _create_struct_def(cls, config, allowed_updates, timeout)

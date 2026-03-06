@@ -4,8 +4,10 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
@@ -29,6 +31,7 @@ public class WorkflowImpl extends Workflow {
     private Set<String> requiredEedNames;
     private Set<String> requiredWorkflowEventDefNames;
     private Stack<WorkflowThreadImpl> threads;
+    private Set<ExternalEventDefRegistration> externalEventsToRegister;
 
     public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc) {
         super(name, entrypointThreadFunc);
@@ -38,6 +41,7 @@ public class WorkflowImpl extends Workflow {
         this.requiredWorkflowEventDefNames = new HashSet<>();
         this.requiredEedNames = new HashSet<>();
         this.threads = new Stack<>();
+        this.externalEventsToRegister = new HashSet<>();
     }
 
     @Override
@@ -46,7 +50,7 @@ public class WorkflowImpl extends Workflow {
         PutWfSpecRequest wfRequest = compileWorkflow();
 
         // Create externalEventDef's that the user wanted us to create
-        for (ExternalEventNodeOutputImpl node : externalEventsToRegister) {
+        for (ExternalEventDefRegistration node : externalEventsToRegister) {
             log.info(
                     "Creating ExternalEventDef:\n {}",
                     LHLibUtil.protoToJson(client.putExternalEventDef(node.toPutExtDefRequest())));
@@ -66,7 +70,7 @@ public class WorkflowImpl extends Workflow {
         workflowEventsToRegister.add(node);
     }
 
-    public void addExternalEventDefToRegister(ExternalEventNodeOutputImpl node) {
+    public void addExternalEventDefToRegister(ExternalEventDefRegistration node) {
         externalEventsToRegister.add(node);
     }
 
@@ -126,11 +130,35 @@ public class WorkflowImpl extends Workflow {
     }
 
     @Override
+    public Set<PutExternalEventDefRequest> getExternalEventDefsToRegister() {
+        if (compiledWorkflow == null) {
+            compiledWorkflow = compileWorkflowHelper();
+        }
+        Set<PutExternalEventDefRequest> out = new HashSet<>();
+        for (ExternalEventDefRegistration node : externalEventsToRegister) {
+            out.add(node.toPutExtDefRequest());
+        }
+        return out;
+    }
+
+    @Override
     public Set<String> getRequiredWorkflowEventDefNames() {
         if (compiledWorkflow == null) {
             compiledWorkflow = compileWorkflowHelper();
         }
         return requiredWorkflowEventDefNames;
+    }
+
+    @Override
+    public Set<PutWorkflowEventDefRequest> getWorkflowEventDefsToRegister() {
+        if (compiledWorkflow == null) {
+            compiledWorkflow = compileWorkflowHelper();
+        }
+        Set<PutWorkflowEventDefRequest> out = new HashSet<>();
+        for (ThrowEventNodeOutputImpl node : workflowEventsToRegister) {
+            out.add(node.toPutWorkflowEventDefRequest());
+        }
+        return out;
     }
 
     private PutWfSpecRequest compileWorkflowHelper() {

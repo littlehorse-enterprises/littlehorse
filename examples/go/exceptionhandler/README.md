@@ -7,7 +7,7 @@ This is a simple example of a workflow that uses a `FailureHandler` to recover f
 We have two `TaskDef`'s and thus two Task Functions. Note that `worker/main.go` kicks off two threads, one for each Task Worker.
 
 ```
-go run ./examples/exceptionhandler/worker
+go run ./examples/go/exceptionhandler/worker
 ```
 
 ## Register the `WfSpec`
@@ -15,7 +15,7 @@ go run ./examples/exceptionhandler/worker
 In another terminal, run:
 
 ```
-go run ./examples/exceptionhandler/deploy
+go run ./examples/go/exceptionhandler/deploy
 ```
 
 ## Run a `WfRun`
