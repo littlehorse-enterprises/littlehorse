@@ -231,7 +231,7 @@ public interface WorkflowThread {
     /**
      * Conditionally executes some workflow code; equivalent to an if() statement in programming.
      *
-     * @param condition is the WorkflowCondition to be satisfied.
+     * @param condition BOOL WfRunVariable that is evaluated to determine if the doIf branch should be executed.
      * @param doIf is the block of ThreadSpec code to be executed if the provided WorkflowCondition
      *     is satisfied.
      * @return Returns a {@link WorkflowIfStatement} object that allows you to chain {@link WorkflowIfStatement#doElseIf(LHExpression, IfElseBody)} and {@link WorkflowIfStatement#doElse(IfElseBody)} method calls.
@@ -255,7 +255,7 @@ public interface WorkflowThread {
      * Conditionally executes one of two workflow code branches; equivalent to an if/else statement
      * in programming.
      *
-     * @param condition is the WorkflowCondition to be satisfied.
+     * @param boolVar a BOOL WfRunVariable that is evaluated to determine if the doIf branch should be executed.
      * @param doIf is the block of ThreadSpec code to be executed if the provided WorkflowCondition
      *     is satisfied.
      * @param doElse is the block of ThreadSpec code to be executed if the provided
