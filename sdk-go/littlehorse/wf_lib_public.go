@@ -58,6 +58,14 @@ type NodeOutput interface {
 	getThread() *WorkflowThread
 
 	JsonPath(string) NodeOutput
+
+	CastTo(targetType lhproto.VariableType) LHExpression
+	CastToInt() LHExpression
+	CastToDouble() LHExpression
+	CastToStr() LHExpression
+	CastToBool() LHExpression
+	CastToBytes() LHExpression
+	CastToWfRunId() LHExpression
 	Get(field string) NodeOutput
 }
 
@@ -297,6 +305,13 @@ type LHExpression interface {
 	RemoveIndex_ByInt(index int) LHExpression
 	RemoveIndex_ByExpression(index LHExpression) LHExpression
 	RemoveKey(key interface{}) LHExpression
+	CastTo(targetType lhproto.VariableType) LHExpression
+	CastToInt() LHExpression
+	CastToDouble() LHExpression
+	CastToStr() LHExpression
+	CastToBool() LHExpression
+	CastToBytes() LHExpression
+	CastToWfRunId() LHExpression
 }
 
 func (n *WaitForThreadsNodeOutput) HandleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
@@ -490,6 +505,34 @@ func (w *WfRunVariable) RemoveKey(key interface{}) LHExpression {
 		rhs:       key,
 		operation: lhproto.VariableMutationType_REMOVE_KEY,
 	}
+}
+
+func (w *WfRunVariable) CastTo(targetType lhproto.VariableType) LHExpression {
+	return &castExpression{source: w, targetType: targetType}
+}
+
+func (w *WfRunVariable) CastToInt() LHExpression {
+	return w.CastTo(lhproto.VariableType_INT)
+}
+
+func (w *WfRunVariable) CastToDouble() LHExpression {
+	return w.CastTo(lhproto.VariableType_DOUBLE)
+}
+
+func (w *WfRunVariable) CastToStr() LHExpression {
+	return w.CastTo(lhproto.VariableType_STR)
+}
+
+func (w *WfRunVariable) CastToBool() LHExpression {
+	return w.CastTo(lhproto.VariableType_BOOL)
+}
+
+func (w *WfRunVariable) CastToBytes() LHExpression {
+	return w.CastTo(lhproto.VariableType_BYTES)
+}
+
+func (w *WfRunVariable) CastToWfRunId() LHExpression {
+	return w.CastTo(lhproto.VariableType_WF_RUN_ID)
 }
 
 func (t *WorkflowThread) DeclareBool(name string) *WfRunVariable {
