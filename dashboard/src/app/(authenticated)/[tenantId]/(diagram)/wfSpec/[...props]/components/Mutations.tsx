@@ -1,4 +1,5 @@
 import { lhPathToString } from '@/app/utils/lhPath'
+import { Badge, IdentifierBadge } from '@/components/ui/badge'
 import { ThreadSpec, VariableMutation } from 'littlehorse-client/proto'
 import { FC, useMemo } from 'react'
 import { VariableAssignment } from '../../../components/Sidebar/Components'
@@ -21,8 +22,8 @@ export const Mutations: FC<Props> = ({ nodes }) => {
       <h2 className="text-md mb-2 font-bold">Mutations</h2>
       {mutations.map(mutation => (
         <div key={mutation.lhsName} className="mb-1 flex items-center gap-1">
-          <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{mutation.lhsName}</span>
-          <span className="rounded bg-green-300 p-1 text-xs">{mutation.operation}</span>
+          <IdentifierBadge name={mutation.lhsName} />
+          <Badge className="bg-green-300">{mutation.operation}</Badge>
           <MutationRhS rhsValue={mutation.rhsValue} />
         </div>
       ))}
@@ -50,14 +51,12 @@ const NodeOutput: FC<{ value: Extract<VariableMutation['rhsValue'], { $case: 'no
 }) => {
   return (
     <>
-      <span className="rounded bg-gray-200 p-1 text-xs">Node Output</span>
+      <Badge className="bg-gray-200">Node Output</Badge>
       {nodeOutput.path && nodeOutput.path.$case == 'jsonpath' && (
-        <span className="rounded bg-gray-100 p-1 font-mono text-xs text-orange-500">{nodeOutput.path.value}</span>
+        <Badge className="bg-gray-100 font-mono text-orange-500">{nodeOutput.path.value}</Badge>
       )}
       {nodeOutput.path && nodeOutput.path.$case == 'lhPath' && (
-        <span className="rounded bg-gray-100 p-1 font-mono text-xs text-orange-500">
-          {lhPathToString(nodeOutput.path.value)}
-        </span>
+        <Badge className="bg-gray-100 font-mono text-orange-500">{lhPathToString(nodeOutput.path.value)}</Badge>
       )}
     </>
   )
