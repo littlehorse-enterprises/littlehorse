@@ -98,7 +98,8 @@ class BuilderUtil {
                 .build();
     }
 
-    private static VariableAssignment buildFromLHExpression(LHExpressionImpl expresion, LHTypeAdapterRegistry typeAdapterRegistry) {
+    private static VariableAssignment buildFromLHExpression(
+            LHExpressionImpl expresion, LHTypeAdapterRegistry typeAdapterRegistry) {
         Expression.Builder builder = Expression.newBuilder()
                 .setLhs(assignVariable(expresion.getLhs(), typeAdapterRegistry))
                 .setRhs(assignVariable(expresion.getRhs(), typeAdapterRegistry));
