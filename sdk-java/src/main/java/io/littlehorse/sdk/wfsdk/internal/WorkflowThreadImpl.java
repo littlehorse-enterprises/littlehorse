@@ -427,7 +427,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 }
                 argType = wfVar.typeDef.getPrimitiveType();
             } else {
-                argType = LHLibUtil.javaClassToLHVarType(arg.getClass());
+                argType = LHLibUtil.javaClassToLHVarType(arg.getClass(), parent.getTypeAdapterRegistry());
             }
 
             if (!argType.equals(taskDefInputVars.get(i).getTypeDef().getPrimitiveType())) {
@@ -540,7 +540,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     @Override
     public WfRunVariable declareStruct(String name, Class<?> clazz) {
-        return addStructVariable(name, new LHStructDefType(clazz));
+        return addStructVariable(name, new LHStructDefType(clazz, parent.getTypeAdapterRegistry()));
     }
 
     // TODO: Complete Arrays implementation
@@ -1133,7 +1133,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     public VariableAssignment assignVariable(Object variable) {
         checkIfIsActive();
-        return BuilderUtil.assignVariable(variable);
+        return BuilderUtil.assignVariable(variable, parent.getTypeAdapterRegistry());
     }
 
     private void checkIfIsActive() {

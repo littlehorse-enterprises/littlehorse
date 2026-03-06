@@ -111,9 +111,10 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
       router.push(`/${tenantId}/wfRun/${wfRunIdToPath(wfRun.id)}`)
     } catch (error: any) {
       if (error.message) {
-        toast.error(error.message.split(':')[1])
+        const sanitizedErrorMessage = error.message.slice(error.message.indexOf(':') + 1).trim()
+        toast.error(sanitizedErrorMessage, { duration: Infinity, closeButton: true })
       } else {
-        toast.error('An error occurred while executing the workflow')
+        toast.error('An error occurred while executing the workflow', { duration: Infinity, closeButton: true })
       }
     }
   }

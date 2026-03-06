@@ -15,7 +15,6 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
   useOnViewportChange({
     onChange: useCallback(
       (viewport: Viewport) => {
-        console.log('viewport', viewport)
         sessionStorage.setItem(viewportKey, JSON.stringify(viewport))
       },
       [viewportKey]
@@ -32,7 +31,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
           'elk.spacing.nodeNode': '150',
           'elk.layered.spacing.nodeNodeBetweenLayers': '200',
           'elk.spacing.edgeEdge': '100',
-          'elk.spacing.edgeNode': '50',
+          'elk.spacing.edgeNode': '100',
           'elk.edgeRouting': 'ORTHOGONAL',
           'elk.layered.nodePlacement.strategy': 'LINEAR_SEGMENTS',
           'elk.layered.cycleBreaking.strategy': 'DEPTH_FIRST',

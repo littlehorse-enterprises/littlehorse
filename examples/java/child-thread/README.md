@@ -2,7 +2,9 @@
 
 In this example you will see how to instantiate a child thread
 and then wait until it has finished its execution before
-executing another task.
+executing another task. The child thread in turn spawns a
+grandchild thread, demonstrating a three-level hierarchy:
+parent → child → grandchild.
 
 We will use the thread.spawnThread() function for that.
 
