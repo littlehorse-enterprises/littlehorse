@@ -10,7 +10,10 @@ import io.littlehorse.sdk.worker.LHStructIgnore;
 import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
@@ -135,6 +138,8 @@ public class LHStructProperty {
         return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry);
     }
 
+    /// The following methods are used to find annotations on the property, whether they are on the getter, setter, or
+    // field itself.
     private <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         if ((hasReadMethod() && pd.getReadMethod().isAnnotationPresent(annotationClass))) {
             return pd.getReadMethod().getAnnotation(annotationClass);
@@ -142,6 +147,45 @@ public class LHStructProperty {
         if ((hasWriteMethod() && pd.getWriteMethod().isAnnotationPresent(annotationClass))) {
             return pd.getWriteMethod().getAnnotation(annotationClass);
         }
+
+        return getAnnotationFromField(annotationClass);
+    }
+
+    private <T extends Annotation> T getAnnotationFromField(Class<T> annotationClass) {
+        for (String fieldName : getCandidateFieldNames()) {
+            Field field = getFieldFromClassHierarchy(fieldName);
+
+            if (field != null && field.isAnnotationPresent(annotationClass)) {
+                return field.getAnnotation(annotationClass);
+            }
+        }
+
+        return null;
+    }
+
+    private List<String> getCandidateFieldNames() {
+        List<String> fieldNames = new ArrayList<>();
+        fieldNames.add(pd.getName());
+
+        if (pd.getPropertyType() == boolean.class || pd.getPropertyType() == Boolean.class) {
+            fieldNames.add("is" + Character.toUpperCase(pd.getName().charAt(0))
+                    + pd.getName().substring(1));
+        }
+
+        return fieldNames;
+    }
+
+    private Field getFieldFromClassHierarchy(String fieldName) {
+        Class<?> currentClass = this.parentStructDef.getClassType();
+
+        while (currentClass != null) {
+            try {
+                return currentClass.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException ignored) {
+                currentClass = currentClass.getSuperclass();
+            }
+        }
+
         return null;
     }
 
