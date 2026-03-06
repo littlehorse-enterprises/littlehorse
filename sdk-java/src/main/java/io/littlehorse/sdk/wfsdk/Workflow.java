@@ -187,7 +187,7 @@ public abstract class Workflow {
 
     /**
      * Compiles this Workflow into a `WfSpec`.
-     * 
+     *
      * <p> <b> If you have type adapters configured in your LHConfig that you want to apply to the Workflow, use {@link #compileWorkflow(LHConfig)} instead. </b>
      *
      * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
@@ -196,7 +196,7 @@ public abstract class Workflow {
 
     /**
      * Compiles this Workflow into a `WfSpec`, applying configured type adapters from the provided config first.
-     * 
+     *
      * <p> <b> Use this method overload if you have type adapters configured in your {@link LHConfig} that you want to apply to the Workflow before registration. </b>
      *
      * @param config source for dynamically configured type adapters
@@ -310,7 +310,7 @@ public abstract class Workflow {
     /**
      * Deploys the WfSpec object to the LH Server. Registering the WfSpec via
      * Workflow::registerWfSpec() is the same as client.putWfSpec(workflow.compileWorkflow()).
-     * 
+     *
      * <p> <b> If you have type adapters configured in your {@link LHConfig} that you want to apply to the Workflow, use {@link #registerWfSpec(LHConfig)} instead. </b>
      *
      * @param client is an LHClient.
