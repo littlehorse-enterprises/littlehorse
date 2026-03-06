@@ -1,8 +1,8 @@
 import { FC } from 'react'
 import { useDiagram } from '../../../hooks/useDiagram'
 import { NodeStatus } from '../Components/NodeStatus'
-import { NodeVariable } from '../Components/NodeVariable'
 import { NodeTypeDocumentation } from '../Components/NodeTypeDocumentation'
+import { NodeVariable } from '../Components/NodeVariable'
 
 export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
   const { selectedNode } = useDiagram()
@@ -16,6 +16,10 @@ export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
   }
 
   const nodeRun = selectedNode.data.nodeRunsList[nodeRunIndex]
+  if (!nodeRun) {
+    return null
+  }
+
   return (
     <div className="ml-1 flex max-w-full flex-1 flex-col">
       {nodeRun.status && <NodeStatus status={nodeRun.status} />}
