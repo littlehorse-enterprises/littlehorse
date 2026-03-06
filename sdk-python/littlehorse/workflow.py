@@ -33,7 +33,7 @@ from littlehorse.model import (
     AllowedUpdateType,
     VariableValue,
     Edge,
-    EdgeCondition,
+    LegacyEdgeCondition,
     EntrypointNode,
     ExitNode,
     ExternalEventNode,
@@ -147,12 +147,17 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
             variable_name=variable_name,
         )
 
+    if isinstance(value, CastExpression):
+        inner = to_variable_assignment(value.source)
+        inner.target_type.CopyFrom(TypeDefinition(primitive_type=value.target_type))
+        return inner
+
     if isinstance(value, LHExpression):
         expression: LHExpression = value
         return VariableAssignment(
             expression=VariableAssignment.Expression(
                 lhs=to_variable_assignment(expression.lhs()),
-                operation=expression.operation(),
+                mutation_type=expression.operation(),
                 rhs=to_variable_assignment(expression.rhs()),
             )
         )
@@ -202,6 +207,80 @@ class LHExpression:
 
     def operation(self) -> Any:
         return self._operation
+        
+    def cast_to(self, target_type: VariableType) -> "CastExpression":
+        return CastExpression(self, target_type)
+
+    def cast_to_int(self) -> "CastExpression":
+        return self.cast_to(VariableType.INT)
+
+    def cast_to_double(self) -> "CastExpression":
+        return self.cast_to(VariableType.DOUBLE)
+
+    def cast_to_str(self) -> "CastExpression":
+        return self.cast_to(VariableType.STR)
+
+    def cast_to_bool(self) -> "CastExpression":
+        return self.cast_to(VariableType.BOOL)
+
+    def cast_to_bytes(self) -> "CastExpression":
+        return self.cast_to(VariableType.BYTES)
+
+    def cast_to_wf_run_id(self) -> "CastExpression":
+        return self.cast_to(VariableType.WF_RUN_ID)        
+
+
+class CastExpression:
+    def __init__(self, source: Any, target_type: VariableType) -> None:
+        self.source = source
+        self.target_type = target_type
+
+    def add(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.ADD, other)
+
+    def subtract(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.SUBTRACT, other)
+
+    def multiply(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.MULTIPLY, other)
+
+    def divide(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.DIVIDE, other)
+
+    def extend(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.EXTEND, other)
+
+    def remove_if_present(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.REMOVE_IF_PRESENT, other)
+
+    def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
+        if index is None:
+            raise ValueError("Expected 'index' to be set, but it was None.")
+        return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
+
+    def remove_key(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.REMOVE_KEY, other)
+
+    def cast_to(self, target_type: VariableType) -> "CastExpression":
+        return CastExpression(self, target_type)
+
+    def cast_to_int(self) -> "CastExpression":
+        return self.cast_to(VariableType.INT)
+
+    def cast_to_double(self) -> "CastExpression":
+        return self.cast_to(VariableType.DOUBLE)
+
+    def cast_to_str(self) -> "CastExpression":
+        return self.cast_to(VariableType.STR)
+
+    def cast_to_bool(self) -> "CastExpression":
+        return self.cast_to(VariableType.BOOL)
+
+    def cast_to_bytes(self) -> "CastExpression":
+        return self.cast_to(VariableType.BYTES)
+
+    def cast_to_wf_run_id(self) -> "CastExpression":
+        return self.cast_to(VariableType.WF_RUN_ID)
 
 
 class WorkflowCondition:
@@ -245,13 +324,13 @@ class WorkflowCondition:
     def __str__(self) -> str:
         return to_json(self.compile())
 
-    def compile(self) -> EdgeCondition:
+    def compile(self) -> LegacyEdgeCondition:
         """Compile this into Protobuf Objects.
 
         Returns:
-            EdgeCondition: Spec.
+            LegacyEdgeCondition: Spec.
         """
-        return EdgeCondition(
+        return LegacyEdgeCondition(
             comparator=self.comparator,
             left=to_variable_assignment(self.left_hand),
             right=to_variable_assignment(self.right_hand),
@@ -557,9 +636,9 @@ class WfRunVariable:
             self.name,
             self.parent,
             variable_type=self.type,
-            default_value=self.default_value,
             struct_def_name=self._struct_def_name,
         )
+        out.default_value = self.default_value
         out.json_path = json_path
         return out
 
@@ -790,6 +869,27 @@ class WfRunVariable:
 
     def remove_key(self, key: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_KEY, key)
+
+    def cast_to(self, target_type: VariableType) -> "CastExpression":
+        return CastExpression(self, target_type)
+
+    def cast_to_int(self) -> "CastExpression":
+        return self.cast_to(VariableType.INT)
+
+    def cast_to_double(self) -> "CastExpression":
+        return self.cast_to(VariableType.DOUBLE)
+
+    def cast_to_str(self) -> "CastExpression":
+        return self.cast_to(VariableType.STR)
+
+    def cast_to_bool(self) -> "CastExpression":
+        return self.cast_to(VariableType.BOOL)
+
+    def cast_to_bytes(self) -> "CastExpression":
+        return self.cast_to(VariableType.BYTES)
+
+    def cast_to_wf_run_id(self) -> "CastExpression":
+        return self.cast_to(VariableType.WF_RUN_ID)
 
     def __str__(self) -> str:
         return to_json(self.compile())
@@ -1262,7 +1362,7 @@ class WorkflowThread:
         self._wf_interruptions: list[WorkflowInterruption] = []
         self._nodes: list[WorkflowNode] = []
         self._variable_mutations: deque[VariableMutation] = deque()
-        self._last_node_condition: EdgeCondition | None = None
+        self._last_node_condition: LegacyEdgeCondition | None = None
         self._retention_policy: Optional[ThreadRetentionPolicy] = None
 
         if workflow is None:
@@ -1400,7 +1500,7 @@ class WorkflowThread:
         """
         self._check_if_active()
         node = WaitForConditionNode(
-            condition=condition.compile(),
+            legacy_condition=condition.compile(),
         )
         node_name = self.add_node("wait-for-condition", node)
         return WaitForConditionNodeOutput(node_name, self)
@@ -2318,7 +2418,7 @@ class WorkflowThread:
                     Edge(
                         sink_node_name=next_node_name,
                         variable_mutations=self._collect_variable_mutations(),
-                        condition=self._last_node_condition,
+                        legacy_condition=self._last_node_condition,
                     )
                 )
                 self._last_node_condition = None
@@ -2382,16 +2482,16 @@ class WorkflowThread:
         while_edge = start_node._find_outgoing_edge(while_condition_node.name)
         while_edge.MergeFrom(
             Edge(
-                condition=condition.compile(),
+                legacy_condition=condition.compile(),
             )
         )
 
         start_node.outgoing_edges.append(
-            Edge(sink_node_name=end_node_name, condition=condition.negate().compile())
+            Edge(sink_node_name=end_node_name, legacy_condition=condition.negate().compile())
         )
 
         end_node.outgoing_edges.append(
-            Edge(sink_node_name=start_node_name, condition=condition.compile())
+            Edge(sink_node_name=start_node_name, legacy_condition=condition.compile())
         )
 
     def do_if(
@@ -2453,7 +2553,7 @@ class WorkflowThread:
                 Edge(
                     sink_node_name=if_statement.get_last_nop_node_name(),
                     variable_mutations=self._collect_variable_mutations(),
-                    condition=else_if_condition,
+                    legacy_condition=else_if_condition,
                 )
             )
         # Otherwise, move nodes that were added
@@ -2469,7 +2569,7 @@ class WorkflowThread:
                 Edge(
                     sink_node_name=first_node_of_body_name,
                     variable_mutations=last_outgoing_edge.variable_mutations,
-                    condition=else_if_condition,
+                    legacy_condition=else_if_condition,
                 )
             )
 

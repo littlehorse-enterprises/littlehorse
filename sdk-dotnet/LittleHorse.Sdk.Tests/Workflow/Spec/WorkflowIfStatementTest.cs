@@ -43,7 +43,7 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "2-nop-NOP",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment 
                         {
@@ -113,7 +113,7 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "2-task-a-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
@@ -129,7 +129,7 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "4-task-b-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
@@ -157,7 +157,7 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "5-task-c-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
@@ -241,7 +241,7 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "2-task-a-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
@@ -257,7 +257,7 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "4-task-b-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
@@ -364,7 +364,7 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "2-task-a-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
@@ -380,7 +380,7 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "5-task-b-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
@@ -450,7 +450,7 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "2-complete-EXIT",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
@@ -650,7 +650,7 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "2-complete-EXIT",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {
@@ -666,7 +666,7 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "4-task-b-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Left = new VariableAssignment
                         {

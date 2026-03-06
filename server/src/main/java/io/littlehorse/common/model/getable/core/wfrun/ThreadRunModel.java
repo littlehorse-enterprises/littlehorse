@@ -879,7 +879,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 break;
             case EXPRESSION:
                 ExpressionModel expression = assn.getExpression();
-                val = expression.evaluate(varAssn -> assignVariable(varAssn, txnCache));
+                val = expression.evaluate(this, varAssn -> assignVariable(varAssn, txnCache));
                 break;
             case SOURCE_NOT_SET:
                 // This should have been caught by the WfSpecModel#validate()

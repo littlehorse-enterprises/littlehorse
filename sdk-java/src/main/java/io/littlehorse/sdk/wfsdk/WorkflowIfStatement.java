@@ -10,14 +10,14 @@ public interface WorkflowIfStatement {
      *
      * Equivalent to an 'else if' statement in programming.
      *
-     * @param condition is the WorkflowCondition to be satisfied.
+     * @param condition is the LHExpression to be satisfied.
      * @param body is the block of ThreadSpec code to be executed if the provided WorkflowCondition
      *             is satisfied.
      * @return Returns a WorkflowIfStatement object that allows you to chain
      *         {@link WorkflowIfStatement#doElseIf(WorkflowCondition, IfElseBody)} and
      *         {@link WorkflowIfStatement#doElse(IfElseBody)} method calls.
      */
-    WorkflowIfStatement doElseIf(WorkflowCondition condition, IfElseBody body);
+    WorkflowIfStatement doElseIf(LHExpression condition, IfElseBody body);
 
     /**
      * After checking the ALL previous condition(s) of the If Statement,
