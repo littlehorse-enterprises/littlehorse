@@ -13,7 +13,7 @@ const PersonStructDefDescription string = "Person represents a person with a nam
 type Person struct {
 	FirstName   string  `json:"firstName"`
 	LastName    string  `json:"lastName"`
-	HomeAddress Address `json:"homeAddress"`
+	HomeAddress Address `json:"homeAddress" lh:",masked"`
 }
 
 func (Person) LHStructDef() littlehorse.LHStructDefInfo {

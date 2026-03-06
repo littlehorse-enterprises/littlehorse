@@ -3,6 +3,7 @@ package littlehorse_test
 import (
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
@@ -716,6 +717,18 @@ func TestVarValToVarType(t *testing.T) {
 	varType = littlehorse.VarValToVarType(varVal)
 	assert.Equal(t, *varType, lhproto.VariableType_STR)
 	assert.Equal(t, varVal.GetStr(), mystr)
+
+	// Timestamp
+	varVal, err = littlehorse.InterfaceToVarVal(time.Now())
+	assert.Nil(t, err)
+	varType = littlehorse.VarValToVarType(varVal)
+	assert.Equal(t, lhproto.VariableType_TIMESTAMP, *varType)
+
+	// WfRunId
+	varVal, err = littlehorse.InterfaceToVarVal(lhproto.WfRunId{Id: "my-wf-run-id"})
+	assert.Nil(t, err)
+	varType = littlehorse.VarValToVarType(varVal)
+	assert.Equal(t, lhproto.VariableType_WF_RUN_ID, *varType)
 
 	// struct/JSON_OBJ
 	varVal, err = littlehorse.InterfaceToVarVal(someObject{

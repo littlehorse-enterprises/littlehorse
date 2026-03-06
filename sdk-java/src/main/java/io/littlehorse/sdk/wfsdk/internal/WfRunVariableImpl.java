@@ -186,7 +186,8 @@ class WfRunVariableImpl implements WfRunVariable {
 
     private void setDefaultValue(Object defaultVal) {
         try {
-            this.defaultValue = LHLibUtil.objToVarVal(defaultVal);
+            this.defaultValue =
+                    LHLibUtil.objToVarVal(defaultVal, parent.getParent().getTypeAdapterRegistry());
         } catch (LHSerdeException e) {
             throw new IllegalArgumentException("Was unable to convert provided default value to LH Variable Type", e);
         }
