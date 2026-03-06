@@ -12,15 +12,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class EdgeConditionModelTest {
+public class LegacyEdgeConditionModelTest {
     @ParameterizedTest
     @MethodSource("provideEdgeConditionArguments")
     public void shouldPedro(Object lhs, Comparator comparator, Object rhs, boolean isValid) {
-        TypeDefinitionModel lhsType = EdgeConditionModelTest.getTypeDefinitionFromObject(lhs);
-        TypeDefinitionModel rhsType = EdgeConditionModelTest.getTypeDefinitionFromObject(rhs);
+        TypeDefinitionModel lhsType = LegacyEdgeConditionModelTest.getTypeDefinitionFromObject(lhs);
+        TypeDefinitionModel rhsType = LegacyEdgeConditionModelTest.getTypeDefinitionFromObject(rhs);
 
         Optional<String> expectedErrorMessage =
-                EdgeConditionModel.checkTypeComparisonIncompatibility(lhsType, comparator, rhsType);
+                LegacyEdgeConditionModel.checkTypeComparisonIncompatibility(lhsType, comparator, rhsType);
 
         assertThat(expectedErrorMessage.isEmpty()).isEqualTo(isValid);
     }

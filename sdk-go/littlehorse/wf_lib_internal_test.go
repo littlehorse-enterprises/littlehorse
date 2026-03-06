@@ -979,12 +979,12 @@ func TestNestedExpressions(t *testing.T) {
 	assert.NotNil(t, lhsExpression)
 	assert.Equal(t, lhsExpression.GetLhs().GetVariableName(), "price")
 	assert.Equal(t, lhsExpression.GetRhs().GetVariableName(), "quantity")
-	assert.Equal(t, lhsExpression.GetOperation(), lhproto.VariableMutationType_MULTIPLY)
+	assert.Equal(t, lhsExpression.GetMutationType(), lhproto.VariableMutationType_MULTIPLY)
 
 	outerRhs := outerExpression.GetRhs()
 	assert.NotNil(t, outerRhs)
 	assert.Equal(t, outerRhs.GetVariableName(), "discount")
-	assert.Equal(t, outerExpression.GetOperation(), lhproto.VariableMutationType_DIVIDE)
+	assert.Equal(t, outerExpression.GetMutationType(), lhproto.VariableMutationType_DIVIDE)
 }
 
 func TestDynamicTask(t *testing.T) {
@@ -1253,19 +1253,21 @@ func TestShouldCompileWorkflowWithDefaultEdgeWhenDoElseIfIsNotUsed(t *testing.T)
 		OutgoingEdges: []*lhproto.Edge{
 			{
 				SinkNodeName: "2-nop-NOP",
-				Condition: &lhproto.EdgeCondition{
-					Comparator: lhproto.Comparator_GREATER_THAN_EQ,
-					Left: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 5},
+				EdgeCondition: &lhproto.Edge_LegacyCondition{
+					LegacyCondition: &lhproto.LegacyEdgeCondition{
+						Comparator: lhproto.Comparator_GREATER_THAN_EQ,
+						Left: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 5},
+								},
 							},
 						},
-					},
-					Right: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 9},
+						Right: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 9},
+								},
 							},
 						},
 					},
@@ -1313,19 +1315,21 @@ func TestShouldCompileWorkflowWithMultipleDoElseIfStatementsInWorkflowThread(t *
 		OutgoingEdges: []*lhproto.Edge{
 			{
 				SinkNodeName: "2-task-a-TASK",
-				Condition: &lhproto.EdgeCondition{
-					Comparator: lhproto.Comparator_GREATER_THAN_EQ,
-					Left: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 5},
+				EdgeCondition: &lhproto.Edge_LegacyCondition{
+					LegacyCondition: &lhproto.LegacyEdgeCondition{
+						Comparator: lhproto.Comparator_GREATER_THAN_EQ,
+						Left: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 5},
+								},
 							},
 						},
-					},
-					Right: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 9},
+						Right: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 9},
+								},
 							},
 						},
 					},
@@ -1333,19 +1337,21 @@ func TestShouldCompileWorkflowWithMultipleDoElseIfStatementsInWorkflowThread(t *
 			},
 			{
 				SinkNodeName: "4-task-b-TASK",
-				Condition: &lhproto.EdgeCondition{
-					Comparator: lhproto.Comparator_LESS_THAN,
-					Left: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 7},
+				EdgeCondition: &lhproto.Edge_LegacyCondition{
+					LegacyCondition: &lhproto.LegacyEdgeCondition{
+						Comparator: lhproto.Comparator_LESS_THAN,
+						Left: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 7},
+								},
 							},
 						},
-					},
-					Right: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 4},
+						Right: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 4},
+								},
 							},
 						},
 					},
@@ -1367,19 +1373,21 @@ func TestShouldCompileWorkflowWithMultipleDoElseIfStatementsInWorkflowThread(t *
 			},
 			{
 				SinkNodeName: "5-task-c-TASK",
-				Condition: &lhproto.EdgeCondition{
-					Comparator: lhproto.Comparator_EQUALS,
-					Left: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 5},
+				EdgeCondition: &lhproto.Edge_LegacyCondition{
+					LegacyCondition: &lhproto.LegacyEdgeCondition{
+						Comparator: lhproto.Comparator_EQUALS,
+						Left: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 5},
+								},
 							},
 						},
-					},
-					Right: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 5},
+						Right: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 5},
+								},
 							},
 						},
 					},
@@ -1445,19 +1453,21 @@ func TestShouldCompileWorkflowWithDoIfElseAndElseStatements(t *testing.T) {
 		OutgoingEdges: []*lhproto.Edge{
 			{
 				SinkNodeName: "2-task-a-TASK",
-				Condition: &lhproto.EdgeCondition{
-					Comparator: lhproto.Comparator_GREATER_THAN_EQ,
-					Left: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 5},
+				EdgeCondition: &lhproto.Edge_LegacyCondition{
+					LegacyCondition: &lhproto.LegacyEdgeCondition{
+						Comparator: lhproto.Comparator_GREATER_THAN_EQ,
+						Left: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 5},
+								},
 							},
 						},
-					},
-					Right: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 9},
+						Right: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 9},
+								},
 							},
 						},
 					},
@@ -1465,19 +1475,21 @@ func TestShouldCompileWorkflowWithDoIfElseAndElseStatements(t *testing.T) {
 			},
 			{
 				SinkNodeName: "4-task-b-TASK",
-				Condition: &lhproto.EdgeCondition{
-					Comparator: lhproto.Comparator_LESS_THAN,
-					Left: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 7},
+				EdgeCondition: &lhproto.Edge_LegacyCondition{
+					LegacyCondition: &lhproto.LegacyEdgeCondition{
+						Comparator: lhproto.Comparator_LESS_THAN,
+						Left: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 7},
+								},
 							},
 						},
-					},
-					Right: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 4},
+						Right: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 4},
+								},
 							},
 						},
 					},
@@ -1587,19 +1599,21 @@ func TestShouldCompileWorkflowWhenDoElseIfIsCalledAfterATask(t *testing.T) {
 		OutgoingEdges: []*lhproto.Edge{
 			{
 				SinkNodeName: "2-nop-NOP",
-				Condition: &lhproto.EdgeCondition{
-					Comparator: lhproto.Comparator_GREATER_THAN_EQ,
-					Left: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 5},
+				EdgeCondition: &lhproto.Edge_LegacyCondition{
+					LegacyCondition: &lhproto.LegacyEdgeCondition{
+						Comparator: lhproto.Comparator_GREATER_THAN_EQ,
+						Left: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 5},
+								},
 							},
 						},
-					},
-					Right: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 9},
+						Right: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 9},
+								},
 							},
 						},
 					},
@@ -1607,19 +1621,21 @@ func TestShouldCompileWorkflowWhenDoElseIfIsCalledAfterATask(t *testing.T) {
 			},
 			{
 				SinkNodeName: "4-task-b-TASK",
-				Condition: &lhproto.EdgeCondition{
-					Comparator: lhproto.Comparator_GREATER_THAN_EQ,
-					Left: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 5},
+				EdgeCondition: &lhproto.Edge_LegacyCondition{
+					LegacyCondition: &lhproto.LegacyEdgeCondition{
+						Comparator: lhproto.Comparator_GREATER_THAN_EQ,
+						Left: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 5},
+								},
 							},
 						},
-					},
-					Right: &lhproto.VariableAssignment{
-						Source: &lhproto.VariableAssignment_LiteralValue{
-							LiteralValue: &lhproto.VariableValue{
-								Value: &lhproto.VariableValue_Int{Int: 3},
+						Right: &lhproto.VariableAssignment{
+							Source: &lhproto.VariableAssignment_LiteralValue{
+								LiteralValue: &lhproto.VariableValue{
+									Value: &lhproto.VariableValue_Int{Int: 3},
+								},
 							},
 						},
 					},

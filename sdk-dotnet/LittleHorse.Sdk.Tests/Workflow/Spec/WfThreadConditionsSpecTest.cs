@@ -58,7 +58,7 @@ public class WfThreadDoIfTest
                 new Edge
                 {
                     SinkNodeName = "2-task-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Comparator = Comparator.GreaterThan,
                         Left = new VariableAssignment { LiteralValue = new VariableValue { Int = leftHandSide } },
@@ -156,7 +156,7 @@ public class WfThreadDoIfTest
                 new Edge
                 {
                     SinkNodeName = "2-task-a-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Comparator = Comparator.LessThan,
                         Left = new VariableAssignment { LiteralValue = new VariableValue { Int = leftHandSide } },
@@ -270,7 +270,7 @@ public class WfThreadDoIfTest
                 new Edge
                 {
                     SinkNodeName = "2-eating-donut-TASK",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Comparator = Comparator.GreaterThan,
                         Left = new VariableAssignment { VariableName = "number-of-donuts" },
@@ -280,7 +280,7 @@ public class WfThreadDoIfTest
                 new Edge
                 {
                     SinkNodeName = "3-nop-NOP",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Comparator = Comparator.LessThanEq,
                         Left = new VariableAssignment { VariableName = "number-of-donuts" },
@@ -322,7 +322,7 @@ public class WfThreadDoIfTest
                 new Edge
                 {
                     SinkNodeName = "1-nop-NOP",
-                    Condition = new EdgeCondition
+                    LegacyCondition = new LegacyEdgeCondition
                     {
                         Comparator = Comparator.GreaterThan,
                         Left = new VariableAssignment { VariableName = "number-of-donuts" },
