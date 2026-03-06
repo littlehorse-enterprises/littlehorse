@@ -6,6 +6,7 @@ import com.google.protobuf.util.JsonFormat;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.AllowedUpdateType;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
@@ -201,6 +202,17 @@ public abstract class Workflow {
     public abstract PutWfSpecRequest compileWorkflow();
 
     /**
+     * Compiles this Workflow into a `WfSpec`, applying configured type adapters from the provided config first.
+     *
+     * @param config source for dynamically configured type adapters
+     * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
+     */
+    public PutWfSpecRequest compileWorkflow(LHConfig config) {
+        applyConfiguredTypeAdapters(config);
+        return compileWorkflow();
+    }
+
+    /**
      * Returns the names of all `TaskDef`s used by this workflow.
      *
      * @return a Set of Strings containing the names of all `TaskDef`s used by this workflow.
@@ -307,6 +319,33 @@ public abstract class Workflow {
      * @param client is an LHClient.
      */
     public abstract void registerWfSpec(LittleHorseBlockingStub client);
+
+    /**
+     * Deploys the WfSpec object to the LH Server using the provided config.
+     *
+     * <p>This applies all type adapters configured in `config` to the workflow before registration.
+     *
+     * @param config contains server connection settings and optional configured type adapters.
+     */
+    public void registerWfSpec(LHConfig config) {
+        applyConfiguredTypeAdapters(config);
+        registerWfSpec(config.getBlockingStub());
+    }
+
+    private void applyConfiguredTypeAdapters(LHConfig config) {
+        for (LHTypeAdapter<?> adapter : config.getTypeAdapters()) {
+            LHTypeAdapter<?> existing = wfTypeAdaptersByClass.get(adapter.getTypeClass());
+            if (existing == null) {
+                wfTypeAdaptersByClass.put(adapter.getTypeClass(), adapter);
+                continue;
+            }
+
+            if (!existing.getClass().equals(adapter.getClass())) {
+                throw new IllegalArgumentException("A type adapter for "
+                        + adapter.getTypeClass().getName() + " is already registered to this workflow");
+            }
+        }
+    }
 
     /**
      * Writes out the PutWfSpecRequest in JSON form in a directory.

@@ -50,3 +50,18 @@ lhctl get taskRun <wf_run_id> <task_run_global_id>
 
 - `TypeAdapterExample.java`: workflow + adapter registration + worker startup
 - `Worker.java`: UUID task methods annotated with `@LHTaskMethod`
+
+## Config-driven type adapters
+
+You can also register runtime type adapters from configuration using `LHC_TYPE_ADAPTERS`.
+
+Example:
+
+```
+LHC_TYPE_ADAPTERS=com.example.UUIDAdapter,com.example.MyCustomAdapter
+```
+
+Notes:
+- Class names must be fully-qualified.
+- Adapter classes must implement an `LHTypeAdapter` (for example `LHStringAdapter<T>`).
+- Adapter classes must have an accessible no-arg constructor.

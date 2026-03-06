@@ -58,7 +58,8 @@ public class LHConfig extends ConfigBase {
         LHW_NUM_WORKER_THREADS,
         LHC_GRPC_KEEPALIVE_TIME_MS,
         LHC_GRPC_KEEPALIVE_TIMEOUT_MS,
-        LHC_INFLIGHT_TASKS
+        LHC_INFLIGHT_TASKS,
+        LHC_TYPE_ADAPTERS
     }
 
     /** The bootstrap host for the LH Server. */
@@ -109,6 +110,9 @@ public class LHConfig extends ConfigBase {
     /** Defines inflight request per polling thread */
     public static final String INFLIGHT_TASKS_KEY = ConfigKeys.LHC_INFLIGHT_TASKS.name();
 
+    /** Comma-separated list of fully-qualified type adapter class names. */
+    public static final String TYPE_ADAPTERS_KEY = ConfigKeys.LHC_TYPE_ADAPTERS.name();
+
     private static final String DEFAULT_PROTOCOL = "PLAINTEXT";
 
     /**
@@ -126,12 +130,14 @@ public class LHConfig extends ConfigBase {
     private OAuthConfig oauthConfig;
     private OAuthCredentialsProvider oauthCredentialsProvider;
     private Map<Class<?>, LHTypeAdapter<?>> typeAdaptersByClass;
+    private boolean typeAdaptersLoadedFromConfig;
 
     /** Creates an LHConfig. Loads default values for config from env vars. */
     public LHConfig() {
         super();
         createdChannels = new HashMap<>();
         typeAdaptersByClass = new LinkedHashMap<>();
+        typeAdaptersLoadedFromConfig = false;
     }
 
     /**
@@ -143,6 +149,7 @@ public class LHConfig extends ConfigBase {
         super(props);
         createdChannels = new HashMap<>();
         typeAdaptersByClass = new LinkedHashMap<>();
+        typeAdaptersLoadedFromConfig = false;
     }
 
     /**
@@ -154,6 +161,7 @@ public class LHConfig extends ConfigBase {
         super(propLocation);
         createdChannels = new HashMap<>();
         typeAdaptersByClass = new LinkedHashMap<>();
+        typeAdaptersLoadedFromConfig = false;
     }
 
     /**
@@ -165,12 +173,14 @@ public class LHConfig extends ConfigBase {
         super(propLocation);
         createdChannels = new HashMap<>();
         typeAdaptersByClass = new LinkedHashMap<>();
+        typeAdaptersLoadedFromConfig = false;
     }
 
     private LHConfig(ConfigSource configSource) {
         super(configSource);
         createdChannels = new HashMap<>();
         typeAdaptersByClass = new LinkedHashMap<>();
+        typeAdaptersLoadedFromConfig = false;
     }
 
     public static LHConfigBuilder newBuilder() {
@@ -230,6 +240,7 @@ public class LHConfig extends ConfigBase {
         super(configs);
         createdChannels = new HashMap<>();
         typeAdaptersByClass = new LinkedHashMap<>();
+        typeAdaptersLoadedFromConfig = false;
     }
 
     /**
@@ -536,12 +547,80 @@ public class LHConfig extends ConfigBase {
      * @param adapter the type adapter to register
      */
     public <T> void registerTypeAdapter(LHTypeAdapter<T> adapter) {
+        loadTypeAdaptersFromConfigIfNeeded();
+        registerTypeAdapterInternal(adapter);
+    }
+
+    private void registerTypeAdapterInternal(LHTypeAdapter<?> adapter) {
         if (typeAdaptersByClass.containsKey(adapter.getTypeClass())) {
             throw new IllegalArgumentException(
                     "A type adapter for " + adapter.getTypeClass().getName() + " is already registered to this worker");
         }
 
         typeAdaptersByClass.put(adapter.getTypeClass(), adapter);
+    }
+
+    private synchronized void loadTypeAdaptersFromConfigIfNeeded() {
+        if (typeAdaptersLoadedFromConfig) {
+            return;
+        }
+
+        String configuredTypeAdapters = getOrSetDefault(TYPE_ADAPTERS_KEY, null);
+        if (configuredTypeAdapters == null || configuredTypeAdapters.isBlank()) {
+            typeAdaptersLoadedFromConfig = true;
+            return;
+        }
+
+        List<String> loadedTypeAdapters = new ArrayList<>();
+
+        for (String token : configuredTypeAdapters.split(",")) {
+            String className = token.trim();
+            if (className.isEmpty()) {
+                continue;
+            }
+
+            registerTypeAdapterInternal(instantiateTypeAdapter(className));
+            loadedTypeAdapters.add(className);
+        }
+
+        log.info(
+                "Loaded {} type adapter(s) from {}: {}",
+                loadedTypeAdapters.size(),
+                TYPE_ADAPTERS_KEY,
+                loadedTypeAdapters);
+
+        typeAdaptersLoadedFromConfig = true;
+    }
+
+    private LHTypeAdapter<?> instantiateTypeAdapter(String className) {
+        Class<?> adapterClass;
+        try {
+            adapterClass = Class.forName(className);
+        } catch (ClassNotFoundException exn) {
+            throw new IllegalArgumentException("Configured type adapter class not found: " + className, exn);
+        }
+
+        if (!LHTypeAdapter.class.isAssignableFrom(adapterClass)) {
+            throw new IllegalArgumentException(
+                    "Configured type adapter class " + className + " does not implement LHTypeAdapter");
+        }
+
+        Object adapterInstance;
+        try {
+            adapterInstance = adapterClass.getDeclaredConstructor().newInstance();
+        } catch (ReflectiveOperationException exn) {
+            throw new IllegalArgumentException(
+                    "Configured type adapter class " + className + " must provide an accessible no-arg constructor",
+                    exn);
+        }
+
+        LHTypeAdapter<?> adapter = (LHTypeAdapter<?>) adapterInstance;
+        if (adapter.getTypeClass() == null) {
+            throw new IllegalArgumentException(
+                    "Configured type adapter class " + className + " returned null from getTypeClass()");
+        }
+
+        return adapter;
     }
 
     /**
@@ -553,6 +632,7 @@ public class LHConfig extends ConfigBase {
      * @return an immutable list of registered type adapters
      */
     public List<LHTypeAdapter<?>> getTypeAdapters() {
+        loadTypeAdaptersFromConfigIfNeeded();
         return Collections.unmodifiableList(new ArrayList<>(typeAdaptersByClass.values()));
     }
 
@@ -565,6 +645,7 @@ public class LHConfig extends ConfigBase {
      * @return a type adapter registry for the current configuration
      */
     public LHTypeAdapterRegistry getTypeAdapterRegistry() {
+        loadTypeAdaptersFromConfigIfNeeded();
         return LHTypeAdapterRegistry.from(new ArrayList<>(typeAdaptersByClass.values()));
     }
 }

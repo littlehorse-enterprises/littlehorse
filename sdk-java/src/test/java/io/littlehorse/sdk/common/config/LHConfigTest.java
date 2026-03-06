@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import io.littlehorse.sdk.worker.adapter.LHStringAdapter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import net.datafaker.Faker;
 import org.assertj.core.util.Files;
@@ -135,5 +137,129 @@ public class LHConfigTest {
                 .build();
 
         assertThat(lhConfig.getTaskWorkerVersion()).isEqualTo(EXPECTED_VERSION);
+    }
+
+    @Test
+    void shouldLoadTypeAdaptersFromConfig() {
+        Properties properties = new Properties();
+        properties.put(LHConfig.TYPE_ADAPTERS_KEY, UUIDStringAdapter.class.getName());
+
+        LHConfig config = new LHConfig(properties);
+
+        assertThat(config.getTypeAdapters()).hasSize(1);
+        assertThat(config.getTypeAdapters().get(0)).isInstanceOf(UUIDStringAdapter.class);
+        assertThat(config.getTypeAdapters().get(0).getTypeClass()).isEqualTo(UUID.class);
+    }
+
+    @Test
+    void shouldLoadMultipleTypeAdaptersFromCommaSeparatedConfig() {
+        Properties properties = new Properties();
+        properties.put(
+                LHConfig.TYPE_ADAPTERS_KEY,
+                UUIDStringAdapter.class.getName() + ", " + IntegerStringAdapter.class.getName());
+
+        LHConfig config = new LHConfig(properties);
+
+        assertThat(config.getTypeAdapters()).hasSize(2);
+    }
+
+    @Test
+    void shouldThrowIfConfiguredTypeAdapterClassIsMissing() {
+        Properties properties = new Properties();
+        properties.put(LHConfig.TYPE_ADAPTERS_KEY, "io.littlehorse.sdk.NopeAdapter");
+
+        LHConfig config = new LHConfig(properties);
+
+        assertThrows(IllegalArgumentException.class, config::getTypeAdapters);
+    }
+
+    @Test
+    void shouldThrowIfConfiguredTypeAdapterClassIsInvalid() {
+        Properties properties = new Properties();
+        properties.put(LHConfig.TYPE_ADAPTERS_KEY, String.class.getName());
+
+        LHConfig config = new LHConfig(properties);
+
+        assertThrows(IllegalArgumentException.class, config::getTypeAdapters);
+    }
+
+    @Test
+    void shouldThrowIfConfiguredTypeAdapterClassHasNoNoArgConstructor() {
+        Properties properties = new Properties();
+        properties.put(LHConfig.TYPE_ADAPTERS_KEY, NoDefaultConstructorAdapter.class.getName());
+
+        LHConfig config = new LHConfig(properties);
+
+        assertThrows(IllegalArgumentException.class, config::getTypeAdapters);
+    }
+
+    @Test
+    void shouldThrowIfConfiguredAndProgrammaticTypeAdaptersOverlap() {
+        Properties properties = new Properties();
+        properties.put(LHConfig.TYPE_ADAPTERS_KEY, UUIDStringAdapter.class.getName());
+
+        LHConfig config = new LHConfig(properties);
+
+        assertThrows(IllegalArgumentException.class, () -> config.registerTypeAdapter(new UUIDStringAdapter()));
+    }
+
+    public static class UUIDStringAdapter implements LHStringAdapter<UUID> {
+
+        @Override
+        public String toString(UUID src) {
+            return src.toString();
+        }
+
+        @Override
+        public UUID fromString(String src) {
+            return UUID.fromString(src);
+        }
+
+        @Override
+        public Class<UUID> getTypeClass() {
+            return UUID.class;
+        }
+    }
+
+    public static class IntegerStringAdapter implements LHStringAdapter<Integer> {
+
+        @Override
+        public String toString(Integer src) {
+            return src.toString();
+        }
+
+        @Override
+        public Integer fromString(String src) {
+            return Integer.valueOf(src);
+        }
+
+        @Override
+        public Class<Integer> getTypeClass() {
+            return Integer.class;
+        }
+    }
+
+    public static class NoDefaultConstructorAdapter implements LHStringAdapter<UUID> {
+
+        private final String value;
+
+        public NoDefaultConstructorAdapter(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString(UUID src) {
+            return value + src;
+        }
+
+        @Override
+        public UUID fromString(String src) {
+            return UUID.fromString(src.substring(value.length()));
+        }
+
+        @Override
+        public Class<UUID> getTypeClass() {
+            return UUID.class;
+        }
     }
 }
