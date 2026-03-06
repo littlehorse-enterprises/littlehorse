@@ -32,39 +32,63 @@ public interface EdgeOrBuilder extends
 
   /**
    * <pre>
-   * The Condition on which this Edge will be traversed. When choosing an Edge
-   * to travel after the completion of a NodeRun, the Edges are evaluated in
-   * order. The first one to either have no condition or have a condition which
-   * evaluates to `true` is taken.
+   * Support for old client versions that use the legacy condition format.
    * </pre>
    *
-   * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
+   * @return Whether the legacyCondition field is set.
+   */
+  boolean hasLegacyCondition();
+  /**
+   * <pre>
+   * Support for old client versions that use the legacy condition format.
+   * </pre>
+   *
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
+   * @return The legacyCondition.
+   */
+  io.littlehorse.sdk.common.proto.LegacyEdgeCondition getLegacyCondition();
+  /**
+   * <pre>
+   * Support for old client versions that use the legacy condition format.
+   * </pre>
+   *
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder getLegacyConditionOrBuilder();
+
+  /**
+   * <pre>
+   * A VariableAssignment that must resolve to a BOOL. This can be a simple
+   * boolean variable reference, a comparison expression (e.g.
+   * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment condition = 4;</code>
    * @return Whether the condition field is set.
    */
   boolean hasCondition();
   /**
    * <pre>
-   * The Condition on which this Edge will be traversed. When choosing an Edge
-   * to travel after the completion of a NodeRun, the Edges are evaluated in
-   * order. The first one to either have no condition or have a condition which
-   * evaluates to `true` is taken.
+   * A VariableAssignment that must resolve to a BOOL. This can be a simple
+   * boolean variable reference, a comparison expression (e.g.
+   * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
    * </pre>
    *
-   * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
+   * <code>.littlehorse.VariableAssignment condition = 4;</code>
    * @return The condition.
    */
-  io.littlehorse.sdk.common.proto.EdgeCondition getCondition();
+  io.littlehorse.sdk.common.proto.VariableAssignment getCondition();
   /**
    * <pre>
-   * The Condition on which this Edge will be traversed. When choosing an Edge
-   * to travel after the completion of a NodeRun, the Edges are evaluated in
-   * order. The first one to either have no condition or have a condition which
-   * evaluates to `true` is taken.
+   * A VariableAssignment that must resolve to a BOOL. This can be a simple
+   * boolean variable reference, a comparison expression (e.g.
+   * myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
    * </pre>
    *
-   * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
+   * <code>.littlehorse.VariableAssignment condition = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder getConditionOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getConditionOrBuilder();
 
   /**
    * <pre>
@@ -109,4 +133,6 @@ public interface EdgeOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getVariableMutationsOrBuilder(
       int index);
+
+  io.littlehorse.sdk.common.proto.Edge.EdgeConditionCase getEdgeConditionCase();
 }

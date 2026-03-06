@@ -16,7 +16,7 @@ from littlehorse.model import (
     PutWfSpecRequest,
     VariableValue,
     Edge,
-    EdgeCondition,
+    LegacyEdgeCondition,
     EntrypointNode,
     ExitNode,
     ExternalEventNode,
@@ -566,7 +566,7 @@ class TestCastExpressions(unittest.TestCase):
                         outgoing_edges=[
                             Edge(
                                 sink_node_name="2-task-a-TASK",
-                                condition=EdgeCondition(
+                                legacy_condition=LegacyEdgeCondition(
                                     comparator=Comparator.GREATER_THAN,
                                     left=VariableAssignment(
                                         literal_value=VariableValue(int=20)
@@ -701,7 +701,7 @@ class TestCastExpressions(unittest.TestCase):
                         outgoing_edges=[
                             Edge(
                                 sink_node_name="2-nop-NOP",
-                                condition=EdgeCondition(
+                                legacy_condition=LegacyEdgeCondition(
                                     comparator=Comparator.LESS_THAN,
                                     left=VariableAssignment(
                                         literal_value=VariableValue(int=4)
@@ -812,7 +812,7 @@ class TestCastExpressions(unittest.TestCase):
                         outgoing_edges=[
                             Edge(
                                 sink_node_name="2-nop-NOP",
-                                condition=EdgeCondition(
+                                legacy_condition=LegacyEdgeCondition(
                                     comparator=Comparator.GREATER_THAN,
                                     left=VariableAssignment(
                                         literal_value=VariableValue(int=4)
@@ -906,7 +906,7 @@ class TestCastExpressions(unittest.TestCase):
                         outgoing_edges=[
                             Edge(
                                 sink_node_name="2-my-task-TASK",
-                                condition=EdgeCondition(
+                                legacy_condition=LegacyEdgeCondition(
                                     comparator=Comparator.LESS_THAN,
                                     left=VariableAssignment(
                                         literal_value=VariableValue(int=4)
@@ -978,7 +978,7 @@ class TestCastExpressions(unittest.TestCase):
                             outgoing_edges=[
                                 Edge(
                                     sink_node_name="2-my-task-TASK",
-                                    condition=EdgeCondition(
+                                    legacy_condition=LegacyEdgeCondition(
                                         left=VariableAssignment(
                                             literal_value=VariableValue(int=5)
                                         ),
@@ -1072,7 +1072,7 @@ class TestCastExpressions(unittest.TestCase):
                 outgoing_edges=[
                     Edge(
                         sink_node_name="2-task-a-TASK",
-                        condition=EdgeCondition(
+                        legacy_condition=LegacyEdgeCondition(
                             comparator=Comparator.GREATER_THAN_EQ,
                             left=VariableAssignment(literal_value=VariableValue(int=5)),
                             right=VariableAssignment(
@@ -1082,7 +1082,7 @@ class TestCastExpressions(unittest.TestCase):
                     ),
                     Edge(
                         sink_node_name="4-task-b-TASK",
-                        condition=EdgeCondition(
+                        legacy_condition=LegacyEdgeCondition(
                             comparator=Comparator.LESS_THAN,
                             left=VariableAssignment(literal_value=VariableValue(int=7)),
                             right=VariableAssignment(
@@ -1101,7 +1101,7 @@ class TestCastExpressions(unittest.TestCase):
                     ),
                     Edge(
                         sink_node_name="5-task-c-TASK",
-                        condition=EdgeCondition(
+                        legacy_condition=LegacyEdgeCondition(
                             comparator=Comparator.EQUALS,
                             left=VariableAssignment(literal_value=VariableValue(int=5)),
                             right=VariableAssignment(
@@ -1204,7 +1204,7 @@ class TestCastExpressions(unittest.TestCase):
                 outgoing_edges=[
                     Edge(
                         sink_node_name="2-task-a-TASK",
-                        condition=EdgeCondition(
+                        legacy_condition=LegacyEdgeCondition(
                             comparator=Comparator.GREATER_THAN_EQ,
                             left=VariableAssignment(literal_value=VariableValue(int=5)),
                             right=VariableAssignment(
@@ -1214,7 +1214,7 @@ class TestCastExpressions(unittest.TestCase):
                     ),
                     Edge(
                         sink_node_name="4-task-b-TASK",
-                        condition=EdgeCondition(
+                        legacy_condition=LegacyEdgeCondition(
                             comparator=Comparator.LESS_THAN,
                             left=VariableAssignment(literal_value=VariableValue(int=7)),
                             right=VariableAssignment(
@@ -1370,7 +1370,7 @@ class TestCastExpressions(unittest.TestCase):
                 outgoing_edges=[
                     Edge(
                         sink_node_name="2-task-a-TASK",
-                        condition=EdgeCondition(
+                        legacy_condition=LegacyEdgeCondition(
                             comparator=Comparator.EQUALS,
                             left=VariableAssignment(literal_value=VariableValue(int=5)),
                             right=VariableAssignment(
@@ -1380,7 +1380,7 @@ class TestCastExpressions(unittest.TestCase):
                     ),
                     Edge(
                         sink_node_name="4-task-b-TASK",
-                        condition=EdgeCondition(
+                        legacy_condition=LegacyEdgeCondition(
                             comparator=Comparator.LESS_THAN,
                             left=VariableAssignment(literal_value=VariableValue(int=7)),
                             right=VariableAssignment(
@@ -1390,7 +1390,7 @@ class TestCastExpressions(unittest.TestCase):
                     ),
                     Edge(
                         sink_node_name="3-nop-NOP",
-                        condition=EdgeCondition(
+                        legacy_condition=LegacyEdgeCondition(
                             comparator=Comparator.EQUALS,
                             left=VariableAssignment(literal_value=VariableValue(int=2)),
                             right=VariableAssignment(
@@ -1512,7 +1512,7 @@ class TestCastExpressions(unittest.TestCase):
                 outgoing_edges=[
                     Edge(
                         sink_node_name="2-task-a-TASK",
-                        condition=EdgeCondition(
+                        legacy_condition=LegacyEdgeCondition(
                             comparator=Comparator.GREATER_THAN_EQ,
                             left=VariableAssignment(literal_value=VariableValue(int=5)),
                             right=VariableAssignment(
@@ -1522,7 +1522,7 @@ class TestCastExpressions(unittest.TestCase):
                     ),
                     Edge(
                         sink_node_name="5-task-b-TASK",
-                        condition=EdgeCondition(
+                        legacy_condition=LegacyEdgeCondition(
                             comparator=Comparator.LESS_THAN,
                             left=VariableAssignment(literal_value=VariableValue(int=7)),
                             right=VariableAssignment(
@@ -1701,7 +1701,7 @@ class TestCastExpressions(unittest.TestCase):
                 outgoing_edges=[
                     Edge(
                         sink_node_name="2-complete-EXIT",
-                        condition=EdgeCondition(
+                        legacy_condition=LegacyEdgeCondition(
                             left=VariableAssignment(literal_value=VariableValue(int=5)),
                             comparator=Comparator.GREATER_THAN,
                             right=VariableAssignment(
@@ -1745,7 +1745,7 @@ class TestCastExpressions(unittest.TestCase):
                 outgoing_edges=[
                     Edge(
                         sink_node_name="2-complete-EXIT",
-                        condition=EdgeCondition(
+                        legacy_condition=LegacyEdgeCondition(
                             left=VariableAssignment(literal_value=VariableValue(int=5)),
                             comparator=Comparator.GREATER_THAN,
                             right=VariableAssignment(
@@ -1755,7 +1755,7 @@ class TestCastExpressions(unittest.TestCase):
                     ),
                     Edge(
                         sink_node_name="4-task-b-TASK",
-                        condition=EdgeCondition(
+                        legacy_condition=LegacyEdgeCondition(
                             left=VariableAssignment(
                                 literal_value=VariableValue(int=10)
                             ),
@@ -1824,7 +1824,7 @@ class TestCastExpressions(unittest.TestCase):
                         outgoing_edges=[
                             Edge(
                                 sink_node_name="2-my-task-TASK",
-                                condition=EdgeCondition(
+                                legacy_condition=LegacyEdgeCondition(
                                     comparator=Comparator.LESS_THAN,
                                     left=VariableAssignment(
                                         literal_value=VariableValue(int=4)
@@ -1845,7 +1845,7 @@ class TestCastExpressions(unittest.TestCase):
                             ),
                             Edge(
                                 sink_node_name="3-nop-NOP",
-                                condition=EdgeCondition(
+                                legacy_condition=LegacyEdgeCondition(
                                     comparator=Comparator.GREATER_THAN_EQ,
                                     left=VariableAssignment(
                                         literal_value=VariableValue(int=4)
@@ -1879,7 +1879,7 @@ class TestCastExpressions(unittest.TestCase):
                         outgoing_edges=[
                             Edge(
                                 sink_node_name="1-nop-NOP",
-                                condition=EdgeCondition(
+                                legacy_condition=LegacyEdgeCondition(
                                     comparator=Comparator.LESS_THAN,
                                     left=VariableAssignment(
                                         literal_value=VariableValue(int=4)
@@ -2252,7 +2252,7 @@ class TestCastExpressions(unittest.TestCase):
             outgoing_edges=[
                 Edge(
                     sink_node_name="2-task-TASK",
-                    condition=EdgeCondition(
+                    legacy_condition=LegacyEdgeCondition(
                         comparator=Comparator.IN,
                         left=VariableAssignment(
                             literal_value=VariableValue(str="this-value")
@@ -2283,7 +2283,7 @@ class TestCastExpressions(unittest.TestCase):
             outgoing_edges=[
                 Edge(
                     sink_node_name="2-task-TASK",
-                    condition=EdgeCondition(
+                    legacy_condition=LegacyEdgeCondition(
                         comparator=Comparator.NOT_IN,
                         left=VariableAssignment(
                             literal_value=VariableValue(str="this-value")
@@ -2310,7 +2310,7 @@ class TestCastExpressions(unittest.TestCase):
             outgoing_edges=[
                 Edge(
                     sink_node_name="2-task-TASK",
-                    condition=EdgeCondition(
+                    legacy_condition=LegacyEdgeCondition(
                         comparator=Comparator.IN,
                         left=VariableAssignment(variable_name="my-var"),
                         right=VariableAssignment(
@@ -2339,7 +2339,7 @@ class TestCastExpressions(unittest.TestCase):
             outgoing_edges=[
                 Edge(
                     sink_node_name="2-task-TASK",
-                    condition=EdgeCondition(
+                    legacy_condition=LegacyEdgeCondition(
                         comparator=Comparator.NOT_IN,
                         left=VariableAssignment(variable_name="my-var"),
                         right=VariableAssignment(
@@ -4068,15 +4068,15 @@ class TestWaitForCondition(unittest.TestCase):
             "1-wait-for-condition-WAIT_FOR_CONDITION"
         ].wait_for_condition
         self.assertEqual(
-            Comparator.EQUALS, wait_for_condition_node.condition.comparator
+            Comparator.EQUALS, wait_for_condition_node.legacy_condition.comparator
         )
         self.assertEqual(
             VariableAssignment(literal_value=VariableValue(str="some-value")),
-            wait_for_condition_node.condition.left,
+            wait_for_condition_node.legacy_condition.left,
         )
         self.assertEqual(
             VariableAssignment(literal_value=VariableValue(str="other-value")),
-            wait_for_condition_node.condition.right,
+            wait_for_condition_node.legacy_condition.right,
         )
 
     def test_wait_for_threads_handle_any_failure_on_child(self):

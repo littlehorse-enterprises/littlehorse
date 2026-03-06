@@ -15,6 +15,10 @@ import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 class BuilderUtil {
 
     static VariableAssignment assignVariable(Object variable) {
+        if (variable instanceof VariableAssignment) {
+            return (VariableAssignment) variable;
+        }
+
         return assignVariable(variable, LHTypeAdapterRegistry.empty());
     }
 
@@ -96,12 +100,15 @@ class BuilderUtil {
 
     private static VariableAssignment buildFromLHExpression(
             LHExpressionImpl expresion, LHTypeAdapterRegistry typeAdapterRegistry) {
-        return VariableAssignment.newBuilder()
-                .setExpression(Expression.newBuilder()
-                        .setLhs(assignVariable(expresion.getLhs(), typeAdapterRegistry))
-                        .setOperation(expresion.getOperation())
-                        .setRhs(assignVariable(expresion.getRhs(), typeAdapterRegistry)))
-                .build();
+        Expression.Builder builder = Expression.newBuilder()
+                .setLhs(assignVariable(expresion.getLhs(), typeAdapterRegistry))
+                .setRhs(assignVariable(expresion.getRhs(), typeAdapterRegistry));
+        if (expresion.getOperation() != null) {
+            builder.setMutationType(expresion.getOperation());
+        } else {
+            builder.setComparator(expresion.getComparator());
+        }
+        return VariableAssignment.newBuilder().setExpression(builder.build()).build();
     }
 
     private static VariableAssignment buildFromLiteral(Object variable, LHTypeAdapterRegistry typeAdapterRegistry) {
