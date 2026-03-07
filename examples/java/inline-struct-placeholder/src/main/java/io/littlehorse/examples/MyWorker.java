@@ -13,7 +13,7 @@ public class MyWorker {
 
     private static final Logger log = LoggerFactory.getLogger(MyWorker.class);
 
-    @LHTaskMethod("inline-${model}-create-customer")
+    @LHTaskMethod("${company}-create-customer")
     @LHType(structDefName = "${customerStructName}")
     public InlineStruct createCustomer(String name, String email) {
         return InlineStruct.newBuilder()
@@ -36,7 +36,7 @@ public class MyWorker {
                 .build();
     }
 
-    @LHTaskMethod("inline-${model}-email-customer")
+    @LHTaskMethod("${company}-email-customer")
     public String emailCustomer(
             @LHType(structDefName = "${customerStructName}") InlineStruct customer, String content) {
         String email = customer.getFieldsOrThrow("email").getValue().getStr();

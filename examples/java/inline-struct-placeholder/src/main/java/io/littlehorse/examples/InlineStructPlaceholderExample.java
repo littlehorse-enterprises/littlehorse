@@ -14,14 +14,11 @@ import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -33,7 +30,7 @@ public class InlineStructPlaceholderExample {
     private static final Logger log = LoggerFactory.getLogger(InlineStructPlaceholderExample.class);
     private static final String WF_SPEC_NAME = "example-inline-struct-placeholder";
 
-    private static final String MODEL = "acme";
+    private static final String COMPANY = "acme";
     private static final String CUSTOMER_STRUCT = "customer-acme";
 
     public static Properties getConfigProps() throws IOException {
@@ -47,12 +44,12 @@ public class InlineStructPlaceholderExample {
     }
 
     public static Map<String, String> getPlaceholders() {
-        return Map.of("model", MODEL, "customerStructName", CUSTOMER_STRUCT);
+        return Map.of("company", COMPANY, "customerStructName", CUSTOMER_STRUCT);
     }
 
     public static Workflow getWorkflow() {
-        String createTaskName = "inline-" + MODEL + "-create-customer";
-        String emailTaskName = "inline-" + MODEL + "-email-customer";
+        String createTaskName = COMPANY + "-create-customer";
+        String emailTaskName = COMPANY + "-email-customer";
 
         return new WorkflowImpl(WF_SPEC_NAME, wf -> {
             WfRunVariable name = wf.declareStr("name").required();
@@ -68,16 +65,9 @@ public class InlineStructPlaceholderExample {
         MyWorker executable = new MyWorker();
         Map<String, String> placeholders = getPlaceholders();
 
-        List<LHTaskWorker> workers = new ArrayList<>();
-
-        for (Method method : executable.getClass().getDeclaredMethods()) {
-            if (!method.isAnnotationPresent(LHTaskMethod.class)) {
-                continue;
-            }
-
-            String taskNameTemplate = method.getAnnotation(LHTaskMethod.class).value();
-            workers.add(new LHTaskWorker(executable, taskNameTemplate, config, placeholders));
-        }
+        List<LHTaskWorker> workers = List.of(
+                new LHTaskWorker(executable, "${company}-create-customer", config, placeholders),
+                new LHTaskWorker(executable, "${company}-email-customer", config, placeholders));
 
         Runtime.getRuntime()
                 .addShutdownHook(new Thread(() -> workers.forEach(worker -> {

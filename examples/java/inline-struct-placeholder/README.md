@@ -17,7 +17,7 @@ Run this first in one terminal:
 This command registers:
 
 - StructDef: `customer-acme`
-- TaskDefs: `inline-acme-create-customer`, `inline-acme-email-customer`
+- TaskDefs: `acme-create-customer`, `acme-email-customer`
 - WfSpec: `example-inline-struct-placeholder`
 
 ### Run the workflow
