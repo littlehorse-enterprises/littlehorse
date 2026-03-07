@@ -775,6 +775,18 @@ public class LHLibUtil {
         return out.build();
     }
 
+    /**
+     * Serializes an {@link InlineStruct} into a STRUCT {@link VariableValue} using an explicit StructDef id.
+     *
+     * <p>This is required for InlineStruct values because, unlike Java POJOs annotated with
+     * {@code @LHStructDef}, the InlineStruct payload itself does not carry Java type metadata that can be used
+     * to infer the target StructDef.
+     *
+     * @param inlineStruct the struct payload to serialize; if null, an empty VariableValue is returned.
+     * @param structDefId the StructDef id that should be attached to the serialized value.
+     * @return a STRUCT VariableValue containing the provided InlineStruct and StructDef id.
+     * @throws LHSerdeException if the StructDef id is null or has a blank name.
+     */
     public static VariableValue inlineStructToVarVal(InlineStruct inlineStruct, StructDefId structDefId)
             throws LHSerdeException {
         if (inlineStruct == null) {
