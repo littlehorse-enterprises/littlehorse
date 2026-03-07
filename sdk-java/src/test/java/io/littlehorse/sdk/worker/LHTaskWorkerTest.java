@@ -3,16 +3,22 @@ package io.littlehorse.sdk.worker;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
+import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 
 public class LHTaskWorkerTest {
@@ -91,6 +97,41 @@ public class LHTaskWorkerTest {
         assertThat(ex.getMessage())
                 .isEqualTo("TaskDef 'greet' was not found on the server. Register it before starting this worker.");
     }
+
+    @Test
+    public void shouldApplyPlaceholdersForInlineStructTypes() {
+        LHConfig config = mock(LHConfig.class);
+        LittleHorseBlockingStub grpcClient = mock(LittleHorseBlockingStub.class);
+        AtomicReference<PutTaskDefRequest> capturedRequest = new AtomicReference<>();
+
+        when(config.getBlockingStub()).thenReturn(grpcClient);
+        doAnswer(invocation -> {
+                    PutTaskDefRequest request = invocation.getArgument(0);
+                    capturedRequest.set(request);
+                    return TaskDef.newBuilder()
+                            .setId(TaskDefId.newBuilder()
+                                    .setName(request.getName())
+                                    .build())
+                            .build();
+                })
+                .when(grpcClient)
+                .putTaskDef(any(PutTaskDefRequest.class));
+
+        Map<String, String> placeholders = Map.of(
+                "taskName", "inline-struct-acme",
+                "inputStruct", "customer-request",
+                "outputStruct", "customer");
+
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), "${taskName}", config, placeholders);
+        task.registerTaskDef();
+
+        PutTaskDefRequest request = capturedRequest.get();
+        assertThat(request.getInputVars(0).getTypeDef().getStructDefId().getName())
+                .isEqualTo("customer-request");
+        assertThat(request.getReturnType().getReturnType().getStructDefId().getName())
+                .isEqualTo("customer");
+        verify(grpcClient).putTaskDef(any(PutTaskDefRequest.class));
+    }
 }
 
 class TaskWorker {
@@ -122,5 +163,11 @@ class TaskWorker {
     @LHTaskMethod("${CLUSTER_NAME}")
     public String onlyWithPlaceHolder(String name) {
         return "task only with placeholder " + name;
+    }
+
+    @LHTaskMethod("${taskName}")
+    @LHType(structDefName = "${outputStruct}")
+    public InlineStruct inlineStructTask(@LHType(structDefName = "${inputStruct}") InlineStruct input) {
+        return input;
     }
 }

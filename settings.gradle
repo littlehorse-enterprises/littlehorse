@@ -29,6 +29,7 @@ include(
         'external-event',
         'hundred-tasks',
         'interrupt-handler',
+        'inline-struct-placeholder',
         'json',
         'mutation',
         'output-topic',

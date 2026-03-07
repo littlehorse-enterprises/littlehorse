@@ -1,7 +1,9 @@
 package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.StructDef;
 import io.littlehorse.sdk.common.proto.StructDefId;
@@ -16,6 +18,7 @@ import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.sdk.worker.adapter.LHStringAdapter;
 import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
@@ -54,6 +57,24 @@ public class LHTaskSignatureTest {
         @LHTaskMethod("adapter-struct-task")
         public UuidHolder adapterStructTask(UuidHolder in) {
             return in;
+        }
+
+        @LHTaskMethod("inline-struct-task")
+        @LHType(structDefName = "customer")
+        public InlineStruct inlineStructTask(@LHType(structDefName = "customer") InlineStruct customer) {
+            return customer;
+        }
+
+        @LHTaskMethod("inline-struct-placeholder-task-${model}")
+        @LHType(structDefName = "${outputStruct}")
+        public InlineStruct inlineStructPlaceholderTask(
+                @LHType(structDefName = "${inputStruct}") InlineStruct customer) {
+            return customer;
+        }
+
+        @LHTaskMethod("inline-struct-invalid-task")
+        public InlineStruct inlineStructInvalidTask(InlineStruct customer) {
+            return customer;
         }
     }
 
@@ -268,5 +289,39 @@ public class LHTaskSignatureTest {
                         .getFieldType()
                         .getPrimitiveType())
                 .isEqualTo(VariableType.STR);
+    }
+
+    @Test
+    void shouldInferInlineStructParameterAndReturnTypesFromAnnotation() {
+        LHTaskSignature taskSignature = new LHTaskSignature("inline-struct-task", new MyWorker(), "inline-struct-task");
+
+        TypeDefinition inputTypeDef = taskSignature.getVariableDefs().get(0).getTypeDef();
+        TypeDefinition returnTypeDef = taskSignature.getReturnType().getReturnType();
+
+        assertThat(inputTypeDef.getStructDefId().getName()).isEqualTo("customer");
+        assertThat(returnTypeDef.getStructDefId().getName()).isEqualTo("customer");
+    }
+
+    @Test
+    void shouldResolvePlaceholdersForInlineStructTypes() {
+        LHTaskSignature taskSignature = new LHTaskSignature(
+                "inline-struct-placeholder-task-acme",
+                new MyWorker(),
+                "inline-struct-placeholder-task-${model}",
+                LHTypeAdapterRegistry.empty(),
+                Map.of("model", "acme", "inputStruct", "customer-request", "outputStruct", "customer"));
+
+        TypeDefinition inputTypeDef = taskSignature.getVariableDefs().get(0).getTypeDef();
+        TypeDefinition returnTypeDef = taskSignature.getReturnType().getReturnType();
+
+        assertThat(inputTypeDef.getStructDefId().getName()).isEqualTo("customer-request");
+        assertThat(returnTypeDef.getStructDefId().getName()).isEqualTo("customer");
+    }
+
+    @Test
+    void shouldFailWhenInlineStructTypeIsMissingStructDefName() {
+        assertThatThrownBy(() ->
+                        new LHTaskSignature("inline-struct-invalid-task", new MyWorker(), "inline-struct-invalid-task"))
+                .hasMessageContaining("InlineStruct parameters must declare @LHType(structDefName = \"...\")");
     }
 }
