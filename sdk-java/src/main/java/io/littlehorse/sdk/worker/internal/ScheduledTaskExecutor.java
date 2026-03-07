@@ -7,12 +7,15 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.exception.LHTaskException;
+import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHTaskError;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
+import io.littlehorse.sdk.common.proto.StructDefId;
+import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
@@ -33,26 +36,36 @@ public class ScheduledTaskExecutor {
     private final LittleHorseGrpc.LittleHorseStub retriesStub;
     private final LittleHorseGrpc.LittleHorseBlockingStub blockingStub;
     private final LHTypeAdapterRegistry typeAdapterRegistry;
+    private final TaskDef taskDef;
 
     public ScheduledTaskExecutor(
             final LittleHorseGrpc.LittleHorseStub retriesStub, final LittleHorseBlockingStub blockingStub) {
-        this(retriesStub, blockingStub, LHTypeAdapterRegistry.empty());
+        this(retriesStub, blockingStub, LHTypeAdapterRegistry.empty(), null);
     }
 
     public ScheduledTaskExecutor(
             final LittleHorseGrpc.LittleHorseStub retriesStub,
             final LittleHorseBlockingStub blockingStub,
             final List<LHTypeAdapter<?>> typeAdapters) {
-        this(retriesStub, blockingStub, LHTypeAdapterRegistry.from(typeAdapters));
+        this(retriesStub, blockingStub, LHTypeAdapterRegistry.from(typeAdapters), null);
     }
 
     public ScheduledTaskExecutor(
             final LittleHorseGrpc.LittleHorseStub retriesStub,
             final LittleHorseBlockingStub blockingStub,
             final LHTypeAdapterRegistry typeAdapterRegistry) {
+        this(retriesStub, blockingStub, typeAdapterRegistry, null);
+    }
+
+    public ScheduledTaskExecutor(
+            final LittleHorseGrpc.LittleHorseStub retriesStub,
+            final LittleHorseBlockingStub blockingStub,
+            final LHTypeAdapterRegistry typeAdapterRegistry,
+            final TaskDef taskDef) {
         this.retriesStub = retriesStub;
         this.blockingStub = blockingStub;
         this.typeAdapterRegistry = typeAdapterRegistry == null ? LHTypeAdapterRegistry.empty() : typeAdapterRegistry;
+        this.taskDef = taskDef;
     }
 
     public void doTask(
@@ -89,7 +102,7 @@ public class ScheduledTaskExecutor {
         try {
             Object rawResult = invoke(scheduledTask, wc, mappings, executable, taskMethod);
             log.debug("Task executed for: " + scheduledTask.getTaskDefId().getName());
-            VariableValue serialized = serializeResult(rawResult, taskMethod.getReturnType());
+            VariableValue serialized = serializeResult(rawResult, taskMethod);
             taskResult.setOutput(serialized.toBuilder()).setStatus(TaskStatus.TASK_SUCCESS);
         } catch (InputVarSubstitutionException exn) {
             log.error("Failed calculating task input variables", exn);
@@ -140,8 +153,31 @@ public class ScheduledTaskExecutor {
      * Bridges the reflection boundary: Method.getReturnType() is a raw Class<?>, so
      * the cast to Class<T> is unchecked but safe—returnType always matches the actual object.
      */
-    private VariableValue serializeResult(Object result, Class<?> returnType) {
+    private VariableValue serializeResult(Object result, Method taskMethod) {
+        Class<?> returnType = taskMethod.getReturnType();
+        if (InlineStruct.class.equals(returnType)) {
+            return serializeInlineStructResult(result);
+        }
         return LHLibUtil.objToVarVal(result, returnType, typeAdapterRegistry);
+    }
+
+    private VariableValue serializeInlineStructResult(Object result) {
+        if (result == null) {
+            return VariableValue.newBuilder().build();
+        }
+
+        if (!(result instanceof InlineStruct)) {
+            throw new LHSerdeException("Task returned a non-InlineStruct value for an InlineStruct task method.");
+        }
+
+        if (taskDef == null
+                || !taskDef.hasReturnType()
+                || !taskDef.getReturnType().hasReturnType()) {
+            throw new LHSerdeException("InlineStruct task return requires a StructDef return type in TaskDef.");
+        }
+
+        StructDefId structDefId = taskDef.getReturnType().getReturnType().getStructDefId();
+        return LHLibUtil.inlineStructToVarVal((InlineStruct) result, structDefId);
     }
 
     private LHTaskError exnToTaskError(Throwable throwable, TaskStatus taskStatus) {

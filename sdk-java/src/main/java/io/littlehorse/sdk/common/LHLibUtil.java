@@ -24,6 +24,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
+import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskRunId;
@@ -386,6 +387,13 @@ public class LHLibUtil {
             return varValToObjViaAdapter(val, maybeAdapter.get());
         }
 
+        if (InlineStruct.class.equals(targetClazz)) {
+            if (val.getValueCase() != ValueCase.STRUCT) {
+                throw new LHSerdeException("Failed deserializing InlineStruct: expected STRUCT value");
+            }
+            return val.getStruct().getStruct();
+        }
+
         String jsonStr = null;
 
         switch (val.getValueCase()) {
@@ -612,6 +620,11 @@ public class LHLibUtil {
             return VariableValue.newBuilder().build();
         }
 
+        if (InlineStruct.class.equals(declaredClass)) {
+            throw new LHSerdeException(
+                    "Cannot serialize InlineStruct without StructDefId. Use inlineStructToVarVal() with a StructDefId.");
+        }
+
         Optional<LHTypeAdapter<?>> maybeAdapter = getTypeAdapterForClass(declaredClass, typeAdapterRegistry);
         if (!maybeAdapter.isPresent()) {
             maybeAdapter = getTypeAdapterForClass(o.getClass(), typeAdapterRegistry);
@@ -700,6 +713,10 @@ public class LHLibUtil {
     private static VariableValue objToVarValWithoutTypeAdapter(Object o, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
         if (o instanceof VariableValue) return (VariableValue) o;
+        if (o instanceof InlineStruct) {
+            throw new LHSerdeException(
+                    "Cannot serialize InlineStruct without StructDefId. Use inlineStructToVarVal() with a StructDefId.");
+        }
 
         VariableValue.Builder out = VariableValue.newBuilder();
         if (o == null) {
@@ -756,6 +773,21 @@ public class LHLibUtil {
         }
 
         return out.build();
+    }
+
+    public static VariableValue inlineStructToVarVal(InlineStruct inlineStruct, StructDefId structDefId)
+            throws LHSerdeException {
+        if (inlineStruct == null) {
+            return VariableValue.newBuilder().build();
+        }
+
+        if (structDefId == null || structDefId.getName().isBlank()) {
+            throw new LHSerdeException("Cannot serialize InlineStruct without a StructDefId name");
+        }
+
+        return VariableValue.newBuilder()
+                .setStruct(Struct.newBuilder().setStructDefId(structDefId).setStruct(inlineStruct))
+                .build();
     }
 
     /**

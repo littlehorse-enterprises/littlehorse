@@ -1,5 +1,9 @@
 package io.littlehorse.sdk.common;
 
+import io.littlehorse.sdk.common.proto.InlineStruct;
+import io.littlehorse.sdk.common.proto.Struct;
+import io.littlehorse.sdk.common.proto.StructDefId;
+import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -262,6 +266,45 @@ public class LHLibUtilTest {
                 .isEqualTo(uuid.toString());
         Assertions.assertThat(deserialized.getName()).isEqualTo("test-name");
         Assertions.assertThat(deserialized.getId()).isEqualTo(uuid);
+    }
+
+    @Test
+    void shouldDeserializeInlineStructFromStructVariableValue() {
+        InlineStruct inlineStruct = InlineStruct.newBuilder()
+                .putFields(
+                        "name",
+                        StructField.newBuilder()
+                                .setValue(VariableValue.newBuilder().setStr("Luke"))
+                                .build())
+                .build();
+
+        VariableValue wrappedValue = VariableValue.newBuilder()
+                .setStruct(Struct.newBuilder()
+                        .setStructDefId(StructDefId.newBuilder().setName("customer"))
+                        .setStruct(inlineStruct))
+                .build();
+
+        Object deserialized = LHLibUtil.varValToObj(wrappedValue, InlineStruct.class);
+        Assertions.assertThat(deserialized).isEqualTo(inlineStruct);
+    }
+
+    @Test
+    void shouldSerializeInlineStructWithProvidedStructDefId() {
+        InlineStruct inlineStruct = InlineStruct.newBuilder()
+                .putFields(
+                        "email",
+                        StructField.newBuilder()
+                                .setValue(VariableValue.newBuilder().setStr("leia@rebellion.example"))
+                                .build())
+                .build();
+
+        VariableValue wrappedValue = LHLibUtil.inlineStructToVarVal(
+                inlineStruct, StructDefId.newBuilder().setName("customer").build());
+
+        Assertions.assertThat(wrappedValue.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        Assertions.assertThat(wrappedValue.getStruct().getStructDefId().getName())
+                .isEqualTo("customer");
+        Assertions.assertThat(wrappedValue.getStruct().getStruct()).isEqualTo(inlineStruct);
     }
 
     private Book getTestBook() {

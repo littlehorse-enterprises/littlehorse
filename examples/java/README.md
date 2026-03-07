@@ -41,6 +41,7 @@ Most Java examples start a long-lived worker process. Keep that command running 
 - [`external-event/`](./external-event/README.md): Wait for external events.
 - [`hierarchical-workflow/`](./hierarchical-workflow/README.md): Hierarchical workflows.
 - [`hundred-tasks/`](./hundred-tasks/README.md): High-volume task fanout example.
+- [`inline-struct-placeholder/`](./inline-struct-placeholder/README.md): InlineStruct task IO with placeholders.
 - [`interrupt-handler/`](./interrupt-handler/README.md): Interrupt handling patterns.
 - [`json/`](./json/README.md): JSON variable examples.
 - [`mutation/`](./mutation/README.md): Variable mutation behavior.

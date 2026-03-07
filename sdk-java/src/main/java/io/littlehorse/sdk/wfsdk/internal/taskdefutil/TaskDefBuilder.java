@@ -6,6 +6,7 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
 import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -18,7 +19,7 @@ public class TaskDefBuilder {
 
     public TaskDefBuilder(Object executable, String taskDefName, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
-        this(executable, taskDefName, lhTaskMethodAnnotationValue, LHTypeAdapterRegistry.empty());
+        this(executable, taskDefName, lhTaskMethodAnnotationValue, LHTypeAdapterRegistry.empty(), Map.of());
     }
 
     public TaskDefBuilder(
@@ -27,7 +28,7 @@ public class TaskDefBuilder {
             String lhTaskMethodAnnotationValue,
             List<LHTypeAdapter<?>> typeAdapters)
             throws TaskSchemaMismatchError {
-        this(executable, taskDefName, lhTaskMethodAnnotationValue, LHTypeAdapterRegistry.from(typeAdapters));
+        this(executable, taskDefName, lhTaskMethodAnnotationValue, LHTypeAdapterRegistry.from(typeAdapters), Map.of());
     }
 
     public TaskDefBuilder(
@@ -36,7 +37,18 @@ public class TaskDefBuilder {
             String lhTaskMethodAnnotationValue,
             LHTypeAdapterRegistry typeAdapterRegistry)
             throws TaskSchemaMismatchError {
-        signature = new LHTaskSignature(taskDefName, executable, lhTaskMethodAnnotationValue, typeAdapterRegistry);
+        this(executable, taskDefName, lhTaskMethodAnnotationValue, typeAdapterRegistry, Map.of());
+    }
+
+    public TaskDefBuilder(
+            Object executable,
+            String taskDefName,
+            String lhTaskMethodAnnotationValue,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws TaskSchemaMismatchError {
+        signature = new LHTaskSignature(
+                taskDefName, executable, lhTaskMethodAnnotationValue, typeAdapterRegistry, placeholderValues);
         this.executable = executable;
         this.structDefDependencies = signature.getStructDefDependencies();
     }

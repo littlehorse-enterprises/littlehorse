@@ -22,7 +22,14 @@ public @interface LHType {
      *
      * @return true if the value should be masked; false otherwise.
      */
-    boolean masked();
+    boolean masked() default false;
 
     String name() default "";
+
+    /**
+     * Indicates the StructDef name used when the annotated type is an InlineStruct.
+     *
+     * @return the StructDef name expected for InlineStruct values.
+     */
+    String structDefName() default "";
 }
