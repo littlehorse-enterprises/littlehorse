@@ -39,7 +39,7 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
       <DiagramProvider value={{ thread, setThread, selectedNode, setSelectedNode }}>
         <Diagram spec={spec} />
       </DiagramProvider>
-      {sortThreadNames(Object.keys(spec.threadSpecs), spec.entrypointThreadName).map(name => (
+      {sortThreadNames(spec).map(name => (
           <Thread key={name} name={name} spec={spec.threadSpecs[name]} />
         ))}
 

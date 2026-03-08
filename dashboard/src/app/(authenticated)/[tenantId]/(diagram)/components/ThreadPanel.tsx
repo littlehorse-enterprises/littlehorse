@@ -72,10 +72,7 @@ export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }
 
   const threads = useMemo((): { name: string; number: number }[] => {
     if (!wfRun) {
-      const sorted = sortThreadNames(
-        Object.keys(spec.threadSpecs),
-        spec.entrypointThreadName
-      )
+      const sorted = sortThreadNames(spec)
       return sorted.map(name => ({ name, number: 0 }))
     }
 
