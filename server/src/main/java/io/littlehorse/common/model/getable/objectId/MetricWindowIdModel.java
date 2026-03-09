@@ -38,6 +38,13 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
         this.metricType = MetricWindowType.WORKFLOW_METRIC;
     }
 
+    public MetricWindowIdModel(TenantIdModel tenantId, TaskDefIdModel taskDefId, Date windowStart) {
+        this.tenantId = tenantId;
+        this.taskDefId = taskDefId;
+        this.windowStart = windowStart;
+        this.metricType = MetricWindowType.TASK_METRIC;
+    }
+
     @Override
     public Class<MetricWindowId> getProtoBaseClass() {
         return MetricWindowId.class;
