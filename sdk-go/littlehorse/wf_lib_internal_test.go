@@ -1897,3 +1897,51 @@ func TestRegisteredAsWorkflowEvent(ts *testing.T) {
 	assert.Equal(ts, "list-event", listNode.GetThrowEvent().GetEventDefId().GetName())
 
 }
+
+func TestRunWfStatic(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		child := t.RunWf("child-spec", map[string]interface{}{"foo": "bar"})
+		t.WaitForChildWf(child)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	runNode := entrypoint.Nodes["1-run-child-spec-RUN_CHILD_WF"].GetRunChildWf()
+
+	if runNode.GetWfSpecName() != "child-spec" {
+		t.Errorf("expected static wf spec name to be 'child-spec', got '%s'", runNode.GetWfSpecName())
+	}
+
+	if runNode.Inputs["foo"].GetLiteralValue().GetStr() != "bar" {
+		t.Errorf("expected input 'foo' to be 'bar'")
+	}
+
+	waitNode := entrypoint.Nodes["2-wait-WAIT_FOR_CHILD_WF"].GetWaitForChildWf()
+	if waitNode.GetChildWfRunId().GetNodeOutput().GetNodeName() != "1-run-child-spec-RUN_CHILD_WF" {
+		t.Errorf("wait node does not reference the run node as source")
+	}
+}
+
+func TestRunWfDynamicVar(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		specVar := t.AddVariable("spec", lhproto.VariableType_STR)
+		t.RunWf(specVar, nil)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	runNode := entrypoint.Nodes["1-spec-RUN_CHILD_WF"].GetRunChildWf()
+
+	// Ensure the wf spec was provided as a variable assignment
+	if runNode.GetWfSpecVar() == nil || runNode.GetWfSpecVar().GetVariableName() != "spec" {
+		t.Errorf("expected wf spec to be provided via variable 'spec'")
+	}
+}

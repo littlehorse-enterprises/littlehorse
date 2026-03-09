@@ -314,6 +314,39 @@ type LHExpression interface {
 	CastToWfRunId() LHExpression
 }
 
+// SpawnedChildWf represents a spawned child workflow from a RunWf call.
+type SpawnedChildWf struct {
+	sourceNodeName string
+	thread         *WorkflowThread
+}
+
+func (s *SpawnedChildWf) BuildNode() *lhproto.WaitForChildWfNode {
+	return &lhproto.WaitForChildWfNode{
+		ChildWfRunId: &lhproto.VariableAssignment{
+			Source: &lhproto.VariableAssignment_NodeOutput{
+				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+					NodeName: s.sourceNodeName,
+				},
+			},
+		},
+		ChildWfRunSourceNode: s.sourceNodeName,
+	}
+}
+
+// RunWf starts a child workflow by name (or by variable/expression) and returns
+// a handle to wait on it later. wfSpecName may be a string or any expression that
+// can be converted to a STRING at runtime (e.g., a WfRunVariable or other
+// VariableAssignment-compatible value).
+func (t *WorkflowThread) RunWf(wfSpecName interface{}, inputs map[string]interface{}) *SpawnedChildWf {
+	return t.runWfImpl(wfSpecName, inputs)
+}
+
+// WaitForChildWf waits for a previously spawned child workflow to complete and
+// returns a NodeOutput referencing the wait node.
+func (t *WorkflowThread) WaitForChildWf(child *SpawnedChildWf) NodeOutput {
+	return t.waitForChildWfImpl(child)
+}
+
 func (n *WaitForThreadsNodeOutput) HandleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
 	n.handleExceptionOnChild(handler, exceptionName)
 }

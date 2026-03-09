@@ -206,7 +206,8 @@ func (l *LHWorkflow) compile() (*lhproto.PutWfSpecRequest, error) {
 				}
 				nodeName := "0-entrypoint-ENTRYPOINT"
 				thr.lastNodeName = &nodeName
-				thr.lastNodeCondition = &WorkflowCondition{}
+				// No condition on the entrypoint's outgoing edge by default.
+				thr.lastNodeCondition = nil
 				thr.spec.Nodes = make(map[string]*lhproto.Node)
 				thr.spec.Nodes[nodeName] = entry
 
@@ -1557,6 +1558,87 @@ func (t *WorkflowThread) spawnThread(
 	return &SpawnedThread{
 		thread:       t,
 		threadNumVar: cachedThreadVar,
+	}
+}
+
+// runWfImpl accepts either a static wfSpec name (string) or a dynamic
+// spec (VariableAssignment-compatible value) and constructs a RunChildWfNode
+// accordingly.
+func (t *WorkflowThread) runWfImpl(wfSpecName interface{}, inputs map[string]interface{}) *SpawnedChildWf {
+	t.checkIfIsActive()
+
+	runNodeProto := &lhproto.RunChildWfNode{
+		MajorVersion: -1,
+		Inputs:       make(map[string]*lhproto.VariableAssignment),
+	}
+
+	// wfSpecName can be either a string (static) or an expression/variable.
+	var humanName string
+	switch v := wfSpecName.(type) {
+	case string:
+		runNodeProto.WfSpec = &lhproto.RunChildWfNode_WfSpecName{WfSpecName: v}
+		humanName = "run-" + v
+	case *WfRunVariable:
+		assn, err := t.assignVariable(v)
+		if err != nil {
+			t.throwError(tracerr.Wrap(err))
+		}
+		runNodeProto.WfSpec = &lhproto.RunChildWfNode_WfSpecVar{WfSpecVar: assn}
+		humanName = v.Name
+	case WfRunVariable:
+		assn, err := t.assignVariable(v)
+		if err != nil {
+			t.throwError(tracerr.Wrap(err))
+		}
+		runNodeProto.WfSpec = &lhproto.RunChildWfNode_WfSpecVar{WfSpecVar: assn}
+		humanName = v.Name
+	default:
+		// Try to convert any other expression to a VariableAssignment
+		assn, err := t.assignVariable(v)
+		if err != nil {
+			t.throwError(tracerr.Wrap(err))
+		}
+		runNodeProto.WfSpec = &lhproto.RunChildWfNode_WfSpecVar{WfSpecVar: assn}
+		humanName = "run"
+	}
+
+	if inputs != nil {
+		for k, v := range inputs {
+			assn, err := t.assignVariable(v)
+			if err != nil {
+				t.throwError(tracerr.Wrap(err))
+			}
+			runNodeProto.Inputs[k] = assn
+		}
+	}
+
+	nodeName, node := t.createBlankNode(humanName, "RUN_CHILD_WF")
+	node.Node = &lhproto.Node_RunChildWf{
+		RunChildWf: runNodeProto,
+	}
+
+	return &SpawnedChildWf{
+		sourceNodeName: nodeName,
+		thread:         t,
+	}
+}
+
+// waitForChildWfImpl builds a WaitForChildWf node that waits for the given child.
+func (t *WorkflowThread) waitForChildWfImpl(child *SpawnedChildWf) *plainNodeOutput {
+	t.checkIfIsActive()
+	if child.thread != t {
+		t.throwError(errors.New("currently cannot wait for WfRun started in other thread"))
+	}
+
+	subNode := child.BuildNode()
+	nodeName, node := t.createBlankNode("wait", "WAIT_FOR_CHILD_WF")
+	node.Node = &lhproto.Node_WaitForChildWf{
+		WaitForChildWf: subNode,
+	}
+
+	return &plainNodeOutput{
+		nodeName: nodeName,
+		thread:   t,
 	}
 }
 
