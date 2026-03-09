@@ -64,7 +64,7 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
         MetricWindowModel aggregatedWindowMetric;
         if (storedMetric == null) {
             aggregatedWindowMetric = new MetricWindowModel(id, metricWindow.getMetrics());
-            Date deletionTime = new Date(id.getWindowStart().getTime() + 2L * 60 * 1000);
+            Date deletionTime = new Date(id.getWindowStart().getTime() + config.getMetricWindowRetentionMs());
             DeleteMetricWindowModel deleteSubcomand = new DeleteMetricWindowModel(id);
             CommandModel deleteCommand = new CommandModel(deleteSubcomand, deletionTime);
             executionContext.getTaskManager().scheduleTimer(new LHTimer(deleteCommand));
