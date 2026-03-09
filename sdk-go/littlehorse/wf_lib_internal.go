@@ -1569,7 +1569,8 @@ func (t *WorkflowThread) runWfImpl(wfSpecName interface{}, inputs map[string]int
 
 	runNodeProto := &lhproto.RunChildWfNode{
 		MajorVersion: -1,
-		Inputs:       make(map[string]*lhproto.VariableAssignment),
+		// Inputs is left nil when the caller provides nil to preserve
+		// nil-vs-empty-map semantics (align with other SDKs/tests).
 	}
 
 	// wfSpecName can be either a string (static) or an expression/variable.
@@ -1603,6 +1604,7 @@ func (t *WorkflowThread) runWfImpl(wfSpecName interface{}, inputs map[string]int
 	}
 
 	if inputs != nil {
+		runNodeProto.Inputs = make(map[string]*lhproto.VariableAssignment)
 		for k, v := range inputs {
 			assn, err := t.assignVariable(v)
 			if err != nil {

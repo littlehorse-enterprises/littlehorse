@@ -1926,6 +1926,22 @@ func TestRunWfStatic(t *testing.T) {
 	}
 }
 
+func TestRunWfNoInputsLeavesNilInputs(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		t.RunWf("child-spec", nil)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	runNode := entrypoint.Nodes["1-run-child-spec-RUN_CHILD_WF"].GetRunChildWf()
+
+	assert.Nil(t, runNode.Inputs)
+}
+
 func TestRunWfDynamicVar(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		specVar := t.AddVariable("spec", lhproto.VariableType_STR)
