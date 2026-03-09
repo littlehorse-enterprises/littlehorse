@@ -87,6 +87,7 @@ private static final long serialVersionUID = 0L;
     DELETE_USER_TASK_RUN_COMMENT(33),
     PUT_CHECKPOINT(34),
     AGGREGATE_WINDOW_METRICS(35),
+    DELETE_METRIC_WINDOW(36),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -136,6 +137,7 @@ private static final long serialVersionUID = 0L;
         case 33: return DELETE_USER_TASK_RUN_COMMENT;
         case 34: return PUT_CHECKPOINT;
         case 35: return AGGREGATE_WINDOW_METRICS;
+        case 36: return DELETE_METRIC_WINDOW;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -1216,6 +1218,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.AggregateWindowMetrics.getDefaultInstance();
   }
 
+  public static final int DELETE_METRIC_WINDOW_FIELD_NUMBER = 36;
+  /**
+   * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+   * @return Whether the deleteMetricWindow field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeleteMetricWindow() {
+    return commandCase_ == 36;
+  }
+  /**
+   * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+   * @return The deleteMetricWindow.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeleteMetricWindow getDeleteMetricWindow() {
+    if (commandCase_ == 36) {
+       return (io.littlehorse.common.proto.DeleteMetricWindow) command_;
+    }
+    return io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeleteMetricWindowOrBuilder getDeleteMetricWindowOrBuilder() {
+    if (commandCase_ == 36) {
+       return (io.littlehorse.common.proto.DeleteMetricWindow) command_;
+    }
+    return io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1331,6 +1364,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 35) {
       output.writeMessage(35, (io.littlehorse.common.proto.AggregateWindowMetrics) command_);
+    }
+    if (commandCase_ == 36) {
+      output.writeMessage(36, (io.littlehorse.common.proto.DeleteMetricWindow) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1475,6 +1511,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 35) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(35, (io.littlehorse.common.proto.AggregateWindowMetrics) command_);
+    }
+    if (commandCase_ == 36) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(36, (io.littlehorse.common.proto.DeleteMetricWindow) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1631,6 +1671,10 @@ private static final long serialVersionUID = 0L;
         if (!getAggregateWindowMetrics()
             .equals(other.getAggregateWindowMetrics())) return false;
         break;
+      case 36:
+        if (!getDeleteMetricWindow()
+            .equals(other.getDeleteMetricWindow())) return false;
+        break;
       case 0:
       default:
     }
@@ -1781,6 +1825,10 @@ private static final long serialVersionUID = 0L;
       case 35:
         hash = (37 * hash) + AGGREGATE_WINDOW_METRICS_FIELD_NUMBER;
         hash = (53 * hash) + getAggregateWindowMetrics().hashCode();
+        break;
+      case 36:
+        hash = (37 * hash) + DELETE_METRIC_WINDOW_FIELD_NUMBER;
+        hash = (53 * hash) + getDeleteMetricWindow().hashCode();
         break;
       case 0:
       default:
@@ -2029,6 +2077,9 @@ private static final long serialVersionUID = 0L;
       if (aggregateWindowMetricsBuilder_ != null) {
         aggregateWindowMetricsBuilder_.clear();
       }
+      if (deleteMetricWindowBuilder_ != null) {
+        deleteMetricWindowBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -2215,6 +2266,10 @@ private static final long serialVersionUID = 0L;
           aggregateWindowMetricsBuilder_ != null) {
         result.command_ = aggregateWindowMetricsBuilder_.build();
       }
+      if (commandCase_ == 36 &&
+          deleteMetricWindowBuilder_ != null) {
+        result.command_ = deleteMetricWindowBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -2364,6 +2419,10 @@ private static final long serialVersionUID = 0L;
         }
         case AGGREGATE_WINDOW_METRICS: {
           mergeAggregateWindowMetrics(other.getAggregateWindowMetrics());
+          break;
+        }
+        case DELETE_METRIC_WINDOW: {
+          mergeDeleteMetricWindow(other.getDeleteMetricWindow());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2632,6 +2691,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 35;
               break;
             } // case 282
+            case 290: {
+              input.readMessage(
+                  internalGetDeleteMetricWindowFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 36;
+              break;
+            } // case 290
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -7407,6 +7473,148 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 35;
       onChanged();
       return aggregateWindowMetricsBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.DeleteMetricWindow, io.littlehorse.common.proto.DeleteMetricWindow.Builder, io.littlehorse.common.proto.DeleteMetricWindowOrBuilder> deleteMetricWindowBuilder_;
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     * @return Whether the deleteMetricWindow field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeleteMetricWindow() {
+      return commandCase_ == 36;
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     * @return The deleteMetricWindow.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeleteMetricWindow getDeleteMetricWindow() {
+      if (deleteMetricWindowBuilder_ == null) {
+        if (commandCase_ == 36) {
+          return (io.littlehorse.common.proto.DeleteMetricWindow) command_;
+        }
+        return io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance();
+      } else {
+        if (commandCase_ == 36) {
+          return deleteMetricWindowBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    public Builder setDeleteMetricWindow(io.littlehorse.common.proto.DeleteMetricWindow value) {
+      if (deleteMetricWindowBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        deleteMetricWindowBuilder_.setMessage(value);
+      }
+      commandCase_ = 36;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    public Builder setDeleteMetricWindow(
+        io.littlehorse.common.proto.DeleteMetricWindow.Builder builderForValue) {
+      if (deleteMetricWindowBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        deleteMetricWindowBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 36;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    public Builder mergeDeleteMetricWindow(io.littlehorse.common.proto.DeleteMetricWindow value) {
+      if (deleteMetricWindowBuilder_ == null) {
+        if (commandCase_ == 36 &&
+            command_ != io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.DeleteMetricWindow.newBuilder((io.littlehorse.common.proto.DeleteMetricWindow) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 36) {
+          deleteMetricWindowBuilder_.mergeFrom(value);
+        } else {
+          deleteMetricWindowBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 36;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    public Builder clearDeleteMetricWindow() {
+      if (deleteMetricWindowBuilder_ == null) {
+        if (commandCase_ == 36) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 36) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        deleteMetricWindowBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    public io.littlehorse.common.proto.DeleteMetricWindow.Builder getDeleteMetricWindowBuilder() {
+      return internalGetDeleteMetricWindowFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeleteMetricWindowOrBuilder getDeleteMetricWindowOrBuilder() {
+      if ((commandCase_ == 36) && (deleteMetricWindowBuilder_ != null)) {
+        return deleteMetricWindowBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 36) {
+          return (io.littlehorse.common.proto.DeleteMetricWindow) command_;
+        }
+        return io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.DeleteMetricWindow, io.littlehorse.common.proto.DeleteMetricWindow.Builder, io.littlehorse.common.proto.DeleteMetricWindowOrBuilder> 
+        internalGetDeleteMetricWindowFieldBuilder() {
+      if (deleteMetricWindowBuilder_ == null) {
+        if (!(commandCase_ == 36)) {
+          command_ = io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance();
+        }
+        deleteMetricWindowBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.common.proto.DeleteMetricWindow, io.littlehorse.common.proto.DeleteMetricWindow.Builder, io.littlehorse.common.proto.DeleteMetricWindowOrBuilder>(
+                (io.littlehorse.common.proto.DeleteMetricWindow) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 36;
+      onChanged();
+      return deleteMetricWindowBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.Command)

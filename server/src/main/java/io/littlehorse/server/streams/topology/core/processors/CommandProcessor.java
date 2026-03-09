@@ -95,7 +95,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         ctx.schedule(
                 LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL,
                 PunctuationType.WALL_CLOCK_TIME,
-                this::forwardWindowPartitionMetrics);
+                this::collectPartitionMetrics);
 
         log.info("Completed the init() process on partition {}", ctx.taskId().partition());
     }
@@ -194,19 +194,19 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         server.drainPartitionTaskQueue(ctx.taskId());
     }
 
-    private void forwardWindowPartitionMetrics(long timestamp) {
+    private void collectPartitionMetrics(long timestamp) {
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
         long lastWindowTime = LHUtil.getCurrentWindowDate().getTime() - (2 * 60 * 1000L);
         if (shouldUseMetricsHint) {
-            lastWindowTime = forwardFromStore(clusterScopedStore);
+            lastWindowTime = collectAndSendStoreMetrics(clusterScopedStore);
         } else {
-            forwardFromMemory(clusterScopedStore);
+            collectAndSendMemoryMetrics(clusterScopedStore);
         }
         clusterScopedStore.put(new MetricsHintModel(fromMillis(lastWindowTime)));
     }
 
-    private void forwardFromMemory(ClusterScopedStore store) {
+    private void collectAndSendMemoryMetrics(ClusterScopedStore store) {
         if (!partitionMetricsMemoryStore.hasEntries()) {
             return;
         }
@@ -226,7 +226,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         }
     }
 
-    private long forwardFromStore(ClusterScopedStore store) {
+    private long collectAndSendStoreMetrics(ClusterScopedStore store) {
         shouldUseMetricsHint = false;
         MetricsHintModel hint = store.get(MetricsHintModel.METRICS_HINT_KEY, MetricsHintModel.class);
         if (hint == null || hint.getLastProcessedTimestamp() == null) {
@@ -260,19 +260,19 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     private long forwardAndDeleteFromStore(ClusterScopedStore store, PartitionMetricWindowModel metric) {
         AggregateWindowMetricsModel aggregate = new AggregateWindowMetricsModel(metric);
-        forwardSubcommand(aggregate);
+        fordwardWindowMetrics(aggregate);
         store.delete(metric);
         return metric.getId().getWindowStart().getTime();
     }
 
-    private void forwardSubcommand(AggregateWindowMetricsModel subCommand) {
-        CommandModel command = new CommandModel(subCommand, new Date());
+    private void fordwardWindowMetrics(AggregateWindowMetricsModel agregateMetricsSubcomand) {
+        CommandModel command = new CommandModel(agregateMetricsSubcomand, new Date());
         LHTimer timer = new LHTimer(command);
         timer.maturationTime = new Date();
         timer.setRepartition(true);
         timer.topic = this.config.getCoreCmdTopicName();
         CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.partitionKey = subCommand.getPartitionKey();
+        cpo.partitionKey = agregateMetricsSubcomand.getPartitionKey();
         cpo.topic = this.config.getCoreCmdTopicName();
         cpo.payload = timer;
         Record<String, CommandProcessorOutput> out = new Record<>(
@@ -280,7 +280,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 cpo,
                 System.currentTimeMillis(),
                 HeadersUtil.metadataHeadersFor(
-                        subCommand.getMetricWindow().getId().getTenantId(),
+                        agregateMetricsSubcomand.getMetricWindow().getId().getTenantId(),
                         new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
         this.ctx.forward(out);
     }

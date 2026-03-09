@@ -11,6 +11,7 @@ import "common_wfspec.proto";
 import "user_tasks.proto";
 import "common_enums.proto";
 import "variable.proto";
+import "metrics.proto";
 import "storage.proto";
 import "acls.proto";
 import "job.proto";
@@ -54,6 +55,7 @@ message Command {
         DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 33;
         PutCheckpointRequest put_checkpoint = 34;
         AggregateWindowMetrics aggregate_window_metrics = 35;
+        DeleteMetricWindow delete_metric_window = 36;
     }
 }
 
@@ -118,6 +120,10 @@ message AggregateWfMetrics {
 
 message AggregateWindowMetrics {
     PartitionMetricWindow metric_window = 1;
+}
+
+message DeleteMetricWindow {
+    MetricWindowId id = 1;
 }
 
 message AggregateTaskMetrics {

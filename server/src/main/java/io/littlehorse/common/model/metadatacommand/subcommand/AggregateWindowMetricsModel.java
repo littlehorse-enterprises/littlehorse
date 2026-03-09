@@ -3,8 +3,11 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.PartitionMetricWindowModel;
+import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteMetricWindowModel;
 import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.proto.AggregateWindowMetrics;
@@ -13,6 +16,7 @@ import io.littlehorse.sdk.common.proto.MetricWindow;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Date;
 import lombok.Getter;
 
 @Getter
@@ -57,14 +61,18 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
         MetricWindowIdModel id = metricWindow.getId();
         StoredGetable<MetricWindow, MetricWindowModel> storedMetric =
                 executionContext.getCoreStore().get(id.getStoreableKey(), StoredGetable.class);
-        MetricWindowModel consolidatedMetric;
+        MetricWindowModel aggregatedWindowMetric;
         if (storedMetric == null) {
-            consolidatedMetric = new MetricWindowModel(id, metricWindow.getMetrics());
+            aggregatedWindowMetric = new MetricWindowModel(id, metricWindow.getMetrics());
+            Date deletionTime = new Date(id.getWindowStart().getTime() + 2L * 60 * 1000);
+            DeleteMetricWindowModel deleteSubcomand = new DeleteMetricWindowModel(id);
+            CommandModel deleteCommand = new CommandModel(deleteSubcomand, deletionTime);
+            executionContext.getTaskManager().scheduleTimer(new LHTimer(deleteCommand));
         } else {
-            consolidatedMetric = storedMetric.getStoredObject();
-            consolidatedMetric.mergeFrom(metricWindow.getMetrics());
+            aggregatedWindowMetric = storedMetric.getStoredObject();
+            aggregatedWindowMetric.mergeFrom(metricWindow.getMetrics());
         }
-        executionContext.getCoreStore().put(new StoredGetable<>(consolidatedMetric));
+        executionContext.getCoreStore().put(new StoredGetable<>(aggregatedWindowMetric));
         return null;
     }
 }

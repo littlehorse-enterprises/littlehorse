@@ -522,5 +522,20 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.common.proto.AggregateWindowMetricsOrBuilder getAggregateWindowMetricsOrBuilder();
 
+  /**
+   * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+   * @return Whether the deleteMetricWindow field is set.
+   */
+  boolean hasDeleteMetricWindow();
+  /**
+   * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+   * @return The deleteMetricWindow.
+   */
+  io.littlehorse.common.proto.DeleteMetricWindow getDeleteMetricWindow();
+  /**
+   * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+   */
+  io.littlehorse.common.proto.DeleteMetricWindowOrBuilder getDeleteMetricWindowOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }
