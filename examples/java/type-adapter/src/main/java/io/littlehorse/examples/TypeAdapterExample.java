@@ -6,7 +6,6 @@ import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-import io.littlehorse.sdk.worker.adapter.LHStringAdapter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -62,31 +61,12 @@ public class TypeAdapterExample {
 
         return workers;
     }
-
-    public static void registerTypeAdapters(LHConfig config) {
-        config.registerTypeAdapter(new LHStringAdapter<UUID>() {
-            @Override
-            public String toString(UUID src) {
-                return src.toString();
-            }
-
-            @Override
-            public UUID fromString(String src) {
-                return UUID.fromString(src);
-            }
-
-            @Override
-            public Class<UUID> getTypeClass() {
-                return UUID.class;
-            }
-        });
-    }
-
     public static void main(String[] args) throws IOException {
         Properties props = getConfigProps();
-        LHConfig config = new LHConfig(props);
-
-        registerTypeAdapters(config);
+        LHConfig config = LHConfig.newBuilder()
+            .loadFromProperties(props)
+            .addTypeAdapter(new UUIDTypeAdapter())
+            .build();
 
         Workflow workflow = getWorkflow();
         List<LHTaskWorker> workers = getTaskWorkers(config);
@@ -95,7 +75,7 @@ public class TypeAdapterExample {
             worker.registerTaskDef();
         }
 
-        workflow.registerWfSpec(config.getBlockingStub());
+        workflow.registerWfSpec(config);
 
         for (LHTaskWorker worker : workers) {
             log.debug("Starting {}", worker.getTaskDefName());

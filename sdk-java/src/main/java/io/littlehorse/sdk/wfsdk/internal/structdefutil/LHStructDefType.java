@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.StructDefCircularDependencyException;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.PutStructDefRequest;
@@ -8,7 +9,6 @@ import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.worker.LHStructDef;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;

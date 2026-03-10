@@ -2,7 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import org.junit.jupiter.api.Test;
 
 public class LHClassTypeTest {

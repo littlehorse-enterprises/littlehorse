@@ -8,10 +8,10 @@ import static org.mockito.Mockito.when;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskDefId;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import java.util.Map;
 import org.junit.jupiter.api.Test;

@@ -97,14 +97,7 @@ public class WorkflowImpl extends Workflow {
         return compiledWorkflow;
     }
 
-    /**
-     * Compiles this Workflow into a `WfSpec`, applying configured type adapters from the provided config first.
-     *
-     * <p> <b> Use this method overload if you have type adapters configured in your {@link LHConfig} that you want to apply to the Workflow before registration. </b>
-     *
-     * @param config source for dynamically configured type adapters
-     * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
-     */
+    @Override
     public PutWfSpecRequest compileWorkflow(LHConfig config) {
         lhTypeAdapterRegistry = config.getTypeAdapterRegistry();
         return compileWorkflow();
