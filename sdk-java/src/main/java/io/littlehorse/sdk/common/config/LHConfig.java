@@ -165,10 +165,10 @@ public class LHConfig extends ConfigBase {
         typeAdapterRegistry = LHTypeAdapterRegistry.empty();
     }
 
-    private LHConfig(ConfigSource configSource, Map<Class<?>, LHTypeAdapter<?>> typeAdaptersByClass) {
+    private LHConfig(ConfigSource configSource, LHTypeAdapterRegistry typeAdapterRegistry) {
         super(configSource);
         createdChannels = new HashMap<>();
-        this.typeAdapterRegistry = LHTypeAdapterRegistry.from(new LinkedHashMap<>(typeAdaptersByClass));
+        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
     }
 
     public static LHConfigBuilder newBuilder() {
@@ -237,7 +237,8 @@ public class LHConfig extends ConfigBase {
         }
 
         public LHConfig build() {
-            return new LHConfig(configSource, typeAdaptersByClass);
+            return new LHConfig(
+                    configSource, LHTypeAdapterRegistry.from(new LinkedHashMap<>(typeAdaptersByClass)));
         }
     }
 
