@@ -10,6 +10,9 @@ import io.littlehorse.sdk.common.proto.VariableType;
  */
 public abstract class LHTimestampAdapter<T> implements LHTypeAdapter<T> {
 
+    /** Protected no-arg constructor for subclassing. */
+    protected LHTimestampAdapter() {}
+
     /**
      * Converts a Java value into a protobuf {@link Timestamp}.
      *

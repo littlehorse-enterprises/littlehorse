@@ -6,6 +6,9 @@ import io.grpc.Status;
 import java.util.concurrent.Executor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * gRPC call credentials provider that injects OAuth bearer tokens.
+ */
 @Slf4j
 public class OAuthCredentialsProvider extends CallCredentials {
 
@@ -14,6 +17,11 @@ public class OAuthCredentialsProvider extends CallCredentials {
     private final OAuthClient oauthClient;
     private TokenStatus currentToken;
 
+    /**
+     * Creates a credentials provider backed by the provided OAuth client.
+     *
+     * @param oauthClient OAuth client used to obtain tokens
+     */
     public OAuthCredentialsProvider(OAuthClient oauthClient) {
         this.oauthClient = oauthClient;
     }
