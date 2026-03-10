@@ -101,7 +101,7 @@ const (
 	LittleHorse_DeleteScheduledWfRun_FullMethodName       = "/littlehorse.LittleHorse/DeleteScheduledWfRun"
 	LittleHorse_GetTaskDefMetricsWindow_FullMethodName    = "/littlehorse.LittleHorse/GetTaskDefMetricsWindow"
 	LittleHorse_GetWfSpecMetricsWindow_FullMethodName     = "/littlehorse.LittleHorse/GetWfSpecMetricsWindow"
-	LittleHorse_ListTaskDefMetrics_FullMethodName         = "/littlehorse.LittleHorse/ListTaskDefMetrics"
+	LittleHorse_ListTaskMetrics_FullMethodName            = "/littlehorse.LittleHorse/ListTaskMetrics"
 	LittleHorse_ListWfMetrics_FullMethodName              = "/littlehorse.LittleHorse/ListWfMetrics"
 	LittleHorse_PutTenant_FullMethodName                  = "/littlehorse.LittleHorse/PutTenant"
 	LittleHorse_GetTenant_FullMethodName                  = "/littlehorse.LittleHorse/GetTenant"
@@ -346,8 +346,7 @@ type LittleHorseClient interface {
 	GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(ctx context.Context, in *WfSpecMetricsQueryRequest, opts ...grpc.CallOption) (*WfSpecMetrics, error)
-	// Returns a list of TaskDef Metrics Windows.
-	ListTaskDefMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*ListTaskMetricsResponse, error)
+	ListTaskMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
 	ListWfMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
 	// EXPERIMENTAL: Creates another Tenant in the LH Server.
 	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error)
@@ -1121,9 +1120,9 @@ func (c *littleHorseClient) GetWfSpecMetricsWindow(ctx context.Context, in *WfSp
 	return out, nil
 }
 
-func (c *littleHorseClient) ListTaskDefMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*ListTaskMetricsResponse, error) {
-	out := new(ListTaskMetricsResponse)
-	err := c.cc.Invoke(ctx, LittleHorse_ListTaskDefMetrics_FullMethodName, in, out, opts...)
+func (c *littleHorseClient) ListTaskMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error) {
+	out := new(MetricsList)
+	err := c.cc.Invoke(ctx, LittleHorse_ListTaskMetrics_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1428,8 +1427,7 @@ type LittleHorseServer interface {
 	GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error)
-	// Returns a list of TaskDef Metrics Windows.
-	ListTaskDefMetrics(context.Context, *ListTaskMetricsRequest) (*ListTaskMetricsResponse, error)
+	ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error)
 	ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error)
 	// EXPERIMENTAL: Creates another Tenant in the LH Server.
 	PutTenant(context.Context, *PutTenantRequest) (*Tenant, error)
@@ -1692,8 +1690,8 @@ func (UnimplementedLittleHorseServer) GetTaskDefMetricsWindow(context.Context, *
 func (UnimplementedLittleHorseServer) GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetWfSpecMetricsWindow not implemented")
 }
-func (UnimplementedLittleHorseServer) ListTaskDefMetrics(context.Context, *ListTaskMetricsRequest) (*ListTaskMetricsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListTaskDefMetrics not implemented")
+func (UnimplementedLittleHorseServer) ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListTaskMetrics not implemented")
 }
 func (UnimplementedLittleHorseServer) ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListWfMetrics not implemented")
@@ -3195,20 +3193,20 @@ func _LittleHorse_GetWfSpecMetricsWindow_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LittleHorse_ListTaskDefMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LittleHorse_ListTaskMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListTaskMetricsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LittleHorseServer).ListTaskDefMetrics(ctx, in)
+		return srv.(LittleHorseServer).ListTaskMetrics(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LittleHorse_ListTaskDefMetrics_FullMethodName,
+		FullMethod: LittleHorse_ListTaskMetrics_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LittleHorseServer).ListTaskDefMetrics(ctx, req.(*ListTaskMetricsRequest))
+		return srv.(LittleHorseServer).ListTaskMetrics(ctx, req.(*ListTaskMetricsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3667,8 +3665,8 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_GetWfSpecMetricsWindow_Handler,
 		},
 		{
-			MethodName: "ListTaskDefMetrics",
-			Handler:    _LittleHorse_ListTaskDefMetrics_Handler,
+			MethodName: "ListTaskMetrics",
+			Handler:    _LittleHorse_ListTaskMetrics_Handler,
 		},
 		{
 			MethodName: "ListWfMetrics",

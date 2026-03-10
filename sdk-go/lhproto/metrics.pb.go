@@ -321,6 +321,69 @@ func (x *ListWfMetricsRequest) GetWindowEnd() *timestamppb.Timestamp {
 	return nil
 }
 
+type ListTaskMetricsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TaskDef     *TaskDefId             `protobuf:"bytes,1,opt,name=task_def,json=taskDef,proto3" json:"task_def,omitempty"`
+	WindowStart *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=window_start,json=windowStart,proto3,oneof" json:"window_start,omitempty"`
+	WindowEnd   *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=window_end,json=windowEnd,proto3,oneof" json:"window_end,omitempty"`
+}
+
+func (x *ListTaskMetricsRequest) Reset() {
+	*x = ListTaskMetricsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_metrics_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListTaskMetricsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTaskMetricsRequest) ProtoMessage() {}
+
+func (x *ListTaskMetricsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_metrics_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListTaskMetricsRequest.ProtoReflect.Descriptor instead.
+func (*ListTaskMetricsRequest) Descriptor() ([]byte, []int) {
+	return file_metrics_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ListTaskMetricsRequest) GetTaskDef() *TaskDefId {
+	if x != nil {
+		return x.TaskDef
+	}
+	return nil
+}
+
+func (x *ListTaskMetricsRequest) GetWindowStart() *timestamppb.Timestamp {
+	if x != nil {
+		return x.WindowStart
+	}
+	return nil
+}
+
+func (x *ListTaskMetricsRequest) GetWindowEnd() *timestamppb.Timestamp {
+	if x != nil {
+		return x.WindowEnd
+	}
+	return nil
+}
+
 type MetricsList struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -332,7 +395,7 @@ type MetricsList struct {
 func (x *MetricsList) Reset() {
 	*x = MetricsList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_metrics_proto_msgTypes[4]
+		mi := &file_metrics_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -345,7 +408,7 @@ func (x *MetricsList) String() string {
 func (*MetricsList) ProtoMessage() {}
 
 func (x *MetricsList) ProtoReflect() protoreflect.Message {
-	mi := &file_metrics_proto_msgTypes[4]
+	mi := &file_metrics_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -358,7 +421,7 @@ func (x *MetricsList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MetricsList.ProtoReflect.Descriptor instead.
 func (*MetricsList) Descriptor() ([]byte, []int) {
-	return file_metrics_proto_rawDescGZIP(), []int{4}
+	return file_metrics_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *MetricsList) GetWindows() []*MetricWindow {
@@ -435,17 +498,32 @@ var file_metrics_proto_rawDesc = []byte{
 	0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x48, 0x01, 0x52, 0x09, 0x77, 0x69,
 	0x6e, 0x64, 0x6f, 0x77, 0x45, 0x6e, 0x64, 0x88, 0x01, 0x01, 0x42, 0x0f, 0x0a, 0x0d, 0x5f, 0x77,
 	0x69, 0x6e, 0x64, 0x6f, 0x77, 0x5f, 0x73, 0x74, 0x61, 0x72, 0x74, 0x42, 0x0d, 0x0a, 0x0b, 0x5f,
-	0x77, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x5f, 0x65, 0x6e, 0x64, 0x22, 0x42, 0x0a, 0x0b, 0x4d, 0x65,
-	0x74, 0x72, 0x69, 0x63, 0x73, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x33, 0x0a, 0x07, 0x77, 0x69, 0x6e,
-	0x64, 0x6f, 0x77, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x6c, 0x69, 0x74,
-	0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x57,
-	0x69, 0x6e, 0x64, 0x6f, 0x77, 0x52, 0x07, 0x77, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x73, 0x42, 0x4d,
-	0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
-	0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b, 0x6c, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa, 0x02,
-	0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x64, 0x6b,
-	0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x77, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x5f, 0x65, 0x6e, 0x64, 0x22, 0xef, 0x01, 0x0a, 0x16, 0x4c,
+	0x69, 0x73, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x31, 0x0a, 0x08, 0x74, 0x61, 0x73, 0x6b, 0x5f, 0x64, 0x65,
+	0x66, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65,
+	0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x49, 0x64, 0x52,
+	0x07, 0x74, 0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x12, 0x42, 0x0a, 0x0c, 0x77, 0x69, 0x6e, 0x64,
+	0x6f, 0x77, 0x5f, 0x73, 0x74, 0x61, 0x72, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a,
+	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
+	0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x48, 0x00, 0x52, 0x0b, 0x77, 0x69,
+	0x6e, 0x64, 0x6f, 0x77, 0x53, 0x74, 0x61, 0x72, 0x74, 0x88, 0x01, 0x01, 0x12, 0x3e, 0x0a, 0x0a,
+	0x77, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x5f, 0x65, 0x6e, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x48, 0x01, 0x52, 0x09,
+	0x77, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x45, 0x6e, 0x64, 0x88, 0x01, 0x01, 0x42, 0x0f, 0x0a, 0x0d,
+	0x5f, 0x77, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x5f, 0x73, 0x74, 0x61, 0x72, 0x74, 0x42, 0x0d, 0x0a,
+	0x0b, 0x5f, 0x77, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x5f, 0x65, 0x6e, 0x64, 0x22, 0x42, 0x0a, 0x0b,
+	0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x33, 0x0a, 0x07, 0x77,
+	0x69, 0x6e, 0x64, 0x6f, 0x77, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x6c,
+	0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4d, 0x65, 0x74, 0x72, 0x69,
+	0x63, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x52, 0x07, 0x77, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x73,
+	0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72,
+	0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b, 0x6c, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53,
+	0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -460,38 +538,42 @@ func file_metrics_proto_rawDescGZIP() []byte {
 	return file_metrics_proto_rawDescData
 }
 
-var file_metrics_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_metrics_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_metrics_proto_goTypes = []interface{}{
-	(*MetricWindowId)(nil),        // 0: littlehorse.MetricWindowId
-	(*CountAndTiming)(nil),        // 1: littlehorse.CountAndTiming
-	(*MetricWindow)(nil),          // 2: littlehorse.MetricWindow
-	(*ListWfMetricsRequest)(nil),  // 3: littlehorse.ListWfMetricsRequest
-	(*MetricsList)(nil),           // 4: littlehorse.MetricsList
-	nil,                           // 5: littlehorse.MetricWindow.MetricsEntry
-	(*WfSpecId)(nil),              // 6: littlehorse.WfSpecId
-	(*TaskDefId)(nil),             // 7: littlehorse.TaskDefId
-	(*UserTaskDefId)(nil),         // 8: littlehorse.UserTaskDefId
-	(*TenantId)(nil),              // 9: littlehorse.TenantId
-	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
+	(*MetricWindowId)(nil),         // 0: littlehorse.MetricWindowId
+	(*CountAndTiming)(nil),         // 1: littlehorse.CountAndTiming
+	(*MetricWindow)(nil),           // 2: littlehorse.MetricWindow
+	(*ListWfMetricsRequest)(nil),   // 3: littlehorse.ListWfMetricsRequest
+	(*ListTaskMetricsRequest)(nil), // 4: littlehorse.ListTaskMetricsRequest
+	(*MetricsList)(nil),            // 5: littlehorse.MetricsList
+	nil,                            // 6: littlehorse.MetricWindow.MetricsEntry
+	(*WfSpecId)(nil),               // 7: littlehorse.WfSpecId
+	(*TaskDefId)(nil),              // 8: littlehorse.TaskDefId
+	(*UserTaskDefId)(nil),          // 9: littlehorse.UserTaskDefId
+	(*TenantId)(nil),               // 10: littlehorse.TenantId
+	(*timestamppb.Timestamp)(nil),  // 11: google.protobuf.Timestamp
 }
 var file_metrics_proto_depIdxs = []int32{
-	6,  // 0: littlehorse.MetricWindowId.wf_spec_id:type_name -> littlehorse.WfSpecId
-	7,  // 1: littlehorse.MetricWindowId.task_def_id:type_name -> littlehorse.TaskDefId
-	8,  // 2: littlehorse.MetricWindowId.user_task_def_id:type_name -> littlehorse.UserTaskDefId
-	9,  // 3: littlehorse.MetricWindowId.tenant_id:type_name -> littlehorse.TenantId
-	10, // 4: littlehorse.MetricWindowId.window_start:type_name -> google.protobuf.Timestamp
+	7,  // 0: littlehorse.MetricWindowId.wf_spec_id:type_name -> littlehorse.WfSpecId
+	8,  // 1: littlehorse.MetricWindowId.task_def_id:type_name -> littlehorse.TaskDefId
+	9,  // 2: littlehorse.MetricWindowId.user_task_def_id:type_name -> littlehorse.UserTaskDefId
+	10, // 3: littlehorse.MetricWindowId.tenant_id:type_name -> littlehorse.TenantId
+	11, // 4: littlehorse.MetricWindowId.window_start:type_name -> google.protobuf.Timestamp
 	0,  // 5: littlehorse.MetricWindow.id:type_name -> littlehorse.MetricWindowId
-	5,  // 6: littlehorse.MetricWindow.metrics:type_name -> littlehorse.MetricWindow.MetricsEntry
-	6,  // 7: littlehorse.ListWfMetricsRequest.wf_spec:type_name -> littlehorse.WfSpecId
-	10, // 8: littlehorse.ListWfMetricsRequest.window_start:type_name -> google.protobuf.Timestamp
-	10, // 9: littlehorse.ListWfMetricsRequest.window_end:type_name -> google.protobuf.Timestamp
-	2,  // 10: littlehorse.MetricsList.windows:type_name -> littlehorse.MetricWindow
-	1,  // 11: littlehorse.MetricWindow.MetricsEntry.value:type_name -> littlehorse.CountAndTiming
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	6,  // 6: littlehorse.MetricWindow.metrics:type_name -> littlehorse.MetricWindow.MetricsEntry
+	7,  // 7: littlehorse.ListWfMetricsRequest.wf_spec:type_name -> littlehorse.WfSpecId
+	11, // 8: littlehorse.ListWfMetricsRequest.window_start:type_name -> google.protobuf.Timestamp
+	11, // 9: littlehorse.ListWfMetricsRequest.window_end:type_name -> google.protobuf.Timestamp
+	8,  // 10: littlehorse.ListTaskMetricsRequest.task_def:type_name -> littlehorse.TaskDefId
+	11, // 11: littlehorse.ListTaskMetricsRequest.window_start:type_name -> google.protobuf.Timestamp
+	11, // 12: littlehorse.ListTaskMetricsRequest.window_end:type_name -> google.protobuf.Timestamp
+	2,  // 13: littlehorse.MetricsList.windows:type_name -> littlehorse.MetricWindow
+	1,  // 14: littlehorse.MetricWindow.MetricsEntry.value:type_name -> littlehorse.CountAndTiming
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_metrics_proto_init() }
@@ -550,6 +632,18 @@ func file_metrics_proto_init() {
 			}
 		}
 		file_metrics_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListTaskMetricsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_metrics_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MetricsList); i {
 			case 0:
 				return &v.state
@@ -568,13 +662,14 @@ func file_metrics_proto_init() {
 		(*MetricWindowId_UserTaskDefId)(nil),
 	}
 	file_metrics_proto_msgTypes[3].OneofWrappers = []interface{}{}
+	file_metrics_proto_msgTypes[4].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_metrics_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

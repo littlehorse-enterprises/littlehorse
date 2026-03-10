@@ -454,10 +454,10 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.WfSpecMetricsQueryRequest.SerializeToString,
                 response_deserializer=service__pb2.WfSpecMetrics.FromString,
                 _registered_method=True)
-        self.ListTaskDefMetrics = channel.unary_unary(
-                '/littlehorse.LittleHorse/ListTaskDefMetrics',
-                request_serializer=service__pb2.ListTaskMetricsRequest.SerializeToString,
-                response_deserializer=service__pb2.ListTaskMetricsResponse.FromString,
+        self.ListTaskMetrics = channel.unary_unary(
+                '/littlehorse.LittleHorse/ListTaskMetrics',
+                request_serializer=metrics__pb2.ListTaskMetricsRequest.SerializeToString,
+                response_deserializer=metrics__pb2.MetricsList.FromString,
                 _registered_method=True)
         self.ListWfMetrics = channel.unary_unary(
                 '/littlehorse.LittleHorse/ListWfMetrics',
@@ -1137,9 +1137,8 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ListTaskDefMetrics(self, request, context):
-        """Returns a list of TaskDef Metrics Windows.
-        """
+    def ListTaskMetrics(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -1599,10 +1598,10 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.WfSpecMetricsQueryRequest.FromString,
                     response_serializer=service__pb2.WfSpecMetrics.SerializeToString,
             ),
-            'ListTaskDefMetrics': grpc.unary_unary_rpc_method_handler(
-                    servicer.ListTaskDefMetrics,
-                    request_deserializer=service__pb2.ListTaskMetricsRequest.FromString,
-                    response_serializer=service__pb2.ListTaskMetricsResponse.SerializeToString,
+            'ListTaskMetrics': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListTaskMetrics,
+                    request_deserializer=metrics__pb2.ListTaskMetricsRequest.FromString,
+                    response_serializer=metrics__pb2.MetricsList.SerializeToString,
             ),
             'ListWfMetrics': grpc.unary_unary_rpc_method_handler(
                     servicer.ListWfMetrics,
@@ -3838,7 +3837,7 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
-    def ListTaskDefMetrics(request,
+    def ListTaskMetrics(request,
             target,
             options=(),
             channel_credentials=None,
@@ -3851,9 +3850,9 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/littlehorse.LittleHorse/ListTaskDefMetrics',
-            service__pb2.ListTaskMetricsRequest.SerializeToString,
-            service__pb2.ListTaskMetricsResponse.FromString,
+            '/littlehorse.LittleHorse/ListTaskMetrics',
+            metrics__pb2.ListTaskMetricsRequest.SerializeToString,
+            metrics__pb2.MetricsList.FromString,
             options,
             channel_credentials,
             insecure,

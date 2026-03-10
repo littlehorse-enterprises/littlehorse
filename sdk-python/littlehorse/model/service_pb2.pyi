@@ -882,30 +882,6 @@ class TaskDefMetricsQueryRequest(_message.Message):
     task_def_name: str
     def __init__(self, window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., window_type: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., task_def_name: _Optional[str] = ...) -> None: ...
 
-class ListTaskMetricsRequest(_message.Message):
-    __slots__ = ("task_def_id", "last_window_start", "window_length", "num_windows", "bookmark", "limit")
-    TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
-    LAST_WINDOW_START_FIELD_NUMBER: _ClassVar[int]
-    WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
-    NUM_WINDOWS_FIELD_NUMBER: _ClassVar[int]
-    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
-    LIMIT_FIELD_NUMBER: _ClassVar[int]
-    task_def_id: _object_id_pb2.TaskDefId
-    last_window_start: _timestamp_pb2.Timestamp
-    window_length: _common_enums_pb2.MetricsWindowLength
-    num_windows: int
-    bookmark: bytes
-    limit: int
-    def __init__(self, task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., last_window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., window_length: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., num_windows: _Optional[int] = ..., bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ...) -> None: ...
-
-class ListTaskMetricsResponse(_message.Message):
-    __slots__ = ("results", "bookmark")
-    RESULTS_FIELD_NUMBER: _ClassVar[int]
-    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
-    results: _containers.RepeatedCompositeFieldContainer[TaskDefMetrics]
-    bookmark: bytes
-    def __init__(self, results: _Optional[_Iterable[_Union[TaskDefMetrics, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
-
 class WfSpecMetricsQueryRequest(_message.Message):
     __slots__ = ("wf_spec_id", "window_start", "window_length")
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
