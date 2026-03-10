@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,12 +60,13 @@ public class TypeAdapterExample {
 
         return workers;
     }
+
     public static void main(String[] args) throws IOException {
         Properties props = getConfigProps();
         LHConfig config = LHConfig.newBuilder()
-            .loadFromProperties(props)
-            .addTypeAdapter(new UUIDTypeAdapter())
-            .build();
+                .loadFromProperties(props)
+                .addTypeAdapter(new UUIDTypeAdapter())
+                .build();
 
         Workflow workflow = getWorkflow();
         List<LHTaskWorker> workers = getTaskWorkers(config);
