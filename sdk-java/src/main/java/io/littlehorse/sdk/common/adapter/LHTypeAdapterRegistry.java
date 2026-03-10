@@ -1,4 +1,4 @@
-package io.littlehorse.sdk.worker.adapter;
+package io.littlehorse.sdk.common.adapter;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;

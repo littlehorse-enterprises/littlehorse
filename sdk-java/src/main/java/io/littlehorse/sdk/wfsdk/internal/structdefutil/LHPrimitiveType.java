@@ -1,9 +1,9 @@
 package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.util.Objects;
 
 /**

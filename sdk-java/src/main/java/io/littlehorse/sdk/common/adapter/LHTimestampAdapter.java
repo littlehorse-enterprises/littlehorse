@@ -1,4 +1,4 @@
-package io.littlehorse.sdk.worker.adapter;
+package io.littlehorse.sdk.common.adapter;
 
 import com.google.protobuf.Timestamp;
 import io.littlehorse.sdk.common.proto.VariableType;
