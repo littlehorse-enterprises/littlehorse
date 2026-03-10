@@ -264,7 +264,8 @@ public class LHConfig extends ConfigBase {
             return this;
         }
 
-        /* Registers a type adapter to this config. Type adapters registered to the config will be used by
+        /**
+         * Registers a type adapter to this config. Type adapters registered to the config will be used by
          * the SDK for type conversions anywhere that user defined classes can be found.
          *
          * Examples of where these Type Adapters may be used include TaskDef input and output variables and StructDef fields.
