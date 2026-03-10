@@ -21,18 +21,31 @@ import lombok.extern.slf4j.Slf4j;
 // https://www.nimbusds.com/products/nimbus-oauth-openid-connect-sdk/guides/java-cookbook-for-openid-connect-public-clients
 // https://www.oauth.com/oauth2-servers/token-introspection-endpoint/
 
+/**
+ * OAuth client that fetches access tokens using the client credentials grant.
+ */
 @Slf4j
 public class OAuthClient {
 
     private final OAuthConfig config;
     private final ClientAuthentication credentials;
 
+    /**
+     * Creates an OAuthClient from OAuth configuration.
+     *
+     * @param config OAuth client settings
+     */
     public OAuthClient(OAuthConfig config) {
         this.config = config;
         this.credentials =
                 new ClientSecretBasic(new ClientID(config.getClientId()), new Secret(config.getClientSecret()));
     }
 
+    /**
+     * Requests a fresh access token from the configured token endpoint.
+     *
+     * @return token status containing token metadata and expiration
+     */
     public TokenStatus getAccessToken() {
         try {
             TokenRequest request =

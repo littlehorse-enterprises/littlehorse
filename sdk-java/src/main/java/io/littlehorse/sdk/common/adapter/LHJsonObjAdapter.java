@@ -9,6 +9,9 @@ import io.littlehorse.sdk.common.proto.VariableType;
  */
 public abstract class LHJsonObjAdapter<T> implements LHTypeAdapter<T> {
 
+    /** Protected no-arg constructor for subclassing. */
+    protected LHJsonObjAdapter() {}
+
     /**
      * Converts a Java value into a JSON object string representation.
      *

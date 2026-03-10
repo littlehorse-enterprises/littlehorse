@@ -9,6 +9,9 @@ import io.littlehorse.sdk.common.proto.VariableType;
  */
 public abstract class LHDoubleAdapter<T> implements LHTypeAdapter<T> {
 
+    /** Protected no-arg constructor for subclassing. */
+    protected LHDoubleAdapter() {}
+
     /**
      * Converts a Java value into its {@link Double} representation.
      *

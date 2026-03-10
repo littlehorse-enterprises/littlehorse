@@ -10,6 +10,9 @@ import io.littlehorse.sdk.common.proto.WfRunId;
  */
 public abstract class LHWfRunIdAdapter<T> implements LHTypeAdapter<T> {
 
+    /** Protected no-arg constructor for subclassing. */
+    protected LHWfRunIdAdapter() {}
+
     /**
      * Converts a Java value into a protobuf {@link WfRunId}.
      *

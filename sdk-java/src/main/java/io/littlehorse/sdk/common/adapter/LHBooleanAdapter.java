@@ -9,6 +9,9 @@ import io.littlehorse.sdk.common.proto.VariableType;
  */
 public abstract class LHBooleanAdapter<T> implements LHTypeAdapter<T> {
 
+    /** Protected no-arg constructor for subclassing. */
+    protected LHBooleanAdapter() {}
+
     /**
      * Converts a Java value into its {@link Boolean} representation.
      *

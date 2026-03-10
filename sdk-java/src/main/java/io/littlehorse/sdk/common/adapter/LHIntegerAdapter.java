@@ -9,6 +9,9 @@ import io.littlehorse.sdk.common.proto.VariableType;
  */
 public abstract class LHIntegerAdapter<T> implements LHTypeAdapter<T> {
 
+    /** Protected no-arg constructor for subclassing. */
+    protected LHIntegerAdapter() {}
+
     /**
      * Converts a Java value into its {@link Integer} representation.
      *
