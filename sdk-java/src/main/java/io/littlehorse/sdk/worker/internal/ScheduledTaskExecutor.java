@@ -16,7 +16,6 @@ import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
 import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.lang.reflect.InvocationTargetException;
@@ -24,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -42,17 +42,10 @@ public class ScheduledTaskExecutor {
     public ScheduledTaskExecutor(
             final LittleHorseGrpc.LittleHorseStub retriesStub,
             final LittleHorseBlockingStub blockingStub,
-            final List<LHTypeAdapter<?>> typeAdapters) {
-        this(retriesStub, blockingStub, LHTypeAdapterRegistry.from(typeAdapters));
-    }
-
-    public ScheduledTaskExecutor(
-            final LittleHorseGrpc.LittleHorseStub retriesStub,
-            final LittleHorseBlockingStub blockingStub,
             final LHTypeAdapterRegistry typeAdapterRegistry) {
         this.retriesStub = retriesStub;
         this.blockingStub = blockingStub;
-        this.typeAdapterRegistry = typeAdapterRegistry == null ? LHTypeAdapterRegistry.empty() : typeAdapterRegistry;
+        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
     }
 
     public void doTask(

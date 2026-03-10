@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.adapter.LHStringAdapter;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -180,9 +181,10 @@ public class LHLibUtilTest {
         };
 
         UUID uuid = UUID.randomUUID();
+        LHTypeAdapterRegistry typeAdapterRegistry = LHTypeAdapterRegistry.from(Map.of(UUID.class, uuidAdapter));
 
-        VariableValue serialized = LHLibUtil.objToVarVal(uuid, List.of(uuidAdapter));
-        Object deserialized = LHLibUtil.varValToObj(serialized, UUID.class, List.of(uuidAdapter));
+        VariableValue serialized = LHLibUtil.objToVarVal(uuid, typeAdapterRegistry);
+        Object deserialized = LHLibUtil.varValToObj(serialized, UUID.class, typeAdapterRegistry);
 
         Assertions.assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STR);
         Assertions.assertThat(serialized.getStr()).isEqualTo(uuid.toString());
@@ -209,7 +211,8 @@ public class LHLibUtilTest {
         };
 
         UUID uuid = UUID.randomUUID();
-        VariableValue serialized = LHLibUtil.objToVarVal(uuid, UUID.class, List.of(uuidAdapter));
+        LHTypeAdapterRegistry typeAdapterRegistry = LHTypeAdapterRegistry.from(Map.of(UUID.class, uuidAdapter));
+        VariableValue serialized = LHLibUtil.objToVarVal(uuid, UUID.class, typeAdapterRegistry);
 
         Assertions.assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STR);
         Assertions.assertThat(serialized.getStr()).isEqualTo(uuid.toString());
@@ -238,10 +241,11 @@ public class LHLibUtilTest {
         AdapterStruct original = new AdapterStruct();
         original.setName("test-name");
         original.setId(uuid);
+        LHTypeAdapterRegistry typeAdapterRegistry = LHTypeAdapterRegistry.from(Map.of(UUID.class, uuidAdapter));
 
-        VariableValue serialized = LHLibUtil.objToVarVal(original, List.of(uuidAdapter));
+        VariableValue serialized = LHLibUtil.objToVarVal(original, typeAdapterRegistry);
         AdapterStruct deserialized =
-                (AdapterStruct) LHLibUtil.varValToObj(serialized, AdapterStruct.class, List.of(uuidAdapter));
+                (AdapterStruct) LHLibUtil.varValToObj(serialized, AdapterStruct.class, typeAdapterRegistry);
 
         Assertions.assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
         Assertions.assertThat(serialized
