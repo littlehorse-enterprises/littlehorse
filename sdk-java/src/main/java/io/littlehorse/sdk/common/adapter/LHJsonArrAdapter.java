@@ -1,4 +1,4 @@
-package io.littlehorse.sdk.worker.adapter;
+package io.littlehorse.sdk.common.adapter;
 
 import io.littlehorse.sdk.common.proto.VariableType;
 
@@ -8,6 +8,9 @@ import io.littlehorse.sdk.common.proto.VariableType;
  * @param <T> the custom Java type handled by this adapter
  */
 public abstract class LHJsonArrAdapter<T> implements LHTypeAdapter<T> {
+
+    /** Protected no-arg constructor for subclassing. */
+    protected LHJsonArrAdapter() {}
 
     /**
      * Converts a Java value into a JSON array string representation.

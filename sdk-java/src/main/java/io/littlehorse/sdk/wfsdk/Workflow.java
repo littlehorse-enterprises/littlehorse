@@ -6,6 +6,8 @@ import com.google.protobuf.util.JsonFormat;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.AllowedUpdateType;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
@@ -18,19 +20,13 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
 import io.littlehorse.sdk.wfsdk.internal.ThrowEventNodeOutputImpl;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +48,8 @@ public abstract class Workflow {
     protected ExponentialBackoffRetryPolicy defaultExponentialBackoff;
     protected int defaultSimpleRetries;
     protected Set<ThrowEventNodeOutputImpl> workflowEventsToRegister;
-    protected Map<Class<?>, LHTypeAdapter<?>> wfTypeAdaptersByClass;
+
+    protected LHTypeAdapterRegistry lhTypeAdapterRegistry;
 
     /**
      * Internal constructor used by WorkflowImpl.
@@ -66,24 +63,16 @@ public abstract class Workflow {
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
         this.workflowEventsToRegister = new HashSet<>();
-        this.wfTypeAdaptersByClass = new LinkedHashMap<>();
+        this.lhTypeAdapterRegistry = LHTypeAdapterRegistry.empty();
     }
 
-    public <T> void registerTypeAdapter(LHTypeAdapter<T> adapter) {
-        if (wfTypeAdaptersByClass.containsKey(adapter.getTypeClass())) {
-            throw new IllegalArgumentException("A type adapter for "
-                    + adapter.getTypeClass().getName() + " is already registered to this workflow");
-        }
-
-        wfTypeAdaptersByClass.put(adapter.getTypeClass(), adapter);
-    }
-
-    public List<LHTypeAdapter<?>> getTypeAdapters() {
-        return new ArrayList<>(wfTypeAdaptersByClass.values());
-    }
-
+    /**
+     * Returns the type adapter registry view for this workflow.
+     *
+     * @return adapter registry
+     */
     public LHTypeAdapterRegistry getTypeAdapterRegistry() {
-        return LHTypeAdapterRegistry.from(new ArrayList<>(wfTypeAdaptersByClass.values()));
+        return lhTypeAdapterRegistry;
     }
 
     /**
@@ -185,7 +174,7 @@ public abstract class Workflow {
      * AllowedUpdateType.ALL (Default): Creates a new WfSpec with a different version (either major or revision).
      * AllowedUpdateType.MINOR_REVISION_ONLY: Creates a new WfSpec with a different revision if the change is a major version it fails.
      * AllowedUpdateType.NONE: Fail with the ALREADY_EXISTS response code.
-     * @param allowedUpdateType
+     * @param allowedUpdateType the allowed update type for the workflow specification
      * @return this Worflow
      */
     public Workflow withUpdateType(AllowedUpdateType allowedUpdateType) {
@@ -199,6 +188,16 @@ public abstract class Workflow {
      * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
      */
     public abstract PutWfSpecRequest compileWorkflow();
+
+    /**
+     * Compiles this Workflow into a `WfSpec`, applying configured type adapters from the provided config first.
+     *
+     * <p> <b> Use this method overload if you have type adapters configured in your {@link LHConfig} that you want to apply to the Workflow before registration. </b>
+     *
+     * @param config source for dynamically configured type adapters
+     * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
+     */
+    public abstract PutWfSpecRequest compileWorkflow(LHConfig config);
 
     /**
      * Returns the names of all `TaskDef`s used by this workflow.
@@ -302,11 +301,23 @@ public abstract class Workflow {
 
     /**
      * Deploys the WfSpec object to the LH Server. Registering the WfSpec via
-     * Workflow::registerWfSpec() is the same as client.putWfSpec(workflow.compileWorkflow()).
+     * Workflow::registerWfSpec() also registers ExternalEventDefs and WorkflowEventDefs
+     * according to your `registeredAs` declarations on `ExternalEventNodeOutput`s and `ThrowEventNodeOutput`s.
      *
      * @param client is an LHClient.
      */
     public abstract void registerWfSpec(LittleHorseBlockingStub client);
+
+    /**
+     * Deploys the WfSpec object to the LH Server. Registering the WfSpec via
+     * Workflow::registerWfSpec() also registers ExternalEventDefs and WorkflowEventDefs
+     * according to your `registeredAs` declarations on `ExternalEventNodeOutput`s and `ThrowEventNodeOutput`s.
+     *
+     * <p> <b> Use this method overload if you have Type Adapters configured in your {@link LHConfig} that you want to apply to the Workflow before registration. </b>
+     *
+     * @param config is an LHConfig.
+     */
+    public abstract void registerWfSpec(LHConfig config);
 
     /**
      * Writes out the PutWfSpecRequest in JSON form in a directory.
