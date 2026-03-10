@@ -237,8 +237,7 @@ public class LHConfig extends ConfigBase {
         }
 
         public LHConfig build() {
-            return new LHConfig(
-                    configSource, LHTypeAdapterRegistry.from(new LinkedHashMap<>(typeAdaptersByClass)));
+            return new LHConfig(configSource, LHTypeAdapterRegistry.from(new LinkedHashMap<>(typeAdaptersByClass)));
         }
     }
 

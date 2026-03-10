@@ -245,7 +245,7 @@ public class LHLibUtilTest {
 
         VariableValue serialized = LHLibUtil.objToVarVal(original, typeAdapterRegistry);
         AdapterStruct deserialized =
-            (AdapterStruct) LHLibUtil.varValToObj(serialized, AdapterStruct.class, typeAdapterRegistry);
+                (AdapterStruct) LHLibUtil.varValToObj(serialized, AdapterStruct.class, typeAdapterRegistry);
 
         Assertions.assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
         Assertions.assertThat(serialized
