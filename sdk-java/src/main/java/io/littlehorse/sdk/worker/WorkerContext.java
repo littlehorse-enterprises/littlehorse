@@ -13,10 +13,9 @@ import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
 import io.littlehorse.sdk.common.proto.WfRunId;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
 import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.util.Date;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * This class contains runtime information about the specific WfRun and NodeRun that is being
@@ -47,21 +46,13 @@ public class WorkerContext {
             ScheduledTask scheduledTask,
             Date scheduleTime,
             LittleHorseBlockingStub client,
-            List<LHTypeAdapter<?>> typeAdapters) {
-        this(scheduledTask, scheduleTime, client, LHTypeAdapterRegistry.from(typeAdapters));
-    }
-
-    public WorkerContext(
-            ScheduledTask scheduledTask,
-            Date scheduleTime,
-            LittleHorseBlockingStub client,
             LHTypeAdapterRegistry typeAdapterRegistry) {
         this.scheduledTask = scheduledTask;
         this.scheduleTime = scheduleTime;
         this.logOutput = "";
         checkpointsSoFarInThisRun = 0;
         this.client = client;
-        this.typeAdapterRegistry = typeAdapterRegistry == null ? LHTypeAdapterRegistry.empty() : typeAdapterRegistry;
+        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
     }
 
     /**

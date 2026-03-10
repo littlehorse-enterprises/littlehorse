@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
@@ -260,7 +261,10 @@ public class WorkflowThreadImplTest {
         WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
             thread.throwEvent("event-one", UUID.randomUUID()).registeredAs(UUID.class);
         });
-        wf.registerTypeAdapter(uuidAdapter());
+        LHConfig config =
+                LHConfig.newBuilder().addTypeAdapter(new UUIDConfigAdapter()).build();
+
+        wf.compileWorkflow(config);
 
         PutWorkflowEventDefRequest eventDef =
                 wf.getWorkflowEventDefsToRegister().stream().findFirst().orElseThrow();
@@ -272,10 +276,30 @@ public class WorkflowThreadImplTest {
         WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
             thread.waitForEvent("event-one").registeredAs(UUID.class);
         });
-        wf.registerTypeAdapter(uuidAdapter());
+        LHConfig config =
+                LHConfig.newBuilder().addTypeAdapter(new UUIDConfigAdapter()).build();
+
+        wf.compileWorkflow(config);
 
         PutExternalEventDefRequest eventDef =
                 wf.getExternalEventDefsToRegister().stream().findFirst().orElseThrow();
+        assertThat(eventDef.getContentType().getReturnType().getPrimitiveType()).isEqualTo(VariableType.STR);
+    }
+
+    @Test
+    void shouldUseTypeAdapterFromConfigForWorkflowEventRegisteredAsClass() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
+            WfRunVariable strVar = thread.declareStr("some-var");
+            thread.throwEvent("event-one", strVar).registeredAs(UUID.class);
+        });
+
+        LHConfig config =
+                LHConfig.newBuilder().addTypeAdapter(new UUIDConfigAdapter()).build();
+
+        wf.compileWorkflow(config);
+
+        PutWorkflowEventDefRequest eventDef =
+                wf.getWorkflowEventDefsToRegister().stream().findFirst().orElseThrow();
         assertThat(eventDef.getContentType().getReturnType().getPrimitiveType()).isEqualTo(VariableType.STR);
     }
 
@@ -847,22 +871,21 @@ public class WorkflowThreadImplTest {
         assertEquals(exitNode.getExit().getReturnContent().getNodeOutput().getNodeName(), "1-some-task-TASK");
     }
 
-    private LHStringAdapter<UUID> uuidAdapter() {
-        return new LHStringAdapter<UUID>() {
-            @Override
-            public String toString(UUID src) {
-                return src.toString();
-            }
+    public static class UUIDConfigAdapter implements LHStringAdapter<UUID> {
 
-            @Override
-            public UUID fromString(String src) {
-                return UUID.fromString(src);
-            }
+        @Override
+        public String toString(UUID src) {
+            return src.toString();
+        }
 
-            @Override
-            public Class<UUID> getTypeClass() {
-                return UUID.class;
-            }
-        };
+        @Override
+        public UUID fromString(String src) {
+            return UUID.fromString(src);
+        }
+
+        @Override
+        public Class<UUID> getTypeClass() {
+            return UUID.class;
+        }
     }
 }

@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -88,6 +89,19 @@ public class WorkflowImpl extends Workflow {
             compiledWorkflow = compileWorkflowHelper();
         }
         return compiledWorkflow;
+    }
+
+    /**
+     * Compiles this Workflow into a `WfSpec`, applying configured type adapters from the provided config first.
+     *
+     * <p> <b> Use this method overload if you have type adapters configured in your {@link LHConfig} that you want to apply to the Workflow before registration. </b>
+     *
+     * @param config source for dynamically configured type adapters
+     * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
+     */
+    public PutWfSpecRequest compileWorkflow(LHConfig config) {
+        lhTypeAdapterRegistry = config.getTypeAdapterRegistry();
+        return compileWorkflow();
     }
 
     void addTaskDefName(String taskDefName) {

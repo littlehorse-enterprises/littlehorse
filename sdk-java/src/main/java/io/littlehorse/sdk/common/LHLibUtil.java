@@ -58,16 +58,10 @@ import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class LHLibUtil {
-
-    public static Optional<LHTypeAdapter<?>> getTypeAdapterForClass(
-            Class<?> clazz, List<LHTypeAdapter<?>> typeAdapters) {
-        return getTypeAdapterForClass(clazz, LHTypeAdapterRegistry.from(typeAdapters));
-    }
 
     public static Optional<LHTypeAdapter<?>> getTypeAdapterForClass(Class<?> clazz, LHTypeAdapterRegistry registry) {
         if (registry == null) {
@@ -373,11 +367,6 @@ public class LHLibUtil {
         return varValToObj(val, targetClazz, LHTypeAdapterRegistry.empty());
     }
 
-    public static Object varValToObj(VariableValue val, Class<?> targetClazz, List<LHTypeAdapter<?>> typeAdapters)
-            throws LHSerdeException {
-        return varValToObj(val, targetClazz, LHTypeAdapterRegistry.from(typeAdapters));
-    }
-
     public static Object varValToObj(VariableValue val, Class<?> targetClazz, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
         Optional<LHTypeAdapter<?>> maybeAdapter = getTypeAdapterForClass(targetClazz, typeAdapterRegistry);
@@ -583,10 +572,6 @@ public class LHLibUtil {
         return objToVarVal(o, LHTypeAdapterRegistry.empty());
     }
 
-    public static VariableValue objToVarVal(Object o, List<LHTypeAdapter<?>> typeAdapters) throws LHSerdeException {
-        return objToVarVal(o, LHTypeAdapterRegistry.from(typeAdapters));
-    }
-
     public static VariableValue objToVarVal(Object o, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
         if (o == null) {
@@ -599,11 +584,6 @@ public class LHLibUtil {
         }
 
         return objToVarValWithoutTypeAdapter(o, typeAdapterRegistry);
-    }
-
-    public static VariableValue objToVarVal(Object o, Class<?> declaredClass, List<LHTypeAdapter<?>> typeAdapters)
-            throws LHSerdeException {
-        return objToVarVal(o, declaredClass, LHTypeAdapterRegistry.from(typeAdapters));
     }
 
     public static VariableValue objToVarVal(Object o, Class<?> declaredClass, LHTypeAdapterRegistry typeAdapterRegistry)
