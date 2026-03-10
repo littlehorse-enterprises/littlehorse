@@ -24,5 +24,10 @@ public @interface LHType {
      */
     boolean masked();
 
+    /**
+     * Optional display name override for the target variable or node output.
+     *
+     * @return configured name override
+     */
     String name() default "";
 }

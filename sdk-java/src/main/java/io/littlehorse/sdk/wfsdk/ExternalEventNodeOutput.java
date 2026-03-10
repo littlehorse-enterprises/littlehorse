@@ -3,6 +3,9 @@ package io.littlehorse.sdk.wfsdk;
 import io.littlehorse.sdk.common.proto.CorrelatedEventConfig;
 import java.io.Serializable;
 
+/**
+ * Node output for external event wait nodes.
+ */
 public interface ExternalEventNodeOutput extends NodeOutput {
     /**
      * Adds a timeout to an ExternalEventNode.

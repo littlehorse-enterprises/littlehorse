@@ -95,6 +95,15 @@ public class LHTaskWorker implements Closeable {
                 executable, this.taskDefName, this.lhTaskMethodAnnotationValue, config.getTypeAdapterRegistry());
     }
 
+    /**
+     * Creates a task worker with a pre-created server connection manager.
+     *
+     * @param executable task implementation object
+     * @param taskDefName TaskDef name or template
+     * @param valuesForPlaceHolders placeholder values for the TaskDef template
+     * @param config SDK configuration
+     * @param manager server connection manager to use
+     */
     public LHTaskWorker(
             Object executable,
             String taskDefName,

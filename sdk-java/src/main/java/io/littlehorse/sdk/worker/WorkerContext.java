@@ -38,11 +38,20 @@ public class WorkerContext {
      *
      * @param scheduledTask is the raw payload for the scheduled task.
      * @param scheduleTime is the time that the task was actually scheduled.
+     * @param client the gRPC blocking stub used to communicate with the LH server
      */
     public WorkerContext(ScheduledTask scheduledTask, Date scheduleTime, LittleHorseBlockingStub client) {
         this(scheduledTask, scheduleTime, client, LHTypeAdapterRegistry.empty());
     }
 
+    /**
+     * Creates a WorkerContext with an explicit list of type adapters.
+     *
+     * @param scheduledTask is the raw payload for the scheduled task.
+     * @param scheduleTime is the time that the task was actually scheduled.
+     * @param client the gRPC blocking stub used to communicate with the LH server
+     * @param typeAdapters list of type adapters to use for variable mapping
+     */
     public WorkerContext(
             ScheduledTask scheduledTask,
             Date scheduleTime,
@@ -191,6 +200,14 @@ public class WorkerContext {
         return LHLibUtil.taskRunIdToString(getTaskRunId());
     }
 
+    /**
+     * Executes the provided checkpointable function and persists checkpoints as needed.
+     *
+     * @param runnable checkpointable work to execute
+     * @param clazz the return type class for deserialization of persisted checkpoints
+     * @param <T> the return type
+     * @return the result of the computation, possibly restored from a prior checkpoint
+     */
     public <T> T executeAndCheckpoint(CheckpointableFunction<T> runnable, Class<T> clazz) {
         if (checkpointsSoFarInThisRun < scheduledTask.getTotalObservedCheckpoints()) {
             return (T) fetchCheckpoint(checkpointsSoFarInThisRun++, clazz);

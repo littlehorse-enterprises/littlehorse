@@ -2,6 +2,9 @@ package io.littlehorse.sdk.wfsdk;
 
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 
+/**
+ * Node output API for workflow task nodes.
+ */
 public interface TaskNodeOutput extends NodeOutput {
 
     /**
@@ -16,6 +19,7 @@ public interface TaskNodeOutput extends NodeOutput {
      * Overrides defaults from the Workflow or WorkflowThread and configures simple retries with no delay
      * on this TaskNode.
      * @param retries is the number of times to retry failed executions of TaskRuns on this Task Node.
+     * @return this TaskNodeOutput
      */
     TaskNodeOutput withRetries(int retries);
 

@@ -4,6 +4,9 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+/**
+ * Snapshot of task worker health state.
+ */
 @Builder
 @Getter
 @EqualsAndHashCode

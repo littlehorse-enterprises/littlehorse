@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+/**
+ * Immutable OAuth client configuration.
+ */
 @Getter
 @Builder
 @EqualsAndHashCode

@@ -78,10 +78,20 @@ public abstract class Workflow {
         wfTypeAdaptersByClass.put(adapter.getTypeClass(), adapter);
     }
 
+    /**
+     * Returns the list of type adapters registered to this workflow.
+     *
+     * @return list of type adapters
+     */
     public List<LHTypeAdapter<?>> getTypeAdapters() {
         return new ArrayList<>(wfTypeAdaptersByClass.values());
     }
 
+    /**
+     * Returns the type adapter registry view for this workflow.
+     *
+     * @return adapter registry
+     */
     public LHTypeAdapterRegistry getTypeAdapterRegistry() {
         return LHTypeAdapterRegistry.from(new ArrayList<>(wfTypeAdaptersByClass.values()));
     }
@@ -185,7 +195,7 @@ public abstract class Workflow {
      * AllowedUpdateType.ALL (Default): Creates a new WfSpec with a different version (either major or revision).
      * AllowedUpdateType.MINOR_REVISION_ONLY: Creates a new WfSpec with a different revision if the change is a major version it fails.
      * AllowedUpdateType.NONE: Fail with the ALREADY_EXISTS response code.
-     * @param allowedUpdateType
+     * @param allowedUpdateType the allowed update type for the workflow specification
      * @return this Worflow
      */
     public Workflow withUpdateType(AllowedUpdateType allowedUpdateType) {
