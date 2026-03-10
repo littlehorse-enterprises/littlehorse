@@ -11,6 +11,7 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -83,6 +84,7 @@ public class LHTaskWorkerTest {
         LHServerConnectionManager manager = mock(LHServerConnectionManager.class);
 
         when(config.getBlockingStub()).thenReturn(grpcClient);
+        when(config.getTypeAdapterRegistry()).thenReturn(LHTypeAdapterRegistry.empty());
         when(grpcClient.getTaskDef(any(TaskDefId.class))).thenThrow(new StatusRuntimeException(Status.NOT_FOUND));
 
         LHTaskWorker task = new LHTaskWorker(new TaskWorker(), "greet", Map.of(), config, manager);
