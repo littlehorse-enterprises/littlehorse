@@ -33,6 +33,8 @@ lhctl/lhctl
 local-dev/certs/
 build/
 .config
+.opencode/
+.opencode
 *.pem
 
 # Python
