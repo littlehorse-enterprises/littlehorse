@@ -188,6 +188,9 @@ public class LHConfig extends ConfigBase {
         private final ConfigSource configSource = ConfigSource.newSource();
         private Map<Class<?>, LHTypeAdapter<?>> typeAdaptersByClass = new LinkedHashMap<>();
 
+        /** Default constructor for the builder. */
+        public LHConfigBuilder() {}
+
         /**
          * Loads key/value pairs into this builder.
          *
@@ -272,6 +275,7 @@ public class LHConfig extends ConfigBase {
          *
          * @param <T> the custom Java type handled by this adapter
          * @param adapter the type adapter to register
+         * @return this builder
          */
         public <T> LHConfigBuilder addTypeAdapter(LHTypeAdapter<T> adapter) {
             Objects.requireNonNull(adapter, "Type adapter cannot be null");

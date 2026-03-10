@@ -9,6 +9,9 @@ import io.littlehorse.sdk.common.proto.VariableType;
  */
 public abstract class LHBytesAdapter<T> implements LHTypeAdapter<T> {
 
+    /** Protected no-arg constructor for subclassing. */
+    protected LHBytesAdapter() {}
+
     /**
      * Converts a Java value into its byte-array representation.
      *

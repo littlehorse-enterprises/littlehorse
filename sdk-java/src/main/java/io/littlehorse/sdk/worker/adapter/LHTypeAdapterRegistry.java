@@ -25,6 +25,13 @@ public class LHTypeAdapterRegistry {
         return new LHTypeAdapterRegistry(Collections.emptyMap());
     }
 
+    /**
+     * Creates a registry from the provided map of adapters keyed by Java class.
+     * If the provided map is null or empty, an empty registry is returned.
+     *
+     * @param byClass map of adapters keyed by class
+     * @return a new LHTypeAdapterRegistry
+     */
     public static LHTypeAdapterRegistry from(Map<Class<?>, LHTypeAdapter<?>> byClass) {
         if (byClass == null || byClass.isEmpty()) {
             return empty();
@@ -64,6 +71,11 @@ public class LHTypeAdapterRegistry {
         return Optional.ofNullable(byClass.get(clazz));
     }
 
+    /**
+     * Returns the unmodifiable view of the registry as a map keyed by Java class.
+     *
+     * @return unmodifiable map of registered adapters
+     */
     public Map<Class<?>, LHTypeAdapter<?>> asMap() {
         return byClass;
     }

@@ -44,12 +44,12 @@ public class WorkerContext {
     }
 
     /**
-     * Creates a WorkerContext with an explicit list of type adapters.
+     * Creates a WorkerContext with a registry of type adapters.
      *
      * @param scheduledTask is the raw payload for the scheduled task.
      * @param scheduleTime is the time that the task was actually scheduled.
      * @param client the gRPC blocking stub used to communicate with the LH server
-     * @param typeAdapters list of type adapters to use for variable mapping
+     * @param typeAdapterRegistry registry of Type Adapters to use for mapping Checkpoint types.
      */
     public WorkerContext(
             ScheduledTask scheduledTask,
