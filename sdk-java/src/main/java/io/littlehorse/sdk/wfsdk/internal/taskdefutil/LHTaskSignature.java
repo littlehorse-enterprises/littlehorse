@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,15 +51,6 @@ public class LHTaskSignature {
             String taskDefName,
             Object executable,
             String lhTaskMethodAnnotationValue,
-            List<LHTypeAdapter<?>> typeAdapters)
-            throws TaskSchemaMismatchError {
-        this(taskDefName, executable, lhTaskMethodAnnotationValue, LHTypeAdapterRegistry.from(typeAdapters));
-    }
-
-    public LHTaskSignature(
-            String taskDefName,
-            Object executable,
-            String lhTaskMethodAnnotationValue,
             LHTypeAdapterRegistry typeAdapterRegistry)
             throws TaskSchemaMismatchError {
         variableDefs = new ArrayList<>();
@@ -67,7 +59,7 @@ public class LHTaskSignature {
         this.executable = executable;
         this.lhTaskMethodAnnotationValue = lhTaskMethodAnnotationValue;
         this.structDefClasses = new LinkedHashSet<>();
-        this.typeAdapterRegistry = typeAdapterRegistry == null ? LHTypeAdapterRegistry.empty() : typeAdapterRegistry;
+        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
 
         for (Method method : executable.getClass().getMethods()) {
             if (method.isAnnotationPresent(LHTaskMethod.class)) {

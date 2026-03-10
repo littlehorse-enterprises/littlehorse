@@ -1,10 +1,9 @@
 package io.littlehorse.sdk.worker.adapter;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class LHTypeAdapterRegistry {
@@ -18,29 +17,40 @@ public class LHTypeAdapterRegistry {
         return new LHTypeAdapterRegistry(Collections.emptyMap());
     }
 
-    public static LHTypeAdapterRegistry from(List<LHTypeAdapter<?>> adapters) {
-        if (adapters == null || adapters.isEmpty()) {
+    public static LHTypeAdapterRegistry from(Map<Class<?>, LHTypeAdapter<?>> byClass) {
+        if (byClass == null || byClass.isEmpty()) {
             return empty();
         }
 
-        LinkedHashMap<Class<?>, LHTypeAdapter<?>> byClass = new LinkedHashMap<>();
-        for (LHTypeAdapter<?> adapter : adapters) {
-            Class<?> typeClass = adapter.getTypeClass();
-            if (byClass.containsKey(typeClass)) {
+        LinkedHashMap<Class<?>, LHTypeAdapter<?>> map = new LinkedHashMap<>();
+        for (Map.Entry<Class<?>, LHTypeAdapter<?>> entry : byClass.entrySet()) {
+            Class<?> typeClass = entry.getKey();
+            LHTypeAdapter<?> adapter = Objects.requireNonNull(entry.getValue(), "Type adapter cannot be null");
+            if (typeClass == null && adapter != null) {
+                typeClass = adapter.getTypeClass();
+            }
+
+            if (typeClass == null) {
+                throw new IllegalArgumentException("Cannot register a type adapter with null class key");
+            }
+            if (adapter == null) {
+                throw new IllegalArgumentException("Cannot register null type adapter for " + typeClass.getName());
+            }
+            if (map.containsKey(typeClass)) {
                 throw new IllegalArgumentException(
                         "A type adapter for " + typeClass.getName() + " is already registered");
             }
-            byClass.put(typeClass, adapter);
+            map.put(typeClass, adapter);
         }
 
-        return new LHTypeAdapterRegistry(byClass);
+        return new LHTypeAdapterRegistry(map);
     }
 
     public Optional<LHTypeAdapter<?>> getForClass(Class<?> clazz) {
         return Optional.ofNullable(byClass.get(clazz));
     }
 
-    public List<LHTypeAdapter<?>> asList() {
-        return Collections.unmodifiableList(new ArrayList<>(byClass.values()));
+    public Map<Class<?>, LHTypeAdapter<?>> asMap() {
+        return byClass;
     }
 }
