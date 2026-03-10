@@ -12,28 +12,66 @@ public interface WaitForConditionNodeOrBuilder extends
 
   /**
    * <pre>
-   * The condition that this node will block for.
+   * Support for `WfSpec`s created before 1.0
    * </pre>
    *
-   * <code>.littlehorse.EdgeCondition condition = 1;</code>
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+   * @return Whether the legacyCondition field is set.
+   */
+  boolean hasLegacyCondition();
+  /**
+   * <pre>
+   * Support for `WfSpec`s created before 1.0
+   * </pre>
+   *
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+   * @return The legacyCondition.
+   */
+  io.littlehorse.sdk.common.proto.LegacyEdgeCondition getLegacyCondition();
+  /**
+   * <pre>
+   * Support for `WfSpec`s created before 1.0
+   * </pre>
+   *
+   * <code>.littlehorse.LegacyEdgeCondition legacy_condition = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.LegacyEdgeConditionOrBuilder getLegacyConditionOrBuilder();
+
+  /**
+   * <pre>
+   * A VariableAssignment that must resolve to a BOOL. The node will block
+   * until this evaluates to true. This can be a simple boolean variable
+   * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+   * a compound boolean expression using AND/OR.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment condition = 2;</code>
    * @return Whether the condition field is set.
    */
   boolean hasCondition();
   /**
    * <pre>
-   * The condition that this node will block for.
+   * A VariableAssignment that must resolve to a BOOL. The node will block
+   * until this evaluates to true. This can be a simple boolean variable
+   * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+   * a compound boolean expression using AND/OR.
    * </pre>
    *
-   * <code>.littlehorse.EdgeCondition condition = 1;</code>
+   * <code>.littlehorse.VariableAssignment condition = 2;</code>
    * @return The condition.
    */
-  io.littlehorse.sdk.common.proto.EdgeCondition getCondition();
+  io.littlehorse.sdk.common.proto.VariableAssignment getCondition();
   /**
    * <pre>
-   * The condition that this node will block for.
+   * A VariableAssignment that must resolve to a BOOL. The node will block
+   * until this evaluates to true. This can be a simple boolean variable
+   * reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+   * a compound boolean expression using AND/OR.
    * </pre>
    *
-   * <code>.littlehorse.EdgeCondition condition = 1;</code>
+   * <code>.littlehorse.VariableAssignment condition = 2;</code>
    */
-  io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder getConditionOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getConditionOrBuilder();
+
+  io.littlehorse.sdk.common.proto.WaitForConditionNode.NodeConditionCase getNodeConditionCase();
 }

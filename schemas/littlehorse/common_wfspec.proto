@@ -43,8 +43,19 @@ message VariableAssignment {
   message Expression {
     // The left-hand-side of the expression.
     VariableAssignment lhs = 1;
-    // The operator in the expression.
-    VariableMutationType operation = 2;
+
+    // The operator in the expression. Determines how lhs and rhs are evaluated.
+    //
+    // - Use `mutation_type` for arithmetic, collection, or logical boolean operations (AND, OR).
+    //   These produce a value whose type depends on the operands and operation.
+    //
+    // - Use `comparator` for comparison operations. These always evaluate to a BOOL.
+    //   These two operation types are kept separate because of compatibility reasons.
+    oneof operation {
+      VariableMutationType mutation_type = 2;
+      Comparator comparator = 4;
+    }
+
     // The right-hand-side of the expression.
     VariableAssignment rhs = 3;
   }
@@ -102,6 +113,10 @@ enum VariableMutationType {
   REMOVE_INDEX = 7;
   // Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ)
   REMOVE_KEY = 8;
+  // Logical AND operation. Combines two boolean values; result is true if both LHS and RHS are true.
+  AND = 9;
+  // Logical OR operation. Combines two boolean values; result is true if either LHS or RHS is true.
+  OR = 10;
 }
 
 // A VariableMutation defines a modification made to one of a ThreadRun's variables.

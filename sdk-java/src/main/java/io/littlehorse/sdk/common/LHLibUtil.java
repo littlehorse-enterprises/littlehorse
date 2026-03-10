@@ -61,14 +61,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 public class LHLibUtil {
-
-    public static Optional<LHTypeAdapter<?>> getTypeAdapterForClass(
-            Class<?> clazz, List<LHTypeAdapter<?>> typeAdapters) {
-        return getTypeAdapterForClass(clazz, LHTypeAdapterRegistry.from(typeAdapters));
-    }
 
     public static Optional<LHTypeAdapter<?>> getTypeAdapterForClass(Class<?> clazz, LHTypeAdapterRegistry registry) {
         if (registry == null) {
@@ -79,23 +73,6 @@ public class LHLibUtil {
 
     public static Map<Class<?>, LHTypeAdapter<?>> getDefaultTypeAdapters() {
         Map<Class<?>, LHTypeAdapter<?>> typeAdapters = new HashMap<>();
-
-        typeAdapters.put(Integer.class, new LHLongAdapter<Integer>() {
-            @Override
-            public Long toLong(Integer src) {
-                return src.longValue();
-            }
-
-            @Override
-            public Integer fromLong(Long src) {
-                return src.intValue();
-            }
-
-            @Override
-            public Class<Integer> getTypeClass() {
-                return Integer.class;
-            }
-        });
 
         typeAdapters.put(Instant.class, new LHTimestampAdapter<Instant>() {
             @Override
@@ -162,23 +139,6 @@ public class LHLibUtil {
             @Override
             public Class<java.sql.Timestamp> getTypeClass() {
                 return java.sql.Timestamp.class;
-            }
-        });
-
-        typeAdapters.put(UUID.class, new LHStringAdapter<UUID>() {
-            @Override
-            public String toString(UUID src) {
-                return src.toString();
-            }
-
-            @Override
-            public UUID fromString(String src) {
-                return UUID.fromString(src);
-            }
-
-            @Override
-            public Class<UUID> getTypeClass() {
-                return UUID.class;
             }
         });
 
@@ -408,11 +368,6 @@ public class LHLibUtil {
         return varValToObj(val, targetClazz, LHTypeAdapterRegistry.empty());
     }
 
-    public static Object varValToObj(VariableValue val, Class<?> targetClazz, List<LHTypeAdapter<?>> typeAdapters)
-            throws LHSerdeException {
-        return varValToObj(val, targetClazz, LHTypeAdapterRegistry.from(typeAdapters));
-    }
-
     public static Object varValToObj(VariableValue val, Class<?> targetClazz, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
         Optional<LHTypeAdapter<?>> maybeAdapter = getTypeAdapterForClass(targetClazz, typeAdapterRegistry);
@@ -618,10 +573,6 @@ public class LHLibUtil {
         return objToVarVal(o, LHTypeAdapterRegistry.empty());
     }
 
-    public static VariableValue objToVarVal(Object o, List<LHTypeAdapter<?>> typeAdapters) throws LHSerdeException {
-        return objToVarVal(o, LHTypeAdapterRegistry.from(typeAdapters));
-    }
-
     public static VariableValue objToVarVal(Object o, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
         if (o == null) {
@@ -634,11 +585,6 @@ public class LHLibUtil {
         }
 
         return objToVarValWithoutTypeAdapter(o, typeAdapterRegistry);
-    }
-
-    public static VariableValue objToVarVal(Object o, Class<?> declaredClass, List<LHTypeAdapter<?>> typeAdapters)
-            throws LHSerdeException {
-        return objToVarVal(o, declaredClass, LHTypeAdapterRegistry.from(typeAdapters));
     }
 
     public static VariableValue objToVarVal(Object o, Class<?> declaredClass, LHTypeAdapterRegistry typeAdapterRegistry)

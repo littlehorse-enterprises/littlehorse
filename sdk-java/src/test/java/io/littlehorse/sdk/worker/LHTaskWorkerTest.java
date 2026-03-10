@@ -2,8 +2,17 @@ package io.littlehorse.sdk.worker;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -66,6 +75,23 @@ public class LHTaskWorkerTest {
         LHTaskWorker task = new LHTaskWorker(new TaskWorker(), taskDefName, new LHConfig(), values);
 
         assertThat(task.getTaskDefName()).isEqualTo("greet");
+    }
+
+    @Test
+    public void shouldFailWithClearMessageWhenTaskDefIsNotRegistered() {
+        LHConfig config = mock(LHConfig.class);
+        LittleHorseBlockingStub grpcClient = mock(LittleHorseBlockingStub.class);
+        LHServerConnectionManager manager = mock(LHServerConnectionManager.class);
+
+        when(config.getBlockingStub()).thenReturn(grpcClient);
+        when(config.getTypeAdapterRegistry()).thenReturn(LHTypeAdapterRegistry.empty());
+        when(grpcClient.getTaskDef(any(TaskDefId.class))).thenThrow(new StatusRuntimeException(Status.NOT_FOUND));
+
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), "greet", Map.of(), config, manager);
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, task::start);
+        assertThat(ex.getMessage())
+                .isEqualTo("TaskDef 'greet' was not found on the server. Register it before starting this worker.");
     }
 }
 

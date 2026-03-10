@@ -35,29 +35,11 @@ jobs:
           private-key: ${{ secrets.DOCS_DISPATCHER_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
 
-      - name: Check for docs-required
-        id: check-docs
-        uses: ./.github/actions/check-docs-required
+      - name: Docs check and dispatch
+        uses: littlehorse-enterprises/action-docs-dispatch@v1
         with:
           check_mode: both
           commit_sha: ${{ github.event.inputs.commit_sha }}
-
-      - name: Require LH_SITE_REPO
-        if: |
-          steps.check-docs.outputs.docs_required == 'true' && 
-          (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-        run: |
-          if [ -z "${{ vars.LH_SITE_REPO }}" ]; then
-            echo "::error::Org variable LH_SITE_REPO is not set. Set it at Organization → Settings → Secrets and variables → Actions → Variables (repo name only, e.g. lh-site)."
-            exit 1
-          fi
-      - name: Dispatch to lh-site workflow
-        if: |
-          steps.check-docs.outputs.docs_required == 'true' && 
-          (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-        uses: ./.github/actions/dispatch-to-lh-site
-        with:
-          commits: ${{ steps.check-docs.outputs.commits }}
           source_repo: ${{ github.repository }}
           source_ref: ${{ github.ref }}
           source_sha: ${{ github.sha }}

@@ -95,13 +95,23 @@ public class LHTaskWorker implements Closeable {
                 executable, this.taskDefName, this.lhTaskMethodAnnotationValue, config.getTypeAdapterRegistry());
     }
 
+    /**
+     * Creates a task worker with a pre-created server connection manager.
+     *
+     * @param executable is any Object which has exactly one method annotated with '@LHTaskMethod'.
+     *                   That method will be used to execute the tasks.
+     * @param taskDefNameTemplate is the name of the `TaskDef` to execute. May contain placeholders.
+     * @param valuesForPlaceholders map of values that will replace the placeholders on the taskDefNameTemplate.
+     * @param config      is a valid LHConfig.
+     * @param manager server connection manager to use
+     */
     public LHTaskWorker(
             Object executable,
-            String taskDefName,
-            Map<String, String> valuesForPlaceHolders,
+            String taskDefNameTemplate,
+            Map<String, String> valuesForPlaceholders,
             LHConfig config,
             LHServerConnectionManager manager) {
-        this(executable, taskDefName, config, valuesForPlaceHolders);
+        this(executable, taskDefNameTemplate, config, valuesForPlaceholders);
         this.manager = manager;
     }
 
@@ -268,6 +278,11 @@ public class LHTaskWorker implements Closeable {
                 }
 
             } while (System.currentTimeMillis() < timeout);
+
+            if (this.taskDef == null) {
+                throw new IllegalStateException("TaskDef '" + taskDefName
+                        + "' was not found on the server. Register it before starting this worker.");
+            }
         }
 
         LHTaskSignature signature = new LHTaskSignature(

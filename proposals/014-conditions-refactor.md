@@ -109,45 +109,59 @@ message Edge {
 }
 ```
 
-We'll rename the `enum VariableMutationType` to `enum Operation`. Then we'll add the following components to the `Operation`:
+We initially planned to rename `VariableMutationType` to `Operation` and merge comparator operations into it. However, this was not possible for compatibility reasons.
+
+Instead, we kept `VariableMutationType` and `Comparator` as separate enums and connected them via a `oneof` inside the `VariableAssignment.Expression` message. We also added `AND` and `OR` to `VariableMutationType` for boolean logic:
 
 ```proto
-enum Operation {
-  // ... (everything in VariableMutationType right now)
+enum VariableMutationType {
+  ASSIGN = 0;
+  ADD = 1;
+  EXTEND = 2;
+  SUBTRACT = 3;
+  MULTIPLY = 4;
+  DIVIDE = 5;
+  REMOVE_IF_PRESENT = 6;
+  REMOVE_INDEX = 7;
+  REMOVE_KEY = 8;
+  // Logical AND operation. Combines two boolean values; result is true if both LHS and RHS are true.
+  AND = 9;
+  // Logical OR operation. Combines two boolean values; result is true if either LHS or RHS is true.
+  OR = 10;
+}
 
-  // Equivalent to `<`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  LESS_THAN = 8;
-
-  // Equivalent to `>`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  GREATER_THAN = 9;
-
-  // Equivalent to `<=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  LESS_THAN_EQ = 10;
-
-  // Equivalent to `>=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  GREATER_THAN_EQ = 11;
-
-  // This is valid for any variable type, and is similar to .equals() in Java.
-  //
-  // One note: if the RHS is a different type from the LHS, then LittleHorse will
-  // try to cast the RHS to the same type as the LHS. If the cast fails, then the
-  // ThreadRun fails with a VAR_SUB_ERROR.
-  EQUALS = 12;
-
-  // This is the inverse of `EQUALS`
-  NOT_EQUALS = 13;
-
-  // Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
-  //
-  // For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
-  // RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
-  // is equal to the LHS.
-  IN = 14;
-
-  // The inverse of IN.
-  NOT_IN = 15;
+// Operator for comparing two values to create a boolean expression.
+enum Comparator {
+  LESS_THAN = 0;
+  GREATER_THAN = 1;
+  LESS_THAN_EQ = 2;
+  GREATER_THAN_EQ = 3;
+  EQUALS = 4;
+  NOT_EQUALS = 5;
+  IN = 6;
+  NOT_IN = 7;
 }
 ```
+
+The `VariableAssignment.Expression` message uses a `oneof` to select which kind of operation to perform:
+
+```proto
+message Expression {
+  // The left-hand-side of the expression.
+  VariableAssignment lhs = 1;
+
+  // The operator in the expression.
+  oneof operation {
+    VariableMutationType mutation_type = 2;
+    Comparator comparator = 4;
+  }
+
+  // The right-hand-side of the expression.
+  VariableAssignment rhs = 3;
+}
+```
+
+This approach preserves full backwards compatibility while still enabling comparators and boolean logic to be used inside expressions.
 
 ## Deprecation Strategy
 

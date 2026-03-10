@@ -58,6 +58,14 @@ type NodeOutput interface {
 	getThread() *WorkflowThread
 
 	JsonPath(string) NodeOutput
+
+	CastTo(targetType lhproto.VariableType) LHExpression
+	CastToInt() LHExpression
+	CastToDouble() LHExpression
+	CastToStr() LHExpression
+	CastToBool() LHExpression
+	CastToBytes() LHExpression
+	CastToWfRunId() LHExpression
 	Get(field string) NodeOutput
 }
 
@@ -247,7 +255,7 @@ func (n *UserTaskNodeOutput) Get(field string) *UserTaskNodeOutput {
 }
 
 type WorkflowCondition struct {
-	spec *lhproto.EdgeCondition
+	spec *lhproto.LegacyEdgeCondition
 }
 
 type SpawnedThread struct {
@@ -297,6 +305,46 @@ type LHExpression interface {
 	RemoveIndex_ByInt(index int) LHExpression
 	RemoveIndex_ByExpression(index LHExpression) LHExpression
 	RemoveKey(key interface{}) LHExpression
+	CastTo(targetType lhproto.VariableType) LHExpression
+	CastToInt() LHExpression
+	CastToDouble() LHExpression
+	CastToStr() LHExpression
+	CastToBool() LHExpression
+	CastToBytes() LHExpression
+	CastToWfRunId() LHExpression
+}
+
+// SpawnedChildWf represents a spawned child workflow from a RunWf call.
+type SpawnedChildWf struct {
+	sourceNodeName string
+	thread         *WorkflowThread
+}
+
+func (s *SpawnedChildWf) BuildNode() *lhproto.WaitForChildWfNode {
+	return &lhproto.WaitForChildWfNode{
+		ChildWfRunId: &lhproto.VariableAssignment{
+			Source: &lhproto.VariableAssignment_NodeOutput{
+				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+					NodeName: s.sourceNodeName,
+				},
+			},
+		},
+		ChildWfRunSourceNode: s.sourceNodeName,
+	}
+}
+
+// RunWf starts a child workflow by name (or by variable/expression) and returns
+// a handle to wait on it later. wfSpecName may be a string or any expression that
+// can be converted to a STRING at runtime (e.g., a WfRunVariable or other
+// VariableAssignment-compatible value).
+func (t *WorkflowThread) RunWf(wfSpecName interface{}, inputs map[string]interface{}) *SpawnedChildWf {
+	return t.runWfImpl(wfSpecName, inputs)
+}
+
+// WaitForChildWf waits for a previously spawned child workflow to complete and
+// returns a NodeOutput referencing the wait node.
+func (t *WorkflowThread) WaitForChildWf(child *SpawnedChildWf) NodeOutput {
+	return t.waitForChildWfImpl(child)
 }
 
 func (n *WaitForThreadsNodeOutput) HandleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
@@ -492,6 +540,34 @@ func (w *WfRunVariable) RemoveKey(key interface{}) LHExpression {
 	}
 }
 
+func (w *WfRunVariable) CastTo(targetType lhproto.VariableType) LHExpression {
+	return &castExpression{source: w, targetType: targetType}
+}
+
+func (w *WfRunVariable) CastToInt() LHExpression {
+	return w.CastTo(lhproto.VariableType_INT)
+}
+
+func (w *WfRunVariable) CastToDouble() LHExpression {
+	return w.CastTo(lhproto.VariableType_DOUBLE)
+}
+
+func (w *WfRunVariable) CastToStr() LHExpression {
+	return w.CastTo(lhproto.VariableType_STR)
+}
+
+func (w *WfRunVariable) CastToBool() LHExpression {
+	return w.CastTo(lhproto.VariableType_BOOL)
+}
+
+func (w *WfRunVariable) CastToBytes() LHExpression {
+	return w.CastTo(lhproto.VariableType_BYTES)
+}
+
+func (w *WfRunVariable) CastToWfRunId() LHExpression {
+	return w.CastTo(lhproto.VariableType_WF_RUN_ID)
+}
+
 func (t *WorkflowThread) DeclareBool(name string) *WfRunVariable {
 	return t.addVariable(name, lhproto.VariableType_BOOL)
 }
@@ -510,6 +586,14 @@ func (t *WorkflowThread) DeclareDouble(name string) *WfRunVariable {
 
 func (t *WorkflowThread) DeclareBytes(name string) *WfRunVariable {
 	return t.addVariable(name, lhproto.VariableType_BYTES)
+}
+
+func (t *WorkflowThread) DeclareTimestamp(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_TIMESTAMP)
+}
+
+func (t *WorkflowThread) DeclareWfRunId(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_WF_RUN_ID)
 }
 
 func (t *WorkflowThread) DeclareJsonArr(name string) *WfRunVariable {

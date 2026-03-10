@@ -55,6 +55,27 @@ func (p *plainNodeOutput) JsonPath(jsonpath string) NodeOutput {
 	}
 }
 
+func (p *plainNodeOutput) CastTo(targetType lhproto.VariableType) LHExpression {
+	return &castExpression{source: p, targetType: targetType}
+}
+func (p *plainNodeOutput) CastToInt() LHExpression {
+	return p.CastTo(lhproto.VariableType_INT)
+}
+func (p *plainNodeOutput) CastToDouble() LHExpression {
+	return p.CastTo(lhproto.VariableType_DOUBLE)
+}
+func (p *plainNodeOutput) CastToStr() LHExpression {
+	return p.CastTo(lhproto.VariableType_STR)
+}
+func (p *plainNodeOutput) CastToBool() LHExpression {
+	return p.CastTo(lhproto.VariableType_BOOL)
+}
+func (p *plainNodeOutput) CastToBytes() LHExpression {
+	return p.CastTo(lhproto.VariableType_BYTES)
+}
+func (p *plainNodeOutput) CastToWfRunId() LHExpression {
+	return p.CastTo(lhproto.VariableType_WF_RUN_ID)
+}
 func (p *plainNodeOutput) Get(field string) NodeOutput {
 	newPath := copyLhPath(p.lhPath)
 	newPath = append(newPath, &lhproto.LHPath_Selector{
@@ -185,7 +206,8 @@ func (l *LHWorkflow) compile() (*lhproto.PutWfSpecRequest, error) {
 				}
 				nodeName := "0-entrypoint-ENTRYPOINT"
 				thr.lastNodeName = &nodeName
-				thr.lastNodeCondition = &WorkflowCondition{}
+				// No condition on the entrypoint's outgoing edge by default.
+				thr.lastNodeCondition = nil
 				thr.spec.Nodes = make(map[string]*lhproto.Node)
 				thr.spec.Nodes[nodeName] = entry
 
@@ -639,9 +661,11 @@ func (t *WorkflowThread) assignVariable(
 			Path: nil,
 			Source: &lhproto.VariableAssignment_Expression_{
 				Expression: &lhproto.VariableAssignment_Expression{
-					Lhs:       lhs,
-					Operation: v.operation,
-					Rhs:       rhs,
+					Lhs: lhs,
+					Operation: &lhproto.VariableAssignment_Expression_MutationType{
+						MutationType: v.operation,
+					},
+					Rhs: rhs,
 				},
 			},
 		}
@@ -662,12 +686,34 @@ func (t *WorkflowThread) assignVariable(
 			Path: nil,
 			Source: &lhproto.VariableAssignment_Expression_{
 				Expression: &lhproto.VariableAssignment_Expression{
-					Lhs:       lhs,
-					Operation: v.operation,
-					Rhs:       rhs,
+					Lhs: lhs,
+					Operation: &lhproto.VariableAssignment_Expression_MutationType{
+						MutationType: v.operation,
+					},
+					Rhs: rhs,
 				},
 			},
 		}
+
+	case *castExpression:
+		inner, innerErr := t.assignVariable(v.source)
+		if innerErr != nil {
+			t.throwError(innerErr)
+		}
+		inner.TargetType = &lhproto.TypeDefinition{
+			DefinedType: &lhproto.TypeDefinition_PrimitiveType{PrimitiveType: v.targetType},
+		}
+		out = inner
+
+	case castExpression:
+		inner, innerErr := t.assignVariable(v.source)
+		if innerErr != nil {
+			t.throwError(innerErr)
+		}
+		inner.TargetType = &lhproto.TypeDefinition{
+			DefinedType: &lhproto.TypeDefinition_PrimitiveType{PrimitiveType: v.targetType},
+		}
+		out = inner
 	default:
 		var tmp *lhproto.VariableValue
 		tmp, err = InterfaceToVarVal(v)
@@ -701,7 +747,9 @@ func (t *WorkflowThread) createBlankNode(name, nType string) (string, *lhproto.N
 	}
 
 	if t.lastNodeCondition != nil {
-		edge.Condition = t.lastNodeCondition.spec
+		edge.EdgeCondition = &lhproto.Edge_LegacyCondition{
+			LegacyCondition: t.lastNodeCondition.spec,
+		}
 		t.lastNodeCondition = nil
 	}
 	lastNode.OutgoingEdges = append(lastNode.OutgoingEdges, &edge)
@@ -1052,7 +1100,7 @@ func (t *WorkflowThread) condition(
 	lhs interface{}, op lhproto.Comparator, rhs interface{},
 ) *WorkflowCondition {
 	t.checkIfIsActive()
-	cond := &lhproto.EdgeCondition{
+	cond := &lhproto.LegacyEdgeCondition{
 		Comparator: op,
 	}
 
@@ -1194,7 +1242,9 @@ func (t *WorkflowThread) buildNewEdge(sinkNodeName string, cond *WorkflowConditi
 		return &lhproto.Edge{
 			SinkNodeName:      sinkNodeName,
 			VariableMutations: variableMutations,
-			Condition:         cond.spec,
+			EdgeCondition: &lhproto.Edge_LegacyCondition{
+				LegacyCondition: cond.spec,
+			},
 		}
 	}
 
@@ -1234,7 +1284,9 @@ func (t *WorkflowThread) doIfElse(
 	// no node was created within the if block, thus the edge of the starting NOP should be created
 	// with the appropriate conditional
 	if lastNodeFromIfBlockName == treeRootNodeName {
-		ifBlockEdge.Condition = lastConditionFromIfBlock.spec
+		ifBlockEdge.EdgeCondition = &lhproto.Edge_LegacyCondition{
+			LegacyCondition: lastConditionFromIfBlock.spec,
+		}
 	}
 
 	t.spec.Nodes[*lastNodeFromIfBlockName].OutgoingEdges = append(
@@ -1283,7 +1335,9 @@ func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) 
 		topOfTreeNode.OutgoingEdges,
 		&lhproto.Edge{
 			SinkNodeName: *bottomOfTreeNodeName,
-			Condition:    cond.getReverse(),
+			EdgeCondition: &lhproto.Edge_LegacyCondition{
+				LegacyCondition: cond.spec,
+			},
 		},
 	)
 
@@ -1292,13 +1346,15 @@ func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) 
 		bottomOfTreeNode.OutgoingEdges,
 		&lhproto.Edge{
 			SinkNodeName: *topOfTreeNodeName,
-			Condition:    cond.spec,
+			EdgeCondition: &lhproto.Edge_LegacyCondition{
+				LegacyCondition: cond.spec,
+			},
 		},
 	)
 }
 
-func (c *WorkflowCondition) getReverse() *lhproto.EdgeCondition {
-	out := &lhproto.EdgeCondition{}
+func (c *WorkflowCondition) getReverse() *lhproto.LegacyEdgeCondition {
+	out := &lhproto.LegacyEdgeCondition{}
 	out.Left = c.spec.Left
 	out.Right = c.spec.Right
 	switch c.spec.Comparator {
@@ -1505,6 +1561,89 @@ func (t *WorkflowThread) spawnThread(
 	}
 }
 
+// runWfImpl accepts either a static wfSpec name (string) or a dynamic
+// spec (VariableAssignment-compatible value) and constructs a RunChildWfNode
+// accordingly.
+func (t *WorkflowThread) runWfImpl(wfSpecName interface{}, inputs map[string]interface{}) *SpawnedChildWf {
+	t.checkIfIsActive()
+
+	runNodeProto := &lhproto.RunChildWfNode{
+		MajorVersion: -1,
+		// Inputs is left nil when the caller provides nil to preserve
+		// nil-vs-empty-map semantics (align with other SDKs/tests).
+	}
+
+	// wfSpecName can be either a string (static) or an expression/variable.
+	var humanName string
+	switch v := wfSpecName.(type) {
+	case string:
+		runNodeProto.WfSpec = &lhproto.RunChildWfNode_WfSpecName{WfSpecName: v}
+		humanName = "run-" + v
+	case *WfRunVariable:
+		assn, err := t.assignVariable(v)
+		if err != nil {
+			t.throwError(tracerr.Wrap(err))
+		}
+		runNodeProto.WfSpec = &lhproto.RunChildWfNode_WfSpecVar{WfSpecVar: assn}
+		humanName = v.Name
+	case WfRunVariable:
+		assn, err := t.assignVariable(v)
+		if err != nil {
+			t.throwError(tracerr.Wrap(err))
+		}
+		runNodeProto.WfSpec = &lhproto.RunChildWfNode_WfSpecVar{WfSpecVar: assn}
+		humanName = v.Name
+	default:
+		// Try to convert any other expression to a VariableAssignment
+		assn, err := t.assignVariable(v)
+		if err != nil {
+			t.throwError(tracerr.Wrap(err))
+		}
+		runNodeProto.WfSpec = &lhproto.RunChildWfNode_WfSpecVar{WfSpecVar: assn}
+		humanName = "run"
+	}
+
+	if inputs != nil {
+		runNodeProto.Inputs = make(map[string]*lhproto.VariableAssignment)
+		for k, v := range inputs {
+			assn, err := t.assignVariable(v)
+			if err != nil {
+				t.throwError(tracerr.Wrap(err))
+			}
+			runNodeProto.Inputs[k] = assn
+		}
+	}
+
+	nodeName, node := t.createBlankNode(humanName, "RUN_CHILD_WF")
+	node.Node = &lhproto.Node_RunChildWf{
+		RunChildWf: runNodeProto,
+	}
+
+	return &SpawnedChildWf{
+		sourceNodeName: nodeName,
+		thread:         t,
+	}
+}
+
+// waitForChildWfImpl builds a WaitForChildWf node that waits for the given child.
+func (t *WorkflowThread) waitForChildWfImpl(child *SpawnedChildWf) *plainNodeOutput {
+	t.checkIfIsActive()
+	if child.thread != t {
+		t.throwError(errors.New("currently cannot wait for WfRun started in other thread"))
+	}
+
+	subNode := child.BuildNode()
+	nodeName, node := t.createBlankNode("wait", "WAIT_FOR_CHILD_WF")
+	node.Node = &lhproto.Node_WaitForChildWf{
+		WaitForChildWf: subNode,
+	}
+
+	return &plainNodeOutput{
+		nodeName: nodeName,
+		thread:   t,
+	}
+}
+
 func (t *WorkflowThread) waitForThreads(strategy lhproto.WaitForThreadsStrategy, s ...*SpawnedThread) *WaitForThreadsNodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode("threads", "WAIT_FOR_THREADS")
@@ -1633,7 +1772,9 @@ func (t *WorkflowThread) waitForCondition(condition *WorkflowCondition) *WaitFor
 	nodeName, node := t.createBlankNode("wait-for-condition", "WAIT_FOR_CONDITION")
 	node.Node = &lhproto.Node_WaitForCondition{
 		WaitForCondition: &lhproto.WaitForConditionNode{
-			Condition: condition.spec,
+			NodeCondition: &lhproto.WaitForConditionNode_LegacyCondition{
+				LegacyCondition: condition.spec,
+			},
 		},
 	}
 

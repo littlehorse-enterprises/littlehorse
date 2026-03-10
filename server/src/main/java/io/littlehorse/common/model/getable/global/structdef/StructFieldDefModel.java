@@ -43,6 +43,8 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
 
     public void validateAgainst(StructFieldModel structField, ReadOnlyMetadataManager metadataManager)
             throws StructValidationException {
+        structField.setMasked(fieldType.isMasked());
+
         if (!fieldType.isCompatibleWith(structField.getValue(), metadataManager)) {
             throw new StructValidationException("Value of '%s' was provided, but field's type definition is %s"
                     .formatted(structField.getValue().getVal(), fieldType));

@@ -85,10 +85,11 @@ public final class VariableOuterClass extends com.google.protobuf.GeneratedFile 
       "eStruct\0225\n\006fields\030\001 \003(\0132%.littlehorse.In" +
       "lineStruct.FieldsEntry\032G\n\013FieldsEntry\022\013\n" +
       "\003key\030\001 \001(\t\022\'\n\005value\030\002 \001(\0132\030.littlehorse." +
-      "StructField:\0028\001\"8\n\013StructField\022)\n\005value\030" +
-      "\001 \001(\0132\032.littlehorse.VariableValueBM\n\037io." +
-      "littlehorse.sdk.common.protoP\001Z\t.;lhprot" +
-      "o\252\002\034LittleHorse.Sdk.Common.Protob\006proto3"
+      "StructField:\0028\001\"H\n\013StructField\022)\n\005value\030" +
+      "\001 \001(\0132\032.littlehorse.VariableValue\022\016\n\006mas" +
+      "ked\030\002 \001(\010BM\n\037io.littlehorse.sdk.common.p" +
+      "rotoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Comm" +
+      "on.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -131,7 +132,7 @@ public final class VariableOuterClass extends com.google.protobuf.GeneratedFile 
     internal_static_littlehorse_StructField_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_StructField_descriptor,
-        new java.lang.String[] { "Value", });
+        new java.lang.String[] { "Value", "Masked", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
