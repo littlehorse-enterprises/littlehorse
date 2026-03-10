@@ -207,4 +207,5 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
     public StoreableType getType() {
         return StoreableType.PARTITION_METRICS;
     }
+    
 }

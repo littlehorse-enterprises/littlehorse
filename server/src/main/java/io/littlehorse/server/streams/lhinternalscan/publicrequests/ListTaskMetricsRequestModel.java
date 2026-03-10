@@ -86,6 +86,7 @@ public class ListTaskMetricsRequestModel
         String partitionKey = MetricWindowType.TASK_METRIC.name() + "/" + taskDefId.toString();
         String startPrefixString = partitionKey + "/" + LHUtil.toLhDbFormat(windowStart);
         String endPrefixString = partitionKey + "/" + LHUtil.toLhDbFormat(windowEnd) + "/~";
+        System.out.println("ListTaskMetricsRequestModel.getScanBoundary: partitionKey=" + partitionKey);
         return new ObjectIdScanBoundaryStrategy(partitionKey, startPrefixString, endPrefixString);
     }
 }

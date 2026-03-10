@@ -105,6 +105,9 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
         if (p.hasWindowStart()) {
             windowStart = LHUtil.fromProtoTs(p.getWindowStart());
         }
+        if (p.hasTenantId()) {
+            tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
+        }
     }
 
     @Override

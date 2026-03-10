@@ -17,6 +17,7 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
+import java.util.Optional;
 import lombok.Getter;
 
 @Getter
@@ -34,13 +35,11 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         AggregateWindowMetrics p = (AggregateWindowMetrics) proto;
         this.metricWindow = LHSerializable.fromProto(p.getMetricWindow(), PartitionMetricWindowModel.class, context);
-        // this.tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
     }
 
     @Override
     public AggregateWindowMetrics.Builder toProto() {
         AggregateWindowMetrics.Builder out = AggregateWindowMetrics.newBuilder();
-        // out.setTenantId(tenantId.toProto());
         out.setMetricWindow(metricWindow.toProto());
         return out;
     }
@@ -52,8 +51,12 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
 
     @Override
     public String getPartitionKey() {
-        return this.metricWindow.getId().getMetricType().name() + "/"
-                + this.metricWindow.getId().getWfSpecId();
+        Optional<String> partitionKeyOpt = metricWindow.getId().getPartitionKey();
+        if (partitionKeyOpt.isPresent()) {
+            return partitionKeyOpt.get();
+        } else {
+            throw new IllegalStateException("PartitionMetricWindowModel must have a partition key");
+        }
     }
 
     @SuppressWarnings("unchecked")
