@@ -46,6 +46,12 @@ public class WorkflowImpl extends Workflow {
     }
 
     @Override
+    public void registerWfSpec(LHConfig config) {
+        lhTypeAdapterRegistry = config.getTypeAdapterRegistry();
+        registerWfSpec(config.getBlockingStub());
+    }
+
+    @Override
     public void registerWfSpec(LittleHorseBlockingStub client) {
         // Must compile the workflow so that we can hydrate the externaleventdef's to create
         PutWfSpecRequest wfRequest = compileWorkflow();

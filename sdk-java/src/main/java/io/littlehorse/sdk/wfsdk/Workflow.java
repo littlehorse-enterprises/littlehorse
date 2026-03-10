@@ -6,6 +6,7 @@ import com.google.protobuf.util.JsonFormat;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.AllowedUpdateType;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
@@ -285,11 +286,23 @@ public abstract class Workflow {
 
     /**
      * Deploys the WfSpec object to the LH Server. Registering the WfSpec via
-     * Workflow::registerWfSpec() is the same as client.putWfSpec(workflow.compileWorkflow()).
+     * Workflow::registerWfSpec() also registers ExternalEventDefs and WorkflowEventDefs
+     * according to your `registeredAs` declarations on `ExternalEventNodeOutput`s and `ThrowEventNodeOutput`s.
      *
      * @param client is an LHClient.
      */
     public abstract void registerWfSpec(LittleHorseBlockingStub client);
+
+    /**
+     * Deploys the WfSpec object to the LH Server. Registering the WfSpec via
+     * Workflow::registerWfSpec() also registers ExternalEventDefs and WorkflowEventDefs
+     * according to your `registeredAs` declarations on `ExternalEventNodeOutput`s and `ThrowEventNodeOutput`s.
+     *
+     * This overload allows you to provide an LHConfig which can contain type adapters that will be applied to the workflow before registration.
+     *
+     * @param config is an LHConfig.
+     */
+    public abstract void registerWfSpec(LHConfig config);
 
     /**
      * Writes out the PutWfSpecRequest in JSON form in a directory.
