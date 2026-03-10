@@ -34,6 +34,11 @@ public class ConfigSource {
         return new ConfigSource(new Properties(), List.of(prefixes));
     }
 
+    /**
+     * Returns the currently loaded properties filtered by configured prefixes.
+     *
+     * @return filtered properties
+     */
     public Properties toProperties() {
         Properties newProps = new Properties();
         newProps.putAll(props.entrySet().stream()
@@ -46,27 +51,63 @@ public class ConfigSource {
         return prefixes.isEmpty() || prefixes.stream().anyMatch(property::startsWith);
     }
 
+    /**
+     * Merges key/value pairs into this source.
+     *
+     * @param map values to merge
+     * @return this source
+     */
     public ConfigSource loadFromMap(Map<?, ?> map) {
         props.putAll(map);
         return this;
     }
 
+    /**
+     * Loads properties from another source into this source.
+     *
+     * @param configSource source whose filtered properties are merged into this source
+     * @return this source
+     */
     public ConfigSource loadFromConfigSource(ConfigSource configSource) {
         return loadFromProperties(configSource.toProperties());
     }
 
+    /**
+     * Merges Java properties into this source.
+     *
+     * @param properties properties to merge
+     * @return this source
+     */
     public ConfigSource loadFromProperties(Properties properties) {
         return loadFromMap(properties);
     }
 
+    /**
+     * Loads properties from a file path.
+     *
+     * @param path path to a .properties file
+     * @return this source
+     */
     public ConfigSource loadFromPropertiesFile(Path path) {
         return loadFromPropertiesFile(path.toFile());
     }
 
+    /**
+     * Loads properties from a file path string.
+     *
+     * @param path path to a .properties file
+     * @return this source
+     */
     public ConfigSource loadFromPropertiesFile(String path) {
         return loadFromPropertiesFile(Path.of(path));
     }
 
+    /**
+     * Loads properties from a file.
+     *
+     * @param file properties file
+     * @return this source
+     */
     public ConfigSource loadFromPropertiesFile(File file) {
         log.info("Loading config from {}", file);
         try {
@@ -77,6 +118,11 @@ public class ConfigSource {
         return this;
     }
 
+    /**
+     * Merges current process environment variables into this source.
+     *
+     * @return this source
+     */
     public ConfigSource loadFromEnvVariables() {
         log.info("Loading config from environment variables");
         props.putAll(System.getenv());

@@ -7,6 +7,9 @@ import io.littlehorse.sdk.wfsdk.internal.CastExpressionImpl;
 import io.littlehorse.sdk.wfsdk.internal.LHExpressionImpl;
 import java.io.Serializable;
 
+/**
+ * A composable workflow expression supporting arithmetic, collection, and boolean operations.
+ */
 public interface LHExpression extends Serializable {
 
     /**
@@ -119,42 +122,102 @@ public interface LHExpression extends Serializable {
         return new CastExpressionImpl(this, targetType);
     }
 
+    /**
+     * Creates a less-than comparison expression.
+     *
+     * @param other right-hand side of the comparison
+     * @return comparison expression
+     */
     default LHExpression isLessThan(Serializable other) {
         return new LHExpressionImpl(this, Comparator.LESS_THAN, other);
     }
 
+    /**
+     * Creates a greater-than comparison expression.
+     *
+     * @param other right-hand side of the comparison
+     * @return comparison expression
+     */
     default LHExpression isGreaterThan(Serializable other) {
         return new LHExpressionImpl(this, Comparator.GREATER_THAN, other);
     }
 
+    /**
+     * Creates an equality comparison expression.
+     *
+     * @param other right-hand side of the comparison
+     * @return comparison expression
+     */
     default LHExpression isEqualTo(Serializable other) {
         return new LHExpressionImpl(this, Comparator.EQUALS, other);
     }
 
+    /**
+     * Creates an inequality comparison expression.
+     *
+     * @param other right-hand side of the comparison
+     * @return comparison expression
+     */
     default LHExpression isNotEqualTo(Serializable other) {
         return new LHExpressionImpl(this, Comparator.NOT_EQUALS, other);
     }
 
+    /**
+     * Creates a contains comparison where this expression is the container.
+     *
+     * @param other element that should be contained
+     * @return comparison expression
+     */
     default LHExpression doesContain(Serializable other) {
         return new LHExpressionImpl(other, Comparator.IN, this);
     }
 
+    /**
+     * Creates a not-contains comparison where this expression is the container.
+     *
+     * @param other element that should not be contained
+     * @return comparison expression
+     */
     default LHExpression doesNotContain(Serializable other) {
         return new LHExpressionImpl(other, Comparator.NOT_IN, this);
     }
 
+    /**
+     * Creates an in comparison where this expression is the element.
+     *
+     * @param other container expression/value
+     * @return comparison expression
+     */
     default LHExpression isIn(Serializable other) {
         return new LHExpressionImpl(this, Comparator.IN, other);
     }
 
+    /**
+     * Creates a not-in comparison where this expression is the element.
+     *
+     * @param other container expression/value
+     * @return comparison expression
+     */
     default LHExpression isNotIn(Serializable other) {
         return new LHExpressionImpl(this, Comparator.NOT_IN, other);
     }
 
+    /**
+     * Creates a logical and expression.
+     *
+     * @param other right-hand side boolean expression/value
+     * @return boolean expression
+     */
     default LHExpression and(Serializable other) {
         return new LHExpressionImpl(this, VariableMutationType.AND, other);
     }
 
+    /**
+     * Creates a logical or expression.
+     *
+     * @param other right-hand side boolean expression/value
+     * @return boolean expression
+     */
     default LHExpression or(Serializable other) {
         return new LHExpressionImpl(this, VariableMutationType.OR, other);
     }

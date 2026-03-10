@@ -6,5 +6,10 @@ package io.littlehorse.sdk.wfsdk;
  */
 public interface SpawnedThread {
 
+    /**
+     * Returns the variable containing the spawned thread number.
+     *
+     * @return workflow variable for the spawned thread number
+     */
     WfRunVariable getThreadNumberVariable();
 }
