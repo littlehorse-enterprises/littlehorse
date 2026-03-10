@@ -6,6 +6,7 @@ import com.google.protobuf.util.JsonFormat;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.AllowedUpdateType;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
@@ -19,7 +20,6 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
 import io.littlehorse.sdk.wfsdk.internal.ThrowEventNodeOutputImpl;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -185,6 +185,16 @@ public abstract class Workflow {
     public abstract PutWfSpecRequest compileWorkflow();
 
     /**
+     * Compiles this Workflow into a `WfSpec`, applying configured type adapters from the provided config first.
+     *
+     * <p> <b> Use this method overload if you have type adapters configured in your {@link LHConfig} that you want to apply to the Workflow before registration. </b>
+     *
+     * @param config source for dynamically configured type adapters
+     * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
+     */
+    public abstract PutWfSpecRequest compileWorkflow(LHConfig config);
+
+    /**
      * Returns the names of all `TaskDef`s used by this workflow.
      *
      * @return a Set of Strings containing the names of all `TaskDef`s used by this workflow.
@@ -298,7 +308,7 @@ public abstract class Workflow {
      * Workflow::registerWfSpec() also registers ExternalEventDefs and WorkflowEventDefs
      * according to your `registeredAs` declarations on `ExternalEventNodeOutput`s and `ThrowEventNodeOutput`s.
      *
-     * This overload allows you to provide an LHConfig which can contain type adapters that will be applied to the workflow before registration.
+     * <p> <b> Use this method overload if you have Type Adapters configured in your {@link LHConfig} that you want to apply to the Workflow before registration. </b>
      *
      * @param config is an LHConfig.
      */
