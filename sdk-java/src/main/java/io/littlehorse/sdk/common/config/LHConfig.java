@@ -24,13 +24,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
@@ -125,13 +123,13 @@ public class LHConfig extends ConfigBase {
     private OAuthClient oauthClient;
     private OAuthConfig oauthConfig;
     private OAuthCredentialsProvider oauthCredentialsProvider;
-    private Map<Class<?>, LHTypeAdapter<?>> typeAdaptersByClass;
+    private final LHTypeAdapterRegistry typeAdapterRegistry;
 
     /** Creates an LHConfig. Loads default values for config from env vars. */
     public LHConfig() {
         super();
         createdChannels = new HashMap<>();
-        typeAdaptersByClass = new LinkedHashMap<>();
+        typeAdapterRegistry = LHTypeAdapterRegistry.empty();
     }
 
     /**
@@ -142,7 +140,7 @@ public class LHConfig extends ConfigBase {
     public LHConfig(Properties props) {
         super(props);
         createdChannels = new HashMap<>();
-        typeAdaptersByClass = new LinkedHashMap<>();
+        typeAdapterRegistry = LHTypeAdapterRegistry.empty();
     }
 
     /**
@@ -153,7 +151,7 @@ public class LHConfig extends ConfigBase {
     public LHConfig(Path propLocation) {
         super(propLocation);
         createdChannels = new HashMap<>();
-        typeAdaptersByClass = new LinkedHashMap<>();
+        typeAdapterRegistry = LHTypeAdapterRegistry.empty();
     }
 
     /**
@@ -164,13 +162,13 @@ public class LHConfig extends ConfigBase {
     public LHConfig(String propLocation) {
         super(propLocation);
         createdChannels = new HashMap<>();
-        typeAdaptersByClass = new LinkedHashMap<>();
+        typeAdapterRegistry = LHTypeAdapterRegistry.empty();
     }
 
-    private LHConfig(ConfigSource configSource) {
+    private LHConfig(ConfigSource configSource, LHTypeAdapterRegistry typeAdapterRegistry) {
         super(configSource);
         createdChannels = new HashMap<>();
-        typeAdaptersByClass = new LinkedHashMap<>();
+        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
     }
 
     /**
@@ -188,6 +186,7 @@ public class LHConfig extends ConfigBase {
     public static class LHConfigBuilder {
 
         private final ConfigSource configSource = ConfigSource.newSource();
+        private Map<Class<?>, LHTypeAdapter<?>> typeAdaptersByClass = new LinkedHashMap<>();
 
         /**
          * Loads key/value pairs into this builder.
@@ -265,13 +264,33 @@ public class LHConfig extends ConfigBase {
             return this;
         }
 
+        /* Registers a type adapter to this config. Type adapters registered to the config will be used by
+         * the SDK for type conversions anywhere that user defined classes can be found.
+         *
+         * Examples of where these Type Adapters may be used include TaskDef input and output variables and StructDef fields.
+         *
+         * @param <T> the custom Java type handled by this adapter
+         * @param adapter the type adapter to register
+         */
+        public <T> LHConfigBuilder addTypeAdapter(LHTypeAdapter<T> adapter) {
+            Objects.requireNonNull(adapter, "Type adapter cannot be null");
+            if (typeAdaptersByClass.containsKey(adapter.getTypeClass())) {
+                throw new IllegalArgumentException("A type adapter for "
+                        + adapter.getTypeClass().getName() + " is already registered to this worker");
+            }
+
+            typeAdaptersByClass.put(adapter.getTypeClass(), adapter);
+
+            return this;
+        }
+
         /**
          * Builds a new LHConfig from all loaded sources.
          *
          * @return a new LHConfig instance
          */
         public LHConfig build() {
-            return new LHConfig(configSource);
+            return new LHConfig(configSource, LHTypeAdapterRegistry.from(new LinkedHashMap<>(typeAdaptersByClass)));
         }
     }
 
@@ -283,7 +302,7 @@ public class LHConfig extends ConfigBase {
     public LHConfig(Map<String, Object> configs) {
         super(configs);
         createdChannels = new HashMap<>();
-        typeAdaptersByClass = new LinkedHashMap<>();
+        typeAdapterRegistry = LHTypeAdapterRegistry.empty();
     }
 
     /**
@@ -626,36 +645,6 @@ public class LHConfig extends ConfigBase {
     }
 
     /**
-     * Registers a type adapter to this config. Type adapters registered to the config will be used by
-     * the SDK for type conversions anywhere that user defined classes can be found.
-     *
-     * Examples of where these Type Adapters may be used include TaskDef input and output variables and StructDef fields.
-     *
-     * @param <T> the custom Java type handled by this adapter
-     * @param adapter the type adapter to register
-     */
-    public <T> void registerTypeAdapter(LHTypeAdapter<T> adapter) {
-        if (typeAdaptersByClass.containsKey(adapter.getTypeClass())) {
-            throw new IllegalArgumentException(
-                    "A type adapter for " + adapter.getTypeClass().getName() + " is already registered to this worker");
-        }
-
-        typeAdaptersByClass.put(adapter.getTypeClass(), adapter);
-    }
-
-    /**
-     * Returns the currently registered type adapters.
-     *
-     * <p>This accessor is primarily intended for SDK internal use. External users should
-     * typically register adapters via {@link #registerTypeAdapter(LHTypeAdapter)}.
-     *
-     * @return an immutable list of registered type adapters
-     */
-    public List<LHTypeAdapter<?>> getTypeAdapters() {
-        return Collections.unmodifiableList(new ArrayList<>(typeAdaptersByClass.values()));
-    }
-
-    /**
      * Returns an immutable registry view of all currently registered type adapters.
      *
      * <p>This accessor is primarily intended for SDK internal use and wiring between SDK
@@ -664,6 +653,6 @@ public class LHConfig extends ConfigBase {
      * @return a type adapter registry for the current configuration
      */
     public LHTypeAdapterRegistry getTypeAdapterRegistry() {
-        return LHTypeAdapterRegistry.from(new ArrayList<>(typeAdaptersByClass.values()));
+        return typeAdapterRegistry;
     }
 }

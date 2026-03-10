@@ -18,19 +18,14 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
 import io.littlehorse.sdk.wfsdk.internal.ThrowEventNodeOutputImpl;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
 import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +47,8 @@ public abstract class Workflow {
     protected ExponentialBackoffRetryPolicy defaultExponentialBackoff;
     protected int defaultSimpleRetries;
     protected Set<ThrowEventNodeOutputImpl> workflowEventsToRegister;
-    protected Map<Class<?>, LHTypeAdapter<?>> wfTypeAdaptersByClass;
+
+    protected LHTypeAdapterRegistry lhTypeAdapterRegistry;
 
     /**
      * Internal constructor used by WorkflowImpl.
@@ -66,25 +62,7 @@ public abstract class Workflow {
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
         this.workflowEventsToRegister = new HashSet<>();
-        this.wfTypeAdaptersByClass = new LinkedHashMap<>();
-    }
-
-    public <T> void registerTypeAdapter(LHTypeAdapter<T> adapter) {
-        if (wfTypeAdaptersByClass.containsKey(adapter.getTypeClass())) {
-            throw new IllegalArgumentException("A type adapter for "
-                    + adapter.getTypeClass().getName() + " is already registered to this workflow");
-        }
-
-        wfTypeAdaptersByClass.put(adapter.getTypeClass(), adapter);
-    }
-
-    /**
-     * Returns the list of type adapters registered to this workflow.
-     *
-     * @return list of type adapters
-     */
-    public List<LHTypeAdapter<?>> getTypeAdapters() {
-        return new ArrayList<>(wfTypeAdaptersByClass.values());
+        this.lhTypeAdapterRegistry = LHTypeAdapterRegistry.empty();
     }
 
     /**
@@ -93,7 +71,7 @@ public abstract class Workflow {
      * @return adapter registry
      */
     public LHTypeAdapterRegistry getTypeAdapterRegistry() {
-        return LHTypeAdapterRegistry.from(new ArrayList<>(wfTypeAdaptersByClass.values()));
+        return lhTypeAdapterRegistry;
     }
 
     /**
