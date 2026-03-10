@@ -1,12 +1,12 @@
 package io.littlehorse.sdk.common;
 
+import io.littlehorse.sdk.common.adapter.LHStringAdapter;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.worker.LHStructDef;
-import io.littlehorse.sdk.worker.adapter.LHStringAdapter;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;

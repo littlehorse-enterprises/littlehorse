@@ -1,9 +1,9 @@
 package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
