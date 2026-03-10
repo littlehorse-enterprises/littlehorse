@@ -1,11 +1,11 @@
 package io.littlehorse.sdk.wfsdk;
 
 /**
- * Node output API for user task nodes.
+ * Node output API for UserTask nodes.
  */
 public interface UserTaskOutput extends NodeOutput {
     /**
-     * Sets static notes shown on the user task.
+     * Sets static notes shown on the UserTask.
      *
      * @param notes static notes string
      * @return this node output
@@ -13,9 +13,9 @@ public interface UserTaskOutput extends NodeOutput {
     public UserTaskOutput withNotes(String notes);
 
     /**
-     * Sets dynamic notes from a workflow variable.
+     * Sets dynamic notes from a WfRunVariable.
      *
-     * @param notes workflow variable containing notes
+     * @param notes is a WfRunVariable containing notes
      * @return this node output
      */
     public UserTaskOutput withNotes(WfRunVariable notes);
@@ -37,9 +37,9 @@ public interface UserTaskOutput extends NodeOutput {
     UserTaskOutput withOnCancellationException(String exceptionName);
 
     /**
-     * Sets cancellation exception name from a workflow variable.
+     * Sets cancellation exception name from a WfRunVariable.
      *
-     * @param exceptionName workflow variable with exception name
+     * @param exceptionName is a WfRunVariable with exception name
      * @return this node output
      */
     UserTaskOutput withOnCancellationException(WfRunVariable exceptionName);

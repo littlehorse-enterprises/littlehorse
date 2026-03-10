@@ -98,19 +98,20 @@ public class LHTaskWorker implements Closeable {
     /**
      * Creates a task worker with a pre-created server connection manager.
      *
-     * @param executable task implementation object
-     * @param taskDefName TaskDef name or template
-     * @param valuesForPlaceHolders placeholder values for the TaskDef template
-     * @param config SDK configuration
+     * @param executable is any Object which has exactly one method annotated with '@LHTaskMethod'.
+     *                   That method will be used to execute the tasks.
+     * @param taskDefNameTemplate is the name of the `TaskDef` to execute. May contain placeholders.
+     * @param valuesForPlaceholders map of values that will replace the placeholders on the taskDefNameTemplate.
+     * @param config      is a valid LHConfig.
      * @param manager server connection manager to use
      */
     public LHTaskWorker(
             Object executable,
-            String taskDefName,
-            Map<String, String> valuesForPlaceHolders,
+            String taskDefNameTemplate,
+            Map<String, String> valuesForPlaceholders,
             LHConfig config,
             LHServerConnectionManager manager) {
-        this(executable, taskDefName, config, valuesForPlaceHolders);
+        this(executable, taskDefNameTemplate, config, valuesForPlaceholders);
         this.manager = manager;
     }
 

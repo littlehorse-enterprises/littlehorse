@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Immutable registry of SDK type adapters keyed by Java class.
+ * Immutable registry of LHTypeAdapters keyed by Java class.
  */
 public class LHTypeAdapterRegistry {
     private final Map<Class<?>, LHTypeAdapter<?>> byClass;

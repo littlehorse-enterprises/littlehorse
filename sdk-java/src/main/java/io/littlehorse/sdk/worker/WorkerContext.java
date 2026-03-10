@@ -192,10 +192,10 @@ public class WorkerContext {
     }
 
     /**
-     * Executes the provided checkpointable function and persists checkpoints as needed.
+     * Executes the provided CheckpointableFunction and persists Checkpoints as needed.
      *
      * @param runnable checkpointable work to execute
-     * @param clazz the return type class for deserialization of persisted checkpoints
+     * @param clazz the return type class for the deserialization of persisted checkpoint data
      * @param <T> the return type
      * @return the result of the computation, possibly restored from a prior checkpoint
      */

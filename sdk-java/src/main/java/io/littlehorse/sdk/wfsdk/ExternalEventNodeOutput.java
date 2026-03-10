@@ -4,11 +4,11 @@ import io.littlehorse.sdk.common.proto.CorrelatedEventConfig;
 import java.io.Serializable;
 
 /**
- * Node output for external event wait nodes.
+ * Node output for WaitForEvent (ExternalEvent) nodes.
  */
 public interface ExternalEventNodeOutput extends NodeOutput {
     /**
-     * Adds a timeout to an ExternalEventNode.
+     * Adds a timeout to a WaitForEvent (ExternalEvent) node.
      *
      * @param timeoutSeconds the timeout length.
      * @return the ExternalEventNodeOutput.

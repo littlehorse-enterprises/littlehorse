@@ -10,7 +10,7 @@ import io.littlehorse.sdk.wfsdk.internal.FixedSpawnedThreads;
 public interface SpawnedThreads {
 
     /**
-     * Builds the wait node for this spawned thread collection.
+     * Builds the WaitForThreadsNode for this collection of spawned threads.
      *
      * @param strategy waiting strategy to apply
      * @return wait node definition

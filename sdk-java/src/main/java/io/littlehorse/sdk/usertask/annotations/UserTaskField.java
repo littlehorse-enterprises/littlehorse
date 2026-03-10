@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for fields exposed in a user task form.
+ * Annotation for fields exposed in a UserTask Form.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
