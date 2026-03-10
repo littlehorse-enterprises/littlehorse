@@ -1,6 +1,8 @@
 package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapter;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -11,8 +13,6 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
