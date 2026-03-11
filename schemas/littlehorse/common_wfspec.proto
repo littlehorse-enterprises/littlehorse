@@ -207,8 +207,10 @@ message TypeDefinition {
   // Note: if no `defined_type` is set, defaults to a `primitive_type` of `JSON_OBJ`
   // to support old clients from 0.14.1 or lower.
   oneof defined_type {
+    // The primitive type definition.
     VariableType primitive_type = 1;
-
+    
+    // The ID of the StructDef that defines this type.
     StructDefId struct_def_id = 5;
   }
 
@@ -298,8 +300,11 @@ message UTActionTrigger {
 
   // The action that is scheduled by the hook
   oneof action {
+    // Schedule a Reminder Task.
     UTATask task = 1;
+    // Cancel the UserTaskRun.
     UTACancel cancel = 2;
+    // Reassign the UserTaskRun to a different user or user group.
     UTAReassign reassign = 3;
     // later on, might enable scheduling entire ThreadRuns
   }
@@ -378,13 +383,13 @@ message TaskNode {
   repeated VariableAssignment variables = 4;
 }
 
-// An `InlineStructDef` is the actual representation of the Schema.
+// A map of InlineStructDef's field names to their StructFieldDef's.
 message InlineStructDef {
   // The fields in this schema.
   map<string, StructFieldDef> fields = 1;
 }
 
-// A `SchemaFieldDef` defines a field inside a `StructDef`.
+// The definition of a field in an InlineStructDef.
 message StructFieldDef {
   // The type of the field.
   TypeDefinition field_type = 1;
@@ -406,5 +411,6 @@ message LHPath {
     }
   }
 
+  // The path of selectors that resolve to the field you want to access.
   repeated Selector path = 1;
 }

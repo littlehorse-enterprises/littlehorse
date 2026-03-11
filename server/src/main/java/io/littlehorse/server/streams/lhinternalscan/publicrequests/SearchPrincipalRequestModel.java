@@ -73,10 +73,10 @@ public class SearchPrincipalRequestModel
         if (latestStart != null) builder.setLatestStart(LHUtil.fromDate(latestStart));
 
         switch (type) {
-            case ISADMIN:
+            case IS_ADMIN:
                 builder.setIsAdmin(isAdmin);
                 break;
-            case TENANTID:
+            case TENANT_ID:
                 builder.setTenantId(tenantId);
                 break;
             default:
@@ -106,10 +106,10 @@ public class SearchPrincipalRequestModel
 
         type = p.getPrincipalCriteriaCase();
         switch (type) {
-            case ISADMIN:
+            case IS_ADMIN:
                 isAdmin = p.getIsAdmin();
                 break;
-            case TENANTID:
+            case TENANT_ID:
                 tenantId = p.getTenantId();
                 break;
             default:

@@ -267,13 +267,13 @@ message WaitForThreadsNode {
     // matches the value specified here. Must resolve to an INT.
     VariableAssignment thread_run_number = 1;
   }
+  // Specifies a list of ThreadRun's to wait for.
   message ThreadsToWaitFor {
     // Wait for one or more ThreadRun's
     repeated ThreadToWaitFor threads = 1;
   }
 
   oneof threads_to_wait_for {
-
     // Specifies that the WaitForThreadsRun will wait for the threads specified
     // here.
     ThreadsToWaitFor threads = 1;

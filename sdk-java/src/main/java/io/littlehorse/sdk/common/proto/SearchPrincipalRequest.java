@@ -55,8 +55,8 @@ private static final long serialVersionUID = 0L;
   public enum PrincipalCriteriaCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    ISADMIN(5),
-    TENANTID(6),
+    IS_ADMIN(5),
+    TENANT_ID(6),
     PRINCIPALCRITERIA_NOT_SET(0);
     private final int value;
     private PrincipalCriteriaCase(int value) {
@@ -74,8 +74,8 @@ private static final long serialVersionUID = 0L;
 
     public static PrincipalCriteriaCase forNumber(int value) {
       switch (value) {
-        case 5: return ISADMIN;
-        case 6: return TENANTID;
+        case 5: return IS_ADMIN;
+        case 6: return TENANT_ID;
         case 0: return PRINCIPALCRITERIA_NOT_SET;
         default: return null;
       }
@@ -221,13 +221,13 @@ private static final long serialVersionUID = 0L;
     return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
   }
 
-  public static final int ISADMIN_FIELD_NUMBER = 5;
+  public static final int IS_ADMIN_FIELD_NUMBER = 5;
   /**
    * <pre>
    * List only Principals that are admins
    * </pre>
    *
-   * <code>bool isAdmin = 5;</code>
+   * <code>bool is_admin = 5;</code>
    * @return Whether the isAdmin field is set.
    */
   @java.lang.Override
@@ -239,7 +239,7 @@ private static final long serialVersionUID = 0L;
    * List only Principals that are admins
    * </pre>
    *
-   * <code>bool isAdmin = 5;</code>
+   * <code>bool is_admin = 5;</code>
    * @return The isAdmin.
    */
   @java.lang.Override
@@ -250,13 +250,13 @@ private static final long serialVersionUID = 0L;
     return false;
   }
 
-  public static final int TENANTID_FIELD_NUMBER = 6;
+  public static final int TENANT_ID_FIELD_NUMBER = 6;
   /**
    * <pre>
    * List Principals associated with this Tenant ID
    * </pre>
    *
-   * <code>string tenantId = 6;</code>
+   * <code>string tenant_id = 6;</code>
    * @return Whether the tenantId field is set.
    */
   public boolean hasTenantId() {
@@ -267,7 +267,7 @@ private static final long serialVersionUID = 0L;
    * List Principals associated with this Tenant ID
    * </pre>
    *
-   * <code>string tenantId = 6;</code>
+   * <code>string tenant_id = 6;</code>
    * @return The tenantId.
    */
   public java.lang.String getTenantId() {
@@ -292,7 +292,7 @@ private static final long serialVersionUID = 0L;
    * List Principals associated with this Tenant ID
    * </pre>
    *
-   * <code>string tenantId = 6;</code>
+   * <code>string tenant_id = 6;</code>
    * @return The bytes for tenantId.
    */
   public com.google.protobuf.ByteString
@@ -457,12 +457,12 @@ private static final long serialVersionUID = 0L;
     }
     switch (principalCriteriaCase_) {
       case 5:
-        hash = (37 * hash) + ISADMIN_FIELD_NUMBER;
+        hash = (37 * hash) + IS_ADMIN_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
             getIsAdmin());
         break;
       case 6:
-        hash = (37 * hash) + TENANTID_FIELD_NUMBER;
+        hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
         hash = (53 * hash) + getTenantId().hashCode();
         break;
       case 0:
@@ -712,11 +712,11 @@ private static final long serialVersionUID = 0L;
         mergeLatestStart(other.getLatestStart());
       }
       switch (other.getPrincipalCriteriaCase()) {
-        case ISADMIN: {
+        case IS_ADMIN: {
           setIsAdmin(other.getIsAdmin());
           break;
         }
-        case TENANTID: {
+        case TENANT_ID: {
           principalCriteriaCase_ = 6;
           principalCriteria_ = other.principalCriteria_;
           onChanged();
@@ -1250,7 +1250,7 @@ private static final long serialVersionUID = 0L;
      * List only Principals that are admins
      * </pre>
      *
-     * <code>bool isAdmin = 5;</code>
+     * <code>bool is_admin = 5;</code>
      * @return Whether the isAdmin field is set.
      */
     public boolean hasIsAdmin() {
@@ -1261,7 +1261,7 @@ private static final long serialVersionUID = 0L;
      * List only Principals that are admins
      * </pre>
      *
-     * <code>bool isAdmin = 5;</code>
+     * <code>bool is_admin = 5;</code>
      * @return The isAdmin.
      */
     public boolean getIsAdmin() {
@@ -1275,7 +1275,7 @@ private static final long serialVersionUID = 0L;
      * List only Principals that are admins
      * </pre>
      *
-     * <code>bool isAdmin = 5;</code>
+     * <code>bool is_admin = 5;</code>
      * @param value The isAdmin to set.
      * @return This builder for chaining.
      */
@@ -1291,7 +1291,7 @@ private static final long serialVersionUID = 0L;
      * List only Principals that are admins
      * </pre>
      *
-     * <code>bool isAdmin = 5;</code>
+     * <code>bool is_admin = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearIsAdmin() {
@@ -1308,7 +1308,7 @@ private static final long serialVersionUID = 0L;
      * List Principals associated with this Tenant ID
      * </pre>
      *
-     * <code>string tenantId = 6;</code>
+     * <code>string tenant_id = 6;</code>
      * @return Whether the tenantId field is set.
      */
     @java.lang.Override
@@ -1320,7 +1320,7 @@ private static final long serialVersionUID = 0L;
      * List Principals associated with this Tenant ID
      * </pre>
      *
-     * <code>string tenantId = 6;</code>
+     * <code>string tenant_id = 6;</code>
      * @return The tenantId.
      */
     @java.lang.Override
@@ -1346,7 +1346,7 @@ private static final long serialVersionUID = 0L;
      * List Principals associated with this Tenant ID
      * </pre>
      *
-     * <code>string tenantId = 6;</code>
+     * <code>string tenant_id = 6;</code>
      * @return The bytes for tenantId.
      */
     @java.lang.Override
@@ -1373,7 +1373,7 @@ private static final long serialVersionUID = 0L;
      * List Principals associated with this Tenant ID
      * </pre>
      *
-     * <code>string tenantId = 6;</code>
+     * <code>string tenant_id = 6;</code>
      * @param value The tenantId to set.
      * @return This builder for chaining.
      */
@@ -1390,7 +1390,7 @@ private static final long serialVersionUID = 0L;
      * List Principals associated with this Tenant ID
      * </pre>
      *
-     * <code>string tenantId = 6;</code>
+     * <code>string tenant_id = 6;</code>
      * @return This builder for chaining.
      */
     public Builder clearTenantId() {
@@ -1406,7 +1406,7 @@ private static final long serialVersionUID = 0L;
      * List Principals associated with this Tenant ID
      * </pre>
      *
-     * <code>string tenantId = 6;</code>
+     * <code>string tenant_id = 6;</code>
      * @param value The bytes for tenantId to set.
      * @return This builder for chaining.
      */

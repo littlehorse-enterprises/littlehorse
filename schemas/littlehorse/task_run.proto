@@ -151,9 +151,10 @@ message LHTaskException {
   // The user-defined Failure name, for example, "credit-card-declined"
   string name = 1;
 
-  // Human readadble description of the failure.
+  // Human readable description of the failure.
   string message = 2;
 
+  // Additional content thrown alongside the exception.
   VariableValue content = 3;
 }
 

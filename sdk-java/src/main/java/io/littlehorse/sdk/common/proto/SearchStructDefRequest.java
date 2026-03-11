@@ -6,6 +6,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Search for StructDef's.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.SearchStructDefRequest}
  */
 @com.google.protobuf.Generated
@@ -485,6 +489,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Search for StructDef's.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.SearchStructDefRequest}
    */
   public static final class Builder extends

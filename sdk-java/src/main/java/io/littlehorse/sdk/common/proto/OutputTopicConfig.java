@@ -194,6 +194,10 @@ private static final long serialVersionUID = 0L;
   public static final int DEFAULT_RECORDING_LEVEL_FIELD_NUMBER = 1;
   private int defaultRecordingLevel_ = 0;
   /**
+   * <pre>
+   * The recording level for this Tenant's Output Topic.
+   * </pre>
+   *
    * <code>.littlehorse.OutputTopicConfig.OutputTopicRecordingLevel default_recording_level = 1;</code>
    * @return The enum numeric value on the wire for defaultRecordingLevel.
    */
@@ -201,6 +205,10 @@ private static final long serialVersionUID = 0L;
     return defaultRecordingLevel_;
   }
   /**
+   * <pre>
+   * The recording level for this Tenant's Output Topic.
+   * </pre>
+   *
    * <code>.littlehorse.OutputTopicConfig.OutputTopicRecordingLevel default_recording_level = 1;</code>
    * @return The defaultRecordingLevel.
    */
@@ -507,6 +515,10 @@ private static final long serialVersionUID = 0L;
 
     private int defaultRecordingLevel_ = 0;
     /**
+     * <pre>
+     * The recording level for this Tenant's Output Topic.
+     * </pre>
+     *
      * <code>.littlehorse.OutputTopicConfig.OutputTopicRecordingLevel default_recording_level = 1;</code>
      * @return The enum numeric value on the wire for defaultRecordingLevel.
      */
@@ -514,6 +526,10 @@ private static final long serialVersionUID = 0L;
       return defaultRecordingLevel_;
     }
     /**
+     * <pre>
+     * The recording level for this Tenant's Output Topic.
+     * </pre>
+     *
      * <code>.littlehorse.OutputTopicConfig.OutputTopicRecordingLevel default_recording_level = 1;</code>
      * @param value The enum numeric value on the wire for defaultRecordingLevel to set.
      * @return This builder for chaining.
@@ -525,6 +541,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The recording level for this Tenant's Output Topic.
+     * </pre>
+     *
      * <code>.littlehorse.OutputTopicConfig.OutputTopicRecordingLevel default_recording_level = 1;</code>
      * @return The defaultRecordingLevel.
      */
@@ -534,6 +554,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The recording level for this Tenant's Output Topic.
+     * </pre>
+     *
      * <code>.littlehorse.OutputTopicConfig.OutputTopicRecordingLevel default_recording_level = 1;</code>
      * @param value The defaultRecordingLevel to set.
      * @return This builder for chaining.
@@ -546,6 +570,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The recording level for this Tenant's Output Topic.
+     * </pre>
+     *
      * <code>.littlehorse.OutputTopicConfig.OutputTopicRecordingLevel default_recording_level = 1;</code>
      * @return This builder for chaining.
      */

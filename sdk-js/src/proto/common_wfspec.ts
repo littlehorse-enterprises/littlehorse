@@ -586,7 +586,7 @@ export interface TaskNode {
   variables: VariableAssignment[];
 }
 
-/** An `InlineStructDef` is the actual representation of the Schema. */
+/** A map of InlineStructDef's field names to their StructFieldDef's. */
 export interface InlineStructDef {
   /** The fields in this schema. */
   fields: { [key: string]: StructFieldDef };
@@ -597,7 +597,7 @@ export interface InlineStructDef_FieldsEntry {
   value: StructFieldDef | undefined;
 }
 
-/** A `SchemaFieldDef` defines a field inside a `StructDef`. */
+/** The definition of a field in an InlineStructDef. */
 export interface StructFieldDef {
   /** The type of the field. */
   fieldType:
@@ -612,6 +612,7 @@ export interface StructFieldDef {
 
 /** A path of repeated Selectors resolving to a nested field in an object. */
 export interface LHPath {
+  /** The path of selectors that resolve to the field you want to access. */
   path: LHPath_Selector[];
 }
 
