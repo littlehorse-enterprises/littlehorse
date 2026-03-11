@@ -2707,6 +2707,7 @@ func (x *WaitForThreadsNode_ThreadToWaitFor) GetThreadRunNumber() *VariableAssig
 	return nil
 }
 
+// Specifies a list of ThreadRun's to wait for.
 type WaitForThreadsNode_ThreadsToWaitFor struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

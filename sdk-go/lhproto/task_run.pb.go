@@ -625,8 +625,9 @@ type LHTaskException struct {
 
 	// The user-defined Failure name, for example, "credit-card-declined"
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Human readadble description of the failure.
-	Message string         `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// Human readable description of the failure.
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// Additional content thrown alongside the exception.
 	Content *VariableValue `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
 }
 

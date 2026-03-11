@@ -11,32 +11,56 @@ public interface TypeDefinitionOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The primitive type definition.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType primitive_type = 1;</code>
    * @return Whether the primitiveType field is set.
    */
   boolean hasPrimitiveType();
   /**
+   * <pre>
+   * The primitive type definition.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType primitive_type = 1;</code>
    * @return The enum numeric value on the wire for primitiveType.
    */
   int getPrimitiveTypeValue();
   /**
+   * <pre>
+   * The primitive type definition.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType primitive_type = 1;</code>
    * @return The primitiveType.
    */
   io.littlehorse.sdk.common.proto.VariableType getPrimitiveType();
 
   /**
+   * <pre>
+   * The ID of the StructDef that defines this type.
+   * </pre>
+   *
    * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
    * @return Whether the structDefId field is set.
    */
   boolean hasStructDefId();
   /**
+   * <pre>
+   * The ID of the StructDef that defines this type.
+   * </pre>
+   *
    * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
    * @return The structDefId.
    */
   io.littlehorse.sdk.common.proto.StructDefId getStructDefId();
   /**
+   * <pre>
+   * The ID of the StructDef that defines this type.
+   * </pre>
+   *
    * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
    */
   io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getStructDefIdOrBuilder();

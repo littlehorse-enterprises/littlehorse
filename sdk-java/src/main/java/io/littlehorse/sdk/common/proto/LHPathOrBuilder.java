@@ -11,24 +11,44 @@ public interface LHPathOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The path of selectors that resolve to the field you want to access.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.LHPath.Selector> 
       getPathList();
   /**
+   * <pre>
+   * The path of selectors that resolve to the field you want to access.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
    */
   io.littlehorse.sdk.common.proto.LHPath.Selector getPath(int index);
   /**
+   * <pre>
+   * The path of selectors that resolve to the field you want to access.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
    */
   int getPathCount();
   /**
+   * <pre>
+   * The path of selectors that resolve to the field you want to access.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.LHPath.SelectorOrBuilder> 
       getPathOrBuilderList();
   /**
+   * <pre>
+   * The path of selectors that resolve to the field you want to access.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
    */
   io.littlehorse.sdk.common.proto.LHPath.SelectorOrBuilder getPathOrBuilder(

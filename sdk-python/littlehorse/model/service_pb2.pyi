@@ -586,20 +586,20 @@ class TenantIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.TenantId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchPrincipalRequest(_message.Message):
-    __slots__ = ("bookmark", "limit", "earliest_start", "latest_start", "isAdmin", "tenantId")
+    __slots__ = ("bookmark", "limit", "earliest_start", "latest_start", "is_admin", "tenant_id")
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
     EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
     LATEST_START_FIELD_NUMBER: _ClassVar[int]
-    ISADMIN_FIELD_NUMBER: _ClassVar[int]
-    TENANTID_FIELD_NUMBER: _ClassVar[int]
+    IS_ADMIN_FIELD_NUMBER: _ClassVar[int]
+    TENANT_ID_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
     earliest_start: _timestamp_pb2.Timestamp
     latest_start: _timestamp_pb2.Timestamp
-    isAdmin: bool
-    tenantId: str
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., earliest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., isAdmin: _Optional[bool] = ..., tenantId: _Optional[str] = ...) -> None: ...
+    is_admin: bool
+    tenant_id: str
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., earliest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., is_admin: _Optional[bool] = ..., tenant_id: _Optional[str] = ...) -> None: ...
 
 class PrincipalIdList(_message.Message):
     __slots__ = ("results", "bookmark")
