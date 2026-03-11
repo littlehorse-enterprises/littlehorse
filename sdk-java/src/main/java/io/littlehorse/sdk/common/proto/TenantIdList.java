@@ -6,6 +6,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * List of Tenant Id's
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.TenantIdList}
  */
 @com.google.protobuf.Generated
@@ -310,6 +314,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * List of Tenant Id's
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.TenantIdList}
    */
   public static final class Builder extends

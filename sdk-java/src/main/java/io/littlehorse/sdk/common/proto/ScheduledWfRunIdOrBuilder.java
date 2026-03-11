@@ -11,11 +11,19 @@ public interface ScheduledWfRunIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the ScheduledWfRun.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The id.
    */
   java.lang.String getId();
   /**
+   * <pre>
+   * The ID of the ScheduledWfRun.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */
