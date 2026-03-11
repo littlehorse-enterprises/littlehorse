@@ -3,6 +3,7 @@ package io.littlehorse.sdk.worker.internal.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
@@ -14,7 +15,6 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import org.junit.jupiter.api.Test;
 
 public class VariableMappingTest {

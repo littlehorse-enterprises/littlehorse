@@ -61,10 +61,7 @@ public class LHTaskSignature {
         this(taskDefName, executable, lhTaskMethodAnnotationValue, LHTypeAdapterRegistry.from(typeAdapters), Map.of());
     }
 
-    public LHTaskSignature(
-            String taskDefName,
-            Object executable,
-            LHTypeAdapterRegistry typeAdapterRegistry)
+    public LHTaskSignature(String taskDefName, Object executable, LHTypeAdapterRegistry typeAdapterRegistry)
             throws TaskSchemaMismatchError {
         this(taskDefName, executable, taskDefName, typeAdapterRegistry, Map.of());
     }

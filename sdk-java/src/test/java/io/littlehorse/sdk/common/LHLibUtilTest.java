@@ -1,11 +1,11 @@
 package io.littlehorse.sdk.common;
 
+import io.littlehorse.sdk.common.adapter.LHStringAdapter;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructField;
-import io.littlehorse.sdk.common.adapter.LHStringAdapter;
-import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;

@@ -3,9 +3,9 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.StructDef;
 import io.littlehorse.sdk.common.proto.StructDefId;
