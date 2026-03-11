@@ -32,7 +32,7 @@ public interface LHTaskExceptionOrBuilder extends
 
   /**
    * <pre>
-   * Human readadble description of the failure.
+   * Human readable description of the failure.
    * </pre>
    *
    * <code>string message = 2;</code>
@@ -41,7 +41,7 @@ public interface LHTaskExceptionOrBuilder extends
   java.lang.String getMessage();
   /**
    * <pre>
-   * Human readadble description of the failure.
+   * Human readable description of the failure.
    * </pre>
    *
    * <code>string message = 2;</code>
@@ -51,16 +51,28 @@ public interface LHTaskExceptionOrBuilder extends
       getMessageBytes();
 
   /**
+   * <pre>
+   * Additional content thrown alongside the exception.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue content = 3;</code>
    * @return Whether the content field is set.
    */
   boolean hasContent();
   /**
+   * <pre>
+   * Additional content thrown alongside the exception.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue content = 3;</code>
    * @return The content.
    */
   io.littlehorse.sdk.common.proto.VariableValue getContent();
   /**
+   * <pre>
+   * Additional content thrown alongside the exception.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue content = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder();

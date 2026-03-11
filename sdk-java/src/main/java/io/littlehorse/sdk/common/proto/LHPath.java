@@ -863,6 +863,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.LHPath.Selector> path_;
   /**
+   * <pre>
+   * The path of selectors that resolve to the field you want to access.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
    */
   @java.lang.Override
@@ -870,6 +874,10 @@ private static final long serialVersionUID = 0L;
     return path_;
   }
   /**
+   * <pre>
+   * The path of selectors that resolve to the field you want to access.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
    */
   @java.lang.Override
@@ -878,6 +886,10 @@ private static final long serialVersionUID = 0L;
     return path_;
   }
   /**
+   * <pre>
+   * The path of selectors that resolve to the field you want to access.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
    */
   @java.lang.Override
@@ -885,6 +897,10 @@ private static final long serialVersionUID = 0L;
     return path_.size();
   }
   /**
+   * <pre>
+   * The path of selectors that resolve to the field you want to access.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
    */
   @java.lang.Override
@@ -892,6 +908,10 @@ private static final long serialVersionUID = 0L;
     return path_.get(index);
   }
   /**
+   * <pre>
+   * The path of selectors that resolve to the field you want to access.
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
    */
   @java.lang.Override
@@ -1259,6 +1279,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.LHPath.Selector, io.littlehorse.sdk.common.proto.LHPath.Selector.Builder, io.littlehorse.sdk.common.proto.LHPath.SelectorOrBuilder> pathBuilder_;
 
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.LHPath.Selector> getPathList() {
@@ -1269,6 +1293,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public int getPathCount() {
@@ -1279,6 +1307,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.LHPath.Selector getPath(int index) {
@@ -1289,6 +1321,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public Builder setPath(
@@ -1306,6 +1342,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public Builder setPath(
@@ -1320,6 +1360,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public Builder addPath(io.littlehorse.sdk.common.proto.LHPath.Selector value) {
@@ -1336,6 +1380,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public Builder addPath(
@@ -1353,6 +1401,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public Builder addPath(
@@ -1367,6 +1419,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public Builder addPath(
@@ -1381,6 +1437,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public Builder addAllPath(
@@ -1396,6 +1456,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public Builder clearPath() {
@@ -1409,6 +1473,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public Builder removePath(int index) {
@@ -1422,6 +1490,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.LHPath.Selector.Builder getPathBuilder(
@@ -1429,6 +1501,10 @@ private static final long serialVersionUID = 0L;
       return internalGetPathFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.LHPath.SelectorOrBuilder getPathOrBuilder(
@@ -1439,6 +1515,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.LHPath.SelectorOrBuilder> 
@@ -1450,6 +1530,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.LHPath.Selector.Builder addPathBuilder() {
@@ -1457,6 +1541,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.LHPath.Selector.getDefaultInstance());
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.LHPath.Selector.Builder addPathBuilder(
@@ -1465,6 +1553,10 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.LHPath.Selector.getDefaultInstance());
     }
     /**
+     * <pre>
+     * The path of selectors that resolve to the field you want to access.
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHPath.Selector path = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.LHPath.Selector.Builder> 

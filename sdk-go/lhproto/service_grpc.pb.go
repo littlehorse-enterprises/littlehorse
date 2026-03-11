@@ -141,17 +141,16 @@ type LittleHorseClient interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
-	// EXPERIMENTAL: Creates a new `StructDef“.
+	// Creates a StructDef.
 	//
 	// Note that this request is idempotent: if you
 	// make a request to create a `StructDef` identical to the currently-created
 	// one with the same `name`, no new `StructDef` will be created. This is the
 	// same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
 	//
-	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-	// enum within the `PutStructDefRequest`.
+	// For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
 	PutStructDef(ctx context.Context, in *PutStructDefRequest, opts ...grpc.CallOption) (*StructDef, error)
-	// EXPERIMENTAL: Get a StructDef.
+	// Gets a StructDef.
 	GetStructDef(ctx context.Context, in *StructDefId, opts ...grpc.CallOption) (*StructDef, error)
 	// EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
 	ValidateStructDefEvolution(ctx context.Context, in *ValidateStructDefEvolutionRequest, opts ...grpc.CallOption) (*ValidateStructDefEvolutionResponse, error)
@@ -280,6 +279,7 @@ type LittleHorseClient interface {
 	SearchWorkflowEventDef(ctx context.Context, in *SearchWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDefIdList, error)
 	// Search for all available TenantIds for current Principal
 	SearchTenant(ctx context.Context, in *SearchTenantRequest, opts ...grpc.CallOption) (*TenantIdList, error)
+	// Search for Principals
 	SearchPrincipal(ctx context.Context, in *SearchPrincipalRequest, opts ...grpc.CallOption) (*PrincipalIdList, error)
 	// Search for StructDef's
 	SearchStructDef(ctx context.Context, in *SearchStructDefRequest, opts ...grpc.CallOption) (*StructDefIdList, error)
@@ -338,6 +338,7 @@ type LittleHorseClient interface {
 	DeleteExternalEventDef(ctx context.Context, in *DeleteExternalEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a CorrelatedEvent
 	DeleteCorrelatedEvent(ctx context.Context, in *DeleteCorrelatedEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Deletes a WorkflowEventDef.
 	DeleteWorkflowEventDef(ctx context.Context, in *DeleteWorkflowEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
@@ -353,12 +354,13 @@ type LittleHorseClient interface {
 	ListTaskDefMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*ListTaskMetricsResponse, error)
 	// Returns a list of WfSpec Metrics Windows.
 	ListWfSpecMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*ListWfMetricsResponse, error)
-	// EXPERIMENTAL: Creates another Tenant in the LH Server.
+	// Creates a Tenant in the LH Server.
 	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error)
-	// EXPERIMENTAL: Gets a Tenant from the LH Server.
+	// Gets a Tenant from the LH Server.
 	GetTenant(ctx context.Context, in *TenantId, opts ...grpc.CallOption) (*Tenant, error)
-	// EXPERIMENTAL: Creates an Principal.
+	// Creates a Principal.
 	PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*Principal, error)
+	// Gets a Principal.
 	GetPrincipal(ctx context.Context, in *PrincipalId, opts ...grpc.CallOption) (*Principal, error)
 	// Returns the Principal of the caller.
 	Whoami(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Principal, error)
@@ -1235,17 +1237,16 @@ type LittleHorseServer interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error)
-	// EXPERIMENTAL: Creates a new `StructDef“.
+	// Creates a StructDef.
 	//
 	// Note that this request is idempotent: if you
 	// make a request to create a `StructDef` identical to the currently-created
 	// one with the same `name`, no new `StructDef` will be created. This is the
 	// same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
 	//
-	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-	// enum within the `PutStructDefRequest`.
+	// For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
 	PutStructDef(context.Context, *PutStructDefRequest) (*StructDef, error)
-	// EXPERIMENTAL: Get a StructDef.
+	// Gets a StructDef.
 	GetStructDef(context.Context, *StructDefId) (*StructDef, error)
 	// EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
 	ValidateStructDefEvolution(context.Context, *ValidateStructDefEvolutionRequest) (*ValidateStructDefEvolutionResponse, error)
@@ -1374,6 +1375,7 @@ type LittleHorseServer interface {
 	SearchWorkflowEventDef(context.Context, *SearchWorkflowEventDefRequest) (*WorkflowEventDefIdList, error)
 	// Search for all available TenantIds for current Principal
 	SearchTenant(context.Context, *SearchTenantRequest) (*TenantIdList, error)
+	// Search for Principals
 	SearchPrincipal(context.Context, *SearchPrincipalRequest) (*PrincipalIdList, error)
 	// Search for StructDef's
 	SearchStructDef(context.Context, *SearchStructDefRequest) (*StructDefIdList, error)
@@ -1432,6 +1434,7 @@ type LittleHorseServer interface {
 	DeleteExternalEventDef(context.Context, *DeleteExternalEventDefRequest) (*emptypb.Empty, error)
 	// Deletes a CorrelatedEvent
 	DeleteCorrelatedEvent(context.Context, *DeleteCorrelatedEventRequest) (*emptypb.Empty, error)
+	// Deletes a WorkflowEventDef.
 	DeleteWorkflowEventDef(context.Context, *DeleteWorkflowEventDefRequest) (*emptypb.Empty, error)
 	// Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
@@ -1447,12 +1450,13 @@ type LittleHorseServer interface {
 	ListTaskDefMetrics(context.Context, *ListTaskMetricsRequest) (*ListTaskMetricsResponse, error)
 	// Returns a list of WfSpec Metrics Windows.
 	ListWfSpecMetrics(context.Context, *ListWfMetricsRequest) (*ListWfMetricsResponse, error)
-	// EXPERIMENTAL: Creates another Tenant in the LH Server.
+	// Creates a Tenant in the LH Server.
 	PutTenant(context.Context, *PutTenantRequest) (*Tenant, error)
-	// EXPERIMENTAL: Gets a Tenant from the LH Server.
+	// Gets a Tenant from the LH Server.
 	GetTenant(context.Context, *TenantId) (*Tenant, error)
-	// EXPERIMENTAL: Creates an Principal.
+	// Creates a Principal.
 	PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error)
+	// Gets a Principal.
 	GetPrincipal(context.Context, *PrincipalId) (*Principal, error)
 	// Returns the Principal of the caller.
 	Whoami(context.Context, *emptypb.Empty) (*Principal, error)

@@ -677,6 +677,7 @@ type OutputTopicConfig struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The recording level for this Tenant's Output Topic.
 	DefaultRecordingLevel OutputTopicConfig_OutputTopicRecordingLevel `protobuf:"varint,1,opt,name=default_recording_level,json=defaultRecordingLevel,proto3,enum=littlehorse.OutputTopicConfig_OutputTopicRecordingLevel" json:"default_recording_level,omitempty"`
 }
 

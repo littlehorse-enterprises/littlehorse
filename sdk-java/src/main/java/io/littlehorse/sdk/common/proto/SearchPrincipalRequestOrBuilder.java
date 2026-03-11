@@ -107,7 +107,7 @@ public interface SearchPrincipalRequestOrBuilder extends
    * List only Principals that are admins
    * </pre>
    *
-   * <code>bool isAdmin = 5;</code>
+   * <code>bool is_admin = 5;</code>
    * @return Whether the isAdmin field is set.
    */
   boolean hasIsAdmin();
@@ -116,7 +116,7 @@ public interface SearchPrincipalRequestOrBuilder extends
    * List only Principals that are admins
    * </pre>
    *
-   * <code>bool isAdmin = 5;</code>
+   * <code>bool is_admin = 5;</code>
    * @return The isAdmin.
    */
   boolean getIsAdmin();
@@ -126,7 +126,7 @@ public interface SearchPrincipalRequestOrBuilder extends
    * List Principals associated with this Tenant ID
    * </pre>
    *
-   * <code>string tenantId = 6;</code>
+   * <code>string tenant_id = 6;</code>
    * @return Whether the tenantId field is set.
    */
   boolean hasTenantId();
@@ -135,7 +135,7 @@ public interface SearchPrincipalRequestOrBuilder extends
    * List Principals associated with this Tenant ID
    * </pre>
    *
-   * <code>string tenantId = 6;</code>
+   * <code>string tenant_id = 6;</code>
    * @return The tenantId.
    */
   java.lang.String getTenantId();
@@ -144,7 +144,7 @@ public interface SearchPrincipalRequestOrBuilder extends
    * List Principals associated with this Tenant ID
    * </pre>
    *
-   * <code>string tenantId = 6;</code>
+   * <code>string tenant_id = 6;</code>
    * @return The bytes for tenantId.
    */
   com.google.protobuf.ByteString

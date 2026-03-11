@@ -512,6 +512,7 @@ export interface WaitForThreadsNode_ThreadToWaitFor {
   threadRunNumber: VariableAssignment | undefined;
 }
 
+/** Specifies a list of ThreadRun's to wait for. */
 export interface WaitForThreadsNode_ThreadsToWaitFor {
   /** Wait for one or more ThreadRun's */
   threads: WaitForThreadsNode_ThreadToWaitFor[];

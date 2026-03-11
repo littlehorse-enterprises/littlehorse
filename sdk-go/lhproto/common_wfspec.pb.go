@@ -761,10 +761,12 @@ type isTypeDefinition_DefinedType interface {
 }
 
 type TypeDefinition_PrimitiveType struct {
+	// The primitive type definition.
 	PrimitiveType VariableType `protobuf:"varint,1,opt,name=primitive_type,json=primitiveType,proto3,enum=littlehorse.VariableType,oneof"`
 }
 
 type TypeDefinition_StructDefId struct {
+	// The ID of the StructDef that defines this type.
 	StructDefId *StructDefId `protobuf:"bytes,5,opt,name=struct_def_id,json=structDefId,proto3,oneof"`
 }
 
@@ -931,14 +933,17 @@ type isUTActionTrigger_Action interface {
 }
 
 type UTActionTrigger_Task struct {
+	// Schedule a Reminder Task.
 	Task *UTActionTrigger_UTATask `protobuf:"bytes,1,opt,name=task,proto3,oneof"`
 }
 
 type UTActionTrigger_Cancel struct {
+	// Cancel the UserTaskRun.
 	Cancel *UTActionTrigger_UTACancel `protobuf:"bytes,2,opt,name=cancel,proto3,oneof"`
 }
 
 type UTActionTrigger_Reassign struct {
+	// Reassign the UserTaskRun to a different user or user group.
 	Reassign *UTActionTrigger_UTAReassign `protobuf:"bytes,3,opt,name=reassign,proto3,oneof"` // later on, might enable scheduling entire ThreadRuns
 }
 
@@ -1154,7 +1159,7 @@ func (*TaskNode_TaskDefId) isTaskNode_TaskToExecute() {}
 
 func (*TaskNode_DynamicTask) isTaskNode_TaskToExecute() {}
 
-// An `InlineStructDef` is the actual representation of the Schema.
+// A map of InlineStructDef's field names to their StructFieldDef's.
 type InlineStructDef struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1203,7 +1208,7 @@ func (x *InlineStructDef) GetFields() map[string]*StructFieldDef {
 	return nil
 }
 
-// A `SchemaFieldDef` defines a field inside a `StructDef`.
+// The definition of a field in an InlineStructDef.
 type StructFieldDef struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1268,6 +1273,7 @@ type LHPath struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The path of selectors that resolve to the field you want to access.
 	Path []*LHPath_Selector `protobuf:"bytes,1,rep,name=path,proto3" json:"path,omitempty"`
 }
 
