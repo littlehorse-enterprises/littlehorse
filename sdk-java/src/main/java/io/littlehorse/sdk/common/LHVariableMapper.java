@@ -103,6 +103,8 @@ public final class LHVariableMapper {
      * This method enforces that the VariableValue contains a Json object value.
      *
      * @param var The VariableValue to convert to a Json object.
+     * @param <T> the target Java type for deserialization
+     * @param clazz the Class object representing the target type
      * @return The deserialized Json object value represented by the VariableValue.
      * @throws IllegalArgumentException If the VariableValue does not contain Json object.
      */
@@ -115,6 +117,8 @@ public final class LHVariableMapper {
      * This method enforces that the VariableValue contains a Json array value.
      *
      * @param var The VariableValue to convert.
+     * @param <T> the target element type for the collection
+     * @param clazz the Class object representing the collection element type
      * @return The collection of deserialized Json objects value represented by the VariableValue.
      * @throws IllegalArgumentException If the VariableValue does not contain Json array.
      */

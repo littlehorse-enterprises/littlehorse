@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.worker;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.Checkpoint;
 import io.littlehorse.sdk.common.proto.CheckpointId;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -13,10 +14,8 @@ import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
 import io.littlehorse.sdk.common.proto.WfRunId;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.util.Date;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * This class contains runtime information about the specific WfRun and NodeRun that is being
@@ -38,19 +37,20 @@ public class WorkerContext {
      *
      * @param scheduledTask is the raw payload for the scheduled task.
      * @param scheduleTime is the time that the task was actually scheduled.
+     * @param client the gRPC blocking stub used to communicate with the LH server
      */
     public WorkerContext(ScheduledTask scheduledTask, Date scheduleTime, LittleHorseBlockingStub client) {
         this(scheduledTask, scheduleTime, client, LHTypeAdapterRegistry.empty());
     }
 
-    public WorkerContext(
-            ScheduledTask scheduledTask,
-            Date scheduleTime,
-            LittleHorseBlockingStub client,
-            List<LHTypeAdapter<?>> typeAdapters) {
-        this(scheduledTask, scheduleTime, client, LHTypeAdapterRegistry.from(typeAdapters));
-    }
-
+    /**
+     * Creates a WorkerContext with a registry of type adapters.
+     *
+     * @param scheduledTask is the raw payload for the scheduled task.
+     * @param scheduleTime is the time that the task was actually scheduled.
+     * @param client the gRPC blocking stub used to communicate with the LH server
+     * @param typeAdapterRegistry registry of Type Adapters to use for mapping Checkpoint types.
+     */
     public WorkerContext(
             ScheduledTask scheduledTask,
             Date scheduleTime,
@@ -61,7 +61,7 @@ public class WorkerContext {
         this.logOutput = "";
         checkpointsSoFarInThisRun = 0;
         this.client = client;
-        this.typeAdapterRegistry = typeAdapterRegistry == null ? LHTypeAdapterRegistry.empty() : typeAdapterRegistry;
+        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
     }
 
     /**
@@ -191,6 +191,14 @@ public class WorkerContext {
         return LHLibUtil.taskRunIdToString(getTaskRunId());
     }
 
+    /**
+     * Executes the provided CheckpointableFunction and persists Checkpoints as needed.
+     *
+     * @param runnable checkpointable work to execute
+     * @param clazz the return type class for the deserialization of persisted checkpoint data
+     * @param <T> the return type
+     * @return the result of the computation, possibly restored from a prior checkpoint
+     */
     public <T> T executeAndCheckpoint(CheckpointableFunction<T> runnable, Class<T> clazz) {
         if (checkpointsSoFarInThisRun < scheduledTask.getTotalObservedCheckpoints()) {
             return (T) fetchCheckpoint(checkpointsSoFarInThisRun++, clazz);

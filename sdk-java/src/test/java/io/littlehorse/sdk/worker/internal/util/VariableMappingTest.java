@@ -14,7 +14,7 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import org.junit.jupiter.api.Test;
 
 public class VariableMappingTest {

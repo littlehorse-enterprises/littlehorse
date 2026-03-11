@@ -44,7 +44,7 @@ public interface WfRunVariable extends LHExpression {
      * started without this variable being provided as input. For Entrypoint
      * ThreadSpec's, this also triggers the WfSpec Required Variable Compatibiltiy
      * Rules.
-     * @return
+     * @return the same {@link WfRunVariable} instance
      */
     WfRunVariable required();
 

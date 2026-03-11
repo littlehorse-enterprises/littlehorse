@@ -427,6 +427,9 @@ public interface WorkflowThread {
     /**
      * Adds an EXIT node which returns the provided result. This causes the ThreadRun to complete
      * gracefully. It is equivalent to putting a call to `return;` early in your function.
+     *
+     * @param output is a value for your ThreadRun to return upon completion.
+     *        It can be either a literal value (which the Library casts to a Variable Value) or a `WfRunVariable`.
      */
     void complete(Serializable output);
 
@@ -445,6 +448,7 @@ public interface WorkflowThread {
      *
      * @param interruptName The name of the ExternalEventDef to listen for.
      * @param handler A Thread Function defining a ThreadSpec to use to handle the Interrupt.
+     * @return an InterruptHandler for further configuration
      */
     InterruptHandler registerInterruptHandler(String interruptName, ThreadFunc handler);
 
@@ -544,6 +548,7 @@ public interface WorkflowThread {
      * and provided content.
      * @param workflowEventDefName is the name of the WorkflowEvent to throw.
      * @param content is the content of the WorkflowEvent that is thrown.
+     * @return a ThrowEventNodeOutput that can be used to configure the thrown event
      */
     ThrowEventNodeOutput throwEvent(String workflowEventDefName, Serializable content);
 

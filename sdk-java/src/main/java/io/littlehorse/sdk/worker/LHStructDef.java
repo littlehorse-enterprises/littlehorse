@@ -19,5 +19,10 @@ public @interface LHStructDef {
      */
     String value();
 
+    /**
+     * Human-readable description for the generated StructDef.
+     *
+     * @return StructDef description
+     */
     String description() default "";
 }

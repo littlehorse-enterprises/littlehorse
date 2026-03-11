@@ -1,7 +1,7 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 
 final class InterruptExternalEventDefRegistration implements ExternalEventDefRegistration {
 
