@@ -2,6 +2,7 @@ package io.littlehorse.sdk.common.adapter;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -56,6 +57,35 @@ public class LHTypeAdapterRegistry {
                         "A type adapter for " + typeClass.getName() + " is already registered");
             }
             map.put(typeClass, adapter);
+        }
+
+        return new LHTypeAdapterRegistry(map);
+    }
+
+    /**
+     * Creates a registry from the provided list of adapters, keyed by each adapter's type class.
+     * If the provided list is null or empty, an empty registry is returned.
+     *
+     * @param adapters list of adapters
+     * @return a new LHTypeAdapterRegistry
+     */
+    public static LHTypeAdapterRegistry from(List<LHTypeAdapter<?>> adapters) {
+        if (adapters == null || adapters.isEmpty()) {
+            return empty();
+        }
+
+        LinkedHashMap<Class<?>, LHTypeAdapter<?>> map = new LinkedHashMap<>();
+        for (LHTypeAdapter<?> adapter : adapters) {
+            LHTypeAdapter<?> nonNullAdapter = Objects.requireNonNull(adapter, "Type adapter cannot be null");
+            Class<?> typeClass = nonNullAdapter.getTypeClass();
+            if (typeClass == null) {
+                throw new IllegalArgumentException("Cannot register a type adapter with null class key");
+            }
+            if (map.containsKey(typeClass)) {
+                throw new IllegalArgumentException(
+                        "A type adapter for " + typeClass.getName() + " is already registered");
+            }
+            map.put(typeClass, nonNullAdapter);
         }
 
         return new LHTypeAdapterRegistry(map);

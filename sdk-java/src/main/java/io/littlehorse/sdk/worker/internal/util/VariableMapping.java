@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TaskDef;
@@ -16,6 +17,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.WorkerContext;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,13 @@ public class VariableMapping {
     private Class<?> type;
     private int position;
     private LHTypeAdapterRegistry typeAdapterRegistry;
+    private String inlineStructDefName;
+
+    public VariableMapping(
+            TaskDef taskDef, int position, Class<?> type, String javaParamName, List<LHTypeAdapter<?>> typeAdapters)
+            throws TaskSchemaMismatchError {
+        this(taskDef, position, type, javaParamName, null, LHTypeAdapterRegistry.from(typeAdapters));
+    }
 
     public VariableMapping(
             TaskDef taskDef,
@@ -35,8 +44,20 @@ public class VariableMapping {
             String javaParamName,
             LHTypeAdapterRegistry typeAdapterRegistry)
             throws TaskSchemaMismatchError {
+        this(taskDef, position, type, javaParamName, null, typeAdapterRegistry);
+    }
+
+    public VariableMapping(
+            TaskDef taskDef,
+            int position,
+            Class<?> type,
+            String javaParamName,
+            String inlineStructDefName,
+            LHTypeAdapterRegistry typeAdapterRegistry)
+            throws TaskSchemaMismatchError {
         this.type = type;
         this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
+        this.inlineStructDefName = inlineStructDefName;
 
         if (type.equals(WorkerContext.class)) return;
         this.position = position;
@@ -70,10 +91,22 @@ public class VariableMapping {
     private Optional<String> validateStructDefType(StructDefId input, Class<?> type) {
         String msg = null;
 
+        if (InlineStruct.class.equals(type)) {
+            if (inlineStructDefName == null || inlineStructDefName.isBlank()) {
+                msg = "TaskDef provides StructDef, func accepts InlineStruct without @LHType(structDefName = ...)";
+            } else if (!input.getName().equals(inlineStructDefName)) {
+                msg = String.format(
+                        "TaskDef provides StructDef <%s>, func expects InlineStruct StructDef <%s>",
+                        input.getName(), inlineStructDefName);
+            }
+            return Optional.ofNullable(msg);
+        }
+
         LHClassType lhClassType = LHClassType.fromJavaClass(type, typeAdapterRegistry);
 
         if (!(lhClassType instanceof LHStructDefType)) {
             msg = "TaskDef provides StructDef, func accepts non-StructDef type " + type;
+            return Optional.ofNullable(msg);
         }
 
         LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
