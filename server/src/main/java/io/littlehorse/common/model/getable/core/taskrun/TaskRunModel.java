@@ -336,13 +336,11 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         attempt.setEndTime(taskRunReport.getTime());
         attempt.setLogOutput(taskRunReport.getLogOutput());
 
-        TaskStatus attemptTerminalStatus;
         if (taskRunReport.getOutput() != null
                 && taskRunReport.getOutput().getDeserializationError().isPresent()) {
             attempt.setError(new LHTaskErrorModel(
                     taskRunReport.getOutput().getDeserializationError().get(), LHErrorType.VAR_SUB_ERROR));
             attempt.setStatus(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
-            attemptTerminalStatus = TaskStatus.TASK_OUTPUT_SERDE_ERROR;
             transitionTo(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
         } else {
             attempt.setOutput(taskRunReport.getOutput());
@@ -352,8 +350,6 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             if (taskRunReport.getException() != null) {
                 attempt.setOutput(taskRunReport.getException().getContent());
             }
-            attemptTerminalStatus = taskRunReport.getStatus();
-
             if (taskRunReport.getStatus() == TaskStatus.TASK_SUCCESS) {
                 // Tell the WfRun that the TaskRun is done.
                 transitionTo(TaskStatus.TASK_SUCCESS);
@@ -368,7 +364,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 processorContext,
                 taskDefId,
                 TaskStatus.TASK_RUNNING,
-                attemptTerminalStatus,
+                attempt.getStatus(),
                 attempt.getStartTime(),
                 attempt.getEndTime());
 

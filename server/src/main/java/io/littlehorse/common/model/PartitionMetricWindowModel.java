@@ -8,13 +8,13 @@ import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
-import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.common.proto.PartitionMetricWindow;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.CountAndTiming;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -65,9 +65,7 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         if (previousStatus == null) {
             incrementCount("started");
         } else {
-            if (endTime == null) {
-                endTime = new Date();
-            }
+            endTime = endTime == null ? new Date() : endTime;
             long latencyMs = endTime.getTime() - startTime.getTime();
             String metricKey = previousStatus.name().toLowerCase() + "_to_"
                     + newStatus.name().toLowerCase();
@@ -75,25 +73,26 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         }
     }
 
-    public void incrementTaskAttemptCount(TaskStatus previousStatus, TaskStatus newStatus, Date phaseStart, Date phaseEnd) {
-        if (phaseStart == null) return;
-        if (phaseEnd == null) phaseEnd = new Date();
-        long latencyMs = phaseEnd.getTime() - phaseStart.getTime();
+    public void incrementTaskAttemptCount(
+            TaskStatus previousStatus, TaskStatus newStatus, Date startTime, Date endTime) {
+        if (startTime == null) return;
+        endTime = endTime == null ? new Date() : endTime;
+        long latencyMs = endTime.getTime() - startTime.getTime();
         String prev = previousStatus.name().replace("TASK_", "").toLowerCase();
         String next = newStatus.name().replace("TASK_", "").toLowerCase();
         String metricKey = "taskattempt_" + prev + "_to_" + next;
         incrementCountAndLatency(metricKey, latencyMs);
     }
 
-
-    public void incrementTaskRunCount(TaskStatus terminalStatus, Date createdAt, Date endTime) {
-        if (endTime == null) endTime = new Date();
+    public void incrementTaskRunCount(TaskStatus endStatus, Date createdAt, Date endTime) {
+        endTime = endTime == null ? new Date() : endTime;
         long latencyMs = endTime.getTime() - createdAt.getTime();
-        String metricKey = switch (terminalStatus) {
-            case TASK_SUCCESS -> "taskrun_created_to_completed";
-            case TASK_EXCEPTION -> "taskrun_created_to_exception";
-            default -> "taskrun_created_to_error";
-        };
+        String metricKey =
+                switch (endStatus) {
+                    case TASK_SUCCESS -> "taskrun_created_to_completed";
+                    case TASK_EXCEPTION -> "taskrun_created_to_exception";
+                    default -> "taskrun_created_to_error";
+                };
         incrementCountAndLatency(metricKey, latencyMs);
     }
 
@@ -104,22 +103,11 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
             TaskStatus newStatus,
             Date phaseStart,
             Date phaseEnd) {
-        Date windowStart = LHUtil.getCurrentWindowDate();
         TenantIdModel tenantId = processorContext.authorization().tenantId();
-        ClusterScopedStore clusterScopedStore =
-                ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
-        PartitionMetricsMemoryStore memoryStore = processorContext.getPartitionMetricsMemoryStore();
-        MetricWindowIdModel id = new MetricWindowIdModel(tenantId, taskDefId, windowStart);
-        PartitionMetricWindowModel metricWindow = memoryStore.get(id.getPartitionMetricStoreKey());
-        if (metricWindow == null) {
-            metricWindow = clusterScopedStore.get(id.getPartitionMetricStoreKey(), PartitionMetricWindowModel.class);
-        }
-        if (metricWindow == null) {
-            metricWindow = new PartitionMetricWindowModel(id);
-        }
+        MetricWindowIdModel id = new MetricWindowIdModel(tenantId, taskDefId, LHUtil.getCurrentWindowDate());
+        PartitionMetricWindowModel metricWindow = getOrcreateMetricWindow(processorContext, id);
         metricWindow.incrementTaskAttemptCount(previousStatus, newStatus, phaseStart, phaseEnd);
-        clusterScopedStore.put(metricWindow);
-        memoryStore.put(metricWindow);
+        storeMetricWindow(processorContext, metricWindow);
     }
 
     public static void trackTaskRun(
@@ -128,22 +116,11 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
             TaskStatus terminalStatus,
             Date createdAt,
             Date endTime) {
-        Date windowStart = LHUtil.getCurrentWindowDate();
         TenantIdModel tenantId = processorContext.authorization().tenantId();
-        ClusterScopedStore clusterScopedStore =
-                ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
-        PartitionMetricsMemoryStore memoryStore = processorContext.getPartitionMetricsMemoryStore();
-        MetricWindowIdModel id = new MetricWindowIdModel(tenantId, taskDefId, windowStart);
-        PartitionMetricWindowModel metricWindow = memoryStore.get(id.getPartitionMetricStoreKey());
-        if (metricWindow == null) {
-            metricWindow = clusterScopedStore.get(id.getPartitionMetricStoreKey(), PartitionMetricWindowModel.class);
-        }
-        if (metricWindow == null) {
-            metricWindow = new PartitionMetricWindowModel(id);
-        }
+        MetricWindowIdModel id = new MetricWindowIdModel(tenantId, taskDefId, LHUtil.getCurrentWindowDate());
+        PartitionMetricWindowModel metricWindow = getOrcreateMetricWindow(processorContext, id);
         metricWindow.incrementTaskRunCount(terminalStatus, createdAt, endTime);
-        clusterScopedStore.put(metricWindow);
-        memoryStore.put(metricWindow);
+        storeMetricWindow(processorContext, metricWindow);
     }
 
     public static void trackWorkflow(
@@ -153,23 +130,35 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
             LHStatus newStatus,
             Date startTime,
             Date endTime) {
-        Date windowStart = LHUtil.getCurrentWindowDate();
         TenantIdModel tenantId = processorContext.authorization().tenantId();
+        MetricWindowIdModel id = new MetricWindowIdModel(tenantId, wfSpecId, LHUtil.getCurrentWindowDate());
+        PartitionMetricWindowModel metricWindow = getOrcreateMetricWindow(processorContext, id);
+        metricWindow.incrementWfCount(previousStatus, newStatus, startTime, endTime);
+        storeMetricWindow(processorContext, metricWindow);
+    }
+
+    private static void storeMetricWindow(
+            CoreProcessorContext processorContext, PartitionMetricWindowModel metricWindow) {
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
         PartitionMetricsMemoryStore memoryStore = processorContext.getPartitionMetricsMemoryStore();
-        MetricWindowIdModel id = new MetricWindowIdModel(tenantId, wfSpecId, windowStart);
+        clusterScopedStore.put(metricWindow);
+        memoryStore.put(metricWindow);
+    }
+
+    private static PartitionMetricWindowModel getOrcreateMetricWindow(
+            CoreProcessorContext processorContext, MetricWindowIdModel id) {
+        PartitionMetricsMemoryStore memoryStore = processorContext.getPartitionMetricsMemoryStore();
         PartitionMetricWindowModel metricWindow = memoryStore.get(id.getPartitionMetricStoreKey());
         if (metricWindow == null) {
+            ClusterScopedStore clusterScopedStore =
+                    ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
             metricWindow = clusterScopedStore.get(id.getPartitionMetricStoreKey(), PartitionMetricWindowModel.class);
         }
         if (metricWindow == null) {
             metricWindow = new PartitionMetricWindowModel(id);
-            ;
         }
-        metricWindow.incrementWfCount(previousStatus, newStatus, startTime, endTime);
-        clusterScopedStore.put(metricWindow);
-        memoryStore.put(metricWindow);
+        return metricWindow;
     }
 
     @Override
@@ -207,5 +196,4 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
     public StoreableType getType() {
         return StoreableType.PARTITION_METRICS;
     }
-    
 }
