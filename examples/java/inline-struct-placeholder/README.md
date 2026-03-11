@@ -6,6 +6,8 @@ This example shows how to:
 - Accept a raw `InlineStruct` input with `@LHType(structDefName = ...)`.
 - Resolve `@LHTaskMethod` and `@LHType(structDefName = ...)` placeholders from a single map.
 
+**_NOTE_: This example is for advanced use-cases only, in which you don't know the exact struct you're using when writing the code. In almost all cases, it's simpler and better to use `@LHStructDef` annotation as shown in the [normal Struct example](../struct-def/README.md)**
+
 ### Start workers and register metadata
 
 Run this first in one terminal:

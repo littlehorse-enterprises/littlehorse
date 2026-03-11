@@ -78,10 +78,10 @@ public class InlineStructPlaceholderExample {
         return workers;
     }
 
-    private static void registerInlineStructDef(LittleHorseBlockingStub client) {
+    private static void registerStructDef(LittleHorseBlockingStub client) {
         PutStructDefRequest request = PutStructDefRequest.newBuilder()
                 .setName(CUSTOMER_STRUCT)
-                .setDescription("Inline customer StructDef used by placeholder example")
+                .setDescription("Customer StructDef used by placeholder example")
                 .setAllowedUpdates(StructDefCompatibilityType.NO_SCHEMA_UPDATES)
                 .setStructDef(InlineStructDef.newBuilder()
                         .putFields(
@@ -122,7 +122,7 @@ public class InlineStructPlaceholderExample {
         Workflow workflow = getWorkflow();
         List<LHTaskWorker> workers = getTaskWorkers(config);
 
-        registerInlineStructDef(config.getBlockingStub());
+        registerStructDef(config.getBlockingStub());
 
         for (LHTaskWorker worker : workers) {
             worker.registerTaskDef();
