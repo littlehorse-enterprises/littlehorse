@@ -103,6 +103,7 @@ public class LHTaskWorkerTest {
     @Test
     public void shouldApplyPlaceholdersForInlineStructTypes() {
         LHConfig config = mock(LHConfig.class);
+        when(config.getTypeAdapterRegistry()).thenReturn(LHTypeAdapterRegistry.empty());
         LittleHorseBlockingStub grpcClient = mock(LittleHorseBlockingStub.class);
         AtomicReference<PutTaskDefRequest> capturedRequest = new AtomicReference<>();
 
