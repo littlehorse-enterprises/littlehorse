@@ -84,9 +84,9 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         incrementCountAndLatency(metricKey, latencyMs);
     }
 
-    public void incrementTaskRunCount(TaskStatus endStatus, Date createdAt, Date endTime) {
+    public void incrementTaskRunCount(TaskStatus endStatus, Date startTime, Date endTime) {
         endTime = endTime == null ? new Date() : endTime;
-        long latencyMs = endTime.getTime() - createdAt.getTime();
+        long latencyMs = endTime.getTime() - startTime.getTime();
         String metricKey =
                 switch (endStatus) {
                     case TASK_SUCCESS -> "taskrun_created_to_completed";
