@@ -1134,7 +1134,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         QuotaIdModel quotaId = QuotaIdModel.fromProto(req, QuotaIdModel.class, reqContext);
         QuotaModel result = reqContext
                 .metadataManager()
-                .getOrThrow(quotaId, () -> new LHApiException(Status.NOT_FOUND, "Could not find quota %s".formatted(quotaId)));
+                .getOrThrow(
+                        quotaId,
+                        () -> new LHApiException(Status.NOT_FOUND, "Could not find quota %s".formatted(quotaId)));
         ctx.onNext(result.toProto().build());
         ctx.onCompleted();
     }

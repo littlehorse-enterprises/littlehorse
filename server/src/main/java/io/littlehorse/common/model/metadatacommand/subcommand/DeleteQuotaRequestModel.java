@@ -41,7 +41,8 @@ public class DeleteQuotaRequestModel extends MetadataSubCommand<DeleteQuotaReque
 
     @Override
     public Empty process(MetadataProcessorContext context) {
-        PrincipalModel caller = context.service().getPrincipal(context.authorization().principalId());
+        PrincipalModel caller =
+                context.service().getPrincipal(context.authorization().principalId());
         if (!caller.canEditQuotas()) {
             throw new LHApiException(
                     Status.PERMISSION_DENIED,

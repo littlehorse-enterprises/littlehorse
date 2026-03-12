@@ -47,8 +47,13 @@ public class GlobalExceptionHandler implements ServerInterceptor {
             } catch (InvalidStateStoreException ex) {
                 call.close(Status.UNAVAILABLE.withDescription(ex.getMessage()).withCause(ex), new Metadata());
             } catch (StatusRuntimeException ex) {
-                log.error("Internal exception: {}", ex.getMessage(), ex);
-                call.close(Status.fromThrowable(ex), trailersFor(ex));
+                Status status = Status.fromThrowable(ex);
+                if (status.getCode() == Status.Code.RESOURCE_EXHAUSTED) {
+                    log.debug("Request throttled: {}", status.getDescription());
+                } else {
+                    log.error("Internal exception: {}", ex.getMessage(), ex);
+                }
+                call.close(status, trailersFor(ex));
             } catch (Throwable ex) {
                 log.error("Unexpected exception: {}", ex.getMessage(), ex);
                 call.close(Status.INTERNAL.withDescription(INTERNAL_ERROR_MESSAGE), new Metadata());

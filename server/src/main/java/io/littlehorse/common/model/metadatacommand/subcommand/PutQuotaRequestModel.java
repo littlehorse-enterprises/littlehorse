@@ -63,7 +63,8 @@ public class PutQuotaRequestModel extends MetadataSubCommand<PutQuotaRequest> im
     @Override
     public Quota process(MetadataProcessorContext context) {
         MetadataManager metadataManager = context.metadataManager();
-        PrincipalModel caller = context.service().getPrincipal(context.authorization().principalId());
+        PrincipalModel caller =
+                context.service().getPrincipal(context.authorization().principalId());
 
         if (!caller.canEditQuotas()) {
             throw new LHApiException(

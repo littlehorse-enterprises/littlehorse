@@ -37,9 +37,7 @@ public class QuotaModel extends ClusterMetadataGetable<Quota> {
 
     @Override
     public Quota.Builder toProto() {
-        Quota.Builder result = Quota.newBuilder()
-                .setId(id.toProto())
-                .setWriteRequestsPerSecond(writeRequestsPerSecond);
+        Quota.Builder result = Quota.newBuilder().setId(id.toProto()).setWriteRequestsPerSecond(writeRequestsPerSecond);
 
         if (createdAt != null) {
             result.setCreatedAt(LHUtil.fromDate(createdAt));
@@ -75,8 +73,7 @@ public class QuotaModel extends ClusterMetadataGetable<Quota> {
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
         return List.of(
                 new GetableIndex<QuotaModel>(
-                        List.of(Pair.of("tenantId", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)),
+                        List.of(Pair.of("tenantId", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.LOCAL)),
                 new GetableIndex<QuotaModel>(
                         List.of(
                                 Pair.of("tenantId", GetableIndex.ValueType.SINGLE),

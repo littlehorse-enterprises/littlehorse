@@ -276,7 +276,7 @@ public class PrincipalAdministrationTest {
                 .isNotNull()
                 .hasCauseInstanceOf(LHApiException.class)
                 .hasRootCauseMessage(
-                        "INVALID_ARGUMENT: PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants or Principals.");
+                        "INVALID_ARGUMENT: PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants, Principals, or Quotas.");
     }
 
     @Test
@@ -292,7 +292,7 @@ public class PrincipalAdministrationTest {
                 .isNotNull()
                 .hasCauseInstanceOf(LHApiException.class)
                 .hasRootCauseMessage(
-                        "INVALID_ARGUMENT: PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants or Principals.");
+                        "INVALID_ARGUMENT: PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants, Principals, or Quotas.");
     }
 
     @Test
