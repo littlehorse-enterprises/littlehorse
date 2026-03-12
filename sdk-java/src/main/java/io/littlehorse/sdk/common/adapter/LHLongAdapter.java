@@ -1,29 +1,32 @@
-package io.littlehorse.sdk.worker.adapter;
+package io.littlehorse.sdk.common.adapter;
 
 import io.littlehorse.sdk.common.proto.VariableType;
 
 /**
- * Adapter base for Java types represented as LittleHorse integer values via {@link Integer}.
+ * Adapter base for Java types represented as LittleHorse integer values via {@link Long}.
  *
  * @param <T> the custom Java type handled by this adapter
  */
-public abstract class LHIntegerAdapter<T> implements LHTypeAdapter<T> {
+public abstract class LHLongAdapter<T> implements LHTypeAdapter<T> {
+
+    /** Protected no-arg constructor for subclassing. */
+    protected LHLongAdapter() {}
 
     /**
-     * Converts a Java value into its {@link Integer} representation.
+     * Converts a Java value into its {@link Long} representation.
      *
      * @param src input Java value
-     * @return serialized integer value
+     * @return serialized long value
      */
-    public abstract Integer toInteger(T src);
+    public abstract Long toLong(T src);
 
     /**
      * Converts a LittleHorse integer value into the target Java type.
      *
-     * @param src runtime integer value
+     * @param src runtime long value
      * @return deserialized Java value
      */
-    public abstract T fromInteger(Integer src);
+    public abstract T fromLong(Long src);
 
     /**
      * Returns the LittleHorse runtime type for this adapter.

@@ -1,6 +1,8 @@
 package io.littlehorse.sdk.worker.internal.util;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapter;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
@@ -14,9 +16,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.WorkerContext;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapter;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,12 +29,6 @@ public class VariableMapping {
     private LHTypeAdapterRegistry typeAdapterRegistry;
 
     public VariableMapping(
-            TaskDef taskDef, int position, Class<?> type, String javaParamName, List<LHTypeAdapter<?>> typeAdapters)
-            throws TaskSchemaMismatchError {
-        this(taskDef, position, type, javaParamName, LHTypeAdapterRegistry.from(typeAdapters));
-    }
-
-    public VariableMapping(
             TaskDef taskDef,
             int position,
             Class<?> type,
@@ -42,7 +36,7 @@ public class VariableMapping {
             LHTypeAdapterRegistry typeAdapterRegistry)
             throws TaskSchemaMismatchError {
         this.type = type;
-        this.typeAdapterRegistry = typeAdapterRegistry == null ? LHTypeAdapterRegistry.empty() : typeAdapterRegistry;
+        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
 
         if (type.equals(WorkerContext.class)) return;
         this.position = position;

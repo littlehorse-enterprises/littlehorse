@@ -252,11 +252,17 @@ export interface TenantId {
 
 /** ID for a ScheduledWfRun */
 export interface ScheduledWfRunId {
+  /** The ID of the ScheduledWfRun. */
   id: string;
 }
 
+/** ID for an InactiveThreadRun. */
 export interface InactiveThreadRunId {
-  wfRunId: WfRunId | undefined;
+  /** The WfRunId of the InactiveThreadRun. */
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** The ThreadRun number of the InactiveThreadRun. */
   threadRunNumber: number;
 }
 

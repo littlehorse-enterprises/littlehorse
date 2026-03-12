@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -83,6 +84,7 @@ public class LHTaskWorkerTest {
         LHServerConnectionManager manager = mock(LHServerConnectionManager.class);
 
         when(config.getBlockingStub()).thenReturn(grpcClient);
+        when(config.getTypeAdapterRegistry()).thenReturn(LHTypeAdapterRegistry.empty());
         when(grpcClient.getTaskDef(any(TaskDefId.class))).thenThrow(new StatusRuntimeException(Status.NOT_FOUND));
 
         LHTaskWorker task = new LHTaskWorker(new TaskWorker(), "greet", Map.of(), config, manager);

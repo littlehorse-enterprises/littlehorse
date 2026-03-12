@@ -52,6 +52,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object id_ = "";
   /**
+   * <pre>
+   * The ID of the ScheduledWfRun.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The id.
    */
@@ -69,6 +73,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The ID of the ScheduledWfRun.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */
@@ -387,6 +395,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object id_ = "";
     /**
+     * <pre>
+     * The ID of the ScheduledWfRun.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return The id.
      */
@@ -403,6 +415,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the ScheduledWfRun.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return The bytes for id.
      */
@@ -420,6 +436,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the ScheduledWfRun.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @param value The id to set.
      * @return This builder for chaining.
@@ -433,6 +453,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ScheduledWfRun.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return This builder for chaining.
      */
@@ -443,6 +467,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ScheduledWfRun.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @param value The bytes for id to set.
      * @return This builder for chaining.

@@ -1,5 +1,8 @@
 package io.littlehorse.sdk.wfsdk;
 
+/**
+ * Configures interrupt behavior for a workflow thread.
+ */
 public interface InterruptHandler {
 
     /**

@@ -97,6 +97,14 @@ export interface WfRun {
   oldWfSpecVersions: WfSpecId[];
   /** The status of this WfRun. */
   status: LHStatus;
+  /**
+   * The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns
+   * is given by greatest_thread_run_number + 1.
+   *
+   * Introduced now since with ThreadRun-level retention, we can't rely upon
+   * thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
+   * from the thread_runs list once its retention period expires.
+   */
   greatestThreadrunNumber: number;
   /** The time the WfRun was started. */
   startTime:
@@ -225,6 +233,7 @@ export interface ThreadRun {
   output?: VariableValue | undefined;
 }
 
+/** Represents an inactive ThreadRun which has been cleaned up by retention and archival mechanisms. */
 export interface InactiveThreadRun {
   threadRun: ThreadRun | undefined;
 }

@@ -6,6 +6,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Represents an inactive ThreadRun which has been cleaned up by retention and archival mechanisms. 
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.InactiveThreadRun}
  */
 @com.google.protobuf.Generated
@@ -233,6 +237,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Represents an inactive ThreadRun which has been cleaned up by retention and archival mechanisms. 
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.InactiveThreadRun}
    */
   public static final class Builder extends

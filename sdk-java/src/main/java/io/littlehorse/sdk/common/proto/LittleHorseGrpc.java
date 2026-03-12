@@ -2971,13 +2971,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     default void putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request,
@@ -2987,7 +2986,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     default void getStructDef(io.littlehorse.sdk.common.proto.StructDefId request,
@@ -3495,6 +3494,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     default void searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList> responseObserver) {
@@ -3692,6 +3694,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     default void deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -3762,7 +3767,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     default void putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request,
@@ -3772,7 +3777,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     default void getTenant(io.littlehorse.sdk.common.proto.TenantId request,
@@ -3782,7 +3787,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     default void putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request,
@@ -3791,6 +3796,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     default void getPrincipal(io.littlehorse.sdk.common.proto.PrincipalId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Principal> responseObserver) {
@@ -3961,13 +3969,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     public void putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request,
@@ -3978,7 +3985,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     public void getStructDef(io.littlehorse.sdk.common.proto.StructDefId request,
@@ -4534,6 +4541,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     public void searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList> responseObserver) {
@@ -4749,6 +4759,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     public void deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -4826,7 +4839,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     public void putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request,
@@ -4837,7 +4850,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     public void getTenant(io.littlehorse.sdk.common.proto.TenantId request,
@@ -4848,7 +4861,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     public void putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request,
@@ -4858,6 +4871,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     public void getPrincipal(io.littlehorse.sdk.common.proto.PrincipalId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Principal> responseObserver) {
@@ -5010,13 +5026,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.StructDef putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request) throws io.grpc.StatusException {
@@ -5026,7 +5041,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.StructDef getStructDef(io.littlehorse.sdk.common.proto.StructDefId request) throws io.grpc.StatusException {
@@ -5534,6 +5549,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.PrincipalIdList searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -5733,6 +5751,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     public com.google.protobuf.Empty deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -5803,7 +5824,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Tenant putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request) throws io.grpc.StatusException {
@@ -5813,7 +5834,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Tenant getTenant(io.littlehorse.sdk.common.proto.TenantId request) throws io.grpc.StatusException {
@@ -5823,7 +5844,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Principal putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request) throws io.grpc.StatusException {
@@ -5832,6 +5853,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.Principal getPrincipal(io.littlehorse.sdk.common.proto.PrincipalId request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -5981,13 +6005,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.StructDef putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request) {
@@ -5997,7 +6020,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.StructDef getStructDef(io.littlehorse.sdk.common.proto.StructDefId request) {
@@ -6505,6 +6528,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.PrincipalIdList searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -6691,6 +6717,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     public com.google.protobuf.Empty deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -6761,7 +6790,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Tenant putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request) {
@@ -6771,7 +6800,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Tenant getTenant(io.littlehorse.sdk.common.proto.TenantId request) {
@@ -6781,7 +6810,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Principal putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request) {
@@ -6790,6 +6819,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.Principal getPrincipal(io.littlehorse.sdk.common.proto.PrincipalId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -6949,13 +6981,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.StructDef> putStructDef(
@@ -6966,7 +6997,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.StructDef> getStructDef(
@@ -7522,6 +7553,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.PrincipalIdList> searchPrincipal(
         io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
@@ -7725,6 +7759,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteWorkflowEventDef(
         io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request) {
@@ -7802,7 +7839,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Tenant> putTenant(
@@ -7813,7 +7850,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Tenant> getTenant(
@@ -7824,7 +7861,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Principal> putPrincipal(
@@ -7834,6 +7871,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Principal> getPrincipal(
         io.littlehorse.sdk.common.proto.PrincipalId request) {

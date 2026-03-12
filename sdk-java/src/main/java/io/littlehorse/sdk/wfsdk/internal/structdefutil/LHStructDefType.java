@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.StructDefCircularDependencyException;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.PutStructDefRequest;
@@ -8,7 +9,6 @@ import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.worker.LHStructDef;
-import io.littlehorse.sdk.worker.adapter.LHTypeAdapterRegistry;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,7 @@ public class LHStructDefType extends LHClassType {
 
     public LHStructDefType(Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) {
         super(clazz);
-        this.typeAdapterRegistry = typeAdapterRegistry == null ? LHTypeAdapterRegistry.empty() : typeAdapterRegistry;
+        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
 
         if (!clazz.isAnnotationPresent(LHStructDef.class)) {
             throw new IllegalArgumentException(

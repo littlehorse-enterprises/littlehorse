@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -42,6 +43,12 @@ public class WorkflowImpl extends Workflow {
         this.requiredEedNames = new HashSet<>();
         this.threads = new Stack<>();
         this.externalEventsToRegister = new HashSet<>();
+    }
+
+    @Override
+    public void registerWfSpec(LHConfig config) {
+        lhTypeAdapterRegistry = config.getTypeAdapterRegistry();
+        registerWfSpec(config.getBlockingStub());
     }
 
     @Override
@@ -88,6 +95,12 @@ public class WorkflowImpl extends Workflow {
             compiledWorkflow = compileWorkflowHelper();
         }
         return compiledWorkflow;
+    }
+
+    @Override
+    public PutWfSpecRequest compileWorkflow(LHConfig config) {
+        lhTypeAdapterRegistry = config.getTypeAdapterRegistry();
+        return compileWorkflow();
     }
 
     void addTaskDefName(String taskDefName) {

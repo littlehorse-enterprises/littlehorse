@@ -2670,6 +2670,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int TASK_FIELD_NUMBER = 1;
   /**
+   * <pre>
+   * Schedule a Reminder Task.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
    * @return Whether the task field is set.
    */
@@ -2678,6 +2682,10 @@ private static final long serialVersionUID = 0L;
     return actionCase_ == 1;
   }
   /**
+   * <pre>
+   * Schedule a Reminder Task.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
    * @return The task.
    */
@@ -2689,6 +2697,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Schedule a Reminder Task.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
    */
   @java.lang.Override
@@ -2701,6 +2713,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int CANCEL_FIELD_NUMBER = 2;
   /**
+   * <pre>
+   * Cancel the UserTaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
    * @return Whether the cancel field is set.
    */
@@ -2709,6 +2725,10 @@ private static final long serialVersionUID = 0L;
     return actionCase_ == 2;
   }
   /**
+   * <pre>
+   * Cancel the UserTaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
    * @return The cancel.
    */
@@ -2720,6 +2740,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Cancel the UserTaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
    */
   @java.lang.Override
@@ -2733,7 +2757,7 @@ private static final long serialVersionUID = 0L;
   public static final int REASSIGN_FIELD_NUMBER = 3;
   /**
    * <pre>
-   * later on, might enable scheduling entire ThreadRuns
+   * Reassign the UserTaskRun to a different user or user group.
    * </pre>
    *
    * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
@@ -2745,7 +2769,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * later on, might enable scheduling entire ThreadRuns
+   * Reassign the UserTaskRun to a different user or user group.
    * </pre>
    *
    * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
@@ -2760,7 +2784,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * later on, might enable scheduling entire ThreadRuns
+   * Reassign the UserTaskRun to a different user or user group.
    * </pre>
    *
    * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
@@ -3328,6 +3352,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask, io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.Builder, io.littlehorse.sdk.common.proto.UTActionTrigger.UTATaskOrBuilder> taskBuilder_;
     /**
+     * <pre>
+     * Schedule a Reminder Task.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      * @return Whether the task field is set.
      */
@@ -3336,6 +3364,10 @@ private static final long serialVersionUID = 0L;
       return actionCase_ == 1;
     }
     /**
+     * <pre>
+     * Schedule a Reminder Task.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      * @return The task.
      */
@@ -3354,6 +3386,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Schedule a Reminder Task.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
     public Builder setTask(io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask value) {
@@ -3370,6 +3406,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Schedule a Reminder Task.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
     public Builder setTask(
@@ -3384,6 +3424,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Schedule a Reminder Task.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
     public Builder mergeTask(io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask value) {
@@ -3407,6 +3451,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Schedule a Reminder Task.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
     public Builder clearTask() {
@@ -3426,12 +3474,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Schedule a Reminder Task.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask.Builder getTaskBuilder() {
       return internalGetTaskFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Schedule a Reminder Task.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
     @java.lang.Override
@@ -3446,6 +3502,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Schedule a Reminder Task.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -3470,6 +3530,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel, io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.Builder, io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancelOrBuilder> cancelBuilder_;
     /**
+     * <pre>
+     * Cancel the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      * @return Whether the cancel field is set.
      */
@@ -3478,6 +3542,10 @@ private static final long serialVersionUID = 0L;
       return actionCase_ == 2;
     }
     /**
+     * <pre>
+     * Cancel the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      * @return The cancel.
      */
@@ -3496,6 +3564,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Cancel the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
     public Builder setCancel(io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel value) {
@@ -3512,6 +3584,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Cancel the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
     public Builder setCancel(
@@ -3526,6 +3602,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Cancel the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
     public Builder mergeCancel(io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel value) {
@@ -3549,6 +3629,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Cancel the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
     public Builder clearCancel() {
@@ -3568,12 +3652,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Cancel the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel.Builder getCancelBuilder() {
       return internalGetCancelFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Cancel the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
     @java.lang.Override
@@ -3588,6 +3680,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Cancel the UserTaskRun.
+     * </pre>
+     *
      * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -3613,7 +3709,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign, io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign.Builder, io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassignOrBuilder> reassignBuilder_;
     /**
      * <pre>
-     * later on, might enable scheduling entire ThreadRuns
+     * Reassign the UserTaskRun to a different user or user group.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
@@ -3625,7 +3721,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * later on, might enable scheduling entire ThreadRuns
+     * Reassign the UserTaskRun to a different user or user group.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
@@ -3647,7 +3743,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * later on, might enable scheduling entire ThreadRuns
+     * Reassign the UserTaskRun to a different user or user group.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
@@ -3667,7 +3763,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * later on, might enable scheduling entire ThreadRuns
+     * Reassign the UserTaskRun to a different user or user group.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
@@ -3685,7 +3781,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * later on, might enable scheduling entire ThreadRuns
+     * Reassign the UserTaskRun to a different user or user group.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
@@ -3712,7 +3808,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * later on, might enable scheduling entire ThreadRuns
+     * Reassign the UserTaskRun to a different user or user group.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
@@ -3735,7 +3831,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * later on, might enable scheduling entire ThreadRuns
+     * Reassign the UserTaskRun to a different user or user group.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
@@ -3745,7 +3841,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * later on, might enable scheduling entire ThreadRuns
+     * Reassign the UserTaskRun to a different user or user group.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
@@ -3763,7 +3859,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * later on, might enable scheduling entire ThreadRuns
+     * Reassign the UserTaskRun to a different user or user group.
      * </pre>
      *
      * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
