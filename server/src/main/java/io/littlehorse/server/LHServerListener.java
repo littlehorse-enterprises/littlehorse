@@ -34,6 +34,7 @@ import io.littlehorse.common.model.getable.core.wfrun.InactiveThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
+import io.littlehorse.common.model.getable.global.acl.QuotaModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
@@ -47,6 +48,7 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.QuotaIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
@@ -61,6 +63,7 @@ import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteQuotaRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
@@ -69,6 +72,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEven
 import io.littlehorse.common.model.metadatacommand.subcommand.MigrateWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutQuotaRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
@@ -80,6 +84,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseImplBase;
 import io.littlehorse.server.listener.ServerListenerConfig;
+import io.littlehorse.server.quotas.RequestQuotaManager;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanReply;
@@ -97,6 +102,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExterna
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchNodeRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchPrincipalRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchQuotaRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchScheduledWfRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchStructDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskDefRequestModel;
@@ -122,6 +128,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchEx
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchPrincipalRequestReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchQuotaRequestReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchScheduledWfRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchStructDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
@@ -173,6 +180,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final CoreStoreProvider coreStoreProvider;
     private final String listenerName;
     private final CommandSender commandSender;
+    private final RequestQuotaManager requestQuotaManager;
     private final Duration successDurationTimeout;
     private final AsyncWaiters asyncWaiters;
     private final LHInternalClient lhInternalClient;
@@ -193,6 +201,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             List<ServerInterceptor> interceptors,
             Context.Key<RequestExecutionContext> contextKey,
             CommandSender commandSender,
+            RequestQuotaManager requestQuotaManager,
             AsyncWaiters asyncWaiters,
             LHInternalClient lhInternalClient) {
 
@@ -207,6 +216,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         this.internalComms = internalComms;
         this.listenerName = listenerConfig.getName();
         this.contextKey = contextKey;
+        this.requestQuotaManager = requestQuotaManager;
         this.successDurationTimeout =
                 Duration.ofMillis(serverConfig.getStreamsSessionTimeout()).plusSeconds(10);
 
@@ -286,6 +296,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deletePrincipal(DeletePrincipalRequest req, StreamObserver<Empty> ctx) {
         DeletePrincipalRequestModel reqModel =
                 LHSerializable.fromProto(req, DeletePrincipalRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_QUOTA, actions = ACLAction.WRITE_METADATA)
+    public void deleteQuota(DeleteQuotaRequest req, StreamObserver<Empty> ctx) {
+        DeleteQuotaRequestModel reqModel =
+                LHSerializable.fromProto(req, DeleteQuotaRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class);
     }
 
@@ -636,9 +654,11 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         // There is no need to wait for the ReportTaskRun to actually be processed, because
         // we would just return a google.protobuf.Empty anyways. All we need to do is wait for
         // the Command to be persisted into Kafka.
-        ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext());
-        TenantIdModel tenantId = requestContext().authorization().tenantId();
-        PrincipalIdModel principalId = requestContext().authorization().principalId();
+        RequestExecutionContext requestContext = requestContext();
+        requestQuotaManager.enforceOrThrow(requestContext);
+        ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext);
+        TenantIdModel tenantId = requestContext.authorization().tenantId();
+        PrincipalIdModel principalId = requestContext.authorization().principalId();
         commandSender.reportTaskAndDontWaitForResponse(reqModel, ctx, principalId, tenantId);
     }
 
@@ -736,6 +756,13 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putTenant(PutTenantRequest req, StreamObserver<Tenant> ctx) {
         PutTenantRequestModel reqModel = LHSerializable.fromProto(req, PutTenantRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, Tenant.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_QUOTA, actions = ACLAction.WRITE_METADATA)
+    public void putQuota(PutQuotaRequest req, StreamObserver<Quota> ctx) {
+        PutQuotaRequestModel reqModel = LHSerializable.fromProto(req, PutQuotaRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, Quota.class);
     }
 
     @Override
@@ -847,6 +874,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 SearchPrincipalRequestModel.fromProto(req, SearchPrincipalRequestModel.class, requestContext()),
                 ctx,
                 SearchPrincipalRequestReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_QUOTA, actions = ACLAction.READ)
+    public void searchQuota(SearchQuotaRequest req, StreamObserver<QuotaIdList> ctx) {
+        handleScan(
+                SearchQuotaRequestModel.fromProto(req, SearchQuotaRequestModel.class, requestContext()),
+                ctx,
+                SearchQuotaRequestReply.class);
     }
 
     // EMPLOYEE_TODO: this is a synchronous call. Make it asynchronous.
@@ -1091,6 +1127,20 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     @Override
     @Authorize(
+            resources = {ACLResource.ACL_QUOTA},
+            actions = ACLAction.READ)
+    public void getQuota(QuotaId req, StreamObserver<Quota> ctx) {
+        RequestExecutionContext reqContext = requestContext();
+        QuotaIdModel quotaId = QuotaIdModel.fromProto(req, QuotaIdModel.class, reqContext);
+        QuotaModel result = reqContext
+                .metadataManager()
+                .getOrThrow(quotaId, () -> new LHApiException(Status.NOT_FOUND, "Could not find quota %s".formatted(quotaId)));
+        ctx.onNext(result.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    @Authorize(
             resources = {ACLResource.ACL_PRINCIPAL},
             actions = ACLAction.READ)
     public void getPrincipal(PrincipalId req, StreamObserver<Principal> ctx) {
@@ -1140,6 +1190,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             AbstractCommand<AC> command, StreamObserver<RC> responseObserver, Class<RC> responseCls) {
         command.setCommandId(LHUtil.generateGuid());
         RequestExecutionContext requestContext = requestContext();
+        requestQuotaManager.enforceOrThrow(requestContext);
         Future<Message> futureResponse = commandSender.doSend(
                 command,
                 responseCls,

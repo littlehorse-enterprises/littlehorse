@@ -16,6 +16,7 @@ import io.littlehorse.common.model.getable.core.wfrun.InactiveThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
+import io.littlehorse.common.model.getable.global.acl.QuotaModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
@@ -30,6 +31,7 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.QuotaIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
@@ -105,6 +107,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.PRINCIPAL;
         } else if (cls.equals(TenantModel.class)) {
             return GetableClassEnum.TENANT;
+        } else if (cls.equals(QuotaModel.class)) {
+            return GetableClassEnum.QUOTA;
         } else if (cls.equals(WorkflowEventDefModel.class)) {
             return GetableClassEnum.WORKFLOW_EVENT_DEF;
         } else if (cls.equals(WorkflowEventModel.class)) {
@@ -156,6 +160,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return PrincipalModel.class;
             case TENANT:
                 return TenantModel.class;
+            case QUOTA:
+                return QuotaModel.class;
             case WORKFLOW_EVENT_DEF:
                 return WorkflowEventDefModel.class;
             case WORKFLOW_EVENT:
@@ -208,6 +214,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return PrincipalIdModel.class;
             case TENANT:
                 return TenantIdModel.class;
+            case QUOTA:
+                return QuotaIdModel.class;
             case WORKFLOW_EVENT_DEF:
                 return WorkflowEventDefIdModel.class;
             case WORKFLOW_EVENT:

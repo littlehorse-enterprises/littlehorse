@@ -609,6 +609,26 @@ class PrincipalIdList(_message.Message):
     bookmark: bytes
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.PrincipalId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
+class SearchQuotaRequest(_message.Message):
+    __slots__ = ("bookmark", "limit", "tenant_id", "principal")
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    TENANT_ID_FIELD_NUMBER: _ClassVar[int]
+    PRINCIPAL_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    tenant_id: str
+    principal: _object_id_pb2.PrincipalId
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., tenant_id: _Optional[str] = ..., principal: _Optional[_Union[_object_id_pb2.PrincipalId, _Mapping]] = ...) -> None: ...
+
+class QuotaIdList(_message.Message):
+    __slots__ = ("results", "bookmark")
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_acls_pb2.QuotaId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_acls_pb2.QuotaId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
 class SearchExternalEventRequest(_message.Message):
     __slots__ = ("bookmark", "limit", "earliest_start", "latest_start", "external_event_def_id", "is_claimed")
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]

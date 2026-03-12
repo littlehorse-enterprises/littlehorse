@@ -7,18 +7,17 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * A Tenant is a logically isolated environment within LittleHorse. All workflows and
- * associated data (WfSpec, WfRun, TaskDef, TaskRun, NodeRun, etc) are scoped to within
- * a Tenant.
+ * A Quota defines limits for requests made within a certain `Tenant`, optionally
+ * scoped to one specific `Principal`.
  * </pre>
  *
- * Protobuf type {@code littlehorse.Tenant}
+ * Protobuf type {@code littlehorse.Quota}
  */
 @com.google.protobuf.Generated
-public final class Tenant extends
+public final class Quota extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:littlehorse.Tenant)
-    TenantOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.Quota)
+    QuotaOrBuilder {
 private static final long serialVersionUID = 0L;
   static {
     com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -27,37 +26,37 @@ private static final long serialVersionUID = 0L;
       /* minor= */ 32,
       /* patch= */ 1,
       /* suffix= */ "",
-      Tenant.class.getName());
+      Quota.class.getName());
   }
-  // Use Tenant.newBuilder() to construct.
-  private Tenant(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  // Use Quota.newBuilder() to construct.
+  private Quota(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
-  private Tenant() {
+  private Quota() {
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Acls.internal_static_littlehorse_Tenant_descriptor;
+    return io.littlehorse.sdk.common.proto.Acls.internal_static_littlehorse_Quota_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Acls.internal_static_littlehorse_Tenant_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Acls.internal_static_littlehorse_Quota_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.Tenant.class, io.littlehorse.sdk.common.proto.Tenant.Builder.class);
+            io.littlehorse.sdk.common.proto.Quota.class, io.littlehorse.sdk.common.proto.Quota.Builder.class);
   }
 
   private int bitField0_;
   public static final int ID_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.TenantId id_;
+  private io.littlehorse.sdk.common.proto.QuotaId id_;
   /**
    * <pre>
-   * The ID of the Tenant.
+   * The ID of the Quota.
    * </pre>
    *
-   * <code>.littlehorse.TenantId id = 1;</code>
+   * <code>.littlehorse.QuotaId id = 1;</code>
    * @return Whether the id field is set.
    */
   @java.lang.Override
@@ -66,33 +65,33 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The ID of the Tenant.
+   * The ID of the Quota.
    * </pre>
    *
-   * <code>.littlehorse.TenantId id = 1;</code>
+   * <code>.littlehorse.QuotaId id = 1;</code>
    * @return The id.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TenantId getId() {
-    return id_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : id_;
+  public io.littlehorse.sdk.common.proto.QuotaId getId() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.QuotaId.getDefaultInstance() : id_;
   }
   /**
    * <pre>
-   * The ID of the Tenant.
+   * The ID of the Quota.
    * </pre>
    *
-   * <code>.littlehorse.TenantId id = 1;</code>
+   * <code>.littlehorse.QuotaId id = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getIdOrBuilder() {
-    return id_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : id_;
+  public io.littlehorse.sdk.common.proto.QuotaIdOrBuilder getIdOrBuilder() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.QuotaId.getDefaultInstance() : id_;
   }
 
   public static final int CREATED_AT_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp createdAt_;
   /**
    * <pre>
-   * The time at which the Tenant was created.
+   * The time at which the Quota was created.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -104,7 +103,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The time at which the Tenant was created.
+   * The time at which the Quota was created.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -116,7 +115,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The time at which the Tenant was created.
+   * The time at which the Quota was created.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -126,45 +125,19 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
 
-  public static final int OUTPUT_TOPIC_CONFIG_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.OutputTopicConfig outputTopicConfig_;
+  public static final int WRITE_REQUESTS_PER_SECOND_FIELD_NUMBER = 3;
+  private int writeRequestsPerSecond_ = 0;
   /**
    * <pre>
-   * Configuration for the output topic associated with this Tenant. If not set,
-   * then the output topic is not enabled.
+   * The maximum number of mutating unary gRPC requests allowed per second.
    * </pre>
    *
-   * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
-   * @return Whether the outputTopicConfig field is set.
+   * <code>int32 write_requests_per_second = 3;</code>
+   * @return The writeRequestsPerSecond.
    */
   @java.lang.Override
-  public boolean hasOutputTopicConfig() {
-    return ((bitField0_ & 0x00000004) != 0);
-  }
-  /**
-   * <pre>
-   * Configuration for the output topic associated with this Tenant. If not set,
-   * then the output topic is not enabled.
-   * </pre>
-   *
-   * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
-   * @return The outputTopicConfig.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.OutputTopicConfig getOutputTopicConfig() {
-    return outputTopicConfig_ == null ? io.littlehorse.sdk.common.proto.OutputTopicConfig.getDefaultInstance() : outputTopicConfig_;
-  }
-  /**
-   * <pre>
-   * Configuration for the output topic associated with this Tenant. If not set,
-   * then the output topic is not enabled.
-   * </pre>
-   *
-   * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder getOutputTopicConfigOrBuilder() {
-    return outputTopicConfig_ == null ? io.littlehorse.sdk.common.proto.OutputTopicConfig.getDefaultInstance() : outputTopicConfig_;
+  public int getWriteRequestsPerSecond() {
+    return writeRequestsPerSecond_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -187,8 +160,8 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(2, getCreatedAt());
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      output.writeMessage(3, getOutputTopicConfig());
+    if (writeRequestsPerSecond_ != 0) {
+      output.writeInt32(3, writeRequestsPerSecond_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -207,9 +180,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getCreatedAt());
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
+    if (writeRequestsPerSecond_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getOutputTopicConfig());
+        .computeInt32Size(3, writeRequestsPerSecond_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -221,10 +194,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.Tenant)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.Quota)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.Tenant other = (io.littlehorse.sdk.common.proto.Tenant) obj;
+    io.littlehorse.sdk.common.proto.Quota other = (io.littlehorse.sdk.common.proto.Quota) obj;
 
     if (hasId() != other.hasId()) return false;
     if (hasId()) {
@@ -236,11 +209,8 @@ private static final long serialVersionUID = 0L;
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
-    if (hasOutputTopicConfig() != other.hasOutputTopicConfig()) return false;
-    if (hasOutputTopicConfig()) {
-      if (!getOutputTopicConfig()
-          .equals(other.getOutputTopicConfig())) return false;
-    }
+    if (getWriteRequestsPerSecond()
+        != other.getWriteRequestsPerSecond()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -260,53 +230,51 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
     }
-    if (hasOutputTopicConfig()) {
-      hash = (37 * hash) + OUTPUT_TOPIC_CONFIG_FIELD_NUMBER;
-      hash = (53 * hash) + getOutputTopicConfig().hashCode();
-    }
+    hash = (37 * hash) + WRITE_REQUESTS_PER_SECOND_FIELD_NUMBER;
+    hash = (53 * hash) + getWriteRequestsPerSecond();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.Tenant parseFrom(
+  public static io.littlehorse.sdk.common.proto.Quota parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.Tenant parseFrom(
+  public static io.littlehorse.sdk.common.proto.Quota parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.Tenant parseFrom(
+  public static io.littlehorse.sdk.common.proto.Quota parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.Tenant parseFrom(
+  public static io.littlehorse.sdk.common.proto.Quota parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.Tenant parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.Quota parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.Tenant parseFrom(
+  public static io.littlehorse.sdk.common.proto.Quota parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.Tenant parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.Quota parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.Tenant parseFrom(
+  public static io.littlehorse.sdk.common.proto.Quota parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -314,26 +282,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.Tenant parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.Quota parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.Tenant parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.Quota parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.Tenant parseFrom(
+  public static io.littlehorse.sdk.common.proto.Quota parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.Tenant parseFrom(
+  public static io.littlehorse.sdk.common.proto.Quota parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -346,7 +314,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.Tenant prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.Quota prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -363,31 +331,30 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * A Tenant is a logically isolated environment within LittleHorse. All workflows and
-   * associated data (WfSpec, WfRun, TaskDef, TaskRun, NodeRun, etc) are scoped to within
-   * a Tenant.
+   * A Quota defines limits for requests made within a certain `Tenant`, optionally
+   * scoped to one specific `Principal`.
    * </pre>
    *
-   * Protobuf type {@code littlehorse.Tenant}
+   * Protobuf type {@code littlehorse.Quota}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.Tenant)
-      io.littlehorse.sdk.common.proto.TenantOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.Quota)
+      io.littlehorse.sdk.common.proto.QuotaOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Acls.internal_static_littlehorse_Tenant_descriptor;
+      return io.littlehorse.sdk.common.proto.Acls.internal_static_littlehorse_Quota_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Acls.internal_static_littlehorse_Tenant_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Acls.internal_static_littlehorse_Quota_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.Tenant.class, io.littlehorse.sdk.common.proto.Tenant.Builder.class);
+              io.littlehorse.sdk.common.proto.Quota.class, io.littlehorse.sdk.common.proto.Quota.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.Tenant.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.Quota.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -402,7 +369,6 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         internalGetIdFieldBuilder();
         internalGetCreatedAtFieldBuilder();
-        internalGetOutputTopicConfigFieldBuilder();
       }
     }
     @java.lang.Override
@@ -419,28 +385,24 @@ private static final long serialVersionUID = 0L;
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
       }
-      outputTopicConfig_ = null;
-      if (outputTopicConfigBuilder_ != null) {
-        outputTopicConfigBuilder_.dispose();
-        outputTopicConfigBuilder_ = null;
-      }
+      writeRequestsPerSecond_ = 0;
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Acls.internal_static_littlehorse_Tenant_descriptor;
+      return io.littlehorse.sdk.common.proto.Acls.internal_static_littlehorse_Quota_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.Tenant getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.Tenant.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.Quota getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.Quota.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.Tenant build() {
-      io.littlehorse.sdk.common.proto.Tenant result = buildPartial();
+    public io.littlehorse.sdk.common.proto.Quota build() {
+      io.littlehorse.sdk.common.proto.Quota result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -448,14 +410,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.Tenant buildPartial() {
-      io.littlehorse.sdk.common.proto.Tenant result = new io.littlehorse.sdk.common.proto.Tenant(this);
+    public io.littlehorse.sdk.common.proto.Quota buildPartial() {
+      io.littlehorse.sdk.common.proto.Quota result = new io.littlehorse.sdk.common.proto.Quota(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.Tenant result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.Quota result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -471,34 +433,31 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000002;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.outputTopicConfig_ = outputTopicConfigBuilder_ == null
-            ? outputTopicConfig_
-            : outputTopicConfigBuilder_.build();
-        to_bitField0_ |= 0x00000004;
+        result.writeRequestsPerSecond_ = writeRequestsPerSecond_;
       }
       result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.Tenant) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.Tenant)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.Quota) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.Quota)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.Tenant other) {
-      if (other == io.littlehorse.sdk.common.proto.Tenant.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.Quota other) {
+      if (other == io.littlehorse.sdk.common.proto.Quota.getDefaultInstance()) return this;
       if (other.hasId()) {
         mergeId(other.getId());
       }
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
-      if (other.hasOutputTopicConfig()) {
-        mergeOutputTopicConfig(other.getOutputTopicConfig());
+      if (other.getWriteRequestsPerSecond() != 0) {
+        setWriteRequestsPerSecond(other.getWriteRequestsPerSecond());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -540,13 +499,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 26: {
-              input.readMessage(
-                  internalGetOutputTopicConfigFieldBuilder().getBuilder(),
-                  extensionRegistry);
+            case 24: {
+              writeRequestsPerSecond_ = input.readInt32();
               bitField0_ |= 0x00000004;
               break;
-            } // case 26
+            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -564,15 +521,15 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.TenantId id_;
+    private io.littlehorse.sdk.common.proto.QuotaId id_;
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> idBuilder_;
+        io.littlehorse.sdk.common.proto.QuotaId, io.littlehorse.sdk.common.proto.QuotaId.Builder, io.littlehorse.sdk.common.proto.QuotaIdOrBuilder> idBuilder_;
     /**
      * <pre>
-     * The ID of the Tenant.
+     * The ID of the Quota.
      * </pre>
      *
-     * <code>.littlehorse.TenantId id = 1;</code>
+     * <code>.littlehorse.QuotaId id = 1;</code>
      * @return Whether the id field is set.
      */
     public boolean hasId() {
@@ -580,27 +537,27 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The ID of the Tenant.
+     * The ID of the Quota.
      * </pre>
      *
-     * <code>.littlehorse.TenantId id = 1;</code>
+     * <code>.littlehorse.QuotaId id = 1;</code>
      * @return The id.
      */
-    public io.littlehorse.sdk.common.proto.TenantId getId() {
+    public io.littlehorse.sdk.common.proto.QuotaId getId() {
       if (idBuilder_ == null) {
-        return id_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : id_;
+        return id_ == null ? io.littlehorse.sdk.common.proto.QuotaId.getDefaultInstance() : id_;
       } else {
         return idBuilder_.getMessage();
       }
     }
     /**
      * <pre>
-     * The ID of the Tenant.
+     * The ID of the Quota.
      * </pre>
      *
-     * <code>.littlehorse.TenantId id = 1;</code>
+     * <code>.littlehorse.QuotaId id = 1;</code>
      */
-    public Builder setId(io.littlehorse.sdk.common.proto.TenantId value) {
+    public Builder setId(io.littlehorse.sdk.common.proto.QuotaId value) {
       if (idBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -615,13 +572,13 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The ID of the Tenant.
+     * The ID of the Quota.
      * </pre>
      *
-     * <code>.littlehorse.TenantId id = 1;</code>
+     * <code>.littlehorse.QuotaId id = 1;</code>
      */
     public Builder setId(
-        io.littlehorse.sdk.common.proto.TenantId.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.QuotaId.Builder builderForValue) {
       if (idBuilder_ == null) {
         id_ = builderForValue.build();
       } else {
@@ -633,16 +590,16 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The ID of the Tenant.
+     * The ID of the Quota.
      * </pre>
      *
-     * <code>.littlehorse.TenantId id = 1;</code>
+     * <code>.littlehorse.QuotaId id = 1;</code>
      */
-    public Builder mergeId(io.littlehorse.sdk.common.proto.TenantId value) {
+    public Builder mergeId(io.littlehorse.sdk.common.proto.QuotaId value) {
       if (idBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
           id_ != null &&
-          id_ != io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance()) {
+          id_ != io.littlehorse.sdk.common.proto.QuotaId.getDefaultInstance()) {
           getIdBuilder().mergeFrom(value);
         } else {
           id_ = value;
@@ -658,10 +615,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The ID of the Tenant.
+     * The ID of the Quota.
      * </pre>
      *
-     * <code>.littlehorse.TenantId id = 1;</code>
+     * <code>.littlehorse.QuotaId id = 1;</code>
      */
     public Builder clearId() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -675,44 +632,44 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The ID of the Tenant.
+     * The ID of the Quota.
      * </pre>
      *
-     * <code>.littlehorse.TenantId id = 1;</code>
+     * <code>.littlehorse.QuotaId id = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.TenantId.Builder getIdBuilder() {
+    public io.littlehorse.sdk.common.proto.QuotaId.Builder getIdBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
       return internalGetIdFieldBuilder().getBuilder();
     }
     /**
      * <pre>
-     * The ID of the Tenant.
+     * The ID of the Quota.
      * </pre>
      *
-     * <code>.littlehorse.TenantId id = 1;</code>
+     * <code>.littlehorse.QuotaId id = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getIdOrBuilder() {
+    public io.littlehorse.sdk.common.proto.QuotaIdOrBuilder getIdOrBuilder() {
       if (idBuilder_ != null) {
         return idBuilder_.getMessageOrBuilder();
       } else {
         return id_ == null ?
-            io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : id_;
+            io.littlehorse.sdk.common.proto.QuotaId.getDefaultInstance() : id_;
       }
     }
     /**
      * <pre>
-     * The ID of the Tenant.
+     * The ID of the Quota.
      * </pre>
      *
-     * <code>.littlehorse.TenantId id = 1;</code>
+     * <code>.littlehorse.QuotaId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> 
+        io.littlehorse.sdk.common.proto.QuotaId, io.littlehorse.sdk.common.proto.QuotaId.Builder, io.littlehorse.sdk.common.proto.QuotaIdOrBuilder> 
         internalGetIdFieldBuilder() {
       if (idBuilder_ == null) {
         idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder>(
+            io.littlehorse.sdk.common.proto.QuotaId, io.littlehorse.sdk.common.proto.QuotaId.Builder, io.littlehorse.sdk.common.proto.QuotaIdOrBuilder>(
                 getId(),
                 getParentForChildren(),
                 isClean());
@@ -726,7 +683,7 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
      * <pre>
-     * The time at which the Tenant was created.
+     * The time at which the Quota was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -737,7 +694,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the Tenant was created.
+     * The time at which the Quota was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -752,7 +709,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the Tenant was created.
+     * The time at which the Quota was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -772,7 +729,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the Tenant was created.
+     * The time at which the Quota was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -790,7 +747,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the Tenant was created.
+     * The time at which the Quota was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -815,7 +772,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the Tenant was created.
+     * The time at which the Quota was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -832,7 +789,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the Tenant was created.
+     * The time at which the Quota was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -844,7 +801,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the Tenant was created.
+     * The time at which the Quota was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -859,7 +816,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time at which the Tenant was created.
+     * The time at which the Quota was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -878,189 +835,67 @@ private static final long serialVersionUID = 0L;
       return createdAtBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.OutputTopicConfig outputTopicConfig_;
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.OutputTopicConfig, io.littlehorse.sdk.common.proto.OutputTopicConfig.Builder, io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder> outputTopicConfigBuilder_;
+    private int writeRequestsPerSecond_ ;
     /**
      * <pre>
-     * Configuration for the output topic associated with this Tenant. If not set,
-     * then the output topic is not enabled.
+     * The maximum number of mutating unary gRPC requests allowed per second.
      * </pre>
      *
-     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
-     * @return Whether the outputTopicConfig field is set.
+     * <code>int32 write_requests_per_second = 3;</code>
+     * @return The writeRequestsPerSecond.
      */
-    public boolean hasOutputTopicConfig() {
-      return ((bitField0_ & 0x00000004) != 0);
+    @java.lang.Override
+    public int getWriteRequestsPerSecond() {
+      return writeRequestsPerSecond_;
     }
     /**
      * <pre>
-     * Configuration for the output topic associated with this Tenant. If not set,
-     * then the output topic is not enabled.
+     * The maximum number of mutating unary gRPC requests allowed per second.
      * </pre>
      *
-     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
-     * @return The outputTopicConfig.
+     * <code>int32 write_requests_per_second = 3;</code>
+     * @param value The writeRequestsPerSecond to set.
+     * @return This builder for chaining.
      */
-    public io.littlehorse.sdk.common.proto.OutputTopicConfig getOutputTopicConfig() {
-      if (outputTopicConfigBuilder_ == null) {
-        return outputTopicConfig_ == null ? io.littlehorse.sdk.common.proto.OutputTopicConfig.getDefaultInstance() : outputTopicConfig_;
-      } else {
-        return outputTopicConfigBuilder_.getMessage();
-      }
-    }
-    /**
-     * <pre>
-     * Configuration for the output topic associated with this Tenant. If not set,
-     * then the output topic is not enabled.
-     * </pre>
-     *
-     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
-     */
-    public Builder setOutputTopicConfig(io.littlehorse.sdk.common.proto.OutputTopicConfig value) {
-      if (outputTopicConfigBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        outputTopicConfig_ = value;
-      } else {
-        outputTopicConfigBuilder_.setMessage(value);
-      }
+    public Builder setWriteRequestsPerSecond(int value) {
+
+      writeRequestsPerSecond_ = value;
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * Configuration for the output topic associated with this Tenant. If not set,
-     * then the output topic is not enabled.
+     * The maximum number of mutating unary gRPC requests allowed per second.
      * </pre>
      *
-     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
+     * <code>int32 write_requests_per_second = 3;</code>
+     * @return This builder for chaining.
      */
-    public Builder setOutputTopicConfig(
-        io.littlehorse.sdk.common.proto.OutputTopicConfig.Builder builderForValue) {
-      if (outputTopicConfigBuilder_ == null) {
-        outputTopicConfig_ = builderForValue.build();
-      } else {
-        outputTopicConfigBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Configuration for the output topic associated with this Tenant. If not set,
-     * then the output topic is not enabled.
-     * </pre>
-     *
-     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
-     */
-    public Builder mergeOutputTopicConfig(io.littlehorse.sdk.common.proto.OutputTopicConfig value) {
-      if (outputTopicConfigBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
-          outputTopicConfig_ != null &&
-          outputTopicConfig_ != io.littlehorse.sdk.common.proto.OutputTopicConfig.getDefaultInstance()) {
-          getOutputTopicConfigBuilder().mergeFrom(value);
-        } else {
-          outputTopicConfig_ = value;
-        }
-      } else {
-        outputTopicConfigBuilder_.mergeFrom(value);
-      }
-      if (outputTopicConfig_ != null) {
-        bitField0_ |= 0x00000004;
-        onChanged();
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * Configuration for the output topic associated with this Tenant. If not set,
-     * then the output topic is not enabled.
-     * </pre>
-     *
-     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
-     */
-    public Builder clearOutputTopicConfig() {
+    public Builder clearWriteRequestsPerSecond() {
       bitField0_ = (bitField0_ & ~0x00000004);
-      outputTopicConfig_ = null;
-      if (outputTopicConfigBuilder_ != null) {
-        outputTopicConfigBuilder_.dispose();
-        outputTopicConfigBuilder_ = null;
-      }
+      writeRequestsPerSecond_ = 0;
       onChanged();
       return this;
     }
-    /**
-     * <pre>
-     * Configuration for the output topic associated with this Tenant. If not set,
-     * then the output topic is not enabled.
-     * </pre>
-     *
-     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
-     */
-    public io.littlehorse.sdk.common.proto.OutputTopicConfig.Builder getOutputTopicConfigBuilder() {
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return internalGetOutputTopicConfigFieldBuilder().getBuilder();
-    }
-    /**
-     * <pre>
-     * Configuration for the output topic associated with this Tenant. If not set,
-     * then the output topic is not enabled.
-     * </pre>
-     *
-     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
-     */
-    public io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder getOutputTopicConfigOrBuilder() {
-      if (outputTopicConfigBuilder_ != null) {
-        return outputTopicConfigBuilder_.getMessageOrBuilder();
-      } else {
-        return outputTopicConfig_ == null ?
-            io.littlehorse.sdk.common.proto.OutputTopicConfig.getDefaultInstance() : outputTopicConfig_;
-      }
-    }
-    /**
-     * <pre>
-     * Configuration for the output topic associated with this Tenant. If not set,
-     * then the output topic is not enabled.
-     * </pre>
-     *
-     * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.OutputTopicConfig, io.littlehorse.sdk.common.proto.OutputTopicConfig.Builder, io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder> 
-        internalGetOutputTopicConfigFieldBuilder() {
-      if (outputTopicConfigBuilder_ == null) {
-        outputTopicConfigBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.OutputTopicConfig, io.littlehorse.sdk.common.proto.OutputTopicConfig.Builder, io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder>(
-                getOutputTopicConfig(),
-                getParentForChildren(),
-                isClean());
-        outputTopicConfig_ = null;
-      }
-      return outputTopicConfigBuilder_;
-    }
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.Tenant)
+    // @@protoc_insertion_point(builder_scope:littlehorse.Quota)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.Tenant)
-  private static final io.littlehorse.sdk.common.proto.Tenant DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.Quota)
+  private static final io.littlehorse.sdk.common.proto.Quota DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.Tenant();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.Quota();
   }
 
-  public static io.littlehorse.sdk.common.proto.Tenant getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.Quota getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<Tenant>
-      PARSER = new com.google.protobuf.AbstractParser<Tenant>() {
+  private static final com.google.protobuf.Parser<Quota>
+      PARSER = new com.google.protobuf.AbstractParser<Quota>() {
     @java.lang.Override
-    public Tenant parsePartialFrom(
+    public Quota parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1079,17 +914,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<Tenant> parser() {
+  public static com.google.protobuf.Parser<Quota> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<Tenant> getParserForType() {
+  public com.google.protobuf.Parser<Quota> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.Tenant getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.Quota getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

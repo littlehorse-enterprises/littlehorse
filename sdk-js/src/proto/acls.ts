@@ -33,9 +33,9 @@ export enum ACLResource {
    */
   ACL_TENANT = "ACL_TENANT",
   /**
-   * ACL_ALL_RESOURCES - Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant`
-   * resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since
-   * those are cluster-scoped resources.
+   * ACL_ALL_RESOURCES - Refers to all resources. In the `global_acls` field, this includes `Principal`, `Tenant`, and
+   * `Quota` resources. In the `per_tenant_acls` field, this does not include `Principal`, `Tenant`,
+   * or `Quota` since those are cluster-scoped resources.
    */
   ACL_ALL_RESOURCES = "ACL_ALL_RESOURCES",
   /** ACL_TASK_WORKER_GROUP - Refers to the `TaskWorkerGroup` associated with a TaskDef */
@@ -44,6 +44,11 @@ export enum ACLResource {
   ACL_WORKFLOW_EVENT = "ACL_WORKFLOW_EVENT",
   /** ACL_STRUCT - Refers to `StructDef` */
   ACL_STRUCT = "ACL_STRUCT",
+  /**
+   * ACL_QUOTA - Refers to the `Quota` resource. The `ACL_QUOTA` permission is only valid in the
+   * `global_acls` field of the `Principal` because `Quota` is a cluster-scoped resource.
+   */
+  ACL_QUOTA = "ACL_QUOTA",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -79,6 +84,9 @@ export function aCLResourceFromJSON(object: any): ACLResource {
     case 9:
     case "ACL_STRUCT":
       return ACLResource.ACL_STRUCT;
+    case 10:
+    case "ACL_QUOTA":
+      return ACLResource.ACL_QUOTA;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -108,6 +116,8 @@ export function aCLResourceToJSON(object: ACLResource): string {
       return "ACL_WORKFLOW_EVENT";
     case ACLResource.ACL_STRUCT:
       return "ACL_STRUCT";
+    case ACLResource.ACL_QUOTA:
+      return "ACL_QUOTA";
     case ACLResource.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -136,6 +146,8 @@ export function aCLResourceToNumber(object: ACLResource): number {
       return 8;
     case ACLResource.ACL_STRUCT:
       return 9;
+    case ACLResource.ACL_QUOTA:
+      return 10;
     case ACLResource.UNRECOGNIZED:
     default:
       return -1;
@@ -259,8 +271,6 @@ export interface Principal_PerTenantAclsEntry {
  * A Tenant is a logically isolated environment within LittleHorse. All workflows and
  * associated data (WfSpec, WfRun, TaskDef, TaskRun, NodeRun, etc) are scoped to within
  * a Tenant.
- *
- * Future versions will include quotas on a per-Tenant basis.
  */
 export interface Tenant {
   /** The ID of the Tenant. */
@@ -276,6 +286,33 @@ export interface Tenant {
    * then the output topic is not enabled.
    */
   outputTopicConfig?: OutputTopicConfig | undefined;
+}
+
+/**
+ * A Quota defines limits for requests made within a certain `Tenant`, optionally
+ * scoped to one specific `Principal`.
+ */
+export interface Quota {
+  /** The ID of the Quota. */
+  id:
+    | QuotaId
+    | undefined;
+  /** The time at which the Quota was created. */
+  createdAt:
+    | string
+    | undefined;
+  /** The maximum number of mutating unary gRPC requests allowed per second. */
+  writeRequestsPerSecond: number;
+}
+
+/** Identifies a `Quota`. */
+export interface QuotaId {
+  /** The governed `Tenant`. */
+  tenant:
+    | TenantId
+    | undefined;
+  /** If unset, the quota applies to all `Principal`s in the `Tenant`. */
+  principal: PrincipalId | undefined;
 }
 
 /** List of ACL's for LittleHorse */
@@ -409,6 +446,26 @@ export interface PutTenantRequest {
    * then the OutputTopic is not considered to be enabled.
    */
   outputTopicConfig?: OutputTopicConfig | undefined;
+}
+
+/** Creates or updates a `Quota`. */
+export interface PutQuotaRequest {
+  /** The governed `Tenant`. */
+  tenant:
+    | TenantId
+    | undefined;
+  /** If unset, the quota applies to all `Principal`s in the `Tenant`. */
+  principal:
+    | PrincipalId
+    | undefined;
+  /** The maximum number of mutating unary gRPC requests allowed per second. */
+  writeRequestsPerSecond: number;
+}
+
+/** Deletes a `Quota`. */
+export interface DeleteQuotaRequest {
+  /** The `Quota` to delete. */
+  id: QuotaId | undefined;
 }
 
 function createBasePrincipal(): Principal {
@@ -703,6 +760,175 @@ export const Tenant = {
     message.createdAt = object.createdAt ?? undefined;
     message.outputTopicConfig = (object.outputTopicConfig !== undefined && object.outputTopicConfig !== null)
       ? OutputTopicConfig.fromPartial(object.outputTopicConfig)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQuota(): Quota {
+  return { id: undefined, createdAt: undefined, writeRequestsPerSecond: 0 };
+}
+
+export const Quota = {
+  encode(message: Quota, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      QuotaId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
+    }
+    if (message.writeRequestsPerSecond !== 0) {
+      writer.uint32(24).int32(message.writeRequestsPerSecond);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Quota {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuota();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = QuotaId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.writeRequestsPerSecond = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Quota {
+    return {
+      id: isSet(object.id) ? QuotaId.fromJSON(object.id) : undefined,
+      createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : undefined,
+      writeRequestsPerSecond: isSet(object.writeRequestsPerSecond)
+        ? globalThis.Number(object.writeRequestsPerSecond)
+        : 0,
+    };
+  },
+
+  toJSON(message: Quota): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = QuotaId.toJSON(message.id);
+    }
+    if (message.createdAt !== undefined) {
+      obj.createdAt = message.createdAt;
+    }
+    if (message.writeRequestsPerSecond !== 0) {
+      obj.writeRequestsPerSecond = Math.round(message.writeRequestsPerSecond);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<Quota>): Quota {
+    return Quota.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Quota>): Quota {
+    const message = createBaseQuota();
+    message.id = (object.id !== undefined && object.id !== null) ? QuotaId.fromPartial(object.id) : undefined;
+    message.createdAt = object.createdAt ?? undefined;
+    message.writeRequestsPerSecond = object.writeRequestsPerSecond ?? 0;
+    return message;
+  },
+};
+
+function createBaseQuotaId(): QuotaId {
+  return { tenant: undefined, principal: undefined };
+}
+
+export const QuotaId = {
+  encode(message: QuotaId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.tenant !== undefined) {
+      TenantId.encode(message.tenant, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.principal !== undefined) {
+      PrincipalId.encode(message.principal, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuotaId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuotaId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.tenant = TenantId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.principal = PrincipalId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuotaId {
+    return {
+      tenant: isSet(object.tenant) ? TenantId.fromJSON(object.tenant) : undefined,
+      principal: isSet(object.principal) ? PrincipalId.fromJSON(object.principal) : undefined,
+    };
+  },
+
+  toJSON(message: QuotaId): unknown {
+    const obj: any = {};
+    if (message.tenant !== undefined) {
+      obj.tenant = TenantId.toJSON(message.tenant);
+    }
+    if (message.principal !== undefined) {
+      obj.principal = PrincipalId.toJSON(message.principal);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuotaId>): QuotaId {
+    return QuotaId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QuotaId>): QuotaId {
+    const message = createBaseQuotaId();
+    message.tenant = (object.tenant !== undefined && object.tenant !== null)
+      ? TenantId.fromPartial(object.tenant)
+      : undefined;
+    message.principal = (object.principal !== undefined && object.principal !== null)
+      ? PrincipalId.fromPartial(object.principal)
       : undefined;
     return message;
   },
@@ -1311,6 +1537,158 @@ export const PutTenantRequest = {
     message.outputTopicConfig = (object.outputTopicConfig !== undefined && object.outputTopicConfig !== null)
       ? OutputTopicConfig.fromPartial(object.outputTopicConfig)
       : undefined;
+    return message;
+  },
+};
+
+function createBasePutQuotaRequest(): PutQuotaRequest {
+  return { tenant: undefined, principal: undefined, writeRequestsPerSecond: 0 };
+}
+
+export const PutQuotaRequest = {
+  encode(message: PutQuotaRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.tenant !== undefined) {
+      TenantId.encode(message.tenant, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.principal !== undefined) {
+      PrincipalId.encode(message.principal, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.writeRequestsPerSecond !== 0) {
+      writer.uint32(24).int32(message.writeRequestsPerSecond);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutQuotaRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutQuotaRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.tenant = TenantId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.principal = PrincipalId.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.writeRequestsPerSecond = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PutQuotaRequest {
+    return {
+      tenant: isSet(object.tenant) ? TenantId.fromJSON(object.tenant) : undefined,
+      principal: isSet(object.principal) ? PrincipalId.fromJSON(object.principal) : undefined,
+      writeRequestsPerSecond: isSet(object.writeRequestsPerSecond)
+        ? globalThis.Number(object.writeRequestsPerSecond)
+        : 0,
+    };
+  },
+
+  toJSON(message: PutQuotaRequest): unknown {
+    const obj: any = {};
+    if (message.tenant !== undefined) {
+      obj.tenant = TenantId.toJSON(message.tenant);
+    }
+    if (message.principal !== undefined) {
+      obj.principal = PrincipalId.toJSON(message.principal);
+    }
+    if (message.writeRequestsPerSecond !== 0) {
+      obj.writeRequestsPerSecond = Math.round(message.writeRequestsPerSecond);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<PutQuotaRequest>): PutQuotaRequest {
+    return PutQuotaRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutQuotaRequest>): PutQuotaRequest {
+    const message = createBasePutQuotaRequest();
+    message.tenant = (object.tenant !== undefined && object.tenant !== null)
+      ? TenantId.fromPartial(object.tenant)
+      : undefined;
+    message.principal = (object.principal !== undefined && object.principal !== null)
+      ? PrincipalId.fromPartial(object.principal)
+      : undefined;
+    message.writeRequestsPerSecond = object.writeRequestsPerSecond ?? 0;
+    return message;
+  },
+};
+
+function createBaseDeleteQuotaRequest(): DeleteQuotaRequest {
+  return { id: undefined };
+}
+
+export const DeleteQuotaRequest = {
+  encode(message: DeleteQuotaRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      QuotaId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteQuotaRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteQuotaRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = QuotaId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DeleteQuotaRequest {
+    return { id: isSet(object.id) ? QuotaId.fromJSON(object.id) : undefined };
+  },
+
+  toJSON(message: DeleteQuotaRequest): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = QuotaId.toJSON(message.id);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<DeleteQuotaRequest>): DeleteQuotaRequest {
+    return DeleteQuotaRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteQuotaRequest>): DeleteQuotaRequest {
+    const message = createBaseDeleteQuotaRequest();
+    message.id = (object.id !== undefined && object.id !== null) ? QuotaId.fromPartial(object.id) : undefined;
     return message;
   },
 };

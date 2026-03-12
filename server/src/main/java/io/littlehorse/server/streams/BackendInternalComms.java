@@ -628,6 +628,7 @@ public class BackendInternalComms implements Closeable {
         switch (type) {
             case PRINCIPAL:
             case TENANT:
+            case QUOTA:
                 return true;
             case TASK_DEF:
             case WF_RUN:

@@ -37,7 +37,6 @@ message Principal {
 // associated data (WfSpec, WfRun, TaskDef, TaskRun, NodeRun, etc) are scoped to within
 // a Tenant.
 //
-// Future versions will include quotas on a per-Tenant basis.
 message Tenant {
     // The ID of the Tenant.
     TenantId id = 1;
@@ -48,6 +47,28 @@ message Tenant {
     // Configuration for the output topic associated with this Tenant. If not set,
     // then the output topic is not enabled.
     optional OutputTopicConfig output_topic_config = 3;
+}
+
+// A Quota defines limits for requests made within a certain `Tenant`, optionally
+// scoped to one specific `Principal`.
+message Quota {
+    // The ID of the Quota.
+    QuotaId id = 1;
+
+    // The time at which the Quota was created.
+    google.protobuf.Timestamp created_at = 2;
+
+    // The maximum number of mutating unary gRPC requests allowed per second.
+    int32 write_requests_per_second = 3;
+}
+
+// Identifies a `Quota`.
+message QuotaId {
+    // The governed `Tenant`.
+    TenantId tenant = 1;
+
+    // If unset, the quota applies to all `Principal`s in the `Tenant`.
+    PrincipalId principal = 2;
 }
 
 // List of ACL's for LittleHorse
@@ -107,9 +128,9 @@ enum ACLResource {
     // cluster-scoped.
     ACL_TENANT = 5;
 
-    // Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant`
-    // resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since
-    // those are cluster-scoped resources.
+    // Refers to all resources. In the `global_acls` field, this includes `Principal`, `Tenant`, and
+    // `Quota` resources. In the `per_tenant_acls` field, this does not include `Principal`, `Tenant`,
+    // or `Quota` since those are cluster-scoped resources.
     ACL_ALL_RESOURCES = 6;
 
     // Refers to the `TaskWorkerGroup` associated with a TaskDef
@@ -120,6 +141,10 @@ enum ACLResource {
 
     // Refers to `StructDef`
     ACL_STRUCT = 9;
+
+    // Refers to the `Quota` resource. The `ACL_QUOTA` permission is only valid in the
+    // `global_acls` field of the `Principal` because `Quota` is a cluster-scoped resource.
+    ACL_QUOTA = 10;
 }
 
 // Describes an Action that can be taken over a specific set of resources.
@@ -195,6 +220,24 @@ message PutTenantRequest {
     // Configures the behavior of the Output Topic for this Tenant. If not set,
     // then the OutputTopic is not considered to be enabled.
     optional OutputTopicConfig output_topic_config = 2;
+}
+
+// Creates or updates a `Quota`.
+message PutQuotaRequest {
+    // The governed `Tenant`.
+    TenantId tenant = 1;
+
+    // If unset, the quota applies to all `Principal`s in the `Tenant`.
+    PrincipalId principal = 2;
+
+    // The maximum number of mutating unary gRPC requests allowed per second.
+    int32 write_requests_per_second = 3;
+}
+
+// Deletes a `Quota`.
+message DeleteQuotaRequest {
+    // The `Quota` to delete.
+    QuotaId id = 1;
 }
 
 // DeleteTenant not yet supported.

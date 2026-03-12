@@ -142,7 +142,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         if (hasClusterScopedResource()) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
-                    "PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants or Principals.");
+                    "PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants, Principals, or Quotas.");
         }
     }
 
@@ -151,7 +151,8 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                 && perTenantAcls.values().stream().anyMatch(mappedACL -> mappedACL.getAcls().stream()
                         .anyMatch(actualACL -> actualACL.getResources().stream()
                                 .anyMatch(aclResource -> aclResource.equals(ACLResource.ACL_TENANT)
-                                        || aclResource.equals(ACLResource.ACL_PRINCIPAL))));
+                                        || aclResource.equals(ACLResource.ACL_PRINCIPAL)
+                                        || aclResource.equals(ACLResource.ACL_QUOTA))));
     }
 
     private void ensureThatThereIsStillAnAdminPrincipal(PrincipalModel old, MetadataProcessorContext context) {

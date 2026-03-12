@@ -30,13 +30,11 @@ public class GlobalExceptionHandler implements ServerInterceptor {
     private static class InternalCallListener<ReqT, RespT>
             extends ForwardingServerCallListener.SimpleForwardingServerCallListener<ReqT> {
         private final ServerCall<ReqT, RespT> call;
-        private final Metadata metadata;
 
         public InternalCallListener(
                 ServerCall<ReqT, RespT> call, ServerCallHandler<ReqT, RespT> next, Metadata metadata) {
             super(next.startCall(call, metadata));
             this.call = call;
-            this.metadata = metadata;
         }
 
         @Override
@@ -45,16 +43,21 @@ public class GlobalExceptionHandler implements ServerInterceptor {
                 // Proceed with the call
                 super.onHalfClose();
             } catch (LHApiException apiException) {
-                call.close(apiException.getStatus(), metadata);
+                call.close(apiException.getStatus(), trailersFor(apiException));
             } catch (InvalidStateStoreException ex) {
-                call.close(Status.UNAVAILABLE.withDescription(ex.getMessage()).withCause(ex), metadata);
+                call.close(Status.UNAVAILABLE.withDescription(ex.getMessage()).withCause(ex), new Metadata());
             } catch (StatusRuntimeException ex) {
                 log.error("Internal exception: {}", ex.getMessage(), ex);
-                call.close(Status.fromThrowable(ex), metadata);
+                call.close(Status.fromThrowable(ex), trailersFor(ex));
             } catch (Throwable ex) {
                 log.error("Unexpected exception: {}", ex.getMessage(), ex);
-                call.close(Status.INTERNAL.withDescription(INTERNAL_ERROR_MESSAGE), metadata);
+                call.close(Status.INTERNAL.withDescription(INTERNAL_ERROR_MESSAGE), new Metadata());
             }
+        }
+
+        private Metadata trailersFor(Throwable throwable) {
+            Metadata trailers = Status.trailersFromThrowable(throwable);
+            return trailers == null ? new Metadata() : trailers;
         }
     }
 }

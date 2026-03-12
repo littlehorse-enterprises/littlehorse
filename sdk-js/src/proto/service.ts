@@ -8,7 +8,17 @@
 import Long from "long";
 import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
-import { DeletePrincipalRequest, Principal, PutPrincipalRequest, PutTenantRequest, Tenant } from "./acls";
+import {
+  DeletePrincipalRequest,
+  DeleteQuotaRequest,
+  Principal,
+  PutPrincipalRequest,
+  PutQuotaRequest,
+  PutTenantRequest,
+  Quota,
+  QuotaId,
+  Tenant,
+} from "./acls";
 import {
   LHStatus,
   lHStatusFromJSON,
@@ -1073,6 +1083,32 @@ export interface SearchPrincipalRequest {
 export interface PrincipalIdList {
   /** The resulting object id's. */
   results: PrincipalId[];
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?: Buffer | undefined;
+}
+
+/** Search for Quotas based on certain criteria. */
+export interface SearchQuotaRequest {
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?:
+    | number
+    | undefined;
+  /** If set, return only Quotas for this Tenant. */
+  tenantId?:
+    | string
+    | undefined;
+  /** If set, return only the Quota for this Principal within the specified Tenant. */
+  principal: PrincipalId | undefined;
+}
+
+/** List of Quota Id's */
+export interface QuotaIdList {
+  /** The resulting object id's. */
+  results: QuotaId[];
   /** Bookmark for cursor-based pagination; pass if applicable. */
   bookmark?: Buffer | undefined;
 }
@@ -7231,6 +7267,186 @@ export const PrincipalIdList = {
   },
 };
 
+function createBaseSearchQuotaRequest(): SearchQuotaRequest {
+  return { bookmark: undefined, limit: undefined, tenantId: undefined, principal: undefined };
+}
+
+export const SearchQuotaRequest = {
+  encode(message: SearchQuotaRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.bookmark !== undefined) {
+      writer.uint32(10).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(16).int32(message.limit);
+    }
+    if (message.tenantId !== undefined) {
+      writer.uint32(26).string(message.tenantId);
+    }
+    if (message.principal !== undefined) {
+      PrincipalId.encode(message.principal, writer.uint32(34).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchQuotaRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchQuotaRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.tenantId = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.principal = PrincipalId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchQuotaRequest {
+    return {
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+      tenantId: isSet(object.tenantId) ? globalThis.String(object.tenantId) : undefined,
+      principal: isSet(object.principal) ? PrincipalId.fromJSON(object.principal) : undefined,
+    };
+  },
+
+  toJSON(message: SearchQuotaRequest): unknown {
+    const obj: any = {};
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.tenantId !== undefined) {
+      obj.tenantId = message.tenantId;
+    }
+    if (message.principal !== undefined) {
+      obj.principal = PrincipalId.toJSON(message.principal);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<SearchQuotaRequest>): SearchQuotaRequest {
+    return SearchQuotaRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SearchQuotaRequest>): SearchQuotaRequest {
+    const message = createBaseSearchQuotaRequest();
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
+    message.tenantId = object.tenantId ?? undefined;
+    message.principal = (object.principal !== undefined && object.principal !== null)
+      ? PrincipalId.fromPartial(object.principal)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQuotaIdList(): QuotaIdList {
+  return { results: [], bookmark: undefined };
+}
+
+export const QuotaIdList = {
+  encode(message: QuotaIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      QuotaId.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuotaIdList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuotaIdList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(QuotaId.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuotaIdList {
+    return {
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => QuotaId.fromJSON(e)) : [],
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+    };
+  },
+
+  toJSON(message: QuotaIdList): unknown {
+    const obj: any = {};
+    if (message.results?.length) {
+      obj.results = message.results.map((e) => QuotaId.toJSON(e));
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuotaIdList>): QuotaIdList {
+    return QuotaIdList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QuotaIdList>): QuotaIdList {
+    const message = createBaseQuotaIdList();
+    message.results = object.results?.map((e) => QuotaId.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
+    return message;
+  },
+};
+
 function createBaseSearchExternalEventRequest(): SearchExternalEventRequest {
   return {
     bookmark: undefined,
@@ -12266,6 +12482,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Search for Quotas. */
+    searchQuota: {
+      name: "SearchQuota",
+      requestType: SearchQuotaRequest,
+      requestStream: false,
+      responseType: QuotaIdList,
+      responseStream: false,
+      options: {},
+    },
     /** Search for StructDef's */
     searchStructDef: {
       name: "SearchStructDef",
@@ -12474,6 +12699,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Deletes a `Quota`. */
+    deleteQuota: {
+      name: "DeleteQuota",
+      requestType: DeleteQuotaRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
     /** Deletes a scheduled run and prevents any further associated WfRun from being executed. */
     deleteScheduledWfRun: {
       name: "DeleteScheduledWfRun",
@@ -12534,6 +12768,24 @@ export const LittleHorseDefinition = {
       requestType: TenantId,
       requestStream: false,
       responseType: Tenant,
+      responseStream: false,
+      options: {},
+    },
+    /** Creates or updates a Quota. */
+    putQuota: {
+      name: "PutQuota",
+      requestType: PutQuotaRequest,
+      requestStream: false,
+      responseType: Quota,
+      responseStream: false,
+      options: {},
+    },
+    /** Gets a Quota. */
+    getQuota: {
+      name: "GetQuota",
+      requestType: QuotaId,
+      requestStream: false,
+      responseType: Quota,
       responseStream: false,
       options: {},
     },
@@ -12888,6 +13140,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: SearchPrincipalRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<PrincipalIdList>>;
+  /** Search for Quotas. */
+  searchQuota(request: SearchQuotaRequest, context: CallContext & CallContextExt): Promise<DeepPartial<QuotaIdList>>;
   /** Search for StructDef's */
   searchStructDef(
     request: SearchStructDefRequest,
@@ -12990,6 +13244,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
    */
   deletePrincipal(request: DeletePrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
+  /** Deletes a `Quota`. */
+  deleteQuota(request: DeleteQuotaRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a scheduled run and prevents any further associated WfRun from being executed. */
   deleteScheduledWfRun(
     request: DeleteScheduledWfRunRequest,
@@ -13019,6 +13275,10 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   putTenant(request: PutTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
   /** Gets a Tenant from the LH Server. */
   getTenant(request: TenantId, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
+  /** Creates or updates a Quota. */
+  putQuota(request: PutQuotaRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Quota>>;
+  /** Gets a Quota. */
+  getQuota(request: QuotaId, context: CallContext & CallContextExt): Promise<DeepPartial<Quota>>;
   /** Creates a Principal. */
   putPrincipal(request: PutPrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Gets a Principal. */
@@ -13350,6 +13610,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchPrincipalRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<PrincipalIdList>;
+  /** Search for Quotas. */
+  searchQuota(request: DeepPartial<SearchQuotaRequest>, options?: CallOptions & CallOptionsExt): Promise<QuotaIdList>;
   /** Search for StructDef's */
   searchStructDef(
     request: DeepPartial<SearchStructDefRequest>,
@@ -13452,6 +13714,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
    */
   deletePrincipal(request: DeepPartial<DeletePrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
+  /** Deletes a `Quota`. */
+  deleteQuota(request: DeepPartial<DeleteQuotaRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a scheduled run and prevents any further associated WfRun from being executed. */
   deleteScheduledWfRun(
     request: DeepPartial<DeleteScheduledWfRunRequest>,
@@ -13481,6 +13745,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   putTenant(request: DeepPartial<PutTenantRequest>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
   /** Gets a Tenant from the LH Server. */
   getTenant(request: DeepPartial<TenantId>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
+  /** Creates or updates a Quota. */
+  putQuota(request: DeepPartial<PutQuotaRequest>, options?: CallOptions & CallOptionsExt): Promise<Quota>;
+  /** Gets a Quota. */
+  getQuota(request: DeepPartial<QuotaId>, options?: CallOptions & CallOptionsExt): Promise<Quota>;
   /** Creates a Principal. */
   putPrincipal(request: DeepPartial<PutPrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Gets a Principal. */
