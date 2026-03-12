@@ -29,7 +29,29 @@ message CountAndTiming {
 
 message MetricWindow {
   MetricWindowId              id      = 1;
-  map<string, CountAndTiming> metrics = 2;
+  oneof metric {
+    WfMetrics workflow = 2;
+    TaskMetrics task = 3;
+  }
+}
+
+message WfMetrics{
+  CountAndTiming started = 1;
+  CountAndTiming running_to_completed = 2;
+  CountAndTiming running_to_error = 3;
+  CountAndTiming running_to_exception = 4;
+  CountAndTiming running_to_halting = 5;
+  CountAndTiming halting_to_halted = 6;
+}
+message TaskMetrics{
+  CountAndTiming taskrun_created_to_completed = 1;
+  CountAndTiming taskrun_created_to_error = 2;
+  CountAndTiming taskrun_created_to_exception = 3;
+  CountAndTiming taskattempt_pending_to_scheduled = 4;
+  CountAndTiming taskattempt_scheduled_to_running = 5;
+  CountAndTiming taskattempt_running_to_error = 6;
+  CountAndTiming taskattempt_running_to_success = 7;
+  CountAndTiming taskattempt_running_to_exception = 8;
 }
 
 message ListWfMetricsRequest {

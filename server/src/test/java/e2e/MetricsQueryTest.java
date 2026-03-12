@@ -1,6 +1,6 @@
 package e2e;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.protobuf.Timestamp;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -83,9 +83,8 @@ public class MetricsQueryTest {
 
         int totalErrorCount = 0;
         for (var window : errorResponse.getWindowsList()) {
-            if (window.getMetricsMap().containsKey("running_to_error")) {
-                totalErrorCount +=
-                        window.getMetricsMap().get("running_to_error").getCount();
+            if (window.hasWorkflow() && window.getWorkflow().hasRunningToError()) {
+                totalErrorCount += window.getWorkflow().getRunningToError().getCount();
             }
         }
 
@@ -95,8 +94,8 @@ public class MetricsQueryTest {
         long maxLatencyMs = 0;
 
         for (var window : response.getWindowsList()) {
-            if (window.getMetricsMap().containsKey("running_to_completed")) {
-                var metric = window.getMetricsMap().get("running_to_completed");
+            if (window.hasWorkflow() && window.getWorkflow().hasRunningToCompleted()) {
+                var metric = window.getWorkflow().getRunningToCompleted();
                 totalCompletedCount += metric.getCount();
                 totalLatencyMs += metric.getTotalLatencyMs();
                 minLatencyMs += metric.getMinLatencyMs();

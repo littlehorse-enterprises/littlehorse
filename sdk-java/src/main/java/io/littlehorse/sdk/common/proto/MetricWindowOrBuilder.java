@@ -26,36 +26,34 @@ public interface MetricWindowOrBuilder extends
   io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder getIdOrBuilder();
 
   /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
+   * <code>.littlehorse.WfMetrics workflow = 2;</code>
+   * @return Whether the workflow field is set.
    */
-  int getMetricsCount();
+  boolean hasWorkflow();
   /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
+   * <code>.littlehorse.WfMetrics workflow = 2;</code>
+   * @return The workflow.
    */
-  boolean containsMetrics(
-      java.lang.String key);
+  io.littlehorse.sdk.common.proto.WfMetrics getWorkflow();
   /**
-   * Use {@link #getMetricsMap()} instead.
+   * <code>.littlehorse.WfMetrics workflow = 2;</code>
    */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
-  getMetrics();
+  io.littlehorse.sdk.common.proto.WfMetricsOrBuilder getWorkflowOrBuilder();
+
   /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
+   * <code>.littlehorse.TaskMetrics task = 3;</code>
+   * @return Whether the task field is set.
    */
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
-  getMetricsMap();
+  boolean hasTask();
   /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
+   * <code>.littlehorse.TaskMetrics task = 3;</code>
+   * @return The task.
    */
-  /* nullable */
-io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrDefault(
-      java.lang.String key,
-      /* nullable */
-io.littlehorse.sdk.common.proto.CountAndTiming defaultValue);
+  io.littlehorse.sdk.common.proto.TaskMetrics getTask();
   /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
+   * <code>.littlehorse.TaskMetrics task = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrThrow(
-      java.lang.String key);
+  io.littlehorse.sdk.common.proto.TaskMetricsOrBuilder getTaskOrBuilder();
+
+  io.littlehorse.sdk.common.proto.MetricWindow.MetricCase getMetricCase();
 }

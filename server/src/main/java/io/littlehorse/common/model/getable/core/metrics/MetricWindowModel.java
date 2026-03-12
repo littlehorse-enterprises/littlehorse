@@ -8,6 +8,9 @@ import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.CountAndTiming;
 import io.littlehorse.sdk.common.proto.MetricWindow;
+import io.littlehorse.sdk.common.proto.MetricWindowType;
+import io.littlehorse.sdk.common.proto.TaskMetrics;
+import io.littlehorse.sdk.common.proto.WfMetrics;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -25,6 +28,22 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class MetricWindowModel extends CoreGetable<MetricWindow> {
+
+    private static final String STARTED = "started";
+    private static final String RUNNING_TO_COMPLETED = "running_to_completed";
+    private static final String RUNNING_TO_ERROR = "running_to_error";
+    private static final String RUNNING_TO_EXCEPTION = "running_to_exception";
+    private static final String RUNNING_TO_HALTING = "running_to_halting";
+    private static final String HALTING_TO_HALTED = "halting_to_halted";
+
+    private static final String TASKRUN_CREATED_TO_COMPLETED = "taskrun_created_to_completed";
+    private static final String TASKRUN_CREATED_TO_ERROR = "taskrun_created_to_error";
+    private static final String TASKRUN_CREATED_TO_EXCEPTION = "taskrun_created_to_exception";
+    private static final String TASKATTEMPT_PENDING_TO_SCHEDULED = "taskattempt_pending_to_scheduled";
+    private static final String TASKATTEMPT_SCHEDULED_TO_RUNNING = "taskattempt_scheduled_to_running";
+    private static final String TASKATTEMPT_RUNNING_TO_ERROR = "taskattempt_running_to_error";
+    private static final String TASKATTEMPT_RUNNING_TO_SUCCESS = "taskattempt_running_to_success";
+    private static final String TASKATTEMPT_RUNNING_TO_EXCEPTION = "taskattempt_running_to_exception";
 
     private MetricWindowIdModel id;
     private Map<String, CountAndTimingModel> metrics;
@@ -57,8 +76,89 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
         MetricWindow p = (MetricWindow) proto;
         id = LHSerializable.fromProto(p.getId(), MetricWindowIdModel.class, context);
         metrics = new HashMap<>();
-        for (Map.Entry<String, CountAndTiming> entry : p.getMetricsMap().entrySet()) {
-            metrics.put(entry.getKey(), LHSerializable.fromProto(entry.getValue(), CountAndTimingModel.class, context));
+
+        if (p.hasWorkflow()) {
+            WfMetrics wfMetrics = p.getWorkflow();
+            addMetricIfPresent(metrics, STARTED, wfMetrics.hasStarted(), wfMetrics.getStarted(), context);
+            addMetricIfPresent(
+                    metrics,
+                    RUNNING_TO_COMPLETED,
+                    wfMetrics.hasRunningToCompleted(),
+                    wfMetrics.getRunningToCompleted(),
+                    context);
+            addMetricIfPresent(
+                    metrics, RUNNING_TO_ERROR, wfMetrics.hasRunningToError(), wfMetrics.getRunningToError(), context);
+            addMetricIfPresent(
+                    metrics,
+                    RUNNING_TO_EXCEPTION,
+                    wfMetrics.hasRunningToException(),
+                    wfMetrics.getRunningToException(),
+                    context);
+            addMetricIfPresent(
+                    metrics,
+                    RUNNING_TO_HALTING,
+                    wfMetrics.hasRunningToHalting(),
+                    wfMetrics.getRunningToHalting(),
+                    context);
+            addMetricIfPresent(
+                    metrics,
+                    HALTING_TO_HALTED,
+                    wfMetrics.hasHaltingToHalted(),
+                    wfMetrics.getHaltingToHalted(),
+                    context);
+            return;
+        }
+
+        if (p.hasTask()) {
+            TaskMetrics taskMetrics = p.getTask();
+            addMetricIfPresent(
+                    metrics,
+                    TASKRUN_CREATED_TO_COMPLETED,
+                    taskMetrics.hasTaskrunCreatedToCompleted(),
+                    taskMetrics.getTaskrunCreatedToCompleted(),
+                    context);
+            addMetricIfPresent(
+                    metrics,
+                    TASKRUN_CREATED_TO_ERROR,
+                    taskMetrics.hasTaskrunCreatedToError(),
+                    taskMetrics.getTaskrunCreatedToError(),
+                    context);
+            addMetricIfPresent(
+                    metrics,
+                    TASKRUN_CREATED_TO_EXCEPTION,
+                    taskMetrics.hasTaskrunCreatedToException(),
+                    taskMetrics.getTaskrunCreatedToException(),
+                    context);
+            addMetricIfPresent(
+                    metrics,
+                    TASKATTEMPT_PENDING_TO_SCHEDULED,
+                    taskMetrics.hasTaskattemptPendingToScheduled(),
+                    taskMetrics.getTaskattemptPendingToScheduled(),
+                    context);
+            addMetricIfPresent(
+                    metrics,
+                    TASKATTEMPT_SCHEDULED_TO_RUNNING,
+                    taskMetrics.hasTaskattemptScheduledToRunning(),
+                    taskMetrics.getTaskattemptScheduledToRunning(),
+                    context);
+            addMetricIfPresent(
+                    metrics,
+                    TASKATTEMPT_RUNNING_TO_ERROR,
+                    taskMetrics.hasTaskattemptRunningToError(),
+                    taskMetrics.getTaskattemptRunningToError(),
+                    context);
+            addMetricIfPresent(
+                    metrics,
+                    TASKATTEMPT_RUNNING_TO_SUCCESS,
+                    taskMetrics.hasTaskattemptRunningToSuccess(),
+                    taskMetrics.getTaskattemptRunningToSuccess(),
+                    context);
+            addMetricIfPresent(
+                    metrics,
+                    TASKATTEMPT_RUNNING_TO_EXCEPTION,
+                    taskMetrics.hasTaskattemptRunningToException(),
+                    taskMetrics.getTaskattemptRunningToException(),
+                    context);
         }
     }
 
@@ -66,11 +166,48 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
     public MetricWindow.Builder toProto() {
         MetricWindow.Builder out = MetricWindow.newBuilder().setId(id.toProto());
 
-        for (Map.Entry<String, CountAndTimingModel> entry : metrics.entrySet()) {
-            out.putMetrics(entry.getKey(), entry.getValue().toProto().build());
+        if (id.getMetricType() == MetricWindowType.WORKFLOW_METRIC) {
+            WfMetrics.Builder wfMetrics = WfMetrics.newBuilder();
+            putMetricIfPresent(wfMetrics::setStarted, STARTED);
+            putMetricIfPresent(wfMetrics::setRunningToCompleted, RUNNING_TO_COMPLETED);
+            putMetricIfPresent(wfMetrics::setRunningToError, RUNNING_TO_ERROR);
+            putMetricIfPresent(wfMetrics::setRunningToException, RUNNING_TO_EXCEPTION);
+            putMetricIfPresent(wfMetrics::setRunningToHalting, RUNNING_TO_HALTING);
+            putMetricIfPresent(wfMetrics::setHaltingToHalted, HALTING_TO_HALTED);
+            out.setWorkflow(wfMetrics);
+        } else if (id.getMetricType() == MetricWindowType.TASK_METRIC) {
+            TaskMetrics.Builder taskMetrics = TaskMetrics.newBuilder();
+            putMetricIfPresent(taskMetrics::setTaskrunCreatedToCompleted, TASKRUN_CREATED_TO_COMPLETED);
+            putMetricIfPresent(taskMetrics::setTaskrunCreatedToError, TASKRUN_CREATED_TO_ERROR);
+            putMetricIfPresent(taskMetrics::setTaskrunCreatedToException, TASKRUN_CREATED_TO_EXCEPTION);
+            putMetricIfPresent(taskMetrics::setTaskattemptPendingToScheduled, TASKATTEMPT_PENDING_TO_SCHEDULED);
+            putMetricIfPresent(taskMetrics::setTaskattemptScheduledToRunning, TASKATTEMPT_SCHEDULED_TO_RUNNING);
+            putMetricIfPresent(taskMetrics::setTaskattemptRunningToError, TASKATTEMPT_RUNNING_TO_ERROR);
+            putMetricIfPresent(taskMetrics::setTaskattemptRunningToSuccess, TASKATTEMPT_RUNNING_TO_SUCCESS);
+            putMetricIfPresent(taskMetrics::setTaskattemptRunningToException, TASKATTEMPT_RUNNING_TO_EXCEPTION);
+            out.setTask(taskMetrics);
         }
 
         return out;
+    }
+
+    private void putMetricIfPresent(java.util.function.Consumer<CountAndTiming> setter, String key) {
+        CountAndTimingModel model = metrics.get(key);
+        if (model != null) {
+            setter.accept(model.toProto().build());
+        }
+    }
+
+    private static void addMetricIfPresent(
+            Map<String, CountAndTimingModel> metrics,
+            String key,
+            boolean hasMetric,
+            CountAndTiming metric,
+            ExecutionContext context) {
+        if (!hasMetric) {
+            return;
+        }
+        metrics.put(key, LHSerializable.fromProto(metric, CountAndTimingModel.class, context));
     }
 
     @Override

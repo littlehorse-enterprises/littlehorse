@@ -35,18 +35,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricWindow_descriptor;
   }
 
-  @SuppressWarnings({"rawtypes"})
-  @java.lang.Override
-  protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
-      int number) {
-    switch (number) {
-      case 2:
-        return internalGetMetrics();
-      default:
-        throw new RuntimeException(
-            "Invalid map field number: " + number);
-    }
-  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -56,6 +44,48 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
+  private int metricCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object metric_;
+  public enum MetricCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    WORKFLOW(2),
+    TASK(3),
+    METRIC_NOT_SET(0);
+    private final int value;
+    private MetricCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static MetricCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static MetricCase forNumber(int value) {
+      switch (value) {
+        case 2: return WORKFLOW;
+        case 3: return TASK;
+        case 0: return METRIC_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public MetricCase
+  getMetricCase() {
+    return MetricCase.forNumber(
+        metricCase_);
+  }
+
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.MetricWindowId id_;
   /**
@@ -82,83 +112,66 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.MetricWindowId.getDefaultInstance() : id_;
   }
 
-  public static final int METRICS_FIELD_NUMBER = 2;
-  private static final class MetricsDefaultEntryHolder {
-    static final com.google.protobuf.MapEntry<
-        java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> defaultEntry =
-            com.google.protobuf.MapEntry
-            .<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>newDefaultInstance(
-                io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricWindow_MetricsEntry_descriptor, 
-                com.google.protobuf.WireFormat.FieldType.STRING,
-                "",
-                com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance());
+  public static final int WORKFLOW_FIELD_NUMBER = 2;
+  /**
+   * <code>.littlehorse.WfMetrics workflow = 2;</code>
+   * @return Whether the workflow field is set.
+   */
+  @java.lang.Override
+  public boolean hasWorkflow() {
+    return metricCase_ == 2;
   }
-  @SuppressWarnings("serial")
-  private com.google.protobuf.MapField<
-      java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> metrics_;
-  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
-  internalGetMetrics() {
-    if (metrics_ == null) {
-      return com.google.protobuf.MapField.emptyMapField(
-          MetricsDefaultEntryHolder.defaultEntry);
+  /**
+   * <code>.littlehorse.WfMetrics workflow = 2;</code>
+   * @return The workflow.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WfMetrics getWorkflow() {
+    if (metricCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.WfMetrics) metric_;
     }
-    return metrics_;
-  }
-  public int getMetricsCount() {
-    return internalGetMetrics().getMap().size();
+    return io.littlehorse.sdk.common.proto.WfMetrics.getDefaultInstance();
   }
   /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
+   * <code>.littlehorse.WfMetrics workflow = 2;</code>
    */
   @java.lang.Override
-  public boolean containsMetrics(
-      java.lang.String key) {
-    if (key == null) { throw new NullPointerException("map key"); }
-    return internalGetMetrics().getMap().containsKey(key);
-  }
-  /**
-   * Use {@link #getMetricsMap()} instead.
-   */
-  @java.lang.Override
-  @java.lang.Deprecated
-  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> getMetrics() {
-    return getMetricsMap();
-  }
-  /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
-   */
-  @java.lang.Override
-  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> getMetricsMap() {
-    return internalGetMetrics().getMap();
-  }
-  /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
-   */
-  @java.lang.Override
-  public /* nullable */
-io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrDefault(
-      java.lang.String key,
-      /* nullable */
-io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
-    if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> map =
-        internalGetMetrics().getMap();
-    return map.containsKey(key) ? map.get(key) : defaultValue;
-  }
-  /**
-   * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrThrow(
-      java.lang.String key) {
-    if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> map =
-        internalGetMetrics().getMap();
-    if (!map.containsKey(key)) {
-      throw new java.lang.IllegalArgumentException();
+  public io.littlehorse.sdk.common.proto.WfMetricsOrBuilder getWorkflowOrBuilder() {
+    if (metricCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.WfMetrics) metric_;
     }
-    return map.get(key);
+    return io.littlehorse.sdk.common.proto.WfMetrics.getDefaultInstance();
+  }
+
+  public static final int TASK_FIELD_NUMBER = 3;
+  /**
+   * <code>.littlehorse.TaskMetrics task = 3;</code>
+   * @return Whether the task field is set.
+   */
+  @java.lang.Override
+  public boolean hasTask() {
+    return metricCase_ == 3;
+  }
+  /**
+   * <code>.littlehorse.TaskMetrics task = 3;</code>
+   * @return The task.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TaskMetrics getTask() {
+    if (metricCase_ == 3) {
+       return (io.littlehorse.sdk.common.proto.TaskMetrics) metric_;
+    }
+    return io.littlehorse.sdk.common.proto.TaskMetrics.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.TaskMetrics task = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TaskMetricsOrBuilder getTaskOrBuilder() {
+    if (metricCase_ == 3) {
+       return (io.littlehorse.sdk.common.proto.TaskMetrics) metric_;
+    }
+    return io.littlehorse.sdk.common.proto.TaskMetrics.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -178,12 +191,12 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(1, getId());
     }
-    com.google.protobuf.GeneratedMessage
-      .serializeStringMapTo(
-        output,
-        internalGetMetrics(),
-        MetricsDefaultEntryHolder.defaultEntry,
-        2);
+    if (metricCase_ == 2) {
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.WfMetrics) metric_);
+    }
+    if (metricCase_ == 3) {
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.TaskMetrics) metric_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -197,15 +210,13 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getId());
     }
-    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> entry
-         : internalGetMetrics().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
-      metrics__ = MetricsDefaultEntryHolder.defaultEntry.newBuilderForType()
-          .setKey(entry.getKey())
-          .setValue(entry.getValue())
-          .build();
+    if (metricCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, metrics__);
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.WfMetrics) metric_);
+    }
+    if (metricCase_ == 3) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.TaskMetrics) metric_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -227,8 +238,19 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       if (!getId()
           .equals(other.getId())) return false;
     }
-    if (!internalGetMetrics().equals(
-        other.internalGetMetrics())) return false;
+    if (!getMetricCase().equals(other.getMetricCase())) return false;
+    switch (metricCase_) {
+      case 2:
+        if (!getWorkflow()
+            .equals(other.getWorkflow())) return false;
+        break;
+      case 3:
+        if (!getTask()
+            .equals(other.getTask())) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -244,9 +266,17 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId().hashCode();
     }
-    if (!internalGetMetrics().getMap().isEmpty()) {
-      hash = (37 * hash) + METRICS_FIELD_NUMBER;
-      hash = (53 * hash) + internalGetMetrics().hashCode();
+    switch (metricCase_) {
+      case 2:
+        hash = (37 * hash) + WORKFLOW_FIELD_NUMBER;
+        hash = (53 * hash) + getWorkflow().hashCode();
+        break;
+      case 3:
+        hash = (37 * hash) + TASK_FIELD_NUMBER;
+        hash = (53 * hash) + getTask().hashCode();
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -357,28 +387,6 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricWindow_descriptor;
     }
 
-    @SuppressWarnings({"rawtypes"})
-    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
-        int number) {
-      switch (number) {
-        case 2:
-          return internalGetMetrics();
-        default:
-          throw new RuntimeException(
-              "Invalid map field number: " + number);
-      }
-    }
-    @SuppressWarnings({"rawtypes"})
-    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMutableMapFieldReflection(
-        int number) {
-      switch (number) {
-        case 2:
-          return internalGetMutableMetrics();
-        default:
-          throw new RuntimeException(
-              "Invalid map field number: " + number);
-      }
-    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -412,7 +420,14 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
         idBuilder_.dispose();
         idBuilder_ = null;
       }
-      internalGetMutableMetrics().clear();
+      if (workflowBuilder_ != null) {
+        workflowBuilder_.clear();
+      }
+      if (taskBuilder_ != null) {
+        taskBuilder_.clear();
+      }
+      metricCase_ = 0;
+      metric_ = null;
       return this;
     }
 
@@ -440,6 +455,7 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
     public io.littlehorse.sdk.common.proto.MetricWindow buildPartial() {
       io.littlehorse.sdk.common.proto.MetricWindow result = new io.littlehorse.sdk.common.proto.MetricWindow(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -453,10 +469,20 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
             : idBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.metrics_ = internalGetMetrics().build(MetricsDefaultEntryHolder.defaultEntry);
-      }
       result.bitField0_ |= to_bitField0_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.MetricWindow result) {
+      result.metricCase_ = metricCase_;
+      result.metric_ = this.metric_;
+      if (metricCase_ == 2 &&
+          workflowBuilder_ != null) {
+        result.metric_ = workflowBuilder_.build();
+      }
+      if (metricCase_ == 3 &&
+          taskBuilder_ != null) {
+        result.metric_ = taskBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -474,9 +500,19 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       if (other.hasId()) {
         mergeId(other.getId());
       }
-      internalGetMutableMetrics().mergeFrom(
-          other.internalGetMetrics());
-      bitField0_ |= 0x00000002;
+      switch (other.getMetricCase()) {
+        case WORKFLOW: {
+          mergeWorkflow(other.getWorkflow());
+          break;
+        }
+        case TASK: {
+          mergeTask(other.getTask());
+          break;
+        }
+        case METRIC_NOT_SET: {
+          break;
+        }
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -511,14 +547,19 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
               break;
             } // case 10
             case 18: {
-              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
-              metrics__ = input.readMessage(
-                  MetricsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              internalGetMutableMetrics().ensureBuilderMap().put(
-                  metrics__.getKey(), metrics__.getValue());
-              bitField0_ |= 0x00000002;
+              input.readMessage(
+                  internalGetWorkflowFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metricCase_ = 2;
               break;
             } // case 18
+            case 26: {
+              input.readMessage(
+                  internalGetTaskFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metricCase_ = 3;
+              break;
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -534,6 +575,21 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       } // finally
       return this;
     }
+    private int metricCase_ = 0;
+    private java.lang.Object metric_;
+    public MetricCase
+        getMetricCase() {
+      return MetricCase.forNumber(
+          metricCase_);
+    }
+
+    public Builder clearMetric() {
+      metricCase_ = 0;
+      metric_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private io.littlehorse.sdk.common.proto.MetricWindowId id_;
@@ -657,159 +713,288 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return idBuilder_;
     }
 
-    private static final class MetricsConverter implements com.google.protobuf.MapFieldBuilder.Converter<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder, io.littlehorse.sdk.common.proto.CountAndTiming> {
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.CountAndTiming build(io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder val) {
-        if (val instanceof io.littlehorse.sdk.common.proto.CountAndTiming) { return (io.littlehorse.sdk.common.proto.CountAndTiming) val; }
-        return ((io.littlehorse.sdk.common.proto.CountAndTiming.Builder) val).build();
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> defaultEntry() {
-        return MetricsDefaultEntryHolder.defaultEntry;
-      }
-    };
-    private static final MetricsConverter metricsConverter = new MetricsConverter();
-
-    private com.google.protobuf.MapFieldBuilder<
-        java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder, io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder> metrics_;
-    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder, io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder>
-        internalGetMetrics() {
-      if (metrics_ == null) {
-        return new com.google.protobuf.MapFieldBuilder<>(metricsConverter);
-      }
-      return metrics_;
-    }
-    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder, io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder>
-        internalGetMutableMetrics() {
-      if (metrics_ == null) {
-        metrics_ = new com.google.protobuf.MapFieldBuilder<>(metricsConverter);
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return metrics_;
-    }
-    public int getMetricsCount() {
-      return internalGetMetrics().ensureBuilderMap().size();
-    }
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.WfMetrics, io.littlehorse.sdk.common.proto.WfMetrics.Builder, io.littlehorse.sdk.common.proto.WfMetricsOrBuilder> workflowBuilder_;
     /**
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
+     * <code>.littlehorse.WfMetrics workflow = 2;</code>
+     * @return Whether the workflow field is set.
      */
     @java.lang.Override
-    public boolean containsMetrics(
-        java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      return internalGetMetrics().ensureBuilderMap().containsKey(key);
+    public boolean hasWorkflow() {
+      return metricCase_ == 2;
     }
     /**
-     * Use {@link #getMetricsMap()} instead.
+     * <code>.littlehorse.WfMetrics workflow = 2;</code>
+     * @return The workflow.
      */
     @java.lang.Override
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> getMetrics() {
-      return getMetricsMap();
-    }
-    /**
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
-     */
-    @java.lang.Override
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> getMetricsMap() {
-      return internalGetMetrics().getImmutableMap();
-    }
-    /**
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
-     */
-    @java.lang.Override
-    public /* nullable */
-io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrDefault(
-        java.lang.String key,
-        /* nullable */
-io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> map = internalGetMutableMetrics().ensureBuilderMap();
-      return map.containsKey(key) ? metricsConverter.build(map.get(key)) : defaultValue;
-    }
-    /**
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrThrow(
-        java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> map = internalGetMutableMetrics().ensureBuilderMap();
-      if (!map.containsKey(key)) {
-        throw new java.lang.IllegalArgumentException();
+    public io.littlehorse.sdk.common.proto.WfMetrics getWorkflow() {
+      if (workflowBuilder_ == null) {
+        if (metricCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.WfMetrics) metric_;
+        }
+        return io.littlehorse.sdk.common.proto.WfMetrics.getDefaultInstance();
+      } else {
+        if (metricCase_ == 2) {
+          return workflowBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.WfMetrics.getDefaultInstance();
       }
-      return metricsConverter.build(map.get(key));
-    }
-    public Builder clearMetrics() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      internalGetMutableMetrics().clear();
-      return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
+     * <code>.littlehorse.WfMetrics workflow = 2;</code>
      */
-    public Builder removeMetrics(
-        java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      internalGetMutableMetrics().ensureBuilderMap()
-          .remove(key);
-      return this;
-    }
-    /**
-     * Use alternate mutation accessors instead.
-     */
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
-        getMutableMetrics() {
-      bitField0_ |= 0x00000002;
-      return internalGetMutableMetrics().ensureMessageMap();
-    }
-    /**
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
-     */
-    public Builder putMetrics(
-        java.lang.String key,
-        io.littlehorse.sdk.common.proto.CountAndTiming value) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      if (value == null) { throw new NullPointerException("map value"); }
-      internalGetMutableMetrics().ensureBuilderMap()
-          .put(key, value);
-      bitField0_ |= 0x00000002;
-      return this;
-    }
-    /**
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
-     */
-    public Builder putAllMetrics(
-        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> values) {
-      for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming> e : values.entrySet()) {
-        if (e.getKey() == null || e.getValue() == null) {
+    public Builder setWorkflow(io.littlehorse.sdk.common.proto.WfMetrics value) {
+      if (workflowBuilder_ == null) {
+        if (value == null) {
           throw new NullPointerException();
         }
+        metric_ = value;
+        onChanged();
+      } else {
+        workflowBuilder_.setMessage(value);
       }
-      internalGetMutableMetrics().ensureBuilderMap()
-          .putAll(values);
-      bitField0_ |= 0x00000002;
+      metricCase_ = 2;
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
+     * <code>.littlehorse.WfMetrics workflow = 2;</code>
      */
-    public io.littlehorse.sdk.common.proto.CountAndTiming.Builder putMetricsBuilderIfAbsent(
-        java.lang.String key) {
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> builderMap = internalGetMutableMetrics().ensureBuilderMap();
-      io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder entry = builderMap.get(key);
-      if (entry == null) {
-        entry = io.littlehorse.sdk.common.proto.CountAndTiming.newBuilder();
-        builderMap.put(key, entry);
+    public Builder setWorkflow(
+        io.littlehorse.sdk.common.proto.WfMetrics.Builder builderForValue) {
+      if (workflowBuilder_ == null) {
+        metric_ = builderForValue.build();
+        onChanged();
+      } else {
+        workflowBuilder_.setMessage(builderForValue.build());
       }
-      if (entry instanceof io.littlehorse.sdk.common.proto.CountAndTiming) {
-        entry = ((io.littlehorse.sdk.common.proto.CountAndTiming) entry).toBuilder();
-        builderMap.put(key, entry);
+      metricCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfMetrics workflow = 2;</code>
+     */
+    public Builder mergeWorkflow(io.littlehorse.sdk.common.proto.WfMetrics value) {
+      if (workflowBuilder_ == null) {
+        if (metricCase_ == 2 &&
+            metric_ != io.littlehorse.sdk.common.proto.WfMetrics.getDefaultInstance()) {
+          metric_ = io.littlehorse.sdk.common.proto.WfMetrics.newBuilder((io.littlehorse.sdk.common.proto.WfMetrics) metric_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metric_ = value;
+        }
+        onChanged();
+      } else {
+        if (metricCase_ == 2) {
+          workflowBuilder_.mergeFrom(value);
+        } else {
+          workflowBuilder_.setMessage(value);
+        }
       }
-      return (io.littlehorse.sdk.common.proto.CountAndTiming.Builder) entry;
+      metricCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfMetrics workflow = 2;</code>
+     */
+    public Builder clearWorkflow() {
+      if (workflowBuilder_ == null) {
+        if (metricCase_ == 2) {
+          metricCase_ = 0;
+          metric_ = null;
+          onChanged();
+        }
+      } else {
+        if (metricCase_ == 2) {
+          metricCase_ = 0;
+          metric_ = null;
+        }
+        workflowBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WfMetrics workflow = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WfMetrics.Builder getWorkflowBuilder() {
+      return internalGetWorkflowFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.WfMetrics workflow = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WfMetricsOrBuilder getWorkflowOrBuilder() {
+      if ((metricCase_ == 2) && (workflowBuilder_ != null)) {
+        return workflowBuilder_.getMessageOrBuilder();
+      } else {
+        if (metricCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.WfMetrics) metric_;
+        }
+        return io.littlehorse.sdk.common.proto.WfMetrics.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.WfMetrics workflow = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.WfMetrics, io.littlehorse.sdk.common.proto.WfMetrics.Builder, io.littlehorse.sdk.common.proto.WfMetricsOrBuilder> 
+        internalGetWorkflowFieldBuilder() {
+      if (workflowBuilder_ == null) {
+        if (!(metricCase_ == 2)) {
+          metric_ = io.littlehorse.sdk.common.proto.WfMetrics.getDefaultInstance();
+        }
+        workflowBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.WfMetrics, io.littlehorse.sdk.common.proto.WfMetrics.Builder, io.littlehorse.sdk.common.proto.WfMetricsOrBuilder>(
+                (io.littlehorse.sdk.common.proto.WfMetrics) metric_,
+                getParentForChildren(),
+                isClean());
+        metric_ = null;
+      }
+      metricCase_ = 2;
+      onChanged();
+      return workflowBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.TaskMetrics, io.littlehorse.sdk.common.proto.TaskMetrics.Builder, io.littlehorse.sdk.common.proto.TaskMetricsOrBuilder> taskBuilder_;
+    /**
+     * <code>.littlehorse.TaskMetrics task = 3;</code>
+     * @return Whether the task field is set.
+     */
+    @java.lang.Override
+    public boolean hasTask() {
+      return metricCase_ == 3;
+    }
+    /**
+     * <code>.littlehorse.TaskMetrics task = 3;</code>
+     * @return The task.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.TaskMetrics getTask() {
+      if (taskBuilder_ == null) {
+        if (metricCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.TaskMetrics) metric_;
+        }
+        return io.littlehorse.sdk.common.proto.TaskMetrics.getDefaultInstance();
+      } else {
+        if (metricCase_ == 3) {
+          return taskBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.TaskMetrics.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.TaskMetrics task = 3;</code>
+     */
+    public Builder setTask(io.littlehorse.sdk.common.proto.TaskMetrics value) {
+      if (taskBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metric_ = value;
+        onChanged();
+      } else {
+        taskBuilder_.setMessage(value);
+      }
+      metricCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskMetrics task = 3;</code>
+     */
+    public Builder setTask(
+        io.littlehorse.sdk.common.proto.TaskMetrics.Builder builderForValue) {
+      if (taskBuilder_ == null) {
+        metric_ = builderForValue.build();
+        onChanged();
+      } else {
+        taskBuilder_.setMessage(builderForValue.build());
+      }
+      metricCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskMetrics task = 3;</code>
+     */
+    public Builder mergeTask(io.littlehorse.sdk.common.proto.TaskMetrics value) {
+      if (taskBuilder_ == null) {
+        if (metricCase_ == 3 &&
+            metric_ != io.littlehorse.sdk.common.proto.TaskMetrics.getDefaultInstance()) {
+          metric_ = io.littlehorse.sdk.common.proto.TaskMetrics.newBuilder((io.littlehorse.sdk.common.proto.TaskMetrics) metric_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metric_ = value;
+        }
+        onChanged();
+      } else {
+        if (metricCase_ == 3) {
+          taskBuilder_.mergeFrom(value);
+        } else {
+          taskBuilder_.setMessage(value);
+        }
+      }
+      metricCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskMetrics task = 3;</code>
+     */
+    public Builder clearTask() {
+      if (taskBuilder_ == null) {
+        if (metricCase_ == 3) {
+          metricCase_ = 0;
+          metric_ = null;
+          onChanged();
+        }
+      } else {
+        if (metricCase_ == 3) {
+          metricCase_ = 0;
+          metric_ = null;
+        }
+        taskBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskMetrics task = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TaskMetrics.Builder getTaskBuilder() {
+      return internalGetTaskFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.TaskMetrics task = 3;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.TaskMetricsOrBuilder getTaskOrBuilder() {
+      if ((metricCase_ == 3) && (taskBuilder_ != null)) {
+        return taskBuilder_.getMessageOrBuilder();
+      } else {
+        if (metricCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.TaskMetrics) metric_;
+        }
+        return io.littlehorse.sdk.common.proto.TaskMetrics.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.TaskMetrics task = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.TaskMetrics, io.littlehorse.sdk.common.proto.TaskMetrics.Builder, io.littlehorse.sdk.common.proto.TaskMetricsOrBuilder> 
+        internalGetTaskFieldBuilder() {
+      if (taskBuilder_ == null) {
+        if (!(metricCase_ == 3)) {
+          metric_ = io.littlehorse.sdk.common.proto.TaskMetrics.getDefaultInstance();
+        }
+        taskBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.TaskMetrics, io.littlehorse.sdk.common.proto.TaskMetrics.Builder, io.littlehorse.sdk.common.proto.TaskMetricsOrBuilder>(
+                (io.littlehorse.sdk.common.proto.TaskMetrics) metric_,
+                getParentForChildren(),
+                isClean());
+        metric_ = null;
+      }
+      metricCase_ = 3;
+      onChanged();
+      return taskBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetricWindow)

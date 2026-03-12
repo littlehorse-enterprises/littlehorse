@@ -28,12 +28,27 @@ export interface CountAndTiming {
 
 export interface MetricWindow {
   id: MetricWindowId | undefined;
-  metrics: { [key: string]: CountAndTiming };
+  metric?: { $case: "workflow"; value: WfMetrics } | { $case: "task"; value: TaskMetrics } | undefined;
 }
 
-export interface MetricWindow_MetricsEntry {
-  key: string;
-  value: CountAndTiming | undefined;
+export interface WfMetrics {
+  started: CountAndTiming | undefined;
+  runningToCompleted: CountAndTiming | undefined;
+  runningToError: CountAndTiming | undefined;
+  runningToException: CountAndTiming | undefined;
+  runningToHalting: CountAndTiming | undefined;
+  haltingToHalted: CountAndTiming | undefined;
+}
+
+export interface TaskMetrics {
+  taskrunCreatedToCompleted: CountAndTiming | undefined;
+  taskrunCreatedToError: CountAndTiming | undefined;
+  taskrunCreatedToException: CountAndTiming | undefined;
+  taskattemptPendingToScheduled: CountAndTiming | undefined;
+  taskattemptScheduledToRunning: CountAndTiming | undefined;
+  taskattemptRunningToError: CountAndTiming | undefined;
+  taskattemptRunningToSuccess: CountAndTiming | undefined;
+  taskattemptRunningToException: CountAndTiming | undefined;
 }
 
 export interface ListWfMetricsRequest {
@@ -284,7 +299,7 @@ export const CountAndTiming = {
 };
 
 function createBaseMetricWindow(): MetricWindow {
-  return { id: undefined, metrics: {} };
+  return { id: undefined, metric: undefined };
 }
 
 export const MetricWindow = {
@@ -292,9 +307,14 @@ export const MetricWindow = {
     if (message.id !== undefined) {
       MetricWindowId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
-    Object.entries(message.metrics).forEach(([key, value]) => {
-      MetricWindow_MetricsEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
-    });
+    switch (message.metric?.$case) {
+      case "workflow":
+        WfMetrics.encode(message.metric.value, writer.uint32(18).fork()).ldelim();
+        break;
+      case "task":
+        TaskMetrics.encode(message.metric.value, writer.uint32(26).fork()).ldelim();
+        break;
+    }
     return writer;
   },
 
@@ -317,10 +337,14 @@ export const MetricWindow = {
             break;
           }
 
-          const entry2 = MetricWindow_MetricsEntry.decode(reader, reader.uint32());
-          if (entry2.value !== undefined) {
-            message.metrics[entry2.key] = entry2.value;
+          message.metric = { $case: "workflow", value: WfMetrics.decode(reader, reader.uint32()) };
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
           }
+
+          message.metric = { $case: "task", value: TaskMetrics.decode(reader, reader.uint32()) };
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -334,12 +358,11 @@ export const MetricWindow = {
   fromJSON(object: any): MetricWindow {
     return {
       id: isSet(object.id) ? MetricWindowId.fromJSON(object.id) : undefined,
-      metrics: isObject(object.metrics)
-        ? Object.entries(object.metrics).reduce<{ [key: string]: CountAndTiming }>((acc, [key, value]) => {
-          acc[key] = CountAndTiming.fromJSON(value);
-          return acc;
-        }, {})
-        : {},
+      metric: isSet(object.workflow)
+        ? { $case: "workflow", value: WfMetrics.fromJSON(object.workflow) }
+        : isSet(object.task)
+        ? { $case: "task", value: TaskMetrics.fromJSON(object.task) }
+        : undefined,
     };
   },
 
@@ -348,14 +371,11 @@ export const MetricWindow = {
     if (message.id !== undefined) {
       obj.id = MetricWindowId.toJSON(message.id);
     }
-    if (message.metrics) {
-      const entries = Object.entries(message.metrics);
-      if (entries.length > 0) {
-        obj.metrics = {};
-        entries.forEach(([k, v]) => {
-          obj.metrics[k] = CountAndTiming.toJSON(v);
-        });
-      }
+    if (message.metric?.$case === "workflow") {
+      obj.workflow = WfMetrics.toJSON(message.metric.value);
+    }
+    if (message.metric?.$case === "task") {
+      obj.task = TaskMetrics.toJSON(message.metric.value);
     }
     return obj;
   },
@@ -366,38 +386,54 @@ export const MetricWindow = {
   fromPartial(object: DeepPartial<MetricWindow>): MetricWindow {
     const message = createBaseMetricWindow();
     message.id = (object.id !== undefined && object.id !== null) ? MetricWindowId.fromPartial(object.id) : undefined;
-    message.metrics = Object.entries(object.metrics ?? {}).reduce<{ [key: string]: CountAndTiming }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = CountAndTiming.fromPartial(value);
-        }
-        return acc;
-      },
-      {},
-    );
+    if (object.metric?.$case === "workflow" && object.metric?.value !== undefined && object.metric?.value !== null) {
+      message.metric = { $case: "workflow", value: WfMetrics.fromPartial(object.metric.value) };
+    }
+    if (object.metric?.$case === "task" && object.metric?.value !== undefined && object.metric?.value !== null) {
+      message.metric = { $case: "task", value: TaskMetrics.fromPartial(object.metric.value) };
+    }
     return message;
   },
 };
 
-function createBaseMetricWindow_MetricsEntry(): MetricWindow_MetricsEntry {
-  return { key: "", value: undefined };
+function createBaseWfMetrics(): WfMetrics {
+  return {
+    started: undefined,
+    runningToCompleted: undefined,
+    runningToError: undefined,
+    runningToException: undefined,
+    runningToHalting: undefined,
+    haltingToHalted: undefined,
+  };
 }
 
-export const MetricWindow_MetricsEntry = {
-  encode(message: MetricWindow_MetricsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
+export const WfMetrics = {
+  encode(message: WfMetrics, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.started !== undefined) {
+      CountAndTiming.encode(message.started, writer.uint32(10).fork()).ldelim();
     }
-    if (message.value !== undefined) {
-      CountAndTiming.encode(message.value, writer.uint32(18).fork()).ldelim();
+    if (message.runningToCompleted !== undefined) {
+      CountAndTiming.encode(message.runningToCompleted, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.runningToError !== undefined) {
+      CountAndTiming.encode(message.runningToError, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.runningToException !== undefined) {
+      CountAndTiming.encode(message.runningToException, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.runningToHalting !== undefined) {
+      CountAndTiming.encode(message.runningToHalting, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.haltingToHalted !== undefined) {
+      CountAndTiming.encode(message.haltingToHalted, writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MetricWindow_MetricsEntry {
+  decode(input: _m0.Reader | Uint8Array, length?: number): WfMetrics {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMetricWindow_MetricsEntry();
+    const message = createBaseWfMetrics();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -406,14 +442,42 @@ export const MetricWindow_MetricsEntry = {
             break;
           }
 
-          message.key = reader.string();
+          message.started = CountAndTiming.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.value = CountAndTiming.decode(reader, reader.uint32());
+          message.runningToCompleted = CountAndTiming.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.runningToError = CountAndTiming.decode(reader, reader.uint32());
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.runningToException = CountAndTiming.decode(reader, reader.uint32());
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.runningToHalting = CountAndTiming.decode(reader, reader.uint32());
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.haltingToHalted = CountAndTiming.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -424,33 +488,280 @@ export const MetricWindow_MetricsEntry = {
     return message;
   },
 
-  fromJSON(object: any): MetricWindow_MetricsEntry {
+  fromJSON(object: any): WfMetrics {
     return {
-      key: isSet(object.key) ? globalThis.String(object.key) : "",
-      value: isSet(object.value) ? CountAndTiming.fromJSON(object.value) : undefined,
+      started: isSet(object.started) ? CountAndTiming.fromJSON(object.started) : undefined,
+      runningToCompleted: isSet(object.runningToCompleted)
+        ? CountAndTiming.fromJSON(object.runningToCompleted)
+        : undefined,
+      runningToError: isSet(object.runningToError) ? CountAndTiming.fromJSON(object.runningToError) : undefined,
+      runningToException: isSet(object.runningToException)
+        ? CountAndTiming.fromJSON(object.runningToException)
+        : undefined,
+      runningToHalting: isSet(object.runningToHalting) ? CountAndTiming.fromJSON(object.runningToHalting) : undefined,
+      haltingToHalted: isSet(object.haltingToHalted) ? CountAndTiming.fromJSON(object.haltingToHalted) : undefined,
     };
   },
 
-  toJSON(message: MetricWindow_MetricsEntry): unknown {
+  toJSON(message: WfMetrics): unknown {
     const obj: any = {};
-    if (message.key !== "") {
-      obj.key = message.key;
+    if (message.started !== undefined) {
+      obj.started = CountAndTiming.toJSON(message.started);
     }
-    if (message.value !== undefined) {
-      obj.value = CountAndTiming.toJSON(message.value);
+    if (message.runningToCompleted !== undefined) {
+      obj.runningToCompleted = CountAndTiming.toJSON(message.runningToCompleted);
+    }
+    if (message.runningToError !== undefined) {
+      obj.runningToError = CountAndTiming.toJSON(message.runningToError);
+    }
+    if (message.runningToException !== undefined) {
+      obj.runningToException = CountAndTiming.toJSON(message.runningToException);
+    }
+    if (message.runningToHalting !== undefined) {
+      obj.runningToHalting = CountAndTiming.toJSON(message.runningToHalting);
+    }
+    if (message.haltingToHalted !== undefined) {
+      obj.haltingToHalted = CountAndTiming.toJSON(message.haltingToHalted);
     }
     return obj;
   },
 
-  create(base?: DeepPartial<MetricWindow_MetricsEntry>): MetricWindow_MetricsEntry {
-    return MetricWindow_MetricsEntry.fromPartial(base ?? {});
+  create(base?: DeepPartial<WfMetrics>): WfMetrics {
+    return WfMetrics.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<MetricWindow_MetricsEntry>): MetricWindow_MetricsEntry {
-    const message = createBaseMetricWindow_MetricsEntry();
-    message.key = object.key ?? "";
-    message.value = (object.value !== undefined && object.value !== null)
-      ? CountAndTiming.fromPartial(object.value)
+  fromPartial(object: DeepPartial<WfMetrics>): WfMetrics {
+    const message = createBaseWfMetrics();
+    message.started = (object.started !== undefined && object.started !== null)
+      ? CountAndTiming.fromPartial(object.started)
       : undefined;
+    message.runningToCompleted = (object.runningToCompleted !== undefined && object.runningToCompleted !== null)
+      ? CountAndTiming.fromPartial(object.runningToCompleted)
+      : undefined;
+    message.runningToError = (object.runningToError !== undefined && object.runningToError !== null)
+      ? CountAndTiming.fromPartial(object.runningToError)
+      : undefined;
+    message.runningToException = (object.runningToException !== undefined && object.runningToException !== null)
+      ? CountAndTiming.fromPartial(object.runningToException)
+      : undefined;
+    message.runningToHalting = (object.runningToHalting !== undefined && object.runningToHalting !== null)
+      ? CountAndTiming.fromPartial(object.runningToHalting)
+      : undefined;
+    message.haltingToHalted = (object.haltingToHalted !== undefined && object.haltingToHalted !== null)
+      ? CountAndTiming.fromPartial(object.haltingToHalted)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseTaskMetrics(): TaskMetrics {
+  return {
+    taskrunCreatedToCompleted: undefined,
+    taskrunCreatedToError: undefined,
+    taskrunCreatedToException: undefined,
+    taskattemptPendingToScheduled: undefined,
+    taskattemptScheduledToRunning: undefined,
+    taskattemptRunningToError: undefined,
+    taskattemptRunningToSuccess: undefined,
+    taskattemptRunningToException: undefined,
+  };
+}
+
+export const TaskMetrics = {
+  encode(message: TaskMetrics, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.taskrunCreatedToCompleted !== undefined) {
+      CountAndTiming.encode(message.taskrunCreatedToCompleted, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.taskrunCreatedToError !== undefined) {
+      CountAndTiming.encode(message.taskrunCreatedToError, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.taskrunCreatedToException !== undefined) {
+      CountAndTiming.encode(message.taskrunCreatedToException, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.taskattemptPendingToScheduled !== undefined) {
+      CountAndTiming.encode(message.taskattemptPendingToScheduled, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.taskattemptScheduledToRunning !== undefined) {
+      CountAndTiming.encode(message.taskattemptScheduledToRunning, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.taskattemptRunningToError !== undefined) {
+      CountAndTiming.encode(message.taskattemptRunningToError, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.taskattemptRunningToSuccess !== undefined) {
+      CountAndTiming.encode(message.taskattemptRunningToSuccess, writer.uint32(58).fork()).ldelim();
+    }
+    if (message.taskattemptRunningToException !== undefined) {
+      CountAndTiming.encode(message.taskattemptRunningToException, writer.uint32(66).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TaskMetrics {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTaskMetrics();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.taskrunCreatedToCompleted = CountAndTiming.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.taskrunCreatedToError = CountAndTiming.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.taskrunCreatedToException = CountAndTiming.decode(reader, reader.uint32());
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.taskattemptPendingToScheduled = CountAndTiming.decode(reader, reader.uint32());
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.taskattemptScheduledToRunning = CountAndTiming.decode(reader, reader.uint32());
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.taskattemptRunningToError = CountAndTiming.decode(reader, reader.uint32());
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.taskattemptRunningToSuccess = CountAndTiming.decode(reader, reader.uint32());
+          continue;
+        case 8:
+          if (tag !== 66) {
+            break;
+          }
+
+          message.taskattemptRunningToException = CountAndTiming.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TaskMetrics {
+    return {
+      taskrunCreatedToCompleted: isSet(object.taskrunCreatedToCompleted)
+        ? CountAndTiming.fromJSON(object.taskrunCreatedToCompleted)
+        : undefined,
+      taskrunCreatedToError: isSet(object.taskrunCreatedToError)
+        ? CountAndTiming.fromJSON(object.taskrunCreatedToError)
+        : undefined,
+      taskrunCreatedToException: isSet(object.taskrunCreatedToException)
+        ? CountAndTiming.fromJSON(object.taskrunCreatedToException)
+        : undefined,
+      taskattemptPendingToScheduled: isSet(object.taskattemptPendingToScheduled)
+        ? CountAndTiming.fromJSON(object.taskattemptPendingToScheduled)
+        : undefined,
+      taskattemptScheduledToRunning: isSet(object.taskattemptScheduledToRunning)
+        ? CountAndTiming.fromJSON(object.taskattemptScheduledToRunning)
+        : undefined,
+      taskattemptRunningToError: isSet(object.taskattemptRunningToError)
+        ? CountAndTiming.fromJSON(object.taskattemptRunningToError)
+        : undefined,
+      taskattemptRunningToSuccess: isSet(object.taskattemptRunningToSuccess)
+        ? CountAndTiming.fromJSON(object.taskattemptRunningToSuccess)
+        : undefined,
+      taskattemptRunningToException: isSet(object.taskattemptRunningToException)
+        ? CountAndTiming.fromJSON(object.taskattemptRunningToException)
+        : undefined,
+    };
+  },
+
+  toJSON(message: TaskMetrics): unknown {
+    const obj: any = {};
+    if (message.taskrunCreatedToCompleted !== undefined) {
+      obj.taskrunCreatedToCompleted = CountAndTiming.toJSON(message.taskrunCreatedToCompleted);
+    }
+    if (message.taskrunCreatedToError !== undefined) {
+      obj.taskrunCreatedToError = CountAndTiming.toJSON(message.taskrunCreatedToError);
+    }
+    if (message.taskrunCreatedToException !== undefined) {
+      obj.taskrunCreatedToException = CountAndTiming.toJSON(message.taskrunCreatedToException);
+    }
+    if (message.taskattemptPendingToScheduled !== undefined) {
+      obj.taskattemptPendingToScheduled = CountAndTiming.toJSON(message.taskattemptPendingToScheduled);
+    }
+    if (message.taskattemptScheduledToRunning !== undefined) {
+      obj.taskattemptScheduledToRunning = CountAndTiming.toJSON(message.taskattemptScheduledToRunning);
+    }
+    if (message.taskattemptRunningToError !== undefined) {
+      obj.taskattemptRunningToError = CountAndTiming.toJSON(message.taskattemptRunningToError);
+    }
+    if (message.taskattemptRunningToSuccess !== undefined) {
+      obj.taskattemptRunningToSuccess = CountAndTiming.toJSON(message.taskattemptRunningToSuccess);
+    }
+    if (message.taskattemptRunningToException !== undefined) {
+      obj.taskattemptRunningToException = CountAndTiming.toJSON(message.taskattemptRunningToException);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<TaskMetrics>): TaskMetrics {
+    return TaskMetrics.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<TaskMetrics>): TaskMetrics {
+    const message = createBaseTaskMetrics();
+    message.taskrunCreatedToCompleted =
+      (object.taskrunCreatedToCompleted !== undefined && object.taskrunCreatedToCompleted !== null)
+        ? CountAndTiming.fromPartial(object.taskrunCreatedToCompleted)
+        : undefined;
+    message.taskrunCreatedToError =
+      (object.taskrunCreatedToError !== undefined && object.taskrunCreatedToError !== null)
+        ? CountAndTiming.fromPartial(object.taskrunCreatedToError)
+        : undefined;
+    message.taskrunCreatedToException =
+      (object.taskrunCreatedToException !== undefined && object.taskrunCreatedToException !== null)
+        ? CountAndTiming.fromPartial(object.taskrunCreatedToException)
+        : undefined;
+    message.taskattemptPendingToScheduled =
+      (object.taskattemptPendingToScheduled !== undefined && object.taskattemptPendingToScheduled !== null)
+        ? CountAndTiming.fromPartial(object.taskattemptPendingToScheduled)
+        : undefined;
+    message.taskattemptScheduledToRunning =
+      (object.taskattemptScheduledToRunning !== undefined && object.taskattemptScheduledToRunning !== null)
+        ? CountAndTiming.fromPartial(object.taskattemptScheduledToRunning)
+        : undefined;
+    message.taskattemptRunningToError =
+      (object.taskattemptRunningToError !== undefined && object.taskattemptRunningToError !== null)
+        ? CountAndTiming.fromPartial(object.taskattemptRunningToError)
+        : undefined;
+    message.taskattemptRunningToSuccess =
+      (object.taskattemptRunningToSuccess !== undefined && object.taskattemptRunningToSuccess !== null)
+        ? CountAndTiming.fromPartial(object.taskattemptRunningToSuccess)
+        : undefined;
+    message.taskattemptRunningToException =
+      (object.taskattemptRunningToException !== undefined && object.taskattemptRunningToException !== null)
+        ? CountAndTiming.fromPartial(object.taskattemptRunningToException)
+        : undefined;
     return message;
   },
 };
@@ -642,10 +953,6 @@ function longToNumber(long: Long): number {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
-}
-
-function isObject(value: any): boolean {
-  return typeof value === "object" && value !== null;
 }
 
 function isSet(value: any): boolean {
