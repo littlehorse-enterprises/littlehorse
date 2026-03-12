@@ -3,6 +3,7 @@ import { getSmoothStepPath, EdgeLabelRenderer, BaseEdge, type EdgeProps, Positio
 import { CircleAlertIcon } from 'lucide-react'
 import { useModal } from '../../hooks/useModal'
 import { Edge as EdgeProto } from 'littlehorse-client/proto'
+import { EdgeConditionLabel } from './EdgeConditionLabel'
 
 const CustomEdge: FC<EdgeProps<EdgeProto>> = ({
   id,
@@ -12,7 +13,6 @@ const CustomEdge: FC<EdgeProps<EdgeProto>> = ({
   targetY,
   sourcePosition = Position.Bottom,
   targetPosition = Position.Top,
-  label,
   data,
   style,
   ...rest
@@ -47,7 +47,14 @@ const CustomEdge: FC<EdgeProps<EdgeProto>> = ({
         >
           <div onClick={onClick} className="flex cursor-pointer flex-col items-center">
             {(data?.variableMutations?.length ?? 0) > 0 && <CircleAlertIcon size={16} className={`fill-gray-200`} />}
-            {label && <div className="rounded-md bg-gray-200 px-2 text-center text-xs text-gray-600">{label}</div>}
+            {data?.edgeCondition && (
+              <div
+                className="flex items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-gray-600"
+                style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}
+              >
+                <EdgeConditionLabel edge={data} />
+              </div>
+            )}
           </div>
         </div>
       </EdgeLabelRenderer>

@@ -207,7 +207,7 @@ class LHExpression:
 
     def operation(self) -> Any:
         return self._operation
-        
+
     def cast_to(self, target_type: VariableType) -> "CastExpression":
         return CastExpression(self, target_type)
 
@@ -227,7 +227,7 @@ class LHExpression:
         return self.cast_to(VariableType.BYTES)
 
     def cast_to_wf_run_id(self) -> "CastExpression":
-        return self.cast_to(VariableType.WF_RUN_ID)        
+        return self.cast_to(VariableType.WF_RUN_ID)
 
 
 class CastExpression:
@@ -2487,7 +2487,10 @@ class WorkflowThread:
         )
 
         start_node.outgoing_edges.append(
-            Edge(sink_node_name=end_node_name, legacy_condition=condition.negate().compile())
+            Edge(
+                sink_node_name=end_node_name,
+                legacy_condition=condition.negate().compile(),
+            )
         )
 
         end_node.outgoing_edges.append(

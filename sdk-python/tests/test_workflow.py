@@ -444,10 +444,14 @@ class TestCastExpressions(unittest.TestCase):
         self.assertEqual(assignment.target_type.primitive_type, VariableType.DOUBLE)
 
     def test_wfrunvariable_cast_sets_target_type(self):
-        wfvar = WfRunVariable("my-var", self.workflow_thread, variable_type=VariableType.STR)
+        wfvar = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.STR
+        )
         casted = wfvar.cast_to_bool()
         assignment = to_variable_assignment(casted)
-        self.assertEqual(assignment.json_path, "")  # Protobuf string fields default to empty string
+        self.assertEqual(
+            assignment.json_path, ""
+        )  # Protobuf string fields default to empty string
         self.assertEqual(assignment.variable_name, "my-var")
         self.assertIsNotNone(assignment.target_type)
         self.assertEqual(assignment.target_type.primitive_type, VariableType.BOOL)
