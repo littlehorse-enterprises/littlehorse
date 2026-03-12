@@ -67,6 +67,7 @@ type LHConfig struct {
 
 	GrpcKeepaliveTimeMs    int64
 	GrpcKeepaliveTimeoutMs int64
+	UnaryInterceptors      []grpc.UnaryClientInterceptor
 
 	clients  map[string]*lhproto.LittleHorseClient
 	channels map[string]*grpc.ClientConn
@@ -87,6 +88,9 @@ func (config *LHConfig) GetGrpcConn(url string) (*grpc.ClientConn, error) {
 				PermitWithoutStream: true,
 			},
 		))
+		if len(config.UnaryInterceptors) > 0 {
+			opts = append(opts, grpc.WithChainUnaryInterceptor(config.UnaryInterceptors...))
+		}
 		opts = append(opts, grpc.WithPerRPCCredentials(&tenantIdHeaderCreds{TenantId: config.TenantId}))
 
 		if config.ApiProtocol == DEFAULT_PROTOCOL {
