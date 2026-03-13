@@ -235,11 +235,11 @@ func (b browserModel) visibleRows() int {
 func (b browserModel) view() string {
 	b.syncPreviewForm()
 
-	selected := b.selectedRPC()
-	if selected == nil {
-		return b.renderListOnlyView(b.width, b.height)
-	}
-
+	// Always render a two-pane layout: left list and right preview.
+	// When there are no matching RPCs, the left pane will show a
+	// "No matching RPCs found" message and the right pane will show
+	// "No RPC selected." This avoids the entire preview/pane area
+	// disappearing when a filter yields zero results.
 	leftWidth := int(float64(max(b.width, 40)) * 0.40)
 	if leftWidth < 30 {
 		leftWidth = 30
