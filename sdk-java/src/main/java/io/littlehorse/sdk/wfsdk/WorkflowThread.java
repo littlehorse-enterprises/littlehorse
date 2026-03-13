@@ -221,9 +221,10 @@ public interface WorkflowThread {
     /**
      * Conditionally executes some workflow code; equivalent to an if() statement in programming.
      *
-     * @param condition is the WorkflowCondition to be satisfied.
-     * @param doIf is the block of ThreadSpec code to be executed if the provided WorkflowCondition
-     *     is satisfied.
+     * @param condition an LHExpression that evaluates to a boolean determining whether to execute the
+     *     `doIf` block.
+     * @param doIf is the block of ThreadSpec code to be executed if the provided LHExpression
+     *     evaluates to true.
      * @return Returns a {@link WorkflowIfStatement} object that allows you to chain {@link WorkflowIfStatement#doElseIf(LHExpression, IfElseBody)} and {@link WorkflowIfStatement#doElse(IfElseBody)} method calls.
      */
     WorkflowIfStatement doIf(LHExpression condition, IfElseBody doIf);
@@ -232,8 +233,8 @@ public interface WorkflowThread {
      * Conditionally executes some workflow code; equivalent to an if() statement in programming.
      *
      * @param condition BOOL WfRunVariable that is evaluated to determine if the doIf branch should be executed.
-     * @param doIf is the block of ThreadSpec code to be executed if the provided WorkflowCondition
-     *     is satisfied.
+     * @param doIf is the block of ThreadSpec code to be executed if the provided WfRunVariable
+     *     evaluates to true.
      * @return Returns a {@link WorkflowIfStatement} object that allows you to chain {@link WorkflowIfStatement#doElseIf(LHExpression, IfElseBody)} and {@link WorkflowIfStatement#doElse(IfElseBody)} method calls.
      */
     WorkflowIfStatement doIf(WfRunVariable condition, IfElseBody doIf);
@@ -242,11 +243,11 @@ public interface WorkflowThread {
      * Conditionally executes one of two workflow code branches; equivalent to an if/else statement
      * in programming.
      *
-     * @param condition is the WorkflowCondition to be satisfied.
-     * @param doIf is the block of ThreadSpec code to be executed if the provided WorkflowCondition
-     *     is satisfied.
+     * @param condition an LHExpression that evaluates to a boolean determining which branch to execute.
+     * @param doIf is the block of ThreadSpec code to be executed if the provided LHExpression
+     *     evaluates to true.
      * @param doElse is the block of ThreadSpec code to be executed if the provided
-     *     WorkflowCondition is NOT satisfied.
+     *     condition evaluates to false.
      * @see WorkflowThread#doIf
      */
     void doIfElse(LHExpression condition, IfElseBody doIf, IfElseBody doElse);
@@ -256,10 +257,10 @@ public interface WorkflowThread {
      * in programming.
      *
      * @param boolVar a BOOL WfRunVariable that is evaluated to determine if the doIf branch should be executed.
-     * @param doIf is the block of ThreadSpec code to be executed if the provided WorkflowCondition
-     *     is satisfied.
+     * @param doIf is the block of ThreadSpec code to be executed if the provided WfRunVariable
+     *     evaluates to true.
      * @param doElse is the block of ThreadSpec code to be executed if the provided
-     *     WorkflowCondition is NOT satisfied.
+     *     WfRunVariable evaluates to false.
      * @see WorkflowThread#doIf
      */
     void doIfElse(WfRunVariable boolVar, IfElseBody doIf, IfElseBody doElse);
@@ -520,7 +521,7 @@ public interface WorkflowThread {
     void handleAnyFailure(NodeOutput node, ThreadFunc handler);
 
     /**
-     * Returns a WorkflowCondition that can be used in `WorkflowThread::doIf()`
+     * Returns an expression that evaluates to a boolean and can be used in `WorkflowThread::doIf()`
      *
      * @param lhs is either a literal value (which the Library casts to a Variable Value) or a
      *     `WfRunVariable` representing the LHS of the expression.
@@ -528,7 +529,7 @@ public interface WorkflowThread {
      *     `ComparatorTypePb.EQUALS`.
      * @param rhs is either a literal value (which the Library casts to a Variable Value) or a
      *     `WfRunVariable` representing the RHS of the expression.
-     * @return a WorkflowCondition.
+     * @return an {@link LHExpression} representing the comparator expression.
      */
     LHExpression condition(Serializable lhs, Comparator comparator, Serializable rhs);
 
