@@ -14,7 +14,7 @@ import java.util.Properties;
 
 /*
  * In this example you will see how to define a while loop with LH.
- * Use doWhile(WorkflowCondition condition, ThreadFunc whileBody) to define the loop,
+ * Use doWhile(LHExpression condition, ThreadFunc whileBody) to define the loop,
  * the end condition and the handler (body) of the while.
  */
 public class ConditionalsWhileExample {
