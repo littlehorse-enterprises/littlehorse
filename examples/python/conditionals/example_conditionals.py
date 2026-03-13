@@ -51,7 +51,6 @@ class SaleService:
 
         wf.mutate(total_sales, VariableMutationType.ASSIGN, output)
 
-        # Build condition using the WfRunVariable comparator DSL
         condition = total_sales.is_greater_than_eq(GOAL)
         wf.do_if(condition, self.if_body).do_else(self.else_body)
 
