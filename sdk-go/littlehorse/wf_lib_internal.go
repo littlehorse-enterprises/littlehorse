@@ -756,19 +756,6 @@ func (t *WorkflowThread) assignVariable(
 			},
 		}
 
-	case *WorkflowCondition:
-		out = &lhproto.VariableAssignment{
-			Source: &lhproto.VariableAssignment_Expression_{
-				Expression: &lhproto.VariableAssignment_Expression{
-					Lhs: v.spec.Left,
-					Operation: &lhproto.VariableAssignment_Expression_Comparator{
-						Comparator: v.spec.Comparator,
-					},
-					Rhs: v.spec.Right,
-				},
-			},
-		}
-
 	default:
 		var tmp *lhproto.VariableValue
 		tmp, err = InterfaceToVarVal(v)
@@ -1157,28 +1144,13 @@ func (t *WorkflowThread) complete(result interface{}) {
 
 func (t *WorkflowThread) condition(
 	lhs interface{}, op lhproto.Comparator, rhs interface{},
-) *WorkflowCondition {
+) LHExpression {
 	t.checkIfIsActive()
-	cond := &lhproto.LegacyEdgeCondition{
-		Comparator: op,
-	}
-
-	var err error
-
-	cond.Left, err = t.assignVariable(lhs)
-
-	if err != nil {
-		t.throwError(tracerr.Wrap(err))
-	}
-
-	cond.Right, err = t.assignVariable(rhs)
-	if err != nil {
-		t.throwError(tracerr.Wrap(err))
-	}
-
-	return &WorkflowCondition{
-		spec: cond,
-	}
+	// Return a comparatorExpression (an LHExpression) instead of the
+	// legacy WorkflowCondition wrapper. assignVariable knows how to
+	// convert comparatorExpression into the appropriate
+	// VariableAssignment/Expression when building the proto.
+	return &comparatorExpression{lhs: lhs, rhs: rhs, comparator: op}
 }
 
 func (t *WorkflowThread) addNopNode() {
@@ -1434,32 +1406,6 @@ func (t *WorkflowThread) doWhile(cond LHExpression, whileBody ThreadFunc) {
 			},
 		},
 	)
-}
-
-func (c *WorkflowCondition) getReverse() *lhproto.LegacyEdgeCondition {
-	out := &lhproto.LegacyEdgeCondition{}
-	out.Left = c.spec.Left
-	out.Right = c.spec.Right
-	switch c.spec.Comparator {
-	case lhproto.Comparator_LESS_THAN:
-		out.Comparator = lhproto.Comparator_GREATER_THAN_EQ
-	case lhproto.Comparator_GREATER_THAN:
-		out.Comparator = lhproto.Comparator_LESS_THAN_EQ
-	case lhproto.Comparator_GREATER_THAN_EQ:
-		out.Comparator = lhproto.Comparator_LESS_THAN
-	case lhproto.Comparator_LESS_THAN_EQ:
-		out.Comparator = lhproto.Comparator_GREATER_THAN
-	case lhproto.Comparator_EQUALS:
-		out.Comparator = lhproto.Comparator_NOT_EQUALS
-	case lhproto.Comparator_NOT_EQUALS:
-		out.Comparator = lhproto.Comparator_EQUALS
-	case lhproto.Comparator_IN:
-		out.Comparator = lhproto.Comparator_NOT_IN
-	case lhproto.Comparator_NOT_IN:
-		out.Comparator = lhproto.Comparator_IN
-	}
-
-	return out
 }
 
 func (t *WorkflowThread) overrideTaskRetries(taskNodeOutput *TaskNodeOutput, retries int32) {

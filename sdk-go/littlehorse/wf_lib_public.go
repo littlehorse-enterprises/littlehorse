@@ -254,13 +254,6 @@ func (n *UserTaskNodeOutput) Get(field string) *UserTaskNodeOutput {
 	}
 }
 
-// Deprecated: WorkflowCondition is deprecated. Use LHExpression-based comparator
-// methods (e.g., WfRunVariable.IsLessThan()) which return LHExpression instead.
-// WorkflowCondition will be removed in 2.0.
-type WorkflowCondition struct {
-	spec *lhproto.LegacyEdgeCondition
-}
-
 type SpawnedThread struct {
 	thread       *WorkflowThread
 	threadNumVar *WfRunVariable
@@ -752,10 +745,12 @@ func (t *WorkflowThread) Mutate(
 
 // Deprecated: Condition is deprecated. Use comparator methods directly on
 // WfRunVariable (e.g., myVar.IsLessThan(10)) which return LHExpression.
-// This method will be removed in 2.0.
+// This method will be removed in 2.0. Kept here for compatibility but now
+// returns an LHExpression (matching the Java SDK) instead of the old
+// WorkflowCondition wrapper.
 func (t *WorkflowThread) Condition(
 	lhs interface{}, op lhproto.Comparator, rhs interface{},
-) *WorkflowCondition {
+) LHExpression {
 	return t.condition(lhs, op, rhs)
 }
 
