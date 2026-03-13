@@ -13,6 +13,7 @@ type ThemePalette struct {
 	Error           lipgloss.Color
 	Text            lipgloss.Color
 	Muted           lipgloss.Color
+	Placeholder     lipgloss.Color
 	Background      lipgloss.Color
 	Surface         lipgloss.Color
 	Border          lipgloss.Color
@@ -39,6 +40,7 @@ var darkTheme = Theme{
 		Error:           lipgloss.Color("#FCA5A5"),
 		Text:            lipgloss.Color("#F9FAFB"),
 		Muted:           lipgloss.Color("#D1D5DB"),
+		Placeholder:     lipgloss.Color("#6B7280"),
 		Background:      lipgloss.Color("#0B1020"),
 		Surface:         lipgloss.Color("#1F2937"),
 		Border:          lipgloss.Color("#4B5563"),
@@ -72,6 +74,7 @@ var (
 	fieldLabelStyle   lipgloss.Style
 	fieldTypeStyle    lipgloss.Style
 	helpStyle         lipgloss.Style
+	placeholderStyle  lipgloss.Style
 	contentFrameStyle lipgloss.Style
 	errorCardStyle    lipgloss.Style
 	errorTitleStyle   lipgloss.Style
@@ -94,6 +97,9 @@ func ApplyTheme(theme Theme) {
 	ColorMuted = p.Muted
 	ColorText = p.Text
 
+	// titleStyle has MarginBottom(1) which embeds a newline into the
+	// rendered string. If you need a single-line header, copy this
+	// style with .MarginBottom(0) before rendering.
 	titleStyle = lipgloss.NewStyle().
 		Bold(true).
 		Foreground(p.Primary).
@@ -107,6 +113,8 @@ func ApplyTheme(theme Theme) {
 		Foreground(p.Muted).
 		Italic(true)
 
+	// statusBarStyle has Padding(0, 1) — use textContentWidth() when
+	// laying out text inside this style, not the raw width.
 	statusBarStyle = lipgloss.NewStyle().
 		Foreground(p.Text).
 		Background(p.Surface).
@@ -130,6 +138,12 @@ func ApplyTheme(theme Theme) {
 	helpStyle = lipgloss.NewStyle().
 		Foreground(p.Muted)
 
+	// placeholderStyle is slightly brighter than muted text for visibility
+	placeholderStyle = lipgloss.NewStyle().
+		Foreground(p.Placeholder)
+
+	// contentFrameStyle has Padding(1, 2) — use textContentWidth() when
+	// laying out text inside this style, not the raw width.
 	contentFrameStyle = lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(p.Border).
@@ -151,4 +165,23 @@ func ApplyTheme(theme Theme) {
 		Border(lipgloss.NormalBorder()).
 		BorderForeground(p.RawErrorBorder).
 		Padding(0, 1)
+}
+
+// textContentWidth returns the number of columns available for actual text
+// content inside a style. Lipgloss Width() includes padding, so passing
+// style.Width(w) renders text into w columns but the usable text area is
+// w minus horizontal padding. Use this whenever you need to lay out text
+// (e.g. right-aligning, truncating, or spacing) inside a styled container.
+//
+// Example:
+//
+//	innerW := totalW - style.GetHorizontalFrameSize()
+//	contentW := textContentWidth(style, innerW) // subtract padding
+//	// Now use contentW for text layout, innerW for style.Width(innerW).Render(...)
+func textContentWidth(style lipgloss.Style, widthPassedToRender int) int {
+	w := widthPassedToRender - style.GetPaddingLeft() - style.GetPaddingRight()
+	if w < 0 {
+		return 0
+	}
+	return w
 }

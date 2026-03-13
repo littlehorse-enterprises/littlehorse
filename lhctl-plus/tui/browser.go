@@ -279,7 +279,13 @@ func (b browserModel) renderListOnlyView(width, height int) string {
 	header := titleStyle.Render("⚡ lhctl+ — RPC Command Palette")
 	s.WriteString(header)
 	s.WriteString("\n")
-	s.WriteString(filter.View())
+	// When the filter is empty, render our placeholder with placeholderStyle
+	// to control placeholder color instead of embedding ANSI sequences.
+	if strings.TrimSpace(filter.Value()) == "" {
+		s.WriteString(placeholderStyle.Render(filter.Placeholder))
+	} else {
+		s.WriteString(filter.View())
+	}
 	s.WriteString("\n\n")
 
 	if len(b.filtered) == 0 {

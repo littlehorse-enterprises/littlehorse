@@ -235,24 +235,71 @@ func (a App) renderErrorView() string {
 }
 
 func (a App) renderStatusBar() string {
-	var left, right string
+	var left, center, right string
 	switch a.currentView {
 	case viewBrowser:
 		left = " lhctl+  │  RPC Browser"
+		center = ""
 		right = "↑/↓ navigate  │  / filter  │  enter select  │  q quit "
 	case viewForm:
 		left = " lhctl+  │  RPC Form"
+		center = ""
 		right = "tab next  │  shift+tab prev  │  enter submit  │  esc back "
 	case viewResponse:
 		left = " lhctl+  │  Response"
+		// center is for context-specific actions (e.g., copy)
+		center = "c copy"
 		right = "↑/↓ scroll  │  esc back  │  q quit "
 	}
 
-	gap := a.width - lipgloss.Width(left) - lipgloss.Width(right)
+	// Account for the status bar style's full frame (borders + padding).
+	// Use textContentWidth to get the true text area inside the bar.
+	availWidth := textContentWidth(statusBarStyle, maxInt(0, a.width-statusBarStyle.GetHorizontalFrameSize()))
+
+	leftW := lipgloss.Width(left)
+	centerW := lipgloss.Width(center)
+	rightW := lipgloss.Width(right)
+	// account for separator between center and right when center exists
+	sepW := 0
+	if center != "" {
+		sepW = 2 // we render two spaces between center and right
+		centerW += sepW
+	}
+
+	// Prioritize keeping right, then center, then truncate left as needed.
+	if rightW >= availWidth {
+		right = truncateToWidth(right, availWidth)
+		left = ""
+		center = ""
+	} else {
+		remaining := availWidth - rightW
+
+		if centerW >= remaining {
+			// not enough space for center; truncate it to remaining
+			center = truncateToWidth(center, maxInt(0, remaining))
+			left = ""
+		} else {
+			// keep center, reserve remaining space for left
+			remaining = remaining - centerW
+			if leftW > remaining {
+				left = truncateToWidth(left, remaining)
+			}
+		}
+	}
+
+	gap := availWidth - leftW - centerW - rightW
 	if gap < 0 {
 		gap = 0
 	}
-	bar := left + fmt.Sprintf("%*s", gap, "") + right
+
+	// Place left, padding, then center (if present), then right.
+	bar := left + fmt.Sprintf("%*s", gap, "")
+	if center != "" {
+		bar = bar + center + "  " + right
+	} else {
+		bar = bar + right
+	}
+
 	return statusBarStyle.Width(a.width).Render(bar)
 }
 
