@@ -9,6 +9,7 @@ import io.grpc.Grpc;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptor;
+import io.grpc.protobuf.services.ProtoReflectionServiceV1;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -217,6 +218,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
                 .addService(this)
+                .addService(ProtoReflectionServiceV1.newInstance())
                 .executor(networkThreads);
 
         for (ServerInterceptor interceptor : interceptors) {

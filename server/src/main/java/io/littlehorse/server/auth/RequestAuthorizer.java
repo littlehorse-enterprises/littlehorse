@@ -99,6 +99,12 @@ public class RequestAuthorizer implements LHServerInterceptor {
 
     private static class AclVerifier {
 
+        private static final Set<String> EXPLICIT_EXTERNAL_ALLOWLIST = Set.of(
+            "grpc.reflection.v1.ServerReflection/ServerReflectionInfo",
+            "grpc.reflection.v1alpha.ServerReflection/ServerReflectionInfo",
+            "grpc.health.v1.Health/Check",
+            "grpc.health.v1.Health/Watch");
+
         private final Map<String, AuthMetadata> methodMetadata = new HashMap<>();
         private final List<ACLAction> adminActions = List.of(ACLAction.ALL_ACTIONS);
         private final List<ACLResource> adminResources = List.of(ACLResource.ACL_ALL_RESOURCES);
@@ -135,6 +141,10 @@ public class RequestAuthorizer implements LHServerInterceptor {
         private void verify(MethodDescriptor<?, ?> serviceMethod, AuthorizationContext authContext) {
             String methodName = serviceMethod.getBareMethodName();
             AuthMetadata authMetadata = methodMetadata.get(methodName);
+            if (authMetadata == null) {
+                ensureExplicitlyAllowlisted(serviceMethod);
+                return;
+            }
 
             Collection<ServerACLModel> acls = authContext.acls();
 
@@ -154,6 +164,10 @@ public class RequestAuthorizer implements LHServerInterceptor {
         public boolean doesServiceRequireClusterScopedResources(MethodDescriptor<?, ?> serviceMethod) {
             String methodName = serviceMethod.getBareMethodName();
             AuthMetadata authMetadata = methodMetadata.get(methodName);
+            if (authMetadata == null) {
+                ensureExplicitlyAllowlisted(serviceMethod);
+                return false;
+            }
 
             return authMetadata.requiredResources().contains(ACLResource.ACL_TENANT)
                     || authMetadata.requiredResources().contains(ACLResource.ACL_PRINCIPAL);
@@ -171,5 +185,16 @@ public class RequestAuthorizer implements LHServerInterceptor {
 
         private record AuthMetadata(
                 String methodName, List<ACLAction> requiredActions, List<ACLResource> requiredResources) {}
+
+        private void ensureExplicitlyAllowlisted(MethodDescriptor<?, ?> serviceMethod) {
+            String fullMethodName = serviceMethod.getFullMethodName();
+            if (EXPLICIT_EXTERNAL_ALLOWLIST.contains(fullMethodName)) {
+                log.debug("Allowlisted external RPC method '{}'", fullMethodName);
+                return;
+            }
+
+            throw new PermissionDeniedException(
+                    "RPC method '%s' is not allowlisted for external services".formatted(fullMethodName));
+        }
     }
 }
