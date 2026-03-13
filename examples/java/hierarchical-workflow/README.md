@@ -1,6 +1,6 @@
 # Child Workflows
 
-This is an example of a three-level workflow hierarchy with `parent`, `child`, and `grand-child` `WfSpec`s, demonstrating nested workflow relationships. The `child` `WfSpec` uses a `Variable` defined from the `parent`, and the `grand-child` `WfSpec` inherits from the `child`. This example shows the ability to use the `WfRunVariableAccessLevel` enum to inherit variables across multiple levels of workflow hierarchy.
+This is an example of a three-level workflow hierarchy with `parent`, `child`, and `grand-child` `WfSpec`s, demonstrating nested workflow relationships. The `child` `WfSpec` uses a `Variable` defined from the `parent`, and the `grand-child` `WfSpec` inherits from the `child`. This example shows the ability to use the `WfRunVariable` visibility methods to inherit variables across multiple levels of workflow hierarchy.
 
 In this example, there is a variable called `name` which is defined in the `parent` `WfSpec`. The `child` `WfSpec` refers to the parent `name` variable, and does the following:
 * Passes it as a parameter into the `greet` task.

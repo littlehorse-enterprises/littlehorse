@@ -21,12 +21,11 @@ def get_config() -> LHConfig:
 
 def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
-        string_input = wf.add_variable("string-number", VariableType.STR, default_value="3.14")
-        string_bool = wf.add_variable("string-bool", VariableType.STR, default_value="false")
-        json_input = wf.add_variable(
-            "json-input", 
-            VariableType.JSON_OBJ, 
-            default_value={"int": "1", "string": "hello"}
+        string_input = wf.declare_str("string-number", default_value="3.14")
+        string_bool = wf.declare_str("string-bool", default_value="false")
+        json_input = wf.declare_json_obj(
+            "json-input",
+            default_value={"int": "1", "string": "hello"},
         )
 
         # Manual cast from STR variable to DOUBLE

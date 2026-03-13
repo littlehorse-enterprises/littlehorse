@@ -22,7 +22,7 @@ def get_config() -> LHConfig:
 
 def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
-        the_name = wf.add_variable("input-name", VariableType.STR)
+        the_name = wf.declare_str("input-name")
         wf.execute("greet", the_name)
 
     return Workflow("example-basic", my_entrypoint)
