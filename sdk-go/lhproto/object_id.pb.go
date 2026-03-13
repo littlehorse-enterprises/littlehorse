@@ -1222,6 +1222,7 @@ type ScheduledWfRunId struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The ID of the ScheduledWfRun.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
@@ -1264,13 +1265,16 @@ func (x *ScheduledWfRunId) GetId() string {
 	return ""
 }
 
+// ID for an InactiveThreadRun.
 type InactiveThreadRunId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	WfRunId         *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
-	ThreadRunNumber int32    `protobuf:"varint,2,opt,name=thread_run_number,json=threadRunNumber,proto3" json:"thread_run_number,omitempty"`
+	// The WfRunId of the InactiveThreadRun.
+	WfRunId *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
+	// The ThreadRun number of the InactiveThreadRun.
+	ThreadRunNumber int32 `protobuf:"varint,2,opt,name=thread_run_number,json=threadRunNumber,proto3" json:"thread_run_number,omitempty"`
 }
 
 func (x *InactiveThreadRunId) Reset() {

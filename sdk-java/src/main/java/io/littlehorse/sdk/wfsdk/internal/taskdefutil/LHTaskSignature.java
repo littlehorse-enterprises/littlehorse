@@ -4,7 +4,9 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -13,12 +15,14 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
+import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -38,13 +42,28 @@ public class LHTaskSignature {
     Object executable;
     ReturnType outputSchema;
     private final LHTypeAdapterRegistry typeAdapterRegistry;
+    private final Map<String, String> placeholderValues;
 
     @Getter
     private String taskDefDescription;
 
     public LHTaskSignature(String taskDefName, Object executable, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
-        this(taskDefName, executable, lhTaskMethodAnnotationValue, LHTypeAdapterRegistry.empty());
+        this(taskDefName, executable, lhTaskMethodAnnotationValue, LHTypeAdapterRegistry.empty(), Map.of());
+    }
+
+    public LHTaskSignature(
+            String taskDefName,
+            Object executable,
+            String lhTaskMethodAnnotationValue,
+            List<LHTypeAdapter<?>> typeAdapters)
+            throws TaskSchemaMismatchError {
+        this(taskDefName, executable, lhTaskMethodAnnotationValue, LHTypeAdapterRegistry.from(typeAdapters), Map.of());
+    }
+
+    public LHTaskSignature(String taskDefName, Object executable, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws TaskSchemaMismatchError {
+        this(taskDefName, executable, taskDefName, typeAdapterRegistry, Map.of());
     }
 
     public LHTaskSignature(
@@ -53,6 +72,16 @@ public class LHTaskSignature {
             String lhTaskMethodAnnotationValue,
             LHTypeAdapterRegistry typeAdapterRegistry)
             throws TaskSchemaMismatchError {
+        this(taskDefName, executable, lhTaskMethodAnnotationValue, typeAdapterRegistry, Map.of());
+    }
+
+    public LHTaskSignature(
+            String taskDefName,
+            Object executable,
+            String lhTaskMethodAnnotationValue,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws TaskSchemaMismatchError {
         variableDefs = new ArrayList<>();
         hasWorkerContextAtEnd = false;
         this.taskDefName = taskDefName;
@@ -60,6 +89,7 @@ public class LHTaskSignature {
         this.lhTaskMethodAnnotationValue = lhTaskMethodAnnotationValue;
         this.structDefClasses = new LinkedHashSet<>();
         this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
+        this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
 
         for (Method method : executable.getClass().getMethods()) {
             if (method.isAnnotationPresent(LHTaskMethod.class)) {
@@ -109,19 +139,22 @@ public class LHTaskSignature {
     private VariableDef buildVariableDef(Parameter param) {
         VariableDef.Builder varDef = VariableDef.newBuilder();
         LHClassType lhClassType = LHClassType.fromJavaClass(param.getType(), typeAdapterRegistry);
+        LHType lhTypeAnnotation = param.getAnnotation(LHType.class);
 
         if (lhClassType instanceof LHStructDefType) {
             LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
             structDefClasses.addAll(lhStructDefType.getDependencyClasses());
         }
 
-        TypeDefinition.Builder typeDef = getAdaptedTypeDefinition(param.getType(), lhClassType);
+        TypeDefinition.Builder typeDef = getTypeDefinition(param.getType(), lhClassType, lhTypeAnnotation, true);
 
         // If param has `LHType` annotation...
-        if (param.isAnnotationPresent(LHType.class)) {
-            LHType lhTypeAnnotation = param.getAnnotation(LHType.class);
-
-            varDef.setName(lhTypeAnnotation.name());
+        if (lhTypeAnnotation != null) {
+            if (lhTypeAnnotation.name().isBlank()) {
+                varDef.setName(varNameFromParameterName(param));
+            } else {
+                varDef.setName(resolvePlaceholders(lhTypeAnnotation.name()));
+            }
             typeDef.setMasked(lhTypeAnnotation.masked());
         } else {
             varDef.setName(varNameFromParameterName(param));
@@ -137,17 +170,17 @@ public class LHTaskSignature {
             return ReturnType.newBuilder().build();
         } else {
             LHClassType lhClassType = LHClassType.fromJavaClass(classReturnType, typeAdapterRegistry);
+            LHType typeAnnotation = taskMethod.getAnnotation(LHType.class);
 
             if (lhClassType instanceof LHStructDefType) {
                 LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
                 structDefClasses.addAll(lhStructDefType.getDependencyClasses());
             }
 
-            TypeDefinition.Builder typeDef = getAdaptedTypeDefinition(classReturnType, lhClassType);
+            TypeDefinition.Builder typeDef = getTypeDefinition(classReturnType, lhClassType, typeAnnotation, false);
 
-            if (taskMethod.isAnnotationPresent(LHType.class)) {
-                LHType type = taskMethod.getAnnotation(LHType.class);
-                typeDef.setMasked(type.masked());
+            if (typeAnnotation != null) {
+                typeDef.setMasked(typeAnnotation.masked());
             }
 
             return ReturnType.newBuilder().setReturnType(typeDef).build();
@@ -174,6 +207,45 @@ public class LHTaskSignature {
         }
 
         return lhClassType.getTypeDefinition().toBuilder();
+    }
+
+    private TypeDefinition.Builder getTypeDefinition(
+            Class<?> javaClass, LHClassType lhClassType, LHType lhTypeAnnotation, boolean isParameter) {
+        String maybeStructDefName = getStructDefName(lhTypeAnnotation);
+        boolean hasStructDefName = maybeStructDefName != null && !maybeStructDefName.isBlank();
+
+        if (InlineStruct.class.equals(javaClass)) {
+            if (!hasStructDefName) {
+                throw new TaskSchemaMismatchError("InlineStruct "
+                        + (isParameter ? "parameters" : "returns")
+                        + " must declare @LHType(structDefName = \"...\").");
+            }
+
+            return TypeDefinition.newBuilder()
+                    .setStructDefId(StructDefId.newBuilder().setName(maybeStructDefName));
+        }
+
+        if (hasStructDefName) {
+            throw new TaskSchemaMismatchError(
+                    "@LHType(structDefName = ...) can only be used on InlineStruct parameters and returns.");
+        }
+
+        return getAdaptedTypeDefinition(javaClass, lhClassType);
+    }
+
+    private String getStructDefName(LHType lhTypeAnnotation) {
+        if (lhTypeAnnotation == null || lhTypeAnnotation.structDefName().isBlank()) {
+            return "";
+        }
+
+        return resolvePlaceholders(lhTypeAnnotation.structDefName());
+    }
+
+    private String resolvePlaceholders(String text) {
+        if (text == null || text.isBlank()) {
+            return text;
+        }
+        return PlaceholderUtil.replacePlaceholders(text, placeholderValues);
     }
 
     public boolean getHasWorkerContextAtEnd() {

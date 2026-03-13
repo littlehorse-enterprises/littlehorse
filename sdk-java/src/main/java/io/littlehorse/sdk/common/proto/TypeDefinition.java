@@ -92,6 +92,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int PRIMITIVE_TYPE_FIELD_NUMBER = 1;
   /**
+   * <pre>
+   * The primitive type definition.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType primitive_type = 1;</code>
    * @return Whether the primitiveType field is set.
    */
@@ -99,6 +103,10 @@ private static final long serialVersionUID = 0L;
     return definedTypeCase_ == 1;
   }
   /**
+   * <pre>
+   * The primitive type definition.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType primitive_type = 1;</code>
    * @return The enum numeric value on the wire for primitiveType.
    */
@@ -109,6 +117,10 @@ private static final long serialVersionUID = 0L;
     return 0;
   }
   /**
+   * <pre>
+   * The primitive type definition.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType primitive_type = 1;</code>
    * @return The primitiveType.
    */
@@ -123,6 +135,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int STRUCT_DEF_ID_FIELD_NUMBER = 5;
   /**
+   * <pre>
+   * The ID of the StructDef that defines this type.
+   * </pre>
+   *
    * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
    * @return Whether the structDefId field is set.
    */
@@ -131,6 +147,10 @@ private static final long serialVersionUID = 0L;
     return definedTypeCase_ == 5;
   }
   /**
+   * <pre>
+   * The ID of the StructDef that defines this type.
+   * </pre>
+   *
    * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
    * @return The structDefId.
    */
@@ -142,6 +162,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance();
   }
   /**
+   * <pre>
+   * The ID of the StructDef that defines this type.
+   * </pre>
+   *
    * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
    */
   @java.lang.Override
@@ -562,6 +586,10 @@ private static final long serialVersionUID = 0L;
     private int bitField0_;
 
     /**
+     * <pre>
+     * The primitive type definition.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType primitive_type = 1;</code>
      * @return Whether the primitiveType field is set.
      */
@@ -570,6 +598,10 @@ private static final long serialVersionUID = 0L;
       return definedTypeCase_ == 1;
     }
     /**
+     * <pre>
+     * The primitive type definition.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType primitive_type = 1;</code>
      * @return The enum numeric value on the wire for primitiveType.
      */
@@ -581,6 +613,10 @@ private static final long serialVersionUID = 0L;
       return 0;
     }
     /**
+     * <pre>
+     * The primitive type definition.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType primitive_type = 1;</code>
      * @param value The enum numeric value on the wire for primitiveType to set.
      * @return This builder for chaining.
@@ -592,6 +628,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The primitive type definition.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType primitive_type = 1;</code>
      * @return The primitiveType.
      */
@@ -605,6 +645,10 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ;
     }
     /**
+     * <pre>
+     * The primitive type definition.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType primitive_type = 1;</code>
      * @param value The primitiveType to set.
      * @return This builder for chaining.
@@ -617,6 +661,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The primitive type definition.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType primitive_type = 1;</code>
      * @return This builder for chaining.
      */
@@ -632,6 +680,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDefId.Builder, io.littlehorse.sdk.common.proto.StructDefIdOrBuilder> structDefIdBuilder_;
     /**
+     * <pre>
+     * The ID of the StructDef that defines this type.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
      * @return Whether the structDefId field is set.
      */
@@ -640,6 +692,10 @@ private static final long serialVersionUID = 0L;
       return definedTypeCase_ == 5;
     }
     /**
+     * <pre>
+     * The ID of the StructDef that defines this type.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
      * @return The structDefId.
      */
@@ -658,6 +714,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the StructDef that defines this type.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
      */
     public Builder setStructDefId(io.littlehorse.sdk.common.proto.StructDefId value) {
@@ -674,6 +734,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the StructDef that defines this type.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
      */
     public Builder setStructDefId(
@@ -688,6 +752,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the StructDef that defines this type.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
      */
     public Builder mergeStructDefId(io.littlehorse.sdk.common.proto.StructDefId value) {
@@ -711,6 +779,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the StructDef that defines this type.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
      */
     public Builder clearStructDefId() {
@@ -730,12 +802,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the StructDef that defines this type.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.StructDefId.Builder getStructDefIdBuilder() {
       return internalGetStructDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the StructDef that defines this type.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
      */
     @java.lang.Override
@@ -750,6 +830,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the StructDef that defines this type.
+     * </pre>
+     *
      * <code>.littlehorse.StructDefId struct_def_id = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<

@@ -335,6 +335,7 @@ export interface DeletePrincipalRequest {
 
 /** Configurations for the Output Topic of a certain Tenant. */
 export interface OutputTopicConfig {
+  /** The recording level for this Tenant's Output Topic. */
   defaultRecordingLevel: OutputTopicConfig_OutputTopicRecordingLevel;
 }
 

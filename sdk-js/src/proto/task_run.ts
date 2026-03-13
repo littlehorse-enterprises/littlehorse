@@ -164,8 +164,9 @@ export interface LHTaskError {
 export interface LHTaskException {
   /** The user-defined Failure name, for example, "credit-card-declined" */
   name: string;
-  /** Human readadble description of the failure. */
+  /** Human readable description of the failure. */
   message: string;
+  /** Additional content thrown alongside the exception. */
   content: VariableValue | undefined;
 }
 

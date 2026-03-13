@@ -103,7 +103,7 @@ private static final long serialVersionUID = 0L;
   private volatile java.lang.Object message_ = "";
   /**
    * <pre>
-   * Human readadble description of the failure.
+   * Human readable description of the failure.
    * </pre>
    *
    * <code>string message = 2;</code>
@@ -124,7 +124,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Human readadble description of the failure.
+   * Human readable description of the failure.
    * </pre>
    *
    * <code>string message = 2;</code>
@@ -148,6 +148,10 @@ private static final long serialVersionUID = 0L;
   public static final int CONTENT_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.VariableValue content_;
   /**
+   * <pre>
+   * Additional content thrown alongside the exception.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue content = 3;</code>
    * @return Whether the content field is set.
    */
@@ -156,6 +160,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Additional content thrown alongside the exception.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue content = 3;</code>
    * @return The content.
    */
@@ -164,6 +172,10 @@ private static final long serialVersionUID = 0L;
     return content_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : content_;
   }
   /**
+   * <pre>
+   * Additional content thrown alongside the exception.
+   * </pre>
+   *
    * <code>.littlehorse.VariableValue content = 3;</code>
    */
   @java.lang.Override
@@ -634,7 +646,7 @@ private static final long serialVersionUID = 0L;
     private java.lang.Object message_ = "";
     /**
      * <pre>
-     * Human readadble description of the failure.
+     * Human readable description of the failure.
      * </pre>
      *
      * <code>string message = 2;</code>
@@ -654,7 +666,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Human readadble description of the failure.
+     * Human readable description of the failure.
      * </pre>
      *
      * <code>string message = 2;</code>
@@ -675,7 +687,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Human readadble description of the failure.
+     * Human readable description of the failure.
      * </pre>
      *
      * <code>string message = 2;</code>
@@ -692,7 +704,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Human readadble description of the failure.
+     * Human readable description of the failure.
      * </pre>
      *
      * <code>string message = 2;</code>
@@ -706,7 +718,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Human readadble description of the failure.
+     * Human readable description of the failure.
      * </pre>
      *
      * <code>string message = 2;</code>
@@ -727,6 +739,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> contentBuilder_;
     /**
+     * <pre>
+     * Additional content thrown alongside the exception.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      * @return Whether the content field is set.
      */
@@ -734,6 +750,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Additional content thrown alongside the exception.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      * @return The content.
      */
@@ -745,6 +765,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Additional content thrown alongside the exception.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     public Builder setContent(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -761,6 +785,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Additional content thrown alongside the exception.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     public Builder setContent(
@@ -775,6 +803,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Additional content thrown alongside the exception.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     public Builder mergeContent(io.littlehorse.sdk.common.proto.VariableValue value) {
@@ -796,6 +828,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Additional content thrown alongside the exception.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     public Builder clearContent() {
@@ -809,6 +845,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Additional content thrown alongside the exception.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getContentBuilder() {
@@ -817,6 +857,10 @@ private static final long serialVersionUID = 0L;
       return internalGetContentFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Additional content thrown alongside the exception.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getContentOrBuilder() {
@@ -828,6 +872,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Additional content thrown alongside the exception.
+     * </pre>
+     *
      * <code>.littlehorse.VariableValue content = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<

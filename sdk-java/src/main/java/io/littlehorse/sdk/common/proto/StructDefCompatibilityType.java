@@ -6,6 +6,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * This enum controls the behavior of a PutStructDefRequest and ValidateStructDefEvolutionRequest
+ * when a StructDef with the same name already exists.
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.StructDefCompatibilityType}
  */
 @com.google.protobuf.Generated
