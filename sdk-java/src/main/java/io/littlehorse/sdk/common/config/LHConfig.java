@@ -3,6 +3,7 @@ package io.littlehorse.sdk.common.config;
 import io.grpc.CallCredentials;
 import io.grpc.Channel;
 import io.grpc.CompositeCallCredentials;
+import io.grpc.ClientInterceptors;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.TlsChannelCredentials;
@@ -39,6 +40,9 @@ import lombok.extern.slf4j.Slf4j;
 /** This class is used to configure the LHClient class. */
 @Slf4j
 public class LHConfig extends ConfigBase {
+
+    private static final ResourceExhaustedRetryInterceptor RESOURCE_EXHAUSTED_RETRY_INTERCEPTOR =
+            new ResourceExhaustedRetryInterceptor();
 
     enum ConfigKeys {
         LHC_API_HOST,
@@ -494,7 +498,7 @@ public class LHConfig extends ConfigBase {
                 .keepAliveTimeout(getKeepaliveTimeoutMs(), TimeUnit.MILLISECONDS)
                 .keepAliveWithoutCalls(true);
 
-        Channel out = builder.build();
+        Channel out = ClientInterceptors.intercept(builder.build(), RESOURCE_EXHAUSTED_RETRY_INTERCEPTOR);
         createdChannels.put(hostKey, out);
         return out;
     }

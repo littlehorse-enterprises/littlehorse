@@ -1,5 +1,6 @@
 import { Channel, ChannelCredentials, Client, Metadata, createChannel, createClientFactory } from 'nice-grpc'
 import { LittleHorseDefinition } from './proto/service'
+import { createResourceExhaustedRetryMiddleware } from './grpcRetry'
 import getPropertiesFile from './utils/getPropertiesFile'
 import getPropertiesArgs, { ConfigArgs } from './utils/getPropertiesArgs'
 import { readFileSync } from 'fs'
@@ -47,7 +48,7 @@ export class LHConfig {
       this.channelCredentials = ChannelCredentials.createSsl(rootCa)
     }
 
-    this.channel = createChannel(`${this.apiHost}:${this.apiPort}`, this.channelCredentials)
+    this.channel = this.openChannel(this.apiHost!, this.apiPort!)
   }
 
   /**
@@ -74,14 +75,26 @@ export class LHConfig {
    * @returns a gRPC client for littlehorse
    */
   public getClient(accessToken?: string): Client<typeof LittleHorseDefinition> {
+    return this.createClientForChannel(this.channel, accessToken)
+  }
+
+  public openChannel(host: string, port: string | number): Channel {
+    return createChannel(`${host}:${port}`, this.channelCredentials)
+  }
+
+  public createClientForChannel(
+    channel: Channel,
+    accessToken?: string
+  ): Client<typeof LittleHorseDefinition> {
     return createClientFactory()
+      .use(createResourceExhaustedRetryMiddleware())
       .use((call, options) =>
         call.next(call.request, {
           ...options,
           metadata: this.getMetadata(options.metadata, accessToken),
         })
       )
-      .create(LittleHorseDefinition, this.channel)
+      .create(LittleHorseDefinition, channel)
   }
 
   private getMetadata(metadata?: Metadata, accessToken?: string): Metadata {

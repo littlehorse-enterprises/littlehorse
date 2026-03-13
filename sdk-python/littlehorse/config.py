@@ -8,7 +8,9 @@ from jproperties import Properties
 from littlehorse.auth import (
     OAuthCredentialsProvider,
     MetadataInterceptor,
+    RetryInterceptor,
     AsyncUnaryUnaryMetadataInterceptor,
+    AsyncUnaryUnaryRetryInterceptor,
     AsyncStreamStreamMetadataInterceptor,
     AsyncStreamUnaryMetadataInterceptor,
     AsyncUnaryStreamMetadataInterceptor,
@@ -46,14 +48,7 @@ class ChannelId:
         self.name = name
 
     def __eq__(self, __value: object) -> bool:
-        return (
-            hasattr(__value, "server")
-            and hasattr(__value, "is_async")
-            and hasattr(__value, "name")
-            and self.server == __value.server
-            and self.is_async == __value.is_async
-            and self.name == __value.name
-        )
+        return isinstance(__value, ChannelId) and vars(self) == vars(__value)
 
     def __hash__(self) -> int:
         return hash(str(self))
@@ -294,7 +289,7 @@ class LHConfig:
 
     def establish_channel(
         self, server: Optional[str] = None, async_channel: bool = False
-    ) -> Channel:
+    ) -> Any:
         """Open a RPC channel. Returns a new channel.
 
         Args:
@@ -315,10 +310,8 @@ class LHConfig:
             ("grpc.http2.max_pings_without_data", 0),
         ]
 
-        def create_channel(
-            target: Optional[str], options: Any, secure_channel: bool
-        ) -> Channel:
-            credentials = []
+        def create_channel(target: str, options: Any, secure_channel: bool) -> Any:
+            credentials: Optional[ChannelCredentials] = None
             if not self.is_secure():
                 self._log.warning("Establishing insecure channel at %s", server)
             elif self.has_authentication():
@@ -333,12 +326,14 @@ class LHConfig:
 
             # https://github.com/grpc/grpc/issues/31442
             async_interceptors = [
+                AsyncUnaryUnaryRetryInterceptor(),
                 AsyncUnaryUnaryMetadataInterceptor(self.tenant_id),
                 AsyncStreamStreamMetadataInterceptor(self.tenant_id),
                 AsyncStreamUnaryMetadataInterceptor(self.tenant_id),
                 AsyncUnaryStreamMetadataInterceptor(self.tenant_id),
             ]
             if async_channel and secure_channel:
+                assert credentials is not None
                 return grpc.aio.secure_channel(
                     target,
                     credentials,
@@ -352,13 +347,16 @@ class LHConfig:
                     interceptors=async_interceptors,
                 )
             elif secure_channel:
+                assert credentials is not None
                 return grpc.intercept_channel(
                     grpc.secure_channel(target, credentials, options=channel_args),
+                    RetryInterceptor(),
                     MetadataInterceptor(self.tenant_id),
                 )
             else:
                 return grpc.intercept_channel(
                     grpc.insecure_channel(target, options=channel_args),
+                    RetryInterceptor(),
                     MetadataInterceptor(self.tenant_id),
                 )
 
