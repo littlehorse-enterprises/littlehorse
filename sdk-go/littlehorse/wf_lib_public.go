@@ -36,7 +36,7 @@ type WorkflowThread struct {
 	spec              lhproto.ThreadSpec
 	wf                *LHWorkflow
 	lastNodeName      *string
-	lastNodeCondition *WorkflowCondition
+	lastNodeCondition LHExpression
 	variableMutations []*lhproto.VariableMutation
 }
 
@@ -254,6 +254,9 @@ func (n *UserTaskNodeOutput) Get(field string) *UserTaskNodeOutput {
 	}
 }
 
+// Deprecated: WorkflowCondition is deprecated. Use LHExpression-based comparator
+// methods (e.g., WfRunVariable.IsLessThan()) which return LHExpression instead.
+// WorkflowCondition will be removed in 2.0.
 type WorkflowCondition struct {
 	spec *lhproto.LegacyEdgeCondition
 }
@@ -312,6 +315,20 @@ type LHExpression interface {
 	CastToBool() LHExpression
 	CastToBytes() LHExpression
 	CastToWfRunId() LHExpression
+
+	IsLessThan(rhs interface{}) LHExpression
+	IsGreaterThan(rhs interface{}) LHExpression
+	IsLessThanEq(rhs interface{}) LHExpression
+	IsGreaterThanEq(rhs interface{}) LHExpression
+	IsEqualTo(rhs interface{}) LHExpression
+	IsNotEqualTo(rhs interface{}) LHExpression
+	DoesContain(rhs interface{}) LHExpression
+	DoesNotContain(rhs interface{}) LHExpression
+	IsIn(rhs interface{}) LHExpression
+	IsNotIn(rhs interface{}) LHExpression
+
+	And(other interface{}) LHExpression
+	Or(other interface{}) LHExpression
 }
 
 // SpawnedChildWf represents a spawned child workflow from a RunWf call.
@@ -417,44 +434,52 @@ func (w *WfRunVariable) Required() *WfRunVariable {
 	return w.requiredImpl()
 }
 
-func (w *WfRunVariable) IsEqualTo(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_EQUALS, rhs)
+func (w *WfRunVariable) IsEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_EQUALS}
 }
 
-func (w *WfRunVariable) IsNotEqualTo(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_NOT_EQUALS, rhs)
+func (w *WfRunVariable) IsNotEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_NOT_EQUALS}
 }
 
-func (w *WfRunVariable) IsGreaterThan(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_GREATER_THAN, rhs)
+func (w *WfRunVariable) IsGreaterThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN}
 }
 
-func (w *WfRunVariable) IsGreaterThanEq(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_GREATER_THAN_EQ, rhs)
+func (w *WfRunVariable) IsGreaterThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN_EQ}
 }
 
-func (w *WfRunVariable) IsLessThan(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_LESS_THAN, rhs)
+func (w *WfRunVariable) IsLessThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN}
 }
 
-func (w *WfRunVariable) IsLessThanEq(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_LESS_THAN_EQ, rhs)
+func (w *WfRunVariable) IsLessThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN_EQ}
 }
 
-func (w *WfRunVariable) DoesContain(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(rhs, lhproto.Comparator_IN, w)
+func (w *WfRunVariable) DoesContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: w, comparator: lhproto.Comparator_IN}
 }
 
-func (w *WfRunVariable) DoesNotContain(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(rhs, lhproto.Comparator_NOT_IN, w)
+func (w *WfRunVariable) DoesNotContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: w, comparator: lhproto.Comparator_NOT_IN}
 }
 
-func (w *WfRunVariable) IsIn(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_IN, rhs)
+func (w *WfRunVariable) IsIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_IN}
 }
 
-func (w *WfRunVariable) IsNotIn(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_NOT_IN, rhs)
+func (w *WfRunVariable) IsNotIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_NOT_IN}
+}
+
+func (w *WfRunVariable) And(other interface{}) LHExpression {
+	return &lhExpression{lhs: w, rhs: other, operation: lhproto.VariableMutationType_AND}
+}
+
+func (w *WfRunVariable) Or(other interface{}) LHExpression {
+	return &lhExpression{lhs: w, rhs: other, operation: lhproto.VariableMutationType_OR}
 }
 
 func (w *WfRunVariable) Assign(rhs interface{}) {
@@ -725,6 +750,9 @@ func (t *WorkflowThread) Mutate(
 	t.mutate(lhs, mutation, rhs)
 }
 
+// Deprecated: Condition is deprecated. Use comparator methods directly on
+// WfRunVariable (e.g., myVar.IsLessThan(10)) which return LHExpression.
+// This method will be removed in 2.0.
 func (t *WorkflowThread) Condition(
 	lhs interface{}, op lhproto.Comparator, rhs interface{},
 ) *WorkflowCondition {
@@ -737,11 +765,11 @@ func (t *WorkflowThread) ThrowEvent(workflowEventDefName string, content interfa
 
 type IfElseBody func(t *WorkflowThread)
 
-func (t *WorkflowThread) DoIf(cond *WorkflowCondition, doIf IfElseBody) *WorkflowIfStatement {
+func (t *WorkflowThread) DoIf(cond LHExpression, doIf IfElseBody) *WorkflowIfStatement {
 	return t.doIf(cond, doIf)
 }
 
-func (s *WorkflowIfStatement) DoElseIf(cond *WorkflowCondition, doIf IfElseBody) *WorkflowIfStatement {
+func (s *WorkflowIfStatement) DoElseIf(cond LHExpression, doIf IfElseBody) *WorkflowIfStatement {
 	result := s.thread.doElseIf(*s, cond, doIf)
 	return &result
 }
@@ -755,11 +783,11 @@ func (s *WorkflowIfStatement) DoElse(doElse IfElseBody) {
 }
 
 // DoIfElse will be replaced by DoIf and DoElse
-func (t *WorkflowThread) DoIfElse(cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody) {
+func (t *WorkflowThread) DoIfElse(cond LHExpression, doIf IfElseBody, doElse IfElseBody) {
 	t.doIfElse(cond, doIf, doElse)
 }
 
-func (t *WorkflowThread) DoWhile(cond *WorkflowCondition, whileBody ThreadFunc) {
+func (t *WorkflowThread) DoWhile(cond LHExpression, whileBody ThreadFunc) {
 	t.doWhile(cond, whileBody)
 }
 
@@ -847,7 +875,7 @@ func (t *WorkflowThread) WaitForEvent(eventName string) *ExternalEventNodeOutput
 	return t.waitForEvent(eventName)
 }
 
-func (t *WorkflowThread) WaitForCondition(condition *WorkflowCondition) *WaitForConditionNodeOutput {
+func (t *WorkflowThread) WaitForCondition(condition LHExpression) *WaitForConditionNodeOutput {
 	return t.waitForCondition(condition)
 }
 
