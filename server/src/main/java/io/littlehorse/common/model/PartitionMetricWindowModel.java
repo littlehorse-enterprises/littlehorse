@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.core.metrics.CountAndTimingModel;
+import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
@@ -61,7 +62,7 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
 
     public void incrementWfCount(LHStatus previousStatus, LHStatus newStatus, Date startTime, Date endTime) {
         if (previousStatus == null) {
-            incrementCount("started");
+            incrementCount(MetricWindowModel.STARTED);
         } else {
             if (endTime == null) {
                 endTime = new Date();
@@ -92,7 +93,6 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         }
         if (metricWindow == null) {
             metricWindow = new PartitionMetricWindowModel(id);
-            ;
         }
         metricWindow.incrementWfCount(previousStatus, newStatus, startTime, endTime);
         clusterScopedStore.put(metricWindow);

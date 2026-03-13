@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,21 +30,21 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MetricWindowModel extends CoreGetable<MetricWindow> {
 
-    private static final String STARTED = "started";
-    private static final String RUNNING_TO_COMPLETED = "running_to_completed";
-    private static final String RUNNING_TO_ERROR = "running_to_error";
-    private static final String RUNNING_TO_EXCEPTION = "running_to_exception";
-    private static final String RUNNING_TO_HALTING = "running_to_halting";
-    private static final String HALTING_TO_HALTED = "halting_to_halted";
+    public static final String STARTED = "started";
+    public static final String RUNNING_TO_COMPLETED = "running_to_completed";
+    public static final String RUNNING_TO_ERROR = "running_to_error";
+    public static final String RUNNING_TO_EXCEPTION = "running_to_exception";
+    public static final String RUNNING_TO_HALTING = "running_to_halting";
+    public static final String HALTING_TO_HALTED = "halting_to_halted";
 
-    private static final String TASKRUN_CREATED_TO_COMPLETED = "taskrun_created_to_completed";
-    private static final String TASKRUN_CREATED_TO_ERROR = "taskrun_created_to_error";
-    private static final String TASKRUN_CREATED_TO_EXCEPTION = "taskrun_created_to_exception";
-    private static final String TASKATTEMPT_PENDING_TO_SCHEDULED = "taskattempt_pending_to_scheduled";
-    private static final String TASKATTEMPT_SCHEDULED_TO_RUNNING = "taskattempt_scheduled_to_running";
-    private static final String TASKATTEMPT_RUNNING_TO_ERROR = "taskattempt_running_to_error";
-    private static final String TASKATTEMPT_RUNNING_TO_SUCCESS = "taskattempt_running_to_success";
-    private static final String TASKATTEMPT_RUNNING_TO_EXCEPTION = "taskattempt_running_to_exception";
+    public static final String TASKRUN_CREATED_TO_COMPLETED = "taskrun_created_to_completed";
+    public static final String TASKRUN_CREATED_TO_ERROR = "taskrun_created_to_error";
+    public static final String TASKRUN_CREATED_TO_EXCEPTION = "taskrun_created_to_exception";
+    public static final String TASKATTEMPT_PENDING_TO_SCHEDULED = "taskattempt_pending_to_scheduled";
+    public static final String TASKATTEMPT_SCHEDULED_TO_RUNNING = "taskattempt_scheduled_to_running";
+    public static final String TASKATTEMPT_RUNNING_TO_ERROR = "taskattempt_running_to_error";
+    public static final String TASKATTEMPT_RUNNING_TO_SUCCESS = "taskattempt_running_to_success";
+    public static final String TASKATTEMPT_RUNNING_TO_EXCEPTION = "taskattempt_running_to_exception";
 
     private MetricWindowIdModel id;
     private Map<String, CountAndTimingModel> metrics;
@@ -191,10 +192,12 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
         return out;
     }
 
-    private void putMetricIfPresent(java.util.function.Consumer<CountAndTiming> setter, String key) {
+    private void putMetricIfPresent(Consumer<CountAndTiming> setter, String key) {
         CountAndTimingModel model = metrics.get(key);
         if (model != null) {
             setter.accept(model.toProto().build());
+        } else {
+            setter.accept(CountAndTiming.getDefaultInstance());
         }
     }
 
