@@ -307,7 +307,7 @@ class CastExpression:
 
 class ComparatorExpression:
     """Represents a comparator expression (lhs <op> rhs) used for edge
-    conditions. This replaces the old WorkflowCondition.
+    conditions.
     """
 
     def __init__(self, lhs: Any, comparator: Comparator, rhs: Any) -> None:
@@ -2444,35 +2444,33 @@ class WorkflowThread:
     def condition(
         self, left_hand: Any, comparator: Comparator, right_hand: Any
     ) -> ComparatorExpression:
-        """Returns a WorkflowCondition that can be used in
-        `ThreadBuilder.doIf()` or `ThreadBuilder.doElse()`.
+        """Create a comparator expression (lhs <op> rhs) for use in
+        conditional nodes such as `do_if()` and `do_while()`.
 
         Args:
-            left_hand (Any): is either a literal value
-            (which the Library casts to a Variable Value) or a
-            `WfRunVariable` representing the LHS of the expression.
-            comparator (Comparator): is a Comparator defining the
-            comparator, for example, `ComparatorTypePb.EQUALS`.
-            right_hand (Any): is either a literal value
-            (which the Library casts to a Variable Value) or a
-            `WfRunVariable` representing the RHS of the expression.
+            left_hand (Any): either a literal value (which the library casts
+                to a VariableValue) or a `WfRunVariable` representing the
+                left-hand side of the expression.
+            comparator (Comparator): the comparator operator to use (for
+                example, `Comparator.EQUALS`).
+            right_hand (Any): either a literal value or a `WfRunVariable`
+                representing the right-hand side of the expression.
 
         Returns:
-            ComparatorExpression: a ComparatorExpression.
+            ComparatorExpression: the constructed comparator expression.
         """
         return ComparatorExpression(left_hand, comparator, right_hand)
 
     def do_while(
         self, condition: ComparatorExpression, while_body: "ThreadInitializer"
     ) -> None:
-        """Conditionally executes some workflow code; equivalent to
-        an while() statement in programming.
+        """Conditionally executes workflow code; equivalent to a while()
+        statement in programming.
 
         Args:
-            condition (ComparatorExpression): is the comparator condition to be satisfied.
-            while_body (ThreadInitializer): is the block of ThreadFunc
-            code to be executed while the provided
-            WorkflowCondition is satisfied.
+            condition (ComparatorExpression): the comparator expression to evaluate.
+            while_body (ThreadInitializer): the block of code to execute while
+                the condition evaluates to true.
         """
         self._check_if_active()
         self._validate_initializer(while_body)
@@ -2516,18 +2514,15 @@ class WorkflowThread:
         if_body: "ThreadInitializer",
         else_body: Optional["ThreadInitializer"] = None,
     ) -> WorkflowIfStatement:
-        """Conditionally executes some workflow code; equivalent
-        to an if() statement in programming.
+        """Conditionally executes workflow code; equivalent to an if()
+        statement in programming.
 
         Args:
-            condition (ComparatorExpression): is the ComparatorExpression
-            to be satisfied.
-            if_body (ThreadInitializer): is the block of
-            ThreadSpec code to be executed if the provided
-            WorkflowCondition is satisfied.
-            else_body (ThreadInitializer): is the block of
-            ThreadSpec code to be executed if the provided
-            WorkflowCondition is NOT satisfied. Default None.
+            condition (ComparatorExpression): the comparator expression to evaluate.
+            if_body (ThreadInitializer): the block of ThreadSpec code to execute
+                when the condition evaluates to true.
+            else_body (ThreadInitializer, optional): the block of ThreadSpec code
+                to execute when the condition evaluates to false. Defaults to None.
         """
         self._check_if_active()
         self._validate_initializer(if_body)
