@@ -23,7 +23,7 @@ func DonutWorkflow(wf *littlehorse.WorkflowThread) {
 	numDonuts := wf.DeclareInt("number-of-donuts")
 
 	wf.DoWhile(
-		wf.Condition(numDonuts, lhproto.Comparator_GREATER_THAN, 0),
+		numDonuts.IsGreaterThan(0),
 		func(t *littlehorse.WorkflowThread) {
 			taskOutput := t.Execute(TaskDefName, numDonuts)
 			wf.Mutate(numDonuts, lhproto.VariableMutationType_ASSIGN, taskOutput)
