@@ -65,20 +65,23 @@ var (
 )
 
 var (
-	titleStyle        lipgloss.Style
-	categoryStyle     lipgloss.Style
-	descriptionStyle  lipgloss.Style
-	statusBarStyle    lipgloss.Style
-	errorStyle        lipgloss.Style
-	successStyle      lipgloss.Style
-	fieldLabelStyle   lipgloss.Style
-	fieldTypeStyle    lipgloss.Style
-	helpStyle         lipgloss.Style
-	placeholderStyle  lipgloss.Style
-	contentFrameStyle lipgloss.Style
-	errorCardStyle    lipgloss.Style
-	errorTitleStyle   lipgloss.Style
-	rawErrorStyle     lipgloss.Style
+	titleStyle           lipgloss.Style
+	categoryStyle        lipgloss.Style
+	descriptionStyle     lipgloss.Style
+	statusBarStyle       lipgloss.Style
+	errorStyle           lipgloss.Style
+	successStyle         lipgloss.Style
+	fieldLabelStyle      lipgloss.Style
+	fieldTypeStyle       lipgloss.Style
+	helpStyle            lipgloss.Style
+	placeholderStyle     lipgloss.Style
+	inputBoxStyle        lipgloss.Style
+	inputBoxFocusedStyle lipgloss.Style
+	focusedInputStyle    lipgloss.Style
+	contentFrameStyle    lipgloss.Style
+	errorCardStyle       lipgloss.Style
+	errorTitleStyle      lipgloss.Style
+	rawErrorStyle        lipgloss.Style
 )
 
 func init() {
@@ -142,6 +145,24 @@ func ApplyTheme(theme Theme) {
 	placeholderStyle = lipgloss.NewStyle().
 		Foreground(p.Placeholder)
 
+	// inputBoxStyle and inputBoxFocusedStyle are used to render a visible
+	// box around form inputs when focused (and subtly when unfocused).
+	inputBoxStyle = lipgloss.NewStyle().
+		Border(lipgloss.NormalBorder()).
+		BorderForeground(p.Border).
+		Padding(0, 1)
+
+	inputBoxFocusedStyle = lipgloss.NewStyle().
+		Border(lipgloss.NormalBorder()).
+		BorderForeground(p.Primary).
+		Background(p.Surface).
+		Padding(0, 1)
+
+	// focusedInputStyle is a lightweight highlight used for focused
+	// inputs to avoid adding extra borders or changing layout.
+	focusedInputStyle = lipgloss.NewStyle().
+		Background(p.Surface).
+		Foreground(p.Text)
 	// contentFrameStyle has Padding(1, 2) — use textContentWidth() when
 	// laying out text inside this style, not the raw width.
 	contentFrameStyle = lipgloss.NewStyle().

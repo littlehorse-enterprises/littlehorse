@@ -653,12 +653,27 @@ func (f formModel) view() string {
 			// Render the input. When empty, render our placeholderStyle explicitly
 			// to control placeholder color instead of embedding ANSI sequences
 			// inside the textinput placeholder string.
+			inputContent := ""
 			if strings.TrimSpace(field.input.Value()) == "" {
+				inputContent = placeholderStyle.Render(field.input.Placeholder)
+			} else {
+				inputContent = field.input.View()
+			}
+
+			// When this field is focused, render the input inside a visible box
+			// so the user can clearly see which control is active even when
+			// the field is empty.
+			// Only show a visible highlight when the text input actually has
+			// keyboard focus. This prevents the preview pane from showing a
+			// highlighted input while the user is navigating the RPC list.
+			if i == f.cursor && field.input.Focused() {
 				s.WriteString("    ")
-				s.WriteString(placeholderStyle.Render(field.input.Placeholder))
+				s.WriteString(focusedInputStyle.Render(inputContent))
 				s.WriteString("\n")
 			} else {
-				s.WriteString(fmt.Sprintf("    %s\n", field.input.View()))
+				s.WriteString("    ")
+				s.WriteString(inputContent)
+				s.WriteString("\n")
 			}
 
 			if i == f.cursor && f.isWfSpecNameSmartField(i) && field.suggestionOpen {
