@@ -1,7 +1,6 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -26,7 +25,7 @@ public class WaitForConditionExample {
         return new WorkflowImpl("example-wait-for-condition", wf -> {
             WfRunVariable counter = wf.declareInt("counter").withDefault(2);
 
-            wf.waitForCondition(wf.condition(counter, Comparator.EQUALS, 0));
+            wf.waitForCondition(counter.isEqualTo(0));
 
             // Interrupt handler which mutates the parent variable
             wf.registerInterruptHandler(INTERRUPT_NAME, handler -> {

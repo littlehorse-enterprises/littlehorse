@@ -33,7 +33,6 @@ from littlehorse.model import (
     AllowedUpdateType,
     VariableValue,
     Edge,
-    LegacyEdgeCondition,
     EntrypointNode,
     ExitNode,
     ExternalEventNode,
@@ -162,6 +161,16 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
             )
         )
 
+    if isinstance(value, ComparatorExpression):
+        expr = value
+        return VariableAssignment(
+            expression=VariableAssignment.Expression(
+                lhs=to_variable_assignment(expr.lhs()),
+                comparator=expr.comparator(),
+                rhs=to_variable_assignment(expr.rhs()),
+            )
+        )
+
     return VariableAssignment(
         literal_value=to_variable_value(value),
     )
@@ -229,6 +238,14 @@ class LHExpression:
     def cast_to_wf_run_id(self) -> "CastExpression":
         return self.cast_to(VariableType.WF_RUN_ID)
 
+    def do_and(self, other: Any) -> "LHExpression":
+        """Logical AND between two boolean expressions."""
+        return LHExpression(self, VariableMutationType.AND, other)
+
+    def do_or(self, other: Any) -> "LHExpression":
+        """Logical OR between two boolean expressions."""
+        return LHExpression(self, VariableMutationType.OR, other)
+
 
 class CastExpression:
     def __init__(self, source: Any, target_type: VariableType) -> None:
@@ -282,59 +299,47 @@ class CastExpression:
     def cast_to_wf_run_id(self) -> "CastExpression":
         return self.cast_to(VariableType.WF_RUN_ID)
 
+    def do_and(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.AND, other)
 
-class WorkflowCondition:
-    def __init__(self, left_hand: Any, comparator: Comparator, right_hand: Any) -> None:
-        """Returns a WorkflowCondition that can be used in
-        `ThreadBuilder.doIf()` or `ThreadBuilder.doElse()`.
+    def do_or(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.OR, other)
 
-        Args:
-            left_hand (Any): is either a literal value
-            (which the Library casts to a Variable Value) or a
-            `WfRunVariable` representing the LHS of the expression.
-            comparator (Comparator): is a Comparator defining the
-            comparator, for example, `ComparatorTypePb.EQUALS`.
-            right_hand (Any): is either a literal value
-            (which the Library casts to a Variable Value) or a
-            `WfRunVariable` representing the RHS of the expression.
-        """
-        self.left_hand = left_hand
-        self.comparator = comparator
-        self.right_hand = right_hand
+class ComparatorExpression:
+    """Represents a comparator expression (lhs <op> rhs) used for edge
+    conditions.
+    """
 
-    def negate(self) -> "WorkflowCondition":
-        """Negates a comparator:
+    def __init__(self, lhs: Any, comparator: Comparator, rhs: Any) -> None:
+        self._lhs = lhs
+        self._comparator = comparator
+        self._rhs = rhs
 
-        Comparator.LESS_THAN => Comparator.GREATER_THAN_EQ
-        Comparator.GREATER_THAN_EQ => Comparator.LESS_THAN
-        Comparator.GREATER_THAN => Comparator.LESS_THAN_EQ
-        Comparator.LESS_THAN_EQ => Comparator.GREATER_THAN
-        Comparator.IN => Comparator.NOT_IN
-        Comparator.NOT_IN => Comparator.IN
-        Comparator.EQUALS => Comparator.NOT_EQUALS
-        Comparator.NOT_EQUALS => Comparator.EQUALS
+    def lhs(self) -> Any:
+        return self._lhs
 
-        Returns:
-            WorkflowCondition: A condition.
-        """
-        return WorkflowCondition(
-            self.left_hand, negate_comparator(self.comparator), self.right_hand
+    def rhs(self) -> Any:
+        return self._rhs
+
+    def comparator(self) -> Comparator:
+        return self._comparator
+
+    def negate(self) -> "ComparatorExpression":
+        return ComparatorExpression(
+            self._lhs, negate_comparator(self._comparator), self._rhs
         )
+
+    def do_and(self, other: Any) -> LHExpression:
+        """Combine this comparator with another boolean expression using AND."""
+        return LHExpression(self, VariableMutationType.AND, other)
+
+    def do_or(self, other: Any) -> LHExpression:
+        """Combine this comparator with another boolean expression using OR."""
+        return LHExpression(self, VariableMutationType.OR, other)
 
     def __str__(self) -> str:
-        return to_json(self.compile())
-
-    def compile(self) -> LegacyEdgeCondition:
-        """Compile this into Protobuf Objects.
-
-        Returns:
-            LegacyEdgeCondition: Spec.
-        """
-        return LegacyEdgeCondition(
-            comparator=self.comparator,
-            left=to_variable_assignment(self.left_hand),
-            right=to_variable_assignment(self.right_hand),
-        )
+        # Represent as the VariableAssignment JSON for debugging
+        return to_json(to_variable_assignment(self))
 
 
 class NodeCase(Enum):
@@ -490,18 +495,18 @@ class WorkflowIfStatement:
         return self._first_nop_node_name == "" and self._last_nop_node_name == ""
 
     def do_else_if(
-        self, condition: WorkflowCondition, body: "ThreadInitializer"
+        self, condition: ComparatorExpression, body: "ThreadInitializer"
     ) -> WorkflowIfStatement:
         """After checking the previous condition(s) of the If Statement,
         conditionally executes some workflow code; equivalent to
         an elseif() statement in programming.
 
         Args:
-            condition (WorkflowCondition): is the WorkflowCondition
+            condition (ComparatorExpression): is the comparator condition
             to be satisfied.
             body (ThreadInitializer): is the block of
             ThreadSpec code to be executed if the provided
-            WorkflowCondition is satisfied.
+            condition is satisfied.
         """
         if self._is_not_initialized():
             raise AttributeError(
@@ -521,7 +526,7 @@ class WorkflowIfStatement:
         Args:
             body (ThreadInitializer): the block of
             ThreadSpec code to be executed if all previous
-            WorkflowConditions were not satisfied.
+            conditions were not satisfied.
         """
         if self._is_not_initialized():
             raise AttributeError(
@@ -806,34 +811,34 @@ class WfRunVariable:
             access_level=self._access_level,
         )
 
-    def is_equal_to(self, rhs: Any) -> WorkflowCondition:
+    def is_equal_to(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.EQUALS, rhs)
 
-    def is_not_equal_to(self, rhs: Any) -> WorkflowCondition:
+    def is_not_equal_to(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.NOT_EQUALS, rhs)
 
-    def is_greater_than(self, rhs: Any) -> WorkflowCondition:
+    def is_greater_than(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.GREATER_THAN, rhs)
 
-    def is_greater_than_eq(self, rhs: Any) -> WorkflowCondition:
+    def is_greater_than_eq(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.GREATER_THAN_EQ, rhs)
 
-    def is_less_than_eq(self, rhs: Any) -> WorkflowCondition:
+    def is_less_than_eq(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.LESS_THAN_EQ, rhs)
 
-    def is_less_than(self, rhs: Any) -> WorkflowCondition:
+    def is_less_than(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.LESS_THAN, rhs)
 
-    def does_contain(self, rhs: Any) -> WorkflowCondition:
+    def does_contain(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(rhs, Comparator.IN, self)
 
-    def does_not_contain(self, rhs: Any) -> WorkflowCondition:
+    def does_not_contain(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(rhs, Comparator.NOT_IN, self)
 
-    def is_in(self, rhs: Any) -> WorkflowCondition:
+    def is_in(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.IN, rhs)
 
-    def is_not_in(self, rhs: Any) -> WorkflowCondition:
+    def is_not_in(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.NOT_IN, rhs)
 
     def assign(self, rhs: Any) -> None:
@@ -1362,7 +1367,11 @@ class WorkflowThread:
         self._wf_interruptions: list[WorkflowInterruption] = []
         self._nodes: list[WorkflowNode] = []
         self._variable_mutations: deque[VariableMutation] = deque()
-        self._last_node_condition: LegacyEdgeCondition | None = None
+        # Stores a compiled protobuf VariableAssignment for the last-node
+        # condition (matches Java SDK behavior). When a user builds a
+        # ComparatorExpression via public APIs, we compile it to a
+        # VariableAssignment and store it here before attaching to an Edge.
+        self._last_node_condition: Optional[VariableAssignment] = None
         self._retention_policy: Optional[ThreadRetentionPolicy] = None
 
         if workflow is None:
@@ -1487,20 +1496,20 @@ class WorkflowThread:
         return WaitForThreadsNodeOutput(node_name, self)
 
     def wait_for_condition(
-        self, condition: WorkflowCondition
+        self, condition: ComparatorExpression
     ) -> WaitForConditionNodeOutput:
         """
         Waits for the specified workflow condition to become true.
 
         Args:
-            condition (WorkflowCondition): The workflow condition to wait for.
+            condition (ComparatorExpression): The workflow condition to wait for.
 
         Returns:
             The output of the WAIT_FOR_CONDITION node.
         """
         self._check_if_active()
         node = WaitForConditionNode(
-            legacy_condition=condition.compile(),
+            condition=to_variable_assignment(condition),
         )
         node_name = self.add_node("wait-for-condition", node)
         return WaitForConditionNodeOutput(node_name, self)
@@ -2418,7 +2427,7 @@ class WorkflowThread:
                     Edge(
                         sink_node_name=next_node_name,
                         variable_mutations=self._collect_variable_mutations(),
-                        legacy_condition=self._last_node_condition,
+                        condition=self._last_node_condition,
                     )
                 )
                 self._last_node_condition = None
@@ -2434,36 +2443,34 @@ class WorkflowThread:
 
     def condition(
         self, left_hand: Any, comparator: Comparator, right_hand: Any
-    ) -> WorkflowCondition:
-        """Returns a WorkflowCondition that can be used in
-        `ThreadBuilder.doIf()` or `ThreadBuilder.doElse()`.
+    ) -> ComparatorExpression:
+        """Create a comparator expression (lhs <op> rhs) for use in
+        conditional nodes such as `do_if()` and `do_while()`.
 
         Args:
-            left_hand (Any): is either a literal value
-            (which the Library casts to a Variable Value) or a
-            `WfRunVariable` representing the LHS of the expression.
-            comparator (Comparator): is a Comparator defining the
-            comparator, for example, `ComparatorTypePb.EQUALS`.
-            right_hand (Any): is either a literal value
-            (which the Library casts to a Variable Value) or a
-            `WfRunVariable` representing the RHS of the expression.
+            left_hand (Any): either a literal value (which the library casts
+                to a VariableValue) or a `WfRunVariable` representing the
+                left-hand side of the expression.
+            comparator (Comparator): the comparator operator to use (for
+                example, `Comparator.EQUALS`).
+            right_hand (Any): either a literal value or a `WfRunVariable`
+                representing the right-hand side of the expression.
 
         Returns:
-            WorkflowCondition: a WorkflowCondition.
+            ComparatorExpression: the constructed comparator expression.
         """
-        return WorkflowCondition(left_hand, comparator, right_hand)
+        return ComparatorExpression(left_hand, comparator, right_hand)
 
     def do_while(
-        self, condition: WorkflowCondition, while_body: "ThreadInitializer"
+        self, condition: ComparatorExpression, while_body: "ThreadInitializer"
     ) -> None:
-        """Conditionally executes some workflow code; equivalent to
-        an while() statement in programming.
+        """Conditionally executes workflow code; equivalent to a while()
+        statement in programming.
 
         Args:
-            condition (WorkflowCondition): is the WorkflowCondition to be satisfied.
-            while_body (ThreadInitializer): is the block of ThreadFunc
-            code to be executed while the provided
-            WorkflowCondition is satisfied.
+            condition (ComparatorExpression): the comparator expression to evaluate.
+            while_body (ThreadInitializer): the block of code to execute while
+                the condition evaluates to true.
         """
         self._check_if_active()
         self._validate_initializer(while_body)
@@ -2480,41 +2487,42 @@ class WorkflowThread:
         # configure edges
         while_condition_node = self._find_next_node(start_node_name)
         while_edge = start_node._find_outgoing_edge(while_condition_node.name)
+        # compile comparator to VariableAssignment and set as condition
         while_edge.MergeFrom(
             Edge(
-                legacy_condition=condition.compile(),
+                condition=to_variable_assignment(condition),
             )
         )
 
         start_node.outgoing_edges.append(
             Edge(
                 sink_node_name=end_node_name,
-                legacy_condition=condition.negate().compile(),
+                condition=to_variable_assignment(condition.negate()),
             )
         )
 
         end_node.outgoing_edges.append(
-            Edge(sink_node_name=start_node_name, legacy_condition=condition.compile())
+            Edge(
+                sink_node_name=start_node_name,
+                condition=to_variable_assignment(condition),
+            )
         )
 
     def do_if(
         self,
-        condition: WorkflowCondition,
+        condition: ComparatorExpression,
         if_body: "ThreadInitializer",
         else_body: Optional["ThreadInitializer"] = None,
     ) -> WorkflowIfStatement:
-        """Conditionally executes some workflow code; equivalent
-        to an if() statement in programming.
+        """Conditionally executes workflow code; equivalent to an if()
+        statement in programming.
 
         Args:
-            condition (WorkflowCondition): is the WorkflowCondition
-            to be satisfied.
-            if_body (ThreadInitializer): is the block of
-            ThreadSpec code to be executed if the provided
-            WorkflowCondition is satisfied.
-            else_body (ThreadInitializer): is the block of
-            ThreadSpec code to be executed if the provided
-            WorkflowCondition is NOT satisfied. Default None.
+            condition (ComparatorExpression): the comparator expression to evaluate.
+            if_body (ThreadInitializer): the block of ThreadSpec code to execute
+                when the condition evaluates to true.
+            else_body (ThreadInitializer, optional): the block of ThreadSpec code
+                to execute when the condition evaluates to false. Defaults to None.
         """
         self._check_if_active()
         self._validate_initializer(if_body)
@@ -2531,13 +2539,15 @@ class WorkflowThread:
     def organize_edges_for_else_if_execution(
         self,
         if_statement: WorkflowIfStatement,
-        input_condition: Optional[WorkflowCondition],
+        input_condition: Optional[ComparatorExpression],
         body: "ThreadInitializer",
     ) -> None:
         first_nop_node = self._find_node(if_statement.get_first_nop_node_name())
         else_edge = first_nop_node.outgoing_edges.pop()
 
-        else_if_condition = input_condition.compile() if input_condition else None
+        else_if_condition = (
+            to_variable_assignment(input_condition) if input_condition else None
+        )
 
         # Get the last node of the parent thread
         last_node_of_parent_thread_name = self._last_node_name
@@ -2556,7 +2566,7 @@ class WorkflowThread:
                 Edge(
                     sink_node_name=if_statement.get_last_nop_node_name(),
                     variable_mutations=self._collect_variable_mutations(),
-                    legacy_condition=else_if_condition,
+                    condition=else_if_condition,
                 )
             )
         # Otherwise, move nodes that were added
@@ -2572,7 +2582,7 @@ class WorkflowThread:
                 Edge(
                     sink_node_name=first_node_of_body_name,
                     variable_mutations=last_outgoing_edge.variable_mutations,
-                    legacy_condition=else_if_condition,
+                    condition=else_if_condition,
                 )
             )
 
@@ -2592,10 +2602,13 @@ class WorkflowThread:
         self._last_node_name = last_node_of_parent_thread_name
 
     def _do_if(
-        self, condition: WorkflowCondition, body: "ThreadInitializer"
+        self, condition: ComparatorExpression, body: "ThreadInitializer"
     ) -> WorkflowIfStatement:
         first_nop_node_name = self.add_node("nop", NopNode())
-        self._last_node_condition = condition.compile()
+        # compile the comparator DSL to a protobuf VariableAssignment and
+        # persist it as the last-node condition so subsequent add_node()
+        # will attach it to the outgoing Edge.condition field.
+        self._last_node_condition = to_variable_assignment(condition)
 
         body(self)
 

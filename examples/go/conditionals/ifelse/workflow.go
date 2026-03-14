@@ -4,8 +4,6 @@ import (
 	"fmt"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
-
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
 const (
@@ -27,10 +25,9 @@ func Donut() string {
 func DonutWorkflow(wf *littlehorse.WorkflowThread) {
 	numDonuts := wf.DeclareInt("number-of-donuts")
 
-	wf.DoIf(wf.Condition(numDonuts, lhproto.Comparator_LESS_THAN, 10),
-		func(t *littlehorse.WorkflowThread) {
-			t.Execute(EatAnotherDonutTaskName)
-		}).DoElse(func(t *littlehorse.WorkflowThread) {
+	wf.DoIf(numDonuts.IsLessThan(10), func(t *littlehorse.WorkflowThread) {
+		t.Execute(EatAnotherDonutTaskName)
+	}).DoElse(func(t *littlehorse.WorkflowThread) {
 		t.Execute(EatSaladTaskName)
 	})
 }

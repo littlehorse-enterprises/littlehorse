@@ -13,6 +13,12 @@ type castExpression struct {
 	targetType lhproto.VariableType
 }
 
+type comparatorExpression struct {
+	lhs        interface{}
+	rhs        interface{}
+	comparator lhproto.Comparator
+}
+
 func (e *castExpression) Add(other interface{}) LHExpression {
 	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_ADD}
 }
@@ -60,6 +66,44 @@ func (e *castExpression) CastToBytes() LHExpression {
 }
 func (e *castExpression) CastToWfRunId() LHExpression {
 	return e.CastTo(lhproto.VariableType_WF_RUN_ID)
+}
+
+// Comparator methods for castExpression
+func (e *castExpression) IsLessThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN}
+}
+func (e *castExpression) IsGreaterThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN}
+}
+func (e *castExpression) IsLessThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN_EQ}
+}
+func (e *castExpression) IsGreaterThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN_EQ}
+}
+func (e *castExpression) IsEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_EQUALS}
+}
+func (e *castExpression) IsNotEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_NOT_EQUALS}
+}
+func (e *castExpression) DoesContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: e, comparator: lhproto.Comparator_IN}
+}
+func (e *castExpression) DoesNotContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: e, comparator: lhproto.Comparator_NOT_IN}
+}
+func (e *castExpression) IsIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_IN}
+}
+func (e *castExpression) IsNotIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_NOT_IN}
+}
+func (e *castExpression) And(other interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_AND}
+}
+func (e *castExpression) Or(other interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_OR}
 }
 
 func (e *lhExpression) Add(other interface{}) LHExpression {
@@ -156,6 +200,44 @@ func (e *lhExpression) CastToWfRunId() LHExpression {
 	return e.CastTo(lhproto.VariableType_WF_RUN_ID)
 }
 
+// Comparator methods for lhExpression
+func (e *lhExpression) IsLessThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN}
+}
+func (e *lhExpression) IsGreaterThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN}
+}
+func (e *lhExpression) IsLessThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN_EQ}
+}
+func (e *lhExpression) IsGreaterThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN_EQ}
+}
+func (e *lhExpression) IsEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_EQUALS}
+}
+func (e *lhExpression) IsNotEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_NOT_EQUALS}
+}
+func (e *lhExpression) DoesContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: e, comparator: lhproto.Comparator_IN}
+}
+func (e *lhExpression) DoesNotContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: e, comparator: lhproto.Comparator_NOT_IN}
+}
+func (e *lhExpression) IsIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_IN}
+}
+func (e *lhExpression) IsNotIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_NOT_IN}
+}
+func (e *lhExpression) And(other interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_AND}
+}
+func (e *lhExpression) Or(other interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_OR}
+}
+
 // LHExpression methods for TaskNodeOutput
 func (n *TaskNodeOutput) Add(other interface{}) LHExpression {
 	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_ADD}
@@ -204,6 +286,42 @@ func (n *TaskNodeOutput) CastToBytes() LHExpression {
 }
 func (n *TaskNodeOutput) CastToWfRunId() LHExpression {
 	return n.CastTo(lhproto.VariableType_WF_RUN_ID)
+}
+func (n *TaskNodeOutput) IsLessThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN}
+}
+func (n *TaskNodeOutput) IsGreaterThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN}
+}
+func (n *TaskNodeOutput) IsLessThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN_EQ}
+}
+func (n *TaskNodeOutput) IsGreaterThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN_EQ}
+}
+func (n *TaskNodeOutput) IsEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_EQUALS}
+}
+func (n *TaskNodeOutput) IsNotEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_NOT_EQUALS}
+}
+func (n *TaskNodeOutput) DoesContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: n, comparator: lhproto.Comparator_IN}
+}
+func (n *TaskNodeOutput) DoesNotContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: n, comparator: lhproto.Comparator_NOT_IN}
+}
+func (n *TaskNodeOutput) IsIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_IN}
+}
+func (n *TaskNodeOutput) IsNotIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_NOT_IN}
+}
+func (n *TaskNodeOutput) And(other interface{}) LHExpression {
+	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_AND}
+}
+func (n *TaskNodeOutput) Or(other interface{}) LHExpression {
+	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_OR}
 }
 
 // LHExpression methods for WaitForThreadsNodeOutput
@@ -255,6 +373,42 @@ func (n *WaitForThreadsNodeOutput) CastToBytes() LHExpression {
 func (n *WaitForThreadsNodeOutput) CastToWfRunId() LHExpression {
 	return n.CastTo(lhproto.VariableType_WF_RUN_ID)
 }
+func (n *WaitForThreadsNodeOutput) IsLessThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN}
+}
+func (n *WaitForThreadsNodeOutput) IsGreaterThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN}
+}
+func (n *WaitForThreadsNodeOutput) IsLessThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN_EQ}
+}
+func (n *WaitForThreadsNodeOutput) IsGreaterThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN_EQ}
+}
+func (n *WaitForThreadsNodeOutput) IsEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_EQUALS}
+}
+func (n *WaitForThreadsNodeOutput) IsNotEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_NOT_EQUALS}
+}
+func (n *WaitForThreadsNodeOutput) DoesContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: n, comparator: lhproto.Comparator_IN}
+}
+func (n *WaitForThreadsNodeOutput) DoesNotContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: n, comparator: lhproto.Comparator_NOT_IN}
+}
+func (n *WaitForThreadsNodeOutput) IsIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_IN}
+}
+func (n *WaitForThreadsNodeOutput) IsNotIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_NOT_IN}
+}
+func (n *WaitForThreadsNodeOutput) And(other interface{}) LHExpression {
+	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_AND}
+}
+func (n *WaitForThreadsNodeOutput) Or(other interface{}) LHExpression {
+	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_OR}
+}
 
 // LHExpression methods for ExternalEventNodeOutput
 func (n *ExternalEventNodeOutput) Add(other interface{}) LHExpression {
@@ -304,6 +458,42 @@ func (n *ExternalEventNodeOutput) CastToBytes() LHExpression {
 }
 func (n *ExternalEventNodeOutput) CastToWfRunId() LHExpression {
 	return n.CastTo(lhproto.VariableType_WF_RUN_ID)
+}
+func (n *ExternalEventNodeOutput) IsLessThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN}
+}
+func (n *ExternalEventNodeOutput) IsGreaterThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN}
+}
+func (n *ExternalEventNodeOutput) IsLessThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN_EQ}
+}
+func (n *ExternalEventNodeOutput) IsGreaterThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN_EQ}
+}
+func (n *ExternalEventNodeOutput) IsEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_EQUALS}
+}
+func (n *ExternalEventNodeOutput) IsNotEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_NOT_EQUALS}
+}
+func (n *ExternalEventNodeOutput) DoesContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: n, comparator: lhproto.Comparator_IN}
+}
+func (n *ExternalEventNodeOutput) DoesNotContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: n, comparator: lhproto.Comparator_NOT_IN}
+}
+func (n *ExternalEventNodeOutput) IsIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_IN}
+}
+func (n *ExternalEventNodeOutput) IsNotIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_NOT_IN}
+}
+func (n *ExternalEventNodeOutput) And(other interface{}) LHExpression {
+	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_AND}
+}
+func (n *ExternalEventNodeOutput) Or(other interface{}) LHExpression {
+	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_OR}
 }
 
 // LHExpression methods for UserTaskNodeOutput
@@ -355,3 +545,133 @@ func (n *UserTaskNodeOutput) CastToBytes() LHExpression {
 func (n *UserTaskNodeOutput) CastToWfRunId() LHExpression {
 	return n.CastTo(lhproto.VariableType_WF_RUN_ID)
 }
+func (n *UserTaskNodeOutput) IsLessThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN}
+}
+func (n *UserTaskNodeOutput) IsGreaterThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN}
+}
+func (n *UserTaskNodeOutput) IsLessThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN_EQ}
+}
+func (n *UserTaskNodeOutput) IsGreaterThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN_EQ}
+}
+func (n *UserTaskNodeOutput) IsEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_EQUALS}
+}
+func (n *UserTaskNodeOutput) IsNotEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_NOT_EQUALS}
+}
+func (n *UserTaskNodeOutput) DoesContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: n, comparator: lhproto.Comparator_IN}
+}
+func (n *UserTaskNodeOutput) DoesNotContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: n, comparator: lhproto.Comparator_NOT_IN}
+}
+func (n *UserTaskNodeOutput) IsIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_IN}
+}
+func (n *UserTaskNodeOutput) IsNotIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: n, rhs: rhs, comparator: lhproto.Comparator_NOT_IN}
+}
+func (n *UserTaskNodeOutput) And(other interface{}) LHExpression {
+	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_AND}
+}
+func (n *UserTaskNodeOutput) Or(other interface{}) LHExpression {
+	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_OR}
+}
+
+// Arithmetic methods
+func (e *comparatorExpression) Add(other interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_ADD}
+}
+func (e *comparatorExpression) Subtract(other interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_SUBTRACT}
+}
+func (e *comparatorExpression) Multiply(other interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_MULTIPLY}
+}
+func (e *comparatorExpression) Divide(other interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_DIVIDE}
+}
+func (e *comparatorExpression) Extend(other interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_EXTEND}
+}
+func (e *comparatorExpression) RemoveIfPresent(other interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_REMOVE_IF_PRESENT}
+}
+func (e *comparatorExpression) RemoveIndex_ByInt(index int) LHExpression {
+	return &lhExpression{lhs: e, rhs: index, operation: lhproto.VariableMutationType_REMOVE_INDEX}
+}
+func (e *comparatorExpression) RemoveIndex_ByExpression(index LHExpression) LHExpression {
+	return &lhExpression{lhs: e, rhs: index, operation: lhproto.VariableMutationType_REMOVE_INDEX}
+}
+func (e *comparatorExpression) RemoveKey(key interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: key, operation: lhproto.VariableMutationType_REMOVE_KEY}
+}
+
+// Cast methods
+func (e *comparatorExpression) CastTo(targetType lhproto.VariableType) LHExpression {
+	return &castExpression{source: e, targetType: targetType}
+}
+func (e *comparatorExpression) CastToInt() LHExpression {
+	return e.CastTo(lhproto.VariableType_INT)
+}
+func (e *comparatorExpression) CastToDouble() LHExpression {
+	return e.CastTo(lhproto.VariableType_DOUBLE)
+}
+func (e *comparatorExpression) CastToStr() LHExpression {
+	return e.CastTo(lhproto.VariableType_STR)
+}
+func (e *comparatorExpression) CastToBool() LHExpression {
+	return e.CastTo(lhproto.VariableType_BOOL)
+}
+func (e *comparatorExpression) CastToBytes() LHExpression {
+	return e.CastTo(lhproto.VariableType_BYTES)
+}
+func (e *comparatorExpression) CastToWfRunId() LHExpression {
+	return e.CastTo(lhproto.VariableType_WF_RUN_ID)
+}
+
+// Comparator methods
+func (e *comparatorExpression) IsLessThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN}
+}
+func (e *comparatorExpression) IsGreaterThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN}
+}
+func (e *comparatorExpression) IsLessThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN_EQ}
+}
+func (e *comparatorExpression) IsGreaterThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN_EQ}
+}
+func (e *comparatorExpression) IsEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_EQUALS}
+}
+func (e *comparatorExpression) IsNotEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_NOT_EQUALS}
+}
+func (e *comparatorExpression) DoesContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: e, comparator: lhproto.Comparator_IN}
+}
+func (e *comparatorExpression) DoesNotContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: e, comparator: lhproto.Comparator_NOT_IN}
+}
+func (e *comparatorExpression) IsIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_IN}
+}
+func (e *comparatorExpression) IsNotIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: e, rhs: rhs, comparator: lhproto.Comparator_NOT_IN}
+}
+
+// Boolean logic methods
+func (e *comparatorExpression) And(other interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_AND}
+}
+func (e *comparatorExpression) Or(other interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_OR}
+}
+
+// Note: WorkflowCondition and its backward-compatibility helpers were removed.

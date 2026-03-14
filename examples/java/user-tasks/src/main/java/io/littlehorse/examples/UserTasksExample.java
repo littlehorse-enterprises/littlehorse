@@ -1,7 +1,6 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
 import io.littlehorse.sdk.wfsdk.*;
@@ -53,7 +52,7 @@ public class UserTasksExample {
         isApproved.assign(financeUserTaskOutput.jsonPath("$.isApproved"));
 
         wf.doIf(
-                        wf.condition(isApproved, Comparator.EQUALS, true),
+                        isApproved.isEqualTo(true),
                         // Request approved!
                         ifBody -> {
                             ifBody.execute(
