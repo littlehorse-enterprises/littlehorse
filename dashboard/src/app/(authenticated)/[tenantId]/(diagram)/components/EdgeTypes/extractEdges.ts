@@ -16,12 +16,14 @@ export const extractEdges = (spec: ThreadSpec): Edge[] => {
       targetMap.set(edge.sinkNodeName, targetIndex + 1)
       sourceMap.set(source, sourceIndex + 1)
 
+      const hasMultipleOutgoingEdges = node.outgoingEdges.length > 1
+      const isElseEdge = hasMultipleOutgoingEdges && !edge.edgeCondition
       return {
         id,
         source,
         type: 'custom',
         target: edge.sinkNodeName,
-        data: edge,
+        data: { ...edge, isElseEdge },
         targetHandle: `target-${targetIndex}`,
         sourceHandle: `source-${sourceIndex}`,
         markerEnd: {

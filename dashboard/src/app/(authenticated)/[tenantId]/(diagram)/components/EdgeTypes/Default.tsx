@@ -5,7 +5,9 @@ import { useModal } from '../../hooks/useModal'
 import { Edge as EdgeProto } from 'littlehorse-client/proto'
 import { EdgeConditionLabel } from './EdgeConditionLabel'
 
-const CustomEdge: FC<EdgeProps<EdgeProto>> = ({
+type EdgeData = EdgeProto & { isElseEdge?: boolean }
+
+const CustomEdge: FC<EdgeProps<EdgeData>> = ({
   id,
   sourceX,
   sourceY,
@@ -30,7 +32,7 @@ const CustomEdge: FC<EdgeProps<EdgeProto>> = ({
   const { setModal, setShowModal } = useModal()
   const onClick = useCallback(() => {
     if (!data) return
-    setModal({ type: 'edge', data })
+    setModal({ type: 'edge', data: data as EdgeProto })
     setShowModal(true)
   }, [data, setModal, setShowModal])
 
@@ -47,13 +49,22 @@ const CustomEdge: FC<EdgeProps<EdgeProto>> = ({
         >
           <div onClick={onClick} className="flex cursor-pointer flex-col items-center">
             {(data?.variableMutations?.length ?? 0) > 0 && <CircleAlertIcon size={16} className={`fill-gray-200`} />}
-            {data?.edgeCondition && (
+            {data?.edgeCondition ? (
               <div
                 className="flex items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-gray-600"
                 style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}
               >
                 <EdgeConditionLabel edge={data} />
               </div>
+            ) : (
+              data?.isElseEdge && (
+                <div
+                  className="flex items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-gray-600"
+                  style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}
+                >
+                  <span className="text-[10px] text-gray-600">else</span>
+                </div>
+              )
             )}
           </div>
         </div>
