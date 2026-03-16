@@ -714,6 +714,48 @@ func (t *WorkflowThread) assignVariable(
 			DefinedType: &lhproto.TypeDefinition_PrimitiveType{PrimitiveType: v.targetType},
 		}
 		out = inner
+
+	case *comparatorExpression:
+		lhs, lhsErr := t.assignVariable(v.lhs)
+		if lhsErr != nil {
+			t.throwError(lhsErr)
+		}
+		rhs, rhsErr := t.assignVariable(v.rhs)
+		if rhsErr != nil {
+			t.throwError(rhsErr)
+		}
+		out = &lhproto.VariableAssignment{
+			Source: &lhproto.VariableAssignment_Expression_{
+				Expression: &lhproto.VariableAssignment_Expression{
+					Lhs: lhs,
+					Operation: &lhproto.VariableAssignment_Expression_Comparator{
+						Comparator: v.comparator,
+					},
+					Rhs: rhs,
+				},
+			},
+		}
+	case comparatorExpression:
+		lhs, lhsErr := t.assignVariable(v.lhs)
+		if lhsErr != nil {
+			t.throwError(lhsErr)
+		}
+		rhs, rhsErr := t.assignVariable(v.rhs)
+		if rhsErr != nil {
+			t.throwError(rhsErr)
+		}
+		out = &lhproto.VariableAssignment{
+			Source: &lhproto.VariableAssignment_Expression_{
+				Expression: &lhproto.VariableAssignment_Expression{
+					Lhs: lhs,
+					Operation: &lhproto.VariableAssignment_Expression_Comparator{
+						Comparator: v.comparator,
+					},
+					Rhs: rhs,
+				},
+			},
+		}
+
 	default:
 		var tmp *lhproto.VariableValue
 		tmp, err = InterfaceToVarVal(v)
@@ -747,8 +789,12 @@ func (t *WorkflowThread) createBlankNode(name, nType string) (string, *lhproto.N
 	}
 
 	if t.lastNodeCondition != nil {
-		edge.EdgeCondition = &lhproto.Edge_LegacyCondition{
-			LegacyCondition: t.lastNodeCondition.spec,
+		condAssn, condErr := t.assignVariable(t.lastNodeCondition)
+		if condErr != nil {
+			t.throwError(tracerr.Wrap(condErr))
+		}
+		edge.EdgeCondition = &lhproto.Edge_Condition{
+			Condition: condAssn,
 		}
 		t.lastNodeCondition = nil
 	}
@@ -1098,28 +1144,13 @@ func (t *WorkflowThread) complete(result interface{}) {
 
 func (t *WorkflowThread) condition(
 	lhs interface{}, op lhproto.Comparator, rhs interface{},
-) *WorkflowCondition {
+) LHExpression {
 	t.checkIfIsActive()
-	cond := &lhproto.LegacyEdgeCondition{
-		Comparator: op,
-	}
-
-	var err error
-
-	cond.Left, err = t.assignVariable(lhs)
-
-	if err != nil {
-		t.throwError(tracerr.Wrap(err))
-	}
-
-	cond.Right, err = t.assignVariable(rhs)
-	if err != nil {
-		t.throwError(tracerr.Wrap(err))
-	}
-
-	return &WorkflowCondition{
-		spec: cond,
-	}
+	// Return a comparatorExpression (an LHExpression) instead of the
+	// legacy WorkflowCondition wrapper. assignVariable knows how to
+	// convert comparatorExpression into the appropriate
+	// VariableAssignment/Expression when building the proto.
+	return &comparatorExpression{lhs: lhs, rhs: rhs, comparator: op}
 }
 
 func (t *WorkflowThread) addNopNode() {
@@ -1130,7 +1161,7 @@ func (t *WorkflowThread) addNopNode() {
 	}
 }
 
-func (t *WorkflowThread) doIf(cond *WorkflowCondition, doIf IfElseBody) *WorkflowIfStatement {
+func (t *WorkflowThread) doIf(cond LHExpression, doIf IfElseBody) *WorkflowIfStatement {
 	t.checkIfIsActive()
 	// The tree looks like:
 	/* T
@@ -1170,7 +1201,7 @@ func (t *WorkflowThread) doIf(cond *WorkflowCondition, doIf IfElseBody) *Workflo
 		thread:          t}
 }
 
-func (t *WorkflowThread) doElseIf(ifStatement WorkflowIfStatement, cond *WorkflowCondition, doElseIf IfElseBody) WorkflowIfStatement {
+func (t *WorkflowThread) doElseIf(ifStatement WorkflowIfStatement, cond LHExpression, doElseIf IfElseBody) WorkflowIfStatement {
 	firstNopNode := t.spec.Nodes[ifStatement.firstNopNodeName]
 	elseEdge := firstNopNode.OutgoingEdges[len(firstNopNode.OutgoingEdges)-1]
 	// Remove else edge from the first NOP node
@@ -1237,13 +1268,17 @@ func removeEdge(edges []*lhproto.Edge, edgeToRemove *lhproto.Edge) []*lhproto.Ed
 	return edges // Return original edges if the edge was not found
 }
 
-func (t *WorkflowThread) buildNewEdge(sinkNodeName string, cond *WorkflowCondition, variableMutations []*lhproto.VariableMutation) *lhproto.Edge {
+func (t *WorkflowThread) buildNewEdge(sinkNodeName string, cond LHExpression, variableMutations []*lhproto.VariableMutation) *lhproto.Edge {
 	if cond != nil {
+		condAssn, condErr := t.assignVariable(cond)
+		if condErr != nil {
+			t.throwError(tracerr.Wrap(condErr))
+		}
 		return &lhproto.Edge{
 			SinkNodeName:      sinkNodeName,
 			VariableMutations: variableMutations,
-			EdgeCondition: &lhproto.Edge_LegacyCondition{
-				LegacyCondition: cond.spec,
+			EdgeCondition: &lhproto.Edge_Condition{
+				Condition: condAssn,
 			},
 		}
 	}
@@ -1255,7 +1290,7 @@ func (t *WorkflowThread) buildNewEdge(sinkNodeName string, cond *WorkflowConditi
 }
 
 func (t *WorkflowThread) doIfElse(
-	cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody,
+	cond LHExpression, doIf IfElseBody, doElse IfElseBody,
 ) {
 	t.checkIfIsActive()
 
@@ -1270,8 +1305,19 @@ func (t *WorkflowThread) doIfElse(
 
 	// Go back to the tree root
 	t.lastNodeName = treeRootNodeName
-	t.lastNodeCondition = &WorkflowCondition{spec: cond.getReverse()}
-	doElse(t)
+	// Instead of synthesizing an explicit negated condition (which fails for
+	// compound LHExpressions), attach the else body to the unconditional else
+	// edge that was created by the doIf above. Reuse the doElseIf logic by
+	// constructing a WorkflowIfStatement pointing to the NOPs we created and
+	// invoking doElseIf with a nil condition so the else body replaces the
+	// unconditional edge.
+	ifStmt := WorkflowIfStatement{
+		firstNopNodeName: *treeRootNodeName,
+		lastNopNodeName:  *lastNodeFromIfBlockName,
+		wasElseExecuted:  false,
+		thread:           t,
+	}
+	t.doElseIf(ifStmt, nil, doElse)
 
 	t.addNopNode()
 
@@ -1284,8 +1330,12 @@ func (t *WorkflowThread) doIfElse(
 	// no node was created within the if block, thus the edge of the starting NOP should be created
 	// with the appropriate conditional
 	if lastNodeFromIfBlockName == treeRootNodeName {
-		ifBlockEdge.EdgeCondition = &lhproto.Edge_LegacyCondition{
-			LegacyCondition: lastConditionFromIfBlock.spec,
+		condAssn, condErr := t.assignVariable(lastConditionFromIfBlock)
+		if condErr != nil {
+			t.throwError(tracerr.Wrap(condErr))
+		}
+		ifBlockEdge.EdgeCondition = &lhproto.Edge_Condition{
+			Condition: condAssn,
 		}
 	}
 
@@ -1302,7 +1352,7 @@ func (t *WorkflowThread) collectVariableMutations() []*lhproto.VariableMutation 
 	return variablesFromIfBlock
 }
 
-func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) {
+func (t *WorkflowThread) doWhile(cond LHExpression, whileBody ThreadFunc) {
 	t.checkIfIsActive()
 	// The tree looks like:
 	/* T
@@ -1330,13 +1380,18 @@ func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) 
 	bottomOfTreeNode := t.spec.Nodes[*t.lastNodeName]
 	bottomOfTreeNodeName := t.lastNodeName
 
+	condAssn, condErr := t.assignVariable(cond)
+	if condErr != nil {
+		t.throwError(tracerr.Wrap(condErr))
+	}
+
 	// Now add the sideways path from T directly to B
 	topOfTreeNode.OutgoingEdges = append(
 		topOfTreeNode.OutgoingEdges,
 		&lhproto.Edge{
 			SinkNodeName: *bottomOfTreeNodeName,
-			EdgeCondition: &lhproto.Edge_LegacyCondition{
-				LegacyCondition: cond.spec,
+			EdgeCondition: &lhproto.Edge_Condition{
+				Condition: condAssn,
 			},
 		},
 	)
@@ -1346,37 +1401,11 @@ func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) 
 		bottomOfTreeNode.OutgoingEdges,
 		&lhproto.Edge{
 			SinkNodeName: *topOfTreeNodeName,
-			EdgeCondition: &lhproto.Edge_LegacyCondition{
-				LegacyCondition: cond.spec,
+			EdgeCondition: &lhproto.Edge_Condition{
+				Condition: condAssn,
 			},
 		},
 	)
-}
-
-func (c *WorkflowCondition) getReverse() *lhproto.LegacyEdgeCondition {
-	out := &lhproto.LegacyEdgeCondition{}
-	out.Left = c.spec.Left
-	out.Right = c.spec.Right
-	switch c.spec.Comparator {
-	case lhproto.Comparator_LESS_THAN:
-		out.Comparator = lhproto.Comparator_GREATER_THAN_EQ
-	case lhproto.Comparator_GREATER_THAN:
-		out.Comparator = lhproto.Comparator_LESS_THAN_EQ
-	case lhproto.Comparator_GREATER_THAN_EQ:
-		out.Comparator = lhproto.Comparator_LESS_THAN
-	case lhproto.Comparator_LESS_THAN_EQ:
-		out.Comparator = lhproto.Comparator_GREATER_THAN
-	case lhproto.Comparator_EQUALS:
-		out.Comparator = lhproto.Comparator_NOT_EQUALS
-	case lhproto.Comparator_NOT_EQUALS:
-		out.Comparator = lhproto.Comparator_EQUALS
-	case lhproto.Comparator_IN:
-		out.Comparator = lhproto.Comparator_NOT_IN
-	case lhproto.Comparator_NOT_IN:
-		out.Comparator = lhproto.Comparator_IN
-	}
-
-	return out
 }
 
 func (t *WorkflowThread) overrideTaskRetries(taskNodeOutput *TaskNodeOutput, retries int32) {
@@ -1767,13 +1796,19 @@ func (t *WorkflowThread) waitForEvent(eventName string) *ExternalEventNodeOutput
 	}
 }
 
-func (t *WorkflowThread) waitForCondition(condition *WorkflowCondition) *WaitForConditionNodeOutput {
+func (t *WorkflowThread) waitForCondition(condition LHExpression) *WaitForConditionNodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode("wait-for-condition", "WAIT_FOR_CONDITION")
+
+	condAssn, condErr := t.assignVariable(condition)
+	if condErr != nil {
+		t.throwError(tracerr.Wrap(condErr))
+	}
+
 	node.Node = &lhproto.Node_WaitForCondition{
 		WaitForCondition: &lhproto.WaitForConditionNode{
-			NodeCondition: &lhproto.WaitForConditionNode_LegacyCondition{
-				LegacyCondition: condition.spec,
+			NodeCondition: &lhproto.WaitForConditionNode_Condition{
+				Condition: condAssn,
 			},
 		},
 	}
