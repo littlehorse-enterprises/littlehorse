@@ -305,6 +305,7 @@ class CastExpression:
     def do_or(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.OR, other)
 
+
 class ComparatorExpression:
     """Represents a comparator expression (lhs <op> rhs) used for edge
     conditions.
