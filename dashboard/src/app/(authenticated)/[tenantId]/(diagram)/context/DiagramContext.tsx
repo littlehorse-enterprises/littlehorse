@@ -1,4 +1,4 @@
-import { Node as NodeProto, NodeRun, WfRun } from 'littlehorse-client/proto'
+import { Node as NodeProto, NodeRun } from 'littlehorse-client/proto'
 import { Dispatch, SetStateAction, createContext } from 'react'
 import { Node } from 'reactflow'
 import { NodeType } from '../components/NodeTypes/extractNodes'
