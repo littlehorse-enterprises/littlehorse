@@ -58,11 +58,15 @@ public class WfThreadDoIfTest
                 new Edge
                 {
                     SinkNodeName = "2-task-TASK",
-                    LegacyCondition = new LegacyEdgeCondition
+                                        Condition = new VariableAssignment
                     {
+                        Expression = new VariableAssignment.Types.Expression
+                        {
                         Comparator = Comparator.GreaterThan,
-                        Left = new VariableAssignment { LiteralValue = new VariableValue { Int = leftHandSide } },
-                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = rightHandSide } }
+                        Lhs = new VariableAssignment { LiteralValue = new VariableValue { Int = leftHandSide } },
+                        Rhs = new VariableAssignment { LiteralValue = new VariableValue { Int = rightHandSide } }
+                    
+                        }
                     }
                 },
                 new Edge
@@ -156,11 +160,15 @@ public class WfThreadDoIfTest
                 new Edge
                 {
                     SinkNodeName = "2-task-a-TASK",
-                    LegacyCondition = new LegacyEdgeCondition
+                                        Condition = new VariableAssignment
                     {
+                        Expression = new VariableAssignment.Types.Expression
+                        {
                         Comparator = Comparator.LessThan,
-                        Left = new VariableAssignment { LiteralValue = new VariableValue { Int = leftHandSide } },
-                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = rightHandSide } }
+                        Lhs = new VariableAssignment { LiteralValue = new VariableValue { Int = leftHandSide } },
+                        Rhs = new VariableAssignment { LiteralValue = new VariableValue { Int = rightHandSide } }
+                    
+                        }
                     }
                 },
                 new Edge
@@ -270,21 +278,29 @@ public class WfThreadDoIfTest
                 new Edge
                 {
                     SinkNodeName = "2-eating-donut-TASK",
-                    LegacyCondition = new LegacyEdgeCondition
+                                        Condition = new VariableAssignment
                     {
+                        Expression = new VariableAssignment.Types.Expression
+                        {
                         Comparator = Comparator.GreaterThan,
-                        Left = new VariableAssignment { VariableName = "number-of-donuts" },
-                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                        Lhs = new VariableAssignment { VariableName = "number-of-donuts" },
+                        Rhs = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                    
+                        }
                     }
                 },
                 new Edge
                 {
                     SinkNodeName = "3-nop-NOP",
-                    LegacyCondition = new LegacyEdgeCondition
+                                        Condition = new VariableAssignment
                     {
+                        Expression = new VariableAssignment.Types.Expression
+                        {
                         Comparator = Comparator.LessThanEq,
-                        Left = new VariableAssignment { VariableName = "number-of-donuts" },
-                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                        Lhs = new VariableAssignment { VariableName = "number-of-donuts" },
+                        Rhs = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                    
+                        }
                     }
                 }
             }
@@ -322,11 +338,15 @@ public class WfThreadDoIfTest
                 new Edge
                 {
                     SinkNodeName = "1-nop-NOP",
-                    LegacyCondition = new LegacyEdgeCondition
+                                        Condition = new VariableAssignment
                     {
+                        Expression = new VariableAssignment.Types.Expression
+                        {
                         Comparator = Comparator.GreaterThan,
-                        Left = new VariableAssignment { VariableName = "number-of-donuts" },
-                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                        Lhs = new VariableAssignment { VariableName = "number-of-donuts" },
+                        Rhs = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                    
+                        }
                     }
                 },
                 new Edge

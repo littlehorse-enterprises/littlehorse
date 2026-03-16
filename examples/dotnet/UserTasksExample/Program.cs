@@ -94,7 +94,7 @@ public abstract class Program
             isApproved.Assign(financeUserTaskOutput.WithJsonPath("$.IsApproved"));
 
             wf.DoIf(
-                wf.Condition(isApproved, Comparator.Equals, true),
+                isApproved.IsEqualTo(true),
                 // Request approved!
                 ifBody => {
                     ifBody.Execute(

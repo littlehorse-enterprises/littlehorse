@@ -1,7 +1,7 @@
 ## Running ConditionalsWhileExample
 
 In this example you will see how to define a while loop with LH.
-Use DoWhile(WorkflowCondition condition, ThreadFunc whileBody) to define the loop,
+Use DoWhile(LHExpression condition, ThreadFunc whileBody) to define the loop,
 the end condition and the handler (body) of the while.
 
 Let's run the example in `ConditionalsWhileExample`

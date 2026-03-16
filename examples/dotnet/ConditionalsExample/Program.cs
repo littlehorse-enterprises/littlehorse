@@ -54,7 +54,7 @@ public abstract class Program
             var foo = wf.DeclareJsonObj("foo");
             wf.Execute("task-a");
             wf.DoIf(
-                wf.Condition(foo.WithJsonPath("$.bar"), Comparator.GreaterThan, 10),
+                foo.WithJsonPath("$.bar").IsGreaterThan(10),
                 ifThread => ifThread.Execute("task-b")
             ).DoElse(elseThread => elseThread.Execute("task-c"));
             wf.Execute("task-d");
