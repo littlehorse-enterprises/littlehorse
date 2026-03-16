@@ -44,5 +44,9 @@ export const EdgeConditionLabel: FC<{ edge: EdgeProto }> = ({ edge }) => {
     return <span className={variableBadgeClass}>{getVariable(variableAssignment)}</span>
   }
 
-  return null
+  return (
+    <span className="rounded bg-amber-100 px-1 py-0.5 font-mono text-[10px] text-amber-700">
+      Unimplemented Conditional Case
+    </span>
+  )
 }
