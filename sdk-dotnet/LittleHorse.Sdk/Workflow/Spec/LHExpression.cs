@@ -281,10 +281,39 @@ public class LHExpression
         return new CastExpression(this, targetType);
     }
 
+    /// <summary>
+    /// Returns a CastExpression that casts this expression to Int.
+    /// </summary>
+    /// <returns>A CastExpression for Int.</returns>
     public CastExpression CastToInt() => CastTo(VariableType.Int);
+
+    /// <summary>
+    /// Returns a CastExpression that casts this expression to Double.
+    /// </summary>
+    /// <returns>A CastExpression for Double.</returns>
     public CastExpression CastToDouble() => CastTo(VariableType.Double);
+
+    /// <summary>
+    /// Returns a CastExpression that casts this expression to Str.
+    /// </summary>
+    /// <returns>A CastExpression for Str.</returns>
     public CastExpression CastToStr() => CastTo(VariableType.Str);
+
+    /// <summary>
+    /// Returns a CastExpression that casts this expression to Bool.
+    /// </summary>
+    /// <returns>A CastExpression for Bool.</returns>
     public CastExpression CastToBool() => CastTo(VariableType.Bool);
+
+    /// <summary>
+    /// Returns a CastExpression that casts this expression to Bytes.
+    /// </summary>
+    /// <returns>A CastExpression for Bytes.</returns>
     public CastExpression CastToBytes() => CastTo(VariableType.Bytes);
+
+    /// <summary>
+    /// Returns a CastExpression that casts this expression to WfRunId.
+    /// </summary>
+    /// <returns>A CastExpression for WfRunId.</returns>
     public CastExpression CastToWfRunId() => CastTo(VariableType.WfRunId);
 }
