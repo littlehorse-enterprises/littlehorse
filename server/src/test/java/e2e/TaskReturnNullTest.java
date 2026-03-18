@@ -36,7 +36,6 @@ public class TaskReturnNullTest {
 
     @LHTaskMethod("maybe-return-int")
     public Integer maybeReturnInt(String input) {
-        // Simulate a lookup that finds nothing
         return null;
     }
 }
