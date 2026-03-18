@@ -221,25 +221,49 @@ public interface WorkflowThread {
     /**
      * Conditionally executes some workflow code; equivalent to an if() statement in programming.
      *
-     * @param condition is the WorkflowCondition to be satisfied.
-     * @param doIf is the block of ThreadSpec code to be executed if the provided WorkflowCondition
-     *     is satisfied.
-     * @return Returns a {@link WorkflowIfStatement} object that allows you to chain {@link WorkflowIfStatement#doElseIf(WorkflowCondition, IfElseBody)} and {@link WorkflowIfStatement#doElse(IfElseBody)} method calls.
+     * @param condition an LHExpression that evaluates to a boolean determining whether to execute the
+     *     `doIf` block.
+     * @param doIf is the block of ThreadSpec code to be executed if the provided LHExpression
+     *     evaluates to true.
+     * @return Returns a {@link WorkflowIfStatement} object that allows you to chain {@link WorkflowIfStatement#doElseIf(LHExpression, IfElseBody)} and {@link WorkflowIfStatement#doElse(IfElseBody)} method calls.
      */
-    WorkflowIfStatement doIf(WorkflowCondition condition, IfElseBody doIf);
+    WorkflowIfStatement doIf(LHExpression condition, IfElseBody doIf);
+
+    /**
+     * Conditionally executes some workflow code; equivalent to an if() statement in programming.
+     *
+     * @param condition BOOL WfRunVariable that is evaluated to determine if the doIf branch should be executed.
+     * @param doIf is the block of ThreadSpec code to be executed if the provided WfRunVariable
+     *     evaluates to true.
+     * @return Returns a {@link WorkflowIfStatement} object that allows you to chain {@link WorkflowIfStatement#doElseIf(LHExpression, IfElseBody)} and {@link WorkflowIfStatement#doElse(IfElseBody)} method calls.
+     */
+    WorkflowIfStatement doIf(WfRunVariable condition, IfElseBody doIf);
 
     /**
      * Conditionally executes one of two workflow code branches; equivalent to an if/else statement
      * in programming.
      *
-     * @param condition is the WorkflowCondition to be satisfied.
-     * @param doIf is the block of ThreadSpec code to be executed if the provided WorkflowCondition
-     *     is satisfied.
+     * @param condition an LHExpression that evaluates to a boolean determining which branch to execute.
+     * @param doIf is the block of ThreadSpec code to be executed if the provided LHExpression
+     *     evaluates to true.
      * @param doElse is the block of ThreadSpec code to be executed if the provided
-     *     WorkflowCondition is NOT satisfied.
+     *     condition evaluates to false.
      * @see WorkflowThread#doIf
      */
-    void doIfElse(WorkflowCondition condition, IfElseBody doIf, IfElseBody doElse);
+    void doIfElse(LHExpression condition, IfElseBody doIf, IfElseBody doElse);
+
+    /**
+     * Conditionally executes one of two workflow code branches; equivalent to an if/else statement
+     * in programming.
+     *
+     * @param boolVar a BOOL WfRunVariable that is evaluated to determine if the doIf branch should be executed.
+     * @param doIf is the block of ThreadSpec code to be executed if the provided WfRunVariable
+     *     evaluates to true.
+     * @param doElse is the block of ThreadSpec code to be executed if the provided
+     *     WfRunVariable evaluates to false.
+     * @see WorkflowThread#doIf
+     */
+    void doIfElse(WfRunVariable boolVar, IfElseBody doIf, IfElseBody doElse);
 
     /**
      * Adds a Reminder Task to a User Task Node.
@@ -313,11 +337,11 @@ public interface WorkflowThread {
     /**
      * Conditionally executes some workflow code; equivalent to an while() statement in programming.
      *
-     * @param condition is the WorkflowCondition to be satisfied.
+     * @param condition is the LHExpression to be satisfied.
      * @param whileBody is the block of ThreadFunc code to be executed while the provided
-     *     WorkflowCondition is satisfied.
+     *     LHExpression is satisfied.
      */
-    void doWhile(WorkflowCondition condition, ThreadFunc whileBody);
+    void doWhile(LHExpression condition, ThreadFunc whileBody);
 
     /**
      * Adds a SPAWN_THREAD node to the ThreadSpec, which spawns a Child ThreadRun whose ThreadSpec
@@ -381,7 +405,7 @@ public interface WorkflowThread {
      * @return a handle to the WaitForConditionNodeOutput, which may only be used for error handling since
      * the output of this node is empty.
      */
-    WaitForConditionNodeOutput waitForCondition(WorkflowCondition condition);
+    WaitForConditionNodeOutput waitForCondition(LHExpression condition);
 
     /**
      * Adds an EXIT node with a Failure defined. This causes a ThreadRun to fail, and the resulting
@@ -404,6 +428,9 @@ public interface WorkflowThread {
     /**
      * Adds an EXIT node which returns the provided result. This causes the ThreadRun to complete
      * gracefully. It is equivalent to putting a call to `return;` early in your function.
+     *
+     * @param output is a value for your ThreadRun to return upon completion.
+     *        It can be either a literal value (which the Library casts to a Variable Value) or a `WfRunVariable`.
      */
     void complete(Serializable output);
 
@@ -422,6 +449,7 @@ public interface WorkflowThread {
      *
      * @param interruptName The name of the ExternalEventDef to listen for.
      * @param handler A Thread Function defining a ThreadSpec to use to handle the Interrupt.
+     * @return an InterruptHandler for further configuration
      */
     InterruptHandler registerInterruptHandler(String interruptName, ThreadFunc handler);
 
@@ -493,7 +521,7 @@ public interface WorkflowThread {
     void handleAnyFailure(NodeOutput node, ThreadFunc handler);
 
     /**
-     * Returns a WorkflowCondition that can be used in `WorkflowThread::doIf()`
+     * Returns an expression that evaluates to a boolean and can be used in `WorkflowThread::doIf()`
      *
      * @param lhs is either a literal value (which the Library casts to a Variable Value) or a
      *     `WfRunVariable` representing the LHS of the expression.
@@ -501,9 +529,9 @@ public interface WorkflowThread {
      *     `ComparatorTypePb.EQUALS`.
      * @param rhs is either a literal value (which the Library casts to a Variable Value) or a
      *     `WfRunVariable` representing the RHS of the expression.
-     * @return a WorkflowCondition.
+     * @return an {@link LHExpression} representing the comparator expression.
      */
-    WorkflowCondition condition(Object lhs, Comparator comparator, Object rhs);
+    LHExpression condition(Serializable lhs, Comparator comparator, Serializable rhs);
 
     /**
      * Adds a VariableMutation to the last Node
@@ -521,6 +549,7 @@ public interface WorkflowThread {
      * and provided content.
      * @param workflowEventDefName is the name of the WorkflowEvent to throw.
      * @param content is the content of the WorkflowEvent that is thrown.
+     * @return a ThrowEventNodeOutput that can be used to configure the thrown event
      */
     ThrowEventNodeOutput throwEvent(String workflowEventDefName, Serializable content);
 

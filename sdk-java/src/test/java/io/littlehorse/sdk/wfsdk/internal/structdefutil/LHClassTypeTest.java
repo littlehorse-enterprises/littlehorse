@@ -2,14 +2,15 @@ package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import org.junit.jupiter.api.Test;
 
 public class LHClassTypeTest {
     @Test
     public void testGetCoreComponentType() {
-        LHClassType lhClassType = LHClassType.fromJavaClass(String[][][][].class);
+        LHClassType lhClassType = LHClassType.fromJavaClass(String[][][][].class, LHTypeAdapterRegistry.empty());
 
-        LHClassType expectedCoreComponentType = LHClassType.fromJavaClass(String.class);
+        LHClassType expectedCoreComponentType = LHClassType.fromJavaClass(String.class, LHTypeAdapterRegistry.empty());
         LHClassType actualCoreComponentType = lhClassType.getCoreComponentType();
 
         assertThat(actualCoreComponentType).isEqualTo(expectedCoreComponentType);

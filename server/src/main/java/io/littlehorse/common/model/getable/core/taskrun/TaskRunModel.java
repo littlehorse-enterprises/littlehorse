@@ -336,10 +336,28 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         attempt.setEndTime(taskRunReport.getTime());
         attempt.setLogOutput(taskRunReport.getLogOutput());
 
+        String taskOutputValidationError = null;
+        if (taskRunReport.getStatus() == TaskStatus.TASK_SUCCESS
+                && returnType.isPresent()
+                && taskRunReport.getOutput() != null) {
+            try {
+                if (!returnType.get().isCompatibleWith(taskRunReport.getOutput(), executionContext.metadataManager())) {
+                    taskOutputValidationError =
+                            String.format("Task output is incompatible with declared return type %s", returnType.get());
+                }
+            } catch (LHApiException ex) {
+                taskOutputValidationError = ex.getMessage();
+            }
+        }
+
         if (taskRunReport.getOutput() != null
                 && taskRunReport.getOutput().getDeserializationError().isPresent()) {
             attempt.setError(new LHTaskErrorModel(
                     taskRunReport.getOutput().getDeserializationError().get(), LHErrorType.VAR_SUB_ERROR));
+            attempt.setStatus(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
+            transitionTo(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
+        } else if (taskOutputValidationError != null) {
+            attempt.setError(new LHTaskErrorModel(taskOutputValidationError, LHErrorType.VAR_SUB_ERROR));
             attempt.setStatus(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
             transitionTo(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
         } else {

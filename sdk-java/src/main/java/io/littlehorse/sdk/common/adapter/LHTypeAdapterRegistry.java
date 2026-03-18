@@ -1,0 +1,112 @@
+package io.littlehorse.sdk.common.adapter;
+
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
+/**
+ * Immutable registry of LHTypeAdapters keyed by Java class.
+ */
+public class LHTypeAdapterRegistry {
+    private final Map<Class<?>, LHTypeAdapter<?>> byClass;
+
+    private LHTypeAdapterRegistry(Map<Class<?>, LHTypeAdapter<?>> byClass) {
+        this.byClass = Collections.unmodifiableMap(new LinkedHashMap<>(byClass));
+    }
+
+    /**
+     * Creates an empty type adapter registry.
+     *
+     * @return empty registry
+     */
+    public static LHTypeAdapterRegistry empty() {
+        return new LHTypeAdapterRegistry(Collections.emptyMap());
+    }
+
+    /**
+     * Creates a registry from the provided map of adapters keyed by Java class.
+     * If the provided map is null or empty, an empty registry is returned.
+     *
+     * @param byClass map of adapters keyed by class
+     * @return a new LHTypeAdapterRegistry
+     */
+    public static LHTypeAdapterRegistry from(Map<Class<?>, LHTypeAdapter<?>> byClass) {
+        if (byClass == null || byClass.isEmpty()) {
+            return empty();
+        }
+
+        LinkedHashMap<Class<?>, LHTypeAdapter<?>> map = new LinkedHashMap<>();
+        for (Map.Entry<Class<?>, LHTypeAdapter<?>> entry : byClass.entrySet()) {
+            Class<?> typeClass = entry.getKey();
+            LHTypeAdapter<?> adapter = Objects.requireNonNull(entry.getValue(), "Type adapter cannot be null");
+            if (typeClass == null && adapter != null) {
+                typeClass = adapter.getTypeClass();
+            }
+
+            if (typeClass == null) {
+                throw new IllegalArgumentException("Cannot register a type adapter with null class key");
+            }
+            if (adapter == null) {
+                throw new IllegalArgumentException("Cannot register null type adapter for " + typeClass.getName());
+            }
+            if (map.containsKey(typeClass)) {
+                throw new IllegalArgumentException(
+                        "A type adapter for " + typeClass.getName() + " is already registered");
+            }
+            map.put(typeClass, adapter);
+        }
+
+        return new LHTypeAdapterRegistry(map);
+    }
+
+    /**
+     * Creates a registry from the provided list of adapters, keyed by each adapter's type class.
+     * If the provided list is null or empty, an empty registry is returned.
+     *
+     * @param adapters list of adapters
+     * @return a new LHTypeAdapterRegistry
+     */
+    public static LHTypeAdapterRegistry from(List<LHTypeAdapter<?>> adapters) {
+        if (adapters == null || adapters.isEmpty()) {
+            return empty();
+        }
+
+        LinkedHashMap<Class<?>, LHTypeAdapter<?>> map = new LinkedHashMap<>();
+        for (LHTypeAdapter<?> adapter : adapters) {
+            LHTypeAdapter<?> nonNullAdapter = Objects.requireNonNull(adapter, "Type adapter cannot be null");
+            Class<?> typeClass = nonNullAdapter.getTypeClass();
+            if (typeClass == null) {
+                throw new IllegalArgumentException("Cannot register a type adapter with null class key");
+            }
+            if (map.containsKey(typeClass)) {
+                throw new IllegalArgumentException(
+                        "A type adapter for " + typeClass.getName() + " is already registered");
+            }
+            map.put(typeClass, nonNullAdapter);
+        }
+
+        return new LHTypeAdapterRegistry(map);
+    }
+
+    /**
+     * Looks up the adapter registered for a Java class.
+     *
+     * @param clazz Java class key
+     * @return adapter if one is registered
+     */
+    public Optional<LHTypeAdapter<?>> getForClass(Class<?> clazz) {
+        return Optional.ofNullable(byClass.get(clazz));
+    }
+
+    /**
+     * Returns the unmodifiable view of the registry as a map keyed by Java class.
+     *
+     * @return unmodifiable map of registered adapters
+     */
+    public Map<Class<?>, LHTypeAdapter<?>> asMap() {
+        return byClass;
+    }
+}

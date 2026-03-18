@@ -1,56 +1,60 @@
 # LittleHorse Java Examples
 
-Here you will find a few examples to demonstrate simple `WfSpec` concepts in LittleHorse.
+Java examples for LittleHorse workflow features.
 
 ## Prerequisites
 
-First, you need a running LH Server (either locally in your own terminal, or remote).
+- Running LittleHorse server (see [`../README.md`](../README.md)).
+- `lhctl` installed and configured.
+- Java 17+.
+- Gradle (`./gradlew` from repo root works).
 
-> The [LittleHorse Website](https://littlehorse.io/docs/server) has information about how to run it.
-> In addition, you can go to [docker-compose](docker-compose) and check the documentation.
+Verify server connectivity:
 
-Next, you'll need to have the `lhctl` command line tool installed.
-
-Finally, you'll need `gradle` and Java 17 or later.
-
-## Understanding the Java Wf SDK
-
-See the Concepts documentation on the [LittleHorse Website](https://littlehorse.io/docs/server).
-
-## Configuration
-
-Create a file `~/.config/littlehorse.config` and configure it as follows:
-
-```
-LHC_API_HOST=foo.bar.com  # Host for the LH Server
-LHC_API_PORT=2023
-
-# If necessary, configure the following client certs:
-LHC_CA_CERT=<path to ca cert file>
-LHC_CLIENT_CERT=<path to client cert file>
-LHC_CLIENT_KEY=<path to client key file>
+```bash
+lhctl whoami
 ```
 
-> More information at [sdk-java](../sdk-java)
+## Running Java examples
 
-## Extra Useful Commands
+From the repository root: (substitute `{name}` for the name of the example you want to run)
 
-Check the result of a workflow with:
-
-```
-# This call shows the result
-lhctl get wfRun <wf_run_id>
-
-# This will show you all nodes in the run
-lhctl list nodeRun <wf_run_id>
-
-# This shows the task run information
-lhctl get taskRun <wf_run_id> <task_run_global_id>
+```bash
+./gradlew example-{name}:run
 ```
 
-You can list all the deployed workflows with:
+Most Java examples start a long-lived worker process. Keep that command running and use another terminal for `lhctl run ...`.
 
-```
-# This call shows the list of registered Wf
-lhctl search wfSpec
-```
+## Java Example Index
+
+- [`await-workflow-event/`](./await-workflow-event/README.md): Wait for `WorkflowEvent`.
+- [`basic/`](./basic/README.md): Minimal hello-world workflow.
+- [`casting/`](./casting/README.md): Type conversion/casting behavior.
+- [`checkpoint-tasks/`](./checkpoint-tasks/README.md): Checkpoint task usage.
+- [`child-thread/`](./child-thread/README.md): Spawn and coordinate child threads.
+- `child-workflow/`: Child workflow example source (no README yet).
+- [`conditionals/`](./conditionals/README.md): `if/else` workflow logic.
+- [`conditionals-while/`](./conditionals-while/README.md): `while` loops in workflows.
+- [`correlated-event/`](./correlated-event/README.md): Correlate events into workflows.
+- [`exception-handler/`](./exception-handler/README.md): Error handling paths.
+- [`expressions/`](./expressions/README.md): Expressions and variable manipulation.
+- [`external-event/`](./external-event/README.md): Wait for external events.
+- [`hierarchical-workflow/`](./hierarchical-workflow/README.md): Hierarchical workflows.
+- [`hundred-tasks/`](./hundred-tasks/README.md): High-volume task fanout example.
+- [`inline-struct-placeholder/`](./inline-struct-placeholder/README.md): InlineStruct task IO with placeholders.
+- [`interrupt-handler/`](./interrupt-handler/README.md): Interrupt handling patterns.
+- [`json/`](./json/README.md): JSON variable examples.
+- [`mutation/`](./mutation/README.md): Variable mutation behavior.
+- [`output-topic/`](./output-topic/README.md): Output-topic event publishing.
+- [`parallel-approval/`](./parallel-approval/README.md): Parallel approval flow.
+- [`run-child-workflow/`](./run-child-workflow/README.md): Invoke child workflow.
+- [`run-wf/`](./run-wf/README.md): Programmatic workflow-run operations.
+- [`saga/`](./saga/README.md): Saga/compensation pattern.
+- [`spawn-thread-foreach/`](./spawn-thread-foreach/README.md): Child-thread foreach fanout.
+- [`struct-def/`](./struct-def/README.md): Struct definition and usage.
+- [`timestamp/`](./timestamp/README.md): Timestamp handling.
+- [`user-tasks/`](./user-tasks/README.md): Human `UserTask` flows.
+- [`variables/`](./variables/README.md): Variable declaration and assignment.
+- [`wait-for-condition/`](./wait-for-condition/README.md): Blocking until condition is met.
+- [`wait-for-one-of/`](./wait-for-one-of/README.md): Wait for one of several outcomes.
+- [`worker-context/`](./worker-context/README.md): Access worker context metadata.

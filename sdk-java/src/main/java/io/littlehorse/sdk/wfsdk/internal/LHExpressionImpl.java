@@ -1,5 +1,8 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
+import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.LegacyEdgeCondition;
+import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import java.io.Serializable;
@@ -8,63 +11,63 @@ import lombok.Getter;
 @Getter
 public class LHExpressionImpl implements LHExpression {
 
-    private Serializable lhs;
-    private Serializable rhs;
-    private VariableMutationType operation;
+    private final Serializable lhs;
+    private final Serializable rhs;
+    private final VariableMutationType operation;
+    private final Comparator comparator;
 
     public LHExpressionImpl(Serializable lhs, VariableMutationType operation, Serializable rhs) {
         this.lhs = lhs;
         this.rhs = rhs;
         this.operation = operation;
+        this.comparator = null;
     }
 
-    @Override
-    public LHExpression add(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.ADD, other);
+    public LHExpressionImpl(Serializable lhs, Comparator comparator, Serializable rhs) {
+        this.lhs = lhs;
+        this.rhs = rhs;
+        this.operation = null;
+        this.comparator = comparator;
     }
 
-    @Override
-    public LHExpression subtract(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.SUBTRACT, other);
+    public LegacyEdgeCondition getLegacyCondition() {
+        return LegacyEdgeCondition.newBuilder()
+                .setLeft(BuilderUtil.assignVariable(lhs))
+                .setRight(BuilderUtil.assignVariable(rhs))
+                .setComparator(comparator)
+                .build();
     }
 
-    @Override
-    public LHExpression multiply(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.MULTIPLY, other);
+    public VariableAssignment getCondition() {
+        VariableAssignment.Expression.Builder condition = VariableAssignment.Expression.newBuilder();
+        condition.setLhs(BuilderUtil.assignVariable(lhs));
+        condition.setRhs(BuilderUtil.assignVariable(rhs));
+        if (comparator != null) {
+            condition.setComparator(comparator);
+        } else {
+            condition.setMutationType(operation);
+        }
+        return VariableAssignment.newBuilder().setExpression(condition).build();
     }
 
-    @Override
-    public LHExpression divide(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.DIVIDE, other);
+    public LHExpression getReverse() {
+        if (comparator == null) {
+            throw new RuntimeException("Cannot reverse non-comparator expression!");
+        }
+        return new LHExpressionImpl(lhs, reverseComparator(comparator), rhs);
     }
 
-    @Override
-    public LHExpression extend(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.EXTEND, other);
-    }
-
-    @Override
-    public LHExpression removeIfPresent(Serializable other) {
-        return new LHExpressionImpl(this, VariableMutationType.REMOVE_IF_PRESENT, other);
-    }
-
-    @Override
-    public LHExpression removeIndex(int index) {
-        return new LHExpressionImpl(this, VariableMutationType.REMOVE_INDEX, index);
-    }
-
-    @Override
-    public LHExpression removeIndex(LHExpression index) {
-        return new LHExpressionImpl(this, VariableMutationType.REMOVE_INDEX, index);
-    }
-
-    @Override
-    public LHExpression removeKey(Serializable key) {
-        return new LHExpressionImpl(this, VariableMutationType.REMOVE_KEY, key);
-    }
-
-    @Override
-    public LHExpression castTo(io.littlehorse.sdk.common.proto.VariableType targetType) {
-        return new CastExpressionImpl(this, targetType);
+    private static Comparator reverseComparator(Comparator comparator) {
+        return switch (comparator) {
+            case LESS_THAN -> Comparator.GREATER_THAN_EQ;
+            case GREATER_THAN -> Comparator.LESS_THAN_EQ;
+            case LESS_THAN_EQ -> Comparator.GREATER_THAN;
+            case GREATER_THAN_EQ -> Comparator.LESS_THAN;
+            case IN -> Comparator.NOT_IN;
+            case NOT_IN -> Comparator.IN;
+            case EQUALS -> Comparator.NOT_EQUALS;
+            case NOT_EQUALS -> Comparator.EQUALS;
+            case UNRECOGNIZED -> throw new RuntimeException("Unexpect comparator: " + comparator);
+        };
     }
 }

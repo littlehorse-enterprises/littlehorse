@@ -92,6 +92,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     // Only contains value in Processor execution context.
     private CoreProcessorContext processorContext;
 
+    // Used to mark ThreadRuns returned by the `ThreadRunIterator` as `inactive` or not.
+    private boolean inactive;
+
     public ThreadRunModel() {}
 
     public ThreadRunModel(CoreProcessorContext processorContext) {
@@ -876,7 +879,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 break;
             case EXPRESSION:
                 ExpressionModel expression = assn.getExpression();
-                val = expression.evaluate(varAssn -> assignVariable(varAssn, txnCache));
+                val = expression.evaluate(this, varAssn -> assignVariable(varAssn, txnCache));
                 break;
             case SOURCE_NOT_SET:
                 // This should have been caught by the WfSpecModel#validate()

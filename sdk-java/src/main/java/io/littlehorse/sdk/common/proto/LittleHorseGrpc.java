@@ -1903,6 +1903,37 @@ public final class LittleHorseGrpc {
     return getSearchStructDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.InactiveThreadRunId,
+      io.littlehorse.sdk.common.proto.InactiveThreadRun> getGetInactiveThreadRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetInactiveThreadRun",
+      requestType = io.littlehorse.sdk.common.proto.InactiveThreadRunId.class,
+      responseType = io.littlehorse.sdk.common.proto.InactiveThreadRun.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.InactiveThreadRunId,
+      io.littlehorse.sdk.common.proto.InactiveThreadRun> getGetInactiveThreadRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.InactiveThreadRunId, io.littlehorse.sdk.common.proto.InactiveThreadRun> getGetInactiveThreadRunMethod;
+    if ((getGetInactiveThreadRunMethod = LittleHorseGrpc.getGetInactiveThreadRunMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetInactiveThreadRunMethod = LittleHorseGrpc.getGetInactiveThreadRunMethod) == null) {
+          LittleHorseGrpc.getGetInactiveThreadRunMethod = getGetInactiveThreadRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.InactiveThreadRunId, io.littlehorse.sdk.common.proto.InactiveThreadRun>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetInactiveThreadRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.InactiveThreadRunId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.InactiveThreadRun.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetInactiveThreadRun"))
+              .build();
+        }
+      }
+    }
+    return getGetInactiveThreadRunMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest,
       io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse> getRegisterTaskWorkerMethod;
 
@@ -2940,13 +2971,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     default void putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request,
@@ -2956,7 +2986,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     default void getStructDef(io.littlehorse.sdk.common.proto.StructDefId request,
@@ -3464,6 +3494,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     default void searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList> responseObserver) {
@@ -3478,6 +3511,16 @@ public final class LittleHorseGrpc {
     default void searchStructDef(io.littlehorse.sdk.common.proto.SearchStructDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDefIdList> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchStructDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Get an InactiveThreadRun
+     * </pre>
+     */
+    default void getInactiveThreadRun(io.littlehorse.sdk.common.proto.InactiveThreadRunId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.InactiveThreadRun> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetInactiveThreadRunMethod(), responseObserver);
     }
 
     /**
@@ -3651,6 +3694,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     default void deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -3715,7 +3761,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     default void putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request,
@@ -3725,7 +3771,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     default void getTenant(io.littlehorse.sdk.common.proto.TenantId request,
@@ -3735,7 +3781,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     default void putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request,
@@ -3744,6 +3790,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     default void getPrincipal(io.littlehorse.sdk.common.proto.PrincipalId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Principal> responseObserver) {
@@ -3914,13 +3963,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     public void putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request,
@@ -3931,7 +3979,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     public void getStructDef(io.littlehorse.sdk.common.proto.StructDefId request,
@@ -4487,6 +4535,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     public void searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList> responseObserver) {
@@ -4503,6 +4554,17 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDefIdList> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getSearchStructDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Get an InactiveThreadRun
+     * </pre>
+     */
+    public void getInactiveThreadRun(io.littlehorse.sdk.common.proto.InactiveThreadRunId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.InactiveThreadRun> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetInactiveThreadRunMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -4691,6 +4753,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     public void deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -4762,7 +4827,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     public void putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request,
@@ -4773,7 +4838,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     public void getTenant(io.littlehorse.sdk.common.proto.TenantId request,
@@ -4784,7 +4849,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     public void putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request,
@@ -4794,6 +4859,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     public void getPrincipal(io.littlehorse.sdk.common.proto.PrincipalId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Principal> responseObserver) {
@@ -4946,13 +5014,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.StructDef putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request) throws io.grpc.StatusException {
@@ -4962,7 +5029,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.StructDef getStructDef(io.littlehorse.sdk.common.proto.StructDefId request) throws io.grpc.StatusException {
@@ -5470,6 +5537,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.PrincipalIdList searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -5484,6 +5554,16 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.StructDefIdList searchStructDef(io.littlehorse.sdk.common.proto.SearchStructDefRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
           getChannel(), getSearchStructDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Get an InactiveThreadRun
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.InactiveThreadRun getInactiveThreadRun(io.littlehorse.sdk.common.proto.InactiveThreadRunId request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getGetInactiveThreadRunMethod(), getCallOptions(), request);
     }
 
     /**
@@ -5659,6 +5739,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     public com.google.protobuf.Empty deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -5723,7 +5806,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Tenant putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request) throws io.grpc.StatusException {
@@ -5733,7 +5816,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Tenant getTenant(io.littlehorse.sdk.common.proto.TenantId request) throws io.grpc.StatusException {
@@ -5743,7 +5826,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Principal putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request) throws io.grpc.StatusException {
@@ -5752,6 +5835,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.Principal getPrincipal(io.littlehorse.sdk.common.proto.PrincipalId request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -5901,13 +5987,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.StructDef putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request) {
@@ -5917,7 +6002,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.StructDef getStructDef(io.littlehorse.sdk.common.proto.StructDefId request) {
@@ -6425,6 +6510,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.PrincipalIdList searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -6439,6 +6527,16 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.StructDefIdList searchStructDef(io.littlehorse.sdk.common.proto.SearchStructDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getSearchStructDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Get an InactiveThreadRun
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.InactiveThreadRun getInactiveThreadRun(io.littlehorse.sdk.common.proto.InactiveThreadRunId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetInactiveThreadRunMethod(), getCallOptions(), request);
     }
 
     /**
@@ -6601,6 +6699,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     public com.google.protobuf.Empty deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -6665,7 +6766,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Tenant putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request) {
@@ -6675,7 +6776,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Tenant getTenant(io.littlehorse.sdk.common.proto.TenantId request) {
@@ -6685,7 +6786,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Principal putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request) {
@@ -6694,6 +6795,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.Principal getPrincipal(io.littlehorse.sdk.common.proto.PrincipalId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -6853,13 +6957,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.StructDef> putStructDef(
@@ -6870,7 +6973,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.StructDef> getStructDef(
@@ -7426,6 +7529,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.PrincipalIdList> searchPrincipal(
         io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
@@ -7442,6 +7548,17 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.SearchStructDefRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getSearchStructDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Get an InactiveThreadRun
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.InactiveThreadRun> getInactiveThreadRun(
+        io.littlehorse.sdk.common.proto.InactiveThreadRunId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetInactiveThreadRunMethod(), getCallOptions()), request);
     }
 
     /**
@@ -7618,6 +7735,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteWorkflowEventDef(
         io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request) {
@@ -7689,7 +7809,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Tenant> putTenant(
@@ -7700,7 +7820,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Tenant> getTenant(
@@ -7711,7 +7831,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Principal> putPrincipal(
@@ -7721,6 +7841,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Principal> getPrincipal(
         io.littlehorse.sdk.common.proto.PrincipalId request) {
@@ -7812,34 +7935,35 @@ public final class LittleHorseGrpc {
   private static final int METHODID_SEARCH_TENANT = 58;
   private static final int METHODID_SEARCH_PRINCIPAL = 59;
   private static final int METHODID_SEARCH_STRUCT_DEF = 60;
-  private static final int METHODID_REGISTER_TASK_WORKER = 61;
-  private static final int METHODID_REPORT_TASK = 62;
-  private static final int METHODID_PUT_CHECKPOINT = 63;
-  private static final int METHODID_GET_CHECKPOINT = 64;
-  private static final int METHODID_STOP_WF_RUN = 65;
-  private static final int METHODID_RESUME_WF_RUN = 66;
-  private static final int METHODID_RESCUE_THREAD_RUN = 67;
-  private static final int METHODID_DELETE_WF_RUN = 68;
-  private static final int METHODID_DELETE_TASK_DEF = 69;
-  private static final int METHODID_DELETE_STRUCT_DEF = 70;
-  private static final int METHODID_DELETE_WF_SPEC = 71;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 72;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 73;
-  private static final int METHODID_DELETE_CORRELATED_EVENT = 74;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 75;
-  private static final int METHODID_DELETE_PRINCIPAL = 76;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 77;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 78;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 79;
-  private static final int METHODID_LIST_TASK_METRICS = 80;
-  private static final int METHODID_LIST_WF_METRICS = 81;
-  private static final int METHODID_PUT_TENANT = 82;
-  private static final int METHODID_GET_TENANT = 83;
-  private static final int METHODID_PUT_PRINCIPAL = 84;
-  private static final int METHODID_GET_PRINCIPAL = 85;
-  private static final int METHODID_WHOAMI = 86;
-  private static final int METHODID_GET_SERVER_VERSION = 87;
-  private static final int METHODID_POLL_TASK = 88;
+  private static final int METHODID_GET_INACTIVE_THREAD_RUN = 61;
+  private static final int METHODID_REGISTER_TASK_WORKER = 62;
+  private static final int METHODID_REPORT_TASK = 63;
+  private static final int METHODID_PUT_CHECKPOINT = 64;
+  private static final int METHODID_GET_CHECKPOINT = 65;
+  private static final int METHODID_STOP_WF_RUN = 66;
+  private static final int METHODID_RESUME_WF_RUN = 67;
+  private static final int METHODID_RESCUE_THREAD_RUN = 68;
+  private static final int METHODID_DELETE_WF_RUN = 69;
+  private static final int METHODID_DELETE_TASK_DEF = 70;
+  private static final int METHODID_DELETE_STRUCT_DEF = 71;
+  private static final int METHODID_DELETE_WF_SPEC = 72;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 73;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 74;
+  private static final int METHODID_DELETE_CORRELATED_EVENT = 75;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 76;
+  private static final int METHODID_DELETE_PRINCIPAL = 77;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 78;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 79;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 80;
+  private static final int METHODID_LIST_TASK_METRICS = 81;
+  private static final int METHODID_LIST_WF_METRICS = 82;
+  private static final int METHODID_PUT_TENANT = 83;
+  private static final int METHODID_GET_TENANT = 84;
+  private static final int METHODID_PUT_PRINCIPAL = 85;
+  private static final int METHODID_GET_PRINCIPAL = 86;
+  private static final int METHODID_WHOAMI = 87;
+  private static final int METHODID_GET_SERVER_VERSION = 88;
+  private static final int METHODID_POLL_TASK = 89;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -8101,6 +8225,10 @@ public final class LittleHorseGrpc {
         case METHODID_SEARCH_STRUCT_DEF:
           serviceImpl.searchStructDef((io.littlehorse.sdk.common.proto.SearchStructDefRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDefIdList>) responseObserver);
+          break;
+        case METHODID_GET_INACTIVE_THREAD_RUN:
+          serviceImpl.getInactiveThreadRun((io.littlehorse.sdk.common.proto.InactiveThreadRunId) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.InactiveThreadRun>) responseObserver);
           break;
         case METHODID_REGISTER_TASK_WORKER:
           serviceImpl.registerTaskWorker((io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest) request,
@@ -8659,6 +8787,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.StructDefIdList>(
                 service, METHODID_SEARCH_STRUCT_DEF)))
         .addMethod(
+          getGetInactiveThreadRunMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.InactiveThreadRunId,
+              io.littlehorse.sdk.common.proto.InactiveThreadRun>(
+                service, METHODID_GET_INACTIVE_THREAD_RUN)))
+        .addMethod(
           getRegisterTaskWorkerMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -8963,6 +9098,7 @@ public final class LittleHorseGrpc {
               .addMethod(getSearchTenantMethod())
               .addMethod(getSearchPrincipalMethod())
               .addMethod(getSearchStructDefMethod())
+              .addMethod(getGetInactiveThreadRunMethod())
               .addMethod(getRegisterTaskWorkerMethod())
               .addMethod(getPollTaskMethod())
               .addMethod(getReportTaskMethod())

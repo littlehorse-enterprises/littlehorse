@@ -18,8 +18,9 @@ import { Button } from '@/components/ui/button'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
-import { FC, useEffect, useLayoutEffect, useMemo, useState } from 'react'
-import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { FC, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import ReactFlow, { Controls, useEdgesState, useNodesState, type Viewport } from 'reactflow'
 import 'reactflow/dist/base.css'
 import { DiagramProvider, NodeInContext, ThreadType } from '../context'
 import edgeTypes from './EdgeTypes'
@@ -35,17 +36,46 @@ type Props = {
   spec: WfSpec
   onThreadChange?: (thread: ThreadType) => void
 }
+const threadFromUrl = (
+  wfRun: Props['wfRun'],
+  spec: WfSpec,
+  threadRunNumber: number | null,
+  threadName: string | null
+): ThreadType => {
+  if (!wfRun) {
+    const name = threadName && spec.threadSpecs[threadName] ? threadName : spec.entrypointThreadName
+    return { name, number: 0 }
+  }
+  if (threadRunNumber !== null) {
+    const tr = wfRun.threadRuns.find(t => t.number === threadRunNumber)
+    if (tr) return { name: tr.threadSpecName, number: tr.number }
+  }
+  const greatest = wfRun.threadRuns.find(tr => tr.number === wfRun.greatestThreadrunNumber)
+  return {
+    name: greatest?.threadSpecName ?? spec.entrypointThreadName,
+    number: wfRun.greatestThreadrunNumber ?? 0,
+  }
+}
+
 export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
   const { tenantId } = useWhoAmI()
-  const currentThread = wfRun
-    ? (wfRun.threadRuns.find(tr => tr.number === wfRun.greatestThreadrunNumber)?.threadSpecName ??
-      spec.entrypointThreadName)
-    : spec.entrypointThreadName
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const urlThreadRunNumber = searchParams.get('threadRunNumber')
+  const threadRunNumber = urlThreadRunNumber ? parseInt(urlThreadRunNumber, 10) : null
+  const threadName = searchParams.get('thread')
 
-  const [thread, setThread] = useState<ThreadType>({
-    name: currentThread,
-    number: wfRun ? wfRun.greatestThreadrunNumber : 0,
-  })
+  const resolvedThread = useMemo(
+    () => threadFromUrl(wfRun, spec, Number.isNaN(threadRunNumber) ? null : threadRunNumber, threadName),
+    [wfRun, spec, threadRunNumber, threadName]
+  )
+
+  const [thread, setThread] = useState<ThreadType>(resolvedThread)
+
+  useEffect(() => {
+    setThread(resolvedThread)
+  }, [resolvedThread])
+
   const [node, setNode] = useState<NodeInContext>(undefined)
 
   const threadSpec = useMemo(() => {
@@ -74,6 +104,15 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
     onThreadChange?.(thread)
   }, [thread, onThreadChange])
 
+  const viewportKey = `lh-viewport:${pathname}:${thread.name}`
+
+  const onMoveEnd = useCallback(
+    (_event: unknown, viewport: Viewport) => {
+      sessionStorage.setItem(viewportKey, JSON.stringify(viewport))
+    },
+    [viewportKey]
+  )
+
   const verb =
     wfRun?.status === LHStatus.RUNNING
       ? 'Stop'
@@ -83,7 +122,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
           ? 'Rescue'
           : ''
   return (
-    <DiagramProvider value={{ thread, setThread, selectedNode: node, setSelectedNode: setNode }}>
+    <DiagramProvider value={{ thread, setThread, selectedNode: node, setSelectedNode: setNode, wfRun }}>
       <div className="flex justify-between gap-3">
         <ThreadPanel spec={spec} wfRun={wfRun} />
         {wfRun && (
@@ -151,10 +190,11 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
             snapToGrid={true}
+            onMoveEnd={onMoveEnd}
           >
             <Controls />
           </ReactFlow>
-          <LayoutManager nodeRuns={threadNodeRuns} />
+          <LayoutManager nodeRuns={threadNodeRuns} viewportKey={viewportKey} />
         </div>
         <Sidebar showNodeRun={wfRun !== undefined} />
       </div>

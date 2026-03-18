@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.global.wfspec.variable.expression;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import java.util.Optional;
 
@@ -34,6 +35,9 @@ public interface LHTypeStrategy {
                 return removeKey(manager, other);
             case EXTEND:
                 return extend(manager, other);
+            case AND:
+            case OR:
+                return Optional.of(new TypeDefinitionModel(VariableType.BOOL));
             case UNRECOGNIZED:
         }
         throw new IllegalStateException();
@@ -42,7 +46,7 @@ public interface LHTypeStrategy {
     boolean isNumeric(ReadOnlyMetadataManager manager);
 
     default Optional<TypeDefinitionModel> assign(LHTypeStrategy other) throws InvalidExpressionException {
-        if (!other.getIdentity().isCompatibleWith(getIdentity())) {
+        if (!getIdentity().isCompatibleWith(other.getIdentity())) {
             throw new InvalidExpressionException(
                     "Cannot use a " + other.getDescription() + " as a " + this.getDescription());
         }

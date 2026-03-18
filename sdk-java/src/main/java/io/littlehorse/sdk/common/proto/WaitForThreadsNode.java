@@ -748,6 +748,10 @@ private static final long serialVersionUID = 0L;
         int index);
   }
   /**
+   * <pre>
+   * Specifies a list of ThreadRun's to wait for.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WaitForThreadsNode.ThreadsToWaitFor}
    */
   public static final class ThreadsToWaitFor extends
@@ -1006,6 +1010,10 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
+     * <pre>
+     * Specifies a list of ThreadRun's to wait for.
+     * </pre>
+     *
      * Protobuf type {@code littlehorse.WaitForThreadsNode.ThreadsToWaitFor}
      */
     public static final class Builder extends

@@ -354,6 +354,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.SearchStructDefRequest.SerializeToString,
                 response_deserializer=service__pb2.StructDefIdList.FromString,
                 _registered_method=True)
+        self.GetInactiveThreadRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetInactiveThreadRun',
+                request_serializer=object__id__pb2.InactiveThreadRunId.SerializeToString,
+                response_deserializer=wf__run__pb2.InactiveThreadRun.FromString,
+                _registered_method=True)
         self.RegisterTaskWorker = channel.unary_unary(
                 '/littlehorse.LittleHorse/RegisterTaskWorker',
                 request_serializer=service__pb2.RegisterTaskWorkerRequest.SerializeToString,
@@ -576,22 +581,21 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def PutStructDef(self, request, context):
-        """EXPERIMENTAL: Creates a new `StructDef``.
+        """Creates a StructDef.
 
         Note that this request is idempotent: if you
         make a request to create a `StructDef` identical to the currently-created
         one with the same `name`, no new `StructDef` will be created. This is the
         same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
 
-        For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-        enum within the `PutStructDefRequest`.
+        For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetStructDef(self, request, context):
-        """EXPERIMENTAL: Get a StructDef.
+        """Gets a StructDef.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -960,7 +964,7 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def SearchPrincipal(self, request, context):
-        """
+        """Search for Principals
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -968,6 +972,13 @@ class LittleHorseServicer(object):
 
     def SearchStructDef(self, request, context):
         """Search for StructDef's
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetInactiveThreadRun(self, request, context):
+        """Get an InactiveThreadRun
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1102,7 +1113,8 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def DeleteWorkflowEventDef(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Deletes a WorkflowEventDef.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -1150,28 +1162,29 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def PutTenant(self, request, context):
-        """EXPERIMENTAL: Creates another Tenant in the LH Server.
+        """Creates a Tenant in the LH Server.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetTenant(self, request, context):
-        """EXPERIMENTAL: Gets a Tenant from the LH Server.
+        """Gets a Tenant from the LH Server.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PutPrincipal(self, request, context):
-        """EXPERIMENTAL: Creates an Principal.
+        """Creates a Principal.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetPrincipal(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Gets a Principal.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -1497,6 +1510,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.SearchStructDef,
                     request_deserializer=service__pb2.SearchStructDefRequest.FromString,
                     response_serializer=service__pb2.StructDefIdList.SerializeToString,
+            ),
+            'GetInactiveThreadRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetInactiveThreadRun,
+                    request_deserializer=object__id__pb2.InactiveThreadRunId.FromString,
+                    response_serializer=wf__run__pb2.InactiveThreadRun.SerializeToString,
             ),
             'RegisterTaskWorker': grpc.unary_unary_rpc_method_handler(
                     servicer.RegisterTaskWorker,
@@ -3286,6 +3304,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/SearchStructDef',
             service__pb2.SearchStructDefRequest.SerializeToString,
             service__pb2.StructDefIdList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetInactiveThreadRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetInactiveThreadRun',
+            object__id__pb2.InactiveThreadRunId.SerializeToString,
+            wf__run__pb2.InactiveThreadRun.FromString,
             options,
             channel_credentials,
             insecure,

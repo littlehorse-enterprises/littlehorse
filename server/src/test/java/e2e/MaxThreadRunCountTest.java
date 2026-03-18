@@ -1,6 +1,6 @@
 package e2e;
 
-import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -20,13 +20,14 @@ public class MaxThreadRunCountTest {
     private Workflow spawnManyThreadsWf;
 
     private WorkflowVerifier verifier;
+    private LHServerConfig serverConfig = new LHServerConfig();
 
     @Test
     void shouldNotFailIfSpawnFewWf() {
         // Creates Array with MAX_THREAD_RUNS_PER_WF_RUN-1 items, meaning MAX_THREAD_RUNS_PER_WF_RUN-1 new threads (+1
         // entrypoint) which should be the limit, but no error
         ArrayList<Integer> largeArr = new ArrayList<>();
-        for (int i = 0; i < LHConstants.MAX_THREAD_RUNS_PER_WF_RUN - 1; i++) {
+        for (int i = 0; i < this.serverConfig.getMaxThreadRunsPerWfRun() - 1; i++) {
             largeArr.add(i);
         }
 
@@ -40,7 +41,7 @@ public class MaxThreadRunCountTest {
         // Creates Array with MAX_THREAD_RUNS_PER_WF_RUN items, meaning MAX_THREAD_RUNS_PER_WF_RUN new threads (+1
         // entrypoint) which will throw error
         ArrayList<Integer> largeArr = new ArrayList<>();
-        for (int i = 0; i < LHConstants.MAX_THREAD_RUNS_PER_WF_RUN; i++) {
+        for (int i = 0; i < this.serverConfig.getMaxThreadRunsPerWfRun(); i++) {
             largeArr.add(i);
         }
 

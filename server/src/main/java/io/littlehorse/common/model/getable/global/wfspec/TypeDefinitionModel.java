@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
@@ -223,6 +224,20 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         return false;
     }
 
+    /**
+     * If this TypeDefinition references a StructDef, validates that the StructDef exists.
+     * @param metadataManager the metadata manager to look up the StructDef.
+     * @throws UnknownStructDefException if the referenced StructDef does not exist.
+     */
+    public void validateStructDefExists(ReadOnlyMetadataManager metadataManager) throws UnknownStructDefException {
+        if (definedTypeCase != DefinedTypeCase.STRUCT_DEF_ID) return;
+
+        WfService wfService = new WfService(metadataManager);
+        if (wfService.getStructDef(structDefId) == null) {
+            throw new UnknownStructDefException(structDefId.getName());
+        }
+    }
+
     public static TypeDefinitionModel fromProto(TypeDefinition proto, ExecutionContext context) {
         TypeDefinitionModel out = new TypeDefinitionModel();
         out.initFrom(proto, context);
@@ -296,25 +311,13 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                         Status.INVALID_ARGUMENT,
                         String.format("Provided Struct incompatible with type %s: %s", this, e.getMessage()));
             }
+        } else if (value.getValueType() == ValueCase.VALUE_NOT_SET) {
+            return true;
         }
 
         TypeDefinitionModel other = value.getTypeDefinition();
 
-        if (this.getDefinedTypeCase() != other.getDefinedTypeCase()) {
-            return false;
-        }
-
-        switch (this.getDefinedTypeCase()) {
-            case PRIMITIVE_TYPE:
-                return TypeCastingUtils.canBeType(other.getPrimitiveType(), this.primitiveType);
-            case STRUCT_DEF_ID:
-                return this.structDefId.equals(other.getStructDefId());
-            case DEFINEDTYPE_NOT_SET:
-            default:
-                break;
-        }
-
-        return false;
+        return this.isCompatibleWith(other);
     }
 
     /**
@@ -331,7 +334,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
         switch (this.getDefinedTypeCase()) {
             case PRIMITIVE_TYPE:
-                return TypeCastingUtils.canBeType(this.primitiveType, other.getPrimitiveType());
+                return TypeCastingUtils.canBeType(other.getPrimitiveType(), this.getPrimitiveType());
             case STRUCT_DEF_ID:
                 return this.getStructDefId().equals(other.getStructDefId());
             case DEFINEDTYPE_NOT_SET:

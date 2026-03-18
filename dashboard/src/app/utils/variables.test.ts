@@ -214,7 +214,7 @@ describe('getVariable', () => {
               },
             },
           },
-          operation: VariableMutationType.MULTIPLY,
+          operation: { $case: 'mutationType', value: VariableMutationType.MULTIPLY },
         },
       },
     }
@@ -249,7 +249,7 @@ describe('getVariable', () => {
               },
             },
           },
-          operation: VariableMutationType.EXTEND,
+          operation: { $case: 'mutationType', value: VariableMutationType.EXTEND },
         },
       },
     }
@@ -284,7 +284,7 @@ describe('getVariable', () => {
               },
             },
           },
-          operation: VariableMutationType.EXTEND,
+          operation: { $case: 'mutationType', value: VariableMutationType.EXTEND },
         },
       },
     }

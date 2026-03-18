@@ -2,6 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
@@ -78,6 +79,23 @@ public class LHStructDefTypeTest {
         public int getInferredFieldName() {
             return this.inferredFieldName;
         }
+    }
+
+    @LHStructDef("field-annotation-demo")
+    @Getter
+    class FieldAnnotationDemo {
+        @LHStructField(masked = true)
+        public String secret;
+
+        @LHStructField(name = "publicLabel")
+        public String displayName;
+    }
+
+    @LHStructDef("boolean-field-annotation-demo")
+    @Getter
+    class BooleanFieldAnnotationDemo {
+        @LHStructField(name = "isPersonAlive")
+        public boolean isAlive;
     }
 
     @Test
@@ -205,8 +223,44 @@ public class LHStructDefTypeTest {
     }
 
     @Test
+    public void getInlineStructDefUsesLHStructFieldAnnotationOnClassFields() {
+        InlineStructDef actualInlineStructDef = new LHStructDefType(FieldAnnotationDemo.class).getInlineStructDef();
+        InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
+                .putFields(
+                        "secret",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.STR)
+                                        .setMasked(true))
+                                .build())
+                .putFields(
+                        "publicLabel",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .build())
+                .build();
+
+        assertThat(actualInlineStructDef).isEqualTo(expectedInlineStructDef);
+    }
+
+    @Test
+    public void getInlineStructDefResolvesBooleanIsPrefixFieldAnnotations() {
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(BooleanFieldAnnotationDemo.class).getInlineStructDef();
+        InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
+                .putFields(
+                        "isPersonAlive",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.BOOL))
+                                .build())
+                .build();
+
+        assertThat(actualInlineStructDef).isEqualTo(expectedInlineStructDef);
+    }
+
+    @Test
     public void getStructDefTypeDefinition() {
-        LHClassType structDefType = LHClassType.fromJavaClass(Author.class);
+        LHClassType structDefType = LHClassType.fromJavaClass(Author.class, LHTypeAdapterRegistry.empty());
 
         TypeDefinition actualTypeDefinition = structDefType.getTypeDefinition();
         TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()

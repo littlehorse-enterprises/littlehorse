@@ -17,7 +17,18 @@ import (
 type plainNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
+}
+
+// copyLhPath returns a shallow copy of the given LHPath selector slice.
+func copyLhPath(src []*lhproto.LHPath_Selector) []*lhproto.LHPath_Selector {
+	if src == nil {
+		return nil
+	}
+	dst := make([]*lhproto.LHPath_Selector, len(src))
+	copy(dst, src)
+	return dst
 }
 
 func (p *plainNodeOutput) getNodeName() string {
@@ -28,14 +39,51 @@ func (p *plainNodeOutput) getJsonPath() *string {
 	return p.jsonPath
 }
 
+func (p *plainNodeOutput) getLhPath() []*lhproto.LHPath_Selector {
+	return p.lhPath
+}
+
 func (p *plainNodeOutput) getThread() *WorkflowThread {
 	return p.thread
 }
 
-func (p *plainNodeOutput) JsonPath(jsonpath string) *plainNodeOutput {
+func (p *plainNodeOutput) JsonPath(jsonpath string) NodeOutput {
 	return &plainNodeOutput{
 		nodeName: p.nodeName,
 		jsonPath: &jsonpath,
+		thread:   p.thread,
+	}
+}
+
+func (p *plainNodeOutput) CastTo(targetType lhproto.VariableType) LHExpression {
+	return &castExpression{source: p, targetType: targetType}
+}
+func (p *plainNodeOutput) CastToInt() LHExpression {
+	return p.CastTo(lhproto.VariableType_INT)
+}
+func (p *plainNodeOutput) CastToDouble() LHExpression {
+	return p.CastTo(lhproto.VariableType_DOUBLE)
+}
+func (p *plainNodeOutput) CastToStr() LHExpression {
+	return p.CastTo(lhproto.VariableType_STR)
+}
+func (p *plainNodeOutput) CastToBool() LHExpression {
+	return p.CastTo(lhproto.VariableType_BOOL)
+}
+func (p *plainNodeOutput) CastToBytes() LHExpression {
+	return p.CastTo(lhproto.VariableType_BYTES)
+}
+func (p *plainNodeOutput) CastToWfRunId() LHExpression {
+	return p.CastTo(lhproto.VariableType_WF_RUN_ID)
+}
+func (p *plainNodeOutput) Get(field string) NodeOutput {
+	newPath := copyLhPath(p.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &plainNodeOutput{
+		nodeName: p.nodeName,
+		lhPath:   newPath,
 		thread:   p.thread,
 	}
 }
@@ -46,6 +94,10 @@ func (n *ExternalEventNodeOutput) getNodeName() string {
 
 func (n *ExternalEventNodeOutput) getJsonPath() *string {
 	return n.jsonPath
+}
+
+func (n *ExternalEventNodeOutput) getLhPath() []*lhproto.LHPath_Selector {
+	return n.lhPath
 }
 
 func (n *ExternalEventNodeOutput) getThread() *WorkflowThread {
@@ -60,6 +112,10 @@ func (n *UserTaskNodeOutput) getJsonPath() *string {
 	return n.jsonPath
 }
 
+func (n *UserTaskNodeOutput) getLhPath() []*lhproto.LHPath_Selector {
+	return n.lhPath
+}
+
 func (n *UserTaskNodeOutput) getThread() *WorkflowThread {
 	return n.thread
 }
@@ -72,6 +128,10 @@ func (n *TaskNodeOutput) getJsonPath() *string {
 	return n.jsonPath
 }
 
+func (n *TaskNodeOutput) getLhPath() []*lhproto.LHPath_Selector {
+	return n.lhPath
+}
+
 func (n *TaskNodeOutput) getThread() *WorkflowThread {
 	return n.thread
 }
@@ -82,6 +142,10 @@ func (n *WaitForThreadsNodeOutput) getNodeName() string {
 
 func (n *WaitForThreadsNodeOutput) getJsonPath() *string {
 	return n.jsonPath
+}
+
+func (n *WaitForThreadsNodeOutput) getLhPath() []*lhproto.LHPath_Selector {
+	return n.lhPath
 }
 
 func (n *WaitForThreadsNodeOutput) getThread() *WorkflowThread {
@@ -142,7 +206,8 @@ func (l *LHWorkflow) compile() (*lhproto.PutWfSpecRequest, error) {
 				}
 				nodeName := "0-entrypoint-ENTRYPOINT"
 				thr.lastNodeName = &nodeName
-				thr.lastNodeCondition = &WorkflowCondition{}
+				// No condition on the entrypoint's outgoing edge by default.
+				thr.lastNodeCondition = nil
 				thr.spec.Nodes = make(map[string]*lhproto.Node)
 				thr.spec.Nodes[nodeName] = entry
 
@@ -506,6 +571,10 @@ func (t *WorkflowThread) assignVariable(
 			out.Path = &lhproto.VariableAssignment_JsonPath{
 				JsonPath: *v.jsonPath,
 			}
+		} else if len(v.lhPath) > 0 {
+			out.Path = &lhproto.VariableAssignment_LhPath{
+				LhPath: &lhproto.LHPath{Path: v.lhPath},
+			}
 		}
 	case WfRunVariable:
 		out = &lhproto.VariableAssignment{
@@ -516,6 +585,10 @@ func (t *WorkflowThread) assignVariable(
 		if v.jsonPath != nil {
 			out.Path = &lhproto.VariableAssignment_JsonPath{
 				JsonPath: *v.jsonPath,
+			}
+		} else if len(v.lhPath) > 0 {
+			out.Path = &lhproto.VariableAssignment_LhPath{
+				LhPath: &lhproto.LHPath{Path: v.lhPath},
 			}
 		}
 	case *LHFormatString:
@@ -549,6 +622,10 @@ func (t *WorkflowThread) assignVariable(
 			out.Path = &lhproto.VariableAssignment_JsonPath{
 				JsonPath: *(*v).getJsonPath(),
 			}
+		} else if len((*v).getLhPath()) > 0 {
+			out.Path = &lhproto.VariableAssignment_LhPath{
+				LhPath: &lhproto.LHPath{Path: (*v).getLhPath()},
+			}
 		}
 	case NodeOutput:
 		out = &lhproto.VariableAssignment{
@@ -561,6 +638,10 @@ func (t *WorkflowThread) assignVariable(
 		if v.getJsonPath() != nil {
 			out.Path = &lhproto.VariableAssignment_JsonPath{
 				JsonPath: *v.getJsonPath(),
+			}
+		} else if len(v.getLhPath()) > 0 {
+			out.Path = &lhproto.VariableAssignment_LhPath{
+				LhPath: &lhproto.LHPath{Path: v.getLhPath()},
 			}
 		}
 	case *lhExpression:
@@ -580,9 +661,11 @@ func (t *WorkflowThread) assignVariable(
 			Path: nil,
 			Source: &lhproto.VariableAssignment_Expression_{
 				Expression: &lhproto.VariableAssignment_Expression{
-					Lhs:       lhs,
-					Operation: v.operation,
-					Rhs:       rhs,
+					Lhs: lhs,
+					Operation: &lhproto.VariableAssignment_Expression_MutationType{
+						MutationType: v.operation,
+					},
+					Rhs: rhs,
 				},
 			},
 		}
@@ -603,12 +686,76 @@ func (t *WorkflowThread) assignVariable(
 			Path: nil,
 			Source: &lhproto.VariableAssignment_Expression_{
 				Expression: &lhproto.VariableAssignment_Expression{
-					Lhs:       lhs,
-					Operation: v.operation,
-					Rhs:       rhs,
+					Lhs: lhs,
+					Operation: &lhproto.VariableAssignment_Expression_MutationType{
+						MutationType: v.operation,
+					},
+					Rhs: rhs,
 				},
 			},
 		}
+
+	case *castExpression:
+		inner, innerErr := t.assignVariable(v.source)
+		if innerErr != nil {
+			t.throwError(innerErr)
+		}
+		inner.TargetType = &lhproto.TypeDefinition{
+			DefinedType: &lhproto.TypeDefinition_PrimitiveType{PrimitiveType: v.targetType},
+		}
+		out = inner
+
+	case castExpression:
+		inner, innerErr := t.assignVariable(v.source)
+		if innerErr != nil {
+			t.throwError(innerErr)
+		}
+		inner.TargetType = &lhproto.TypeDefinition{
+			DefinedType: &lhproto.TypeDefinition_PrimitiveType{PrimitiveType: v.targetType},
+		}
+		out = inner
+
+	case *comparatorExpression:
+		lhs, lhsErr := t.assignVariable(v.lhs)
+		if lhsErr != nil {
+			t.throwError(lhsErr)
+		}
+		rhs, rhsErr := t.assignVariable(v.rhs)
+		if rhsErr != nil {
+			t.throwError(rhsErr)
+		}
+		out = &lhproto.VariableAssignment{
+			Source: &lhproto.VariableAssignment_Expression_{
+				Expression: &lhproto.VariableAssignment_Expression{
+					Lhs: lhs,
+					Operation: &lhproto.VariableAssignment_Expression_Comparator{
+						Comparator: v.comparator,
+					},
+					Rhs: rhs,
+				},
+			},
+		}
+	case comparatorExpression:
+		lhs, lhsErr := t.assignVariable(v.lhs)
+		if lhsErr != nil {
+			t.throwError(lhsErr)
+		}
+		rhs, rhsErr := t.assignVariable(v.rhs)
+		if rhsErr != nil {
+			t.throwError(rhsErr)
+		}
+		out = &lhproto.VariableAssignment{
+			Source: &lhproto.VariableAssignment_Expression_{
+				Expression: &lhproto.VariableAssignment_Expression{
+					Lhs: lhs,
+					Operation: &lhproto.VariableAssignment_Expression_Comparator{
+						Comparator: v.comparator,
+					},
+					Rhs: rhs,
+				},
+			},
+		}
+
 	default:
 		var tmp *lhproto.VariableValue
 		tmp, err = InterfaceToVarVal(v)
@@ -642,7 +789,13 @@ func (t *WorkflowThread) createBlankNode(name, nType string) (string, *lhproto.N
 	}
 
 	if t.lastNodeCondition != nil {
-		edge.Condition = t.lastNodeCondition.spec
+		condAssn, condErr := t.assignVariable(t.lastNodeCondition)
+		if condErr != nil {
+			t.throwError(tracerr.Wrap(condErr))
+		}
+		edge.EdgeCondition = &lhproto.Edge_Condition{
+			Condition: condAssn,
+		}
 		t.lastNodeCondition = nil
 	}
 	lastNode.OutgoingEdges = append(lastNode.OutgoingEdges, &edge)
@@ -718,16 +871,71 @@ func (w *WfRunVariable) jsonPathImpl(path string) *WfRunVariable {
 			errors.New("Variable " + w.Name + " was jsonpath'ed twice!"),
 		)
 	}
+	if len(w.lhPath) > 0 {
+		w.thread.throwError(
+			errors.New("Variable " + w.Name + " already has an LHPath set; cannot mix with JsonPath"),
+		)
+	}
 	if w.VarType != nil && *w.VarType != lhproto.VariableType_JSON_ARR && *w.VarType != lhproto.VariableType_JSON_OBJ {
 		w.thread.throwError(errors.New(
 			"Cannot jsonpath on var of type " + w.VarType.String(),
 		))
 	}
 	return &WfRunVariable{
-		Name:     w.Name,
-		thread:   w.thread,
-		VarType:  w.VarType,
-		jsonPath: &path,
+		Name:          w.Name,
+		thread:        w.thread,
+		VarType:       w.VarType,
+		jsonPath:      &path,
+		structDefName: w.structDefName,
+	}
+}
+
+func (w *WfRunVariable) getImpl(field string) *WfRunVariable {
+	if w.jsonPath != nil {
+		w.thread.throwError(
+			errors.New("Variable " + w.Name + " already has a JsonPath set; cannot mix with LHPath"),
+		)
+	}
+	// Only allow Get on JSON_OBJ, JSON_ARR, or Struct (structDefName != nil means Struct)
+	if w.VarType != nil && *w.VarType != lhproto.VariableType_JSON_OBJ && *w.VarType != lhproto.VariableType_JSON_ARR {
+		w.thread.throwError(errors.New(
+			"Cannot use Get on var of type " + w.VarType.String(),
+		))
+	}
+	newPath := copyLhPath(w.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &WfRunVariable{
+		Name:          w.Name,
+		thread:        w.thread,
+		VarType:       w.VarType,
+		lhPath:        newPath,
+		structDefName: w.structDefName,
+	}
+}
+
+func (w *WfRunVariable) getIndexImpl(index int) *WfRunVariable {
+	if w.jsonPath != nil {
+		w.thread.throwError(
+			errors.New("Variable " + w.Name + " already has a JsonPath set; cannot mix with LHPath"),
+		)
+	}
+	if w.VarType != nil && *w.VarType != lhproto.VariableType_JSON_OBJ && *w.VarType != lhproto.VariableType_JSON_ARR {
+		w.thread.throwError(errors.New(
+			"Cannot use GetIndex on var of type " + w.VarType.String(),
+		))
+	}
+	newPath := copyLhPath(w.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Index{Index: int32(index)},
+	})
+	return &WfRunVariable{
+		Name:          w.Name,
+		thread:        w.thread,
+		VarType:       w.VarType,
+		lhPath:        newPath,
+		structDefName: w.structDefName,
 	}
 }
 
@@ -883,6 +1091,37 @@ func (t *WorkflowThread) addVariable(
 	}
 }
 
+func (t *WorkflowThread) addStructVariable(
+	name string, structDefName string,
+) *WfRunVariable {
+	t.checkIfIsActive()
+
+	varDef := &lhproto.VariableDef{
+		TypeDef: &lhproto.TypeDefinition{
+			DefinedType: &lhproto.TypeDefinition_StructDefId{
+				StructDefId: &lhproto.StructDefId{
+					Name: structDefName,
+				},
+			},
+		},
+		Name: name,
+	}
+
+	threadVarDef := &lhproto.ThreadVarDef{
+		VarDef:      varDef,
+		AccessLevel: lhproto.WfRunVariableAccessLevel_PRIVATE_VAR,
+	}
+
+	t.spec.VariableDefs = append(t.spec.VariableDefs, threadVarDef)
+
+	return &WfRunVariable{
+		Name:          name,
+		thread:        t,
+		threadVarDef:  threadVarDef,
+		structDefName: &structDefName,
+	}
+}
+
 func (t *WorkflowThread) complete(result interface{}) {
 	t.checkIfIsActive()
 
@@ -905,28 +1144,13 @@ func (t *WorkflowThread) complete(result interface{}) {
 
 func (t *WorkflowThread) condition(
 	lhs interface{}, op lhproto.Comparator, rhs interface{},
-) *WorkflowCondition {
+) LHExpression {
 	t.checkIfIsActive()
-	cond := &lhproto.EdgeCondition{
-		Comparator: op,
-	}
-
-	var err error
-
-	cond.Left, err = t.assignVariable(lhs)
-
-	if err != nil {
-		t.throwError(tracerr.Wrap(err))
-	}
-
-	cond.Right, err = t.assignVariable(rhs)
-	if err != nil {
-		t.throwError(tracerr.Wrap(err))
-	}
-
-	return &WorkflowCondition{
-		spec: cond,
-	}
+	// Return a comparatorExpression (an LHExpression) instead of the
+	// legacy WorkflowCondition wrapper. assignVariable knows how to
+	// convert comparatorExpression into the appropriate
+	// VariableAssignment/Expression when building the proto.
+	return &comparatorExpression{lhs: lhs, rhs: rhs, comparator: op}
 }
 
 func (t *WorkflowThread) addNopNode() {
@@ -937,7 +1161,7 @@ func (t *WorkflowThread) addNopNode() {
 	}
 }
 
-func (t *WorkflowThread) doIf(cond *WorkflowCondition, doIf IfElseBody) *WorkflowIfStatement {
+func (t *WorkflowThread) doIf(cond LHExpression, doIf IfElseBody) *WorkflowIfStatement {
 	t.checkIfIsActive()
 	// The tree looks like:
 	/* T
@@ -977,7 +1201,7 @@ func (t *WorkflowThread) doIf(cond *WorkflowCondition, doIf IfElseBody) *Workflo
 		thread:          t}
 }
 
-func (t *WorkflowThread) doElseIf(ifStatement WorkflowIfStatement, cond *WorkflowCondition, doElseIf IfElseBody) WorkflowIfStatement {
+func (t *WorkflowThread) doElseIf(ifStatement WorkflowIfStatement, cond LHExpression, doElseIf IfElseBody) WorkflowIfStatement {
 	firstNopNode := t.spec.Nodes[ifStatement.firstNopNodeName]
 	elseEdge := firstNopNode.OutgoingEdges[len(firstNopNode.OutgoingEdges)-1]
 	// Remove else edge from the first NOP node
@@ -1044,12 +1268,18 @@ func removeEdge(edges []*lhproto.Edge, edgeToRemove *lhproto.Edge) []*lhproto.Ed
 	return edges // Return original edges if the edge was not found
 }
 
-func (t *WorkflowThread) buildNewEdge(sinkNodeName string, cond *WorkflowCondition, variableMutations []*lhproto.VariableMutation) *lhproto.Edge {
+func (t *WorkflowThread) buildNewEdge(sinkNodeName string, cond LHExpression, variableMutations []*lhproto.VariableMutation) *lhproto.Edge {
 	if cond != nil {
+		condAssn, condErr := t.assignVariable(cond)
+		if condErr != nil {
+			t.throwError(tracerr.Wrap(condErr))
+		}
 		return &lhproto.Edge{
 			SinkNodeName:      sinkNodeName,
 			VariableMutations: variableMutations,
-			Condition:         cond.spec,
+			EdgeCondition: &lhproto.Edge_Condition{
+				Condition: condAssn,
+			},
 		}
 	}
 
@@ -1060,7 +1290,7 @@ func (t *WorkflowThread) buildNewEdge(sinkNodeName string, cond *WorkflowConditi
 }
 
 func (t *WorkflowThread) doIfElse(
-	cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody,
+	cond LHExpression, doIf IfElseBody, doElse IfElseBody,
 ) {
 	t.checkIfIsActive()
 
@@ -1075,8 +1305,19 @@ func (t *WorkflowThread) doIfElse(
 
 	// Go back to the tree root
 	t.lastNodeName = treeRootNodeName
-	t.lastNodeCondition = &WorkflowCondition{spec: cond.getReverse()}
-	doElse(t)
+	// Instead of synthesizing an explicit negated condition (which fails for
+	// compound LHExpressions), attach the else body to the unconditional else
+	// edge that was created by the doIf above. Reuse the doElseIf logic by
+	// constructing a WorkflowIfStatement pointing to the NOPs we created and
+	// invoking doElseIf with a nil condition so the else body replaces the
+	// unconditional edge.
+	ifStmt := WorkflowIfStatement{
+		firstNopNodeName: *treeRootNodeName,
+		lastNopNodeName:  *lastNodeFromIfBlockName,
+		wasElseExecuted:  false,
+		thread:           t,
+	}
+	t.doElseIf(ifStmt, nil, doElse)
 
 	t.addNopNode()
 
@@ -1089,7 +1330,13 @@ func (t *WorkflowThread) doIfElse(
 	// no node was created within the if block, thus the edge of the starting NOP should be created
 	// with the appropriate conditional
 	if lastNodeFromIfBlockName == treeRootNodeName {
-		ifBlockEdge.Condition = lastConditionFromIfBlock.spec
+		condAssn, condErr := t.assignVariable(lastConditionFromIfBlock)
+		if condErr != nil {
+			t.throwError(tracerr.Wrap(condErr))
+		}
+		ifBlockEdge.EdgeCondition = &lhproto.Edge_Condition{
+			Condition: condAssn,
+		}
 	}
 
 	t.spec.Nodes[*lastNodeFromIfBlockName].OutgoingEdges = append(
@@ -1105,7 +1352,7 @@ func (t *WorkflowThread) collectVariableMutations() []*lhproto.VariableMutation 
 	return variablesFromIfBlock
 }
 
-func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) {
+func (t *WorkflowThread) doWhile(cond LHExpression, whileBody ThreadFunc) {
 	t.checkIfIsActive()
 	// The tree looks like:
 	/* T
@@ -1133,12 +1380,19 @@ func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) 
 	bottomOfTreeNode := t.spec.Nodes[*t.lastNodeName]
 	bottomOfTreeNodeName := t.lastNodeName
 
+	condAssn, condErr := t.assignVariable(cond)
+	if condErr != nil {
+		t.throwError(tracerr.Wrap(condErr))
+	}
+
 	// Now add the sideways path from T directly to B
 	topOfTreeNode.OutgoingEdges = append(
 		topOfTreeNode.OutgoingEdges,
 		&lhproto.Edge{
 			SinkNodeName: *bottomOfTreeNodeName,
-			Condition:    cond.getReverse(),
+			EdgeCondition: &lhproto.Edge_Condition{
+				Condition: condAssn,
+			},
 		},
 	)
 
@@ -1147,35 +1401,11 @@ func (t *WorkflowThread) doWhile(cond *WorkflowCondition, whileBody ThreadFunc) 
 		bottomOfTreeNode.OutgoingEdges,
 		&lhproto.Edge{
 			SinkNodeName: *topOfTreeNodeName,
-			Condition:    cond.spec,
+			EdgeCondition: &lhproto.Edge_Condition{
+				Condition: condAssn,
+			},
 		},
 	)
-}
-
-func (c *WorkflowCondition) getReverse() *lhproto.EdgeCondition {
-	out := &lhproto.EdgeCondition{}
-	out.Left = c.spec.Left
-	out.Right = c.spec.Right
-	switch c.spec.Comparator {
-	case lhproto.Comparator_LESS_THAN:
-		out.Comparator = lhproto.Comparator_GREATER_THAN_EQ
-	case lhproto.Comparator_GREATER_THAN:
-		out.Comparator = lhproto.Comparator_LESS_THAN_EQ
-	case lhproto.Comparator_GREATER_THAN_EQ:
-		out.Comparator = lhproto.Comparator_LESS_THAN
-	case lhproto.Comparator_LESS_THAN_EQ:
-		out.Comparator = lhproto.Comparator_GREATER_THAN
-	case lhproto.Comparator_EQUALS:
-		out.Comparator = lhproto.Comparator_NOT_EQUALS
-	case lhproto.Comparator_NOT_EQUALS:
-		out.Comparator = lhproto.Comparator_EQUALS
-	case lhproto.Comparator_IN:
-		out.Comparator = lhproto.Comparator_NOT_IN
-	case lhproto.Comparator_NOT_IN:
-		out.Comparator = lhproto.Comparator_IN
-	}
-
-	return out
 }
 
 func (t *WorkflowThread) overrideTaskRetries(taskNodeOutput *TaskNodeOutput, retries int32) {
@@ -1348,13 +1578,98 @@ func (t *WorkflowThread) spawnThread(
 		cachedThreadVar,
 		lhproto.VariableMutationType_ASSIGN,
 		plainNodeOutput{
-			nodeName, nil, t,
+			nodeName: nodeName,
+			jsonPath: nil,
+			thread:   t,
 		},
 	)
 
 	return &SpawnedThread{
 		thread:       t,
 		threadNumVar: cachedThreadVar,
+	}
+}
+
+// runWfImpl accepts either a static wfSpec name (string) or a dynamic
+// spec (VariableAssignment-compatible value) and constructs a RunChildWfNode
+// accordingly.
+func (t *WorkflowThread) runWfImpl(wfSpecName interface{}, inputs map[string]interface{}) *SpawnedChildWf {
+	t.checkIfIsActive()
+
+	runNodeProto := &lhproto.RunChildWfNode{
+		MajorVersion: -1,
+		// Inputs is left nil when the caller provides nil to preserve
+		// nil-vs-empty-map semantics (align with other SDKs/tests).
+	}
+
+	// wfSpecName can be either a string (static) or an expression/variable.
+	var humanName string
+	switch v := wfSpecName.(type) {
+	case string:
+		runNodeProto.WfSpec = &lhproto.RunChildWfNode_WfSpecName{WfSpecName: v}
+		humanName = "run-" + v
+	case *WfRunVariable:
+		assn, err := t.assignVariable(v)
+		if err != nil {
+			t.throwError(tracerr.Wrap(err))
+		}
+		runNodeProto.WfSpec = &lhproto.RunChildWfNode_WfSpecVar{WfSpecVar: assn}
+		humanName = v.Name
+	case WfRunVariable:
+		assn, err := t.assignVariable(v)
+		if err != nil {
+			t.throwError(tracerr.Wrap(err))
+		}
+		runNodeProto.WfSpec = &lhproto.RunChildWfNode_WfSpecVar{WfSpecVar: assn}
+		humanName = v.Name
+	default:
+		// Try to convert any other expression to a VariableAssignment
+		assn, err := t.assignVariable(v)
+		if err != nil {
+			t.throwError(tracerr.Wrap(err))
+		}
+		runNodeProto.WfSpec = &lhproto.RunChildWfNode_WfSpecVar{WfSpecVar: assn}
+		humanName = "run"
+	}
+
+	if inputs != nil {
+		runNodeProto.Inputs = make(map[string]*lhproto.VariableAssignment)
+		for k, v := range inputs {
+			assn, err := t.assignVariable(v)
+			if err != nil {
+				t.throwError(tracerr.Wrap(err))
+			}
+			runNodeProto.Inputs[k] = assn
+		}
+	}
+
+	nodeName, node := t.createBlankNode(humanName, "RUN_CHILD_WF")
+	node.Node = &lhproto.Node_RunChildWf{
+		RunChildWf: runNodeProto,
+	}
+
+	return &SpawnedChildWf{
+		sourceNodeName: nodeName,
+		thread:         t,
+	}
+}
+
+// waitForChildWfImpl builds a WaitForChildWf node that waits for the given child.
+func (t *WorkflowThread) waitForChildWfImpl(child *SpawnedChildWf) *plainNodeOutput {
+	t.checkIfIsActive()
+	if child.thread != t {
+		t.throwError(errors.New("currently cannot wait for WfRun started in other thread"))
+	}
+
+	subNode := child.BuildNode()
+	nodeName, node := t.createBlankNode("wait", "WAIT_FOR_CHILD_WF")
+	node.Node = &lhproto.Node_WaitForChildWf{
+		WaitForChildWf: subNode,
+	}
+
+	return &plainNodeOutput{
+		nodeName: nodeName,
+		thread:   t,
 	}
 }
 
@@ -1481,12 +1796,20 @@ func (t *WorkflowThread) waitForEvent(eventName string) *ExternalEventNodeOutput
 	}
 }
 
-func (t *WorkflowThread) waitForCondition(condition *WorkflowCondition) *WaitForConditionNodeOutput {
+func (t *WorkflowThread) waitForCondition(condition LHExpression) *WaitForConditionNodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode("wait-for-condition", "WAIT_FOR_CONDITION")
+
+	condAssn, condErr := t.assignVariable(condition)
+	if condErr != nil {
+		t.throwError(tracerr.Wrap(condErr))
+	}
+
 	node.Node = &lhproto.Node_WaitForCondition{
 		WaitForCondition: &lhproto.WaitForConditionNode{
-			Condition: condition.spec,
+			NodeCondition: &lhproto.WaitForConditionNode_Condition{
+				Condition: condAssn,
+			},
 		},
 	}
 

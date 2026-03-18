@@ -33,7 +33,7 @@ def while_body(wf: WorkflowThread) -> None:
 
 def entrypoint(wf: WorkflowThread) -> None:
     donuts = wf.add_variable("number-of-donuts", VariableType.INT)
-    condition = wf.condition(donuts, Comparator.GREATER_THAN, 0)
+    condition = donuts.is_greater_than(0)
     wf.do_while(condition, while_body)
 
 

@@ -19,11 +19,24 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
+import io.littlehorse.sdk.common.adapter.LHBooleanAdapter;
+import io.littlehorse.sdk.common.adapter.LHBytesAdapter;
+import io.littlehorse.sdk.common.adapter.LHDoubleAdapter;
+import io.littlehorse.sdk.common.adapter.LHIntegerAdapter;
+import io.littlehorse.sdk.common.adapter.LHJsonArrAdapter;
+import io.littlehorse.sdk.common.adapter.LHJsonObjAdapter;
+import io.littlehorse.sdk.common.adapter.LHLongAdapter;
+import io.littlehorse.sdk.common.adapter.LHStringAdapter;
+import io.littlehorse.sdk.common.adapter.LHTimestampAdapter;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapter;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.adapter.LHWfRunIdAdapter;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
+import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskRunId;
@@ -45,9 +58,93 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class LHLibUtil {
+
+    public static Optional<LHTypeAdapter<?>> getTypeAdapterForClass(Class<?> clazz, LHTypeAdapterRegistry registry) {
+        if (registry == null) {
+            return Optional.empty();
+        }
+        return registry.getForClass(clazz);
+    }
+
+    public static Map<Class<?>, LHTypeAdapter<?>> getDefaultTypeAdapters() {
+        Map<Class<?>, LHTypeAdapter<?>> typeAdapters = new HashMap<>();
+
+        typeAdapters.put(Instant.class, new LHTimestampAdapter<Instant>() {
+            @Override
+            public Timestamp toTimestamp(Instant src) {
+                return fromInstant(src);
+            }
+
+            @Override
+            public Instant fromTimestamp(Timestamp src) {
+                return Instant.ofEpochSecond(src.getSeconds(), src.getNanos());
+            }
+
+            @Override
+            public Class<Instant> getTypeClass() {
+                return Instant.class;
+            }
+        });
+        typeAdapters.put(LocalDateTime.class, new LHTimestampAdapter<LocalDateTime>() {
+            @Override
+            public Timestamp toTimestamp(LocalDateTime src) {
+                Instant instant = src.atZone(ZoneId.systemDefault()).toInstant();
+                return fromInstant(instant);
+            }
+
+            @Override
+            public LocalDateTime fromTimestamp(Timestamp src) {
+                Instant instant = Instant.ofEpochSecond(src.getSeconds(), src.getNanos());
+                return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+            }
+
+            @Override
+            public Class<LocalDateTime> getTypeClass() {
+                return LocalDateTime.class;
+            }
+        });
+        typeAdapters.put(Date.class, new LHTimestampAdapter<Date>() {
+            @Override
+            public Timestamp toTimestamp(Date src) {
+                return fromDate(src);
+            }
+
+            @Override
+            public Date fromTimestamp(Timestamp src) {
+                return fromProtoTs(src);
+            }
+
+            @Override
+            public Class<Date> getTypeClass() {
+                return Date.class;
+            }
+        });
+        typeAdapters.put(java.sql.Timestamp.class, new LHTimestampAdapter<java.sql.Timestamp>() {
+            @Override
+            public Timestamp toTimestamp(java.sql.Timestamp src) {
+                return fromInstant(src.toInstant());
+            }
+
+            @Override
+            public java.sql.Timestamp fromTimestamp(Timestamp src) {
+                Instant inst = Instant.ofEpochSecond(src.getSeconds(), src.getNanos());
+                return new java.sql.Timestamp(inst.toEpochMilli());
+            }
+
+            @Override
+            public Class<java.sql.Timestamp> getTypeClass() {
+                return java.sql.Timestamp.class;
+            }
+        });
+
+        return typeAdapters;
+    }
 
     public static Date fromProtoTs(Timestamp proto) {
         if (proto == null) return null;
@@ -269,6 +366,24 @@ public class LHLibUtil {
     }
 
     public static Object varValToObj(VariableValue val, Class<?> targetClazz) throws LHSerdeException {
+        return varValToObj(val, targetClazz, LHTypeAdapterRegistry.empty());
+    }
+
+    public static Object varValToObj(VariableValue val, Class<?> targetClazz, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
+        Optional<LHTypeAdapter<?>> maybeAdapter = getTypeAdapterForClass(targetClazz, typeAdapterRegistry);
+
+        if (maybeAdapter.isPresent()) {
+            return varValToObjViaAdapter(val, maybeAdapter.get());
+        }
+
+        if (InlineStruct.class.equals(targetClazz)) {
+            if (val.getValueCase() != ValueCase.STRUCT) {
+                throw new LHSerdeException("Failed deserializing InlineStruct: expected STRUCT value");
+            }
+            return val.getStruct().getStruct();
+        }
+
         String jsonStr = null;
 
         switch (val.getValueCase()) {
@@ -300,7 +415,7 @@ public class LHLibUtil {
                 return val.getWfRunId();
             case STRUCT:
                 Struct struct = val.getStruct();
-                return deserializeStructToObject(struct, targetClazz);
+                return deserializeStructToObject(struct, targetClazz, typeAdapterRegistry);
             case UTC_TIMESTAMP:
                 Timestamp timestamp = val.getUtcTimestamp();
                 if (Timestamp.class.isAssignableFrom(targetClazz)) {
@@ -329,8 +444,99 @@ public class LHLibUtil {
         }
     }
 
-    private static Object deserializeStructToObject(Struct struct, Class<?> clazz) throws LHSerdeException {
-        LHClassType lhClassType = LHClassType.fromJavaClass(clazz);
+    @SuppressWarnings("unchecked")
+    private static Object varValToObjViaAdapter(VariableValue val, LHTypeAdapter<?> adapter) throws LHSerdeException {
+        switch (adapter.getVariableType()) {
+            case STR:
+                if (!(adapter instanceof LHStringAdapter)) {
+                    break;
+                }
+                if (val.getValueCase() != ValueCase.STR) {
+                    throw new LHSerdeException("Failed deserializing object with adapter: expected STR value");
+                }
+                return ((LHStringAdapter<Object>) adapter).fromString(val.getStr());
+            case INT:
+                if (val.getValueCase() != ValueCase.INT) {
+                    throw new LHSerdeException("Failed deserializing object with adapter: expected INT value");
+                }
+
+                if (adapter instanceof LHLongAdapter) {
+                    return ((LHLongAdapter<Object>) adapter).fromLong(val.getInt());
+                }
+
+                if (adapter instanceof LHIntegerAdapter) {
+                    return ((LHIntegerAdapter<Object>) adapter).fromInteger((int) val.getInt());
+                }
+                break;
+            case DOUBLE:
+                if (!(adapter instanceof LHDoubleAdapter)) {
+                    break;
+                }
+                if (val.getValueCase() != ValueCase.DOUBLE) {
+                    throw new LHSerdeException("Failed deserializing object with adapter: expected DOUBLE value");
+                }
+                return ((LHDoubleAdapter<Object>) adapter).fromDouble(val.getDouble());
+            case BOOL:
+                if (!(adapter instanceof LHBooleanAdapter)) {
+                    break;
+                }
+                if (val.getValueCase() != ValueCase.BOOL) {
+                    throw new LHSerdeException("Failed deserializing object with adapter: expected BOOL value");
+                }
+                return ((LHBooleanAdapter<Object>) adapter).fromBoolean(val.getBool());
+            case BYTES:
+                if (!(adapter instanceof LHBytesAdapter)) {
+                    break;
+                }
+                if (val.getValueCase() != ValueCase.BYTES) {
+                    throw new LHSerdeException("Failed deserializing object with adapter: expected BYTES value");
+                }
+                return ((LHBytesAdapter<Object>) adapter)
+                        .fromBytes(val.getBytes().toByteArray());
+            case JSON_ARR:
+                if (!(adapter instanceof LHJsonArrAdapter)) {
+                    break;
+                }
+                if (val.getValueCase() != ValueCase.JSON_ARR) {
+                    throw new LHSerdeException("Failed deserializing object with adapter: expected JSON_ARR value");
+                }
+                return ((LHJsonArrAdapter<Object>) adapter).fromJsonArr(val.getJsonArr());
+            case JSON_OBJ:
+                if (!(adapter instanceof LHJsonObjAdapter)) {
+                    break;
+                }
+                if (val.getValueCase() != ValueCase.JSON_OBJ) {
+                    throw new LHSerdeException("Failed deserializing object with adapter: expected JSON_OBJ value");
+                }
+                return ((LHJsonObjAdapter<Object>) adapter).fromJsonObj(val.getJsonObj());
+            case WF_RUN_ID:
+                if (!(adapter instanceof LHWfRunIdAdapter)) {
+                    break;
+                }
+                if (val.getValueCase() != ValueCase.WF_RUN_ID) {
+                    throw new LHSerdeException("Failed deserializing object with adapter: expected WF_RUN_ID value");
+                }
+                return ((LHWfRunIdAdapter<Object>) adapter).fromWfRunId(val.getWfRunId());
+            case TIMESTAMP:
+                if (!(adapter instanceof LHTimestampAdapter)) {
+                    break;
+                }
+                if (val.getValueCase() != ValueCase.UTC_TIMESTAMP) {
+                    throw new LHSerdeException("Failed deserializing object with adapter: expected TIMESTAMP value");
+                }
+                return ((LHTimestampAdapter<Object>) adapter).fromTimestamp(val.getUtcTimestamp());
+            case UNRECOGNIZED:
+            default:
+                break;
+        }
+
+        throw new LHSerdeException("Unsupported type adapter configuration for "
+                + adapter.getTypeClass().getName());
+    }
+
+    private static Object deserializeStructToObject(
+            Struct struct, Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
+        LHClassType lhClassType = LHClassType.fromJavaClass(clazz, typeAdapterRegistry);
 
         if (!(lhClassType instanceof LHStructDefType)) {
             throw new LHSerdeException("Failed deserializing Struct into class of type: " + lhClassType);
@@ -356,7 +562,7 @@ public class LHLibUtil {
                 VariableValue fieldValue =
                         struct.getStruct().getFieldsMap().get(fieldName).getValue();
 
-                property.setValueTo(structObject, fieldValue);
+                property.setValueTo(structObject, fieldValue, typeAdapterRegistry);
             }
 
             return structObject;
@@ -372,7 +578,126 @@ public class LHLibUtil {
     }
 
     public static VariableValue objToVarVal(Object o) throws LHSerdeException {
+        return objToVarVal(o, LHTypeAdapterRegistry.empty());
+    }
+
+    public static VariableValue objToVarVal(Object o, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
+        if (o == null) {
+            return VariableValue.newBuilder().build();
+        }
+
+        Optional<LHTypeAdapter<?>> maybeAdapter = getTypeAdapterForClass(o.getClass(), typeAdapterRegistry);
+        if (maybeAdapter.isPresent()) {
+            return objToVarValViaAdapter(o, maybeAdapter.get());
+        }
+
+        return objToVarValWithoutTypeAdapter(o, typeAdapterRegistry);
+    }
+
+    public static VariableValue objToVarVal(Object o, Class<?> declaredClass, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
+        if (o == null) {
+            return VariableValue.newBuilder().build();
+        }
+
+        if (InlineStruct.class.equals(declaredClass)) {
+            throw new LHSerdeException(
+                    "Cannot serialize InlineStruct without StructDefId. Use inlineStructToVarVal() with a StructDefId.");
+        }
+
+        Optional<LHTypeAdapter<?>> maybeAdapter = getTypeAdapterForClass(declaredClass, typeAdapterRegistry);
+        if (!maybeAdapter.isPresent()) {
+            maybeAdapter = getTypeAdapterForClass(o.getClass(), typeAdapterRegistry);
+        }
+
+        if (maybeAdapter.isPresent()) {
+            return objToVarValViaAdapter(o, maybeAdapter.get());
+        }
+
+        return objToVarValWithoutTypeAdapter(o, typeAdapterRegistry);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static VariableValue objToVarValViaAdapter(Object o, LHTypeAdapter<?> adapter) throws LHSerdeException {
+        VariableValue.Builder out = VariableValue.newBuilder();
+
+        switch (adapter.getVariableType()) {
+            case STR:
+                if (adapter instanceof LHStringAdapter) {
+                    out.setStr(((LHStringAdapter<Object>) adapter).toString(o));
+                    return out.build();
+                }
+                break;
+            case INT:
+                if (adapter instanceof LHLongAdapter) {
+                    out.setInt(((LHLongAdapter<Object>) adapter).toLong(o));
+                    return out.build();
+                }
+
+                if (adapter instanceof LHIntegerAdapter) {
+                    out.setInt(((LHIntegerAdapter<Object>) adapter).toInteger(o));
+                    return out.build();
+                }
+                break;
+            case DOUBLE:
+                if (adapter instanceof LHDoubleAdapter) {
+                    out.setDouble(((LHDoubleAdapter<Object>) adapter).toDouble(o));
+                    return out.build();
+                }
+                break;
+            case BOOL:
+                if (adapter instanceof LHBooleanAdapter) {
+                    out.setBool(((LHBooleanAdapter<Object>) adapter).toBoolean(o));
+                    return out.build();
+                }
+                break;
+            case BYTES:
+                if (adapter instanceof LHBytesAdapter) {
+                    out.setBytes(ByteString.copyFrom(((LHBytesAdapter<Object>) adapter).toBytes(o)));
+                    return out.build();
+                }
+                break;
+            case JSON_ARR:
+                if (adapter instanceof LHJsonArrAdapter) {
+                    out.setJsonArr(((LHJsonArrAdapter<Object>) adapter).toJsonArr(o));
+                    return out.build();
+                }
+                break;
+            case JSON_OBJ:
+                if (adapter instanceof LHJsonObjAdapter) {
+                    out.setJsonObj(((LHJsonObjAdapter<Object>) adapter).toJsonObj(o));
+                    return out.build();
+                }
+                break;
+            case WF_RUN_ID:
+                if (adapter instanceof LHWfRunIdAdapter) {
+                    out.setWfRunId(((LHWfRunIdAdapter<Object>) adapter).toWfRunId(o));
+                    return out.build();
+                }
+                break;
+            case TIMESTAMP:
+                if (adapter instanceof LHTimestampAdapter) {
+                    out.setUtcTimestamp(((LHTimestampAdapter<Object>) adapter).toTimestamp(o));
+                    return out.build();
+                }
+                break;
+            case UNRECOGNIZED:
+            default:
+                break;
+        }
+
+        throw new LHSerdeException("Unsupported type adapter configuration for "
+                + adapter.getTypeClass().getName());
+    }
+
+    private static VariableValue objToVarValWithoutTypeAdapter(Object o, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
         if (o instanceof VariableValue) return (VariableValue) o;
+        if (o instanceof InlineStruct) {
+            throw new LHSerdeException(
+                    "Cannot serialize InlineStruct without StructDefId. Use inlineStructToVarVal() with a StructDefId.");
+        }
 
         VariableValue.Builder out = VariableValue.newBuilder();
         if (o == null) {
@@ -394,9 +719,11 @@ public class LHLibUtil {
         } else if (o instanceof WfRunId) {
             out.setWfRunId((WfRunId) o);
         } else if (o.getClass().isAnnotationPresent(LHStructDef.class)) {
-            out.setStruct(serializeToStruct(o));
+            out.setStruct(serializeToStruct(o, typeAdapterRegistry));
         } else if (o instanceof Instant) {
             out.setUtcTimestamp(fromInstant((Instant) o));
+        } else if (o instanceof Timestamp) {
+            out.setUtcTimestamp((Timestamp) o);
         } else if (o instanceof LocalDateTime) {
             Instant inst = ((LocalDateTime) o).atZone(ZoneId.systemDefault()).toInstant();
             out.setUtcTimestamp(fromInstant(inst));
@@ -430,12 +757,43 @@ public class LHLibUtil {
     }
 
     /**
+     * Serializes an {@link InlineStruct} into a STRUCT {@link VariableValue} using an explicit StructDef id.
+     *
+     * <p>This is required for InlineStruct values because, unlike Java POJOs annotated with
+     * {@code @LHStructDef}, the InlineStruct payload itself does not carry Java type metadata that can be used
+     * to infer the target StructDef.
+     *
+     * @param inlineStruct the struct payload to serialize; if null, an empty VariableValue is returned.
+     * @param structDefId the StructDef id that should be attached to the serialized value.
+     * @return a STRUCT VariableValue containing the provided InlineStruct and StructDef id.
+     * @throws LHSerdeException if the StructDef id is null or has a blank name.
+     */
+    public static VariableValue inlineStructToVarVal(InlineStruct inlineStruct, StructDefId structDefId)
+            throws LHSerdeException {
+        if (inlineStruct == null) {
+            return VariableValue.newBuilder().build();
+        }
+
+        if (structDefId == null || structDefId.getName().isBlank()) {
+            throw new LHSerdeException("Cannot serialize InlineStruct without a StructDefId name");
+        }
+
+        return VariableValue.newBuilder()
+                .setStruct(Struct.newBuilder().setStructDefId(structDefId).setStruct(inlineStruct))
+                .build();
+    }
+
+    /**
      * Serializes a Java Object to a Struct based on the object's properties that have public getter methods.
      * @param o is a Java object
      * @return a Struct where the fields mirror the object's properties
      */
     public static Struct serializeToStruct(Object o) {
-        LHClassType lhClassType = LHClassType.fromJavaClass(o.getClass());
+        return serializeToStruct(o, LHTypeAdapterRegistry.empty());
+    }
+
+    public static Struct serializeToStruct(Object o, LHTypeAdapterRegistry typeAdapterRegistry) {
+        LHClassType lhClassType = LHClassType.fromJavaClass(o.getClass(), typeAdapterRegistry);
 
         if (!(lhClassType instanceof LHStructDefType))
             throw new IllegalStateException("Cannot serialize given object to Struct");
@@ -452,7 +810,7 @@ public class LHLibUtil {
             List<LHStructProperty> lhStructProperties = structDefType.getStructProperties();
 
             for (LHStructProperty property : lhStructProperties) {
-                VariableValue fieldValue = property.getValueFrom(o);
+                VariableValue fieldValue = property.getValueFrom(o, typeAdapterRegistry);
 
                 StructField structField =
                         StructField.newBuilder().setValue(fieldValue).build();
@@ -544,6 +902,18 @@ public class LHLibUtil {
     }
 
     public static VariableType javaClassToLHVarType(Class<?> cls) {
+        return javaClassToLHVarType(cls, LHTypeAdapterRegistry.empty());
+    }
+
+    public static VariableType javaClassToLHVarType(Class<?> cls, LHTypeAdapterRegistry typeAdapterRegistry) {
+        VariableType adapterType = getTypeAdapterForClass(cls, typeAdapterRegistry)
+                .map(LHTypeAdapter::getVariableType)
+                .orElse(VariableType.UNRECOGNIZED);
+
+        if (adapterType != VariableType.UNRECOGNIZED) {
+            return adapterType;
+        }
+
         if (isINT(cls)) return VariableType.INT;
 
         if (isDOUBLE(cls)) return VariableType.DOUBLE;
@@ -575,7 +945,6 @@ public class LHLibUtil {
         if (clazz.equals(WfRunId.class)) return true;
         if (clazz.equals(Byte[].class)) return true;
         if (clazz.equals(byte[].class)) return true;
-
         return false;
     }
 

@@ -63,7 +63,8 @@ enum GetableClassEnum {
     STRUCT_DEF = 18;
     CORRELATED_EVENT = 19;
     CHECKPOINT = 20;
-    METRIC_WINDOW = 21;
+    INACTIVE_THREAD_RUN = 21;
+    METRIC_WINDOW = 22;
 }
 
 message AttributePb {

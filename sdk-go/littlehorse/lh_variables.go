@@ -8,8 +8,10 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func StrToVarVal(input string, varType lhproto.VariableType) (*lhproto.VariableValue, error) {
@@ -97,6 +99,12 @@ func VarValToVarType(varVal *lhproto.VariableValue) *lhproto.VariableType {
 		return &result
 	case *lhproto.VariableValue_Int:
 		result := lhproto.VariableType_INT
+		return &result
+	case *lhproto.VariableValue_UtcTimestamp:
+		result := lhproto.VariableType_TIMESTAMP
+		return &result
+	case *lhproto.VariableValue_WfRunId:
+		result := lhproto.VariableType_WF_RUN_ID
 		return &result
 	case *lhproto.VariableValue_JsonArr:
 		result := lhproto.VariableType_JSON_ARR
@@ -204,10 +212,29 @@ func InterfaceToVarVal(someInterface interface{}) (*lhproto.VariableValue, error
 		out.Value = &lhproto.VariableValue_Str{Str: e}
 	case bool:
 		out.Value = &lhproto.VariableValue_Bool{Bool: e}
+	case time.Time:
+		out.Value = &lhproto.VariableValue_UtcTimestamp{UtcTimestamp: timestamppb.New(e.UTC())}
+	case lhproto.WfRunId:
+		out.Value = &lhproto.VariableValue_WfRunId{WfRunId: &e}
 	case []byte:
 		out.Value = &lhproto.VariableValue_Bytes{Bytes: e}
 	default:
-		isAList := reflect.TypeOf(e).Kind() == reflect.Slice
+		eType := reflect.TypeOf(e)
+		isAList := eType.Kind() == reflect.Slice
+
+		// Check if the struct implements LHStructDef() — if so, serialize as a Struct proto.
+		if eType.Kind() == reflect.Struct {
+			structDefName := getStructDefName(eType)
+			if structDefName != "" {
+				structProto, structErr := ToLhStruct(e)
+				if structErr != nil {
+					return nil, structErr
+				}
+				out.Value = &lhproto.VariableValue_Struct{Struct: structProto}
+				return out, nil
+			}
+		}
+
 		var b []byte
 		b, err = json.Marshal(e)
 		if err == nil {
@@ -338,6 +365,9 @@ func VarValToType(varVal *lhproto.VariableValue, targetType reflect.Type) (inter
 		}
 		return loadJsonObj(varVal, targetType)
 
+	case *lhproto.VariableValue_Struct:
+		return StructProtoToGoStruct(varVal.GetStruct(), targetType)
+
 	case *lhproto.VariableValue_Bytes:
 		return loadByteArr(varVal, targetType)
 	}
@@ -429,12 +459,32 @@ func VarValToType(varVal *lhproto.VariableValue, targetType reflect.Type) (inter
 			return &strVal, nil
 		}
 		return strVal, nil
+	case *lhproto.VariableValue_UtcTimestamp:
+		res := varVal.GetUtcTimestamp().AsTime()
+		if isPtr {
+			return &res, nil
+		}
+		return res, nil
+
+	case *lhproto.VariableValue_WfRunId:
+		workflowRunId := varVal.GetWfRunId()
+		if isPtr {
+			return &workflowRunId, nil
+		}
+		return workflowRunId, nil
 	}
 
 	return nil, fmt.Errorf("unknown VariableValue type")
 }
 
 func ReflectTypeToVarType(rt reflect.Type) lhproto.VariableType {
+	// Handle non-primitive types first
+	if rt == reflect.TypeOf(time.Time{}) {
+		return lhproto.VariableType_TIMESTAMP
+	} else if rt == reflect.TypeOf(lhproto.WfRunId{}) {
+		return lhproto.VariableType_WF_RUN_ID
+	}
+
 	switch rt.Kind() {
 	case reflect.Ptr:
 		return ReflectTypeToVarType(rt.Elem())
@@ -476,5 +526,37 @@ func ReflectTypeToVarType(rt reflect.Type) lhproto.VariableType {
 		}
 	default:
 		return lhproto.VariableType_JSON_OBJ
+	}
+}
+
+// ReflectTypeToTypeDef converts a Go reflect.Type to a TypeDefinition proto.
+// Unlike ReflectTypeToVarType, this detects struct types that implement LHStructDef()
+// and returns a TypeDefinition with StructDefId instead of falling back to JSON_OBJ.
+func ReflectTypeToTypeDef(rt reflect.Type) *lhproto.TypeDefinition {
+	// Unwrap pointer
+	if rt.Kind() == reflect.Ptr {
+		rt = rt.Elem()
+	}
+
+	// Check if it's a struct with LHStructDef
+	if rt.Kind() == reflect.Struct {
+		structDefName := getStructDefName(rt)
+		if structDefName != "" {
+			return &lhproto.TypeDefinition{
+				DefinedType: &lhproto.TypeDefinition_StructDefId{
+					StructDefId: &lhproto.StructDefId{
+						Name: structDefName,
+					},
+				},
+			}
+		}
+	}
+
+	// Fall back to primitive type
+	primType := ReflectTypeToVarType(rt)
+	return &lhproto.TypeDefinition{
+		DefinedType: &lhproto.TypeDefinition_PrimitiveType{
+			PrimitiveType: primType,
+		},
 	}
 }

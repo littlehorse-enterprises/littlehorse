@@ -36,4 +36,15 @@ public interface StructFieldOrBuilder extends
    * <code>.littlehorse.VariableValue value = 1;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder();
+
+  /**
+   * <pre>
+   * Whether or not this StructField value is masked.
+   * Set by the server based on the StructDef's field definition for this configuration.
+   * </pre>
+   *
+   * <code>bool masked = 2;</code>
+   * @return The masked.
+   */
+  boolean getMasked();
 }

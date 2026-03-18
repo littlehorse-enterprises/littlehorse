@@ -13,23 +13,20 @@ import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import io.littlehorse.sdk.worker.internal.LHLivenessController;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
+import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.io.Closeable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -38,18 +35,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class LHTaskWorker implements Closeable {
-
-    public static HashMap<Class<?>, VariableType> javaTypeToLHType = new HashMap<>() {
-        {
-            put(Integer.class, VariableType.INT);
-            put(Long.class, VariableType.INT);
-            put(Boolean.class, VariableType.BOOL);
-            put(Double.class, VariableType.DOUBLE);
-            put(byte[].class, VariableType.BYTES);
-            put(String.class, VariableType.STR);
-        }
-    };
-
     private Object executable;
     private LHConfig config;
     private TaskDef taskDef;
@@ -60,6 +45,7 @@ public class LHTaskWorker implements Closeable {
     private String lhTaskMethodAnnotationValue;
     private LittleHorseBlockingStub grpcClient;
     private TaskDefBuilder tdb;
+    private Map<String, String> placeholderValues;
 
     /**
      * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
@@ -74,10 +60,16 @@ public class LHTaskWorker implements Closeable {
         this.config = config;
         this.executable = executable;
         this.mappings = new ArrayList<>();
+        this.placeholderValues = Map.of();
         this.taskDefName = taskDefName;
         this.lhTaskMethodAnnotationValue = taskDefName;
         this.grpcClient = config.getBlockingStub();
-        this.tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
+        this.tdb = new TaskDefBuilder(
+                executable,
+                this.taskDefName,
+                this.lhTaskMethodAnnotationValue,
+                config.getTypeAdapterRegistry(),
+                this.placeholderValues);
     }
 
     /**
@@ -100,22 +92,36 @@ public class LHTaskWorker implements Closeable {
         this.config = config;
         this.executable = executable;
         this.mappings = new ArrayList<>();
-        this.taskDefName = replacePlaceholdersInTaskDefName(taskDefNameTemplate, valuesForPlaceholders);
+        this.placeholderValues = valuesForPlaceholders == null ? Map.of() : Map.copyOf(valuesForPlaceholders);
+        this.taskDefName = replacePlaceholders(taskDefNameTemplate, this.placeholderValues);
         this.lhTaskMethodAnnotationValue = taskDefNameTemplate;
         this.grpcClient = config.getBlockingStub();
-
-        this.tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
+        this.tdb = new TaskDefBuilder(
+                executable,
+                this.taskDefName,
+                this.lhTaskMethodAnnotationValue,
+                config.getTypeAdapterRegistry(),
+                this.placeholderValues);
     }
 
+    /**
+     * Creates a task worker with a pre-created server connection manager.
+     *
+     * @param executable is any Object which has exactly one method annotated with '@LHTaskMethod'.
+     *                   That method will be used to execute the tasks.
+     * @param taskDefNameTemplate is the name of the `TaskDef` to execute. May contain placeholders.
+     * @param valuesForPlaceholders map of values that will replace the placeholders on the taskDefNameTemplate.
+     * @param config      is a valid LHConfig.
+     * @param manager server connection manager to use
+     */
     public LHTaskWorker(
             Object executable,
-            String taskDefName,
-            Map<String, String> valuesForPlaceHolders,
+            String taskDefNameTemplate,
+            Map<String, String> valuesForPlaceholders,
             LHConfig config,
             LHServerConnectionManager manager) {
-        this(executable, taskDefName, config, valuesForPlaceHolders);
+        this(executable, taskDefNameTemplate, config, valuesForPlaceholders);
         this.manager = manager;
-        this.tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
     }
 
     /**
@@ -192,7 +198,7 @@ public class LHTaskWorker implements Closeable {
      *                          their existing StructDef schemas based on this compatibility type.
      */
     public void validateStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
-        LHStructDefType lhStructDefType = new LHStructDefType(structClass);
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass, config.getTypeAdapterRegistry());
 
         validateStructDef(lhStructDefType, compatibilityType);
     }
@@ -238,7 +244,7 @@ public class LHTaskWorker implements Closeable {
      *                          according to this compatibility type.
      */
     public void registerStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
-        LHStructDefType lhStructDefType = new LHStructDefType(structClass);
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass, config.getTypeAdapterRegistry());
 
         registerStructDef(lhStructDefType, compatibilityType);
     }
@@ -281,10 +287,19 @@ public class LHTaskWorker implements Closeable {
                 }
 
             } while (System.currentTimeMillis() < timeout);
+
+            if (this.taskDef == null) {
+                throw new IllegalStateException("TaskDef '" + taskDefName
+                        + "' was not found on the server. Register it before starting this worker.");
+            }
         }
 
-        LHTaskSignature signature =
-                new LHTaskSignature(taskDef.getId().getName(), executable, this.lhTaskMethodAnnotationValue);
+        LHTaskSignature signature = new LHTaskSignature(
+                taskDef.getId().getName(),
+                executable,
+                this.lhTaskMethodAnnotationValue,
+                config.getTypeAdapterRegistry(),
+                placeholderValues);
         taskMethod = signature.getTaskMethod();
 
         int numTaskMethodParams = taskMethod.getParameterCount();
@@ -307,6 +322,11 @@ public class LHTaskWorker implements Closeable {
             Parameter param = taskMethod.getParameters()[i];
             String javaParamName = param.getName();
             Class<?> paramClass = param.getType();
+            LHType lhTypeAnnotation = param.getAnnotation(LHType.class);
+            String inlineStructDefName = null;
+            if (lhTypeAnnotation != null && !lhTypeAnnotation.structDefName().isBlank()) {
+                inlineStructDefName = replacePlaceholders(lhTypeAnnotation.structDefName(), placeholderValues);
+            }
 
             if (paramClass.equals(WorkerContext.class)) {
                 throw new TaskSchemaMismatchError("Can only have WorkerContext after all required taskDef params.");
@@ -314,12 +334,14 @@ public class LHTaskWorker implements Closeable {
 
             // This line throws a TaskSchemaMismatchError if the param can't
             // be provided properly.
-            VariableMapping mapping = new VariableMapping(taskDef, i, paramClass, javaParamName);
+            VariableMapping mapping = new VariableMapping(
+                    taskDef, i, paramClass, javaParamName, inlineStructDefName, config.getTypeAdapterRegistry());
             mappings.add(mapping);
         }
 
         if (signature.getHasWorkerContextAtEnd()) {
-            mappings.add(new VariableMapping(taskDef, numTaskMethodParams - 1, WorkerContext.class, null));
+            mappings.add(new VariableMapping(
+                    taskDef, numTaskMethodParams - 1, WorkerContext.class, null, config.getTypeAdapterRegistry()));
         }
     }
 
@@ -360,25 +382,7 @@ public class LHTaskWorker implements Closeable {
         return manager.healthStatus();
     }
 
-    private static String replacePlaceholdersInTaskDefName(String template, Map<String, String> values) {
-        final StringBuilder resultingText = new StringBuilder();
-
-        final Pattern placeholderPattern = Pattern.compile("\\$\\{(.*?)\\}", Pattern.DOTALL);
-
-        final Matcher matcher = placeholderPattern.matcher(template);
-
-        while (matcher.find()) {
-            final String placeholderKey = matcher.group(1);
-            final String replacement = values.get(placeholderKey);
-
-            if (replacement == null) {
-                throw new IllegalArgumentException(
-                        "No value has been provided for the placeholder with key: " + placeholderKey);
-            }
-            matcher.appendReplacement(resultingText, replacement);
-        }
-
-        matcher.appendTail(resultingText);
-        return resultingText.toString();
+    private static String replacePlaceholders(String template, Map<String, String> values) {
+        return PlaceholderUtil.replacePlaceholders(template, values);
     }
 }

@@ -6,6 +6,8 @@ import com.google.protobuf.util.JsonFormat;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.AllowedUpdateType;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
@@ -47,6 +49,8 @@ public abstract class Workflow {
     protected int defaultSimpleRetries;
     protected Set<ThrowEventNodeOutputImpl> workflowEventsToRegister;
 
+    protected LHTypeAdapterRegistry lhTypeAdapterRegistry;
+
     /**
      * Internal constructor used by WorkflowImpl.
      *
@@ -59,6 +63,16 @@ public abstract class Workflow {
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
         this.workflowEventsToRegister = new HashSet<>();
+        this.lhTypeAdapterRegistry = LHTypeAdapterRegistry.empty();
+    }
+
+    /**
+     * Returns the type adapter registry view for this workflow.
+     *
+     * @return adapter registry
+     */
+    public LHTypeAdapterRegistry getTypeAdapterRegistry() {
+        return lhTypeAdapterRegistry;
     }
 
     /**
@@ -160,7 +174,7 @@ public abstract class Workflow {
      * AllowedUpdateType.ALL (Default): Creates a new WfSpec with a different version (either major or revision).
      * AllowedUpdateType.MINOR_REVISION_ONLY: Creates a new WfSpec with a different revision if the change is a major version it fails.
      * AllowedUpdateType.NONE: Fail with the ALREADY_EXISTS response code.
-     * @param allowedUpdateType
+     * @param allowedUpdateType the allowed update type for the workflow specification
      * @return this Worflow
      */
     public Workflow withUpdateType(AllowedUpdateType allowedUpdateType) {
@@ -174,6 +188,16 @@ public abstract class Workflow {
      * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
      */
     public abstract PutWfSpecRequest compileWorkflow();
+
+    /**
+     * Compiles this Workflow into a `WfSpec`, applying configured type adapters from the provided config first.
+     *
+     * <p> <b> Use this method overload if you have type adapters configured in your {@link LHConfig} that you want to apply to the Workflow before registration. </b>
+     *
+     * @param config source for dynamically configured type adapters
+     * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
+     */
+    public abstract PutWfSpecRequest compileWorkflow(LHConfig config);
 
     /**
      * Returns the names of all `TaskDef`s used by this workflow.
@@ -277,11 +301,23 @@ public abstract class Workflow {
 
     /**
      * Deploys the WfSpec object to the LH Server. Registering the WfSpec via
-     * Workflow::registerWfSpec() is the same as client.putWfSpec(workflow.compileWorkflow()).
+     * Workflow::registerWfSpec() also registers ExternalEventDefs and WorkflowEventDefs
+     * according to your `registeredAs` declarations on `ExternalEventNodeOutput`s and `ThrowEventNodeOutput`s.
      *
      * @param client is an LHClient.
      */
     public abstract void registerWfSpec(LittleHorseBlockingStub client);
+
+    /**
+     * Deploys the WfSpec object to the LH Server. Registering the WfSpec via
+     * Workflow::registerWfSpec() also registers ExternalEventDefs and WorkflowEventDefs
+     * according to your `registeredAs` declarations on `ExternalEventNodeOutput`s and `ThrowEventNodeOutput`s.
+     *
+     * <p> <b> Use this method overload if you have Type Adapters configured in your {@link LHConfig} that you want to apply to the Workflow before registration. </b>
+     *
+     * @param config is an LHConfig.
+     */
+    public abstract void registerWfSpec(LHConfig config);
 
     /**
      * Writes out the PutWfSpecRequest in JSON form in a directory.

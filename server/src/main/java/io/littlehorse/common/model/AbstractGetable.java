@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.wfrun.InactiveThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
@@ -28,6 +29,7 @@ import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
+import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
@@ -117,6 +119,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.CHECKPOINT;
         } else if (cls.equals(MetricWindowModel.class)) {
             return GetableClassEnum.METRIC_WINDOW;
+        } else if (cls.equals(InactiveThreadRunModel.class)) {
+            return GetableClassEnum.INACTIVE_THREAD_RUN;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -168,6 +172,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CheckpointModel.class;
             case METRIC_WINDOW:
                 return MetricWindowModel.class;
+            case INACTIVE_THREAD_RUN:
+                return InactiveThreadRunModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -220,6 +226,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CheckpointIdModel.class;
             case METRIC_WINDOW:
                 return MetricWindowIdModel.class;
+            case INACTIVE_THREAD_RUN:
+                return InactiveThreadRunIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");

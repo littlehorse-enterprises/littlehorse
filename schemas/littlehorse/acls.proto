@@ -183,6 +183,7 @@ message OutputTopicConfig {
         NO_ENTITY_EVENTS = 1;
     }
 
+    // The recording level for this Tenant's Output Topic.
     OutputTopicRecordingLevel default_recording_level = 1;
 }
 

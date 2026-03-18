@@ -1,9 +1,9 @@
-import { VariableTypeToFieldComponent } from '@/app/utils'
 import { ThreadVarDef, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import FormField from './FormField'
 import FormLabel from './FormLabel'
 import { StructDefGroup } from './StructDefGroup'
+import { VariableTypeToFieldComponent } from './VariableTypeToFieldComponent'
 
 interface VariableFormFieldProps {
   variable: ThreadVarDef
@@ -20,7 +20,14 @@ export const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
   if (!definedType) return null
 
   if (variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR) {
-    return <FormLabel label={name} accessLevel={variable.accessLevel} required={variable.required} />
+    return (
+      <FormLabel
+        label={name}
+        accessLevel={variable.accessLevel}
+        required={variable.required}
+        masked={varDef.typeDef?.masked}
+      />
+    )
   }
 
   if (definedType.$case === 'primitiveType') {
@@ -35,6 +42,7 @@ export const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
         protoRequired={variable.required}
         accessLevel={variable.accessLevel}
         variableType={definedType.value}
+        masked={varDef.typeDef?.masked}
       />
     )
   }
@@ -45,6 +53,7 @@ export const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
         structDefId={definedType.value}
         name={name}
         required={variable.required}
+        masked={varDef.typeDef?.masked}
         defaultValue={varDef.defaultValue}
       />
     )

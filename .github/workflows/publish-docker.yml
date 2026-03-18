@@ -56,6 +56,7 @@ jobs:
           dockerfile: docker/server/Dockerfile
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
+            type=raw,value=latest,enable=false
             type=semver,pattern={{version}}
             type=ref,event=branch
 
@@ -81,6 +82,7 @@ jobs:
           dockerfile: docker/canary/Dockerfile
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
+            type=raw,value=latest,enable=false
             type=semver,pattern={{version}}
             type=ref,event=branch
 
@@ -100,6 +102,7 @@ jobs:
             VERSION=${{ inputs.tag || github.ref_name }}
             COMMIT=${{ github.sha }}
           tags: |
+            type=raw,value=latest,enable=false
             type=semver,pattern={{version}}
             type=ref,event=branch
 
@@ -114,16 +117,16 @@ jobs:
         with:
           node-version: 20
 
-      # - name: Update Dashboard Version
-      #   working-directory: ./dashboard
-      #   run: |
-      #     if [ "${{ inputs.tag }}" != "" ]; then
-      #       VERSION="${{ inputs.tag }}"
-      #     else
-      #       SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-      #       VERSION="${{ github.ref_name }}-$SHORT_SHA"
-      #     fi
-      #     sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
+      - name: Update Dashboard Version
+        working-directory: ./dashboard
+        run: |
+          if [ "${{ inputs.tag }}" != "" ]; then
+            VERSION="${{ inputs.tag }}"
+          else
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            VERSION="${{ github.ref_name }}-$SHORT_SHA"
+          fi
+          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.mjs
 
       - name: Build Dashboard
         working-directory: ./dashboard
@@ -138,6 +141,7 @@ jobs:
           dockerfile: docker/dashboard/Dockerfile
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
+            type=raw,value=latest,enable=false
             type=semver,pattern={{version}}
             type=ref,event=branch
 
@@ -154,16 +158,16 @@ jobs:
         with:
           node-version: 20
 
-      # - name: Update Dashboard Version
-      #   working-directory: ./dashboard
-      #   run: |
-      #     if [ "${{ inputs.tag }}" != "" ]; then
-      #       VERSION="${{ inputs.tag }}"
-      #     else
-      #       SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-      #       VERSION="${{ github.ref_name }}-$SHORT_SHA"
-      #     fi
-      #     sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
+      - name: Update Dashboard Version
+        working-directory: ./dashboard
+        run: |
+          if [ "${{ inputs.tag }}" != "" ]; then
+            VERSION="${{ inputs.tag }}"
+          else
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            VERSION="${{ github.ref_name }}-$SHORT_SHA"
+          fi
+          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.mjs
 
       - name: Build Dashboard
         working-directory: ./dashboard
@@ -184,5 +188,6 @@ jobs:
           dockerfile: docker/standalone/Dockerfile
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
+            type=raw,value=latest,enable=false
             type=semver,pattern={{version}}
             type=ref,event=branch

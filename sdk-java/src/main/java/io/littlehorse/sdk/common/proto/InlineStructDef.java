@@ -7,7 +7,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * An `InlineStructDef` is the actual representation of the Schema.
+ * A map of InlineStructDef's field names to their StructFieldDef's.
  * </pre>
  *
  * Protobuf type {@code littlehorse.InlineStructDef}
@@ -324,7 +324,7 @@ io.littlehorse.sdk.common.proto.StructFieldDef defaultValue) {
   }
   /**
    * <pre>
-   * An `InlineStructDef` is the actual representation of the Schema.
+   * A map of InlineStructDef's field names to their StructFieldDef's.
    * </pre>
    *
    * Protobuf type {@code littlehorse.InlineStructDef}

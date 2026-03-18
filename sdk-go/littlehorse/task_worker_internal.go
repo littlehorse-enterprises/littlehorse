@@ -2,6 +2,7 @@ package littlehorse
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"reflect"
 	"runtime/debug"
@@ -11,6 +12,8 @@ import (
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -30,22 +33,19 @@ func (tw *LHTaskWorker) registerTaskDef() error {
 		return false
 	}
 	for i, arg := range tw.taskSig.Args {
-		tempType := ReflectTypeToVarType(arg.Type)
+		typeDef := ReflectTypeToTypeDef(arg.Type)
 		tempMasked := isMaskedField(i)
+		typeDef.Masked = tempMasked
 		ptd.InputVars = append(ptd.InputVars, &lhproto.VariableDef{
-			Name:        strconv.Itoa(i) + "-" + arg.Name,
-			Type:        &tempType,
-			MaskedValue: &tempMasked,
+			Name:    strconv.Itoa(i) + "-" + arg.Name,
+			TypeDef: typeDef,
 		})
 	}
 	if tw.taskSig.HasOutput {
+		outputTypeDef := ReflectTypeToTypeDef(*tw.taskSig.OutputType)
+		outputTypeDef.Masked = tw.maskedOutput
 		ptd.ReturnType = &lhproto.ReturnType{
-			ReturnType: &lhproto.TypeDefinition{
-				DefinedType: &lhproto.TypeDefinition_PrimitiveType{
-					PrimitiveType: ReflectTypeToVarType(*tw.taskSig.OutputType),
-				},
-				Masked: tw.maskedOutput,
-			},
+			ReturnType: outputTypeDef,
 		}
 	}
 
@@ -55,8 +55,7 @@ func (tw *LHTaskWorker) registerTaskDef() error {
 }
 
 func (tw *LHTaskWorker) start() error {
-	tw.manager.start()
-	return nil
+	return tw.manager.start()
 }
 
 func (tw *LHTaskWorker) close() error {
@@ -196,7 +195,35 @@ func (controller *serverConnectionManager) notifyCallSuccess(response *lhproto.R
 	controller.workerHealthy = true
 }
 
-func (m *serverConnectionManager) start() {
+func (m *serverConnectionManager) validateTaskDef() error {
+	deadline := time.Now().Add(2 * time.Second)
+
+	for {
+		_, err := (*m.tw.grpcStub).GetTaskDef(context.Background(), m.tw.taskDefId)
+		if err == nil {
+			return nil
+		}
+
+		if status.Code(err) != codes.NotFound {
+			return err
+		}
+
+		if time.Now().After(deadline) {
+			return fmt.Errorf(
+				"TaskDef '%s' was not found on the server. Register it before starting this worker",
+				m.tw.taskDefId.Name,
+			)
+		}
+
+		time.Sleep(10 * time.Millisecond)
+	}
+}
+
+func (m *serverConnectionManager) start() error {
+	if err := m.validateTaskDef(); err != nil {
+		return err
+	}
+
 	m.running = true
 
 	// start worker threads
@@ -259,6 +286,8 @@ func (m *serverConnectionManager) start() {
 
 		time.Sleep(HEARTBEAT_INTERVAL)
 	}
+
+	return nil
 
 }
 

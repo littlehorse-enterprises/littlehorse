@@ -40,6 +40,7 @@ import {
   CorrelatedEventId,
   ExternalEventDefId,
   ExternalEventId,
+  InactiveThreadRunId,
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
@@ -77,7 +78,7 @@ import {
   userTaskRunStatusToNumber,
 } from "./user_tasks";
 import { Variable, VariableValue } from "./variable";
-import { WfRun } from "./wf_run";
+import { InactiveThreadRun, WfRun } from "./wf_run";
 import {
   ThreadSpec,
   WfSpec,
@@ -153,6 +154,10 @@ export function allowedUpdateTypeToNumber(object: AllowedUpdateType): number {
   }
 }
 
+/**
+ * This enum controls the behavior of a PutStructDefRequest and ValidateStructDefEvolutionRequest
+ * when a StructDef with the same name already exists.
+ */
 export enum StructDefCompatibilityType {
   /** NO_SCHEMA_UPDATES - No updates are allowed. */
   NO_SCHEMA_UPDATES = "NO_SCHEMA_UPDATES",
@@ -915,6 +920,7 @@ export interface SearchUserTaskDefRequest {
   userTaskDefCriteria?: { $case: "prefix"; value: string } | { $case: "name"; value: string } | undefined;
 }
 
+/** Search for StructDef's. */
 export interface SearchStructDefRequest {
   /** Bookmark for cursor-based pagination; pass if applicable. */
   bookmark?:
@@ -925,6 +931,7 @@ export interface SearchStructDefRequest {
   structDefCriteria?: { $case: "prefix"; value: string } | { $case: "name"; value: string } | undefined;
 }
 
+/** List of StructDef Id's. */
 export interface StructDefIdList {
   /** The result object Id's */
   results: StructDefId[];
@@ -1036,6 +1043,7 @@ export interface SearchTenantRequest {
   bookmark?: Buffer | undefined;
 }
 
+/** List of Tenant Id's */
 export interface TenantIdList {
   /** The resulting object id's. */
   results: TenantId[];
@@ -1062,6 +1070,7 @@ export interface SearchPrincipalRequest {
   principalCriteria?: { $case: "isAdmin"; value: boolean } | { $case: "tenantId"; value: string } | undefined;
 }
 
+/** List of Principal Id's */
 export interface PrincipalIdList {
   /** The resulting object id's. */
   results: PrincipalId[];
@@ -11311,15 +11320,14 @@ export const LittleHorseDefinition = {
       options: {},
     },
     /**
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      *
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
      *
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      */
     putStructDef: {
       name: "PutStructDef",
@@ -11329,7 +11337,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** EXPERIMENTAL: Get a StructDef. */
+    /** Gets a StructDef. */
     getStructDef: {
       name: "GetStructDef",
       requestType: StructDefId,
@@ -11822,7 +11830,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /**  */
+    /** Search for Principals */
     searchPrincipal: {
       name: "SearchPrincipal",
       requestType: SearchPrincipalRequest,
@@ -11837,6 +11845,15 @@ export const LittleHorseDefinition = {
       requestType: SearchStructDefRequest,
       requestStream: false,
       responseType: StructDefIdList,
+      responseStream: false,
+      options: {},
+    },
+    /** Get an InactiveThreadRun */
+    getInactiveThreadRun: {
+      name: "GetInactiveThreadRun",
+      requestType: InactiveThreadRunId,
+      requestStream: false,
+      responseType: InactiveThreadRun,
       responseStream: false,
       options: {},
     },
@@ -12008,6 +12025,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Deletes a WorkflowEventDef. */
     deleteWorkflowEventDef: {
       name: "DeleteWorkflowEventDef",
       requestType: DeleteWorkflowEventDefRequest,
@@ -12072,7 +12090,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
+    /** Creates a Tenant in the LH Server. */
     putTenant: {
       name: "PutTenant",
       requestType: PutTenantRequest,
@@ -12081,7 +12099,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** EXPERIMENTAL: Gets a Tenant from the LH Server. */
+    /** Gets a Tenant from the LH Server. */
     getTenant: {
       name: "GetTenant",
       requestType: TenantId,
@@ -12090,7 +12108,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** EXPERIMENTAL: Creates an Principal. */
+    /** Creates a Principal. */
     putPrincipal: {
       name: "PutPrincipal",
       requestType: PutPrincipalRequest,
@@ -12099,6 +12117,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Gets a Principal. */
     getPrincipal: {
       name: "GetPrincipal",
       requestType: PrincipalId,
@@ -12166,18 +12185,17 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    */
   migrateWfSpec(request: MigrateWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
   /**
-   * EXPERIMENTAL: Creates a new `StructDef``.
+   * Creates a StructDef.
    *
    * Note that this request is idempotent: if you
    * make a request to create a `StructDef` identical to the currently-created
    * one with the same `name`, no new `StructDef` will be created. This is the
    * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
    *
-   * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-   * enum within the `PutStructDefRequest`.
+   * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
    */
   putStructDef(request: PutStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
-  /** EXPERIMENTAL: Get a StructDef. */
+  /** Gets a StructDef. */
   getStructDef(request: StructDefId, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
   /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
   validateStructDefEvolution(
@@ -12436,7 +12454,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<WorkflowEventDefIdList>>;
   /** Search for all available TenantIds for current Principal */
   searchTenant(request: SearchTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<TenantIdList>>;
-  /**  */
+  /** Search for Principals */
   searchPrincipal(
     request: SearchPrincipalRequest,
     context: CallContext & CallContextExt,
@@ -12446,6 +12464,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: SearchStructDefRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<StructDefIdList>>;
+  /** Get an InactiveThreadRun */
+  getInactiveThreadRun(
+    request: InactiveThreadRunId,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<InactiveThreadRun>>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -12527,6 +12550,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: DeleteCorrelatedEventRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
+  /** Deletes a WorkflowEventDef. */
   deleteWorkflowEventDef(
     request: DeleteWorkflowEventDefRequest,
     context: CallContext & CallContextExt,
@@ -12560,12 +12584,13 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListWfMetricsRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<MetricsList>>;
-  /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
+  /** Creates a Tenant in the LH Server. */
   putTenant(request: PutTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
-  /** EXPERIMENTAL: Gets a Tenant from the LH Server. */
+  /** Gets a Tenant from the LH Server. */
   getTenant(request: TenantId, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
-  /** EXPERIMENTAL: Creates an Principal. */
+  /** Creates a Principal. */
   putPrincipal(request: PutPrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
+  /** Gets a Principal. */
   getPrincipal(request: PrincipalId, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Returns the Principal of the caller. */
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
@@ -12614,18 +12639,17 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    */
   migrateWfSpec(request: DeepPartial<MigrateWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
   /**
-   * EXPERIMENTAL: Creates a new `StructDef``.
+   * Creates a StructDef.
    *
    * Note that this request is idempotent: if you
    * make a request to create a `StructDef` identical to the currently-created
    * one with the same `name`, no new `StructDef` will be created. This is the
    * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
    *
-   * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-   * enum within the `PutStructDefRequest`.
+   * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
    */
   putStructDef(request: DeepPartial<PutStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
-  /** EXPERIMENTAL: Get a StructDef. */
+  /** Gets a StructDef. */
   getStructDef(request: DeepPartial<StructDefId>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
   /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
   validateStructDefEvolution(
@@ -12890,7 +12914,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchTenantRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<TenantIdList>;
-  /**  */
+  /** Search for Principals */
   searchPrincipal(
     request: DeepPartial<SearchPrincipalRequest>,
     options?: CallOptions & CallOptionsExt,
@@ -12900,6 +12924,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchStructDefRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<StructDefIdList>;
+  /** Get an InactiveThreadRun */
+  getInactiveThreadRun(
+    request: DeepPartial<InactiveThreadRunId>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<InactiveThreadRun>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -12981,6 +13010,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<DeleteCorrelatedEventRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
+  /** Deletes a WorkflowEventDef. */
   deleteWorkflowEventDef(
     request: DeepPartial<DeleteWorkflowEventDefRequest>,
     options?: CallOptions & CallOptionsExt,
@@ -13014,12 +13044,13 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListWfMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<MetricsList>;
-  /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
+  /** Creates a Tenant in the LH Server. */
   putTenant(request: DeepPartial<PutTenantRequest>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
-  /** EXPERIMENTAL: Gets a Tenant from the LH Server. */
+  /** Gets a Tenant from the LH Server. */
   getTenant(request: DeepPartial<TenantId>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
-  /** EXPERIMENTAL: Creates an Principal. */
+  /** Creates a Principal. */
   putPrincipal(request: DeepPartial<PutPrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
+  /** Gets a Principal. */
   getPrincipal(request: DeepPartial<PrincipalId>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Returns the Principal of the caller. */
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;

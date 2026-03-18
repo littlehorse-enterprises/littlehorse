@@ -148,7 +148,7 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
       "ED_INVENTORY\020\t\022\026\n\022CORRELATION_MARKER\020\n\022\023" +
       "\n\017TASK_QUEUE_HINT\020\013\022\017\n\013NODE_OUTPUT\020\014\022\027\n\023" +
       "TIMER_ITERATOR_HINT\020\r\022\020\n\014METRICS_HINT\020\016\"" +
-      "\004\010\007\020\007*\235\003\n\020GetableClassEnum\022\014\n\010TASK_DEF\020\000" +
+      "\004\010\007\020\007*\266\003\n\020GetableClassEnum\022\014\n\010TASK_DEF\020\000" +
       "\022\026\n\022EXTERNAL_EVENT_DEF\020\001\022\013\n\007WF_SPEC\020\002\022\n\n" +
       "\006WF_RUN\020\003\022\014\n\010NODE_RUN\020\004\022\014\n\010VARIABLE\020\005\022\022\n" +
       "\016EXTERNAL_EVENT\020\006\022\024\n\020TASK_DEF_METRICS\020\007\022" +
@@ -158,9 +158,9 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
       "\020\016\022\026\n\022WORKFLOW_EVENT_DEF\020\017\022\022\n\016WORKFLOW_E" +
       "VENT\020\020\022\024\n\020SCHEDULED_WF_RUN\020\021\022\016\n\nSTRUCT_D" +
       "EF\020\022\022\024\n\020CORRELATED_EVENT\020\023\022\016\n\nCHECKPOINT" +
-      "\020\024\022\021\n\rMETRIC_WINDOW\020\025*\033\n\016TagStorageType\022" +
-      "\t\n\005LOCAL\020\000B\037\n\033io.littlehorse.common.prot" +
-      "oP\001b\006proto3"
+      "\020\024\022\027\n\023INACTIVE_THREAD_RUN\020\025\022\021\n\rMETRIC_WI" +
+      "NDOW\020\026*\033\n\016TagStorageType\022\t\n\005LOCAL\020\000B\037\n\033i" +
+      "o.littlehorse.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

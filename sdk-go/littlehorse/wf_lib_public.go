@@ -36,7 +36,7 @@ type WorkflowThread struct {
 	spec              lhproto.ThreadSpec
 	wf                *LHWorkflow
 	lastNodeName      *string
-	lastNodeCondition *WorkflowCondition
+	lastNodeCondition LHExpression
 	variableMutations []*lhproto.VariableMutation
 }
 
@@ -44,22 +44,35 @@ type WfRunVariable struct {
 	Name    string
 	VarType *lhproto.VariableType
 
-	thread       *WorkflowThread
-	jsonPath     *string
-	threadVarDef *lhproto.ThreadVarDef
+	thread        *WorkflowThread
+	jsonPath      *string
+	lhPath        []*lhproto.LHPath_Selector
+	threadVarDef  *lhproto.ThreadVarDef
+	structDefName *string
 }
 
 type NodeOutput interface {
 	getNodeName() string
 	getJsonPath() *string
+	getLhPath() []*lhproto.LHPath_Selector
 	getThread() *WorkflowThread
 
 	JsonPath(string) NodeOutput
+
+	CastTo(targetType lhproto.VariableType) LHExpression
+	CastToInt() LHExpression
+	CastToDouble() LHExpression
+	CastToStr() LHExpression
+	CastToBool() LHExpression
+	CastToBytes() LHExpression
+	CastToWfRunId() LHExpression
+	Get(field string) NodeOutput
 }
 
 type WaitForThreadsNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
 }
 
@@ -71,9 +84,22 @@ func (w *WaitForThreadsNodeOutput) JsonPath(jsonPath string) NodeOutput {
 	}
 }
 
+func (w *WaitForThreadsNodeOutput) Get(field string) NodeOutput {
+	newPath := copyLhPath(w.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &WaitForThreadsNodeOutput{
+		nodeName: w.nodeName,
+		lhPath:   newPath,
+		thread:   w.thread,
+	}
+}
+
 type TaskNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
 }
 
@@ -85,9 +111,22 @@ func (n *TaskNodeOutput) JsonPath(jsonPath string) NodeOutput {
 	}
 }
 
+func (n *TaskNodeOutput) Get(field string) NodeOutput {
+	newPath := copyLhPath(n.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &TaskNodeOutput{
+		nodeName: n.nodeName,
+		lhPath:   newPath,
+		thread:   n.thread,
+	}
+}
+
 type ExternalEventNodeOutput struct {
 	nodeName              string
 	jsonPath              *string
+	lhPath                []*lhproto.LHPath_Selector
 	thread                *WorkflowThread
 	externalEventDefName  string
 	payloadType           *lhproto.VariableType
@@ -103,6 +142,7 @@ type InterruptHandler struct {
 type WaitForConditionNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
 }
 
@@ -110,6 +150,21 @@ func (n *ExternalEventNodeOutput) JsonPath(jsonPath string) NodeOutput {
 	return &ExternalEventNodeOutput{
 		nodeName:              n.nodeName,
 		jsonPath:              &jsonPath,
+		thread:                n.thread,
+		externalEventDefName:  n.externalEventDefName,
+		payloadType:           n.payloadType,
+		correlatedEventConfig: n.correlatedEventConfig,
+	}
+}
+
+func (n *ExternalEventNodeOutput) Get(field string) NodeOutput {
+	newPath := copyLhPath(n.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &ExternalEventNodeOutput{
+		nodeName:              n.nodeName,
+		lhPath:                newPath,
 		thread:                n.thread,
 		externalEventDefName:  n.externalEventDefName,
 		payloadType:           n.payloadType,
@@ -174,6 +229,7 @@ func (n *TaskNodeOutput) Timeout(timeout int64) *TaskNodeOutput {
 type UserTaskNodeOutput struct {
 	nodeName string
 	jsonPath *string
+	lhPath   []*lhproto.LHPath_Selector
 	thread   *WorkflowThread
 	node     *lhproto.Node
 }
@@ -186,8 +242,16 @@ func (n *UserTaskNodeOutput) JsonPath(jsonPath string) *UserTaskNodeOutput {
 	}
 }
 
-type WorkflowCondition struct {
-	spec *lhproto.EdgeCondition
+func (n *UserTaskNodeOutput) Get(field string) *UserTaskNodeOutput {
+	newPath := copyLhPath(n.lhPath)
+	newPath = append(newPath, &lhproto.LHPath_Selector{
+		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
+	})
+	return &UserTaskNodeOutput{
+		nodeName: n.nodeName,
+		lhPath:   newPath,
+		thread:   n.thread,
+	}
 }
 
 type SpawnedThread struct {
@@ -237,6 +301,60 @@ type LHExpression interface {
 	RemoveIndex_ByInt(index int) LHExpression
 	RemoveIndex_ByExpression(index LHExpression) LHExpression
 	RemoveKey(key interface{}) LHExpression
+	CastTo(targetType lhproto.VariableType) LHExpression
+	CastToInt() LHExpression
+	CastToDouble() LHExpression
+	CastToStr() LHExpression
+	CastToBool() LHExpression
+	CastToBytes() LHExpression
+	CastToWfRunId() LHExpression
+
+	IsLessThan(rhs interface{}) LHExpression
+	IsGreaterThan(rhs interface{}) LHExpression
+	IsLessThanEq(rhs interface{}) LHExpression
+	IsGreaterThanEq(rhs interface{}) LHExpression
+	IsEqualTo(rhs interface{}) LHExpression
+	IsNotEqualTo(rhs interface{}) LHExpression
+	DoesContain(rhs interface{}) LHExpression
+	DoesNotContain(rhs interface{}) LHExpression
+	IsIn(rhs interface{}) LHExpression
+	IsNotIn(rhs interface{}) LHExpression
+
+	And(other interface{}) LHExpression
+	Or(other interface{}) LHExpression
+}
+
+// SpawnedChildWf represents a spawned child workflow from a RunWf call.
+type SpawnedChildWf struct {
+	sourceNodeName string
+	thread         *WorkflowThread
+}
+
+func (s *SpawnedChildWf) BuildNode() *lhproto.WaitForChildWfNode {
+	return &lhproto.WaitForChildWfNode{
+		ChildWfRunId: &lhproto.VariableAssignment{
+			Source: &lhproto.VariableAssignment_NodeOutput{
+				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+					NodeName: s.sourceNodeName,
+				},
+			},
+		},
+		ChildWfRunSourceNode: s.sourceNodeName,
+	}
+}
+
+// RunWf starts a child workflow by name (or by variable/expression) and returns
+// a handle to wait on it later. wfSpecName may be a string or any expression that
+// can be converted to a STRING at runtime (e.g., a WfRunVariable or other
+// VariableAssignment-compatible value).
+func (t *WorkflowThread) RunWf(wfSpecName interface{}, inputs map[string]interface{}) *SpawnedChildWf {
+	return t.runWfImpl(wfSpecName, inputs)
+}
+
+// WaitForChildWf waits for a previously spawned child workflow to complete and
+// returns a NodeOutput referencing the wait node.
+func (t *WorkflowThread) WaitForChildWf(child *SpawnedChildWf) NodeOutput {
+	return t.waitForChildWfImpl(child)
 }
 
 func (n *WaitForThreadsNodeOutput) HandleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
@@ -267,6 +385,20 @@ func (w *WfRunVariable) JsonPath(path string) *WfRunVariable {
 	return w.jsonPathImpl(path)
 }
 
+// Get returns a new WfRunVariable that accesses a specific field of a Struct, JSON_OBJ,
+// or JSON_ARR variable. Can be chained: variable.Get("address").Get("city").
+// Cannot be mixed with JsonPath.
+func (w *WfRunVariable) Get(field string) *WfRunVariable {
+	return w.getImpl(field)
+}
+
+// GetIndex returns a new WfRunVariable that accesses a specific index of a JSON_ARR
+// variable. Can be chained with Get: variable.GetIndex(0).Get("name").
+// Cannot be mixed with JsonPath.
+func (w *WfRunVariable) GetIndex(index int) *WfRunVariable {
+	return w.getIndexImpl(index)
+}
+
 func (w *WfRunVariable) WithAccessLevel(accessLevel lhproto.WfRunVariableAccessLevel) WfRunVariable {
 	return w.withAccessLevel(accessLevel)
 }
@@ -295,44 +427,52 @@ func (w *WfRunVariable) Required() *WfRunVariable {
 	return w.requiredImpl()
 }
 
-func (w *WfRunVariable) IsEqualTo(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_EQUALS, rhs)
+func (w *WfRunVariable) IsEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_EQUALS}
 }
 
-func (w *WfRunVariable) IsNotEqualTo(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_NOT_EQUALS, rhs)
+func (w *WfRunVariable) IsNotEqualTo(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_NOT_EQUALS}
 }
 
-func (w *WfRunVariable) IsGreaterThan(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_GREATER_THAN, rhs)
+func (w *WfRunVariable) IsGreaterThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN}
 }
 
-func (w *WfRunVariable) IsGreaterThanEq(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_GREATER_THAN_EQ, rhs)
+func (w *WfRunVariable) IsGreaterThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_GREATER_THAN_EQ}
 }
 
-func (w *WfRunVariable) IsLessThan(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_LESS_THAN, rhs)
+func (w *WfRunVariable) IsLessThan(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN}
 }
 
-func (w *WfRunVariable) IsLessThanEq(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_LESS_THAN_EQ, rhs)
+func (w *WfRunVariable) IsLessThanEq(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_LESS_THAN_EQ}
 }
 
-func (w *WfRunVariable) DoesContain(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(rhs, lhproto.Comparator_IN, w)
+func (w *WfRunVariable) DoesContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: w, comparator: lhproto.Comparator_IN}
 }
 
-func (w *WfRunVariable) DoesNotContain(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(rhs, lhproto.Comparator_NOT_IN, w)
+func (w *WfRunVariable) DoesNotContain(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: rhs, rhs: w, comparator: lhproto.Comparator_NOT_IN}
 }
 
-func (w *WfRunVariable) IsIn(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_IN, rhs)
+func (w *WfRunVariable) IsIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_IN}
 }
 
-func (w *WfRunVariable) IsNotIn(rhs interface{}) *WorkflowCondition {
-	return w.thread.condition(w, lhproto.Comparator_NOT_IN, rhs)
+func (w *WfRunVariable) IsNotIn(rhs interface{}) LHExpression {
+	return &comparatorExpression{lhs: w, rhs: rhs, comparator: lhproto.Comparator_NOT_IN}
+}
+
+func (w *WfRunVariable) And(other interface{}) LHExpression {
+	return &lhExpression{lhs: w, rhs: other, operation: lhproto.VariableMutationType_AND}
+}
+
+func (w *WfRunVariable) Or(other interface{}) LHExpression {
+	return &lhExpression{lhs: w, rhs: other, operation: lhproto.VariableMutationType_OR}
 }
 
 func (w *WfRunVariable) Assign(rhs interface{}) {
@@ -418,6 +558,34 @@ func (w *WfRunVariable) RemoveKey(key interface{}) LHExpression {
 	}
 }
 
+func (w *WfRunVariable) CastTo(targetType lhproto.VariableType) LHExpression {
+	return &castExpression{source: w, targetType: targetType}
+}
+
+func (w *WfRunVariable) CastToInt() LHExpression {
+	return w.CastTo(lhproto.VariableType_INT)
+}
+
+func (w *WfRunVariable) CastToDouble() LHExpression {
+	return w.CastTo(lhproto.VariableType_DOUBLE)
+}
+
+func (w *WfRunVariable) CastToStr() LHExpression {
+	return w.CastTo(lhproto.VariableType_STR)
+}
+
+func (w *WfRunVariable) CastToBool() LHExpression {
+	return w.CastTo(lhproto.VariableType_BOOL)
+}
+
+func (w *WfRunVariable) CastToBytes() LHExpression {
+	return w.CastTo(lhproto.VariableType_BYTES)
+}
+
+func (w *WfRunVariable) CastToWfRunId() LHExpression {
+	return w.CastTo(lhproto.VariableType_WF_RUN_ID)
+}
+
 func (t *WorkflowThread) DeclareBool(name string) *WfRunVariable {
 	return t.addVariable(name, lhproto.VariableType_BOOL)
 }
@@ -438,12 +606,29 @@ func (t *WorkflowThread) DeclareBytes(name string) *WfRunVariable {
 	return t.addVariable(name, lhproto.VariableType_BYTES)
 }
 
+func (t *WorkflowThread) DeclareTimestamp(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_TIMESTAMP)
+}
+
+func (t *WorkflowThread) DeclareWfRunId(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_WF_RUN_ID)
+}
+
 func (t *WorkflowThread) DeclareJsonArr(name string) *WfRunVariable {
 	return t.addVariable(name, lhproto.VariableType_JSON_ARR)
 }
 
 func (t *WorkflowThread) DeclareJsonObj(name string) *WfRunVariable {
 	return t.addVariable(name, lhproto.VariableType_JSON_OBJ)
+}
+
+// DeclareStruct declares a Struct variable in the ThreadSpec. The structDefName is the
+// name of the StructDef that has been (or will be) registered with the server.
+//
+// Unlike ExternalEventDefs, StructDefs are NOT automatically registered by RegisterWfSpec.
+// You must register them manually using RegisterStructDef before calling RegisterWfSpec.
+func (t *WorkflowThread) DeclareStruct(name string, structDefName string) *WfRunVariable {
+	return t.addStructVariable(name, structDefName)
 }
 
 func (t *WorkflowThread) Complete(result interface{}) {
@@ -558,9 +743,14 @@ func (t *WorkflowThread) Mutate(
 	t.mutate(lhs, mutation, rhs)
 }
 
+// Deprecated: Condition is deprecated. Use comparator methods directly on
+// WfRunVariable (e.g., myVar.IsLessThan(10)) which return LHExpression.
+// This method will be removed in 2.0. Kept here for compatibility but now
+// returns an LHExpression (matching the Java SDK) instead of the old
+// WorkflowCondition wrapper.
 func (t *WorkflowThread) Condition(
 	lhs interface{}, op lhproto.Comparator, rhs interface{},
-) *WorkflowCondition {
+) LHExpression {
 	return t.condition(lhs, op, rhs)
 }
 
@@ -570,11 +760,11 @@ func (t *WorkflowThread) ThrowEvent(workflowEventDefName string, content interfa
 
 type IfElseBody func(t *WorkflowThread)
 
-func (t *WorkflowThread) DoIf(cond *WorkflowCondition, doIf IfElseBody) *WorkflowIfStatement {
+func (t *WorkflowThread) DoIf(cond LHExpression, doIf IfElseBody) *WorkflowIfStatement {
 	return t.doIf(cond, doIf)
 }
 
-func (s *WorkflowIfStatement) DoElseIf(cond *WorkflowCondition, doIf IfElseBody) *WorkflowIfStatement {
+func (s *WorkflowIfStatement) DoElseIf(cond LHExpression, doIf IfElseBody) *WorkflowIfStatement {
 	result := s.thread.doElseIf(*s, cond, doIf)
 	return &result
 }
@@ -588,11 +778,11 @@ func (s *WorkflowIfStatement) DoElse(doElse IfElseBody) {
 }
 
 // DoIfElse will be replaced by DoIf and DoElse
-func (t *WorkflowThread) DoIfElse(cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody) {
+func (t *WorkflowThread) DoIfElse(cond LHExpression, doIf IfElseBody, doElse IfElseBody) {
 	t.doIfElse(cond, doIf, doElse)
 }
 
-func (t *WorkflowThread) DoWhile(cond *WorkflowCondition, whileBody ThreadFunc) {
+func (t *WorkflowThread) DoWhile(cond LHExpression, whileBody ThreadFunc) {
 	t.doWhile(cond, whileBody)
 }
 
@@ -680,7 +870,7 @@ func (t *WorkflowThread) WaitForEvent(eventName string) *ExternalEventNodeOutput
 	return t.waitForEvent(eventName)
 }
 
-func (t *WorkflowThread) WaitForCondition(condition *WorkflowCondition) *WaitForConditionNodeOutput {
+func (t *WorkflowThread) WaitForCondition(condition LHExpression) *WaitForConditionNodeOutput {
 	return t.waitForCondition(condition)
 }
 

@@ -28,10 +28,7 @@
 
 import { VariableType } from '../proto/common_enums'
 import { VariableDef, TypeDefinition, StructFieldDef } from '../proto/common_wfspec'
-import {
-  PutStructDefRequest,
-  StructDefCompatibilityType,
-} from '../proto/service'
+import { PutStructDefRequest, StructDefCompatibilityType } from '../proto/service'
 import { VariableValue, StructField } from '../proto/variable'
 import { toVariableValue } from './variableMapping'
 
@@ -69,9 +66,7 @@ export type FieldDef = PrimitiveField | StructRefField
  *
  * Use `Infer<typeof MySchema>` to derive the TypeScript type.
  */
-export interface LHStructSchema<
-  F extends Record<string, FieldDef> = Record<string, FieldDef>,
-> {
+export interface LHStructSchema<F extends Record<string, FieldDef> = Record<string, FieldDef>> {
   readonly name: string
   readonly description?: string
   readonly fields: F
@@ -81,9 +76,7 @@ export interface LHStructSchema<
 
 /** Infers the TypeScript type of a single field. */
 type InferField<F extends FieldDef> =
-  F extends PrimitiveField<infer T> ? T :
-  F extends StructRefField<infer S> ? Infer<S> :
-  never
+  F extends PrimitiveField<infer T> ? T : F extends StructRefField<infer S> ? Infer<S> : never
 
 /**
  * Infers the TypeScript type from a struct schema.
@@ -179,7 +172,7 @@ export interface LHStructOptions {
 export function lhStruct<F extends Record<string, FieldDef>>(
   name: string,
   fields: F,
-  options?: LHStructOptions,
+  options?: LHStructOptions
 ): LHStructSchema<F> {
   return { name, fields, description: options?.description }
 }
@@ -203,7 +196,7 @@ export function getStructDefName(schema: LHStructSchema): string {
  */
 export function buildPutStructDefRequest(
   schema: LHStructSchema,
-  allowedUpdates: StructDefCompatibilityType = StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES,
+  allowedUpdates: StructDefCompatibilityType = StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES
 ): PutStructDefRequest {
   const structDefFields: { [key: string]: StructFieldDef } = {}
 
@@ -226,10 +219,7 @@ export function buildPutStructDefRequest(
  * const inputVars = [buildStructVariableDef('car', CarSchema)]
  * ```
  */
-export function buildStructVariableDef(
-  paramName: string,
-  schema: LHStructSchema,
-): VariableDef {
+export function buildStructVariableDef(paramName: string, schema: LHStructSchema): VariableDef {
   return {
     name: paramName,
     typeDef: {
@@ -283,7 +273,7 @@ export function getStructDependencies(schema: LHStructSchema): LHStructSchema[] 
 export function toStructVariableValue(
   value: Record<string, unknown>,
   schema: LHStructSchema,
-  structDefVersion: number = 0,
+  structDefVersion: number = 0
 ): VariableValue {
   const fields: { [key: string]: StructField } = {}
 
@@ -292,9 +282,13 @@ export function toStructVariableValue(
     if (fieldDef?._tag === 'struct' && val !== null && val !== undefined && typeof val === 'object') {
       fields[key] = {
         value: toStructVariableValue(val as Record<string, unknown>, fieldDef.schema),
+        masked: fieldDef.masked,
       }
     } else {
-      fields[key] = { value: toVariableValue(val) }
+      fields[key] = {
+        value: toVariableValue(val),
+        masked: fieldDef?.masked ?? false,
+      }
     }
   }
 

@@ -23,12 +23,12 @@ public class WorkflowIfStatement
     /// conditionally executes some workflow code; equivalent to
     /// an if() statement in programming.
     /// </summary>
-    /// <param name="condition">It is the WorkflowCondition to be satisfied.</param>
-    /// <param name="body">It is the block of ThreadSpec code to be executed if the provided WorkflowCondition
+    /// <param name="condition">It is the condition to be satisfied.</param>
+    /// <param name="body">It is the block of ThreadSpec code to be executed if the provided condition
     /// is satisfied.
     /// </param>
     /// <returns>WorkflowIfStatement</returns>
-    public WorkflowIfStatement DoElseIf(WorkflowCondition condition, Action<WorkflowThread> body)
+    public WorkflowIfStatement DoElseIf(LHExpression condition, Action<WorkflowThread> body)
     {
         _parent.OrganizeEdgesForElseIfExecution(this, body, condition);
         
@@ -41,7 +41,7 @@ public class WorkflowIfStatement
     /// an else block in programming.
     /// </summary>
     /// <param name="body">The block of ThreadSpec code to be executed if all previous
-    ///  WorkflowConditions were not satisfied.
+    ///  conditions were not satisfied.
     /// </param>
     public void DoElse(Action<WorkflowThread> body)
     {

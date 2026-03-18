@@ -1,5 +1,3 @@
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
   TypeDefinition,
   VariableAssignment,
@@ -8,8 +6,7 @@ import {
   VariableType,
   VariableValue,
 } from 'littlehorse-client/proto'
-import { HTMLInputTypeAttribute } from 'react'
-import { SelectBool } from '../(authenticated)/[tenantId]/(diagram)/components/Forms/components/SelectBool'
+import { getComparatorSymbol } from './comparatorUtils'
 import { lhPathToString } from './lhPath'
 import { structFromJSONString, structToJSONString } from './struct'
 import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
@@ -220,7 +217,7 @@ const getValueFromFormatString = ({
   return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
 }
 
-const getExpressionSymbol = (expression: VariableMutationType): String => {
+const getExpressionSymbol = (expression: VariableMutationType): string => {
   switch (expression) {
     case VariableMutationType.ASSIGN:
       return '='
@@ -250,25 +247,26 @@ const formatVariableExpression = (
   depth = 0
 ): string => {
   const { lhs, rhs, operation } = value
-  const result =
-    operation === VariableMutationType.REMOVE_IF_PRESENT ||
-    operation === VariableMutationType.REMOVE_INDEX ||
-    operation === VariableMutationType.REMOVE_KEY ||
-    operation === VariableMutationType.EXTEND
-      ? `${getVariable(lhs!, depth + 1)}.${getExpressionSymbol(operation)}(${getVariable(rhs!, depth + 1)})` // Dot notation for these operations
-      : `${getVariable(lhs!, depth + 1)} ${getExpressionSymbol(operation)} ${getVariable(rhs!, depth + 1)}` // Arithmetic operations
+  if (!operation) return ''
+
+  let symbol: string
+  let useDotNotation = false
+
+  if (operation.$case === 'mutationType') {
+    const mt = operation.value
+    symbol = getExpressionSymbol(mt)
+    useDotNotation =
+      mt === VariableMutationType.REMOVE_IF_PRESENT ||
+      mt === VariableMutationType.REMOVE_INDEX ||
+      mt === VariableMutationType.REMOVE_KEY ||
+      mt === VariableMutationType.EXTEND
+  } else {
+    symbol = getComparatorSymbol(operation.value)
+  }
+
+  const result = useDotNotation
+    ? `${getVariable(lhs!, depth + 1)}.${symbol}(${getVariable(rhs!, depth + 1)})`
+    : `${getVariable(lhs!, depth + 1)} ${symbol} ${getVariable(rhs!, depth + 1)}`
   return depth > 0 ? `(${result})` : result
 }
 
-export const VariableTypeToFieldComponent = {
-  [VariableType.JSON_OBJ]: { type: 'textarea', component: Textarea },
-  [VariableType.JSON_ARR]: { type: 'textarea', component: Textarea },
-  [VariableType.DOUBLE]: { type: 'number', component: Input },
-  [VariableType.BOOL]: { type: 'checkbox', component: SelectBool },
-  [VariableType.STR]: { type: 'text', component: Input },
-  [VariableType.INT]: { type: 'number', component: Input },
-  [VariableType.BYTES]: { type: 'text', component: Input },
-  [VariableType.WF_RUN_ID]: { type: 'text', component: Input },
-  [VariableType.TIMESTAMP]: { type: 'number', component: Input },
-  [VariableType.UNRECOGNIZED]: { type: 'text', component: Input },
-} as const satisfies Record<keyof typeof VariableType, { type: HTMLInputTypeAttribute; component: React.ElementType }>

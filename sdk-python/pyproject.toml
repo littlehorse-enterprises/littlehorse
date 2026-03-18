@@ -18,12 +18,12 @@ classifiers = [
 ]
 requires-python = ">=3.10,<3.14"
 dependencies = [
-    "protobuf==6.32.1",
+    "protobuf==6.33.5",
     # compile-proto.sh is using grpcio 1.69.0 (local-dev/Dockerfile)
     "grpcio==1.69.0",
     # other utilities
     "jproperties>=2.1,<2.2",
-    "authlib>=1.6,<1.7",
+    "authlib==1.6.6",
     "requests>=2.32,<2.33"
 ]
 

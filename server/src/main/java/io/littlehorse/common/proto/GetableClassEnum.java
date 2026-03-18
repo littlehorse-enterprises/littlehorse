@@ -96,9 +96,13 @@ public enum GetableClassEnum
    */
   CHECKPOINT(20),
   /**
-   * <code>METRIC_WINDOW = 21;</code>
+   * <code>INACTIVE_THREAD_RUN = 21;</code>
    */
-  METRIC_WINDOW(21),
+  INACTIVE_THREAD_RUN(21),
+  /**
+   * <code>METRIC_WINDOW = 22;</code>
+   */
+  METRIC_WINDOW(22),
   UNRECOGNIZED(-1),
   ;
 
@@ -196,9 +200,13 @@ public enum GetableClassEnum
    */
   public static final int CHECKPOINT_VALUE = 20;
   /**
-   * <code>METRIC_WINDOW = 21;</code>
+   * <code>INACTIVE_THREAD_RUN = 21;</code>
    */
-  public static final int METRIC_WINDOW_VALUE = 21;
+  public static final int INACTIVE_THREAD_RUN_VALUE = 21;
+  /**
+   * <code>METRIC_WINDOW = 22;</code>
+   */
+  public static final int METRIC_WINDOW_VALUE = 22;
 
 
   public final int getNumber() {
@@ -246,7 +254,8 @@ public enum GetableClassEnum
       case 18: return STRUCT_DEF;
       case 19: return CORRELATED_EVENT;
       case 20: return CHECKPOINT;
-      case 21: return METRIC_WINDOW;
+      case 21: return INACTIVE_THREAD_RUN;
+      case 22: return METRIC_WINDOW;
       default: return null;
     }
   }

@@ -220,5 +220,15 @@ message TenantId {
 }
 // ID for a ScheduledWfRun
 message ScheduledWfRunId {
+  // The ID of the ScheduledWfRun.
   string id = 1;
+}
+
+// ID for an InactiveThreadRun.
+message InactiveThreadRunId {
+  // The WfRunId of the InactiveThreadRun.
+   WfRunId wf_run_id = 1;
+
+  // The ThreadRun number of the InactiveThreadRun.
+  int32 thread_run_number = 2;
 }

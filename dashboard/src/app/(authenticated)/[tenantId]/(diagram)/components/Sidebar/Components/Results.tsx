@@ -1,5 +1,6 @@
 import { VARIABLE_TYPES } from '@/app/constants'
 import { getVariableValue } from '@/app/utils'
+import { IdentifierBadge, TypeBadge } from '@/components/ui/badge'
 import { VariableValue } from 'littlehorse-client/proto'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
@@ -15,11 +16,9 @@ export const Results = ({ variables, classTitle }: { variables: [string, Variabl
               const variableType = variable.value?.$case
               return (
                 <div key={`result-${index}-${key}`} className="flex w-full items-center gap-1">
-                  <p className="rounded bg-gray-100 px-1 py-1 font-mono text-xs text-fuchsia-500">{key}</p>
+                  <IdentifierBadge name={key} />
 
-                  {variableType && (
-                    <span className="rounded bg-yellow-100 p-1 text-xs">{VARIABLE_TYPES[variableType]}</span>
-                  )}
+                  {variableType && <TypeBadge>{VARIABLE_TYPES[variableType]}</TypeBadge>}
                   <p> = </p>
                   <div className={'px-2  text-center text-xs'}>
                     <p className="text-sx">{getVariableValue(variable)}</p>

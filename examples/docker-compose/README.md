@@ -25,13 +25,10 @@ LHC_API_PORT=2023
 You can confirm that the Server is running via:
 
 ```
-lhctl search wfSpec
+lhctl whoami
 ```
 
-Result:
+## Directory Index
 
-```
-{
-  "results": []
-}
-```
+- [`docker-compose.yml`](./docker-compose.yml): Single-node local sandbox.
+- `three-servers/`: Multi-server compose setup (no README yet).

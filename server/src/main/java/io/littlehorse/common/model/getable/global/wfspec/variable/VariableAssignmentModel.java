@@ -5,8 +5,10 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidEdgeException;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -18,8 +20,10 @@ import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.PathCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -287,5 +291,35 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
 
     public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
         return canBeType(new TypeDefinitionModel(type), tspec);
+    }
+
+    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
+            throws InvalidEdgeException, InvalidExpressionException {
+        if (expression != null) {
+            expression.validate(source, manager, threadSpec);
+        } else {
+            Optional<TypeDefinitionModel> sourceType = getSourceType(manager, threadSpec.wfSpec, threadSpec.getName());
+            if (sourceType.isEmpty()
+                    || !sourceType.get().isCompatibleWith(new TypeDefinitionModel(VariableType.BOOL))) {
+                throw new InvalidExpressionException(source.getName() + " Does not resolve to a BOOL value");
+            }
+        }
+    }
+
+    public boolean isSatisfied(ThreadRunModel threadRun) throws LHVarSubError {
+        if (expression != null) {
+            return expression.isSatisfied(threadRun);
+        } else {
+            return threadRun.assignVariable(this).getBoolVal();
+        }
+    }
+
+    public Collection<String> getRequiredVariableNames() {
+        final Set<String> out = new HashSet<>();
+        if (expression != null) {
+            out.addAll(expression.getLhs().getRequiredVariableNames());
+            out.addAll(expression.getRhs().getRequiredVariableNames());
+        }
+        return out;
     }
 }

@@ -33,7 +33,6 @@ from littlehorse.model import (
     AllowedUpdateType,
     VariableValue,
     Edge,
-    EdgeCondition,
     EntrypointNode,
     ExitNode,
     ExternalEventNode,
@@ -46,6 +45,7 @@ from littlehorse.model import (
     SleepNode,
     StartThreadNode,
     StartMultipleThreadsNode,
+    StructDefId,
     ThreadRetentionPolicy,
     ThreadSpec,
     ThreadVarDef,
@@ -61,8 +61,10 @@ from littlehorse.model import (
     RunChildWfNode,
     WaitForChildWfNode,
 )
+from littlehorse.model.common_wfspec_pb2 import LHPath
 from littlehorse.model.wf_spec_pb2 import PRIVATE_VAR, WaitForConditionNode
 from littlehorse.utils import negate_comparator, to_variable_value
+from littlehorse.lh_struct import get_struct_def_name, is_lh_struct
 from littlehorse.worker import _create_task_def
 
 ENTRYPOINT = "entrypoint"
@@ -134,18 +136,38 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
         if value.json_path is not None:
             json_path = value.json_path
 
+        lh_path_proto: Optional[LHPath] = None
+        if value._lh_path:
+            lh_path_proto = LHPath(path=value._lh_path)
+
         return VariableAssignment(
             json_path=json_path,
+            lh_path=lh_path_proto,
             variable_name=variable_name,
         )
+
+    if isinstance(value, CastExpression):
+        inner = to_variable_assignment(value.source)
+        inner.target_type.CopyFrom(TypeDefinition(primitive_type=value.target_type))
+        return inner
 
     if isinstance(value, LHExpression):
         expression: LHExpression = value
         return VariableAssignment(
             expression=VariableAssignment.Expression(
                 lhs=to_variable_assignment(expression.lhs()),
-                operation=expression.operation(),
+                mutation_type=expression.operation(),
                 rhs=to_variable_assignment(expression.rhs()),
+            )
+        )
+
+    if isinstance(value, ComparatorExpression):
+        expr = value
+        return VariableAssignment(
+            expression=VariableAssignment.Expression(
+                lhs=to_variable_assignment(expr.lhs()),
+                comparator=expr.comparator(),
+                rhs=to_variable_assignment(expr.rhs()),
             )
         )
 
@@ -195,59 +217,130 @@ class LHExpression:
     def operation(self) -> Any:
         return self._operation
 
+    def cast_to(self, target_type: VariableType) -> "CastExpression":
+        return CastExpression(self, target_type)
 
-class WorkflowCondition:
-    def __init__(self, left_hand: Any, comparator: Comparator, right_hand: Any) -> None:
-        """Returns a WorkflowCondition that can be used in
-        `ThreadBuilder.doIf()` or `ThreadBuilder.doElse()`.
+    def cast_to_int(self) -> "CastExpression":
+        return self.cast_to(VariableType.INT)
 
-        Args:
-            left_hand (Any): is either a literal value
-            (which the Library casts to a Variable Value) or a
-            `WfRunVariable` representing the LHS of the expression.
-            comparator (Comparator): is a Comparator defining the
-            comparator, for example, `ComparatorTypePb.EQUALS`.
-            right_hand (Any): is either a literal value
-            (which the Library casts to a Variable Value) or a
-            `WfRunVariable` representing the RHS of the expression.
-        """
-        self.left_hand = left_hand
-        self.comparator = comparator
-        self.right_hand = right_hand
+    def cast_to_double(self) -> "CastExpression":
+        return self.cast_to(VariableType.DOUBLE)
 
-    def negate(self) -> "WorkflowCondition":
-        """Negates a comparator:
+    def cast_to_str(self) -> "CastExpression":
+        return self.cast_to(VariableType.STR)
 
-        Comparator.LESS_THAN => Comparator.GREATER_THAN_EQ
-        Comparator.GREATER_THAN_EQ => Comparator.LESS_THAN
-        Comparator.GREATER_THAN => Comparator.LESS_THAN_EQ
-        Comparator.LESS_THAN_EQ => Comparator.GREATER_THAN
-        Comparator.IN => Comparator.NOT_IN
-        Comparator.NOT_IN => Comparator.IN
-        Comparator.EQUALS => Comparator.NOT_EQUALS
-        Comparator.NOT_EQUALS => Comparator.EQUALS
+    def cast_to_bool(self) -> "CastExpression":
+        return self.cast_to(VariableType.BOOL)
 
-        Returns:
-            WorkflowCondition: A condition.
-        """
-        return WorkflowCondition(
-            self.left_hand, negate_comparator(self.comparator), self.right_hand
+    def cast_to_bytes(self) -> "CastExpression":
+        return self.cast_to(VariableType.BYTES)
+
+    def cast_to_wf_run_id(self) -> "CastExpression":
+        return self.cast_to(VariableType.WF_RUN_ID)
+
+    def do_and(self, other: Any) -> "LHExpression":
+        """Logical AND between two boolean expressions."""
+        return LHExpression(self, VariableMutationType.AND, other)
+
+    def do_or(self, other: Any) -> "LHExpression":
+        """Logical OR between two boolean expressions."""
+        return LHExpression(self, VariableMutationType.OR, other)
+
+
+class CastExpression:
+    def __init__(self, source: Any, target_type: VariableType) -> None:
+        self.source = source
+        self.target_type = target_type
+
+    def add(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.ADD, other)
+
+    def subtract(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.SUBTRACT, other)
+
+    def multiply(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.MULTIPLY, other)
+
+    def divide(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.DIVIDE, other)
+
+    def extend(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.EXTEND, other)
+
+    def remove_if_present(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.REMOVE_IF_PRESENT, other)
+
+    def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
+        if index is None:
+            raise ValueError("Expected 'index' to be set, but it was None.")
+        return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
+
+    def remove_key(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.REMOVE_KEY, other)
+
+    def cast_to(self, target_type: VariableType) -> "CastExpression":
+        return CastExpression(self, target_type)
+
+    def cast_to_int(self) -> "CastExpression":
+        return self.cast_to(VariableType.INT)
+
+    def cast_to_double(self) -> "CastExpression":
+        return self.cast_to(VariableType.DOUBLE)
+
+    def cast_to_str(self) -> "CastExpression":
+        return self.cast_to(VariableType.STR)
+
+    def cast_to_bool(self) -> "CastExpression":
+        return self.cast_to(VariableType.BOOL)
+
+    def cast_to_bytes(self) -> "CastExpression":
+        return self.cast_to(VariableType.BYTES)
+
+    def cast_to_wf_run_id(self) -> "CastExpression":
+        return self.cast_to(VariableType.WF_RUN_ID)
+
+    def do_and(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.AND, other)
+
+    def do_or(self, other: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.OR, other)
+
+
+class ComparatorExpression:
+    """Represents a comparator expression (lhs <op> rhs) used for edge
+    conditions.
+    """
+
+    def __init__(self, lhs: Any, comparator: Comparator, rhs: Any) -> None:
+        self._lhs = lhs
+        self._comparator = comparator
+        self._rhs = rhs
+
+    def lhs(self) -> Any:
+        return self._lhs
+
+    def rhs(self) -> Any:
+        return self._rhs
+
+    def comparator(self) -> Comparator:
+        return self._comparator
+
+    def negate(self) -> "ComparatorExpression":
+        return ComparatorExpression(
+            self._lhs, negate_comparator(self._comparator), self._rhs
         )
+
+    def do_and(self, other: Any) -> LHExpression:
+        """Combine this comparator with another boolean expression using AND."""
+        return LHExpression(self, VariableMutationType.AND, other)
+
+    def do_or(self, other: Any) -> LHExpression:
+        """Combine this comparator with another boolean expression using OR."""
+        return LHExpression(self, VariableMutationType.OR, other)
 
     def __str__(self) -> str:
-        return to_json(self.compile())
-
-    def compile(self) -> EdgeCondition:
-        """Compile this into Protobuf Objects.
-
-        Returns:
-            EdgeCondition: Spec.
-        """
-        return EdgeCondition(
-            comparator=self.comparator,
-            left=to_variable_assignment(self.left_hand),
-            right=to_variable_assignment(self.right_hand),
-        )
+        # Represent as the VariableAssignment JSON for debugging
+        return to_json(to_variable_assignment(self))
 
 
 class NodeCase(Enum):
@@ -403,18 +496,18 @@ class WorkflowIfStatement:
         return self._first_nop_node_name == "" and self._last_nop_node_name == ""
 
     def do_else_if(
-        self, condition: WorkflowCondition, body: "ThreadInitializer"
+        self, condition: ComparatorExpression, body: "ThreadInitializer"
     ) -> WorkflowIfStatement:
         """After checking the previous condition(s) of the If Statement,
         conditionally executes some workflow code; equivalent to
         an elseif() statement in programming.
 
         Args:
-            condition (WorkflowCondition): is the WorkflowCondition
+            condition (ComparatorExpression): is the comparator condition
             to be satisfied.
             body (ThreadInitializer): is the block of
             ThreadSpec code to be executed if the provided
-            WorkflowCondition is satisfied.
+            condition is satisfied.
         """
         if self._is_not_initialized():
             raise AttributeError(
@@ -434,7 +527,7 @@ class WorkflowIfStatement:
         Args:
             body (ThreadInitializer): the block of
             ThreadSpec code to be executed if all previous
-            WorkflowConditions were not satisfied.
+            conditions were not satisfied.
         """
         if self._is_not_initialized():
             raise AttributeError(
@@ -455,41 +548,54 @@ class WfRunVariable:
     def __init__(
         self,
         variable_name: str,
-        variable_type: VariableType,
         parent: WorkflowThread,
+        *,
+        variable_type: Optional[VariableType] = None,
         default_value: Any = None,
         access_level: Optional[
             Union[WfRunVariableAccessLevel, str]
         ] = WfRunVariableAccessLevel.PRIVATE_VAR,
+        struct_def_name: Optional[str] = None,
     ) -> None:
         """Defines a Variable in the ThreadSpec and returns a handle to it.
 
+        Exactly one of ``variable_type`` or ``struct_def_name`` must be provided.
+
         Args:
             variable_name (str): The name of the variable.
-            variable_type (VariableType): The variable type.
             parent (WorkflowThread): The parent WorkflowThread of this WfRunVariable.
+            variable_type (VariableType, optional): The primitive variable type.
             default_value (Any, optional): A default value. Defaults to None.
             access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable. Defaults to PRIVATE_VAR.
+            struct_def_name (str, optional): The StructDef name, when this variable is a Struct.
 
         Returns:
             WfRunVariable: A handle to the created WfRunVariable.
 
         Raises:
             TypeError: If variable_type and type(default_value) are not compatible.
+            ValueError: If both or neither of variable_type and struct_def_name are provided.
         """
         if parent is None:
             raise ValueError("Parent workflow thread cannot be None.")
+
+        if variable_type is not None and struct_def_name is not None:
+            raise ValueError("Cannot specify both variable_type and struct_def_name")
+        if variable_type is None and struct_def_name is None:
+            raise ValueError("Must specify either variable_type or struct_def_name")
 
         self.name = variable_name
         self.type = variable_type
         self.parent = parent
         self.default_value: Optional[VariableValue] = None
         self._json_path: Optional[str] = None
+        self._lh_path: List[LHPath.Selector] = []
         self._required = False
         self._masked = False
         self._searchable = False
         self._json_indexes: List[JsonIndex] = []
         self._access_level = access_level
+        self._struct_def_name: Optional[str] = struct_def_name
 
         if default_value is not None:
             self._set_default(default_value)
@@ -529,11 +635,54 @@ class WfRunVariable:
 
         if self.type != VariableType.JSON_OBJ and self.type != VariableType.JSON_ARR:
             raise ValueError(
-                f"JsonPath not allowed in a {VariableType.Name(self.type)} variable"
+                f"JsonPath not allowed in a {VariableType.Name(self.type) if self.type is not None else 'STRUCT'} variable"
             )
 
-        out = WfRunVariable(self.name, self.type, self.parent, self.default_value)
+        out = WfRunVariable(
+            self.name,
+            self.parent,
+            variable_type=self.type,
+            struct_def_name=self._struct_def_name,
+        )
+        out.default_value = self.default_value
         out.json_path = json_path
+        return out
+
+    def get(self, field: Union[str, int]) -> "WfRunVariable":
+        """Access a sub-field of a Struct variable (by key) or an element
+        of an array variable (by index).
+
+        Can be chained: ``my_person.get("home_address").get("city")``.
+
+        Args:
+            field: A string key for struct field access,
+                   or an int index for array element access.
+
+        Returns:
+            WfRunVariable: A new handle pointing to the sub-field.
+        """
+        if self._json_path is not None:
+            raise ValueError(
+                "Cannot use .get() on a variable that already uses json_path"
+            )
+
+        out = WfRunVariable(
+            self.name,
+            self.parent,
+            variable_type=self.type,
+            struct_def_name=self._struct_def_name,
+        )
+        out._lh_path = list(self._lh_path)
+        out._masked = self._masked
+        out._access_level = self._access_level
+
+        if isinstance(field, str):
+            out._lh_path.append(LHPath.Selector(key=field))
+        elif isinstance(field, int):
+            out._lh_path.append(LHPath.Selector(index=field))
+        else:
+            raise TypeError(f"Expected str or int, got {type(field)}")
+
         return out
 
     def as_public(self) -> "WfRunVariable":
@@ -596,9 +745,9 @@ class WfRunVariable:
         if not field_path.startswith("$."):
             raise ValueError(f"Invalid JsonPath: {field_path}")
 
-        if self.type != VariableType.JSON_OBJ:
+        if self.type != VariableType.JSON_OBJ and self._struct_def_name is None:
             raise ValueError(
-                f"JsonPath not allowed in a {VariableType.Name(self.type)} variable"
+                f"JsonPath not allowed in a {VariableType.Name(self.type) if self.type is not None else 'STRUCT'} variable"
             )
 
         self._json_indexes.append(
@@ -617,6 +766,14 @@ class WfRunVariable:
 
     def _set_default(self, default_value: Any) -> None:
         self.default_value = to_variable_value(default_value)
+        # For struct variables, verify the serialized value is a struct
+        if self._struct_def_name is not None:
+            if self.default_value.WhichOneof("value") != "struct":
+                raise TypeError(
+                    "Default value type does not match LH variable type STRUCT"
+                )
+            return
+        assert self.type is not None
         if (
             self.default_value.WhichOneof("value")
             != str(VariableType.Name(self.type)).lower()
@@ -635,9 +792,17 @@ class WfRunVariable:
         Returns:
             VariableDef: Spec.
         """
+        if self._struct_def_name is not None:
+            type_def = TypeDefinition(
+                struct_def_id=StructDefId(name=self._struct_def_name),
+                masked=self._masked,
+            )
+        else:
+            type_def = TypeDefinition(primitive_type=self.type, masked=self._masked)
+
         return ThreadVarDef(
             var_def=VariableDef(
-                type_def=TypeDefinition(primitive_type=self.type, masked=self._masked),
+                type_def=type_def,
                 name=self.name,
                 default_value=self.default_value,
             ),
@@ -647,34 +812,34 @@ class WfRunVariable:
             access_level=self._access_level,
         )
 
-    def is_equal_to(self, rhs: Any) -> WorkflowCondition:
+    def is_equal_to(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.EQUALS, rhs)
 
-    def is_not_equal_to(self, rhs: Any) -> WorkflowCondition:
+    def is_not_equal_to(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.NOT_EQUALS, rhs)
 
-    def is_greater_than(self, rhs: Any) -> WorkflowCondition:
+    def is_greater_than(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.GREATER_THAN, rhs)
 
-    def is_greater_than_eq(self, rhs: Any) -> WorkflowCondition:
+    def is_greater_than_eq(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.GREATER_THAN_EQ, rhs)
 
-    def is_less_than_eq(self, rhs: Any) -> WorkflowCondition:
+    def is_less_than_eq(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.LESS_THAN_EQ, rhs)
 
-    def is_less_than(self, rhs: Any) -> WorkflowCondition:
+    def is_less_than(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.LESS_THAN, rhs)
 
-    def does_contain(self, rhs: Any) -> WorkflowCondition:
+    def does_contain(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(rhs, Comparator.IN, self)
 
-    def does_not_contain(self, rhs: Any) -> WorkflowCondition:
+    def does_not_contain(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(rhs, Comparator.NOT_IN, self)
 
-    def is_in(self, rhs: Any) -> WorkflowCondition:
+    def is_in(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.IN, rhs)
 
-    def is_not_in(self, rhs: Any) -> WorkflowCondition:
+    def is_not_in(self, rhs: Any) -> ComparatorExpression:
         return self.parent.condition(self, Comparator.NOT_IN, rhs)
 
     def assign(self, rhs: Any) -> None:
@@ -710,6 +875,27 @@ class WfRunVariable:
 
     def remove_key(self, key: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_KEY, key)
+
+    def cast_to(self, target_type: VariableType) -> "CastExpression":
+        return CastExpression(self, target_type)
+
+    def cast_to_int(self) -> "CastExpression":
+        return self.cast_to(VariableType.INT)
+
+    def cast_to_double(self) -> "CastExpression":
+        return self.cast_to(VariableType.DOUBLE)
+
+    def cast_to_str(self) -> "CastExpression":
+        return self.cast_to(VariableType.STR)
+
+    def cast_to_bool(self) -> "CastExpression":
+        return self.cast_to(VariableType.BOOL)
+
+    def cast_to_bytes(self) -> "CastExpression":
+        return self.cast_to(VariableType.BYTES)
+
+    def cast_to_wf_run_id(self) -> "CastExpression":
+        return self.cast_to(VariableType.WF_RUN_ID)
 
     def __str__(self) -> str:
         return to_json(self.compile())
@@ -902,8 +1088,7 @@ class ExternalEventNodeOutput(NodeOutput):
 
 
 class ExternalEventDefRegistration(Protocol):
-    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest:
-        ...
+    def to_put_external_event_def_request(self) -> PutExternalEventDefRequest: ...
 
 
 class InterruptExternalEventDefRegistration:
@@ -1183,7 +1368,11 @@ class WorkflowThread:
         self._wf_interruptions: list[WorkflowInterruption] = []
         self._nodes: list[WorkflowNode] = []
         self._variable_mutations: deque[VariableMutation] = deque()
-        self._last_node_condition: EdgeCondition | None = None
+        # Stores a compiled protobuf VariableAssignment for the last-node
+        # condition (matches Java SDK behavior). When a user builds a
+        # ComparatorExpression via public APIs, we compile it to a
+        # VariableAssignment and store it here before attaching to an Edge.
+        self._last_node_condition: Optional[VariableAssignment] = None
         self._retention_policy: Optional[ThreadRetentionPolicy] = None
 
         if workflow is None:
@@ -1287,7 +1476,11 @@ class WorkflowThread:
         self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
         return SpawnedThreads(thread_number, None)
 
-    def wait_for_threads(self, wait_for: SpawnedThreads, strategy: WaitForThreadsStrategy = WaitForThreadsStrategy.WAIT_FOR_ALL) -> WaitForThreadsNodeOutput:
+    def wait_for_threads(
+        self,
+        wait_for: SpawnedThreads,
+        strategy: WaitForThreadsStrategy = WaitForThreadsStrategy.WAIT_FOR_ALL,
+    ) -> WaitForThreadsNodeOutput:
         """Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
 
         Args:
@@ -1304,20 +1497,20 @@ class WorkflowThread:
         return WaitForThreadsNodeOutput(node_name, self)
 
     def wait_for_condition(
-        self, condition: WorkflowCondition
+        self, condition: ComparatorExpression
     ) -> WaitForConditionNodeOutput:
         """
         Waits for the specified workflow condition to become true.
 
         Args:
-            condition (WorkflowCondition): The workflow condition to wait for.
+            condition (ComparatorExpression): The workflow condition to wait for.
 
         Returns:
             The output of the WAIT_FOR_CONDITION node.
         """
         self._check_if_active()
         node = WaitForConditionNode(
-            condition=condition.compile(),
+            condition=to_variable_assignment(condition),
         )
         node_name = self.add_node("wait-for-condition", node)
         return WaitForConditionNodeOutput(node_name, self)
@@ -1622,6 +1815,32 @@ class WorkflowThread:
         return self.add_variable(
             name, VariableType.WF_RUN_ID, default_value=default_value
         )
+
+    def declare_struct(
+        self,
+        name: str,
+        struct_def: Union[str, type],
+    ) -> WfRunVariable:
+        """Declares a Struct variable in the ThreadSpec.
+
+        Args:
+            name (str): The name of the variable.
+            struct_def (Union[str, type]): Either the StructDef name as a string,
+                or a class decorated with ``@lh_struct_def``.
+
+        Returns:
+            WfRunVariable: A handle to the created WfRunVariable.
+        """
+        if isinstance(struct_def, str):
+            struct_def_name = struct_def
+        else:
+            if not is_lh_struct(struct_def):
+                raise TypeError(
+                    f"{struct_def.__name__} is not decorated with @lh_struct_def"
+                )
+            struct_def_name = get_struct_def_name(struct_def)
+
+        return self.add_variable(name, struct_def_name=struct_def_name)
 
     def handle_any_failure(
         self, node: NodeOutput, initializer: "ThreadInitializer"
@@ -2117,17 +2336,21 @@ class WorkflowThread:
     def add_variable(
         self,
         variable_name: str,
-        variable_type: VariableType,
+        variable_type: Optional[VariableType] = None,
         access_level: Optional[Union[WfRunVariableAccessLevel, str]] = PRIVATE_VAR,
         default_value: Any = None,
+        struct_def_name: Optional[str] = None,
     ) -> WfRunVariable:
         """Defines a Variable in the ThreadSpec and returns a handle to it.
 
+        Exactly one of ``variable_type`` or ``struct_def_name`` must be provided.
+
         Args:
             variable_name (str): The name of the variable.
-            variable_type (VariableType): The variable type.
+            variable_type (VariableType, optional): The primitive variable type.
             access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable.
             default_value (Any, optional): A default value. Defaults to None.
+            struct_def_name (str, optional): The StructDef name, for struct variables.
 
         Returns:
             WfRunVariable: A handle to the created WfRunVariable.
@@ -2144,7 +2367,12 @@ class WorkflowThread:
                 raise ValueError(f"Variable {variable_name} already added")
 
         new_var = WfRunVariable(
-            variable_name, variable_type, self, default_value, access_level
+            variable_name,
+            self,
+            variable_type=variable_type,
+            default_value=default_value,
+            access_level=access_level,
+            struct_def_name=struct_def_name,
         )
         self._wf_run_variables.append(new_var)
         return new_var
@@ -2216,36 +2444,34 @@ class WorkflowThread:
 
     def condition(
         self, left_hand: Any, comparator: Comparator, right_hand: Any
-    ) -> WorkflowCondition:
-        """Returns a WorkflowCondition that can be used in
-        `ThreadBuilder.doIf()` or `ThreadBuilder.doElse()`.
+    ) -> ComparatorExpression:
+        """Create a comparator expression (lhs <op> rhs) for use in
+        conditional nodes such as `do_if()` and `do_while()`.
 
         Args:
-            left_hand (Any): is either a literal value
-            (which the Library casts to a Variable Value) or a
-            `WfRunVariable` representing the LHS of the expression.
-            comparator (Comparator): is a Comparator defining the
-            comparator, for example, `ComparatorTypePb.EQUALS`.
-            right_hand (Any): is either a literal value
-            (which the Library casts to a Variable Value) or a
-            `WfRunVariable` representing the RHS of the expression.
+            left_hand (Any): either a literal value (which the library casts
+                to a VariableValue) or a `WfRunVariable` representing the
+                left-hand side of the expression.
+            comparator (Comparator): the comparator operator to use (for
+                example, `Comparator.EQUALS`).
+            right_hand (Any): either a literal value or a `WfRunVariable`
+                representing the right-hand side of the expression.
 
         Returns:
-            WorkflowCondition: a WorkflowCondition.
+            ComparatorExpression: the constructed comparator expression.
         """
-        return WorkflowCondition(left_hand, comparator, right_hand)
+        return ComparatorExpression(left_hand, comparator, right_hand)
 
     def do_while(
-        self, condition: WorkflowCondition, while_body: "ThreadInitializer"
+        self, condition: ComparatorExpression, while_body: "ThreadInitializer"
     ) -> None:
-        """Conditionally executes some workflow code; equivalent to
-        an while() statement in programming.
+        """Conditionally executes workflow code; equivalent to a while()
+        statement in programming.
 
         Args:
-            condition (WorkflowCondition): is the WorkflowCondition to be satisfied.
-            while_body (ThreadInitializer): is the block of ThreadFunc
-            code to be executed while the provided
-            WorkflowCondition is satisfied.
+            condition (ComparatorExpression): the comparator expression to evaluate.
+            while_body (ThreadInitializer): the block of code to execute while
+                the condition evaluates to true.
         """
         self._check_if_active()
         self._validate_initializer(while_body)
@@ -2262,38 +2488,42 @@ class WorkflowThread:
         # configure edges
         while_condition_node = self._find_next_node(start_node_name)
         while_edge = start_node._find_outgoing_edge(while_condition_node.name)
+        # compile comparator to VariableAssignment and set as condition
         while_edge.MergeFrom(
             Edge(
-                condition=condition.compile(),
+                condition=to_variable_assignment(condition),
             )
         )
 
         start_node.outgoing_edges.append(
-            Edge(sink_node_name=end_node_name, condition=condition.negate().compile())
+            Edge(
+                sink_node_name=end_node_name,
+                condition=to_variable_assignment(condition.negate()),
+            )
         )
 
         end_node.outgoing_edges.append(
-            Edge(sink_node_name=start_node_name, condition=condition.compile())
+            Edge(
+                sink_node_name=start_node_name,
+                condition=to_variable_assignment(condition),
+            )
         )
 
     def do_if(
         self,
-        condition: WorkflowCondition,
+        condition: ComparatorExpression,
         if_body: "ThreadInitializer",
         else_body: Optional["ThreadInitializer"] = None,
     ) -> WorkflowIfStatement:
-        """Conditionally executes some workflow code; equivalent
-        to an if() statement in programming.
+        """Conditionally executes workflow code; equivalent to an if()
+        statement in programming.
 
         Args:
-            condition (WorkflowCondition): is the WorkflowCondition
-            to be satisfied.
-            if_body (ThreadInitializer): is the block of
-            ThreadSpec code to be executed if the provided
-            WorkflowCondition is satisfied.
-            else_body (ThreadInitializer): is the block of
-            ThreadSpec code to be executed if the provided
-            WorkflowCondition is NOT satisfied. Default None.
+            condition (ComparatorExpression): the comparator expression to evaluate.
+            if_body (ThreadInitializer): the block of ThreadSpec code to execute
+                when the condition evaluates to true.
+            else_body (ThreadInitializer, optional): the block of ThreadSpec code
+                to execute when the condition evaluates to false. Defaults to None.
         """
         self._check_if_active()
         self._validate_initializer(if_body)
@@ -2310,13 +2540,15 @@ class WorkflowThread:
     def organize_edges_for_else_if_execution(
         self,
         if_statement: WorkflowIfStatement,
-        input_condition: Optional[WorkflowCondition],
+        input_condition: Optional[ComparatorExpression],
         body: "ThreadInitializer",
     ) -> None:
         first_nop_node = self._find_node(if_statement.get_first_nop_node_name())
         else_edge = first_nop_node.outgoing_edges.pop()
 
-        else_if_condition = input_condition.compile() if input_condition else None
+        else_if_condition = (
+            to_variable_assignment(input_condition) if input_condition else None
+        )
 
         # Get the last node of the parent thread
         last_node_of_parent_thread_name = self._last_node_name
@@ -2371,10 +2603,13 @@ class WorkflowThread:
         self._last_node_name = last_node_of_parent_thread_name
 
     def _do_if(
-        self, condition: WorkflowCondition, body: "ThreadInitializer"
+        self, condition: ComparatorExpression, body: "ThreadInitializer"
     ) -> WorkflowIfStatement:
         first_nop_node_name = self.add_node("nop", NopNode())
-        self._last_node_condition = condition.compile()
+        # compile the comparator DSL to a protobuf VariableAssignment and
+        # persist it as the last-node condition so subsequent add_node()
+        # will attach it to the outgoing Edge.condition field.
+        self._last_node_condition = to_variable_assignment(condition)
 
         body(self)
 
@@ -2757,3 +2992,30 @@ def create_workflow_event_def(
     )
     stub.PutWorkflowEventDef(request, timeout=timeout)
     logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")
+
+
+def create_struct_def(
+    cls: type,
+    config: LHConfig,
+    allowed_updates: Any = None,
+    timeout: Optional[int] = None,
+) -> None:
+    """Register a ``@lh_struct_def``-decorated class as a ``StructDef``
+    on the LH Server.
+
+    This will also recursively register any nested ``@lh_struct_def``
+    dependencies in the correct order.
+
+    Args:
+        cls: A class decorated with ``@lh_struct_def``.
+        config: The LHConfig for connecting to the server.
+        allowed_updates: Schema evolution compatibility type.
+            Defaults to ``NO_SCHEMA_UPDATES``.
+        timeout: gRPC timeout in seconds.
+    """
+    from littlehorse.lh_struct import create_struct_def as _create_struct_def
+    from littlehorse.model import StructDefCompatibilityType
+
+    if allowed_updates is None:
+        allowed_updates = StructDefCompatibilityType.NO_SCHEMA_UPDATES
+    _create_struct_def(cls, config, allowed_updates, timeout)
