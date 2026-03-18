@@ -10,6 +10,7 @@ import { OctagonAlert } from 'lucide-react'
 import { StartThreadNodeRun } from './StartThreadNodeRun'
 import { TaskNodeRun } from './TaskNodeRun'
 import { ChildWFNodeRun } from './ChildWFNodeRun'
+import { ExitNodeRun } from './ExitNodeRun'
 import { WaitForChildWfNodeRun } from './WaitForChildWfNodeRun'
 
 export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
@@ -36,6 +37,7 @@ export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex })
   if ($case === 'throwEvent') return <ThrowEventNodeRun node={value} />
   if ($case === 'runChildWf') return <ChildWFNodeRun node={value} />
   if ($case === 'waitForChildWf') return <WaitForChildWfNodeRun node={value} />
+  if ($case === 'exit') return <ExitNodeRun />
 
   return (
     <div className="mt-2 flex justify-center">
