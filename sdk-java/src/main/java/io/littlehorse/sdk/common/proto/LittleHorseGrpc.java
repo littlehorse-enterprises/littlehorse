@@ -2524,34 +2524,34 @@ public final class LittleHorseGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskMetricsRequest,
-      io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> getListTaskDefMetricsMethod;
+      io.littlehorse.sdk.common.proto.MetricsList> getListTaskMetricsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "ListTaskDefMetrics",
+      fullMethodName = SERVICE_NAME + '/' + "ListTaskMetrics",
       requestType = io.littlehorse.sdk.common.proto.ListTaskMetricsRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.ListTaskMetricsResponse.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricsList.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskMetricsRequest,
-      io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> getListTaskDefMetricsMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskMetricsRequest, io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> getListTaskDefMetricsMethod;
-    if ((getListTaskDefMetricsMethod = LittleHorseGrpc.getListTaskDefMetricsMethod) == null) {
+      io.littlehorse.sdk.common.proto.MetricsList> getListTaskMetricsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskMetricsRequest, io.littlehorse.sdk.common.proto.MetricsList> getListTaskMetricsMethod;
+    if ((getListTaskMetricsMethod = LittleHorseGrpc.getListTaskMetricsMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
-        if ((getListTaskDefMetricsMethod = LittleHorseGrpc.getListTaskDefMetricsMethod) == null) {
-          LittleHorseGrpc.getListTaskDefMetricsMethod = getListTaskDefMetricsMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListTaskMetricsRequest, io.littlehorse.sdk.common.proto.ListTaskMetricsResponse>newBuilder()
+        if ((getListTaskMetricsMethod = LittleHorseGrpc.getListTaskMetricsMethod) == null) {
+          LittleHorseGrpc.getListTaskMetricsMethod = getListTaskMetricsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListTaskMetricsRequest, io.littlehorse.sdk.common.proto.MetricsList>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListTaskDefMetrics"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListTaskMetrics"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.ListTaskMetricsRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ListTaskMetricsResponse.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListTaskDefMetrics"))
+                  io.littlehorse.sdk.common.proto.MetricsList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListTaskMetrics"))
               .build();
         }
       }
     }
-    return getListTaskDefMetricsMethod;
+    return getListTaskMetricsMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListWfMetricsRequest,
@@ -3700,13 +3700,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Returns a list of TaskDef Metrics Windows.
-     * </pre>
      */
-    default void listTaskDefMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListTaskDefMetricsMethod(), responseObserver);
+    default void listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListTaskMetricsMethod(), responseObserver);
     }
 
     /**
@@ -4748,14 +4745,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Returns a list of TaskDef Metrics Windows.
-     * </pre>
      */
-    public void listTaskDefMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> responseObserver) {
+    public void listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getListTaskDefMetricsMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getListTaskMetricsMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -5714,13 +5708,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Returns a list of TaskDef Metrics Windows.
-     * </pre>
      */
-    public io.littlehorse.sdk.common.proto.ListTaskMetricsResponse listTaskDefMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) throws io.grpc.StatusException {
+    public io.littlehorse.sdk.common.proto.MetricsList listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
-          getChannel(), getListTaskDefMetricsMethod(), getCallOptions(), request);
+          getChannel(), getListTaskMetricsMethod(), getCallOptions(), request);
     }
 
     /**
@@ -6659,13 +6650,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Returns a list of TaskDef Metrics Windows.
-     * </pre>
      */
-    public io.littlehorse.sdk.common.proto.ListTaskMetricsResponse listTaskDefMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
+    public io.littlehorse.sdk.common.proto.MetricsList listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getListTaskDefMetricsMethod(), getCallOptions(), request);
+          getChannel(), getListTaskMetricsMethod(), getCallOptions(), request);
     }
 
     /**
@@ -7684,14 +7672,11 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * Returns a list of TaskDef Metrics Windows.
-     * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> listTaskDefMetrics(
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricsList> listTaskMetrics(
         io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getListTaskDefMetricsMethod(), getCallOptions()), request);
+          getChannel().newCall(getListTaskMetricsMethod(), getCallOptions()), request);
     }
 
     /**
@@ -7846,7 +7831,7 @@ public final class LittleHorseGrpc {
   private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 77;
   private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 78;
   private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 79;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 80;
+  private static final int METHODID_LIST_TASK_METRICS = 80;
   private static final int METHODID_LIST_WF_METRICS = 81;
   private static final int METHODID_PUT_TENANT = 82;
   private static final int METHODID_GET_TENANT = 83;
@@ -8193,9 +8178,9 @@ public final class LittleHorseGrpc {
           serviceImpl.getWfSpecMetricsWindow((io.littlehorse.sdk.common.proto.WfSpecMetricsQueryRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpecMetrics>) responseObserver);
           break;
-        case METHODID_LIST_TASK_DEF_METRICS:
-          serviceImpl.listTaskDefMetrics((io.littlehorse.sdk.common.proto.ListTaskMetricsRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListTaskMetricsResponse>) responseObserver);
+        case METHODID_LIST_TASK_METRICS:
+          serviceImpl.listTaskMetrics((io.littlehorse.sdk.common.proto.ListTaskMetricsRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList>) responseObserver);
           break;
         case METHODID_LIST_WF_METRICS:
           serviceImpl.listWfMetrics((io.littlehorse.sdk.common.proto.ListWfMetricsRequest) request,
@@ -8814,12 +8799,12 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.WfSpecMetrics>(
                 service, METHODID_GET_WF_SPEC_METRICS_WINDOW)))
         .addMethod(
-          getListTaskDefMetricsMethod(),
+          getListTaskMetricsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               io.littlehorse.sdk.common.proto.ListTaskMetricsRequest,
-              io.littlehorse.sdk.common.proto.ListTaskMetricsResponse>(
-                service, METHODID_LIST_TASK_DEF_METRICS)))
+              io.littlehorse.sdk.common.proto.MetricsList>(
+                service, METHODID_LIST_TASK_METRICS)))
         .addMethod(
           getListWfMetricsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -8998,7 +8983,7 @@ public final class LittleHorseGrpc {
               .addMethod(getDeleteScheduledWfRunMethod())
               .addMethod(getGetTaskDefMetricsWindowMethod())
               .addMethod(getGetWfSpecMetricsWindowMethod())
-              .addMethod(getListTaskDefMetricsMethod())
+              .addMethod(getListTaskMetricsMethod())
               .addMethod(getListWfMetricsMethod())
               .addMethod(getPutTenantMethod())
               .addMethod(getGetTenantMethod())

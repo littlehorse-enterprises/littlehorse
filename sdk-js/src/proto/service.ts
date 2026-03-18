@@ -33,7 +33,7 @@ import {
 } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ListWfMetricsRequest, MetricsList } from "./metrics";
+import { ListTaskMetricsRequest, ListWfMetricsRequest, MetricsList } from "./metrics";
 import { NodeRun } from "./node_run";
 import {
   CheckpointId,
@@ -1576,43 +1576,6 @@ export interface TaskDefMetricsQueryRequest {
   windowType: MetricsWindowLength;
   /** The name of the specific TaskDef for which we are calculating metrics. */
   taskDefName?: string | undefined;
-}
-
-/** Query to retrieve TaskDef Metrics over a period of time. */
-export interface ListTaskMetricsRequest {
-  /** TaskDef id for whichwe retrieve metrics. */
-  taskDefId:
-    | TaskDefId
-    | undefined;
-  /**
-   * This parameter is a timestamp that is used to determine the *last* window returned. The
-   * server will then return `num_windows` worth of data from before this timestamp.
-   */
-  lastWindowStart:
-    | string
-    | undefined;
-  /** Window size */
-  windowLength: MetricsWindowLength;
-  /** Number of windows to retrieve. */
-  numWindows: number;
-  /** Bookmark for cursor-based pagination; pass if applicable. */
-  bookmark?:
-    | Buffer
-    | undefined;
-  /** Maximum results to return in one request. */
-  limit?: number | undefined;
-}
-
-/** A list of TaskDef Metrics WIndows */
-export interface ListTaskMetricsResponse {
-  /** List of TaskDef Metrics Windows */
-  results: TaskDefMetrics[];
-  /**
-   * The bookmark can be used for cursor-based pagination. If it is null, the server
-   * has returned all results. If it is set, you can pass it into your next request
-   * to resume searching where your previous request left off.
-   */
-  bookmark?: Buffer | undefined;
 }
 
 /** Query to retrieve a specific WfSpec Metrics Window. */
@@ -9664,227 +9627,6 @@ export const TaskDefMetricsQueryRequest = {
   },
 };
 
-function createBaseListTaskMetricsRequest(): ListTaskMetricsRequest {
-  return {
-    taskDefId: undefined,
-    lastWindowStart: undefined,
-    windowLength: MetricsWindowLength.MINUTES_5,
-    numWindows: 0,
-    bookmark: undefined,
-    limit: undefined,
-  };
-}
-
-export const ListTaskMetricsRequest = {
-  encode(message: ListTaskMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.taskDefId !== undefined) {
-      TaskDefId.encode(message.taskDefId, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.lastWindowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.lastWindowStart), writer.uint32(18).fork()).ldelim();
-    }
-    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      writer.uint32(24).int32(metricsWindowLengthToNumber(message.windowLength));
-    }
-    if (message.numWindows !== 0) {
-      writer.uint32(32).int32(message.numWindows);
-    }
-    if (message.bookmark !== undefined) {
-      writer.uint32(42).bytes(message.bookmark);
-    }
-    if (message.limit !== undefined) {
-      writer.uint32(48).int32(message.limit);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ListTaskMetricsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListTaskMetricsRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.taskDefId = TaskDefId.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.lastWindowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.windowLength = metricsWindowLengthFromJSON(reader.int32());
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.numWindows = reader.int32();
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.bookmark = reader.bytes() as Buffer;
-          continue;
-        case 6:
-          if (tag !== 48) {
-            break;
-          }
-
-          message.limit = reader.int32();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ListTaskMetricsRequest {
-    return {
-      taskDefId: isSet(object.taskDefId) ? TaskDefId.fromJSON(object.taskDefId) : undefined,
-      lastWindowStart: isSet(object.lastWindowStart) ? globalThis.String(object.lastWindowStart) : undefined,
-      windowLength: isSet(object.windowLength)
-        ? metricsWindowLengthFromJSON(object.windowLength)
-        : MetricsWindowLength.MINUTES_5,
-      numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
-      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
-      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
-    };
-  },
-
-  toJSON(message: ListTaskMetricsRequest): unknown {
-    const obj: any = {};
-    if (message.taskDefId !== undefined) {
-      obj.taskDefId = TaskDefId.toJSON(message.taskDefId);
-    }
-    if (message.lastWindowStart !== undefined) {
-      obj.lastWindowStart = message.lastWindowStart;
-    }
-    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      obj.windowLength = metricsWindowLengthToJSON(message.windowLength);
-    }
-    if (message.numWindows !== 0) {
-      obj.numWindows = Math.round(message.numWindows);
-    }
-    if (message.bookmark !== undefined) {
-      obj.bookmark = base64FromBytes(message.bookmark);
-    }
-    if (message.limit !== undefined) {
-      obj.limit = Math.round(message.limit);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<ListTaskMetricsRequest>): ListTaskMetricsRequest {
-    return ListTaskMetricsRequest.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ListTaskMetricsRequest>): ListTaskMetricsRequest {
-    const message = createBaseListTaskMetricsRequest();
-    message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
-      ? TaskDefId.fromPartial(object.taskDefId)
-      : undefined;
-    message.lastWindowStart = object.lastWindowStart ?? undefined;
-    message.windowLength = object.windowLength ?? MetricsWindowLength.MINUTES_5;
-    message.numWindows = object.numWindows ?? 0;
-    message.bookmark = object.bookmark ?? undefined;
-    message.limit = object.limit ?? undefined;
-    return message;
-  },
-};
-
-function createBaseListTaskMetricsResponse(): ListTaskMetricsResponse {
-  return { results: [], bookmark: undefined };
-}
-
-export const ListTaskMetricsResponse = {
-  encode(message: ListTaskMetricsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.results) {
-      TaskDefMetrics.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.bookmark !== undefined) {
-      writer.uint32(18).bytes(message.bookmark);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ListTaskMetricsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListTaskMetricsResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.results.push(TaskDefMetrics.decode(reader, reader.uint32()));
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.bookmark = reader.bytes() as Buffer;
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ListTaskMetricsResponse {
-    return {
-      results: globalThis.Array.isArray(object?.results)
-        ? object.results.map((e: any) => TaskDefMetrics.fromJSON(e))
-        : [],
-      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
-    };
-  },
-
-  toJSON(message: ListTaskMetricsResponse): unknown {
-    const obj: any = {};
-    if (message.results?.length) {
-      obj.results = message.results.map((e) => TaskDefMetrics.toJSON(e));
-    }
-    if (message.bookmark !== undefined) {
-      obj.bookmark = base64FromBytes(message.bookmark);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<ListTaskMetricsResponse>): ListTaskMetricsResponse {
-    return ListTaskMetricsResponse.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ListTaskMetricsResponse>): ListTaskMetricsResponse {
-    const message = createBaseListTaskMetricsResponse();
-    message.results = object.results?.map((e) => TaskDefMetrics.fromPartial(e)) || [];
-    message.bookmark = object.bookmark ?? undefined;
-    return message;
-  },
-};
-
 function createBaseWfSpecMetricsQueryRequest(): WfSpecMetricsQueryRequest {
   return { wfSpecId: undefined, windowStart: undefined, windowLength: MetricsWindowLength.MINUTES_5 };
 }
@@ -12314,12 +12056,11 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Returns a list of TaskDef Metrics Windows. */
-    listTaskDefMetrics: {
-      name: "ListTaskDefMetrics",
+    listTaskMetrics: {
+      name: "ListTaskMetrics",
       requestType: ListTaskMetricsRequest,
       requestStream: false,
-      responseType: ListTaskMetricsResponse,
+      responseType: MetricsList,
       responseStream: false,
       options: {},
     },
@@ -12811,11 +12552,10 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: WfSpecMetricsQueryRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<WfSpecMetrics>>;
-  /** Returns a list of TaskDef Metrics Windows. */
-  listTaskDefMetrics(
+  listTaskMetrics(
     request: ListTaskMetricsRequest,
     context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ListTaskMetricsResponse>>;
+  ): Promise<DeepPartial<MetricsList>>;
   listWfMetrics(
     request: ListWfMetricsRequest,
     context: CallContext & CallContextExt,
@@ -13266,11 +13006,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<WfSpecMetricsQueryRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<WfSpecMetrics>;
-  /** Returns a list of TaskDef Metrics Windows. */
-  listTaskDefMetrics(
+  listTaskMetrics(
     request: DeepPartial<ListTaskMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
-  ): Promise<ListTaskMetricsResponse>;
+  ): Promise<MetricsList>;
   listWfMetrics(
     request: DeepPartial<ListWfMetricsRequest>,
     options?: CallOptions & CallOptionsExt,

@@ -38,6 +38,13 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
         this.metricType = MetricWindowType.WORKFLOW_METRIC;
     }
 
+    public MetricWindowIdModel(TenantIdModel tenantId, TaskDefIdModel taskDefId, Date windowStart) {
+        this.tenantId = tenantId;
+        this.taskDefId = taskDefId;
+        this.windowStart = windowStart;
+        this.metricType = MetricWindowType.TASK_METRIC;
+    }
+
     @Override
     public Class<MetricWindowId> getProtoBaseClass() {
         return MetricWindowId.class;
@@ -97,6 +104,9 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
 
         if (p.hasWindowStart()) {
             windowStart = LHUtil.fromProtoTs(p.getWindowStart());
+        }
+        if (p.hasTenantId()) {
+            tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
         }
     }
 

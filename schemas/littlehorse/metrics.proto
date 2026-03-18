@@ -59,6 +59,11 @@ message ListWfMetricsRequest {
   optional google.protobuf.Timestamp window_start = 2;
   optional google.protobuf.Timestamp window_end   = 3;
 }
+message ListTaskMetricsRequest {
+  TaskDefId task_def = 1;
+  optional google.protobuf.Timestamp window_start = 2;
+  optional google.protobuf.Timestamp window_end   = 3;
+}
 
 message MetricsList {
   repeated MetricWindow windows = 1;

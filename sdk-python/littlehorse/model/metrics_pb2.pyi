@@ -92,6 +92,16 @@ class ListWfMetricsRequest(_message.Message):
     window_end: _timestamp_pb2.Timestamp
     def __init__(self, wf_spec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., window_end: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
+class ListTaskMetricsRequest(_message.Message):
+    __slots__ = ("task_def", "window_start", "window_end")
+    TASK_DEF_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_START_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_END_FIELD_NUMBER: _ClassVar[int]
+    task_def: _object_id_pb2.TaskDefId
+    window_start: _timestamp_pb2.Timestamp
+    window_end: _timestamp_pb2.Timestamp
+    def __init__(self, task_def: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., window_end: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+
 class MetricsList(_message.Message):
     __slots__ = ("windows",)
     WINDOWS_FIELD_NUMBER: _ClassVar[int]

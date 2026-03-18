@@ -57,6 +57,12 @@ export interface ListWfMetricsRequest {
   windowEnd?: string | undefined;
 }
 
+export interface ListTaskMetricsRequest {
+  taskDef: TaskDefId | undefined;
+  windowStart?: string | undefined;
+  windowEnd?: string | undefined;
+}
+
 export interface MetricsList {
   windows: MetricWindow[];
 }
@@ -850,6 +856,97 @@ export const ListWfMetricsRequest = {
     const message = createBaseListWfMetricsRequest();
     message.wfSpec = (object.wfSpec !== undefined && object.wfSpec !== null)
       ? WfSpecId.fromPartial(object.wfSpec)
+      : undefined;
+    message.windowStart = object.windowStart ?? undefined;
+    message.windowEnd = object.windowEnd ?? undefined;
+    return message;
+  },
+};
+
+function createBaseListTaskMetricsRequest(): ListTaskMetricsRequest {
+  return { taskDef: undefined, windowStart: undefined, windowEnd: undefined };
+}
+
+export const ListTaskMetricsRequest = {
+  encode(message: ListTaskMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.taskDef !== undefined) {
+      TaskDefId.encode(message.taskDef, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.windowStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(18).fork()).ldelim();
+    }
+    if (message.windowEnd !== undefined) {
+      Timestamp.encode(toTimestamp(message.windowEnd), writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ListTaskMetricsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListTaskMetricsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.taskDef = TaskDefId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.windowEnd = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ListTaskMetricsRequest {
+    return {
+      taskDef: isSet(object.taskDef) ? TaskDefId.fromJSON(object.taskDef) : undefined,
+      windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
+      windowEnd: isSet(object.windowEnd) ? globalThis.String(object.windowEnd) : undefined,
+    };
+  },
+
+  toJSON(message: ListTaskMetricsRequest): unknown {
+    const obj: any = {};
+    if (message.taskDef !== undefined) {
+      obj.taskDef = TaskDefId.toJSON(message.taskDef);
+    }
+    if (message.windowStart !== undefined) {
+      obj.windowStart = message.windowStart;
+    }
+    if (message.windowEnd !== undefined) {
+      obj.windowEnd = message.windowEnd;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ListTaskMetricsRequest>): ListTaskMetricsRequest {
+    return ListTaskMetricsRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ListTaskMetricsRequest>): ListTaskMetricsRequest {
+    const message = createBaseListTaskMetricsRequest();
+    message.taskDef = (object.taskDef !== undefined && object.taskDef !== null)
+      ? TaskDefId.fromPartial(object.taskDef)
       : undefined;
     message.windowStart = object.windowStart ?? undefined;
     message.windowEnd = object.windowEnd ?? undefined;

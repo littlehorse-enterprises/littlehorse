@@ -110,7 +110,6 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflo
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
-import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskRunsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListUserTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVariablesReply;
@@ -921,18 +920,18 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
-    public void listTaskDefMetrics(ListTaskMetricsRequest req, StreamObserver<ListTaskMetricsResponse> ctx) {
-        ListTaskMetricsRequestModel ltm =
+    public void listTaskMetrics(ListTaskMetricsRequest req, StreamObserver<MetricsList> ctx) {
+        ListTaskMetricsRequestModel reqModel =
                 LHSerializable.fromProto(req, ListTaskMetricsRequestModel.class, requestContext());
-        handleScan(ltm, ctx, ListTaskMetricsReply.class);
+        handleScan(reqModel, ctx, ListMetricsReply.class);
     }
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void listWfMetrics(ListWfMetricsRequest req, StreamObserver<MetricsList> ctx) {
-        ListWfMetricsRequestModel lwm =
+        ListWfMetricsRequestModel reqModel =
                 LHSerializable.fromProto(req, ListWfMetricsRequestModel.class, requestContext());
-        handleScan(lwm, ctx, ListMetricsReply.class);
+        handleScan(reqModel, ctx, ListMetricsReply.class);
     }
 
     @Override
