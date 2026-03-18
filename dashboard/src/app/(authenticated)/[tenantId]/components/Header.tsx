@@ -18,7 +18,10 @@ export const Header: FC = () => {
             <span>HORSE</span>
           </div>
         </LinkWithTenant>
-        <div className="flex items-center">
+        <div className="flex items-center gap-4">
+          <span className="whitespace-nowrap text-sm text-gray-400">
+            {process.env.NEXT_PUBLIC_VERSION ?? 'v0.0.0-dev'}
+          </span>
           <TenantSelector />
           <Principal />
         </div>
