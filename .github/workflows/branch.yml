@@ -82,12 +82,12 @@ jobs:
         with:
           node-version: 20
 
-      # - name: Update Dashboard Version
-      #   working-directory: ./dashboard
-      #   run: |
-      #     SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-      #     VERSION="${{ github.ref_name }}-$SHORT_SHA"
-      #     sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
+      - name: Update Dashboard Version
+        working-directory: ./dashboard
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          VERSION="${{ github.ref_name }}-$SHORT_SHA"
+          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.mjs
 
       - name: Build Dashboard
         working-directory: ./dashboard
@@ -116,12 +116,12 @@ jobs:
         with:
           node-version: 20
 
-      # - name: Update Dashboard Version
-      #   working-directory: ./dashboard
-      #   run: |
-      #     SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-      #     VERSION="${{ github.ref_name }}-$SHORT_SHA"
-      #     sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.ts
+      - name: Update Dashboard Version
+        working-directory: ./dashboard
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          VERSION="${{ github.ref_name }}-$SHORT_SHA"
+          sed -i "s|NEXT_PUBLIC_VERSION: '.*'|NEXT_PUBLIC_VERSION: '$VERSION'|g" next.config.mjs
 
       - name: Build Dashboard
         working-directory: ./dashboard
