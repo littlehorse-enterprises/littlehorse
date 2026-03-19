@@ -28,8 +28,8 @@ def get_workflow() -> Workflow:
         wf.execute(ASK_FOR_NAME)
         ext_event_output = wf.wait_for_event(EXT_EVENT, timeout=60)
 
-        name = wf.add_variable("name", VariableType.STR)
-        wf.mutate(name, VariableMutationType.ASSIGN, ext_event_output)
+        name = wf.declare_str("name")
+        name.assign(ext_event_output)
         wf.execute(GREET, name)
 
     return Workflow("example-external-event", my_entrypoint)
