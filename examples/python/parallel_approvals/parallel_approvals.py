@@ -35,11 +35,7 @@ def get_workflow() -> Workflow:
                 user_id=None,
                 user_group=approval.with_json_path("$.userGroup"),
             )
-            user_group_thread.mutate(
-                is_approved,
-                VariableMutationType.ASSIGN,
-                user_task_output.with_json_path("$.isApproved"),
-            )
+            is_approved.assign(user_task_output.with_json_path("$.isApproved"))
 
         def is_user(user_thread: WorkflowThread) -> None:
             user_task_output = approval_thread.assign_user_task(
@@ -47,11 +43,7 @@ def get_workflow() -> Workflow:
                 user_id=approval.with_json_path("$.userId"),
                 user_group=approval.with_json_path("$.userGroup"),
             )
-            user_thread.mutate(
-                is_approved,
-                VariableMutationType.ASSIGN,
-                user_task_output.with_json_path("$.isApproved"),
-            )
+            is_approved.assign(user_task_output.with_json_path("$.isApproved"))
 
         condition = approval_thread.condition(
             approval.with_json_path("$.userId"), Comparator.EQUALS, None

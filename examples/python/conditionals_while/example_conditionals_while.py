@@ -27,12 +27,12 @@ async def eat_donut(donuts_left: int) -> str:
 
 def while_body(wf: WorkflowThread) -> None:
     donuts = wf.find_variable("number-of-donuts")
-    wf.mutate(donuts, VariableMutationType.SUBTRACT, 1)
+    donuts.assign(donuts.subtract(1))
     wf.execute("eating-donut", donuts)
 
 
 def entrypoint(wf: WorkflowThread) -> None:
-    donuts = wf.add_variable("number-of-donuts", VariableType.INT)
+    donuts = wf.declare_int("number-of-donuts")
     condition = donuts.is_greater_than(0)
     wf.do_while(condition, while_body)
 
