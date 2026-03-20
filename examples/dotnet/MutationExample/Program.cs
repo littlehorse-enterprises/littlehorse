@@ -43,7 +43,7 @@ public abstract class Program
             NodeOutput output = wf.Execute(TaskDefName, theName);
 
             // We save the output in the variable
-            wf.Mutate(theName, VariableMutationType.Assign, output);
+            theName.assign(output);
         }
         
         return new Workflow("example-mutation", MyEntryPoint);

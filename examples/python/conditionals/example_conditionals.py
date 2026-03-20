@@ -45,11 +45,10 @@ class SaleService:
         wf.execute("keep-selling", wf.find_variable("total-sales"))
 
     def entrypoint(self, wf: WorkflowThread) -> None:
-        amount = wf.add_variable("amount", VariableType.DOUBLE)
-        total_sales = wf.add_variable("total-sales", VariableType.DOUBLE)
+        amount = wf.declare_double("amount")
+        total_sales = wf.declare_double("total-sales")
         output = wf.execute("sale", amount)
-
-        wf.mutate(total_sales, VariableMutationType.ASSIGN, output)
+        total_sales.assign(output)
 
         condition = total_sales.is_greater_than_eq(GOAL)
         wf.do_if(condition, self.if_body).do_else(self.else_body)
