@@ -49,6 +49,9 @@ message VariableValue {
 
     // A Struct object.
     Struct struct = 11;
+
+    // A native LittleHorse Array object.
+    Array array = 12;
   }
 }
 
@@ -78,6 +81,12 @@ message Struct {
   StructDefId struct_def_id = 1;
   // The content of the Struct
   InlineStruct struct = 2;
+}
+
+// An Array is a strongly-typed list of values. Element typing is defined by
+// TypeDefinition.inline_array for the variable that carries this value.
+message Array {
+  repeated VariableValue items = 1;
 }
 
 // An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`.

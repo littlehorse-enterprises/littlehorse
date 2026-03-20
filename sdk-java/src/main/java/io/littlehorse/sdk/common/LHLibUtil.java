@@ -33,6 +33,7 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.adapter.LHWfRunIdAdapter;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
+import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
@@ -57,6 +58,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -373,6 +375,8 @@ public class LHLibUtil {
             throws LHSerdeException {
         Optional<LHTypeAdapter<?>> maybeAdapter = getTypeAdapterForClass(targetClazz, typeAdapterRegistry);
 
+        boolean targetIsUntyped = Object.class.equals(targetClazz);
+
         if (maybeAdapter.isPresent()) {
             return varValToObjViaAdapter(val, maybeAdapter.get());
         }
@@ -388,13 +392,13 @@ public class LHLibUtil {
 
         switch (val.getValueCase()) {
             case INT:
-                if (targetClazz == Long.class || targetClazz == long.class) {
+                if (targetIsUntyped || targetClazz == Long.class || targetClazz == long.class) {
                     return val.getInt();
                 } else {
                     return (int) val.getInt();
                 }
             case DOUBLE:
-                if (targetClazz == Double.class || targetClazz == double.class) {
+                if (targetIsUntyped || targetClazz == Double.class || targetClazz == double.class) {
                     return val.getDouble();
                 } else {
                     return (float) val.getDouble();
@@ -416,6 +420,24 @@ public class LHLibUtil {
             case STRUCT:
                 Struct struct = val.getStruct();
                 return deserializeStructToObject(struct, targetClazz, typeAdapterRegistry);
+            case ARRAY:
+                if (LHArray.class.isAssignableFrom(targetClazz)) {
+                    Array arr = val.getArray();
+                    List<Object> out = new ArrayList<>(arr.getItemsCount());
+                    for (VariableValue item : arr.getItemsList()) {
+                        out.add(varValToObj(item, Object.class));
+                    }
+                    return LHArray.of(out);
+                }
+                if (List.class.isAssignableFrom(targetClazz)) {
+                    Array arr = val.getArray();
+                    List<Object> out = new ArrayList<>(arr.getItemsCount());
+                    for (VariableValue item : arr.getItemsList()) {
+                        out.add(varValToObj(item, Object.class));
+                    }
+                    return out;
+                }
+                throw new LHSerdeException("Failed deserializing ARRAY value into class: " + targetClazz.getName());
             case UTC_TIMESTAMP:
                 Timestamp timestamp = val.getUtcTimestamp();
                 if (Timestamp.class.isAssignableFrom(targetClazz)) {
@@ -718,6 +740,13 @@ public class LHLibUtil {
             out.setBytes(ByteString.copyFrom((byte[]) o));
         } else if (o instanceof WfRunId) {
             out.setWfRunId((WfRunId) o);
+        } else if (o instanceof LHArray) {
+            LHArray<?> array = (LHArray<?>) o;
+            Array.Builder arr = Array.newBuilder();
+            for (Object item : array.asList()) {
+                arr.addItems(objToVarVal(item, typeAdapterRegistry));
+            }
+            out.setArray(arr);
         } else if (o.getClass().isAnnotationPresent(LHStructDef.class)) {
             out.setStruct(serializeToStruct(o, typeAdapterRegistry));
         } else if (o instanceof Instant) {
@@ -887,6 +916,9 @@ public class LHLibUtil {
     }
 
     public static boolean isJSON_ARR(Class<?> cls) {
+        if (LHArray.class.isAssignableFrom(cls)) {
+            return false;
+        }
         return List.class.isAssignableFrom(cls) || cls.isArray();
     }
 
@@ -970,6 +1002,8 @@ public class LHLibUtil {
                 return a.getWfRunId().equals(b.getWfRunId());
             case UTC_TIMESTAMP:
                 return a.getUtcTimestamp().equals(b.getUtcTimestamp());
+            case ARRAY:
+                return a.getArray().equals(b.getArray());
             case VALUE_NOT_SET:
                 return true;
             default:

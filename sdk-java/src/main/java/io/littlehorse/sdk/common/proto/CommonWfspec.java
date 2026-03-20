@@ -67,6 +67,11 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_TypeDefinition_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_InlineArrayDef_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_InlineArrayDef_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_ReturnType_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -175,11 +180,14 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
       "ueH\001\210\001\001\022\031\n\014masked_value\030\004 \001(\010H\002\210\001\001\0222\n\010ty" +
       "pe_def\030\005 \001(\0132\033.littlehorse.TypeDefinitio" +
       "nH\003\210\001\001B\007\n\005_typeB\020\n\016_default_valueB\017\n\r_ma" +
-      "sked_valueB\013\n\t_type_def\"\244\001\n\016TypeDefiniti" +
+      "sked_valueB\013\n\t_type_def\"\331\001\n\016TypeDefiniti" +
       "on\0223\n\016primitive_type\030\001 \001(\0162\031.littlehorse" +
       ".VariableTypeH\000\0221\n\rstruct_def_id\030\005 \001(\0132\030" +
-      ".littlehorse.StructDefIdH\000\022\016\n\006masked\030\004 \001" +
-      "(\010B\016\n\014defined_typeJ\004\010\002\020\003J\004\010\003\020\004\"S\n\nReturn" +
+      ".littlehorse.StructDefIdH\000\0223\n\014inline_arr" +
+      "ay\030\006 \001(\0132\033.littlehorse.InlineArrayDefH\000\022" +
+      "\016\n\006masked\030\004 \001(\010B\016\n\014defined_typeJ\004\010\002\020\003J\004\010" +
+      "\003\020\004\"A\n\016InlineArrayDef\022/\n\narray_type\030\001 \001(" +
+      "\0132\033.littlehorse.TypeDefinition\"S\n\nReturn" +
       "Type\0225\n\013return_type\030\001 \001(\0132\033.littlehorse." +
       "TypeDefinitionH\000\210\001\001B\016\n\014_return_type\"\357\004\n\017" +
       "UTActionTrigger\0224\n\004task\030\001 \001(\0132$.littleho" +
@@ -284,15 +292,21 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_TypeDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TypeDefinition_descriptor,
-        new java.lang.String[] { "PrimitiveType", "StructDefId", "Masked", "DefinedType", });
-    internal_static_littlehorse_ReturnType_descriptor =
+        new java.lang.String[] { "PrimitiveType", "StructDefId", "InlineArray", "Masked", "DefinedType", });
+    internal_static_littlehorse_InlineArrayDef_descriptor =
       getDescriptor().getMessageTypes().get(4);
+    internal_static_littlehorse_InlineArrayDef_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_InlineArrayDef_descriptor,
+        new java.lang.String[] { "ArrayType", });
+    internal_static_littlehorse_ReturnType_descriptor =
+      getDescriptor().getMessageTypes().get(5);
     internal_static_littlehorse_ReturnType_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ReturnType_descriptor,
         new java.lang.String[] { "ReturnType", });
     internal_static_littlehorse_UTActionTrigger_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_littlehorse_UTActionTrigger_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_UTActionTrigger_descriptor,
@@ -316,19 +330,19 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
         internal_static_littlehorse_UTActionTrigger_UTAReassign_descriptor,
         new java.lang.String[] { "UserId", "UserGroup", });
     internal_static_littlehorse_ExponentialBackoffRetryPolicy_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_littlehorse_ExponentialBackoffRetryPolicy_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ExponentialBackoffRetryPolicy_descriptor,
         new java.lang.String[] { "BaseIntervalMs", "MaxDelayMs", "Multiplier", });
     internal_static_littlehorse_TaskNode_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_littlehorse_TaskNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TaskNode_descriptor,
         new java.lang.String[] { "TaskDefId", "DynamicTask", "TimeoutSeconds", "Retries", "ExponentialBackoff", "Variables", "TaskToExecute", });
     internal_static_littlehorse_InlineStructDef_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_littlehorse_InlineStructDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_InlineStructDef_descriptor,
@@ -340,13 +354,13 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
         internal_static_littlehorse_InlineStructDef_FieldsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_StructFieldDef_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_littlehorse_StructFieldDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_StructFieldDef_descriptor,
         new java.lang.String[] { "FieldType", "DefaultValue", });
     internal_static_littlehorse_LHPath_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_littlehorse_LHPath_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_LHPath_descriptor,

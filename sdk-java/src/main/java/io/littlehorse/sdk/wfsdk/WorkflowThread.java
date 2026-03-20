@@ -203,8 +203,7 @@ public interface WorkflowThread {
      * @param elementType is the Java class matching the type of elements stored in your Array.
      * @return a WfRunVariable.
      */
-    // TODO: Complete Array's implementation
-    // WfRunVariable declareArray(String name, Class<?> elementType);
+    WfRunVariable declareArray(String name, Class<?> elementType);
 
     /**
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.

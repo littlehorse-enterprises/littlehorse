@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
+import io.littlehorse.sdk.common.LHArray;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -35,6 +36,8 @@ public abstract class LHClassType {
     public static LHClassType fromJavaClass(Class<?> classType, LHTypeAdapterRegistry typeAdapterRegistry) {
         if (classType == null) {
             throw new IllegalArgumentException("Class type should not be null");
+        } else if (LHArray.class.isAssignableFrom(classType)) {
+            return new LHArrayType(classType);
         } else if (LHLibUtil.isJavaClassLHPrimitive(classType)) {
             return new LHPrimitiveType(classType, typeAdapterRegistry);
         } else if (classType.isAnnotationPresent(LHStructDef.class)) {
