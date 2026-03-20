@@ -7,7 +7,7 @@ This directory contains proposals for significant changes to the LittleHorse Ker
 Proposals are similar to Kafka Improvement Proposals (KIP's) in Apache Kafka and [Strimzi Proposals](https://github.com/strimzi/proposals) in Strimzi. Proposals should be written before significant features which have significant impact on:
 
 * Any changes to the Protocol Buffer API (in the [`schemas` directory](../schemas/)).
-* Significant changes to the SDK API in Java, Go, Python, or C#.
+* Significant changes to the SDK API in Java, Go, Python, C#, or TypeScript.
 * Significant changes to the internal architecture of the Server which might affect performance.
 
 Proposals should include:
@@ -42,3 +42,9 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 014 | [Conditions Refactor](./014-conditions-refactor.md) | Colt McNealy | [#1458](https://github.com/littlehorse-enterprises/littlehorse/issues/1458) |
 | 015 | [Dynamic Child Workflows](./015-run-child-workflow-dynamically.md) | Eduwer Camacaro | N/A |
 | 016 | [Java `LHTaskWorker` Support Generic Structs](./016-java-structdef-placeholder-resolution.md) | Colt McNealy | [#2132](https://github.com/littlehorse-enterprises/littlehorse/pull/2132) |
+
+## SDK design sketches
+
+Draft API shapes that are not yet formal kernel proposals (no issue # until adopted):
+
+- [TypeScript WfSpec minimal API](./017-typescript-wfspec-minimal-api.md) — companion: [`017-typescript-wfspec-minimal-api.proposal.ts`](./017-typescript-wfspec-minimal-api.proposal.ts)
