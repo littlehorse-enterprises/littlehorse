@@ -9,6 +9,8 @@
     - [`StructDef` Schema Evolution](#structdef-schema-evolution)
       - [Validating `StructDef` Schema Evolution](#validating-structdef-schema-evolution)
     - [Interoperability with `JSON_OBJ`](#interoperability-with-json_obj)
+    - [Interoperability with `JSON_ARR` and Native `Array`](#interoperability-with-json_arr-and-native-array)
+      - [Differentiating LH Arrays from traditional `JSON_ARR`s](#differentiating-lh-arrays-from-traditional-json_arrs)
   - [Client-Side Enhancements](#client-side-enhancements)
     - [Task Workers](#task-workers)
       - [`StructDef` References](#structdef-references)
@@ -276,7 +278,7 @@ message VariableValue {
 }
 ```
 
-The only addition is the `Struct struct = 9;` field.
+The additions are the `Struct struct = 9;` and `Array array = 10;` fields.
 
 Note that the `Variable`, `VariableDef`, `ThreadVarDef`, `ReturnType`, `TaskDef`, `ExternalEventDef`, `WorkflowEventDef`, `UserTaskDef`, and other protobuf structures will **not** need to change. All of the changes will be encapsulated within the `TypeDefinition` and `VariableValue` messages.
 
@@ -413,6 +415,62 @@ In the past, this only worked if the variable on the ScheduledTask was of the ty
 2. The variable in the ScheduledTask is a Struct that matches.
 
 This means that the SDK will dynamically convert the `VariableValue` into a `Car` whether it is a `STRUCT` or a `JSON_OBJ`.
+
+### Interoperability with `JSON_ARR` and Native `Array`
+
+For Arrays, we will adopt a similar policy and convert an `Array` into a `JSON_ARR` but will not allow converting a `JSON_ARR` to an `Array`. 
+
+#### Differentiating LH Arrays from traditional `JSON_ARR`s
+
+When trying to serialize and deserialize values in the SDKs, we define a rule for explicitly differentiating legacy `JSON_ARR` and native LittleHorse `Array`s.
+
+1. A dedicated SDK type (recommended: `LHArray<T>`, alternatively proto `Array`) represents native LittleHorse `Array`.
+2. Fallback to using GSON to determine if an unrecognized class is a `JSON_OBJ` or `JSON_ARR`
+
+Example task methods:
+
+```java
+class MyWorker {
+  // Legacy JSON_ARR parameter
+  @LHTaskMethod("legacy-array-task")
+  public void handleLegacy(List<Car> cars) {
+    // Gson-style JSON_ARR mapping
+  }
+
+  // Native LH Array parameter
+  @LHTaskMethod("typed-array-task")
+  public void handleTyped(LHArray<Car> cars) {
+    // Typed Array mapping backed by InlineArrayDef
+  }
+}
+```
+
+To make native Arrays easy to produce, the Java SDK should provide factory helpers:
+
+```java
+class LHArray<T> {
+  public static <T> LHArray<T> of(Collection<T> items) {
+    // Builds a typed LHArray from an existing Java Collection.
+  }
+}
+```
+
+Example return values from task methods:
+
+```java
+class MyWorker {
+  @LHTaskMethod("return-typed-array")
+  public LHArray<Car> returnTypedArray() {
+    List<Car> cars = List.of(new Car("Toyota", "Camry"), new Car("Honda", "Civic"));
+    return LHArray.of(cars);
+  }
+
+  @LHTaskMethod("return-legacy-json-arr")
+  public List<Car> returnLegacyJsonArr() {
+    return List.of(new Car("Toyota", "Camry"), new Car("Honda", "Civic"));
+  }
+}
+```
 
 ## Client-Side Enhancements
 
