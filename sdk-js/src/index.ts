@@ -1,17 +1,28 @@
 export { LHConfig } from './LHConfig'
 export {
-  createTaskWorker,
   LHTaskException,
   WorkerContext,
-  lhStruct,
-  lhMasked,
-  getStructName,
-  isLHStruct,
-  zodToTypeDef,
-  zodToVariableDefs,
   buildPutStructDefRequest,
   buildStructVariableDef,
+  createTaskWorker,
   getStructDependencies,
+  getStructName,
+  isLHStruct,
+  lhMasked,
+  lhStruct,
   toStructVariableValue,
+  zodToTypeDef,
+  zodToVariableDefs,
 } from './worker'
-export type { LHTaskWorker, TaskFunction, LHTaskWorkerOptions } from './worker'
+export type { LHTaskWorker, LHTaskWorkerOptions, TaskFunction } from './worker'
+export type {
+  LHExpression,
+  LHFormatString,
+  NodeOutput,
+  TaskNodeOutput,
+  ThreadFunc,
+  Workflow,
+  WorkflowRhs,
+  WorkflowThread,
+  WfRunVariable,
+} from './workflow'
