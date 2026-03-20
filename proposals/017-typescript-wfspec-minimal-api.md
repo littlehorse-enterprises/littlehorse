@@ -1,6 +1,36 @@
-# TypeScript WfSpec builder (minimal API sketch)
+# TypeScript WfSpec builder (minimal API)
 
-Design artifact for a **TypeScript workflow-spec DSL** in `littlehorse-client` (`sdk-js`), aligned with Java / Python / Go / C#.
+## Motivation
+
+[`sdk-js`](../sdk-js) already ships a gRPC client, generated protos, and a task worker. It does **not** yet offer a workflow-spec DSL: today you either hand-assemble `PutWfSpecRequest` / `ThreadSpec` from protos, generate JSON for `lhctl deploy`, or define the `WfSpec` in another language. Teams that standardize on Node for workers naturally want to **author and register** workflows in TypeScript with the same mental model as Java / Python / Go / .NET.
+
+This proposal sketches a **minimal first slice** (variables, task nodes, mutations) so the API can be reviewed before implementation; broader parity (conditionals, events, user tasks, etc.) comes later.
+
+## Proposed Protocol Buffer changes
+
+**None.** The builder compiles to the existing public API (`PutWfSpecRequest` and related messages in [`schemas/`](../schemas/)). No new fields or RPCs.
+
+## Proposed SDK API changes
+
+Add a **workflow builder** to `littlehorse-client` (`sdk-js`): types and implementation under `sdk-js/src/` (exact module path TBD) that mirror the graph-building model used by other SDKs and produce the same protobuf objects users could build manually today.
+
+Initial surface area: `Workflow.create`, `WorkflowThread` (`declare*`, `execute`, `mutate`, `assign`, expression helpers, `complete`), compiling to `PutWfSpecRequest`. Optional follow-up: `registerWfSpec`-style helper orchestrating `putWfSpec` (and any side-effect RPCs) like other SDKs.
+
+Concrete interfaces and an example appear in [Proposed TypeScript surface](#proposed-typescript-surface) below.
+
+## Server architecture and operations
+
+**No server changes.** This is client-only. Performance and cluster behavior are unchanged; the server continues to accept the same `putWfSpec` payloads.
+
+## Backwards compatibility
+
+**Additive.** Existing `littlehorse-client` imports and behavior stay as-is. New APIs are additional exports; no breaking changes to `LHConfig`, the gRPC client, or the worker unless explicitly called out in a future revision of this doc.
+
+## GitHub issue
+
+TBD — add a tracking issue when implementation work is scheduled.
+
+---
 
 ## Scope (initial)
 
@@ -29,9 +59,9 @@ Go keeps `(threadFunc, name)`; TS should use the more common **name-first** orde
 - **Format strings:** Java/C# use `{0}`-style indices; Python’s `LHFormatString` uses `{}` — choose one for TS and document it so examples stay consistent.
 - **Deferred parity:** JSON helpers (`extend`, `removeKey`, …), variable modifiers (`.searchable()`, `.masked()`, …), `doIf` / `spawnThread`, etc. follow after the minimal milestone.
 
-Below is a sketch only — not part of the `sdk-js` build until implemented under `sdk-js/src/`.
+The following is a **design sketch** only — not part of the `sdk-js` build until implemented under `sdk-js/src/`.
 
-## Proposed API (TypeScript)
+## Proposed TypeScript surface
 
 ```typescript
 /**
