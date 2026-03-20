@@ -47,4 +47,4 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 
 Draft API shapes that are not yet formal kernel proposals (no issue # until adopted):
 
-- [TypeScript WfSpec minimal API](./017-typescript-wfspec-minimal-api.md) — companion: [`017-typescript-wfspec-minimal-api.proposal.ts`](./017-typescript-wfspec-minimal-api.proposal.ts)
+- [TypeScript WfSpec minimal API](./017-typescript-wfspec-minimal-api.md)
