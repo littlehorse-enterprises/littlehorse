@@ -42,4 +42,4 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 014 | [Conditions Refactor](./014-conditions-refactor.md) | Colt McNealy | [#1458](https://github.com/littlehorse-enterprises/littlehorse/issues/1458) |
 | 015 | [Dynamic Child Workflows](./015-run-child-workflow-dynamically.md) | Eduwer Camacaro | N/A |
 | 016 | [Java `LHTaskWorker` Support Generic Structs](./016-java-structdef-placeholder-resolution.md) | Colt McNealy | [#2132](https://github.com/littlehorse-enterprises/littlehorse/pull/2132) |
-| 017 | [TypeScript WfSpec minimal API](./017-typescript-wfspec-minimal-api.md) | Colt McNealy | [#2132](https://github.com/littlehorse-enterprises/littlehorse/pull/2132) |
+| 017 | [TypeScript WfSpec minimal API](./017-typescript-wfspec-minimal-api.md) | Hazim Arafa | [#2132](https://github.com/littlehorse-enterprises/littlehorse/pull/2132) |
