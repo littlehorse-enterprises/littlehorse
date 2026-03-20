@@ -25,13 +25,13 @@ def get_config() -> LHConfig:
 def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
         # it receives a name
-        name = wf.add_variable("name", VariableType.STR).masked()
+        name = wf.declare_str("name").masked()
 
         # it sends the name to a task worker
         output = wf.execute(SPIDER_BITE, name)
 
         # it assigns the result to the variable name
-        wf.mutate(name, VariableMutationType.ASSIGN, output)
+        name.assign(output)
 
         # it pass the variable to another task
         wf.execute(DAILY_BUGLE, name)

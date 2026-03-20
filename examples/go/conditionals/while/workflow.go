@@ -4,8 +4,6 @@ import (
 	"fmt"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
-
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
 const (
@@ -26,7 +24,7 @@ func DonutWorkflow(wf *littlehorse.WorkflowThread) {
 		numDonuts.IsGreaterThan(0),
 		func(t *littlehorse.WorkflowThread) {
 			taskOutput := t.Execute(TaskDefName, numDonuts)
-			wf.Mutate(numDonuts, lhproto.VariableMutationType_ASSIGN, taskOutput)
+			numDonuts.Assign(taskOutput)
 		},
 	)
 }

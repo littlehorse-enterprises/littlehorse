@@ -36,7 +36,7 @@ def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
         wf.execute(
             TASK_NAME,
-            wf.add_variable(INPUT_NAME, VariableType.INT),
+            wf.declare_int(INPUT_NAME),
             retries=MAX_RETRIES,
         )
 
