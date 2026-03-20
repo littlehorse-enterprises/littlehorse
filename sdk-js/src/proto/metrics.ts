@@ -10,6 +10,10 @@ import _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { TaskDefId, TenantId, UserTaskDefId, WfSpecId } from "./object_id";
 
+/**
+ * Identifies a metrics window for a workflow/task/user-task object.
+ * `window_start` marks the window start; `tenant_id` is optional.
+ */
 export interface MetricWindowId {
   id?: { $case: "wfSpecId"; value: WfSpecId } | { $case: "taskDefId"; value: TaskDefId } | {
     $case: "userTaskDefId";
@@ -19,6 +23,10 @@ export interface MetricWindowId {
   windowStart: string | undefined;
 }
 
+/**
+ * Aggregate counts and latency stats for a metric window. Use
+ * `total_latency_ms / count` to compute average latency.
+ */
 export interface CountAndTiming {
   count: number;
   minLatencyMs: number;
@@ -26,11 +34,16 @@ export interface CountAndTiming {
   totalLatencyMs: number;
 }
 
+/**
+ * Aggregated metrics for a workflow or task within a time window.
+ * Only one of `workflow` or `task` will be populated.
+ */
 export interface MetricWindow {
   id: MetricWindowId | undefined;
   metric?: { $case: "workflow"; value: WfMetrics } | { $case: "task"; value: TaskMetrics } | undefined;
 }
 
+/** Workflow-level aggregates for lifecycle transitions; fields are `CountAndTiming`. */
 export interface WfMetrics {
   started: CountAndTiming | undefined;
   runningToCompleted: CountAndTiming | undefined;
@@ -40,6 +53,7 @@ export interface WfMetrics {
   haltingToHalted: CountAndTiming | undefined;
 }
 
+/** Task-level aggregates for task lifecycle transitions; fields are `CountAndTiming`. */
 export interface TaskMetrics {
   taskrunCreatedToCompleted: CountAndTiming | undefined;
   taskrunCreatedToError: CountAndTiming | undefined;

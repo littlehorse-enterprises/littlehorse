@@ -21,6 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Identifies a metrics window for a workflow/task/user-task object.
+// `window_start` marks the window start; `tenant_id` is optional.
 type MetricWindowId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -132,6 +134,8 @@ func (*MetricWindowId_TaskDefId) isMetricWindowId_Id() {}
 
 func (*MetricWindowId_UserTaskDefId) isMetricWindowId_Id() {}
 
+// Aggregate counts and latency stats for a metric window. Use
+// `total_latency_ms / count` to compute average latency.
 type CountAndTiming struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -203,6 +207,8 @@ func (x *CountAndTiming) GetTotalLatencyMs() int64 {
 	return 0
 }
 
+// Aggregated metrics for a workflow or task within a time window.
+// Only one of `workflow` or `task` will be populated.
 type MetricWindow struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -292,6 +298,7 @@ func (*MetricWindow_Workflow) isMetricWindow_Metric() {}
 
 func (*MetricWindow_Task) isMetricWindow_Metric() {}
 
+// Workflow-level aggregates for lifecycle transitions; fields are `CountAndTiming`.
 type WfMetrics struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -379,6 +386,7 @@ func (x *WfMetrics) GetHaltingToHalted() *CountAndTiming {
 	return nil
 }
 
+// Task-level aggregates for task lifecycle transitions; fields are `CountAndTiming`.
 type TaskMetrics struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

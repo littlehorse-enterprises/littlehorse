@@ -6,6 +6,11 @@
 package io.littlehorse.common.proto;
 
 /**
+ * <pre>
+ * Stored partition of a metrics window: `id` identifies the window.
+ * `metrics` maps metric names to aggregated `CountAndTiming`.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.PartitionMetricWindow}
  */
 @com.google.protobuf.Generated
@@ -59,6 +64,10 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.MetricWindowId id_;
   /**
+   * <pre>
+   * Identifier of the metrics window this partition belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -67,6 +76,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Identifier of the metrics window this partition belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    * @return The id.
    */
@@ -75,6 +88,10 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.MetricWindowId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * Identifier of the metrics window this partition belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    */
   @java.lang.Override
@@ -109,6 +126,10 @@ private static final long serialVersionUID = 0L;
     return internalGetMetrics().getMap().size();
   }
   /**
+   * <pre>
+   * Metric name -&gt; aggregated counts/timings.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   @java.lang.Override
@@ -126,6 +147,10 @@ private static final long serialVersionUID = 0L;
     return getMetricsMap();
   }
   /**
+   * <pre>
+   * Metric name -&gt; aggregated counts/timings.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   @java.lang.Override
@@ -133,6 +158,10 @@ private static final long serialVersionUID = 0L;
     return internalGetMetrics().getMap();
   }
   /**
+   * <pre>
+   * Metric name -&gt; aggregated counts/timings.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   @java.lang.Override
@@ -147,6 +176,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
+   * <pre>
+   * Metric name -&gt; aggregated counts/timings.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   @java.lang.Override
@@ -346,6 +379,11 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * Stored partition of a metrics window: `id` identifies the window.
+   * `metrics` maps metric names to aggregated `CountAndTiming`.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.PartitionMetricWindow}
    */
   public static final class Builder extends
@@ -540,6 +578,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.MetricWindowId, io.littlehorse.sdk.common.proto.MetricWindowId.Builder, io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * Identifier of the metrics window this partition belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -547,6 +589,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Identifier of the metrics window this partition belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      * @return The id.
      */
@@ -558,6 +604,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Identifier of the metrics window this partition belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.MetricWindowId value) {
@@ -574,6 +624,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Identifier of the metrics window this partition belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     public Builder setId(
@@ -588,6 +642,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Identifier of the metrics window this partition belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.MetricWindowId value) {
@@ -609,6 +667,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Identifier of the metrics window this partition belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     public Builder clearId() {
@@ -622,6 +684,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Identifier of the metrics window this partition belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.MetricWindowId.Builder getIdBuilder() {
@@ -630,6 +696,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return internalGetIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Identifier of the metrics window this partition belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder getIdOrBuilder() {
@@ -641,6 +711,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Identifier of the metrics window this partition belongs to.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -693,6 +767,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return internalGetMetrics().ensureBuilderMap().size();
     }
     /**
+     * <pre>
+     * Metric name -&gt; aggregated counts/timings.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
     @java.lang.Override
@@ -710,6 +788,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return getMetricsMap();
     }
     /**
+     * <pre>
+     * Metric name -&gt; aggregated counts/timings.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
     @java.lang.Override
@@ -717,6 +799,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return internalGetMetrics().getImmutableMap();
     }
     /**
+     * <pre>
+     * Metric name -&gt; aggregated counts/timings.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
     @java.lang.Override
@@ -730,6 +816,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return map.containsKey(key) ? metricsConverter.build(map.get(key)) : defaultValue;
     }
     /**
+     * <pre>
+     * Metric name -&gt; aggregated counts/timings.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
     @java.lang.Override
@@ -748,6 +838,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Metric name -&gt; aggregated counts/timings.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
     public Builder removeMetrics(
@@ -767,6 +861,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return internalGetMutableMetrics().ensureMessageMap();
     }
     /**
+     * <pre>
+     * Metric name -&gt; aggregated counts/timings.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
     public Builder putMetrics(
@@ -780,6 +878,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Metric name -&gt; aggregated counts/timings.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
     public Builder putAllMetrics(
@@ -795,6 +897,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Metric name -&gt; aggregated counts/timings.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder putMetricsBuilderIfAbsent(

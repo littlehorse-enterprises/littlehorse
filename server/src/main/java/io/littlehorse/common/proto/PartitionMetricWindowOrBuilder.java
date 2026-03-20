@@ -11,25 +11,45 @@ public interface PartitionMetricWindowOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Identifier of the metrics window this partition belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * Identifier of the metrics window this partition belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.MetricWindowId getId();
   /**
+   * <pre>
+   * Identifier of the metrics window this partition belongs to.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder getIdOrBuilder();
 
   /**
+   * <pre>
+   * Metric name -&gt; aggregated counts/timings.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   int getMetricsCount();
   /**
+   * <pre>
+   * Metric name -&gt; aggregated counts/timings.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   boolean containsMetrics(
@@ -41,11 +61,19 @@ public interface PartitionMetricWindowOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
   getMetrics();
   /**
+   * <pre>
+   * Metric name -&gt; aggregated counts/timings.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.CountAndTiming>
   getMetricsMap();
   /**
+   * <pre>
+   * Metric name -&gt; aggregated counts/timings.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   /* nullable */
@@ -54,6 +82,10 @@ io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrDefault(
       /* nullable */
 io.littlehorse.sdk.common.proto.CountAndTiming defaultValue);
   /**
+   * <pre>
+   * Metric name -&gt; aggregated counts/timings.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.CountAndTiming&gt; metrics = 2;</code>
    */
   io.littlehorse.sdk.common.proto.CountAndTiming getMetricsOrThrow(

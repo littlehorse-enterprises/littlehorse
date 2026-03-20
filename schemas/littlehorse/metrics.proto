@@ -9,17 +9,23 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
+// Identifies a metrics window for a workflow/task/user-task object.
+// `window_start` marks the window start; `tenant_id` is optional.
 message MetricWindowId {
   oneof id {
     WfSpecId  wf_spec_id  = 1;
     TaskDefId task_def_id = 2;
     UserTaskDefId user_task_def_id = 3;
   }
+
   optional TenantId tenant_id = 6;
+
   google.protobuf.Timestamp window_start = 7;
 
 }
 
+// Aggregate counts and latency stats for a metric window. Use
+// `total_latency_ms / count` to compute average latency.
 message CountAndTiming {
   int32 count            = 1;
   int64 min_latency_ms   = 2;
@@ -27,14 +33,18 @@ message CountAndTiming {
   int64 total_latency_ms = 4;
 }
 
+// Aggregated metrics for a workflow or task within a time window.
+// Only one of `workflow` or `task` will be populated.
 message MetricWindow {
   MetricWindowId              id      = 1;
+
   oneof metric {
     WfMetrics workflow = 2;
     TaskMetrics task = 3;
   }
 }
 
+// Workflow-level aggregates for lifecycle transitions; fields are `CountAndTiming`.
 message WfMetrics{
   CountAndTiming started = 1;
   CountAndTiming running_to_completed = 2;
@@ -43,6 +53,8 @@ message WfMetrics{
   CountAndTiming running_to_halting = 5;
   CountAndTiming halting_to_halted = 6;
 }
+
+// Task-level aggregates for task lifecycle transitions; fields are `CountAndTiming`.
 message TaskMetrics{
   CountAndTiming taskrun_created_to_completed = 1;
   CountAndTiming taskrun_created_to_error = 2;

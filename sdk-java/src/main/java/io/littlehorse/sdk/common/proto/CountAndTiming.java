@@ -6,6 +6,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Aggregate counts and latency stats for a metric window. Use
+ * `total_latency_ms / count` to compute average latency.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.CountAndTiming}
  */
 @com.google.protobuf.Generated
@@ -281,6 +286,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Aggregate counts and latency stats for a metric window. Use
+   * `total_latency_ms / count` to compute average latency.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.CountAndTiming}
    */
   public static final class Builder extends

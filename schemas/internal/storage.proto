@@ -158,7 +158,12 @@ message NodeOutput {
   google.protobuf.Timestamp created_at = 5;
 }
 
+// Stored partition of a metrics window: `id` identifies the window.
+// `metrics` maps metric names to aggregated `CountAndTiming`.
 message PartitionMetricWindow {
+  // Identifier of the metrics window this partition belongs to.
   MetricWindowId id = 1;
+
+  // Metric name -> aggregated counts/timings.
   map<string, CountAndTiming> metrics = 2;
 }

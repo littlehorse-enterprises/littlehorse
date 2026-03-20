@@ -6,6 +6,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Task-level aggregates for task lifecycle transitions; fields are `CountAndTiming`.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.TaskMetrics}
  */
 @com.google.protobuf.Generated
@@ -527,6 +531,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Task-level aggregates for task lifecycle transitions; fields are `CountAndTiming`.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.TaskMetrics}
    */
   public static final class Builder extends

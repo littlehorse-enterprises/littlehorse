@@ -6,6 +6,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Workflow-level aggregates for lifecycle transitions; fields are `CountAndTiming`.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.WfMetrics}
  */
 @com.google.protobuf.Generated
@@ -443,6 +447,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Workflow-level aggregates for lifecycle transitions; fields are `CountAndTiming`.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WfMetrics}
    */
   public static final class Builder extends

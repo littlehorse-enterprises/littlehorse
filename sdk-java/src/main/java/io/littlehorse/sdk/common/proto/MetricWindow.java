@@ -6,6 +6,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Aggregated metrics for a workflow or task within a time window.
+ * Only one of `workflow` or `task` will be populated.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.MetricWindow}
  */
 @com.google.protobuf.Generated
@@ -376,6 +381,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Aggregated metrics for a workflow or task within a time window.
+   * Only one of `workflow` or `task` will be populated.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.MetricWindow}
    */
   public static final class Builder extends

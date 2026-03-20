@@ -6,6 +6,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Identifies a metrics window for a workflow/task/user-task object.
+ * `window_start` marks the window start; `tenant_id` is optional.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.MetricWindowId}
  */
 @com.google.protobuf.Generated
@@ -466,6 +471,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Identifies a metrics window for a workflow/task/user-task object.
+   * `window_start` marks the window start; `tenant_id` is optional.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.MetricWindowId}
    */
   public static final class Builder extends
