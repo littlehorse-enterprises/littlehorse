@@ -1,12 +1,13 @@
 # LittleHorse JavaScript Examples
 
-JavaScript/TypeScript SDK examples for LittleHorse workers.
+JavaScript/TypeScript examples for LittleHorse workflow features.
 
 ## Prerequisites
 
 - Running LittleHorse server (see [`../README.md`](../README.md)).
 - `lhctl` installed and configured.
-- Node.js (see per-example README for version details).
+- Node.js 18+.
+- npm (run `npm install` inside each example directory).
 
 Verify server connectivity:
 
@@ -14,30 +15,22 @@ Verify server connectivity:
 lhctl whoami
 ```
 
-## Running JS examples
+## Running JavaScript examples
 
-Example (`basic`):
+From an example directory (after `npm install`):
 
 ```bash
-cd examples/js/basic
-npm install
 npm start
 ```
 
-Use another terminal to start a run (see each example’s README).
+Most examples start a long-lived worker process. Keep that command running and use another terminal for `npm run run-wf` or `lhctl run ...` (see each example’s README).
 
 ## JavaScript Example Index
 
-| JS folder | Java equivalent |
-|-----------|------------------|
-| [`basic/`](./basic/README.md) | `examples/java/basic` |
-| [`expressions/`](./expressions/README.md) | `examples/java/expressions` |
-| [`json/`](./json/README.md) | `examples/java/json` |
-| [`mutation/`](./mutation/README.md) | `examples/java/mutation` |
-| [`structs/`](./structs/README.md) | `examples/java/struct-def` |
-| [`variables/`](./variables/README.md) | `examples/java/variables` |
-| [`worker-context/`](./worker-context/README.md) | `examples/java/worker-context` |
-
-### Not in the minimal JS workflow builder yet
-
-`casting`, `conditionals`, `external-event`, `child-thread`, `user-tasks`, `exception-handler`, `checkpoint-tasks`, …
+- [`basic/`](./basic/README.md): Minimal hello-world workflow.
+- [`expressions/`](./expressions/README.md): Expressions and variable manipulation.
+- [`json/`](./json/README.md): JSON variable examples.
+- [`mutation/`](./mutation/README.md): Variable mutation behavior.
+- [`structs/`](./structs/README.md): Struct definition and usage.
+- [`variables/`](./variables/README.md): Variable declaration and assignment.
+- [`worker-context/`](./worker-context/README.md): Access worker context metadata.

@@ -1,31 +1,37 @@
-# JavaScript JSON variable example
+## Running Json Example
 
-[`examples/java/json`](../../../java/json/README.md) — `JSON_OBJ` + JsonPath into tasks.
+This workflow demonstrates JSON variables and JsonPath when wiring data into tasks.
+More information about json-path at https://github.com/json-path/JsonPath.
 
-## Prerequisites
+Let's run the example in `src/index.ts`
 
-- Node.js >= 18, server on `localhost:2023`
-- `cd ../../../sdk-js && npm install && npm run build`
-
-## Run
-
-Terminal 1:
-
-```bash
+```
 npm install
 npm start
 ```
 
-Terminal 2:
+In another terminal, use `lhctl` to run the workflow:
 
-```bash
+```
+lhctl run example-json person '{"name": "Obi-Wan", "car": {"brand": "Ford", "model": "Escape"}}'
+```
+
+Or:
+
+```
 npm run run-wf
-# or
 npm run run-wf -- '{"name":"Obi-Wan","car":{"brand":"Ford","model":"Escape"}}'
 ```
 
-Same idea as:
+In addition, you can check the result with:
 
-```bash
-lhctl run example-json person '{"name": "Obi-Wan", "car": {"brand": "Ford", "model": "Escape"}}'
+```
+# This call shows the result
+lhctl get wfRun <wf_run_id>
+
+# This will show you all nodes in the run
+lhctl list nodeRun <wf_run_id>
+
+# This shows the task run information
+lhctl get taskRun <wf_run_id> <task_run_global_id>
 ```

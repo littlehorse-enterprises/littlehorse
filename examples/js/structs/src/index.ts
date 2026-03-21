@@ -11,7 +11,7 @@ import { Address, Person, ParkingTicketReport } from './schemas.js'
 import type { Person as PersonType, ParkingTicketReport as ParkingTicketReportType } from './schemas.js'
 
 function issueParkingTicketWorkflow() {
-  return Workflow.newWorkflow('issue-parking-ticket', thread => {
+  return Workflow.newWorkflow('example-issue-parking-ticket', thread => {
     const carInput = thread.declareStruct('car-input', 'parking-ticket-report')
     const ownerLookup = thread.execute('get-car-owner', carInput)
     const carOwner = thread.declareStruct('car-owner', 'person')
@@ -64,7 +64,7 @@ async function main() {
   console.log('Registering TaskDef "mail-ticket"...')
   await mailTicketWorker.registerTaskDef()
 
-  console.log('Registering WfSpec "issue-parking-ticket"...')
+  console.log('Registering WfSpec "example-issue-parking-ticket"...')
   await Workflow.registerWfSpec(issueParkingTicketWorkflow(), config.getClient())
 
   await getCarOwnerWorker.start()

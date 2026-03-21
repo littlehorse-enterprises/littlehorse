@@ -1,34 +1,39 @@
-# JavaScript Expressions Example
+## Running Expressions Example
 
-[`examples/java/expressions`](../../../java/expressions/README.md) — variable math into one task input.
+This is a simple example, which does two things:
 
-## Prerequisites
+1. Declare the variables `quantity`, `price`, and `taxes`,
+2. Execute an expression to calculate the total to pay. `quantity * (price * (1 + (taxes / 100)))`.
 
-- Node.js >= 18
-- LittleHorse server on `localhost:2023` (see [`local-dev/README.md`](../../../local-dev/README.md))
-- Build the SDK: `cd ../../../sdk-js && npm install && npm run build`
+Let's run the example in `src/index.ts`
 
-## Setup
-
-```bash
+```sh
 npm install
-```
-
-## Run
-
-```bash
 npm start
 ```
 
-Other terminal:
+In another terminal, use `lhctl` to run the workflow:
 
-```bash
-npm run run-wf -- 2 10 8
+```sh
+# Here, we specify that the "quantity" = 1, "price" = 0.8 and "taxes" = 12
+lhctl run example-expressions quantity 1 price 0.8 taxes 12
 ```
 
-## Inspect
+Or:
 
-```bash
+```sh
+npm run run-wf -- 1 0.8 12
+```
+
+In addition, you can check the result with:
+
+```
+# This call shows the result
 lhctl get wfRun <wf_run_id>
+
+# This will show you all nodes in the run
 lhctl list nodeRun <wf_run_id>
+
+# This shows the task run information
+lhctl get taskRun <wf_run_id> <task_run_global_id>
 ```

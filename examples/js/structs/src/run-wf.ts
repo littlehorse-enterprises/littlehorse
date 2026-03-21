@@ -23,7 +23,7 @@ async function main() {
   const reportValue = toStructVariableValue(report, ParkingTicketReport)
 
   const result = await client.runWf({
-    wfSpecName: 'issue-parking-ticket',
+    wfSpecName: 'example-issue-parking-ticket',
     variables: { 'car-input': reportValue },
   })
 

@@ -1,47 +1,46 @@
-# JavaScript Basic Example
+## Running Basic Example
 
-## Prerequisites
+This is a simple example, which does two things:
 
-- Node.js >= 18
-- A running LittleHorse server on `localhost:2023` (see [local-dev/README.md](../../local-dev/README.md))
-- Build the SDK first: `cd ../../sdk-js && npm install && npm run build`
+1. Declare an "input-name" variable of type String
+2. Pass that variable into the execution of the "greet" task.
 
-## Setup
+Let's run the example in `src/index.ts`
 
 ```bash
 npm install
-```
-
-## Run the Task Worker
-
-```bash
 npm start
 ```
 
-Registers TaskDef + WfSpec, then polls.
+In another terminal, use `lhctl` to run the workflow:
 
-## Run a Workflow
-
-In another terminal:
-
-```bash
-# Run with a name
-npm run run-wf -- Obi-Wan
-
-# Run with default name
-npm run run-wf
 ```
+# The "input-name" variable here is treated as null
+lhctl run example-basic
 
-Or with `lhctl`:
-
-```bash
+# Here, we specify that the "input-name" variable = "Obi-Wan"
 lhctl run example-basic input-name Obi-Wan
+
+# This call fails since there is no defined "foo" variable
+lhctl run example-basic foo bar
 ```
 
-## Check Results
+Or use the helper script (defaults the name if omitted):
 
 ```bash
+npm run run-wf
+npm run run-wf -- Obi-Wan
+```
+
+In addition, you can check the result with:
+
+```
+# This call shows the result
 lhctl get wfRun <wf_run_id>
+
+# This will show you all nodes in the run
 lhctl list nodeRun <wf_run_id>
+
+# This shows the task run information
 lhctl get taskRun <wf_run_id> <task_run_global_id>
 ```
