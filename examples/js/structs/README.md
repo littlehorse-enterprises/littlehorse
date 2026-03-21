@@ -1,12 +1,6 @@
 # JavaScript Structs Example — Issue Parking Ticket
 
-Mirrors the Java `struct-def` example. Demonstrates using the LittleHorse JavaScript
-SDK with **StructDefs**, including nested structs (`Person` → `Address`).
-
-This example:
-1. Registers three StructDefs: `address`, `person` (with masked `homeAddress`), and `parking-ticket-report`
-2. Registers two TaskDefs: `get-car-owner` (returns a `Person`) and `mail-ticket`
-3. Starts task workers that process the `issue-parking-ticket` workflow
+[`examples/java/struct-def`](../../../java/struct-def/README.md): StructDefs + `Workflow.create` for `issue-parking-ticket`.
 
 ## Prerequisites
 
@@ -23,30 +17,13 @@ npm install
 
 ## Run
 
-### 1. Start the Task Workers
-
 ```bash
 npm start
 ```
 
-This registers the StructDefs (`address`, `person`, `parking-ticket-report`), the TaskDefs
-(`get-car-owner`, `mail-ticket`), and starts polling for tasks.
-
-### 2. Deploy the WfSpec
-
-In another terminal:
-
-```bash
-lhctl deploy issue-parking-ticket-wfspec.json
-```
-
-### 3. Run a Workflow
-
 ```bash
 npm run run-wf -- Toyota Camry ABC123
 ```
-
-This creates a `ParkingTicketReport` and runs the `issue-parking-ticket` workflow.
 
 ## Check Results
 

@@ -16,21 +16,28 @@ lhctl whoami
 
 ## Running JS examples
 
-Example (`simple-worker`):
+Example (`basic`):
 
 ```bash
-cd examples/js/simple-worker
+cd examples/js/basic
 npm install
 npm start
 ```
 
-Use another terminal for workflow registration/runs:
-
-```bash
-lhctl deploy wfSpec example-basic-wfspec.json
-```
+Use another terminal to start a run (see each example’s README).
 
 ## JavaScript Example Index
 
-- [`simple-worker/`](./simple-worker/README.md): Basic task worker example.
-- [`structs/`](./structs/README.md): Struct-based worker and workflow example.
+| JS folder | Java equivalent |
+|-----------|------------------|
+| [`basic/`](./basic/README.md) | `examples/java/basic` |
+| [`expressions/`](./expressions/README.md) | `examples/java/expressions` |
+| [`json/`](./json/README.md) | `examples/java/json` |
+| [`mutation/`](./mutation/README.md) | `examples/java/mutation` |
+| [`structs/`](./structs/README.md) | `examples/java/struct-def` |
+| [`variables/`](./variables/README.md) | `examples/java/variables` |
+| [`worker-context/`](./worker-context/README.md) | `examples/java/worker-context` |
+
+### Not in the minimal JS workflow builder yet
+
+`casting`, `conditionals`, `external-event`, `child-thread`, `user-tasks`, `exception-handler`, `checkpoint-tasks`, …

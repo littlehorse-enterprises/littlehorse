@@ -1,9 +1,5 @@
 # JavaScript Basic Example
 
-A simple example that demonstrates using the LittleHorse JavaScript SDK to create a Task Worker.
-
-The worker executes a `greet` task that takes a name and returns a greeting message.
-
 ## Prerequisites
 
 - Node.js >= 18
@@ -22,18 +18,11 @@ npm install
 npm start
 ```
 
-This will:
-1. Register the `greet` TaskDef if it doesn't exist
-2. Start polling for tasks
+Registers TaskDef + WfSpec, then polls.
 
 ## Run a Workflow
 
-Before running a workflow, register the WfSpec using `lhctl`:
-
-```bash
-lhctl deploy wfSpec example-basic-wfspec.json
-```
-Then in another terminal:
+In another terminal:
 
 ```bash
 # Run with a name
@@ -41,6 +30,12 @@ npm run run-wf -- Obi-Wan
 
 # Run with default name
 npm run run-wf
+```
+
+Or with `lhctl`:
+
+```bash
+lhctl run example-basic input-name Obi-Wan
 ```
 
 ## Check Results

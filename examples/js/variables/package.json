@@ -1,11 +1,10 @@
 {
-  "name": "example-js-structs",
+  "name": "example-js-variables",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "npx tsc",
-    "start": "npx tsc && node dist/index.js",
-    "run-wf": "npx tsc && node dist/run-wf.js"
+    "start": "npx tsx src/index.ts",
+    "run-wf": "npx tsx src/run-wf.ts"
   },
   "dependencies": {
     "littlehorse-client": "file:../../../sdk-js",

@@ -1,4 +1,5 @@
 export { LHConfig } from './LHConfig'
+export { toVariableValue } from './utils/variableValueConvert'
 export {
   LHTaskException,
   WorkerContext,
@@ -15,14 +16,14 @@ export {
   zodToVariableDefs,
 } from './worker'
 export type { LHTaskWorker, LHTaskWorkerOptions, TaskFunction } from './worker'
+export { LHMisconfigurationException, Workflow } from './workflow'
 export type {
   LHExpression,
   LHFormatString,
   NodeOutput,
   TaskNodeOutput,
   ThreadFunc,
-  Workflow,
+  WfRunVariable,
   WorkflowRhs,
   WorkflowThread,
-  WfRunVariable,
 } from './workflow'

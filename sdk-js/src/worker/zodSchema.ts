@@ -35,7 +35,7 @@ import { VariableType } from '../proto/common_enums'
 import { VariableDef, TypeDefinition, StructFieldDef } from '../proto/common_wfspec'
 import { PutStructDefRequest, StructDefCompatibilityType } from '../proto/service'
 import { VariableValue, StructField } from '../proto/variable'
-import { toVariableValue } from './variableMapping'
+import { toVariableValue } from '../utils/variableValueConvert'
 
 // ── Metadata key for struct name ─────────────────────────────────────
 

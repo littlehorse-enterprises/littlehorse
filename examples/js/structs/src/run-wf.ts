@@ -1,12 +1,6 @@
 import { LHConfig, toStructVariableValue } from 'littlehorse-client'
 import { ParkingTicketReport } from './schemas.js'
 
-/**
- * Runs the "issue-parking-ticket" workflow, passing a ParkingTicketReport struct as input.
- *
- * Usage:
- *   npm run run-wf -- <vehicleMake> <vehicleModel> <licensePlateNumber>
- */
 async function main() {
   const config = LHConfig.from({})
   const client = config.getClient()
