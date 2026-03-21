@@ -6,10 +6,7 @@ import { LHFormatStringImpl } from './lhFormatStringImpl'
 import { NodeOutputImpl } from './nodeOutputImpl'
 import { WfRunVariableImpl } from './wfRunVariableImpl'
 
-export function assignVariable(
-  rhs: WorkflowRhs,
-  assign: (r: WorkflowRhs) => VariableAssignment
-): VariableAssignment {
+export function assignVariable(rhs: WorkflowRhs, assign: (r: WorkflowRhs) => VariableAssignment): VariableAssignment {
   if (rhs === null || rhs === undefined) {
     return {
       path: undefined,

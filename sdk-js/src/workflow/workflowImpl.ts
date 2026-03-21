@@ -1,7 +1,7 @@
 import { AllowedUpdateType, PutWfSpecRequest } from '../proto/service'
-import type { Workflow } from './workflow'
 import { WorkflowThreadImpl } from './internal/workflowThreadImpl'
 import type { ThreadFunc } from './threadFunc'
+import type { Workflow } from './workflow'
 
 export class WorkflowImpl implements Workflow {
   private compiled: PutWfSpecRequest | undefined

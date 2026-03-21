@@ -1,4 +1,3 @@
-import type { ExponentialBackoffRetryPolicy } from '../proto/common_wfspec'
 import type { LHFormatString } from './lhFormatString'
 import type { TaskNodeOutput } from './taskNodeOutput'
 import type { WfRunVariable } from './wfRunVariable'
