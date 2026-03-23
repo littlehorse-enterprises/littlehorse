@@ -109,7 +109,9 @@ class CommandSenderTest {
         threadPool.awaitTermination(10, TimeUnit.SECONDS);
         verify(client).onError(exceptionCaptor.capture());
         LHApiException thrown = exceptionCaptor.getValue();
-        assertThat(thrown.getMessage()).isEqualTo("UNAVAILABLE: Failed recording task claim to Kafka");
+        assertThat(thrown.getMessage())
+                .isEqualTo(
+                        "UNAVAILABLE: Task claim for TaskRun test/test-guid could not be processed in time. The task will likely time out.");
     }
 
     @Test
