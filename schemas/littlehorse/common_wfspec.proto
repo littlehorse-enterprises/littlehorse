@@ -214,7 +214,7 @@ message TypeDefinition {
     StructDefId struct_def_id = 5;
 
     // Inline-defined Array type definition.
-    InlineArrayDef inline_array = 6;
+    InlineArrayDef inline_array_def = 6;
   }
 
   // For compatibility purposes.

@@ -135,16 +135,16 @@ class VariableDef(_message.Message):
     def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: _Optional[bool] = ..., type_def: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class TypeDefinition(_message.Message):
-    __slots__ = ("primitive_type", "struct_def_id", "inline_array", "masked")
+    __slots__ = ("primitive_type", "struct_def_id", "inline_array_def", "masked")
     PRIMITIVE_TYPE_FIELD_NUMBER: _ClassVar[int]
     STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
-    INLINE_ARRAY_FIELD_NUMBER: _ClassVar[int]
+    INLINE_ARRAY_DEF_FIELD_NUMBER: _ClassVar[int]
     MASKED_FIELD_NUMBER: _ClassVar[int]
     primitive_type: _common_enums_pb2.VariableType
     struct_def_id: _object_id_pb2.StructDefId
-    inline_array: InlineArrayDef
+    inline_array_def: InlineArrayDef
     masked: bool
-    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., inline_array: _Optional[_Union[InlineArrayDef, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
+    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., inline_array_def: _Optional[_Union[InlineArrayDef, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
 
 class InlineArrayDef(_message.Message):
     __slots__ = ("array_type",)

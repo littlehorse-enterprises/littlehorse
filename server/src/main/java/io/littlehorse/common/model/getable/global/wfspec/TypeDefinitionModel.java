@@ -7,10 +7,12 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
 import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ArrayReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BytesReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.DoubleReturnTypeStrategy;
@@ -27,6 +29,7 @@ import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.util.LHUtil.LHComparisonRule;
 import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
+import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -52,6 +55,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
     private VariableType primitiveType;
     private StructDefIdModel structDefId;
+    private InlineArrayDefModel inlineArrayDef;
 
     public TypeDefinitionModel() {
         this.definedTypeCase = DefinedTypeCase.DEFINEDTYPE_NOT_SET;
@@ -81,6 +85,12 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         this.masked = masked;
     }
 
+    public TypeDefinitionModel(InlineArrayDefModel inlineArrayDef) {
+        this.definedTypeCase = DefinedTypeCase.INLINE_ARRAY_DEF;
+        this.inlineArrayDef = Objects.requireNonNull(inlineArrayDef);
+        this.masked = false;
+    }
+
     @Override
     public Class<TypeDefinition> getProtoBaseClass() {
         return TypeDefinition.class;
@@ -96,6 +106,11 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case STRUCT_DEF_ID:
                 out.setStructDefId(structDefId.toProto());
+                break;
+            case INLINE_ARRAY_DEF:
+                if (inlineArrayDef != null) {
+                    out.setInlineArrayDef(inlineArrayDef.toProto());
+                }
                 break;
             case DEFINEDTYPE_NOT_SET:
             default:
@@ -118,6 +133,9 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case STRUCT_DEF_ID:
                 this.structDefId = StructDefIdModel.fromProto(p.getStructDefId(), ctx);
+                break;
+            case INLINE_ARRAY_DEF:
+                this.inlineArrayDef = InlineArrayDefModel.fromProto(p.getInlineArrayDef(), ctx);
                 break;
             case DEFINEDTYPE_NOT_SET:
                 this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
@@ -157,6 +175,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case STRUCT_DEF_ID:
                 return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES);
+            case INLINE_ARRAY_DEF:
+                return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES);
             case DEFINEDTYPE_NOT_SET:
                 return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES, LHComparisonRule.MAGNITUDE);
             default:
@@ -195,6 +215,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case STRUCT_DEF_ID:
                 return new StructReturnTypeStrategy(this.structDefId);
+            case INLINE_ARRAY_DEF:
+                return new ArrayReturnTypeStrategy(this.inlineArrayDef);
             default:
         }
         throw new IllegalStateException();
@@ -289,6 +311,13 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                     }
 
                     currentTypeDef = fieldDefs.get(selector.getKey()).getFieldType();
+                    break;
+                case INLINE_ARRAY_DEF:
+                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX) {
+                        throw new InvalidExpressionException(String.format(
+                                "Expected numeric index selector for Array type, got key selector '%s'", selector.getKey()));
+                    }
+                    currentTypeDef = currentTypeDef.getInlineArrayDef().getArrayType();
                     break;
                 case DEFINEDTYPE_NOT_SET:
                     break;

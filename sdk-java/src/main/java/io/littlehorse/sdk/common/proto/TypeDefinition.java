@@ -56,7 +56,7 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     PRIMITIVE_TYPE(1),
     STRUCT_DEF_ID(5),
-    INLINE_ARRAY(6),
+    INLINE_ARRAY_DEF(6),
     DEFINEDTYPE_NOT_SET(0);
     private final int value;
     private DefinedTypeCase(int value) {
@@ -76,7 +76,7 @@ private static final long serialVersionUID = 0L;
       switch (value) {
         case 1: return PRIMITIVE_TYPE;
         case 5: return STRUCT_DEF_ID;
-        case 6: return INLINE_ARRAY;
+        case 6: return INLINE_ARRAY_DEF;
         case 0: return DEFINEDTYPE_NOT_SET;
         default: return null;
       }
@@ -178,17 +178,17 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance();
   }
 
-  public static final int INLINE_ARRAY_FIELD_NUMBER = 6;
+  public static final int INLINE_ARRAY_DEF_FIELD_NUMBER = 6;
   /**
    * <pre>
    * Inline-defined Array type definition.
    * </pre>
    *
-   * <code>.littlehorse.InlineArrayDef inline_array = 6;</code>
-   * @return Whether the inlineArray field is set.
+   * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
+   * @return Whether the inlineArrayDef field is set.
    */
   @java.lang.Override
-  public boolean hasInlineArray() {
+  public boolean hasInlineArrayDef() {
     return definedTypeCase_ == 6;
   }
   /**
@@ -196,11 +196,11 @@ private static final long serialVersionUID = 0L;
    * Inline-defined Array type definition.
    * </pre>
    *
-   * <code>.littlehorse.InlineArrayDef inline_array = 6;</code>
-   * @return The inlineArray.
+   * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
+   * @return The inlineArrayDef.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.InlineArrayDef getInlineArray() {
+  public io.littlehorse.sdk.common.proto.InlineArrayDef getInlineArrayDef() {
     if (definedTypeCase_ == 6) {
        return (io.littlehorse.sdk.common.proto.InlineArrayDef) definedType_;
     }
@@ -211,10 +211,10 @@ private static final long serialVersionUID = 0L;
    * Inline-defined Array type definition.
    * </pre>
    *
-   * <code>.littlehorse.InlineArrayDef inline_array = 6;</code>
+   * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.InlineArrayDefOrBuilder getInlineArrayOrBuilder() {
+  public io.littlehorse.sdk.common.proto.InlineArrayDefOrBuilder getInlineArrayDefOrBuilder() {
     if (definedTypeCase_ == 6) {
        return (io.littlehorse.sdk.common.proto.InlineArrayDef) definedType_;
     }
@@ -315,8 +315,8 @@ private static final long serialVersionUID = 0L;
             .equals(other.getStructDefId())) return false;
         break;
       case 6:
-        if (!getInlineArray()
-            .equals(other.getInlineArray())) return false;
+        if (!getInlineArrayDef()
+            .equals(other.getInlineArrayDef())) return false;
         break;
       case 0:
       default:
@@ -345,8 +345,8 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getStructDefId().hashCode();
         break;
       case 6:
-        hash = (37 * hash) + INLINE_ARRAY_FIELD_NUMBER;
-        hash = (53 * hash) + getInlineArray().hashCode();
+        hash = (37 * hash) + INLINE_ARRAY_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getInlineArrayDef().hashCode();
         break;
       case 0:
       default:
@@ -490,8 +490,8 @@ private static final long serialVersionUID = 0L;
       if (structDefIdBuilder_ != null) {
         structDefIdBuilder_.clear();
       }
-      if (inlineArrayBuilder_ != null) {
-        inlineArrayBuilder_.clear();
+      if (inlineArrayDefBuilder_ != null) {
+        inlineArrayDefBuilder_.clear();
       }
       masked_ = false;
       definedTypeCase_ = 0;
@@ -543,8 +543,8 @@ private static final long serialVersionUID = 0L;
         result.definedType_ = structDefIdBuilder_.build();
       }
       if (definedTypeCase_ == 6 &&
-          inlineArrayBuilder_ != null) {
-        result.definedType_ = inlineArrayBuilder_.build();
+          inlineArrayDefBuilder_ != null) {
+        result.definedType_ = inlineArrayDefBuilder_.build();
       }
     }
 
@@ -572,8 +572,8 @@ private static final long serialVersionUID = 0L;
           mergeStructDefId(other.getStructDefId());
           break;
         }
-        case INLINE_ARRAY: {
-          mergeInlineArray(other.getInlineArray());
+        case INLINE_ARRAY_DEF: {
+          mergeInlineArrayDef(other.getInlineArrayDef());
           break;
         }
         case DEFINEDTYPE_NOT_SET: {
@@ -626,7 +626,7 @@ private static final long serialVersionUID = 0L;
             } // case 42
             case 50: {
               input.readMessage(
-                  internalGetInlineArrayFieldBuilder().getBuilder(),
+                  internalGetInlineArrayDefFieldBuilder().getBuilder(),
                   extensionRegistry);
               definedTypeCase_ = 6;
               break;
@@ -934,17 +934,17 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.InlineArrayDef, io.littlehorse.sdk.common.proto.InlineArrayDef.Builder, io.littlehorse.sdk.common.proto.InlineArrayDefOrBuilder> inlineArrayBuilder_;
+        io.littlehorse.sdk.common.proto.InlineArrayDef, io.littlehorse.sdk.common.proto.InlineArrayDef.Builder, io.littlehorse.sdk.common.proto.InlineArrayDefOrBuilder> inlineArrayDefBuilder_;
     /**
      * <pre>
      * Inline-defined Array type definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineArrayDef inline_array = 6;</code>
-     * @return Whether the inlineArray field is set.
+     * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
+     * @return Whether the inlineArrayDef field is set.
      */
     @java.lang.Override
-    public boolean hasInlineArray() {
+    public boolean hasInlineArrayDef() {
       return definedTypeCase_ == 6;
     }
     /**
@@ -952,19 +952,19 @@ private static final long serialVersionUID = 0L;
      * Inline-defined Array type definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineArrayDef inline_array = 6;</code>
-     * @return The inlineArray.
+     * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
+     * @return The inlineArrayDef.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.InlineArrayDef getInlineArray() {
-      if (inlineArrayBuilder_ == null) {
+    public io.littlehorse.sdk.common.proto.InlineArrayDef getInlineArrayDef() {
+      if (inlineArrayDefBuilder_ == null) {
         if (definedTypeCase_ == 6) {
           return (io.littlehorse.sdk.common.proto.InlineArrayDef) definedType_;
         }
         return io.littlehorse.sdk.common.proto.InlineArrayDef.getDefaultInstance();
       } else {
         if (definedTypeCase_ == 6) {
-          return inlineArrayBuilder_.getMessage();
+          return inlineArrayDefBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.InlineArrayDef.getDefaultInstance();
       }
@@ -974,17 +974,17 @@ private static final long serialVersionUID = 0L;
      * Inline-defined Array type definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineArrayDef inline_array = 6;</code>
+     * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
      */
-    public Builder setInlineArray(io.littlehorse.sdk.common.proto.InlineArrayDef value) {
-      if (inlineArrayBuilder_ == null) {
+    public Builder setInlineArrayDef(io.littlehorse.sdk.common.proto.InlineArrayDef value) {
+      if (inlineArrayDefBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         definedType_ = value;
         onChanged();
       } else {
-        inlineArrayBuilder_.setMessage(value);
+        inlineArrayDefBuilder_.setMessage(value);
       }
       definedTypeCase_ = 6;
       return this;
@@ -994,15 +994,15 @@ private static final long serialVersionUID = 0L;
      * Inline-defined Array type definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineArrayDef inline_array = 6;</code>
+     * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
      */
-    public Builder setInlineArray(
+    public Builder setInlineArrayDef(
         io.littlehorse.sdk.common.proto.InlineArrayDef.Builder builderForValue) {
-      if (inlineArrayBuilder_ == null) {
+      if (inlineArrayDefBuilder_ == null) {
         definedType_ = builderForValue.build();
         onChanged();
       } else {
-        inlineArrayBuilder_.setMessage(builderForValue.build());
+        inlineArrayDefBuilder_.setMessage(builderForValue.build());
       }
       definedTypeCase_ = 6;
       return this;
@@ -1012,10 +1012,10 @@ private static final long serialVersionUID = 0L;
      * Inline-defined Array type definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineArrayDef inline_array = 6;</code>
+     * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
      */
-    public Builder mergeInlineArray(io.littlehorse.sdk.common.proto.InlineArrayDef value) {
-      if (inlineArrayBuilder_ == null) {
+    public Builder mergeInlineArrayDef(io.littlehorse.sdk.common.proto.InlineArrayDef value) {
+      if (inlineArrayDefBuilder_ == null) {
         if (definedTypeCase_ == 6 &&
             definedType_ != io.littlehorse.sdk.common.proto.InlineArrayDef.getDefaultInstance()) {
           definedType_ = io.littlehorse.sdk.common.proto.InlineArrayDef.newBuilder((io.littlehorse.sdk.common.proto.InlineArrayDef) definedType_)
@@ -1026,9 +1026,9 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (definedTypeCase_ == 6) {
-          inlineArrayBuilder_.mergeFrom(value);
+          inlineArrayDefBuilder_.mergeFrom(value);
         } else {
-          inlineArrayBuilder_.setMessage(value);
+          inlineArrayDefBuilder_.setMessage(value);
         }
       }
       definedTypeCase_ = 6;
@@ -1039,10 +1039,10 @@ private static final long serialVersionUID = 0L;
      * Inline-defined Array type definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineArrayDef inline_array = 6;</code>
+     * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
      */
-    public Builder clearInlineArray() {
-      if (inlineArrayBuilder_ == null) {
+    public Builder clearInlineArrayDef() {
+      if (inlineArrayDefBuilder_ == null) {
         if (definedTypeCase_ == 6) {
           definedTypeCase_ = 0;
           definedType_ = null;
@@ -1053,7 +1053,7 @@ private static final long serialVersionUID = 0L;
           definedTypeCase_ = 0;
           definedType_ = null;
         }
-        inlineArrayBuilder_.clear();
+        inlineArrayDefBuilder_.clear();
       }
       return this;
     }
@@ -1062,22 +1062,22 @@ private static final long serialVersionUID = 0L;
      * Inline-defined Array type definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineArrayDef inline_array = 6;</code>
+     * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
      */
-    public io.littlehorse.sdk.common.proto.InlineArrayDef.Builder getInlineArrayBuilder() {
-      return internalGetInlineArrayFieldBuilder().getBuilder();
+    public io.littlehorse.sdk.common.proto.InlineArrayDef.Builder getInlineArrayDefBuilder() {
+      return internalGetInlineArrayDefFieldBuilder().getBuilder();
     }
     /**
      * <pre>
      * Inline-defined Array type definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineArrayDef inline_array = 6;</code>
+     * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.InlineArrayDefOrBuilder getInlineArrayOrBuilder() {
-      if ((definedTypeCase_ == 6) && (inlineArrayBuilder_ != null)) {
-        return inlineArrayBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.InlineArrayDefOrBuilder getInlineArrayDefOrBuilder() {
+      if ((definedTypeCase_ == 6) && (inlineArrayDefBuilder_ != null)) {
+        return inlineArrayDefBuilder_.getMessageOrBuilder();
       } else {
         if (definedTypeCase_ == 6) {
           return (io.littlehorse.sdk.common.proto.InlineArrayDef) definedType_;
@@ -1090,16 +1090,16 @@ private static final long serialVersionUID = 0L;
      * Inline-defined Array type definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineArrayDef inline_array = 6;</code>
+     * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.InlineArrayDef, io.littlehorse.sdk.common.proto.InlineArrayDef.Builder, io.littlehorse.sdk.common.proto.InlineArrayDefOrBuilder> 
-        internalGetInlineArrayFieldBuilder() {
-      if (inlineArrayBuilder_ == null) {
+        internalGetInlineArrayDefFieldBuilder() {
+      if (inlineArrayDefBuilder_ == null) {
         if (!(definedTypeCase_ == 6)) {
           definedType_ = io.littlehorse.sdk.common.proto.InlineArrayDef.getDefaultInstance();
         }
-        inlineArrayBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+        inlineArrayDefBuilder_ = new com.google.protobuf.SingleFieldBuilder<
             io.littlehorse.sdk.common.proto.InlineArrayDef, io.littlehorse.sdk.common.proto.InlineArrayDef.Builder, io.littlehorse.sdk.common.proto.InlineArrayDefOrBuilder>(
                 (io.littlehorse.sdk.common.proto.InlineArrayDef) definedType_,
                 getParentForChildren(),
@@ -1108,7 +1108,7 @@ private static final long serialVersionUID = 0L;
       }
       definedTypeCase_ = 6;
       onChanged();
-      return inlineArrayBuilder_;
+      return inlineArrayDefBuilder_;
     }
 
     private boolean masked_ ;

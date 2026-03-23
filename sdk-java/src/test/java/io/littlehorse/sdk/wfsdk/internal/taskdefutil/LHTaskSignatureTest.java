@@ -187,13 +187,13 @@ public class LHTaskSignatureTest {
 
         ReturnType actualReturnType = taskSignature.getReturnType();
         TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
-                .setInlineArray(InlineArrayDef.newBuilder()
+                .setInlineArrayDef(InlineArrayDef.newBuilder()
                         .setArrayType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.JSON_OBJ)))
                 .build();
 
         assertThat(actualReturnType.getReturnType()).isEqualTo(expectedTypeDefinition);
     }
-
+        
     @Test
     void shouldInferInlineArrayParameterTypeForLHArray() {
         LHTaskSignature taskSignature = new LHTaskSignature("array-task", new MyWorker(), "array-task");
@@ -201,7 +201,7 @@ public class LHTaskSignatureTest {
         List<VariableDef> actualVariableDefs = taskSignature.getVariableDefs();
         TypeDefinition actualTypeDefinition = actualVariableDefs.get(0).getTypeDef();
         TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
-                .setInlineArray(InlineArrayDef.newBuilder()
+                .setInlineArrayDef(InlineArrayDef.newBuilder()
                         .setArrayType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.JSON_OBJ)))
                 .build();
 

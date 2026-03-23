@@ -397,7 +397,7 @@ export interface TypeDefinition {
   definedType?:
     | { $case: "primitiveType"; value: VariableType }
     | { $case: "structDefId"; value: StructDefId }
-    | { $case: "inlineArray"; value: InlineArrayDef }
+    | { $case: "inlineArrayDef"; value: InlineArrayDef }
     | undefined;
   /** Set to true if values of this type contain sensitive information and must be masked. */
   masked: boolean;
@@ -1480,7 +1480,7 @@ export const TypeDefinition = {
       case "structDefId":
         StructDefId.encode(message.definedType.value, writer.uint32(42).fork()).ldelim();
         break;
-      case "inlineArray":
+      case "inlineArrayDef":
         InlineArrayDef.encode(message.definedType.value, writer.uint32(50).fork()).ldelim();
         break;
     }
@@ -1516,7 +1516,7 @@ export const TypeDefinition = {
             break;
           }
 
-          message.definedType = { $case: "inlineArray", value: InlineArrayDef.decode(reader, reader.uint32()) };
+          message.definedType = { $case: "inlineArrayDef", value: InlineArrayDef.decode(reader, reader.uint32()) };
           continue;
         case 4:
           if (tag !== 32) {
@@ -1540,8 +1540,8 @@ export const TypeDefinition = {
         ? { $case: "primitiveType", value: variableTypeFromJSON(object.primitiveType) }
         : isSet(object.structDefId)
         ? { $case: "structDefId", value: StructDefId.fromJSON(object.structDefId) }
-        : isSet(object.inlineArray)
-        ? { $case: "inlineArray", value: InlineArrayDef.fromJSON(object.inlineArray) }
+        : isSet(object.inlineArrayDef)
+        ? { $case: "inlineArrayDef", value: InlineArrayDef.fromJSON(object.inlineArrayDef) }
         : undefined,
       masked: isSet(object.masked) ? globalThis.Boolean(object.masked) : false,
     };
@@ -1555,8 +1555,8 @@ export const TypeDefinition = {
     if (message.definedType?.$case === "structDefId") {
       obj.structDefId = StructDefId.toJSON(message.definedType.value);
     }
-    if (message.definedType?.$case === "inlineArray") {
-      obj.inlineArray = InlineArrayDef.toJSON(message.definedType.value);
+    if (message.definedType?.$case === "inlineArrayDef") {
+      obj.inlineArrayDef = InlineArrayDef.toJSON(message.definedType.value);
     }
     if (message.masked !== false) {
       obj.masked = message.masked;
@@ -1584,11 +1584,11 @@ export const TypeDefinition = {
       message.definedType = { $case: "structDefId", value: StructDefId.fromPartial(object.definedType.value) };
     }
     if (
-      object.definedType?.$case === "inlineArray" &&
+      object.definedType?.$case === "inlineArrayDef" &&
       object.definedType?.value !== undefined &&
       object.definedType?.value !== null
     ) {
-      message.definedType = { $case: "inlineArray", value: InlineArrayDef.fromPartial(object.definedType.value) };
+      message.definedType = { $case: "inlineArrayDef", value: InlineArrayDef.fromPartial(object.definedType.value) };
     }
     message.masked = object.masked ?? false;
     return message;

@@ -12,8 +12,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ReturnLHArrayExample {
-    private static final Logger log = LoggerFactory.getLogger(ReturnLHArrayExample.class);
+public class LHArrayExample {
+    private static final Logger log = LoggerFactory.getLogger(LHArrayExample.class);
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-return-lharray", wf -> {

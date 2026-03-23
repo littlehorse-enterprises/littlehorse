@@ -19,13 +19,13 @@ public class LHArrayType extends LHClassType {
 
     @Override
     public DefinedTypeCase getDefinedTypeCase() {
-        return DefinedTypeCase.INLINE_ARRAY;
+        return DefinedTypeCase.INLINE_ARRAY_DEF;
     }
 
     @Override
     public TypeDefinition getTypeDefinition() {
         return TypeDefinition.newBuilder()
-                .setInlineArray(InlineArrayDef.newBuilder()
+                .setInlineArrayDef(InlineArrayDef.newBuilder()
                         .setArrayType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.JSON_OBJ)))
                 .build();
     }
