@@ -51,7 +51,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     private WfRunIdModel wfRunId;
     private StructModel struct;
     private Timestamp utcTimestampVal;
-    private ArrayModel array;
 
     private ExecutionContext context;
 
@@ -123,8 +122,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case STRUCT:
                 struct = StructModel.fromProto(p.getStruct(), StructModel.class, context);
                 break;
-            case ARRAY:
-                array = ArrayModel.fromProto(p.getArray(), ArrayModel.class, context);
             case VALUE_NOT_SET:
                 // it's a null variable! Nothing to do.
                 break;
@@ -251,11 +248,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     out.setUtcTimestamp(utcTimestampVal);
                 }
                 break;
-            case ARRAY:
-                if (array != null) {
-                    out.setArray(array.toProto());
-                }
-                break;
             case VALUE_NOT_SET:
                 // nothing to do
                 break;
@@ -351,13 +343,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                             .get(currentSelector.getKey())
                             .getValue();
 
-                    selectors.remove(0);
-                    break;
-                case ARRAY:
-                    if (currentSelector.getIndex() < 0) {
-                        throw new LHVarSubError(null, "Array index cannot be negative: " + currentSelector.getIndex());
-                    }
-                    val = val.getArray().getItems().get(currentSelector.getIndex());
                     selectors.remove(0);
                     break;
                 case JSON_ARR:
@@ -836,11 +821,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     public VariableValueModel(StructModel struct) {
         valueType = ValueCase.STRUCT;
         this.struct = struct;
-    }
-
-    public VariableValueModel(ArrayModel array) {
-        valueType = ValueCase.ARRAY;
-        this.array = array;
     }
 
     /*
