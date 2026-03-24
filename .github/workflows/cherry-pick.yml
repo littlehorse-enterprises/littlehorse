@@ -1,0 +1,41 @@
+name: cherry-pick
+run-name: Cherry-pick ${{ inputs.commit }} → ${{ inputs.branch }}
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Commit ID to cherry-pick (must be on master)"
+        required: true
+        type: string
+      branch:
+        description: "Target release branch (e.g. 1.0)"
+        required: true
+        type: string
+
+jobs:
+  cherry-pick:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.branch }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Cherry-pick
+        working-directory: release-manager/scripts
+        run: python3 cherry_pick.py "${{ inputs.commit }}" "${{ inputs.branch }}"
+
+      - name: Push
+        run: git push origin ${{ inputs.branch }}
+

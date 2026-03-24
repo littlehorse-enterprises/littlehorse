@@ -10,20 +10,20 @@ Releasing a new version of LittleHorse involves coordinating multiple artifacts 
 
 A full LittleHorse release produces the following artifacts:
 
-| Artifact | Registry / Distribution | Source |
-|---|---|---|
-| **LH Server** | Docker Hub (`littlehorse/lh-server`) | `server/` |
-| **LH Dashboard** | Docker Hub (`littlehorse/lh-dashboard`) | `dashboard/` |
-| **LH Standalone** | Docker Hub (`littlehorse/lh-standalone`) | `docker/standalone/` |
-| **LH Canary** | Docker Hub (`littlehorse/lh-canary`) | `canary/` |
-| **lhctl** | Docker Hub (`littlehorse/lhctl`) / GitHub Release | `lhctl/` |
-| **sdk-java** | Maven Central (`io.littlehorse:sdk-java`) | `sdk-java/` |
-| **test-utils** | Maven Central (`io.littlehorse:test-utils`) | `test-utils/` |
-| **test-utils-container** | Maven Central (`io.littlehorse:test-utils-container`) | `test-utils-container/` |
-| **sdk-python** | PyPI (`littlehorse-client`) | `sdk-python/` |
-| **sdk-js** | npm (`littlehorse-client`) | `sdk-js/` |
+| Artifact | Registry / Distribution                                             | Source |
+|---|---------------------------------------------------------------------|---|
+| **LH Server** | GHCR or Docker Hub (`littlehorse/lh-server`)                 | `server/` |
+| **LH Dashboard** | GHCR or Docker Hub (`littlehorse/lh-dashboard`)                     | `dashboard/` |
+| **LH Standalone** | GHCR or Docker Hub (`littlehorse/lh-standalone`)                            | `docker/standalone/` |
+| **LH Canary** | GHCR or Docker Hub (`littlehorse/lh-canary`)                                | `canary/` |
+| **lhctl** | GHCR or Docker Hub (`littlehorse/lhctl`) / GitHub Release                   | `lhctl/` |
+| **sdk-java** | Maven Central (`io.littlehorse:sdk-java`)                           | `sdk-java/` |
+| **test-utils** | Maven Central (`io.littlehorse:test-utils`)                         | `test-utils/` |
+| **test-utils-container** | Maven Central (`io.littlehorse:test-utils-container`)               | `test-utils-container/` |
+| **sdk-python** | PyPI (`littlehorse-client`)                                         | `sdk-python/` |
+| **sdk-js** | npm (`littlehorse-client`)                                          | `sdk-js/` |
 | **sdk-go** | Go module (`github.com/littlehorse-enterprises/littlehorse/sdk-go`) | `sdk-go/` |
-| **sdk-dotnet** | NuGet (`LittleHorseSDK`) | `sdk-dotnet/` |
+| **sdk-dotnet** | NuGet (`LittleHorseSDK`)                                            | `sdk-dotnet/` |
 
 ## Versioning
 
@@ -200,21 +200,6 @@ A patch release contains only backward-compatible bug fixes. Patches are typical
 
 ---
 
-## Publishing Details
-
-Every stable release (major, minor, patch) and release candidate goes through the same publishing pipeline. The only difference is the version string.
-
-| Ecosystem | Command / Mechanism | Destination |
-|---|---|---|
-| **Java** (sdk-java, test-utils, test-utils-container) | `./gradlew <module>:publishToSonatype closeSonatypeStagingRepository` + manual release at [central.sonatype.com](https://central.sonatype.com) | Maven Central (`io.littlehorse`) |
-| **Python** (sdk-python) | `poetry build && poetry publish` | [PyPI](https://pypi.org/project/littlehorse-client/) |
-| **JavaScript** (sdk-js) | `npm publish` (use `--tag next` for RCs) | [npm](https://www.npmjs.com/package/littlehorse-client) |
-| **Go** (sdk-go) | Git tag `vX.Y.Z` — the Go module proxy picks it up automatically | [pkg.go.dev](https://pkg.go.dev/github.com/littlehorse-enterprises/littlehorse/sdk-go) |
-| **.NET** (sdk-dotnet) | `dotnet pack && dotnet nuget push` | [NuGet](https://www.nuget.org/packages/LittleHorseSDK) |
-| **Docker** (server, dashboard, standalone, canary, lhctl) | `local-dev/build.sh --server --dashboard --standalone --canary` + `docker push` | Docker Hub (`littlehorse/*`) |
-
-> **Note:** Java snapshot publishing skips the staging/close step — artifacts go directly to the Sonatype snapshot repository.
-
 ## Automation Goals
 
 The [`scripts/`](scripts/) subdirectory contains utility Python scripts that are invoked by the GitHub Actions workflows under [`.github/workflows/`](../.github/workflows/) to automate the release process. They can also be run locally.
@@ -223,14 +208,16 @@ The scripts handle tasks such as:
 
 - **Validation** — Pre-release checks: version consistency, branch constraints, clean Git tree, and snapshot format verification.
 - **Version extraction** — Determining the current version from `gradle.properties` or Git tags.
+- **Cherry-pick** — Safely cherry-picking a commit from `master` onto a release branch for patch releases.
 
 ### Running Locally
 
 ```bash
 cd release-manager/scripts
 
-python3 validate.py       --type minor --version 1.2.0
+python3 validate.py        --type minor --version 1.2.0
 python3 extract_version.py
+python3 cherry_pick.py     abc123def 1.0
 ```
 
 ### Running from GitHub Actions
@@ -252,16 +239,4 @@ python3 extract_version.py
 
 - Python ≥ 3.10
 - Git
-- Access to publishing credentials:
-  - GPG signing key (for Maven Central)
-  - Sonatype OSSRH username/password
-  - PyPI API token
-  - npm access token
-  - NuGet API key
-  - Docker Hub credentials
-- Java 11 (required for Maven Central signing/publishing)
-- Node.js ≥ 18 (for sdk-js build)
-- Go ≥ 1.24 (for lhctl build)
-- .NET 6 SDK (for sdk-dotnet)
-- [git-cliff](https://git-cliff.org/) (for changelog generation)
 
