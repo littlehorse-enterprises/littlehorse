@@ -397,16 +397,9 @@ export interface TypeDefinition {
   definedType?:
     | { $case: "primitiveType"; value: VariableType }
     | { $case: "structDefId"; value: StructDefId }
-    | { $case: "inlineArrayDef"; value: InlineArrayDef }
     | undefined;
   /** Set to true if values of this type contain sensitive information and must be masked. */
   masked: boolean;
-}
-
-/** Inline schema definition for a native LittleHorse Array. */
-export interface InlineArrayDef {
-  /** Type definition for each element in the array. */
-  arrayType: TypeDefinition | undefined;
 }
 
 /**
@@ -1480,9 +1473,6 @@ export const TypeDefinition = {
       case "structDefId":
         StructDefId.encode(message.definedType.value, writer.uint32(42).fork()).ldelim();
         break;
-      case "inlineArrayDef":
-        InlineArrayDef.encode(message.definedType.value, writer.uint32(50).fork()).ldelim();
-        break;
     }
     if (message.masked !== false) {
       writer.uint32(32).bool(message.masked);
@@ -1511,13 +1501,6 @@ export const TypeDefinition = {
 
           message.definedType = { $case: "structDefId", value: StructDefId.decode(reader, reader.uint32()) };
           continue;
-        case 6:
-          if (tag !== 50) {
-            break;
-          }
-
-          message.definedType = { $case: "inlineArrayDef", value: InlineArrayDef.decode(reader, reader.uint32()) };
-          continue;
         case 4:
           if (tag !== 32) {
             break;
@@ -1540,8 +1523,6 @@ export const TypeDefinition = {
         ? { $case: "primitiveType", value: variableTypeFromJSON(object.primitiveType) }
         : isSet(object.structDefId)
         ? { $case: "structDefId", value: StructDefId.fromJSON(object.structDefId) }
-        : isSet(object.inlineArrayDef)
-        ? { $case: "inlineArrayDef", value: InlineArrayDef.fromJSON(object.inlineArrayDef) }
         : undefined,
       masked: isSet(object.masked) ? globalThis.Boolean(object.masked) : false,
     };
@@ -1554,9 +1535,6 @@ export const TypeDefinition = {
     }
     if (message.definedType?.$case === "structDefId") {
       obj.structDefId = StructDefId.toJSON(message.definedType.value);
-    }
-    if (message.definedType?.$case === "inlineArrayDef") {
-      obj.inlineArrayDef = InlineArrayDef.toJSON(message.definedType.value);
     }
     if (message.masked !== false) {
       obj.masked = message.masked;
@@ -1583,73 +1561,7 @@ export const TypeDefinition = {
     ) {
       message.definedType = { $case: "structDefId", value: StructDefId.fromPartial(object.definedType.value) };
     }
-    if (
-      object.definedType?.$case === "inlineArrayDef" &&
-      object.definedType?.value !== undefined &&
-      object.definedType?.value !== null
-    ) {
-      message.definedType = { $case: "inlineArrayDef", value: InlineArrayDef.fromPartial(object.definedType.value) };
-    }
     message.masked = object.masked ?? false;
-    return message;
-  },
-};
-
-function createBaseInlineArrayDef(): InlineArrayDef {
-  return { arrayType: undefined };
-}
-
-export const InlineArrayDef = {
-  encode(message: InlineArrayDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.arrayType !== undefined) {
-      TypeDefinition.encode(message.arrayType, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): InlineArrayDef {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseInlineArrayDef();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.arrayType = TypeDefinition.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): InlineArrayDef {
-    return { arrayType: isSet(object.arrayType) ? TypeDefinition.fromJSON(object.arrayType) : undefined };
-  },
-
-  toJSON(message: InlineArrayDef): unknown {
-    const obj: any = {};
-    if (message.arrayType !== undefined) {
-      obj.arrayType = TypeDefinition.toJSON(message.arrayType);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<InlineArrayDef>): InlineArrayDef {
-    return InlineArrayDef.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<InlineArrayDef>): InlineArrayDef {
-    const message = createBaseInlineArrayDef();
-    message.arrayType = (object.arrayType !== undefined && object.arrayType !== null)
-      ? TypeDefinition.fromPartial(object.arrayType)
-      : undefined;
     return message;
   },
 };

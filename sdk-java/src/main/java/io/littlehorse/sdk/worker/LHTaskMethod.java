@@ -26,11 +26,4 @@ public @interface LHTaskMethod {
      * @return the taskdef name.
      */
     String value();
-
-    /**
-     * This allows you to opt-in to serializing Array types as LittleHorse native Arrays instead of
-     * JSON_ARRs. Using LittleHorse native Arrays ensures Array type-safety before running workflows.
-     * @return whether or not Array types returned by this task method should be serialized as LittleHorse Arrays.
-     */
-    boolean returnsLHArray() default false;
 }

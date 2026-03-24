@@ -33,7 +33,6 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.adapter.LHWfRunIdAdapter;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
@@ -58,7 +57,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -420,25 +418,6 @@ public class LHLibUtil {
             case STRUCT:
                 Struct struct = val.getStruct();
                 return deserializeStructToObject(struct, targetClazz, typeAdapterRegistry);
-            case ARRAY:
-                // TODO:
-                // if (LHArray.class.isAssignableFrom(targetClazz)) {
-                //     Array arr = val.getArray();
-                //     List<Object> out = new ArrayList<>(arr.getItemsCount());
-                //     for (VariableValue item : arr.getItemsList()) {
-                //         out.add(varValToObj(item, Object.class));
-                //     }
-                //     return LHArray.of(out);
-                // }
-                if (List.class.isAssignableFrom(targetClazz)) {
-                    Array arr = val.getArray();
-                    List<Object> out = new ArrayList<>(arr.getItemsCount());
-                    for (VariableValue item : arr.getItemsList()) {
-                        out.add(varValToObj(item, Object.class));
-                    }
-                    return out;
-                }
-                throw new LHSerdeException("Failed deserializing ARRAY value into class: " + targetClazz.getName());
             case UTC_TIMESTAMP:
                 Timestamp timestamp = val.getUtcTimestamp();
                 if (Timestamp.class.isAssignableFrom(targetClazz)) {

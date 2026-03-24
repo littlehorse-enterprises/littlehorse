@@ -6,8 +6,6 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.Array;
-import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.StructDefId;
@@ -84,21 +82,12 @@ public class VariableMapping {
             case PRIMITIVE_TYPE:
                 validatePrimitiveType(paramType.getPrimitiveType(), type);
                 break;
-            case INLINE_ARRAY_DEF:
-                validateInlineArrayDef(paramType.getInlineArrayDef(), type);
-                break;
             case STRUCT_DEF_ID:
                 validateStructDefType(paramType.getStructDefId(), type);
                 break;
             case DEFINEDTYPE_NOT_SET:
             default:
                 break;
-        }
-    }
-
-    private void validateInlineArrayDef(InlineArrayDef input, Class<?> type) {
-        if (Array.class.equals(type)) {
-            return;
         }
     }
 

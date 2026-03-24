@@ -128,35 +128,6 @@ public class LHLibUtilTest {
     }
 
     @Test
-    void validateLHArrayToNativeArrayConversion() {
-        LHArray<Object> array = LHArray.of(List.of("item1", 2, 3.0));
-
-        VariableValue varVal = LHLibUtil.objToVarVal(array);
-
-        Assertions.assertThat(varVal.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
-        Assertions.assertThat(varVal.getArray().getItemsCount()).isEqualTo(3);
-        Assertions.assertThat(varVal.getArray().getItems(0).getStr()).isEqualTo("item1");
-        Assertions.assertThat(varVal.getArray().getItems(1).getInt()).isEqualTo(2);
-    }
-
-    @Test
-    void shouldDeserializeNativeArrayIntoLHArray() {
-        VariableValue in = VariableValue.newBuilder()
-                .setArray(io.littlehorse.sdk.common.proto.Array.newBuilder()
-                        .addItems(VariableValue.newBuilder().setStr("a"))
-                        .addItems(VariableValue.newBuilder().setInt(2)))
-                .build();
-
-        Object out = LHLibUtil.varValToObj(in, LHArray.class);
-
-        Assertions.assertThat(out).isInstanceOf(LHArray.class);
-        LHArray<?> arr = (LHArray<?>) out;
-        Assertions.assertThat(arr.size()).isEqualTo(2);
-        Assertions.assertThat(arr.get(0)).isEqualTo("a");
-        Assertions.assertThat(arr.get(1)).isEqualTo(2L);
-    }
-
-    @Test
     void validatePojoToStringObjectConversion() {
         VariableValue varVal = LHLibUtil.objToVarVal(getTestBook());
 

@@ -647,9 +647,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     return asStruct();
                 }
                 break;
-            case INLINE_ARRAY_DEF:
-                // ?? We don't have a use case for this yet, so will hold off on implementing this coercion until we do.
-                break;
             case DEFINEDTYPE_NOT_SET:
             default:
         }
@@ -728,14 +725,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return new VariableValueModel((WfRunIdModel) WfRunIdModel.fromString(strVal, WfRunIdModel.class));
         }
         throw new LHVarSubError(null, "Cant convert " + getTypeDefinition() + " to WF_RUN_ID");
-    }
-
-    public VariableValueModel asArray() throws LHVarSubError {
-        if (getTypeDefinition().getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF) {
-            return new VariableValueModel(array);
-        } else {
-            throw new LHVarSubError(null, "Cant convert " + this.getTypeDefinition() + " to INLINE_ARRAY");
-        }
     }
 
     public VariableValueModel asBool() throws LHVarSubError {

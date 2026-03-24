@@ -17,7 +17,6 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
@@ -78,12 +77,6 @@ class WfRunVariableImpl implements WfRunVariable {
         return wfRunVar;
     }
 
-    public static WfRunVariableImpl createArrayVar(String name, LHArrayType arrayType, WorkflowThreadImpl parent) {
-        WfRunVariableImpl wfRunVar = new WfRunVariableImpl(name, parent);
-        wfRunVar.initializeFromLHClassType(arrayType);
-        return wfRunVar;
-    }
-
     private void initializeAsPrimitive(Object typeOrDefaultVal) {
         if (typeOrDefaultVal instanceof VariableType) {
             VariableType variableType = (VariableType) typeOrDefaultVal;
@@ -139,7 +132,6 @@ class WfRunVariableImpl implements WfRunVariable {
             throw new LHMisconfigurationException("Cannot use jsonPath() and get() on same var!");
         }
         switch (typeDef.getDefinedTypeCase()) {
-            case INLINE_ARRAY_DEF:
             case STRUCT_DEF_ID:
                 break;
             case PRIMITIVE_TYPE:
@@ -164,7 +156,6 @@ class WfRunVariableImpl implements WfRunVariable {
             throw new LHMisconfigurationException("Cannot use jsonPath() and get() on same var!");
         }
         switch (typeDef.getDefinedTypeCase()) {
-            case INLINE_ARRAY_DEF:
             case STRUCT_DEF_ID:
                 break;
             case PRIMITIVE_TYPE:

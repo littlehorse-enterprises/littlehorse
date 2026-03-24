@@ -3,10 +3,8 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import io.littlehorse.sdk.common.LHArray;
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
-import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.StructDef;
@@ -77,11 +75,6 @@ public class LHTaskSignatureTest {
         @LHTaskMethod("inline-struct-invalid-task")
         public InlineStruct inlineStructInvalidTask(InlineStruct customer) {
             return customer;
-        }
-
-        @LHTaskMethod("array-task")
-        public LHArray<String> arrayTask(LHArray<String> input) {
-            return input;
         }
     }
 
@@ -179,33 +172,6 @@ public class LHTaskSignatureTest {
                 .build();
 
         assertThat(actualReturnType).isEqualTo(expectedReturnType);
-    }
-
-    @Test
-    void shouldInferInlineArrayReturnTypeForLHArray() {
-        LHTaskSignature taskSignature = new LHTaskSignature("array-task", new MyWorker(), "array-task");
-
-        ReturnType actualReturnType = taskSignature.getReturnType();
-        TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
-                .setInlineArrayDef(InlineArrayDef.newBuilder()
-                        .setArrayType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.JSON_OBJ)))
-                .build();
-
-        assertThat(actualReturnType.getReturnType()).isEqualTo(expectedTypeDefinition);
-    }
-        
-    @Test
-    void shouldInferInlineArrayParameterTypeForLHArray() {
-        LHTaskSignature taskSignature = new LHTaskSignature("array-task", new MyWorker(), "array-task");
-
-        List<VariableDef> actualVariableDefs = taskSignature.getVariableDefs();
-        TypeDefinition actualTypeDefinition = actualVariableDefs.get(0).getTypeDef();
-        TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
-                .setInlineArrayDef(InlineArrayDef.newBuilder()
-                        .setArrayType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.JSON_OBJ)))
-                .build();
-
-        assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
     }
 
     @Test

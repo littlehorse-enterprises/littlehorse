@@ -31,7 +31,6 @@ include(
         'interrupt-handler',
         'inline-struct-placeholder',
         'json',
-        'lh-array',
         'mutation',
         'output-topic',
         'parallel-approval',

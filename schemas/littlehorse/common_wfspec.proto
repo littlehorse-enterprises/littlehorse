@@ -212,9 +212,6 @@ message TypeDefinition {
     
     // The ID of the StructDef that defines this type.
     StructDefId struct_def_id = 5;
-
-    // Inline-defined Array type definition.
-    InlineArrayDef inline_array_def = 6;
   }
 
   // For compatibility purposes.
@@ -222,12 +219,6 @@ message TypeDefinition {
 
   // Set to true if values of this type contain sensitive information and must be masked.
   bool masked = 4;
-}
-
-// Inline schema definition for a native LittleHorse Array.
-message InlineArrayDef {
-  // Type definition for each element in the array.
-  TypeDefinition array_type = 1;
 }
 
 // Utility used among metadata objects to define their output type. For example, used in
