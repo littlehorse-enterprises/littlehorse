@@ -9,14 +9,14 @@ import org.slf4j.LoggerFactory;
 public class LHArrayWorker {
     private static final Logger log = LoggerFactory.getLogger(LHArrayWorker.class);
 
-    @LHTaskMethod("produce-array")
-    public LHArray<Long> produceArray() {
+    @LHTaskMethod(value = "produce-array", returnsLHArray = true)
+    public Long[] produceArray() {
         log.info("Producing native LHArray<Long>");
         return LHArray.of(Arrays.asList(100L, 200L, 300L));
     }
 
     @LHTaskMethod("consume-array")
-    public String consumeArray(LHArray<Long> arr) {
+    public String consumeArray(@LHType(isLHArray = true) Long[] arr) {
         log.info("Consuming LHArray: {}", arr.asList());
         return "consumed:" + arr.asList().size();
     }

@@ -421,14 +421,15 @@ public class LHLibUtil {
                 Struct struct = val.getStruct();
                 return deserializeStructToObject(struct, targetClazz, typeAdapterRegistry);
             case ARRAY:
-                if (LHArray.class.isAssignableFrom(targetClazz)) {
-                    Array arr = val.getArray();
-                    List<Object> out = new ArrayList<>(arr.getItemsCount());
-                    for (VariableValue item : arr.getItemsList()) {
-                        out.add(varValToObj(item, Object.class));
-                    }
-                    return LHArray.of(out);
-                }
+                // TODO:
+                // if (LHArray.class.isAssignableFrom(targetClazz)) {
+                //     Array arr = val.getArray();
+                //     List<Object> out = new ArrayList<>(arr.getItemsCount());
+                //     for (VariableValue item : arr.getItemsList()) {
+                //         out.add(varValToObj(item, Object.class));
+                //     }
+                //     return LHArray.of(out);
+                // }
                 if (List.class.isAssignableFrom(targetClazz)) {
                     Array arr = val.getArray();
                     List<Object> out = new ArrayList<>(arr.getItemsCount());
@@ -740,13 +741,7 @@ public class LHLibUtil {
             out.setBytes(ByteString.copyFrom((byte[]) o));
         } else if (o instanceof WfRunId) {
             out.setWfRunId((WfRunId) o);
-        } else if (o instanceof LHArray) {
-            LHArray<?> array = (LHArray<?>) o;
-            Array.Builder arr = Array.newBuilder();
-            for (Object item : array.asList()) {
-                arr.addItems(objToVarVal(item, typeAdapterRegistry));
-            }
-            out.setArray(arr);
+            // TODO: Array
         } else if (o.getClass().isAnnotationPresent(LHStructDef.class)) {
             out.setStruct(serializeToStruct(o, typeAdapterRegistry));
         } else if (o instanceof Instant) {
@@ -916,9 +911,6 @@ public class LHLibUtil {
     }
 
     public static boolean isJSON_ARR(Class<?> cls) {
-        if (LHArray.class.isAssignableFrom(cls)) {
-            return false;
-        }
         return List.class.isAssignableFrom(cls) || cls.isArray();
     }
 

@@ -6,6 +6,8 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.Array;
+import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.StructDefId;
@@ -68,70 +70,77 @@ public class VariableMapping {
         this.name = javaParamName;
         TypeDefinition inputType = taskDef.getInputVars(position).getTypeDef();
 
-        Optional<String> msg = null;
-
-        switch (inputType.getDefinedTypeCase()) {
-            case DEFINEDTYPE_NOT_SET:
-                break;
-            case PRIMITIVE_TYPE:
-                msg = validatePrimitiveType(inputType.getPrimitiveType(), type);
-                break;
-            case STRUCT_DEF_ID:
-                msg = validateStructDefType(inputType.getStructDefId(), type);
-                break;
-            default:
-                break;
-        }
-
-        if (msg.isPresent()) {
-            throw new TaskSchemaMismatchError("Invalid assignment for var " + name + ": " + msg.get());
+        try {
+            validateParamAgainstTaskDef(inputType);
+        } catch (TaskSchemaMismatchError taskSchemaMismatchError) {
+            throw new TaskSchemaMismatchError(
+                    "Invalid assignment for var " + name + ": " + taskSchemaMismatchError.getMessage());
         }
     }
 
-    private Optional<String> validateStructDefType(StructDefId input, Class<?> type) {
-        String msg = null;
+    private void validateParamAgainstTaskDef(TypeDefinition paramType) {
 
+        switch (paramType.getDefinedTypeCase()) {
+            case PRIMITIVE_TYPE:
+                validatePrimitiveType(paramType.getPrimitiveType(), type);
+                break;
+            case INLINE_ARRAY_DEF:
+                validateInlineArrayDef(paramType.getInlineArrayDef(), type);
+                break;
+            case STRUCT_DEF_ID:
+                validateStructDefType(paramType.getStructDefId(), type);
+                break;
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                break;
+        }
+    }
+
+    private void validateInlineArrayDef(InlineArrayDef input, Class<?> type) {
+        if (Array.class.equals(type)) {
+            return;
+        }
+    }
+
+    private void validateStructDefType(StructDefId input, Class<?> type) {
         if (InlineStruct.class.equals(type)) {
             if (inlineStructDefName == null || inlineStructDefName.isBlank()) {
-                msg = "TaskDef provides StructDef, func accepts InlineStruct without @LHType(structDefName = ...)";
+                throw new TaskSchemaMismatchError(
+                        "TaskDef provides StructDef, func accepts InlineStruct without @LHType(structDefName = ...)");
             } else if (!input.getName().equals(inlineStructDefName)) {
-                msg = String.format(
+                throw new TaskSchemaMismatchError(String.format(
                         "TaskDef provides StructDef <%s>, func expects InlineStruct StructDef <%s>",
-                        input.getName(), inlineStructDefName);
+                        input.getName(), inlineStructDefName));
             }
-            return Optional.ofNullable(msg);
         }
 
         LHClassType lhClassType = LHClassType.fromJavaClass(type, typeAdapterRegistry);
 
         if (!(lhClassType instanceof LHStructDefType)) {
-            msg = "TaskDef provides StructDef, func accepts non-StructDef type " + type;
-            return Optional.ofNullable(msg);
+            throw new TaskSchemaMismatchError("TaskDef provides StructDef, func accepts non-StructDef type " + type);
         }
 
         LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
 
         if (!input.equals(lhStructDefType.getStructDefId())) {
-            msg = String.format(
+            throw new TaskSchemaMismatchError(String.format(
                     "TaskDef provides StructDef <%s>, func accepts StructDef <%s>",
-                    input, lhStructDefType.getStructDefId());
+                    input, lhStructDefType.getStructDefId()));
         }
-
-        return Optional.ofNullable(msg);
     }
 
-    private Optional<String> validatePrimitiveType(VariableType input, Class<?> type) {
-        String msg = null;
-
+    private void validatePrimitiveType(VariableType input, Class<?> type) {
         Optional<LHTypeAdapter<?>> maybeAdapter = LHLibUtil.getTypeAdapterForClass(type, typeAdapterRegistry);
         if (maybeAdapter.isPresent()) {
             LHTypeAdapter<?> adapter = maybeAdapter.get();
             if (adapter.getVariableType() != input) {
-                return Optional.of("TaskDef provides " + input + ", but adapter for " + type.getName() + " maps to "
-                        + adapter.getVariableType());
+                throw new TaskSchemaMismatchError("TaskDef provides " + input + ", but adapter for " + type.getName()
+                        + " maps to " + adapter.getVariableType());
             }
-            return Optional.empty();
+            return;
         }
+
+        String msg = null;
 
         switch (input) {
             case INT:
@@ -174,11 +183,14 @@ public class VariableMapping {
                 }
                 break;
             case UNRECOGNIZED:
-                throw new RuntimeException("Not possible");
             default:
+                msg = "TaskDef primitive input type unrecognized. Client versiom might be older than server.";
                 break;
         }
-        return Optional.ofNullable(msg);
+
+        if (msg != null) {
+            throw new TaskSchemaMismatchError(msg);
+        }
     }
 
     public Object assign(ScheduledTask taskInstance, WorkerContext context) throws InputVarSubstitutionException {

@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,8 +37,7 @@ public class LHTaskSignature {
     LinkedHashSet<LHStructDefType> structDefClasses;
 
     Method taskMethod;
-    boolean hasWorkerContextAtEnd;
-    String taskDefName;
+    boolean hasWorkerContext;
     String lhTaskMethodAnnotationValue;
     Object executable;
     ReturnType outputSchema;
@@ -45,7 +45,10 @@ public class LHTaskSignature {
     private final Map<String, String> placeholderValues;
 
     @Getter
-    private String taskDefDescription;
+    private String taskDefName;
+
+    @Getter
+    private Optional<String> taskDefDescription;
 
     public LHTaskSignature(String taskDefName, Object executable, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
@@ -126,7 +129,46 @@ public class LHTaskSignature {
                 if (i + 1 != taskMethod.getParameterCount()) {
                     throw new TaskSchemaMismatchError("Can only have WorkerContext as the last parameter.");
                 } else {
-                    hasWorkerContextAtEnd = true;
+                    hasWorkerContext = true;
+                    continue; // could also be `break;`
+                }
+            }
+
+            variableDefs.add(buildVariableDef(param));
+        }
+        outputSchema = buildReturnType(taskMethod.getReturnType());
+    }
+
+    public LHTaskSignature(
+            Method taskMethod, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
+        taskMethod = Objects.requireNonNull(taskMethod);
+        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
+        variableDefs = new ArrayList<>();
+        this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
+        this.structDefClasses = new LinkedHashSet<>();
+
+        if (!taskMethod.isAnnotationPresent(LHTaskMethod.class)) {
+            throw new TaskSchemaMismatchError(String.format(
+                    "Cannot create LHTaskSignature: Provided method %s is missing the required @LHTaskMethod annotation.",
+                    taskMethod.getName()));
+        }
+
+        LHTaskMethod lhTaskMethod = taskMethod.getAnnotation(LHTaskMethod.class);
+
+        taskDefName = lhTaskMethod.value();
+        taskDefDescription = Optional.of(lhTaskMethod.description());
+
+        initializeVariableDefs();
+    }
+
+    public void initializeVariableDefs() {
+        for (int i = 0; i < taskMethod.getParameterCount(); i++) {
+            Parameter param = taskMethod.getParameters()[i];
+            if (param.getType().equals(WorkerContext.class)) {
+                if (i + 1 != taskMethod.getParameterCount()) {
+                    throw new TaskSchemaMismatchError("Can only have WorkerContext as the last parameter.");
+                } else {
+                    hasWorkerContext = true;
                     continue; // could also be `break;`
                 }
             }
@@ -248,16 +290,8 @@ public class LHTaskSignature {
         return PlaceholderUtil.replacePlaceholders(text, placeholderValues);
     }
 
-    public boolean getHasWorkerContextAtEnd() {
-        return hasWorkerContextAtEnd;
-    }
-
-    public String getTaskDefName() {
-        return taskDefName;
-    }
-
-    public Object getExecutable() {
-        return executable;
+    public boolean hasWorkerContext() {
+        return hasWorkerContext;
     }
 
     public Method getTaskMethod() {

@@ -1,11 +1,14 @@
 package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
-import io.littlehorse.sdk.common.LHArray;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.LHType;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Objects;
 
 /**
@@ -15,6 +18,7 @@ import java.util.Objects;
  */
 public abstract class LHClassType {
     protected Class<?> clazz;
+    protected LHTypeAdapterRegistry typeAdapterRegistry;
 
     /**
      * @deprecated Use {@link #fromJavaClass(Class, LHTypeAdapterRegistry)} instead, which allows for proper handling of type adapters.
@@ -24,6 +28,29 @@ public abstract class LHClassType {
     @Deprecated(since = "0.16.0", forRemoval = true)
     public static LHClassType fromJavaClass(Class<?> classType) {
         return fromJavaClass(classType, LHTypeAdapterRegistry.empty());
+    }
+
+    public static LHClassType fromTaskMethodReturnType(Method method, LHTypeAdapterRegistry typeAdapterRegistry) {
+        if (method.isAnnotationPresent(LHTaskMethod.class)) {
+            LHTaskMethod lhTaskMethod = method.getAnnotation(LHTaskMethod.class);
+
+            if (lhTaskMethod.returnsLHArray()) {
+                return new LHArrayType(method.getReturnType(), typeAdapterRegistry);
+            }
+        }
+        return fromJavaClass(method.getReturnType(), typeAdapterRegistry);
+    }
+
+    public static LHClassType fromTaskMethodParameter(Parameter parameter, LHTypeAdapterRegistry typeAdapterRegistry) {
+        if (parameter.isAnnotationPresent(LHType.class)) {
+            LHType lhType = parameter.getAnnotation(LHType.class);
+
+            if (lhType.isLHArray()) {
+                return new LHArrayType(parameter.getType(), typeAdapterRegistry);
+            }
+        }
+
+        return fromJavaClass(parameter.getType(), typeAdapterRegistry);
     }
 
     /**
@@ -36,8 +63,6 @@ public abstract class LHClassType {
     public static LHClassType fromJavaClass(Class<?> classType, LHTypeAdapterRegistry typeAdapterRegistry) {
         if (classType == null) {
             throw new IllegalArgumentException("Class type should not be null");
-        } else if (LHArray.class.isAssignableFrom(classType)) {
-            return new LHArrayType(classType);
         } else if (LHLibUtil.isJavaClassLHPrimitive(classType)) {
             return new LHPrimitiveType(classType, typeAdapterRegistry);
         } else if (classType.isAnnotationPresent(LHStructDef.class)) {
@@ -56,8 +81,9 @@ public abstract class LHClassType {
 
     public abstract TypeDefinition getTypeDefinition();
 
-    protected LHClassType(Class<?> clazz) {
+    protected LHClassType(Class<?> clazz, LHTypeAdapterRegistry lhTypeAdapterRegistry) {
         this.clazz = Objects.requireNonNull(clazz);
+        this.typeAdapterRegistry = Objects.requireNonNull(lhTypeAdapterRegistry);
     }
 
     public Class<?> getClassType() {
@@ -65,7 +91,7 @@ public abstract class LHClassType {
     }
 
     public LHClassType getCoreComponentType() {
-        return getCoreComponentType(LHTypeAdapterRegistry.empty());
+        return getCoreComponentType(this.typeAdapterRegistry);
     }
 
     public LHClassType getCoreComponentType(LHTypeAdapterRegistry typeAdapterRegistry) {

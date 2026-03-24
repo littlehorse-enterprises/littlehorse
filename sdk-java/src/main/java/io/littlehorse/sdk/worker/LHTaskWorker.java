@@ -265,48 +265,62 @@ public class LHTaskWorker implements Closeable {
         }
     }
 
+    private void getTaskDefOrFail() {
+        long start = System.currentTimeMillis();
+        long timeout = start + Duration.ofSeconds(2).toMillis();
+        do {
+            try {
+                TaskDef taskDef = grpcClient.getTaskDef(
+                        TaskDefId.newBuilder().setName(taskDefName).build());
+                if (taskDef != null) {
+                    this.taskDef = taskDef;
+                    break;
+                }
+                Thread.sleep(10);
+            } catch (StatusRuntimeException exn) {
+                if (!(exn.getStatus().getCode() == Code.NOT_FOUND)) {
+                    throw exn;
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        } while (System.currentTimeMillis() < timeout);
+
+        if (this.taskDef == null) {
+            throw new IllegalStateException("TaskDef '" + taskDefName
+                    + "' was not found on the server. Register it before starting this worker.");
+        }
+    }
+
+    private Method getLHTaskMethod() {
+        return List.of(executable.getClass().getMethods()).stream()
+                .filter(method -> method.isAnnotationPresent(LHTaskMethod.class))
+                .filter((Method method) -> {
+                    LHTaskMethod annotation = method.getAnnotation(LHTaskMethod.class);
+                    String annotationValue = annotation.value();
+                    String resolvedAnnotationValue = replacePlaceholders(annotationValue, placeholderValues);
+                    return resolvedAnnotationValue.equals(taskDefName);
+                })
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Provided executable object must have exactly one method annotated with @LHTaskMethod"));
+    }
+
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {
         if (this.taskDef == null) {
-            long start = System.currentTimeMillis();
-            long timeout = start + Duration.ofSeconds(2).toMillis();
-            do {
-                try {
-                    TaskDef taskDef = grpcClient.getTaskDef(
-                            TaskDefId.newBuilder().setName(taskDefName).build());
-                    if (taskDef != null) {
-                        this.taskDef = taskDef;
-                        break;
-                    }
-                    Thread.sleep(10);
-                } catch (StatusRuntimeException exn) {
-                    if (!(exn.getStatus().getCode() == Code.NOT_FOUND)) {
-                        throw exn;
-                    }
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-            } while (System.currentTimeMillis() < timeout);
-
-            if (this.taskDef == null) {
-                throw new IllegalStateException("TaskDef '" + taskDefName
-                        + "' was not found on the server. Register it before starting this worker.");
-            }
+            getTaskDefOrFail();
         }
 
-        LHTaskSignature signature = new LHTaskSignature(
-                taskDef.getId().getName(),
-                executable,
-                this.lhTaskMethodAnnotationValue,
-                config.getTypeAdapterRegistry(),
-                placeholderValues);
+        LHTaskSignature signature =
+                new LHTaskSignature(this.getLHTaskMethod(), config.getTypeAdapterRegistry(), placeholderValues);
         taskMethod = signature.getTaskMethod();
 
         int numTaskMethodParams = taskMethod.getParameterCount();
         int numTaskDefParams = taskDef.getInputVarsCount();
 
         boolean wrongNumParams = false;
-        if (signature.getHasWorkerContextAtEnd()) {
+        if (signature.hasWorkerContext()) {
             if (numTaskMethodParams - 1 != numTaskDefParams) {
                 wrongNumParams = true;
             }
@@ -339,7 +353,7 @@ public class LHTaskWorker implements Closeable {
             mappings.add(mapping);
         }
 
-        if (signature.getHasWorkerContextAtEnd()) {
+        if (signature.hasWorkerContext()) {
             mappings.add(new VariableMapping(
                     taskDef, numTaskMethodParams - 1, WorkerContext.class, null, config.getTypeAdapterRegistry()));
         }
@@ -364,7 +378,9 @@ public class LHTaskWorker implements Closeable {
     }
 
     /**
-     * Tests if this worker is alive. A worker is alive if it has been started and has not yet terminated.
+     * Tests if this worker is alive. A worker is alive if it has been started and
+     * has not yet terminated.
+     *
      * @return true if this thread is not alive; false otherwise.
      */
     public boolean isClosed() {
@@ -373,6 +389,7 @@ public class LHTaskWorker implements Closeable {
 
     /**
      * Determine if a worker is healthy. A worker could be running but not healthy.
+     *
      * @return LHTaskWorkerHealth
      */
     public LHTaskWorkerHealth healthStatus() {

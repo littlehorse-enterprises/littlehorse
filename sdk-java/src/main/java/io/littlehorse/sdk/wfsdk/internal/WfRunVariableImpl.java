@@ -18,6 +18,7 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -67,19 +68,19 @@ class WfRunVariableImpl implements WfRunVariable {
 
     public static WfRunVariableImpl createStructDefVar(String name, LHStructDefType clazz, WorkflowThreadImpl parent) {
         WfRunVariableImpl wfRunVar = new WfRunVariableImpl(name, parent);
-        wfRunVar.initializeAsStructDef(clazz);
+        wfRunVar.initializeFromLHClassType(clazz);
         return wfRunVar;
     }
 
     public static WfRunVariableImpl createStructDefVar(String name, String structDefName, WorkflowThreadImpl parent) {
         WfRunVariableImpl wfRunVar = new WfRunVariableImpl(name, parent);
-        wfRunVar.initializeAsStructDef(structDefName);
+        wfRunVar.initializeFromStructDefString(structDefName);
         return wfRunVar;
     }
 
     public static WfRunVariableImpl createArrayVar(String name, LHArrayType arrayType, WorkflowThreadImpl parent) {
         WfRunVariableImpl wfRunVar = new WfRunVariableImpl(name, parent);
-        wfRunVar.initializeAsArray(arrayType);
+        wfRunVar.initializeFromLHClassType(arrayType);
         return wfRunVar;
     }
 
@@ -96,18 +97,14 @@ class WfRunVariableImpl implements WfRunVariable {
         }
     }
 
-    private void initializeAsStructDef(String structDefName) {
+    private void initializeFromStructDefString(String structDefName) {
         this.typeDef = TypeDefinition.newBuilder()
                 .setStructDefId(StructDefId.newBuilder().setName(structDefName))
                 .build();
     }
 
-    private void initializeAsStructDef(LHStructDefType structClass) {
-        this.typeDef = structClass.getTypeDefinition();
-    }
-
-    private void initializeAsArray(LHArrayType arrayType) {
-        this.typeDef = arrayType.getTypeDefinition();
+    private void initializeFromLHClassType(LHClassType lhClassType) {
+        this.typeDef = lhClassType.getTypeDefinition();
     }
 
     @Override
@@ -141,10 +138,20 @@ class WfRunVariableImpl implements WfRunVariable {
         if (jsonPath != null) {
             throw new LHMisconfigurationException("Cannot use jsonPath() and get() on same var!");
         }
-        if (typeDef.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
-                && (typeDef.getPrimitiveType() != VariableType.JSON_OBJ
-                        && typeDef.getPrimitiveType() != VariableType.JSON_ARR)) {
-            throw new LHMisconfigurationException("Can only use get() on JSON_OBJ, JSON_ARR, or Struct variables");
+        switch (typeDef.getDefinedTypeCase()) {
+            case INLINE_ARRAY_DEF:
+            case STRUCT_DEF_ID:
+                break;
+            case PRIMITIVE_TYPE:
+                if (typeDef.getPrimitiveType() != VariableType.JSON_ARR
+                        && typeDef.getPrimitiveType() != VariableType.JSON_OBJ) {
+                    throw new LHMisconfigurationException(
+                            "Can only use get() on JSON_OBJ, JSON_ARR, Struct, or Array variables");
+                }
+                break;
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                throw new RuntimeException(String.format("Unrecognized WfRunVariable type: %s", typeDef));
         }
         WfRunVariableImpl out = this.clone();
         out.getLhPath().add(Selector.newBuilder().setKey(field).build());
@@ -156,10 +163,20 @@ class WfRunVariableImpl implements WfRunVariable {
         if (jsonPath != null) {
             throw new LHMisconfigurationException("Cannot use jsonPath() and get() on same var!");
         }
-        if (typeDef.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
-                && (typeDef.getPrimitiveType() != VariableType.JSON_OBJ
-                        && typeDef.getPrimitiveType() != VariableType.JSON_ARR)) {
-            throw new LHMisconfigurationException("Can only use get() on JSON_OBJ, JSON_ARR, or Struct variables");
+        switch (typeDef.getDefinedTypeCase()) {
+            case INLINE_ARRAY_DEF:
+            case STRUCT_DEF_ID:
+                break;
+            case PRIMITIVE_TYPE:
+                if (typeDef.getPrimitiveType() != VariableType.JSON_ARR
+                        && typeDef.getPrimitiveType() != VariableType.JSON_OBJ) {
+                    throw new LHMisconfigurationException(
+                            "Can only use get() on JSON_OBJ, JSON_ARR, Struct, or Array variables");
+                }
+                break;
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                throw new RuntimeException(String.format("Unrecognized WfRunVariable type: %s", typeDef));
         }
         WfRunVariableImpl out = this.clone();
         out.getLhPath().add(Selector.newBuilder().setIndex(index).build());

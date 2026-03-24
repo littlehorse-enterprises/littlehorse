@@ -37,4 +37,11 @@ public @interface LHType {
      * @return the StructDef name expected for InlineStruct values.
      */
     String structDefName() default "";
+
+    /**
+     * Indicates whether or not Array types marked with this annotation should be serialized as a LittleHorse native Array.
+     *
+     * @return whether or not this Array should be a LittleHorse native Array or a JSON_ARR.
+     */
+    boolean isLHArray() default false;
 }
