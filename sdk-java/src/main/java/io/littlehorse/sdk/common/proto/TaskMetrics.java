@@ -51,6 +51,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASKRUN_CREATED_TO_COMPLETED_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.CountAndTiming taskrunCreatedToCompleted_;
   /**
+   * <pre>
+   * Created → Completed.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
    * @return Whether the taskrunCreatedToCompleted field is set.
    */
@@ -59,6 +63,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Created → Completed.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
    * @return The taskrunCreatedToCompleted.
    */
@@ -67,6 +75,10 @@ private static final long serialVersionUID = 0L;
     return taskrunCreatedToCompleted_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : taskrunCreatedToCompleted_;
   }
   /**
+   * <pre>
+   * Created → Completed.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
    */
   @java.lang.Override
@@ -77,6 +89,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASKRUN_CREATED_TO_ERROR_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.CountAndTiming taskrunCreatedToError_;
   /**
+   * <pre>
+   * Created → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
    * @return Whether the taskrunCreatedToError field is set.
    */
@@ -85,6 +101,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Created → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
    * @return The taskrunCreatedToError.
    */
@@ -93,6 +113,10 @@ private static final long serialVersionUID = 0L;
     return taskrunCreatedToError_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : taskrunCreatedToError_;
   }
   /**
+   * <pre>
+   * Created → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
    */
   @java.lang.Override
@@ -103,6 +127,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASKRUN_CREATED_TO_EXCEPTION_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.CountAndTiming taskrunCreatedToException_;
   /**
+   * <pre>
+   * Created → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
    * @return Whether the taskrunCreatedToException field is set.
    */
@@ -111,6 +139,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
+   * <pre>
+   * Created → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
    * @return The taskrunCreatedToException.
    */
@@ -119,6 +151,10 @@ private static final long serialVersionUID = 0L;
     return taskrunCreatedToException_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : taskrunCreatedToException_;
   }
   /**
+   * <pre>
+   * Created → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
    */
   @java.lang.Override
@@ -129,6 +165,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASKATTEMPT_PENDING_TO_SCHEDULED_FIELD_NUMBER = 4;
   private io.littlehorse.sdk.common.proto.CountAndTiming taskattemptPendingToScheduled_;
   /**
+   * <pre>
+   * Pending → Scheduled.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
    * @return Whether the taskattemptPendingToScheduled field is set.
    */
@@ -137,6 +177,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
+   * <pre>
+   * Pending → Scheduled.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
    * @return The taskattemptPendingToScheduled.
    */
@@ -145,6 +189,10 @@ private static final long serialVersionUID = 0L;
     return taskattemptPendingToScheduled_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : taskattemptPendingToScheduled_;
   }
   /**
+   * <pre>
+   * Pending → Scheduled.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
    */
   @java.lang.Override
@@ -155,6 +203,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASKATTEMPT_SCHEDULED_TO_RUNNING_FIELD_NUMBER = 5;
   private io.littlehorse.sdk.common.proto.CountAndTiming taskattemptScheduledToRunning_;
   /**
+   * <pre>
+   * Scheduled → Running.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
    * @return Whether the taskattemptScheduledToRunning field is set.
    */
@@ -163,6 +215,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000010) != 0);
   }
   /**
+   * <pre>
+   * Scheduled → Running.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
    * @return The taskattemptScheduledToRunning.
    */
@@ -171,6 +227,10 @@ private static final long serialVersionUID = 0L;
     return taskattemptScheduledToRunning_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : taskattemptScheduledToRunning_;
   }
   /**
+   * <pre>
+   * Scheduled → Running.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
    */
   @java.lang.Override
@@ -181,6 +241,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASKATTEMPT_RUNNING_TO_ERROR_FIELD_NUMBER = 6;
   private io.littlehorse.sdk.common.proto.CountAndTiming taskattemptRunningToError_;
   /**
+   * <pre>
+   * Running → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
    * @return Whether the taskattemptRunningToError field is set.
    */
@@ -189,6 +253,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000020) != 0);
   }
   /**
+   * <pre>
+   * Running → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
    * @return The taskattemptRunningToError.
    */
@@ -197,6 +265,10 @@ private static final long serialVersionUID = 0L;
     return taskattemptRunningToError_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : taskattemptRunningToError_;
   }
   /**
+   * <pre>
+   * Running → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
    */
   @java.lang.Override
@@ -207,6 +279,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASKATTEMPT_RUNNING_TO_SUCCESS_FIELD_NUMBER = 7;
   private io.littlehorse.sdk.common.proto.CountAndTiming taskattemptRunningToSuccess_;
   /**
+   * <pre>
+   * Running → Success.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
    * @return Whether the taskattemptRunningToSuccess field is set.
    */
@@ -215,6 +291,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000040) != 0);
   }
   /**
+   * <pre>
+   * Running → Success.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
    * @return The taskattemptRunningToSuccess.
    */
@@ -223,6 +303,10 @@ private static final long serialVersionUID = 0L;
     return taskattemptRunningToSuccess_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : taskattemptRunningToSuccess_;
   }
   /**
+   * <pre>
+   * Running → Success.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
    */
   @java.lang.Override
@@ -233,6 +317,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASKATTEMPT_RUNNING_TO_EXCEPTION_FIELD_NUMBER = 8;
   private io.littlehorse.sdk.common.proto.CountAndTiming taskattemptRunningToException_;
   /**
+   * <pre>
+   * Running → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
    * @return Whether the taskattemptRunningToException field is set.
    */
@@ -241,6 +329,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000080) != 0);
   }
   /**
+   * <pre>
+   * Running → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
    * @return The taskattemptRunningToException.
    */
@@ -249,6 +341,10 @@ private static final long serialVersionUID = 0L;
     return taskattemptRunningToException_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : taskattemptRunningToException_;
   }
   /**
+   * <pre>
+   * Running → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
    */
   @java.lang.Override
@@ -845,6 +941,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> taskrunCreatedToCompletedBuilder_;
     /**
+     * <pre>
+     * Created → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
      * @return Whether the taskrunCreatedToCompleted field is set.
      */
@@ -852,6 +952,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Created → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
      * @return The taskrunCreatedToCompleted.
      */
@@ -863,6 +967,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Created → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
      */
     public Builder setTaskrunCreatedToCompleted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -879,6 +987,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Created → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
      */
     public Builder setTaskrunCreatedToCompleted(
@@ -893,6 +1005,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Created → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
      */
     public Builder mergeTaskrunCreatedToCompleted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -914,6 +1030,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Created → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
      */
     public Builder clearTaskrunCreatedToCompleted() {
@@ -927,6 +1047,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Created → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getTaskrunCreatedToCompletedBuilder() {
@@ -935,6 +1059,10 @@ private static final long serialVersionUID = 0L;
       return internalGetTaskrunCreatedToCompletedFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Created → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskrunCreatedToCompletedOrBuilder() {
@@ -946,6 +1074,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Created → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -966,6 +1098,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> taskrunCreatedToErrorBuilder_;
     /**
+     * <pre>
+     * Created → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
      * @return Whether the taskrunCreatedToError field is set.
      */
@@ -973,6 +1109,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Created → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
      * @return The taskrunCreatedToError.
      */
@@ -984,6 +1124,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Created → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
      */
     public Builder setTaskrunCreatedToError(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1000,6 +1144,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Created → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
      */
     public Builder setTaskrunCreatedToError(
@@ -1014,6 +1162,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Created → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
      */
     public Builder mergeTaskrunCreatedToError(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1035,6 +1187,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Created → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
      */
     public Builder clearTaskrunCreatedToError() {
@@ -1048,6 +1204,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Created → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getTaskrunCreatedToErrorBuilder() {
@@ -1056,6 +1216,10 @@ private static final long serialVersionUID = 0L;
       return internalGetTaskrunCreatedToErrorFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Created → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskrunCreatedToErrorOrBuilder() {
@@ -1067,6 +1231,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Created → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -1087,6 +1255,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> taskrunCreatedToExceptionBuilder_;
     /**
+     * <pre>
+     * Created → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
      * @return Whether the taskrunCreatedToException field is set.
      */
@@ -1094,6 +1266,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Created → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
      * @return The taskrunCreatedToException.
      */
@@ -1105,6 +1281,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Created → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
      */
     public Builder setTaskrunCreatedToException(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1121,6 +1301,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Created → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
      */
     public Builder setTaskrunCreatedToException(
@@ -1135,6 +1319,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Created → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
      */
     public Builder mergeTaskrunCreatedToException(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1156,6 +1344,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Created → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
      */
     public Builder clearTaskrunCreatedToException() {
@@ -1169,6 +1361,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Created → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getTaskrunCreatedToExceptionBuilder() {
@@ -1177,6 +1373,10 @@ private static final long serialVersionUID = 0L;
       return internalGetTaskrunCreatedToExceptionFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Created → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskrunCreatedToExceptionOrBuilder() {
@@ -1188,6 +1388,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Created → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -1208,6 +1412,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> taskattemptPendingToScheduledBuilder_;
     /**
+     * <pre>
+     * Pending → Scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
      * @return Whether the taskattemptPendingToScheduled field is set.
      */
@@ -1215,6 +1423,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * Pending → Scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
      * @return The taskattemptPendingToScheduled.
      */
@@ -1226,6 +1438,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Pending → Scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
      */
     public Builder setTaskattemptPendingToScheduled(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1242,6 +1458,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Pending → Scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
      */
     public Builder setTaskattemptPendingToScheduled(
@@ -1256,6 +1476,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Pending → Scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
      */
     public Builder mergeTaskattemptPendingToScheduled(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1277,6 +1501,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Pending → Scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
      */
     public Builder clearTaskattemptPendingToScheduled() {
@@ -1290,6 +1518,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Pending → Scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getTaskattemptPendingToScheduledBuilder() {
@@ -1298,6 +1530,10 @@ private static final long serialVersionUID = 0L;
       return internalGetTaskattemptPendingToScheduledFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Pending → Scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskattemptPendingToScheduledOrBuilder() {
@@ -1309,6 +1545,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Pending → Scheduled.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -1329,6 +1569,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> taskattemptScheduledToRunningBuilder_;
     /**
+     * <pre>
+     * Scheduled → Running.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
      * @return Whether the taskattemptScheduledToRunning field is set.
      */
@@ -1336,6 +1580,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
+     * <pre>
+     * Scheduled → Running.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
      * @return The taskattemptScheduledToRunning.
      */
@@ -1347,6 +1595,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Scheduled → Running.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
      */
     public Builder setTaskattemptScheduledToRunning(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1363,6 +1615,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Scheduled → Running.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
      */
     public Builder setTaskattemptScheduledToRunning(
@@ -1377,6 +1633,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Scheduled → Running.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
      */
     public Builder mergeTaskattemptScheduledToRunning(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1398,6 +1658,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Scheduled → Running.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
      */
     public Builder clearTaskattemptScheduledToRunning() {
@@ -1411,6 +1675,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Scheduled → Running.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getTaskattemptScheduledToRunningBuilder() {
@@ -1419,6 +1687,10 @@ private static final long serialVersionUID = 0L;
       return internalGetTaskattemptScheduledToRunningFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Scheduled → Running.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskattemptScheduledToRunningOrBuilder() {
@@ -1430,6 +1702,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Scheduled → Running.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -1450,6 +1726,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> taskattemptRunningToErrorBuilder_;
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
      * @return Whether the taskattemptRunningToError field is set.
      */
@@ -1457,6 +1737,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
      * @return The taskattemptRunningToError.
      */
@@ -1468,6 +1752,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
      */
     public Builder setTaskattemptRunningToError(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1484,6 +1772,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
      */
     public Builder setTaskattemptRunningToError(
@@ -1498,6 +1790,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
      */
     public Builder mergeTaskattemptRunningToError(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1519,6 +1815,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
      */
     public Builder clearTaskattemptRunningToError() {
@@ -1532,6 +1832,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getTaskattemptRunningToErrorBuilder() {
@@ -1540,6 +1844,10 @@ private static final long serialVersionUID = 0L;
       return internalGetTaskattemptRunningToErrorFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskattemptRunningToErrorOrBuilder() {
@@ -1551,6 +1859,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -1571,6 +1883,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> taskattemptRunningToSuccessBuilder_;
     /**
+     * <pre>
+     * Running → Success.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
      * @return Whether the taskattemptRunningToSuccess field is set.
      */
@@ -1578,6 +1894,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
+     * <pre>
+     * Running → Success.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
      * @return The taskattemptRunningToSuccess.
      */
@@ -1589,6 +1909,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Success.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
      */
     public Builder setTaskattemptRunningToSuccess(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1605,6 +1929,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Success.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
      */
     public Builder setTaskattemptRunningToSuccess(
@@ -1619,6 +1947,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Success.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
      */
     public Builder mergeTaskattemptRunningToSuccess(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1640,6 +1972,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Success.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
      */
     public Builder clearTaskattemptRunningToSuccess() {
@@ -1653,6 +1989,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Success.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getTaskattemptRunningToSuccessBuilder() {
@@ -1661,6 +2001,10 @@ private static final long serialVersionUID = 0L;
       return internalGetTaskattemptRunningToSuccessFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Running → Success.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskattemptRunningToSuccessOrBuilder() {
@@ -1672,6 +2016,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Success.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -1692,6 +2040,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> taskattemptRunningToExceptionBuilder_;
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
      * @return Whether the taskattemptRunningToException field is set.
      */
@@ -1699,6 +2051,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000080) != 0);
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
      * @return The taskattemptRunningToException.
      */
@@ -1710,6 +2066,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
      */
     public Builder setTaskattemptRunningToException(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1726,6 +2086,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
      */
     public Builder setTaskattemptRunningToException(
@@ -1740,6 +2104,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
      */
     public Builder mergeTaskattemptRunningToException(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1761,6 +2129,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
      */
     public Builder clearTaskattemptRunningToException() {
@@ -1774,6 +2146,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getTaskattemptRunningToExceptionBuilder() {
@@ -1782,6 +2158,10 @@ private static final long serialVersionUID = 0L;
       return internalGetTaskattemptRunningToExceptionFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskattemptRunningToExceptionOrBuilder() {
@@ -1793,6 +2173,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<

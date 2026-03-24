@@ -35,7 +35,9 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
     public static final String RUNNING_TO_ERROR = "running_to_error";
     public static final String RUNNING_TO_EXCEPTION = "running_to_exception";
     public static final String RUNNING_TO_HALTING = "running_to_halting";
+    public static final String RUNNING_TO_HALTED = "running_to_halted";
     public static final String HALTING_TO_HALTED = "halting_to_halted";
+    public static final String HALTED_TO_RUNNING = "halted_to_running";
 
     public static final String TASKRUN_CREATED_TO_COMPLETED = "taskrun_created_to_completed";
     public static final String TASKRUN_CREATED_TO_ERROR = "taskrun_created_to_error";
@@ -103,9 +105,22 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
                     context);
             addMetricIfPresent(
                     metrics,
+                    RUNNING_TO_HALTED,
+                    wfMetrics.hasRunningToHalted(),
+                    wfMetrics.getRunningToHalted(),
+                    context);
+
+            addMetricIfPresent(
+                    metrics,
                     HALTING_TO_HALTED,
                     wfMetrics.hasHaltingToHalted(),
                     wfMetrics.getHaltingToHalted(),
+                    context);
+            addMetricIfPresent(
+                    metrics,
+                    HALTED_TO_RUNNING,
+                    wfMetrics.hasHaltedToRunning(),
+                    wfMetrics.getHaltedToRunning(),
                     context);
             return;
         }
@@ -174,7 +189,9 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
             putMetricIfPresent(wfMetrics::setRunningToError, RUNNING_TO_ERROR);
             putMetricIfPresent(wfMetrics::setRunningToException, RUNNING_TO_EXCEPTION);
             putMetricIfPresent(wfMetrics::setRunningToHalting, RUNNING_TO_HALTING);
+            putMetricIfPresent(wfMetrics::setRunningToHalted, RUNNING_TO_HALTED);
             putMetricIfPresent(wfMetrics::setHaltingToHalted, HALTING_TO_HALTED);
+            putMetricIfPresent(wfMetrics::setHaltedToRunning, HALTED_TO_RUNNING);
             out.setWorkflow(wfMetrics);
         } else if (id.getMetricType() == MetricWindowType.TASK_METRIC) {
             TaskMetrics.Builder taskMetrics = TaskMetrics.newBuilder();

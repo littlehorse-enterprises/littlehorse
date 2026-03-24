@@ -11,16 +11,28 @@ public interface AggregateWindowMetricsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Aggregated metrics for a partition window.
+   * </pre>
+   *
    * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
    * @return Whether the metricWindow field is set.
    */
   boolean hasMetricWindow();
   /**
+   * <pre>
+   * Aggregated metrics for a partition window.
+   * </pre>
+   *
    * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
    * @return The metricWindow.
    */
   io.littlehorse.common.proto.PartitionMetricWindow getMetricWindow();
   /**
+   * <pre>
+   * Aggregated metrics for a partition window.
+   * </pre>
+   *
    * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
    */
   io.littlehorse.common.proto.PartitionMetricWindowOrBuilder getMetricWindowOrBuilder();

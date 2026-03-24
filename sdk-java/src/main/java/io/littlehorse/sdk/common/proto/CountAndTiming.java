@@ -51,6 +51,10 @@ private static final long serialVersionUID = 0L;
   public static final int COUNT_FIELD_NUMBER = 1;
   private int count_ = 0;
   /**
+   * <pre>
+   * Number of events.
+   * </pre>
+   *
    * <code>int32 count = 1;</code>
    * @return The count.
    */
@@ -62,6 +66,10 @@ private static final long serialVersionUID = 0L;
   public static final int MIN_LATENCY_MS_FIELD_NUMBER = 2;
   private long minLatencyMs_ = 0L;
   /**
+   * <pre>
+   * Minimum latency in ms.
+   * </pre>
+   *
    * <code>int64 min_latency_ms = 2;</code>
    * @return The minLatencyMs.
    */
@@ -73,6 +81,10 @@ private static final long serialVersionUID = 0L;
   public static final int MAX_LATENCY_MS_FIELD_NUMBER = 3;
   private long maxLatencyMs_ = 0L;
   /**
+   * <pre>
+   * Maximum latency in ms.
+   * </pre>
+   *
    * <code>int64 max_latency_ms = 3;</code>
    * @return The maxLatencyMs.
    */
@@ -84,6 +96,10 @@ private static final long serialVersionUID = 0L;
   public static final int TOTAL_LATENCY_MS_FIELD_NUMBER = 4;
   private long totalLatencyMs_ = 0L;
   /**
+   * <pre>
+   * Sum of all latencies in ms.
+   * </pre>
+   *
    * <code>int64 total_latency_ms = 4;</code>
    * @return The totalLatencyMs.
    */
@@ -464,6 +480,10 @@ private static final long serialVersionUID = 0L;
 
     private int count_ ;
     /**
+     * <pre>
+     * Number of events.
+     * </pre>
+     *
      * <code>int32 count = 1;</code>
      * @return The count.
      */
@@ -472,6 +492,10 @@ private static final long serialVersionUID = 0L;
       return count_;
     }
     /**
+     * <pre>
+     * Number of events.
+     * </pre>
+     *
      * <code>int32 count = 1;</code>
      * @param value The count to set.
      * @return This builder for chaining.
@@ -484,6 +508,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Number of events.
+     * </pre>
+     *
      * <code>int32 count = 1;</code>
      * @return This builder for chaining.
      */
@@ -496,6 +524,10 @@ private static final long serialVersionUID = 0L;
 
     private long minLatencyMs_ ;
     /**
+     * <pre>
+     * Minimum latency in ms.
+     * </pre>
+     *
      * <code>int64 min_latency_ms = 2;</code>
      * @return The minLatencyMs.
      */
@@ -504,6 +536,10 @@ private static final long serialVersionUID = 0L;
       return minLatencyMs_;
     }
     /**
+     * <pre>
+     * Minimum latency in ms.
+     * </pre>
+     *
      * <code>int64 min_latency_ms = 2;</code>
      * @param value The minLatencyMs to set.
      * @return This builder for chaining.
@@ -516,6 +552,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Minimum latency in ms.
+     * </pre>
+     *
      * <code>int64 min_latency_ms = 2;</code>
      * @return This builder for chaining.
      */
@@ -528,6 +568,10 @@ private static final long serialVersionUID = 0L;
 
     private long maxLatencyMs_ ;
     /**
+     * <pre>
+     * Maximum latency in ms.
+     * </pre>
+     *
      * <code>int64 max_latency_ms = 3;</code>
      * @return The maxLatencyMs.
      */
@@ -536,6 +580,10 @@ private static final long serialVersionUID = 0L;
       return maxLatencyMs_;
     }
     /**
+     * <pre>
+     * Maximum latency in ms.
+     * </pre>
+     *
      * <code>int64 max_latency_ms = 3;</code>
      * @param value The maxLatencyMs to set.
      * @return This builder for chaining.
@@ -548,6 +596,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Maximum latency in ms.
+     * </pre>
+     *
      * <code>int64 max_latency_ms = 3;</code>
      * @return This builder for chaining.
      */
@@ -560,6 +612,10 @@ private static final long serialVersionUID = 0L;
 
     private long totalLatencyMs_ ;
     /**
+     * <pre>
+     * Sum of all latencies in ms.
+     * </pre>
+     *
      * <code>int64 total_latency_ms = 4;</code>
      * @return The totalLatencyMs.
      */
@@ -568,6 +624,10 @@ private static final long serialVersionUID = 0L;
       return totalLatencyMs_;
     }
     /**
+     * <pre>
+     * Sum of all latencies in ms.
+     * </pre>
+     *
      * <code>int64 total_latency_ms = 4;</code>
      * @param value The totalLatencyMs to set.
      * @return This builder for chaining.
@@ -580,6 +640,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Sum of all latencies in ms.
+     * </pre>
+     *
      * <code>int64 total_latency_ms = 4;</code>
      * @return This builder for chaining.
      */

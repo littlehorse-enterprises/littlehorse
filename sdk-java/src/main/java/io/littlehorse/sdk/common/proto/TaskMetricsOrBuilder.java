@@ -11,121 +11,217 @@ public interface TaskMetricsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Created → Completed.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
    * @return Whether the taskrunCreatedToCompleted field is set.
    */
   boolean hasTaskrunCreatedToCompleted();
   /**
+   * <pre>
+   * Created → Completed.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
    * @return The taskrunCreatedToCompleted.
    */
   io.littlehorse.sdk.common.proto.CountAndTiming getTaskrunCreatedToCompleted();
   /**
+   * <pre>
+   * Created → Completed.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_completed = 1;</code>
    */
   io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskrunCreatedToCompletedOrBuilder();
 
   /**
+   * <pre>
+   * Created → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
    * @return Whether the taskrunCreatedToError field is set.
    */
   boolean hasTaskrunCreatedToError();
   /**
+   * <pre>
+   * Created → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
    * @return The taskrunCreatedToError.
    */
   io.littlehorse.sdk.common.proto.CountAndTiming getTaskrunCreatedToError();
   /**
+   * <pre>
+   * Created → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_error = 2;</code>
    */
   io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskrunCreatedToErrorOrBuilder();
 
   /**
+   * <pre>
+   * Created → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
    * @return Whether the taskrunCreatedToException field is set.
    */
   boolean hasTaskrunCreatedToException();
   /**
+   * <pre>
+   * Created → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
    * @return The taskrunCreatedToException.
    */
   io.littlehorse.sdk.common.proto.CountAndTiming getTaskrunCreatedToException();
   /**
+   * <pre>
+   * Created → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskrun_created_to_exception = 3;</code>
    */
   io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskrunCreatedToExceptionOrBuilder();
 
   /**
+   * <pre>
+   * Pending → Scheduled.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
    * @return Whether the taskattemptPendingToScheduled field is set.
    */
   boolean hasTaskattemptPendingToScheduled();
   /**
+   * <pre>
+   * Pending → Scheduled.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
    * @return The taskattemptPendingToScheduled.
    */
   io.littlehorse.sdk.common.proto.CountAndTiming getTaskattemptPendingToScheduled();
   /**
+   * <pre>
+   * Pending → Scheduled.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_pending_to_scheduled = 4;</code>
    */
   io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskattemptPendingToScheduledOrBuilder();
 
   /**
+   * <pre>
+   * Scheduled → Running.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
    * @return Whether the taskattemptScheduledToRunning field is set.
    */
   boolean hasTaskattemptScheduledToRunning();
   /**
+   * <pre>
+   * Scheduled → Running.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
    * @return The taskattemptScheduledToRunning.
    */
   io.littlehorse.sdk.common.proto.CountAndTiming getTaskattemptScheduledToRunning();
   /**
+   * <pre>
+   * Scheduled → Running.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_scheduled_to_running = 5;</code>
    */
   io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskattemptScheduledToRunningOrBuilder();
 
   /**
+   * <pre>
+   * Running → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
    * @return Whether the taskattemptRunningToError field is set.
    */
   boolean hasTaskattemptRunningToError();
   /**
+   * <pre>
+   * Running → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
    * @return The taskattemptRunningToError.
    */
   io.littlehorse.sdk.common.proto.CountAndTiming getTaskattemptRunningToError();
   /**
+   * <pre>
+   * Running → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_error = 6;</code>
    */
   io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskattemptRunningToErrorOrBuilder();
 
   /**
+   * <pre>
+   * Running → Success.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
    * @return Whether the taskattemptRunningToSuccess field is set.
    */
   boolean hasTaskattemptRunningToSuccess();
   /**
+   * <pre>
+   * Running → Success.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
    * @return The taskattemptRunningToSuccess.
    */
   io.littlehorse.sdk.common.proto.CountAndTiming getTaskattemptRunningToSuccess();
   /**
+   * <pre>
+   * Running → Success.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_success = 7;</code>
    */
   io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskattemptRunningToSuccessOrBuilder();
 
   /**
+   * <pre>
+   * Running → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
    * @return Whether the taskattemptRunningToException field is set.
    */
   boolean hasTaskattemptRunningToException();
   /**
+   * <pre>
+   * Running → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
    * @return The taskattemptRunningToException.
    */
   io.littlehorse.sdk.common.proto.CountAndTiming getTaskattemptRunningToException();
   /**
+   * <pre>
+   * Running → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming taskattempt_running_to_exception = 8;</code>
    */
   io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getTaskattemptRunningToExceptionOrBuilder();

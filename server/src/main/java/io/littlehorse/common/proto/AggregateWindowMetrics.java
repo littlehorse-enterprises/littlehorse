@@ -47,6 +47,10 @@ private static final long serialVersionUID = 0L;
   public static final int METRIC_WINDOW_FIELD_NUMBER = 1;
   private io.littlehorse.common.proto.PartitionMetricWindow metricWindow_;
   /**
+   * <pre>
+   * Aggregated metrics for a partition window.
+   * </pre>
+   *
    * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
    * @return Whether the metricWindow field is set.
    */
@@ -55,6 +59,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Aggregated metrics for a partition window.
+   * </pre>
+   *
    * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
    * @return The metricWindow.
    */
@@ -63,6 +71,10 @@ private static final long serialVersionUID = 0L;
     return metricWindow_ == null ? io.littlehorse.common.proto.PartitionMetricWindow.getDefaultInstance() : metricWindow_;
   }
   /**
+   * <pre>
+   * Aggregated metrics for a partition window.
+   * </pre>
+   *
    * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
    */
   @java.lang.Override
@@ -389,6 +401,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.common.proto.PartitionMetricWindow, io.littlehorse.common.proto.PartitionMetricWindow.Builder, io.littlehorse.common.proto.PartitionMetricWindowOrBuilder> metricWindowBuilder_;
     /**
+     * <pre>
+     * Aggregated metrics for a partition window.
+     * </pre>
+     *
      * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      * @return Whether the metricWindow field is set.
      */
@@ -396,6 +412,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Aggregated metrics for a partition window.
+     * </pre>
+     *
      * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      * @return The metricWindow.
      */
@@ -407,6 +427,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Aggregated metrics for a partition window.
+     * </pre>
+     *
      * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     public Builder setMetricWindow(io.littlehorse.common.proto.PartitionMetricWindow value) {
@@ -423,6 +447,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Aggregated metrics for a partition window.
+     * </pre>
+     *
      * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     public Builder setMetricWindow(
@@ -437,6 +465,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Aggregated metrics for a partition window.
+     * </pre>
+     *
      * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     public Builder mergeMetricWindow(io.littlehorse.common.proto.PartitionMetricWindow value) {
@@ -458,6 +490,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Aggregated metrics for a partition window.
+     * </pre>
+     *
      * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     public Builder clearMetricWindow() {
@@ -471,6 +507,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Aggregated metrics for a partition window.
+     * </pre>
+     *
      * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     public io.littlehorse.common.proto.PartitionMetricWindow.Builder getMetricWindowBuilder() {
@@ -479,6 +519,10 @@ private static final long serialVersionUID = 0L;
       return internalGetMetricWindowFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Aggregated metrics for a partition window.
+     * </pre>
+     *
      * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     public io.littlehorse.common.proto.PartitionMetricWindowOrBuilder getMetricWindowOrBuilder() {
@@ -490,6 +534,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Aggregated metrics for a partition window.
+     * </pre>
+     *
      * <code>.littlehorse.PartitionMetricWindow metric_window = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<

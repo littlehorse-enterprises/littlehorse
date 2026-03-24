@@ -11,24 +11,40 @@ public interface CountAndTimingOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Number of events.
+   * </pre>
+   *
    * <code>int32 count = 1;</code>
    * @return The count.
    */
   int getCount();
 
   /**
+   * <pre>
+   * Minimum latency in ms.
+   * </pre>
+   *
    * <code>int64 min_latency_ms = 2;</code>
    * @return The minLatencyMs.
    */
   long getMinLatencyMs();
 
   /**
+   * <pre>
+   * Maximum latency in ms.
+   * </pre>
+   *
    * <code>int64 max_latency_ms = 3;</code>
    * @return The maxLatencyMs.
    */
   long getMaxLatencyMs();
 
   /**
+   * <pre>
+   * Sum of all latencies in ms.
+   * </pre>
+   *
    * <code>int64 total_latency_ms = 4;</code>
    * @return The totalLatencyMs.
    */

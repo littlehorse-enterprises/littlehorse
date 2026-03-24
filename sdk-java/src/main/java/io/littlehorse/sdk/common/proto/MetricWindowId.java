@@ -189,6 +189,10 @@ private static final long serialVersionUID = 0L;
   public static final int TENANT_ID_FIELD_NUMBER = 6;
   private io.littlehorse.sdk.common.proto.TenantId tenantId_;
   /**
+   * <pre>
+   * Tenant for this window (optional).
+   * </pre>
+   *
    * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
    * @return Whether the tenantId field is set.
    */
@@ -197,6 +201,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Tenant for this window (optional).
+   * </pre>
+   *
    * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
    * @return The tenantId.
    */
@@ -205,6 +213,10 @@ private static final long serialVersionUID = 0L;
     return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
   }
   /**
+   * <pre>
+   * Tenant for this window (optional).
+   * </pre>
+   *
    * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
    */
   @java.lang.Override
@@ -215,6 +227,10 @@ private static final long serialVersionUID = 0L;
   public static final int WINDOW_START_FIELD_NUMBER = 7;
   private com.google.protobuf.Timestamp windowStart_;
   /**
+   * <pre>
+   * Start time of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 7;</code>
    * @return Whether the windowStart field is set.
    */
@@ -223,6 +239,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Start time of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 7;</code>
    * @return The windowStart.
    */
@@ -231,6 +251,10 @@ private static final long serialVersionUID = 0L;
     return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
   }
   /**
+   * <pre>
+   * Start time of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 7;</code>
    */
   @java.lang.Override
@@ -1162,6 +1186,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> tenantIdBuilder_;
     /**
+     * <pre>
+     * Tenant for this window (optional).
+     * </pre>
+     *
      * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
      * @return Whether the tenantId field is set.
      */
@@ -1169,6 +1197,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * Tenant for this window (optional).
+     * </pre>
+     *
      * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
      * @return The tenantId.
      */
@@ -1180,6 +1212,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Tenant for this window (optional).
+     * </pre>
+     *
      * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
      */
     public Builder setTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
@@ -1196,6 +1232,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Tenant for this window (optional).
+     * </pre>
+     *
      * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
      */
     public Builder setTenantId(
@@ -1210,6 +1250,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Tenant for this window (optional).
+     * </pre>
+     *
      * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
      */
     public Builder mergeTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
@@ -1231,6 +1275,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Tenant for this window (optional).
+     * </pre>
+     *
      * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
      */
     public Builder clearTenantId() {
@@ -1244,6 +1292,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Tenant for this window (optional).
+     * </pre>
+     *
      * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.TenantId.Builder getTenantIdBuilder() {
@@ -1252,6 +1304,10 @@ private static final long serialVersionUID = 0L;
       return internalGetTenantIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Tenant for this window (optional).
+     * </pre>
+     *
      * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder() {
@@ -1263,6 +1319,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Tenant for this window (optional).
+     * </pre>
+     *
      * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -1283,6 +1343,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> windowStartBuilder_;
     /**
+     * <pre>
+     * Start time of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 7;</code>
      * @return Whether the windowStart field is set.
      */
@@ -1290,6 +1354,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
+     * <pre>
+     * Start time of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 7;</code>
      * @return The windowStart.
      */
@@ -1301,6 +1369,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Start time of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 7;</code>
      */
     public Builder setWindowStart(com.google.protobuf.Timestamp value) {
@@ -1317,6 +1389,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Start time of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 7;</code>
      */
     public Builder setWindowStart(
@@ -1331,6 +1407,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Start time of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 7;</code>
      */
     public Builder mergeWindowStart(com.google.protobuf.Timestamp value) {
@@ -1352,6 +1432,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Start time of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 7;</code>
      */
     public Builder clearWindowStart() {
@@ -1365,6 +1449,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Start time of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 7;</code>
      */
     public com.google.protobuf.Timestamp.Builder getWindowStartBuilder() {
@@ -1373,6 +1461,10 @@ private static final long serialVersionUID = 0L;
       return internalGetWindowStartFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Start time of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 7;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
@@ -1384,6 +1476,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Start time of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<

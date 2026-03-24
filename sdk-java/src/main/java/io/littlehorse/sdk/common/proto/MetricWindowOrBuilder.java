@@ -11,16 +11,28 @@ public interface MetricWindowOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Window identifier.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * Window identifier.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.MetricWindowId getId();
   /**
+   * <pre>
+   * Window identifier.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder getIdOrBuilder();

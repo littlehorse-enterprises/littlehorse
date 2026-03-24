@@ -15,11 +15,16 @@ import { TaskDefId, TenantId, UserTaskDefId, WfSpecId } from "./object_id";
  * `window_start` marks the window start; `tenant_id` is optional.
  */
 export interface MetricWindowId {
-  id?: { $case: "wfSpecId"; value: WfSpecId } | { $case: "taskDefId"; value: TaskDefId } | {
-    $case: "userTaskDefId";
-    value: UserTaskDefId;
-  } | undefined;
-  tenantId?: TenantId | undefined;
+  id?:
+    | { $case: "wfSpecId"; value: WfSpecId }
+    | { $case: "taskDefId"; value: TaskDefId }
+    | { $case: "userTaskDefId"; value: UserTaskDefId }
+    | undefined;
+  /** Tenant for this window (optional). */
+  tenantId?:
+    | TenantId
+    | undefined;
+  /** Start time of the window. */
   windowStart: string | undefined;
 }
 
@@ -28,9 +33,13 @@ export interface MetricWindowId {
  * `total_latency_ms / count` to compute average latency.
  */
 export interface CountAndTiming {
+  /** Number of events. */
   count: number;
+  /** Minimum latency in ms. */
   minLatencyMs: number;
+  /** Maximum latency in ms. */
   maxLatencyMs: number;
+  /** Sum of all latencies in ms. */
   totalLatencyMs: number;
 }
 
@@ -39,29 +48,76 @@ export interface CountAndTiming {
  * Only one of `workflow` or `task` will be populated.
  */
 export interface MetricWindow {
+  /** Window identifier. */
   id: MetricWindowId | undefined;
   metric?: { $case: "workflow"; value: WfMetrics } | { $case: "task"; value: TaskMetrics } | undefined;
 }
 
 /** Workflow-level aggregates for lifecycle transitions; fields are `CountAndTiming`. */
 export interface WfMetrics {
-  started: CountAndTiming | undefined;
-  runningToCompleted: CountAndTiming | undefined;
-  runningToError: CountAndTiming | undefined;
-  runningToException: CountAndTiming | undefined;
-  runningToHalting: CountAndTiming | undefined;
-  haltingToHalted: CountAndTiming | undefined;
+  /** WfRun started. */
+  started:
+    | CountAndTiming
+    | undefined;
+  /** Running → Completed. */
+  runningToCompleted:
+    | CountAndTiming
+    | undefined;
+  /** Running → Error. */
+  runningToError:
+    | CountAndTiming
+    | undefined;
+  /** Running → Exception. */
+  runningToException:
+    | CountAndTiming
+    | undefined;
+  /** Running → Halting. */
+  runningToHalting:
+    | CountAndTiming
+    | undefined;
+  /** Halting → Halted. */
+  haltingToHalted:
+    | CountAndTiming
+    | undefined;
+  /** Halted → Running. */
+  haltedToRunning:
+    | CountAndTiming
+    | undefined;
+  /** Halted → Running. */
+  runningToHalted: CountAndTiming | undefined;
 }
 
 /** Task-level aggregates for task lifecycle transitions; fields are `CountAndTiming`. */
 export interface TaskMetrics {
-  taskrunCreatedToCompleted: CountAndTiming | undefined;
-  taskrunCreatedToError: CountAndTiming | undefined;
-  taskrunCreatedToException: CountAndTiming | undefined;
-  taskattemptPendingToScheduled: CountAndTiming | undefined;
-  taskattemptScheduledToRunning: CountAndTiming | undefined;
-  taskattemptRunningToError: CountAndTiming | undefined;
-  taskattemptRunningToSuccess: CountAndTiming | undefined;
+  /** Created → Completed. */
+  taskrunCreatedToCompleted:
+    | CountAndTiming
+    | undefined;
+  /** Created → Error. */
+  taskrunCreatedToError:
+    | CountAndTiming
+    | undefined;
+  /** Created → Exception. */
+  taskrunCreatedToException:
+    | CountAndTiming
+    | undefined;
+  /** Pending → Scheduled. */
+  taskattemptPendingToScheduled:
+    | CountAndTiming
+    | undefined;
+  /** Scheduled → Running. */
+  taskattemptScheduledToRunning:
+    | CountAndTiming
+    | undefined;
+  /** Running → Error. */
+  taskattemptRunningToError:
+    | CountAndTiming
+    | undefined;
+  /** Running → Success. */
+  taskattemptRunningToSuccess:
+    | CountAndTiming
+    | undefined;
+  /** Running → Exception. */
   taskattemptRunningToException: CountAndTiming | undefined;
 }
 
@@ -424,6 +480,8 @@ function createBaseWfMetrics(): WfMetrics {
     runningToException: undefined,
     runningToHalting: undefined,
     haltingToHalted: undefined,
+    haltedToRunning: undefined,
+    runningToHalted: undefined,
   };
 }
 
@@ -446,6 +504,12 @@ export const WfMetrics = {
     }
     if (message.haltingToHalted !== undefined) {
       CountAndTiming.encode(message.haltingToHalted, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.haltedToRunning !== undefined) {
+      CountAndTiming.encode(message.haltedToRunning, writer.uint32(58).fork()).ldelim();
+    }
+    if (message.runningToHalted !== undefined) {
+      CountAndTiming.encode(message.runningToHalted, writer.uint32(66).fork()).ldelim();
     }
     return writer;
   },
@@ -499,6 +563,20 @@ export const WfMetrics = {
 
           message.haltingToHalted = CountAndTiming.decode(reader, reader.uint32());
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.haltedToRunning = CountAndTiming.decode(reader, reader.uint32());
+          continue;
+        case 8:
+          if (tag !== 66) {
+            break;
+          }
+
+          message.runningToHalted = CountAndTiming.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -520,6 +598,8 @@ export const WfMetrics = {
         : undefined,
       runningToHalting: isSet(object.runningToHalting) ? CountAndTiming.fromJSON(object.runningToHalting) : undefined,
       haltingToHalted: isSet(object.haltingToHalted) ? CountAndTiming.fromJSON(object.haltingToHalted) : undefined,
+      haltedToRunning: isSet(object.haltedToRunning) ? CountAndTiming.fromJSON(object.haltedToRunning) : undefined,
+      runningToHalted: isSet(object.runningToHalted) ? CountAndTiming.fromJSON(object.runningToHalted) : undefined,
     };
   },
 
@@ -542,6 +622,12 @@ export const WfMetrics = {
     }
     if (message.haltingToHalted !== undefined) {
       obj.haltingToHalted = CountAndTiming.toJSON(message.haltingToHalted);
+    }
+    if (message.haltedToRunning !== undefined) {
+      obj.haltedToRunning = CountAndTiming.toJSON(message.haltedToRunning);
+    }
+    if (message.runningToHalted !== undefined) {
+      obj.runningToHalted = CountAndTiming.toJSON(message.runningToHalted);
     }
     return obj;
   },
@@ -568,6 +654,12 @@ export const WfMetrics = {
       : undefined;
     message.haltingToHalted = (object.haltingToHalted !== undefined && object.haltingToHalted !== null)
       ? CountAndTiming.fromPartial(object.haltingToHalted)
+      : undefined;
+    message.haltedToRunning = (object.haltedToRunning !== undefined && object.haltedToRunning !== null)
+      ? CountAndTiming.fromPartial(object.haltedToRunning)
+      : undefined;
+    message.runningToHalted = (object.runningToHalted !== undefined && object.runningToHalted !== null)
+      ? CountAndTiming.fromPartial(object.runningToHalted)
       : undefined;
     return message;
   },

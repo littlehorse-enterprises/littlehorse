@@ -47,6 +47,10 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.MetricWindowId id_;
   /**
+   * <pre>
+   * ID of the metric window to delete.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -55,6 +59,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * ID of the metric window to delete.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    * @return The id.
    */
@@ -63,6 +71,10 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.MetricWindowId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * ID of the metric window to delete.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    */
   @java.lang.Override
@@ -389,6 +401,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.MetricWindowId, io.littlehorse.sdk.common.proto.MetricWindowId.Builder, io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * ID of the metric window to delete.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -396,6 +412,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * ID of the metric window to delete.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      * @return The id.
      */
@@ -407,6 +427,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * ID of the metric window to delete.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.MetricWindowId value) {
@@ -423,6 +447,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of the metric window to delete.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     public Builder setId(
@@ -437,6 +465,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of the metric window to delete.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.MetricWindowId value) {
@@ -458,6 +490,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of the metric window to delete.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     public Builder clearId() {
@@ -471,6 +507,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * ID of the metric window to delete.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.MetricWindowId.Builder getIdBuilder() {
@@ -479,6 +519,10 @@ private static final long serialVersionUID = 0L;
       return internalGetIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * ID of the metric window to delete.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder getIdOrBuilder() {
@@ -490,6 +534,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * ID of the metric window to delete.
+     * </pre>
+     *
      * <code>.littlehorse.MetricWindowId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<

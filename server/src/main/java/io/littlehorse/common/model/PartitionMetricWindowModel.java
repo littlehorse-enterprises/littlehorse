@@ -78,8 +78,12 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
             metricKey = MetricWindowModel.RUNNING_TO_EXCEPTION;
         } else if (previousStatus == LHStatus.RUNNING && newStatus == LHStatus.HALTING) {
             metricKey = MetricWindowModel.RUNNING_TO_HALTING;
+        } else if (previousStatus == LHStatus.RUNNING && newStatus == LHStatus.HALTED) {
+            metricKey = MetricWindowModel.RUNNING_TO_HALTED;
         } else if (previousStatus == LHStatus.HALTING && newStatus == LHStatus.HALTED) {
             metricKey = MetricWindowModel.HALTING_TO_HALTED;
+        } else if (previousStatus == LHStatus.HALTED && newStatus == LHStatus.RUNNING) {
+            metricKey = MetricWindowModel.HALTED_TO_RUNNING;
         } else {
             metricKey = previousStatus.name().toLowerCase() + "_to_"
                     + newStatus.name().toLowerCase();

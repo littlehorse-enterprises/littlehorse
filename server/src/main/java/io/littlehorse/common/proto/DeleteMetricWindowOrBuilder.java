@@ -11,16 +11,28 @@ public interface DeleteMetricWindowOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * ID of the metric window to delete.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * ID of the metric window to delete.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.MetricWindowId getId();
   /**
+   * <pre>
+   * ID of the metric window to delete.
+   * </pre>
+   *
    * <code>.littlehorse.MetricWindowId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.MetricWindowIdOrBuilder getIdOrBuilder();

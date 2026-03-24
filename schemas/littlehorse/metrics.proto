@@ -67,6 +67,10 @@ message WfMetrics{
   CountAndTiming running_to_halting = 5;
   // Halting → Halted.
   CountAndTiming halting_to_halted = 6;
+  // Halted → Running.
+  CountAndTiming halted_to_running = 7;
+  // Halted → Running.
+  CountAndTiming running_to_halted = 8;
 }
 
 // Task-level aggregates for task lifecycle transitions; fields are `CountAndTiming`.

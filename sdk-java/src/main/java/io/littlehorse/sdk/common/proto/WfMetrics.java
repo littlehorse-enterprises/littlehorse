@@ -51,6 +51,10 @@ private static final long serialVersionUID = 0L;
   public static final int STARTED_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.CountAndTiming started_;
   /**
+   * <pre>
+   * WfRun started.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming started = 1;</code>
    * @return Whether the started field is set.
    */
@@ -59,6 +63,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * WfRun started.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming started = 1;</code>
    * @return The started.
    */
@@ -67,6 +75,10 @@ private static final long serialVersionUID = 0L;
     return started_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : started_;
   }
   /**
+   * <pre>
+   * WfRun started.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming started = 1;</code>
    */
   @java.lang.Override
@@ -77,6 +89,10 @@ private static final long serialVersionUID = 0L;
   public static final int RUNNING_TO_COMPLETED_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.CountAndTiming runningToCompleted_;
   /**
+   * <pre>
+   * Running → Completed.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming running_to_completed = 2;</code>
    * @return Whether the runningToCompleted field is set.
    */
@@ -85,6 +101,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Running → Completed.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming running_to_completed = 2;</code>
    * @return The runningToCompleted.
    */
@@ -93,6 +113,10 @@ private static final long serialVersionUID = 0L;
     return runningToCompleted_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : runningToCompleted_;
   }
   /**
+   * <pre>
+   * Running → Completed.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming running_to_completed = 2;</code>
    */
   @java.lang.Override
@@ -103,6 +127,10 @@ private static final long serialVersionUID = 0L;
   public static final int RUNNING_TO_ERROR_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.CountAndTiming runningToError_;
   /**
+   * <pre>
+   * Running → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming running_to_error = 3;</code>
    * @return Whether the runningToError field is set.
    */
@@ -111,6 +139,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
+   * <pre>
+   * Running → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming running_to_error = 3;</code>
    * @return The runningToError.
    */
@@ -119,6 +151,10 @@ private static final long serialVersionUID = 0L;
     return runningToError_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : runningToError_;
   }
   /**
+   * <pre>
+   * Running → Error.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming running_to_error = 3;</code>
    */
   @java.lang.Override
@@ -129,6 +165,10 @@ private static final long serialVersionUID = 0L;
   public static final int RUNNING_TO_EXCEPTION_FIELD_NUMBER = 4;
   private io.littlehorse.sdk.common.proto.CountAndTiming runningToException_;
   /**
+   * <pre>
+   * Running → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming running_to_exception = 4;</code>
    * @return Whether the runningToException field is set.
    */
@@ -137,6 +177,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
+   * <pre>
+   * Running → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming running_to_exception = 4;</code>
    * @return The runningToException.
    */
@@ -145,6 +189,10 @@ private static final long serialVersionUID = 0L;
     return runningToException_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : runningToException_;
   }
   /**
+   * <pre>
+   * Running → Exception.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming running_to_exception = 4;</code>
    */
   @java.lang.Override
@@ -155,6 +203,10 @@ private static final long serialVersionUID = 0L;
   public static final int RUNNING_TO_HALTING_FIELD_NUMBER = 5;
   private io.littlehorse.sdk.common.proto.CountAndTiming runningToHalting_;
   /**
+   * <pre>
+   * Running → Halting.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming running_to_halting = 5;</code>
    * @return Whether the runningToHalting field is set.
    */
@@ -163,6 +215,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000010) != 0);
   }
   /**
+   * <pre>
+   * Running → Halting.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming running_to_halting = 5;</code>
    * @return The runningToHalting.
    */
@@ -171,6 +227,10 @@ private static final long serialVersionUID = 0L;
     return runningToHalting_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : runningToHalting_;
   }
   /**
+   * <pre>
+   * Running → Halting.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming running_to_halting = 5;</code>
    */
   @java.lang.Override
@@ -181,6 +241,10 @@ private static final long serialVersionUID = 0L;
   public static final int HALTING_TO_HALTED_FIELD_NUMBER = 6;
   private io.littlehorse.sdk.common.proto.CountAndTiming haltingToHalted_;
   /**
+   * <pre>
+   * Halting → Halted.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
    * @return Whether the haltingToHalted field is set.
    */
@@ -189,6 +253,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000020) != 0);
   }
   /**
+   * <pre>
+   * Halting → Halted.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
    * @return The haltingToHalted.
    */
@@ -197,11 +265,91 @@ private static final long serialVersionUID = 0L;
     return haltingToHalted_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : haltingToHalted_;
   }
   /**
+   * <pre>
+   * Halting → Halted.
+   * </pre>
+   *
    * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getHaltingToHaltedOrBuilder() {
     return haltingToHalted_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : haltingToHalted_;
+  }
+
+  public static final int HALTED_TO_RUNNING_FIELD_NUMBER = 7;
+  private io.littlehorse.sdk.common.proto.CountAndTiming haltedToRunning_;
+  /**
+   * <pre>
+   * Halted → Running.
+   * </pre>
+   *
+   * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+   * @return Whether the haltedToRunning field is set.
+   */
+  @java.lang.Override
+  public boolean hasHaltedToRunning() {
+    return ((bitField0_ & 0x00000040) != 0);
+  }
+  /**
+   * <pre>
+   * Halted → Running.
+   * </pre>
+   *
+   * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+   * @return The haltedToRunning.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CountAndTiming getHaltedToRunning() {
+    return haltedToRunning_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : haltedToRunning_;
+  }
+  /**
+   * <pre>
+   * Halted → Running.
+   * </pre>
+   *
+   * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getHaltedToRunningOrBuilder() {
+    return haltedToRunning_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : haltedToRunning_;
+  }
+
+  public static final int RUNNING_TO_HALTED_FIELD_NUMBER = 8;
+  private io.littlehorse.sdk.common.proto.CountAndTiming runningToHalted_;
+  /**
+   * <pre>
+   * Halted → Running.
+   * </pre>
+   *
+   * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
+   * @return Whether the runningToHalted field is set.
+   */
+  @java.lang.Override
+  public boolean hasRunningToHalted() {
+    return ((bitField0_ & 0x00000080) != 0);
+  }
+  /**
+   * <pre>
+   * Halted → Running.
+   * </pre>
+   *
+   * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
+   * @return The runningToHalted.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CountAndTiming getRunningToHalted() {
+    return runningToHalted_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : runningToHalted_;
+  }
+  /**
+   * <pre>
+   * Halted → Running.
+   * </pre>
+   *
+   * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getRunningToHaltedOrBuilder() {
+    return runningToHalted_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : runningToHalted_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -236,6 +384,12 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000020) != 0)) {
       output.writeMessage(6, getHaltingToHalted());
     }
+    if (((bitField0_ & 0x00000040) != 0)) {
+      output.writeMessage(7, getHaltedToRunning());
+    }
+    if (((bitField0_ & 0x00000080) != 0)) {
+      output.writeMessage(8, getRunningToHalted());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -268,6 +422,14 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000020) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, getHaltingToHalted());
+    }
+    if (((bitField0_ & 0x00000040) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, getHaltedToRunning());
+    }
+    if (((bitField0_ & 0x00000080) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(8, getRunningToHalted());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -314,6 +476,16 @@ private static final long serialVersionUID = 0L;
       if (!getHaltingToHalted()
           .equals(other.getHaltingToHalted())) return false;
     }
+    if (hasHaltedToRunning() != other.hasHaltedToRunning()) return false;
+    if (hasHaltedToRunning()) {
+      if (!getHaltedToRunning()
+          .equals(other.getHaltedToRunning())) return false;
+    }
+    if (hasRunningToHalted() != other.hasRunningToHalted()) return false;
+    if (hasRunningToHalted()) {
+      if (!getRunningToHalted()
+          .equals(other.getRunningToHalted())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -348,6 +520,14 @@ private static final long serialVersionUID = 0L;
     if (hasHaltingToHalted()) {
       hash = (37 * hash) + HALTING_TO_HALTED_FIELD_NUMBER;
       hash = (53 * hash) + getHaltingToHalted().hashCode();
+    }
+    if (hasHaltedToRunning()) {
+      hash = (37 * hash) + HALTED_TO_RUNNING_FIELD_NUMBER;
+      hash = (53 * hash) + getHaltedToRunning().hashCode();
+    }
+    if (hasRunningToHalted()) {
+      hash = (37 * hash) + RUNNING_TO_HALTED_FIELD_NUMBER;
+      hash = (53 * hash) + getRunningToHalted().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -489,6 +669,8 @@ private static final long serialVersionUID = 0L;
         internalGetRunningToExceptionFieldBuilder();
         internalGetRunningToHaltingFieldBuilder();
         internalGetHaltingToHaltedFieldBuilder();
+        internalGetHaltedToRunningFieldBuilder();
+        internalGetRunningToHaltedFieldBuilder();
       }
     }
     @java.lang.Override
@@ -524,6 +706,16 @@ private static final long serialVersionUID = 0L;
       if (haltingToHaltedBuilder_ != null) {
         haltingToHaltedBuilder_.dispose();
         haltingToHaltedBuilder_ = null;
+      }
+      haltedToRunning_ = null;
+      if (haltedToRunningBuilder_ != null) {
+        haltedToRunningBuilder_.dispose();
+        haltedToRunningBuilder_ = null;
+      }
+      runningToHalted_ = null;
+      if (runningToHaltedBuilder_ != null) {
+        runningToHaltedBuilder_.dispose();
+        runningToHaltedBuilder_ = null;
       }
       return this;
     }
@@ -595,6 +787,18 @@ private static final long serialVersionUID = 0L;
             : haltingToHaltedBuilder_.build();
         to_bitField0_ |= 0x00000020;
       }
+      if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.haltedToRunning_ = haltedToRunningBuilder_ == null
+            ? haltedToRunning_
+            : haltedToRunningBuilder_.build();
+        to_bitField0_ |= 0x00000040;
+      }
+      if (((from_bitField0_ & 0x00000080) != 0)) {
+        result.runningToHalted_ = runningToHaltedBuilder_ == null
+            ? runningToHalted_
+            : runningToHaltedBuilder_.build();
+        to_bitField0_ |= 0x00000080;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -627,6 +831,12 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasHaltingToHalted()) {
         mergeHaltingToHalted(other.getHaltingToHalted());
+      }
+      if (other.hasHaltedToRunning()) {
+        mergeHaltedToRunning(other.getHaltedToRunning());
+      }
+      if (other.hasRunningToHalted()) {
+        mergeRunningToHalted(other.getRunningToHalted());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -696,6 +906,20 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000020;
               break;
             } // case 50
+            case 58: {
+              input.readMessage(
+                  internalGetHaltedToRunningFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000040;
+              break;
+            } // case 58
+            case 66: {
+              input.readMessage(
+                  internalGetRunningToHaltedFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000080;
+              break;
+            } // case 66
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -717,6 +941,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> startedBuilder_;
     /**
+     * <pre>
+     * WfRun started.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming started = 1;</code>
      * @return Whether the started field is set.
      */
@@ -724,6 +952,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * WfRun started.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming started = 1;</code>
      * @return The started.
      */
@@ -735,6 +967,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * WfRun started.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming started = 1;</code>
      */
     public Builder setStarted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -751,6 +987,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRun started.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming started = 1;</code>
      */
     public Builder setStarted(
@@ -765,6 +1005,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRun started.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming started = 1;</code>
      */
     public Builder mergeStarted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -786,6 +1030,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRun started.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming started = 1;</code>
      */
     public Builder clearStarted() {
@@ -799,6 +1047,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfRun started.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming started = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getStartedBuilder() {
@@ -807,6 +1059,10 @@ private static final long serialVersionUID = 0L;
       return internalGetStartedFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * WfRun started.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming started = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getStartedOrBuilder() {
@@ -818,6 +1074,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * WfRun started.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming started = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -838,6 +1098,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> runningToCompletedBuilder_;
     /**
+     * <pre>
+     * Running → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_completed = 2;</code>
      * @return Whether the runningToCompleted field is set.
      */
@@ -845,6 +1109,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Running → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_completed = 2;</code>
      * @return The runningToCompleted.
      */
@@ -856,6 +1124,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_completed = 2;</code>
      */
     public Builder setRunningToCompleted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -872,6 +1144,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_completed = 2;</code>
      */
     public Builder setRunningToCompleted(
@@ -886,6 +1162,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_completed = 2;</code>
      */
     public Builder mergeRunningToCompleted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -907,6 +1187,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_completed = 2;</code>
      */
     public Builder clearRunningToCompleted() {
@@ -920,6 +1204,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_completed = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getRunningToCompletedBuilder() {
@@ -928,6 +1216,10 @@ private static final long serialVersionUID = 0L;
       return internalGetRunningToCompletedFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Running → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_completed = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getRunningToCompletedOrBuilder() {
@@ -939,6 +1231,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Completed.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_completed = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -959,6 +1255,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> runningToErrorBuilder_;
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_error = 3;</code>
      * @return Whether the runningToError field is set.
      */
@@ -966,6 +1266,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_error = 3;</code>
      * @return The runningToError.
      */
@@ -977,6 +1281,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_error = 3;</code>
      */
     public Builder setRunningToError(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -993,6 +1301,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_error = 3;</code>
      */
     public Builder setRunningToError(
@@ -1007,6 +1319,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_error = 3;</code>
      */
     public Builder mergeRunningToError(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1028,6 +1344,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_error = 3;</code>
      */
     public Builder clearRunningToError() {
@@ -1041,6 +1361,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_error = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getRunningToErrorBuilder() {
@@ -1049,6 +1373,10 @@ private static final long serialVersionUID = 0L;
       return internalGetRunningToErrorFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_error = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getRunningToErrorOrBuilder() {
@@ -1060,6 +1388,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Error.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_error = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -1080,6 +1412,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> runningToExceptionBuilder_;
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_exception = 4;</code>
      * @return Whether the runningToException field is set.
      */
@@ -1087,6 +1423,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_exception = 4;</code>
      * @return The runningToException.
      */
@@ -1098,6 +1438,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_exception = 4;</code>
      */
     public Builder setRunningToException(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1114,6 +1458,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_exception = 4;</code>
      */
     public Builder setRunningToException(
@@ -1128,6 +1476,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_exception = 4;</code>
      */
     public Builder mergeRunningToException(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1149,6 +1501,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_exception = 4;</code>
      */
     public Builder clearRunningToException() {
@@ -1162,6 +1518,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_exception = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getRunningToExceptionBuilder() {
@@ -1170,6 +1530,10 @@ private static final long serialVersionUID = 0L;
       return internalGetRunningToExceptionFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_exception = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getRunningToExceptionOrBuilder() {
@@ -1181,6 +1545,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Exception.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_exception = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -1201,6 +1569,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> runningToHaltingBuilder_;
     /**
+     * <pre>
+     * Running → Halting.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_halting = 5;</code>
      * @return Whether the runningToHalting field is set.
      */
@@ -1208,6 +1580,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
+     * <pre>
+     * Running → Halting.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_halting = 5;</code>
      * @return The runningToHalting.
      */
@@ -1219,6 +1595,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Halting.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_halting = 5;</code>
      */
     public Builder setRunningToHalting(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1235,6 +1615,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Halting.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_halting = 5;</code>
      */
     public Builder setRunningToHalting(
@@ -1249,6 +1633,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Halting.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_halting = 5;</code>
      */
     public Builder mergeRunningToHalting(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1270,6 +1658,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Halting.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_halting = 5;</code>
      */
     public Builder clearRunningToHalting() {
@@ -1283,6 +1675,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Running → Halting.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_halting = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getRunningToHaltingBuilder() {
@@ -1291,6 +1687,10 @@ private static final long serialVersionUID = 0L;
       return internalGetRunningToHaltingFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Running → Halting.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_halting = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getRunningToHaltingOrBuilder() {
@@ -1302,6 +1702,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Running → Halting.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming running_to_halting = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -1322,6 +1726,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> haltingToHaltedBuilder_;
     /**
+     * <pre>
+     * Halting → Halted.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
      * @return Whether the haltingToHalted field is set.
      */
@@ -1329,6 +1737,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
+     * <pre>
+     * Halting → Halted.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
      * @return The haltingToHalted.
      */
@@ -1340,6 +1752,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Halting → Halted.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
      */
     public Builder setHaltingToHalted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1356,6 +1772,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Halting → Halted.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
      */
     public Builder setHaltingToHalted(
@@ -1370,6 +1790,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Halting → Halted.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
      */
     public Builder mergeHaltingToHalted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
@@ -1391,6 +1815,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Halting → Halted.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
      */
     public Builder clearHaltingToHalted() {
@@ -1404,6 +1832,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Halting → Halted.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getHaltingToHaltedBuilder() {
@@ -1412,6 +1844,10 @@ private static final long serialVersionUID = 0L;
       return internalGetHaltingToHaltedFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Halting → Halted.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getHaltingToHaltedOrBuilder() {
@@ -1423,6 +1859,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Halting → Halted.
+     * </pre>
+     *
      * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -1437,6 +1877,320 @@ private static final long serialVersionUID = 0L;
         haltingToHalted_ = null;
       }
       return haltingToHaltedBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.CountAndTiming haltedToRunning_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> haltedToRunningBuilder_;
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+     * @return Whether the haltedToRunning field is set.
+     */
+    public boolean hasHaltedToRunning() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+     * @return The haltedToRunning.
+     */
+    public io.littlehorse.sdk.common.proto.CountAndTiming getHaltedToRunning() {
+      if (haltedToRunningBuilder_ == null) {
+        return haltedToRunning_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : haltedToRunning_;
+      } else {
+        return haltedToRunningBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+     */
+    public Builder setHaltedToRunning(io.littlehorse.sdk.common.proto.CountAndTiming value) {
+      if (haltedToRunningBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        haltedToRunning_ = value;
+      } else {
+        haltedToRunningBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+     */
+    public Builder setHaltedToRunning(
+        io.littlehorse.sdk.common.proto.CountAndTiming.Builder builderForValue) {
+      if (haltedToRunningBuilder_ == null) {
+        haltedToRunning_ = builderForValue.build();
+      } else {
+        haltedToRunningBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+     */
+    public Builder mergeHaltedToRunning(io.littlehorse.sdk.common.proto.CountAndTiming value) {
+      if (haltedToRunningBuilder_ == null) {
+        if (((bitField0_ & 0x00000040) != 0) &&
+          haltedToRunning_ != null &&
+          haltedToRunning_ != io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance()) {
+          getHaltedToRunningBuilder().mergeFrom(value);
+        } else {
+          haltedToRunning_ = value;
+        }
+      } else {
+        haltedToRunningBuilder_.mergeFrom(value);
+      }
+      if (haltedToRunning_ != null) {
+        bitField0_ |= 0x00000040;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+     */
+    public Builder clearHaltedToRunning() {
+      bitField0_ = (bitField0_ & ~0x00000040);
+      haltedToRunning_ = null;
+      if (haltedToRunningBuilder_ != null) {
+        haltedToRunningBuilder_.dispose();
+        haltedToRunningBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getHaltedToRunningBuilder() {
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return internalGetHaltedToRunningFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getHaltedToRunningOrBuilder() {
+      if (haltedToRunningBuilder_ != null) {
+        return haltedToRunningBuilder_.getMessageOrBuilder();
+      } else {
+        return haltedToRunning_ == null ?
+            io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : haltedToRunning_;
+      }
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> 
+        internalGetHaltedToRunningFieldBuilder() {
+      if (haltedToRunningBuilder_ == null) {
+        haltedToRunningBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder>(
+                getHaltedToRunning(),
+                getParentForChildren(),
+                isClean());
+        haltedToRunning_ = null;
+      }
+      return haltedToRunningBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.CountAndTiming runningToHalted_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> runningToHaltedBuilder_;
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
+     * @return Whether the runningToHalted field is set.
+     */
+    public boolean hasRunningToHalted() {
+      return ((bitField0_ & 0x00000080) != 0);
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
+     * @return The runningToHalted.
+     */
+    public io.littlehorse.sdk.common.proto.CountAndTiming getRunningToHalted() {
+      if (runningToHaltedBuilder_ == null) {
+        return runningToHalted_ == null ? io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : runningToHalted_;
+      } else {
+        return runningToHaltedBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
+     */
+    public Builder setRunningToHalted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
+      if (runningToHaltedBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        runningToHalted_ = value;
+      } else {
+        runningToHaltedBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
+     */
+    public Builder setRunningToHalted(
+        io.littlehorse.sdk.common.proto.CountAndTiming.Builder builderForValue) {
+      if (runningToHaltedBuilder_ == null) {
+        runningToHalted_ = builderForValue.build();
+      } else {
+        runningToHaltedBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
+     */
+    public Builder mergeRunningToHalted(io.littlehorse.sdk.common.proto.CountAndTiming value) {
+      if (runningToHaltedBuilder_ == null) {
+        if (((bitField0_ & 0x00000080) != 0) &&
+          runningToHalted_ != null &&
+          runningToHalted_ != io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance()) {
+          getRunningToHaltedBuilder().mergeFrom(value);
+        } else {
+          runningToHalted_ = value;
+        }
+      } else {
+        runningToHaltedBuilder_.mergeFrom(value);
+      }
+      if (runningToHalted_ != null) {
+        bitField0_ |= 0x00000080;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
+     */
+    public Builder clearRunningToHalted() {
+      bitField0_ = (bitField0_ & ~0x00000080);
+      runningToHalted_ = null;
+      if (runningToHaltedBuilder_ != null) {
+        runningToHaltedBuilder_.dispose();
+        runningToHaltedBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.CountAndTiming.Builder getRunningToHaltedBuilder() {
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return internalGetRunningToHaltedFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getRunningToHaltedOrBuilder() {
+      if (runningToHaltedBuilder_ != null) {
+        return runningToHaltedBuilder_.getMessageOrBuilder();
+      } else {
+        return runningToHalted_ == null ?
+            io.littlehorse.sdk.common.proto.CountAndTiming.getDefaultInstance() : runningToHalted_;
+      }
+    }
+    /**
+     * <pre>
+     * Halted → Running.
+     * </pre>
+     *
+     * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder> 
+        internalGetRunningToHaltedFieldBuilder() {
+      if (runningToHaltedBuilder_ == null) {
+        runningToHaltedBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.CountAndTiming, io.littlehorse.sdk.common.proto.CountAndTiming.Builder, io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder>(
+                getRunningToHalted(),
+                getParentForChildren(),
+                isClean());
+        runningToHalted_ = null;
+      }
+      return runningToHaltedBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.WfMetrics)

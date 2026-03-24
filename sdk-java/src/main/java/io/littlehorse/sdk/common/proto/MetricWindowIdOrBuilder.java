@@ -56,31 +56,55 @@ public interface MetricWindowIdOrBuilder extends
   io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder getUserTaskDefIdOrBuilder();
 
   /**
+   * <pre>
+   * Tenant for this window (optional).
+   * </pre>
+   *
    * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
    * @return Whether the tenantId field is set.
    */
   boolean hasTenantId();
   /**
+   * <pre>
+   * Tenant for this window (optional).
+   * </pre>
+   *
    * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
    * @return The tenantId.
    */
   io.littlehorse.sdk.common.proto.TenantId getTenantId();
   /**
+   * <pre>
+   * Tenant for this window (optional).
+   * </pre>
+   *
    * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
    */
   io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder();
 
   /**
+   * <pre>
+   * Start time of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 7;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
+   * <pre>
+   * Start time of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 7;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
+   * <pre>
+   * Start time of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 7;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
