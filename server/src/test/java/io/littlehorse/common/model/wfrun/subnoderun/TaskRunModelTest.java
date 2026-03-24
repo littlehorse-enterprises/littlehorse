@@ -27,11 +27,14 @@ import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import java.util.ArrayList;
 import java.util.Date;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.state.KeyValueStore;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 
@@ -70,6 +73,7 @@ public class TaskRunModelTest {
         assertThat(taskRun.getLatestAttempt().getTaskWorkerId()).isEqualTo(taskClaimEvent.getTaskWorkerId());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void shouldMarkTaskOutputSerdeErrorWhenOutputIncompatibleWithDeclaredReturnType() {
         TaskRunModel taskRun = TestUtil.taskRun();
@@ -90,11 +94,14 @@ public class TaskRunModelTest {
         GetableManager getableManager = mock(GetableManager.class);
         GetableUpdates getableUpdates = mock(GetableUpdates.class);
         WfRunModel wfRun = mock(WfRunModel.class);
+        KeyValueStore<String, Bytes> mockStore = mock(KeyValueStore.class);
         when(taskProcessorContext.getableManager()).thenReturn(getableManager);
         when(getableManager.get(taskRun.getWfRunId())).thenReturn(wfRun);
         when(taskProcessorContext.getableUpdates()).thenReturn(getableUpdates);
         when(taskProcessorContext.authorization()).thenReturn(mock(AuthorizationContext.class));
         when(taskProcessorContext.authorization().tenantId()).thenReturn(new TenantIdModel("tenant-a"));
+        when(taskProcessorContext.getPartitionMetricsMemoryStore()).thenReturn(new PartitionMetricsMemoryStore());
+        when(taskProcessorContext.nativeCoreStore()).thenReturn(mockStore);
         taskRun.setProcessorContext(taskProcessorContext);
 
         ReportTaskRunModel report = new ReportTaskRunModel();

@@ -11,77 +11,133 @@ public interface WfMetricUpdateOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Start of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 1;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
+   * <pre>
+   * Start of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 1;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
+   * <pre>
+   * Start of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 1;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 
   /**
+   * <pre>
+   * Window length.
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength type = 2;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
+   * <pre>
+   * Window length.
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength type = 2;</code>
    * @return The type.
    */
   io.littlehorse.sdk.common.proto.MetricsWindowLength getType();
 
   /**
+   * <pre>
+   * WfSpec this update is for.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
+   * <pre>
+   * WfSpec this update is for.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
+   * <pre>
+   * WfSpec this update is for.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 3;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
+   * <pre>
+   * Number of entries in this window.
+   * </pre>
+   *
    * <code>int64 num_entries = 4;</code>
    * @return The numEntries.
    */
   long getNumEntries();
 
   /**
+   * <pre>
+   * Max time from start to complete.
+   * </pre>
+   *
    * <code>int64 start_to_complete_max = 5;</code>
    * @return The startToCompleteMax.
    */
   long getStartToCompleteMax();
 
   /**
+   * <pre>
+   * Total time from start to complete.
+   * </pre>
+   *
    * <code>int64 start_to_complete_total = 6;</code>
    * @return The startToCompleteTotal.
    */
   long getStartToCompleteTotal();
 
   /**
+   * <pre>
+   * Number completed.
+   * </pre>
+   *
    * <code>int64 total_completed = 7;</code>
    * @return The totalCompleted.
    */
   long getTotalCompleted();
 
   /**
+   * <pre>
+   * Number errored.
+   * </pre>
+   *
    * <code>int64 total_errored = 8;</code>
    * @return The totalErrored.
    */
   long getTotalErrored();
 
   /**
+   * <pre>
+   * Number started.
+   * </pre>
+   *
    * <code>int64 total_started = 9;</code>
    * @return The totalStarted.
    */

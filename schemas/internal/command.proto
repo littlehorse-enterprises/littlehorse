@@ -53,6 +53,8 @@ message Command {
         EditUserTaskRunCommentRequest edit_user_task_run_comment = 32;
         DeleteUserTaskRunCommentRequest delete_user_task_run_comment = 33;
         PutCheckpointRequest put_checkpoint = 34;
+        AggregateWindowMetrics aggregate_window_metrics = 35;
+        DeleteMetricWindow delete_metric_window = 36;
     }
 }
 
@@ -110,26 +112,51 @@ message MetadataCommand {
 
 // Repartition subcommand
 message AggregateWfMetrics {
+    // WfSpec this aggregate is for.
     WfSpecId wf_spec_id = 1;
+    // Tenant for this aggregate.
     TenantId tenant_id = 2;
+    // List of workflow metric updates.
     repeated WfMetricUpdate metric_updates = 3;
 }
 
+message AggregateWindowMetrics {
+    // Aggregated metrics for a partition window.
+    PartitionMetricWindow metric_window = 1;
+}
+
+message DeleteMetricWindow {
+    // ID of the metric window to delete.
+    MetricWindowId id = 1;
+}
+
 message AggregateTaskMetrics {
+    // TaskDef this aggregate is for.
     TaskDefId task_def_id = 1;
+    // Tenant for this aggregate.
     TenantId tenant_id = 2;
+    // List of task metric updates.
     repeated TaskMetricUpdate metric_updates = 3;
 }
 
 message WfMetricUpdate {
+    // Start of the window.
     google.protobuf.Timestamp window_start = 1;
+    // Window length.
     MetricsWindowLength type = 2;
+    // WfSpec this update is for.
     WfSpecId wf_spec_id = 3;
+    // Number of entries in this window.
     int64 num_entries = 4;
+    // Max time from start to complete.
     int64 start_to_complete_max = 5;
+    // Total time from start to complete.
     int64 start_to_complete_total = 6;
+    // Number completed.
     int64 total_completed = 7;
+    // Number errored.
     int64 total_errored = 8;
+    // Number started.
     int64 total_started = 9;
 }
 
@@ -147,14 +174,16 @@ message InternalDeleteWfRunRequest {
 }
 
 message PartitionMetrics {
+    // Metrics for each tenant in this partition.
     repeated MetricsByTenant metrics_by_tenant = 1;
 }
 
 message MetricsByTenant {
+    // Tenant for these metrics.
     TenantId tenant_id = 1;
-    // workflow runs status changes
+    // Workflow run status changes.
     map<string, StatusChanges> lh_status_changes = 2;
-    // task run status changes
+    // Task run status changes.
     map<string, StatusChanges> task_status_changes = 3;
 }
 
@@ -195,17 +224,28 @@ message RepartitionCommandPb {
 }
 
 message TaskMetricUpdate {
+    // TaskDef this update is for.
     TaskDefId task_def_id = 1;
+    // Start of the window.
     google.protobuf.Timestamp window_start = 2;
+    // Window length.
     MetricsWindowLength type = 3;
 
+    // Number of entries in this window.
     int64 num_entries = 4;
+    // Max time from schedule to start.
     int64 schedule_to_start_max = 5;
+    // Total time from schedule to start.
     int64 schedule_to_start_total = 6;
+    // Max time from start to complete.
     int64 start_to_complete_max = 7;
+    // Total time from start to complete.
     int64 start_to_complete_total = 8;
+    // Number completed.
     int64 total_completed = 9;
+    // Number errored.
     int64 total_errored = 10;
+    // Number started.
     int64 total_started = 11;
     int64 total_scheduled = 12;
 

@@ -35,8 +35,13 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     private LHTaskErrorModel error;
     private boolean maskedValue;
 
+    // Transient: not serialized to proto. Set when the attempt is created (enters PENDING state).
+    // Used for pending_to_scheduled latency metrics. May be null if loaded from store.
+    private Date pendingTime;
+
     public TaskAttemptModel() {
         this.status = TaskStatus.TASK_PENDING;
+        this.pendingTime = new Date();
     }
 
     @Override

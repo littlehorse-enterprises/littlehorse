@@ -48,6 +48,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.common.proto.MetricsByTenant> metricsByTenant_;
   /**
+   * <pre>
+   * Metrics for each tenant in this partition.
+   * </pre>
+   *
    * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
    */
   @java.lang.Override
@@ -55,6 +59,10 @@ private static final long serialVersionUID = 0L;
     return metricsByTenant_;
   }
   /**
+   * <pre>
+   * Metrics for each tenant in this partition.
+   * </pre>
+   *
    * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
    */
   @java.lang.Override
@@ -63,6 +71,10 @@ private static final long serialVersionUID = 0L;
     return metricsByTenant_;
   }
   /**
+   * <pre>
+   * Metrics for each tenant in this partition.
+   * </pre>
+   *
    * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
    */
   @java.lang.Override
@@ -70,6 +82,10 @@ private static final long serialVersionUID = 0L;
     return metricsByTenant_.size();
   }
   /**
+   * <pre>
+   * Metrics for each tenant in this partition.
+   * </pre>
+   *
    * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
    */
   @java.lang.Override
@@ -77,6 +93,10 @@ private static final long serialVersionUID = 0L;
     return metricsByTenant_.get(index);
   }
   /**
+   * <pre>
+   * Metrics for each tenant in this partition.
+   * </pre>
+   *
    * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
    */
   @java.lang.Override
@@ -440,6 +460,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.MetricsByTenant, io.littlehorse.common.proto.MetricsByTenant.Builder, io.littlehorse.common.proto.MetricsByTenantOrBuilder> metricsByTenantBuilder_;
 
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public java.util.List<io.littlehorse.common.proto.MetricsByTenant> getMetricsByTenantList() {
@@ -450,6 +474,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public int getMetricsByTenantCount() {
@@ -460,6 +488,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public io.littlehorse.common.proto.MetricsByTenant getMetricsByTenant(int index) {
@@ -470,6 +502,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public Builder setMetricsByTenant(
@@ -487,6 +523,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public Builder setMetricsByTenant(
@@ -501,6 +541,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public Builder addMetricsByTenant(io.littlehorse.common.proto.MetricsByTenant value) {
@@ -517,6 +561,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public Builder addMetricsByTenant(
@@ -534,6 +582,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public Builder addMetricsByTenant(
@@ -548,6 +600,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public Builder addMetricsByTenant(
@@ -562,6 +618,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public Builder addAllMetricsByTenant(
@@ -577,6 +637,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public Builder clearMetricsByTenant() {
@@ -590,6 +654,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public Builder removeMetricsByTenant(int index) {
@@ -603,6 +671,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public io.littlehorse.common.proto.MetricsByTenant.Builder getMetricsByTenantBuilder(
@@ -610,6 +682,10 @@ private static final long serialVersionUID = 0L;
       return internalGetMetricsByTenantFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public io.littlehorse.common.proto.MetricsByTenantOrBuilder getMetricsByTenantOrBuilder(
@@ -620,6 +696,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public java.util.List<? extends io.littlehorse.common.proto.MetricsByTenantOrBuilder> 
@@ -631,6 +711,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public io.littlehorse.common.proto.MetricsByTenant.Builder addMetricsByTenantBuilder() {
@@ -638,6 +722,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.common.proto.MetricsByTenant.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public io.littlehorse.common.proto.MetricsByTenant.Builder addMetricsByTenantBuilder(
@@ -646,6 +734,10 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.common.proto.MetricsByTenant.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Metrics for each tenant in this partition.
+     * </pre>
+     *
      * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
      */
     public java.util.List<io.littlehorse.common.proto.MetricsByTenant.Builder> 
