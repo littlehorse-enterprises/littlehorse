@@ -46,7 +46,7 @@ All other manifests (`sdk-python/pyproject.toml`, `sdk-js/package.json`, `sdk-do
 Snapshots are development builds published from the `master` branch. They let consumers test unreleased features without waiting for a formal release.
 
 - **Version format:** `X.Y.Z-SNAPSHOT` (e.g. `1.1.0-SNAPSHOT`).
-- **Trigger:** Automated weekly via the [`weekly-snapshot`](../.github/workflows/weekly-snapshot.yml) GitHub Actions workflow (runs every Friday at midnight UTC), or on-demand.
+- **Trigger:** Automated weekly via the [`weekly-snapshot`](../.github/workflows/weekly-snapshot.yml) GitHub Actions workflow (runs every Friday at midnight UTC), or on-demand(TODO).
 - **Published to:**
   - **Maven:** Sonatype snapshot repository (`https://central.sonatype.com/repository/maven-snapshots/`).
   - **PyPI:** Not published (snapshots are Maven-only; Python users install from source).
