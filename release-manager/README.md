@@ -128,7 +128,6 @@ A major release introduces breaking changes to the public API (protobuf schemas,
 
 1. **Pre-release checks**
    - Ensure the `X.0` branch is green.
-   - Verify the changelog is up-to-date (generated via [git-cliff](https://git-cliff.org/) using `cliff.toml`).
    - Confirm all breaking changes are documented and migration guides are ready.
    - One or more RCs should have been published and validated on the release branch.
 2. **Version bump** — On the release branch, update the version in [`gradle.properties`](#version-file) to `X.0.0`.
@@ -156,7 +155,6 @@ A minor release adds new functionality in a backward-compatible manner.
 
 1. **Pre-release checks**
    - Ensure `master` is green.
-   - Verify the changelog is up-to-date.
    - Confirm no open blockers for the target milestone.
    - Optionally publish one or more RCs for validation.
 2. **Version bump** — Update the version in [`gradle.properties`](#version-file) to `X.Y.0`.
