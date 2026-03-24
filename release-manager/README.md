@@ -4,7 +4,7 @@ A set of Python scripts to automate the release process for the [LittleHorse](ht
 
 ## Overview
 
-Releasing a new version of LittleHorse involves coordinating multiple artifacts across different ecosystems. This tooling automates the end-to-end workflow—from version bumping and tagging to publishing artifacts and generating changelogs—so that releases are repeatable, auditable, and less error-prone.
+This document describes the end-to-end workflow—from version bumping and tagging to publishing artifacts and generating changelogs—so that releases are repeatable, auditable, and less error-prone.
 
 ## Release Artifacts
 
