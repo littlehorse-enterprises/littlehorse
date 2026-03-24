@@ -29,7 +29,6 @@ import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.util.LHUtil.LHComparisonRule;
 import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
-import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -315,7 +314,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 case INLINE_ARRAY_DEF:
                     if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX) {
                         throw new InvalidExpressionException(String.format(
-                                "Expected numeric index selector for Array type, got key selector '%s'", selector.getKey()));
+                                "Expected numeric index selector for Array type, got key selector '%s'",
+                                selector.getKey()));
                     }
                     currentTypeDef = currentTypeDef.getInlineArrayDef().getArrayType();
                     break;
@@ -366,6 +366,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 return TypeCastingUtils.canBeType(other.getPrimitiveType(), this.getPrimitiveType());
             case STRUCT_DEF_ID:
                 return this.getStructDefId().equals(other.getStructDefId());
+            case INLINE_ARRAY_DEF:
+                return this.getInlineArrayDef().equals(other.getInlineArrayDef());
             case DEFINEDTYPE_NOT_SET:
             default:
                 break;
@@ -385,6 +387,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case STRUCT_DEF_ID:
                 result = String.format("Struct<%s,v%d>", structDefId.getName(), structDefId.getVersion());
                 break;
+            case INLINE_ARRAY_DEF:
+                result = String.format("Array<%s>", inlineArrayDef.getArrayType());
             case DEFINEDTYPE_NOT_SET:
             default:
                 result = this.definedTypeCase.toString();

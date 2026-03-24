@@ -1,16 +1,12 @@
 package io.littlehorse.common.model.getable.core.variable;
 
-import java.util.ArrayList;
-
-import com.google.protobuf.GeneratedMessage;
-import com.google.protobuf.GeneratedMessage.Builder;
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
 import lombok.Getter;
 
 public class ArrayModel extends LHSerializable<Array> {
@@ -31,16 +27,15 @@ public class ArrayModel extends LHSerializable<Array> {
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
-      Array p = (Array) proto;
-      items = new ArrayList<>();
-      for (VariableValue item : p.getItemsList()) {
-          items.add(VariableValueModel.fromProto(item, VariableValueModel.class, context));
-      }
+        Array p = (Array) proto;
+        items = new ArrayList<>();
+        for (VariableValue item : p.getItemsList()) {
+            items.add(VariableValueModel.fromProto(item, VariableValueModel.class, context));
+        }
     }
 
     @Override
     public Class<Array> getProtoBaseClass() {
         return Array.class;
     }
-  
 }
