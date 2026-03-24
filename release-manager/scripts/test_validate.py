@@ -99,23 +99,23 @@ class TestVersionFormat(unittest.TestCase):
 class TestCheckBranch(unittest.TestCase):
     @patch("validate.subprocess.run")
     def test_branch_is_match(self, mock_run):
-        mock_run.return_value = mock_git_branch("main")
-        self.assertTrue(validate.check_branch_is("main"))
+        mock_run.return_value = mock_git_branch("master")
+        self.assertTrue(validate.check_branch_is("master"))
 
     @patch("validate.subprocess.run")
     def test_branch_is_mismatch(self, mock_run):
         mock_run.return_value = mock_git_branch("1.0")
-        self.assertFalse(validate.check_branch_is("main"))
+        self.assertFalse(validate.check_branch_is("master"))
 
     @patch("validate.subprocess.run")
     def test_branch_is_not_passes(self, mock_run):
         mock_run.return_value = mock_git_branch("1.0")
-        self.assertTrue(validate.check_branch_is_not("main"))
+        self.assertTrue(validate.check_branch_is_not("master"))
 
     @patch("validate.subprocess.run")
     def test_branch_is_not_fails(self, mock_run):
-        mock_run.return_value = mock_git_branch("main")
-        self.assertFalse(validate.check_branch_is_not("main"))
+        mock_run.return_value = mock_git_branch("master")
+        self.assertFalse(validate.check_branch_is_not("master"))
 
 
 class TestCheckGitClean(unittest.TestCase):
@@ -130,20 +130,32 @@ class TestCheckGitClean(unittest.TestCase):
         self.assertFalse(validate.check_git_clean())
 
 
+class TestCheckVersionFileExists(unittest.TestCase):
+    @patch("validate.VERSION_FILE")
+    def test_file_exists(self, mock_file):
+        mock_file.exists.return_value = True
+        self.assertTrue(validate.check_version_file_exists())
+
+    @patch("validate.VERSION_FILE")
+    def test_file_missing(self, mock_file):
+        mock_file.exists.return_value = False
+        self.assertFalse(validate.check_version_file_exists())
+
+
 class TestCheckGradleSnapshot(unittest.TestCase):
-    @patch("validate.VERSION_FILES")
-    def test_has_snapshot_suffix(self, mock_files):
-        mock_files.__getitem__ = lambda self, k: MagicMock(read_text=lambda: GRADLE_SNAPSHOT)
+    @patch("validate.VERSION_FILE")
+    def test_has_snapshot_suffix(self, mock_file):
+        mock_file.read_text.return_value = GRADLE_SNAPSHOT
         self.assertTrue(validate.check_gradle_snapshot())
 
-    @patch("validate.VERSION_FILES")
-    def test_missing_snapshot_suffix(self, mock_files):
-        mock_files.__getitem__ = lambda self, k: MagicMock(read_text=lambda: GRADLE_STABLE)
+    @patch("validate.VERSION_FILE")
+    def test_missing_snapshot_suffix(self, mock_file):
+        mock_file.read_text.return_value = GRADLE_STABLE
         self.assertFalse(validate.check_gradle_snapshot())
 
-    @patch("validate.VERSION_FILES")
-    def test_no_version_line(self, mock_files):
-        mock_files.__getitem__ = lambda self, k: MagicMock(read_text=lambda: "group=io.littlehorse\n")
+    @patch("validate.VERSION_FILE")
+    def test_no_version_line(self, mock_file):
+        mock_file.read_text.return_value = "group=io.littlehorse\n"
         self.assertFalse(validate.check_gradle_snapshot())
 
 
@@ -151,7 +163,7 @@ class TestValidateSnapshot(unittest.TestCase):
     @patch("validate.check_gradle_snapshot", return_value=True)
     @patch("validate.subprocess.run")
     def test_valid_snapshot_on_main(self, mock_run, _mock_gradle):
-        mock_run.side_effect = git_side_effect("main", clean=True)
+        mock_run.side_effect = git_side_effect("master", clean=True)
         self.assertTrue(validate.validate_snapshot("1.1.0-SNAPSHOT"))
 
     @patch("validate.check_gradle_snapshot", return_value=True)
@@ -169,7 +181,7 @@ class TestValidateSnapshot(unittest.TestCase):
     @patch("validate.check_gradle_snapshot", return_value=True)
     @patch("validate.subprocess.run")
     def test_snapshot_bad_format(self, mock_run, _mock_gradle):
-        mock_run.side_effect = git_side_effect("main", clean=True)
+        mock_run.side_effect = git_side_effect("master", clean=True)
         self.assertFalse(validate.validate_snapshot("1.1.0"))
 
 
@@ -181,7 +193,7 @@ class TestValidateRC(unittest.TestCase):
 
     @patch("validate.subprocess.run")
     def test_rc_on_main_rejected(self, mock_run):
-        mock_run.side_effect = git_side_effect("main", clean=True)
+        mock_run.side_effect = git_side_effect("master", clean=True)
         self.assertFalse(validate.validate_rc("1.0.0-RC1"))
 
     @patch("validate.subprocess.run")
@@ -203,7 +215,7 @@ class TestValidateMajor(unittest.TestCase):
 
     @patch("validate.subprocess.run")
     def test_major_on_main_rejected(self, mock_run):
-        mock_run.side_effect = git_side_effect("main", clean=True)
+        mock_run.side_effect = git_side_effect("master", clean=True)
         self.assertFalse(validate.validate_major("2.0.0"))
 
     @patch("validate.subprocess.run")
@@ -220,7 +232,7 @@ class TestValidateMajor(unittest.TestCase):
 class TestValidateMinor(unittest.TestCase):
     @patch("validate.subprocess.run")
     def test_valid_minor_on_main(self, mock_run):
-        mock_run.side_effect = git_side_effect("main", clean=True)
+        mock_run.side_effect = git_side_effect("master", clean=True)
         self.assertTrue(validate.validate_minor("1.2.0"))
 
     @patch("validate.subprocess.run")
@@ -230,7 +242,7 @@ class TestValidateMinor(unittest.TestCase):
 
     @patch("validate.subprocess.run")
     def test_minor_with_nonzero_patch(self, mock_run):
-        mock_run.side_effect = git_side_effect("main", clean=True)
+        mock_run.side_effect = git_side_effect("master", clean=True)
         self.assertFalse(validate.validate_minor("1.2.3"))
 
 
@@ -242,7 +254,7 @@ class TestValidatePatch(unittest.TestCase):
 
     @patch("validate.subprocess.run")
     def test_patch_on_main_rejected(self, mock_run):
-        mock_run.side_effect = git_side_effect("main", clean=True)
+        mock_run.side_effect = git_side_effect("master", clean=True)
         self.assertFalse(validate.validate_patch("1.0.1"))
 
     @patch("validate.subprocess.run")

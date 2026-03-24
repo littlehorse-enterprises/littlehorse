@@ -5,7 +5,7 @@ import re
 import subprocess
 import sys
 
-from config import REPO_ROOT, VERSION_FILES
+from config import REPO_ROOT, VERSION_FILE
 
 RELEASE_TYPES = ["snapshot", "rc", "major", "minor", "patch"]
 
@@ -54,14 +54,12 @@ def check_git_clean() -> bool:
     return True
 
 
-def check_version_files_exist() -> bool:
-    """Verify all version files exist."""
-    ok = True
-    for name, path in VERSION_FILES.items():
-        if not path.exists():
-            print(f"ERROR: {name} file not found at {path}", file=sys.stderr)
-            ok = False
-    return ok
+def check_version_file_exists() -> bool:
+    """Verify gradle.properties exists."""
+    if not VERSION_FILE.exists():
+        print(f"ERROR: Version file not found at {VERSION_FILE}", file=sys.stderr)
+        return False
+    return True
 
 
 def check_branch_is(expected: str) -> bool:
@@ -101,7 +99,7 @@ def check_version_format(version: str, pattern: re.Pattern, description: str) ->
 
 def check_gradle_snapshot() -> bool:
     """Verify gradle.properties version ends with -SNAPSHOT."""
-    content = VERSION_FILES["gradle"].read_text()
+    content = VERSION_FILE.read_text()
     for line in content.splitlines():
         if line.startswith("version="):
             value = line.split("=", 1)[1].strip()
@@ -120,9 +118,9 @@ def validate_snapshot(version: str) -> bool:
     ok = True
     ok = check_version_format(version, SNAPSHOT_RE, "X.Y.Z-SNAPSHOT") and ok
     branch = get_current_branch()
-    if branch != "main" and branch != expected_branch(version):
+    if branch != "master" and branch != expected_branch(version):
         print(
-            f"ERROR: Snapshots must be on 'main' or '{expected_branch(version)}', "
+            f"ERROR: Snapshots must be on 'master' or '{expected_branch(version)}', "
             f"but currently on '{branch}'",
             file=sys.stderr,
         )
@@ -134,7 +132,7 @@ def validate_snapshot(version: str) -> bool:
 def validate_rc(version: str) -> bool:
     ok = True
     ok = check_version_format(version, RC_RE, "X.Y.Z-RC<N>") and ok
-    ok = check_branch_is_not("main") and ok
+    ok = check_branch_is_not("master") and ok
     if ok:
         ok = check_branch_is(expected_branch(version)) and ok
     return ok
@@ -151,7 +149,7 @@ def validate_major(version: str) -> bool:
                 file=sys.stderr,
             )
             ok = False
-    ok = check_branch_is_not("main") and ok
+    ok = check_branch_is_not("master") and ok
     if ok:
         ok = check_branch_is(expected_branch(version)) and ok
     return ok
@@ -168,7 +166,7 @@ def validate_minor(version: str) -> bool:
                 file=sys.stderr,
             )
             ok = False
-    ok = check_branch_is("main") and ok
+    ok = check_branch_is("master") and ok
     return ok
 
 
@@ -183,7 +181,7 @@ def validate_patch(version: str) -> bool:
                 file=sys.stderr,
             )
             ok = False
-    ok = check_branch_is_not("main") and ok
+    ok = check_branch_is_not("master") and ok
     if ok:
         ok = check_branch_is(expected_branch(version)) and ok
     return ok
@@ -202,7 +200,7 @@ def validate(release_type: str, version: str) -> None:
     print(f"Validating {release_type} release: {version}")
     ok = True
 
-    ok = check_version_files_exist() and ok
+    ok = check_version_file_exists() and ok
     ok = check_git_clean() and ok
     ok = VALIDATORS[release_type](version) and ok
 
