@@ -31,7 +31,7 @@ def get_workflow() -> Workflow:
             EXT_EVENT, correlation_id="some-correlation-id", mask_correlation_id=True
         )
 
-        name = wf.add_variable("name", VariableType.STR)
+        name = wf.declare_str("name")
         name.assign(ext_event_output)
         wf.execute(GREET, name)
 

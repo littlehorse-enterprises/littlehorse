@@ -23,7 +23,7 @@ def get_config() -> LHConfig:
 
 def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
-        person = wf.add_variable("person", VariableType.JSON_OBJ)
+        person = wf.declare_json_obj("person")
         wf.execute("greet", person.with_json_path("$.name"))
         wf.execute("describe-car", person.with_json_path("$.car"))
 
