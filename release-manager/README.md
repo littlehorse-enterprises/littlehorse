@@ -111,7 +111,7 @@ Release candidates (RC) are pre-release versions intended for final validation b
 5. **Publish artifacts** (see [Publishing Details](#publishing-details)).
 6. **Validation** — Stakeholders test the RC. If issues are found:
    - Fix them on `master` first.
-   - Cherry-pick the fixes onto the `X.Y` branch.
+   - Cherry-pick the fixes onto the `X.Y` branch using the [`cherry-pick`](../.github/workflows/cherry-pick.yml) workflow.
    - Cut `RC<N+1>` from the release branch.
 
 ---
@@ -183,7 +183,7 @@ A patch release contains only backward-compatible bug fixes. Patches are typical
 
 **Workflow:**
 
-1. **Cherry-pick fixes** — Fix on `master` first, then cherry-pick onto the `X.Y` branch.
+1. **Cherry-pick fixes** — Fix on `master` first, then cherry-pick onto the `X.Y` branch using the [`cherry-pick`](../.github/workflows/cherry-pick.yml) GitHub Actions workflow. It takes a commit ID and a release branch as inputs, validates the commit is on `master`, and applies it to the target branch.
 2. **Pre-release checks**
    - Ensure the `X.Y` branch is green.
    - Verify each fix has a corresponding test.
