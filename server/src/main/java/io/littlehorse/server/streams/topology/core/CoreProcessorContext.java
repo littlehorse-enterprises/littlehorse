@@ -27,6 +27,7 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.EventCorrelationMarkerModel;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -73,6 +74,7 @@ public class CoreProcessorContext implements ExecutionContext {
     private GetableUpdates getableUpdates;
     private MetricsUpdater metricsAggregator;
     private final TenantIdModel tenantId;
+    private final PartitionMetricsMemoryStore partitionMetricsMemoryStore;
 
     public CoreProcessorContext(
             Command currentCommand,
@@ -81,7 +83,8 @@ public class CoreProcessorContext implements ExecutionContext {
             ProcessorContext<String, CommandProcessorOutput> processorContext,
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
-            LHServer server) {
+            LHServer server,
+            PartitionMetricsMemoryStore partitionMetricsMemoryStore) {
 
         this.processorContext = processorContext;
         this.metadataCache = metadataCache;
@@ -99,10 +102,15 @@ public class CoreProcessorContext implements ExecutionContext {
         this.recordMetadata = recordHeaders;
         this.server = server;
         this.coreStore = TenantScopedStore.newInstance(nativeCoreStore(), tenantId, this);
+        this.partitionMetricsMemoryStore = partitionMetricsMemoryStore;
 
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
         this.eventsToThrow = new ArrayList<>();
+    }
+
+    public PartitionMetricsMemoryStore getPartitionMetricsMemoryStore() {
+        return partitionMetricsMemoryStore;
     }
 
     /**
@@ -294,7 +302,7 @@ public class CoreProcessorContext implements ExecutionContext {
         return new AuthorizationContextImpl(principalId, tenantId, List.of(), false);
     }
 
-    private KeyValueStore<String, Bytes> nativeCoreStore() {
+    public KeyValueStore<String, Bytes> nativeCoreStore() {
         return processorContext.getStateStore(ServerTopology.CORE_STORE);
     }
 

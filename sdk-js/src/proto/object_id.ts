@@ -266,6 +266,24 @@ export interface InactiveThreadRunId {
   threadRunNumber: number;
 }
 
+/**
+ * Identifies a metrics window for a workflow/task/user-task object.
+ * `window_start` marks the window start; `tenant_id` is optional.
+ */
+export interface MetricWindowId {
+  id?:
+    | { $case: "wfSpecId"; value: WfSpecId }
+    | { $case: "taskDefId"; value: TaskDefId }
+    | { $case: "userTaskDefId"; value: UserTaskDefId }
+    | undefined;
+  /** Tenant for this window (optional). */
+  tenantId?:
+    | TenantId
+    | undefined;
+  /** Start time of the window. */
+  windowStart: string | undefined;
+}
+
 function createBaseWfSpecId(): WfSpecId {
   return { name: "", majorVersion: 0, revision: 0 };
 }
@@ -1916,6 +1934,139 @@ export const InactiveThreadRunId = {
       ? WfRunId.fromPartial(object.wfRunId)
       : undefined;
     message.threadRunNumber = object.threadRunNumber ?? 0;
+    return message;
+  },
+};
+
+function createBaseMetricWindowId(): MetricWindowId {
+  return { id: undefined, tenantId: undefined, windowStart: undefined };
+}
+
+export const MetricWindowId = {
+  encode(message: MetricWindowId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    switch (message.id?.$case) {
+      case "wfSpecId":
+        WfSpecId.encode(message.id.value, writer.uint32(10).fork()).ldelim();
+        break;
+      case "taskDefId":
+        TaskDefId.encode(message.id.value, writer.uint32(18).fork()).ldelim();
+        break;
+      case "userTaskDefId":
+        UserTaskDefId.encode(message.id.value, writer.uint32(26).fork()).ldelim();
+        break;
+    }
+    if (message.tenantId !== undefined) {
+      TenantId.encode(message.tenantId, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.windowStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(58).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricWindowId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricWindowId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = { $case: "wfSpecId", value: WfSpecId.decode(reader, reader.uint32()) };
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.id = { $case: "taskDefId", value: TaskDefId.decode(reader, reader.uint32()) };
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.id = { $case: "userTaskDefId", value: UserTaskDefId.decode(reader, reader.uint32()) };
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.tenantId = TenantId.decode(reader, reader.uint32());
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MetricWindowId {
+    return {
+      id: isSet(object.wfSpecId)
+        ? { $case: "wfSpecId", value: WfSpecId.fromJSON(object.wfSpecId) }
+        : isSet(object.taskDefId)
+        ? { $case: "taskDefId", value: TaskDefId.fromJSON(object.taskDefId) }
+        : isSet(object.userTaskDefId)
+        ? { $case: "userTaskDefId", value: UserTaskDefId.fromJSON(object.userTaskDefId) }
+        : undefined,
+      tenantId: isSet(object.tenantId) ? TenantId.fromJSON(object.tenantId) : undefined,
+      windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
+    };
+  },
+
+  toJSON(message: MetricWindowId): unknown {
+    const obj: any = {};
+    if (message.id?.$case === "wfSpecId") {
+      obj.wfSpecId = WfSpecId.toJSON(message.id.value);
+    }
+    if (message.id?.$case === "taskDefId") {
+      obj.taskDefId = TaskDefId.toJSON(message.id.value);
+    }
+    if (message.id?.$case === "userTaskDefId") {
+      obj.userTaskDefId = UserTaskDefId.toJSON(message.id.value);
+    }
+    if (message.tenantId !== undefined) {
+      obj.tenantId = TenantId.toJSON(message.tenantId);
+    }
+    if (message.windowStart !== undefined) {
+      obj.windowStart = message.windowStart;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MetricWindowId>): MetricWindowId {
+    return MetricWindowId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MetricWindowId>): MetricWindowId {
+    const message = createBaseMetricWindowId();
+    if (object.id?.$case === "wfSpecId" && object.id?.value !== undefined && object.id?.value !== null) {
+      message.id = { $case: "wfSpecId", value: WfSpecId.fromPartial(object.id.value) };
+    }
+    if (object.id?.$case === "taskDefId" && object.id?.value !== undefined && object.id?.value !== null) {
+      message.id = { $case: "taskDefId", value: TaskDefId.fromPartial(object.id.value) };
+    }
+    if (object.id?.$case === "userTaskDefId" && object.id?.value !== undefined && object.id?.value !== null) {
+      message.id = { $case: "userTaskDefId", value: UserTaskDefId.fromPartial(object.id.value) };
+    }
+    message.tenantId = (object.tenantId !== undefined && object.tenantId !== null)
+      ? TenantId.fromPartial(object.tenantId)
+      : undefined;
+    message.windowStart = object.windowStart ?? undefined;
     return message;
   },
 };
