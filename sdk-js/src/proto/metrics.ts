@@ -8,25 +8,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { TaskDefId, TenantId, UserTaskDefId, WfSpecId } from "./object_id";
-
-/**
- * Identifies a metrics window for a workflow/task/user-task object.
- * `window_start` marks the window start; `tenant_id` is optional.
- */
-export interface MetricWindowId {
-  id?:
-    | { $case: "wfSpecId"; value: WfSpecId }
-    | { $case: "taskDefId"; value: TaskDefId }
-    | { $case: "userTaskDefId"; value: UserTaskDefId }
-    | undefined;
-  /** Tenant for this window (optional). */
-  tenantId?:
-    | TenantId
-    | undefined;
-  /** Start time of the window. */
-  windowStart: string | undefined;
-}
+import { MetricWindowId, TaskDefId, WfSpecId } from "./object_id";
 
 /**
  * Aggregate counts and latency stats for a metric window. Use
@@ -75,16 +57,16 @@ export interface WfMetrics {
   runningToHalting:
     | CountAndTiming
     | undefined;
+  /** Running → Halted. */
+  runningToHalted:
+    | CountAndTiming
+    | undefined;
   /** Halting → Halted. */
   haltingToHalted:
     | CountAndTiming
     | undefined;
   /** Halted → Running. */
-  haltedToRunning:
-    | CountAndTiming
-    | undefined;
-  /** Halted → Running. */
-  runningToHalted: CountAndTiming | undefined;
+  haltedToRunning: CountAndTiming | undefined;
 }
 
 /** Task-level aggregates for task lifecycle transitions; fields are `CountAndTiming`. */
@@ -136,139 +118,6 @@ export interface ListTaskMetricsRequest {
 export interface MetricsList {
   windows: MetricWindow[];
 }
-
-function createBaseMetricWindowId(): MetricWindowId {
-  return { id: undefined, tenantId: undefined, windowStart: undefined };
-}
-
-export const MetricWindowId = {
-  encode(message: MetricWindowId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    switch (message.id?.$case) {
-      case "wfSpecId":
-        WfSpecId.encode(message.id.value, writer.uint32(10).fork()).ldelim();
-        break;
-      case "taskDefId":
-        TaskDefId.encode(message.id.value, writer.uint32(18).fork()).ldelim();
-        break;
-      case "userTaskDefId":
-        UserTaskDefId.encode(message.id.value, writer.uint32(26).fork()).ldelim();
-        break;
-    }
-    if (message.tenantId !== undefined) {
-      TenantId.encode(message.tenantId, writer.uint32(50).fork()).ldelim();
-    }
-    if (message.windowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(58).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MetricWindowId {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMetricWindowId();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.id = { $case: "wfSpecId", value: WfSpecId.decode(reader, reader.uint32()) };
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.id = { $case: "taskDefId", value: TaskDefId.decode(reader, reader.uint32()) };
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.id = { $case: "userTaskDefId", value: UserTaskDefId.decode(reader, reader.uint32()) };
-          continue;
-        case 6:
-          if (tag !== 50) {
-            break;
-          }
-
-          message.tenantId = TenantId.decode(reader, reader.uint32());
-          continue;
-        case 7:
-          if (tag !== 58) {
-            break;
-          }
-
-          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MetricWindowId {
-    return {
-      id: isSet(object.wfSpecId)
-        ? { $case: "wfSpecId", value: WfSpecId.fromJSON(object.wfSpecId) }
-        : isSet(object.taskDefId)
-        ? { $case: "taskDefId", value: TaskDefId.fromJSON(object.taskDefId) }
-        : isSet(object.userTaskDefId)
-        ? { $case: "userTaskDefId", value: UserTaskDefId.fromJSON(object.userTaskDefId) }
-        : undefined,
-      tenantId: isSet(object.tenantId) ? TenantId.fromJSON(object.tenantId) : undefined,
-      windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
-    };
-  },
-
-  toJSON(message: MetricWindowId): unknown {
-    const obj: any = {};
-    if (message.id?.$case === "wfSpecId") {
-      obj.wfSpecId = WfSpecId.toJSON(message.id.value);
-    }
-    if (message.id?.$case === "taskDefId") {
-      obj.taskDefId = TaskDefId.toJSON(message.id.value);
-    }
-    if (message.id?.$case === "userTaskDefId") {
-      obj.userTaskDefId = UserTaskDefId.toJSON(message.id.value);
-    }
-    if (message.tenantId !== undefined) {
-      obj.tenantId = TenantId.toJSON(message.tenantId);
-    }
-    if (message.windowStart !== undefined) {
-      obj.windowStart = message.windowStart;
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<MetricWindowId>): MetricWindowId {
-    return MetricWindowId.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<MetricWindowId>): MetricWindowId {
-    const message = createBaseMetricWindowId();
-    if (object.id?.$case === "wfSpecId" && object.id?.value !== undefined && object.id?.value !== null) {
-      message.id = { $case: "wfSpecId", value: WfSpecId.fromPartial(object.id.value) };
-    }
-    if (object.id?.$case === "taskDefId" && object.id?.value !== undefined && object.id?.value !== null) {
-      message.id = { $case: "taskDefId", value: TaskDefId.fromPartial(object.id.value) };
-    }
-    if (object.id?.$case === "userTaskDefId" && object.id?.value !== undefined && object.id?.value !== null) {
-      message.id = { $case: "userTaskDefId", value: UserTaskDefId.fromPartial(object.id.value) };
-    }
-    message.tenantId = (object.tenantId !== undefined && object.tenantId !== null)
-      ? TenantId.fromPartial(object.tenantId)
-      : undefined;
-    message.windowStart = object.windowStart ?? undefined;
-    return message;
-  },
-};
 
 function createBaseCountAndTiming(): CountAndTiming {
   return { count: 0, minLatencyMs: 0, maxLatencyMs: 0, totalLatencyMs: 0 };
@@ -479,9 +328,9 @@ function createBaseWfMetrics(): WfMetrics {
     runningToError: undefined,
     runningToException: undefined,
     runningToHalting: undefined,
+    runningToHalted: undefined,
     haltingToHalted: undefined,
     haltedToRunning: undefined,
-    runningToHalted: undefined,
   };
 }
 
@@ -502,14 +351,14 @@ export const WfMetrics = {
     if (message.runningToHalting !== undefined) {
       CountAndTiming.encode(message.runningToHalting, writer.uint32(42).fork()).ldelim();
     }
+    if (message.runningToHalted !== undefined) {
+      CountAndTiming.encode(message.runningToHalted, writer.uint32(50).fork()).ldelim();
+    }
     if (message.haltingToHalted !== undefined) {
-      CountAndTiming.encode(message.haltingToHalted, writer.uint32(50).fork()).ldelim();
+      CountAndTiming.encode(message.haltingToHalted, writer.uint32(58).fork()).ldelim();
     }
     if (message.haltedToRunning !== undefined) {
-      CountAndTiming.encode(message.haltedToRunning, writer.uint32(58).fork()).ldelim();
-    }
-    if (message.runningToHalted !== undefined) {
-      CountAndTiming.encode(message.runningToHalted, writer.uint32(66).fork()).ldelim();
+      CountAndTiming.encode(message.haltedToRunning, writer.uint32(66).fork()).ldelim();
     }
     return writer;
   },
@@ -561,21 +410,21 @@ export const WfMetrics = {
             break;
           }
 
-          message.haltingToHalted = CountAndTiming.decode(reader, reader.uint32());
+          message.runningToHalted = CountAndTiming.decode(reader, reader.uint32());
           continue;
         case 7:
           if (tag !== 58) {
             break;
           }
 
-          message.haltedToRunning = CountAndTiming.decode(reader, reader.uint32());
+          message.haltingToHalted = CountAndTiming.decode(reader, reader.uint32());
           continue;
         case 8:
           if (tag !== 66) {
             break;
           }
 
-          message.runningToHalted = CountAndTiming.decode(reader, reader.uint32());
+          message.haltedToRunning = CountAndTiming.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -597,9 +446,9 @@ export const WfMetrics = {
         ? CountAndTiming.fromJSON(object.runningToException)
         : undefined,
       runningToHalting: isSet(object.runningToHalting) ? CountAndTiming.fromJSON(object.runningToHalting) : undefined,
+      runningToHalted: isSet(object.runningToHalted) ? CountAndTiming.fromJSON(object.runningToHalted) : undefined,
       haltingToHalted: isSet(object.haltingToHalted) ? CountAndTiming.fromJSON(object.haltingToHalted) : undefined,
       haltedToRunning: isSet(object.haltedToRunning) ? CountAndTiming.fromJSON(object.haltedToRunning) : undefined,
-      runningToHalted: isSet(object.runningToHalted) ? CountAndTiming.fromJSON(object.runningToHalted) : undefined,
     };
   },
 
@@ -620,14 +469,14 @@ export const WfMetrics = {
     if (message.runningToHalting !== undefined) {
       obj.runningToHalting = CountAndTiming.toJSON(message.runningToHalting);
     }
+    if (message.runningToHalted !== undefined) {
+      obj.runningToHalted = CountAndTiming.toJSON(message.runningToHalted);
+    }
     if (message.haltingToHalted !== undefined) {
       obj.haltingToHalted = CountAndTiming.toJSON(message.haltingToHalted);
     }
     if (message.haltedToRunning !== undefined) {
       obj.haltedToRunning = CountAndTiming.toJSON(message.haltedToRunning);
-    }
-    if (message.runningToHalted !== undefined) {
-      obj.runningToHalted = CountAndTiming.toJSON(message.runningToHalted);
     }
     return obj;
   },
@@ -652,14 +501,14 @@ export const WfMetrics = {
     message.runningToHalting = (object.runningToHalting !== undefined && object.runningToHalting !== null)
       ? CountAndTiming.fromPartial(object.runningToHalting)
       : undefined;
+    message.runningToHalted = (object.runningToHalted !== undefined && object.runningToHalted !== null)
+      ? CountAndTiming.fromPartial(object.runningToHalted)
+      : undefined;
     message.haltingToHalted = (object.haltingToHalted !== undefined && object.haltingToHalted !== null)
       ? CountAndTiming.fromPartial(object.haltingToHalted)
       : undefined;
     message.haltedToRunning = (object.haltedToRunning !== undefined && object.haltedToRunning !== null)
       ? CountAndTiming.fromPartial(object.haltedToRunning)
-      : undefined;
-    message.runningToHalted = (object.runningToHalted !== undefined && object.runningToHalted !== null)
-      ? CountAndTiming.fromPartial(object.runningToHalted)
       : undefined;
     return message;
   },

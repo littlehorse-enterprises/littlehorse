@@ -10,20 +10,6 @@ from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-class MetricWindowId(_message.Message):
-    __slots__ = ("wf_spec_id", "task_def_id", "user_task_def_id", "tenant_id", "window_start")
-    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
-    TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
-    USER_TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
-    TENANT_ID_FIELD_NUMBER: _ClassVar[int]
-    WINDOW_START_FIELD_NUMBER: _ClassVar[int]
-    wf_spec_id: _object_id_pb2.WfSpecId
-    task_def_id: _object_id_pb2.TaskDefId
-    user_task_def_id: _object_id_pb2.UserTaskDefId
-    tenant_id: _object_id_pb2.TenantId
-    window_start: _timestamp_pb2.Timestamp
-    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[_object_id_pb2.UserTaskDefId, _Mapping]] = ..., tenant_id: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
-
 class CountAndTiming(_message.Message):
     __slots__ = ("count", "min_latency_ms", "max_latency_ms", "total_latency_ms")
     COUNT_FIELD_NUMBER: _ClassVar[int]
@@ -41,30 +27,30 @@ class MetricWindow(_message.Message):
     ID_FIELD_NUMBER: _ClassVar[int]
     WORKFLOW_FIELD_NUMBER: _ClassVar[int]
     TASK_FIELD_NUMBER: _ClassVar[int]
-    id: MetricWindowId
+    id: _object_id_pb2.MetricWindowId
     workflow: WfMetrics
     task: TaskMetrics
-    def __init__(self, id: _Optional[_Union[MetricWindowId, _Mapping]] = ..., workflow: _Optional[_Union[WfMetrics, _Mapping]] = ..., task: _Optional[_Union[TaskMetrics, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.MetricWindowId, _Mapping]] = ..., workflow: _Optional[_Union[WfMetrics, _Mapping]] = ..., task: _Optional[_Union[TaskMetrics, _Mapping]] = ...) -> None: ...
 
 class WfMetrics(_message.Message):
-    __slots__ = ("started", "running_to_completed", "running_to_error", "running_to_exception", "running_to_halting", "halting_to_halted", "halted_to_running", "running_to_halted")
+    __slots__ = ("started", "running_to_completed", "running_to_error", "running_to_exception", "running_to_halting", "running_to_halted", "halting_to_halted", "halted_to_running")
     STARTED_FIELD_NUMBER: _ClassVar[int]
     RUNNING_TO_COMPLETED_FIELD_NUMBER: _ClassVar[int]
     RUNNING_TO_ERROR_FIELD_NUMBER: _ClassVar[int]
     RUNNING_TO_EXCEPTION_FIELD_NUMBER: _ClassVar[int]
     RUNNING_TO_HALTING_FIELD_NUMBER: _ClassVar[int]
+    RUNNING_TO_HALTED_FIELD_NUMBER: _ClassVar[int]
     HALTING_TO_HALTED_FIELD_NUMBER: _ClassVar[int]
     HALTED_TO_RUNNING_FIELD_NUMBER: _ClassVar[int]
-    RUNNING_TO_HALTED_FIELD_NUMBER: _ClassVar[int]
     started: CountAndTiming
     running_to_completed: CountAndTiming
     running_to_error: CountAndTiming
     running_to_exception: CountAndTiming
     running_to_halting: CountAndTiming
+    running_to_halted: CountAndTiming
     halting_to_halted: CountAndTiming
     halted_to_running: CountAndTiming
-    running_to_halted: CountAndTiming
-    def __init__(self, started: _Optional[_Union[CountAndTiming, _Mapping]] = ..., running_to_completed: _Optional[_Union[CountAndTiming, _Mapping]] = ..., running_to_error: _Optional[_Union[CountAndTiming, _Mapping]] = ..., running_to_exception: _Optional[_Union[CountAndTiming, _Mapping]] = ..., running_to_halting: _Optional[_Union[CountAndTiming, _Mapping]] = ..., halting_to_halted: _Optional[_Union[CountAndTiming, _Mapping]] = ..., halted_to_running: _Optional[_Union[CountAndTiming, _Mapping]] = ..., running_to_halted: _Optional[_Union[CountAndTiming, _Mapping]] = ...) -> None: ...
+    def __init__(self, started: _Optional[_Union[CountAndTiming, _Mapping]] = ..., running_to_completed: _Optional[_Union[CountAndTiming, _Mapping]] = ..., running_to_error: _Optional[_Union[CountAndTiming, _Mapping]] = ..., running_to_exception: _Optional[_Union[CountAndTiming, _Mapping]] = ..., running_to_halting: _Optional[_Union[CountAndTiming, _Mapping]] = ..., running_to_halted: _Optional[_Union[CountAndTiming, _Mapping]] = ..., halting_to_halted: _Optional[_Union[CountAndTiming, _Mapping]] = ..., halted_to_running: _Optional[_Union[CountAndTiming, _Mapping]] = ...) -> None: ...
 
 class TaskMetrics(_message.Message):
     __slots__ = ("taskrun_created_to_completed", "taskrun_created_to_error", "taskrun_created_to_exception", "taskattempt_pending_to_scheduled", "taskattempt_scheduled_to_running", "taskattempt_running_to_error", "taskattempt_running_to_success", "taskattempt_running_to_exception")

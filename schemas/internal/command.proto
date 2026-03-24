@@ -11,7 +11,6 @@ import "common_wfspec.proto";
 import "user_tasks.proto";
 import "common_enums.proto";
 import "variable.proto";
-import "metrics.proto";
 import "storage.proto";
 import "acls.proto";
 import "job.proto";

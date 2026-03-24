@@ -26,7 +26,7 @@ from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__
 import littlehorse.model.object_id_pb2 as object__id__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmetrics.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0fobject_id.proto\"\x99\x02\n\x0eMetricWindowId\x12+\n\nwf_spec_id\x18\x01 \x01(\x0b\x32\x15.littlehorse.WfSpecIdH\x00\x12-\n\x0btask_def_id\x18\x02 \x01(\x0b\x32\x16.littlehorse.TaskDefIdH\x00\x12\x36\n\x10user_task_def_id\x18\x03 \x01(\x0b\x32\x1a.littlehorse.UserTaskDefIdH\x00\x12-\n\ttenant_id\x18\x06 \x01(\x0b\x32\x15.littlehorse.TenantIdH\x01\x88\x01\x01\x12\x30\n\x0cwindow_start\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.TimestampB\x04\n\x02idB\x0c\n\n_tenant_id\"i\n\x0e\x43ountAndTiming\x12\r\n\x05\x63ount\x18\x01 \x01(\x05\x12\x16\n\x0emin_latency_ms\x18\x02 \x01(\x03\x12\x16\n\x0emax_latency_ms\x18\x03 \x01(\x03\x12\x18\n\x10total_latency_ms\x18\x04 \x01(\x03\"\x97\x01\n\x0cMetricWindow\x12\'\n\x02id\x18\x01 \x01(\x0b\x32\x1b.littlehorse.MetricWindowId\x12*\n\x08workflow\x18\x02 \x01(\x0b\x32\x16.littlehorse.WfMetricsH\x00\x12(\n\x04task\x18\x03 \x01(\x0b\x32\x18.littlehorse.TaskMetricsH\x00\x42\x08\n\x06metric\"\xc7\x03\n\tWfMetrics\x12,\n\x07started\x18\x01 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x39\n\x14running_to_completed\x18\x02 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x35\n\x10running_to_error\x18\x03 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x39\n\x14running_to_exception\x18\x04 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x37\n\x12running_to_halting\x18\x05 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x36\n\x11halting_to_halted\x18\x06 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x36\n\x11halted_to_running\x18\x07 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x36\n\x11running_to_halted\x18\x08 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\"\xaf\x04\n\x0bTaskMetrics\x12\x41\n\x1ctaskrun_created_to_completed\x18\x01 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12=\n\x18taskrun_created_to_error\x18\x02 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x41\n\x1ctaskrun_created_to_exception\x18\x03 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x45\n taskattempt_pending_to_scheduled\x18\x04 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x45\n taskattempt_scheduled_to_running\x18\x05 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x41\n\x1ctaskattempt_running_to_error\x18\x06 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x43\n\x1etaskattempt_running_to_success\x18\x07 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x45\n taskattempt_running_to_exception\x18\x08 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\"\xca\x01\n\x14ListWfMetricsRequest\x12&\n\x07wf_spec\x18\x01 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12\x35\n\x0cwindow_start\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12\x33\n\nwindow_end\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x01\x88\x01\x01\x42\x0f\n\r_window_startB\r\n\x0b_window_end\"\xce\x01\n\x16ListTaskMetricsRequest\x12(\n\x08task_def\x18\x01 \x01(\x0b\x32\x16.littlehorse.TaskDefId\x12\x35\n\x0cwindow_start\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12\x33\n\nwindow_end\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x01\x88\x01\x01\x42\x0f\n\r_window_startB\r\n\x0b_window_end\"9\n\x0bMetricsList\x12*\n\x07windows\x18\x01 \x03(\x0b\x32\x19.littlehorse.MetricWindowBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmetrics.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0fobject_id.proto\"i\n\x0e\x43ountAndTiming\x12\r\n\x05\x63ount\x18\x01 \x01(\x05\x12\x16\n\x0emin_latency_ms\x18\x02 \x01(\x03\x12\x16\n\x0emax_latency_ms\x18\x03 \x01(\x03\x12\x18\n\x10total_latency_ms\x18\x04 \x01(\x03\"\x97\x01\n\x0cMetricWindow\x12\'\n\x02id\x18\x01 \x01(\x0b\x32\x1b.littlehorse.MetricWindowId\x12*\n\x08workflow\x18\x02 \x01(\x0b\x32\x16.littlehorse.WfMetricsH\x00\x12(\n\x04task\x18\x03 \x01(\x0b\x32\x18.littlehorse.TaskMetricsH\x00\x42\x08\n\x06metric\"\xc7\x03\n\tWfMetrics\x12,\n\x07started\x18\x01 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x39\n\x14running_to_completed\x18\x02 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x35\n\x10running_to_error\x18\x03 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x39\n\x14running_to_exception\x18\x04 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x37\n\x12running_to_halting\x18\x05 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x36\n\x11running_to_halted\x18\x06 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x36\n\x11halting_to_halted\x18\x07 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x36\n\x11halted_to_running\x18\x08 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\"\xaf\x04\n\x0bTaskMetrics\x12\x41\n\x1ctaskrun_created_to_completed\x18\x01 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12=\n\x18taskrun_created_to_error\x18\x02 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x41\n\x1ctaskrun_created_to_exception\x18\x03 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x45\n taskattempt_pending_to_scheduled\x18\x04 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x45\n taskattempt_scheduled_to_running\x18\x05 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x41\n\x1ctaskattempt_running_to_error\x18\x06 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x43\n\x1etaskattempt_running_to_success\x18\x07 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\x12\x45\n taskattempt_running_to_exception\x18\x08 \x01(\x0b\x32\x1b.littlehorse.CountAndTiming\"\xca\x01\n\x14ListWfMetricsRequest\x12&\n\x07wf_spec\x18\x01 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12\x35\n\x0cwindow_start\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12\x33\n\nwindow_end\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x01\x88\x01\x01\x42\x0f\n\r_window_startB\r\n\x0b_window_end\"\xce\x01\n\x16ListTaskMetricsRequest\x12(\n\x08task_def\x18\x01 \x01(\x0b\x32\x16.littlehorse.TaskDefId\x12\x35\n\x0cwindow_start\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12\x33\n\nwindow_end\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x01\x88\x01\x01\x42\x0f\n\r_window_startB\r\n\x0b_window_end\"9\n\x0bMetricsList\x12*\n\x07windows\x18\x01 \x03(\x0b\x32\x19.littlehorse.MetricWindowBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,20 +34,18 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'metrics_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Proto'
-  _globals['_METRICWINDOWID']._serialized_start=81
-  _globals['_METRICWINDOWID']._serialized_end=362
-  _globals['_COUNTANDTIMING']._serialized_start=364
-  _globals['_COUNTANDTIMING']._serialized_end=469
-  _globals['_METRICWINDOW']._serialized_start=472
-  _globals['_METRICWINDOW']._serialized_end=623
-  _globals['_WFMETRICS']._serialized_start=626
-  _globals['_WFMETRICS']._serialized_end=1081
-  _globals['_TASKMETRICS']._serialized_start=1084
-  _globals['_TASKMETRICS']._serialized_end=1643
-  _globals['_LISTWFMETRICSREQUEST']._serialized_start=1646
-  _globals['_LISTWFMETRICSREQUEST']._serialized_end=1848
-  _globals['_LISTTASKMETRICSREQUEST']._serialized_start=1851
-  _globals['_LISTTASKMETRICSREQUEST']._serialized_end=2057
-  _globals['_METRICSLIST']._serialized_start=2059
-  _globals['_METRICSLIST']._serialized_end=2116
+  _globals['_COUNTANDTIMING']._serialized_start=80
+  _globals['_COUNTANDTIMING']._serialized_end=185
+  _globals['_METRICWINDOW']._serialized_start=188
+  _globals['_METRICWINDOW']._serialized_end=339
+  _globals['_WFMETRICS']._serialized_start=342
+  _globals['_WFMETRICS']._serialized_end=797
+  _globals['_TASKMETRICS']._serialized_start=800
+  _globals['_TASKMETRICS']._serialized_end=1359
+  _globals['_LISTWFMETRICSREQUEST']._serialized_start=1362
+  _globals['_LISTWFMETRICSREQUEST']._serialized_end=1564
+  _globals['_LISTTASKMETRICSREQUEST']._serialized_start=1567
+  _globals['_LISTTASKMETRICSREQUEST']._serialized_end=1773
+  _globals['_METRICSLIST']._serialized_start=1775
+  _globals['_METRICSLIST']._serialized_end=1832
 # @@protoc_insertion_point(module_scope)

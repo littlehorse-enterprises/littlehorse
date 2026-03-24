@@ -147,10 +147,37 @@ public interface WfMetricsOrBuilder extends
 
   /**
    * <pre>
+   * Running → Halted.
+   * </pre>
+   *
+   * <code>.littlehorse.CountAndTiming running_to_halted = 6;</code>
+   * @return Whether the runningToHalted field is set.
+   */
+  boolean hasRunningToHalted();
+  /**
+   * <pre>
+   * Running → Halted.
+   * </pre>
+   *
+   * <code>.littlehorse.CountAndTiming running_to_halted = 6;</code>
+   * @return The runningToHalted.
+   */
+  io.littlehorse.sdk.common.proto.CountAndTiming getRunningToHalted();
+  /**
+   * <pre>
+   * Running → Halted.
+   * </pre>
+   *
+   * <code>.littlehorse.CountAndTiming running_to_halted = 6;</code>
+   */
+  io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getRunningToHaltedOrBuilder();
+
+  /**
+   * <pre>
    * Halting → Halted.
    * </pre>
    *
-   * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
+   * <code>.littlehorse.CountAndTiming halting_to_halted = 7;</code>
    * @return Whether the haltingToHalted field is set.
    */
   boolean hasHaltingToHalted();
@@ -159,7 +186,7 @@ public interface WfMetricsOrBuilder extends
    * Halting → Halted.
    * </pre>
    *
-   * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
+   * <code>.littlehorse.CountAndTiming halting_to_halted = 7;</code>
    * @return The haltingToHalted.
    */
   io.littlehorse.sdk.common.proto.CountAndTiming getHaltingToHalted();
@@ -168,7 +195,7 @@ public interface WfMetricsOrBuilder extends
    * Halting → Halted.
    * </pre>
    *
-   * <code>.littlehorse.CountAndTiming halting_to_halted = 6;</code>
+   * <code>.littlehorse.CountAndTiming halting_to_halted = 7;</code>
    */
   io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getHaltingToHaltedOrBuilder();
 
@@ -177,7 +204,7 @@ public interface WfMetricsOrBuilder extends
    * Halted → Running.
    * </pre>
    *
-   * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+   * <code>.littlehorse.CountAndTiming halted_to_running = 8;</code>
    * @return Whether the haltedToRunning field is set.
    */
   boolean hasHaltedToRunning();
@@ -186,7 +213,7 @@ public interface WfMetricsOrBuilder extends
    * Halted → Running.
    * </pre>
    *
-   * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+   * <code>.littlehorse.CountAndTiming halted_to_running = 8;</code>
    * @return The haltedToRunning.
    */
   io.littlehorse.sdk.common.proto.CountAndTiming getHaltedToRunning();
@@ -195,34 +222,7 @@ public interface WfMetricsOrBuilder extends
    * Halted → Running.
    * </pre>
    *
-   * <code>.littlehorse.CountAndTiming halted_to_running = 7;</code>
+   * <code>.littlehorse.CountAndTiming halted_to_running = 8;</code>
    */
   io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getHaltedToRunningOrBuilder();
-
-  /**
-   * <pre>
-   * Halted → Running.
-   * </pre>
-   *
-   * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
-   * @return Whether the runningToHalted field is set.
-   */
-  boolean hasRunningToHalted();
-  /**
-   * <pre>
-   * Halted → Running.
-   * </pre>
-   *
-   * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
-   * @return The runningToHalted.
-   */
-  io.littlehorse.sdk.common.proto.CountAndTiming getRunningToHalted();
-  /**
-   * <pre>
-   * Halted → Running.
-   * </pre>
-   *
-   * <code>.littlehorse.CountAndTiming running_to_halted = 8;</code>
-   */
-  io.littlehorse.sdk.common.proto.CountAndTimingOrBuilder getRunningToHaltedOrBuilder();
 }
