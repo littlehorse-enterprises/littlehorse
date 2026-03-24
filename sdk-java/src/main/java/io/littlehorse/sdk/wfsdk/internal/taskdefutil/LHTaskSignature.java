@@ -86,7 +86,7 @@ public class LHTaskSignature {
             Map<String, String> placeholderValues)
             throws TaskSchemaMismatchError {
         variableDefs = new ArrayList<>();
-        hasWorkerContextAtEnd = false;
+        hasWorkerContext = false;
         this.taskDefName = taskDefName;
         this.executable = executable;
         this.lhTaskMethodAnnotationValue = lhTaskMethodAnnotationValue;

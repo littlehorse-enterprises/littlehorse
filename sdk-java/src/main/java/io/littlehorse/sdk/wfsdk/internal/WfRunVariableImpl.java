@@ -138,7 +138,7 @@ class WfRunVariableImpl implements WfRunVariable {
                 if (typeDef.getPrimitiveType() != VariableType.JSON_ARR
                         && typeDef.getPrimitiveType() != VariableType.JSON_OBJ) {
                     throw new LHMisconfigurationException(
-                            "Can only use get() on JSON_OBJ, JSON_ARR, Struct, or Array variables");
+                            "Can only use get() on JSON_OBJ, JSON_ARR, or Struct variables");
                 }
                 break;
             case DEFINEDTYPE_NOT_SET:
@@ -162,7 +162,7 @@ class WfRunVariableImpl implements WfRunVariable {
                 if (typeDef.getPrimitiveType() != VariableType.JSON_ARR
                         && typeDef.getPrimitiveType() != VariableType.JSON_OBJ) {
                     throw new LHMisconfigurationException(
-                            "Can only use get() on JSON_OBJ, JSON_ARR, Struct, or Array variables");
+                            "Can only use get() on JSON_OBJ, JSON_ARR, or Struct variables");
                 }
                 break;
             case DEFINEDTYPE_NOT_SET:
