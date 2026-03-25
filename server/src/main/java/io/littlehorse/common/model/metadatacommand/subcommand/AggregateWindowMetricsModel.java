@@ -63,7 +63,6 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
         StoredGetable<MetricWindow, MetricWindowModel> storedMetric =
                 executionContext.getCoreStore().get(id.getStoreableKey(), StoredGetable.class);
         MetricWindowModel aggregatedWindowMetric;
-        System.out.println("Aggregating metric window for id: " + id);
         if (storedMetric == null) {
             aggregatedWindowMetric = new MetricWindowModel(id, metricWindow.getMetrics());
             Date deletionTime = new Date(id.getWindowStart().getTime() + config.getMetricWindowRetentionMs());
@@ -75,29 +74,6 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
             aggregatedWindowMetric.mergeFrom(metricWindow.getMetrics());
         }
         executionContext.getCoreStore().put(new StoredGetable<>(aggregatedWindowMetric));
-        // Also aggregate into a tenant-level window (rollup across wfSpec/task/user-task)
-        // if (id.getTenantId() != null) {
-        //     MetricWindowIdModel tenantWindowId = new MetricWindowIdModel();
-        //     tenantWindowId.setTenantId(id.getTenantId());
-        //     tenantWindowId.setWindowStart(id.getWindowStart());
-        //     tenantWindowId.setMetricType(id.getMetricType());
-
-        //     StoredGetable<MetricWindow, MetricWindowModel> storedTenantMetric =
-        //             executionContext.getCoreStore().get(tenantWindowId.getStoreableKey(), StoredGetable.class);
-        //     MetricWindowModel aggregatedTenantMetric;
-        //     if (storedTenantMetric == null) {
-        //         aggregatedTenantMetric = new MetricWindowModel(tenantWindowId, metricWindow.getMetrics());
-        //         Date deletionTime =
-        //                 new Date(tenantWindowId.getWindowStart().getTime() + config.getMetricWindowRetentionMs());
-        //         DeleteMetricWindowModel deleteTenantCmd = new DeleteMetricWindowModel(tenantWindowId);
-        //         CommandModel deleteTenantCommand = new CommandModel(deleteTenantCmd, deletionTime);
-        //         executionContext.getTaskManager().scheduleTimer(new LHTimer(deleteTenantCommand));
-        //     } else {
-        //         aggregatedTenantMetric = storedTenantMetric.getStoredObject();
-        //         aggregatedTenantMetric.mergeFrom(metricWindow.getMetrics());
-        //     }
-        //     executionContext.getCoreStore().put(new StoredGetable<>(aggregatedTenantMetric));
-        // }
         return null;
     }
 }

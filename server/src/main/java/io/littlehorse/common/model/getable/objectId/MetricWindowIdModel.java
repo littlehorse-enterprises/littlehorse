@@ -63,7 +63,11 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
         return Optional.of(parritionKey);
     }
 
-    public void emptyIds() {
+    public void markAsTenantMetricId() {
+         clearIds();
+    }
+
+    private void clearIds() {
         this.wfSpecId = null;
         this.taskDefId = null;
         this.userTaskDefId = null;
@@ -105,11 +109,11 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
                 this.metricType = MetricWindowType.USER_TASK_METRIC;
                 break;
             case ID_NOT_SET:
-                if(p.hasMetricType()) {
+                if (p.hasMetricType()) {
                     this.metricType = p.getMetricType();
                 } else {
-                    throw new IllegalArgumentException("MetricWindowId proto must have one of wfSpecId, taskDefId, or userTaskDefId set");
-                }   
+                    this.metricType = MetricWindowType.UNRECOGNIZED; // default to workflow metric if not set
+                }
                 break;
         }
 
@@ -145,7 +149,7 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
 
     @Override
     public String toString() {
-        String idPart="";
+        String idPart = "";
         if (wfSpecId != null) {
             idPart = wfSpecId.toString();
         } else if (taskDefId != null) {
@@ -153,7 +157,10 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
         } else if (userTaskDefId != null) {
             idPart = userTaskDefId.toString();
         }
-        return LHUtil.getCompositeId(this.getMetricType().name(), idPart, LHUtil.toLhDbFormat(windowStart));
+        String key = idPart != ""
+                ? LHUtil.getCompositeId(this.getMetricType().name(), idPart, LHUtil.toLhDbFormat(windowStart))
+                : LHUtil.getCompositeId(this.getMetricType().name(), LHUtil.toLhDbFormat(windowStart));
+        return key;
     }
 
     @Override
