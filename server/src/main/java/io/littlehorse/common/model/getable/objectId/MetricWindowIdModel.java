@@ -64,7 +64,7 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
     }
 
     public void markAsTenantMetricId() {
-         clearIds();
+        clearIds();
     }
 
     private void clearIds() {
