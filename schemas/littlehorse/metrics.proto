@@ -1,0 +1,91 @@
+syntax = "proto3";
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "object_id.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+// Aggregate counts and latency stats for a metric window. Use
+// `total_latency_ms / count` to compute average latency.
+message CountAndTiming {
+  // Number of events.
+  int32 count            = 1;
+  // Minimum latency in ms.
+  int64 min_latency_ms   = 2;
+  // Maximum latency in ms.
+  int64 max_latency_ms   = 3;
+  // Sum of all latencies in ms.
+  int64 total_latency_ms = 4;
+}
+
+// Aggregated metrics for a workflow or task within a time window.
+// Only one of `workflow` or `task` will be populated.
+message MetricWindow {
+  // Window identifier.
+  MetricWindowId              id      = 1;
+
+  // Metrics for workflow or task.
+  oneof metric {
+    WfMetrics workflow = 2;
+    TaskMetrics task = 3;
+  }
+}
+
+// Workflow-level aggregates for lifecycle transitions; fields are `CountAndTiming`.
+message WfMetrics{
+  // WfRun started.
+  CountAndTiming started = 1;
+  // Running → Completed.
+  CountAndTiming running_to_completed = 2;
+  // Running → Error.
+  CountAndTiming running_to_error = 3;
+  // Running → Exception.
+  CountAndTiming running_to_exception = 4;
+  // Running → Halting.
+  CountAndTiming running_to_halting = 5;
+  // Running → Halted.
+  CountAndTiming running_to_halted = 6;
+  // Halting → Halted.
+  CountAndTiming halting_to_halted = 7;
+  // Halted → Running.
+  CountAndTiming halted_to_running = 8;
+}
+
+// Task-level aggregates for task lifecycle transitions; fields are `CountAndTiming`.
+message TaskMetrics{
+  // Created → Completed.
+  CountAndTiming taskrun_created_to_completed = 1;
+  // Created → Error.
+  CountAndTiming taskrun_created_to_error = 2;
+  // Created → Exception.
+  CountAndTiming taskrun_created_to_exception = 3;
+  // Pending → Scheduled.
+  CountAndTiming taskattempt_pending_to_scheduled = 4;
+  // Scheduled → Running.
+  CountAndTiming taskattempt_scheduled_to_running = 5;
+  // Running → Error.
+  CountAndTiming taskattempt_running_to_error = 6;
+  // Running → Success.
+  CountAndTiming taskattempt_running_to_success = 7;
+  // Running → Exception.
+  CountAndTiming taskattempt_running_to_exception = 8;
+}
+
+message ListWfMetricsRequest {
+  WfSpecId                           wf_spec      = 1;
+  optional google.protobuf.Timestamp window_start = 2;
+  optional google.protobuf.Timestamp window_end   = 3;
+}
+message ListTaskMetricsRequest {
+  TaskDefId task_def = 1;
+  optional google.protobuf.Timestamp window_start = 2;
+  optional google.protobuf.Timestamp window_end   = 3;
+}
+
+message MetricsList {
+  repeated MetricWindow windows = 1;
+}

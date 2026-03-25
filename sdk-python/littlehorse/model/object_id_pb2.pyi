@@ -184,3 +184,17 @@ class InactiveThreadRunId(_message.Message):
     wf_run_id: WfRunId
     thread_run_number: int
     def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., thread_run_number: _Optional[int] = ...) -> None: ...
+
+class MetricWindowId(_message.Message):
+    __slots__ = ("wf_spec_id", "task_def_id", "user_task_def_id", "tenant_id", "window_start")
+    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
+    TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    USER_TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    TENANT_ID_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_START_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_id: WfSpecId
+    task_def_id: TaskDefId
+    user_task_def_id: UserTaskDefId
+    tenant_id: TenantId
+    window_start: _timestamp_pb2.Timestamp
+    def __init__(self, wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., task_def_id: _Optional[_Union[TaskDefId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[UserTaskDefId, _Mapping]] = ..., tenant_id: _Optional[_Union[TenantId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...

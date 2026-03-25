@@ -1,22 +1,24 @@
 package io.littlehorse.server.streams.lhinternalscan.publicsearchreplies;
 
-import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
-import io.littlehorse.sdk.common.proto.ListTaskMetricsResponse;
-import io.littlehorse.sdk.common.proto.TaskDefMetrics;
+import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
+import io.littlehorse.sdk.common.proto.MetricWindow;
+import io.littlehorse.sdk.common.proto.MetricsList;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanReply;
 
-public class ListTaskMetricsReply
-        extends PublicScanReply<ListTaskMetricsResponse, TaskDefMetrics, TaskDefMetricsModel> {
+public class ListTaskMetricsReply extends PublicScanReply<MetricsList, MetricWindow, MetricWindowModel> {
 
-    public Class<ListTaskMetricsResponse> getProtoBaseClass() {
-        return ListTaskMetricsResponse.class;
+    @Override
+    public Class<MetricsList> getProtoBaseClass() {
+        return MetricsList.class;
     }
 
-    public Class<TaskDefMetricsModel> getResultJavaClass() {
-        return TaskDefMetricsModel.class;
+    @Override
+    public Class<MetricWindowModel> getResultJavaClass() {
+        return MetricWindowModel.class;
     }
 
-    public Class<TaskDefMetrics> getResultProtoClass() {
-        return TaskDefMetrics.class;
+    @Override
+    public Class<MetricWindow> getResultProtoClass() {
+        return MetricWindow.class;
     }
 }

@@ -1,12 +1,13 @@
 syntax = "proto3";
 package littlehorse;
-
 option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
 import "variable.proto";
+import "metrics.proto";
+
 
 
 
@@ -37,6 +38,7 @@ enum StoreableType {
     TASK_QUEUE_HINT = 11;
     NODE_OUTPUT = 12;
     TIMER_ITERATOR_HINT = 13;
+    METRICS_HINT = 14;
 }
 
 enum GetableClassEnum {
@@ -62,6 +64,7 @@ enum GetableClassEnum {
     CORRELATED_EVENT = 19;
     CHECKPOINT = 20;
     INACTIVE_THREAD_RUN = 21;
+    METRIC_WINDOW = 22;
 }
 
 message AttributePb {
@@ -142,6 +145,10 @@ message TimerIteratorHint {
   google.protobuf.Timestamp last_processed_timer = 2;
 }
 
+message MetricsHint {
+  google.protobuf.Timestamp last_processed_timestamp = 1;
+}
+
 // Represents a persistently stored node output
 message NodeOutput {
   int32 thread_run_number = 1;
@@ -149,4 +156,14 @@ message NodeOutput {
   string node_name = 3;
   VariableValue value = 4;
   google.protobuf.Timestamp created_at = 5;
+}
+
+// Stored partition of a metrics window: `id` identifies the window.
+// `metrics` maps metric names to aggregated `CountAndTiming`.
+message PartitionMetricWindow {
+  // Identifier of the metrics window this partition belongs to.
+  MetricWindowId id = 1;
+
+  // Metric name -> aggregated counts/timings.
+  map<string, CountAndTiming> metrics = 2;
 }
