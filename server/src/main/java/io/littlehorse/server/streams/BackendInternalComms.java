@@ -688,7 +688,6 @@ public class BackendInternalComms implements Closeable {
 
     private InternalScanResponse objectIdPrefixScan(InternalScan search) throws StatusRuntimeException {
         HostInfo correctHost = getHostForKey(search.storeName, search.partitionKey);
-
         if (getHostForKey(search.storeName, search.partitionKey).equals(thisHost)) {
             return objectIdPrefixScanOnThisHost(search);
         } else {
@@ -710,8 +709,7 @@ public class BackendInternalComms implements Closeable {
         ReadOnlyTenantScopedStore store = getStore(partition, req.storeName);
         PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(partition, null);
 
-        String endKey =
-                StoredGetable.getRocksDBKey(req.boundedObjectIdScan.getStartObjectId(), req.getObjectType()) + "~";
+        String endKey = StoredGetable.getRocksDBKey(req.boundedObjectIdScan.getEndObjectId(), req.getObjectType());
         String startKey;
         if (partBookmark == null) {
             startKey = StoredGetable.getRocksDBKey(req.boundedObjectIdScan.getStartObjectId(), req.getObjectType());

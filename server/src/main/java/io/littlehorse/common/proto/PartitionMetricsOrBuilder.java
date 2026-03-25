@@ -11,24 +11,44 @@ public interface PartitionMetricsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Metrics for each tenant in this partition.
+   * </pre>
+   *
    * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
    */
   java.util.List<io.littlehorse.common.proto.MetricsByTenant> 
       getMetricsByTenantList();
   /**
+   * <pre>
+   * Metrics for each tenant in this partition.
+   * </pre>
+   *
    * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
    */
   io.littlehorse.common.proto.MetricsByTenant getMetricsByTenant(int index);
   /**
+   * <pre>
+   * Metrics for each tenant in this partition.
+   * </pre>
+   *
    * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
    */
   int getMetricsByTenantCount();
   /**
+   * <pre>
+   * Metrics for each tenant in this partition.
+   * </pre>
+   *
    * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
    */
   java.util.List<? extends io.littlehorse.common.proto.MetricsByTenantOrBuilder> 
       getMetricsByTenantOrBuilderList();
   /**
+   * <pre>
+   * Metrics for each tenant in this partition.
+   * </pre>
+   *
    * <code>repeated .littlehorse.MetricsByTenant metrics_by_tenant = 1;</code>
    */
   io.littlehorse.common.proto.MetricsByTenantOrBuilder getMetricsByTenantOrBuilder(

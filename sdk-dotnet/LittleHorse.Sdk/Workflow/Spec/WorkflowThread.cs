@@ -29,7 +29,7 @@ public class WorkflowThread
     
     private readonly ThreadSpec _spec;
     private readonly List<WfRunVariable> _wfRunVariables;
-    private LegacyEdgeCondition? _lastNodeCondition;
+    private VariableAssignment? _lastNodeCondition;
     private readonly Queue<VariableMutation> _variableMutations;
     private ThreadRetentionPolicy? _retentionPolicy;
     private bool _isStartNopActive;
@@ -187,7 +187,7 @@ public class WorkflowThread
     
         if (_lastNodeCondition != null) 
         {
-            edge.LegacyCondition = _lastNodeCondition;
+            edge.Condition = _lastNodeCondition;
             _lastNodeCondition = null;
         }
     
@@ -559,21 +559,21 @@ public class WorkflowThread
     /// in programming.
     /// </summary>
     /// <param name="condition">
-    /// It is the WorkflowCondition to be satisfied.
+    /// It is the condition to be satisfied.
     /// </param>
     /// <param name="ifBody">
-    /// It is the block of ThreadSpec code to be executed if the provided WorkflowCondition
+    /// It is the block of ThreadSpec code to be executed if the provided condition
     /// is satisfied.
     /// </param>
     /// <param name="elseBody">
     /// It is the block of ThreadSpec code to be executed if the provided
-    /// WorkflowCondition is NOT satisfied.
+    /// condition is NOT satisfied.
     /// </param>
     /// <remarks>
-    /// Use <see cref="WorkflowThread.DoIf(WorkflowCondition, System.Action{WorkflowThread})"/>
+    /// Use <see cref="WorkflowThread.DoIf(LHExpression, System.Action{WorkflowThread})"/>
     /// and <see cref="WorkflowIfStatement.DoElse(System.Action{WorkflowThread})"/> instead.
     /// </remarks>
-    public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null)
+    public void DoIf(LHExpression condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null)
     {
         WorkflowIfStatement ifResult = DoIf(condition, ifBody);
         
@@ -588,18 +588,18 @@ public class WorkflowThread
     /// in programming.
     /// </summary>
     /// <param name="condition">
-    /// It is the WorkflowCondition to be satisfied.
+    /// It is the condition to be satisfied.
     /// </param>
     /// <param name="body">
-    /// It is the block of ThreadSpec code to be executed if the provided WorkflowCondition
+    /// It is the block of ThreadSpec code to be executed if the provided condition
     /// is satisfied.
     /// </param>
-    public WorkflowIfStatement DoIf(WorkflowCondition condition, Action<WorkflowThread> body)
+    public WorkflowIfStatement DoIf(LHExpression condition, Action<WorkflowThread> body)
     {
         CheckIfWorkflowThreadIsActive();
         _isStartNopActive = true;
         var firstNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-        _lastNodeCondition = condition.Compile();
+        _lastNodeCondition = AssignVariableHelper(condition);
 
         body.Invoke(this);
 
@@ -614,9 +614,33 @@ public class WorkflowThread
         
         return new WorkflowIfStatement(this, firstNodeName, lastNodeName);
     }
+
+    /// <summary>
+    /// Conditionally executes some workflow code using a BOOL variable.
+    /// </summary>
+    public WorkflowIfStatement DoIf(WfRunVariable condition, Action<WorkflowThread> body)
+    {
+        CheckIfWorkflowThreadIsActive();
+        _isStartNopActive = true;
+        var firstNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+        _lastNodeCondition = AssignVariableHelper(condition);
+
+        body.Invoke(this);
+
+        _isStartNopActive = false;
+        var lastNodeName = AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+
+        var firstNopeNode = FindNode(firstNodeName);
+        firstNopeNode.OutgoingEdges.Add(new Edge
+        {
+            SinkNodeName = lastNodeName
+        });
+
+        return new WorkflowIfStatement(this, firstNodeName, lastNodeName);
+    }
     
     internal void OrganizeEdgesForElseIfExecution(WorkflowIfStatement ifStatement, 
-        Action<WorkflowThread> body, WorkflowCondition? condition = null)
+        Action<WorkflowThread> body, LHExpression? condition = null)
     {
         var firstNopNode = FindNode(ifStatement.FirstNopNodeName);
         var elseEdge = GetLastRemovedEdgeFrom(firstNopNode);
@@ -669,17 +693,17 @@ public class WorkflowThread
         return lastEdge;
     }
 
-    private Edge GetNewEdge(string sinkNodeName, WorkflowCondition? condition, 
+    private Edge GetNewEdge(string sinkNodeName, LHExpression? condition, 
         ICollection<VariableMutation> variableMutations)
     {
         if (condition != null)
         {
-            var compiledCondition = condition.Compile();
+            var compiledCondition = AssignVariableHelper(condition);
 
             return new Edge
             {
                 SinkNodeName = sinkNodeName,
-                LegacyCondition = compiledCondition,
+                Condition = compiledCondition,
                 VariableMutations = { variableMutations }
             };
         }
@@ -695,20 +719,20 @@ public class WorkflowThread
     /// Conditionally executes some workflow code; equivalent to an while() statement in programming.
     /// </summary>
     /// <param name="condition">
-    /// It is the WorkflowCondition to be satisfied.
+    /// It is the condition to be satisfied.
     /// </param>
     /// <param name="whileThread">
     /// It is the block of ThreadFunc code to be executed while the provided
-    /// WorkflowCondition is satisfied.
+    /// condition is satisfied.
     /// </param>
-    public void DoWhile(WorkflowCondition condition, Action<WorkflowThread> whileThread)
+    public void DoWhile(LHExpression condition, Action<WorkflowThread> whileThread)
     {
         CheckIfWorkflowThreadIsActive();
 
         _isStartNopActive = true;
         AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
         var treeRootNodeName = LastNodeName;
-        _lastNodeCondition = condition.Compile();
+        _lastNodeCondition = AssignVariableHelper(condition);
         
         whileThread.Invoke(this);
         
@@ -719,19 +743,19 @@ public class WorkflowThread
         treeRoot.OutgoingEdges.Add(new Edge
         {
             SinkNodeName = treeLastNodeName,
-            LegacyCondition = condition.GetOpposite()
+            Condition = AssignVariableHelper(condition.GetReverse())
         });
 
         var treeLast = FindNode(treeLastNodeName);
         treeLast.OutgoingEdges.Add(new Edge
         {
             SinkNodeName = treeRootNodeName,
-            LegacyCondition = condition.Compile()
+            Condition = AssignVariableHelper(condition)
         });
     }
 
     /// <summary>
-    /// Returns a WorkflowCondition used in `WorkflowThread::doIf()`
+    /// Returns an LHExpression used in `WorkflowThread::DoIf()`
     /// </summary>
     /// <param name="lhs">
     /// It is either a literal value (which the Library casts to a Variable Value) or a
@@ -745,11 +769,10 @@ public class WorkflowThread
     /// It is either a literal value (which the Library casts to a Variable Value) or a
     /// `WfRunVariable` representing the RHS of the expression.
     /// </param>
-    /// <returns>The value of WorkflowCondition </returns>
-    public WorkflowCondition Condition(object lhs, Comparator comparator, object rhs)
+    /// <returns>The condition expression.</returns>
+    public LHExpression Condition(object lhs, Comparator comparator, object rhs)
     {
-        return new WorkflowCondition(AssignVariableHelper(lhs), 
-            comparator, AssignVariableHelper(rhs));
+        return new LHExpression(lhs, comparator, rhs);
     }
     
     /// <summary>
@@ -827,12 +850,26 @@ public class WorkflowThread
         }
         else if (value is LHExpression expr) 
         {
-            variableAssignment.Expression = new VariableAssignment.Types.Expression
+            var expression = new VariableAssignment.Types.Expression
             {
                 Lhs = AssignVariableHelper(expr.Lhs),
-                MutationType = expr.Operation,
                 Rhs = AssignVariableHelper(expr.Rhs),
             };
+
+            if (expr.Comparison.HasValue)
+            {
+                expression.Comparator = expr.Comparison.Value;
+            }
+            else if (expr.Operation.HasValue)
+            {
+                expression.MutationType = expr.Operation.Value;
+            }
+            else
+            {
+                throw new InvalidOperationException("LHExpression must define either Comparator or Operation.");
+            }
+
+            variableAssignment.Expression = expression;
         }
         else if (value.GetType() == typeof(LHFormatString)) 
         {
@@ -1361,16 +1398,33 @@ public class WorkflowThread
     /// <returns>A handle to the WaitForConditionNodeOutput, which may only be used for error handling since 
     /// the output of this node is empty.
     /// </returns>
-    public WaitForConditionNodeOutput WaitForCondition(WorkflowCondition condition)
+    public WaitForConditionNodeOutput WaitForCondition(LHExpression condition)
     {
         CheckIfWorkflowThreadIsActive();
         WaitForConditionNode waitNode = new WaitForConditionNode
         {
-            LegacyCondition = condition.Compile()
+            Condition = AssignVariableHelper(condition)
         };
 
         string nodeName = AddNode("wait-for-condition", Node.NodeOneofCase.WaitForCondition, waitNode);
         
+        return new WaitForConditionNodeOutput(nodeName, this);
+    }
+
+    /// <summary>
+    /// Adds a WAIT_FOR_CONDITION node which blocks until the provided BOOL variable
+    /// evaluates to true.
+    /// </summary>
+    public WaitForConditionNodeOutput WaitForCondition(WfRunVariable condition)
+    {
+        CheckIfWorkflowThreadIsActive();
+        WaitForConditionNode waitNode = new WaitForConditionNode
+        {
+            Condition = AssignVariableHelper(condition)
+        };
+
+        string nodeName = AddNode("wait-for-condition", Node.NodeOneofCase.WaitForCondition, waitNode);
+
         return new WaitForConditionNodeOutput(nodeName, this);
     }
     

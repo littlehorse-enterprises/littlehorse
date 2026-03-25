@@ -114,7 +114,15 @@ public class CommandSender {
         taskClaim.setCommandId(LHUtil.generateGuid());
         BiFunction<Message, Throwable, PollTaskResponse> completeTaskClaim = (taskClaimResponse, exception) -> {
             if (exception != null) {
-                client.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording task claim to Kafka"));
+                log.warn(
+                        "TaskClaimEvent for TaskRun {} was not processed within the expected time. "
+                                + "This is likely caused by a cluster rebalance or high command-processing latency. "
+                                + "The TaskRun will probably be marked as TIMEOUT.",
+                        taskToClaim);
+                client.onError(new LHApiException(
+                        Status.UNAVAILABLE,
+                        "Task claim for TaskRun " + taskToClaim + " could not be processed in time. "
+                                + "The task will likely time out."));
             }
             PollTaskResponse result = (PollTaskResponse) taskClaimResponse;
             client.getResponseObserver().onNext(result);
@@ -163,13 +171,14 @@ public class CommandSender {
                     case REPARTITION -> ServerTopology.CORE_REPARTITION_STORE;
                     case UNRECOGNIZED -> throw new LHApiException(Status.INTERNAL);
                 };
+        CompletableFuture<Message> out = LHFuture.forCommand(command);
         KeyQueryMetadata meta = internalComms.lookupPartitionKey(storeName, command.getPartitionKey());
         Optional<String> commandId = command.getCommandId();
         if (commandId.isEmpty()) {
             return CompletableFuture.completedFuture(null);
         }
         if (meta.activeHost().equals(thisHost)) {
-            return asyncWaiters.getOrRegisterFuture(commandId.get(), Message.class, new CompletableFuture<>());
+            return asyncWaiters.getOrRegisterFuture(commandId.get(), Message.class, out);
         } else {
             WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
                     .setCommandId(commandId.get())
@@ -178,7 +187,6 @@ public class CommandSender {
             LHInternalsGrpc.LHInternalsFutureStub internalClient = internalComms.getInternalFutureClient(
                     meta.activeHost(), InternalCallCredentials.forContext(context));
             ListenableFuture<WaitForCommandResponse> futureResponse = internalClient.waitForCommand(req);
-            CompletableFuture<Message> out = new CompletableFuture<>();
             futureResponse.addListener(
                     () -> {
                         try {

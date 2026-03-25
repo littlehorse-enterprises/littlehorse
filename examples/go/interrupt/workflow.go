@@ -3,9 +3,8 @@ package interrupt
 import (
 	"strconv"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
-
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
 func ReportTheResult(input int) string {
@@ -26,13 +25,13 @@ const (
 func InterruptWorkflow(wf *littlehorse.WorkflowThread) {
 	tally := wf.DeclareInt("tally")
 	wf.Execute(ChildFooTaskName, 5)
-	wf.Mutate(tally, lhproto.VariableMutationType_ASSIGN, 0)
+	tally.Assign(0)
 
 	// The interrupt handler
 	wf.HandleInterrupt(UpdateTallyInterruptName, func(handler *littlehorse.WorkflowThread) {
 		eventContent := handler.DeclareInt("INPUT")
 		handler.Execute(ChildFooTaskName, eventContent)
-		handler.Mutate(tally, lhproto.VariableMutationType_ADD, eventContent)
+		tally.Assign(tally.Add(eventContent))
 	}).RegisteredAs(lhproto.VariableType_INT)
 
 	// The main thread sleeps for 120 seconds and then reports the tally

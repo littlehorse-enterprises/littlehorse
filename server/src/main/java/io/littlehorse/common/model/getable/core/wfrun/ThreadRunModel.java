@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
+import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
@@ -87,7 +88,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     private VariableValueModel output;
 
     public ThreadType type;
-
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
     private CoreProcessorContext processorContext;
@@ -655,6 +655,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         if (haltReasons.isEmpty()) {
             log.debug("Thread {} is alive again!", number);
+            var previousStatus = status;
             if (getCurrentNodeRun().getLatestFailure().isEmpty()) {
                 setStatus(LHStatus.RUNNING);
                 getCurrentNodeRun().unHalt();
@@ -663,6 +664,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             } else {
                 setStatus(getCurrentNodeRun().getLatestFailure().get().getStatus());
             }
+            PartitionMetricWindowModel.trackWorkflow(
+                    processorContext, wfSpecId, previousStatus, status, startTime, endTime);
             return true;
         }
         return false;

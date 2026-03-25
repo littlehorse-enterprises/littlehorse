@@ -61,6 +61,10 @@ private static final long serialVersionUID = 0L;
   public static final int TENANT_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TenantId tenantId_;
   /**
+   * <pre>
+   * Tenant for these metrics.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 1;</code>
    * @return Whether the tenantId field is set.
    */
@@ -69,6 +73,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Tenant for these metrics.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 1;</code>
    * @return The tenantId.
    */
@@ -77,6 +85,10 @@ private static final long serialVersionUID = 0L;
     return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
   }
   /**
+   * <pre>
+   * Tenant for these metrics.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 1;</code>
    */
   @java.lang.Override
@@ -112,7 +124,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * workflow runs status changes
+   * Workflow run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -133,7 +145,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * workflow runs status changes
+   * Workflow run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -144,7 +156,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * workflow runs status changes
+   * Workflow run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -162,7 +174,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
   }
   /**
    * <pre>
-   * workflow runs status changes
+   * Workflow run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -207,7 +219,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
   }
   /**
    * <pre>
-   * task run status changes
+   * Task run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -228,7 +240,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
   }
   /**
    * <pre>
-   * task run status changes
+   * Task run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -239,7 +251,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
   }
   /**
    * <pre>
-   * task run status changes
+   * Task run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -257,7 +269,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
   }
   /**
    * <pre>
-   * task run status changes
+   * Task run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -695,6 +707,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> tenantIdBuilder_;
     /**
+     * <pre>
+     * Tenant for these metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 1;</code>
      * @return Whether the tenantId field is set.
      */
@@ -702,6 +718,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Tenant for these metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 1;</code>
      * @return The tenantId.
      */
@@ -713,6 +733,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Tenant for these metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 1;</code>
      */
     public Builder setTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
@@ -729,6 +753,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Tenant for these metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 1;</code>
      */
     public Builder setTenantId(
@@ -743,6 +771,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Tenant for these metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 1;</code>
      */
     public Builder mergeTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
@@ -764,6 +796,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Tenant for these metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 1;</code>
      */
     public Builder clearTenantId() {
@@ -777,6 +813,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Tenant for these metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TenantId.Builder getTenantIdBuilder() {
@@ -785,6 +825,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       return internalGetTenantIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Tenant for these metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder() {
@@ -796,6 +840,10 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Tenant for these metrics.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -849,7 +897,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * workflow runs status changes
+     * Workflow run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -870,7 +918,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * workflow runs status changes
+     * Workflow run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -881,7 +929,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * workflow runs status changes
+     * Workflow run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -898,7 +946,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * workflow runs status changes
+     * Workflow run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -920,7 +968,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * workflow runs status changes
+     * Workflow run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -943,7 +991,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * workflow runs status changes
+     * Workflow run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -960,7 +1008,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * workflow runs status changes
+     * Workflow run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -979,7 +1027,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * workflow runs status changes
+     * Workflow run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -1036,7 +1084,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * task run status changes
+     * Task run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -1057,7 +1105,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * task run status changes
+     * Task run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -1068,7 +1116,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * task run status changes
+     * Task run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -1085,7 +1133,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * task run status changes
+     * Task run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -1107,7 +1155,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * task run status changes
+     * Task run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -1130,7 +1178,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * task run status changes
+     * Task run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -1147,7 +1195,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * task run status changes
+     * Task run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -1166,7 +1214,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue) {
     }
     /**
      * <pre>
-     * task run status changes
+     * Task run status changes.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>

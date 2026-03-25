@@ -9,6 +9,7 @@ import {
   WaitForThreadDefDetail,
   WorkflowEventDefDetail,
 } from './'
+import { ExitDefDetail } from './ExitDefDetail'
 import { RunChildWfDefDetail } from './RunChildWfDefDetail'
 import { WaitForChildWfDefDetail } from './WaitForChildWfDefDetail'
 import { WaitForConditionDefDetail } from './WaitForConditionDefDetail'
@@ -40,7 +41,7 @@ export const AccordionComponents: AccordionNodes = {
 
   // Not supported but required for type safety
   entrypoint: () => null,
-  exit: () => null,
+  exit: ExitDefDetail,
   startMultipleThreads: () => null,
 } as const
 

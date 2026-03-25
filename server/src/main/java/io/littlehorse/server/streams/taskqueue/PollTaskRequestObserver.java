@@ -77,6 +77,15 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     @Override
     public void onError(Throwable t) {
         taskQueueManager.onRequestDisconnected(this, tenantId);
+        try {
+            // Sometimes this observer receives an error not related to the client connection,
+            // so we need to make sure we send an error back to the client.
+            // See Javadoc for StreamObserver.onError for more details.
+            responseObserver.onError(t);
+        } catch (Exception e) {
+            // Smallowed to fail silently since the client connection is already broken, so there's no point in trying
+            // to send an error back to the client.
+        }
         log.debug(
                 "Instance {}: Client {} disconnected from task queue {}",
                 taskQueueManager.getBackend().getInstanceName(),

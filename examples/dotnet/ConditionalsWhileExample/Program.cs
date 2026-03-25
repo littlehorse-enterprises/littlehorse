@@ -49,7 +49,7 @@ public abstract class Program
         void MyEntryPoint(WorkflowThread wf)
         {
             var numDonuts = wf.DeclareInt("number-of-donuts").Required();
-            wf.DoWhile(wf.Condition(numDonuts, Comparator.GreaterThan, 0),
+            wf.DoWhile(numDonuts.IsGreaterThan(0),
                 whileThread =>
                 {
                     whileThread.Execute("eating-donut", numDonuts);

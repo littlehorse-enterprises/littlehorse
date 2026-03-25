@@ -96,7 +96,8 @@ public class CommandProcessorTest {
                 mockProcessorContext,
                 tenantProcessorContext.getGlobalTaskQueueManager(),
                 tenantProcessorContext.getMetadataCache(),
-                tenantProcessorContext.getServer());
+                tenantProcessorContext.getServer(),
+                tenantProcessorContext.getPartitionMetricsMemoryStore());
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(
                 mockProcessorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), executionContext);
         NodeRunModel nodeRun = TestUtil.nodeRun();

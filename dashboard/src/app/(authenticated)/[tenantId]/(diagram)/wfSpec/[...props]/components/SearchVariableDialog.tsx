@@ -1,4 +1,5 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
+import { wfRunIdToPath } from '@/app/utils/wfRun'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { getTypedVariableValue, getVariableDefType } from '@/app/utils/variables'
@@ -100,16 +101,18 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
         ) : data?.pages[0].results.length ? (
           data?.pages.map((page, i) => (
             <Fragment key={i}>
-              {page.results.map(variableId => (
-                <div key={variableId.name}>
-                  <LinkWithTenant
-                    className="py-2 text-blue-500 hover:underline"
-                    href={`/wfRun/${variableId.wfRunId?.id}?threadRunNumber=${variableId.threadRunNumber}`}
-                  >
-                    {variableId.wfRunId?.id}
-                  </LinkWithTenant>
-                </div>
-              ))}
+              {page.results.map(variableId =>
+                variableId.wfRunId ? (
+                  <div key={`${wfRunIdToPath(variableId.wfRunId)}-${variableId.threadRunNumber}`}>
+                    <LinkWithTenant
+                      className="py-2 text-blue-500 hover:underline"
+                      href={`/wfRun/${wfRunIdToPath(variableId.wfRunId)}?threadRunNumber=${variableId.threadRunNumber}`}
+                    >
+                      {wfRunIdToPath(variableId.wfRunId)}
+                    </LinkWithTenant>
+                  </div>
+                ) : null
+              )}
             </Fragment>
           ))
         ) : (

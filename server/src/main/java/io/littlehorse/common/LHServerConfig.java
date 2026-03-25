@@ -155,6 +155,9 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_MAX_DELETES_PER_COMMAND_KEY = "LHS_X_MAX_DELETES_PER_COMMAND";
     // Enable timer streams processing
     public static final String X_ENABLE_TIMER_STREAMS_KEY = "LHS_X_ENABLE_TIMER_STREAMS";
+    // How long (in ms) to retain metric before deleting them
+    public static final String X_METRIC_RETENTION_MS_KEY = "LHS_X_METRIC_RETENTION_MS";
+
     // Maximum number of thread runs per workflow run.
     public static final String X_MAX_THREAD_RUNS_PER_WF_RUN = "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN";
     // Instance configs
@@ -1108,6 +1111,11 @@ public class LHServerConfig extends ConfigBase {
 
     public boolean isTimerStreamsEnabled() {
         return Boolean.valueOf(getOrSetDefault(X_ENABLE_TIMER_STREAMS_KEY, "false"));
+    }
+
+    public long getMetricWindowRetentionMs() {
+        // Default: 2 weeks
+        return Long.valueOf(getOrSetDefault(X_METRIC_RETENTION_MS_KEY, String.valueOf(14L * 24 * 60 * 60 * 1000)));
     }
 
     public String getRackId() {

@@ -311,25 +311,13 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                         Status.INVALID_ARGUMENT,
                         String.format("Provided Struct incompatible with type %s: %s", this, e.getMessage()));
             }
+        } else if (value.getValueType() == ValueCase.VALUE_NOT_SET) {
+            return true;
         }
 
         TypeDefinitionModel other = value.getTypeDefinition();
 
-        if (this.getDefinedTypeCase() != other.getDefinedTypeCase()) {
-            return false;
-        }
-
-        switch (this.getDefinedTypeCase()) {
-            case PRIMITIVE_TYPE:
-                return TypeCastingUtils.canBeType(other.getPrimitiveType(), this.primitiveType);
-            case STRUCT_DEF_ID:
-                return this.structDefId.equals(other.getStructDefId());
-            case DEFINEDTYPE_NOT_SET:
-            default:
-                break;
-        }
-
-        return false;
+        return this.isCompatibleWith(other);
     }
 
     /**
@@ -346,7 +334,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
         switch (this.getDefinedTypeCase()) {
             case PRIMITIVE_TYPE:
-                return TypeCastingUtils.canBeType(this.primitiveType, other.getPrimitiveType());
+                return TypeCastingUtils.canBeType(other.getPrimitiveType(), this.getPrimitiveType());
             case STRUCT_DEF_ID:
                 return this.getStructDefId().equals(other.getStructDefId());
             case DEFINEDTYPE_NOT_SET:
