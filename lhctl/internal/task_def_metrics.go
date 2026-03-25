@@ -15,8 +15,8 @@ import (
 
 var listTaskMetricsCmd = &cobra.Command{
 	Use:   "taskMetrics [taskDefName]",
-	Short: "List metrics for a TaskDef (omit name to list all)",
-	Long: `List metrics for a TaskDef. Omitting the name lists metrics for all TaskDefs.
+	Short: "List metrics for a TaskDef (omit name to list aggregated metrics)",
+	Long: `List metrics for a TaskDef. Omitting the name lists aggregated metrics for all TaskDefs.
 
 By default, returns metrics for the last 60 minutes.
 You can use --earliestMinutesAgo and --latestMinutesAgo to specify a custom time window.
