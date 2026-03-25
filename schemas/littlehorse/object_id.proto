@@ -249,4 +249,6 @@ message MetricWindowId {
   // Start time of the window.
   google.protobuf.Timestamp window_start = 7;
 
+  optional MetricWindowType metric_type = 8;
+
 }

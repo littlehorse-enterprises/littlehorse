@@ -109,5 +109,21 @@ public interface MetricWindowIdOrBuilder extends
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 
+  /**
+   * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
+   * @return Whether the metricType field is set.
+   */
+  boolean hasMetricType();
+  /**
+   * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
+   * @return The enum numeric value on the wire for metricType.
+   */
+  int getMetricTypeValue();
+  /**
+   * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
+   * @return The metricType.
+   */
+  io.littlehorse.sdk.common.proto.MetricWindowType getMetricType();
+
   io.littlehorse.sdk.common.proto.MetricWindowId.IdCase getIdCase();
 }

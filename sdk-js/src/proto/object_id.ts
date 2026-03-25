@@ -11,6 +11,10 @@ import {
   metricsWindowLengthFromJSON,
   metricsWindowLengthToJSON,
   metricsWindowLengthToNumber,
+  MetricWindowType,
+  metricWindowTypeFromJSON,
+  metricWindowTypeToJSON,
+  metricWindowTypeToNumber,
 } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 
@@ -282,6 +286,7 @@ export interface MetricWindowId {
     | undefined;
   /** Start time of the window. */
   windowStart: string | undefined;
+  metricType?: MetricWindowType | undefined;
 }
 
 function createBaseWfSpecId(): WfSpecId {
@@ -1939,7 +1944,7 @@ export const InactiveThreadRunId = {
 };
 
 function createBaseMetricWindowId(): MetricWindowId {
-  return { id: undefined, tenantId: undefined, windowStart: undefined };
+  return { id: undefined, tenantId: undefined, windowStart: undefined, metricType: undefined };
 }
 
 export const MetricWindowId = {
@@ -1960,6 +1965,9 @@ export const MetricWindowId = {
     }
     if (message.windowStart !== undefined) {
       Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(58).fork()).ldelim();
+    }
+    if (message.metricType !== undefined) {
+      writer.uint32(64).int32(metricWindowTypeToNumber(message.metricType));
     }
     return writer;
   },
@@ -2006,6 +2014,13 @@ export const MetricWindowId = {
 
           message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 8:
+          if (tag !== 64) {
+            break;
+          }
+
+          message.metricType = metricWindowTypeFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2026,6 +2041,7 @@ export const MetricWindowId = {
         : undefined,
       tenantId: isSet(object.tenantId) ? TenantId.fromJSON(object.tenantId) : undefined,
       windowStart: isSet(object.windowStart) ? globalThis.String(object.windowStart) : undefined,
+      metricType: isSet(object.metricType) ? metricWindowTypeFromJSON(object.metricType) : undefined,
     };
   },
 
@@ -2045,6 +2061,9 @@ export const MetricWindowId = {
     }
     if (message.windowStart !== undefined) {
       obj.windowStart = message.windowStart;
+    }
+    if (message.metricType !== undefined) {
+      obj.metricType = metricWindowTypeToJSON(message.metricType);
     }
     return obj;
   },
@@ -2067,6 +2086,7 @@ export const MetricWindowId = {
       ? TenantId.fromPartial(object.tenantId)
       : undefined;
     message.windowStart = object.windowStart ?? undefined;
+    message.metricType = object.metricType ?? undefined;
     return message;
   },
 };

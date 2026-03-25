@@ -33,6 +33,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private MetricWindowId() {
+    metricType_ = 0;
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -262,6 +263,31 @@ private static final long serialVersionUID = 0L;
     return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
   }
 
+  public static final int METRIC_TYPE_FIELD_NUMBER = 8;
+  private int metricType_ = 0;
+  /**
+   * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
+   * @return Whether the metricType field is set.
+   */
+  @java.lang.Override public boolean hasMetricType() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
+   * @return The enum numeric value on the wire for metricType.
+   */
+  @java.lang.Override public int getMetricTypeValue() {
+    return metricType_;
+  }
+  /**
+   * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
+   * @return The metricType.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.MetricWindowType getMetricType() {
+    io.littlehorse.sdk.common.proto.MetricWindowType result = io.littlehorse.sdk.common.proto.MetricWindowType.forNumber(metricType_);
+    return result == null ? io.littlehorse.sdk.common.proto.MetricWindowType.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -290,6 +316,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(7, getWindowStart());
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      output.writeEnum(8, metricType_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -320,6 +349,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, getWindowStart());
     }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(8, metricType_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -344,6 +377,10 @@ private static final long serialVersionUID = 0L;
     if (hasWindowStart()) {
       if (!getWindowStart()
           .equals(other.getWindowStart())) return false;
+    }
+    if (hasMetricType() != other.hasMetricType()) return false;
+    if (hasMetricType()) {
+      if (metricType_ != other.metricType_) return false;
     }
     if (!getIdCase().equals(other.getIdCase())) return false;
     switch (idCase_) {
@@ -380,6 +417,10 @@ private static final long serialVersionUID = 0L;
     if (hasWindowStart()) {
       hash = (37 * hash) + WINDOW_START_FIELD_NUMBER;
       hash = (53 * hash) + getWindowStart().hashCode();
+    }
+    if (hasMetricType()) {
+      hash = (37 * hash) + METRIC_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + metricType_;
     }
     switch (idCase_) {
       case 1:
@@ -559,6 +600,7 @@ private static final long serialVersionUID = 0L;
         windowStartBuilder_.dispose();
         windowStartBuilder_ = null;
       }
+      metricType_ = 0;
       idCase_ = 0;
       id_ = null;
       return this;
@@ -608,6 +650,10 @@ private static final long serialVersionUID = 0L;
             : windowStartBuilder_.build();
         to_bitField0_ |= 0x00000002;
       }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.metricType_ = metricType_;
+        to_bitField0_ |= 0x00000004;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -645,6 +691,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasWindowStart()) {
         mergeWindowStart(other.getWindowStart());
+      }
+      if (other.hasMetricType()) {
+        setMetricTypeValue(other.getMetricTypeValue());
       }
       switch (other.getIdCase()) {
         case WF_SPEC_ID: {
@@ -724,6 +773,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000010;
               break;
             } // case 58
+            case 64: {
+              metricType_ = input.readEnum();
+              bitField0_ |= 0x00000020;
+              break;
+            } // case 64
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1494,6 +1548,64 @@ private static final long serialVersionUID = 0L;
         windowStart_ = null;
       }
       return windowStartBuilder_;
+    }
+
+    private int metricType_ = 0;
+    /**
+     * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
+     * @return Whether the metricType field is set.
+     */
+    @java.lang.Override public boolean hasMetricType() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
+     * @return The enum numeric value on the wire for metricType.
+     */
+    @java.lang.Override public int getMetricTypeValue() {
+      return metricType_;
+    }
+    /**
+     * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
+     * @param value The enum numeric value on the wire for metricType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMetricTypeValue(int value) {
+      metricType_ = value;
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
+     * @return The metricType.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.MetricWindowType getMetricType() {
+      io.littlehorse.sdk.common.proto.MetricWindowType result = io.littlehorse.sdk.common.proto.MetricWindowType.forNumber(metricType_);
+      return result == null ? io.littlehorse.sdk.common.proto.MetricWindowType.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
+     * @param value The metricType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMetricType(io.littlehorse.sdk.common.proto.MetricWindowType value) {
+      if (value == null) { throw new NullPointerException(); }
+      bitField0_ |= 0x00000020;
+      metricType_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMetricType() {
+      bitField0_ = (bitField0_ & ~0x00000020);
+      metricType_ = 0;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetricWindowId)
