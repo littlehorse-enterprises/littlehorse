@@ -373,8 +373,6 @@ public class LHLibUtil {
             throws LHSerdeException {
         Optional<LHTypeAdapter<?>> maybeAdapter = getTypeAdapterForClass(targetClazz, typeAdapterRegistry);
 
-        boolean targetIsUntyped = Object.class.equals(targetClazz);
-
         if (maybeAdapter.isPresent()) {
             return varValToObjViaAdapter(val, maybeAdapter.get());
         }
@@ -390,13 +388,13 @@ public class LHLibUtil {
 
         switch (val.getValueCase()) {
             case INT:
-                if (targetIsUntyped || targetClazz == Long.class || targetClazz == long.class) {
+                if (targetClazz == Long.class || targetClazz == long.class) {
                     return val.getInt();
                 } else {
                     return (int) val.getInt();
                 }
             case DOUBLE:
-                if (targetIsUntyped || targetClazz == Double.class || targetClazz == double.class) {
+                if (targetClazz == Double.class || targetClazz == double.class) {
                     return val.getDouble();
                 } else {
                     return (float) val.getDouble();
@@ -973,8 +971,6 @@ public class LHLibUtil {
                 return a.getWfRunId().equals(b.getWfRunId());
             case UTC_TIMESTAMP:
                 return a.getUtcTimestamp().equals(b.getUtcTimestamp());
-            case ARRAY:
-                return a.getArray().equals(b.getArray());
             case VALUE_NOT_SET:
                 return true;
             default:
