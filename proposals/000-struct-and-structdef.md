@@ -796,4 +796,4 @@ Some further work includes:
 
 * Differentiate between breaking and compatible evolutions in the `StructDefId` by following the `WfSpecId` pattern.
 * **Important**: Follow-up proposal that shows how this will work with the other three SDK's (Python, Go, C#).
-* Plugins and wrappers that allow converting well-known schema formats (eg. Protobuf, Avro, JsonSchema) into LittleHorse `Struct`s and `StructDef`s
+* Plugins and wrappers that allow converting well-known schema formats (eg. Protobuf, Avro, JsonSchema) into LittleHorse `Struct`s and `StructDef`s.
