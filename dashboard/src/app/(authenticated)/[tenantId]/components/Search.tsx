@@ -92,17 +92,13 @@ export const Search: FC = () => {
 
   const searchPlaceholder = useMemo(() => `Search ${type}s...`, [type])
 
-  const showSearchInput = type === 'WfSpec' || type === 'TaskDef'
-
   return (
     <div className="flex flex-col space-y-4">
       <SearchHeader currentType={type} />
 
-      {showSearchInput && (
-        <div className="mb-4">
-          <SearchInput prefix={prefix} setPrefix={setPrefix} placeholder={searchPlaceholder} />
-        </div>
-      )}
+      <div className="mb-4">
+        <SearchInput prefix={prefix} setPrefix={setPrefix} placeholder={searchPlaceholder} />
+      </div>
 
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">

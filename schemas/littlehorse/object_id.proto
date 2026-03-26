@@ -232,3 +232,21 @@ message InactiveThreadRunId {
   // The ThreadRun number of the InactiveThreadRun.
   int32 thread_run_number = 2;
 }
+
+// Identifies a metrics window for a workflow/task/user-task object.
+// `window_start` marks the window start; `tenant_id` is optional.
+message MetricWindowId {
+  // ID for the workflow, task, or user task.
+  oneof id {
+    WfSpecId  wf_spec_id  = 1;
+    TaskDefId task_def_id = 2;
+    UserTaskDefId user_task_def_id = 3;
+  }
+
+  // Tenant for this window (optional).
+  optional TenantId tenant_id = 6;
+
+  // Start time of the window.
+  google.protobuf.Timestamp window_start = 7;
+
+}

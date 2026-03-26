@@ -9,6 +9,7 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -36,6 +37,7 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
     private final ClusterScopedStore clusterMetadataStore;
     private final Headers recordMetadata;
     private final LHServer server;
+    private final PartitionMetricsMemoryStore partitionMetricsMemoryStore;
     private GetableManager getableManager;
 
     public TestCoreProcessorContext(
@@ -45,15 +47,24 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
             ProcessorContext<String, CommandProcessorOutput> processorContext,
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
-            LHServer server) {
-        super(currentCommand, recordMetadata, config, processorContext, globalTaskQueueManager, metadataCache, server);
+            LHServer server,
+            PartitionMetricsMemoryStore partitionMetricsMemoryStore) {
+        super(
+                currentCommand,
+                recordMetadata,
+                config,
+                processorContext,
+                globalTaskQueueManager,
+                metadataCache,
+                server,
+                partitionMetricsMemoryStore);
         this.metadataCache = metadataCache;
         this.recordMetadata = recordMetadata;
         this.lhConfig = config;
         this.globalTaskQueueManager = globalTaskQueueManager;
-
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
         this.server = server;
+        this.partitionMetricsMemoryStore = partitionMetricsMemoryStore;
 
         this.coreStore = Mockito.spy(TenantScopedStore.newInstance(
                 processorContext.getStateStore(ServerTopology.CORE_STORE), tenantId, this));
@@ -73,6 +84,7 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
         TaskQueueManager globalTaskQueueManager = Mockito.mock();
         MetadataCache metadataCache = new MetadataCache();
         LHServer server = Mockito.mock();
+        PartitionMetricsMemoryStore partitionMetricsMemoryStore = new PartitionMetricsMemoryStore();
         KeyValueStore<String, Bytes> nativeMetadataStore = Mockito.spy(Stores.keyValueStoreBuilder(
                         Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
                 .withLoggingDisabled()
@@ -97,7 +109,8 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
                 processorContext,
                 globalTaskQueueManager,
                 metadataCache,
-                server);
+                server,
+                partitionMetricsMemoryStore);
     }
 
     @Override

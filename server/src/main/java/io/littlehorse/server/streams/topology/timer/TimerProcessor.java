@@ -54,6 +54,7 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
             return;
         }
         if (timer.isRepartition()) {
+            System.out.println("Forwarding repartitioned timer for partition key: " + timer.partitionKey);
             context.forward(record);
             return;
         }

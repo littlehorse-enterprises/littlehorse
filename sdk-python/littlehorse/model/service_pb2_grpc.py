@@ -6,6 +6,7 @@ import warnings
 import littlehorse.model.acls_pb2 as acls__pb2
 import littlehorse.model.external_event_pb2 as external__event__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
+import littlehorse.model.metrics_pb2 as metrics__pb2
 import littlehorse.model.node_run_pb2 as node__run__pb2
 import littlehorse.model.object_id_pb2 as object__id__pb2
 import littlehorse.model.scheduled_wf_run_pb2 as scheduled__wf__run__pb2
@@ -458,15 +459,15 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.WfSpecMetricsQueryRequest.SerializeToString,
                 response_deserializer=service__pb2.WfSpecMetrics.FromString,
                 _registered_method=True)
-        self.ListTaskDefMetrics = channel.unary_unary(
-                '/littlehorse.LittleHorse/ListTaskDefMetrics',
-                request_serializer=service__pb2.ListTaskMetricsRequest.SerializeToString,
-                response_deserializer=service__pb2.ListTaskMetricsResponse.FromString,
+        self.ListTaskMetrics = channel.unary_unary(
+                '/littlehorse.LittleHorse/ListTaskMetrics',
+                request_serializer=metrics__pb2.ListTaskMetricsRequest.SerializeToString,
+                response_deserializer=metrics__pb2.MetricsList.FromString,
                 _registered_method=True)
-        self.ListWfSpecMetrics = channel.unary_unary(
-                '/littlehorse.LittleHorse/ListWfSpecMetrics',
-                request_serializer=service__pb2.ListWfMetricsRequest.SerializeToString,
-                response_deserializer=service__pb2.ListWfMetricsResponse.FromString,
+        self.ListWfMetrics = channel.unary_unary(
+                '/littlehorse.LittleHorse/ListWfMetrics',
+                request_serializer=metrics__pb2.ListWfMetricsRequest.SerializeToString,
+                response_deserializer=metrics__pb2.MetricsList.FromString,
                 _registered_method=True)
         self.PutTenant = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutTenant',
@@ -1148,16 +1149,14 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ListTaskDefMetrics(self, request, context):
-        """Returns a list of TaskDef Metrics Windows.
-        """
+    def ListTaskMetrics(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ListWfSpecMetrics(self, request, context):
-        """Returns a list of WfSpec Metrics Windows.
-        """
+    def ListWfMetrics(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -1617,15 +1616,15 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.WfSpecMetricsQueryRequest.FromString,
                     response_serializer=service__pb2.WfSpecMetrics.SerializeToString,
             ),
-            'ListTaskDefMetrics': grpc.unary_unary_rpc_method_handler(
-                    servicer.ListTaskDefMetrics,
-                    request_deserializer=service__pb2.ListTaskMetricsRequest.FromString,
-                    response_serializer=service__pb2.ListTaskMetricsResponse.SerializeToString,
+            'ListTaskMetrics': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListTaskMetrics,
+                    request_deserializer=metrics__pb2.ListTaskMetricsRequest.FromString,
+                    response_serializer=metrics__pb2.MetricsList.SerializeToString,
             ),
-            'ListWfSpecMetrics': grpc.unary_unary_rpc_method_handler(
-                    servicer.ListWfSpecMetrics,
-                    request_deserializer=service__pb2.ListWfMetricsRequest.FromString,
-                    response_serializer=service__pb2.ListWfMetricsResponse.SerializeToString,
+            'ListWfMetrics': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListWfMetrics,
+                    request_deserializer=metrics__pb2.ListWfMetricsRequest.FromString,
+                    response_serializer=metrics__pb2.MetricsList.SerializeToString,
             ),
             'PutTenant': grpc.unary_unary_rpc_method_handler(
                     servicer.PutTenant,
@@ -3883,7 +3882,7 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
-    def ListTaskDefMetrics(request,
+    def ListTaskMetrics(request,
             target,
             options=(),
             channel_credentials=None,
@@ -3896,9 +3895,9 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/littlehorse.LittleHorse/ListTaskDefMetrics',
-            service__pb2.ListTaskMetricsRequest.SerializeToString,
-            service__pb2.ListTaskMetricsResponse.FromString,
+            '/littlehorse.LittleHorse/ListTaskMetrics',
+            metrics__pb2.ListTaskMetricsRequest.SerializeToString,
+            metrics__pb2.MetricsList.FromString,
             options,
             channel_credentials,
             insecure,
@@ -3910,7 +3909,7 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
-    def ListWfSpecMetrics(request,
+    def ListWfMetrics(request,
             target,
             options=(),
             channel_credentials=None,
@@ -3923,9 +3922,9 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/littlehorse.LittleHorse/ListWfSpecMetrics',
-            service__pb2.ListWfMetricsRequest.SerializeToString,
-            service__pb2.ListWfMetricsResponse.FromString,
+            '/littlehorse.LittleHorse/ListWfMetrics',
+            metrics__pb2.ListWfMetricsRequest.SerializeToString,
+            metrics__pb2.MetricsList.FromString,
             options,
             channel_credentials,
             insecure,
