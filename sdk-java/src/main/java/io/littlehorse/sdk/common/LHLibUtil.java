@@ -718,7 +718,6 @@ public class LHLibUtil {
             out.setBytes(ByteString.copyFrom((byte[]) o));
         } else if (o instanceof WfRunId) {
             out.setWfRunId((WfRunId) o);
-            // TODO: Array
         } else if (o.getClass().isAnnotationPresent(LHStructDef.class)) {
             out.setStruct(serializeToStruct(o, typeAdapterRegistry));
         } else if (o instanceof Instant) {
