@@ -315,6 +315,6 @@ public class LHTaskSignatureTest {
 
         assertThatThrownBy(() -> new LHTaskSignature(method, LHTypeAdapterRegistry.empty(), Map.of()))
                 .isInstanceOf(TaskSchemaMismatchError.class)
-                .hasMessageContaining("Parameters of type InlineStruct must specify a structDefName");
+                .hasMessageContaining("InlineStruct parameters must declare @LHType(structDefName = \\\"...\\\")");
     }
 }
