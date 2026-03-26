@@ -56,10 +56,10 @@ jobs:
       - prepare
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "corretto"
           java-version: "17"
@@ -107,10 +107,10 @@ jobs:
       - prepare
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "corretto"
           java-version: "25"
@@ -156,7 +156,7 @@ jobs:
       - prepare
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Dump version
         env:
@@ -164,7 +164,7 @@ jobs:
         run: sed -i "s/version = \".*\"/version = \"${TAG,,}\"/g" sdk-python/pyproject.toml
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.9"
 
@@ -197,12 +197,12 @@ jobs:
       working-directory: ./sdk-js
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup NodeJS
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           registry-url: "https://registry.npmjs.org"
           cache: "npm"
           cache-dependency-path: ${{env.working-directory}}
@@ -238,9 +238,9 @@ jobs:
       - prepare
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "6"
       - name: Bump version
@@ -260,10 +260,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: "1.21.3"
 
@@ -273,7 +273,7 @@ jobs:
           args: release --clean --skip=announce,publish,validate
 
       - name: Upload release archive
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lhctl
           path: dist/lhctl_*.*
@@ -290,7 +290,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -304,7 +304,7 @@ jobs:
           OUTPUT: CHANGELOG.md
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: dist
           merge-multiple: true
