@@ -11,7 +11,7 @@ public class LHClassTypeTest {
         LHClassType lhClassType = LHClassType.fromJavaClass(String[][][][].class, LHTypeAdapterRegistry.empty());
 
         LHClassType expectedCoreComponentType = LHClassType.fromJavaClass(String.class, LHTypeAdapterRegistry.empty());
-        LHClassType actualCoreComponentType = lhClassType.getCoreComponentType();
+        LHClassType actualCoreComponentType = lhClassType.getCoreComponentType(LHTypeAdapterRegistry.empty());
 
         assertThat(actualCoreComponentType).isEqualTo(expectedCoreComponentType);
     }

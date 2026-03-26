@@ -30,7 +30,7 @@ public class LHPrimitiveType extends LHClassType {
 
     @Override
     public TypeDefinition getTypeDefinition() {
-        if (this.primitiveType != null) {
+        if (this.primitiveType == null) {
             initializePrimitiveType();
         }
 
