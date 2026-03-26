@@ -43,16 +43,20 @@ public class TaskDefLifecycleTest {
     private Method getMethodFor(Class<?> clazz, String taskDefName) {
         return java.util.Arrays.stream(clazz.getMethods())
                 .filter(method -> method.isAnnotationPresent(LHTaskMethod.class))
-                .filter(method -> method.getAnnotation(LHTaskMethod.class).value().equals(taskDefName))
+                .filter(method ->
+                        method.getAnnotation(LHTaskMethod.class).value().equals(taskDefName))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No @LHTaskMethod found for taskDef " + taskDefName));
-
     }
 
     @Test
     void shouldBeIdempotent() {
-        PutTaskDefRequest task = new LHTaskSignature(getMethodFor(TaskWorker.class, "greet"), LHTypeAdapterRegistry.empty(), Map.of()).toPutTaskDefRequest();
-        PutTaskDefRequest taskCopy = new LHTaskSignature(getMethodFor(TaskWorker.class, "greet"), LHTypeAdapterRegistry.empty(), Map.of()).toPutTaskDefRequest();
+        PutTaskDefRequest task = new LHTaskSignature(
+                        getMethodFor(TaskWorker.class, "greet"), LHTypeAdapterRegistry.empty(), Map.of())
+                .toPutTaskDefRequest();
+        PutTaskDefRequest taskCopy = new LHTaskSignature(
+                        getMethodFor(TaskWorker.class, "greet"), LHTypeAdapterRegistry.empty(), Map.of())
+                .toPutTaskDefRequest();
         TaskDef original = client.putTaskDef(task);
         TaskDef copy = client.putTaskDef(taskCopy);
         assertThat(TaskDefUtil.equals(TaskDefModel.fromProto(original, null), TaskDefModel.fromProto(copy, null)))
@@ -61,10 +65,16 @@ public class TaskDefLifecycleTest {
 
     @Test
     void shouldThrowAlreadyExistWhenTaskDefDifferent() {
-        
-        client.putTaskDef(new LHTaskSignature(getMethodFor(TaskWorker.class, "greet-with-update"), LHTypeAdapterRegistry.empty(), Map.of()).toPutTaskDefRequest());
 
-        PutTaskDefRequest taskUpdated = new LHTaskSignature(getMethodFor(TaskWorkerUpdated.class, "greet-with-update"), LHTypeAdapterRegistry.empty(), Map.of()).toPutTaskDefRequest();
+        client.putTaskDef(new LHTaskSignature(
+                        getMethodFor(TaskWorker.class, "greet-with-update"), LHTypeAdapterRegistry.empty(), Map.of())
+                .toPutTaskDefRequest());
+
+        PutTaskDefRequest taskUpdated = new LHTaskSignature(
+                        getMethodFor(TaskWorkerUpdated.class, "greet-with-update"),
+                        LHTypeAdapterRegistry.empty(),
+                        Map.of())
+                .toPutTaskDefRequest();
 
         assertThatThrownBy(() -> client.putTaskDef(taskUpdated))
                 .isInstanceOf(StatusRuntimeException.class)

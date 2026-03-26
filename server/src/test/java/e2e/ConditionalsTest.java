@@ -124,8 +124,7 @@ public class ConditionalsTest {
         @ParameterizedTest
         @MethodSource("provideStructEqualsWorkflowSuccessArguments")
         void shouldCompleteStructEqualsWorkflowWithConditionals(Car car1, Car car2, boolean expectedOutput) {
-            client.putStructDef(
-                new LHStructDefType(Car.class, LHTypeAdapterRegistry.empty()).toPutStructDefRequest());
+            client.putStructDef(new LHStructDefType(Car.class, LHTypeAdapterRegistry.empty()).toPutStructDefRequest());
 
             workflowVerifier
                     .prepareRun(workflowStructEquals, Arg.of("struct-a", car1), Arg.of("struct-b", car2))
