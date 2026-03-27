@@ -37,6 +37,8 @@ If running the app without Docker, you need to fill in the environment variables
 - `LHC_API_PORT` littlehorse port
 - `LHC_CA_CERT` To specify the path to the self signed certificate that the dashboard needs to connect to a LittleHorse server configured to work with OAuth.
 - `LHC_API_PROTOCOL` specify the communication protocol PLAINTEXT or TLS. If not provided it defaults to PLAINTEXT.
+- `LHC_CLIENT_CERT` To specify the path to the client certificate that the dashboard needs to connect to a LittleHorse server configured to work with mTLS.
+- `LHC_CLIENT_KEY` To specify the path to the client key that the dashboard needs to connect to a LittleHorse server configured to work with mTLS.
 - `LHD_OAUTH_ENABLED` enable oauth authentication
 - `LHD_OAUTH_ENCRYPT_SECRET` random string that will be used to encrypt the secrets and also the JWT token
 - `LHD_OAUTH_CALLBACK_URL` the url (domain) in which the dashboard will run (required for some authentication methods). For your local you can use: `http:/localhost:3001/`
@@ -121,6 +123,23 @@ docker run --rm
 --network host
 ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
 ```
+
+## mTLS
+Assuming you have a folder `./certs` containing `ca.crt`, `client.crt`, and `client.key`
+
+```bash
+docker run --rm \
+  --env LHC_API_HOST='localhost' \
+  --env LHC_API_PORT='2023' \
+  --env LHC_API_PROTOCOL='TLS' \
+  --env LHC_CLIENT_CERT='/certs/client.crt' \
+  --env LHC_CLIENT_KEY='/certs/client.key' \
+  --env LHC_CA_CERT='/certs/ca.crt' \
+  --network host \
+  -v ./certs:/certs \
+  ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
+```
+
 
 ## SSL termination
 
