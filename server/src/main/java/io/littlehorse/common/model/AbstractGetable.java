@@ -6,6 +6,7 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.CheckpointModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -29,6 +30,7 @@ import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.QuotaIdModel;
@@ -119,6 +121,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.CORRELATED_EVENT;
         } else if (cls.equals(CheckpointModel.class)) {
             return GetableClassEnum.CHECKPOINT;
+        } else if (cls.equals(MetricWindowModel.class)) {
+            return GetableClassEnum.METRIC_WINDOW;
         } else if (cls.equals(InactiveThreadRunModel.class)) {
             return GetableClassEnum.INACTIVE_THREAD_RUN;
         } else {
@@ -172,6 +176,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CorrelatedEventModel.class;
             case CHECKPOINT:
                 return CheckpointModel.class;
+            case METRIC_WINDOW:
+                return MetricWindowModel.class;
             case INACTIVE_THREAD_RUN:
                 return InactiveThreadRunModel.class;
             case UNRECOGNIZED:
@@ -226,6 +232,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CorrelatedEventIdModel.class;
             case CHECKPOINT:
                 return CheckpointIdModel.class;
+            case METRIC_WINDOW:
+                return MetricWindowIdModel.class;
             case INACTIVE_THREAD_RUN:
                 return InactiveThreadRunIdModel.class;
             case UNRECOGNIZED:

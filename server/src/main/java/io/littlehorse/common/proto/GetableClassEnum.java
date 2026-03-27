@@ -100,9 +100,13 @@ public enum GetableClassEnum
    */
   INACTIVE_THREAD_RUN(21),
   /**
-   * <code>QUOTA = 22;</code>
+   * <code>METRIC_WINDOW = 22;</code>
    */
-  QUOTA(22),
+  METRIC_WINDOW(22),
+  /**
+   * <code>QUOTA = 23;</code>
+   */
+  QUOTA(23),
   UNRECOGNIZED(-1),
   ;
 
@@ -204,9 +208,13 @@ public enum GetableClassEnum
    */
   public static final int INACTIVE_THREAD_RUN_VALUE = 21;
   /**
-   * <code>QUOTA = 22;</code>
+   * <code>METRIC_WINDOW = 22;</code>
    */
-  public static final int QUOTA_VALUE = 22;
+  public static final int METRIC_WINDOW_VALUE = 22;
+  /**
+   * <code>QUOTA = 23;</code>
+   */
+  public static final int QUOTA_VALUE = 23;
 
 
   public final int getNumber() {
@@ -255,7 +263,8 @@ public enum GetableClassEnum
       case 19: return CORRELATED_EVENT;
       case 20: return CHECKPOINT;
       case 21: return INACTIVE_THREAD_RUN;
-      case 22: return QUOTA;
+      case 22: return METRIC_WINDOW;
+      case 23: return QUOTA;
       default: return null;
     }
   }

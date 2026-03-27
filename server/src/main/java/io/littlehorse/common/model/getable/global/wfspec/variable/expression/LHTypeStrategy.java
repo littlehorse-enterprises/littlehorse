@@ -46,7 +46,7 @@ public interface LHTypeStrategy {
     boolean isNumeric(ReadOnlyMetadataManager manager);
 
     default Optional<TypeDefinitionModel> assign(LHTypeStrategy other) throws InvalidExpressionException {
-        if (!other.getIdentity().isCompatibleWith(getIdentity())) {
+        if (!getIdentity().isCompatibleWith(other.getIdentity())) {
             throw new InvalidExpressionException(
                     "Cannot use a " + other.getDescription() + " as a " + this.getDescription());
         }

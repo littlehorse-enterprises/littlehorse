@@ -19,6 +19,7 @@ import "struct_def.proto";
 import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
+import "metrics.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -340,10 +341,9 @@ service LittleHorse {
   rpc GetTaskDefMetricsWindow(TaskDefMetricsQueryRequest) returns (TaskDefMetrics) {}
   // Returns WfSpec Metrics for a specific WfSpec and a specific time window.
   rpc GetWfSpecMetricsWindow(WfSpecMetricsQueryRequest) returns (WfSpecMetrics) {}
-  // Returns a list of TaskDef Metrics Windows.
-  rpc ListTaskDefMetrics(ListTaskMetricsRequest) returns (ListTaskMetricsResponse) {}
-  // Returns a list of WfSpec Metrics Windows.
-  rpc ListWfSpecMetrics(ListWfMetricsRequest) returns (ListWfMetricsResponse) {}
+  
+  rpc ListTaskMetrics(ListTaskMetricsRequest) returns (MetricsList) {}
+  rpc ListWfMetrics(ListWfMetricsRequest) returns (MetricsList) {}
 
   // Creates a Tenant in the LH Server.
   rpc PutTenant(PutTenantRequest) returns (Tenant) {}
@@ -368,6 +368,7 @@ service LittleHorse {
 
   // Gets the version of the LH Server.
   rpc GetServerVersion(google.protobuf.Empty) returns (LittleHorseVersion) {}
+
 }
 // Returns the UserTaskDef with a given name and the highest version number.
 message GetLatestUserTaskDefRequest {
@@ -1564,36 +1565,7 @@ message TaskDefMetricsQueryRequest {
   optional string task_def_name = 3;
 }
 
-// Query to retrieve TaskDef Metrics over a period of time.
-message ListTaskMetricsRequest {
-  // TaskDef id for whichwe retrieve metrics.
-  TaskDefId task_def_id = 1;
 
-  // This parameter is a timestamp that is used to determine the *last* window returned. The
-  // server will then return `num_windows` worth of data from before this timestamp.
-  google.protobuf.Timestamp last_window_start = 2;
-  // Window size
-  MetricsWindowLength window_length = 3;
-  // Number of windows to retrieve.
-  int32 num_windows = 4;
-
-  // Bookmark for cursor-based pagination; pass if applicable.
-  optional bytes bookmark = 5;
-
-  // Maximum results to return in one request.
-  optional int32 limit = 6;
-}
-
-// A list of TaskDef Metrics WIndows
-message ListTaskMetricsResponse {
-  // List of TaskDef Metrics Windows
-  repeated TaskDefMetrics results = 1;
-
-  // The bookmark can be used for cursor-based pagination. If it is null, the server
-  // has returned all results. If it is set, you can pass it into your next request
-  // to resume searching where your previous request left off.
-  optional bytes bookmark = 2;
-}
 
 // Query to retrieve a specific WfSpec Metrics Window.
 message WfSpecMetricsQueryRequest {
@@ -1606,27 +1578,6 @@ message WfSpecMetricsQueryRequest {
 
   // The window size
   MetricsWindowLength window_length = 3;
-}
-
-// Query to retrieve WfSpec Metrics over a period of time.
-message ListWfMetricsRequest {
-  // WfSpecId of metrics to get.
-  WfSpecId wf_spec_id = 1;
-
-  // This parameter is a timestamp that is used to determine the *last* window returned. The
-  // server will then return `num_windows` worth of data from before this timestamp.
-  google.protobuf.Timestamp last_window_start = 2;
-
-  // The window size
-  MetricsWindowLength window_length = 3;
-  // Number of windows to retrieve
-  int32 num_windows = 4;
-
-  // Bookmark for cursor-based pagination; pass if applicable.
-  optional bytes bookmark = 5;
-
-  // Maximum results to return in one request.
-  optional int32 limit = 6;
 }
 
 // A list of WfSpec Metrics Windows

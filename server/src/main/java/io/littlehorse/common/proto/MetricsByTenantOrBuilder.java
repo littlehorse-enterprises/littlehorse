@@ -11,23 +11,35 @@ public interface MetricsByTenantOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Tenant for these metrics.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 1;</code>
    * @return Whether the tenantId field is set.
    */
   boolean hasTenantId();
   /**
+   * <pre>
+   * Tenant for these metrics.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 1;</code>
    * @return The tenantId.
    */
   io.littlehorse.sdk.common.proto.TenantId getTenantId();
   /**
+   * <pre>
+   * Tenant for these metrics.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder();
 
   /**
    * <pre>
-   * workflow runs status changes
+   * Workflow run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -35,7 +47,7 @@ public interface MetricsByTenantOrBuilder extends
   int getLhStatusChangesCount();
   /**
    * <pre>
-   * workflow runs status changes
+   * Workflow run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -50,7 +62,7 @@ public interface MetricsByTenantOrBuilder extends
   getLhStatusChanges();
   /**
    * <pre>
-   * workflow runs status changes
+   * Workflow run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -59,7 +71,7 @@ public interface MetricsByTenantOrBuilder extends
   getLhStatusChangesMap();
   /**
    * <pre>
-   * workflow runs status changes
+   * Workflow run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -71,7 +83,7 @@ io.littlehorse.common.proto.StatusChanges getLhStatusChangesOrDefault(
 io.littlehorse.common.proto.StatusChanges defaultValue);
   /**
    * <pre>
-   * workflow runs status changes
+   * Workflow run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; lh_status_changes = 2;</code>
@@ -81,7 +93,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue);
 
   /**
    * <pre>
-   * task run status changes
+   * Task run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -89,7 +101,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue);
   int getTaskStatusChangesCount();
   /**
    * <pre>
-   * task run status changes
+   * Task run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -104,7 +116,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue);
   getTaskStatusChanges();
   /**
    * <pre>
-   * task run status changes
+   * Task run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -113,7 +125,7 @@ io.littlehorse.common.proto.StatusChanges defaultValue);
   getTaskStatusChangesMap();
   /**
    * <pre>
-   * task run status changes
+   * Task run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
@@ -125,7 +137,7 @@ io.littlehorse.common.proto.StatusChanges getTaskStatusChangesOrDefault(
 io.littlehorse.common.proto.StatusChanges defaultValue);
   /**
    * <pre>
-   * task run status changes
+   * Task run status changes.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.StatusChanges&gt; task_status_changes = 3;</code>
