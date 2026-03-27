@@ -3746,6 +3746,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists aggregated task metrics over a time range; supports filters and returns a MetricsList.
+     * </pre>
      */
     default void listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
@@ -3753,6 +3756,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList.
+     * </pre>
      */
     default void listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
@@ -4810,6 +4816,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists aggregated task metrics over a time range; supports filters and returns a MetricsList.
+     * </pre>
      */
     public void listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
@@ -4818,6 +4827,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList.
+     * </pre>
      */
     public void listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
@@ -5791,6 +5803,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists aggregated task metrics over a time range; supports filters and returns a MetricsList.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.MetricsList listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -5798,6 +5813,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.MetricsList listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -6751,6 +6769,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists aggregated task metrics over a time range; supports filters and returns a MetricsList.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.MetricsList listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -6758,6 +6779,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.MetricsList listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -7792,6 +7816,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists aggregated task metrics over a time range; supports filters and returns a MetricsList.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricsList> listTaskMetrics(
         io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
@@ -7800,6 +7827,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricsList> listWfMetrics(
         io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {

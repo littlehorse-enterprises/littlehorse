@@ -55,13 +55,11 @@ public class ListWfMetricsRequestModel
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         ListWfMetricsRequest p = (ListWfMetricsRequest) proto;
-        // Treat empty WfSpec (empty name) as wildcard => list all wfSpecs
         wfSpecId = LHSerializable.fromProto(p.getWfSpec(), WfSpecIdModel.class, context);
         if (wfSpecId != null
                 && (wfSpecId.getName() == null || wfSpecId.getName().isEmpty())) {
             wfSpecId = null;
         }
-        // Use windowStart and windowEnd from the request (default to 1 hour ago if not provided)
         if (p.hasWindowStart()) {
             windowStart = LHUtil.fromProtoTs(p.getWindowStart());
         } else {

@@ -1342,7 +1342,8 @@ type MetricWindowId struct {
 	TenantId *TenantId `protobuf:"bytes,6,opt,name=tenant_id,json=tenantId,proto3,oneof" json:"tenant_id,omitempty"`
 	// Start time of the window.
 	WindowStart *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=window_start,json=windowStart,proto3" json:"window_start,omitempty"`
-	MetricType  *MetricWindowType      `protobuf:"varint,8,opt,name=metric_type,json=metricType,proto3,enum=littlehorse.MetricWindowType,oneof" json:"metric_type,omitempty"`
+	// Metric type (workflow, task, or user task)
+	MetricType *MetricWindowType `protobuf:"varint,8,opt,name=metric_type,json=metricType,proto3,enum=littlehorse.MetricWindowType,oneof" json:"metric_type,omitempty"`
 }
 
 func (x *MetricWindowId) Reset() {

@@ -266,6 +266,10 @@ private static final long serialVersionUID = 0L;
   public static final int METRIC_TYPE_FIELD_NUMBER = 8;
   private int metricType_ = 0;
   /**
+   * <pre>
+   * Metric type (workflow, task, or user task)
+   * </pre>
+   *
    * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
    * @return Whether the metricType field is set.
    */
@@ -273,6 +277,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
+   * <pre>
+   * Metric type (workflow, task, or user task)
+   * </pre>
+   *
    * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
    * @return The enum numeric value on the wire for metricType.
    */
@@ -280,6 +288,10 @@ private static final long serialVersionUID = 0L;
     return metricType_;
   }
   /**
+   * <pre>
+   * Metric type (workflow, task, or user task)
+   * </pre>
+   *
    * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
    * @return The metricType.
    */
@@ -1552,6 +1564,10 @@ private static final long serialVersionUID = 0L;
 
     private int metricType_ = 0;
     /**
+     * <pre>
+     * Metric type (workflow, task, or user task)
+     * </pre>
+     *
      * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
      * @return Whether the metricType field is set.
      */
@@ -1559,6 +1575,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
+     * <pre>
+     * Metric type (workflow, task, or user task)
+     * </pre>
+     *
      * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
      * @return The enum numeric value on the wire for metricType.
      */
@@ -1566,6 +1586,10 @@ private static final long serialVersionUID = 0L;
       return metricType_;
     }
     /**
+     * <pre>
+     * Metric type (workflow, task, or user task)
+     * </pre>
+     *
      * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
      * @param value The enum numeric value on the wire for metricType to set.
      * @return This builder for chaining.
@@ -1577,6 +1601,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Metric type (workflow, task, or user task)
+     * </pre>
+     *
      * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
      * @return The metricType.
      */
@@ -1586,6 +1614,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.MetricWindowType.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * Metric type (workflow, task, or user task)
+     * </pre>
+     *
      * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
      * @param value The metricType to set.
      * @return This builder for chaining.
@@ -1598,6 +1630,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Metric type (workflow, task, or user task)
+     * </pre>
+     *
      * <code>optional .littlehorse.MetricWindowType metric_type = 8;</code>
      * @return This builder for chaining.
      */

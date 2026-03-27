@@ -167,7 +167,6 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
     public void initFromString(String storeKey) {
         String[] split = storeKey.split("/");
         metricType = MetricWindowType.valueOf(split[0]);
-        System.out.println("Parsing MetricWindowId from store key: " + storeKey);
         switch (metricType) {
             case WORKFLOW_METRIC:
                 wfSpecId = (WfSpecIdModel)

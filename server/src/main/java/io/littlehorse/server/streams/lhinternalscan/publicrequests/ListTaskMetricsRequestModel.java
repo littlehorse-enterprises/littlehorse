@@ -91,10 +91,10 @@ public class ListTaskMetricsRequestModel
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         String partitionKey;
-        if (taskDefId == null) {
-            partitionKey = MetricWindowType.TASK_METRIC.name();
-        } else {
+        if (taskDefId != null) {
             partitionKey = MetricWindowType.TASK_METRIC.name() + "/" + taskDefId.toString();
+        } else {
+            partitionKey = MetricWindowType.TASK_METRIC.name();
         }
         String startPrefixString = partitionKey + "/" + LHUtil.toLhDbFormat(windowStart);
         String endPrefixString = partitionKey + "/" + LHUtil.toLhDbFormat(windowEnd) + "/~";

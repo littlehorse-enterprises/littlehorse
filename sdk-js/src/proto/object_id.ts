@@ -285,7 +285,10 @@ export interface MetricWindowId {
     | TenantId
     | undefined;
   /** Start time of the window. */
-  windowStart: string | undefined;
+  windowStart:
+    | string
+    | undefined;
+  /** Metric type (workflow, task, or user task) */
   metricType?: MetricWindowType | undefined;
 }
 

@@ -12074,6 +12074,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Lists aggregated task metrics over a time range; supports filters and returns a MetricsList. */
     listTaskMetrics: {
       name: "ListTaskMetrics",
       requestType: ListTaskMetricsRequest,
@@ -12082,6 +12083,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList. */
     listWfMetrics: {
       name: "ListWfMetrics",
       requestType: ListWfMetricsRequest,
@@ -12576,10 +12578,12 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: WfSpecMetricsQueryRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<WfSpecMetrics>>;
+  /** Lists aggregated task metrics over a time range; supports filters and returns a MetricsList. */
   listTaskMetrics(
     request: ListTaskMetricsRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<MetricsList>>;
+  /** Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList. */
   listWfMetrics(
     request: ListWfMetricsRequest,
     context: CallContext & CallContextExt,
@@ -13036,10 +13040,12 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<WfSpecMetricsQueryRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<WfSpecMetrics>;
+  /** Lists aggregated task metrics over a time range; supports filters and returns a MetricsList. */
   listTaskMetrics(
     request: DeepPartial<ListTaskMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<MetricsList>;
+  /** Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList. */
   listWfMetrics(
     request: DeepPartial<ListWfMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
