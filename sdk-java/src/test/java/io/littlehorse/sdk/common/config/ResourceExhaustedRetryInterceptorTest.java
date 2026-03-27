@@ -8,27 +8,23 @@ import com.google.rpc.Code;
 import com.google.rpc.RetryInfo;
 import io.grpc.Metadata;
 import io.grpc.Status;
-import io.grpc.protobuf.ProtoUtils;
+import io.grpc.protobuf.StatusProto;
 import org.junit.jupiter.api.Test;
 
 class ResourceExhaustedRetryInterceptorTest {
 
-    private static final Metadata.Key<com.google.rpc.Status> STATUS_DETAILS_KEY =
-            ProtoUtils.keyForProto(com.google.rpc.Status.getDefaultInstance());
-
     @Test
     void shouldExtractRetryDelayFromStatusDetails() {
-        RetryInfo retryInfo = RetryInfo.newBuilder()
-                .setRetryDelay(Durations.fromMillis(1500))
-                .build();
+        RetryInfo retryInfo =
+                RetryInfo.newBuilder().setRetryDelay(Durations.fromMillis(1500)).build();
         com.google.rpc.Status statusDetails = com.google.rpc.Status.newBuilder()
                 .setCode(Code.RESOURCE_EXHAUSTED.getNumber())
                 .addDetails(Any.pack(retryInfo))
                 .build();
-        Metadata trailers = new Metadata();
-        trailers.put(STATUS_DETAILS_KEY, statusDetails);
+        Metadata trailers = StatusProto.toStatusRuntimeException(statusDetails).getTrailers();
 
-        Long retryDelayMillis = ResourceExhaustedRetryInterceptor.getRetryDelayMillis(Status.RESOURCE_EXHAUSTED, trailers);
+        Long retryDelayMillis =
+                ResourceExhaustedRetryInterceptor.getRetryDelayMillis(Status.RESOURCE_EXHAUSTED, trailers);
 
         assertThat(retryDelayMillis).isEqualTo(1500L);
     }
@@ -37,22 +33,21 @@ class ResourceExhaustedRetryInterceptorTest {
     void shouldIgnoreStatusesWithoutRetryInfo() {
         Metadata trailers = new Metadata();
 
-        Long retryDelayMillis = ResourceExhaustedRetryInterceptor.getRetryDelayMillis(Status.RESOURCE_EXHAUSTED, trailers);
+        Long retryDelayMillis =
+                ResourceExhaustedRetryInterceptor.getRetryDelayMillis(Status.RESOURCE_EXHAUSTED, trailers);
 
         assertThat(retryDelayMillis).isNull();
     }
 
     @Test
     void shouldIgnoreNonQuotaStatuses() {
-        RetryInfo retryInfo = RetryInfo.newBuilder()
-                .setRetryDelay(Durations.fromMillis(1500))
-                .build();
+        RetryInfo retryInfo =
+                RetryInfo.newBuilder().setRetryDelay(Durations.fromMillis(1500)).build();
         com.google.rpc.Status statusDetails = com.google.rpc.Status.newBuilder()
                 .setCode(Code.RESOURCE_EXHAUSTED.getNumber())
                 .addDetails(Any.pack(retryInfo))
                 .build();
-        Metadata trailers = new Metadata();
-        trailers.put(STATUS_DETAILS_KEY, statusDetails);
+        Metadata trailers = StatusProto.toStatusRuntimeException(statusDetails).getTrailers();
 
         Long retryDelayMillis = ResourceExhaustedRetryInterceptor.getRetryDelayMillis(Status.UNAVAILABLE, trailers);
 

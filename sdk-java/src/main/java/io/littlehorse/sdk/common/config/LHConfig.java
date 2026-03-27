@@ -2,8 +2,8 @@ package io.littlehorse.sdk.common.config;
 
 import io.grpc.CallCredentials;
 import io.grpc.Channel;
-import io.grpc.CompositeCallCredentials;
 import io.grpc.ClientInterceptors;
+import io.grpc.CompositeCallCredentials;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.TlsChannelCredentials;

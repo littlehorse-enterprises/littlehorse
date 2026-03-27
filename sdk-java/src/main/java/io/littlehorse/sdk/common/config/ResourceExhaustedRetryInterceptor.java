@@ -10,7 +10,7 @@ import io.grpc.ClientInterceptor;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.Status;
-import io.grpc.protobuf.ProtoUtils;
+import io.grpc.protobuf.StatusProto;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -18,14 +18,12 @@ import java.util.concurrent.TimeUnit;
 
 final class ResourceExhaustedRetryInterceptor implements ClientInterceptor {
 
-    private static final Metadata.Key<com.google.rpc.Status> STATUS_DETAILS_KEY =
-            ProtoUtils.keyForProto(com.google.rpc.Status.getDefaultInstance());
-
-    private static final ScheduledExecutorService RETRY_EXECUTOR = Executors.newSingleThreadScheduledExecutor(runnable -> {
-        Thread thread = new Thread(runnable, "lh-sdk-grpc-retry");
-        thread.setDaemon(true);
-        return thread;
-    });
+    private static final ScheduledExecutorService RETRY_EXECUTOR =
+            Executors.newSingleThreadScheduledExecutor(runnable -> {
+                Thread thread = new Thread(runnable, "lh-sdk-grpc-retry");
+                thread.setDaemon(true);
+                return thread;
+            });
 
     @Override
     public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(
@@ -42,8 +40,10 @@ final class ResourceExhaustedRetryInterceptor implements ClientInterceptor {
             return null;
         }
 
-        com.google.rpc.Status statusDetails = trailers.get(STATUS_DETAILS_KEY);
-        if (statusDetails == null) {
+        com.google.rpc.Status statusDetails;
+        try {
+            statusDetails = StatusProto.fromStatusAndTrailers(status, trailers);
+        } catch (IllegalArgumentException ex) {
             return null;
         }
 
@@ -87,8 +87,7 @@ final class ResourceExhaustedRetryInterceptor implements ClientInterceptor {
         private Throwable cancelCause;
         private ScheduledFuture<?> scheduledRetry;
 
-        private RetryingUnaryClientCall(
-                MethodDescriptor<ReqT, RespT> method, CallOptions callOptions, Channel next) {
+        private RetryingUnaryClientCall(MethodDescriptor<ReqT, RespT> method, CallOptions callOptions, Channel next) {
             this.method = method;
             this.callOptions = callOptions;
             this.next = next;
@@ -139,7 +138,8 @@ final class ResourceExhaustedRetryInterceptor implements ClientInterceptor {
             if (currentDelegate != null) {
                 currentDelegate.cancel(message, cause);
             } else if (currentListener != null) {
-                currentListener.onClose(Status.CANCELLED.withDescription(message).withCause(cause), new Metadata());
+                currentListener.onClose(
+                        Status.CANCELLED.withDescription(message).withCause(cause), new Metadata());
             }
         }
 
@@ -250,7 +250,8 @@ final class ResourceExhaustedRetryInterceptor implements ClientInterceptor {
                             return;
                         }
                         delegate = null;
-                        scheduledRetry = RETRY_EXECUTOR.schedule(RetryingUnaryClientCall.this::startAttempt, retryDelayMillis, TimeUnit.MILLISECONDS);
+                        scheduledRetry = RETRY_EXECUTOR.schedule(
+                                RetryingUnaryClientCall.this::startAttempt, retryDelayMillis, TimeUnit.MILLISECONDS);
                     }
                     return;
                 }
