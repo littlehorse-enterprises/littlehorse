@@ -42,9 +42,10 @@ class WfRunVariableImpl implements WfRunVariable {
 
     private final WorkflowThreadImpl parent;
 
-    private WfRunVariableImpl(String name, WorkflowThreadImpl parent) {
+    private WfRunVariableImpl(String name, WorkflowThreadImpl parent, TypeDefinition typeDef) {
         this.name = Objects.requireNonNull(name, "Name cannot be null.");
         this.parent = Objects.requireNonNull(parent, "Parent thread cannot be null.");
+        this.typeDef = Objects.requireNonNull(typeDef, "TypeDefinition cannot be null.");
 
         // As per GH Issue #582, the default is now PRIVATE_VAR.
         this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
@@ -59,26 +60,31 @@ class WfRunVariableImpl implements WfRunVariable {
                     "The 'typeOrDefaultVal' argument must be either a VariableType or a default value, but a null value was provided.");
         }
 
-        WfRunVariableImpl wfRunVar = new WfRunVariableImpl(name, parent);
+        WfRunVariableImpl wfRunVar;
 
         if (typeOrDefaultVal instanceof VariableType) {
             VariableType variableType = (VariableType) typeOrDefaultVal;
-            wfRunVar.typeDef =
-                    TypeDefinition.newBuilder().setPrimitiveType(variableType).build();
+            TypeDefinition td = TypeDefinition.newBuilder().setPrimitiveType(variableType).build();
+            wfRunVar = new WfRunVariableImpl(name, parent, td);
         } else {
-            wfRunVar.setDefaultValue(typeOrDefaultVal);
-            wfRunVar.typeDef = TypeDefinition.newBuilder()
-                    .setPrimitiveType(LHLibUtil.fromValueCase(wfRunVar.defaultValue.getValueCase()))
+            VariableValue val;
+            try {
+                val = LHLibUtil.objToVarVal(typeOrDefaultVal, parent.getParent().getTypeAdapterRegistry());
+            } catch (LHSerdeException e) {
+                throw new IllegalArgumentException("Was unable to convert provided default value to LH Variable Type", e);
+            }
+            TypeDefinition td = TypeDefinition.newBuilder()
+                    .setPrimitiveType(LHLibUtil.fromValueCase(val.getValueCase()))
                     .build();
+            wfRunVar = new WfRunVariableImpl(name, parent, td);
+            wfRunVar.setDefaultValue(val);
         }
 
         return wfRunVar;
     }
 
     public static WfRunVariableImpl createStructDefVar(String name, LHStructDefType clazz, WorkflowThreadImpl parent) {
-        WfRunVariableImpl wfRunVar = new WfRunVariableImpl(name, parent);
-        wfRunVar.typeDef = clazz.getTypeDefinition();
-        return wfRunVar;
+        return new WfRunVariableImpl(name, parent, clazz.getTypeDefinition());
     }
 
     @Override
@@ -305,13 +311,12 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     public WfRunVariableImpl clone() {
-        WfRunVariableImpl out = new WfRunVariableImpl(this.getName(), this.getParent());
+        WfRunVariableImpl out = new WfRunVariableImpl(this.getName(), this.getParent(), this.getTypeDef());
         out.setDefaultValue(this.getDefaultValue());
         out.setRequired(this.isRequired());
         out.setSearchable(this.isSearchable());
         out.setJsonIndexes(new ArrayList<>(this.getJsonIndexes()));
         out.setAccessLevel(this.getAccessLevel());
-        out.setTypeDef(this.getTypeDef());
 
         if (jsonPath != null) {
             out.setJsonPath(this.getJsonPath());
