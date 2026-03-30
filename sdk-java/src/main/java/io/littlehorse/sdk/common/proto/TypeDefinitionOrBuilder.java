@@ -67,6 +67,33 @@ public interface TypeDefinitionOrBuilder extends
 
   /**
    * <pre>
+   * An inline Array definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
+   * @return Whether the inlineArrayDef field is set.
+   */
+  boolean hasInlineArrayDef();
+  /**
+   * <pre>
+   * An inline Array definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
+   * @return The inlineArrayDef.
+   */
+  io.littlehorse.sdk.common.proto.InlineArrayDef getInlineArrayDef();
+  /**
+   * <pre>
+   * An inline Array definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineArrayDef inline_array_def = 6;</code>
+   */
+  io.littlehorse.sdk.common.proto.InlineArrayDefOrBuilder getInlineArrayDefOrBuilder();
+
+  /**
+   * <pre>
    * Set to true if values of this type contain sensitive information and must be masked.
    * </pre>
    *

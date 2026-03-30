@@ -49,6 +49,9 @@ message VariableValue {
 
     // A Struct object.
     Struct struct = 11;
+
+    // An Array object.
+    Array array = 12;
   }
 }
 
@@ -69,6 +72,11 @@ message Variable {
 
   // Marks a variable to show masked values
   bool masked = 5;
+}
+
+// An Array is a strongly-typed list of values.
+message Array {
+  repeated VariableValue items = 1;
 }
 
 // A Struct is a strongly-typed structure containing fields. The Struct is defined

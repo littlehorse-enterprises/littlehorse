@@ -27,6 +27,7 @@ export interface VariableValue {
     | { $case: "wfRunId"; value: WfRunId }
     | { $case: "utcTimestamp"; value: string }
     | { $case: "struct"; value: Struct }
+    | { $case: "array"; value: Array }
     | undefined;
 }
 
@@ -53,6 +54,11 @@ export interface Variable {
     | undefined;
   /** Marks a variable to show masked values */
   masked: boolean;
+}
+
+/** An Array is a strongly-typed list of values. */
+export interface Array {
+  items: VariableValue[];
 }
 
 /**
@@ -128,6 +134,9 @@ export const VariableValue = {
         break;
       case "struct":
         Struct.encode(message.value.value, writer.uint32(90).fork()).ldelim();
+        break;
+      case "array":
+        Array.encode(message.value.value, writer.uint32(98).fork()).ldelim();
         break;
     }
     return writer;
@@ -210,6 +219,13 @@ export const VariableValue = {
 
           message.value = { $case: "struct", value: Struct.decode(reader, reader.uint32()) };
           continue;
+        case 12:
+          if (tag !== 98) {
+            break;
+          }
+
+          message.value = { $case: "array", value: Array.decode(reader, reader.uint32()) };
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -241,6 +257,8 @@ export const VariableValue = {
         ? { $case: "utcTimestamp", value: globalThis.String(object.utcTimestamp) }
         : isSet(object.struct)
         ? { $case: "struct", value: Struct.fromJSON(object.struct) }
+        : isSet(object.array)
+        ? { $case: "array", value: Array.fromJSON(object.array) }
         : undefined,
     };
   },
@@ -276,6 +294,9 @@ export const VariableValue = {
     }
     if (message.value?.$case === "struct") {
       obj.struct = Struct.toJSON(message.value.value);
+    }
+    if (message.value?.$case === "array") {
+      obj.array = Array.toJSON(message.value.value);
     }
     return obj;
   },
@@ -314,6 +335,9 @@ export const VariableValue = {
     }
     if (object.value?.$case === "struct" && object.value?.value !== undefined && object.value?.value !== null) {
       message.value = { $case: "struct", value: Struct.fromPartial(object.value.value) };
+    }
+    if (object.value?.$case === "array" && object.value?.value !== undefined && object.value?.value !== null) {
+      message.value = { $case: "array", value: Array.fromPartial(object.value.value) };
     }
     return message;
   },
@@ -438,6 +462,65 @@ export const Variable = {
       ? WfSpecId.fromPartial(object.wfSpecId)
       : undefined;
     message.masked = object.masked ?? false;
+    return message;
+  },
+};
+
+function createBaseArray(): Array {
+  return { items: [] };
+}
+
+export const Array = {
+  encode(message: Array, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.items) {
+      VariableValue.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Array {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseArray();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.items.push(VariableValue.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Array {
+    return {
+      items: globalThis.Array.isArray(object?.items) ? object.items.map((e: any) => VariableValue.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: Array): unknown {
+    const obj: any = {};
+    if (message.items?.length) {
+      obj.items = message.items.map((e) => VariableValue.toJSON(e));
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<Array>): Array {
+    return Array.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Array>): Array {
+    const message = createBaseArray();
+    message.items = object.items?.map((e) => VariableValue.fromPartial(e)) || [];
     return message;
   },
 };
