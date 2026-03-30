@@ -6,18 +6,25 @@ import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Optional;
+import lombok.Getter;
 
 public class LHTaskReturnType {
     private final Method method;
     private final Map<String, String> placeholderValues;
+
+    @Getter
     private Optional<LHClassType> returnClassType;
+
     private ReturnType returnType;
+
+    private boolean isMasked;
 
     public LHTaskReturnType(
             Method method, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
@@ -28,6 +35,16 @@ public class LHTaskReturnType {
             returnClassType = Optional.empty();
         } else {
             returnClassType = Optional.of(LHClassType.fromJavaClass(method.getReturnType(), typeAdapterRegistry));
+        }
+
+        if (method.isAnnotationPresent(LHType.class)) {
+            LHType typeAnnotation = method.getAnnotation(LHType.class);
+            if (typeAnnotation.isLHArray()) {
+                returnClassType = Optional.of(new LHArrayType(method.getReturnType(), typeAdapterRegistry));
+            }
+            if (typeAnnotation.masked()) {
+                isMasked = true;
+            }
         }
     }
 
@@ -57,7 +74,9 @@ public class LHTaskReturnType {
         }
 
         returnType = ReturnType.newBuilder()
-                .setReturnType(returnClassType.get().getTypeDefinition())
+                .setReturnType(returnClassType.get().getTypeDefinition().toBuilder()
+                        .setMasked(isMasked)
+                        .build())
                 .build();
     }
 

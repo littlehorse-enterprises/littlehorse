@@ -83,6 +83,15 @@ public abstract class LHClassType {
         return LHClassType.fromJavaClass(coreType, typeAdapterRegistry);
     }
 
+    public LHClassType getComponentType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        if (!clazz.isArray()) {
+            throw new IllegalStateException("getComponentType can only be called on array types, but class "
+                    + clazz.getName() + " is not an array.");
+        }
+        Class<?> componentType = clazz.getComponentType();
+        return LHClassType.fromJavaClass(componentType, typeAdapterRegistry);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

@@ -6,7 +6,7 @@ import io.littlehorse.sdk.worker.LHStructField;
 import io.littlehorse.sdk.worker.LHStructIgnore;
 
 @LHStructDef("library")
-class Library {
+public class Library {
     public String name;
     public String[] books = null;
     public int ignoredField;
