@@ -16,7 +16,7 @@ public class ArrayExample {
     private static final Logger log = LoggerFactory.getLogger(ArrayExample.class);
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-return-lharray", wf -> {
+        return new WorkflowImpl("example-arrays", wf -> {
             // declare a typed LH Array variable (elements are Long)
             WfRunVariable arrVar = wf.declareArray("my-array", Long.class);
 

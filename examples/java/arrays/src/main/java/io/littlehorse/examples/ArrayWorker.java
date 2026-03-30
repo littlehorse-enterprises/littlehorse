@@ -12,8 +12,8 @@ public class ArrayWorker {
     @LHTaskMethod(value = "produce-array")
     @LHType(isLHArray = true)
     public Long[] produceArray() {
-        log.info("Producing native LHArray<Long>");
-        return List.of(1L, 2L, 3L).toArray(new Long[0]);
+        log.info("Producing native LittleHorse Array of type Long");
+        return new Long[] {1L, 2L, 3L};
     }
 
     @LHTaskMethod("consume-array")
