@@ -33,4 +33,34 @@ public interface ArrayOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getItemsOrBuilder(
       int index);
+
+  /**
+   * <pre>
+   * Optional, authoritative element type for this array. If absent, element
+   * type may be unknown and must be derived from items or treated as wildcard.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+   * @return Whether the elementType field is set.
+   */
+  boolean hasElementType();
+  /**
+   * <pre>
+   * Optional, authoritative element type for this array. If absent, element
+   * type may be unknown and must be derived from items or treated as wildcard.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+   * @return The elementType.
+   */
+  io.littlehorse.sdk.common.proto.TypeDefinition getElementType();
+  /**
+   * <pre>
+   * Optional, authoritative element type for this array. If absent, element
+   * type may be unknown and must be derived from items or treated as wildcard.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getElementTypeOrBuilder();
 }

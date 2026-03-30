@@ -4,6 +4,7 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
+import "type_definition.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -77,6 +78,10 @@ message Variable {
 // An Array is a strongly-typed list of values.
 message Array {
   repeated VariableValue items = 1;
+  
+  // Optional, authoritative element type for this array. If absent, element
+  // type may be unknown and must be derived from items or treated as wildcard.
+  optional TypeDefinition element_type = 2;
 }
 
 // A Struct is a strongly-typed structure containing fields. The Struct is defined

@@ -48,6 +48,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.Array.class, io.littlehorse.sdk.common.proto.Array.Builder.class);
   }
 
+  private int bitField0_;
   public static final int ITEMS_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.VariableValue> items_;
@@ -89,6 +90,47 @@ private static final long serialVersionUID = 0L;
     return items_.get(index);
   }
 
+  public static final int ELEMENT_TYPE_FIELD_NUMBER = 2;
+  private io.littlehorse.sdk.common.proto.TypeDefinition elementType_;
+  /**
+   * <pre>
+   * Optional, authoritative element type for this array. If absent, element
+   * type may be unknown and must be derived from items or treated as wildcard.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+   * @return Whether the elementType field is set.
+   */
+  @java.lang.Override
+  public boolean hasElementType() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * Optional, authoritative element type for this array. If absent, element
+   * type may be unknown and must be derived from items or treated as wildcard.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+   * @return The elementType.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TypeDefinition getElementType() {
+    return elementType_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : elementType_;
+  }
+  /**
+   * <pre>
+   * Optional, authoritative element type for this array. If absent, element
+   * type may be unknown and must be derived from items or treated as wildcard.
+   * </pre>
+   *
+   * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getElementTypeOrBuilder() {
+    return elementType_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : elementType_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -106,6 +148,9 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < items_.size(); i++) {
       output.writeMessage(1, items_.get(i));
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(2, getElementType());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -118,6 +163,10 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < items_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, items_.get(i));
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getElementType());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -136,6 +185,11 @@ private static final long serialVersionUID = 0L;
 
     if (!getItemsList()
         .equals(other.getItemsList())) return false;
+    if (hasElementType() != other.hasElementType()) return false;
+    if (hasElementType()) {
+      if (!getElementType()
+          .equals(other.getElementType())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -150,6 +204,10 @@ private static final long serialVersionUID = 0L;
     if (getItemsCount() > 0) {
       hash = (37 * hash) + ITEMS_FIELD_NUMBER;
       hash = (53 * hash) + getItemsList().hashCode();
+    }
+    if (hasElementType()) {
+      hash = (37 * hash) + ELEMENT_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getElementType().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -274,13 +332,20 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.Array.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessage
+              .alwaysUseFieldBuilders) {
+        internalGetItemsFieldBuilder();
+        internalGetElementTypeFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -293,6 +358,11 @@ private static final long serialVersionUID = 0L;
         itemsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
+      elementType_ = null;
+      if (elementTypeBuilder_ != null) {
+        elementTypeBuilder_.dispose();
+        elementTypeBuilder_ = null;
+      }
       return this;
     }
 
@@ -339,6 +409,14 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.Array result) {
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.elementType_ = elementTypeBuilder_ == null
+            ? elementType_
+            : elementTypeBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -379,6 +457,9 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (other.hasElementType()) {
+        mergeElementType(other.getElementType());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -418,6 +499,13 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 10
+            case 18: {
+              input.readMessage(
+                  internalGetElementTypeFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -673,6 +761,172 @@ private static final long serialVersionUID = 0L;
         items_ = null;
       }
       return itemsBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.TypeDefinition elementType_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> elementTypeBuilder_;
+    /**
+     * <pre>
+     * Optional, authoritative element type for this array. If absent, element
+     * type may be unknown and must be derived from items or treated as wildcard.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+     * @return Whether the elementType field is set.
+     */
+    public boolean hasElementType() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * Optional, authoritative element type for this array. If absent, element
+     * type may be unknown and must be derived from items or treated as wildcard.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+     * @return The elementType.
+     */
+    public io.littlehorse.sdk.common.proto.TypeDefinition getElementType() {
+      if (elementTypeBuilder_ == null) {
+        return elementType_ == null ? io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : elementType_;
+      } else {
+        return elementTypeBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Optional, authoritative element type for this array. If absent, element
+     * type may be unknown and must be derived from items or treated as wildcard.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+     */
+    public Builder setElementType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
+      if (elementTypeBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        elementType_ = value;
+      } else {
+        elementTypeBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional, authoritative element type for this array. If absent, element
+     * type may be unknown and must be derived from items or treated as wildcard.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+     */
+    public Builder setElementType(
+        io.littlehorse.sdk.common.proto.TypeDefinition.Builder builderForValue) {
+      if (elementTypeBuilder_ == null) {
+        elementType_ = builderForValue.build();
+      } else {
+        elementTypeBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional, authoritative element type for this array. If absent, element
+     * type may be unknown and must be derived from items or treated as wildcard.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+     */
+    public Builder mergeElementType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
+      if (elementTypeBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0) &&
+          elementType_ != null &&
+          elementType_ != io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) {
+          getElementTypeBuilder().mergeFrom(value);
+        } else {
+          elementType_ = value;
+        }
+      } else {
+        elementTypeBuilder_.mergeFrom(value);
+      }
+      if (elementType_ != null) {
+        bitField0_ |= 0x00000002;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional, authoritative element type for this array. If absent, element
+     * type may be unknown and must be derived from items or treated as wildcard.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+     */
+    public Builder clearElementType() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      elementType_ = null;
+      if (elementTypeBuilder_ != null) {
+        elementTypeBuilder_.dispose();
+        elementTypeBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional, authoritative element type for this array. If absent, element
+     * type may be unknown and must be derived from items or treated as wildcard.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TypeDefinition.Builder getElementTypeBuilder() {
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return internalGetElementTypeFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Optional, authoritative element type for this array. If absent, element
+     * type may be unknown and must be derived from items or treated as wildcard.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder getElementTypeOrBuilder() {
+      if (elementTypeBuilder_ != null) {
+        return elementTypeBuilder_.getMessageOrBuilder();
+      } else {
+        return elementType_ == null ?
+            io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance() : elementType_;
+      }
+    }
+    /**
+     * <pre>
+     * Optional, authoritative element type for this array. If absent, element
+     * type may be unknown and must be derived from items or treated as wildcard.
+     * </pre>
+     *
+     * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> 
+        internalGetElementTypeFieldBuilder() {
+      if (elementTypeBuilder_ == null) {
+        elementTypeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder>(
+                getElementType(),
+                getParentForChildren(),
+                isClean());
+        elementType_ = null;
+      }
+      return elementTypeBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.Array)

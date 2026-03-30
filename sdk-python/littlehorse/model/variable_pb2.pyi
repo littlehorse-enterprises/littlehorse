@@ -2,6 +2,7 @@ import datetime
 
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
+import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -51,10 +52,12 @@ class Variable(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.VariableId, _Mapping]] = ..., value: _Optional[_Union[VariableValue, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
 
 class Array(_message.Message):
-    __slots__ = ("items",)
+    __slots__ = ("items", "element_type")
     ITEMS_FIELD_NUMBER: _ClassVar[int]
+    ELEMENT_TYPE_FIELD_NUMBER: _ClassVar[int]
     items: _containers.RepeatedCompositeFieldContainer[VariableValue]
-    def __init__(self, items: _Optional[_Iterable[_Union[VariableValue, _Mapping]]] = ...) -> None: ...
+    element_type: _type_definition_pb2.TypeDefinition
+    def __init__(self, items: _Optional[_Iterable[_Union[VariableValue, _Mapping]]] = ..., element_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class Struct(_message.Message):
     __slots__ = ("struct_def_id", "struct")

@@ -6,6 +6,7 @@ package littlehorse;
 import "common_enums.proto";
 import "variable.proto";
 import "object_id.proto";
+import "type_definition.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -199,79 +200,8 @@ message VariableDef {
   optional TypeDefinition type_def = 5;
 }
 
-// Defines the type of a value in LittleHorse. Can be used for Task Parameters,
-// Task return types, External Event types, ThreadSpec variables, etc.
-message TypeDefinition {
-  // The type of this definition. One of the following will be set.
-  //
-  // Note: if no `defined_type` is set, defaults to a `primitive_type` of `JSON_OBJ`
-  // to support old clients from 0.14.1 or lower.
-  oneof defined_type {
-    // The primitive type definition.
-    VariableType primitive_type = 1;
-    
-    // The ID of the StructDef that defines this type.
-    StructDefId struct_def_id = 5;
-
-    // An inline Array definition.
-    InlineArrayDef inline_array_def = 6;
-  }
-
-  // For compatibility purposes.
-  reserved 2, 3;
-
-  // Set to true if values of this type contain sensitive information and must be masked.
-  bool masked = 4;
-}
-
-// Inline schema definition for a native LittleHorse Array.
-message InlineArrayDef {
-  // Type definition for each element in the array.
-  TypeDefinition array_type = 1;
-}
-
-// Utility used among metadata objects to define their output type. For example, used in
-// TaskDef and ExternalEventDef to represent the output.
-message ReturnType {
-  // The type of the output. If it is not present, it is interpred as the output type
-  // being void: the TaskRun output/ExternalEvent/WorkflowEvent is always empty / NULL.
-  optional TypeDefinition return_type = 1;
-}
-
-// Operator for comparing two values to create a boolean expression.
-enum Comparator {
-  // Equivalent to `<`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  LESS_THAN = 0;
-
-  // Equivalent to `>`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  GREATER_THAN = 1;
-
-  // Equivalent to `<=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  LESS_THAN_EQ = 2;
-
-  // Equivalent to `>=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  GREATER_THAN_EQ = 3;
-
-  // This is valid for any variable type, and is similar to .equals() in Java.
-  //
-  // One note: if the RHS is a different type from the LHS, then LittleHorse will
-  // try to cast the RHS to the same type as the LHS. If the cast fails, then the
-  // ThreadRun fails with a VAR_SUB_ERROR.
-  EQUALS = 4;
-
-  // This is the inverse of `EQUALS`
-  NOT_EQUALS = 5;
-
-  // Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
-  //
-  // For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
-  // RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
-  // is equal to the LHS.
-  IN = 6;
-
-  // The inverse of IN.
-  NOT_IN = 7;
-}
+// TypeDefinition and related messages were moved to type_definition.proto to
+// avoid circular imports between variable.proto and common_wfspec.proto.
 
 // A UTActionTrigger triggers an action upon certain lifecycle hooks
 // in a User Task. Actions include:

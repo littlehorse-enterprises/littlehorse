@@ -1,6 +1,7 @@
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.variable_pb2 as _variable_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
+import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -23,17 +24,6 @@ class VariableMutationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     REMOVE_KEY: _ClassVar[VariableMutationType]
     AND: _ClassVar[VariableMutationType]
     OR: _ClassVar[VariableMutationType]
-
-class Comparator(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = ()
-    LESS_THAN: _ClassVar[Comparator]
-    GREATER_THAN: _ClassVar[Comparator]
-    LESS_THAN_EQ: _ClassVar[Comparator]
-    GREATER_THAN_EQ: _ClassVar[Comparator]
-    EQUALS: _ClassVar[Comparator]
-    NOT_EQUALS: _ClassVar[Comparator]
-    IN: _ClassVar[Comparator]
-    NOT_IN: _ClassVar[Comparator]
 ASSIGN: VariableMutationType
 ADD: VariableMutationType
 EXTEND: VariableMutationType
@@ -45,14 +35,6 @@ REMOVE_INDEX: VariableMutationType
 REMOVE_KEY: VariableMutationType
 AND: VariableMutationType
 OR: VariableMutationType
-LESS_THAN: Comparator
-GREATER_THAN: Comparator
-LESS_THAN_EQ: Comparator
-GREATER_THAN_EQ: Comparator
-EQUALS: Comparator
-NOT_EQUALS: Comparator
-IN: Comparator
-NOT_IN: Comparator
 
 class VariableAssignment(_message.Message):
     __slots__ = ("json_path", "lh_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "target_type")
@@ -76,9 +58,9 @@ class VariableAssignment(_message.Message):
         RHS_FIELD_NUMBER: _ClassVar[int]
         lhs: VariableAssignment
         mutation_type: VariableMutationType
-        comparator: Comparator
+        comparator: _type_definition_pb2.Comparator
         rhs: VariableAssignment
-        def __init__(self, lhs: _Optional[_Union[VariableAssignment, _Mapping]] = ..., mutation_type: _Optional[_Union[VariableMutationType, str]] = ..., comparator: _Optional[_Union[Comparator, str]] = ..., rhs: _Optional[_Union[VariableAssignment, _Mapping]] = ...) -> None: ...
+        def __init__(self, lhs: _Optional[_Union[VariableAssignment, _Mapping]] = ..., mutation_type: _Optional[_Union[VariableMutationType, str]] = ..., comparator: _Optional[_Union[_type_definition_pb2.Comparator, str]] = ..., rhs: _Optional[_Union[VariableAssignment, _Mapping]] = ...) -> None: ...
     JSON_PATH_FIELD_NUMBER: _ClassVar[int]
     LH_PATH_FIELD_NUMBER: _ClassVar[int]
     VARIABLE_NAME_FIELD_NUMBER: _ClassVar[int]
@@ -94,8 +76,8 @@ class VariableAssignment(_message.Message):
     format_string: VariableAssignment.FormatString
     node_output: VariableAssignment.NodeOutputReference
     expression: VariableAssignment.Expression
-    target_type: TypeDefinition
-    def __init__(self, json_path: _Optional[str] = ..., lh_path: _Optional[_Union[LHPath, _Mapping]] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., target_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
+    target_type: _type_definition_pb2.TypeDefinition
+    def __init__(self, json_path: _Optional[str] = ..., lh_path: _Optional[_Union[LHPath, _Mapping]] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., target_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class VariableMutation(_message.Message):
     __slots__ = ("lhs_name", "lhs_json_path", "operation", "rhs_assignment", "literal_value", "node_output")
@@ -131,32 +113,8 @@ class VariableDef(_message.Message):
     name: str
     default_value: _variable_pb2.VariableValue
     masked_value: bool
-    type_def: TypeDefinition
-    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: _Optional[bool] = ..., type_def: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
-
-class TypeDefinition(_message.Message):
-    __slots__ = ("primitive_type", "struct_def_id", "inline_array_def", "masked")
-    PRIMITIVE_TYPE_FIELD_NUMBER: _ClassVar[int]
-    STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
-    INLINE_ARRAY_DEF_FIELD_NUMBER: _ClassVar[int]
-    MASKED_FIELD_NUMBER: _ClassVar[int]
-    primitive_type: _common_enums_pb2.VariableType
-    struct_def_id: _object_id_pb2.StructDefId
-    inline_array_def: InlineArrayDef
-    masked: bool
-    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., inline_array_def: _Optional[_Union[InlineArrayDef, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
-
-class InlineArrayDef(_message.Message):
-    __slots__ = ("array_type",)
-    ARRAY_TYPE_FIELD_NUMBER: _ClassVar[int]
-    array_type: TypeDefinition
-    def __init__(self, array_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
-
-class ReturnType(_message.Message):
-    __slots__ = ("return_type",)
-    RETURN_TYPE_FIELD_NUMBER: _ClassVar[int]
-    return_type: TypeDefinition
-    def __init__(self, return_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
+    type_def: _type_definition_pb2.TypeDefinition
+    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: _Optional[bool] = ..., type_def: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class UTActionTrigger(_message.Message):
     __slots__ = ("task", "cancel", "reassign", "delay_seconds", "hook")
@@ -238,9 +196,9 @@ class StructFieldDef(_message.Message):
     __slots__ = ("field_type", "default_value")
     FIELD_TYPE_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
-    field_type: TypeDefinition
+    field_type: _type_definition_pb2.TypeDefinition
     default_value: _variable_pb2.VariableValue
-    def __init__(self, field_type: _Optional[_Union[TypeDefinition, _Mapping]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    def __init__(self, field_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
 class LHPath(_message.Message):
     __slots__ = ("path",)

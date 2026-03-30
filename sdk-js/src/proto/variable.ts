@@ -9,6 +9,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { StructDefId, VariableId, WfRunId, WfSpecId } from "./object_id";
+import { TypeDefinition } from "./type_definition";
 
 /**
  * VariableValue is a structure containing a value in LittleHorse. It can be
@@ -59,6 +60,11 @@ export interface Variable {
 /** An Array is a strongly-typed list of values. */
 export interface Array {
   items: VariableValue[];
+  /**
+   * Optional, authoritative element type for this array. If absent, element
+   * type may be unknown and must be derived from items or treated as wildcard.
+   */
+  elementType?: TypeDefinition | undefined;
 }
 
 /**
@@ -467,13 +473,16 @@ export const Variable = {
 };
 
 function createBaseArray(): Array {
-  return { items: [] };
+  return { items: [], elementType: undefined };
 }
 
 export const Array = {
   encode(message: Array, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.items) {
       VariableValue.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.elementType !== undefined) {
+      TypeDefinition.encode(message.elementType, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -492,6 +501,13 @@ export const Array = {
 
           message.items.push(VariableValue.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.elementType = TypeDefinition.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -504,6 +520,7 @@ export const Array = {
   fromJSON(object: any): Array {
     return {
       items: globalThis.Array.isArray(object?.items) ? object.items.map((e: any) => VariableValue.fromJSON(e)) : [],
+      elementType: isSet(object.elementType) ? TypeDefinition.fromJSON(object.elementType) : undefined,
     };
   },
 
@@ -511,6 +528,9 @@ export const Array = {
     const obj: any = {};
     if (message.items?.length) {
       obj.items = message.items.map((e) => VariableValue.toJSON(e));
+    }
+    if (message.elementType !== undefined) {
+      obj.elementType = TypeDefinition.toJSON(message.elementType);
     }
     return obj;
   },
@@ -521,6 +541,9 @@ export const Array = {
   fromPartial(object: DeepPartial<Array>): Array {
     const message = createBaseArray();
     message.items = object.items?.map((e) => VariableValue.fromPartial(e)) || [];
+    message.elementType = (object.elementType !== undefined && object.elementType !== null)
+      ? TypeDefinition.fromPartial(object.elementType)
+      : undefined;
     return message;
   },
 };
