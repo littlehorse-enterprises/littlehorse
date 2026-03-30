@@ -344,6 +344,20 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
         TypeDefinitionModel other = value.getTypeDefinition();
 
+        // If this is an inline array type, validate every element in the provided
+        // array value against the array's element type. The VariableValueModel
+        // derives its array type from the first element only, which can allow
+        // mixed-typed arrays to appear compatible. Enforce per-element checks here.
+        if (this.getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF && value.getValueType() == ValueCase.ARRAY) {
+            TypeDefinitionModel expectedElementType = this.getInlineArrayDef().getArrayType();
+            for (VariableValueModel item : value.getArray().getItems()) {
+                TypeDefinitionModel itemType = item.getTypeDefinition();
+                if (!expectedElementType.isCompatibleWith(itemType)) {
+                    return false;
+                }
+            }
+        }
+
         return this.isCompatibleWith(other);
     }
 
@@ -365,6 +379,13 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case STRUCT_DEF_ID:
                 return this.getStructDefId().equals(other.getStructDefId());
             case INLINE_ARRAY_DEF:
+                // If the other array's item type is undefined (reported for empty/native arrays),
+                // treat it as a wildcard that is compatible with any array element type.
+                if (other.getInlineArrayDef() == null
+                        || other.getInlineArrayDef().getArrayType() == null
+                        || other.getInlineArrayDef().getArrayType().isNull()) {
+                    return true;
+                }
                 return this.getInlineArrayDef().equals(other.getInlineArrayDef());
             case DEFINEDTYPE_NOT_SET:
             default:

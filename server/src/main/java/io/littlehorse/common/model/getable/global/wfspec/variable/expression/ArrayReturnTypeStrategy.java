@@ -38,7 +38,7 @@ public class ArrayReturnTypeStrategy implements LHTypeStrategy {
 
     @Override
     public String getDescription() {
-        return "ARRAY";
+        return inlineArrayDef.toString();
     }
 
     @Override

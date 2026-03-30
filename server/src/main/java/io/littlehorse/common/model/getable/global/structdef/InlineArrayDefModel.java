@@ -58,4 +58,9 @@ public class InlineArrayDefModel extends LHSerializable<InlineArrayDef> {
 
         return this.getArrayType().equals(other.getArrayType());
     }
+
+    @Override
+    public String toString() {
+        return "Array<" + arrayType.toString() + ">";
+    }
 }

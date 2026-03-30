@@ -657,7 +657,20 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 }
                 break;
             case INLINE_ARRAY_DEF:
-                if (otherType.getInlineArrayDef().equals(getTypeDefinition().getInlineArrayDef())) {
+                // If this array value has an unknown/empty element type (reported for empty
+                // native arrays), allow coercion to any inline array target type. This lets
+                // tasks return an empty native ARRAY and have it be assigned to a typed
+                // array variable.
+                TypeDefinitionModel thisArrayItemType =
+                        getTypeDefinition().getInlineArrayDef().getArrayType();
+                TypeDefinitionModel otherArrayItemType =
+                        otherType.getInlineArrayDef().getArrayType();
+
+                if (thisArrayItemType == null || thisArrayItemType.isNull()) {
+                    return asArray();
+                }
+
+                if (thisArrayItemType.equals(otherArrayItemType)) {
                     return asArray();
                 }
                 break;
