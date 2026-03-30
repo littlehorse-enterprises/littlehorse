@@ -16,27 +16,33 @@ final class LHTypeMetadata {
     }
 
     private final boolean masked;
-    private final Optional<String> name;
-    private final Optional<String> structDefName;
+    private final String name;
+    private final String structDefName;
 
-    private LHTypeMetadata(boolean masked, Optional<String> name, Optional<String> structDefName) {
+    private LHTypeMetadata(boolean masked, String name, String structDefName) {
         this.masked = masked;
         this.name = name;
         this.structDefName = structDefName;
+    }
+
+    private LHTypeMetadata() {
+        this(false, null, null);
     }
 
     static LHTypeMetadata from(AnnotatedElement element, Map<String, String> placeholderValues) {
         Map<String, String> placeholders = placeholderValues == null ? Map.of() : placeholderValues;
 
         if (!element.isAnnotationPresent(LHType.class)) {
-            return new LHTypeMetadata(false, Optional.empty(), Optional.empty());
+            return new LHTypeMetadata();
         }
 
         LHType typeAnnotation = element.getAnnotation(LHType.class);
 
-        Optional<String> parsedName = normalize(typeAnnotation.name());
-        Optional<String> parsedStructDefName = normalize(typeAnnotation.structDefName())
-                .map(value -> PlaceholderUtil.replacePlaceholders(value, placeholders));
+        String parsedName = normalize(typeAnnotation.name());
+        String parsedStructDefName = normalize(typeAnnotation.structDefName());
+        if (parsedStructDefName != null) {
+            parsedStructDefName = PlaceholderUtil.replacePlaceholders(parsedStructDefName, placeholders);
+        }
 
         return new LHTypeMetadata(typeAnnotation.masked(), parsedName, parsedStructDefName);
     }
@@ -46,31 +52,31 @@ final class LHTypeMetadata {
     }
 
     Optional<String> getName() {
-        return name;
+        return Optional.ofNullable(name);
     }
 
     Optional<String> getStructDefName() {
-        return structDefName;
+        return Optional.ofNullable(structDefName);
     }
 
     void validateStructDefNameUsage(Class<?> javaType, ValidationContext context, String contextName) {
         boolean isInlineStruct = InlineStruct.class.isAssignableFrom(javaType);
 
-        if (isInlineStruct && structDefName.isEmpty()) {
+        if (isInlineStruct && structDefName == null) {
             throw new TaskSchemaMismatchError(buildMissingStructDefNameMessage(context, contextName, javaType));
         }
 
-        if (!isInlineStruct && structDefName.isPresent()) {
+        if (!isInlineStruct && structDefName != null) {
             throw new TaskSchemaMismatchError(buildUnexpectedStructDefNameMessage(context, contextName, javaType));
         }
     }
 
-    private static Optional<String> normalize(String value) {
+    private static String normalize(String value) {
         if (value == null || value.isBlank()) {
-            return Optional.empty();
+            return null;
         }
 
-        return Optional.of(value);
+        return value;
     }
 
     private static String buildMissingStructDefNameMessage(
