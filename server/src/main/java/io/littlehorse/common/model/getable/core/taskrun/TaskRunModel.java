@@ -30,9 +30,7 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
-import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
-import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -345,7 +343,8 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 && taskRunReport.getOutput() != null) {
             try {
                 try {
-                    IngressTypeUtils.applyExpectedTypeAndValidate(returnType, taskRunReport.getOutput(), executionContext.metadataManager());
+                    IngressTypeUtils.applyExpectedTypeAndValidate(
+                            returnType, taskRunReport.getOutput(), executionContext.metadataManager());
                 } catch (LHApiException ex) {
                     taskOutputValidationError = ex.getMessage();
                 }

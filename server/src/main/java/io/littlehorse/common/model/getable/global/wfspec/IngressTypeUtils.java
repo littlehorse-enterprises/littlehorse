@@ -3,10 +3,9 @@ package io.littlehorse.common.model.getable.global.wfspec;
 import io.grpc.Status;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
-import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
-import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import java.util.Optional;
 
 /**
@@ -23,9 +22,7 @@ import java.util.Optional;
 public class IngressTypeUtils {
 
     public static void applyExpectedTypeAndValidate(
-            Optional<TypeDefinitionModel> expected,
-            VariableValueModel value,
-            ReadOnlyMetadataManager metadataManager) {
+            Optional<TypeDefinitionModel> expected, VariableValueModel value, ReadOnlyMetadataManager metadataManager) {
         if (expected == null || expected.isEmpty()) return;
 
         TypeDefinitionModel typeDef = expected.get();
@@ -43,7 +40,8 @@ public class IngressTypeUtils {
             String actualType = (value == null) ? "NULL" : String.valueOf(value.getTypeDefinition());
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
-                    String.format("Provided value of type %s is incompatible with expected type %s", actualType, typeDef));
+                    String.format(
+                            "Provided value of type %s is incompatible with expected type %s", actualType, typeDef));
         }
     }
 }

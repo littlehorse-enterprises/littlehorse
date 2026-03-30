@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
-import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
@@ -15,15 +14,12 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.IngressTypeUtils;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
-import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
-import io.littlehorse.sdk.common.proto.TypeDefinition;
-import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -89,12 +85,13 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         if (eed.getReturnType().isPresent()) {
             ReturnTypeModel type = eed.getReturnType().get();
             try {
-                IngressTypeUtils.applyExpectedTypeAndValidate(type.getOutputType(), content, executionContext.metadataManager());
+                IngressTypeUtils.applyExpectedTypeAndValidate(
+                        type.getOutputType(), content, executionContext.metadataManager());
             } catch (io.littlehorse.common.exceptions.LHApiException ex) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
-                        "Invalid type of content for event. Check the return type of ExternalEventDef "
-                                + eed.getName() + ": " + ex.getMessage());
+                        "Invalid type of content for event. Check the return type of ExternalEventDef " + eed.getName()
+                                + ": " + ex.getMessage());
             }
         }
 

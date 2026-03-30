@@ -86,7 +86,8 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
                 Optional<TypeDefinitionModel> out = wed.getContentType().getOutputType();
                 if (out.isPresent()
                         && out.get().getDefinedTypeCase() == TypeDefinition.DefinedTypeCase.INLINE_ARRAY_DEF) {
-                    content.getArray().setElementType(out.get().getInlineArrayDef().getArrayType());
+                    content.getArray()
+                            .setElementType(out.get().getInlineArrayDef().getArrayType());
                 }
             }
 
