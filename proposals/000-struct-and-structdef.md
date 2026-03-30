@@ -71,6 +71,9 @@ message Struct {
 // An Array is a strongly-typed list of values.
 message Array {
   repeated VariableValue items = 1;
+
+  // Set and validated at VariableValue ingress to prevent unnecessary lookups
+  TypeDefinition element_type = 2;
 }
 
 // An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`.
