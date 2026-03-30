@@ -12,6 +12,7 @@ import com.jayway.jsonpath.ParseContext;
 import com.jayway.jsonpath.PathNotFoundException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -135,6 +136,16 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     public TypeDefinitionModel getTypeDefinition() {
         if (this.valueType == ValueCase.STRUCT) {
             return new TypeDefinitionModel(this.struct.getStructDefId());
+        } else if (this.valueType == ValueCase.ARRAY) {
+            if (this.array.getItems().isEmpty()) {
+                return new TypeDefinitionModel(new InlineArrayDefModel(new TypeDefinitionModel()));
+            }
+            
+            return new TypeDefinitionModel(
+                new InlineArrayDefModel(
+                    new TypeDefinitionModel(fromValueCase(this.array.getItems().get(0).getValueType()))
+                )
+            );
         }
 
         VariableType primitiveType = fromValueCase(valueType);
@@ -650,7 +661,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 break;
             case INLINE_ARRAY_DEF:
                 if (otherType.getInlineArrayDef().equals(getTypeDefinition().getInlineArrayDef())) {
-                    return asArr();
+                    return asArray();
                 }
                 break;
             case DEFINEDTYPE_NOT_SET:
