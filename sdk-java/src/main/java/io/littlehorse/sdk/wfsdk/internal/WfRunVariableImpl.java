@@ -6,7 +6,6 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.JsonIndex;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
-import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
@@ -17,7 +16,6 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -60,44 +58,27 @@ class WfRunVariableImpl implements WfRunVariable {
             throw new IllegalArgumentException(
                     "The 'typeOrDefaultVal' argument must be either a VariableType or a default value, but a null value was provided.");
         }
+
         WfRunVariableImpl wfRunVar = new WfRunVariableImpl(name, parent);
-        wfRunVar.initializeAsPrimitive(typeOrDefaultVal);
+
+        if (typeOrDefaultVal instanceof VariableType) {
+            VariableType variableType = (VariableType) typeOrDefaultVal;
+            wfRunVar.typeDef =
+                    TypeDefinition.newBuilder().setPrimitiveType(variableType).build();
+        } else {
+            wfRunVar.setDefaultValue(typeOrDefaultVal);
+            wfRunVar.typeDef = TypeDefinition.newBuilder()
+                    .setPrimitiveType(LHLibUtil.fromValueCase(wfRunVar.defaultValue.getValueCase()))
+                    .build();
+        }
+
         return wfRunVar;
     }
 
     public static WfRunVariableImpl createStructDefVar(String name, LHStructDefType clazz, WorkflowThreadImpl parent) {
         WfRunVariableImpl wfRunVar = new WfRunVariableImpl(name, parent);
-        wfRunVar.initializeFromLHClassType(clazz);
+        wfRunVar.typeDef = clazz.getTypeDefinition();
         return wfRunVar;
-    }
-
-    public static WfRunVariableImpl createStructDefVar(String name, String structDefName, WorkflowThreadImpl parent) {
-        WfRunVariableImpl wfRunVar = new WfRunVariableImpl(name, parent);
-        wfRunVar.initializeFromStructDefString(structDefName);
-        return wfRunVar;
-    }
-
-    private void initializeAsPrimitive(Object typeOrDefaultVal) {
-        if (typeOrDefaultVal instanceof VariableType) {
-            VariableType variableType = (VariableType) typeOrDefaultVal;
-            this.typeDef =
-                    TypeDefinition.newBuilder().setPrimitiveType(variableType).build();
-        } else {
-            setDefaultValue(typeOrDefaultVal);
-            this.typeDef = TypeDefinition.newBuilder()
-                    .setPrimitiveType(LHLibUtil.fromValueCase(defaultValue.getValueCase()))
-                    .build();
-        }
-    }
-
-    private void initializeFromStructDefString(String structDefName) {
-        this.typeDef = TypeDefinition.newBuilder()
-                .setStructDefId(StructDefId.newBuilder().setName(structDefName))
-                .build();
-    }
-
-    private void initializeFromLHClassType(LHClassType lhClassType) {
-        this.typeDef = lhClassType.getTypeDefinition();
     }
 
     @Override
