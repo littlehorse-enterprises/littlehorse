@@ -64,14 +64,16 @@ class WfRunVariableImpl implements WfRunVariable {
 
         if (typeOrDefaultVal instanceof VariableType) {
             VariableType variableType = (VariableType) typeOrDefaultVal;
-            TypeDefinition td = TypeDefinition.newBuilder().setPrimitiveType(variableType).build();
+            TypeDefinition td =
+                    TypeDefinition.newBuilder().setPrimitiveType(variableType).build();
             wfRunVar = new WfRunVariableImpl(name, parent, td);
         } else {
             VariableValue val;
             try {
                 val = LHLibUtil.objToVarVal(typeOrDefaultVal, parent.getParent().getTypeAdapterRegistry());
             } catch (LHSerdeException e) {
-                throw new IllegalArgumentException("Was unable to convert provided default value to LH Variable Type", e);
+                throw new IllegalArgumentException(
+                        "Was unable to convert provided default value to LH Variable Type", e);
             }
             TypeDefinition td = TypeDefinition.newBuilder()
                     .setPrimitiveType(LHLibUtil.fromValueCase(val.getValueCase()))
