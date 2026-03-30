@@ -7,6 +7,7 @@ import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Map;
 import java.util.Optional;
+import lombok.Getter;
 
 final class LHTypeMetadata {
 
@@ -16,29 +17,38 @@ final class LHTypeMetadata {
     }
 
     private final boolean masked;
-    private final boolean lhArray;
-    private final Optional<String> name;
-    private final Optional<String> structDefName;
 
-    private LHTypeMetadata(boolean masked, boolean lhArray, Optional<String> name, Optional<String> structDefName) {
+    @Getter
+    private final boolean isLHArray;
+
+    private final String name;
+    private final String structDefName;
+
+    private LHTypeMetadata(boolean masked, boolean isLHArray, String name, String structDefName) {
         this.masked = masked;
-        this.lhArray = lhArray;
+        this.isLHArray = isLHArray;
         this.name = name;
         this.structDefName = structDefName;
+    }
+
+    private LHTypeMetadata() {
+        this(false, false, null, null);
     }
 
     static LHTypeMetadata from(AnnotatedElement element, Map<String, String> placeholderValues) {
         Map<String, String> placeholders = placeholderValues == null ? Map.of() : placeholderValues;
 
         if (!element.isAnnotationPresent(LHType.class)) {
-            return new LHTypeMetadata(false, false, Optional.empty(), Optional.empty());
+            return new LHTypeMetadata();
         }
 
         LHType typeAnnotation = element.getAnnotation(LHType.class);
 
-        Optional<String> parsedName = normalize(typeAnnotation.name());
-        Optional<String> parsedStructDefName = normalize(typeAnnotation.structDefName())
-                .map(value -> PlaceholderUtil.replacePlaceholders(value, placeholders));
+        String parsedName = normalize(typeAnnotation.name());
+        String parsedStructDefName = normalize(typeAnnotation.structDefName());
+        if (parsedStructDefName != null) {
+            parsedStructDefName = PlaceholderUtil.replacePlaceholders(parsedStructDefName, placeholders);
+        }
 
         return new LHTypeMetadata(typeAnnotation.masked(), typeAnnotation.isLHArray(), parsedName, parsedStructDefName);
     }
@@ -47,32 +57,28 @@ final class LHTypeMetadata {
         return masked;
     }
 
-    boolean isLHArray() {
-        return lhArray;
-    }
-
     Optional<String> getName() {
-        return name;
+        return Optional.ofNullable(name);
     }
 
     Optional<String> getStructDefName() {
-        return structDefName;
+        return Optional.ofNullable(structDefName);
     }
 
     void validateStructDefNameUsage(Class<?> javaType, ValidationContext context, String contextName) {
         boolean isInlineStruct = InlineStruct.class.isAssignableFrom(javaType);
 
-        if (isInlineStruct && structDefName.isEmpty()) {
+        if (isInlineStruct && structDefName == null) {
             throw new TaskSchemaMismatchError(buildMissingStructDefNameMessage(context, contextName, javaType));
         }
 
-        if (!isInlineStruct && structDefName.isPresent()) {
+        if (!isInlineStruct && structDefName != null) {
             throw new TaskSchemaMismatchError(buildUnexpectedStructDefNameMessage(context, contextName, javaType));
         }
     }
 
     void validateLHArrayUsage(Class<?> javaType, ValidationContext context, String contextName) {
-        if (!lhArray) {
+        if (!isLHArray) {
             return;
         }
 
@@ -81,12 +87,12 @@ final class LHTypeMetadata {
         }
     }
 
-    private static Optional<String> normalize(String value) {
+    private static String normalize(String value) {
         if (value == null || value.isBlank()) {
-            return Optional.empty();
+            return null;
         }
 
-        return Optional.of(value);
+        return value;
     }
 
     private static String buildMissingStructDefNameMessage(

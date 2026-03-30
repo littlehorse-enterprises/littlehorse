@@ -51,9 +51,15 @@ public class VariableMapping {
         }
 
         TypeDefinition providedType = requireTypeDefinition(variableDef);
-        TypeDefinition expectedType = toExpectedTypeDefinition(expected, lhTaskParameter);
+        TypeDefinition expectedType = lhTaskParameter.getVariableDef().getTypeDef();
 
         if (!areTypesCompatible(providedType, expectedType)) {
+            throw new TaskSchemaMismatchError(String.format(
+                    "TaskDef provides type <%s>, func expects <%s>",
+                    formatTypeDefinition(providedType), formatTypeDefinition(expectedType)));
+        }
+
+        if (providedType.getDefinedTypeCase() != expectedType.getDefinedTypeCase()) {
             throw new TaskSchemaMismatchError(String.format(
                     "TaskDef provides type <%s>, func expects <%s>",
                     formatTypeDefinition(providedType), formatTypeDefinition(expectedType)));
@@ -95,10 +101,6 @@ public class VariableMapping {
         }
 
         return typeDef;
-    }
-
-    private static TypeDefinition toExpectedTypeDefinition(VariableDef expected, LHTaskParameter lhTaskParameter) {
-        return lhTaskParameter.getVariableClassType().getTypeDefinition();
     }
 
     private static String formatTypeDefinition(TypeDefinition typeDefinition) {

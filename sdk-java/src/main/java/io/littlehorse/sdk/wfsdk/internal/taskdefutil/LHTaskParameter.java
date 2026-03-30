@@ -18,14 +18,10 @@ public class LHTaskParameter {
     private final Parameter parameter;
 
     @Getter
-    private final LHClassType variableClassType;
-
-    @Getter
     private final String variableName;
 
-    private final boolean isMasked;
-
-    private VariableDef variableDef;
+    @Getter
+    private final VariableDef variableDef;
 
     public LHTaskParameter(
             Parameter parameter, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
@@ -37,14 +33,28 @@ public class LHTaskParameter {
         Optional<String> structDefName = metadata.getStructDefName();
 
         this.variableName = metadata.getName().orElseGet(this::getVarNameFromParameterName);
-        this.isMasked = metadata.isMasked();
 
         metadata.validateStructDefNameUsage(
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
         metadata.validateLHArrayUsage(
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
 
-        this.variableClassType = buildVariableClassType(typeAdapterRegistry, structDefName, metadata.isLHArray());
+        LHClassType variableClassType;
+
+        if (metadata.isLHArray()) {
+            variableClassType = new LHArrayType(parameter.getType(), typeAdapterRegistry);
+        } else if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
+            variableClassType = new LHStructDefId(structDefName.get());
+        } else {
+            variableClassType = LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry);
+        }
+
+        this.variableDef = VariableDef.newBuilder()
+                .setName(variableName)
+                .setTypeDef(variableClassType.getTypeDefinition().toBuilder()
+                        .setMasked(metadata.isMasked())
+                        .build())
+                .build();
     }
 
     private String getVarNameFromParameterName() {
@@ -55,36 +65,6 @@ public class LHTaskParameter {
                             + "Using the parameter position as its name, which makes the resulting TaskDef harder to understand.");
         }
         return parameter.getName();
-    }
-
-    private LHClassType buildVariableClassType(
-            LHTypeAdapterRegistry typeAdapterRegistry, Optional<String> structDefName, boolean isLHArray) {
-        if (isLHArray) {
-            return new LHArrayType(parameter.getType(), typeAdapterRegistry);
-        }
-
-        if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
-            return new LHStructDefId(structDefName.get());
-        }
-
-        return LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry);
-    }
-
-    private void buildVariableDef() {
-        variableDef = VariableDef.newBuilder()
-                .setName(variableName)
-                .setTypeDef(variableClassType.getTypeDefinition().toBuilder()
-                        .setMasked(isMasked)
-                        .build())
-                .build();
-    }
-
-    public VariableDef getVariableDef() {
-        if (variableDef == null) {
-            buildVariableDef();
-        }
-
-        return variableDef;
     }
 
     public Class<?> getParameterType() {
