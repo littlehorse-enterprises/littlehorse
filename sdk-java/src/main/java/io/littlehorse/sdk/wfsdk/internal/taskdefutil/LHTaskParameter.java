@@ -1,13 +1,10 @@
 package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
-import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
-import io.littlehorse.sdk.worker.LHType;
-import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import java.lang.reflect.Parameter;
 import java.util.Map;
 import java.util.Optional;
@@ -17,52 +14,34 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LHTaskParameter {
 
-    private Parameter parameter;
-    protected LHTypeAdapterRegistry lhTypeAdapterRegistry;
+    private final Parameter parameter;
 
     @Getter
-    private LHClassType variableClassType;
+    private final LHClassType variableClassType;
 
     @Getter
-    private String variableName;
+    private final String variableName;
 
-    private boolean isMasked;
-    private boolean isLHArray;
-
-    private Optional<String> structDefName;
-    private final Map<String, String> placeholderValues;
+    private final boolean isMasked;
 
     private VariableDef variableDef;
 
     public LHTaskParameter(
             Parameter parameter, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
         this.parameter = parameter;
-        this.lhTypeAdapterRegistry = typeAdapterRegistry;
-        this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
+        Map<String, String> resolvedPlaceholderValues =
+                placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
 
-        variableName = getVarNameFromParameterName();
-        isMasked = false;
-        structDefName = Optional.empty();
+        LHTypeMetadata metadata = LHTypeMetadata.from(parameter, resolvedPlaceholderValues);
+        Optional<String> structDefName = metadata.getStructDefName();
 
-        maybeInitializeFromLHType();
+        this.variableName = metadata.getName().orElseGet(this::getVarNameFromParameterName);
+        this.isMasked = metadata.isMasked();
 
-        if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
-            if (!structDefName.isPresent()) {
-                throw new TaskSchemaMismatchError(
-                        "InlineStruct parameters must declare @LHType(structDefName = \"...\") via the LHType annotation, but parameter "
-                                + parameter.getName() + " of type "
-                                + parameter.getType().getName() + " did not.");
-            } else {
-                this.variableClassType = new LHStructDefId(structDefName.get());
-            }
-        } else {
-            if (structDefName.isPresent()) {
-                throw new TaskSchemaMismatchError(
-                        "@LHType(structDefName = ...) can only be used on InlineStruct parameters and returns.");
-            }
+        metadata.validateStructDefNameUsage(
+                parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
 
-            this.variableClassType = LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry);
-        }
+        this.variableClassType = buildVariableClassType(typeAdapterRegistry, structDefName);
     }
 
     private String getVarNameFromParameterName() {
@@ -75,21 +54,13 @@ public class LHTaskParameter {
         return parameter.getName();
     }
 
-    private void maybeInitializeFromLHType() {
-        if (!parameter.isAnnotationPresent(LHType.class)) return;
-
-        LHType typeAnnotation = parameter.getAnnotation(LHType.class);
-        isMasked = typeAnnotation.masked();
-
-        if (typeAnnotation.name() != null && !typeAnnotation.name().isBlank()) {
-            variableName = typeAnnotation.name();
+    private LHClassType buildVariableClassType(
+            LHTypeAdapterRegistry typeAdapterRegistry, Optional<String> structDefName) {
+        if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
+            return new LHStructDefId(structDefName.get());
         }
 
-        if (typeAnnotation.structDefName() != null
-                && !typeAnnotation.structDefName().isBlank()) {
-            structDefName =
-                    Optional.of(PlaceholderUtil.replacePlaceholders(typeAnnotation.structDefName(), placeholderValues));
-        }
+        return LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry);
     }
 
     private void buildVariableDef() {

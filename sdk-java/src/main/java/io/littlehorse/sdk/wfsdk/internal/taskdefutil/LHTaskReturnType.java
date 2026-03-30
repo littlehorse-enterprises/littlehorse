@@ -1,77 +1,53 @@
 package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
-import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
-import io.littlehorse.sdk.common.proto.StructDefId;
-import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
-import io.littlehorse.sdk.worker.LHType;
-import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
 
 public class LHTaskReturnType {
-    private final Method method;
-    private final Map<String, String> placeholderValues;
 
     @Getter
-    private Optional<LHClassType> returnClassType;
+    private final Optional<LHClassType> returnClassType;
 
     private ReturnType returnType;
 
-    private boolean isMasked;
+    private final boolean isMasked;
 
     public LHTaskReturnType(
             Method method, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
-        this.method = method;
-        this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
+        Map<String, String> resolvedPlaceholderValues =
+                placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
 
-        if (void.class.isAssignableFrom(method.getReturnType())) {
-            returnClassType = Optional.empty();
-        } else {
-            returnClassType = Optional.of(LHClassType.fromJavaClass(method.getReturnType(), typeAdapterRegistry));
-        }
+        LHTypeMetadata metadata = LHTypeMetadata.from(method, resolvedPlaceholderValues);
+        this.isMasked = metadata.isMasked();
 
-        if (method.isAnnotationPresent(LHType.class)) {
-            LHType typeAnnotation = method.getAnnotation(LHType.class);
-            if (typeAnnotation.masked()) {
-                isMasked = true;
-            }
-        }
+        metadata.validateStructDefNameUsage(
+                method.getReturnType(), LHTypeMetadata.ValidationContext.RETURN_TYPE, method.getName());
 
-        if (InlineStruct.class.isAssignableFrom(method.getReturnType())) {
-            if (!method.isAnnotationPresent(LHType.class)
-                    || method.getAnnotation(LHType.class).structDefName().isEmpty()) {
-                throw new TaskSchemaMismatchError(
-                        "Methods that return type InlineStruct must declare @LHType(structDefName = \"...\"). Method "
-                                + method.getName() + " of type "
-                                + method.getReturnType().getName() + " did not.");
-            }
-        }
+        this.returnClassType =
+                buildVariableClassType(method.getReturnType(), typeAdapterRegistry, metadata.getStructDefName());
     }
 
-    private String getInlineStructDefNameFromAnnotation() {
-        LHType typeAnnotation = method.getAnnotation(LHType.class);
-
-        return PlaceholderUtil.replacePlaceholders(typeAnnotation.structDefName(), placeholderValues);
+    private Optional<LHClassType> buildVariableClassType(
+            Class<?> javaType, LHTypeAdapterRegistry typeAdapterRegistry, Optional<String> structDefName) {
+        if (void.class.isAssignableFrom(javaType)) {
+            return Optional.empty();
+        } else if (InlineStruct.class.isAssignableFrom(javaType)) {
+            return Optional.of(new LHStructDefId(structDefName.get()));
+        } else {
+            return Optional.of(LHClassType.fromJavaClass(javaType, typeAdapterRegistry));
+        }
     }
 
     private void buildReturnType() {
         if (!returnClassType.isPresent()) {
             returnType = ReturnType.newBuilder().build();
-            return;
-        }
-
-        if (InlineStruct.class.isAssignableFrom(method.getReturnType())) {
-            String structDefName = getInlineStructDefNameFromAnnotation();
-            returnType = ReturnType.newBuilder()
-                    .setReturnType(TypeDefinition.newBuilder()
-                            .setStructDefId(StructDefId.newBuilder().setName(structDefName)))
-                    .build();
             return;
         }
 

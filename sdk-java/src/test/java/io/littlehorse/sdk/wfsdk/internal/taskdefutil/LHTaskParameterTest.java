@@ -44,6 +44,9 @@ public class LHTaskParameterTest {
         @LHTaskMethod("inline-struct-invalid-task")
         public void inlineStructInvalidTask(InlineStruct customer) {}
         ;
+
+        @LHTaskMethod("non-inline-structdef-invalid-task")
+        public void nonInlineStructDefInvalidTask(@LHType(structDefName = "customer") String customer) {}
     }
 
     @Test
@@ -168,5 +171,18 @@ public class LHTaskParameterTest {
                 })
                 .isInstanceOf(TaskSchemaMismatchError.class)
                 .hasMessageContaining("InlineStruct parameters must declare @LHType(structDefName = \"...\")");
+    }
+
+    @Test
+    void shouldFailWhenStructDefNameIsUsedOnNonInlineStructParameter() {
+        Method taskMethod =
+                TestReflection.getTaskMethodByName(ParameterTestTasks.class, "non-inline-structdef-invalid-task");
+        Parameter parameter = taskMethod.getParameters()[0];
+
+        assertThatThrownBy(() -> {
+                    new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of());
+                })
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining("@LHType(structDefName = ...) can only be used on InlineStruct");
     }
 }

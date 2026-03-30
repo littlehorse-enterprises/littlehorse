@@ -61,6 +61,12 @@ public class LHTaskReturnTypeTest {
         public InlineStruct inlineStructInvalidTask() {
             return null;
         }
+
+        @LHTaskMethod("non-inline-structdef-invalid-task")
+        @LHType(structDefName = "customer")
+        public String nonInlineStructDefInvalidTask() {
+            return "hello world";
+        }
     }
 
     @Test
@@ -185,7 +191,18 @@ public class LHTaskReturnTypeTest {
                     new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
                 })
                 .isInstanceOf(TaskSchemaMismatchError.class)
-                .hasMessageContaining(
-                        "Methods that return type InlineStruct must declare @LHType(structDefName = \"...\").");
+                .hasMessageContaining("Methods that return InlineStruct must declare @LHType(structDefName = \"...\")");
+    }
+
+    @Test
+    void shouldFailWhenStructDefNameIsUsedOnNonInlineStructReturnType() {
+        Method taskMethod =
+                TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "non-inline-structdef-invalid-task");
+
+        assertThatThrownBy(() -> {
+                    new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
+                })
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining("@LHType(structDefName = ...) can only be used on InlineStruct");
     }
 }
