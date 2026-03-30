@@ -13,13 +13,10 @@ import io.littlehorse.sdk.common.proto.VariableType;
  */
 public class LHPrimitiveType extends LHClassType {
 
-    private VariableType primitiveType;
+    private final VariableType primitiveType;
 
     public LHPrimitiveType(Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) {
         super(clazz, typeAdapterRegistry);
-    }
-
-    private void initializePrimitiveType() {
         this.primitiveType = LHLibUtil.javaClassToLHVarType(this.clazz, typeAdapterRegistry);
     }
 
@@ -30,10 +27,6 @@ public class LHPrimitiveType extends LHClassType {
 
     @Override
     public TypeDefinition getTypeDefinition() {
-        if (this.primitiveType == null) {
-            initializePrimitiveType();
-        }
-
         return TypeDefinition.newBuilder().setPrimitiveType(this.primitiveType).build();
     }
 }
