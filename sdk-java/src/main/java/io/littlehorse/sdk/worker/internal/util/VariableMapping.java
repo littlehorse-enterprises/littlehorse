@@ -38,9 +38,6 @@ public class VariableMapping {
 
     private void validateParamAgainstVariableDef(VariableDef variableDef, LHTaskParameter lhTaskParameter)
             throws TaskSchemaMismatchError {
-        Objects.requireNonNull(variableDef, "VariableDef cannot be null");
-        Objects.requireNonNull(lhTaskParameter, "LHTaskParameter cannot be null");
-
         VariableDef expected = lhTaskParameter.getVariableDef();
 
         if (!variableDef.getName().equals(expected.getName())) {
@@ -75,7 +72,9 @@ public class VariableMapping {
                 break;
             case DEFINEDTYPE_NOT_SET:
             default:
-                break;
+                throw new TaskSchemaMismatchError(String.format(
+                        "TaskDef variable <%s> has an unrecognized Type Definition incompatible with this client.",
+                        variableDef.getName()));
         }
     }
 
