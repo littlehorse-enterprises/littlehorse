@@ -1,14 +1,21 @@
 package io.littlehorse.common.model.getable.global.wfspec.variable;
 
+import java.util.Optional;
+
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.validation.InvalidVariableDefException;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.IngressTypeUtils;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.EqualsAndHashCode;
@@ -83,12 +90,12 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
             throws InvalidVariableDefException {
         if (value.isNull()) return;
 
-        if (typeDef.isCompatibleWith(value, metadataManager)) {
+        try {
+            IngressTypeUtils.applyExpectedTypeAndValidate(Optional.of(typeDef), value, metadataManager);
             return;
+        } catch (LHApiException e) {
+            throw new InvalidVariableDefException(this, e.getMessage());
         }
-
-        throw new InvalidVariableDefException(
-                this, "should be " + typeDef + " but is of type " + value.getTypeDefinition());
     }
 
     public VarNameAndValModel assignValue(VariableValueModel value, ReadOnlyMetadataManager metadataManager)

@@ -17,6 +17,7 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyM
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.IngressTypeUtils;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
@@ -29,7 +30,9 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
+import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -341,9 +344,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 && returnType.isPresent()
                 && taskRunReport.getOutput() != null) {
             try {
-                if (!returnType.get().isCompatibleWith(taskRunReport.getOutput(), executionContext.metadataManager())) {
-                    taskOutputValidationError =
-                            String.format("Task output is incompatible with declared return type %s", returnType.get());
+                try {
+                    IngressTypeUtils.applyExpectedTypeAndValidate(returnType, taskRunReport.getOutput(), executionContext.metadataManager());
+                } catch (LHApiException ex) {
+                    taskOutputValidationError = ex.getMessage();
                 }
             } catch (LHApiException ex) {
                 taskOutputValidationError = ex.getMessage();

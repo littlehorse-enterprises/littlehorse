@@ -137,6 +137,12 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         if (this.valueType == ValueCase.STRUCT) {
             return new TypeDefinitionModel(this.struct.getStructDefId());
         } else if (this.valueType == ValueCase.ARRAY) {
+            // If the ArrayModel has an authoritative element type, prefer it. This
+            // is set at ingress (RunWf/Task returns) to avoid per-item checks later.
+            if (this.array.getElementType() != null) {
+                return new TypeDefinitionModel(new InlineArrayDefModel(this.array.getElementType()));
+            }
+
             if (this.array.getItems().isEmpty()) {
                 return new TypeDefinitionModel(new InlineArrayDefModel(new TypeDefinitionModel()));
             }
