@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
 
-final class LHTypeMetadata {
+public final class LHTypeMetadata {
 
     enum ValidationContext {
         PARAMETER,
@@ -35,7 +35,7 @@ final class LHTypeMetadata {
         this(false, false, null, null);
     }
 
-    static LHTypeMetadata from(AnnotatedElement element, Map<String, String> placeholderValues) {
+    public static LHTypeMetadata from(AnnotatedElement element, Map<String, String> placeholderValues) {
         Map<String, String> placeholders = placeholderValues == null ? Map.of() : placeholderValues;
 
         if (!element.isAnnotationPresent(LHType.class)) {
