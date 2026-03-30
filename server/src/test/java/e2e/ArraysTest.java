@@ -34,6 +34,9 @@ public class ArraysTest {
     @LHWorkflow("filled-array-assign-wf")
     private Workflow filledArrayWf;
 
+    @LHWorkflow("array-get-wf")
+    private Workflow arrayGetWf;
+
     private LittleHorseBlockingStub client;
     private WorkflowVerifier workflowVerifier;
 
@@ -108,10 +111,34 @@ public class ArraysTest {
                 .start();
     }
 
+    @Test
+    public void shouldAllowGettingArrayElementByIndex() {
+        workflowVerifier
+                .prepareRun(arrayGetWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "picked", variableValue -> {
+                    Assertions.assertThat(variableValue.getValueCase().toString())
+                            .isEqualTo("INT");
+                    Assertions.assertThat(variableValue.getInt()).isEqualTo(2L);
+                })
+                .start();
+    }
+
     @LHTaskMethod("produce-array")
     @LHType(isLHArray = true)
     public Long[] produceArray() {
         return new Long[] {1L, 2L, 3L};
+    }
+
+    @LHWorkflow("array-get-wf")
+    public Workflow buildArrayGetWf() {
+        return new WorkflowImpl("array-get-wf", thread -> {
+            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+            WfRunVariable picked = thread.declareInt("picked");
+            TaskNodeOutput produced = thread.execute("produce-array");
+            arrVar.assign(produced);
+            picked.assign(arrVar.get(1));
+        });
     }
 
     @LHWorkflow("empty-array-assign-wf")
