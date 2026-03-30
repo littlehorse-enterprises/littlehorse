@@ -17,14 +17,10 @@ public class LHTaskParameter {
     private final Parameter parameter;
 
     @Getter
-    private final LHClassType variableClassType;
-
-    @Getter
     private final String variableName;
 
-    private final boolean isMasked;
-
-    private VariableDef variableDef;
+    @Getter
+    private final VariableDef variableDef;
 
     public LHTaskParameter(
             Parameter parameter, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
@@ -36,12 +32,18 @@ public class LHTaskParameter {
         Optional<String> structDefName = metadata.getStructDefName();
 
         this.variableName = metadata.getName().orElseGet(this::getVarNameFromParameterName);
-        this.isMasked = metadata.isMasked();
 
         metadata.validateStructDefNameUsage(
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
 
-        this.variableClassType = buildVariableClassType(typeAdapterRegistry, structDefName);
+        LHClassType variableClassType = buildVariableClassType(typeAdapterRegistry, structDefName);
+
+        this.variableDef = VariableDef.newBuilder()
+                .setName(variableName)
+                .setTypeDef(variableClassType.getTypeDefinition().toBuilder()
+                        .setMasked(metadata.isMasked())
+                        .build())
+                .build();
     }
 
     private String getVarNameFromParameterName() {
@@ -61,23 +63,6 @@ public class LHTaskParameter {
         }
 
         return LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry);
-    }
-
-    private void buildVariableDef() {
-        variableDef = VariableDef.newBuilder()
-                .setName(variableName)
-                .setTypeDef(variableClassType.getTypeDefinition().toBuilder()
-                        .setMasked(isMasked)
-                        .build())
-                .build();
-    }
-
-    public VariableDef getVariableDef() {
-        if (variableDef == null) {
-            buildVariableDef();
-        }
-
-        return variableDef;
     }
 
     public Class<?> getParameterType() {

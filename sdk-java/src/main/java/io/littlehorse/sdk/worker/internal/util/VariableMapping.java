@@ -47,7 +47,7 @@ public class VariableMapping {
         }
 
         TypeDefinition providedType = requireTypeDefinition(variableDef);
-        TypeDefinition expectedType = toExpectedTypeDefinition(expected, lhTaskParameter);
+        TypeDefinition expectedType = lhTaskParameter.getVariableDef().getTypeDef();
 
         if (providedType.getDefinedTypeCase() != expectedType.getDefinedTypeCase()) {
             throw new TaskSchemaMismatchError(String.format(
@@ -93,10 +93,6 @@ public class VariableMapping {
         }
 
         return typeDef;
-    }
-
-    private static TypeDefinition toExpectedTypeDefinition(VariableDef expected, LHTaskParameter lhTaskParameter) {
-        return lhTaskParameter.getVariableClassType().getTypeDefinition();
     }
 
     private static String formatTypeDefinition(TypeDefinition typeDefinition) {

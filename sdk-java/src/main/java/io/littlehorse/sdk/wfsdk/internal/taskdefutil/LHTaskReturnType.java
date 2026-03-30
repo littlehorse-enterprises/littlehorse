@@ -8,15 +8,10 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Optional;
-import lombok.Getter;
 
 public class LHTaskReturnType {
 
-    @Getter
-    private final Optional<LHClassType> returnClassType;
-
-    private ReturnType returnType;
-
+    private final ReturnType returnType;
     private final boolean isMasked;
 
     public LHTaskReturnType(
@@ -30,13 +25,24 @@ public class LHTaskReturnType {
         metadata.validateStructDefNameUsage(
                 method.getReturnType(), LHTypeMetadata.ValidationContext.RETURN_TYPE, method.getName());
 
-        this.returnClassType =
+        Optional<LHClassType> returnClassType =
                 buildVariableClassType(method.getReturnType(), typeAdapterRegistry, metadata.getStructDefName());
+
+        if (!returnClassType.isPresent()) {
+            this.returnType = ReturnType.newBuilder().build();
+            return;
+        }
+
+        this.returnType = ReturnType.newBuilder()
+                .setReturnType(returnClassType.get().getTypeDefinition().toBuilder()
+                        .setMasked(isMasked)
+                        .build())
+                .build();
     }
 
     private Optional<LHClassType> buildVariableClassType(
             Class<?> javaType, LHTypeAdapterRegistry typeAdapterRegistry, Optional<String> structDefName) {
-        if (void.class.isAssignableFrom(javaType)) {
+        if (void.class.isAssignableFrom(javaType) || Void.class.isAssignableFrom(javaType)) {
             return Optional.empty();
         } else if (InlineStruct.class.isAssignableFrom(javaType)) {
             return Optional.of(new LHStructDefId(structDefName.get()));
@@ -45,24 +51,7 @@ public class LHTaskReturnType {
         }
     }
 
-    private void buildReturnType() {
-        if (!returnClassType.isPresent()) {
-            returnType = ReturnType.newBuilder().build();
-            return;
-        }
-
-        returnType = ReturnType.newBuilder()
-                .setReturnType(returnClassType.get().getTypeDefinition().toBuilder()
-                        .setMasked(isMasked)
-                        .build())
-                .build();
-    }
-
     public ReturnType getReturnType() {
-        if (returnType == null) {
-            buildReturnType();
-        }
-
         return returnType;
     }
 }
