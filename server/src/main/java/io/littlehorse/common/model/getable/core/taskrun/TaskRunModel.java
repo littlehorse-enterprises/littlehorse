@@ -342,14 +342,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 && returnType.isPresent()
                 && taskRunReport.getOutput() != null) {
             try {
-                try {
-                    IngressTypeUtils.applyExpectedTypeAndValidate(
-                            returnType, taskRunReport.getOutput(), executionContext.metadataManager());
-                } catch (LHApiException ex) {
-                    taskOutputValidationError = ex.getMessage();
-                }
+                IngressTypeUtils.applyExpectedTypeAndValidate(
+                        returnType, taskRunReport.getOutput(), executionContext.metadataManager());
             } catch (LHApiException ex) {
-                taskOutputValidationError = ex.getMessage();
+                taskOutputValidationError = "Task output incompatible with declared return type: " + ex.getMessage();
             }
         }
 
