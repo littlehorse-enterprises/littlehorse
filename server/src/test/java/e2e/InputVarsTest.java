@@ -3,6 +3,7 @@ package e2e;
 import com.google.protobuf.Timestamp;
 import e2e.Struct.Car;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -135,7 +136,7 @@ public class InputVarsTest {
 
     @Test
     public void structVarInput() {
-        LHStructDefType lhStructDefType = new LHStructDefType(Car.class);
+        LHStructDefType lhStructDefType = new LHStructDefType(Car.class, LHTypeAdapterRegistry.empty());
 
         client.putStructDef(lhStructDefType.toPutStructDefRequest());
 

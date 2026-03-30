@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import e2e.Struct.UserCredentials;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.util.Arg;
@@ -28,7 +29,7 @@ public class StructMaskedFieldsTest {
 
     @BeforeEach
     public void setup() {
-        LHStructDefType lhStructDefType = new LHStructDefType(UserCredentials.class);
+        LHStructDefType lhStructDefType = new LHStructDefType(UserCredentials.class, LHTypeAdapterRegistry.empty());
         client.putStructDef(lhStructDefType.toPutStructDefRequest());
     }
 

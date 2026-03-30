@@ -3,6 +3,7 @@ package e2e;
 import e2e.Struct.Car;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
@@ -123,7 +124,7 @@ public class ExternalEventTest {
         WfRunId id = WfRunId.newBuilder().setId(LHUtil.generateGuid()).build();
 
         // TODO: Refactor if we add `registeredAs` for Struct Variables
-        LHStructDefType lhStructDefType = new LHStructDefType(Car.class);
+        LHStructDefType lhStructDefType = new LHStructDefType(Car.class, LHTypeAdapterRegistry.empty());
         client.putStructDef(lhStructDefType.toPutStructDefRequest());
 
         Car car = new Car("brand", "model", 1000);
