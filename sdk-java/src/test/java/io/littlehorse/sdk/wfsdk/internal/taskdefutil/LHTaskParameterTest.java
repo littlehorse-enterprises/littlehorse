@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -28,6 +29,9 @@ public class LHTaskParameterTest {
         @LHTaskMethod("test-json-arr")
         public void jsonParamTask(@LHType(name = "param1") String[] param1) {}
 
+        @LHTaskMethod("test-native-arr")
+        public void nativeArrayParamTask(@LHType(name = "param1", isLHArray = true) String[] param1) {}
+
         @LHTaskMethod("test-type-adapted-method")
         public void typeAdaptedParamTask(@LHType(name = "param1") UUID param1) {}
 
@@ -47,6 +51,9 @@ public class LHTaskParameterTest {
 
         @LHTaskMethod("non-inline-structdef-invalid-task")
         public void nonInlineStructDefInvalidTask(@LHType(structDefName = "customer") String customer) {}
+
+        @LHTaskMethod("non-array-lh-array-invalid-task")
+        public void nonArrayLhArrayInvalidTask(@LHType(isLHArray = true) String customer) {}
     }
 
     @Test
@@ -77,6 +84,26 @@ public class LHTaskParameterTest {
                 .setName("param1")
                 .setTypeDef(TypeDefinition.newBuilder()
                         .setPrimitiveType(VariableType.JSON_ARR)
+                        .build())
+                .build();
+
+        assertThat(actualVariableDef).isEqualTo(expectedVariableDef);
+    }
+
+    @Test
+    public void shouldHandleNativeArrayTaskParameter() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ParameterTestTasks.class, "test-native-arr");
+        Parameter parameter = taskMethod.getParameters()[0];
+        LHTaskParameter taskParameter = new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of());
+
+        VariableDef actualVariableDef = taskParameter.getVariableDef();
+        VariableDef expectedVariableDef = VariableDef.newBuilder()
+                .setName("param1")
+                .setTypeDef(TypeDefinition.newBuilder()
+                        .setInlineArrayDef(InlineArrayDef.newBuilder()
+                                .setArrayType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.STR)
+                                        .build()))
                         .build())
                 .build();
 
@@ -184,5 +211,18 @@ public class LHTaskParameterTest {
                 })
                 .isInstanceOf(TaskSchemaMismatchError.class)
                 .hasMessageContaining("@LHType(structDefName = ...) can only be used on InlineStruct");
+    }
+
+    @Test
+    void shouldFailWhenIsLHArrayUsedOnNonArrayParameter() {
+        Method taskMethod =
+                TestReflection.getTaskMethodByName(ParameterTestTasks.class, "non-array-lh-array-invalid-task");
+        Parameter parameter = taskMethod.getParameters()[0];
+
+        assertThatThrownBy(() -> {
+                    new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of());
+                })
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining("@LHType(isLHArray = true) can only be used on array parameters");
     }
 }

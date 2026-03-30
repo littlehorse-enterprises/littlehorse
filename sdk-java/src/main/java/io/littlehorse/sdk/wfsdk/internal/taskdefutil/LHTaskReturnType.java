@@ -3,6 +3,7 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import java.lang.reflect.Method;
@@ -29,15 +30,22 @@ public class LHTaskReturnType {
 
         metadata.validateStructDefNameUsage(
                 method.getReturnType(), LHTypeMetadata.ValidationContext.RETURN_TYPE, method.getName());
+        metadata.validateLHArrayUsage(
+                method.getReturnType(), LHTypeMetadata.ValidationContext.RETURN_TYPE, method.getName());
 
-        this.returnClassType =
-                buildVariableClassType(method.getReturnType(), typeAdapterRegistry, metadata.getStructDefName());
+        this.returnClassType = buildVariableClassType(
+                method.getReturnType(), typeAdapterRegistry, metadata.getStructDefName(), metadata.isLHArray());
     }
 
     private Optional<LHClassType> buildVariableClassType(
-            Class<?> javaType, LHTypeAdapterRegistry typeAdapterRegistry, Optional<String> structDefName) {
+            Class<?> javaType,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Optional<String> structDefName,
+            boolean isLHArray) {
         if (void.class.isAssignableFrom(javaType)) {
             return Optional.empty();
+        } else if (isLHArray) {
+            return Optional.of(new LHArrayType(javaType, typeAdapterRegistry));
         } else if (InlineStruct.class.isAssignableFrom(javaType)) {
             return Optional.of(new LHStructDefId(structDefName.get()));
         } else {

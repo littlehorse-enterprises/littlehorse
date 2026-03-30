@@ -3,6 +3,7 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import java.lang.reflect.Parameter;
@@ -40,8 +41,10 @@ public class LHTaskParameter {
 
         metadata.validateStructDefNameUsage(
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
+        metadata.validateLHArrayUsage(
+                parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
 
-        this.variableClassType = buildVariableClassType(typeAdapterRegistry, structDefName);
+        this.variableClassType = buildVariableClassType(typeAdapterRegistry, structDefName, metadata.isLHArray());
     }
 
     private String getVarNameFromParameterName() {
@@ -55,7 +58,11 @@ public class LHTaskParameter {
     }
 
     private LHClassType buildVariableClassType(
-            LHTypeAdapterRegistry typeAdapterRegistry, Optional<String> structDefName) {
+            LHTypeAdapterRegistry typeAdapterRegistry, Optional<String> structDefName, boolean isLHArray) {
+        if (isLHArray) {
+            return new LHArrayType(parameter.getType(), typeAdapterRegistry);
+        }
+
         if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
             return new LHStructDefId(structDefName.get());
         }

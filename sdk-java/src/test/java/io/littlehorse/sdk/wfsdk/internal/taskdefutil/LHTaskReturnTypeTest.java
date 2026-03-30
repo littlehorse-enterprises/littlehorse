@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.StructDefId;
@@ -31,6 +32,12 @@ public class LHTaskReturnTypeTest {
 
         @LHTaskMethod("test-json-arr")
         public String[] testJsonArrReturnType() {
+            return new String[] {"hello", "world"};
+        }
+
+        @LHTaskMethod("test-native-arr")
+        @LHType(isLHArray = true)
+        public String[] testNativeArrReturnType() {
             return new String[] {"hello", "world"};
         }
 
@@ -65,6 +72,12 @@ public class LHTaskReturnTypeTest {
         @LHTaskMethod("non-inline-structdef-invalid-task")
         @LHType(structDefName = "customer")
         public String nonInlineStructDefInvalidTask() {
+            return "hello world";
+        }
+
+        @LHTaskMethod("non-array-lh-array-invalid-task")
+        @LHType(isLHArray = true)
+        public String nonArrayLhArrayInvalidTask() {
             return "hello world";
         }
     }
@@ -104,6 +117,24 @@ public class LHTaskReturnTypeTest {
         ReturnType expectedReturnType = ReturnType.newBuilder()
                 .setReturnType(TypeDefinition.newBuilder()
                         .setPrimitiveType(VariableType.JSON_ARR)
+                        .build())
+                .build();
+
+        assertThat(actualReturnType).isEqualTo(expectedReturnType);
+    }
+
+    @Test
+    public void shouldHandleNativeArrayTaskReturnType() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "test-native-arr");
+        LHTaskReturnType taskReturnType = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
+
+        ReturnType actualReturnType = taskReturnType.getReturnType();
+        ReturnType expectedReturnType = ReturnType.newBuilder()
+                .setReturnType(TypeDefinition.newBuilder()
+                        .setInlineArrayDef(InlineArrayDef.newBuilder()
+                                .setArrayType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.STR)
+                                        .build()))
                         .build())
                 .build();
 
@@ -204,5 +235,17 @@ public class LHTaskReturnTypeTest {
                 })
                 .isInstanceOf(TaskSchemaMismatchError.class)
                 .hasMessageContaining("@LHType(structDefName = ...) can only be used on InlineStruct");
+    }
+
+    @Test
+    void shouldFailWhenIsLHArrayUsedOnNonArrayReturnType() {
+        Method taskMethod =
+                TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "non-array-lh-array-invalid-task");
+
+        assertThatThrownBy(() -> {
+                    new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
+                })
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining("@LHType(isLHArray = true) can only be used on array return types");
     }
 }
