@@ -105,18 +105,6 @@ public class WorkflowImpl extends Workflow {
         requiredWorkflowEventDefNames.add(name);
     }
 
-    void addTaskDefBuilder(LHTaskSignature lhTaskSignature) {
-        LHTaskSignature previous = taskSignatures.get(lhTaskSignature.getTaskDefName());
-        if (previous != null) {
-            if (!previous.equals(lhTaskSignature)) {
-                throw new RuntimeException(
-                        "Tried to register two DIFFERENT tasks named " + lhTaskSignature.getTaskDefName());
-            }
-        } else {
-            taskSignatures.put(lhTaskSignature.getTaskDefName(), lhTaskSignature);
-        }
-    }
-
     @Override
     public Set<String> getRequiredTaskDefNames() {
         if (compiledWorkflow == null) {

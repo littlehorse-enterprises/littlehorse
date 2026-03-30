@@ -113,13 +113,4 @@ public class LHTaskSignature {
 
         return out.build();
     }
-
-    @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof LHTaskSignature)) return false;
-
-        // TODO: Improve TaskSignature equals!
-
-        return true;
-    }
 }
