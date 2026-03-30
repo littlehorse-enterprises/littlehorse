@@ -14,6 +14,7 @@ import java.util.Objects;
  */
 public abstract class LHClassType {
     protected Class<?> clazz;
+    protected LHTypeAdapterRegistry typeAdapterRegistry;
 
     /**
      * @deprecated Use {@link #fromJavaClass(Class, LHTypeAdapterRegistry)} instead, which allows for proper handling of type adapters.
@@ -35,6 +36,9 @@ public abstract class LHClassType {
     public static LHClassType fromJavaClass(Class<?> classType, LHTypeAdapterRegistry typeAdapterRegistry) {
         if (classType == null) {
             throw new IllegalArgumentException("Class type should not be null");
+        } else if (void.class.equals(classType)) {
+            throw new IllegalArgumentException(
+                    "Void type is not supported as a variable type in LittleHorse. Void cases should be handled before creating LHClassTypes.");
         } else if (LHLibUtil.isJavaClassLHPrimitive(classType)) {
             return new LHPrimitiveType(classType, typeAdapterRegistry);
         } else if (classType.isAnnotationPresent(LHStructDef.class)) {
@@ -53,18 +57,22 @@ public abstract class LHClassType {
 
     public abstract TypeDefinition getTypeDefinition();
 
-    protected LHClassType(Class<?> clazz) {
+    protected LHClassType() {}
+
+    protected LHClassType(Class<?> clazz, LHTypeAdapterRegistry lhTypeAdapterRegistry) {
         this.clazz = Objects.requireNonNull(clazz);
+        this.typeAdapterRegistry = Objects.requireNonNull(lhTypeAdapterRegistry);
     }
 
     public Class<?> getClassType() {
         return this.clazz;
     }
 
-    public LHClassType getCoreComponentType() {
-        return getCoreComponentType(LHTypeAdapterRegistry.empty());
-    }
-
+    /**
+     * Within a series of nested Arrays, grabs the root component type. For example, if the class is String[][][], this method will return the LHClassType for String.
+     * @param typeAdapterRegistry the LHTypeAdapterRegistry to use for handling type adapters when determining the core component type
+     * @return the LHClassType representing the core component type of the array
+     */
     public LHClassType getCoreComponentType(LHTypeAdapterRegistry typeAdapterRegistry) {
         Class<?> coreType = clazz;
 
@@ -73,6 +81,15 @@ public abstract class LHClassType {
         }
 
         return LHClassType.fromJavaClass(coreType, typeAdapterRegistry);
+    }
+
+    public LHClassType getComponentType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        if (!clazz.isArray()) {
+            throw new IllegalStateException("getComponentType can only be called on array types, but class "
+                    + clazz.getName() + " is not an array.");
+        }
+        Class<?> componentType = clazz.getComponentType();
+        return LHClassType.fromJavaClass(componentType, typeAdapterRegistry);
     }
 
     @Override

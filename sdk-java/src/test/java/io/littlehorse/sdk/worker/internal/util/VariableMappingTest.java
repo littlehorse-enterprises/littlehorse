@@ -15,9 +15,25 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.testutils.TestReflection;
+import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskParameter;
+import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.LHType;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 public class VariableMappingTest {
+
+    class Dummy {
+        @LHTaskMethod("inline-param")
+        public void inlineParam(@LHType(name = "customer", structDefName = "customer") InlineStruct customer) {}
+
+        @LHTaskMethod("inline-param-2")
+        public void inlineParam2(
+                @LHType(name = "customer", structDefName = "different-customer") InlineStruct customer) {}
+    }
 
     @Test
     void shouldAssignInlineStructInput() throws Exception {
@@ -28,8 +44,11 @@ public class VariableMappingTest {
                                 .setStructDefId(StructDefId.newBuilder().setName("customer"))))
                 .build();
 
-        VariableMapping mapping = new VariableMapping(
-                taskDef, 0, InlineStruct.class, "customer", "customer", LHTypeAdapterRegistry.empty());
+        Method method = TestReflection.getTaskMethodByName(Dummy.class, "inline-param");
+        Parameter param = TestReflection.getParameter(method, 0);
+
+        LHTaskParameter lhParam = new LHTaskParameter(param, LHTypeAdapterRegistry.empty(), Map.of());
+        VariableMapping mapping = new VariableMapping(taskDef.getInputVars(0), lhParam, LHTypeAdapterRegistry.empty());
 
         InlineStruct inlineStruct = InlineStruct.newBuilder()
                 .putFields(
@@ -48,7 +67,7 @@ public class VariableMappingTest {
                                         .setStruct(inlineStruct))))
                 .build();
 
-        Object assigned = mapping.assign(scheduledTask, null);
+        Object assigned = mapping.assign(scheduledTask);
         assertThat(assigned).isEqualTo(inlineStruct);
     }
 
@@ -61,13 +80,12 @@ public class VariableMappingTest {
                                 .setStructDefId(StructDefId.newBuilder().setName("customer"))))
                 .build();
 
-        assertThatThrownBy(() -> new VariableMapping(
-                        taskDef,
-                        0,
-                        InlineStruct.class,
-                        "customer",
-                        "different-customer",
-                        LHTypeAdapterRegistry.empty()))
+        Method method = TestReflection.getTaskMethodByName(Dummy.class, "inline-param-2");
+        Parameter param = TestReflection.getParameter(method, 0);
+
+        LHTaskParameter lhParam = new LHTaskParameter(param, LHTypeAdapterRegistry.empty(), Map.of());
+
+        assertThatThrownBy(() -> new VariableMapping(taskDef.getInputVars(0), lhParam, LHTypeAdapterRegistry.empty()))
                 .isInstanceOf(TaskSchemaMismatchError.class)
                 .hasMessageContaining("different-customer");
     }

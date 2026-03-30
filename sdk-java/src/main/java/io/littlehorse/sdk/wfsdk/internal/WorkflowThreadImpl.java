@@ -541,12 +541,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return addStructVariable(name, new LHStructDefType(clazz, parent.getTypeAdapterRegistry()));
     }
 
-    // TODO: Complete Arrays implementation
-    // @Override
-    // public WfRunVariable declareArray(String name, Class<?> elementType) {
-    //     return addArrayVariable(name, new LHArrayDefType(elementType));
-    // }
-
     @Override
     public WorkflowIfStatement doIf(LHExpression condition, IfElseBody ifBody) {
         LHExpressionImpl cond = (LHExpressionImpl) condition;
