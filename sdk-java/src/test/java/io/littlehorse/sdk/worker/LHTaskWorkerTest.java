@@ -129,6 +129,7 @@ public class LHTaskWorkerTest {
         task.registerTaskDef();
 
         PutTaskDefRequest request = capturedRequest.get();
+        assertThat(request.getName()).isEqualTo("inline-struct-acme");
         assertThat(request.getInputVars(0).getTypeDef().getStructDefId().getName())
                 .isEqualTo("customer-request");
         assertThat(request.getReturnType().getReturnType().getStructDefId().getName())

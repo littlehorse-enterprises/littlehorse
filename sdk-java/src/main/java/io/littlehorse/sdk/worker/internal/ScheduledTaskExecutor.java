@@ -145,8 +145,19 @@ public class ScheduledTaskExecutor {
             throws Exception {
         List<Object> inputs = new ArrayList<>();
         for (VariableMapping mapping : mappings) {
-            inputs.add(mapping.assign(scheduledTask, context));
+            inputs.add(mapping.assign(scheduledTask));
         }
+
+        int methodParamCount = taskMethod.getParameterCount();
+        if (methodParamCount == inputs.size() + 1
+                && WorkerContext.class.equals(taskMethod.getParameterTypes()[methodParamCount - 1])) {
+            inputs.add(context);
+        } else if (methodParamCount != inputs.size()) {
+            throw new IllegalStateException(String.format(
+                    "Task method parameter mismatch. Method expects %d params but resolved %d mapped inputs.",
+                    methodParamCount, inputs.size()));
+        }
+
         return taskMethod.invoke(executable, inputs.toArray());
     }
 

@@ -6,6 +6,7 @@ import e2e.Struct.Person;
 import e2e.Struct.PersonPojo;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.util.Arg;
@@ -35,7 +36,7 @@ public class LHPathTest {
 
     @Test
     public void shouldPerformGetOnStruct() {
-        client.putStructDef(new LHStructDefType(Person.class).toPutStructDefRequest());
+        client.putStructDef(new LHStructDefType(Person.class, LHTypeAdapterRegistry.empty()).toPutStructDefRequest());
 
         Person person = new Person(
                 "Obi-Wan Kenobi",
@@ -55,7 +56,7 @@ public class LHPathTest {
 
     @Test
     void shouldFailGetOnStructWithInvalidField() {
-        client.putStructDef(new LHStructDefType(Person.class).toPutStructDefRequest());
+        client.putStructDef(new LHStructDefType(Person.class, LHTypeAdapterRegistry.empty()).toPutStructDefRequest());
 
         Workflow invalid = Workflow.newWorkflow("fail-get-on-struct", wf -> {
             WfRunVariable person = wf.declareStruct("person", Person.class);
