@@ -36,7 +36,7 @@ public abstract class LHClassType {
     public static LHClassType fromJavaClass(Class<?> classType, LHTypeAdapterRegistry typeAdapterRegistry) {
         if (classType == null) {
             throw new IllegalArgumentException("Class type should not be null");
-        } else if (void.class.equals(classType)) {
+        } else if (void.class.equals(classType) || Void.class.equals(classType)) {
             throw new IllegalArgumentException(
                     "Void type is not supported as a variable type in LittleHorse. Void cases should be handled before creating LHClassTypes.");
         } else if (LHLibUtil.isJavaClassLHPrimitive(classType)) {

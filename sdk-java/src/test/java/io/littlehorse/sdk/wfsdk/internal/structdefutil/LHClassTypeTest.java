@@ -18,8 +18,15 @@ public class LHClassTypeTest {
     }
 
     @Test
-    public void shouldThrowExceptionForVoidClass() {
+    public void shouldThrowExceptionForVoidPrimitiveClass() {
         assertThatThrownBy(() -> LHClassType.fromJavaClass(void.class, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Void type is not supported");
+    }
+
+    @Test
+    public void shouldThrowExceptionForVoidWrapperClass() {
+        assertThatThrownBy(() -> LHClassType.fromJavaClass(Void.class, LHTypeAdapterRegistry.empty()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Void type is not supported");
     }
