@@ -51,6 +51,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     private WfRunIdModel wfRunId;
     private StructModel struct;
     private Timestamp utcTimestampVal;
+    private ArrayModel array;
 
     private ExecutionContext context;
 
@@ -121,6 +122,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 break;
             case STRUCT:
                 struct = StructModel.fromProto(p.getStruct(), StructModel.class, context);
+                break;
+            case ARRAY:
+                array = ArrayModel.fromProto(p.getArray(), ArrayModel.class, context);
                 break;
             case VALUE_NOT_SET:
                 // it's a null variable! Nothing to do.
@@ -248,6 +252,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     out.setUtcTimestamp(utcTimestampVal);
                 }
                 break;
+            case ARRAY:
+                if (array != null) {
+                    out.setArray(array.toProto());
+                }
+                break;
             case VALUE_NOT_SET:
                 // nothing to do
                 break;
@@ -343,6 +352,13 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                             .get(currentSelector.getKey())
                             .getValue();
 
+                    selectors.remove(0);
+                    break;
+                case ARRAY:
+                    if (currentSelector.getIndex() < 0) {
+                        throw new LHVarSubError(null, "Array index cannot be negative: " + currentSelector.getIndex());
+                    }
+                    val = val.getArray().getItems().get(currentSelector.getIndex());
                     selectors.remove(0);
                     break;
                 case JSON_ARR:
@@ -632,6 +648,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     return asStruct();
                 }
                 break;
+            case INLINE_ARRAY_DEF:
+                if (otherType.getInlineArrayDef().equals(getTypeDefinition().getInlineArrayDef())) {
+                    return asArr();
+                }
+                break;
             case DEFINEDTYPE_NOT_SET:
             default:
         }
@@ -710,6 +731,14 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return new VariableValueModel((WfRunIdModel) WfRunIdModel.fromString(strVal, WfRunIdModel.class));
         }
         throw new LHVarSubError(null, "Cant convert " + getTypeDefinition() + " to WF_RUN_ID");
+    }
+
+    public VariableValueModel asArray() throws LHVarSubError {
+        if (getTypeDefinition().getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF) {
+            return new VariableValueModel(array);
+        } else {
+            throw new LHVarSubError(null, "Cant convert " + this.getTypeDefinition() + " to INLINE_ARRAY");
+        }
     }
 
     public VariableValueModel asBool() throws LHVarSubError {
@@ -823,6 +852,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         this.struct = struct;
     }
 
+    public VariableValueModel(ArrayModel array) {
+        valueType = ValueCase.ARRAY;
+        this.array = array;
+    }
+
     /*
      * Returns a pair of String, String that can be used to find the Variable via
      * a Tag Search. If not supported, returns null.
@@ -866,42 +900,20 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof VariableValueModel)) return false;
+        if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof VariableValueModel)) {
+            return false;
+        }
+
         VariableValueModel o = (VariableValueModel) other;
-
-        if (o.getTypeDefinition().getPrimitiveType() != getTypeDefinition().getPrimitiveType()) return false;
-
-        // TODO: Support json path.
-        return (o.getVal().equals(getVal()));
+        return this.toProto().build().equals(o.toProto().build());
     }
 
-    public boolean contains(VariableValueModel other) throws LHVarSubError {
-        // Can only do for Str, Arr, and Obj
-
-        // TODO: Decide how to support StructDefs
-        if (this.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
-            throw new LHVarSubError(null, "Can't perform contains on " + this.getTypeDefinition());
-        }
-
-        if (this.getTypeDefinition().getPrimitiveType() == VariableType.STR) {
-            String rStr = other.asStr().getStrVal();
-
-            return this.asStr().getStrVal().contains(rStr);
-        } else if (this.getTypeDefinition().getPrimitiveType() == VariableType.JSON_ARR) {
-            Object rObj = other.getVal();
-            List<Object> lhs = this.asArr().getJsonArrVal();
-
-            for (Object o : lhs) {
-                if (LHUtil.deepEquals(o, rObj)) {
-                    return true;
-                }
-            }
-            return false;
-        } else if (this.getTypeDefinition().getPrimitiveType() == VariableType.JSON_OBJ) {
-            return this.asObj().getJsonObjVal().containsKey(other.asStr().getStrVal());
-        } else {
-            throw new LHVarSubError(
-                    null, "Can't do CONTAINS on " + this.getTypeDefinition().getPrimitiveType());
-        }
+    @Override
+    public int hashCode() {
+        return this.toProto().build().hashCode();
     }
 }
