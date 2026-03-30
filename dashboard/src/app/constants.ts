@@ -15,6 +15,7 @@ export const VARIABLE_TYPES = {
   wfRunId: 'WfRunId',
   struct: 'Struct',
   utcTimestamp: 'UTC Timestamp',
+  array: 'Array',
 } as const
 
 export const VARIABLE_TYPE_ENTRIES = Object.entries(VARIABLE_TYPES)
