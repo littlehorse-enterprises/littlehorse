@@ -15,6 +15,10 @@ public class LHArrayType extends LHClassType {
     public LHArrayType(Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) {
         super(clazz, typeAdapterRegistry);
 
+        if (!clazz.isArray()) {
+            throw new IllegalArgumentException("LHArrayType can only be created from array classes. Provided class: " + clazz.getName() + ". Please add brackets to your class to declare an array type, e.g. MyType[] instead of MyType.");
+        }
+
         this.componentType = LHClassType.fromJavaClass(clazz.getComponentType(), typeAdapterRegistry);
     }
 

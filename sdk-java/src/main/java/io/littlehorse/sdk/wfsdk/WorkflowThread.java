@@ -198,6 +198,14 @@ public interface WorkflowThread {
     WfRunVariable declareStruct(String name, Class<?> clazz);
 
     /**
+     * Creates an Array variable based on your elementType parameter.
+     * @param name is the name of the variable.
+     * @param elementType is the class type of the elements in the array.
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareArray(String name, Class<?> elementType);
+
+    /**
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.
      *
      * @param name the name of the variable.
