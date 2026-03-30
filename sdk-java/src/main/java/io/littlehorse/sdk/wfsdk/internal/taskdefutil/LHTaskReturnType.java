@@ -6,7 +6,6 @@ import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
@@ -39,9 +38,6 @@ public class LHTaskReturnType {
 
         if (method.isAnnotationPresent(LHType.class)) {
             LHType typeAnnotation = method.getAnnotation(LHType.class);
-            if (typeAnnotation.isLHArray()) {
-                returnClassType = Optional.of(new LHArrayType(method.getReturnType(), typeAdapterRegistry));
-            }
             if (typeAnnotation.masked()) {
                 isMasked = true;
             }

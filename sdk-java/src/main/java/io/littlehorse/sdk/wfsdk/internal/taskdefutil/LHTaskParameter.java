@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.VariableDef;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import io.littlehorse.sdk.worker.LHType;
@@ -62,11 +61,7 @@ public class LHTaskParameter {
                         "@LHType(structDefName = ...) can only be used on InlineStruct parameters and returns.");
             }
 
-            if (isLHArray) {
-                this.variableClassType = new LHArrayType(parameter.getType(), typeAdapterRegistry);
-            } else {
-                this.variableClassType = LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry);
-            }
+            this.variableClassType = LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry);
         }
     }
 
@@ -95,8 +90,6 @@ public class LHTaskParameter {
             structDefName =
                     Optional.of(PlaceholderUtil.replacePlaceholders(typeAnnotation.structDefName(), placeholderValues));
         }
-
-        isLHArray = typeAnnotation.isLHArray();
     }
 
     private void buildVariableDef() {
