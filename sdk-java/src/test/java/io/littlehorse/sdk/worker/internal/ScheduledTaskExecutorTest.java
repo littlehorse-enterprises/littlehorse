@@ -29,7 +29,8 @@ public class ScheduledTaskExecutorTest {
         serializeResult.setAccessible(true);
 
         Method method = ReturnTasks.class.getMethod("nativeArrayReturn");
-        VariableValue out = (VariableValue) serializeResult.invoke(executor, new ReturnTasks().nativeArrayReturn(), method);
+        VariableValue out =
+                (VariableValue) serializeResult.invoke(executor, new ReturnTasks().nativeArrayReturn(), method);
 
         assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
         assertThat(out.getArray().getItemsCount()).isEqualTo(3);
@@ -44,7 +45,8 @@ public class ScheduledTaskExecutorTest {
         serializeResult.setAccessible(true);
 
         Method method = ReturnTasks.class.getMethod("jsonArrayReturn");
-        VariableValue out = (VariableValue) serializeResult.invoke(executor, new ReturnTasks().jsonArrayReturn(), method);
+        VariableValue out =
+                (VariableValue) serializeResult.invoke(executor, new ReturnTasks().jsonArrayReturn(), method);
 
         assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.JSON_ARR);
     }

@@ -448,7 +448,8 @@ public class LHLibUtil {
     }
 
     private static Object deserializeNativeArrayToObject(
-            VariableValue val, Class<?> targetClazz, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
+            VariableValue val, Class<?> targetClazz, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
         if (!targetClazz.isArray()) {
             throw new LHSerdeException(
                     "Failed deserializing native LittleHorse ARRAY: target class is not a Java array type.");
@@ -657,7 +658,8 @@ public class LHLibUtil {
         }
 
         if (!o.getClass().isArray()) {
-            throw new LHSerdeException("Native array serialization requires the value returned by the task to be a Java array.");
+            throw new LHSerdeException(
+                    "Native array serialization requires the value returned by the task to be a Java array.");
         }
 
         Class<?> componentType = declaredArrayClass.getComponentType();
@@ -1029,7 +1031,8 @@ public class LHLibUtil {
                     return false;
                 }
                 for (int i = 0; i < a.getArray().getItemsCount(); i++) {
-                    if (!areVariableValuesEqual(a.getArray().getItems(i), b.getArray().getItems(i))) {
+                    if (!areVariableValuesEqual(
+                            a.getArray().getItems(i), b.getArray().getItems(i))) {
                         return false;
                     }
                 }

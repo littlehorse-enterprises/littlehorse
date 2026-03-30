@@ -329,8 +329,8 @@ public class LHLibUtilTest {
     void shouldFailNativeArraySerializationForNonArrayDeclaredType() {
         Long[] numbers = new Long[] {1L};
 
-        Assertions.assertThatThrownBy(() ->
-                        LHLibUtil.objToVarValAsNativeArray(numbers, Long.class, LHTypeAdapterRegistry.empty()))
+        Assertions.assertThatThrownBy(
+                        () -> LHLibUtil.objToVarValAsNativeArray(numbers, Long.class, LHTypeAdapterRegistry.empty()))
                 .isInstanceOf(io.littlehorse.sdk.common.exception.LHSerdeException.class)
                 .hasMessageContaining("must be a Java array type");
     }

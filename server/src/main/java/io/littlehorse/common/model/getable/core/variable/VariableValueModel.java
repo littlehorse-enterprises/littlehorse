@@ -140,12 +140,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             if (this.array.getItems().isEmpty()) {
                 return new TypeDefinitionModel(new InlineArrayDefModel(new TypeDefinitionModel()));
             }
-            
-            return new TypeDefinitionModel(
-                new InlineArrayDefModel(
-                    new TypeDefinitionModel(fromValueCase(this.array.getItems().get(0).getValueType()))
-                )
-            );
+
+            return new TypeDefinitionModel(new InlineArrayDefModel(new TypeDefinitionModel(
+                    fromValueCase(this.array.getItems().get(0).getValueType()))));
         }
 
         VariableType primitiveType = fromValueCase(valueType);
