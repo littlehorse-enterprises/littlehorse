@@ -155,7 +155,7 @@ public class LHTaskWorker implements Closeable {
      * recommended for production (in production you should manually use the PutTaskDef).
      */
     public void registerTaskDef() {
-        // validateStructDefs(StructDefCompatibilityType.NO_SCHEMA_UPDATES);
+        validateStructDefs(StructDefCompatibilityType.NO_SCHEMA_UPDATES);
 
         TaskDef result = grpcClient.putTaskDef(taskSignature.toPutTaskDefRequest());
         log.info("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
