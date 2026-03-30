@@ -6,8 +6,14 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.PutStructDefRequest;
+import io.littlehorse.sdk.common.proto.StructDef;
+import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest;
+import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskParameter;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.worker.internal.LHLivenessController;
@@ -149,7 +155,7 @@ public class LHTaskWorker implements Closeable {
      * recommended for production (in production you should manually use the PutTaskDef).
      */
     public void registerTaskDef() {
-        // validateStructDefs(StructDefCompatibilityType.NO_SCHEMA_UPDATES);
+        validateStructDefs(StructDefCompatibilityType.NO_SCHEMA_UPDATES);
 
         TaskDef result = grpcClient.putTaskDef(taskSignature.toPutTaskDefRequest());
         log.info("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
@@ -161,13 +167,13 @@ public class LHTaskWorker implements Closeable {
      * @param compatibilityType The server will validate the given StructDef schema against
      *                          the existing StructDef schema based on this compatibility type.
      */
-    // public void validateStructDefs(StructDefCompatibilityType compatibilityType) {
-    //     if (tdb.getStructDefDependencies().isEmpty()) return;
+    public void validateStructDefs(StructDefCompatibilityType compatibilityType) {
+        if (taskSignature.getStructDefDependencies().isEmpty()) return;
 
-    //     for (LHStructDefType lhStructDefType : tdb.getStructDefDependencies()) {
-    //         validateStructDef(lhStructDefType, compatibilityType);
-    //     }
-    // }
+        for (LHStructDefType lhStructDefType : taskSignature.getStructDefDependencies()) {
+            validateStructDef(lhStructDefType, compatibilityType);
+        }
+    }
 
     /**
      * Validates whether or not you can evolve your StructDef with the selected compatibility type
@@ -176,41 +182,41 @@ public class LHTaskWorker implements Closeable {
      * @param compatibilityType The server will validate the given StructDef schemas against
      *                          their existing StructDef schemas based on this compatibility type.
      */
-    // public void validateStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
-    //     LHStructDefType lhStructDefType = new LHStructDefType(structClass, config.getTypeAdapterRegistry());
+    public void validateStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass, config.getTypeAdapterRegistry());
 
-    //     validateStructDef(lhStructDefType, compatibilityType);
-    // }
+        validateStructDef(lhStructDefType, compatibilityType);
+    }
 
-    // private void validateStructDef(LHStructDefType lhStructDefType, StructDefCompatibilityType compatibilityType) {
-    //     StructDef structDef = lhStructDefType.toStructDef();
+    private void validateStructDef(LHStructDefType lhStructDefType, StructDefCompatibilityType compatibilityType) {
+        StructDef structDef = lhStructDefType.toStructDef();
 
-    //     ValidateStructDefEvolutionRequest.Builder validateStructDefRequest =
-    //             ValidateStructDefEvolutionRequest.newBuilder();
-    //     validateStructDefRequest.setStructDefId(structDef.getId());
-    //     validateStructDefRequest.setStructDef(structDef.getStructDef());
-    //     validateStructDefRequest.setCompatibilityType(compatibilityType);
+        ValidateStructDefEvolutionRequest.Builder validateStructDefRequest =
+                ValidateStructDefEvolutionRequest.newBuilder();
+        validateStructDefRequest.setStructDefId(structDef.getId());
+        validateStructDefRequest.setStructDef(structDef.getStructDef());
+        validateStructDefRequest.setCompatibilityType(compatibilityType);
 
-    //     ValidateStructDefEvolutionResponse resp =
-    //             grpcClient.validateStructDefEvolution(validateStructDefRequest.build());
+        ValidateStructDefEvolutionResponse resp =
+                grpcClient.validateStructDefEvolution(validateStructDefRequest.build());
 
-    //     if (!resp.getIsValid()) {
-    //         throw new IllegalArgumentException(String.format(
-    //                 "Unable to evolve StructDef %s using StructDefCompatibilityType %s",
-    //                 structDef.getId().getName(), compatibilityType));
-    //     }
-    // }
+        if (!resp.getIsValid()) {
+            throw new IllegalArgumentException(String.format(
+                    "Unable to evolve StructDef %s using StructDefCompatibilityType %s",
+                    structDef.getId().getName(), compatibilityType));
+        }
+    }
 
-    // private void registerStructDef(LHStructDefType lhStructDefType, StructDefCompatibilityType compatibilityType) {
-    //     StructDef structDef = lhStructDefType.toStructDef();
-    //     PutStructDefRequest.Builder putStructDefRequest = PutStructDefRequest.newBuilder();
-    //     putStructDefRequest.setName(structDef.getId().getName());
-    //     putStructDefRequest.setDescription(structDef.getDescription());
-    //     putStructDefRequest.setStructDef(structDef.getStructDef());
-    //     putStructDefRequest.setAllowedUpdates(compatibilityType);
+    private void registerStructDef(LHStructDefType lhStructDefType, StructDefCompatibilityType compatibilityType) {
+        StructDef structDef = lhStructDefType.toStructDef();
+        PutStructDefRequest.Builder putStructDefRequest = PutStructDefRequest.newBuilder();
+        putStructDefRequest.setName(structDef.getId().getName());
+        putStructDefRequest.setDescription(structDef.getDescription());
+        putStructDefRequest.setStructDef(structDef.getStructDef());
+        putStructDefRequest.setAllowedUpdates(compatibilityType);
 
-    //     grpcClient.putStructDef(putStructDefRequest.build());
-    // }
+        grpcClient.putStructDef(putStructDefRequest.build());
+    }
 
     /**
      * Registers a single StructDef based on the StructDef class
@@ -222,11 +228,11 @@ public class LHTaskWorker implements Closeable {
      * @param compatibilityType The server will try to register the given StructDef
      *                          according to this compatibility type.
      */
-    // public void registerStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
-    //     LHStructDefType lhStructDefType = new LHStructDefType(structClass, config.getTypeAdapterRegistry());
+    public void registerStructDef(Class<?> structClass, StructDefCompatibilityType compatibilityType) {
+        LHStructDefType lhStructDefType = new LHStructDefType(structClass, config.getTypeAdapterRegistry());
 
-    //     registerStructDef(lhStructDefType, compatibilityType);
-    // }
+        registerStructDef(lhStructDefType, compatibilityType);
+    }
 
     /**
      * Validates StructDef classes used in your Task Definitions against StructDefs on the server.
@@ -234,15 +240,15 @@ public class LHTaskWorker implements Closeable {
      * @param compatibilityType The server will try to register the given StructDefs
      *                          according to this compatibility type.
      */
-    // public void registerStructDefs(StructDefCompatibilityType compatibilityType) {
-    //     List<LHStructDefType> lhStructDefTypes = tdb.getStructDefDependencies();
+    public void registerStructDefs(StructDefCompatibilityType compatibilityType) {
+        List<LHStructDefType> lhStructDefTypes = taskSignature.getStructDefDependencies();
 
-    //     if (lhStructDefTypes.isEmpty()) return;
+        if (lhStructDefTypes.isEmpty()) return;
 
-    //     for (LHStructDefType lhStructDefType : lhStructDefTypes) {
-    //         registerStructDef(lhStructDefType, compatibilityType);
-    //     }
-    // }
+        for (LHStructDefType lhStructDefType : lhStructDefTypes) {
+            registerStructDef(lhStructDefType, compatibilityType);
+        }
+    }
 
     private void getTaskDefOrFail() {
         long start = System.currentTimeMillis();
