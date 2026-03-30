@@ -49,7 +49,7 @@ public class LHTaskParameter {
         if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
             if (!structDefName.isPresent()) {
                 throw new TaskSchemaMismatchError(
-                        "InlineStruct parameters must declare @LHType(structDefName = \\\"...\\\") via the LHType annotation, but parameter "
+                        "InlineStruct parameters must declare @LHType(structDefName = \"...\") via the LHType annotation, but parameter "
                                 + parameter.getName() + " of type "
                                 + parameter.getType().getName() + " did not.");
             } else {

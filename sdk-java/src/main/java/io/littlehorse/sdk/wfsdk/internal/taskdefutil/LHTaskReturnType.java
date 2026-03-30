@@ -42,14 +42,20 @@ public class LHTaskReturnType {
                 isMasked = true;
             }
         }
+
+        if (InlineStruct.class.isAssignableFrom(method.getReturnType())) {
+            if (!method.isAnnotationPresent(LHType.class)
+                    || method.getAnnotation(LHType.class).structDefName().isEmpty()) {
+                throw new TaskSchemaMismatchError(
+                        "Methods that return type InlineStruct must declare @LHType(structDefName = \"...\"). Method "
+                                + method.getName() + " of type "
+                                + method.getReturnType().getName() + " did not.");
+            }
+        }
     }
 
     private String getInlineStructDefNameFromAnnotation() {
         LHType typeAnnotation = method.getAnnotation(LHType.class);
-        if (typeAnnotation == null || typeAnnotation.structDefName().isBlank()) {
-            throw new TaskSchemaMismatchError(
-                    "Returns of type InlineStruct must declare @LHType(structDefName = \"...\").");
-        }
 
         return PlaceholderUtil.replacePlaceholders(typeAnnotation.structDefName(), placeholderValues);
     }

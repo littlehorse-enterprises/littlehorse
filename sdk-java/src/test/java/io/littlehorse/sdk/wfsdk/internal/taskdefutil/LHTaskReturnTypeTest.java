@@ -1,10 +1,14 @@
 package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.testutils.TestReflection;
@@ -16,7 +20,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 public class LHTaskReturnTypeTest {
-    public class TestClass {
+    public class ReturnTypeTestTasks {
         @LHTaskMethod("test-void")
         public void testVoidReturnType() {}
 
@@ -40,11 +44,28 @@ public class LHTaskReturnTypeTest {
         public int testMaskedReturnType() {
             return 42;
         }
+
+        @LHTaskMethod("test-inline-struct-param")
+        @LHType(name = "param1", structDefName = "customer")
+        public InlineStruct inlineStructTask() {
+            return null;
+        }
+
+        @LHTaskMethod("inline-struct-placeholder-task")
+        @LHType(structDefName = "${outputStruct}")
+        public InlineStruct inlineStructPlaceholderTask() {
+            return null;
+        }
+
+        @LHTaskMethod("inline-struct-invalid-task")
+        public InlineStruct inlineStructInvalidTask() {
+            return null;
+        }
     }
 
     @Test
     public void shouldHandleVoidTaskReturnType() {
-        Method taskMethod = TestReflection.getTaskMethodByName(TestClass.class, "test-void");
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "test-void");
         LHTaskReturnType taskReturnType = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
 
         ReturnType actualReturnType = taskReturnType.getReturnType();
@@ -55,7 +76,7 @@ public class LHTaskReturnTypeTest {
 
     @Test
     public void shouldHandlePrimitiveTaskReturnType() {
-        Method taskMethod = TestReflection.getTaskMethodByName(TestClass.class, "test-primitive");
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "test-primitive");
         LHTaskReturnType taskReturnType = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
 
         ReturnType actualReturnType = taskReturnType.getReturnType();
@@ -70,7 +91,7 @@ public class LHTaskReturnTypeTest {
 
     @Test
     public void shouldHandleJsonArrayTaskReturnType() {
-        Method taskMethod = TestReflection.getTaskMethodByName(TestClass.class, "test-json-arr");
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "test-json-arr");
         LHTaskReturnType taskReturnType = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
 
         ReturnType actualReturnType = taskReturnType.getReturnType();
@@ -85,7 +106,7 @@ public class LHTaskReturnTypeTest {
 
     @Test
     public void shouldHandleTypeAdaptedTaskReturnType() {
-        Method taskMethod = TestReflection.getTaskMethodByName(TestClass.class, "test-type-adapted-method");
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "test-type-adapted-method");
         LHTypeAdapterRegistry typeAdapterRegistry =
                 LHTypeAdapterRegistry.from(Map.of(UUID.class, new LHStringAdapter<UUID>() {
                     @Override
@@ -119,11 +140,52 @@ public class LHTaskReturnTypeTest {
 
     @Test
     public void shouldHandleMaskedTaskReturnType() {
-        Method taskMethod = TestReflection.getTaskMethodByName(TestClass.class, "test-masked-param");
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "test-masked-param");
         LHTaskReturnType taskReturnType = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
 
         ReturnType actualReturnType = taskReturnType.getReturnType();
 
         assertThat(actualReturnType.getReturnType().getMasked()).isTrue();
+    }
+
+    @Test
+    public void shouldInferInlineStructParameter() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "test-inline-struct-param");
+        LHTaskReturnType taskReturnType = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
+
+        ReturnType actualReturnType = taskReturnType.getReturnType();
+        ReturnType expectedReturnType = ReturnType.newBuilder()
+                .setReturnType(TypeDefinition.newBuilder()
+                        .setStructDefId(StructDefId.newBuilder().setName("customer"))
+                        .build())
+                .build();
+
+        assertThat(actualReturnType).isEqualTo(expectedReturnType);
+    }
+
+    @Test
+    void shouldResolvePlaceholdersForInlineStructTypes() {
+        Map<String, String> placeholderValues = Map.of("outputStruct", "customer");
+
+        Method taskMethod =
+                TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "inline-struct-placeholder-task");
+        LHTaskReturnType taskReturnType =
+                new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), placeholderValues);
+
+        TypeDefinition returnType = taskReturnType.getReturnType().getReturnType();
+
+        assertThat(returnType.getStructDefId().getName()).isEqualTo("customer");
+    }
+
+    @Test
+    void shouldFailWhenInlineStructTypeIsMissingStructDefName() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "inline-struct-invalid-task");
+
+        assertThatThrownBy(() -> {
+                    new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
+                })
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining(
+                        "Methods that return type InlineStruct must declare @LHType(structDefName = \"...\").");
     }
 }
