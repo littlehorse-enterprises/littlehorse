@@ -101,7 +101,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         return getVarValFromThreadInTxn(this.lhsName, thread, txnCache);
     }
 
-    private VariableValueModel getVarValFromThreadInTxn(
+    private static VariableValueModel getVarValFromThreadInTxn(
             String varName, ThreadRunModel thread, Map<String, VariableValueModel> txnCache) throws LHVarSubError {
         VariableValueModel result = txnCache.get(varName);
         if (result == null) {
