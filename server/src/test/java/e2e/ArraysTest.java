@@ -37,6 +37,9 @@ public class ArraysTest {
     @LHWorkflow("array-get-wf")
     private Workflow arrayGetWf;
 
+    @LHWorkflow("array-contains-wf")
+    private Workflow arrayContainsWf;
+
     private LittleHorseBlockingStub client;
     private WorkflowVerifier workflowVerifier;
 
@@ -85,12 +88,6 @@ public class ArraysTest {
                 });
     }
 
-    @LHTaskMethod("produce-empty-array")
-    @LHType(isLHArray = true)
-    public Long[] produceEmptyArray() {
-        return new Long[0];
-    }
-
     @Test
     public void shouldAssignNativeArrayWithContents() {
         workflowVerifier
@@ -124,10 +121,17 @@ public class ArraysTest {
                 .start();
     }
 
-    @LHTaskMethod("produce-array")
-    @LHType(isLHArray = true)
-    public Long[] produceArray() {
-        return new Long[] {1L, 2L, 3L};
+    @Test
+    public void shouldDetectArrayContains() {
+        workflowVerifier
+                .prepareRun(arrayContainsWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "found", variableValue -> {
+                    Assertions.assertThat(variableValue.getValueCase().toString())
+                            .isEqualTo("BOOL");
+                    Assertions.assertThat(variableValue.getBool()).isTrue();
+                })
+                .start();
     }
 
     @LHWorkflow("array-get-wf")
@@ -138,6 +142,19 @@ public class ArraysTest {
             TaskNodeOutput produced = thread.execute("produce-array");
             arrVar.assign(produced);
             picked.assign(arrVar.get(1));
+        });
+    }
+
+    @LHWorkflow("array-contains-wf")
+    public Workflow buildArrayContainsWf() {
+        return new WorkflowImpl("array-contains-wf", thread -> {
+            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+            WfRunVariable found = thread.declareBool("found");
+            TaskNodeOutput produced = thread.execute("produce-array");
+            arrVar.assign(produced);
+            // TODO: Test contains unnecessary task call because of mutation bug #2181
+            thread.execute("produce-array");
+            found.assign(arrVar.doesContain(2L));
         });
     }
 
@@ -166,5 +183,17 @@ public class ArraysTest {
             TaskNodeOutput produced = thread.execute("produce-array");
             arrVar.assign(produced);
         });
+    }
+
+    @LHTaskMethod("produce-empty-array")
+    @LHType(isLHArray = true)
+    public Long[] produceEmptyArray() {
+        return new Long[0];
+    }
+
+    @LHTaskMethod("produce-array")
+    @LHType(isLHArray = true)
+    public Long[] produceArray() {
+        return new Long[] {1L, 2L, 3L};
     }
 }
