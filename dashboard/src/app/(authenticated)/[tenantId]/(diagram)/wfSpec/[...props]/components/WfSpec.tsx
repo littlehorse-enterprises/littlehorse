@@ -11,6 +11,7 @@ import { Details } from './Details'
 import { ScheduledWfRuns } from './ScheduledWfRuns'
 import { Thread } from './Thread'
 import { WfRuns } from './WfRuns'
+import { WfSpecMetrics } from './WfSpecMetrics'
 
 type WfSpecProps = {
   spec: Spec
@@ -38,6 +39,11 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
       <DiagramProvider value={{ thread, setThread, selectedNode, setSelectedNode }}>
         <Diagram spec={spec} />
       </DiagramProvider>
+      {spec.id && (
+        <div className="mb-12">
+          <WfSpecMetrics wfSpecId={spec.id} />
+        </div>
+      )}
       {Object.keys(spec.threadSpecs)
         .reverse()
         .map(name => (
