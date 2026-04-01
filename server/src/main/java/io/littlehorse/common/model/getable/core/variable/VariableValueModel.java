@@ -701,7 +701,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case STRUCT:
                 return this.struct;
             case ARRAY:
-                return this.array;
+                return this.array == null
+                        ? null
+                        : LHSerializable.fromProto(this.array.toProto().build(), ArrayModel.class, context);
             case UTC_TIMESTAMP:
                 return this.utcTimestampVal;
             case VALUE_NOT_SET:
