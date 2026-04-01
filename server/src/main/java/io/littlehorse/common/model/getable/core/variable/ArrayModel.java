@@ -23,8 +23,31 @@ public class ArrayModel extends LHSerializable<Array> {
     public ArrayModel() {}
 
     public ArrayModel(ArrayList<VariableValueModel> items, TypeDefinitionModel elementType) {
-        this.items = items;
-        this.elementType = elementType;
+        this.items = new ArrayList<>();
+        if (items != null) {
+            this.items.addAll(
+                    items.stream().map(i -> i == null ? null : i.getCopy()).toList());
+        }
+        this.elementType = elementType == null ? null : new TypeDefinitionModel(elementType);
+    }
+
+    public ArrayModel(ArrayModel other) {
+        if (other == null) {
+            this.items = new ArrayList<>();
+            this.elementType = null;
+            return;
+        }
+
+        if (other.items != null) {
+            this.items = new ArrayList<>();
+            for (VariableValueModel item : other.items) {
+                this.items.add(item == null ? null : item.getCopy());
+            }
+        } else {
+            this.items = new ArrayList<>();
+        }
+
+        this.elementType = other.elementType == null ? null : new TypeDefinitionModel(other.elementType);
     }
 
     @Override

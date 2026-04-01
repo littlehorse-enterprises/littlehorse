@@ -21,6 +21,14 @@ public class InlineArrayDefModel extends LHSerializable<InlineArrayDef> {
         this.arrayType = arrayType;
     }
 
+    public InlineArrayDefModel(InlineArrayDefModel other) {
+        if (other == null || other.arrayType == null) {
+            this.arrayType = null;
+        } else {
+            this.arrayType = new TypeDefinitionModel(other.arrayType);
+        }
+    }
+
     @Override
     public InlineArrayDef.Builder toProto() {
         InlineArrayDef.Builder out = InlineArrayDef.newBuilder();

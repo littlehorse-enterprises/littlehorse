@@ -90,6 +90,34 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         this.masked = false;
     }
 
+    public TypeDefinitionModel(TypeDefinitionModel other) {
+        if (other == null) {
+            this.definedTypeCase = DefinedTypeCase.DEFINEDTYPE_NOT_SET;
+            return;
+        }
+        this.masked = other.masked;
+        this.definedTypeCase = other.definedTypeCase;
+
+        switch (other.definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                this.primitiveType = other.primitiveType;
+                break;
+            case STRUCT_DEF_ID:
+                this.structDefId = other.structDefId == null
+                        ? null
+                        : new StructDefIdModel(other.structDefId.getName(), other.structDefId.getVersion());
+                break;
+            case INLINE_ARRAY_DEF:
+                this.inlineArrayDef =
+                        other.inlineArrayDef == null ? null : new InlineArrayDefModel(other.inlineArrayDef);
+                break;
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                this.definedTypeCase = DefinedTypeCase.DEFINEDTYPE_NOT_SET;
+                break;
+        }
+    }
+
     @Override
     public Class<TypeDefinition> getProtoBaseClass() {
         return TypeDefinition.class;

@@ -980,7 +980,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     public VariableValueModel(ArrayModel array) {
         valueType = ValueCase.ARRAY;
-        this.array = array;
+        this.array = new ArrayModel(array);
     }
 
     /*
