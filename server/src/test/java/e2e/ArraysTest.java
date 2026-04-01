@@ -1,9 +1,13 @@
 package e2e;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -13,6 +17,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.util.Arg;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -55,6 +60,10 @@ public class ArraysTest {
 
     private LittleHorseBlockingStub client;
     private WorkflowVerifier workflowVerifier;
+    private LHServerConfig serverConfig = new LHServerConfig();
+
+    @LHWorkflow("spawn-many-threads-wf-array")
+    private Workflow spawnManyThreadsWfArray;
 
     @Test
     public void shouldAllowAssigningEmptyNativeArrayToTypedArrayVariable() {
@@ -220,6 +229,28 @@ public class ArraysTest {
                 .start();
     }
 
+    @Test
+    public void shouldNotFailIfSpawnWfThreadRuns_WithNativeArray() {
+        WorkflowVerifier verifier = this.workflowVerifier;
+        Long[] arr = {1L, 2L, 3L};
+
+        VariableValue arrayVariableValue =
+                LHLibUtil.objToVarValAsNativeArray(arr, Long[].class, LHTypeAdapterRegistry.empty());
+
+        verifier.prepareRun(spawnManyThreadsWfArray, Arg.of("arr", arrayVariableValue))
+                .waitForStatus(LHStatus.COMPLETED)
+                .waitForThreadRunStatus(1, LHStatus.COMPLETED)
+                .waitForThreadRunStatus(2, LHStatus.COMPLETED)
+                .waitForThreadRunStatus(3, LHStatus.COMPLETED)
+                .thenVerifyWfRun(wfRun -> {
+                    assertThat(wfRun.getThreadRunsList()).hasSize(4); // 3 spawned threads + 1 entrypoint thread
+                    wfRun.getThreadRunsList().forEach(threadRun -> {
+                        assertThat(threadRun.getStatus()).isEqualTo(LHStatus.COMPLETED);
+                    });
+                })
+                .start();
+    }
+
     @LHWorkflow("array-get-wf")
     public Workflow buildArrayGetWf() {
         return new WorkflowImpl("array-get-wf", thread -> {
@@ -304,6 +335,19 @@ public class ArraysTest {
             // TODO: Test contains unnecessary task call because of mutation bug #2181
             thread.execute("produce-array");
             arrVar.assign(arrVar.removeIndex(1));
+        });
+    }
+
+    @LHWorkflow("spawn-many-threads-wf-array")
+    public Workflow spawnNThreadsWfArray() {
+        return new WorkflowImpl("spawn-many-threads-wf-array", wf -> {
+            WfRunVariable arr = wf.declareArray("arr", Integer.class).required();
+
+            SpawnedThreads spawnedThreads = wf.spawnThreadForEach(arr, "test-thread", handler -> {
+                handler.complete();
+            });
+
+            wf.waitForThreads(spawnedThreads);
         });
     }
 

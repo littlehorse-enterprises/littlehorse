@@ -659,7 +659,8 @@ public class LHLibUtil {
 
         if (!o.getClass().isArray()) {
             throw new LHSerdeException(
-                    "Native array serialization requires the value returned by the task to be a Java array.");
+                    "Native array serialization requires the given object to be a Java array, but got an object of type: "
+                            + o.getClass().getName());
         }
 
         Class<?> componentType = declaredArrayClass.getComponentType();
