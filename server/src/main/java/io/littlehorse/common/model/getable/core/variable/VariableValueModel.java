@@ -305,9 +305,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             }
         }
 
-        if (typeToCoerceTo.getDefinedTypeCase() != DefinedTypeCase.DEFINEDTYPE_NOT_SET
-                && typeToCoerceTo.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
-            throw new RuntimeException("Unsupported operation: " + operation);
+        if (typeToCoerceTo.getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID) {
+            throw new LHVarSubError(null, "Unsupported operation for Structs: " + operation);
         }
 
         if (operation == VariableMutationType.ADD) {
@@ -528,34 +527,99 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel extend(VariableValueModel rhs) throws LHVarSubError {
-        if (getTypeDefinition().getPrimitiveType() == VariableType.JSON_ARR) {
-            List<Object> newList = new ArrayList<>();
-            newList.addAll(asArr().jsonArrVal);
-            newList.addAll(rhs.asArr().jsonArrVal);
-            return new VariableValueModel(newList);
-        } else if (getTypeDefinition().getPrimitiveType() == VariableType.BYTES) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try {
-                if (bytesVal != null) baos.write(bytesVal);
-                rhs = rhs.asBytes();
-                if (rhs.bytesVal != null) baos.write(rhs.bytesVal);
-            } catch (IOException exn) {
-                throw new LHVarSubError(exn, "Failed concatenating bytes");
-            }
-            return new VariableValueModel(baos.toByteArray());
-        } else if (getTypeDefinition().getPrimitiveType() == VariableType.STR) {
-            return new VariableValueModel(this.strVal + rhs.asStr().strVal);
+        switch (getValueType()) {
+            case JSON_ARR:
+                List<Object> newList = new ArrayList<>();
+                newList.addAll(asArr().jsonArrVal);
+                newList.addAll(rhs.asArr().jsonArrVal);
+                return new VariableValueModel(newList);
+            case BYTES:
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                try {
+                    if (bytesVal != null) baos.write(bytesVal);
+                    rhs = rhs.asBytes();
+                    if (rhs.bytesVal != null) baos.write(rhs.bytesVal);
+                } catch (IOException exn) {
+                    throw new LHVarSubError(exn, "Failed concatenating bytes");
+                }
+                return new VariableValueModel(baos.toByteArray());
+            case STR:
+                return new VariableValueModel(this.strVal + rhs.asStr().strVal);
+            case ARRAY:
+                ArrayModel arr = this.array;
+                try {
+                    ArrayList<VariableValueModel> newItems = new ArrayList<>();
+                    if (arr.getItems() != null) {
+                        for (VariableValueModel v : arr.getItems()) {
+                            newItems.add(v.getCopy());
+                        }
+                    }
+
+                    TypeDefinitionModel elemType = arr.getElementType();
+                    VariableValueModel itemToAppend;
+                    if (elemType != null && !elemType.isNull()) {
+                        itemToAppend = rhs.coerceToType(elemType);
+                    } else {
+                        itemToAppend = rhs.getCopy();
+                    }
+
+                    newItems.add(itemToAppend);
+
+                    ArrayModel newArr = new ArrayModel(newItems, elemType);
+                    return new VariableValueModel(newArr);
+                } catch (LHVarSubError exn) {
+                    throw exn;
+                } catch (Exception exn) {
+                    throw new LHVarSubError(exn, "Failed extending ARRAY");
+                }
+            default:
         }
         throw new LHVarSubError(null, "Cannot extend var of type " + valueType);
     }
 
     public VariableValueModel removeIfPresent(VariableValueModel other) throws LHVarSubError {
-        List<Object> lhsList = asArr().jsonArrVal;
-        Object o = other.getVal();
-        lhsList.removeIf(i -> {
-            return isEqual(i, o);
-        });
-        return new VariableValueModel(lhsList);
+        switch (getValueType()) {
+            case JSON_ARR: {
+                List<Object> lhsList = asArr().jsonArrVal;
+                Object o = other.getVal();
+                lhsList.removeIf(i -> {
+                    return isEqual(i, o);
+                });
+                return new VariableValueModel(lhsList);
+            }
+            case ARRAY: {
+                ArrayModel arr = this.array;
+                try {
+                    ArrayList<VariableValueModel> newItems = new ArrayList<>();
+
+                    TypeDefinitionModel elemType = arr.getElementType();
+                    VariableValueModel target;
+                    if (elemType != null && !elemType.isNull()) {
+                        target = other.coerceToType(elemType);
+                    } else {
+                        target = other.getCopy();
+                    }
+
+                    if (arr.getItems() != null) {
+                        for (VariableValueModel v : arr.getItems()) {
+                            // Compare by proto equality to cover all types
+                            if (!v.toProto().build().equals(target.toProto().build())) {
+                                newItems.add(v.getCopy());
+                            }
+                        }
+                    }
+
+                    ArrayModel newArr = new ArrayModel(newItems, elemType);
+                    return new VariableValueModel(newArr);
+                } catch (LHVarSubError exn) {
+                    throw exn;
+                } catch (Exception exn) {
+                    throw new LHVarSubError(exn, "Failed removing from ARRAY");
+                }
+            }
+            default:
+                throw new LHVarSubError(null, "Cannot removeIfPresent on var of type " + valueType);
+        }
     }
 
     private boolean isEqual(Object a, Object b) {
@@ -569,14 +633,47 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel removeIndex(VariableValueModel other) throws LHVarSubError {
-        List<Object> lhsList = asArr().jsonArrVal;
-        Long longIdx = other.asInt().intVal;
-        if (longIdx == null) {
-            throw new LHVarSubError(null, "Tried to remove null index");
+        switch (getValueType()) {
+            case JSON_ARR: {
+                List<Object> lhsList = asArr().jsonArrVal;
+                Long longIdx = other.asInt().intVal;
+                if (longIdx == null) {
+                    throw new LHVarSubError(null, "Tried to remove null index");
+                }
+                int idx = longIdx.intValue();
+                lhsList.remove(idx);
+                return new VariableValueModel(lhsList);
+            }
+            case ARRAY: {
+                ArrayModel arr = this.array;
+                Long longIdx = other.asInt().intVal;
+                if (longIdx == null) {
+                    throw new LHVarSubError(null, "Tried to remove null index");
+                }
+                int idx = longIdx.intValue();
+                try {
+                    ArrayList<VariableValueModel> newItems = new ArrayList<>();
+                    if (arr.getItems() != null) {
+                        if (idx < 0 || idx >= arr.getItems().size()) {
+                            throw new LHVarSubError(null, "Index out of bounds: " + idx);
+                        }
+                        for (int i = 0; i < arr.getItems().size(); i++) {
+                            if (i == idx) continue;
+                            newItems.add(arr.getItems().get(i).getCopy());
+                        }
+                    }
+
+                    ArrayModel newArr = new ArrayModel(newItems, arr.getElementType());
+                    return new VariableValueModel(newArr);
+                } catch (LHVarSubError exn) {
+                    throw exn;
+                } catch (Exception exn) {
+                    throw new LHVarSubError(exn, "Failed removing index from ARRAY");
+                }
+            }
+            default:
+                throw new LHVarSubError(null, "Cannot removeIndex on var of type " + valueType);
         }
-        int idx = longIdx.intValue();
-        lhsList.remove(idx);
-        return new VariableValueModel(lhsList);
     }
 
     public VariableValueModel removeKey(VariableValueModel other) throws LHVarSubError {

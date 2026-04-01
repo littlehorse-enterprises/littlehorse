@@ -8,7 +8,11 @@ import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
+import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -109,6 +113,34 @@ public class ArraysTest {
     }
 
     @Test
+    public void shouldAcceptArrayInputEvenIfClientSetsWrongTypeDef() {
+        VariableValue clientArr = VariableValue.newBuilder()
+                .setArray(Array.newBuilder()
+                        .setElementType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.BOOL))
+                        .addItems(VariableValue.newBuilder().setInt(1).build())
+                        .addItems(VariableValue.newBuilder().setInt(2).build())
+                        .addItems(VariableValue.newBuilder().setInt(3).build())
+                        .build())
+                .build();
+
+        workflowVerifier
+                .prepareRun(filledArrayWf, Arg.of("my-array", clientArr))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-array", variableValue -> {
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
+                    Assertions.assertThat(variableValue.getArray().getItemsList())
+                            .hasSize(3);
+                    Assertions.assertThat(variableValue.getArray().getItems(0).getInt())
+                            .isEqualTo(1L);
+                    Assertions.assertThat(variableValue.getArray().getItems(1).getInt())
+                            .isEqualTo(2L);
+                    Assertions.assertThat(variableValue.getArray().getItems(2).getInt())
+                            .isEqualTo(3L);
+                })
+                .start();
+    }
+
+    @Test
     public void shouldAllowGettingArrayElementByIndex() {
         workflowVerifier
                 .prepareRun(arrayGetWf)
@@ -183,6 +215,62 @@ public class ArraysTest {
             TaskNodeOutput produced = thread.execute("produce-array");
             arrVar.assign(produced);
         });
+    }
+
+    @LHWorkflow("array-extend-wf")
+    public Workflow buildArrayExtendWf() {
+        return new WorkflowImpl("array-extend-wf", thread -> {
+            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+            TaskNodeOutput produced = thread.execute("produce-array");
+            arrVar.assign(produced);
+            thread.execute("produce-array");
+            // Append a new element using EXTEND
+            arrVar.assign(arrVar.extend(4L));
+        });
+    }
+
+    @LHWorkflow("array-remove-wf")
+    public Workflow buildArrayRemoveWf() {
+        return new WorkflowImpl("array-remove-wf", thread -> {
+            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+            TaskNodeOutput produced = thread.execute("produce-array");
+            arrVar.assign(produced);
+            thread.execute("produce-array");
+            // Remove the element 2L using REMOVE_IF_PRESENT
+            arrVar.assign(arrVar.removeIfPresent(2L));
+        });
+    }
+
+    @Test
+    public void shouldAppendItemOnExtend() {
+        workflowVerifier
+                .prepareRun(buildArrayExtendWf())
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-array", variableValue -> {
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.ARRAY);
+                    Assertions.assertThat(variableValue.getArray().getItemsList())
+                            .hasSize(4);
+                    Assertions.assertThat(variableValue.getArray().getItems(3).getInt())
+                            .isEqualTo(4L);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldRemoveItemOnRemoveIfPresent() {
+        workflowVerifier
+                .prepareRun(buildArrayRemoveWf())
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-array", variableValue -> {
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.ARRAY);
+                    Assertions.assertThat(variableValue.getArray().getItemsList())
+                            .hasSize(2);
+                    Assertions.assertThat(variableValue.getArray().getItems(0).getInt())
+                            .isEqualTo(1L);
+                    Assertions.assertThat(variableValue.getArray().getItems(1).getInt())
+                            .isEqualTo(3L);
+                })
+                .start();
     }
 
     @LHTaskMethod("produce-empty-array")

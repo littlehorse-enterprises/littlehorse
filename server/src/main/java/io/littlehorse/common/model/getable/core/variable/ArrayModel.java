@@ -22,6 +22,11 @@ public class ArrayModel extends LHSerializable<Array> {
 
     public ArrayModel() {}
 
+    public ArrayModel(ArrayList<VariableValueModel> items, TypeDefinitionModel elementType) {
+        this.items = items;
+        this.elementType = elementType;
+    }
+
     @Override
     public Array.Builder toProto() {
         Array.Builder out = Array.newBuilder();
