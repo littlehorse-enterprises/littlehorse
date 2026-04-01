@@ -6,8 +6,10 @@ import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+@EqualsAndHashCode(callSuper = false)
 public class InlineArrayDefModel extends LHSerializable<InlineArrayDef> {
 
     @Getter
@@ -43,20 +45,6 @@ public class InlineArrayDefModel extends LHSerializable<InlineArrayDef> {
         InlineArrayDefModel out = new InlineArrayDefModel();
         out.initFrom(p, context);
         return out;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (obj == this) return true;
-
-        if (!(obj instanceof InlineArrayDefModel)) {
-            return false;
-        }
-
-        InlineArrayDefModel other = (InlineArrayDefModel) obj;
-
-        return this.getArrayType().equals(other.getArrayType());
     }
 
     @Override
