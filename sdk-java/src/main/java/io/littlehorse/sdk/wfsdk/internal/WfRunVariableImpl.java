@@ -16,6 +16,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -89,6 +90,10 @@ class WfRunVariableImpl implements WfRunVariable {
         return new WfRunVariableImpl(name, parent, clazz.getTypeDefinition());
     }
 
+    public static WfRunVariableImpl createArrayVar(String name, LHArrayType arrayType, WorkflowThreadImpl parent) {
+        return new WfRunVariableImpl(name, parent, arrayType.getTypeDefinition());
+    }
+
     @Override
     public WfRunVariableImpl withAccessLevel(WfRunVariableAccessLevel accessLevel) {
         this.accessLevel = accessLevel;
@@ -130,6 +135,10 @@ class WfRunVariableImpl implements WfRunVariable {
                             "Can only use get() on JSON_OBJ, JSON_ARR, or Struct variables");
                 }
                 break;
+            case INLINE_ARRAY_DEF:
+                // Typed inline arrays (e.g. declareArray("x", Long.class)) are allowed to be
+                // indexed with get(int).
+                break;
             case DEFINEDTYPE_NOT_SET:
             default:
                 throw new RuntimeException(String.format("Unrecognized WfRunVariable type: %s", typeDef));
@@ -153,6 +162,10 @@ class WfRunVariableImpl implements WfRunVariable {
                     throw new LHMisconfigurationException(
                             "Can only use get() on JSON_OBJ, JSON_ARR, or Struct variables");
                 }
+                break;
+            case INLINE_ARRAY_DEF:
+                // Typed inline arrays (e.g. declareArray("x", Long.class)) are allowed to be
+                // indexed with get(int).
                 break;
             case DEFINEDTYPE_NOT_SET:
             default:
@@ -185,8 +198,16 @@ class WfRunVariableImpl implements WfRunVariable {
     public WfRunVariable withDefault(Object defaultVal) {
         setDefaultValue(defaultVal);
 
-        if (!LHLibUtil.fromValueCase(defaultValue.getValueCase()).equals(typeDef.getPrimitiveType())) {
-            throw new IllegalArgumentException("Default value type does not match LH variable type " + typeDef);
+        // Validate default value matches the declared variable type. Handle inline
+        // array defs (native LH Array) specially.
+        if (typeDef.getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF) {
+            if (defaultValue.getValueCase() != VariableValue.ValueCase.ARRAY) {
+                throw new IllegalArgumentException("Default value type does not match LH variable type " + typeDef);
+            }
+        } else {
+            if (!LHLibUtil.fromValueCase(defaultValue.getValueCase()).equals(typeDef.getPrimitiveType())) {
+                throw new IllegalArgumentException("Default value type does not match LH variable type " + typeDef);
+            }
         }
 
         return this;
@@ -194,8 +215,18 @@ class WfRunVariableImpl implements WfRunVariable {
 
     private void setDefaultValue(Object defaultVal) {
         try {
-            this.defaultValue =
-                    LHLibUtil.objToVarVal(defaultVal, parent.getParent().getTypeAdapterRegistry());
+            // If this variable is an inline-typed array and the provided default is a
+            // Java array, serialize it as a native LH Array instead of a JSON array.
+            if (typeDef != null
+                    && typeDef.getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF
+                    && defaultVal != null
+                    && defaultVal.getClass().isArray()) {
+                this.defaultValue = LHLibUtil.objToVarValAsNativeArray(
+                        defaultVal, defaultVal.getClass(), parent.getParent().getTypeAdapterRegistry());
+            } else {
+                this.defaultValue =
+                        LHLibUtil.objToVarVal(defaultVal, parent.getParent().getTypeAdapterRegistry());
+            }
         } catch (LHSerdeException e) {
             throw new IllegalArgumentException("Was unable to convert provided default value to LH Variable Type", e);
         }

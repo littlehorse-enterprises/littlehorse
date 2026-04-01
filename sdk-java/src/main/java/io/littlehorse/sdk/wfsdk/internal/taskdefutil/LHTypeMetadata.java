@@ -7,8 +7,9 @@ import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Map;
 import java.util.Optional;
+import lombok.Getter;
 
-final class LHTypeMetadata {
+public final class LHTypeMetadata {
 
     enum ValidationContext {
         PARAMETER,
@@ -16,20 +17,25 @@ final class LHTypeMetadata {
     }
 
     private final boolean masked;
+
+    @Getter
+    private final boolean isLHArray;
+
     private final String name;
     private final String structDefName;
 
-    private LHTypeMetadata(boolean masked, String name, String structDefName) {
+    private LHTypeMetadata(boolean masked, boolean isLHArray, String name, String structDefName) {
         this.masked = masked;
+        this.isLHArray = isLHArray;
         this.name = name;
         this.structDefName = structDefName;
     }
 
     private LHTypeMetadata() {
-        this(false, null, null);
+        this(false, false, null, null);
     }
 
-    static LHTypeMetadata from(AnnotatedElement element, Map<String, String> placeholderValues) {
+    public static LHTypeMetadata from(AnnotatedElement element, Map<String, String> placeholderValues) {
         Map<String, String> placeholders = placeholderValues == null ? Map.of() : placeholderValues;
 
         if (!element.isAnnotationPresent(LHType.class)) {
@@ -44,7 +50,7 @@ final class LHTypeMetadata {
             parsedStructDefName = PlaceholderUtil.replacePlaceholders(parsedStructDefName, placeholders);
         }
 
-        return new LHTypeMetadata(typeAnnotation.masked(), parsedName, parsedStructDefName);
+        return new LHTypeMetadata(typeAnnotation.masked(), typeAnnotation.isLHArray(), parsedName, parsedStructDefName);
     }
 
     boolean isMasked() {
@@ -68,6 +74,16 @@ final class LHTypeMetadata {
 
         if (!isInlineStruct && structDefName != null) {
             throw new TaskSchemaMismatchError(buildUnexpectedStructDefNameMessage(context, contextName, javaType));
+        }
+    }
+
+    void validateLHArrayUsage(Class<?> javaType, ValidationContext context, String contextName) {
+        if (!isLHArray) {
+            return;
+        }
+
+        if (!javaType.isArray()) {
+            throw new TaskSchemaMismatchError(buildUnexpectedLHArrayMessage(context, contextName, javaType));
         }
     }
 
@@ -103,6 +119,23 @@ final class LHTypeMetadata {
         return "@LHType(structDefName = ...) can only be used on InlineStruct parameters and return types. "
                 + "Invalid "
                 + noun
+                + contextName
+                + " with Java type "
+                + javaType.getName()
+                + ".";
+    }
+
+    private static String buildUnexpectedLHArrayMessage(
+            ValidationContext context, String contextName, Class<?> javaType) {
+        if (context == ValidationContext.PARAMETER) {
+            return "@LHType(isLHArray = true) can only be used on array parameters. Invalid parameter "
+                    + contextName
+                    + " with Java type "
+                    + javaType.getName()
+                    + ".";
+        }
+
+        return "@LHType(isLHArray = true) can only be used on array return types. Invalid return type for method "
                 + contextName
                 + " with Java type "
                 + javaType.getName()

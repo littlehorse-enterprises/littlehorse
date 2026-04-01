@@ -3,6 +3,7 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import java.lang.reflect.Parameter;
@@ -35,8 +36,18 @@ public class LHTaskParameter {
 
         metadata.validateStructDefNameUsage(
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
+        metadata.validateLHArrayUsage(
+                parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
 
-        LHClassType variableClassType = buildVariableClassType(typeAdapterRegistry, structDefName);
+        LHClassType variableClassType;
+
+        if (metadata.isLHArray()) {
+            variableClassType = new LHArrayType(parameter.getType(), typeAdapterRegistry);
+        } else if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
+            variableClassType = new LHStructDefId(structDefName.get());
+        } else {
+            variableClassType = LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry);
+        }
 
         this.variableDef = VariableDef.newBuilder()
                 .setName(variableName)
@@ -54,15 +65,6 @@ public class LHTaskParameter {
                             + "Using the parameter position as its name, which makes the resulting TaskDef harder to understand.");
         }
         return parameter.getName();
-    }
-
-    private LHClassType buildVariableClassType(
-            LHTypeAdapterRegistry typeAdapterRegistry, Optional<String> structDefName) {
-        if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
-            return new LHStructDefId(structDefName.get());
-        }
-
-        return LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry);
     }
 
     public Class<?> getParameterType() {

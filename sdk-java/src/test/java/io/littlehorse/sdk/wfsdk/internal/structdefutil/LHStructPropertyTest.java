@@ -4,12 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 public class LHStructPropertyTest {
@@ -99,5 +101,37 @@ public class LHStructPropertyTest {
                 stringWithDefaultProperty.getDefaultValue().get();
 
         assertThat(expectedPropertyValue).isEqualTo(actualPropertyValue);
+    }
+
+    @Test
+    public void structProperty_withLHArrayAnnotation_emitsInlineArrayDef() throws Exception {
+
+        LHStructDefType parent = new LHStructDefType(Library.class, LHTypeAdapterRegistry.empty());
+        PropertyDescriptor pd = new PropertyDescriptor("lhArrayWithDefault", Library.class);
+        LHStructProperty prop = new LHStructProperty(pd, parent);
+
+        StructFieldDef fieldDef = prop.toStructFieldDef(LHTypeAdapterRegistry.empty());
+        TypeDefinition typeDef = fieldDef.getFieldType();
+
+        assertThat(typeDef.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_ARRAY_DEF);
+
+        InlineArrayDef arr = typeDef.getInlineArrayDef();
+        assertThat(arr).isNotNull();
+        assertThat(arr.getArrayType().getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.PRIMITIVE_TYPE);
+        assertThat(arr.getArrayType().getPrimitiveType()).isEqualTo(VariableType.STR);
+    }
+
+    @Test
+    public void getDefaultValue_returnsNativeArrayWhenAnnotated() throws Exception {
+        LHStructDefType parent = new LHStructDefType(Library.class, LHTypeAdapterRegistry.empty());
+        PropertyDescriptor pd = new PropertyDescriptor("lhArrayWithDefault", Library.class);
+        LHStructProperty prop = new LHStructProperty(pd, parent);
+
+        Optional<VariableValue> maybe = prop.getDefaultValue(LHTypeAdapterRegistry.empty());
+        VariableValue def = maybe.get();
+
+        assertThat(def.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
+        assertThat(def.getArray().getItemsCount()).isEqualTo(2);
+        assertThat(def.getArray().getItems(0).getStr()).isEqualTo("a");
     }
 }

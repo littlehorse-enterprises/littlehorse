@@ -13,6 +13,9 @@ public class Library {
     public WfRunId maskedField;
     public String stringWithDefault = "hello";
 
+    @LHStructField(isLHArray = true)
+    public String[] lhArrayWithDefault = new String[] {"a", "b"};
+
     public Library() {}
 
     public String getName() {
@@ -55,5 +58,13 @@ public class Library {
 
     public void setStringWithDefault(String val) {
         this.stringWithDefault = val;
+    }
+
+    public String[] getLhArrayWithDefault() {
+        return this.lhArrayWithDefault;
+    }
+
+    public void setLhArrayWithDefault(String[] val) {
+        this.lhArrayWithDefault = val;
     }
 }

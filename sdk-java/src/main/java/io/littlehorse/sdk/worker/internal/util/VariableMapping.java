@@ -18,6 +18,7 @@ public class VariableMapping {
     private final LHTypeAdapterRegistry typeAdapterRegistry;
     private final String variableName;
     private final Class<?> parameterJavaType;
+    private final boolean expectsNativeLHArray;
 
     public VariableMapping(
             VariableDef variableDef, LHTaskParameter lhTaskParameter, LHTypeAdapterRegistry typeAdapterRegistry)
@@ -27,6 +28,9 @@ public class VariableMapping {
         this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
         this.variableName = variableDef.getName();
         this.parameterJavaType = lhTaskParameter.getParameterType();
+        this.expectsNativeLHArray =
+                lhTaskParameter.getVariableDef().getTypeDef().getDefinedTypeCase()
+                        == TypeDefinition.DefinedTypeCase.INLINE_ARRAY_DEF;
 
         try {
             validateParamAgainstVariableDef(variableDef, lhTaskParameter);
@@ -49,32 +53,36 @@ public class VariableMapping {
         TypeDefinition providedType = requireTypeDefinition(variableDef);
         TypeDefinition expectedType = lhTaskParameter.getVariableDef().getTypeDef();
 
-        if (providedType.getDefinedTypeCase() != expectedType.getDefinedTypeCase()) {
+        if (!areTypesCompatible(providedType, expectedType)) {
             throw new TaskSchemaMismatchError(String.format(
                     "TaskDef provides type <%s>, func expects <%s>",
                     formatTypeDefinition(providedType), formatTypeDefinition(expectedType)));
         }
 
+        if (providedType.getDefinedTypeCase() != expectedType.getDefinedTypeCase()) {
+            throw new TaskSchemaMismatchError(String.format(
+                    "TaskDef provides type <%s>, func expects <%s>",
+                    formatTypeDefinition(providedType), formatTypeDefinition(expectedType)));
+        }
+    }
+
+    private static boolean areTypesCompatible(TypeDefinition providedType, TypeDefinition expectedType) {
+        if (providedType.getDefinedTypeCase() != expectedType.getDefinedTypeCase()) {
+            return false;
+        }
+
         switch (providedType.getDefinedTypeCase()) {
             case PRIMITIVE_TYPE:
-                if (providedType.getPrimitiveType() != expectedType.getPrimitiveType()) {
-                    throw new TaskSchemaMismatchError(String.format(
-                            "TaskDef provides primitive <%s>, func expects <%s>",
-                            providedType.getPrimitiveType(), expectedType.getPrimitiveType()));
-                }
-                break;
+                return providedType.getPrimitiveType() == expectedType.getPrimitiveType();
             case STRUCT_DEF_ID:
-                if (!providedType.getStructDefId().equals(expectedType.getStructDefId())) {
-                    throw new TaskSchemaMismatchError(String.format(
-                            "TaskDef provides StructDef <%s>, func expects StructDef <%s>",
-                            providedType.getStructDefId(), expectedType.getStructDefId()));
-                }
-                break;
+                return providedType.getStructDefId().equals(expectedType.getStructDefId());
+            case INLINE_ARRAY_DEF:
+                return areTypesCompatible(
+                        providedType.getInlineArrayDef().getArrayType(),
+                        expectedType.getInlineArrayDef().getArrayType());
             case DEFINEDTYPE_NOT_SET:
             default:
-                throw new TaskSchemaMismatchError(String.format(
-                        "TaskDef variable <%s> has an unrecognized Type Definition incompatible with this client.",
-                        variableDef.getName()));
+                return false;
         }
     }
 
@@ -101,6 +109,10 @@ public class VariableMapping {
                 return typeDefinition.getPrimitiveType().name();
             case STRUCT_DEF_ID:
                 return "StructDef<" + typeDefinition.getStructDefId().getName() + ">";
+            case INLINE_ARRAY_DEF:
+                return "Array<"
+                        + formatTypeDefinition(
+                                typeDefinition.getInlineArrayDef().getArrayType()) + ">";
             default:
                 return "UNSPECIFIED";
         }
@@ -126,10 +138,30 @@ public class VariableMapping {
         VariableValue val = assignment.getValue();
 
         try {
+            if (expectsNativeLHArray && val.getValueCase() == VariableValue.ValueCase.ARRAY) {
+                return assignNativeArray(val);
+            }
             return LHLibUtil.varValToObj(val, this.parameterJavaType, this.typeAdapterRegistry);
         } catch (LHSerdeException e) {
             throw new InputVarSubstitutionException(
                     "Failed serializing Java object for variable: " + taskDefParamName, e);
         }
+    }
+
+    private Object assignNativeArray(VariableValue val) throws LHSerdeException {
+        if (!parameterJavaType.isArray()) {
+            throw new LHSerdeException("Native LittleHorse arrays can only be assigned to Java array parameters.");
+        }
+
+        Class<?> componentType = parameterJavaType.getComponentType();
+        int size = val.getArray().getItemsCount();
+        Object outputArray = java.lang.reflect.Array.newInstance(componentType, size);
+
+        for (int i = 0; i < size; i++) {
+            Object item = LHLibUtil.varValToObj(val.getArray().getItems(i), componentType, typeAdapterRegistry);
+            java.lang.reflect.Array.set(outputArray, i, item);
+        }
+
+        return outputArray;
     }
 }

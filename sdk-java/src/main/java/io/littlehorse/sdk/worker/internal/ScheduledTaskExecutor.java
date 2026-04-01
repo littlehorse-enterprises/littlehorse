@@ -20,6 +20,7 @@ import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTypeMetadata;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.lang.reflect.InvocationTargetException;
@@ -27,6 +28,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 
@@ -167,6 +169,12 @@ public class ScheduledTaskExecutor {
      */
     private VariableValue serializeResult(Object result, Method taskMethod) {
         Class<?> returnType = taskMethod.getReturnType();
+
+        LHTypeMetadata metadata = LHTypeMetadata.from(taskMethod, Map.of());
+        if (metadata.isLHArray()) {
+            return LHLibUtil.objToVarValAsNativeArray(result, returnType, typeAdapterRegistry);
+        }
+
         if (InlineStruct.class.equals(returnType)) {
             return serializeInlineStructResult(result);
         }
