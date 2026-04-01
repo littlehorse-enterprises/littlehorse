@@ -44,6 +44,15 @@ public class ArraysTest {
     @LHWorkflow("array-contains-wf")
     private Workflow arrayContainsWf;
 
+    @LHWorkflow("array-extend-wf")
+    private Workflow arrayExtendWf;
+
+    @LHWorkflow("array-remove-wf")
+    private Workflow arrayRemoveWf;
+
+    @LHWorkflow("array-remove-index-wf")
+    private Workflow arrayRemoveIndexWf;
+
     private LittleHorseBlockingStub client;
     private WorkflowVerifier workflowVerifier;
 
@@ -54,8 +63,7 @@ public class ArraysTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "my-array", variableValue -> {
                     // Expect an ARRAY VariableValue with zero items
-                    Assertions.assertThat(variableValue.getValueCase().toString())
-                            .isEqualTo("ARRAY");
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.ARRAY);
                     Assertions.assertThat(variableValue.getArray().getItemsList())
                             .hasSize(0);
                 })
@@ -98,8 +106,7 @@ public class ArraysTest {
                 .prepareRun(filledArrayWf)
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "my-array", variableValue -> {
-                    Assertions.assertThat(variableValue.getValueCase().toString())
-                            .isEqualTo("ARRAY");
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.ARRAY);
                     Assertions.assertThat(variableValue.getArray().getItemsList())
                             .hasSize(3);
                     Assertions.assertThat(variableValue.getArray().getItems(0).getInt())
@@ -146,8 +153,7 @@ public class ArraysTest {
                 .prepareRun(arrayGetWf)
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "picked", variableValue -> {
-                    Assertions.assertThat(variableValue.getValueCase().toString())
-                            .isEqualTo("INT");
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.INT);
                     Assertions.assertThat(variableValue.getInt()).isEqualTo(2L);
                 })
                 .start();
@@ -159,9 +165,57 @@ public class ArraysTest {
                 .prepareRun(arrayContainsWf)
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "found", variableValue -> {
-                    Assertions.assertThat(variableValue.getValueCase().toString())
-                            .isEqualTo("BOOL");
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.BOOL);
                     Assertions.assertThat(variableValue.getBool()).isTrue();
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldAppendItemOnExtend() {
+        workflowVerifier
+                .prepareRun(arrayExtendWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-array", variableValue -> {
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.ARRAY);
+                    Assertions.assertThat(variableValue.getArray().getItemsList())
+                            .hasSize(4);
+                    Assertions.assertThat(variableValue.getArray().getItems(3).getInt())
+                            .isEqualTo(4L);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldRemoveItemOnRemoveIfPresent() {
+        workflowVerifier
+                .prepareRun(buildArrayRemoveWf())
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-array", variableValue -> {
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.ARRAY);
+                    Assertions.assertThat(variableValue.getArray().getItemsList())
+                            .hasSize(2);
+                    Assertions.assertThat(variableValue.getArray().getItems(0).getInt())
+                            .isEqualTo(1L);
+                    Assertions.assertThat(variableValue.getArray().getItems(1).getInt())
+                            .isEqualTo(3L);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldRemoveItemByIndexOnRemoveIndex() {
+        workflowVerifier
+                .prepareRun(buildArrayRemoveIndexWf())
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-array", variableValue -> {
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.ARRAY);
+                    Assertions.assertThat(variableValue.getArray().getItemsList())
+                            .hasSize(2);
+                    Assertions.assertThat(variableValue.getArray().getItems(0).getInt())
+                            .isEqualTo(1L);
+                    Assertions.assertThat(variableValue.getArray().getItems(1).getInt())
+                            .isEqualTo(3L);
                 })
                 .start();
     }
@@ -223,8 +277,8 @@ public class ArraysTest {
             WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
             TaskNodeOutput produced = thread.execute("produce-array");
             arrVar.assign(produced);
+            // TODO: Test contains unnecessary task call because of mutation bug #2181
             thread.execute("produce-array");
-            // Append a new element using EXTEND
             arrVar.assign(arrVar.extend(4L));
         });
     }
@@ -235,42 +289,22 @@ public class ArraysTest {
             WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
             TaskNodeOutput produced = thread.execute("produce-array");
             arrVar.assign(produced);
+            // TODO: Test contains unnecessary task call because of mutation bug #2181
             thread.execute("produce-array");
-            // Remove the element 2L using REMOVE_IF_PRESENT
             arrVar.assign(arrVar.removeIfPresent(2L));
         });
     }
 
-    @Test
-    public void shouldAppendItemOnExtend() {
-        workflowVerifier
-                .prepareRun(buildArrayExtendWf())
-                .waitForStatus(LHStatus.COMPLETED)
-                .thenVerifyVariable(0, "my-array", variableValue -> {
-                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.ARRAY);
-                    Assertions.assertThat(variableValue.getArray().getItemsList())
-                            .hasSize(4);
-                    Assertions.assertThat(variableValue.getArray().getItems(3).getInt())
-                            .isEqualTo(4L);
-                })
-                .start();
-    }
-
-    @Test
-    public void shouldRemoveItemOnRemoveIfPresent() {
-        workflowVerifier
-                .prepareRun(buildArrayRemoveWf())
-                .waitForStatus(LHStatus.COMPLETED)
-                .thenVerifyVariable(0, "my-array", variableValue -> {
-                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.ARRAY);
-                    Assertions.assertThat(variableValue.getArray().getItemsList())
-                            .hasSize(2);
-                    Assertions.assertThat(variableValue.getArray().getItems(0).getInt())
-                            .isEqualTo(1L);
-                    Assertions.assertThat(variableValue.getArray().getItems(1).getInt())
-                            .isEqualTo(3L);
-                })
-                .start();
+    @LHWorkflow("array-remove-index-wf")
+    public Workflow buildArrayRemoveIndexWf() {
+        return new WorkflowImpl("array-remove-index-wf", thread -> {
+            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+            TaskNodeOutput produced = thread.execute("produce-array");
+            arrVar.assign(produced);
+            // TODO: Test contains unnecessary task call because of mutation bug #2181
+            thread.execute("produce-array");
+            arrVar.assign(arrVar.removeIndex(1));
+        });
     }
 
     @LHTaskMethod("produce-empty-array")
