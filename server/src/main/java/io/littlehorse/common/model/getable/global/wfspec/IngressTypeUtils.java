@@ -27,9 +27,16 @@ public class IngressTypeUtils {
 
         TypeDefinitionModel typeDef = expected.get();
 
+        // If the provided value is null, fail early to avoid any dereference.
+        if (value == null) {
+            throw new RuntimeException(String.format(
+                    "VariableValue provided is null"
+                            + " but expected type is %s. All VariableValues must be non-null, with ValueCase.VALUE_NOT_SET used to represent null values.",
+                    typeDef));
+        }
+
         // If expected is inline array and value is array, set authoritative element type
         if (typeDef.getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF
-                && value != null
                 && value.getValueType() == VariableValue.ValueCase.ARRAY) {
             value.getArray().setElementType(typeDef.getInlineArrayDef().getArrayType());
         }
@@ -37,7 +44,7 @@ public class IngressTypeUtils {
         // Validate using existing TypeDefinitionModel logic. It will perform
         // per-item checks for inline arrays as needed.
         if (!typeDef.isCompatibleWith(value, metadataManager)) {
-            String actualType = (value == null) ? "NULL" : String.valueOf(value.getTypeDefinition());
+            String actualType = String.valueOf(value.getTypeDefinition());
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
                     String.format(
