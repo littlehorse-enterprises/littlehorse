@@ -339,8 +339,9 @@ type Array struct {
 	unknownFields protoimpl.UnknownFields
 
 	Items []*VariableValue `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
-	// Optional, authoritative element type for this array. If absent, element
-	// type may be unknown and must be derived from items or treated as wildcard.
+	// Optional, authoritative element type for this array.
+	// Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+	// If absent, element type may be unknown and must be derived from items or treated as wildcard.
 	ElementType *TypeDefinition `protobuf:"bytes,2,opt,name=element_type,json=elementType,proto3,oneof" json:"element_type,omitempty"`
 }
 

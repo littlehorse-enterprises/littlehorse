@@ -24,7 +24,7 @@ export enum VariableMutationType {
   ASSIGN = "ASSIGN",
   /** ADD - Add the RHS to the LHS. */
   ADD = "ADD",
-  /** EXTEND - Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR) */
+  /** EXTEND - Append the RHS to the LHS (valid if the LHS is a STR, JSON_ARR, or ARRAY) */
   EXTEND = "EXTEND",
   /** SUBTRACT - Subtract the RHS from the LHS (both must be INT or DOUBLE) */
   SUBTRACT = "SUBTRACT",
@@ -32,9 +32,9 @@ export enum VariableMutationType {
   MULTIPLY = "MULTIPLY",
   /** DIVIDE - Divide the LHS by the RHS (both must be INT or DOUBLE) */
   DIVIDE = "DIVIDE",
-  /** REMOVE_IF_PRESENT - Remove any occurrences of RHS from LHS (LHS must be JSON_ARR) */
+  /** REMOVE_IF_PRESENT - Remove any occurrences of RHS from LHS (LHS must be JSON_ARR or ARRAY) */
   REMOVE_IF_PRESENT = "REMOVE_IF_PRESENT",
-  /** REMOVE_INDEX - Remove item at index RHS from LHS (LHS must be JSON_ARR) */
+  /** REMOVE_INDEX - Remove item at index RHS from LHS (LHS must be JSON_ARR or ARRAY) */
   REMOVE_INDEX = "REMOVE_INDEX",
   /** REMOVE_KEY - Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ) */
   REMOVE_KEY = "REMOVE_KEY",

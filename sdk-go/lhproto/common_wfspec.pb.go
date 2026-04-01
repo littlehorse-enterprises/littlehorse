@@ -28,7 +28,7 @@ const (
 	VariableMutationType_ASSIGN VariableMutationType = 0
 	// Add the RHS to the LHS.
 	VariableMutationType_ADD VariableMutationType = 1
-	// Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR)
+	// Append the RHS to the LHS (valid if the LHS is a STR, JSON_ARR, or ARRAY)
 	VariableMutationType_EXTEND VariableMutationType = 2
 	// Subtract the RHS from the LHS (both must be INT or DOUBLE)
 	VariableMutationType_SUBTRACT VariableMutationType = 3
@@ -36,9 +36,9 @@ const (
 	VariableMutationType_MULTIPLY VariableMutationType = 4
 	// Divide the LHS by the RHS (both must be INT or DOUBLE)
 	VariableMutationType_DIVIDE VariableMutationType = 5
-	// Remove any occurrences of RHS from LHS (LHS must be JSON_ARR)
+	// Remove any occurrences of RHS from LHS (LHS must be JSON_ARR or ARRAY)
 	VariableMutationType_REMOVE_IF_PRESENT VariableMutationType = 6
-	// Remove item at index RHS from LHS (LHS must be JSON_ARR)
+	// Remove item at index RHS from LHS (LHS must be JSON_ARR or ARRAY)
 	VariableMutationType_REMOVE_INDEX VariableMutationType = 7
 	// Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ)
 	VariableMutationType_REMOVE_KEY VariableMutationType = 8
@@ -171,8 +171,8 @@ type VariableAssignment struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// If you provide a `variable_name` and the specified variable is a JSON_OBJ, JSON_ARR, or
-	// StructDef type, then you may provide a `path` for querying data within your object.
+	// If you provide a `variable_name` and the specified variable is a JSON_OBJ, JSON_ARR, ARRAY or
+	// STRUCT type, then you may provide a `path` for querying data within your object.
 	//
 	// Types that are assignable to Path:
 	//
@@ -310,7 +310,7 @@ type VariableAssignment_JsonPath struct {
 
 type VariableAssignment_LhPath struct {
 	// A path resolving to a field in your object.
-	// Supported on Struct and JSON_OBJ.
+	// Supported on Struct, Array, and JSON_OBJ.
 	LhPath *LHPath `protobuf:"bytes,8,opt,name=lh_path,json=lhPath,proto3,oneof"`
 }
 
@@ -1310,7 +1310,7 @@ type VariableMutation_NodeOutputSource struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Use this specific field from a Struct, JSON_OBJ, or JSON_ARR output
+	// Use this specific field from a Struct, JSON_OBJ, JSON_ARR, or ARRAY output
 	//
 	// Types that are assignable to Path:
 	//
@@ -1384,7 +1384,7 @@ type VariableMutation_NodeOutputSource_Jsonpath struct {
 
 type VariableMutation_NodeOutputSource_LhPath struct {
 	// A path resolving to a field in your object.
-	// Supported on Struct and JSON_OBJ.
+	// Supported on Struct, JSON_OBJ, JSON_ARR, or ARRAY.
 	LhPath *LHPath `protobuf:"bytes,11,opt,name=lh_path,json=lhPath,proto3,oneof"`
 }
 

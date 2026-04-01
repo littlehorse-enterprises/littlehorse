@@ -30,10 +30,10 @@ export enum Comparator {
   /** NOT_EQUALS - This is the inverse of `EQUALS` */
   NOT_EQUALS = "NOT_EQUALS",
   /**
-   * IN - Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
+   * IN - Only valid if the RHS is a JSON_OBJ, JSON_ARR, or ARRAY. Valid for any type on the LHS.
    *
    * For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
-   * RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
+   * RHS. For the JSON_ARR and ARRAY types, it returns true if one of the elements of the RHS
    * is equal to the LHS.
    */
   IN = "IN",

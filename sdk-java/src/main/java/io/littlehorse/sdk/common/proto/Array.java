@@ -94,8 +94,9 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.TypeDefinition elementType_;
   /**
    * <pre>
-   * Optional, authoritative element type for this array. If absent, element
-   * type may be unknown and must be derived from items or treated as wildcard.
+   * Optional, authoritative element type for this array.
+   * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+   * If absent, element type may be unknown and must be derived from items or treated as wildcard.
    * </pre>
    *
    * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
@@ -107,8 +108,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Optional, authoritative element type for this array. If absent, element
-   * type may be unknown and must be derived from items or treated as wildcard.
+   * Optional, authoritative element type for this array.
+   * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+   * If absent, element type may be unknown and must be derived from items or treated as wildcard.
    * </pre>
    *
    * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
@@ -120,8 +122,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Optional, authoritative element type for this array. If absent, element
-   * type may be unknown and must be derived from items or treated as wildcard.
+   * Optional, authoritative element type for this array.
+   * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+   * If absent, element type may be unknown and must be derived from items or treated as wildcard.
    * </pre>
    *
    * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
@@ -768,8 +771,9 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> elementTypeBuilder_;
     /**
      * <pre>
-     * Optional, authoritative element type for this array. If absent, element
-     * type may be unknown and must be derived from items or treated as wildcard.
+     * Optional, authoritative element type for this array.
+     * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+     * If absent, element type may be unknown and must be derived from items or treated as wildcard.
      * </pre>
      *
      * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
@@ -780,8 +784,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative element type for this array. If absent, element
-     * type may be unknown and must be derived from items or treated as wildcard.
+     * Optional, authoritative element type for this array.
+     * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+     * If absent, element type may be unknown and must be derived from items or treated as wildcard.
      * </pre>
      *
      * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
@@ -796,8 +801,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative element type for this array. If absent, element
-     * type may be unknown and must be derived from items or treated as wildcard.
+     * Optional, authoritative element type for this array.
+     * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+     * If absent, element type may be unknown and must be derived from items or treated as wildcard.
      * </pre>
      *
      * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
@@ -817,8 +823,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative element type for this array. If absent, element
-     * type may be unknown and must be derived from items or treated as wildcard.
+     * Optional, authoritative element type for this array.
+     * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+     * If absent, element type may be unknown and must be derived from items or treated as wildcard.
      * </pre>
      *
      * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
@@ -836,8 +843,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative element type for this array. If absent, element
-     * type may be unknown and must be derived from items or treated as wildcard.
+     * Optional, authoritative element type for this array.
+     * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+     * If absent, element type may be unknown and must be derived from items or treated as wildcard.
      * </pre>
      *
      * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
@@ -862,8 +870,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative element type for this array. If absent, element
-     * type may be unknown and must be derived from items or treated as wildcard.
+     * Optional, authoritative element type for this array.
+     * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+     * If absent, element type may be unknown and must be derived from items or treated as wildcard.
      * </pre>
      *
      * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
@@ -880,8 +889,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative element type for this array. If absent, element
-     * type may be unknown and must be derived from items or treated as wildcard.
+     * Optional, authoritative element type for this array.
+     * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+     * If absent, element type may be unknown and must be derived from items or treated as wildcard.
      * </pre>
      *
      * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
@@ -893,8 +903,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative element type for this array. If absent, element
-     * type may be unknown and must be derived from items or treated as wildcard.
+     * Optional, authoritative element type for this array.
+     * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+     * If absent, element type may be unknown and must be derived from items or treated as wildcard.
      * </pre>
      *
      * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
@@ -909,8 +920,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative element type for this array. If absent, element
-     * type may be unknown and must be derived from items or treated as wildcard.
+     * Optional, authoritative element type for this array.
+     * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+     * If absent, element type may be unknown and must be derived from items or treated as wildcard.
      * </pre>
      *
      * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>

@@ -36,8 +36,9 @@ public interface ArrayOrBuilder extends
 
   /**
    * <pre>
-   * Optional, authoritative element type for this array. If absent, element
-   * type may be unknown and must be derived from items or treated as wildcard.
+   * Optional, authoritative element type for this array.
+   * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+   * If absent, element type may be unknown and must be derived from items or treated as wildcard.
    * </pre>
    *
    * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
@@ -46,8 +47,9 @@ public interface ArrayOrBuilder extends
   boolean hasElementType();
   /**
    * <pre>
-   * Optional, authoritative element type for this array. If absent, element
-   * type may be unknown and must be derived from items or treated as wildcard.
+   * Optional, authoritative element type for this array.
+   * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+   * If absent, element type may be unknown and must be derived from items or treated as wildcard.
    * </pre>
    *
    * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>
@@ -56,8 +58,9 @@ public interface ArrayOrBuilder extends
   io.littlehorse.sdk.common.proto.TypeDefinition getElementType();
   /**
    * <pre>
-   * Optional, authoritative element type for this array. If absent, element
-   * type may be unknown and must be derived from items or treated as wildcard.
+   * Optional, authoritative element type for this array.
+   * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+   * If absent, element type may be unknown and must be derived from items or treated as wildcard.
    * </pre>
    *
    * <code>optional .littlehorse.TypeDefinition element_type = 2;</code>

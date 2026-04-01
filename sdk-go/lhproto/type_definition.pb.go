@@ -40,10 +40,10 @@ const (
 	Comparator_EQUALS Comparator = 4
 	// This is the inverse of `EQUALS`
 	Comparator_NOT_EQUALS Comparator = 5
-	// Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
+	// Only valid if the RHS is a JSON_OBJ, JSON_ARR, or ARRAY. Valid for any type on the LHS.
 	//
 	// For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
-	// RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
+	// RHS. For the JSON_ARR and ARRAY types, it returns true if one of the elements of the RHS
 	// is equal to the LHS.
 	Comparator_IN Comparator = 6
 	// The inverse of IN.
