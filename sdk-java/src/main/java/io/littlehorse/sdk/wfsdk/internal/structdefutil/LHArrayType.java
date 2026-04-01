@@ -8,9 +8,9 @@ import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 /**
  * Represents a native LittleHorse array type.
  */
-public class LHArrayType extends LHClassType {
+public final class LHArrayType extends LHClassType {
 
-    private LHClassType componentType;
+    private final LHClassType componentType;
 
     public LHArrayType(Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) {
         super(clazz, typeAdapterRegistry);
