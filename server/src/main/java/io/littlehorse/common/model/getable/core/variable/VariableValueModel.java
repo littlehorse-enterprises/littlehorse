@@ -550,9 +550,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 try {
                     ArrayList<VariableValueModel> newItems = new ArrayList<>();
                     if (arr.getItems() != null) {
-                        for (VariableValueModel v : arr.getItems()) {
-                            newItems.add(v.getCopy());
-                        }
+                        newItems.addAll(arr.getItems().stream()
+                                .map(item -> item.getCopy())
+                                .toList());
                     }
 
                     TypeDefinitionModel elemType = arr.getElementType();
@@ -601,12 +601,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     }
 
                     if (arr.getItems() != null) {
-                        for (VariableValueModel v : arr.getItems()) {
-                            // Compare by proto equality to cover all types
-                            if (!v.toProto().build().equals(target.toProto().build())) {
-                                newItems.add(v.getCopy());
-                            }
-                        }
+                        newItems.addAll(arr.getItems().stream()
+                                .filter(v -> !v.equals(target))
+                                .map(v -> v.getCopy())
+                                .toList());
                     }
 
                     ArrayModel newArr = new ArrayModel(newItems, elemType);
@@ -702,6 +700,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 return this.wfRunId;
             case STRUCT:
                 return this.struct;
+            case ARRAY:
+                return this.array;
             case UTC_TIMESTAMP:
                 return this.utcTimestampVal;
             case VALUE_NOT_SET:
