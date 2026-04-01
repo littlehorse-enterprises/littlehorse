@@ -5,6 +5,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'com.diffplug.spotless'
+    id("com.github.spotbugs") version "6.4.8"
 }
 
 java {
@@ -31,6 +32,18 @@ javadoc {
         'io/littlehorse/common/util/LHUtil.java'
     ]
     options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+spotbugs {
+    excludeFilter = file('spotbugs-exclude.xml')
+}
+
+tasks.spotbugsMain {
+    reports.create("html") {
+        required = true
+        outputLocation = file("$buildDir/reports/spotbugs.html")
+        setStylesheet("fancy-hist.xsl")
+    }
 }
 
 task sourcesJar(type: Jar) {
