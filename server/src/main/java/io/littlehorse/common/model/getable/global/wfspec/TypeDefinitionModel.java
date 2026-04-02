@@ -276,12 +276,26 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      * @param metadataManager the metadata manager to look up the StructDef.
      * @throws UnknownStructDefException if the referenced StructDef does not exist.
      */
-    public void validateStructDefExists(ReadOnlyMetadataManager metadataManager) throws UnknownStructDefException {
-        if (definedTypeCase != DefinedTypeCase.STRUCT_DEF_ID) return;
+    public void validateStructDefExistsAndPinVersion(ReadOnlyMetadataManager metadataManager)
+            throws UnknownStructDefException {
+        if (definedTypeCase == DefinedTypeCase.STRUCT_DEF_ID) {
+            WfService wfService = new WfService(metadataManager);
 
-        WfService wfService = new WfService(metadataManager);
-        if (wfService.getStructDef(structDefId) == null) {
-            throw new UnknownStructDefException(structDefId.getName());
+            StructDefModel resolved = wfService.getStructDef(structDefId.getName(), null);
+            if (resolved == null) {
+                throw new UnknownStructDefException(structDefId.getName());
+            }
+
+            // Overwrite the version to the concrete latest version.
+            structDefId.setVersion(resolved.getObjectId().getVersion());
+            return;
+        } else if (definedTypeCase == DefinedTypeCase.INLINE_ARRAY_DEF) {
+            if (inlineArrayDef != null && inlineArrayDef.getArrayType() != null) {
+                inlineArrayDef.getArrayType().validateStructDefExistsAndPinVersion(metadataManager);
+            }
+            return;
+        } else {
+            return;
         }
     }
 
