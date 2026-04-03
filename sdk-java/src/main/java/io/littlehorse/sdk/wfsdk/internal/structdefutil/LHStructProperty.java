@@ -56,6 +56,12 @@ public class LHStructProperty {
         try {
             Object val = pd.getReadMethod().invoke(o);
             if (val == null) return null;
+
+            LHStructField structField = getAnnotation(LHStructField.class);
+            if (structField != null && structField.isLHArray() && val.getClass().isArray()) {
+                return LHLibUtil.objToVarValAsNativeArray(val, pd.getPropertyType(), typeAdapterRegistry);
+            }
+
             return LHLibUtil.objToVarVal(val, pd.getPropertyType(), typeAdapterRegistry);
         } catch (LHSerdeException | IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
@@ -135,6 +141,11 @@ public class LHStructProperty {
     }
 
     public LHClassType getPropertyType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        LHStructField structField = getAnnotation(LHStructField.class);
+        if (structField != null && structField.isLHArray()) {
+            return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry);
+        }
+
         return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry);
     }
 

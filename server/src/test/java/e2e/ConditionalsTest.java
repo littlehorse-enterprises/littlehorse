@@ -3,6 +3,7 @@ package e2e;
 import static org.assertj.core.api.Assertions.*;
 
 import e2e.Struct.Car;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -123,7 +124,7 @@ public class ConditionalsTest {
         @ParameterizedTest
         @MethodSource("provideStructEqualsWorkflowSuccessArguments")
         void shouldCompleteStructEqualsWorkflowWithConditionals(Car car1, Car car2, boolean expectedOutput) {
-            client.putStructDef(new LHStructDefType(Car.class).toPutStructDefRequest());
+            client.putStructDef(new LHStructDefType(Car.class, LHTypeAdapterRegistry.empty()).toPutStructDefRequest());
 
             workflowVerifier
                     .prepareRun(workflowStructEquals, Arg.of("struct-a", car1), Arg.of("struct-b", car2))
