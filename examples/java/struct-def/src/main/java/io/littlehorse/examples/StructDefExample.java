@@ -1,6 +1,7 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutStructDefRequest;
@@ -81,7 +82,7 @@ public class StructDefExample {
     private static void registerStructDef(LittleHorseBlockingStub client, Class<?> structDefClass) {
         StructDefCompatibilityType compatibilityType = StructDefCompatibilityType.NO_SCHEMA_UPDATES;
 
-        LHStructDefType structDefType = new LHStructDefType(structDefClass);
+        LHStructDefType structDefType = new LHStructDefType(structDefClass, LHTypeAdapterRegistry.empty());
 
         PutStructDefRequest request = structDefType.toPutStructDefRequest().toBuilder()
                 .setAllowedUpdates(compatibilityType)

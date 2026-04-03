@@ -99,10 +99,20 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
         }
     }
 
-    public void validateAgainst(InlineStructModel inlineStruct, ReadOnlyMetadataManager metadataManager)
+    /**
+     * Superset-compatible validation: value may contain extra fields that are not
+     * present in this StructDef. Required fields from the StructDef are still enforced.
+     * Use this for runtime ingestion where clients may send newer fields than the
+     * pinned schema.
+     *
+     * @param inlineStruct The InlineStruct to validate.
+     * @param metadataManager Read-only metadata manager used to resolve nested struct types.
+     * @throws StructValidationException if the payload is missing required fields or
+     *                                   contains fields incompatible with the StructDef.
+     */
+    public void validateAgainstSuperset(InlineStructModel inlineStruct, ReadOnlyMetadataManager metadataManager)
             throws StructValidationException {
         for (Entry<String, StructFieldDefModel> entry : this.fields.entrySet()) {
-            // If InlineStruct is missing required field...
             String fieldName = entry.getKey();
             StructFieldDefModel fieldDef = entry.getValue();
 
@@ -117,16 +127,6 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
                     throw new StructValidationException(
                             String.format("Field '%s' is invalid: %s", fieldName, e.getMessage()));
                 }
-            }
-        }
-
-        for (Entry<String, StructFieldModel> entry : inlineStruct.getFields().entrySet()) {
-            // If InlineStruct has extra fields...
-            String fieldName = entry.getKey();
-
-            if (!this.fields.containsKey(fieldName)) {
-                throw new StructValidationException(
-                        "Struct does not match StructDef, includes unrecognized field %s".formatted(fieldName));
             }
         }
     }

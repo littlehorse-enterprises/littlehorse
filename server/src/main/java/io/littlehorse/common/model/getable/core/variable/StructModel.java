@@ -38,6 +38,34 @@ public class StructModel extends LHSerializable<Struct> implements Comparable<St
         return out;
     }
 
+    public void validateAgainstStructDefId(
+            StructDefIdModel expectedStructDefId, ReadOnlyMetadataManager metadataManager)
+            throws StructValidationException {
+        if (expectedStructDefId == null) {
+            throw new StructValidationException("Expected StructDefId cannot be null");
+        }
+
+        StructDefModel structDef = new WfService(metadataManager).getStructDef(expectedStructDefId);
+
+        if (structDef == null) {
+            throw new StructValidationException("StructDef %s does not exist.".formatted(expectedStructDefId));
+        }
+
+        try {
+            structDef.validateAgainstSuperset(this, metadataManager);
+        } catch (StructValidationException e) {
+            throw new StructValidationException(String.format(
+                    "Struct incompatible with StructDef %s: %s", structDef.getObjectId(), e.getMessage()));
+        }
+
+        this.structDefId = expectedStructDefId;
+    }
+
+    /**
+     * Validate this struct against the StructDefId embedded in the payload itself.
+     * Prefer the overload that accepts an explicit expected StructDefId for ingress
+     * validation against pinned metadata types.
+     */
     public void validateAgainstStructDefId(ReadOnlyMetadataManager metadataManager) throws StructValidationException {
         StructDefModel structDef = new WfService(metadataManager).getStructDef(structDefId.getName(), null);
 
@@ -46,7 +74,7 @@ public class StructModel extends LHSerializable<Struct> implements Comparable<St
         }
 
         try {
-            structDef.validateAgainst(this, metadataManager);
+            structDef.validateAgainstSuperset(this, metadataManager);
         } catch (StructValidationException e) {
             throw new StructValidationException(String.format(
                     "Struct incompatible with StructDef %s: %s", structDef.getObjectId(), e.getMessage()));

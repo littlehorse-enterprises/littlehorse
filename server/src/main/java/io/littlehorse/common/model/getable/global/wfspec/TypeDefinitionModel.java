@@ -1,16 +1,14 @@
 package io.littlehorse.common.model.getable.global.wfspec;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
-import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
 import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ArrayReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
@@ -368,39 +366,41 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
-     * Returns true if the VariableValueModel matches this type.
-     * @throws StructValidationException
+     * Validate that the given VariableValueModel is compatible with this type.
+     * Throws a domain-level TypeValidationException on failure.
      */
-    public boolean isCompatibleWith(VariableValueModel value, ReadOnlyMetadataManager readOnlyMetadataManager) {
-        if (value.getValueType() == ValueCase.STRUCT) {
-            try {
-                value.getStruct().validateAgainstStructDefId(readOnlyMetadataManager);
-            } catch (StructValidationException e) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        String.format("Provided Struct incompatible with type %s: %s", this, e.getMessage()));
-            }
-        } else if (value.getValueType() == ValueCase.VALUE_NOT_SET) {
-            return true;
-        }
+    public void validateCompatibility(VariableValueModel value, ReadOnlyMetadataManager readOnlyMetadataManager)
+            throws TypeValidationException {
+        if (value.getValueType() == ValueCase.VALUE_NOT_SET) return;
 
         TypeDefinitionModel other = value.getTypeDefinition();
 
-        // If this is an inline array type, validate every element in the provided
-        // array value against the array's element type. The VariableValueModel
-        // derives its array type from the first element only, which can allow
-        // mixed-typed arrays to appear compatible. Enforce per-element checks here.
-        if (this.getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF && value.getValueType() == ValueCase.ARRAY) {
-            TypeDefinitionModel expectedElementType = this.getInlineArrayDef().getArrayType();
-            for (VariableValueModel item : value.getArray().getItems()) {
-                TypeDefinitionModel itemType = item.getTypeDefinition();
-                if (!expectedElementType.isCompatibleWith(itemType)) {
-                    return false;
-                }
-            }
+        if (!isCompatibleWith(other)) {
+            throw new TypeValidationException(
+                    String.format("Value of type %s is not compatible with expected type %s", other, this));
         }
 
-        return this.isCompatibleWith(other);
+        switch (value.getValueType()) {
+            case STRUCT:
+                value.getStruct().validateAgainstStructDefId(this.getStructDefId(), readOnlyMetadataManager);
+                break;
+            case ARRAY:
+                TypeDefinitionModel expectedElementType =
+                        this.getInlineArrayDef().getArrayType();
+
+                for (VariableValueModel item : value.getArray().getItems()) {
+                    TypeDefinitionModel itemType = item.getTypeDefinition();
+                    if (!expectedElementType.isCompatibleWith(itemType)) {
+                        throw new TypeValidationException(String.format(
+                                "Array element type %s incompatible with expected element type %s",
+                                itemType, expectedElementType));
+                    }
+                }
+                break;
+            case VALUE_NOT_SET:
+                return;
+            default:
+        }
     }
 
     /**

@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.global.wfspec;
 
-import io.grpc.Status;
-import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -22,7 +21,8 @@ import java.util.Optional;
 public class IngressTypeUtils {
 
     public static void applyExpectedTypeAndValidate(
-            Optional<TypeDefinitionModel> expected, VariableValueModel value, ReadOnlyMetadataManager metadataManager) {
+            Optional<TypeDefinitionModel> expected, VariableValueModel value, ReadOnlyMetadataManager metadataManager)
+            throws TypeValidationException {
         if (expected == null || expected.isEmpty()) return;
 
         TypeDefinitionModel typeDef = expected.get();
@@ -42,13 +42,7 @@ public class IngressTypeUtils {
         }
 
         // Validate using existing TypeDefinitionModel logic. It will perform
-        // per-item checks for inline arrays as needed.
-        if (!typeDef.isCompatibleWith(value, metadataManager)) {
-            String actualType = String.valueOf(value.getTypeDefinition());
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT,
-                    String.format(
-                            "Provided value of type %s is incompatible with expected type %s", actualType, typeDef));
-        }
+        // per-item checks for inline arrays as needed. Map domain errors to API errors.
+        typeDef.validateCompatibility(value, metadataManager);
     }
 }
