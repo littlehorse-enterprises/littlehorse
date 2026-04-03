@@ -58,7 +58,8 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
             }
 
             try {
-                // Ensure any STRUCT_DEF_ID referenced in the field's type exists and is pinned to the concrete latest version
+                // Ensure any STRUCT_DEF_ID referenced in the field's type exists and is pinned to the concrete latest
+                // version
                 if (field.getValue().getFieldType() != null) {
                     try {
                         field.getValue().getFieldType().validateStructDefExistsAndPinVersion(metadataManager);
