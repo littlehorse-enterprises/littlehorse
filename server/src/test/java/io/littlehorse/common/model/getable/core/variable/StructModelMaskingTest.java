@@ -11,8 +11,8 @@ import static org.mockito.Mockito.when;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
-import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.Struct;
