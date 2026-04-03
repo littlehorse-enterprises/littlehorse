@@ -3,7 +3,6 @@ package e2e;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import e2e.Struct.Car;
-import e2e.Struct.CarWithExtraField;
 import e2e.Struct.CarWithMissingField;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;

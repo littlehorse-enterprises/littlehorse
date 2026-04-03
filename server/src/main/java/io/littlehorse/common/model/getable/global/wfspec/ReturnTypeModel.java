@@ -68,9 +68,13 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
      */
     public void validateCompatibility(VariableValueModel value, ReadOnlyMetadataManager metadataManager)
             throws TypeValidationException {
-        if (returnType == null && !value.isEmpty()) {
-            throw new TypeValidationException("Expected void return type, but value is not empty.");
+        if (returnType == null) {
+            if (!value.isEmpty()) {
+                throw new TypeValidationException("Expected void return type, but value is not empty.");
+            }
+            return;
         }
+
         returnType.validateCompatibility(value, metadataManager);
     }
 }
