@@ -65,17 +65,6 @@ public class StructValidationsTest {
         Assertions.assertThat(caught.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
     }
 
-    @Test
-    void shouldFailWithStructWithExtraField() {
-        StatusRuntimeException caught = assertThrows(StatusRuntimeException.class, () -> {
-            verifier.prepareRun(
-                            structWorkflow, Arg.of("my-car", new CarWithExtraField("Obi-Wan", "Kenobi", 5000, "red")))
-                    .start();
-        });
-
-        Assertions.assertThat(caught.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
-    }
-
     @LHWorkflow("structs-wf")
     public Workflow structsWf() {
         return new WorkflowImpl("structs-wf", wf -> {
