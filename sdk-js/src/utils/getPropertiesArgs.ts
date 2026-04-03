@@ -1,6 +1,4 @@
-import { readFileSync } from 'fs'
-import { resolve } from 'path'
-import { CONFIG_NAMES, Config, ConfigName } from '../LHConfig'
+import { Config, ConfigName } from '../LHConfig'
 
 export type ConfigArgs = {
   apiHost: string
@@ -8,6 +6,8 @@ export type ConfigArgs = {
   protocol: string
   tenantId: string
   caCert: string
+  clientCert: string
+  clientKey: string
 }
 
 type Mapping = {
@@ -20,14 +20,17 @@ const argsMapping: Mapping = {
   protocol: 'LHC_API_PROTOCOL',
   tenantId: 'LHC_TENANT_ID',
   caCert: 'LHC_CA_CERT',
+  clientCert: 'LHC_CLIENT_CERT',
+  clientKey: 'LHC_CLIENT_KEY',
 }
 
 /**
- * Returns partial object with restricted key/value for valid config properties
- * @param path - absolute path to config file
- * @returns Partial<Config>
+ * Maps provided partial ConfigArgs to a partial Config object using the defined
+ * environment variable mapping.
+ * @param args - Partial set of configuration arguments (ConfigArgs).
+ * @returns Partial<Config> object with keys mapped to their corresponding ConfigName.
  */
-const getPropertiesFile = (args: Partial<ConfigArgs>): Partial<Config> => {
+const getPropertiesArgs = (args: Partial<ConfigArgs>): Partial<Config> => {
   const keys = Object.keys(args) as Array<keyof ConfigArgs>
   return keys.reduce<Partial<Config>>((config, key) => {
     config[argsMapping[key]] = args[key]
@@ -35,4 +38,4 @@ const getPropertiesFile = (args: Partial<ConfigArgs>): Partial<Config> => {
   }, {})
 }
 
-export default getPropertiesFile
+export default getPropertiesArgs

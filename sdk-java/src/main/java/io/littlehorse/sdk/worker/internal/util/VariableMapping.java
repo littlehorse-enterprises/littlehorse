@@ -1,201 +1,167 @@
 package io.littlehorse.sdk.worker.internal.util;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.adapter.LHTypeAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
-import io.littlehorse.sdk.common.proto.StructDefId;
-import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
-import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
-import io.littlehorse.sdk.worker.WorkerContext;
-import java.util.List;
+import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskParameter;
 import java.util.Objects;
-import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class VariableMapping {
 
-    private String name;
-    private Class<?> type;
-    private int position;
-    private LHTypeAdapterRegistry typeAdapterRegistry;
-    private String inlineStructDefName;
+    private final LHTypeAdapterRegistry typeAdapterRegistry;
+    private final String variableName;
+    private final Class<?> parameterJavaType;
+    private final boolean expectsNativeLHArray;
 
     public VariableMapping(
-            TaskDef taskDef, int position, Class<?> type, String javaParamName, List<LHTypeAdapter<?>> typeAdapters)
+            VariableDef variableDef, LHTaskParameter lhTaskParameter, LHTypeAdapterRegistry typeAdapterRegistry)
             throws TaskSchemaMismatchError {
-        this(taskDef, position, type, javaParamName, null, LHTypeAdapterRegistry.from(typeAdapters));
-    }
-
-    public VariableMapping(
-            TaskDef taskDef,
-            int position,
-            Class<?> type,
-            String javaParamName,
-            LHTypeAdapterRegistry typeAdapterRegistry)
-            throws TaskSchemaMismatchError {
-        this(taskDef, position, type, javaParamName, null, typeAdapterRegistry);
-    }
-
-    public VariableMapping(
-            TaskDef taskDef,
-            int position,
-            Class<?> type,
-            String javaParamName,
-            String inlineStructDefName,
-            LHTypeAdapterRegistry typeAdapterRegistry)
-            throws TaskSchemaMismatchError {
-        this.type = type;
+        Objects.requireNonNull(variableDef, "VariableDef cannot be null");
+        Objects.requireNonNull(lhTaskParameter, "LHTaskParameter cannot be null");
         this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
-        this.inlineStructDefName = inlineStructDefName;
+        this.variableName = variableDef.getName();
+        this.parameterJavaType = lhTaskParameter.getParameterType();
+        this.expectsNativeLHArray =
+                lhTaskParameter.getVariableDef().getTypeDef().getDefinedTypeCase()
+                        == TypeDefinition.DefinedTypeCase.INLINE_ARRAY_DEF;
 
-        if (type.equals(WorkerContext.class)) return;
-        this.position = position;
-
-        if (position >= taskDef.getInputVarsCount()) {
-            throw new TaskSchemaMismatchError("Provided Java function has more parameters than the TaskDef.");
+        try {
+            validateParamAgainstVariableDef(variableDef, lhTaskParameter);
+        } catch (TaskSchemaMismatchError taskSchemaMismatchError) {
+            throw new TaskSchemaMismatchError("Invalid assignment for var " + lhTaskParameter.getVariableName() + ": "
+                    + taskSchemaMismatchError.getMessage());
         }
-        this.name = javaParamName;
-        TypeDefinition inputType = taskDef.getInputVars(position).getTypeDef();
+    }
 
-        Optional<String> msg = null;
+    private void validateParamAgainstVariableDef(VariableDef variableDef, LHTaskParameter lhTaskParameter)
+            throws TaskSchemaMismatchError {
+        VariableDef expected = lhTaskParameter.getVariableDef();
 
-        switch (inputType.getDefinedTypeCase()) {
-            case DEFINEDTYPE_NOT_SET:
-                break;
+        if (!variableDef.getName().equals(expected.getName())) {
+            throw new TaskSchemaMismatchError(String.format(
+                    "TaskDef variable name <%s>, func expects parameter name <%s>",
+                    variableDef.getName(), expected.getName()));
+        }
+
+        TypeDefinition providedType = requireTypeDefinition(variableDef);
+        TypeDefinition expectedType = lhTaskParameter.getVariableDef().getTypeDef();
+
+        if (!areTypesCompatible(providedType, expectedType)) {
+            throw new TaskSchemaMismatchError(String.format(
+                    "TaskDef provides type <%s>, func expects <%s>",
+                    formatTypeDefinition(providedType), formatTypeDefinition(expectedType)));
+        }
+
+        if (providedType.getDefinedTypeCase() != expectedType.getDefinedTypeCase()) {
+            throw new TaskSchemaMismatchError(String.format(
+                    "TaskDef provides type <%s>, func expects <%s>",
+                    formatTypeDefinition(providedType), formatTypeDefinition(expectedType)));
+        }
+    }
+
+    private static boolean areTypesCompatible(TypeDefinition providedType, TypeDefinition expectedType) {
+        if (providedType.getDefinedTypeCase() != expectedType.getDefinedTypeCase()) {
+            return false;
+        }
+
+        switch (providedType.getDefinedTypeCase()) {
             case PRIMITIVE_TYPE:
-                msg = validatePrimitiveType(inputType.getPrimitiveType(), type);
-                break;
+                return providedType.getPrimitiveType() == expectedType.getPrimitiveType();
             case STRUCT_DEF_ID:
-                msg = validateStructDefType(inputType.getStructDefId(), type);
-                break;
+                return providedType.getStructDefId().equals(expectedType.getStructDefId());
+            case INLINE_ARRAY_DEF:
+                return areTypesCompatible(
+                        providedType.getInlineArrayDef().getArrayType(),
+                        expectedType.getInlineArrayDef().getArrayType());
+            case DEFINEDTYPE_NOT_SET:
             default:
-                break;
-        }
-
-        if (msg.isPresent()) {
-            throw new TaskSchemaMismatchError("Invalid assignment for var " + name + ": " + msg.get());
+                return false;
         }
     }
 
-    private Optional<String> validateStructDefType(StructDefId input, Class<?> type) {
-        String msg = null;
-
-        if (InlineStruct.class.equals(type)) {
-            if (inlineStructDefName == null || inlineStructDefName.isBlank()) {
-                msg = "TaskDef provides StructDef, func accepts InlineStruct without @LHType(structDefName = ...)";
-            } else if (!input.getName().equals(inlineStructDefName)) {
-                msg = String.format(
-                        "TaskDef provides StructDef <%s>, func expects InlineStruct StructDef <%s>",
-                        input.getName(), inlineStructDefName);
-            }
-            return Optional.ofNullable(msg);
+    private static TypeDefinition requireTypeDefinition(VariableDef variableDef) {
+        if (!variableDef.hasTypeDef()) {
+            throw new TaskSchemaMismatchError(String.format(
+                    "TaskDef variable <%s> is missing a TypeDefinition. This client requires TypeDefinitions for all VariableDefs.",
+                    variableDef.getName()));
         }
 
-        LHClassType lhClassType = LHClassType.fromJavaClass(type, typeAdapterRegistry);
-
-        if (!(lhClassType instanceof LHStructDefType)) {
-            msg = "TaskDef provides StructDef, func accepts non-StructDef type " + type;
-            return Optional.ofNullable(msg);
+        TypeDefinition typeDef = variableDef.getTypeDef();
+        if (typeDef.getDefinedTypeCase() == TypeDefinition.DefinedTypeCase.DEFINEDTYPE_NOT_SET) {
+            throw new TaskSchemaMismatchError(String.format(
+                    "TaskDef variable <%s> has an unrecognized TypeDefinition incompatible with this client.",
+                    variableDef.getName()));
         }
 
-        LHStructDefType lhStructDefType = (LHStructDefType) lhClassType;
-
-        if (!input.equals(lhStructDefType.getStructDefId())) {
-            msg = String.format(
-                    "TaskDef provides StructDef <%s>, func accepts StructDef <%s>",
-                    input, lhStructDefType.getStructDefId());
-        }
-
-        return Optional.ofNullable(msg);
+        return typeDef;
     }
 
-    private Optional<String> validatePrimitiveType(VariableType input, Class<?> type) {
-        String msg = null;
-
-        Optional<LHTypeAdapter<?>> maybeAdapter = LHLibUtil.getTypeAdapterForClass(type, typeAdapterRegistry);
-        if (maybeAdapter.isPresent()) {
-            LHTypeAdapter<?> adapter = maybeAdapter.get();
-            if (adapter.getVariableType() != input) {
-                return Optional.of("TaskDef provides " + input + ", but adapter for " + type.getName() + " maps to "
-                        + adapter.getVariableType());
-            }
-            return Optional.empty();
-        }
-
-        switch (input) {
-            case INT:
-                if (!LHLibUtil.isINT(type)) {
-                    msg = "TaskDef provides INT, func accepts " + type.getName();
-                }
-                break;
-            case DOUBLE:
-                if (!LHLibUtil.isDOUBLE(type)) {
-                    msg = "TaskDef provides a DOUBLE, func accepts " + type.getName();
-                }
-                break;
-            case STR:
-                if (!LHLibUtil.isSTR(type)) {
-                    msg = "TaskDef provides a STRING, func accepts " + type.getName();
-                }
-                break;
-            case BOOL:
-                if (!LHLibUtil.isBOOL(type)) {
-                    msg = "TaskDef provides a BOOL, func accepts " + type.getName();
-                }
-                break;
-            case BYTES:
-                if (!LHLibUtil.isBYTES(type)) {
-                    msg = "TaskDef provides BYTES, func accepts " + type.getName();
-                }
-                break;
-            case JSON_ARR:
-            case JSON_OBJ:
-                log.info("Info: Will use Gson to deserialize Json into {}", type.getName());
-                break;
-            case WF_RUN_ID:
-                if (!LHLibUtil.isWfRunId(type)) {
-                    msg = "TaskDef provides WF_RUN_ID, func accepts " + type.getName();
-                }
-                break;
-            case TIMESTAMP:
-                if (!LHLibUtil.isTIMESTAMP(type)) {
-                    msg = "TaskDef provides a TIMESTAMP, func accepts " + type.getName();
-                }
-                break;
-            case UNRECOGNIZED:
-                throw new RuntimeException("Not possible");
+    private static String formatTypeDefinition(TypeDefinition typeDefinition) {
+        switch (typeDefinition.getDefinedTypeCase()) {
+            case PRIMITIVE_TYPE:
+                return typeDefinition.getPrimitiveType().name();
+            case STRUCT_DEF_ID:
+                return "StructDef<" + typeDefinition.getStructDefId().getName() + ">";
+            case INLINE_ARRAY_DEF:
+                return "Array<"
+                        + formatTypeDefinition(
+                                typeDefinition.getInlineArrayDef().getArrayType()) + ">";
             default:
-                break;
+                return "UNSPECIFIED";
         }
-        return Optional.ofNullable(msg);
     }
 
-    public Object assign(ScheduledTask taskInstance, WorkerContext context) throws InputVarSubstitutionException {
-        if (type.equals(WorkerContext.class)) {
-            return context;
+    private static VarNameAndVal getAssignmentByName(ScheduledTask taskInstance, String variableName)
+            throws InputVarSubstitutionException {
+        for (VarNameAndVal assignment : taskInstance.getVariablesList()) {
+            if (variableName.equals(assignment.getVarName())) {
+                return assignment;
+            }
         }
 
-        VarNameAndVal assignment = taskInstance.getVariables(position);
+        throw new InputVarSubstitutionException(
+                "Could not find assignment for variable: " + variableName,
+                new Exception("ScheduledTask did not include a VarNameAndVal entry for that variable name."));
+    }
+
+    public Object assign(ScheduledTask taskInstance) throws InputVarSubstitutionException {
+        VarNameAndVal assignment = getAssignmentByName(taskInstance, variableName);
         String taskDefParamName = assignment.getVarName();
 
         VariableValue val = assignment.getValue();
 
         try {
-            return LHLibUtil.varValToObj(val, this.type, this.typeAdapterRegistry);
+            if (expectsNativeLHArray && val.getValueCase() == VariableValue.ValueCase.ARRAY) {
+                return assignNativeArray(val);
+            }
+            return LHLibUtil.varValToObj(val, this.parameterJavaType, this.typeAdapterRegistry);
         } catch (LHSerdeException e) {
             throw new InputVarSubstitutionException(
                     "Failed serializing Java object for variable: " + taskDefParamName, e);
         }
+    }
+
+    private Object assignNativeArray(VariableValue val) throws LHSerdeException {
+        if (!parameterJavaType.isArray()) {
+            throw new LHSerdeException("Native LittleHorse arrays can only be assigned to Java array parameters.");
+        }
+
+        Class<?> componentType = parameterJavaType.getComponentType();
+        int size = val.getArray().getItemsCount();
+        Object outputArray = java.lang.reflect.Array.newInstance(componentType, size);
+
+        for (int i = 0; i < size; i++) {
+            Object item = LHLibUtil.varValToObj(val.getArray().getItems(i), componentType, typeAdapterRegistry);
+            java.lang.reflect.Array.set(outputArray, i, item);
+        }
+
+        return outputArray;
     }
 }

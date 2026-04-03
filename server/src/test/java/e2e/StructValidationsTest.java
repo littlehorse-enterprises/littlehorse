@@ -7,6 +7,7 @@ import e2e.Struct.CarWithExtraField;
 import e2e.Struct.CarWithMissingField;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.util.Arg;
@@ -32,7 +33,7 @@ public class StructValidationsTest {
 
     @BeforeEach
     public void setup() {
-        LHStructDefType lhStructDefType = new LHStructDefType(Car.class);
+        LHStructDefType lhStructDefType = new LHStructDefType(Car.class, LHTypeAdapterRegistry.empty());
         client.putStructDef(lhStructDefType.toPutStructDefRequest());
     }
 
