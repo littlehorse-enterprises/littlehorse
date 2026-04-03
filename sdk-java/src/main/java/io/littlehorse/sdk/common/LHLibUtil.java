@@ -33,6 +33,7 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.adapter.LHWfRunIdAdapter;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
+import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
@@ -416,6 +417,8 @@ public class LHLibUtil {
             case STRUCT:
                 Struct struct = val.getStruct();
                 return deserializeStructToObject(struct, targetClazz, typeAdapterRegistry);
+            case ARRAY:
+                return deserializeNativeArrayToObject(val, targetClazz, typeAdapterRegistry);
             case UTC_TIMESTAMP:
                 Timestamp timestamp = val.getUtcTimestamp();
                 if (Timestamp.class.isAssignableFrom(targetClazz)) {
@@ -442,6 +445,26 @@ public class LHLibUtil {
         } catch (LHJsonProcessingException exn) {
             throw new LHSerdeException(exn, "Failed deserializing VariableValue from JSON");
         }
+    }
+
+    private static Object deserializeNativeArrayToObject(
+            VariableValue val, Class<?> targetClazz, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
+        if (!targetClazz.isArray()) {
+            throw new LHSerdeException(
+                    "Failed deserializing native LittleHorse ARRAY: target class is not a Java array type.");
+        }
+
+        Class<?> componentType = targetClazz.getComponentType();
+        int size = val.getArray().getItemsCount();
+        Object outputArray = java.lang.reflect.Array.newInstance(componentType, size);
+
+        for (int i = 0; i < size; i++) {
+            Object item = varValToObj(val.getArray().getItems(i), componentType, typeAdapterRegistry);
+            java.lang.reflect.Array.set(outputArray, i, item);
+        }
+
+        return outputArray;
     }
 
     @SuppressWarnings("unchecked")
@@ -616,6 +639,40 @@ public class LHLibUtil {
         }
 
         return objToVarValWithoutTypeAdapter(o, typeAdapterRegistry);
+    }
+
+    /**
+     * Serializes a Java array into a native LittleHorse ARRAY VariableValue.
+     *
+     * <p>Each item is serialized according to the declared component type, allowing
+     * primitive and adapter-backed element serialization to be reused.
+     */
+    public static VariableValue objToVarValAsNativeArray(
+            Object o, Class<?> declaredArrayClass, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
+        if (o == null) {
+            return VariableValue.newBuilder().build();
+        }
+
+        if (declaredArrayClass == null || !declaredArrayClass.isArray()) {
+            throw new LHSerdeException("Declared class for native array serialization must be a Java array type.");
+        }
+
+        if (!o.getClass().isArray()) {
+            throw new LHSerdeException(
+                    "Native array serialization requires the given object to be a Java array, but got an object of type: "
+                            + o.getClass().getName());
+        }
+
+        Class<?> componentType = declaredArrayClass.getComponentType();
+        Array.Builder out = Array.newBuilder();
+        int length = java.lang.reflect.Array.getLength(o);
+
+        for (int i = 0; i < length; i++) {
+            Object item = java.lang.reflect.Array.get(o, i);
+            out.addItems(objToVarVal(item, componentType, typeAdapterRegistry));
+        }
+
+        return VariableValue.newBuilder().setArray(out).build();
     }
 
     @SuppressWarnings("unchecked")
@@ -970,6 +1027,17 @@ public class LHLibUtil {
                 return a.getWfRunId().equals(b.getWfRunId());
             case UTC_TIMESTAMP:
                 return a.getUtcTimestamp().equals(b.getUtcTimestamp());
+            case ARRAY:
+                if (a.getArray().getItemsCount() != b.getArray().getItemsCount()) {
+                    return false;
+                }
+                for (int i = 0; i < a.getArray().getItemsCount(); i++) {
+                    if (!areVariableValuesEqual(
+                            a.getArray().getItems(i), b.getArray().getItems(i))) {
+                        return false;
+                    }
+                }
+                return true;
             case VALUE_NOT_SET:
                 return true;
             default:

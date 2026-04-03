@@ -6,6 +6,7 @@ package littlehorse;
 import "common_enums.proto";
 import "variable.proto";
 import "object_id.proto";
+import "type_definition.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -60,15 +61,15 @@ message VariableAssignment {
     VariableAssignment rhs = 3;
   }
 
-  // If you provide a `variable_name` and the specified variable is a JSON_OBJ, JSON_ARR, or
-  // StructDef type, then you may provide a `path` for querying data within your object.
+  // If you provide a `variable_name` and the specified variable is a JSON_OBJ, JSON_ARR, ARRAY or
+  // STRUCT type, then you may provide a `path` for querying data within your object.
   oneof path {
     // DEPRECATED: A String path formatted in the `JSONPath` format.
     // Supported on JSON_OBJ and JSON_ARR.
     string json_path = 1;
 
     // A path resolving to a field in your object.
-    // Supported on Struct and JSON_OBJ.
+    // Supported on Struct, Array, and JSON_OBJ.
     LHPath lh_path = 8;
   }
 
@@ -99,7 +100,7 @@ enum VariableMutationType {
   ASSIGN = 0;
   // Add the RHS to the LHS.
   ADD = 1;
-  // Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR)
+  // Append the RHS to the LHS (valid if the LHS is a STR, JSON_ARR, or ARRAY)
   EXTEND = 2;
   // Subtract the RHS from the LHS (both must be INT or DOUBLE)
   SUBTRACT = 3;
@@ -107,9 +108,9 @@ enum VariableMutationType {
   MULTIPLY = 4;
   // Divide the LHS by the RHS (both must be INT or DOUBLE)
   DIVIDE = 5;
-  // Remove any occurrences of RHS from LHS (LHS must be JSON_ARR)
+  // Remove any occurrences of RHS from LHS (LHS must be JSON_ARR or ARRAY)
   REMOVE_IF_PRESENT = 6;
-  // Remove item at index RHS from LHS (LHS must be JSON_ARR)
+  // Remove item at index RHS from LHS (LHS must be JSON_ARR or ARRAY)
   REMOVE_INDEX = 7;
   // Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ)
   REMOVE_KEY = 8;
@@ -128,14 +129,14 @@ enum VariableMutationType {
 message VariableMutation {
   // Specifies to use the output of a NodeRun as the RHS.
   message NodeOutputSource {
-    // Use this specific field from a Struct, JSON_OBJ, or JSON_ARR output
+    // Use this specific field from a Struct, JSON_OBJ, JSON_ARR, or ARRAY output
     oneof path {
       // DEPRECATED: A String path formatted in the `JSONPath` format.
       // Supported on JSON_OBJ and JSON_ARR.
       string jsonpath = 10;
 
       // A path resolving to a field in your object.
-      // Supported on Struct and JSON_OBJ.
+      // Supported on Struct, JSON_OBJ, JSON_ARR, or ARRAY.
       LHPath lh_path = 11;
     }
   }
@@ -199,70 +200,8 @@ message VariableDef {
   optional TypeDefinition type_def = 5;
 }
 
-// Defines the type of a value in LittleHorse. Can be used for Task Parameters,
-// Task return types, External Event types, ThreadSpec variables, etc.
-message TypeDefinition {
-  // The type of this definition. One of the following will be set.
-  //
-  // Note: if no `defined_type` is set, defaults to a `primitive_type` of `JSON_OBJ`
-  // to support old clients from 0.14.1 or lower.
-  oneof defined_type {
-    // The primitive type definition.
-    VariableType primitive_type = 1;
-    
-    // The ID of the StructDef that defines this type.
-    StructDefId struct_def_id = 5;
-  }
-
-  // For compatibility purposes.
-  reserved 2, 3;
-
-  // Set to true if values of this type contain sensitive information and must be masked.
-  bool masked = 4;
-}
-
-// Utility used among metadata objects to define their output type. For example, used in
-// TaskDef and ExternalEventDef to represent the output.
-message ReturnType {
-  // The type of the output. If it is not present, it is interpred as the output type
-  // being void: the TaskRun output/ExternalEvent/WorkflowEvent is always empty / NULL.
-  optional TypeDefinition return_type = 1;
-}
-
-// Operator for comparing two values to create a boolean expression.
-enum Comparator {
-  // Equivalent to `<`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  LESS_THAN = 0;
-
-  // Equivalent to `>`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  GREATER_THAN = 1;
-
-  // Equivalent to `<=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  LESS_THAN_EQ = 2;
-
-  // Equivalent to `>=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR).
-  GREATER_THAN_EQ = 3;
-
-  // This is valid for any variable type, and is similar to .equals() in Java.
-  //
-  // One note: if the RHS is a different type from the LHS, then LittleHorse will
-  // try to cast the RHS to the same type as the LHS. If the cast fails, then the
-  // ThreadRun fails with a VAR_SUB_ERROR.
-  EQUALS = 4;
-
-  // This is the inverse of `EQUALS`
-  NOT_EQUALS = 5;
-
-  // Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
-  //
-  // For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
-  // RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
-  // is equal to the LHS.
-  IN = 6;
-
-  // The inverse of IN.
-  NOT_IN = 7;
-}
+// TypeDefinition and related messages were moved to type_definition.proto to
+// avoid circular imports between variable.proto and common_wfspec.proto.
 
 // A UTActionTrigger triggers an action upon certain lifecycle hooks
 // in a User Task. Actions include:
