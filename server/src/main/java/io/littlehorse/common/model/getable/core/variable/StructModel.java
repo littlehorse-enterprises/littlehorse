@@ -61,26 +61,6 @@ public class StructModel extends LHSerializable<Struct> implements Comparable<St
         this.structDefId = expectedStructDefId;
     }
 
-    /**
-     * Validate this struct against the StructDefId embedded in the payload itself.
-     * Prefer the overload that accepts an explicit expected StructDefId for ingress
-     * validation against pinned metadata types.
-     */
-    public void validateAgainstStructDefId(ReadOnlyMetadataManager metadataManager) throws StructValidationException {
-        StructDefModel structDef = new WfService(metadataManager).getStructDef(structDefId.getName(), null);
-
-        if (structDef == null) {
-            throw new StructValidationException("StructDef %s does not exist.".formatted(structDefId));
-        }
-
-        try {
-            structDef.validateAgainstSuperset(this, metadataManager);
-        } catch (StructValidationException e) {
-            throw new StructValidationException(String.format(
-                    "Struct incompatible with StructDef %s: %s", structDef.getObjectId(), e.getMessage()));
-        }
-    }
-
     @Override
     public Class<Struct> getProtoBaseClass() {
         return Struct.class;
