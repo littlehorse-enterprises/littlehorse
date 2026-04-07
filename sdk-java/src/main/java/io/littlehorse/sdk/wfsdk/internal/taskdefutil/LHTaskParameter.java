@@ -31,10 +31,13 @@ public class LHTaskParameter {
 
         LHTypeMetadata metadata = LHTypeMetadata.from(parameter, resolvedPlaceholderValues);
         Optional<String> structDefName = metadata.getStructDefName();
+        Optional<Integer> structDefVersion = metadata.getStructDefVersion();
 
         this.variableName = metadata.getName().orElseGet(this::getVarNameFromParameterName);
 
         metadata.validateStructDefNameUsage(
+                parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
+        metadata.validateStructDefVersionUsage(
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
         metadata.validateLHArrayUsage(
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
@@ -44,7 +47,7 @@ public class LHTaskParameter {
         if (metadata.isLHArray()) {
             variableClassType = new LHArrayType(parameter.getType(), typeAdapterRegistry);
         } else if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
-            variableClassType = new LHStructDefId(structDefName.get());
+            variableClassType = new LHStructDefId(structDefName.get(), structDefVersion.get());
         } else {
             variableClassType = LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry);
         }

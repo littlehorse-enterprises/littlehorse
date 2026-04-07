@@ -279,9 +279,11 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         if (definedTypeCase == DefinedTypeCase.STRUCT_DEF_ID) {
             WfService wfService = new WfService(metadataManager);
 
-            StructDefModel resolved = wfService.getStructDef(structDefId.getName(), null);
+            Integer version = structDefId.getVersion() == -1 ? null : structDefId.getVersion();
+
+            StructDefModel resolved = wfService.getStructDef(structDefId.getName(), version);
             if (resolved == null) {
-                throw new UnknownStructDefException(structDefId.getName());
+                throw new UnknownStructDefException(structDefId.getName(), version);
             }
 
             // Overwrite the version to the concrete latest version.

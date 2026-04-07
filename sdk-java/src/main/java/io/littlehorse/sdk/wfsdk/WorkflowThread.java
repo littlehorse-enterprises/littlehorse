@@ -198,6 +198,24 @@ public interface WorkflowThread {
     WfRunVariable declareStruct(String name, Class<?> clazz);
 
     /**
+     * Creates a Struct variable based on your StructDef name.
+     * @param name is the name of the variable.
+     * @param structDefName is the name of the StructDef.
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareStruct(String name, String structDefName);
+
+    /**
+     * Creates a Struct variable based on your StructDef name and version.
+     * @param name is the name of the variable.
+     * @param structDefName is the name of the StructDef.
+     * @param structDefVersion is the version of the StructDef.
+     *
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareStruct(String name, String structDefName, int structDefVersion);
+
+    /**
      * Creates an Array variable based on your elementType parameter.
      * @param name is the name of the variable.
      * @param elementType is the class type of the elements in the array.

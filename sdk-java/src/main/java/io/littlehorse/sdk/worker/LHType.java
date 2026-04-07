@@ -39,6 +39,14 @@ public @interface LHType {
     String structDefName() default "";
 
     /**
+     * Indicates the StructDef version used when the annotated type is an InlineStruct.
+     *
+     * When structDefName is set, this version will be used to determine which version of the StructDef to use. If unset, the latest version of the StructDef will be used.
+     * @return
+     */
+    int structDefVersion() default -1;
+
+    /**
      * Indicates whether or not Array types marked with this annotation should be serialized as a LittleHorse native Array.
      *
      * @return whether or not this Array should be a LittleHorse native Array or a JSON_ARR.

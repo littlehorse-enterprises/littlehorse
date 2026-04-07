@@ -23,16 +23,18 @@ public final class LHTypeMetadata {
 
     private final String name;
     private final String structDefName;
+    private final int structDefVersion;
 
-    private LHTypeMetadata(boolean masked, boolean isLHArray, String name, String structDefName) {
+    private LHTypeMetadata(boolean masked, boolean isLHArray, String name, String structDefName, int structDefVersion) {
         this.masked = masked;
         this.isLHArray = isLHArray;
         this.name = name;
         this.structDefName = structDefName;
+        this.structDefVersion = structDefVersion;
     }
 
     private LHTypeMetadata() {
-        this(false, false, null, null);
+        this(false, false, null, null, -1);
     }
 
     public static LHTypeMetadata from(AnnotatedElement element, Map<String, String> placeholderValues) {
@@ -50,7 +52,12 @@ public final class LHTypeMetadata {
             parsedStructDefName = PlaceholderUtil.replacePlaceholders(parsedStructDefName, placeholders);
         }
 
-        return new LHTypeMetadata(typeAnnotation.masked(), typeAnnotation.isLHArray(), parsedName, parsedStructDefName);
+        return new LHTypeMetadata(
+                typeAnnotation.masked(),
+                typeAnnotation.isLHArray(),
+                parsedName,
+                parsedStructDefName,
+                typeAnnotation.structDefVersion());
     }
 
     boolean isMasked() {
@@ -65,6 +72,10 @@ public final class LHTypeMetadata {
         return Optional.ofNullable(structDefName);
     }
 
+    Optional<Integer> getStructDefVersion() {
+        return structDefVersion >= 0 ? Optional.of(structDefVersion) : Optional.empty();
+    }
+
     void validateStructDefNameUsage(Class<?> javaType, ValidationContext context, String contextName) {
         boolean isInlineStruct = InlineStruct.class.isAssignableFrom(javaType);
 
@@ -74,6 +85,20 @@ public final class LHTypeMetadata {
 
         if (!isInlineStruct && structDefName != null) {
             throw new TaskSchemaMismatchError(buildUnexpectedStructDefNameMessage(context, contextName, javaType));
+        }
+    }
+
+    void validateStructDefVersionUsage(Class<?> javaType, ValidationContext context, String contextName) {
+        boolean isInlineStruct = InlineStruct.class.isAssignableFrom(javaType);
+
+        if (!isInlineStruct && structDefVersion >= 0) {
+            throw new TaskSchemaMismatchError(
+                    "@LHType(structDefVersion = ...) can only be used on InlineStruct parameters and return types. Invalid usage on "
+                            + (context == ValidationContext.PARAMETER ? "parameter " : "return type for method ")
+                            + contextName
+                            + " with Java type "
+                            + javaType.getName()
+                            + ".");
         }
     }
 

@@ -677,7 +677,7 @@ public class StructDefLifecycleTest {
                     if (version != null) {
                         structDefId.setVersion(version);
                     }
-                    StructDef structDef = client.getStructDef(structDefId.build());
+                    client.getStructDef(structDefId.build());
                     return true;
                 });
     }
@@ -687,7 +687,7 @@ public class StructDefLifecycleTest {
                 .atMost(Duration.ofMillis(500))
                 .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
                 .until(() -> {
-                    WfSpec wfSpec = client.getWfSpec(id);
+                    client.getWfSpec(id);
                     return true;
                 });
     }
@@ -697,7 +697,7 @@ public class StructDefLifecycleTest {
                 .atMost(Duration.ofMillis(500))
                 .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
                 .until(() -> {
-                    TaskDef taskDef = client.getTaskDef(id);
+                    client.getTaskDef(id);
                     return true;
                 });
     }
@@ -707,7 +707,7 @@ public class StructDefLifecycleTest {
                 .atMost(Duration.ofMillis(500))
                 .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
                 .until(() -> {
-                    ExternalEventDef externalEventDef = client.getExternalEventDef(id);
+                    client.getExternalEventDef(id);
                     return true;
                 });
     }
@@ -717,7 +717,7 @@ public class StructDefLifecycleTest {
                 .atMost(Duration.ofMillis(500))
                 .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
                 .until(() -> {
-                    WorkflowEventDef workflowEventDef = client.getWorkflowEventDef(id);
+                    client.getWorkflowEventDef(id);
                     return true;
                 });
     }

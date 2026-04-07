@@ -25,4 +25,12 @@ public @interface LHStructDef {
      * @return StructDef description
      */
     String description() default "";
+
+    /**
+     * Optional version number for the StructDef.
+     *
+     * When unset, the version will default to -1, which indicates that the latest version will be used.
+     * @return StructDef version
+     */
+    int version() default -1;
 }

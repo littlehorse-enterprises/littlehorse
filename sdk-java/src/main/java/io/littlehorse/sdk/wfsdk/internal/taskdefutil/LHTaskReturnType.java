@@ -25,6 +25,8 @@ public class LHTaskReturnType {
         Class<?> javaType = method.getReturnType();
 
         metadata.validateStructDefNameUsage(javaType, LHTypeMetadata.ValidationContext.RETURN_TYPE, method.getName());
+        metadata.validateStructDefVersionUsage(
+                javaType, LHTypeMetadata.ValidationContext.RETURN_TYPE, method.getName());
         metadata.validateLHArrayUsage(javaType, LHTypeMetadata.ValidationContext.RETURN_TYPE, method.getName());
 
         LHClassType returnClassType = null;
@@ -34,7 +36,9 @@ public class LHTaskReturnType {
         } else if (metadata.isLHArray()) {
             returnClassType = new LHArrayType(javaType, typeAdapterRegistry);
         } else if (InlineStruct.class.isAssignableFrom(javaType)) {
-            returnClassType = new LHStructDefId(metadata.getStructDefName().get());
+            returnClassType = new LHStructDefId(
+                    metadata.getStructDefName().get(),
+                    metadata.getStructDefVersion().get());
         } else {
             returnClassType = LHClassType.fromJavaClass(javaType, typeAdapterRegistry);
         }
