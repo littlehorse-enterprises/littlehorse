@@ -1,14 +1,17 @@
 'use client'
 import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { MetricWindow, WfSpecId } from 'littlehorse-client/proto'
+import { WfSpecId } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import { FC, useCallback, useMemo, useState } from 'react'
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
+import { CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useSWR from 'swr'
 import { getWfMetrics } from '../actions/getWfMetrics'
+import { CountDataPoint, LatencyDataPoint, PieDataPoint, transformToCountData, transformToLatencyData, transformToPieData } from './metricsData'
 
 type ViewMode = 'count' | 'latency'
 
@@ -20,6 +23,15 @@ const TIME_RANGE_OPTIONS = [
   { value: '1440', label: 'Last 24 hours' },
   { value: '4320', label: 'Last 3 days' },
   { value: '10080', label: 'Last 7 days' },
+] as const
+
+const BUCKET_OPTIONS = [
+  { value: '1', label: '1 minute' },
+  { value: '5', label: '5 minutes' },
+  { value: '10', label: '10 minutes' },
+  { value: '30', label: '30 minutes' },
+  { value: '60', label: '1 hour' },
+  { value: '1440', label: '1 day' },
 ] as const
 
 const COUNT_CHART_CONFIG = {
@@ -36,72 +48,6 @@ const LATENCY_CHART_CONFIG = {
   errorMax: { label: 'Error (max)', color: 'hsl(0, 84%, 40%)' },
 } satisfies ChartConfig
 
-type CountDataPoint = {
-  time: string
-  timestamp: number
-  started: number
-  completed: number
-  error: number
-  exception: number
-}
-
-type LatencyDataPoint = {
-  time: string
-  timestamp: number
-  completedAvg: number
-  completedMax: number
-  errorAvg: number
-  errorMax: number
-}
-
-function formatTime(isoString: string, rangeMinutes: number): string {
-  const date = new Date(isoString)
-  if (rangeMinutes <= 60) return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  if (rangeMinutes <= 1440) return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  return date.toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-}
-
-function avgLatency(ct: { count: number; totalLatencyMs: number } | undefined): number {
-  if (!ct || ct.count === 0) return 0
-  return Math.round(ct.totalLatencyMs / ct.count)
-}
-
-function transformToCountData(windows: MetricWindow[], rangeMinutes: number): CountDataPoint[] {
-  return windows
-    .filter(w => w.metric?.$case === 'workflow')
-    .map(w => {
-      const wf = w.metric!.value as import('littlehorse-client/proto').WfMetrics
-      const windowStart = w.id?.windowStart ?? ''
-      return {
-        time: formatTime(windowStart, rangeMinutes),
-        timestamp: new Date(windowStart).getTime(),
-        started: wf.started?.count ?? 0,
-        completed: wf.runningToCompleted?.count ?? 0,
-        error: wf.runningToError?.count ?? 0,
-        exception: wf.runningToException?.count ?? 0,
-      }
-    })
-    .sort((a, b) => a.timestamp - b.timestamp)
-}
-
-function transformToLatencyData(windows: MetricWindow[], rangeMinutes: number): LatencyDataPoint[] {
-  return windows
-    .filter(w => w.metric?.$case === 'workflow')
-    .map(w => {
-      const wf = w.metric!.value as import('littlehorse-client/proto').WfMetrics
-      const windowStart = w.id?.windowStart ?? ''
-      return {
-        time: formatTime(windowStart, rangeMinutes),
-        timestamp: new Date(windowStart).getTime(),
-        completedAvg: avgLatency(wf.runningToCompleted),
-        completedMax: wf.runningToCompleted?.maxLatencyMs ?? 0,
-        errorAvg: avgLatency(wf.runningToError),
-        errorMax: wf.runningToError?.maxLatencyMs ?? 0,
-      }
-    })
-    .sort((a, b) => a.timestamp - b.timestamp)
-}
-
 type WfSpecMetricsProps = {
   wfSpecId: WfSpecId
 }
@@ -109,15 +55,19 @@ type WfSpecMetricsProps = {
 export const WfSpecMetrics: FC<WfSpecMetricsProps> = ({ wfSpecId }) => {
   const { tenantId } = useWhoAmI()
   const [rangeMinutes, setRangeMinutes] = useState('60')
+  const [bucketMinutes, setBucketMinutes] = useState('5')
   const [viewMode, setViewMode] = useState<ViewMode>('count')
 
   const rangeNum = parseInt(rangeMinutes)
+  const bucketNum = parseInt(bucketMinutes)
 
   const fetcher = useCallback(async () => {
-    const now = new Date()
-    const windowStart = new Date(now.getTime() - rangeNum * 60 * 1000).toISOString()
-    const windowEnd = now.toISOString()
-    return getWfMetrics({ wfSpecId, windowStart, windowEnd, tenantId })
+    const nowMs = Date.now()
+    const rangeStartMs = nowMs - rangeNum * 60 * 1000
+    const windowStart = new Date(rangeStartMs).toISOString()
+    const windowEnd = new Date(nowMs).toISOString()
+    const result = await getWfMetrics({ wfSpecId, windowStart, windowEnd, tenantId })
+    return { result, rangeStartMs, rangeEndMs: nowMs }
   }, [wfSpecId, rangeNum, tenantId])
 
   const { data, error, isLoading } = useSWR(
@@ -126,104 +76,204 @@ export const WfSpecMetrics: FC<WfSpecMetricsProps> = ({ wfSpecId }) => {
     { refreshInterval: 120_000, revalidateOnFocus: true, revalidateOnMount: true }
   )
 
-  const countData = useMemo(() => {
-    if (!data?.windows) return []
-    return transformToCountData(data.windows, rangeNum)
-  }, [data, rangeNum])
-
-  const latencyData = useMemo(() => {
-    if (!data?.windows) return []
-    return transformToLatencyData(data.windows, rangeNum)
-  }, [data, rangeNum])
+  const { countData, latencyData, pieData } = useMemo(() => {
+    if (data === undefined) {
+      return { countData: [] as CountDataPoint[], latencyData: [] as LatencyDataPoint[], pieData: [] as PieDataPoint[] }
+    }
+    const { rangeStartMs, rangeEndMs } = data
+    const windows = data.result.windows ?? []
+    return {
+      countData: transformToCountData(windows, bucketNum, rangeNum, rangeStartMs, rangeEndMs),
+      latencyData: transformToLatencyData(windows, bucketNum, rangeNum, rangeStartMs, rangeEndMs),
+      pieData: transformToPieData(windows, viewMode),
+    }
+  }, [data, bucketNum, rangeNum, viewMode])
 
   const chartConfig = viewMode === 'count' ? COUNT_CHART_CONFIG : LATENCY_CHART_CONFIG
   const chartData = viewMode === 'count' ? countData : latencyData
-  const hasData = chartData.length > 0
+  const hasData = chartData.length > 0 || pieData.length > 0
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <CardTitle className="text-base font-medium">Workflow Metrics</CardTitle>
-        <div className="flex items-center gap-2">
-          <Select value={viewMode} onValueChange={v => setViewMode(v as ViewMode)}>
-            <SelectTrigger className="h-8 w-[140px] text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="count">Count</SelectItem>
-              <SelectItem value="latency">Latency</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={rangeMinutes} onValueChange={setRangeMinutes}>
-            <SelectTrigger className="h-8 w-[160px] text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {TIME_RANGE_OPTIONS.map(opt => (
-                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <div className="flex h-[300px] items-center justify-center">
-            <RefreshCwIcon className="h-6 w-6 animate-spin text-blue-500" />
+    <Tabs defaultValue="line">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <div className="flex items-center gap-3">
+            <CardTitle className="text-base font-medium">Workflow Metrics</CardTitle>
+            <TabsList className="h-8">
+              <TabsTrigger value="line" className="text-xs px-2.5 py-1">Line Chart</TabsTrigger>
+              <TabsTrigger value="pie" className="text-xs px-2.5 py-1">Pie Chart</TabsTrigger>
+            </TabsList>
           </div>
-        ) : error ? (
-          <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
-            Failed to load metrics
+          <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="wf-metrics-view" className="text-xs text-muted-foreground whitespace-nowrap">
+                View
+              </Label>
+              <Select value={viewMode} onValueChange={v => setViewMode(v as ViewMode)}>
+                <SelectTrigger id="wf-metrics-view" className="h-8 w-[140px] text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="count">Count</SelectItem>
+                  <SelectItem value="latency">Latency</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center gap-2">
+              <Label htmlFor="wf-metrics-bucket" className="text-xs text-muted-foreground whitespace-nowrap">
+                Bucket size
+              </Label>
+              <Select value={bucketMinutes} onValueChange={setBucketMinutes}>
+                <SelectTrigger id="wf-metrics-bucket" className="h-8 w-[160px] text-xs">
+                  <SelectValue placeholder="Bucket" />
+                </SelectTrigger>
+                <SelectContent>
+                  {BUCKET_OPTIONS.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center gap-2">
+              <Label htmlFor="wf-metrics-range" className="text-xs text-muted-foreground whitespace-nowrap">
+                Time range
+              </Label>
+              <Select value={rangeMinutes} onValueChange={setRangeMinutes}>
+                <SelectTrigger id="wf-metrics-range" className="h-8 w-[160px] text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {TIME_RANGE_OPTIONS.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        ) : !hasData ? (
-          <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
-            No metric data available for this time range
-          </div>
-        ) : (
-          <ChartContainer config={chartConfig} className="h-[300px] w-full">
-            {viewMode === 'count' ? (
-              <LineChart data={countData} margin={{ top: 5, right: 10, left: 10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                <XAxis dataKey="time" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} allowDecimals={false} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <ChartLegend content={<ChartLegendContent />} />
-                <Line type="monotone" dataKey="started" stroke="var(--color-started)" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="completed" stroke="var(--color-completed)" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="error" stroke="var(--color-error)" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="exception" stroke="var(--color-exception)" strokeWidth={2} dot={false} />
-              </LineChart>
-            ) : (
-              <LineChart data={latencyData} margin={{ top: 5, right: 10, left: 10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                <XAxis dataKey="time" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
-                <YAxis
-                  tick={{ fontSize: 11 }}
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={v => (v >= 1000 ? `${(v / 1000).toFixed(1)}s` : `${v}ms`)}
-                />
-                <ChartTooltip
-                  content={
-                    <ChartTooltipContent
-                      formatter={(value, name) => {
-                        const ms = Number(value)
-                        const formatted = ms >= 1000 ? `${(ms / 1000).toFixed(2)}s` : `${ms}ms`
-                        return <span>{formatted}</span>
-                      }}
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="flex h-[300px] items-center justify-center">
+              <RefreshCwIcon className="h-6 w-6 animate-spin text-blue-500" />
+            </div>
+          ) : error ? (
+            <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
+              Failed to load metrics
+            </div>
+          ) : !hasData ? (
+            <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
+              No metric data available for this time range
+            </div>
+          ) : (
+            <>
+              <TabsContent value="line" className="mt-0">
+              <ChartContainer config={chartConfig} className="h-[300px] w-full">
+                {viewMode === 'count' ? (
+                  <LineChart data={countData} margin={{ top: 5, right: 10, left: 10, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <XAxis dataKey="time" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+                    <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} allowDecimals={false} />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    <Line type="monotone" dataKey="started" stroke="var(--color-started)" strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="completed" stroke="var(--color-completed)" strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="error" stroke="var(--color-error)" strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="exception" stroke="var(--color-exception)" strokeWidth={2} dot={false} />
+                  </LineChart>
+                ) : (
+                  <LineChart data={latencyData} margin={{ top: 5, right: 10, left: 10, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <XAxis dataKey="time" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+                    <YAxis
+                      tick={{ fontSize: 11 }}
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={v => (v >= 1000 ? `${(v / 1000).toFixed(1)}s` : `${v}ms`)}
                     />
-                  }
-                />
-                <ChartLegend content={<ChartLegendContent />} />
-                <Line type="monotone" dataKey="completedAvg" stroke="var(--color-completedAvg)" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="completedMax" stroke="var(--color-completedMax)" strokeWidth={2} dot={false} strokeDasharray="5 5" />
-                <Line type="monotone" dataKey="errorAvg" stroke="var(--color-errorAvg)" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="errorMax" stroke="var(--color-errorMax)" strokeWidth={2} dot={false} strokeDasharray="5 5" />
-              </LineChart>
-            )}
-          </ChartContainer>
-        )}
-      </CardContent>
-    </Card>
+                    <ChartTooltip
+                      content={
+                        <ChartTooltipContent
+                          formatter={(value, name, item) => {
+                            const ms = Number(value)
+                            const formatted = ms >= 1000 ? `${(ms / 1000).toFixed(2)}s` : `${ms}ms`
+                            return (
+                              <>
+                                <div
+                                  className="shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg] h-2.5 w-2.5"
+                                  style={{ '--color-bg': item.color, '--color-border': item.color } as React.CSSProperties}
+                                />
+                                <div className="flex flex-1 justify-between items-center leading-none">
+                                  <span className="text-muted-foreground">
+                                    {LATENCY_CHART_CONFIG[name as keyof typeof LATENCY_CHART_CONFIG]?.label ?? name}
+                                  </span>
+                                  <span className="font-mono font-medium tabular-nums text-foreground ml-2">
+                                    {formatted}
+                                  </span>
+                                </div>
+                              </>
+                            )
+                          }}
+                        />
+                      }
+                    />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    <Line type="monotone" dataKey="completedAvg" stroke="var(--color-completedAvg)" strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="completedMax" stroke="var(--color-completedMax)" strokeWidth={2} dot={false} strokeDasharray="5 5" />
+                    <Line type="monotone" dataKey="errorAvg" stroke="var(--color-errorAvg)" strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="errorMax" stroke="var(--color-errorMax)" strokeWidth={2} dot={false} strokeDasharray="5 5" />
+                  </LineChart>
+                )}
+              </ChartContainer>
+              </TabsContent>
+              <TabsContent value="pie" className="mt-0">
+                {pieData.length === 0 ? (
+                <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
+                  No data for pie chart
+                </div>
+              ) : (
+                <div className="h-[300px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={100}
+                        innerRadius={50}
+                        paddingAngle={2}
+                        label={({ name, value }) => {
+                          if (viewMode === 'latency') {
+                            const ms = Number(value)
+                            return `${name}: ${ms >= 1000 ? `${(ms / 1000).toFixed(1)}s` : `${ms}ms`}`
+                          }
+                          return `${name}: ${value.toLocaleString()}`
+                        }}
+                        labelLine
+                      >
+                        {pieData.map((entry, i) => (
+                          <Cell key={i} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(value: number, name: string) => {
+                          if (viewMode === 'latency') {
+                            return [value >= 1000 ? `${(value / 1000).toFixed(2)}s` : `${value}ms`, name]
+                          }
+                          return [value.toLocaleString(), name]
+                        }}
+                      />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+              </TabsContent>
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </Tabs>
   )
 }
