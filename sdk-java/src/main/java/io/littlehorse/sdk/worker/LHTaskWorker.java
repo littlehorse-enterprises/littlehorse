@@ -76,7 +76,12 @@ public class LHTaskWorker implements Closeable {
      */
     public LHTaskWorker(
             Object executable, String taskDefNameTemplate, LHConfig config, Map<String, String> valuesForPlaceholders) {
-        this(executable, taskDefNameTemplate, config, valuesForPlaceholders, LHTaskMethodResolver.lHTaskMethodAnnotationResolver());
+        this(
+                executable,
+                taskDefNameTemplate,
+                config,
+                valuesForPlaceholders,
+                LHTaskMethodResolver.lHTaskMethodAnnotationResolver());
     }
 
     /**
@@ -132,7 +137,7 @@ public class LHTaskWorker implements Closeable {
         if (taskMethodResolver == null) {
             throw new IllegalStateException(
                     "Task resolver was not supplied. Use the constructor that provides a default resolver "
-                        + "or provide your own implementation of LHTaskMethodResolver.");
+                            + "or provide your own implementation of LHTaskMethodResolver.");
         }
         this.taskMethod = taskMethodResolver.resolve(executable, taskDefName, this.placeholderValues);
         this.taskSignature =
@@ -307,7 +312,6 @@ public class LHTaskWorker implements Closeable {
                     + "' was not found on the server. Register it before starting this worker.");
         }
     }
-
 
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {
         if (this.taskDef == null) {

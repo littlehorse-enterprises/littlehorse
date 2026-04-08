@@ -166,8 +166,14 @@ public class LHTaskWorkerTest {
                 Map.of(),
                 (executable, taskDefName, placeholderValues) -> {
                     try {
-                        return executable.getClass().getMethod(
-                            "withCustomTaskResolver", String.class, Integer.class, Boolean.class, WfRunId.class);
+                        return executable
+                                .getClass()
+                                .getMethod(
+                                        "withCustomTaskResolver",
+                                        String.class,
+                                        Integer.class,
+                                        Boolean.class,
+                                        WfRunId.class);
                     } catch (NoSuchMethodException e) {
                         throw new RuntimeException(e);
                     }
