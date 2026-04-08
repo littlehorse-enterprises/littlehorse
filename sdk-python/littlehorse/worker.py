@@ -887,7 +887,18 @@ def shutdown_hook(*workers: LHTaskWorker) -> None:
     loop = asyncio.get_running_loop()
 
     for sig in (signal.SIGTERM, signal.SIGINT):
-        loop.add_signal_handler(sig, functools.partial(stop_workers, *workers))
+        stop_callback = functools.partial(stop_workers, *workers)
+        try:
+            loop.add_signal_handler(sig, stop_callback)
+        except NotImplementedError:
+            try:
+                signal.signal(
+                    sig,
+                    lambda _sig, _frame, callback=stop_callback: callback(),
+                )
+            except (ValueError, OSError):
+                # Signal registration is unavailable in this runtime/thread.
+                pass
 
 
 async def start(*workers: LHTaskWorker) -> None:
