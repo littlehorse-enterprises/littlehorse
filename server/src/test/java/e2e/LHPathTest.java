@@ -6,15 +6,14 @@ import e2e.Struct.Person;
 import e2e.Struct.PersonPojo;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
-import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.test.LHStructDefs;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
@@ -34,10 +33,11 @@ public class LHPathTest {
     private LittleHorseBlockingStub client;
     private WorkflowVerifier verifier;
 
+    @LHStructDefs
+    private List<Class<?>> structClasses = List.of(Person.class);
+
     @Test
     public void shouldPerformGetOnStruct() {
-        client.putStructDef(new LHStructDefType(Person.class, LHTypeAdapterRegistry.empty()).toPutStructDefRequest());
-
         Person person = new Person(
                 "Obi-Wan Kenobi",
                 List.of("Yoda", "Anakin Skywalker"),
@@ -56,8 +56,6 @@ public class LHPathTest {
 
     @Test
     void shouldFailGetOnStructWithInvalidField() {
-        client.putStructDef(new LHStructDefType(Person.class, LHTypeAdapterRegistry.empty()).toPutStructDefRequest());
-
         Workflow invalid = Workflow.newWorkflow("fail-get-on-struct", wf -> {
             WfRunVariable person = wf.declareStruct("person", Person.class);
             wf.execute("greet-lh-path", person.get("age"));

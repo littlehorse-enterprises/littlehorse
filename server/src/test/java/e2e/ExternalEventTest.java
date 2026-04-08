@@ -3,7 +3,6 @@ package e2e;
 import e2e.Struct.Car;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
@@ -16,11 +15,12 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.test.LHStructDefs;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +30,9 @@ public class ExternalEventTest {
     public static final String EVT_NAME = "basic-test-event";
     public static final String STRUCT_EVT_NAME = "struct-test-event";
     public static final String IGNORED_EVT_NAME = "not-a-real-event-kenobi";
+
+    @LHStructDefs
+    private List<Class<?>> structClasses = List.of(Car.class);
 
     @LHWorkflow("external-event-timeout")
     public Workflow timeoutEvent;
@@ -122,10 +125,6 @@ public class ExternalEventTest {
     @Test
     void shouldCompleteWhenWeSendStructEvent() {
         WfRunId id = WfRunId.newBuilder().setId(LHUtil.generateGuid()).build();
-
-        // TODO: Refactor if we add `registeredAs` for Struct Variables
-        LHStructDefType lhStructDefType = new LHStructDefType(Car.class, LHTypeAdapterRegistry.empty());
-        client.putStructDef(lhStructDefType.toPutStructDefRequest());
 
         Car car = new Car("brand", "model", 1000);
 

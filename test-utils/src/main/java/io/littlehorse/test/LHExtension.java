@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.OutputTopicConfig;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
@@ -118,6 +119,7 @@ public class LHExtension
         TestContext testContext = getTestContext(context);
         maybeCreateTenantAndPrincipal(testContext);
         try {
+            registerStructDefs(testInstance, testContext);
             startWorkersFromDeclaredTaskMethods(testInstance, testContext, store);
             testContext.registerUserTaskSchemas(testInstance);
             registerExternalEventDefinitions(testInstance, testContext);
@@ -134,6 +136,11 @@ public class LHExtension
             throws IllegalAccessException {
         List<PutWorkflowEventDefRequest> workflowEvents = testContext.discoverWorkflowEvents(testInstance);
         workflowEvents.forEach(testContext::registerWorkflowEventDef);
+    }
+
+    private static void registerStructDefs(Object testInstance, TestContext testContext) throws IllegalAccessException {
+        List<LHStructDefType> structDefRequests = testContext.discoverStructDefs(testInstance);
+        structDefRequests.forEach(testContext::registerStructDef);
     }
 
     private static void registerExternalEventDefinitions(Object testInstance, TestContext testContext) {
