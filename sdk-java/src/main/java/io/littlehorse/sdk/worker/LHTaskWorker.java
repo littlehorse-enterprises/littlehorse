@@ -76,17 +76,7 @@ public class LHTaskWorker implements Closeable {
      */
     public LHTaskWorker(
             Object executable, String taskDefNameTemplate, LHConfig config, Map<String, String> valuesForPlaceholders) {
-        this.executable = executable;
-        this.config = config;
-        this.mappings = new ArrayList<>();
-        this.placeholderValues = valuesForPlaceholders == null ? Map.of() : Map.copyOf(valuesForPlaceholders);
-        this.taskDefName = replacePlaceholders(taskDefNameTemplate, this.placeholderValues);
-        this.grpcClient = config.getBlockingStub();
-
-        this.taskMethod = this.getLHTaskMethod();
-
-        this.taskSignature =
-                new LHTaskSignature(this.taskMethod, config.getTypeAdapterRegistry(), this.placeholderValues);
+        this(executable, taskDefNameTemplate, config, valuesForPlaceholders, LHTaskMethodResolver.lHTaskMethodAnnotationResolver());
     }
 
     /**
@@ -107,6 +97,46 @@ public class LHTaskWorker implements Closeable {
             LHServerConnectionManager manager) {
         this(executable, taskDefNameTemplate, config, valuesForPlaceholders);
         this.manager = manager;
+    }
+
+    /**
+     *  Creates an {@code LHTaskWorker} using the provided executable object and a custom
+     *  {@link LHTaskMethodResolver} to determine the task method to invoke.
+     *  You can have placeholders in the taskDefName in the form of:
+     *  a-task-name-${PLACEHOLDER_1}-${PLACEHOLDER-2}.
+     *  Each placeholder should be replaced by its corresponding value coming from the valuesForPlaceHolders map.
+     *  PLACEHOLDER_1: VALUE_1
+     *  PLACEHOLDER_2: VALUE_2
+     *  So after the values are replaced, you will have a taskDefName like: a-task-name-VALUE_1-VALUE_2
+     *
+     * @param executable is any object containing the task execution logic. The task method
+     *                   will be resolved using the provided {@code taskMethodResolver}.
+     *                   That method will be used to execute the tasks.
+     * @param taskDefNameTemplate is the name of the `TaskDef` to execute. May contain placeholders.
+     * @param config is a valid LHConfig.
+     * @param valuesForPlaceholders map of values that will replace the placeholders on the taskDefNameTemplate.
+     * @param taskMethodResolver strategy used to resolve the {@code @LHTaskMethod} from the given {@code executable}.
+     */
+    public LHTaskWorker(
+            Object executable,
+            String taskDefNameTemplate,
+            LHConfig config,
+            Map<String, String> valuesForPlaceholders,
+            LHTaskMethodResolver taskMethodResolver) {
+        this.executable = executable;
+        this.config = config;
+        this.mappings = new ArrayList<>();
+        this.placeholderValues = valuesForPlaceholders == null ? Map.of() : Map.copyOf(valuesForPlaceholders);
+        this.taskDefName = replacePlaceholders(taskDefNameTemplate, this.placeholderValues);
+        this.grpcClient = config.getBlockingStub();
+        if (taskMethodResolver == null) {
+            throw new IllegalStateException(
+                    "Task resolver was not supplied. Use the constructor that provides a default resolver "
+                        + "or provide your own implementation of LHTaskMethodResolver.");
+        }
+        this.taskMethod = taskMethodResolver.resolve(executable, taskDefName, this.placeholderValues);
+        this.taskSignature =
+                new LHTaskSignature(this.taskMethod, config.getTypeAdapterRegistry(), this.placeholderValues);
     }
 
     /**
@@ -278,23 +308,6 @@ public class LHTaskWorker implements Closeable {
         }
     }
 
-    private Method getLHTaskMethod() {
-        return List.of(executable.getClass().getMethods()).stream()
-                .filter(method -> method.isAnnotationPresent(LHTaskMethod.class))
-                .filter((Method method) -> {
-                    LHTaskMethod annotation = method.getAnnotation(LHTaskMethod.class);
-                    String annotationValue = annotation.value();
-                    try {
-                        String resolvedAnnotationValue = replacePlaceholders(annotationValue, placeholderValues);
-                        return resolvedAnnotationValue.equals(taskDefName);
-                    } catch (IllegalArgumentException ex) {
-                        return false;
-                    }
-                })
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Provided executable object must have exactly one method annotated with @LHTaskMethod"));
-    }
 
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {
         if (this.taskDef == null) {

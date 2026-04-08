@@ -58,7 +58,7 @@ public class LHTaskSignature {
         this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry);
         this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
         taskDefName = PlaceholderUtil.replacePlaceholders(lhTaskMethod.value(), this.placeholderValues);
-        taskDefDescription = Optional.of(lhTaskMethod.description());
+        taskDefDescription = Optional.of(lhTaskMethod.description()).filter(desc -> !desc.isEmpty());
         variableDefs = new ArrayList<>();
         structDefClasses = new LinkedHashSet<>();
 
