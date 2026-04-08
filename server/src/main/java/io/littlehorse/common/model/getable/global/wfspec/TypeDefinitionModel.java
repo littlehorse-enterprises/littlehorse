@@ -421,7 +421,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case PRIMITIVE_TYPE:
                 return TypeCastingUtils.canBeType(other.getPrimitiveType(), this.getPrimitiveType());
             case STRUCT_DEF_ID:
-                return this.getStructDefId().equals(other.getStructDefId());
+                return this.getStructDefId().getName().equals(other.getStructDefId().getName());
             case INLINE_ARRAY_DEF:
                 // If the other array's item type is undefined (reported for empty/native arrays),
                 // treat it as a wildcard that is compatible with any array element type.

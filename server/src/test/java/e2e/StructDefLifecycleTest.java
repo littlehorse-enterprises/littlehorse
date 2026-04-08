@@ -3,7 +3,6 @@ package e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import e2e.Struct.PinStructWf;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
@@ -156,8 +155,8 @@ public class StructDefLifecycleTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class StructDefVersionPinningTest {
-        final String WF_SPEC_NAME = "wf-pin-test";
-        final String STRUCT_DEF_NAME = "pin-struct";
+                final String WF_SPEC_NAME = "structdef-pin-test";
+                final String STRUCT_DEF_NAME = "structdef-pin-struct";
 
         @LHWorkflow("wf-pin-test")
         public Workflow wfPinTest;
@@ -210,7 +209,9 @@ public class StructDefLifecycleTest {
                     .setName(TASK_DEF_NAME)
                     .addInputVars(VariableDef.newBuilder()
                             .setTypeDef(TypeDefinition.newBuilder()
-                                    .setStructDefId(StructDefId.newBuilder().setName(STRUCT_DEF_NAME))));
+                                    .setStructDefId(StructDefId.newBuilder()
+                                            .setName(STRUCT_DEF_NAME)
+                                            .setVersion(-1))));
 
             client.putTaskDef(taskReq.build());
 
@@ -252,7 +253,9 @@ public class StructDefLifecycleTest {
                     .setName(EXT_EVT_DEF_NAME)
                     .setContentType(ReturnType.newBuilder()
                             .setReturnType(TypeDefinition.newBuilder()
-                                    .setStructDefId(StructDefId.newBuilder().setName(STRUCT_DEF_NAME))))
+                                    .setStructDefId(StructDefId.newBuilder()
+                                            .setName(STRUCT_DEF_NAME)
+                                            .setVersion(-1))))
                     .setRetentionPolicy(
                             ExternalEventRetentionPolicy.newBuilder().build())
                     .build();
@@ -278,7 +281,9 @@ public class StructDefLifecycleTest {
                     .setName(WORKFLOW_EVT_DEF_NAME)
                     .setContentType(ReturnType.newBuilder()
                             .setReturnType(TypeDefinition.newBuilder()
-                                    .setStructDefId(StructDefId.newBuilder().setName(STRUCT_DEF_NAME))))
+                                    .setStructDefId(StructDefId.newBuilder()
+                                            .setName(STRUCT_DEF_NAME)
+                                            .setVersion(-1))))
                     .build();
 
             client.putWorkflowEventDef(wReq);
@@ -296,7 +301,7 @@ public class StructDefLifecycleTest {
 
         public Workflow getWfPinTest() {
             return Workflow.newWorkflow(WF_SPEC_NAME, w -> {
-                w.declareStruct("in", PinStructWf.class).required();
+                                w.declareStruct("in", STRUCT_DEF_NAME).required();
             });
         }
     }

@@ -2,8 +2,10 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
@@ -77,9 +79,27 @@ public class LHTaskSignature {
                 }
             }
 
+            addStructDefDependencies(param.getType());
             variableDefs.add(new LHTaskParameter(param, typeAdapterRegistry, placeholderValues));
         }
+
+        addStructDefDependencies(taskMethod.getReturnType());
         returnType = new LHTaskReturnType(taskMethod, typeAdapterRegistry, placeholderValues);
+    }
+
+    private void addStructDefDependencies(Class<?> javaType) {
+        if (void.class.equals(javaType)
+                || Void.class.equals(javaType)
+                || InlineStruct.class.isAssignableFrom(javaType)) {
+            return;
+        }
+
+        LHClassType classType = LHClassType.fromJavaClass(javaType, typeAdapterRegistry);
+        LHClassType coreType = classType.getCoreComponentType(typeAdapterRegistry);
+
+        if (coreType instanceof LHStructDefType structDefType) {
+            structDefClasses.addAll(structDefType.getDependencyClasses());
+        }
     }
 
     public boolean hasWorkerContext() {

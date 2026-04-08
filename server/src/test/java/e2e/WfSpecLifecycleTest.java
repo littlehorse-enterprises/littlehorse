@@ -3,7 +3,6 @@ package e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import e2e.Struct.PinStructWf;
 import e2e.Struct.UnknownStructDef;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.AllowedUpdateType;
@@ -22,7 +21,6 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.test.LHTest;
-import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
 import java.time.Duration;
 import org.awaitility.Awaitility;
@@ -117,11 +115,8 @@ public class WfSpecLifecycleTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class StructDefPinning {
-        final String WF_SPEC_NAME = "wf-pin-test";
-        final String STRUCT_DEF_NAME = "pin-struct";
-
-        @LHWorkflow("wf-pin-test")
-        public Workflow wfPinTest;
+        final String WF_SPEC_NAME = "wfspec-pin-test";
+        final String STRUCT_DEF_NAME = "wfspec-pin-struct";
 
         @BeforeAll
         void setup() {
@@ -217,19 +212,19 @@ public class WfSpecLifecycleTest {
 
         public Workflow getWfPinTestImplicitVersion(String name) {
             return new WorkflowImpl(name, thread -> {
-                thread.declareStruct("in", PinStructWf.class).required();
+                thread.declareStruct("in", STRUCT_DEF_NAME).required();
             });
         }
 
         public Workflow getWfPinTestExplicitVersionV0(String name) {
             return new WorkflowImpl(name, thread -> {
-                thread.declareStruct("in", "pin-struct", 0).required();
+                thread.declareStruct("in", STRUCT_DEF_NAME, 0).required();
             });
         }
 
         public Workflow getWfPinTestExplicitVersionV2(String name) {
             return new WorkflowImpl(name, thread -> {
-                thread.declareStruct("in", "pin-struct", 2).required();
+                thread.declareStruct("in", STRUCT_DEF_NAME, 999).required();
             });
         }
     }
