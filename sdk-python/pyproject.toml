@@ -23,7 +23,7 @@ dependencies = [
     "grpcio==1.69.0",
     # other utilities
     "jproperties>=2.1,<2.2",
-    "authlib==1.6.6",
+    "authlib==1.6.9",
     "requests>=2.32,<2.33"
 ]
 
