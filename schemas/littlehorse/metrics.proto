@@ -89,3 +89,27 @@ message ListTaskMetricsRequest {
 message MetricsList {
   repeated MetricWindow windows = 1;
 }
+
+// Request for the latest available workflow metric window for a given WfSpecId.
+message GetLatestWfMetricWindowRequest {
+  WfSpecId wf_spec = 1;
+}
+
+
+// Response for the latest available workflow metric window.
+message GetLatestWfMetricWindowResponse {
+  // The latest completed metric window, or unset if none available.
+  MetricWindow window = 1;
+}
+
+// Request for the latest available task metric window for a given TaskDefId.
+message GetLatestTaskMetricWindowRequest {
+  TaskDefId task_def = 1;
+}
+
+
+// Response for the latest available task metric window.
+message GetLatestTaskMetricWindowResponse {
+  // The latest completed metric window, or unset if none available.
+  MetricWindow window = 1;
+}

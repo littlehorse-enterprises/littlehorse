@@ -336,6 +336,14 @@ service LittleHorse {
   // Returns WfSpec Metrics for a specific WfSpec and a specific time window.
   rpc GetWfSpecMetricsWindow(WfSpecMetricsQueryRequest) returns (WfSpecMetrics) {}
   
+
+
+  // Returns the latest available workflow metric window for a given WfSpecId.
+  rpc GetLatestWfMetricWindow(GetLatestWfMetricWindowRequest) returns (GetLatestWfMetricWindowResponse) {}
+
+  // Returns the latest available task metric window for a given TaskDefId.
+  rpc GetLatestTaskMetricWindow(GetLatestTaskMetricWindowRequest) returns (GetLatestTaskMetricWindowResponse) {}
+
   rpc ListTaskMetrics(ListTaskMetricsRequest) returns (MetricsList) {}
   rpc ListWfMetrics(ListWfMetricsRequest) returns (MetricsList) {}
 

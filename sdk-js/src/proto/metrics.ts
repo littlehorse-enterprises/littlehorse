@@ -119,6 +119,28 @@ export interface MetricsList {
   windows: MetricWindow[];
 }
 
+/** Request for the latest available workflow metric window for a given WfSpecId. */
+export interface GetLatestWfMetricWindowRequest {
+  wfSpec: WfSpecId | undefined;
+}
+
+/** Response for the latest available workflow metric window. */
+export interface GetLatestWfMetricWindowResponse {
+  /** The latest completed metric window, or unset if none available. */
+  window: MetricWindow | undefined;
+}
+
+/** Request for the latest available task metric window for a given TaskDefId. */
+export interface GetLatestTaskMetricWindowRequest {
+  taskDef: TaskDefId | undefined;
+}
+
+/** Response for the latest available task metric window. */
+export interface GetLatestTaskMetricWindowResponse {
+  /** The latest completed metric window, or unset if none available. */
+  window: MetricWindow | undefined;
+}
+
 function createBaseCountAndTiming(): CountAndTiming {
   return { count: 0, minLatencyMs: 0, maxLatencyMs: 0, totalLatencyMs: 0 };
 }
@@ -966,6 +988,242 @@ export const MetricsList = {
   fromPartial(object: DeepPartial<MetricsList>): MetricsList {
     const message = createBaseMetricsList();
     message.windows = object.windows?.map((e) => MetricWindow.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseGetLatestWfMetricWindowRequest(): GetLatestWfMetricWindowRequest {
+  return { wfSpec: undefined };
+}
+
+export const GetLatestWfMetricWindowRequest = {
+  encode(message: GetLatestWfMetricWindowRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpec !== undefined) {
+      WfSpecId.encode(message.wfSpec, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetLatestWfMetricWindowRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetLatestWfMetricWindowRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfSpec = WfSpecId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetLatestWfMetricWindowRequest {
+    return { wfSpec: isSet(object.wfSpec) ? WfSpecId.fromJSON(object.wfSpec) : undefined };
+  },
+
+  toJSON(message: GetLatestWfMetricWindowRequest): unknown {
+    const obj: any = {};
+    if (message.wfSpec !== undefined) {
+      obj.wfSpec = WfSpecId.toJSON(message.wfSpec);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<GetLatestWfMetricWindowRequest>): GetLatestWfMetricWindowRequest {
+    return GetLatestWfMetricWindowRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<GetLatestWfMetricWindowRequest>): GetLatestWfMetricWindowRequest {
+    const message = createBaseGetLatestWfMetricWindowRequest();
+    message.wfSpec = (object.wfSpec !== undefined && object.wfSpec !== null)
+      ? WfSpecId.fromPartial(object.wfSpec)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseGetLatestWfMetricWindowResponse(): GetLatestWfMetricWindowResponse {
+  return { window: undefined };
+}
+
+export const GetLatestWfMetricWindowResponse = {
+  encode(message: GetLatestWfMetricWindowResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.window !== undefined) {
+      MetricWindow.encode(message.window, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetLatestWfMetricWindowResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetLatestWfMetricWindowResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.window = MetricWindow.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetLatestWfMetricWindowResponse {
+    return { window: isSet(object.window) ? MetricWindow.fromJSON(object.window) : undefined };
+  },
+
+  toJSON(message: GetLatestWfMetricWindowResponse): unknown {
+    const obj: any = {};
+    if (message.window !== undefined) {
+      obj.window = MetricWindow.toJSON(message.window);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<GetLatestWfMetricWindowResponse>): GetLatestWfMetricWindowResponse {
+    return GetLatestWfMetricWindowResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<GetLatestWfMetricWindowResponse>): GetLatestWfMetricWindowResponse {
+    const message = createBaseGetLatestWfMetricWindowResponse();
+    message.window = (object.window !== undefined && object.window !== null)
+      ? MetricWindow.fromPartial(object.window)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseGetLatestTaskMetricWindowRequest(): GetLatestTaskMetricWindowRequest {
+  return { taskDef: undefined };
+}
+
+export const GetLatestTaskMetricWindowRequest = {
+  encode(message: GetLatestTaskMetricWindowRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.taskDef !== undefined) {
+      TaskDefId.encode(message.taskDef, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetLatestTaskMetricWindowRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetLatestTaskMetricWindowRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.taskDef = TaskDefId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetLatestTaskMetricWindowRequest {
+    return { taskDef: isSet(object.taskDef) ? TaskDefId.fromJSON(object.taskDef) : undefined };
+  },
+
+  toJSON(message: GetLatestTaskMetricWindowRequest): unknown {
+    const obj: any = {};
+    if (message.taskDef !== undefined) {
+      obj.taskDef = TaskDefId.toJSON(message.taskDef);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<GetLatestTaskMetricWindowRequest>): GetLatestTaskMetricWindowRequest {
+    return GetLatestTaskMetricWindowRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<GetLatestTaskMetricWindowRequest>): GetLatestTaskMetricWindowRequest {
+    const message = createBaseGetLatestTaskMetricWindowRequest();
+    message.taskDef = (object.taskDef !== undefined && object.taskDef !== null)
+      ? TaskDefId.fromPartial(object.taskDef)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseGetLatestTaskMetricWindowResponse(): GetLatestTaskMetricWindowResponse {
+  return { window: undefined };
+}
+
+export const GetLatestTaskMetricWindowResponse = {
+  encode(message: GetLatestTaskMetricWindowResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.window !== undefined) {
+      MetricWindow.encode(message.window, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetLatestTaskMetricWindowResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetLatestTaskMetricWindowResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.window = MetricWindow.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetLatestTaskMetricWindowResponse {
+    return { window: isSet(object.window) ? MetricWindow.fromJSON(object.window) : undefined };
+  },
+
+  toJSON(message: GetLatestTaskMetricWindowResponse): unknown {
+    const obj: any = {};
+    if (message.window !== undefined) {
+      obj.window = MetricWindow.toJSON(message.window);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<GetLatestTaskMetricWindowResponse>): GetLatestTaskMetricWindowResponse {
+    return GetLatestTaskMetricWindowResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<GetLatestTaskMetricWindowResponse>): GetLatestTaskMetricWindowResponse {
+    const message = createBaseGetLatestTaskMetricWindowResponse();
+    message.window = (object.window !== undefined && object.window !== null)
+      ? MetricWindow.fromPartial(object.window)
+      : undefined;
     return message;
   },
 };

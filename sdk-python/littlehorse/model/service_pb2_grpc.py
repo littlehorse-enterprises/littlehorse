@@ -459,6 +459,16 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.WfSpecMetricsQueryRequest.SerializeToString,
                 response_deserializer=service__pb2.WfSpecMetrics.FromString,
                 _registered_method=True)
+        self.GetLatestWfMetricWindow = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetLatestWfMetricWindow',
+                request_serializer=metrics__pb2.GetLatestWfMetricWindowRequest.SerializeToString,
+                response_deserializer=metrics__pb2.GetLatestWfMetricWindowResponse.FromString,
+                _registered_method=True)
+        self.GetLatestTaskMetricWindow = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetLatestTaskMetricWindow',
+                request_serializer=metrics__pb2.GetLatestTaskMetricWindowRequest.SerializeToString,
+                response_deserializer=metrics__pb2.GetLatestTaskMetricWindowResponse.FromString,
+                _registered_method=True)
         self.ListTaskMetrics = channel.unary_unary(
                 '/littlehorse.LittleHorse/ListTaskMetrics',
                 request_serializer=metrics__pb2.ListTaskMetricsRequest.SerializeToString,
@@ -1149,6 +1159,20 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetLatestWfMetricWindow(self, request, context):
+        """Returns the latest available workflow metric window for a given WfSpecId.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetLatestTaskMetricWindow(self, request, context):
+        """Returns the latest available task metric window for a given TaskDefId.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ListTaskMetrics(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -1615,6 +1639,16 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.GetWfSpecMetricsWindow,
                     request_deserializer=service__pb2.WfSpecMetricsQueryRequest.FromString,
                     response_serializer=service__pb2.WfSpecMetrics.SerializeToString,
+            ),
+            'GetLatestWfMetricWindow': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetLatestWfMetricWindow,
+                    request_deserializer=metrics__pb2.GetLatestWfMetricWindowRequest.FromString,
+                    response_serializer=metrics__pb2.GetLatestWfMetricWindowResponse.SerializeToString,
+            ),
+            'GetLatestTaskMetricWindow': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetLatestTaskMetricWindow,
+                    request_deserializer=metrics__pb2.GetLatestTaskMetricWindowRequest.FromString,
+                    response_serializer=metrics__pb2.GetLatestTaskMetricWindowResponse.SerializeToString,
             ),
             'ListTaskMetrics': grpc.unary_unary_rpc_method_handler(
                     servicer.ListTaskMetrics,
@@ -3871,6 +3905,60 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/GetWfSpecMetricsWindow',
             service__pb2.WfSpecMetricsQueryRequest.SerializeToString,
             service__pb2.WfSpecMetrics.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetLatestWfMetricWindow(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetLatestWfMetricWindow',
+            metrics__pb2.GetLatestWfMetricWindowRequest.SerializeToString,
+            metrics__pb2.GetLatestWfMetricWindowResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetLatestTaskMetricWindow(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetLatestTaskMetricWindow',
+            metrics__pb2.GetLatestTaskMetricWindowRequest.SerializeToString,
+            metrics__pb2.GetLatestTaskMetricWindowResponse.FromString,
             options,
             channel_credentials,
             insecure,

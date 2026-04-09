@@ -97,3 +97,27 @@ class MetricsList(_message.Message):
     WINDOWS_FIELD_NUMBER: _ClassVar[int]
     windows: _containers.RepeatedCompositeFieldContainer[MetricWindow]
     def __init__(self, windows: _Optional[_Iterable[_Union[MetricWindow, _Mapping]]] = ...) -> None: ...
+
+class GetLatestWfMetricWindowRequest(_message.Message):
+    __slots__ = ("wf_spec",)
+    WF_SPEC_FIELD_NUMBER: _ClassVar[int]
+    wf_spec: _object_id_pb2.WfSpecId
+    def __init__(self, wf_spec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
+
+class GetLatestWfMetricWindowResponse(_message.Message):
+    __slots__ = ("window",)
+    WINDOW_FIELD_NUMBER: _ClassVar[int]
+    window: MetricWindow
+    def __init__(self, window: _Optional[_Union[MetricWindow, _Mapping]] = ...) -> None: ...
+
+class GetLatestTaskMetricWindowRequest(_message.Message):
+    __slots__ = ("task_def",)
+    TASK_DEF_FIELD_NUMBER: _ClassVar[int]
+    task_def: _object_id_pb2.TaskDefId
+    def __init__(self, task_def: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ...) -> None: ...
+
+class GetLatestTaskMetricWindowResponse(_message.Message):
+    __slots__ = ("window",)
+    WINDOW_FIELD_NUMBER: _ClassVar[int]
+    window: MetricWindow
+    def __init__(self, window: _Optional[_Union[MetricWindow, _Mapping]] = ...) -> None: ...

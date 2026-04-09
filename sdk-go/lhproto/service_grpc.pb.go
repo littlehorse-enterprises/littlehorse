@@ -102,6 +102,8 @@ const (
 	LittleHorse_DeleteScheduledWfRun_FullMethodName       = "/littlehorse.LittleHorse/DeleteScheduledWfRun"
 	LittleHorse_GetTaskDefMetricsWindow_FullMethodName    = "/littlehorse.LittleHorse/GetTaskDefMetricsWindow"
 	LittleHorse_GetWfSpecMetricsWindow_FullMethodName     = "/littlehorse.LittleHorse/GetWfSpecMetricsWindow"
+	LittleHorse_GetLatestWfMetricWindow_FullMethodName    = "/littlehorse.LittleHorse/GetLatestWfMetricWindow"
+	LittleHorse_GetLatestTaskMetricWindow_FullMethodName  = "/littlehorse.LittleHorse/GetLatestTaskMetricWindow"
 	LittleHorse_ListTaskMetrics_FullMethodName            = "/littlehorse.LittleHorse/ListTaskMetrics"
 	LittleHorse_ListWfMetrics_FullMethodName              = "/littlehorse.LittleHorse/ListWfMetrics"
 	LittleHorse_PutTenant_FullMethodName                  = "/littlehorse.LittleHorse/PutTenant"
@@ -350,6 +352,10 @@ type LittleHorseClient interface {
 	GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(ctx context.Context, in *WfSpecMetricsQueryRequest, opts ...grpc.CallOption) (*WfSpecMetrics, error)
+	// Returns the latest available workflow metric window for a given WfSpecId.
+	GetLatestWfMetricWindow(ctx context.Context, in *GetLatestWfMetricWindowRequest, opts ...grpc.CallOption) (*GetLatestWfMetricWindowResponse, error)
+	// Returns the latest available task metric window for a given TaskDefId.
+	GetLatestTaskMetricWindow(ctx context.Context, in *GetLatestTaskMetricWindowRequest, opts ...grpc.CallOption) (*GetLatestTaskMetricWindowResponse, error)
 	ListTaskMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
 	ListWfMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
 	// Creates a Tenant in the LH Server.
@@ -1134,6 +1140,24 @@ func (c *littleHorseClient) GetWfSpecMetricsWindow(ctx context.Context, in *WfSp
 	return out, nil
 }
 
+func (c *littleHorseClient) GetLatestWfMetricWindow(ctx context.Context, in *GetLatestWfMetricWindowRequest, opts ...grpc.CallOption) (*GetLatestWfMetricWindowResponse, error) {
+	out := new(GetLatestWfMetricWindowResponse)
+	err := c.cc.Invoke(ctx, LittleHorse_GetLatestWfMetricWindow_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetLatestTaskMetricWindow(ctx context.Context, in *GetLatestTaskMetricWindowRequest, opts ...grpc.CallOption) (*GetLatestTaskMetricWindowResponse, error) {
+	out := new(GetLatestTaskMetricWindowResponse)
+	err := c.cc.Invoke(ctx, LittleHorse_GetLatestTaskMetricWindow_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) ListTaskMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error) {
 	out := new(MetricsList)
 	err := c.cc.Invoke(ctx, LittleHorse_ListTaskMetrics_FullMethodName, in, out, opts...)
@@ -1444,6 +1468,10 @@ type LittleHorseServer interface {
 	GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error)
+	// Returns the latest available workflow metric window for a given WfSpecId.
+	GetLatestWfMetricWindow(context.Context, *GetLatestWfMetricWindowRequest) (*GetLatestWfMetricWindowResponse, error)
+	// Returns the latest available task metric window for a given TaskDefId.
+	GetLatestTaskMetricWindow(context.Context, *GetLatestTaskMetricWindowRequest) (*GetLatestTaskMetricWindowResponse, error)
 	ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error)
 	ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error)
 	// Creates a Tenant in the LH Server.
@@ -1710,6 +1738,12 @@ func (UnimplementedLittleHorseServer) GetTaskDefMetricsWindow(context.Context, *
 }
 func (UnimplementedLittleHorseServer) GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetWfSpecMetricsWindow not implemented")
+}
+func (UnimplementedLittleHorseServer) GetLatestWfMetricWindow(context.Context, *GetLatestWfMetricWindowRequest) (*GetLatestWfMetricWindowResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLatestWfMetricWindow not implemented")
+}
+func (UnimplementedLittleHorseServer) GetLatestTaskMetricWindow(context.Context, *GetLatestTaskMetricWindowRequest) (*GetLatestTaskMetricWindowResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLatestTaskMetricWindow not implemented")
 }
 func (UnimplementedLittleHorseServer) ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListTaskMetrics not implemented")
@@ -3232,6 +3266,42 @@ func _LittleHorse_GetWfSpecMetricsWindow_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_GetLatestWfMetricWindow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLatestWfMetricWindowRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetLatestWfMetricWindow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetLatestWfMetricWindow_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetLatestWfMetricWindow(ctx, req.(*GetLatestWfMetricWindowRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetLatestTaskMetricWindow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLatestTaskMetricWindowRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetLatestTaskMetricWindow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetLatestTaskMetricWindow_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetLatestTaskMetricWindow(ctx, req.(*GetLatestTaskMetricWindowRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_ListTaskMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListTaskMetricsRequest)
 	if err := dec(in); err != nil {
@@ -3706,6 +3776,14 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetWfSpecMetricsWindow",
 			Handler:    _LittleHorse_GetWfSpecMetricsWindow_Handler,
+		},
+		{
+			MethodName: "GetLatestWfMetricWindow",
+			Handler:    _LittleHorse_GetLatestWfMetricWindow_Handler,
+		},
+		{
+			MethodName: "GetLatestTaskMetricWindow",
+			Handler:    _LittleHorse_GetLatestTaskMetricWindow_Handler,
 		},
 		{
 			MethodName: "ListTaskMetrics",

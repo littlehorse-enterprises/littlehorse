@@ -33,7 +33,15 @@ import {
 } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ListTaskMetricsRequest, ListWfMetricsRequest, MetricsList } from "./metrics";
+import {
+  GetLatestTaskMetricWindowRequest,
+  GetLatestTaskMetricWindowResponse,
+  GetLatestWfMetricWindowRequest,
+  GetLatestWfMetricWindowResponse,
+  ListTaskMetricsRequest,
+  ListWfMetricsRequest,
+  MetricsList,
+} from "./metrics";
 import { NodeRun } from "./node_run";
 import {
   CheckpointId,
@@ -12075,6 +12083,24 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Returns the latest available workflow metric window for a given WfSpecId. */
+    getLatestWfMetricWindow: {
+      name: "GetLatestWfMetricWindow",
+      requestType: GetLatestWfMetricWindowRequest,
+      requestStream: false,
+      responseType: GetLatestWfMetricWindowResponse,
+      responseStream: false,
+      options: {},
+    },
+    /** Returns the latest available task metric window for a given TaskDefId. */
+    getLatestTaskMetricWindow: {
+      name: "GetLatestTaskMetricWindow",
+      requestType: GetLatestTaskMetricWindowRequest,
+      requestStream: false,
+      responseType: GetLatestTaskMetricWindowResponse,
+      responseStream: false,
+      options: {},
+    },
     listTaskMetrics: {
       name: "ListTaskMetrics",
       requestType: ListTaskMetricsRequest,
@@ -12577,6 +12603,16 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: WfSpecMetricsQueryRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<WfSpecMetrics>>;
+  /** Returns the latest available workflow metric window for a given WfSpecId. */
+  getLatestWfMetricWindow(
+    request: GetLatestWfMetricWindowRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<GetLatestWfMetricWindowResponse>>;
+  /** Returns the latest available task metric window for a given TaskDefId. */
+  getLatestTaskMetricWindow(
+    request: GetLatestTaskMetricWindowRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<GetLatestTaskMetricWindowResponse>>;
   listTaskMetrics(
     request: ListTaskMetricsRequest,
     context: CallContext & CallContextExt,
@@ -13037,6 +13073,16 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<WfSpecMetricsQueryRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<WfSpecMetrics>;
+  /** Returns the latest available workflow metric window for a given WfSpecId. */
+  getLatestWfMetricWindow(
+    request: DeepPartial<GetLatestWfMetricWindowRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<GetLatestWfMetricWindowResponse>;
+  /** Returns the latest available task metric window for a given TaskDefId. */
+  getLatestTaskMetricWindow(
+    request: DeepPartial<GetLatestTaskMetricWindowRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<GetLatestTaskMetricWindowResponse>;
   listTaskMetrics(
     request: DeepPartial<ListTaskMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
