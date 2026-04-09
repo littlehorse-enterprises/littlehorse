@@ -14,9 +14,6 @@ import java.util.Map;
  * Custom implementations can be supplied to change this strategy — e.g. lookup by custom annotation, naming
  * convention etc.
  *
- * <p><strong>Note:</strong> The resolved task method should still have the {@link LHTaskMethod} annotation to
- * allow for proper extraction of task details.
- *
  */
 @FunctionalInterface
 public interface LHTaskMethodResolver {
@@ -26,11 +23,11 @@ public interface LHTaskMethodResolver {
      *
      * @param executable the object containing the task implementation
      * @param taskDefName the resolved task definition name
-     * @param placeholderValues key-value pairs used to resolve placeholders  during method resolution
-     * @return the resolved {@link Method} to invoke
+     * @param placeholderValues key-value pairs used to resolve placeholders during method resolution
+     * @return the resolved LH task method and its metadata
      * @throws IllegalArgumentException if no matching method is found or if resolution fails
      */
-    Method resolve(Object executable, String taskDefName, Map<String, String> placeholderValues);
+    LHTaskMethodHandle resolve(Object executable, String taskDefName, Map<String, String> placeholderValues);
 
     /**
      * Returns the default annotation based resolver.
@@ -43,20 +40,24 @@ public interface LHTaskMethodResolver {
      * @throws IllegalArgumentException if no matching annotated method is found
      */
     static LHTaskMethodResolver lHTaskMethodAnnotationResolver() {
-        return (executable, taskDefName, placeholderValues) -> Arrays.stream(
-                        executable.getClass().getMethods())
-                .filter(m -> m.isAnnotationPresent(LHTaskMethod.class))
-                .filter(m -> {
-                    String annotationValue = m.getAnnotation(LHTaskMethod.class).value();
-                    try {
-                        return PlaceholderUtil.replacePlaceholders(annotationValue, placeholderValues)
-                                .equals(taskDefName);
-                    } catch (IllegalArgumentException ex) {
-                        return false;
-                    }
-                })
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Provided executable object must have exactly one method annotated" + " with @LHTaskMethod"));
+        return (executable, taskDefName, placeholderValues) -> {
+            Method taskMethod = Arrays.stream(executable.getClass().getMethods())
+                    .filter(m -> m.isAnnotationPresent(LHTaskMethod.class))
+                    .filter(m -> {
+                        String annotationValue =
+                                m.getAnnotation(LHTaskMethod.class).value();
+                        try {
+                            return PlaceholderUtil.replacePlaceholders(annotationValue, placeholderValues)
+                                    .equals(taskDefName);
+                        } catch (IllegalArgumentException ex) {
+                            return false;
+                        }
+                    })
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Provided executable object must have exactly one method annotated"
+                                    + " with @LHTaskMethod"));
+            return LHTaskMethodHandle.fromLHTaskMethod(taskMethod, placeholderValues);
+        };
     }
 }

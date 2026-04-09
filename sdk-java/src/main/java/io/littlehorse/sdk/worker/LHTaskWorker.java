@@ -139,9 +139,10 @@ public class LHTaskWorker implements Closeable {
                     "Task resolver was not supplied. Use the constructor that provides a default resolver "
                             + "or provide your own implementation of LHTaskMethodResolver.");
         }
-        this.taskMethod = taskMethodResolver.resolve(executable, taskDefName, this.placeholderValues);
+        var taskMethodHandle = taskMethodResolver.resolve(executable, taskDefName, this.placeholderValues);
+        this.taskMethod = taskMethodHandle.getTaskMethod();
         this.taskSignature =
-                new LHTaskSignature(this.taskMethod, config.getTypeAdapterRegistry(), this.placeholderValues);
+                new LHTaskSignature(taskMethodHandle, config.getTypeAdapterRegistry(), this.placeholderValues);
     }
 
     /**

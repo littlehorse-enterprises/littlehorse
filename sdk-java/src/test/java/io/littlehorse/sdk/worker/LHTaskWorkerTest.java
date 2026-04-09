@@ -20,6 +20,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
@@ -166,7 +167,7 @@ public class LHTaskWorkerTest {
                 Map.of(),
                 (executable, taskDefName, placeholderValues) -> {
                     try {
-                        return executable
+                        Method taskMethod = executable
                                 .getClass()
                                 .getMethod(
                                         "withCustomTaskResolver",
@@ -174,6 +175,7 @@ public class LHTaskWorkerTest {
                                         Integer.class,
                                         Boolean.class,
                                         WfRunId.class);
+                        return LHTaskMethodHandle.from(taskDefName, null, taskMethod);
                     } catch (NoSuchMethodException e) {
                         throw new RuntimeException(e);
                     }
