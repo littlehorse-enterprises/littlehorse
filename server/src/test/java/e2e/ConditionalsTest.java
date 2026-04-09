@@ -80,7 +80,6 @@ public class ConditionalsTest {
     @Nested
     @WithStructDefs({Car.class})
     class Equals {
-
         @ParameterizedTest
         @MethodSource("provideEqualsWorkflowSuccessArguments")
         void shouldCompleteEqualsWorkflowWithConditionals(Map<?, ?> inputObject, boolean expectedOutput) {
