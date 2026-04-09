@@ -4,34 +4,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import e2e.Struct.UserCredentials;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@WithStructDefs({UserCredentials.class})
 public class StructMaskedFieldsTest {
     private LittleHorseBlockingStub client;
     private WorkflowVerifier verifier;
 
     @LHWorkflow("struct-masked-fields-wf")
     private Workflow maskedFieldsWorkflow;
-
-    @BeforeEach
-    public void setup() {
-        LHStructDefType lhStructDefType = new LHStructDefType(UserCredentials.class, LHTypeAdapterRegistry.empty());
-        client.putStructDef(lhStructDefType.toPutStructDefRequest());
-    }
 
     @Test
     void shouldMaskStructFieldValues() {
