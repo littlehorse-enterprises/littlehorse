@@ -1160,27 +1160,29 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def GetLatestWfMetricWindow(self, request, context):
-        """Returns the latest available workflow metric window for a given WfSpecId.
+        """Returns the latest workflow metric window for a given WfSpecId.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetLatestTaskMetricWindow(self, request, context):
-        """Returns the latest available task metric window for a given TaskDefId.
+        """Returns the latest task metric window for a given TaskDefId.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListTaskMetrics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Lists available metric windows for a given TaskDefId and time range.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListWfMetrics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Lists available metric windows for a given WfSpecId and time range.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')

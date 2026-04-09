@@ -338,13 +338,13 @@ service LittleHorse {
   
 
 
-  // Returns the latest available workflow metric window for a given WfSpecId.
+  // Returns the latest workflow metric window for a given WfSpecId.
   rpc GetLatestWfMetricWindow(GetLatestWfMetricWindowRequest) returns (GetLatestWfMetricWindowResponse) {}
-
-  // Returns the latest available task metric window for a given TaskDefId.
+  // Returns the latest task metric window for a given TaskDefId.
   rpc GetLatestTaskMetricWindow(GetLatestTaskMetricWindowRequest) returns (GetLatestTaskMetricWindowResponse) {}
-
+  // Lists available metric windows for a given TaskDefId and time range.
   rpc ListTaskMetrics(ListTaskMetricsRequest) returns (MetricsList) {}
+  // Lists available metric windows for a given WfSpecId and time range.
   rpc ListWfMetrics(ListWfMetricsRequest) returns (MetricsList) {}
 
   // Creates a Tenant in the LH Server.

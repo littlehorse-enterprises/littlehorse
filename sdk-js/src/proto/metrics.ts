@@ -119,9 +119,20 @@ export interface MetricsList {
   windows: MetricWindow[];
 }
 
-/** Request for the latest available workflow metric window for a given WfSpecId. */
+/**
+ * Request for the latest available workflow metric window for a given WfSpec.
+ * If major_version is not set, resolves the latest major version automatically.
+ * If major_version is set but revision is not, resolves the latest revision of that major version.
+ */
 export interface GetLatestWfMetricWindowRequest {
-  wfSpec: WfSpecId | undefined;
+  /** The name of the WfSpec. Required. */
+  wfSpecName: string;
+  /** Optionally restrict to a specific major version. */
+  majorVersion?:
+    | number
+    | undefined;
+  /** Optionally restrict to a specific revision. */
+  revision?: number | undefined;
 }
 
 /** Response for the latest available workflow metric window. */
@@ -993,13 +1004,19 @@ export const MetricsList = {
 };
 
 function createBaseGetLatestWfMetricWindowRequest(): GetLatestWfMetricWindowRequest {
-  return { wfSpec: undefined };
+  return { wfSpecName: "", majorVersion: undefined, revision: undefined };
 }
 
 export const GetLatestWfMetricWindowRequest = {
   encode(message: GetLatestWfMetricWindowRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfSpec !== undefined) {
-      WfSpecId.encode(message.wfSpec, writer.uint32(10).fork()).ldelim();
+    if (message.wfSpecName !== "") {
+      writer.uint32(10).string(message.wfSpecName);
+    }
+    if (message.majorVersion !== undefined) {
+      writer.uint32(16).int32(message.majorVersion);
+    }
+    if (message.revision !== undefined) {
+      writer.uint32(24).int32(message.revision);
     }
     return writer;
   },
@@ -1016,7 +1033,21 @@ export const GetLatestWfMetricWindowRequest = {
             break;
           }
 
-          message.wfSpec = WfSpecId.decode(reader, reader.uint32());
+          message.wfSpecName = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.majorVersion = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.revision = reader.int32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1028,13 +1059,23 @@ export const GetLatestWfMetricWindowRequest = {
   },
 
   fromJSON(object: any): GetLatestWfMetricWindowRequest {
-    return { wfSpec: isSet(object.wfSpec) ? WfSpecId.fromJSON(object.wfSpec) : undefined };
+    return {
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      majorVersion: isSet(object.majorVersion) ? globalThis.Number(object.majorVersion) : undefined,
+      revision: isSet(object.revision) ? globalThis.Number(object.revision) : undefined,
+    };
   },
 
   toJSON(message: GetLatestWfMetricWindowRequest): unknown {
     const obj: any = {};
-    if (message.wfSpec !== undefined) {
-      obj.wfSpec = WfSpecId.toJSON(message.wfSpec);
+    if (message.wfSpecName !== "") {
+      obj.wfSpecName = message.wfSpecName;
+    }
+    if (message.majorVersion !== undefined) {
+      obj.majorVersion = Math.round(message.majorVersion);
+    }
+    if (message.revision !== undefined) {
+      obj.revision = Math.round(message.revision);
     }
     return obj;
   },
@@ -1044,9 +1085,9 @@ export const GetLatestWfMetricWindowRequest = {
   },
   fromPartial(object: DeepPartial<GetLatestWfMetricWindowRequest>): GetLatestWfMetricWindowRequest {
     const message = createBaseGetLatestWfMetricWindowRequest();
-    message.wfSpec = (object.wfSpec !== undefined && object.wfSpec !== null)
-      ? WfSpecId.fromPartial(object.wfSpec)
-      : undefined;
+    message.wfSpecName = object.wfSpecName ?? "";
+    message.majorVersion = object.majorVersion ?? undefined;
+    message.revision = object.revision ?? undefined;
     return message;
   },
 };

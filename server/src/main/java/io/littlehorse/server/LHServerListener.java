@@ -18,6 +18,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
+import io.littlehorse.common.model.GetLatestTaskMetricWindowRequestModel;
+import io.littlehorse.common.model.GetLatestWfMetricWindowRequestModel;
 import io.littlehorse.common.model.ValidateStructDefEvolutionRequestModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.*;
@@ -943,6 +945,26 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ListWfMetricsRequestModel reqModel =
                 LHSerializable.fromProto(req, ListWfMetricsRequestModel.class, requestContext());
         handleScan(reqModel, ctx, ListMetricsReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getLatestWfMetricWindow(
+            GetLatestWfMetricWindowRequest req, StreamObserver<GetLatestWfMetricWindowResponse> ctx) {
+        GetLatestWfMetricWindowRequestModel reqModel =
+                LHSerializable.fromProto(req, GetLatestWfMetricWindowRequestModel.class, requestContext());
+        ctx.onNext(reqModel.process(internalComms, requestContext()));
+        ctx.onCompleted();
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.READ)
+    public void getLatestTaskMetricWindow(
+            GetLatestTaskMetricWindowRequest req, StreamObserver<GetLatestTaskMetricWindowResponse> ctx) {
+        GetLatestTaskMetricWindowRequestModel reqModel =
+                LHSerializable.fromProto(req, GetLatestTaskMetricWindowRequestModel.class, requestContext());
+        ctx.onNext(reqModel.process(internalComms, requestContext()));
+        ctx.onCompleted();
     }
 
     @Override

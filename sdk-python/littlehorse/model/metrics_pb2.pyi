@@ -99,10 +99,14 @@ class MetricsList(_message.Message):
     def __init__(self, windows: _Optional[_Iterable[_Union[MetricWindow, _Mapping]]] = ...) -> None: ...
 
 class GetLatestWfMetricWindowRequest(_message.Message):
-    __slots__ = ("wf_spec",)
-    WF_SPEC_FIELD_NUMBER: _ClassVar[int]
-    wf_spec: _object_id_pb2.WfSpecId
-    def __init__(self, wf_spec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
+    __slots__ = ("wf_spec_name", "major_version", "revision")
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    REVISION_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_name: str
+    major_version: int
+    revision: int
+    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ...) -> None: ...
 
 class GetLatestWfMetricWindowResponse(_message.Message):
     __slots__ = ("window",)

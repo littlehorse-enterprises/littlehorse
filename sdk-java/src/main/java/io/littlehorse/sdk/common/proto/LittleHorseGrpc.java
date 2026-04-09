@@ -3809,7 +3809,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest available workflow metric window for a given WfSpecId.
+     * Returns the latest workflow metric window for a given WfSpecId.
      * </pre>
      */
     default void getLatestWfMetricWindow(io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest request,
@@ -3819,7 +3819,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest available task metric window for a given TaskDefId.
+     * Returns the latest task metric window for a given TaskDefId.
      * </pre>
      */
     default void getLatestTaskMetricWindow(io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest request,
@@ -3828,6 +3828,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given TaskDefId and time range.
+     * </pre>
      */
     default void listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
@@ -3835,6 +3838,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given WfSpecId and time range.
+     * </pre>
      */
     default void listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
@@ -4893,7 +4899,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest available workflow metric window for a given WfSpecId.
+     * Returns the latest workflow metric window for a given WfSpecId.
      * </pre>
      */
     public void getLatestWfMetricWindow(io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest request,
@@ -4904,7 +4910,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest available task metric window for a given TaskDefId.
+     * Returns the latest task metric window for a given TaskDefId.
      * </pre>
      */
     public void getLatestTaskMetricWindow(io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest request,
@@ -4914,6 +4920,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given TaskDefId and time range.
+     * </pre>
      */
     public void listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
@@ -4922,6 +4931,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given WfSpecId and time range.
+     * </pre>
      */
     public void listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
@@ -5896,7 +5908,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest available workflow metric window for a given WfSpecId.
+     * Returns the latest workflow metric window for a given WfSpecId.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse getLatestWfMetricWindow(io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest request) throws io.grpc.StatusException {
@@ -5906,7 +5918,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest available task metric window for a given TaskDefId.
+     * Returns the latest task metric window for a given TaskDefId.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse getLatestTaskMetricWindow(io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest request) throws io.grpc.StatusException {
@@ -5915,6 +5927,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given TaskDefId and time range.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.MetricsList listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -5922,6 +5937,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given WfSpecId and time range.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.MetricsList listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -6876,7 +6894,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest available workflow metric window for a given WfSpecId.
+     * Returns the latest workflow metric window for a given WfSpecId.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse getLatestWfMetricWindow(io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest request) {
@@ -6886,7 +6904,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest available task metric window for a given TaskDefId.
+     * Returns the latest task metric window for a given TaskDefId.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse getLatestTaskMetricWindow(io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest request) {
@@ -6895,6 +6913,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given TaskDefId and time range.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.MetricsList listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -6902,6 +6923,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given WfSpecId and time range.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.MetricsList listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -7937,7 +7961,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest available workflow metric window for a given WfSpecId.
+     * Returns the latest workflow metric window for a given WfSpecId.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse> getLatestWfMetricWindow(
@@ -7948,7 +7972,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest available task metric window for a given TaskDefId.
+     * Returns the latest task metric window for a given TaskDefId.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse> getLatestTaskMetricWindow(
@@ -7958,6 +7982,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given TaskDefId and time range.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricsList> listTaskMetrics(
         io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
@@ -7966,6 +7993,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given WfSpecId and time range.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricsList> listWfMetrics(
         io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {

@@ -11,17 +11,60 @@ public interface GetLatestWfMetricWindowRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
-   * @return Whether the wfSpec field is set.
+   * <pre>
+   * The name of the WfSpec. Required.
+   * </pre>
+   *
+   * <code>string wf_spec_name = 1;</code>
+   * @return The wfSpecName.
    */
-  boolean hasWfSpec();
+  java.lang.String getWfSpecName();
   /**
-   * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
-   * @return The wfSpec.
+   * <pre>
+   * The name of the WfSpec. Required.
+   * </pre>
+   *
+   * <code>string wf_spec_name = 1;</code>
+   * @return The bytes for wfSpecName.
    */
-  io.littlehorse.sdk.common.proto.WfSpecId getWfSpec();
+  com.google.protobuf.ByteString
+      getWfSpecNameBytes();
+
   /**
-   * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
+   * <pre>
+   * Optionally restrict to a specific major version.
+   * </pre>
+   *
+   * <code>optional int32 major_version = 2;</code>
+   * @return Whether the majorVersion field is set.
    */
-  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecOrBuilder();
+  boolean hasMajorVersion();
+  /**
+   * <pre>
+   * Optionally restrict to a specific major version.
+   * </pre>
+   *
+   * <code>optional int32 major_version = 2;</code>
+   * @return The majorVersion.
+   */
+  int getMajorVersion();
+
+  /**
+   * <pre>
+   * Optionally restrict to a specific revision.
+   * </pre>
+   *
+   * <code>optional int32 revision = 3;</code>
+   * @return Whether the revision field is set.
+   */
+  boolean hasRevision();
+  /**
+   * <pre>
+   * Optionally restrict to a specific revision.
+   * </pre>
+   *
+   * <code>optional int32 revision = 3;</code>
+   * @return The revision.
+   */
+  int getRevision();
 }

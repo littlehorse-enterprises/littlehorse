@@ -7,7 +7,9 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Request for the latest available workflow metric window for a given WfSpecId.
+ * Request for the latest available workflow metric window for a given WfSpec.
+ * If major_version is not set, resolves the latest major version automatically.
+ * If major_version is set but revision is not, resolves the latest revision of that major version.
  * </pre>
  *
  * Protobuf type {@code littlehorse.GetLatestWfMetricWindowRequest}
@@ -32,6 +34,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private GetLatestWfMetricWindowRequest() {
+    wfSpecName_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -48,30 +51,105 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int WF_SPEC_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.WfSpecId wfSpec_;
+  public static final int WF_SPEC_NAME_FIELD_NUMBER = 1;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object wfSpecName_ = "";
   /**
-   * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
-   * @return Whether the wfSpec field is set.
+   * <pre>
+   * The name of the WfSpec. Required.
+   * </pre>
+   *
+   * <code>string wf_spec_name = 1;</code>
+   * @return The wfSpecName.
    */
   @java.lang.Override
-  public boolean hasWfSpec() {
+  public java.lang.String getWfSpecName() {
+    java.lang.Object ref = wfSpecName_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      wfSpecName_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * The name of the WfSpec. Required.
+   * </pre>
+   *
+   * <code>string wf_spec_name = 1;</code>
+   * @return The bytes for wfSpecName.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getWfSpecNameBytes() {
+    java.lang.Object ref = wfSpecName_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      wfSpecName_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int MAJOR_VERSION_FIELD_NUMBER = 2;
+  private int majorVersion_ = 0;
+  /**
+   * <pre>
+   * Optionally restrict to a specific major version.
+   * </pre>
+   *
+   * <code>optional int32 major_version = 2;</code>
+   * @return Whether the majorVersion field is set.
+   */
+  @java.lang.Override
+  public boolean hasMajorVersion() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
-   * @return The wfSpec.
+   * <pre>
+   * Optionally restrict to a specific major version.
+   * </pre>
+   *
+   * <code>optional int32 major_version = 2;</code>
+   * @return The majorVersion.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfSpecId getWfSpec() {
-    return wfSpec_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpec_;
+  public int getMajorVersion() {
+    return majorVersion_;
+  }
+
+  public static final int REVISION_FIELD_NUMBER = 3;
+  private int revision_ = 0;
+  /**
+   * <pre>
+   * Optionally restrict to a specific revision.
+   * </pre>
+   *
+   * <code>optional int32 revision = 3;</code>
+   * @return Whether the revision field is set.
+   */
+  @java.lang.Override
+  public boolean hasRevision() {
+    return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
+   * <pre>
+   * Optionally restrict to a specific revision.
+   * </pre>
+   *
+   * <code>optional int32 revision = 3;</code>
+   * @return The revision.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecOrBuilder() {
-    return wfSpec_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpec_;
+  public int getRevision() {
+    return revision_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -88,8 +166,14 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(wfSpecName_)) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, wfSpecName_);
+    }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(1, getWfSpec());
+      output.writeInt32(2, majorVersion_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeInt32(3, revision_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -100,9 +184,16 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
+    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(wfSpecName_)) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, wfSpecName_);
+    }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getWfSpec());
+        .computeInt32Size(2, majorVersion_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(3, revision_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -119,10 +210,17 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest other = (io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest) obj;
 
-    if (hasWfSpec() != other.hasWfSpec()) return false;
-    if (hasWfSpec()) {
-      if (!getWfSpec()
-          .equals(other.getWfSpec())) return false;
+    if (!getWfSpecName()
+        .equals(other.getWfSpecName())) return false;
+    if (hasMajorVersion() != other.hasMajorVersion()) return false;
+    if (hasMajorVersion()) {
+      if (getMajorVersion()
+          != other.getMajorVersion()) return false;
+    }
+    if (hasRevision() != other.hasRevision()) return false;
+    if (hasRevision()) {
+      if (getRevision()
+          != other.getRevision()) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -135,9 +233,15 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasWfSpec()) {
-      hash = (37 * hash) + WF_SPEC_FIELD_NUMBER;
-      hash = (53 * hash) + getWfSpec().hashCode();
+    hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getWfSpecName().hashCode();
+    if (hasMajorVersion()) {
+      hash = (37 * hash) + MAJOR_VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + getMajorVersion();
+    }
+    if (hasRevision()) {
+      hash = (37 * hash) + REVISION_FIELD_NUMBER;
+      hash = (53 * hash) + getRevision();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -238,7 +342,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Request for the latest available workflow metric window for a given WfSpecId.
+   * Request for the latest available workflow metric window for a given WfSpec.
+   * If major_version is not set, resolves the latest major version automatically.
+   * If major_version is set but revision is not, resolves the latest revision of that major version.
    * </pre>
    *
    * Protobuf type {@code littlehorse.GetLatestWfMetricWindowRequest}
@@ -262,29 +368,21 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessage
-              .alwaysUseFieldBuilders) {
-        internalGetWfSpecFieldBuilder();
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      wfSpec_ = null;
-      if (wfSpecBuilder_ != null) {
-        wfSpecBuilder_.dispose();
-        wfSpecBuilder_ = null;
-      }
+      wfSpecName_ = "";
+      majorVersion_ = 0;
+      revision_ = 0;
       return this;
     }
 
@@ -318,12 +416,17 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest result) {
       int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.wfSpec_ = wfSpecBuilder_ == null
-            ? wfSpec_
-            : wfSpecBuilder_.build();
+        result.wfSpecName_ = wfSpecName_;
+      }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.majorVersion_ = majorVersion_;
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.revision_ = revision_;
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -340,8 +443,16 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest other) {
       if (other == io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest.getDefaultInstance()) return this;
-      if (other.hasWfSpec()) {
-        mergeWfSpec(other.getWfSpec());
+      if (!other.getWfSpecName().isEmpty()) {
+        wfSpecName_ = other.wfSpecName_;
+        bitField0_ |= 0x00000001;
+        onChanged();
+      }
+      if (other.hasMajorVersion()) {
+        setMajorVersion(other.getMajorVersion());
+      }
+      if (other.hasRevision()) {
+        setRevision(other.getRevision());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -370,12 +481,20 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              input.readMessage(
-                  internalGetWfSpecFieldBuilder().getBuilder(),
-                  extensionRegistry);
+              wfSpecName_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 16: {
+              majorVersion_ = input.readInt32();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 16
+            case 24: {
+              revision_ = input.readInt32();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -393,125 +512,208 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.WfSpecId wfSpec_;
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecBuilder_;
+    private java.lang.Object wfSpecName_ = "";
     /**
-     * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
-     * @return Whether the wfSpec field is set.
+     * <pre>
+     * The name of the WfSpec. Required.
+     * </pre>
+     *
+     * <code>string wf_spec_name = 1;</code>
+     * @return The wfSpecName.
      */
-    public boolean hasWfSpec() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
-     * @return The wfSpec.
-     */
-    public io.littlehorse.sdk.common.proto.WfSpecId getWfSpec() {
-      if (wfSpecBuilder_ == null) {
-        return wfSpec_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpec_;
+    public java.lang.String getWfSpecName() {
+      java.lang.Object ref = wfSpecName_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        wfSpecName_ = s;
+        return s;
       } else {
-        return wfSpecBuilder_.getMessage();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
+     * <pre>
+     * The name of the WfSpec. Required.
+     * </pre>
+     *
+     * <code>string wf_spec_name = 1;</code>
+     * @return The bytes for wfSpecName.
      */
-    public Builder setWfSpec(io.littlehorse.sdk.common.proto.WfSpecId value) {
-      if (wfSpecBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        wfSpec_ = value;
+    public com.google.protobuf.ByteString
+        getWfSpecNameBytes() {
+      java.lang.Object ref = wfSpecName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        wfSpecName_ = b;
+        return b;
       } else {
-        wfSpecBuilder_.setMessage(value);
+        return (com.google.protobuf.ByteString) ref;
       }
+    }
+    /**
+     * <pre>
+     * The name of the WfSpec. Required.
+     * </pre>
+     *
+     * <code>string wf_spec_name = 1;</code>
+     * @param value The wfSpecName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfSpecName(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      wfSpecName_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
+     * <pre>
+     * The name of the WfSpec. Required.
+     * </pre>
+     *
+     * <code>string wf_spec_name = 1;</code>
+     * @return This builder for chaining.
      */
-    public Builder setWfSpec(
-        io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
-      if (wfSpecBuilder_ == null) {
-        wfSpec_ = builderForValue.build();
-      } else {
-        wfSpecBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
-     */
-    public Builder mergeWfSpec(io.littlehorse.sdk.common.proto.WfSpecId value) {
-      if (wfSpecBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
-          wfSpec_ != null &&
-          wfSpec_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
-          getWfSpecBuilder().mergeFrom(value);
-        } else {
-          wfSpec_ = value;
-        }
-      } else {
-        wfSpecBuilder_.mergeFrom(value);
-      }
-      if (wfSpec_ != null) {
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
-     */
-    public Builder clearWfSpec() {
+    public Builder clearWfSpecName() {
+      wfSpecName_ = getDefaultInstance().getWfSpecName();
       bitField0_ = (bitField0_ & ~0x00000001);
-      wfSpec_ = null;
-      if (wfSpecBuilder_ != null) {
-        wfSpecBuilder_.dispose();
-        wfSpecBuilder_ = null;
-      }
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
+     * <pre>
+     * The name of the WfSpec. Required.
+     * </pre>
+     *
+     * <code>string wf_spec_name = 1;</code>
+     * @param value The bytes for wfSpecName to set.
+     * @return This builder for chaining.
      */
-    public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecBuilder() {
+    public Builder setWfSpecNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      wfSpecName_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
-      return internalGetWfSpecFieldBuilder().getBuilder();
+      return this;
+    }
+
+    private int majorVersion_ ;
+    /**
+     * <pre>
+     * Optionally restrict to a specific major version.
+     * </pre>
+     *
+     * <code>optional int32 major_version = 2;</code>
+     * @return Whether the majorVersion field is set.
+     */
+    @java.lang.Override
+    public boolean hasMajorVersion() {
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
+     * <pre>
+     * Optionally restrict to a specific major version.
+     * </pre>
+     *
+     * <code>optional int32 major_version = 2;</code>
+     * @return The majorVersion.
      */
-    public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecOrBuilder() {
-      if (wfSpecBuilder_ != null) {
-        return wfSpecBuilder_.getMessageOrBuilder();
-      } else {
-        return wfSpec_ == null ?
-            io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpec_;
-      }
+    @java.lang.Override
+    public int getMajorVersion() {
+      return majorVersion_;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec = 1;</code>
+     * <pre>
+     * Optionally restrict to a specific major version.
+     * </pre>
+     *
+     * <code>optional int32 major_version = 2;</code>
+     * @param value The majorVersion to set.
+     * @return This builder for chaining.
      */
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
-        internalGetWfSpecFieldBuilder() {
-      if (wfSpecBuilder_ == null) {
-        wfSpecBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder>(
-                getWfSpec(),
-                getParentForChildren(),
-                isClean());
-        wfSpec_ = null;
-      }
-      return wfSpecBuilder_;
+    public Builder setMajorVersion(int value) {
+
+      majorVersion_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optionally restrict to a specific major version.
+     * </pre>
+     *
+     * <code>optional int32 major_version = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMajorVersion() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      majorVersion_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int revision_ ;
+    /**
+     * <pre>
+     * Optionally restrict to a specific revision.
+     * </pre>
+     *
+     * <code>optional int32 revision = 3;</code>
+     * @return Whether the revision field is set.
+     */
+    @java.lang.Override
+    public boolean hasRevision() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <pre>
+     * Optionally restrict to a specific revision.
+     * </pre>
+     *
+     * <code>optional int32 revision = 3;</code>
+     * @return The revision.
+     */
+    @java.lang.Override
+    public int getRevision() {
+      return revision_;
+    }
+    /**
+     * <pre>
+     * Optionally restrict to a specific revision.
+     * </pre>
+     *
+     * <code>optional int32 revision = 3;</code>
+     * @param value The revision to set.
+     * @return This builder for chaining.
+     */
+    public Builder setRevision(int value) {
+
+      revision_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optionally restrict to a specific revision.
+     * </pre>
+     *
+     * <code>optional int32 revision = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearRevision() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      revision_ = 0;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.GetLatestWfMetricWindowRequest)

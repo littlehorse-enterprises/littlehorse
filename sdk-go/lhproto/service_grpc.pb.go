@@ -352,11 +352,13 @@ type LittleHorseClient interface {
 	GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(ctx context.Context, in *WfSpecMetricsQueryRequest, opts ...grpc.CallOption) (*WfSpecMetrics, error)
-	// Returns the latest available workflow metric window for a given WfSpecId.
+	// Returns the latest workflow metric window for a given WfSpecId.
 	GetLatestWfMetricWindow(ctx context.Context, in *GetLatestWfMetricWindowRequest, opts ...grpc.CallOption) (*GetLatestWfMetricWindowResponse, error)
-	// Returns the latest available task metric window for a given TaskDefId.
+	// Returns the latest task metric window for a given TaskDefId.
 	GetLatestTaskMetricWindow(ctx context.Context, in *GetLatestTaskMetricWindowRequest, opts ...grpc.CallOption) (*GetLatestTaskMetricWindowResponse, error)
+	// Lists available metric windows for a given TaskDefId and time range.
 	ListTaskMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
+	// Lists available metric windows for a given WfSpecId and time range.
 	ListWfMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
 	// Creates a Tenant in the LH Server.
 	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error)
@@ -1468,11 +1470,13 @@ type LittleHorseServer interface {
 	GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error)
-	// Returns the latest available workflow metric window for a given WfSpecId.
+	// Returns the latest workflow metric window for a given WfSpecId.
 	GetLatestWfMetricWindow(context.Context, *GetLatestWfMetricWindowRequest) (*GetLatestWfMetricWindowResponse, error)
-	// Returns the latest available task metric window for a given TaskDefId.
+	// Returns the latest task metric window for a given TaskDefId.
 	GetLatestTaskMetricWindow(context.Context, *GetLatestTaskMetricWindowRequest) (*GetLatestTaskMetricWindowResponse, error)
+	// Lists available metric windows for a given TaskDefId and time range.
 	ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error)
+	// Lists available metric windows for a given WfSpecId and time range.
 	ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error)
 	// Creates a Tenant in the LH Server.
 	PutTenant(context.Context, *PutTenantRequest) (*Tenant, error)

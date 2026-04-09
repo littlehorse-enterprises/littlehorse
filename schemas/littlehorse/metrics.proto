@@ -90,9 +90,18 @@ message MetricsList {
   repeated MetricWindow windows = 1;
 }
 
-// Request for the latest available workflow metric window for a given WfSpecId.
+// Request for the latest available workflow metric window for a given WfSpec.
+// If major_version is not set, resolves the latest major version automatically.
+// If major_version is set but revision is not, resolves the latest revision of that major version.
 message GetLatestWfMetricWindowRequest {
-  WfSpecId wf_spec = 1;
+  // The name of the WfSpec. Required.
+  string wf_spec_name = 1;
+
+  // Optionally restrict to a specific major version.
+  optional int32 major_version = 2;
+
+  // Optionally restrict to a specific revision.
+  optional int32 revision = 3;
 }
 
 
