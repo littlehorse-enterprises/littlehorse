@@ -11,9 +11,9 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.test.LHStructDefs;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +26,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 @LHTest
+@WithStructDefs({Car.class})
 public class ConditionalsTest {
     private LittleHorseBlockingStub client;
 
@@ -77,9 +78,8 @@ public class ConditionalsTest {
     private WorkflowVerifier workflowVerifier;
 
     @Nested
+    @WithStructDefs({Car.class})
     class Equals {
-        @LHStructDefs
-        private List<Class<?>> structClasses = List.of(Car.class);
 
         @ParameterizedTest
         @MethodSource("provideEqualsWorkflowSuccessArguments")

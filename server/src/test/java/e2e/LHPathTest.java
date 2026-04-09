@@ -13,9 +13,9 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.test.LHStructDefs;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +23,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@WithStructDefs({Person.class})
 public class LHPathTest {
     @LHWorkflow("lh-path-structs")
     private Workflow lhPathStructsWf;
@@ -32,9 +33,6 @@ public class LHPathTest {
 
     private LittleHorseBlockingStub client;
     private WorkflowVerifier verifier;
-
-    @LHStructDefs
-    private List<Class<?>> structClasses = List.of(Person.class);
 
     @Test
     public void shouldPerformGetOnStruct() {

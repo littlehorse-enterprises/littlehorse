@@ -16,9 +16,9 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.test.LHStructDefs;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -30,13 +30,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@WithStructDefs({Car.class})
 public class InputVarsTest {
 
     private WorkflowVerifier workflowVerifier;
     private LittleHorseBlockingStub client;
-
-    @LHStructDefs
-    private List<Class<?>> structClasses = List.of(Car.class);
 
     @LHWorkflow("input-vars-wf")
     private Workflow workflow;

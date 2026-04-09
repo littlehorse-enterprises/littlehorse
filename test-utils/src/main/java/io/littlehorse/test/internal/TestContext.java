@@ -1,6 +1,5 @@
 package io.littlehorse.test.internal;
 
-import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
@@ -17,7 +16,6 @@ import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-import io.littlehorse.test.LHStructDefs;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHUserTaskForm;
 import io.littlehorse.test.LHWorkflow;
@@ -54,24 +52,6 @@ public class TestContext {
         this.config = bootstrapper.getWorkerConfig();
         this.lhClient = this.config.getBlockingStub();
         this.wfSpecStoreLock = new ReentrantLock();
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<LHStructDefType> discoverStructDefs(Object testInstance) throws IllegalAccessException {
-        List<LHStructDefType> structDefRequests = new ArrayList<>();
-        List<Field> annotatedFields = ReflectionUtil.findAnnotatedFields(testInstance.getClass(), LHStructDefs.class);
-        for (Field annotatedField : annotatedFields) {
-            annotatedField.setAccessible(true);
-
-            List<Class<?>> structClasses = (List<Class<?>>) annotatedField.get(testInstance);
-
-            List<LHStructDefType> structDefTypes = structClasses.stream()
-                    .map(structClass -> new LHStructDefType(structClass, LHTypeAdapterRegistry.empty()))
-                    .toList();
-
-            structDefTypes.forEach(structDefType -> structDefRequests.add(structDefType));
-        }
-        return structDefRequests;
     }
 
     public List<String> discoverTaskDefNames(Object testInstance) {

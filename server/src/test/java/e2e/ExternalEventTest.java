@@ -16,23 +16,20 @@ import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.test.LHStructDefs;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
-import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest(externalEventNames = {ExternalEventTest.IGNORED_EVT_NAME})
+@WithStructDefs({Car.class})
 public class ExternalEventTest {
 
     public static final String EVT_NAME = "basic-test-event";
     public static final String STRUCT_EVT_NAME = "struct-test-event";
     public static final String IGNORED_EVT_NAME = "not-a-real-event-kenobi";
-
-    @LHStructDefs
-    private List<Class<?>> structClasses = List.of(Car.class);
 
     @LHWorkflow("external-event-timeout")
     public Workflow timeoutEvent;

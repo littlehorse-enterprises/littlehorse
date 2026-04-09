@@ -13,20 +13,17 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.test.LHStructDefs;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
-import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@WithStructDefs({Car.class})
 public class StructValidationsTest {
     private WorkflowVerifier verifier;
-
-    @LHStructDefs
-    private List<Class<?>> structClasses = List.of(Car.class);
 
     @LHWorkflow("structs-wf")
     private Workflow structWorkflow;

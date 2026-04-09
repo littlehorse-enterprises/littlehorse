@@ -2,6 +2,7 @@ package io.littlehorse.test;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
@@ -118,8 +119,9 @@ public class LHExtension
         ExtensionContext.Store store = getStore(context);
         TestContext testContext = getTestContext(context);
         maybeCreateTenantAndPrincipal(testContext);
+
         try {
-            registerStructDefs(testInstance, testContext);
+            registerStructDefs(testInstance.getClass(), testContext);
             startWorkersFromDeclaredTaskMethods(testInstance, testContext, store);
             testContext.registerUserTaskSchemas(testInstance);
             registerExternalEventDefinitions(testInstance, testContext);
@@ -138,8 +140,8 @@ public class LHExtension
         workflowEvents.forEach(testContext::registerWorkflowEventDef);
     }
 
-    private static void registerStructDefs(Object testInstance, TestContext testContext) throws IllegalAccessException {
-        List<LHStructDefType> structDefRequests = testContext.discoverStructDefs(testInstance);
+    private static void registerStructDefs(Class<?> testClass, TestContext testContext) throws IllegalAccessException {
+        List<LHStructDefType> structDefRequests = scanStructDefsSetup(testClass);
         structDefRequests.forEach(testContext::registerStructDef);
     }
 
@@ -174,6 +176,16 @@ public class LHExtension
                 return true;
             });
         }
+    }
+
+    private static List<LHStructDefType> scanStructDefsSetup(AnnotatedElement instanceClass) {
+        LHTypeAdapterRegistry typeAdapterRegistry = LHTypeAdapterRegistry.empty();
+        if (instanceClass.isAnnotationPresent(WithStructDefs.class)) {
+            return List.of(instanceClass.getAnnotation(WithStructDefs.class).value()).stream()
+                    .map(clazz -> new LHStructDefType(clazz, typeAdapterRegistry))
+                    .toList();
+        }
+        return List.of();
     }
 
     private WithWorkers[] scanWorkersSetup(AnnotatedElement instanceClass) {

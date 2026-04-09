@@ -11,23 +11,20 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.test.LHStructDefs;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@WithStructDefs({UserCredentials.class})
 public class StructMaskedFieldsTest {
     private LittleHorseBlockingStub client;
     private WorkflowVerifier verifier;
 
     @LHWorkflow("struct-masked-fields-wf")
     private Workflow maskedFieldsWorkflow;
-
-    @LHStructDefs
-    private List<Class<?>> structClasses = List.of(UserCredentials.class);
 
     @Test
     void shouldMaskStructFieldValues() {
