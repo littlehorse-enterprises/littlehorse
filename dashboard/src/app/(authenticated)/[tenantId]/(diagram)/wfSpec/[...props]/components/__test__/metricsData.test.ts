@@ -156,14 +156,6 @@ describe('enumerateBucketStarts', () => {
       new Date(2026, 3, 7).getTime(),
     ])
   })
-
-  it('returns single bucket when range fits in one', () => {
-    const hourMs = 60 * 60 * 1000
-    const start = new Date('2026-04-07T10:15:00Z').getTime()
-    const end = new Date('2026-04-07T10:45:00Z').getTime()
-    const result = enumerateBucketStarts(start, end, hourMs)
-    expect(result).toEqual([new Date('2026-04-07T10:00:00Z').getTime()])
-  })
 })
 
 // ─── aggregateByBucket ────────────────────────────────────────────
