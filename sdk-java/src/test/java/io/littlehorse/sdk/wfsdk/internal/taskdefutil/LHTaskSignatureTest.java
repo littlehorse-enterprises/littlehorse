@@ -40,6 +40,9 @@ public class LHTaskSignatureTest {
         public UuidHolder adapterStructTask(UuidHolder in) {
             return in;
         }
+
+        @LHTaskMethod(value = "blank-desc-task", description = "")
+        public void blankDescTask() {};
     }
 
     @LHStructDef("car")
@@ -105,12 +108,19 @@ public class LHTaskSignatureTest {
         assertThat(taskSignature.hasWorkerContext()).isTrue();
     }
 
-    // @Test
-    // void shouldReturnNoStructDefDependenciesAfterRefactor() {
-    //     LHTaskSignature taskSignature = signatureFor("struct-task", Car.class);
+    @Test
+    void shouldReturnNoStructDefDependenciesAfterRefactor() {
+        LHTaskSignature taskSignature = signatureFor("struct-task", Car.class);
 
-    //     assertThat(taskSignature.getStructDefDependencies()).isEmpty();
-    // }
+        assertThat(taskSignature.getStructDefDependencies()).isEmpty();
+    }
+
+    @Test
+    void shouldIgnoreEmptyTaskDefDescription() {
+        LHTaskSignature taskSignature = signatureFor("blank-desc-task");
+
+        assertThat(taskSignature.toPutTaskDefRequest().hasDescription()).isFalse();
+    }
 
     @Test
     void shouldUseTypeAdapterForStructDefFieldTypes() {
