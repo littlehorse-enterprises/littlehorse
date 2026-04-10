@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.LHTest;
@@ -104,6 +105,10 @@ public class TestContext {
                     .collect(Collectors.toList());
         }
         return List.of();
+    }
+
+    public void registerStructDef(LHStructDefType structDef) {
+        lhClient.putStructDef(structDef.toPutStructDefRequest());
     }
 
     public void registerExternalEventDef(ExternalEventDef externalEventDef) {
