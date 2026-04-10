@@ -241,14 +241,20 @@ describe('transformToCountData', () => {
   })
 
   it('aggregates multiple windows into buckets', () => {
-    const w1 = makeWindow('2026-04-07T10:01:00Z', wfMetrics({
-      started: ct(3, 0, 0, 0),
-      runningToCompleted: ct(2, 10, 50, 80),
-    }))
-    const w2 = makeWindow('2026-04-07T10:03:00Z', wfMetrics({
-      started: ct(5, 0, 0, 0),
-      runningToCompleted: ct(4, 5, 100, 200),
-    }))
+    const w1 = makeWindow(
+      '2026-04-07T10:01:00Z',
+      wfMetrics({
+        started: ct(3, 0, 0, 0),
+        runningToCompleted: ct(2, 10, 50, 80),
+      })
+    )
+    const w2 = makeWindow(
+      '2026-04-07T10:03:00Z',
+      wfMetrics({
+        started: ct(5, 0, 0, 0),
+        runningToCompleted: ct(4, 5, 100, 200),
+      })
+    )
 
     const start = new Date('2026-04-07T10:00:00Z').getTime()
     const end = new Date('2026-04-07T10:04:59Z').getTime()
@@ -286,12 +292,18 @@ describe('transformToCountData', () => {
 
 describe('transformToLatencyData', () => {
   it('computes weighted average latency across merged windows', () => {
-    const w1 = makeWindow('2026-04-07T10:01:00Z', wfMetrics({
-      runningToCompleted: ct(2, 10, 50, 80),
-    }))
-    const w2 = makeWindow('2026-04-07T10:03:00Z', wfMetrics({
-      runningToCompleted: ct(8, 5, 100, 320),
-    }))
+    const w1 = makeWindow(
+      '2026-04-07T10:01:00Z',
+      wfMetrics({
+        runningToCompleted: ct(2, 10, 50, 80),
+      })
+    )
+    const w2 = makeWindow(
+      '2026-04-07T10:03:00Z',
+      wfMetrics({
+        runningToCompleted: ct(8, 5, 100, 320),
+      })
+    )
 
     const start = new Date('2026-04-07T10:00:00Z').getTime()
     const end = new Date('2026-04-07T10:04:59Z').getTime()

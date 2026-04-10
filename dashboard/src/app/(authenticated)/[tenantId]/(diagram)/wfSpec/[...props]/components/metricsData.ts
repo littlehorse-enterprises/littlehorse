@@ -71,10 +71,7 @@ export function parseWorkflowWindows(windows: MetricWindow[]): { ts: number; wf:
     .sort((a, b) => a.ts - b.ts)
 }
 
-export function aggregateByBucket(
-  points: { ts: number; wf: WfMetrics }[],
-  bucketMs: number
-): Map<number, WfMetrics> {
+export function aggregateByBucket(points: { ts: number; wf: WfMetrics }[], bucketMs: number): Map<number, WfMetrics> {
   const groups = new Map<number, WfMetrics[]>()
   for (const p of points) {
     const k = bucketStartMs(p.ts, bucketMs)
@@ -195,10 +192,7 @@ export type PieDataPoint = {
   fill: string
 }
 
-export function transformToPieData(
-  windows: MetricWindow[],
-  viewMode: 'count' | 'latency'
-): PieDataPoint[] {
+export function transformToPieData(windows: MetricWindow[], viewMode: 'count' | 'latency'): PieDataPoint[] {
   const parsed = parseWorkflowWindows(windows)
   const allWfs = parsed.map(p => p.wf)
   const merged = mergeWfMetricsGroup(allWfs)

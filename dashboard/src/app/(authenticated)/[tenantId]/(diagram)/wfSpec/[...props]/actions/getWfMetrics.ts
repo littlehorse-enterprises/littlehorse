@@ -12,7 +12,12 @@ type GetWfMetricsProps = {
 const CHUNK_MINUTES = 90
 const MAX_CONCURRENT = 8
 
-export const getWfMetrics = async ({ wfSpecId, windowStart, windowEnd, tenantId }: GetWfMetricsProps): Promise<MetricsList> => {
+export const getWfMetrics = async ({
+  wfSpecId,
+  windowStart,
+  windowEnd,
+  tenantId,
+}: GetWfMetricsProps): Promise<MetricsList> => {
   const client = await lhClient({ tenantId })
 
   if (!windowStart || !windowEnd) {

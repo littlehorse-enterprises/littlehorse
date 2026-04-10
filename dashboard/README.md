@@ -125,6 +125,7 @@ ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
 ```
 
 ## mTLS
+
 Assuming you have a folder `./certs` containing `ca.crt`, `client.crt`, and `client.key`
 
 ```bash
@@ -139,7 +140,6 @@ docker run --rm \
   -v ./certs:/certs \
   ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
 ```
-
 
 ## SSL termination
 

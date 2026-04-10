@@ -13,7 +13,7 @@ import { DoneEvent } from './DoneEvent'
 export const Events = ({ events }: { events: UserTaskEvent[] }) => {
   const sortedEvents = [...events].sort((a, b) => getEventTime(b) - getEventTime(a))
 
-  const renderEvent = (userTask: UserTaskEvent, index: number) => {
+  const renderEvent = (userTask: UserTaskEvent, _index: number) => {
     const { event, time } = userTask
     switch (event?.$case) {
       case 'taskExecuted':

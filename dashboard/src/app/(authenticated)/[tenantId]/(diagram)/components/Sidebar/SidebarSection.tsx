@@ -1,5 +1,5 @@
-import { ChevronDown, ChevronUp, FileSliders } from 'lucide-react'
-import { FC, MouseEvent, PropsWithChildren, useCallback, useState } from 'react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { FC, PropsWithChildren, useCallback, useState } from 'react'
 
 type Props = PropsWithChildren & {
   title: string

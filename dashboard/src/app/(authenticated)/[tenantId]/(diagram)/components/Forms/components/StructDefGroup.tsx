@@ -168,11 +168,7 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
     return union.value.struct.fields
   }, [defaultValue])
 
-  const {
-    data: structDef,
-    error,
-    isLoading,
-  } = useSWR(`structDef/${tenantId}/${structDefId.name}/${structDefId.version}`, async () => {
+  const { data: structDef } = useSWR(`structDef/${tenantId}/${structDefId.name}/${structDefId.version}`, async () => {
     return await getStructDef(tenantId, structDefId)
   })
 

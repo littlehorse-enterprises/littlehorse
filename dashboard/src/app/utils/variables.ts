@@ -269,4 +269,3 @@ const formatVariableExpression = (
     : `${getVariable(lhs!, depth + 1)} ${symbol} ${getVariable(rhs!, depth + 1)}`
   return depth > 0 ? `(${result})` : result
 }
-
