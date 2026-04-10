@@ -2,7 +2,6 @@ package io.littlehorse.common.util;
 
 import io.littlehorse.common.LHServerConfig;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
@@ -30,12 +29,6 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
     @Override
     public void setConfig(final String storeName, final Options options, final Map<String, Object> configs) {
-        try {
-            log.info("Just waiting....");
-            TimeUnit.MINUTES.sleep(2);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         log.trace("Overriding rocksdb settings for store {}", storeName);
 
         LHServerConfig serverConfig = (LHServerConfig) configs.get(LH_SERVER_CONFIG_KEY);
