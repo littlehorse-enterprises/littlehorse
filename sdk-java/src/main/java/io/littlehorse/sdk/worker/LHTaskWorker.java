@@ -14,15 +14,14 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest;
 import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
+import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskParameter;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
-import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import io.littlehorse.sdk.worker.internal.LHLivenessController;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.io.Closeable;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,14 +37,14 @@ public class LHTaskWorker implements Closeable {
     private Object executable;
     private LHConfig config;
     private TaskDef taskDef;
-    private Method taskMethod;
     private List<VariableMapping> mappings;
     private LHServerConnectionManager manager;
     private String taskDefName;
-    private String lhTaskMethodAnnotationValue;
     private LittleHorseBlockingStub grpcClient;
-    private TaskDefBuilder tdb;
     private Map<String, String> placeholderValues;
+
+    private Method taskMethod;
+    private LHTaskSignature taskSignature;
 
     /**
      * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
@@ -57,19 +56,7 @@ public class LHTaskWorker implements Closeable {
      * @param config      is a valid LHConfig.
      */
     public LHTaskWorker(Object executable, String taskDefName, LHConfig config) {
-        this.config = config;
-        this.executable = executable;
-        this.mappings = new ArrayList<>();
-        this.placeholderValues = Map.of();
-        this.taskDefName = taskDefName;
-        this.lhTaskMethodAnnotationValue = taskDefName;
-        this.grpcClient = config.getBlockingStub();
-        this.tdb = new TaskDefBuilder(
-                executable,
-                this.taskDefName,
-                this.lhTaskMethodAnnotationValue,
-                config.getTypeAdapterRegistry(),
-                this.placeholderValues);
+        this(executable, taskDefName, config, Map.of());
     }
 
     /**
@@ -89,19 +76,12 @@ public class LHTaskWorker implements Closeable {
      */
     public LHTaskWorker(
             Object executable, String taskDefNameTemplate, LHConfig config, Map<String, String> valuesForPlaceholders) {
-        this.config = config;
-        this.executable = executable;
-        this.mappings = new ArrayList<>();
-        this.placeholderValues = valuesForPlaceholders == null ? Map.of() : Map.copyOf(valuesForPlaceholders);
-        this.taskDefName = replacePlaceholders(taskDefNameTemplate, this.placeholderValues);
-        this.lhTaskMethodAnnotationValue = taskDefNameTemplate;
-        this.grpcClient = config.getBlockingStub();
-        this.tdb = new TaskDefBuilder(
+        this(
                 executable,
-                this.taskDefName,
-                this.lhTaskMethodAnnotationValue,
-                config.getTypeAdapterRegistry(),
-                this.placeholderValues);
+                taskDefNameTemplate,
+                config,
+                valuesForPlaceholders,
+                LHTaskMethodResolver.lHTaskMethodAnnotationResolver());
     }
 
     /**
@@ -122,6 +102,47 @@ public class LHTaskWorker implements Closeable {
             LHServerConnectionManager manager) {
         this(executable, taskDefNameTemplate, config, valuesForPlaceholders);
         this.manager = manager;
+    }
+
+    /**
+     *  Creates an {@code LHTaskWorker} using the provided executable object and a custom
+     *  {@link LHTaskMethodResolver} to determine the task method to invoke.
+     *  You can have placeholders in the taskDefName in the form of:
+     *  a-task-name-${PLACEHOLDER_1}-${PLACEHOLDER-2}.
+     *  Each placeholder should be replaced by its corresponding value coming from the valuesForPlaceHolders map.
+     *  PLACEHOLDER_1: VALUE_1
+     *  PLACEHOLDER_2: VALUE_2
+     *  So after the values are replaced, you will have a taskDefName like: a-task-name-VALUE_1-VALUE_2
+     *
+     * @param executable is any object containing the task execution logic. The task method
+     *                   will be resolved using the provided {@code taskMethodResolver}.
+     *                   That method will be used to execute the tasks.
+     * @param taskDefNameTemplate is the name of the `TaskDef` to execute. May contain placeholders.
+     * @param config is a valid LHConfig.
+     * @param valuesForPlaceholders map of values that will replace the placeholders on the taskDefNameTemplate.
+     * @param taskMethodResolver strategy used to resolve the {@code @LHTaskMethod} from the given {@code executable}.
+     */
+    public LHTaskWorker(
+            Object executable,
+            String taskDefNameTemplate,
+            LHConfig config,
+            Map<String, String> valuesForPlaceholders,
+            LHTaskMethodResolver taskMethodResolver) {
+        this.executable = executable;
+        this.config = config;
+        this.mappings = new ArrayList<>();
+        this.placeholderValues = valuesForPlaceholders == null ? Map.of() : Map.copyOf(valuesForPlaceholders);
+        this.taskDefName = replacePlaceholders(taskDefNameTemplate, this.placeholderValues);
+        this.grpcClient = config.getBlockingStub();
+        if (taskMethodResolver == null) {
+            throw new IllegalStateException(
+                    "Task resolver was not supplied. Use the constructor that provides a default resolver "
+                            + "or provide your own implementation of LHTaskMethodResolver.");
+        }
+        var taskMethodHandle = taskMethodResolver.resolve(executable, taskDefName, this.placeholderValues);
+        this.taskMethod = taskMethodHandle.getTaskMethod();
+        this.taskSignature =
+                new LHTaskSignature(taskMethodHandle, config.getTypeAdapterRegistry(), this.placeholderValues);
     }
 
     /**
@@ -172,7 +193,7 @@ public class LHTaskWorker implements Closeable {
     public void registerTaskDef() {
         validateStructDefs(StructDefCompatibilityType.NO_SCHEMA_UPDATES);
 
-        TaskDef result = grpcClient.putTaskDef(tdb.toPutTaskDefRequest());
+        TaskDef result = grpcClient.putTaskDef(taskSignature.toPutTaskDefRequest());
         log.info("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
     }
 
@@ -183,9 +204,9 @@ public class LHTaskWorker implements Closeable {
      *                          the existing StructDef schema based on this compatibility type.
      */
     public void validateStructDefs(StructDefCompatibilityType compatibilityType) {
-        if (tdb.getStructDefDependencies().isEmpty()) return;
+        if (taskSignature.getStructDefDependencies().isEmpty()) return;
 
-        for (LHStructDefType lhStructDefType : tdb.getStructDefDependencies()) {
+        for (LHStructDefType lhStructDefType : taskSignature.getStructDefDependencies()) {
             validateStructDef(lhStructDefType, compatibilityType);
         }
     }
@@ -256,7 +277,7 @@ public class LHTaskWorker implements Closeable {
      *                          according to this compatibility type.
      */
     public void registerStructDefs(StructDefCompatibilityType compatibilityType) {
-        List<LHStructDefType> lhStructDefTypes = tdb.getStructDefDependencies();
+        List<LHStructDefType> lhStructDefTypes = taskSignature.getStructDefDependencies();
 
         if (lhStructDefTypes.isEmpty()) return;
 
@@ -265,83 +286,43 @@ public class LHTaskWorker implements Closeable {
         }
     }
 
+    private void getTaskDefOrFail() {
+        long start = System.currentTimeMillis();
+        long timeout = start + Duration.ofSeconds(2).toMillis();
+        do {
+            try {
+                TaskDef taskDef = grpcClient.getTaskDef(
+                        TaskDefId.newBuilder().setName(taskDefName).build());
+                if (taskDef != null) {
+                    this.taskDef = taskDef;
+                    break;
+                }
+                Thread.sleep(10);
+            } catch (StatusRuntimeException exn) {
+                if (!(exn.getStatus().getCode() == Code.NOT_FOUND)) {
+                    throw exn;
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        } while (System.currentTimeMillis() < timeout);
+
+        if (this.taskDef == null) {
+            throw new IllegalStateException("TaskDef '" + taskDefName
+                    + "' was not found on the server. Register it before starting this worker.");
+        }
+    }
+
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {
         if (this.taskDef == null) {
-            long start = System.currentTimeMillis();
-            long timeout = start + Duration.ofSeconds(2).toMillis();
-            do {
-                try {
-                    TaskDef taskDef = grpcClient.getTaskDef(
-                            TaskDefId.newBuilder().setName(taskDefName).build());
-                    if (taskDef != null) {
-                        this.taskDef = taskDef;
-                        break;
-                    }
-                    Thread.sleep(10);
-                } catch (StatusRuntimeException exn) {
-                    if (!(exn.getStatus().getCode() == Code.NOT_FOUND)) {
-                        throw exn;
-                    }
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-            } while (System.currentTimeMillis() < timeout);
-
-            if (this.taskDef == null) {
-                throw new IllegalStateException("TaskDef '" + taskDefName
-                        + "' was not found on the server. Register it before starting this worker.");
-            }
+            getTaskDefOrFail();
         }
 
-        LHTaskSignature signature = new LHTaskSignature(
-                taskDef.getId().getName(),
-                executable,
-                this.lhTaskMethodAnnotationValue,
-                config.getTypeAdapterRegistry(),
-                placeholderValues);
-        taskMethod = signature.getTaskMethod();
-
-        int numTaskMethodParams = taskMethod.getParameterCount();
-        int numTaskDefParams = taskDef.getInputVarsCount();
-
-        boolean wrongNumParams = false;
-        if (signature.getHasWorkerContextAtEnd()) {
-            if (numTaskMethodParams - 1 != numTaskDefParams) {
-                wrongNumParams = true;
-            }
-        } else if (numTaskDefParams != numTaskMethodParams) {
-            wrongNumParams = true;
-        }
-
-        if (wrongNumParams) {
-            throw new TaskSchemaMismatchError("Number of task method params doesn't match number of taskdef params!");
-        }
-
-        for (int i = 0; i < numTaskDefParams; i++) {
-            Parameter param = taskMethod.getParameters()[i];
-            String javaParamName = param.getName();
-            Class<?> paramClass = param.getType();
-            LHType lhTypeAnnotation = param.getAnnotation(LHType.class);
-            String inlineStructDefName = null;
-            if (lhTypeAnnotation != null && !lhTypeAnnotation.structDefName().isBlank()) {
-                inlineStructDefName = replacePlaceholders(lhTypeAnnotation.structDefName(), placeholderValues);
-            }
-
-            if (paramClass.equals(WorkerContext.class)) {
-                throw new TaskSchemaMismatchError("Can only have WorkerContext after all required taskDef params.");
-            }
-
-            // This line throws a TaskSchemaMismatchError if the param can't
-            // be provided properly.
+        for (LHTaskParameter lhTaskParameter : taskSignature.getVariableDefs()) {
             VariableMapping mapping = new VariableMapping(
-                    taskDef, i, paramClass, javaParamName, inlineStructDefName, config.getTypeAdapterRegistry());
+                    lhTaskParameter.getVariableDef(), lhTaskParameter, config.getTypeAdapterRegistry());
             mappings.add(mapping);
-        }
-
-        if (signature.getHasWorkerContextAtEnd()) {
-            mappings.add(new VariableMapping(
-                    taskDef, numTaskMethodParams - 1, WorkerContext.class, null, config.getTypeAdapterRegistry()));
         }
     }
 
@@ -364,7 +345,9 @@ public class LHTaskWorker implements Closeable {
     }
 
     /**
-     * Tests if this worker is alive. A worker is alive if it has been started and has not yet terminated.
+     * Tests if this worker is alive. A worker is alive if it has been started and
+     * has not yet terminated.
+     *
      * @return true if this thread is not alive; false otherwise.
      */
     public boolean isClosed() {
@@ -373,6 +356,7 @@ public class LHTaskWorker implements Closeable {
 
     /**
      * Determine if a worker is healthy. A worker could be running but not healthy.
+     *
      * @return LHTaskWorkerHealth
      */
     public LHTaskWorkerHealth healthStatus() {

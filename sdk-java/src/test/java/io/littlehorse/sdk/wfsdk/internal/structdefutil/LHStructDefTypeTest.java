@@ -100,7 +100,7 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getEmptyInlineStructDefWhenClassDoesNotHaveGettersOrSetters() {
-        LHStructDefType authorClassType = new LHStructDefType(AuthorFieldsOnly.class);
+        LHStructDefType authorClassType = new LHStructDefType(AuthorFieldsOnly.class, LHTypeAdapterRegistry.empty());
         InlineStructDef actualInlineStructDef = authorClassType.getInlineStructDef();
 
         assertThat(actualInlineStructDef.toString()).isBlank();
@@ -108,7 +108,7 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefWithPrimitiveFields() {
-        LHStructDefType authorClassType = new LHStructDefType(Author.class);
+        LHStructDefType authorClassType = new LHStructDefType(Author.class, LHTypeAdapterRegistry.empty());
         InlineStructDef actualInlineStructDef = authorClassType.getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
@@ -148,7 +148,8 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefWithFieldReferenceToAnotherStructDef() {
-        InlineStructDef actualInlineStructDef = new LHStructDefType(Book.class).getInlineStructDef();
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(Book.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "title",
@@ -173,7 +174,8 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefIgnoresFieldsWithLHStructIgnore() {
-        InlineStructDef actualInlineStructDef = new LHStructDefType(Library.class).getInlineStructDef();
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(Library.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "name",
@@ -194,7 +196,8 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefMarksFieldsAsMasked() {
-        InlineStructDef actualInlineStructDef = new LHStructDefType(MaskedValueDemo.class).getInlineStructDef();
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(MaskedValueDemo.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "maskedValue",
@@ -210,7 +213,8 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefUsesAnnotatedFieldName() {
-        InlineStructDef actualInlineStructDef = new LHStructDefType(NamedFieldDemo.class).getInlineStructDef();
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(NamedFieldDemo.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "customFieldName",
@@ -224,7 +228,8 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefUsesLHStructFieldAnnotationOnClassFields() {
-        InlineStructDef actualInlineStructDef = new LHStructDefType(FieldAnnotationDemo.class).getInlineStructDef();
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(FieldAnnotationDemo.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "secret",
@@ -245,8 +250,9 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefResolvesBooleanIsPrefixFieldAnnotations() {
-        InlineStructDef actualInlineStructDef =
-                new LHStructDefType(BooleanFieldAnnotationDemo.class).getInlineStructDef();
+        InlineStructDef actualInlineStructDef = new LHStructDefType(
+                        BooleanFieldAnnotationDemo.class, LHTypeAdapterRegistry.empty())
+                .getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "isPersonAlive",

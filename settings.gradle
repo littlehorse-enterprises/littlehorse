@@ -15,6 +15,7 @@ include(
 )
 
 [
+        'arrays',
         'await-workflow-event',
         'basic',
         'checkpoint-tasks',

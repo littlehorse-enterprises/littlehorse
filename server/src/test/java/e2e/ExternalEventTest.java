@@ -15,15 +15,16 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest(externalEventNames = {ExternalEventTest.IGNORED_EVT_NAME})
+@WithStructDefs({Car.class})
 public class ExternalEventTest {
 
     public static final String EVT_NAME = "basic-test-event";
@@ -121,10 +122,6 @@ public class ExternalEventTest {
     @Test
     void shouldCompleteWhenWeSendStructEvent() {
         WfRunId id = WfRunId.newBuilder().setId(LHUtil.generateGuid()).build();
-
-        // TODO: Refactor if we add `registeredAs` for Struct Variables
-        LHStructDefType lhStructDefType = new LHStructDefType(Car.class);
-        client.putStructDef(lhStructDefType.toPutStructDefRequest());
 
         Car car = new Car("brand", "model", 1000);
 

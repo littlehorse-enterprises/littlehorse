@@ -6,6 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "variable.proto";
 import "object_id.proto";
 import "common_wfspec.proto";
+import "type_definition.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
