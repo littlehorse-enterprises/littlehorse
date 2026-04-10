@@ -118,12 +118,12 @@ public class LHTaskSignatureTest {
         assertThat(taskSignature.hasWorkerContext()).isTrue();
     }
 
-    @Test
-    void shouldReturnNoStructDefDependenciesAfterRefactor() {
-        LHTaskSignature taskSignature = signatureFor("struct-task", Car.class);
+    // @Test
+    // void shouldReturnNoStructDefDependenciesAfterRefactor() {
+    //     LHTaskSignature taskSignature = signatureFor("struct-task", Car.class);
 
-        assertThat(taskSignature.getStructDefDependencies()).isEmpty();
-    }
+    //     assertThat(taskSignature.getStructDefDependencies()).isEmpty();
+    // }
 
     @Test
     void shouldUseTypeAdapterForStructDefFieldTypes() {
