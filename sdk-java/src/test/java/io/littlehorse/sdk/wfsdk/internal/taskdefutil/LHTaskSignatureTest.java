@@ -10,6 +10,7 @@ import io.littlehorse.sdk.testutils.TestReflection;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.LHTaskMethodHandle;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
 import java.lang.reflect.Method;
@@ -86,7 +87,8 @@ public class LHTaskSignatureTest {
             Map<String, String> placeholders,
             Class<?>... paramTypes) {
         Method method = TestReflection.getTaskMethodByName(MyWorker.class, taskName);
-        return new LHTaskSignature(method, typeAdapterRegistry, placeholders);
+        return new LHTaskSignature(
+                LHTaskMethodHandle.fromLHTaskMethod(method, placeholders), typeAdapterRegistry, placeholders);
     }
 
     private static LHTaskSignature signatureFor(String taskName, Class<?>... paramTypes) {
