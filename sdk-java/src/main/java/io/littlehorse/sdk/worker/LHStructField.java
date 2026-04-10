@@ -27,4 +27,12 @@ public @interface LHStructField {
      * @return whether or not the type value should be masked.
      */
     boolean masked() default false;
+
+    /**
+     * OPTIONAL: Indicates that this array-typed field should be serialized as a LittleHorse native Array
+     * rather than a JSON_ARR.
+     *
+     * @return whether or not this field's array should be an LH native Array.
+     */
+    boolean isLHArray() default false;
 }

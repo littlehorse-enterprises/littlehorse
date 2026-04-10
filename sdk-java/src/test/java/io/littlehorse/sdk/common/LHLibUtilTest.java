@@ -2,6 +2,7 @@ package io.littlehorse.sdk.common;
 
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.StructDefId;
@@ -309,6 +310,42 @@ public class LHLibUtilTest {
         Assertions.assertThat(wrappedValue.getStruct().getStructDefId().getName())
                 .isEqualTo("customer");
         Assertions.assertThat(wrappedValue.getStruct().getStruct()).isEqualTo(inlineStruct);
+    }
+
+    @Test
+    void shouldSerializeArrayAsNativeLHArrayWhenRequested() {
+        Long[] numbers = new Long[] {1L, 2L, 3L};
+
+        VariableValue val = LHLibUtil.objToVarValAsNativeArray(numbers, Long[].class, LHTypeAdapterRegistry.empty());
+
+        Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
+        Assertions.assertThat(val.getArray().getItemsCount()).isEqualTo(3);
+        Assertions.assertThat(val.getArray().getItems(0).getInt()).isEqualTo(1L);
+        Assertions.assertThat(val.getArray().getItems(1).getInt()).isEqualTo(2L);
+        Assertions.assertThat(val.getArray().getItems(2).getInt()).isEqualTo(3L);
+    }
+
+    @Test
+    void shouldFailNativeArraySerializationForNonArrayDeclaredType() {
+        Long[] numbers = new Long[] {1L};
+
+        Assertions.assertThatThrownBy(
+                        () -> LHLibUtil.objToVarValAsNativeArray(numbers, Long.class, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(io.littlehorse.sdk.common.exception.LHSerdeException.class)
+                .hasMessageContaining("must be a Java array type");
+    }
+
+    @Test
+    void shouldDeserializeNativeLHArrayToJavaArray() {
+        VariableValue nativeArray = VariableValue.newBuilder()
+                .setArray(Array.newBuilder()
+                        .addItems(VariableValue.newBuilder().setInt(7L))
+                        .addItems(VariableValue.newBuilder().setInt(9L)))
+                .build();
+
+        Object out = LHLibUtil.varValToObj(nativeArray, Long[].class, LHTypeAdapterRegistry.empty());
+
+        Assertions.assertThat((Long[]) out).containsExactly(7L, 9L);
     }
 
     private Book getTestBook() {

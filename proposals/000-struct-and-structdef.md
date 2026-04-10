@@ -9,6 +9,7 @@
     - [`StructDef` Schema Evolution](#structdef-schema-evolution)
       - [Validating `StructDef` Schema Evolution](#validating-structdef-schema-evolution)
     - [Interoperability with `JSON_OBJ`](#interoperability-with-json_obj)
+      - [Differentiating LH Arrays from traditional `JSON_ARR`s](#differentiating-lh-arrays-from-traditional-json_arrs)
   - [Client-Side Enhancements](#client-side-enhancements)
     - [Task Workers](#task-workers)
       - [`StructDef` References](#structdef-references)
@@ -67,51 +68,12 @@ message Struct {
   InlineStruct struct = 2;
 }
 
-// An Array is a list structure containing a single type of data.
+// An Array is a strongly-typed list of values.
 message Array {
-  message StringArray {
-    repeated string items = 1;
-  }
+  repeated VariableValue items = 1;
 
-  message DoubleArray {
-    repeated double items = 1;
-  }
-
-  message BoolArray {
-    repeated bool items = 1;
-  }
-
-  message IntArray {
-    repeated int64 items = 1;
-  }
-
-  message BytesArray {
-    repeated bytes items = 1;
-  }
-
-  message WfRunIdArray {
-    repeated WfRunId items = 1;
-  }
-
-  message StructArray {
-    repeated Struct items = 1;
-  }
-
-  message ArrayArray {
-    repeated Array items = 1;
-  }
-
-  oneof value {
-    StringArray json_obj_arr = 1;
-    StringArray json_arr_arr = 2;
-    DoubleArray double_arr = 3;
-    BoolArray bool_arr = 4;
-    IntArray int_arr = 5;
-    BytesArray bytes_arr = 6;
-    WfRunIdArray wf_run_id_arr = 7;
-    StructArray struct_arr = 8;
-    ArrayArray array_arr = 9;
-  }
+  // Set and validated at VariableValue ingress to prevent unnecessary lookups
+  TypeDefinition element_type = 2;
 }
 
 // An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`.
@@ -276,7 +238,7 @@ message VariableValue {
 }
 ```
 
-The only addition is the `Struct struct = 9;` field.
+The additions are the `Struct struct = 9;` and `Array array = 10;` fields.
 
 Note that the `Variable`, `VariableDef`, `ThreadVarDef`, `ReturnType`, `TaskDef`, `ExternalEventDef`, `WorkflowEventDef`, `UserTaskDef`, and other protobuf structures will **not** need to change. All of the changes will be encapsulated within the `TypeDefinition` and `VariableValue` messages.
 
@@ -413,6 +375,27 @@ In the past, this only worked if the variable on the ScheduledTask was of the ty
 2. The variable in the ScheduledTask is a Struct that matches.
 
 This means that the SDK will dynamically convert the `VariableValue` into a `Car` whether it is a `STRUCT` or a `JSON_OBJ`.
+
+#### Differentiating LH Arrays from traditional `JSON_ARR`s
+
+When trying to serialize and deserialize values in the SDKs, we will define a rule for explicitly differentiating legacy `JSON_ARR` and native LittleHorse `Array`s. This will help us maintain backwards compatibility with old clients using `JSON_ARR`s.
+
+In order to distinguish a LittleHorse `Array` type from a `JSON_ARR` type, users can annotate Task Parameters and Return Types with the `@LHType` method and a new `boolean` field `isLHArray`:
+
+```java
+@LHTaskMethod("task-with-lh-array-param")
+public void taskWithLHArrayParam(@LHType(isLHArray=true) String[] words) {
+
+}
+
+@LHTaskMethod("task-with-lh-array-param")
+@LHType(isLHArray=true)
+public String[] taskWithLHArrayReturnType() {
+
+}
+```
+
+The SDK will still handle legacy TaskDef cases, serializing unmarked Array parameter and return types into `JSON_ARR`s.
 
 ## Client-Side Enhancements
 

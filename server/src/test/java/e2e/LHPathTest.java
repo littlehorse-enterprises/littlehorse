@@ -12,10 +12,10 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +23,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@WithStructDefs({Person.class})
 public class LHPathTest {
     @LHWorkflow("lh-path-structs")
     private Workflow lhPathStructsWf;
@@ -35,8 +36,6 @@ public class LHPathTest {
 
     @Test
     public void shouldPerformGetOnStruct() {
-        client.putStructDef(new LHStructDefType(Person.class).toPutStructDefRequest());
-
         Person person = new Person(
                 "Obi-Wan Kenobi",
                 List.of("Yoda", "Anakin Skywalker"),
@@ -55,8 +54,6 @@ public class LHPathTest {
 
     @Test
     void shouldFailGetOnStructWithInvalidField() {
-        client.putStructDef(new LHStructDefType(Person.class).toPutStructDefRequest());
-
         Workflow invalid = Workflow.newWorkflow("fail-get-on-struct", wf -> {
             WfRunVariable person = wf.declareStruct("person", Person.class);
             wf.execute("greet-lh-path", person.get("age"));

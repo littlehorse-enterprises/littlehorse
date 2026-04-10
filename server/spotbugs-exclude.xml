@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Exclude all generated protobuf code -->
+    <Match>
+        <Package name="~io\.littlehorse\.sdk\.common\.proto.*"/>
+    </Match>
+    <Match>
+        <Package name="~io\.littlehorse\.common\.proto.*"/>
+    </Match>
+</FindBugsFilter>

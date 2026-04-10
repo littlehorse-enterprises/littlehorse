@@ -3178,7 +3178,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * A path resolving to a field in your object.
-   * Supported on Struct and JSON_OBJ.
+   * Supported on Struct, Array, and JSON_OBJ.
    * </pre>
    *
    * <code>.littlehorse.LHPath lh_path = 8;</code>
@@ -3191,7 +3191,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * A path resolving to a field in your object.
-   * Supported on Struct and JSON_OBJ.
+   * Supported on Struct, Array, and JSON_OBJ.
    * </pre>
    *
    * <code>.littlehorse.LHPath lh_path = 8;</code>
@@ -3207,7 +3207,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * A path resolving to a field in your object.
-   * Supported on Struct and JSON_OBJ.
+   * Supported on Struct, Array, and JSON_OBJ.
    * </pre>
    *
    * <code>.littlehorse.LHPath lh_path = 8;</code>
@@ -4243,7 +4243,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * A path resolving to a field in your object.
-     * Supported on Struct and JSON_OBJ.
+     * Supported on Struct, Array, and JSON_OBJ.
      * </pre>
      *
      * <code>.littlehorse.LHPath lh_path = 8;</code>
@@ -4256,7 +4256,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * A path resolving to a field in your object.
-     * Supported on Struct and JSON_OBJ.
+     * Supported on Struct, Array, and JSON_OBJ.
      * </pre>
      *
      * <code>.littlehorse.LHPath lh_path = 8;</code>
@@ -4279,7 +4279,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * A path resolving to a field in your object.
-     * Supported on Struct and JSON_OBJ.
+     * Supported on Struct, Array, and JSON_OBJ.
      * </pre>
      *
      * <code>.littlehorse.LHPath lh_path = 8;</code>
@@ -4300,7 +4300,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * A path resolving to a field in your object.
-     * Supported on Struct and JSON_OBJ.
+     * Supported on Struct, Array, and JSON_OBJ.
      * </pre>
      *
      * <code>.littlehorse.LHPath lh_path = 8;</code>
@@ -4319,7 +4319,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * A path resolving to a field in your object.
-     * Supported on Struct and JSON_OBJ.
+     * Supported on Struct, Array, and JSON_OBJ.
      * </pre>
      *
      * <code>.littlehorse.LHPath lh_path = 8;</code>
@@ -4347,7 +4347,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * A path resolving to a field in your object.
-     * Supported on Struct and JSON_OBJ.
+     * Supported on Struct, Array, and JSON_OBJ.
      * </pre>
      *
      * <code>.littlehorse.LHPath lh_path = 8;</code>
@@ -4371,7 +4371,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * A path resolving to a field in your object.
-     * Supported on Struct and JSON_OBJ.
+     * Supported on Struct, Array, and JSON_OBJ.
      * </pre>
      *
      * <code>.littlehorse.LHPath lh_path = 8;</code>
@@ -4382,7 +4382,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * A path resolving to a field in your object.
-     * Supported on Struct and JSON_OBJ.
+     * Supported on Struct, Array, and JSON_OBJ.
      * </pre>
      *
      * <code>.littlehorse.LHPath lh_path = 8;</code>
@@ -4401,7 +4401,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * A path resolving to a field in your object.
-     * Supported on Struct and JSON_OBJ.
+     * Supported on Struct, Array, and JSON_OBJ.
      * </pre>
      *
      * <code>.littlehorse.LHPath lh_path = 8;</code>

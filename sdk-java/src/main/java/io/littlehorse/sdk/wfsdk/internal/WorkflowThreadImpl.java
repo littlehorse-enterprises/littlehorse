@@ -55,6 +55,7 @@ import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -496,6 +497,14 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return wfRunVariable;
     }
 
+    private WfRunVariableImpl addArrayVariable(String name, LHArrayType clazz) {
+        checkIfIsActive();
+
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createArrayVar(name, clazz, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
+    }
+
     @Override
     public WfRunVariable declareBool(String name) {
         return addVariable(name, VariableType.BOOL);
@@ -541,11 +550,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return addStructVariable(name, new LHStructDefType(clazz, parent.getTypeAdapterRegistry()));
     }
 
-    // TODO: Complete Arrays implementation
-    // @Override
-    // public WfRunVariable declareArray(String name, Class<?> elementType) {
-    //     return addArrayVariable(name, new LHArrayDefType(elementType));
-    // }
+    @Override
+    public WfRunVariable declareArray(String name, Class<?> elementType) {
+        Class<?> arrayType = java.lang.reflect.Array.newInstance(elementType, 0).getClass();
+        return addArrayVariable(name, new LHArrayType(arrayType, parent.getTypeAdapterRegistry()));
+    }
 
     @Override
     public WorkflowIfStatement doIf(LHExpression condition, IfElseBody ifBody) {
