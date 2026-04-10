@@ -80,9 +80,9 @@ export function aggregateByBucket(points: { ts: number; wf: WfMetrics }[], bucke
     groups.set(k, arr)
   }
   const merged = new Map<number, WfMetrics>()
-  for (const [bs, wfs] of groups) {
+  groups.forEach((wfs, bs) => {
     merged.set(bs, mergeWfMetricsGroup(wfs))
-  }
+  })
   return merged
 }
 
