@@ -44,7 +44,6 @@ public class LHTaskSignatureTest {
 
         @LHTaskMethod(value = "blank-desc-task")
         public void blankDescTask() {}
-        ;
     }
 
     @LHStructDef("car")
