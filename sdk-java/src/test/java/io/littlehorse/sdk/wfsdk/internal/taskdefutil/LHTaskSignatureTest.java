@@ -41,7 +41,7 @@ public class LHTaskSignatureTest {
             return in;
         }
 
-        @LHTaskMethod(value = "blank-desc-task", description = "")
+        @LHTaskMethod(value = "blank-desc-task")
         public void blankDescTask() {};
     }
 
@@ -101,6 +101,13 @@ public class LHTaskSignatureTest {
     }
 
     @Test
+    void shouldIgnoreEmptyTaskDefDescription() {
+        LHTaskSignature taskSignature = signatureFor("blank-desc-task");
+
+        assertThat(taskSignature.toPutTaskDefRequest().hasDescription()).isFalse();
+    }
+
+    @Test
     void shouldIgnoreWorkerContextInTaskDefParameter() {
         LHTaskSignature taskSignature = signatureFor("worker-context-task", WorkerContext.class);
 
@@ -113,13 +120,6 @@ public class LHTaskSignatureTest {
         LHTaskSignature taskSignature = signatureFor("struct-task", Car.class);
 
         assertThat(taskSignature.getStructDefDependencies()).isEmpty();
-    }
-
-    @Test
-    void shouldIgnoreEmptyTaskDefDescription() {
-        LHTaskSignature taskSignature = signatureFor("blank-desc-task");
-
-        assertThat(taskSignature.toPutTaskDefRequest().hasDescription()).isFalse();
     }
 
     @Test
