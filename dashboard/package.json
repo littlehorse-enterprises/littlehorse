@@ -45,7 +45,7 @@
     "cmdk": "^1.0.0",
     "cron-parser": "^4.9.0",
     "elkjs": "^0.11.0",
-    "eslint": "^8.57.0",
+    "eslint": "^9.23.0",
     "littlehorse-client": "file://../sdk-js",
     "lucide-react": "^0.519.0",
     "next": "^14.2.4",
