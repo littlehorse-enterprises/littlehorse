@@ -190,6 +190,7 @@ public class LHServer {
     }
 
     public void start() throws IOException {
+        healthService.start();
         coreStreams.start();
         if (timerStreams != null) {
             timerStreams.start();
@@ -198,7 +199,6 @@ public class LHServer {
         for (LHServerListener listener : listeners) {
             listener.start();
         }
-        healthService.start();
     }
 
     public void close() {
