@@ -1,6 +1,15 @@
 'use client'
 
-import { buildRfc3339Utc, parseRfc3339Utc, unixMillisToRfc3339 } from '@/app/utils/timestamp'
+import {
+  buildRfc3339Utc,
+  msFromNanos,
+  parseRfc3339Utc,
+  parseTimeWithNanos,
+  unixMillisToRfc3339,
+  utcDateFromParts,
+  utcParts,
+  utcTimeWithNanos,
+} from '@/app/utils/timestamp'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
@@ -18,51 +27,6 @@ export type TimestampPickerProps = {
   onChange: (next: string) => void
   disabled?: boolean
   className?: string
-}
-
-function utcParts(d: Date) {
-  return {
-    y: d.getUTCFullYear(),
-    mo: d.getUTCMonth(),
-    day: d.getUTCDate(),
-    h: d.getUTCHours(),
-    mi: d.getUTCMinutes(),
-    s: d.getUTCSeconds(),
-    ms: d.getUTCMilliseconds(),
-  }
-}
-
-function utcDateFromParts(y: number, mo: number, day: number, h: number, mi: number, s: number, ms: number): Date {
-  return new Date(Date.UTC(y, mo, day, h, mi, s, ms))
-}
-
-const msFromNanos = (nanoseconds: number) => Math.floor(nanoseconds / 1_000_000)
-
-function utcTimeWithNanos(d: Date, nanos: number): string {
-  const p = utcParts(d)
-  const hms = `${String(p.h).padStart(2, '0')}:${String(p.mi).padStart(2, '0')}:${String(p.s).padStart(2, '0')}`
-  if (nanos === 0) return hms
-  const subSecondNanos = nanos % 1_000_000_000
-  const frac = subSecondNanos.toString().padStart(9, '0').replace(/0+$/, '')
-  return frac ? `${hms}.${frac}` : hms
-}
-
-const TIME_RE = /^(\d{1,2}):(\d{1,2}):(\d{1,2})(?:\.(\d{1,9}))?$/
-
-function parseTimeWithNanos(raw: string): { h: number; mi: number; s: number; nanos: number } | null {
-  const m = raw.trim().match(TIME_RE)
-  if (!m) return null
-  const [, hStr, miStr, sStr, fracStr] = m
-  const h = parseInt(hStr, 10)
-  const mi = parseInt(miStr, 10)
-  const s = parseInt(sStr, 10)
-  if (h > 23 || mi > 59 || s > 59) return null
-  let nanos = 0
-  if (fracStr) {
-    const padded = fracStr.padEnd(9, '0').slice(0, 9)
-    nanos = parseInt(padded, 10)
-  }
-  return { h, mi, s, nanos }
 }
 
 export function TimestampPicker({ id, value, onChange, disabled, className }: TimestampPickerProps) {
