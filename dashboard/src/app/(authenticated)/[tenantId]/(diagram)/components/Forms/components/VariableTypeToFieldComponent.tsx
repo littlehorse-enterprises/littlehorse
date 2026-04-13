@@ -13,6 +13,6 @@ export const VariableTypeToFieldComponent = {
   [VariableType.INT]: { type: 'number', component: Input },
   [VariableType.BYTES]: { type: 'text', component: Input },
   [VariableType.WF_RUN_ID]: { type: 'text', component: Input },
-  [VariableType.TIMESTAMP]: { type: 'number', component: Input },
+  [VariableType.TIMESTAMP]: { type: 'text', component: Input },
   [VariableType.UNRECOGNIZED]: { type: 'text', component: Input },
 } as const satisfies Record<keyof typeof VariableType, { type: HTMLInputTypeAttribute; component: React.ElementType }>
