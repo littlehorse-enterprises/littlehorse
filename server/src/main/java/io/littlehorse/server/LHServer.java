@@ -14,6 +14,7 @@ import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.interceptors.RequestBlocker;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
+import io.littlehorse.server.monitoring.http.NettyStatusServer;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
@@ -104,8 +105,14 @@ public class LHServer {
                 config, coreStreams, timerStreams, metadataCache, contextKey, coreStoreProvider, asyncWaiters);
 
         // Health Server Setup
-        this.healthService =
-                new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache, internalComms);
+        this.healthService = new HealthService(
+                new NettyStatusServer(),
+                config,
+                coreStreams,
+                timerStreams,
+                taskQueueManager,
+                metadataCache,
+                internalComms);
         this.commandSender = new CommandSender(
                 internalComms,
                 networkThreadpool,
