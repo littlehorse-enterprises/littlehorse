@@ -114,11 +114,12 @@ export function TimestampPicker({ id, value, onChange, disabled, className }: Ti
 
   const onDaySelect = (day: Date | undefined) => {
     if (!day) return
-    const p = utcParts(date)
     const sel = utcParts(day)
-    const ms = msFromNanos(nanoseconds)
+    const hasExistingValue = !!value?.trim()
+    const p = hasExistingValue ? utcParts(date) : { h: 0, mi: 0, s: 0 }
+    const ms = hasExistingValue ? msFromNanos(nanoseconds) : 0
     const next = utcDateFromParts(sel.y, sel.mo, sel.day, p.h, p.mi, p.s, ms)
-    emit(next, nanoseconds)
+    emit(next, hasExistingValue ? nanoseconds : 0)
     setOpen(false)
   }
 
