@@ -152,6 +152,40 @@ export interface GetLatestTaskMetricWindowResponse {
   window: MetricWindow | undefined;
 }
 
+/** A list of MetricWindowId's returned by a search. */
+export interface MetricWindowIdList {
+  /** Opaque bookmark for pagination; pass back to continue a search. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** The matching window IDs. */
+  results: MetricWindowId[];
+}
+
+/** Search for workflow metric windows by WfSpec name and optional time filter. */
+export interface SearchWfMetricWindowRequest {
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?:
+    | number
+    | undefined;
+  /** The name of the WfSpec. Required. */
+  wfSpecName: string;
+  /** Only return windows starting after this time. */
+  earliestStart?:
+    | string
+    | undefined;
+  /** Only return windows starting before this time. */
+  latestStart?:
+    | string
+    | undefined;
+  /** If true, ignore time range fields and return only the single most recent completed window. */
+  latestOnly?: boolean | undefined;
+}
+
 function createBaseCountAndTiming(): CountAndTiming {
   return { count: 0, minLatencyMs: 0, maxLatencyMs: 0, totalLatencyMs: 0 };
 }
@@ -1268,6 +1302,231 @@ export const GetLatestTaskMetricWindowResponse = {
     return message;
   },
 };
+
+function createBaseMetricWindowIdList(): MetricWindowIdList {
+  return { bookmark: undefined, results: [] };
+}
+
+export const MetricWindowIdList = {
+  encode(message: MetricWindowIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.bookmark !== undefined) {
+      writer.uint32(10).bytes(message.bookmark);
+    }
+    for (const v of message.results) {
+      MetricWindowId.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricWindowIdList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricWindowIdList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.results.push(MetricWindowId.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MetricWindowIdList {
+    return {
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+      results: globalThis.Array.isArray(object?.results)
+        ? object.results.map((e: any) => MetricWindowId.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: MetricWindowIdList): unknown {
+    const obj: any = {};
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.results?.length) {
+      obj.results = message.results.map((e) => MetricWindowId.toJSON(e));
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MetricWindowIdList>): MetricWindowIdList {
+    return MetricWindowIdList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MetricWindowIdList>): MetricWindowIdList {
+    const message = createBaseMetricWindowIdList();
+    message.bookmark = object.bookmark ?? undefined;
+    message.results = object.results?.map((e) => MetricWindowId.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseSearchWfMetricWindowRequest(): SearchWfMetricWindowRequest {
+  return {
+    bookmark: undefined,
+    limit: undefined,
+    wfSpecName: "",
+    earliestStart: undefined,
+    latestStart: undefined,
+    latestOnly: undefined,
+  };
+}
+
+export const SearchWfMetricWindowRequest = {
+  encode(message: SearchWfMetricWindowRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.bookmark !== undefined) {
+      writer.uint32(10).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(16).int32(message.limit);
+    }
+    if (message.wfSpecName !== "") {
+      writer.uint32(26).string(message.wfSpecName);
+    }
+    if (message.earliestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(34).fork()).ldelim();
+    }
+    if (message.latestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(42).fork()).ldelim();
+    }
+    if (message.latestOnly !== undefined) {
+      writer.uint32(48).bool(message.latestOnly);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchWfMetricWindowRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchWfMetricWindowRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.wfSpecName = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.latestOnly = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchWfMetricWindowRequest {
+    return {
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
+      latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
+      latestOnly: isSet(object.latestOnly) ? globalThis.Boolean(object.latestOnly) : undefined,
+    };
+  },
+
+  toJSON(message: SearchWfMetricWindowRequest): unknown {
+    const obj: any = {};
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.wfSpecName !== "") {
+      obj.wfSpecName = message.wfSpecName;
+    }
+    if (message.earliestStart !== undefined) {
+      obj.earliestStart = message.earliestStart;
+    }
+    if (message.latestStart !== undefined) {
+      obj.latestStart = message.latestStart;
+    }
+    if (message.latestOnly !== undefined) {
+      obj.latestOnly = message.latestOnly;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<SearchWfMetricWindowRequest>): SearchWfMetricWindowRequest {
+    return SearchWfMetricWindowRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SearchWfMetricWindowRequest>): SearchWfMetricWindowRequest {
+    const message = createBaseSearchWfMetricWindowRequest();
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
+    message.wfSpecName = object.wfSpecName ?? "";
+    message.earliestStart = object.earliestStart ?? undefined;
+    message.latestStart = object.latestStart ?? undefined;
+    message.latestOnly = object.latestOnly ?? undefined;
+    return message;
+  },
+};
+
+function bytesFromBase64(b64: string): Uint8Array {
+  return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  return globalThis.Buffer.from(arr).toString("base64");
+}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 

@@ -41,6 +41,8 @@ import {
   ListTaskMetricsRequest,
   ListWfMetricsRequest,
   MetricsList,
+  MetricWindowIdList,
+  SearchWfMetricWindowRequest,
 } from "./metrics";
 import { NodeRun } from "./node_run";
 import {
@@ -12119,6 +12121,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
+    searchWfMetricWindow: {
+      name: "SearchWfMetricWindow",
+      requestType: SearchWfMetricWindowRequest,
+      requestStream: false,
+      responseType: MetricWindowIdList,
+      responseStream: false,
+      options: {},
+    },
     /** Creates a Tenant in the LH Server. */
     putTenant: {
       name: "PutTenant",
@@ -12625,6 +12636,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListWfMetricsRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<MetricsList>>;
+  /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
+  searchWfMetricWindow(
+    request: SearchWfMetricWindowRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<MetricWindowIdList>>;
   /** Creates a Tenant in the LH Server. */
   putTenant(request: PutTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
   /** Gets a Tenant from the LH Server. */
@@ -13097,6 +13113,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListWfMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<MetricsList>;
+  /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
+  searchWfMetricWindow(
+    request: DeepPartial<SearchWfMetricWindowRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<MetricWindowIdList>;
   /** Creates a Tenant in the LH Server. */
   putTenant(request: DeepPartial<PutTenantRequest>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
   /** Gets a Tenant from the LH Server. */

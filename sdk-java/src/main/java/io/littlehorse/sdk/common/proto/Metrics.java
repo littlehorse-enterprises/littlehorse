@@ -81,6 +81,16 @@ public final class Metrics extends com.google.protobuf.GeneratedFile {
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_GetLatestTaskMetricWindowResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_MetricWindowIdList_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_MetricWindowIdList_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_SearchWfMetricWindowRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_SearchWfMetricWindowRequest_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -145,9 +155,19 @@ public final class Metrics extends com.google.protobuf.GeneratedFile {
       "quest\022(\n\010task_def\030\001 \001(\0132\026.littlehorse.Ta" +
       "skDefId\"N\n!GetLatestTaskMetricWindowResp" +
       "onse\022)\n\006window\030\001 \001(\0132\031.littlehorse.Metri" +
-      "cWindowBM\n\037io.littlehorse.sdk.common.pro" +
-      "toP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common" +
-      ".Protob\006proto3"
+      "cWindow\"f\n\022MetricWindowIdList\022\025\n\010bookmar" +
+      "k\030\001 \001(\014H\000\210\001\001\022,\n\007results\030\002 \003(\0132\033.littleho" +
+      "rse.MetricWindowIdB\013\n\t_bookmark\"\263\002\n\033Sear" +
+      "chWfMetricWindowRequest\022\025\n\010bookmark\030\001 \001(" +
+      "\014H\000\210\001\001\022\022\n\005limit\030\002 \001(\005H\001\210\001\001\022\024\n\014wf_spec_na" +
+      "me\030\003 \001(\t\0227\n\016earliest_start\030\004 \001(\0132\032.googl" +
+      "e.protobuf.TimestampH\002\210\001\001\0225\n\014latest_star" +
+      "t\030\005 \001(\0132\032.google.protobuf.TimestampH\003\210\001\001" +
+      "\022\030\n\013latest_only\030\006 \001(\010H\004\210\001\001B\013\n\t_bookmarkB" +
+      "\010\n\006_limitB\021\n\017_earliest_startB\017\n\r_latest_" +
+      "startB\016\n\014_latest_onlyBM\n\037io.littlehorse." +
+      "sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHo" +
+      "rse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -221,6 +241,18 @@ public final class Metrics extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_GetLatestTaskMetricWindowResponse_descriptor,
         new java.lang.String[] { "Window", });
+    internal_static_littlehorse_MetricWindowIdList_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_littlehorse_MetricWindowIdList_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_MetricWindowIdList_descriptor,
+        new java.lang.String[] { "Bookmark", "Results", });
+    internal_static_littlehorse_SearchWfMetricWindowRequest_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_littlehorse_SearchWfMetricWindowRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_SearchWfMetricWindowRequest_descriptor,
+        new java.lang.String[] { "Bookmark", "Limit", "WfSpecName", "EarliestStart", "LatestStart", "LatestOnly", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

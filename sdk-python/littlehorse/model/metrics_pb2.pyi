@@ -125,3 +125,27 @@ class GetLatestTaskMetricWindowResponse(_message.Message):
     WINDOW_FIELD_NUMBER: _ClassVar[int]
     window: MetricWindow
     def __init__(self, window: _Optional[_Union[MetricWindow, _Mapping]] = ...) -> None: ...
+
+class MetricWindowIdList(_message.Message):
+    __slots__ = ("bookmark", "results")
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.MetricWindowId]
+    def __init__(self, bookmark: _Optional[bytes] = ..., results: _Optional[_Iterable[_Union[_object_id_pb2.MetricWindowId, _Mapping]]] = ...) -> None: ...
+
+class SearchWfMetricWindowRequest(_message.Message):
+    __slots__ = ("bookmark", "limit", "wf_spec_name", "earliest_start", "latest_start", "latest_only")
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
+    LATEST_START_FIELD_NUMBER: _ClassVar[int]
+    LATEST_ONLY_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    wf_spec_name: str
+    earliest_start: _timestamp_pb2.Timestamp
+    latest_start: _timestamp_pb2.Timestamp
+    latest_only: bool
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_spec_name: _Optional[str] = ..., earliest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., latest_only: _Optional[bool] = ...) -> None: ...

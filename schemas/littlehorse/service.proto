@@ -346,6 +346,8 @@ service LittleHorse {
   rpc ListTaskMetrics(ListTaskMetricsRequest) returns (MetricsList) {}
   // Lists available metric windows for a given WfSpecId and time range.
   rpc ListWfMetrics(ListWfMetricsRequest) returns (MetricsList) {}
+  // Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+  rpc SearchWfMetricWindow(SearchWfMetricWindowRequest) returns (MetricWindowIdList) {}
 
   // Creates a Tenant in the LH Server.
   rpc PutTenant(PutTenantRequest) returns (Tenant) {}
