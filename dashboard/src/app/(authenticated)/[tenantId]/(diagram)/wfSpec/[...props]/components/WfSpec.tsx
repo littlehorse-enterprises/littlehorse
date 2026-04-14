@@ -11,7 +11,7 @@ import { Details } from './Details'
 import { ScheduledWfRuns } from './ScheduledWfRuns'
 import { Thread } from './Thread'
 import { WfRuns } from './WfRuns'
-import { WfSpecMetrics } from './WfSpecMetrics'
+import { WfSpecMetrics } from './metrics'
 
 type WfSpecProps = {
   spec: Spec
