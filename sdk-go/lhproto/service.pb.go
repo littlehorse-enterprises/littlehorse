@@ -8167,7 +8167,7 @@ var file_service_proto_rawDesc = []byte{
 	0x4d, 0x41, 0x5f, 0x55, 0x50, 0x44, 0x41, 0x54, 0x45, 0x53, 0x10, 0x00, 0x12, 0x23, 0x0a, 0x1f,
 	0x46, 0x55, 0x4c, 0x4c, 0x59, 0x5f, 0x43, 0x4f, 0x4d, 0x50, 0x41, 0x54, 0x49, 0x42, 0x4c, 0x45,
 	0x5f, 0x53, 0x43, 0x48, 0x45, 0x4d, 0x41, 0x5f, 0x55, 0x50, 0x44, 0x41, 0x54, 0x45, 0x53, 0x10,
-	0x01, 0x32, 0xcd, 0x3d, 0x0a, 0x0b, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73,
+	0x01, 0x32, 0x9a, 0x3e, 0x0a, 0x0b, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73,
 	0x65, 0x12, 0x44, 0x0a, 0x0a, 0x50, 0x75, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x12,
 	0x1e, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x75,
 	0x74, 0x54, 0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
@@ -8628,44 +8628,49 @@ var file_service_proto_rawDesc = []byte{
 	0x73, 0x65, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x66, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73,
 	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65,
 	0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x4c, 0x69, 0x73,
-	0x74, 0x22, 0x00, 0x12, 0x63, 0x0a, 0x14, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x57, 0x66, 0x4d,
-	0x65, 0x74, 0x72, 0x69, 0x63, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x12, 0x28, 0x2e, 0x6c, 0x69,
-	0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68,
-	0x57, 0x66, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
-	0x72, 0x73, 0x65, 0x2e, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77,
-	0x49, 0x64, 0x4c, 0x69, 0x73, 0x74, 0x22, 0x00, 0x12, 0x41, 0x0a, 0x09, 0x50, 0x75, 0x74, 0x54,
-	0x65, 0x6e, 0x61, 0x6e, 0x74, 0x12, 0x1d, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
-	0x72, 0x73, 0x65, 0x2e, 0x50, 0x75, 0x74, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72,
-	0x73, 0x65, 0x2e, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x22, 0x00, 0x12, 0x39, 0x0a, 0x09, 0x47,
-	0x65, 0x74, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x12, 0x15, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c,
-	0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x64, 0x1a,
-	0x13, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x65,
-	0x6e, 0x61, 0x6e, 0x74, 0x22, 0x00, 0x12, 0x4a, 0x0a, 0x0c, 0x50, 0x75, 0x74, 0x50, 0x72, 0x69,
-	0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x12, 0x20, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
-	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x75, 0x74, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61,
-	0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c,
-	0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c,
-	0x22, 0x00, 0x12, 0x42, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70,
-	0x61, 0x6c, 0x12, 0x18, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
-	0x2e, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x49, 0x64, 0x1a, 0x16, 0x2e, 0x6c,
-	0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x72, 0x69, 0x6e, 0x63,
-	0x69, 0x70, 0x61, 0x6c, 0x22, 0x00, 0x12, 0x3a, 0x0a, 0x06, 0x57, 0x68, 0x6f, 0x61, 0x6d, 0x69,
-	0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
-	0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c,
-	0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c,
-	0x22, 0x00, 0x12, 0x4d, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x56,
-	0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x1f,
-	0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4c, 0x69, 0x74,
-	0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x22,
-	0x00, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
-	0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b, 0x6c, 0x68, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e,
-	0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x74, 0x22, 0x00, 0x12, 0x4b, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63,
+	0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x12, 0x1b, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
+	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x57, 0x69, 0x6e, 0x64, 0x6f,
+	0x77, 0x49, 0x64, 0x1a, 0x19, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73,
+	0x65, 0x2e, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x22, 0x00,
+	0x12, 0x63, 0x0a, 0x14, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x57, 0x66, 0x4d, 0x65, 0x74, 0x72,
+	0x69, 0x63, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x12, 0x28, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c,
+	0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x57, 0x66, 0x4d,
+	0x65, 0x74, 0x72, 0x69, 0x63, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
+	0x2e, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x49, 0x64, 0x4c,
+	0x69, 0x73, 0x74, 0x22, 0x00, 0x12, 0x41, 0x0a, 0x09, 0x50, 0x75, 0x74, 0x54, 0x65, 0x6e, 0x61,
+	0x6e, 0x74, 0x12, 0x1d, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
+	0x2e, 0x50, 0x75, 0x74, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x13, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e,
+	0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x22, 0x00, 0x12, 0x39, 0x0a, 0x09, 0x47, 0x65, 0x74, 0x54,
+	0x65, 0x6e, 0x61, 0x6e, 0x74, 0x12, 0x15, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
+	0x72, 0x73, 0x65, 0x2e, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x64, 0x1a, 0x13, 0x2e, 0x6c,
+	0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x65, 0x6e, 0x61, 0x6e,
+	0x74, 0x22, 0x00, 0x12, 0x4a, 0x0a, 0x0c, 0x50, 0x75, 0x74, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69,
+	0x70, 0x61, 0x6c, 0x12, 0x20, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73,
+	0x65, 0x2e, 0x50, 0x75, 0x74, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
+	0x72, 0x73, 0x65, 0x2e, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x22, 0x00, 0x12,
+	0x42, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x12,
+	0x18, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x72,
+	0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x49, 0x64, 0x1a, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74,
+	0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61,
+	0x6c, 0x22, 0x00, 0x12, 0x3a, 0x0a, 0x06, 0x57, 0x68, 0x6f, 0x61, 0x6d, 0x69, 0x12, 0x16, 0x2e,
+	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
+	0x72, 0x73, 0x65, 0x2e, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x22, 0x00, 0x12,
+	0x4d, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x56, 0x65, 0x72, 0x73,
+	0x69, 0x6f, 0x6e, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x1f, 0x2e, 0x6c, 0x69,
+	0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65,
+	0x48, 0x6f, 0x72, 0x73, 0x65, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x22, 0x00, 0x42, 0x4d,
+	0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
+	0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b, 0x6c, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa, 0x02,
+	0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x64, 0x6b,
+	0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -8843,26 +8848,28 @@ var file_service_proto_goTypes = []interface{}{
 	(*GetLatestTaskMetricWindowRequest)(nil),       // 157: littlehorse.GetLatestTaskMetricWindowRequest
 	(*ListTaskMetricsRequest)(nil),                 // 158: littlehorse.ListTaskMetricsRequest
 	(*ListWfMetricsRequest)(nil),                   // 159: littlehorse.ListWfMetricsRequest
-	(*SearchWfMetricWindowRequest)(nil),            // 160: littlehorse.SearchWfMetricWindowRequest
-	(*PutTenantRequest)(nil),                       // 161: littlehorse.PutTenantRequest
-	(*PutPrincipalRequest)(nil),                    // 162: littlehorse.PutPrincipalRequest
-	(*emptypb.Empty)(nil),                          // 163: google.protobuf.Empty
-	(*TaskDef)(nil),                                // 164: littlehorse.TaskDef
-	(*ExternalEventDef)(nil),                       // 165: littlehorse.ExternalEventDef
-	(*WorkflowEventDef)(nil),                       // 166: littlehorse.WorkflowEventDef
-	(*WfSpec)(nil),                                 // 167: littlehorse.WfSpec
-	(*StructDef)(nil),                              // 168: littlehorse.StructDef
-	(*UserTaskDef)(nil),                            // 169: littlehorse.UserTaskDef
-	(*WfRun)(nil),                                  // 170: littlehorse.WfRun
-	(*ScheduledWfRun)(nil),                         // 171: littlehorse.ScheduledWfRun
-	(*CorrelatedEvent)(nil),                        // 172: littlehorse.CorrelatedEvent
-	(*InactiveThreadRun)(nil),                      // 173: littlehorse.InactiveThreadRun
-	(*GetLatestWfMetricWindowResponse)(nil),        // 174: littlehorse.GetLatestWfMetricWindowResponse
-	(*GetLatestTaskMetricWindowResponse)(nil),      // 175: littlehorse.GetLatestTaskMetricWindowResponse
-	(*MetricsList)(nil),                            // 176: littlehorse.MetricsList
-	(*MetricWindowIdList)(nil),                     // 177: littlehorse.MetricWindowIdList
-	(*Tenant)(nil),                                 // 178: littlehorse.Tenant
-	(*Principal)(nil),                              // 179: littlehorse.Principal
+	(*MetricWindowId)(nil),                         // 160: littlehorse.MetricWindowId
+	(*SearchWfMetricWindowRequest)(nil),            // 161: littlehorse.SearchWfMetricWindowRequest
+	(*PutTenantRequest)(nil),                       // 162: littlehorse.PutTenantRequest
+	(*PutPrincipalRequest)(nil),                    // 163: littlehorse.PutPrincipalRequest
+	(*emptypb.Empty)(nil),                          // 164: google.protobuf.Empty
+	(*TaskDef)(nil),                                // 165: littlehorse.TaskDef
+	(*ExternalEventDef)(nil),                       // 166: littlehorse.ExternalEventDef
+	(*WorkflowEventDef)(nil),                       // 167: littlehorse.WorkflowEventDef
+	(*WfSpec)(nil),                                 // 168: littlehorse.WfSpec
+	(*StructDef)(nil),                              // 169: littlehorse.StructDef
+	(*UserTaskDef)(nil),                            // 170: littlehorse.UserTaskDef
+	(*WfRun)(nil),                                  // 171: littlehorse.WfRun
+	(*ScheduledWfRun)(nil),                         // 172: littlehorse.ScheduledWfRun
+	(*CorrelatedEvent)(nil),                        // 173: littlehorse.CorrelatedEvent
+	(*InactiveThreadRun)(nil),                      // 174: littlehorse.InactiveThreadRun
+	(*GetLatestWfMetricWindowResponse)(nil),        // 175: littlehorse.GetLatestWfMetricWindowResponse
+	(*GetLatestTaskMetricWindowResponse)(nil),      // 176: littlehorse.GetLatestTaskMetricWindowResponse
+	(*MetricsList)(nil),                            // 177: littlehorse.MetricsList
+	(*MetricWindow)(nil),                           // 178: littlehorse.MetricWindow
+	(*MetricWindowIdList)(nil),                     // 179: littlehorse.MetricWindowIdList
+	(*Tenant)(nil),                                 // 180: littlehorse.Tenant
+	(*Principal)(nil),                              // 181: littlehorse.Principal
 }
 var file_service_proto_depIdxs = []int32{
 	97,  // 0: littlehorse.PutWfSpecRequest.thread_specs:type_name -> littlehorse.PutWfSpecRequest.ThreadSpecsEntry
@@ -9093,108 +9100,110 @@ var file_service_proto_depIdxs = []int32{
 	157, // 225: littlehorse.LittleHorse.GetLatestTaskMetricWindow:input_type -> littlehorse.GetLatestTaskMetricWindowRequest
 	158, // 226: littlehorse.LittleHorse.ListTaskMetrics:input_type -> littlehorse.ListTaskMetricsRequest
 	159, // 227: littlehorse.LittleHorse.ListWfMetrics:input_type -> littlehorse.ListWfMetricsRequest
-	160, // 228: littlehorse.LittleHorse.SearchWfMetricWindow:input_type -> littlehorse.SearchWfMetricWindowRequest
-	161, // 229: littlehorse.LittleHorse.PutTenant:input_type -> littlehorse.PutTenantRequest
-	129, // 230: littlehorse.LittleHorse.GetTenant:input_type -> littlehorse.TenantId
-	162, // 231: littlehorse.LittleHorse.PutPrincipal:input_type -> littlehorse.PutPrincipalRequest
-	130, // 232: littlehorse.LittleHorse.GetPrincipal:input_type -> littlehorse.PrincipalId
-	163, // 233: littlehorse.LittleHorse.Whoami:input_type -> google.protobuf.Empty
-	163, // 234: littlehorse.LittleHorse.GetServerVersion:input_type -> google.protobuf.Empty
-	164, // 235: littlehorse.LittleHorse.PutTaskDef:output_type -> littlehorse.TaskDef
-	164, // 236: littlehorse.LittleHorse.GetTaskDef:output_type -> littlehorse.TaskDef
-	91,  // 237: littlehorse.LittleHorse.GetTaskWorkerGroup:output_type -> littlehorse.TaskWorkerGroup
-	165, // 238: littlehorse.LittleHorse.PutExternalEventDef:output_type -> littlehorse.ExternalEventDef
-	165, // 239: littlehorse.LittleHorse.GetExternalEventDef:output_type -> littlehorse.ExternalEventDef
-	166, // 240: littlehorse.LittleHorse.PutWorkflowEventDef:output_type -> littlehorse.WorkflowEventDef
-	167, // 241: littlehorse.LittleHorse.PutWfSpec:output_type -> littlehorse.WfSpec
-	167, // 242: littlehorse.LittleHorse.GetWfSpec:output_type -> littlehorse.WfSpec
-	167, // 243: littlehorse.LittleHorse.GetLatestWfSpec:output_type -> littlehorse.WfSpec
-	167, // 244: littlehorse.LittleHorse.MigrateWfSpec:output_type -> littlehorse.WfSpec
-	168, // 245: littlehorse.LittleHorse.PutStructDef:output_type -> littlehorse.StructDef
-	168, // 246: littlehorse.LittleHorse.GetStructDef:output_type -> littlehorse.StructDef
-	8,   // 247: littlehorse.LittleHorse.ValidateStructDefEvolution:output_type -> littlehorse.ValidateStructDefEvolutionResponse
-	169, // 248: littlehorse.LittleHorse.PutUserTaskDef:output_type -> littlehorse.UserTaskDef
-	169, // 249: littlehorse.LittleHorse.GetUserTaskDef:output_type -> littlehorse.UserTaskDef
-	169, // 250: littlehorse.LittleHorse.GetLatestUserTaskDef:output_type -> littlehorse.UserTaskDef
-	170, // 251: littlehorse.LittleHorse.RunWf:output_type -> littlehorse.WfRun
-	171, // 252: littlehorse.LittleHorse.ScheduleWf:output_type -> littlehorse.ScheduledWfRun
-	88,  // 253: littlehorse.LittleHorse.SearchScheduledWfRun:output_type -> littlehorse.ScheduledWfRunIdList
-	171, // 254: littlehorse.LittleHorse.GetScheduledWfRun:output_type -> littlehorse.ScheduledWfRun
-	170, // 255: littlehorse.LittleHorse.GetWfRun:output_type -> littlehorse.WfRun
-	141, // 256: littlehorse.LittleHorse.GetUserTaskRun:output_type -> littlehorse.UserTaskRun
-	163, // 257: littlehorse.LittleHorse.AssignUserTaskRun:output_type -> google.protobuf.Empty
-	163, // 258: littlehorse.LittleHorse.CompleteUserTaskRun:output_type -> google.protobuf.Empty
-	163, // 259: littlehorse.LittleHorse.CancelUserTaskRun:output_type -> google.protobuf.Empty
-	141, // 260: littlehorse.LittleHorse.SaveUserTaskRunProgress:output_type -> littlehorse.UserTaskRun
-	87,  // 261: littlehorse.LittleHorse.ListUserTaskRuns:output_type -> littlehorse.UserTaskRunList
-	141, // 262: littlehorse.LittleHorse.PutUserTaskRunComment:output_type -> littlehorse.UserTaskRun
-	141, // 263: littlehorse.LittleHorse.EditUserTaskRunComment:output_type -> littlehorse.UserTaskRun
-	141, // 264: littlehorse.LittleHorse.DeleteUserTaskRunComment:output_type -> littlehorse.UserTaskRun
-	131, // 265: littlehorse.LittleHorse.GetNodeRun:output_type -> littlehorse.NodeRun
-	61,  // 266: littlehorse.LittleHorse.ListNodeRuns:output_type -> littlehorse.NodeRunList
-	143, // 267: littlehorse.LittleHorse.GetTaskRun:output_type -> littlehorse.TaskRun
-	93,  // 268: littlehorse.LittleHorse.ListTaskRuns:output_type -> littlehorse.TaskRunList
-	132, // 269: littlehorse.LittleHorse.GetVariable:output_type -> littlehorse.Variable
-	63,  // 270: littlehorse.LittleHorse.ListVariables:output_type -> littlehorse.VariableList
-	133, // 271: littlehorse.LittleHorse.PutExternalEvent:output_type -> littlehorse.ExternalEvent
-	172, // 272: littlehorse.LittleHorse.PutCorrelatedEvent:output_type -> littlehorse.CorrelatedEvent
-	133, // 273: littlehorse.LittleHorse.GetExternalEvent:output_type -> littlehorse.ExternalEvent
-	172, // 274: littlehorse.LittleHorse.GetCorrelatedEvent:output_type -> littlehorse.CorrelatedEvent
-	134, // 275: littlehorse.LittleHorse.AwaitWorkflowEvent:output_type -> littlehorse.WorkflowEvent
-	166, // 276: littlehorse.LittleHorse.GetWorkflowEventDef:output_type -> littlehorse.WorkflowEventDef
-	134, // 277: littlehorse.LittleHorse.GetWorkflowEvent:output_type -> littlehorse.WorkflowEvent
-	65,  // 278: littlehorse.LittleHorse.ListExternalEvents:output_type -> littlehorse.ExternalEventList
-	67,  // 279: littlehorse.LittleHorse.ListWorkflowEvents:output_type -> littlehorse.WorkflowEventList
-	29,  // 280: littlehorse.LittleHorse.SearchWfRun:output_type -> littlehorse.WfRunIdList
-	31,  // 281: littlehorse.LittleHorse.SearchCorrelatedEvent:output_type -> littlehorse.CorrelatedEventIdList
-	35,  // 282: littlehorse.LittleHorse.SearchNodeRun:output_type -> littlehorse.NodeRunIdList
-	33,  // 283: littlehorse.LittleHorse.SearchTaskRun:output_type -> littlehorse.TaskRunIdList
-	37,  // 284: littlehorse.LittleHorse.SearchUserTaskRun:output_type -> littlehorse.UserTaskRunIdList
-	39,  // 285: littlehorse.LittleHorse.SearchVariable:output_type -> littlehorse.VariableIdList
-	57,  // 286: littlehorse.LittleHorse.SearchExternalEvent:output_type -> littlehorse.ExternalEventIdList
-	59,  // 287: littlehorse.LittleHorse.SearchWorkflowEvent:output_type -> littlehorse.WorkflowEventIdList
-	41,  // 288: littlehorse.LittleHorse.SearchTaskDef:output_type -> littlehorse.TaskDefIdList
-	45,  // 289: littlehorse.LittleHorse.SearchUserTaskDef:output_type -> littlehorse.UserTaskDefIdList
-	47,  // 290: littlehorse.LittleHorse.SearchWfSpec:output_type -> littlehorse.WfSpecIdList
-	49,  // 291: littlehorse.LittleHorse.SearchExternalEventDef:output_type -> littlehorse.ExternalEventDefIdList
-	51,  // 292: littlehorse.LittleHorse.SearchWorkflowEventDef:output_type -> littlehorse.WorkflowEventDefIdList
-	53,  // 293: littlehorse.LittleHorse.SearchTenant:output_type -> littlehorse.TenantIdList
-	55,  // 294: littlehorse.LittleHorse.SearchPrincipal:output_type -> littlehorse.PrincipalIdList
-	44,  // 295: littlehorse.LittleHorse.SearchStructDef:output_type -> littlehorse.StructDefIdList
-	173, // 296: littlehorse.LittleHorse.GetInactiveThreadRun:output_type -> littlehorse.InactiveThreadRun
-	70,  // 297: littlehorse.LittleHorse.RegisterTaskWorker:output_type -> littlehorse.RegisterTaskWorkerResponse
-	76,  // 298: littlehorse.LittleHorse.PollTask:output_type -> littlehorse.PollTaskResponse
-	163, // 299: littlehorse.LittleHorse.ReportTask:output_type -> google.protobuf.Empty
-	74,  // 300: littlehorse.LittleHorse.PutCheckpoint:output_type -> littlehorse.PutCheckpointResponse
-	135, // 301: littlehorse.LittleHorse.GetCheckpoint:output_type -> littlehorse.Checkpoint
-	163, // 302: littlehorse.LittleHorse.StopWfRun:output_type -> google.protobuf.Empty
-	163, // 303: littlehorse.LittleHorse.ResumeWfRun:output_type -> google.protobuf.Empty
-	170, // 304: littlehorse.LittleHorse.RescueThreadRun:output_type -> littlehorse.WfRun
-	163, // 305: littlehorse.LittleHorse.DeleteWfRun:output_type -> google.protobuf.Empty
-	163, // 306: littlehorse.LittleHorse.DeleteTaskDef:output_type -> google.protobuf.Empty
-	163, // 307: littlehorse.LittleHorse.DeleteStructDef:output_type -> google.protobuf.Empty
-	163, // 308: littlehorse.LittleHorse.DeleteWfSpec:output_type -> google.protobuf.Empty
-	163, // 309: littlehorse.LittleHorse.DeleteUserTaskDef:output_type -> google.protobuf.Empty
-	163, // 310: littlehorse.LittleHorse.DeleteExternalEventDef:output_type -> google.protobuf.Empty
-	163, // 311: littlehorse.LittleHorse.DeleteCorrelatedEvent:output_type -> google.protobuf.Empty
-	163, // 312: littlehorse.LittleHorse.DeleteWorkflowEventDef:output_type -> google.protobuf.Empty
-	163, // 313: littlehorse.LittleHorse.DeletePrincipal:output_type -> google.protobuf.Empty
-	163, // 314: littlehorse.LittleHorse.DeleteScheduledWfRun:output_type -> google.protobuf.Empty
-	84,  // 315: littlehorse.LittleHorse.GetTaskDefMetricsWindow:output_type -> littlehorse.TaskDefMetrics
-	85,  // 316: littlehorse.LittleHorse.GetWfSpecMetricsWindow:output_type -> littlehorse.WfSpecMetrics
-	174, // 317: littlehorse.LittleHorse.GetLatestWfMetricWindow:output_type -> littlehorse.GetLatestWfMetricWindowResponse
-	175, // 318: littlehorse.LittleHorse.GetLatestTaskMetricWindow:output_type -> littlehorse.GetLatestTaskMetricWindowResponse
-	176, // 319: littlehorse.LittleHorse.ListTaskMetrics:output_type -> littlehorse.MetricsList
-	176, // 320: littlehorse.LittleHorse.ListWfMetrics:output_type -> littlehorse.MetricsList
-	177, // 321: littlehorse.LittleHorse.SearchWfMetricWindow:output_type -> littlehorse.MetricWindowIdList
-	178, // 322: littlehorse.LittleHorse.PutTenant:output_type -> littlehorse.Tenant
-	178, // 323: littlehorse.LittleHorse.GetTenant:output_type -> littlehorse.Tenant
-	179, // 324: littlehorse.LittleHorse.PutPrincipal:output_type -> littlehorse.Principal
-	179, // 325: littlehorse.LittleHorse.GetPrincipal:output_type -> littlehorse.Principal
-	179, // 326: littlehorse.LittleHorse.Whoami:output_type -> littlehorse.Principal
-	96,  // 327: littlehorse.LittleHorse.GetServerVersion:output_type -> littlehorse.LittleHorseVersion
-	235, // [235:328] is the sub-list for method output_type
-	142, // [142:235] is the sub-list for method input_type
+	160, // 228: littlehorse.LittleHorse.GetMetricWindow:input_type -> littlehorse.MetricWindowId
+	161, // 229: littlehorse.LittleHorse.SearchWfMetricWindow:input_type -> littlehorse.SearchWfMetricWindowRequest
+	162, // 230: littlehorse.LittleHorse.PutTenant:input_type -> littlehorse.PutTenantRequest
+	129, // 231: littlehorse.LittleHorse.GetTenant:input_type -> littlehorse.TenantId
+	163, // 232: littlehorse.LittleHorse.PutPrincipal:input_type -> littlehorse.PutPrincipalRequest
+	130, // 233: littlehorse.LittleHorse.GetPrincipal:input_type -> littlehorse.PrincipalId
+	164, // 234: littlehorse.LittleHorse.Whoami:input_type -> google.protobuf.Empty
+	164, // 235: littlehorse.LittleHorse.GetServerVersion:input_type -> google.protobuf.Empty
+	165, // 236: littlehorse.LittleHorse.PutTaskDef:output_type -> littlehorse.TaskDef
+	165, // 237: littlehorse.LittleHorse.GetTaskDef:output_type -> littlehorse.TaskDef
+	91,  // 238: littlehorse.LittleHorse.GetTaskWorkerGroup:output_type -> littlehorse.TaskWorkerGroup
+	166, // 239: littlehorse.LittleHorse.PutExternalEventDef:output_type -> littlehorse.ExternalEventDef
+	166, // 240: littlehorse.LittleHorse.GetExternalEventDef:output_type -> littlehorse.ExternalEventDef
+	167, // 241: littlehorse.LittleHorse.PutWorkflowEventDef:output_type -> littlehorse.WorkflowEventDef
+	168, // 242: littlehorse.LittleHorse.PutWfSpec:output_type -> littlehorse.WfSpec
+	168, // 243: littlehorse.LittleHorse.GetWfSpec:output_type -> littlehorse.WfSpec
+	168, // 244: littlehorse.LittleHorse.GetLatestWfSpec:output_type -> littlehorse.WfSpec
+	168, // 245: littlehorse.LittleHorse.MigrateWfSpec:output_type -> littlehorse.WfSpec
+	169, // 246: littlehorse.LittleHorse.PutStructDef:output_type -> littlehorse.StructDef
+	169, // 247: littlehorse.LittleHorse.GetStructDef:output_type -> littlehorse.StructDef
+	8,   // 248: littlehorse.LittleHorse.ValidateStructDefEvolution:output_type -> littlehorse.ValidateStructDefEvolutionResponse
+	170, // 249: littlehorse.LittleHorse.PutUserTaskDef:output_type -> littlehorse.UserTaskDef
+	170, // 250: littlehorse.LittleHorse.GetUserTaskDef:output_type -> littlehorse.UserTaskDef
+	170, // 251: littlehorse.LittleHorse.GetLatestUserTaskDef:output_type -> littlehorse.UserTaskDef
+	171, // 252: littlehorse.LittleHorse.RunWf:output_type -> littlehorse.WfRun
+	172, // 253: littlehorse.LittleHorse.ScheduleWf:output_type -> littlehorse.ScheduledWfRun
+	88,  // 254: littlehorse.LittleHorse.SearchScheduledWfRun:output_type -> littlehorse.ScheduledWfRunIdList
+	172, // 255: littlehorse.LittleHorse.GetScheduledWfRun:output_type -> littlehorse.ScheduledWfRun
+	171, // 256: littlehorse.LittleHorse.GetWfRun:output_type -> littlehorse.WfRun
+	141, // 257: littlehorse.LittleHorse.GetUserTaskRun:output_type -> littlehorse.UserTaskRun
+	164, // 258: littlehorse.LittleHorse.AssignUserTaskRun:output_type -> google.protobuf.Empty
+	164, // 259: littlehorse.LittleHorse.CompleteUserTaskRun:output_type -> google.protobuf.Empty
+	164, // 260: littlehorse.LittleHorse.CancelUserTaskRun:output_type -> google.protobuf.Empty
+	141, // 261: littlehorse.LittleHorse.SaveUserTaskRunProgress:output_type -> littlehorse.UserTaskRun
+	87,  // 262: littlehorse.LittleHorse.ListUserTaskRuns:output_type -> littlehorse.UserTaskRunList
+	141, // 263: littlehorse.LittleHorse.PutUserTaskRunComment:output_type -> littlehorse.UserTaskRun
+	141, // 264: littlehorse.LittleHorse.EditUserTaskRunComment:output_type -> littlehorse.UserTaskRun
+	141, // 265: littlehorse.LittleHorse.DeleteUserTaskRunComment:output_type -> littlehorse.UserTaskRun
+	131, // 266: littlehorse.LittleHorse.GetNodeRun:output_type -> littlehorse.NodeRun
+	61,  // 267: littlehorse.LittleHorse.ListNodeRuns:output_type -> littlehorse.NodeRunList
+	143, // 268: littlehorse.LittleHorse.GetTaskRun:output_type -> littlehorse.TaskRun
+	93,  // 269: littlehorse.LittleHorse.ListTaskRuns:output_type -> littlehorse.TaskRunList
+	132, // 270: littlehorse.LittleHorse.GetVariable:output_type -> littlehorse.Variable
+	63,  // 271: littlehorse.LittleHorse.ListVariables:output_type -> littlehorse.VariableList
+	133, // 272: littlehorse.LittleHorse.PutExternalEvent:output_type -> littlehorse.ExternalEvent
+	173, // 273: littlehorse.LittleHorse.PutCorrelatedEvent:output_type -> littlehorse.CorrelatedEvent
+	133, // 274: littlehorse.LittleHorse.GetExternalEvent:output_type -> littlehorse.ExternalEvent
+	173, // 275: littlehorse.LittleHorse.GetCorrelatedEvent:output_type -> littlehorse.CorrelatedEvent
+	134, // 276: littlehorse.LittleHorse.AwaitWorkflowEvent:output_type -> littlehorse.WorkflowEvent
+	167, // 277: littlehorse.LittleHorse.GetWorkflowEventDef:output_type -> littlehorse.WorkflowEventDef
+	134, // 278: littlehorse.LittleHorse.GetWorkflowEvent:output_type -> littlehorse.WorkflowEvent
+	65,  // 279: littlehorse.LittleHorse.ListExternalEvents:output_type -> littlehorse.ExternalEventList
+	67,  // 280: littlehorse.LittleHorse.ListWorkflowEvents:output_type -> littlehorse.WorkflowEventList
+	29,  // 281: littlehorse.LittleHorse.SearchWfRun:output_type -> littlehorse.WfRunIdList
+	31,  // 282: littlehorse.LittleHorse.SearchCorrelatedEvent:output_type -> littlehorse.CorrelatedEventIdList
+	35,  // 283: littlehorse.LittleHorse.SearchNodeRun:output_type -> littlehorse.NodeRunIdList
+	33,  // 284: littlehorse.LittleHorse.SearchTaskRun:output_type -> littlehorse.TaskRunIdList
+	37,  // 285: littlehorse.LittleHorse.SearchUserTaskRun:output_type -> littlehorse.UserTaskRunIdList
+	39,  // 286: littlehorse.LittleHorse.SearchVariable:output_type -> littlehorse.VariableIdList
+	57,  // 287: littlehorse.LittleHorse.SearchExternalEvent:output_type -> littlehorse.ExternalEventIdList
+	59,  // 288: littlehorse.LittleHorse.SearchWorkflowEvent:output_type -> littlehorse.WorkflowEventIdList
+	41,  // 289: littlehorse.LittleHorse.SearchTaskDef:output_type -> littlehorse.TaskDefIdList
+	45,  // 290: littlehorse.LittleHorse.SearchUserTaskDef:output_type -> littlehorse.UserTaskDefIdList
+	47,  // 291: littlehorse.LittleHorse.SearchWfSpec:output_type -> littlehorse.WfSpecIdList
+	49,  // 292: littlehorse.LittleHorse.SearchExternalEventDef:output_type -> littlehorse.ExternalEventDefIdList
+	51,  // 293: littlehorse.LittleHorse.SearchWorkflowEventDef:output_type -> littlehorse.WorkflowEventDefIdList
+	53,  // 294: littlehorse.LittleHorse.SearchTenant:output_type -> littlehorse.TenantIdList
+	55,  // 295: littlehorse.LittleHorse.SearchPrincipal:output_type -> littlehorse.PrincipalIdList
+	44,  // 296: littlehorse.LittleHorse.SearchStructDef:output_type -> littlehorse.StructDefIdList
+	174, // 297: littlehorse.LittleHorse.GetInactiveThreadRun:output_type -> littlehorse.InactiveThreadRun
+	70,  // 298: littlehorse.LittleHorse.RegisterTaskWorker:output_type -> littlehorse.RegisterTaskWorkerResponse
+	76,  // 299: littlehorse.LittleHorse.PollTask:output_type -> littlehorse.PollTaskResponse
+	164, // 300: littlehorse.LittleHorse.ReportTask:output_type -> google.protobuf.Empty
+	74,  // 301: littlehorse.LittleHorse.PutCheckpoint:output_type -> littlehorse.PutCheckpointResponse
+	135, // 302: littlehorse.LittleHorse.GetCheckpoint:output_type -> littlehorse.Checkpoint
+	164, // 303: littlehorse.LittleHorse.StopWfRun:output_type -> google.protobuf.Empty
+	164, // 304: littlehorse.LittleHorse.ResumeWfRun:output_type -> google.protobuf.Empty
+	171, // 305: littlehorse.LittleHorse.RescueThreadRun:output_type -> littlehorse.WfRun
+	164, // 306: littlehorse.LittleHorse.DeleteWfRun:output_type -> google.protobuf.Empty
+	164, // 307: littlehorse.LittleHorse.DeleteTaskDef:output_type -> google.protobuf.Empty
+	164, // 308: littlehorse.LittleHorse.DeleteStructDef:output_type -> google.protobuf.Empty
+	164, // 309: littlehorse.LittleHorse.DeleteWfSpec:output_type -> google.protobuf.Empty
+	164, // 310: littlehorse.LittleHorse.DeleteUserTaskDef:output_type -> google.protobuf.Empty
+	164, // 311: littlehorse.LittleHorse.DeleteExternalEventDef:output_type -> google.protobuf.Empty
+	164, // 312: littlehorse.LittleHorse.DeleteCorrelatedEvent:output_type -> google.protobuf.Empty
+	164, // 313: littlehorse.LittleHorse.DeleteWorkflowEventDef:output_type -> google.protobuf.Empty
+	164, // 314: littlehorse.LittleHorse.DeletePrincipal:output_type -> google.protobuf.Empty
+	164, // 315: littlehorse.LittleHorse.DeleteScheduledWfRun:output_type -> google.protobuf.Empty
+	84,  // 316: littlehorse.LittleHorse.GetTaskDefMetricsWindow:output_type -> littlehorse.TaskDefMetrics
+	85,  // 317: littlehorse.LittleHorse.GetWfSpecMetricsWindow:output_type -> littlehorse.WfSpecMetrics
+	175, // 318: littlehorse.LittleHorse.GetLatestWfMetricWindow:output_type -> littlehorse.GetLatestWfMetricWindowResponse
+	176, // 319: littlehorse.LittleHorse.GetLatestTaskMetricWindow:output_type -> littlehorse.GetLatestTaskMetricWindowResponse
+	177, // 320: littlehorse.LittleHorse.ListTaskMetrics:output_type -> littlehorse.MetricsList
+	177, // 321: littlehorse.LittleHorse.ListWfMetrics:output_type -> littlehorse.MetricsList
+	178, // 322: littlehorse.LittleHorse.GetMetricWindow:output_type -> littlehorse.MetricWindow
+	179, // 323: littlehorse.LittleHorse.SearchWfMetricWindow:output_type -> littlehorse.MetricWindowIdList
+	180, // 324: littlehorse.LittleHorse.PutTenant:output_type -> littlehorse.Tenant
+	180, // 325: littlehorse.LittleHorse.GetTenant:output_type -> littlehorse.Tenant
+	181, // 326: littlehorse.LittleHorse.PutPrincipal:output_type -> littlehorse.Principal
+	181, // 327: littlehorse.LittleHorse.GetPrincipal:output_type -> littlehorse.Principal
+	181, // 328: littlehorse.LittleHorse.Whoami:output_type -> littlehorse.Principal
+	96,  // 329: littlehorse.LittleHorse.GetServerVersion:output_type -> littlehorse.LittleHorseVersion
+	236, // [236:330] is the sub-list for method output_type
+	142, // [142:236] is the sub-list for method input_type
 	142, // [142:142] is the sub-list for extension type_name
 	142, // [142:142] is the sub-list for extension extendee
 	0,   // [0:142] is the sub-list for field type_name

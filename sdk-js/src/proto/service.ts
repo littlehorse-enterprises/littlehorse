@@ -41,6 +41,7 @@ import {
   ListTaskMetricsRequest,
   ListWfMetricsRequest,
   MetricsList,
+  MetricWindow,
   MetricWindowIdList,
   SearchWfMetricWindowRequest,
 } from "./metrics";
@@ -51,6 +52,7 @@ import {
   ExternalEventDefId,
   ExternalEventId,
   InactiveThreadRunId,
+  MetricWindowId,
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
@@ -12121,6 +12123,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Gets a MetricWindow by its ID. */
+    getMetricWindow: {
+      name: "GetMetricWindow",
+      requestType: MetricWindowId,
+      requestStream: false,
+      responseType: MetricWindow,
+      responseStream: false,
+      options: {},
+    },
     /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
     searchWfMetricWindow: {
       name: "SearchWfMetricWindow",
@@ -12636,6 +12647,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListWfMetricsRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<MetricsList>>;
+  /** Gets a MetricWindow by its ID. */
+  getMetricWindow(request: MetricWindowId, context: CallContext & CallContextExt): Promise<DeepPartial<MetricWindow>>;
   /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
   searchWfMetricWindow(
     request: SearchWfMetricWindowRequest,
@@ -13113,6 +13126,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListWfMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<MetricsList>;
+  /** Gets a MetricWindow by its ID. */
+  getMetricWindow(request: DeepPartial<MetricWindowId>, options?: CallOptions & CallOptionsExt): Promise<MetricWindow>;
   /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
   searchWfMetricWindow(
     request: DeepPartial<SearchWfMetricWindowRequest>,

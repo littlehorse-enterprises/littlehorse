@@ -26,6 +26,7 @@ import io.littlehorse.common.model.corecommand.subcommand.*;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.CheckpointModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -47,6 +48,7 @@ import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
@@ -947,6 +949,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ListWfMetricsRequestModel reqModel =
                 LHSerializable.fromProto(req, ListWfMetricsRequestModel.class, requestContext());
         handleScan(reqModel, ctx, ListMetricsReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getMetricWindow(MetricWindowId req, StreamObserver<MetricWindow> ctx) {
+        MetricWindowIdModel id = LHSerializable.fromProto(req, MetricWindowIdModel.class, requestContext());
+        MetricWindowModel metricWindow = internalComms.getObject(id, MetricWindowModel.class, requestContext());
+        ctx.onNext(metricWindow.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override

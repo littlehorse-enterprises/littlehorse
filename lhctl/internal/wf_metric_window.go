@@ -2,11 +2,59 @@ package internal
 
 import (
 	"log"
+	"strconv"
+	"time"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"github.com/spf13/cobra"
 )
+
+var getMetricWindowCmd = &cobra.Command{
+	Use:   "wfMetricWindow <wfSpecName> <majorVersion> <revision> <windowStartMs>",
+	Short: "Get a MetricWindow by its ID.",
+	Long: `Get a MetricWindow by its full ID.
+
+Arguments:
+  <wfSpecName>     - Name of the WfSpec.
+  <majorVersion>   - Major version of the WfSpec.
+  <revision>       - Revision of the WfSpec.
+  <windowStartMs>  - Window start time in milliseconds since epoch.
+`,
+	Args: cobra.ExactArgs(4),
+	Run: func(cmd *cobra.Command, args []string) {
+		majorVersion, err := strconv.Atoi(args[1])
+		if err != nil {
+			log.Fatal("Invalid majorVersion: ", err)
+		}
+		revision, err := strconv.Atoi(args[2])
+		if err != nil {
+			log.Fatal("Invalid revision: ", err)
+		}
+		windowStartMs, err := strconv.ParseInt(args[3], 10, 64)
+		if err != nil {
+			log.Fatal("Invalid windowStartMs: ", err)
+		}
+
+		windowStart := timestamppb.New(time.UnixMilli(windowStartMs))
+
+		req := &lhproto.MetricWindowId{
+			Id: &lhproto.MetricWindowId_WfSpecId{
+				WfSpecId: &lhproto.WfSpecId{
+					Name:         args[0],
+					MajorVersion: int32(majorVersion),
+					Revision:     int32(revision),
+				},
+			},
+			WindowStart: windowStart,
+		}
+
+		littlehorse.PrintResp(
+			getGlobalClient(cmd).GetMetricWindow(requestContext(cmd), req),
+		)
+	},
+}
 
 var searchWfMetricWindowCmd = &cobra.Command{
 	Use:   "wfMetricWindow <wfSpecName>",
@@ -52,6 +100,7 @@ Returns a list of MetricWindowId's.
 }
 
 func init() {
+	getCmd.AddCommand(getMetricWindowCmd)
 	searchCmd.AddCommand(searchWfMetricWindowCmd)
 	searchWfMetricWindowCmd.Flags().Int("earliestMinutesAgo", -1, "Return windows starting no earlier than this many minutes ago")
 	searchWfMetricWindowCmd.Flags().Int("latestMinutesAgo", -1, "Return windows starting no later than this many minutes ago")
