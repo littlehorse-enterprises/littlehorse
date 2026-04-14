@@ -55,15 +55,14 @@ public class SearchWfMetricWindowRequestModel
         }
         if (p.hasLimit()) limit = p.getLimit();
         wfSpecName = p.getWfSpecName();
-        if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
-        if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
         latestOnly = p.hasLatestOnly() && p.getLatestOnly();
         if (latestOnly) {
-            // The last completed window started exactly 1 minute before the current window.
             Date windowStart = LHUtil.getPreviousWindowDate();
             earliestStart = windowStart;
             latestStart = windowStart;
-            limit = 1;
+        } else {
+            if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
+            if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
         }
     }
 
@@ -112,8 +111,6 @@ public class SearchWfMetricWindowRequestModel
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         return new TagScanBoundaryStrategy(
-                searchAttributeString,
-                Optional.ofNullable(earliestStart),
-                Optional.ofNullable(latestStart));
+                searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
     }
 }

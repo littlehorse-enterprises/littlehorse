@@ -233,17 +233,18 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        GetableIndex<MetricWindowModel> allWfSpecByDate = new GetableIndex<>(
-                List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageType.LOCAL),
-                model -> model.id.getWfSpecId() != null);
-        return List.of(allWfSpecByDate);
+        if (id.getWfSpecId() == null || id.getWfSpecId().getName() == null) {
+            return List.of();
+        }
+        GetableIndex<MetricWindowModel> indexes = new GetableIndex<>(
+                List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.LOCAL));
+        return List.of(indexes);
     }
 
     @Override
-    public List<IndexedField> getIndexValues(String attributeName, Optional<TagStorageType> tagStorageType) {
-        if ("wfSpecName".equals(attributeName)) {
-            return List.of(new IndexedField(attributeName, id.getWfSpecId().getName(), tagStorageType.get()));
+    public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
+        if ("wfSpecName".equals(key)) {
+            return List.of(new IndexedField(key, id.getWfSpecId().getName(), tagStorageType.get()));
         }
         return List.of();
     }

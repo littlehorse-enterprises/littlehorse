@@ -951,9 +951,11 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
-    public void searchWfMetricWindow(
-            SearchWfMetricWindowRequest req, StreamObserver<MetricWindowIdList> ctx) {
-        handleScan(SearchWfMetricWindowRequestModel.fromProto(req, requestContext()), ctx, SearchWfMetricWindowReply.class);
+    public void searchWfMetricWindow(SearchWfMetricWindowRequest req, StreamObserver<MetricWindowIdList> ctx) {
+        handleScan(
+                SearchWfMetricWindowRequestModel.fromProto(req, requestContext()),
+                ctx,
+                SearchWfMetricWindowReply.class);
     }
 
     @Override
