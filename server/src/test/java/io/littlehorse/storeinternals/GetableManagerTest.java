@@ -10,6 +10,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskAttemptModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -24,11 +25,13 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
@@ -43,6 +46,7 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -624,6 +628,34 @@ public class GetableManagerTest {
         assertThat(storedKeys)
                 .anyMatch(key ->
                         key.contains("myTenant/5/3/__wfSpecName_test-spec-name__parentWfRunId_" + parentWfRunId));
+    }
+
+    @Test
+    void storeWfSpecMetricWindowWithWfSpecNameTag() {
+        String wfSpecName = "my-wf";
+        MetricWindowIdModel id =
+                new MetricWindowIdModel(new TenantIdModel(tenantId), new WfSpecIdModel(wfSpecName, 0, 0), new Date());
+        MetricWindowModel metricWindow = new MetricWindowModel(id, new HashMap<>());
+
+        getableManager.put(metricWindow);
+        getableManager.commit();
+
+        List<String> storedKeys = getAllKeys(store);
+        assertThat(storedKeys).hasSize(2);
+        assertThat(storedKeys).anyMatch(key -> key.contains("5/22/__wfSpecName_" + wfSpecName));
+    }
+
+    @Test
+    void storeTaskDefMetricWindowWithoutTags() {
+        MetricWindowIdModel id =
+                new MetricWindowIdModel(new TenantIdModel(tenantId), new TaskDefIdModel("my-task"), new Date());
+        MetricWindowModel metricWindow = new MetricWindowModel(id, new HashMap<>());
+
+        getableManager.put(metricWindow);
+        getableManager.commit();
+
+        List<String> storedKeys = getAllKeys(store);
+        assertThat(storedKeys).hasSize(1);
     }
 
     @Test

@@ -6,7 +6,11 @@ import com.google.protobuf.Timestamp;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.MetricWindow;
+import io.littlehorse.sdk.common.proto.MetricWindowId;
+import io.littlehorse.sdk.common.proto.MetricWindowIdList;
 import io.littlehorse.sdk.common.proto.MetricsList;
+import io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -109,6 +113,19 @@ public class MetricsQueryTest {
         assertThat(minLatencyMs).isGreaterThan(0);
         assertThat(maxLatencyMs).isGreaterThan(0);
         assertThat(totalLatencyMs).isGreaterThan(0);
+
+        // Verify search by wfSpecName returns the windows that were just aggregated
+        MetricWindowIdList searchResult = client.searchWfMetricWindow(SearchWfMetricWindowRequest.newBuilder()
+                .setWfSpecName("metrics-test-workflow")
+                .build());
+        assertThat(searchResult.getResultsList()).isNotEmpty();
+
+        // Verify get-by-id returns the correct MetricWindow
+        MetricWindowId firstId = searchResult.getResultsList().get(0);
+        MetricWindow metricWindowById = client.getMetricWindow(firstId);
+        assertThat(metricWindowById).isNotNull();
+        assertThat(metricWindowById.getId()).isEqualTo(firstId);
+        assertThat(metricWindowById.hasWorkflow()).isTrue();
     }
 
     @LHWorkflow("metrics-error-workflow")
