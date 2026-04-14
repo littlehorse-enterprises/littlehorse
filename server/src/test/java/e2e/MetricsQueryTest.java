@@ -1,6 +1,7 @@
 package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import com.google.protobuf.Timestamp;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -126,6 +127,13 @@ public class MetricsQueryTest {
         assertThat(metricWindowById).isNotNull();
         assertThat(metricWindowById.getId()).isEqualTo(firstId);
         assertThat(metricWindowById.hasWorkflow()).isTrue();
+
+        // Verify that searching with latestOnly=true returns only the most recent window
+        MetricWindowIdList latestMetricResult = client.searchWfMetricWindow(SearchWfMetricWindowRequest.newBuilder()
+                .setWfSpecName("metrics-test-workflow")
+                .setLatestOnly(true)
+                .build());
+        assertEquals(1, latestMetricResult.getResultsList().size());
     }
 
     @LHWorkflow("metrics-error-workflow")
