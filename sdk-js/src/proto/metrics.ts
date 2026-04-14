@@ -119,22 +119,6 @@ export interface MetricsList {
   windows: MetricWindow[];
 }
 
-/**
- * Request for the latest available workflow metric window for a given WfSpec.
- * If major_version is not set, resolves the latest major version automatically.
- * If major_version is set but revision is not, resolves the latest revision of that major version.
- */
-export interface GetLatestWfMetricWindowRequest {
-  /** The name of the WfSpec. Required. */
-  wfSpecName: string;
-  /** Optionally restrict to a specific major version. */
-  majorVersion?:
-    | number
-    | undefined;
-  /** Optionally restrict to a specific revision. */
-  revision?: number | undefined;
-}
-
 /** A list of MetricWindowId's returned by a search. */
 export interface MetricWindowIdList {
   /** Opaque bookmark for pagination; pass back to continue a search. */
@@ -1016,95 +1000,6 @@ export const MetricsList = {
   fromPartial(object: DeepPartial<MetricsList>): MetricsList {
     const message = createBaseMetricsList();
     message.windows = object.windows?.map((e) => MetricWindow.fromPartial(e)) || [];
-    return message;
-  },
-};
-
-function createBaseGetLatestWfMetricWindowRequest(): GetLatestWfMetricWindowRequest {
-  return { wfSpecName: "", majorVersion: undefined, revision: undefined };
-}
-
-export const GetLatestWfMetricWindowRequest = {
-  encode(message: GetLatestWfMetricWindowRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfSpecName !== "") {
-      writer.uint32(10).string(message.wfSpecName);
-    }
-    if (message.majorVersion !== undefined) {
-      writer.uint32(16).int32(message.majorVersion);
-    }
-    if (message.revision !== undefined) {
-      writer.uint32(24).int32(message.revision);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): GetLatestWfMetricWindowRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseGetLatestWfMetricWindowRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.wfSpecName = reader.string();
-          continue;
-        case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.majorVersion = reader.int32();
-          continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.revision = reader.int32();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): GetLatestWfMetricWindowRequest {
-    return {
-      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
-      majorVersion: isSet(object.majorVersion) ? globalThis.Number(object.majorVersion) : undefined,
-      revision: isSet(object.revision) ? globalThis.Number(object.revision) : undefined,
-    };
-  },
-
-  toJSON(message: GetLatestWfMetricWindowRequest): unknown {
-    const obj: any = {};
-    if (message.wfSpecName !== "") {
-      obj.wfSpecName = message.wfSpecName;
-    }
-    if (message.majorVersion !== undefined) {
-      obj.majorVersion = Math.round(message.majorVersion);
-    }
-    if (message.revision !== undefined) {
-      obj.revision = Math.round(message.revision);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<GetLatestWfMetricWindowRequest>): GetLatestWfMetricWindowRequest {
-    return GetLatestWfMetricWindowRequest.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<GetLatestWfMetricWindowRequest>): GetLatestWfMetricWindowRequest {
-    const message = createBaseGetLatestWfMetricWindowRequest();
-    message.wfSpecName = object.wfSpecName ?? "";
-    message.majorVersion = object.majorVersion ?? undefined;
-    message.revision = object.revision ?? undefined;
     return message;
   },
 };
