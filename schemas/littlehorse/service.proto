@@ -336,7 +336,9 @@ service LittleHorse {
   // Returns WfSpec Metrics for a specific WfSpec and a specific time window.
   rpc GetWfSpecMetricsWindow(WfSpecMetricsQueryRequest) returns (WfSpecMetrics) {}
   
+  // Lists aggregated task metrics over a time range; supports filters and returns a MetricsList.
   rpc ListTaskMetrics(ListTaskMetricsRequest) returns (MetricsList) {}
+  // Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList.
   rpc ListWfMetrics(ListWfMetricsRequest) returns (MetricsList) {}
 
   // Creates a Tenant in the LH Server.

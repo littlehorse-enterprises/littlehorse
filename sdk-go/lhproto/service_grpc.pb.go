@@ -350,7 +350,9 @@ type LittleHorseClient interface {
 	GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(ctx context.Context, in *WfSpecMetricsQueryRequest, opts ...grpc.CallOption) (*WfSpecMetrics, error)
+	// Lists aggregated task metrics over a time range; supports filters and returns a MetricsList.
 	ListTaskMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
+	// Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList.
 	ListWfMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
 	// Creates a Tenant in the LH Server.
 	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error)
@@ -1444,7 +1446,9 @@ type LittleHorseServer interface {
 	GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error)
+	// Lists aggregated task metrics over a time range; supports filters and returns a MetricsList.
 	ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error)
+	// Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList.
 	ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error)
 	// Creates a Tenant in the LH Server.
 	PutTenant(context.Context, *PutTenantRequest) (*Tenant, error)

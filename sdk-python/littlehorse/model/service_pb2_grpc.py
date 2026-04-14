@@ -1150,13 +1150,15 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ListTaskMetrics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Lists aggregated task metrics over a time range; supports filters and returns a MetricsList.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListWfMetrics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
