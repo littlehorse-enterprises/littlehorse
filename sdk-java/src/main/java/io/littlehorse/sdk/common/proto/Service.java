@@ -921,7 +921,7 @@ public final class Service extends com.google.protobuf.GeneratedFile {
       "\017\n\013ALL_UPDATES\020\000\022\032\n\026MINOR_REVISION_UPDAT" +
       "ES\020\001\022\016\n\nNO_UPDATES\020\002*X\n\032StructDefCompati" +
       "bilityType\022\025\n\021NO_SCHEMA_UPDATES\020\000\022#\n\037FUL" +
-      "LY_COMPATIBLE_SCHEMA_UPDATES\020\0012\232>\n\013Littl" +
+      "LY_COMPATIBLE_SCHEMA_UPDATES\020\0012\244<\n\013Littl" +
       "eHorse\022D\n\nPutTaskDef\022\036.littlehorse.PutTa" +
       "skDefRequest\032\024.littlehorse.TaskDef\"\000\022<\n\n" +
       "GetTaskDef\022\026.littlehorse.TaskDefId\032\024.lit",
@@ -1095,35 +1095,28 @@ public final class Service extends com.google.protobuf.GeneratedFile {
       "orse.TaskDefMetricsQueryRequest\032\033.little" +
       "horse.TaskDefMetrics\"\000\022^\n\026GetWfSpecMetri" +
       "csWindow\022&.littlehorse.WfSpecMetricsQuer" +
-      "yRequest\032\032.littlehorse.WfSpecMetrics\"\000\022v" +
-      "\n\027GetLatestWfMetricWindow\022+.littlehorse." +
-      "GetLatestWfMetricWindowRequest\032,.littleh" +
-      "orse.GetLatestWfMetricWindowResponse\"\000\022|" +
-      "\n\031GetLatestTaskMetricWindow\022-.littlehors" +
-      "e.GetLatestTaskMetricWindowRequest\032..lit" +
-      "tlehorse.GetLatestTaskMetricWindowRespon" +
-      "se\"\000\022R\n\017ListTaskMetrics\022#.littlehorse.Li" +
-      "stTaskMetricsRequest\032\030.littlehorse.Metri" +
-      "csList\"\000\022N\n\rListWfMetrics\022!.littlehorse." +
-      "ListWfMetricsRequest\032\030.littlehorse.Metri" +
-      "csList\"\000\022K\n\017GetMetricWindow\022\033.littlehors" +
-      "e.MetricWindowId\032\031.littlehorse.MetricWin" +
-      "dow\"\000\022c\n\024SearchWfMetricWindow\022(.littleho" +
-      "rse.SearchWfMetricWindowRequest\032\037.little" +
-      "horse.MetricWindowIdList\"\000\022A\n\tPutTenant\022" +
-      "\035.littlehorse.PutTenantRequest\032\023.littleh" +
-      "orse.Tenant\"\000\0229\n\tGetTenant\022\025.littlehorse" +
-      ".TenantId\032\023.littlehorse.Tenant\"\000\022J\n\014PutP" +
-      "rincipal\022 .littlehorse.PutPrincipalReque" +
-      "st\032\026.littlehorse.Principal\"\000\022B\n\014GetPrinc" +
-      "ipal\022\030.littlehorse.PrincipalId\032\026.littleh" +
-      "orse.Principal\"\000\022:\n\006Whoami\022\026.google.prot" +
-      "obuf.Empty\032\026.littlehorse.Principal\"\000\022M\n\020" +
-      "GetServerVersion\022\026.google.protobuf.Empty" +
-      "\032\037.littlehorse.LittleHorseVersion\"\000BM\n\037i" +
-      "o.littlehorse.sdk.common.protoP\001Z\t.;lhpr" +
-      "oto\252\002\034LittleHorse.Sdk.Common.Protob\006prot" +
-      "o3"
+      "yRequest\032\032.littlehorse.WfSpecMetrics\"\000\022R" +
+      "\n\017ListTaskMetrics\022#.littlehorse.ListTask" +
+      "MetricsRequest\032\030.littlehorse.MetricsList" +
+      "\"\000\022N\n\rListWfMetrics\022!.littlehorse.ListWf" +
+      "MetricsRequest\032\030.littlehorse.MetricsList" +
+      "\"\000\022K\n\017GetMetricWindow\022\033.littlehorse.Metr" +
+      "icWindowId\032\031.littlehorse.MetricWindow\"\000\022" +
+      "c\n\024SearchWfMetricWindow\022(.littlehorse.Se" +
+      "archWfMetricWindowRequest\032\037.littlehorse." +
+      "MetricWindowIdList\"\000\022A\n\tPutTenant\022\035.litt" +
+      "lehorse.PutTenantRequest\032\023.littlehorse.T" +
+      "enant\"\000\0229\n\tGetTenant\022\025.littlehorse.Tenan" +
+      "tId\032\023.littlehorse.Tenant\"\000\022J\n\014PutPrincip" +
+      "al\022 .littlehorse.PutPrincipalRequest\032\026.l" +
+      "ittlehorse.Principal\"\000\022B\n\014GetPrincipal\022\030" +
+      ".littlehorse.PrincipalId\032\026.littlehorse.P" +
+      "rincipal\"\000\022:\n\006Whoami\022\026.google.protobuf.E" +
+      "mpty\032\026.littlehorse.Principal\"\000\022M\n\020GetSer" +
+      "verVersion\022\026.google.protobuf.Empty\032\037.lit" +
+      "tlehorse.LittleHorseVersion\"\000BM\n\037io.litt" +
+      "lehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034" +
+      "LittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

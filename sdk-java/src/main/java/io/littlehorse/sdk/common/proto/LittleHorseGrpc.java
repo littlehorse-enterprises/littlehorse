@@ -2554,68 +2554,6 @@ public final class LittleHorseGrpc {
     return getGetWfSpecMetricsWindowMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest,
-      io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse> getGetLatestWfMetricWindowMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "GetLatestWfMetricWindow",
-      requestType = io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest,
-      io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse> getGetLatestWfMetricWindowMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest, io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse> getGetLatestWfMetricWindowMethod;
-    if ((getGetLatestWfMetricWindowMethod = LittleHorseGrpc.getGetLatestWfMetricWindowMethod) == null) {
-      synchronized (LittleHorseGrpc.class) {
-        if ((getGetLatestWfMetricWindowMethod = LittleHorseGrpc.getGetLatestWfMetricWindowMethod) == null) {
-          LittleHorseGrpc.getGetLatestWfMetricWindowMethod = getGetLatestWfMetricWindowMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest, io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetLatestWfMetricWindow"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetLatestWfMetricWindow"))
-              .build();
-        }
-      }
-    }
-    return getGetLatestWfMetricWindowMethod;
-  }
-
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest,
-      io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse> getGetLatestTaskMetricWindowMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "GetLatestTaskMetricWindow",
-      requestType = io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest,
-      io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse> getGetLatestTaskMetricWindowMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest, io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse> getGetLatestTaskMetricWindowMethod;
-    if ((getGetLatestTaskMetricWindowMethod = LittleHorseGrpc.getGetLatestTaskMetricWindowMethod) == null) {
-      synchronized (LittleHorseGrpc.class) {
-        if ((getGetLatestTaskMetricWindowMethod = LittleHorseGrpc.getGetLatestTaskMetricWindowMethod) == null) {
-          LittleHorseGrpc.getGetLatestTaskMetricWindowMethod = getGetLatestTaskMetricWindowMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest, io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetLatestTaskMetricWindow"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetLatestTaskMetricWindow"))
-              .build();
-        }
-      }
-    }
-    return getGetLatestTaskMetricWindowMethod;
-  }
-
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskMetricsRequest,
       io.littlehorse.sdk.common.proto.MetricsList> getListTaskMetricsMethod;
 
@@ -3871,26 +3809,6 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest workflow metric window for a given WfSpecId.
-     * </pre>
-     */
-    default void getLatestWfMetricWindow(io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetLatestWfMetricWindowMethod(), responseObserver);
-    }
-
-    /**
-     * <pre>
-     * Returns the latest task metric window for a given TaskDefId.
-     * </pre>
-     */
-    default void getLatestTaskMetricWindow(io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetLatestTaskMetricWindowMethod(), responseObserver);
-    }
-
-    /**
-     * <pre>
      * Lists available metric windows for a given TaskDefId and time range.
      * </pre>
      */
@@ -4981,28 +4899,6 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest workflow metric window for a given WfSpecId.
-     * </pre>
-     */
-    public void getLatestWfMetricWindow(io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getGetLatestWfMetricWindowMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     * <pre>
-     * Returns the latest task metric window for a given TaskDefId.
-     * </pre>
-     */
-    public void getLatestTaskMetricWindow(io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getGetLatestTaskMetricWindowMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     * <pre>
      * Lists available metric windows for a given TaskDefId and time range.
      * </pre>
      */
@@ -6012,26 +5908,6 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest workflow metric window for a given WfSpecId.
-     * </pre>
-     */
-    public io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse getLatestWfMetricWindow(io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest request) throws io.grpc.StatusException {
-      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
-          getChannel(), getGetLatestWfMetricWindowMethod(), getCallOptions(), request);
-    }
-
-    /**
-     * <pre>
-     * Returns the latest task metric window for a given TaskDefId.
-     * </pre>
-     */
-    public io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse getLatestTaskMetricWindow(io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest request) throws io.grpc.StatusException {
-      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
-          getChannel(), getGetLatestTaskMetricWindowMethod(), getCallOptions(), request);
-    }
-
-    /**
-     * <pre>
      * Lists available metric windows for a given TaskDefId and time range.
      * </pre>
      */
@@ -7014,26 +6890,6 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.WfSpecMetrics getWfSpecMetricsWindow(io.littlehorse.sdk.common.proto.WfSpecMetricsQueryRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetWfSpecMetricsWindowMethod(), getCallOptions(), request);
-    }
-
-    /**
-     * <pre>
-     * Returns the latest workflow metric window for a given WfSpecId.
-     * </pre>
-     */
-    public io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse getLatestWfMetricWindow(io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getGetLatestWfMetricWindowMethod(), getCallOptions(), request);
-    }
-
-    /**
-     * <pre>
-     * Returns the latest task metric window for a given TaskDefId.
-     * </pre>
-     */
-    public io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse getLatestTaskMetricWindow(io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getGetLatestTaskMetricWindowMethod(), getCallOptions(), request);
     }
 
     /**
@@ -8105,28 +7961,6 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns the latest workflow metric window for a given WfSpecId.
-     * </pre>
-     */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse> getLatestWfMetricWindow(
-        io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getGetLatestWfMetricWindowMethod(), getCallOptions()), request);
-    }
-
-    /**
-     * <pre>
-     * Returns the latest task metric window for a given TaskDefId.
-     * </pre>
-     */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse> getLatestTaskMetricWindow(
-        io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getGetLatestTaskMetricWindowMethod(), getCallOptions()), request);
-    }
-
-    /**
-     * <pre>
      * Lists available metric windows for a given TaskDefId and time range.
      * </pre>
      */
@@ -8317,19 +8151,17 @@ public final class LittleHorseGrpc {
   private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 78;
   private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 79;
   private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 80;
-  private static final int METHODID_GET_LATEST_WF_METRIC_WINDOW = 81;
-  private static final int METHODID_GET_LATEST_TASK_METRIC_WINDOW = 82;
-  private static final int METHODID_LIST_TASK_METRICS = 83;
-  private static final int METHODID_LIST_WF_METRICS = 84;
-  private static final int METHODID_GET_METRIC_WINDOW = 85;
-  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 86;
-  private static final int METHODID_PUT_TENANT = 87;
-  private static final int METHODID_GET_TENANT = 88;
-  private static final int METHODID_PUT_PRINCIPAL = 89;
-  private static final int METHODID_GET_PRINCIPAL = 90;
-  private static final int METHODID_WHOAMI = 91;
-  private static final int METHODID_GET_SERVER_VERSION = 92;
-  private static final int METHODID_POLL_TASK = 93;
+  private static final int METHODID_LIST_TASK_METRICS = 81;
+  private static final int METHODID_LIST_WF_METRICS = 82;
+  private static final int METHODID_GET_METRIC_WINDOW = 83;
+  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 84;
+  private static final int METHODID_PUT_TENANT = 85;
+  private static final int METHODID_GET_TENANT = 86;
+  private static final int METHODID_PUT_PRINCIPAL = 87;
+  private static final int METHODID_GET_PRINCIPAL = 88;
+  private static final int METHODID_WHOAMI = 89;
+  private static final int METHODID_GET_SERVER_VERSION = 90;
+  private static final int METHODID_POLL_TASK = 91;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -8671,14 +8503,6 @@ public final class LittleHorseGrpc {
         case METHODID_GET_WF_SPEC_METRICS_WINDOW:
           serviceImpl.getWfSpecMetricsWindow((io.littlehorse.sdk.common.proto.WfSpecMetricsQueryRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpecMetrics>) responseObserver);
-          break;
-        case METHODID_GET_LATEST_WF_METRIC_WINDOW:
-          serviceImpl.getLatestWfMetricWindow((io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse>) responseObserver);
-          break;
-        case METHODID_GET_LATEST_TASK_METRIC_WINDOW:
-          serviceImpl.getLatestTaskMetricWindow((io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse>) responseObserver);
           break;
         case METHODID_LIST_TASK_METRICS:
           serviceImpl.listTaskMetrics((io.littlehorse.sdk.common.proto.ListTaskMetricsRequest) request,
@@ -9316,20 +9140,6 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.WfSpecMetrics>(
                 service, METHODID_GET_WF_SPEC_METRICS_WINDOW)))
         .addMethod(
-          getGetLatestWfMetricWindowMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowRequest,
-              io.littlehorse.sdk.common.proto.GetLatestWfMetricWindowResponse>(
-                service, METHODID_GET_LATEST_WF_METRIC_WINDOW)))
-        .addMethod(
-          getGetLatestTaskMetricWindowMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowRequest,
-              io.littlehorse.sdk.common.proto.GetLatestTaskMetricWindowResponse>(
-                service, METHODID_GET_LATEST_TASK_METRIC_WINDOW)))
-        .addMethod(
           getListTaskMetricsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -9529,8 +9339,6 @@ public final class LittleHorseGrpc {
               .addMethod(getDeleteScheduledWfRunMethod())
               .addMethod(getGetTaskDefMetricsWindowMethod())
               .addMethod(getGetWfSpecMetricsWindowMethod())
-              .addMethod(getGetLatestWfMetricWindowMethod())
-              .addMethod(getGetLatestTaskMetricWindowMethod())
               .addMethod(getListTaskMetricsMethod())
               .addMethod(getListWfMetricsMethod())
               .addMethod(getGetMetricWindowMethod())

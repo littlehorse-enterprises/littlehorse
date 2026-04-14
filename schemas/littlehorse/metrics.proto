@@ -104,25 +104,6 @@ message GetLatestWfMetricWindowRequest {
   optional int32 revision = 3;
 }
 
-
-// Response for the latest available workflow metric window.
-message GetLatestWfMetricWindowResponse {
-  // The latest completed metric window, or unset if none available.
-  MetricWindow window = 1;
-}
-
-// Request for the latest available task metric window for a given TaskDefId.
-message GetLatestTaskMetricWindowRequest {
-  TaskDefId task_def = 1;
-}
-
-
-// Response for the latest available task metric window.
-message GetLatestTaskMetricWindowResponse {
-  // The latest completed metric window, or unset if none available.
-  MetricWindow window = 1;
-}
-
 // A list of MetricWindowId's returned by a search.
 message MetricWindowIdList {
   // Opaque bookmark for pagination; pass back to continue a search.
