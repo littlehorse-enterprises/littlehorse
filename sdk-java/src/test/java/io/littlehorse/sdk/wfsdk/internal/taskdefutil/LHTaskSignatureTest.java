@@ -41,6 +41,9 @@ public class LHTaskSignatureTest {
         public UuidHolder adapterStructTask(UuidHolder in) {
             return in;
         }
+
+        @LHTaskMethod(value = "blank-desc-task")
+        public void blankDescTask() {}
     }
 
     @LHStructDef("car")
@@ -97,6 +100,13 @@ public class LHTaskSignatureTest {
         LHTaskSignature taskSignature = signatureFor("description-task");
 
         assertThat(taskSignature.getTaskDefDescription()).contains("description-test");
+    }
+
+    @Test
+    void shouldIgnoreEmptyTaskDefDescription() {
+        LHTaskSignature taskSignature = signatureFor("blank-desc-task");
+
+        assertThat(taskSignature.toPutTaskDefRequest().hasDescription()).isFalse();
     }
 
     @Test

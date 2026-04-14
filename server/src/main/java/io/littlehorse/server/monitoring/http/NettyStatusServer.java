@@ -10,12 +10,12 @@ import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioSocketChannel;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpRequestDecoder;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseEncoder;
-import java.io.Closeable;
+import io.littlehorse.server.monitoring.StatusServer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-public class StatusServer implements Closeable {
+public class NettyStatusServer implements StatusServer {
 
     private final HttpEndpointRegistry registry = new HttpEndpointRegistry();
     private final ServerBootstrap server = new ServerBootstrap();
