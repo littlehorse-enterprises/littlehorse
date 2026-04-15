@@ -56,6 +56,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -492,7 +493,15 @@ final class WorkflowThreadImpl implements WorkflowThread {
     private WfRunVariableImpl addStructVariable(String name, LHStructDefType clazz) {
         checkIfIsActive();
 
-        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createStructDefVar(name, clazz, this);
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createVarFromLHClassType(name, clazz, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
+    }
+
+    private WfRunVariableImpl addStructVariable(String name, LHStructDefId clazz) {
+        checkIfIsActive();
+
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createVarFromLHClassType(name, clazz, this);
         wfRunVariables.add(wfRunVariable);
         return wfRunVariable;
     }
@@ -500,7 +509,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     private WfRunVariableImpl addArrayVariable(String name, LHArrayType clazz) {
         checkIfIsActive();
 
-        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createArrayVar(name, clazz, this);
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createVarFromLHClassType(name, clazz, this);
         wfRunVariables.add(wfRunVariable);
         return wfRunVariable;
     }
@@ -548,6 +557,16 @@ final class WorkflowThreadImpl implements WorkflowThread {
     @Override
     public WfRunVariable declareStruct(String name, Class<?> clazz) {
         return addStructVariable(name, new LHStructDefType(clazz, parent.getTypeAdapterRegistry()));
+    }
+
+    @Override
+    public WfRunVariable declareStruct(String name, String structDefName) {
+        return addStructVariable(name, new LHStructDefId(structDefName));
+    }
+
+    @Override
+    public WfRunVariable declareStruct(String name, String structDefName, int structDefVersion) {
+        return addStructVariable(name, new LHStructDefId(structDefName, structDefVersion));
     }
 
     @Override
