@@ -31,10 +31,12 @@ public class LHStructDefType extends LHClassType {
     private List<LHStructProperty> structProperties;
 
     /**
-     * DEPRECATED: Use {@link #LHStructDefType(Class, LHTypeAdapterRegistry)} instead and provide an explicit type adapter registry. This will ensure that any custom type adapters you have registered will be properly used when generating StructDef definitions from your Java classes.
+     * Constructor for LHStructDefType that does not take a type adapter registry.
+     *
+     * If you want to use Type Adapters with your StructDef, use {@link #LHStructDefType(Class, LHTypeAdapterRegistry)} instead and provide an explicit type adapter registry.
+     *
      * @param clazz The Java class representing the StructDef.
      */
-    @Deprecated(since = "1.1.0", forRemoval = true)
     public LHStructDefType(Class<?> clazz) {
         this(clazz, LHTypeAdapterRegistry.empty());
     }
