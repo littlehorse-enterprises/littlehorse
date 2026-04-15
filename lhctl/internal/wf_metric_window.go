@@ -7,8 +7,8 @@ import (
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"github.com/spf13/cobra"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var getMetricWindowCmd = &cobra.Command{
