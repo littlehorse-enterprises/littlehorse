@@ -8,8 +8,8 @@ import { CONFIG_NAMES, Config } from '../LHConfig'
  * @returns Partial<Config>
  */
 const getPropertiesFile = (path: string): Partial<Config> => {
-  const fullpath = resolve(path)
-  const file = readFileSync(fullpath).toString()
+  const absolutePath = resolve(path)
+  const file = readFileSync(absolutePath).toString()
   return file
     .split('\n')
     .filter(Boolean)

@@ -12,6 +12,7 @@ from .service_pb2 import *
 from .struct_def_pb2 import *
 from .task_def_pb2 import *
 from .task_run_pb2 import *
+from .type_definition_pb2 import *
 from .user_tasks_pb2 import *
 from .variable_pb2 import *
 from .wf_run_pb2 import *

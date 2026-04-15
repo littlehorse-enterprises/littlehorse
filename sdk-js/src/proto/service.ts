@@ -33,7 +33,7 @@ import {
   taskStatusToJSON,
   taskStatusToNumber,
 } from "./common_enums";
-import { InlineStructDef, ReturnType, VariableDef } from "./common_wfspec";
+import { InlineStructDef, VariableDef } from "./common_wfspec";
 import {
   CorrelatedEvent,
   CorrelatedEventConfig,
@@ -71,6 +71,7 @@ import { ScheduledWfRun } from "./scheduled_wf_run";
 import { StructDef } from "./struct_def";
 import { TaskDef } from "./task_def";
 import { Checkpoint, LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } from "./task_run";
+import { ReturnType } from "./type_definition";
 import {
   AssignUserTaskRunRequest,
   CancelUserTaskRunRequest,

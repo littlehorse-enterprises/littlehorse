@@ -9,12 +9,16 @@ import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
+import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.ThrowEventNodeRun;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Comparator;
@@ -69,6 +73,24 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
             VariableValueModel content = getNodeRun()
                     .getThreadRun()
                     .assignVariable(getNode().getThrowEventNode().getContent());
+
+            // If the WorkflowEventDef defines a return type and it's an inline array,
+            // set the authoritative element type on the produced content array so that
+            // empty/native arrays inherit the expected element type (matches RunWf/Task
+            // and ExternalEvent ingress behavior).
+            WorkflowEventDefModel wed = processorContext.service().getWorkflowEventDef(eventDefId);
+            if (wed != null
+                    && wed.getContentType() != null
+                    && content != null
+                    && content.getValueType() == VariableValue.ValueCase.ARRAY) {
+                Optional<TypeDefinitionModel> out = wed.getContentType().getOutputType();
+                if (out.isPresent()
+                        && out.get().getDefinedTypeCase() == TypeDefinition.DefinedTypeCase.INLINE_ARRAY_DEF) {
+                    content.getArray()
+                            .setElementType(out.get().getInlineArrayDef().getArrayType());
+                }
+            }
+
             WorkflowEventModel event = new WorkflowEventModel(workflowEventId, content, nodeRun);
             processorContext.getableManager().put(event);
 

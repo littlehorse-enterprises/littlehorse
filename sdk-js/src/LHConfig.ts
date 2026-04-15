@@ -11,6 +11,8 @@ export const CONFIG_NAMES = [
   'LHC_API_PROTOCOL',
   'LHC_TENANT_ID',
   'LHC_CA_CERT',
+  'LHC_CLIENT_CERT',
+  'LHC_CLIENT_KEY',
 ] as const
 
 export type Config = {
@@ -31,6 +33,8 @@ export class LHConfig {
   private protocol?: string = 'PLAINTEXT'
   private tenantId?: string = 'default'
   private caCert?: string
+  private clientCert?: string
+  private clientKey?: string
   private channel: Channel
 
   private channelCredentials?: ChannelCredentials
@@ -42,10 +46,19 @@ export class LHConfig {
     this.protocol = mergedConfig.LHC_API_PROTOCOL
     this.tenantId = mergedConfig.LHC_TENANT_ID
     this.caCert = mergedConfig.LHC_CA_CERT
+    this.clientCert = mergedConfig.LHC_CLIENT_CERT
+    this.clientKey = mergedConfig.LHC_CLIENT_KEY
 
     if (this.protocol === 'TLS') {
       const rootCa = this.caCert ? readFileSync(this.caCert) : undefined
-      this.channelCredentials = ChannelCredentials.createSsl(rootCa)
+      const clientCert = this.clientCert ? readFileSync(this.clientCert) : undefined
+      const clientKey = this.clientKey ? readFileSync(this.clientKey) : undefined
+
+      if (clientCert && clientKey) {
+        this.channelCredentials = ChannelCredentials.createSsl(rootCa, clientKey, clientCert)
+      } else {
+        this.channelCredentials = ChannelCredentials.createSsl(rootCa)
+      }
     }
 
     this.channel = this.openChannel(this.apiHost!, this.apiPort!)

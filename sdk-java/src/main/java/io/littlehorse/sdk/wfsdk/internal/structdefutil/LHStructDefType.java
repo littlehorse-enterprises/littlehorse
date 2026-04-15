@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,17 +27,11 @@ import java.util.stream.Collectors;
 public class LHStructDefType extends LHClassType {
     private List<LHStructDefType> dependencyClasses;
     private InlineStructDef inlineStructDef;
-    private final LHTypeAdapterRegistry typeAdapterRegistry;
 
     private List<LHStructProperty> structProperties;
 
-    public LHStructDefType(Class<?> clazz) {
-        this(clazz, LHTypeAdapterRegistry.empty());
-    }
-
     public LHStructDefType(Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) {
-        super(clazz);
-        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
+        super(clazz, typeAdapterRegistry);
 
         if (!clazz.isAnnotationPresent(LHStructDef.class)) {
             throw new IllegalArgumentException(
