@@ -24,6 +24,7 @@ import io.littlehorse.common.model.corecommand.subcommand.*;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.CheckpointModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -45,6 +46,7 @@ import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
@@ -105,6 +107,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTenantR
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchUserTaskDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchUserTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchVariableRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfMetricWindowRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfSpecRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventDefRequestModel;
@@ -129,6 +132,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTe
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUserTaskDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUserTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfMetricWindowReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowEventDefReply;
@@ -943,6 +947,24 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ListWfMetricsRequestModel reqModel =
                 LHSerializable.fromProto(req, ListWfMetricsRequestModel.class, requestContext());
         handleScan(reqModel, ctx, ListMetricsReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getMetricWindow(MetricWindowId req, StreamObserver<MetricWindow> ctx) {
+        MetricWindowIdModel id = LHSerializable.fromProto(req, MetricWindowIdModel.class, requestContext());
+        MetricWindowModel metricWindow = internalComms.getObject(id, MetricWindowModel.class, requestContext());
+        ctx.onNext(metricWindow.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchWfMetricWindow(SearchWfMetricWindowRequest req, StreamObserver<MetricWindowIdList> ctx) {
+        handleScan(
+                SearchWfMetricWindowRequestModel.fromProto(req, requestContext()),
+                ctx,
+                SearchWfMetricWindowReply.class);
     }
 
     @Override

@@ -3,7 +3,6 @@ import datetime
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.variable_pb2 as _variable_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
-import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
 import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
