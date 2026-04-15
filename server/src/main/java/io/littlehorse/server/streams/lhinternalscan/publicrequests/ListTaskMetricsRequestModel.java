@@ -41,9 +41,11 @@ public class ListTaskMetricsRequestModel
 
     @Override
     public ListTaskMetricsRequest.Builder toProto() {
-        ListTaskMetricsRequest.Builder out = ListTaskMetricsRequest.newBuilder()
-                .setTaskDef(taskDefId.toProto())
-                .setWindowStart(LHUtil.fromDate(windowStart));
+        ListTaskMetricsRequest.Builder out =
+                ListTaskMetricsRequest.newBuilder().setWindowStart(LHUtil.fromDate(windowStart));
+        if (taskDefId != null) {
+            out.setTaskDef(taskDefId.toProto());
+        }
         if (windowEnd != null) {
             out.setWindowEnd(LHUtil.fromDate(windowEnd));
         }
@@ -53,7 +55,12 @@ public class ListTaskMetricsRequestModel
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         ListTaskMetricsRequest p = (ListTaskMetricsRequest) proto;
+        // Treat empty TaskDefId (empty name) as wildcard => list all tasks
         taskDefId = LHSerializable.fromProto(p.getTaskDef(), TaskDefIdModel.class, context);
+        if (taskDefId != null
+                && (taskDefId.getName() == null || taskDefId.getName().isEmpty())) {
+            taskDefId = null;
+        }
         if (p.hasWindowStart()) {
             windowStart = LHUtil.fromProtoTs(p.getWindowStart());
         } else {
@@ -83,10 +90,14 @@ public class ListTaskMetricsRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        String partitionKey = MetricWindowType.TASK_METRIC.name() + "/" + taskDefId.toString();
+        String partitionKey;
+        if (taskDefId != null) {
+            partitionKey = MetricWindowType.TASK_METRIC.name() + "/" + taskDefId.toString();
+        } else {
+            partitionKey = MetricWindowType.TASK_METRIC.name();
+        }
         String startPrefixString = partitionKey + "/" + LHUtil.toLhDbFormat(windowStart);
         String endPrefixString = partitionKey + "/" + LHUtil.toLhDbFormat(windowEnd) + "/~";
-        System.out.println("ListTaskMetricsRequestModel.getScanBoundary: partitionKey=" + partitionKey);
         return new ObjectIdScanBoundaryStrategy(partitionKey, startPrefixString, endPrefixString);
     }
 }

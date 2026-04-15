@@ -16,23 +16,28 @@ import (
 )
 
 var listWfMetricsCmd = &cobra.Command{
-	Use:   "wfMetrics <wfSpecName> [wfSpecVersion]",
-	Short: "List metrics for a given WfSpec",
-	Long: `List metrics for a given WfSpec.
+	Use:   "wfMetrics [wfSpecName] [wfSpecVersion]",
+	Short: "List metrics for a WfSpec (omit name to list all)",
+	Long: `List metrics for a WfSpec. Omitting the name lists metrics for all WfSpecs.
 
 By default, returns metrics for the last 60 minutes.
 You can use --earliestMinutesAgo and --latestMinutesAgo to specify a custom time window.
 
 Examples:
+  lhctl list wfMetrics
   lhctl list wfMetrics my-workflow
   lhctl list wfMetrics my-workflow 1
   lhctl list wfMetrics my-workflow --latestMinutesAgo 10
   lhctl list wfMetrics my-workflow --earliestMinutesAgo 120 --latestMinutesAgo 60
 `,
-	Args: cobra.RangeArgs(1, 2),
+	Args: cobra.RangeArgs(0, 2),
 	Run: func(cmd *cobra.Command, args []string) {
-		wfSpecName := args[0]
+		wfSpecName := ""
 		wfSpecVersion := int32(0)
+
+		if len(args) > 0 {
+			wfSpecName = args[0]
+		}
 
 		if len(args) > 1 {
 			version, err := strconv.Atoi(args[1])
@@ -57,16 +62,21 @@ Examples:
 			)
 		}
 
+		req := &lhproto.ListWfMetricsRequest{
+			WindowStart: windowStart,
+			WindowEnd:   windowEnd,
+		}
+
+		if wfSpecName != "" {
+			req.WfSpec = &lhproto.WfSpecId{
+				Name:         wfSpecName,
+				MajorVersion: wfSpecVersion,
+			}
+		}
+
 		littlehorse.PrintResp(getGlobalClient(cmd).ListWfMetrics(
 			requestContext(cmd),
-			&lhproto.ListWfMetricsRequest{
-				WfSpec: &lhproto.WfSpecId{
-					Name:         wfSpecName,
-					MajorVersion: wfSpecVersion,
-				},
-				WindowStart: windowStart,
-				WindowEnd:   windowEnd,
-			},
+			req,
 		))
 	},
 }

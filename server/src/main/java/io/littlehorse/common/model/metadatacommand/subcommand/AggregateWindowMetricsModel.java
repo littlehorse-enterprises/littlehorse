@@ -15,7 +15,6 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import java.util.Optional;
 import lombok.Getter;
 
 @Getter
@@ -49,12 +48,11 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
 
     @Override
     public String getPartitionKey() {
-        Optional<String> partitionKeyOpt = metricWindow.getId().getPartitionKey();
-        if (partitionKeyOpt.isPresent()) {
-            return partitionKeyOpt.get();
-        } else {
-            throw new IllegalStateException("PartitionMetricWindowModel must have a partition key");
-        }
+        String partitionKey = metricWindow
+                .getId()
+                .getPartitionKey()
+                .orElseThrow(() -> new IllegalStateException("PartitionMetricWindowModel must have a partition key"));
+        return partitionKey;
     }
 
     @SuppressWarnings("unchecked")
