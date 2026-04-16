@@ -479,6 +479,16 @@ class LittleHorseStub(object):
                 request_serializer=metrics__pb2.ListWfMetricsRequest.SerializeToString,
                 response_deserializer=metrics__pb2.MetricsList.FromString,
                 _registered_method=True)
+        self.GetMetricWindow = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetMetricWindow',
+                request_serializer=object__id__pb2.MetricWindowId.SerializeToString,
+                response_deserializer=metrics__pb2.MetricWindow.FromString,
+                _registered_method=True)
+        self.SearchWfMetricWindow = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchWfMetricWindow',
+                request_serializer=metrics__pb2.SearchWfMetricWindowRequest.SerializeToString,
+                response_deserializer=metrics__pb2.MetricWindowIdList.FromString,
+                _registered_method=True)
         self.PutTenant = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutTenant',
                 request_serializer=acls__pb2.PutTenantRequest.SerializeToString,
@@ -1184,13 +1194,29 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ListTaskMetrics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Lists available metric windows for a given TaskDefId and time range.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListWfMetrics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Lists available metric windows for a given WfSpecId and time range.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetMetricWindow(self, request, context):
+        """Gets a MetricWindow by its ID.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SearchWfMetricWindow(self, request, context):
+        """Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -1683,6 +1709,16 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.ListWfMetrics,
                     request_deserializer=metrics__pb2.ListWfMetricsRequest.FromString,
                     response_serializer=metrics__pb2.MetricsList.SerializeToString,
+            ),
+            'GetMetricWindow': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMetricWindow,
+                    request_deserializer=object__id__pb2.MetricWindowId.FromString,
+                    response_serializer=metrics__pb2.MetricWindow.SerializeToString,
+            ),
+            'SearchWfMetricWindow': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchWfMetricWindow,
+                    request_deserializer=metrics__pb2.SearchWfMetricWindowRequest.FromString,
+                    response_serializer=metrics__pb2.MetricWindowIdList.SerializeToString,
             ),
             'PutTenant': grpc.unary_unary_rpc_method_handler(
                     servicer.PutTenant,
@@ -4047,6 +4083,60 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/ListWfMetrics',
             metrics__pb2.ListWfMetricsRequest.SerializeToString,
             metrics__pb2.MetricsList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetMetricWindow(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetMetricWindow',
+            object__id__pb2.MetricWindowId.SerializeToString,
+            metrics__pb2.MetricWindow.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SearchWfMetricWindow(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/SearchWfMetricWindow',
+            metrics__pb2.SearchWfMetricWindowRequest.SerializeToString,
+            metrics__pb2.MetricWindowIdList.FromString,
             options,
             channel_credentials,
             insecure,

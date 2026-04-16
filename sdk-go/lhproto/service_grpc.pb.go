@@ -106,6 +106,8 @@ const (
 	LittleHorse_GetWfSpecMetricsWindow_FullMethodName     = "/littlehorse.LittleHorse/GetWfSpecMetricsWindow"
 	LittleHorse_ListTaskMetrics_FullMethodName            = "/littlehorse.LittleHorse/ListTaskMetrics"
 	LittleHorse_ListWfMetrics_FullMethodName              = "/littlehorse.LittleHorse/ListWfMetrics"
+	LittleHorse_GetMetricWindow_FullMethodName            = "/littlehorse.LittleHorse/GetMetricWindow"
+	LittleHorse_SearchWfMetricWindow_FullMethodName       = "/littlehorse.LittleHorse/SearchWfMetricWindow"
 	LittleHorse_PutTenant_FullMethodName                  = "/littlehorse.LittleHorse/PutTenant"
 	LittleHorse_GetTenant_FullMethodName                  = "/littlehorse.LittleHorse/GetTenant"
 	LittleHorse_PutQuota_FullMethodName                   = "/littlehorse.LittleHorse/PutQuota"
@@ -358,8 +360,14 @@ type LittleHorseClient interface {
 	GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(ctx context.Context, in *WfSpecMetricsQueryRequest, opts ...grpc.CallOption) (*WfSpecMetrics, error)
+	// Lists available metric windows for a given TaskDefId and time range.
 	ListTaskMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
+	// Lists available metric windows for a given WfSpecId and time range.
 	ListWfMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
+	// Gets a MetricWindow by its ID.
+	GetMetricWindow(ctx context.Context, in *MetricWindowId, opts ...grpc.CallOption) (*MetricWindow, error)
+	// Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+	SearchWfMetricWindow(ctx context.Context, in *SearchWfMetricWindowRequest, opts ...grpc.CallOption) (*MetricWindowIdList, error)
 	// Creates a Tenant in the LH Server.
 	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error)
 	// Gets a Tenant from the LH Server.
@@ -1182,6 +1190,24 @@ func (c *littleHorseClient) ListWfMetrics(ctx context.Context, in *ListWfMetrics
 	return out, nil
 }
 
+func (c *littleHorseClient) GetMetricWindow(ctx context.Context, in *MetricWindowId, opts ...grpc.CallOption) (*MetricWindow, error) {
+	out := new(MetricWindow)
+	err := c.cc.Invoke(ctx, LittleHorse_GetMetricWindow_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) SearchWfMetricWindow(ctx context.Context, in *SearchWfMetricWindowRequest, opts ...grpc.CallOption) (*MetricWindowIdList, error) {
+	out := new(MetricWindowIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchWfMetricWindow_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error) {
 	out := new(Tenant)
 	err := c.cc.Invoke(ctx, LittleHorse_PutTenant_FullMethodName, in, out, opts...)
@@ -1496,8 +1522,14 @@ type LittleHorseServer interface {
 	GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error)
+	// Lists available metric windows for a given TaskDefId and time range.
 	ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error)
+	// Lists available metric windows for a given WfSpecId and time range.
 	ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error)
+	// Gets a MetricWindow by its ID.
+	GetMetricWindow(context.Context, *MetricWindowId) (*MetricWindow, error)
+	// Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+	SearchWfMetricWindow(context.Context, *SearchWfMetricWindowRequest) (*MetricWindowIdList, error)
 	// Creates a Tenant in the LH Server.
 	PutTenant(context.Context, *PutTenantRequest) (*Tenant, error)
 	// Gets a Tenant from the LH Server.
@@ -1778,6 +1810,12 @@ func (UnimplementedLittleHorseServer) ListTaskMetrics(context.Context, *ListTask
 }
 func (UnimplementedLittleHorseServer) ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListWfMetrics not implemented")
+}
+func (UnimplementedLittleHorseServer) GetMetricWindow(context.Context, *MetricWindowId) (*MetricWindow, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMetricWindow not implemented")
+}
+func (UnimplementedLittleHorseServer) SearchWfMetricWindow(context.Context, *SearchWfMetricWindowRequest) (*MetricWindowIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchWfMetricWindow not implemented")
 }
 func (UnimplementedLittleHorseServer) PutTenant(context.Context, *PutTenantRequest) (*Tenant, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutTenant not implemented")
@@ -3372,6 +3410,42 @@ func _LittleHorse_ListWfMetrics_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_GetMetricWindow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MetricWindowId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetMetricWindow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetMetricWindow_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetMetricWindow(ctx, req.(*MetricWindowId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_SearchWfMetricWindow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchWfMetricWindowRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchWfMetricWindow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchWfMetricWindow_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchWfMetricWindow(ctx, req.(*SearchWfMetricWindowRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_PutTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PutTenantRequest)
 	if err := dec(in); err != nil {
@@ -3862,6 +3936,14 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListWfMetrics",
 			Handler:    _LittleHorse_ListWfMetrics_Handler,
+		},
+		{
+			MethodName: "GetMetricWindow",
+			Handler:    _LittleHorse_GetMetricWindow_Handler,
+		},
+		{
+			MethodName: "SearchWfMetricWindow",
+			Handler:    _LittleHorse_SearchWfMetricWindow_Handler,
 		},
 		{
 			MethodName: "PutTenant",

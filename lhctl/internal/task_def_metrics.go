@@ -14,21 +14,25 @@ import (
 )
 
 var listTaskMetricsCmd = &cobra.Command{
-	Use:   "taskMetrics <taskDefName>",
-	Short: "List metrics for a given TaskDef",
-	Long: `List metrics for a given TaskDef.
+	Use:   "taskMetrics [taskDefName]",
+	Short: "List metrics for a TaskDef (omit name to list aggregated metrics)",
+	Long: `List metrics for a TaskDef. Omitting the name lists aggregated metrics for all TaskDefs.
 
 By default, returns metrics for the last 60 minutes.
 You can use --earliestMinutesAgo and --latestMinutesAgo to specify a custom time window.
 
 Examples:
+  lhctl list taskMetrics
   lhctl list taskMetrics my-task
   lhctl list taskMetrics my-task --latestMinutesAgo 10
   lhctl list taskMetrics my-task --earliestMinutesAgo 120 --latestMinutesAgo 60
 `,
-	Args: cobra.ExactArgs(1),
+	Args: cobra.RangeArgs(0, 1),
 	Run: func(cmd *cobra.Command, args []string) {
-		taskDefName := args[0]
+		taskDefName := ""
+		if len(args) > 0 {
+			taskDefName = args[0]
+		}
 
 		windowStart, windowEnd := loadEarliestAndLatestStart(cmd)
 
@@ -45,13 +49,18 @@ Examples:
 			)
 		}
 
+		req := &lhproto.ListTaskMetricsRequest{
+			WindowStart: windowStart,
+			WindowEnd:   windowEnd,
+		}
+
+		if taskDefName != "" {
+			req.TaskDef = &lhproto.TaskDefId{Name: taskDefName}
+		}
+
 		littlehorse.PrintResp(getGlobalClient(cmd).ListTaskMetrics(
 			requestContext(cmd),
-			&lhproto.ListTaskMetricsRequest{
-				TaskDef:     &lhproto.TaskDefId{Name: taskDefName},
-				WindowStart: windowStart,
-				WindowEnd:   windowEnd,
-			},
+			req,
 		))
 	},
 }

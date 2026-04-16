@@ -3,7 +3,6 @@ package e2e;
 import com.google.protobuf.Timestamp;
 import e2e.Struct.Car;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -16,10 +15,10 @@ import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -31,6 +30,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@WithStructDefs({Car.class})
 public class InputVarsTest {
 
     private WorkflowVerifier workflowVerifier;
@@ -136,10 +136,6 @@ public class InputVarsTest {
 
     @Test
     public void structVarInput() {
-        LHStructDefType lhStructDefType = new LHStructDefType(Car.class, LHTypeAdapterRegistry.empty());
-
-        client.putStructDef(lhStructDefType.toPutStructDefRequest());
-
         VariableValue originalStruct = LHLibUtil.objToVarVal(new Car("Ford", "Bronco", 123));
         VariableValue expectedStructFromTask1 = LHLibUtil.objToVarVal(new Car("Ford", "Bronco", 124));
         VariableValue expectedStructFromTask2 = LHLibUtil.objToVarVal(new Car("Mustang", "Mach-E", 123));

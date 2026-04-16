@@ -938,7 +938,7 @@ public final class Service extends com.google.protobuf.GeneratedFile {
       "\n\026MINOR_REVISION_UPDATES\020\001\022\016\n\nNO_UPDATES" +
       "\020\002*X\n\032StructDefCompatibilityType\022\025\n\021NO_S" +
       "CHEMA_UPDATES\020\000\022#\n\037FULLY_COMPATIBLE_SCHE" +
-      "MA_UPDATES\020\0012\200=\n\013LittleHorse\022D\n\nPutTaskD" +
+      "MA_UPDATES\020\0012\262>\n\013LittleHorse\022D\n\nPutTaskD" +
       "ef\022\036.littlehorse.PutTaskDefRequest\032\024.lit" +
       "tlehorse.TaskDef\"\000\022<\n\nGetTaskDef\022\026.littl" +
       "ehorse.TaskDefId\032\024.littlehorse.TaskDef\"\000" +
@@ -1120,22 +1120,27 @@ public final class Service extends com.google.protobuf.GeneratedFile {
       "rse.ListTaskMetricsRequest\032\030.littlehorse" +
       ".MetricsList\"\000\022N\n\rListWfMetrics\022!.little" +
       "horse.ListWfMetricsRequest\032\030.littlehorse" +
-      ".MetricsList\"\000\022A\n\tPutTenant\022\035.littlehors" +
-      "e.PutTenantRequest\032\023.littlehorse.Tenant\"" +
-      "\000\0229\n\tGetTenant\022\025.littlehorse.TenantId\032\023." +
-      "littlehorse.Tenant\"\000\022>\n\010PutQuota\022\034.littl" +
-      "ehorse.PutQuotaRequest\032\022.littlehorse.Quo" +
-      "ta\"\000\0226\n\010GetQuota\022\024.littlehorse.QuotaId\032\022" +
-      ".littlehorse.Quota\"\000\022J\n\014PutPrincipal\022 .l" +
-      "ittlehorse.PutPrincipalRequest\032\026.littleh" +
-      "orse.Principal\"\000\022B\n\014GetPrincipal\022\030.littl" +
-      "ehorse.PrincipalId\032\026.littlehorse.Princip" +
-      "al\"\000\022:\n\006Whoami\022\026.google.protobuf.Empty\032\026" +
-      ".littlehorse.Principal\"\000\022M\n\020GetServerVer" +
-      "sion\022\026.google.protobuf.Empty\032\037.littlehor" +
-      "se.LittleHorseVersion\"\000BM\n\037io.littlehors" +
-      "e.sdk.common.protoP\001Z\t.;lhproto\252\002\034Little" +
-      "Horse.Sdk.Common.Protob\006proto3"
+      ".MetricsList\"\000\022K\n\017GetMetricWindow\022\033.litt" +
+      "lehorse.MetricWindowId\032\031.littlehorse.Met" +
+      "ricWindow\"\000\022c\n\024SearchWfMetricWindow\022(.li" +
+      "ttlehorse.SearchWfMetricWindowRequest\032\037." +
+      "littlehorse.MetricWindowIdList\"\000\022A\n\tPutT" +
+      "enant\022\035.littlehorse.PutTenantRequest\032\023.l" +
+      "ittlehorse.Tenant\"\000\0229\n\tGetTenant\022\025.littl" +
+      "ehorse.TenantId\032\023.littlehorse.Tenant\"\000\022>" +
+      "\n\010PutQuota\022\034.littlehorse.PutQuotaRequest" +
+      "\032\022.littlehorse.Quota\"\000\0226\n\010GetQuota\022\024.lit" +
+      "tlehorse.QuotaId\032\022.littlehorse.Quota\"\000\022J" +
+      "\n\014PutPrincipal\022 .littlehorse.PutPrincipa" +
+      "lRequest\032\026.littlehorse.Principal\"\000\022B\n\014Ge" +
+      "tPrincipal\022\030.littlehorse.PrincipalId\032\026.l" +
+      "ittlehorse.Principal\"\000\022:\n\006Whoami\022\026.googl" +
+      "e.protobuf.Empty\032\026.littlehorse.Principal" +
+      "\"\000\022M\n\020GetServerVersion\022\026.google.protobuf" +
+      ".Empty\032\037.littlehorse.LittleHorseVersion\"" +
+      "\000BM\n\037io.littlehorse.sdk.common.protoP\001Z\t" +
+      ".;lhproto\252\002\034LittleHorse.Sdk.Common.Proto" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

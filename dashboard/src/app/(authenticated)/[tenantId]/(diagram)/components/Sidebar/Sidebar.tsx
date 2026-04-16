@@ -51,9 +51,7 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
     <aside className={`flex max-w-full flex-col overflow-hidden pl-4 ${maxHeightClass}`}>
       {isValidNode && selectedNode && (selectedNode as { type?: string }).type !== 'cycle' && (
         <>
-          {showNodeRun && (
-            <SelectedNodeRun nodeRunIndex={nodeRunIndex} setNodeRunIndex={setNodeRunIndex} />
-          )}
+          {showNodeRun && <SelectedNodeRun nodeRunIndex={nodeRunIndex} setNodeRunIndex={setNodeRunIndex} />}
           <Tabs
             value={currentTab}
             onValueChange={value => setCurrentTab(value)}

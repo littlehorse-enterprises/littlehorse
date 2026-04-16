@@ -5,9 +5,8 @@ import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
-import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.LHTaskMethodHandle;
 import io.littlehorse.sdk.worker.WorkerContext;
-import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -30,13 +29,13 @@ public class LHTaskSignature {
 
     LinkedHashSet<LHStructDefType> structDefClasses;
 
-    Method taskMethod;
+    private final Method taskMethod;
 
     @Getter
-    private String taskDefName;
+    private final String taskDefName;
 
     @Getter
-    private Optional<String> taskDefDescription;
+    private final Optional<String> taskDefDescription;
 
     boolean hasWorkerContext;
 
@@ -45,20 +44,15 @@ public class LHTaskSignature {
     private final Map<String, String> placeholderValues;
 
     public LHTaskSignature(
-            Method taskMethod, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
-        if (!taskMethod.isAnnotationPresent(LHTaskMethod.class)) {
-            throw new TaskSchemaMismatchError(String.format(
-                    "Cannot create LHTaskSignature: Provided method %s is missing the required @LHTaskMethod annotation.",
-                    taskMethod.getName()));
-        }
-
-        this.taskMethod = taskMethod;
-        LHTaskMethod lhTaskMethod = this.taskMethod.getAnnotation(LHTaskMethod.class);
-
+            LHTaskMethodHandle taskMethodHandle,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues) {
+        this.taskMethod = taskMethodHandle.getTaskMethod();
         this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry);
         this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
-        taskDefName = PlaceholderUtil.replacePlaceholders(lhTaskMethod.value(), this.placeholderValues);
-        taskDefDescription = Optional.of(lhTaskMethod.description());
+        this.taskDefName = taskMethodHandle.getTaskDefName();
+        this.taskDefDescription =
+                Optional.ofNullable(taskMethodHandle.getDescription()).filter(desc -> !desc.isEmpty());
         variableDefs = new ArrayList<>();
         structDefClasses = new LinkedHashSet<>();
 

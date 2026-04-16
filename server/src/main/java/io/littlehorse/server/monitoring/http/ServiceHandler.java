@@ -22,9 +22,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 class ServiceHandler extends SimpleChannelInboundHandler<HttpObject> {
-    private final StatusServer.HttpEndpointRegistry registry;
+    private final NettyStatusServer.HttpEndpointRegistry registry;
 
-    ServiceHandler(StatusServer.HttpEndpointRegistry registry) {
+    ServiceHandler(NettyStatusServer.HttpEndpointRegistry registry) {
         this.registry = registry;
     }
 

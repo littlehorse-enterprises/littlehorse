@@ -15,6 +15,7 @@ import io.littlehorse.server.interceptors.RequestBlocker;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.quotas.RequestQuotaManager;
+import io.littlehorse.server.monitoring.http.NettyStatusServer;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
@@ -106,8 +107,14 @@ public class LHServer {
                 config, coreStreams, timerStreams, metadataCache, contextKey, coreStoreProvider, asyncWaiters);
 
         // Health Server Setup
-        this.healthService =
-                new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache, internalComms);
+        this.healthService = new HealthService(
+                new NettyStatusServer(),
+                config,
+                coreStreams,
+                timerStreams,
+                taskQueueManager,
+                metadataCache,
+                internalComms);
         this.commandSender = new CommandSender(
                 internalComms,
                 networkThreadpool,
@@ -187,6 +194,7 @@ public class LHServer {
     }
 
     public void start() throws IOException {
+        healthService.start();
         coreStreams.start();
         if (timerStreams != null) {
             timerStreams.start();
@@ -195,7 +203,6 @@ public class LHServer {
         for (LHServerListener listener : listeners) {
             listener.start();
         }
-        healthService.start();
     }
 
     public void close() {
