@@ -364,6 +364,13 @@ describe('getTypedVariableValue', () => {
     const variableValue = getTypedVariableValue('str', 'Hello World')
     expect(variableValue).toStrictEqual({ value: { $case: 'str', value: 'Hello World' } })
   })
+
+  it('should return utcTimestamp as RFC3339 string', async () => {
+    const variableValue = getTypedVariableValue('utcTimestamp', '2024-06-15T14:30:45.123456789Z')
+    expect(variableValue).toStrictEqual({
+      value: { $case: 'utcTimestamp', value: '2024-06-15T14:30:45.123456789Z' },
+    })
+  })
 })
 
 describe('getVariableDefType', () => {
