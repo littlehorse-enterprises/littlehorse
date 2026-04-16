@@ -41,9 +41,11 @@ public class ListWfMetricsRequestModel
 
     @Override
     public ListWfMetricsRequest.Builder toProto() {
-        ListWfMetricsRequest.Builder out = ListWfMetricsRequest.newBuilder()
-                .setWfSpec(wfSpecId.toProto())
-                .setWindowStart(LHUtil.fromDate(windowStart));
+        ListWfMetricsRequest.Builder out =
+                ListWfMetricsRequest.newBuilder().setWindowStart(LHUtil.fromDate(windowStart));
+        if (wfSpecId != null) {
+            out.setWfSpec(wfSpecId.toProto());
+        }
         if (windowEnd != null) {
             out.setWindowEnd(LHUtil.fromDate(windowEnd));
         }
@@ -54,7 +56,10 @@ public class ListWfMetricsRequestModel
     public void initFrom(Message proto, ExecutionContext context) {
         ListWfMetricsRequest p = (ListWfMetricsRequest) proto;
         wfSpecId = LHSerializable.fromProto(p.getWfSpec(), WfSpecIdModel.class, context);
-        // Use windowStart and windowEnd from the request (default to 1 hour ago if not provided)
+        if (wfSpecId != null
+                && (wfSpecId.getName() == null || wfSpecId.getName().isEmpty())) {
+            wfSpecId = null;
+        }
         if (p.hasWindowStart()) {
             windowStart = LHUtil.fromProtoTs(p.getWindowStart());
         } else {
@@ -84,7 +89,12 @@ public class ListWfMetricsRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        String partitionKey = MetricWindowType.WORKFLOW_METRIC.name() + "/" + wfSpecId.toString();
+        String partitionKey;
+        if (wfSpecId == null) {
+            partitionKey = MetricWindowType.WORKFLOW_METRIC.name();
+        } else {
+            partitionKey = MetricWindowType.WORKFLOW_METRIC.name() + "/" + wfSpecId.toString();
+        }
         String startPrefixString = partitionKey + "/" + LHUtil.toLhDbFormat(windowStart);
         String endPrefixString = partitionKey + "/" + LHUtil.toLhDbFormat(windowEnd) + "/~";
         return new ObjectIdScanBoundaryStrategy(partitionKey, startPrefixString, endPrefixString);

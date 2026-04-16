@@ -1,12 +1,16 @@
 package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
-import com.google.protobuf.Timestamp;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.MetricWindow;
+import io.littlehorse.sdk.common.proto.MetricWindowId;
+import io.littlehorse.sdk.common.proto.MetricWindowIdList;
 import io.littlehorse.sdk.common.proto.MetricsList;
+import io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -45,35 +49,18 @@ public class MetricsQueryTest {
 
         Thread.sleep(65000);
 
-        long now = System.currentTimeMillis();
-        long oneHourAgo = now - (60 * 60 * 1000);
-
         ListWfMetricsRequest completedWfRequest = ListWfMetricsRequest.newBuilder()
                 .setWfSpec(WfSpecId.newBuilder()
                         .setName("metrics-test-workflow")
                         .setMajorVersion(0)
-                        .build())
-                .setWindowStart(Timestamp.newBuilder()
-                        .setSeconds(oneHourAgo / 1000)
-                        .setNanos((int) ((oneHourAgo % 1000) * 1_000_000))
-                        .build())
-                .setWindowEnd(Timestamp.newBuilder()
-                        .setSeconds(now / 1000)
-                        .setNanos((int) ((now % 1000) * 1_000_000))
+                        .setRevision(0)
                         .build())
                 .build();
         ListWfMetricsRequest errorWfRequest = ListWfMetricsRequest.newBuilder()
                 .setWfSpec(WfSpecId.newBuilder()
                         .setName("metrics-error-workflow")
                         .setMajorVersion(0)
-                        .build())
-                .setWindowStart(Timestamp.newBuilder()
-                        .setSeconds(oneHourAgo / 1000)
-                        .setNanos((int) ((oneHourAgo % 1000) * 1_000_000))
-                        .build())
-                .setWindowEnd(Timestamp.newBuilder()
-                        .setSeconds(now / 1000)
-                        .setNanos((int) ((now % 1000) * 1_000_000))
+                        .setRevision(0)
                         .build())
                 .build();
 
@@ -103,12 +90,33 @@ public class MetricsQueryTest {
             }
         }
 
-        assertThat(totalErrorCount).isGreaterThanOrEqualTo(5);
-
-        assertThat(totalCompletedCount).isGreaterThanOrEqualTo(33);
+        assertThat(totalErrorCount).isEqualTo(5);
+        assertThat(totalCompletedCount).isEqualTo(33);
         assertThat(minLatencyMs).isGreaterThan(0);
         assertThat(maxLatencyMs).isGreaterThan(0);
         assertThat(totalLatencyMs).isGreaterThan(0);
+
+        // Verify search by wfSpecName returns the windows that were just aggregated
+        MetricWindowIdList searchResult = client.searchWfMetricWindow(SearchWfMetricWindowRequest.newBuilder()
+                .setWfSpecName("metrics-test-workflow")
+                .build());
+        assertThat(searchResult.getResultsList()).isNotEmpty();
+
+        // Verify get-by-id returns the correct MetricWindow
+        MetricWindowId firstId = searchResult.getResultsList().get(0);
+        MetricWindow metricWindowById = client.getMetricWindow(firstId);
+        assertThat(metricWindowById).isNotNull();
+        assertThat(metricWindowById.getId().getWfSpecId()).isEqualTo(firstId.getWfSpecId());
+        assertThat(metricWindowById.getId().getWindowStart()).isEqualTo(firstId.getWindowStart());
+
+        assertThat(metricWindowById.hasWorkflow()).isTrue();
+
+        // Verify that searching with latestOnly=true returns only the most recent window
+        MetricWindowIdList latestMetricResult = client.searchWfMetricWindow(SearchWfMetricWindowRequest.newBuilder()
+                .setWfSpecName("metrics-test-workflow")
+                .setLatestOnly(true)
+                .build());
+        assertEquals(1, latestMetricResult.getResultsList().size());
     }
 
     @LHWorkflow("metrics-error-workflow")

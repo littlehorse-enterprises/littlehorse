@@ -263,6 +263,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         AggregateWindowMetricsModel aggregate = new AggregateWindowMetricsModel(metric);
         fordwardWindowMetrics(aggregate);
         store.delete(metric);
+        metric.getId().markAsTenantMetricId();
+        fordwardWindowMetrics(aggregate);
         return metric.getId().getWindowStart().getTime();
     }
 
