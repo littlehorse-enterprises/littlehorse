@@ -38,19 +38,27 @@ public class StructModel extends LHSerializable<Struct> implements Comparable<St
         return out;
     }
 
-    public void validateAgainstStructDefId(ReadOnlyMetadataManager metadataManager) throws StructValidationException {
-        StructDefModel structDef = new WfService(metadataManager).getStructDef(structDefId.getName(), null);
+    public void validateAgainstStructDefId(
+            StructDefIdModel expectedStructDefId, ReadOnlyMetadataManager metadataManager)
+            throws StructValidationException {
+        if (expectedStructDefId == null) {
+            throw new StructValidationException("Expected StructDefId cannot be null");
+        }
+
+        StructDefModel structDef = new WfService(metadataManager).getStructDef(expectedStructDefId);
 
         if (structDef == null) {
-            throw new StructValidationException("StructDef %s does not exist.".formatted(structDefId));
+            throw new StructValidationException("StructDef %s does not exist.".formatted(expectedStructDefId));
         }
 
         try {
-            structDef.validateAgainst(this, metadataManager);
+            structDef.validateAgainstSuperset(this, metadataManager);
         } catch (StructValidationException e) {
             throw new StructValidationException(String.format(
                     "Struct incompatible with StructDef %s: %s", structDef.getObjectId(), e.getMessage()));
         }
+
+        this.structDefId = expectedStructDefId;
     }
 
     @Override

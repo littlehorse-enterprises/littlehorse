@@ -52,7 +52,9 @@ public class ValidateStructDefEvolutionRequestModel extends LHSerializable<Valid
                     Status.INVALID_ARGUMENT, String.format("StructDef evolution request invalid: %s", e.getMessage()));
         }
 
-        StructDefModel existingStructDef = new WfService(metadataManager).getStructDef(structDefId.getName(), null);
+        Integer version = structDefId.getVersion() == -1 ? null : structDefId.getVersion();
+
+        StructDefModel existingStructDef = new WfService(metadataManager).getStructDef(structDefId.getName(), version);
 
         if (existingStructDef == null) {
             return ValidateStructDefEvolutionResponse.newBuilder()

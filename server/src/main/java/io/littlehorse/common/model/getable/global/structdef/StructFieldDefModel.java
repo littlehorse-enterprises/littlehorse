@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.global.structdef;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
@@ -45,9 +46,10 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
             throws StructValidationException {
         structField.setMasked(fieldType.isMasked());
 
-        if (!fieldType.isCompatibleWith(structField.getValue(), metadataManager)) {
-            throw new StructValidationException("Value of '%s' was provided, but field's type definition is %s"
-                    .formatted(structField.getValue().getVal(), fieldType));
+        try {
+            fieldType.validateCompatibility(structField.getValue(), metadataManager);
+        } catch (TypeValidationException e) {
+            throw new StructValidationException(e, "StructFieldDef validation failed: " + e.getMessage());
         }
     }
 
@@ -66,12 +68,12 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
 
     public void validate(ReadOnlyMetadataManager metadataManager) throws StructDefValidationException {
         // Validates field type against default value
-        if (defaultValue != null
-                && !defaultValue.isNull()
-                && !this.fieldType.isCompatibleWith(defaultValue, metadataManager)) {
-            throw new StructDefValidationException(String.format(
-                    "StructFieldDef field type [%s] is not compatible with the provided default value.",
-                    this.fieldType));
+        if (defaultValue != null && !defaultValue.isNull()) {
+            try {
+                this.fieldType.validateCompatibility(defaultValue, metadataManager);
+            } catch (TypeValidationException e) {
+                throw new StructDefValidationException(e, "StructFieldDef validation failed: " + e.getMessage());
+            }
         }
     }
 }
