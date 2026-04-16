@@ -12,7 +12,11 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LHTaskMethod {
-
+    /**
+     * Optional TaskDef description to publish when registering this task.
+     *
+     * @return task description
+     */
     String description() default "";
     /**
      * This is the value of the annotation; it corresponds to the name of the TaskDef executed by

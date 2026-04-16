@@ -15,10 +15,10 @@ jobs:
         java-version: ["17", "21", "24"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Java ${{ matrix.java-version }}
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "corretto"
           java-version: ${{ matrix.java-version }}
@@ -34,13 +34,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ["1.21", "1.22", "1.23"]
+        go-version: ["1.24", "1.25", "1.26"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go-version }}
 
@@ -59,10 +59,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -90,10 +90,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "corretto"
           java-version: 25
@@ -101,15 +101,15 @@ jobs:
       - name: Tests
         run: ./gradlew canary:spotlessCheck canary:test canary:build
 
-  tests-server:
+  tests-server-unit:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "corretto"
           java-version: 25
@@ -117,8 +117,24 @@ jobs:
       - name: Validate Indentations
         run: ./gradlew server:spotlessCheck
 
-      - name: Tests
-        run: ./gradlew server:test server:e2e
+      - name: Unit Tests
+        run: ./gradlew server:test
+
+  tests-server-e2e:
+    if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: "corretto"
+          java-version: 25
+
+      - name: E2E Tests
+        run: ./gradlew server:e2e
 
   tests-test-utils:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
@@ -128,10 +144,10 @@ jobs:
         java-version: ["17", "21", "24"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Java ${{ matrix.java-version }}
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "corretto"
           java-version: ${{ matrix.java-version }}
@@ -150,10 +166,10 @@ jobs:
         java-version: ["17", "21", "24"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Java ${{ matrix.java-version }}
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "corretto"
           java-version: ${{ matrix.java-version }}
@@ -169,12 +185,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Build Dashboard
         working-directory: ./dashboard
@@ -188,9 +204,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "6"
       - name: Build Project

@@ -48,6 +48,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASK_DEF_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
   /**
+   * <pre>
+   * TaskDef this aggregate is for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
@@ -56,6 +60,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * TaskDef this aggregate is for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
@@ -64,6 +72,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
   }
   /**
+   * <pre>
+   * TaskDef this aggregate is for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   @java.lang.Override
@@ -74,6 +86,10 @@ private static final long serialVersionUID = 0L;
   public static final int TENANT_ID_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.TenantId tenantId_;
   /**
+   * <pre>
+   * Tenant for this aggregate.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 2;</code>
    * @return Whether the tenantId field is set.
    */
@@ -82,6 +98,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Tenant for this aggregate.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 2;</code>
    * @return The tenantId.
    */
@@ -90,6 +110,10 @@ private static final long serialVersionUID = 0L;
     return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
   }
   /**
+   * <pre>
+   * Tenant for this aggregate.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 2;</code>
    */
   @java.lang.Override
@@ -101,6 +125,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.common.proto.TaskMetricUpdate> metricUpdates_;
   /**
+   * <pre>
+   * List of task metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
@@ -108,6 +136,10 @@ private static final long serialVersionUID = 0L;
     return metricUpdates_;
   }
   /**
+   * <pre>
+   * List of task metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
@@ -116,6 +148,10 @@ private static final long serialVersionUID = 0L;
     return metricUpdates_;
   }
   /**
+   * <pre>
+   * List of task metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
@@ -123,6 +159,10 @@ private static final long serialVersionUID = 0L;
     return metricUpdates_.size();
   }
   /**
+   * <pre>
+   * List of task metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
@@ -130,6 +170,10 @@ private static final long serialVersionUID = 0L;
     return metricUpdates_.get(index);
   }
   /**
+   * <pre>
+   * List of task metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
@@ -568,6 +612,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> taskDefIdBuilder_;
     /**
+     * <pre>
+     * TaskDef this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      * @return Whether the taskDefId field is set.
      */
@@ -575,6 +623,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * TaskDef this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      * @return The taskDefId.
      */
@@ -586,6 +638,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * TaskDef this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder setTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -602,6 +658,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TaskDef this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder setTaskDefId(
@@ -616,6 +676,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TaskDef this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder mergeTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -637,6 +701,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TaskDef this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder clearTaskDefId() {
@@ -650,6 +718,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TaskDef this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefId.Builder getTaskDefIdBuilder() {
@@ -658,6 +730,10 @@ private static final long serialVersionUID = 0L;
       return internalGetTaskDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * TaskDef this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
@@ -669,6 +745,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * TaskDef this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -689,6 +769,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> tenantIdBuilder_;
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      * @return Whether the tenantId field is set.
      */
@@ -696,6 +780,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      * @return The tenantId.
      */
@@ -707,6 +795,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public Builder setTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
@@ -723,6 +815,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public Builder setTenantId(
@@ -737,6 +833,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public Builder mergeTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
@@ -758,6 +858,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public Builder clearTenantId() {
@@ -771,6 +875,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.TenantId.Builder getTenantIdBuilder() {
@@ -779,6 +887,10 @@ private static final long serialVersionUID = 0L;
       return internalGetTenantIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder() {
@@ -790,6 +902,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -819,6 +935,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.TaskMetricUpdate, io.littlehorse.common.proto.TaskMetricUpdate.Builder, io.littlehorse.common.proto.TaskMetricUpdateOrBuilder> metricUpdatesBuilder_;
 
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public java.util.List<io.littlehorse.common.proto.TaskMetricUpdate> getMetricUpdatesList() {
@@ -829,6 +949,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public int getMetricUpdatesCount() {
@@ -839,6 +963,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public io.littlehorse.common.proto.TaskMetricUpdate getMetricUpdates(int index) {
@@ -849,6 +977,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public Builder setMetricUpdates(
@@ -866,6 +998,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public Builder setMetricUpdates(
@@ -880,6 +1016,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public Builder addMetricUpdates(io.littlehorse.common.proto.TaskMetricUpdate value) {
@@ -896,6 +1036,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public Builder addMetricUpdates(
@@ -913,6 +1057,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public Builder addMetricUpdates(
@@ -927,6 +1075,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public Builder addMetricUpdates(
@@ -941,6 +1093,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public Builder addAllMetricUpdates(
@@ -956,6 +1112,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public Builder clearMetricUpdates() {
@@ -969,6 +1129,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public Builder removeMetricUpdates(int index) {
@@ -982,6 +1146,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public io.littlehorse.common.proto.TaskMetricUpdate.Builder getMetricUpdatesBuilder(
@@ -989,6 +1157,10 @@ private static final long serialVersionUID = 0L;
       return internalGetMetricUpdatesFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public io.littlehorse.common.proto.TaskMetricUpdateOrBuilder getMetricUpdatesOrBuilder(
@@ -999,6 +1171,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public java.util.List<? extends io.littlehorse.common.proto.TaskMetricUpdateOrBuilder> 
@@ -1010,6 +1186,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public io.littlehorse.common.proto.TaskMetricUpdate.Builder addMetricUpdatesBuilder() {
@@ -1017,6 +1197,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.common.proto.TaskMetricUpdate.getDefaultInstance());
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public io.littlehorse.common.proto.TaskMetricUpdate.Builder addMetricUpdatesBuilder(
@@ -1025,6 +1209,10 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.common.proto.TaskMetricUpdate.getDefaultInstance());
     }
     /**
+     * <pre>
+     * List of task metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
      */
     public java.util.List<io.littlehorse.common.proto.TaskMetricUpdate.Builder> 

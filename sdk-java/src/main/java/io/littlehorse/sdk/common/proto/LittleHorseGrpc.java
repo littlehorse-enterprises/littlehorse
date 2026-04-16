@@ -2555,65 +2555,127 @@ public final class LittleHorseGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskMetricsRequest,
-      io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> getListTaskDefMetricsMethod;
+      io.littlehorse.sdk.common.proto.MetricsList> getListTaskMetricsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "ListTaskDefMetrics",
+      fullMethodName = SERVICE_NAME + '/' + "ListTaskMetrics",
       requestType = io.littlehorse.sdk.common.proto.ListTaskMetricsRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.ListTaskMetricsResponse.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricsList.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskMetricsRequest,
-      io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> getListTaskDefMetricsMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskMetricsRequest, io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> getListTaskDefMetricsMethod;
-    if ((getListTaskDefMetricsMethod = LittleHorseGrpc.getListTaskDefMetricsMethod) == null) {
+      io.littlehorse.sdk.common.proto.MetricsList> getListTaskMetricsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskMetricsRequest, io.littlehorse.sdk.common.proto.MetricsList> getListTaskMetricsMethod;
+    if ((getListTaskMetricsMethod = LittleHorseGrpc.getListTaskMetricsMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
-        if ((getListTaskDefMetricsMethod = LittleHorseGrpc.getListTaskDefMetricsMethod) == null) {
-          LittleHorseGrpc.getListTaskDefMetricsMethod = getListTaskDefMetricsMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListTaskMetricsRequest, io.littlehorse.sdk.common.proto.ListTaskMetricsResponse>newBuilder()
+        if ((getListTaskMetricsMethod = LittleHorseGrpc.getListTaskMetricsMethod) == null) {
+          LittleHorseGrpc.getListTaskMetricsMethod = getListTaskMetricsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListTaskMetricsRequest, io.littlehorse.sdk.common.proto.MetricsList>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListTaskDefMetrics"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListTaskMetrics"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.ListTaskMetricsRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ListTaskMetricsResponse.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListTaskDefMetrics"))
+                  io.littlehorse.sdk.common.proto.MetricsList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListTaskMetrics"))
               .build();
         }
       }
     }
-    return getListTaskDefMetricsMethod;
+    return getListTaskMetricsMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListWfMetricsRequest,
-      io.littlehorse.sdk.common.proto.ListWfMetricsResponse> getListWfSpecMetricsMethod;
+      io.littlehorse.sdk.common.proto.MetricsList> getListWfMetricsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "ListWfSpecMetrics",
+      fullMethodName = SERVICE_NAME + '/' + "ListWfMetrics",
       requestType = io.littlehorse.sdk.common.proto.ListWfMetricsRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.ListWfMetricsResponse.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricsList.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListWfMetricsRequest,
-      io.littlehorse.sdk.common.proto.ListWfMetricsResponse> getListWfSpecMetricsMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListWfMetricsRequest, io.littlehorse.sdk.common.proto.ListWfMetricsResponse> getListWfSpecMetricsMethod;
-    if ((getListWfSpecMetricsMethod = LittleHorseGrpc.getListWfSpecMetricsMethod) == null) {
+      io.littlehorse.sdk.common.proto.MetricsList> getListWfMetricsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListWfMetricsRequest, io.littlehorse.sdk.common.proto.MetricsList> getListWfMetricsMethod;
+    if ((getListWfMetricsMethod = LittleHorseGrpc.getListWfMetricsMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
-        if ((getListWfSpecMetricsMethod = LittleHorseGrpc.getListWfSpecMetricsMethod) == null) {
-          LittleHorseGrpc.getListWfSpecMetricsMethod = getListWfSpecMetricsMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListWfMetricsRequest, io.littlehorse.sdk.common.proto.ListWfMetricsResponse>newBuilder()
+        if ((getListWfMetricsMethod = LittleHorseGrpc.getListWfMetricsMethod) == null) {
+          LittleHorseGrpc.getListWfMetricsMethod = getListWfMetricsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListWfMetricsRequest, io.littlehorse.sdk.common.proto.MetricsList>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListWfSpecMetrics"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListWfMetrics"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.ListWfMetricsRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ListWfMetricsResponse.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListWfSpecMetrics"))
+                  io.littlehorse.sdk.common.proto.MetricsList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListWfMetrics"))
               .build();
         }
       }
     }
-    return getListWfSpecMetricsMethod;
+    return getListWfMetricsMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.MetricWindowId,
+      io.littlehorse.sdk.common.proto.MetricWindow> getGetMetricWindowMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetMetricWindow",
+      requestType = io.littlehorse.sdk.common.proto.MetricWindowId.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricWindow.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.MetricWindowId,
+      io.littlehorse.sdk.common.proto.MetricWindow> getGetMetricWindowMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.MetricWindowId, io.littlehorse.sdk.common.proto.MetricWindow> getGetMetricWindowMethod;
+    if ((getGetMetricWindowMethod = LittleHorseGrpc.getGetMetricWindowMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetMetricWindowMethod = LittleHorseGrpc.getGetMetricWindowMethod) == null) {
+          LittleHorseGrpc.getGetMetricWindowMethod = getGetMetricWindowMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.MetricWindowId, io.littlehorse.sdk.common.proto.MetricWindow>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetMetricWindow"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricWindowId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricWindow.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetMetricWindow"))
+              .build();
+        }
+      }
+    }
+    return getGetMetricWindowMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest,
+      io.littlehorse.sdk.common.proto.MetricWindowIdList> getSearchWfMetricWindowMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchWfMetricWindow",
+      requestType = io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricWindowIdList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest,
+      io.littlehorse.sdk.common.proto.MetricWindowIdList> getSearchWfMetricWindowMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest, io.littlehorse.sdk.common.proto.MetricWindowIdList> getSearchWfMetricWindowMethod;
+    if ((getSearchWfMetricWindowMethod = LittleHorseGrpc.getSearchWfMetricWindowMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getSearchWfMetricWindowMethod = LittleHorseGrpc.getSearchWfMetricWindowMethod) == null) {
+          LittleHorseGrpc.getSearchWfMetricWindowMethod = getSearchWfMetricWindowMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest, io.littlehorse.sdk.common.proto.MetricWindowIdList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchWfMetricWindow"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricWindowIdList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("SearchWfMetricWindow"))
+              .build();
+        }
+      }
+    }
+    return getSearchWfMetricWindowMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutTenantRequest,
@@ -2971,13 +3033,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     default void putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request,
@@ -2987,7 +3048,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     default void getStructDef(io.littlehorse.sdk.common.proto.StructDefId request,
@@ -3495,6 +3556,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     default void searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList> responseObserver) {
@@ -3692,6 +3756,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     default void deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -3742,27 +3809,47 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns a list of TaskDef Metrics Windows.
+     * Lists available metric windows for a given TaskDefId and time range.
      * </pre>
      */
-    default void listTaskDefMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListTaskDefMetricsMethod(), responseObserver);
+    default void listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListTaskMetricsMethod(), responseObserver);
     }
 
     /**
      * <pre>
-     * Returns a list of WfSpec Metrics Windows.
+     * Lists available metric windows for a given WfSpecId and time range.
      * </pre>
      */
-    default void listWfSpecMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListWfMetricsResponse> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListWfSpecMetricsMethod(), responseObserver);
+    default void listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListWfMetricsMethod(), responseObserver);
     }
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Gets a MetricWindow by its ID.
+     * </pre>
+     */
+    default void getMetricWindow(io.littlehorse.sdk.common.proto.MetricWindowId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricWindow> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetMetricWindowMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+     * </pre>
+     */
+    default void searchWfMetricWindow(io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricWindowIdList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchWfMetricWindowMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     default void putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request,
@@ -3772,7 +3859,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     default void getTenant(io.littlehorse.sdk.common.proto.TenantId request,
@@ -3782,7 +3869,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     default void putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request,
@@ -3791,6 +3878,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     default void getPrincipal(io.littlehorse.sdk.common.proto.PrincipalId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Principal> responseObserver) {
@@ -3961,13 +4051,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     public void putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request,
@@ -3978,7 +4067,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     public void getStructDef(io.littlehorse.sdk.common.proto.StructDefId request,
@@ -4534,6 +4623,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     public void searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList> responseObserver) {
@@ -4749,6 +4841,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     public void deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -4804,29 +4899,51 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns a list of TaskDef Metrics Windows.
+     * Lists available metric windows for a given TaskDefId and time range.
      * </pre>
      */
-    public void listTaskDefMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> responseObserver) {
+    public void listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getListTaskDefMetricsMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getListTaskMetricsMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      * <pre>
-     * Returns a list of WfSpec Metrics Windows.
+     * Lists available metric windows for a given WfSpecId and time range.
      * </pre>
      */
-    public void listWfSpecMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListWfMetricsResponse> responseObserver) {
+    public void listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getListWfSpecMetricsMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getListWfMetricsMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Gets a MetricWindow by its ID.
+     * </pre>
+     */
+    public void getMetricWindow(io.littlehorse.sdk.common.proto.MetricWindowId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricWindow> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetMetricWindowMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+     * </pre>
+     */
+    public void searchWfMetricWindow(io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricWindowIdList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchWfMetricWindowMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     public void putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request,
@@ -4837,7 +4954,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     public void getTenant(io.littlehorse.sdk.common.proto.TenantId request,
@@ -4848,7 +4965,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     public void putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request,
@@ -4858,6 +4975,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     public void getPrincipal(io.littlehorse.sdk.common.proto.PrincipalId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Principal> responseObserver) {
@@ -5010,13 +5130,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.StructDef putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request) throws io.grpc.StatusException {
@@ -5026,7 +5145,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.StructDef getStructDef(io.littlehorse.sdk.common.proto.StructDefId request) throws io.grpc.StatusException {
@@ -5534,6 +5653,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.PrincipalIdList searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -5733,6 +5855,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     public com.google.protobuf.Empty deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -5783,27 +5908,47 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns a list of TaskDef Metrics Windows.
+     * Lists available metric windows for a given TaskDefId and time range.
      * </pre>
      */
-    public io.littlehorse.sdk.common.proto.ListTaskMetricsResponse listTaskDefMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) throws io.grpc.StatusException {
+    public io.littlehorse.sdk.common.proto.MetricsList listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
-          getChannel(), getListTaskDefMetricsMethod(), getCallOptions(), request);
+          getChannel(), getListTaskMetricsMethod(), getCallOptions(), request);
     }
 
     /**
      * <pre>
-     * Returns a list of WfSpec Metrics Windows.
+     * Lists available metric windows for a given WfSpecId and time range.
      * </pre>
      */
-    public io.littlehorse.sdk.common.proto.ListWfMetricsResponse listWfSpecMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) throws io.grpc.StatusException {
+    public io.littlehorse.sdk.common.proto.MetricsList listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
-          getChannel(), getListWfSpecMetricsMethod(), getCallOptions(), request);
+          getChannel(), getListWfMetricsMethod(), getCallOptions(), request);
     }
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Gets a MetricWindow by its ID.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricWindow getMetricWindow(io.littlehorse.sdk.common.proto.MetricWindowId request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getGetMetricWindowMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricWindowIdList searchWfMetricWindow(io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getSearchWfMetricWindowMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Tenant putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request) throws io.grpc.StatusException {
@@ -5813,7 +5958,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Tenant getTenant(io.littlehorse.sdk.common.proto.TenantId request) throws io.grpc.StatusException {
@@ -5823,7 +5968,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Principal putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request) throws io.grpc.StatusException {
@@ -5832,6 +5977,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.Principal getPrincipal(io.littlehorse.sdk.common.proto.PrincipalId request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -5981,13 +6129,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.StructDef putStructDef(io.littlehorse.sdk.common.proto.PutStructDefRequest request) {
@@ -5997,7 +6144,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.StructDef getStructDef(io.littlehorse.sdk.common.proto.StructDefId request) {
@@ -6505,6 +6652,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.PrincipalIdList searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -6691,6 +6841,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     public com.google.protobuf.Empty deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -6741,27 +6894,47 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns a list of TaskDef Metrics Windows.
+     * Lists available metric windows for a given TaskDefId and time range.
      * </pre>
      */
-    public io.littlehorse.sdk.common.proto.ListTaskMetricsResponse listTaskDefMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
+    public io.littlehorse.sdk.common.proto.MetricsList listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getListTaskDefMetricsMethod(), getCallOptions(), request);
+          getChannel(), getListTaskMetricsMethod(), getCallOptions(), request);
     }
 
     /**
      * <pre>
-     * Returns a list of WfSpec Metrics Windows.
+     * Lists available metric windows for a given WfSpecId and time range.
      * </pre>
      */
-    public io.littlehorse.sdk.common.proto.ListWfMetricsResponse listWfSpecMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {
+    public io.littlehorse.sdk.common.proto.MetricsList listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getListWfSpecMetricsMethod(), getCallOptions(), request);
+          getChannel(), getListWfMetricsMethod(), getCallOptions(), request);
     }
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Gets a MetricWindow by its ID.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricWindow getMetricWindow(io.littlehorse.sdk.common.proto.MetricWindowId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetMetricWindowMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricWindowIdList searchWfMetricWindow(io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchWfMetricWindowMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Tenant putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request) {
@@ -6771,7 +6944,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Tenant getTenant(io.littlehorse.sdk.common.proto.TenantId request) {
@@ -6781,7 +6954,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.Principal putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request) {
@@ -6790,6 +6963,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.Principal getPrincipal(io.littlehorse.sdk.common.proto.PrincipalId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -6949,13 +7125,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.StructDef> putStructDef(
@@ -6966,7 +7141,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Get a StructDef.
+     * Gets a StructDef.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.StructDef> getStructDef(
@@ -7522,6 +7697,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for Principals
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.PrincipalIdList> searchPrincipal(
         io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
@@ -7725,6 +7903,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a WorkflowEventDef.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteWorkflowEventDef(
         io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request) {
@@ -7780,29 +7961,51 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Returns a list of TaskDef Metrics Windows.
+     * Lists available metric windows for a given TaskDefId and time range.
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ListTaskMetricsResponse> listTaskDefMetrics(
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricsList> listTaskMetrics(
         io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getListTaskDefMetricsMethod(), getCallOptions()), request);
+          getChannel().newCall(getListTaskMetricsMethod(), getCallOptions()), request);
     }
 
     /**
      * <pre>
-     * Returns a list of WfSpec Metrics Windows.
+     * Lists available metric windows for a given WfSpecId and time range.
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ListWfMetricsResponse> listWfSpecMetrics(
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricsList> listWfMetrics(
         io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getListWfSpecMetricsMethod(), getCallOptions()), request);
+          getChannel().newCall(getListWfMetricsMethod(), getCallOptions()), request);
     }
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * Gets a MetricWindow by its ID.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricWindow> getMetricWindow(
+        io.littlehorse.sdk.common.proto.MetricWindowId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetMetricWindowMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricWindowIdList> searchWfMetricWindow(
+        io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchWfMetricWindowMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a Tenant in the LH Server.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Tenant> putTenant(
@@ -7813,7 +8016,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * Gets a Tenant from the LH Server.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Tenant> getTenant(
@@ -7824,7 +8027,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * EXPERIMENTAL: Creates an Principal.
+     * Creates a Principal.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Principal> putPrincipal(
@@ -7834,6 +8037,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets a Principal.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Principal> getPrincipal(
         io.littlehorse.sdk.common.proto.PrincipalId request) {
@@ -7945,15 +8151,17 @@ public final class LittleHorseGrpc {
   private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 78;
   private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 79;
   private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 80;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 81;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 82;
-  private static final int METHODID_PUT_TENANT = 83;
-  private static final int METHODID_GET_TENANT = 84;
-  private static final int METHODID_PUT_PRINCIPAL = 85;
-  private static final int METHODID_GET_PRINCIPAL = 86;
-  private static final int METHODID_WHOAMI = 87;
-  private static final int METHODID_GET_SERVER_VERSION = 88;
-  private static final int METHODID_POLL_TASK = 89;
+  private static final int METHODID_LIST_TASK_METRICS = 81;
+  private static final int METHODID_LIST_WF_METRICS = 82;
+  private static final int METHODID_GET_METRIC_WINDOW = 83;
+  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 84;
+  private static final int METHODID_PUT_TENANT = 85;
+  private static final int METHODID_GET_TENANT = 86;
+  private static final int METHODID_PUT_PRINCIPAL = 87;
+  private static final int METHODID_GET_PRINCIPAL = 88;
+  private static final int METHODID_WHOAMI = 89;
+  private static final int METHODID_GET_SERVER_VERSION = 90;
+  private static final int METHODID_POLL_TASK = 91;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -8296,13 +8504,21 @@ public final class LittleHorseGrpc {
           serviceImpl.getWfSpecMetricsWindow((io.littlehorse.sdk.common.proto.WfSpecMetricsQueryRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpecMetrics>) responseObserver);
           break;
-        case METHODID_LIST_TASK_DEF_METRICS:
-          serviceImpl.listTaskDefMetrics((io.littlehorse.sdk.common.proto.ListTaskMetricsRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListTaskMetricsResponse>) responseObserver);
+        case METHODID_LIST_TASK_METRICS:
+          serviceImpl.listTaskMetrics((io.littlehorse.sdk.common.proto.ListTaskMetricsRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList>) responseObserver);
           break;
-        case METHODID_LIST_WF_SPEC_METRICS:
-          serviceImpl.listWfSpecMetrics((io.littlehorse.sdk.common.proto.ListWfMetricsRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListWfMetricsResponse>) responseObserver);
+        case METHODID_LIST_WF_METRICS:
+          serviceImpl.listWfMetrics((io.littlehorse.sdk.common.proto.ListWfMetricsRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList>) responseObserver);
+          break;
+        case METHODID_GET_METRIC_WINDOW:
+          serviceImpl.getMetricWindow((io.littlehorse.sdk.common.proto.MetricWindowId) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricWindow>) responseObserver);
+          break;
+        case METHODID_SEARCH_WF_METRIC_WINDOW:
+          serviceImpl.searchWfMetricWindow((io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricWindowIdList>) responseObserver);
           break;
         case METHODID_PUT_TENANT:
           serviceImpl.putTenant((io.littlehorse.sdk.common.proto.PutTenantRequest) request,
@@ -8924,19 +9140,33 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.WfSpecMetrics>(
                 service, METHODID_GET_WF_SPEC_METRICS_WINDOW)))
         .addMethod(
-          getListTaskDefMetricsMethod(),
+          getListTaskMetricsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               io.littlehorse.sdk.common.proto.ListTaskMetricsRequest,
-              io.littlehorse.sdk.common.proto.ListTaskMetricsResponse>(
-                service, METHODID_LIST_TASK_DEF_METRICS)))
+              io.littlehorse.sdk.common.proto.MetricsList>(
+                service, METHODID_LIST_TASK_METRICS)))
         .addMethod(
-          getListWfSpecMetricsMethod(),
+          getListWfMetricsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               io.littlehorse.sdk.common.proto.ListWfMetricsRequest,
-              io.littlehorse.sdk.common.proto.ListWfMetricsResponse>(
-                service, METHODID_LIST_WF_SPEC_METRICS)))
+              io.littlehorse.sdk.common.proto.MetricsList>(
+                service, METHODID_LIST_WF_METRICS)))
+        .addMethod(
+          getGetMetricWindowMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.MetricWindowId,
+              io.littlehorse.sdk.common.proto.MetricWindow>(
+                service, METHODID_GET_METRIC_WINDOW)))
+        .addMethod(
+          getSearchWfMetricWindowMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest,
+              io.littlehorse.sdk.common.proto.MetricWindowIdList>(
+                service, METHODID_SEARCH_WF_METRIC_WINDOW)))
         .addMethod(
           getPutTenantMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -9109,8 +9339,10 @@ public final class LittleHorseGrpc {
               .addMethod(getDeleteScheduledWfRunMethod())
               .addMethod(getGetTaskDefMetricsWindowMethod())
               .addMethod(getGetWfSpecMetricsWindowMethod())
-              .addMethod(getListTaskDefMetricsMethod())
-              .addMethod(getListWfSpecMetricsMethod())
+              .addMethod(getListTaskMetricsMethod())
+              .addMethod(getListWfMetricsMethod())
+              .addMethod(getGetMetricWindowMethod())
+              .addMethod(getSearchWfMetricWindowMethod())
               .addMethod(getPutTenantMethod())
               .addMethod(getGetTenantMethod())
               .addMethod(getPutPrincipalMethod())

@@ -23,7 +23,7 @@ import {
   taskStatusToJSON,
   taskStatusToNumber,
 } from "./common_enums";
-import { InlineStructDef, ReturnType, VariableDef } from "./common_wfspec";
+import { InlineStructDef, VariableDef } from "./common_wfspec";
 import {
   CorrelatedEvent,
   CorrelatedEventConfig,
@@ -33,6 +33,14 @@ import {
 } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
+import {
+  ListTaskMetricsRequest,
+  ListWfMetricsRequest,
+  MetricsList,
+  MetricWindow,
+  MetricWindowIdList,
+  SearchWfMetricWindowRequest,
+} from "./metrics";
 import { NodeRun } from "./node_run";
 import {
   CheckpointId,
@@ -40,6 +48,7 @@ import {
   ExternalEventDefId,
   ExternalEventId,
   InactiveThreadRunId,
+  MetricWindowId,
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
@@ -60,6 +69,7 @@ import { ScheduledWfRun } from "./scheduled_wf_run";
 import { StructDef } from "./struct_def";
 import { TaskDef } from "./task_def";
 import { Checkpoint, LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } from "./task_run";
+import { ReturnType } from "./type_definition";
 import {
   AssignUserTaskRunRequest,
   CancelUserTaskRunRequest,
@@ -153,6 +163,10 @@ export function allowedUpdateTypeToNumber(object: AllowedUpdateType): number {
   }
 }
 
+/**
+ * This enum controls the behavior of a PutStructDefRequest and ValidateStructDefEvolutionRequest
+ * when a StructDef with the same name already exists.
+ */
 export enum StructDefCompatibilityType {
   /** NO_SCHEMA_UPDATES - No updates are allowed. */
   NO_SCHEMA_UPDATES = "NO_SCHEMA_UPDATES",
@@ -915,6 +929,7 @@ export interface SearchUserTaskDefRequest {
   userTaskDefCriteria?: { $case: "prefix"; value: string } | { $case: "name"; value: string } | undefined;
 }
 
+/** Search for StructDef's. */
 export interface SearchStructDefRequest {
   /** Bookmark for cursor-based pagination; pass if applicable. */
   bookmark?:
@@ -925,6 +940,7 @@ export interface SearchStructDefRequest {
   structDefCriteria?: { $case: "prefix"; value: string } | { $case: "name"; value: string } | undefined;
 }
 
+/** List of StructDef Id's. */
 export interface StructDefIdList {
   /** The result object Id's */
   results: StructDefId[];
@@ -1036,6 +1052,7 @@ export interface SearchTenantRequest {
   bookmark?: Buffer | undefined;
 }
 
+/** List of Tenant Id's */
 export interface TenantIdList {
   /** The resulting object id's. */
   results: TenantId[];
@@ -1062,6 +1079,7 @@ export interface SearchPrincipalRequest {
   principalCriteria?: { $case: "isAdmin"; value: boolean } | { $case: "tenantId"; value: string } | undefined;
 }
 
+/** List of Principal Id's */
 export interface PrincipalIdList {
   /** The resulting object id's. */
   results: PrincipalId[];
@@ -1578,43 +1596,6 @@ export interface TaskDefMetricsQueryRequest {
   taskDefName?: string | undefined;
 }
 
-/** Query to retrieve TaskDef Metrics over a period of time. */
-export interface ListTaskMetricsRequest {
-  /** TaskDef id for whichwe retrieve metrics. */
-  taskDefId:
-    | TaskDefId
-    | undefined;
-  /**
-   * This parameter is a timestamp that is used to determine the *last* window returned. The
-   * server will then return `num_windows` worth of data from before this timestamp.
-   */
-  lastWindowStart:
-    | string
-    | undefined;
-  /** Window size */
-  windowLength: MetricsWindowLength;
-  /** Number of windows to retrieve. */
-  numWindows: number;
-  /** Bookmark for cursor-based pagination; pass if applicable. */
-  bookmark?:
-    | Buffer
-    | undefined;
-  /** Maximum results to return in one request. */
-  limit?: number | undefined;
-}
-
-/** A list of TaskDef Metrics WIndows */
-export interface ListTaskMetricsResponse {
-  /** List of TaskDef Metrics Windows */
-  results: TaskDefMetrics[];
-  /**
-   * The bookmark can be used for cursor-based pagination. If it is null, the server
-   * has returned all results. If it is set, you can pass it into your next request
-   * to resume searching where your previous request left off.
-   */
-  bookmark?: Buffer | undefined;
-}
-
 /** Query to retrieve a specific WfSpec Metrics Window. */
 export interface WfSpecMetricsQueryRequest {
   /** WfSpecId of metrics to get. */
@@ -1630,31 +1611,6 @@ export interface WfSpecMetricsQueryRequest {
     | undefined;
   /** The window size */
   windowLength: MetricsWindowLength;
-}
-
-/** Query to retrieve WfSpec Metrics over a period of time. */
-export interface ListWfMetricsRequest {
-  /** WfSpecId of metrics to get. */
-  wfSpecId:
-    | WfSpecId
-    | undefined;
-  /**
-   * This parameter is a timestamp that is used to determine the *last* window returned. The
-   * server will then return `num_windows` worth of data from before this timestamp.
-   */
-  lastWindowStart:
-    | string
-    | undefined;
-  /** The window size */
-  windowLength: MetricsWindowLength;
-  /** Number of windows to retrieve */
-  numWindows: number;
-  /** Bookmark for cursor-based pagination; pass if applicable. */
-  bookmark?:
-    | Buffer
-    | undefined;
-  /** Maximum results to return in one request. */
-  limit?: number | undefined;
 }
 
 /** A list of WfSpec Metrics Windows */
@@ -9689,227 +9645,6 @@ export const TaskDefMetricsQueryRequest = {
   },
 };
 
-function createBaseListTaskMetricsRequest(): ListTaskMetricsRequest {
-  return {
-    taskDefId: undefined,
-    lastWindowStart: undefined,
-    windowLength: MetricsWindowLength.MINUTES_5,
-    numWindows: 0,
-    bookmark: undefined,
-    limit: undefined,
-  };
-}
-
-export const ListTaskMetricsRequest = {
-  encode(message: ListTaskMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.taskDefId !== undefined) {
-      TaskDefId.encode(message.taskDefId, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.lastWindowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.lastWindowStart), writer.uint32(18).fork()).ldelim();
-    }
-    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      writer.uint32(24).int32(metricsWindowLengthToNumber(message.windowLength));
-    }
-    if (message.numWindows !== 0) {
-      writer.uint32(32).int32(message.numWindows);
-    }
-    if (message.bookmark !== undefined) {
-      writer.uint32(42).bytes(message.bookmark);
-    }
-    if (message.limit !== undefined) {
-      writer.uint32(48).int32(message.limit);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ListTaskMetricsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListTaskMetricsRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.taskDefId = TaskDefId.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.lastWindowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.windowLength = metricsWindowLengthFromJSON(reader.int32());
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.numWindows = reader.int32();
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.bookmark = reader.bytes() as Buffer;
-          continue;
-        case 6:
-          if (tag !== 48) {
-            break;
-          }
-
-          message.limit = reader.int32();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ListTaskMetricsRequest {
-    return {
-      taskDefId: isSet(object.taskDefId) ? TaskDefId.fromJSON(object.taskDefId) : undefined,
-      lastWindowStart: isSet(object.lastWindowStart) ? globalThis.String(object.lastWindowStart) : undefined,
-      windowLength: isSet(object.windowLength)
-        ? metricsWindowLengthFromJSON(object.windowLength)
-        : MetricsWindowLength.MINUTES_5,
-      numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
-      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
-      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
-    };
-  },
-
-  toJSON(message: ListTaskMetricsRequest): unknown {
-    const obj: any = {};
-    if (message.taskDefId !== undefined) {
-      obj.taskDefId = TaskDefId.toJSON(message.taskDefId);
-    }
-    if (message.lastWindowStart !== undefined) {
-      obj.lastWindowStart = message.lastWindowStart;
-    }
-    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      obj.windowLength = metricsWindowLengthToJSON(message.windowLength);
-    }
-    if (message.numWindows !== 0) {
-      obj.numWindows = Math.round(message.numWindows);
-    }
-    if (message.bookmark !== undefined) {
-      obj.bookmark = base64FromBytes(message.bookmark);
-    }
-    if (message.limit !== undefined) {
-      obj.limit = Math.round(message.limit);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<ListTaskMetricsRequest>): ListTaskMetricsRequest {
-    return ListTaskMetricsRequest.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ListTaskMetricsRequest>): ListTaskMetricsRequest {
-    const message = createBaseListTaskMetricsRequest();
-    message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
-      ? TaskDefId.fromPartial(object.taskDefId)
-      : undefined;
-    message.lastWindowStart = object.lastWindowStart ?? undefined;
-    message.windowLength = object.windowLength ?? MetricsWindowLength.MINUTES_5;
-    message.numWindows = object.numWindows ?? 0;
-    message.bookmark = object.bookmark ?? undefined;
-    message.limit = object.limit ?? undefined;
-    return message;
-  },
-};
-
-function createBaseListTaskMetricsResponse(): ListTaskMetricsResponse {
-  return { results: [], bookmark: undefined };
-}
-
-export const ListTaskMetricsResponse = {
-  encode(message: ListTaskMetricsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.results) {
-      TaskDefMetrics.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.bookmark !== undefined) {
-      writer.uint32(18).bytes(message.bookmark);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ListTaskMetricsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListTaskMetricsResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.results.push(TaskDefMetrics.decode(reader, reader.uint32()));
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.bookmark = reader.bytes() as Buffer;
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ListTaskMetricsResponse {
-    return {
-      results: globalThis.Array.isArray(object?.results)
-        ? object.results.map((e: any) => TaskDefMetrics.fromJSON(e))
-        : [],
-      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
-    };
-  },
-
-  toJSON(message: ListTaskMetricsResponse): unknown {
-    const obj: any = {};
-    if (message.results?.length) {
-      obj.results = message.results.map((e) => TaskDefMetrics.toJSON(e));
-    }
-    if (message.bookmark !== undefined) {
-      obj.bookmark = base64FromBytes(message.bookmark);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<ListTaskMetricsResponse>): ListTaskMetricsResponse {
-    return ListTaskMetricsResponse.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ListTaskMetricsResponse>): ListTaskMetricsResponse {
-    const message = createBaseListTaskMetricsResponse();
-    message.results = object.results?.map((e) => TaskDefMetrics.fromPartial(e)) || [];
-    message.bookmark = object.bookmark ?? undefined;
-    return message;
-  },
-};
-
 function createBaseWfSpecMetricsQueryRequest(): WfSpecMetricsQueryRequest {
   return { wfSpecId: undefined, windowStart: undefined, windowLength: MetricsWindowLength.MINUTES_5 };
 }
@@ -9999,151 +9734,6 @@ export const WfSpecMetricsQueryRequest = {
       : undefined;
     message.windowStart = object.windowStart ?? undefined;
     message.windowLength = object.windowLength ?? MetricsWindowLength.MINUTES_5;
-    return message;
-  },
-};
-
-function createBaseListWfMetricsRequest(): ListWfMetricsRequest {
-  return {
-    wfSpecId: undefined,
-    lastWindowStart: undefined,
-    windowLength: MetricsWindowLength.MINUTES_5,
-    numWindows: 0,
-    bookmark: undefined,
-    limit: undefined,
-  };
-}
-
-export const ListWfMetricsRequest = {
-  encode(message: ListWfMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfSpecId !== undefined) {
-      WfSpecId.encode(message.wfSpecId, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.lastWindowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.lastWindowStart), writer.uint32(18).fork()).ldelim();
-    }
-    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      writer.uint32(24).int32(metricsWindowLengthToNumber(message.windowLength));
-    }
-    if (message.numWindows !== 0) {
-      writer.uint32(32).int32(message.numWindows);
-    }
-    if (message.bookmark !== undefined) {
-      writer.uint32(42).bytes(message.bookmark);
-    }
-    if (message.limit !== undefined) {
-      writer.uint32(48).int32(message.limit);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ListWfMetricsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListWfMetricsRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.lastWindowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.windowLength = metricsWindowLengthFromJSON(reader.int32());
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.numWindows = reader.int32();
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.bookmark = reader.bytes() as Buffer;
-          continue;
-        case 6:
-          if (tag !== 48) {
-            break;
-          }
-
-          message.limit = reader.int32();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ListWfMetricsRequest {
-    return {
-      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
-      lastWindowStart: isSet(object.lastWindowStart) ? globalThis.String(object.lastWindowStart) : undefined,
-      windowLength: isSet(object.windowLength)
-        ? metricsWindowLengthFromJSON(object.windowLength)
-        : MetricsWindowLength.MINUTES_5,
-      numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
-      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
-      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
-    };
-  },
-
-  toJSON(message: ListWfMetricsRequest): unknown {
-    const obj: any = {};
-    if (message.wfSpecId !== undefined) {
-      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
-    }
-    if (message.lastWindowStart !== undefined) {
-      obj.lastWindowStart = message.lastWindowStart;
-    }
-    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      obj.windowLength = metricsWindowLengthToJSON(message.windowLength);
-    }
-    if (message.numWindows !== 0) {
-      obj.numWindows = Math.round(message.numWindows);
-    }
-    if (message.bookmark !== undefined) {
-      obj.bookmark = base64FromBytes(message.bookmark);
-    }
-    if (message.limit !== undefined) {
-      obj.limit = Math.round(message.limit);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<ListWfMetricsRequest>): ListWfMetricsRequest {
-    return ListWfMetricsRequest.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ListWfMetricsRequest>): ListWfMetricsRequest {
-    const message = createBaseListWfMetricsRequest();
-    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
-      ? WfSpecId.fromPartial(object.wfSpecId)
-      : undefined;
-    message.lastWindowStart = object.lastWindowStart ?? undefined;
-    message.windowLength = object.windowLength ?? MetricsWindowLength.MINUTES_5;
-    message.numWindows = object.numWindows ?? 0;
-    message.bookmark = object.bookmark ?? undefined;
-    message.limit = object.limit ?? undefined;
     return message;
   },
 };
@@ -11739,15 +11329,14 @@ export const LittleHorseDefinition = {
       options: {},
     },
     /**
-     * EXPERIMENTAL: Creates a new `StructDef``.
+     * Creates a StructDef.
      *
      * Note that this request is idempotent: if you
      * make a request to create a `StructDef` identical to the currently-created
      * one with the same `name`, no new `StructDef` will be created. This is the
      * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
      *
-     * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-     * enum within the `PutStructDefRequest`.
+     * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
      */
     putStructDef: {
       name: "PutStructDef",
@@ -11757,7 +11346,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** EXPERIMENTAL: Get a StructDef. */
+    /** Gets a StructDef. */
     getStructDef: {
       name: "GetStructDef",
       requestType: StructDefId,
@@ -12250,7 +11839,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /**  */
+    /** Search for Principals */
     searchPrincipal: {
       name: "SearchPrincipal",
       requestType: SearchPrincipalRequest,
@@ -12445,6 +12034,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Deletes a WorkflowEventDef. */
     deleteWorkflowEventDef: {
       name: "DeleteWorkflowEventDef",
       requestType: DeleteWorkflowEventDefRequest,
@@ -12493,25 +12083,43 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Returns a list of TaskDef Metrics Windows. */
-    listTaskDefMetrics: {
-      name: "ListTaskDefMetrics",
+    /** Lists available metric windows for a given TaskDefId and time range. */
+    listTaskMetrics: {
+      name: "ListTaskMetrics",
       requestType: ListTaskMetricsRequest,
       requestStream: false,
-      responseType: ListTaskMetricsResponse,
+      responseType: MetricsList,
       responseStream: false,
       options: {},
     },
-    /** Returns a list of WfSpec Metrics Windows. */
-    listWfSpecMetrics: {
-      name: "ListWfSpecMetrics",
+    /** Lists available metric windows for a given WfSpecId and time range. */
+    listWfMetrics: {
+      name: "ListWfMetrics",
       requestType: ListWfMetricsRequest,
       requestStream: false,
-      responseType: ListWfMetricsResponse,
+      responseType: MetricsList,
       responseStream: false,
       options: {},
     },
-    /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
+    /** Gets a MetricWindow by its ID. */
+    getMetricWindow: {
+      name: "GetMetricWindow",
+      requestType: MetricWindowId,
+      requestStream: false,
+      responseType: MetricWindow,
+      responseStream: false,
+      options: {},
+    },
+    /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
+    searchWfMetricWindow: {
+      name: "SearchWfMetricWindow",
+      requestType: SearchWfMetricWindowRequest,
+      requestStream: false,
+      responseType: MetricWindowIdList,
+      responseStream: false,
+      options: {},
+    },
+    /** Creates a Tenant in the LH Server. */
     putTenant: {
       name: "PutTenant",
       requestType: PutTenantRequest,
@@ -12520,7 +12128,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** EXPERIMENTAL: Gets a Tenant from the LH Server. */
+    /** Gets a Tenant from the LH Server. */
     getTenant: {
       name: "GetTenant",
       requestType: TenantId,
@@ -12529,7 +12137,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** EXPERIMENTAL: Creates an Principal. */
+    /** Creates a Principal. */
     putPrincipal: {
       name: "PutPrincipal",
       requestType: PutPrincipalRequest,
@@ -12538,6 +12146,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Gets a Principal. */
     getPrincipal: {
       name: "GetPrincipal",
       requestType: PrincipalId,
@@ -12605,18 +12214,17 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    */
   migrateWfSpec(request: MigrateWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
   /**
-   * EXPERIMENTAL: Creates a new `StructDef``.
+   * Creates a StructDef.
    *
    * Note that this request is idempotent: if you
    * make a request to create a `StructDef` identical to the currently-created
    * one with the same `name`, no new `StructDef` will be created. This is the
    * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
    *
-   * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-   * enum within the `PutStructDefRequest`.
+   * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
    */
   putStructDef(request: PutStructDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
-  /** EXPERIMENTAL: Get a StructDef. */
+  /** Gets a StructDef. */
   getStructDef(request: StructDefId, context: CallContext & CallContextExt): Promise<DeepPartial<StructDef>>;
   /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
   validateStructDefEvolution(
@@ -12875,7 +12483,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<WorkflowEventDefIdList>>;
   /** Search for all available TenantIds for current Principal */
   searchTenant(request: SearchTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<TenantIdList>>;
-  /**  */
+  /** Search for Principals */
   searchPrincipal(
     request: SearchPrincipalRequest,
     context: CallContext & CallContextExt,
@@ -12971,6 +12579,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: DeleteCorrelatedEventRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
+  /** Deletes a WorkflowEventDef. */
   deleteWorkflowEventDef(
     request: DeleteWorkflowEventDefRequest,
     context: CallContext & CallContextExt,
@@ -12996,22 +12605,30 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: WfSpecMetricsQueryRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<WfSpecMetrics>>;
-  /** Returns a list of TaskDef Metrics Windows. */
-  listTaskDefMetrics(
+  /** Lists available metric windows for a given TaskDefId and time range. */
+  listTaskMetrics(
     request: ListTaskMetricsRequest,
     context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ListTaskMetricsResponse>>;
-  /** Returns a list of WfSpec Metrics Windows. */
-  listWfSpecMetrics(
+  ): Promise<DeepPartial<MetricsList>>;
+  /** Lists available metric windows for a given WfSpecId and time range. */
+  listWfMetrics(
     request: ListWfMetricsRequest,
     context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ListWfMetricsResponse>>;
-  /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
+  ): Promise<DeepPartial<MetricsList>>;
+  /** Gets a MetricWindow by its ID. */
+  getMetricWindow(request: MetricWindowId, context: CallContext & CallContextExt): Promise<DeepPartial<MetricWindow>>;
+  /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
+  searchWfMetricWindow(
+    request: SearchWfMetricWindowRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<MetricWindowIdList>>;
+  /** Creates a Tenant in the LH Server. */
   putTenant(request: PutTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
-  /** EXPERIMENTAL: Gets a Tenant from the LH Server. */
+  /** Gets a Tenant from the LH Server. */
   getTenant(request: TenantId, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
-  /** EXPERIMENTAL: Creates an Principal. */
+  /** Creates a Principal. */
   putPrincipal(request: PutPrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
+  /** Gets a Principal. */
   getPrincipal(request: PrincipalId, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Returns the Principal of the caller. */
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
@@ -13060,18 +12677,17 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    */
   migrateWfSpec(request: DeepPartial<MigrateWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
   /**
-   * EXPERIMENTAL: Creates a new `StructDef``.
+   * Creates a StructDef.
    *
    * Note that this request is idempotent: if you
    * make a request to create a `StructDef` identical to the currently-created
    * one with the same `name`, no new `StructDef` will be created. This is the
    * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
    *
-   * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-   * enum within the `PutStructDefRequest`.
+   * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
    */
   putStructDef(request: DeepPartial<PutStructDefRequest>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
-  /** EXPERIMENTAL: Get a StructDef. */
+  /** Gets a StructDef. */
   getStructDef(request: DeepPartial<StructDefId>, options?: CallOptions & CallOptionsExt): Promise<StructDef>;
   /** EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef` */
   validateStructDefEvolution(
@@ -13336,7 +12952,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchTenantRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<TenantIdList>;
-  /**  */
+  /** Search for Principals */
   searchPrincipal(
     request: DeepPartial<SearchPrincipalRequest>,
     options?: CallOptions & CallOptionsExt,
@@ -13432,6 +13048,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<DeleteCorrelatedEventRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
+  /** Deletes a WorkflowEventDef. */
   deleteWorkflowEventDef(
     request: DeepPartial<DeleteWorkflowEventDefRequest>,
     options?: CallOptions & CallOptionsExt,
@@ -13457,22 +13074,30 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<WfSpecMetricsQueryRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<WfSpecMetrics>;
-  /** Returns a list of TaskDef Metrics Windows. */
-  listTaskDefMetrics(
+  /** Lists available metric windows for a given TaskDefId and time range. */
+  listTaskMetrics(
     request: DeepPartial<ListTaskMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
-  ): Promise<ListTaskMetricsResponse>;
-  /** Returns a list of WfSpec Metrics Windows. */
-  listWfSpecMetrics(
+  ): Promise<MetricsList>;
+  /** Lists available metric windows for a given WfSpecId and time range. */
+  listWfMetrics(
     request: DeepPartial<ListWfMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
-  ): Promise<ListWfMetricsResponse>;
-  /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
+  ): Promise<MetricsList>;
+  /** Gets a MetricWindow by its ID. */
+  getMetricWindow(request: DeepPartial<MetricWindowId>, options?: CallOptions & CallOptionsExt): Promise<MetricWindow>;
+  /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
+  searchWfMetricWindow(
+    request: DeepPartial<SearchWfMetricWindowRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<MetricWindowIdList>;
+  /** Creates a Tenant in the LH Server. */
   putTenant(request: DeepPartial<PutTenantRequest>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
-  /** EXPERIMENTAL: Gets a Tenant from the LH Server. */
+  /** Gets a Tenant from the LH Server. */
   getTenant(request: DeepPartial<TenantId>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
-  /** EXPERIMENTAL: Creates an Principal. */
+  /** Creates a Principal. */
   putPrincipal(request: DeepPartial<PutPrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
+  /** Gets a Principal. */
   getPrincipal(request: DeepPartial<PrincipalId>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Returns the Principal of the caller. */
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;

@@ -5,7 +5,6 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Edge;
-import io.littlehorse.sdk.common.proto.EdgeCondition;
 import io.littlehorse.sdk.common.proto.EntrypointNode;
 import io.littlehorse.sdk.common.proto.ExitNode;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
@@ -54,9 +53,9 @@ import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
-import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -78,7 +77,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     private List<WfRunVariableImpl> wfRunVariables = new ArrayList<>();
     public String lastNodeName;
     public String name;
-    private EdgeCondition lastNodeCondition;
+    private VariableAssignment lastNodeCondition;
     private boolean isActive;
     private ThreadRetentionPolicy retentionPolicy;
     private Queue<VariableMutation> variableMutations;
@@ -427,7 +426,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 }
                 argType = wfVar.typeDef.getPrimitiveType();
             } else {
-                argType = LHLibUtil.javaClassToLHVarType(arg.getClass());
+                argType = LHLibUtil.javaClassToLHVarType(arg.getClass(), parent.getTypeAdapterRegistry());
             }
 
             if (!argType.equals(taskDefInputVars.get(i).getTypeDef().getPrimitiveType())) {
@@ -498,6 +497,14 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return wfRunVariable;
     }
 
+    private WfRunVariableImpl addArrayVariable(String name, LHArrayType clazz) {
+        checkIfIsActive();
+
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createArrayVar(name, clazz, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
+    }
+
     @Override
     public WfRunVariable declareBool(String name) {
         return addVariable(name, VariableType.BOOL);
@@ -540,22 +547,22 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     @Override
     public WfRunVariable declareStruct(String name, Class<?> clazz) {
-        return addStructVariable(name, new LHStructDefType(clazz));
+        return addStructVariable(name, new LHStructDefType(clazz, parent.getTypeAdapterRegistry()));
     }
 
-    // TODO: Complete Arrays implementation
-    // @Override
-    // public WfRunVariable declareArray(String name, Class<?> elementType) {
-    //     return addArrayVariable(name, new LHArrayDefType(elementType));
-    // }
+    @Override
+    public WfRunVariable declareArray(String name, Class<?> elementType) {
+        Class<?> arrayType = java.lang.reflect.Array.newInstance(elementType, 0).getClass();
+        return addArrayVariable(name, new LHArrayType(arrayType, parent.getTypeAdapterRegistry()));
+    }
 
     @Override
-    public WorkflowIfStatement doIf(WorkflowCondition condition, IfElseBody ifBody) {
-        WorkflowConditionImpl cond = (WorkflowConditionImpl) condition;
+    public WorkflowIfStatement doIf(LHExpression condition, IfElseBody ifBody) {
+        LHExpressionImpl cond = (LHExpressionImpl) condition;
 
         addNopNode();
         String firstNopNodeName = lastNodeName;
-        lastNodeCondition = cond.getSpec();
+        lastNodeCondition = cond.getCondition();
 
         ifBody.body(this);
 
@@ -570,8 +577,24 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new WorkflowIfStatementImpl(this, firstNopNodeName, lastNopNodeName);
     }
 
+    @Override
+    public WorkflowIfStatement doIf(WfRunVariable condition, IfElseBody ifBody) {
+        addNopNode();
+        String firstNopNodeName = lastNodeName;
+        lastNodeCondition = assignVariable(condition);
+        ifBody.body(this);
+
+        addNopNode();
+        String lastNopNodeName = lastNodeName;
+        Node.Builder treeRoot = spec.getNodesOrThrow(firstNopNodeName).toBuilder();
+        treeRoot.addOutgoingEdges(
+                Edge.newBuilder().setSinkNodeName(lastNopNodeName).build());
+        spec.putNodes(firstNopNodeName, treeRoot.build());
+        return new WorkflowIfStatementImpl(this, firstNopNodeName, lastNopNodeName);
+    }
+
     WorkflowIfStatement doElseIf(
-            WorkflowIfStatement inputIfStatement, WorkflowCondition inputCondition, IfElseBody ifElseBody) {
+            WorkflowIfStatement inputIfStatement, LHExpression inputCondition, IfElseBody ifElseBody) {
         WorkflowIfStatementImpl ifStatement = (WorkflowIfStatementImpl) inputIfStatement;
         // Remove else edge from firstNopNode
         Edge elseEdge = removeLastOutgoingEdgeFromNode(ifStatement.getFirstNopNodeName());
@@ -590,7 +613,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                     .addAllVariableMutations(this.collectVariableMutations());
 
             if (inputCondition != null) {
-                edgeToNopNode.setCondition(((WorkflowConditionImpl) inputCondition).getSpec());
+                edgeToNopNode.setCondition(((LHExpressionImpl) inputCondition).getCondition());
             }
 
             addOutgoingEdgeToNode(ifStatement.getFirstNopNodeName(), edgeToNopNode.build());
@@ -606,7 +629,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
                     .addAllVariableMutations(lastOutgoingEdge.getVariableMutationsList());
 
             if (inputCondition != null) {
-                edgeToBody.setCondition(((WorkflowConditionImpl) inputCondition).getSpec());
+                edgeToBody.setCondition(((LHExpressionImpl) inputCondition).getCondition());
             }
 
             addOutgoingEdgeToNode(ifStatement.getFirstNopNodeName(), edgeToBody.build());
@@ -652,10 +675,15 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public void doIfElse(WorkflowCondition condition, IfElseBody ifBody, IfElseBody elseBody) {
+    public void doIfElse(LHExpression condition, IfElseBody ifBody, IfElseBody elseBody) {
         checkIfIsActive();
 
         this.doIf(condition, ifBody).doElse(elseBody);
+    }
+
+    @Override
+    public void doIfElse(WfRunVariable boolVar, IfElseBody doIf, IfElseBody doElse) {
+        this.doIf(boolVar, doIf).doElse(doElse);
     }
 
     private List<VariableMutation> collectVariableMutations() {
@@ -667,16 +695,16 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public void doWhile(WorkflowCondition condition, ThreadFunc whileBody) {
+    public void doWhile(LHExpression condition, ThreadFunc whileBody) {
         checkIfIsActive();
-        WorkflowConditionImpl cond = (WorkflowConditionImpl) condition;
+        LHExpressionImpl cond = (LHExpressionImpl) condition;
 
         // Start a new tree. Basically, we gotta take the last node we ran
         // then we need to put a condition on it...
         addNopNode();
         String treeRootNodeName = lastNodeName;
 
-        lastNodeCondition = cond.getSpec();
+        lastNodeCondition = cond.getCondition();
         // execute the tasks
         whileBody.threadFunction(this);
 
@@ -688,7 +716,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         Node.Builder treeRoot = spec.getNodesOrThrow(treeRootNodeName).toBuilder();
         treeRoot.addOutgoingEdges(Edge.newBuilder()
                 .setSinkNodeName(treeLastNodeName)
-                .setCondition(cond.getReverse())
+                .setCondition(((LHExpressionImpl) cond.getReverse()).getCondition())
                 .build());
         spec.putNodes(treeRootNodeName, treeRoot.build());
 
@@ -696,7 +724,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         Node.Builder treeLast = spec.getNodesOrThrow(treeLastNodeName).toBuilder();
         treeLast.addOutgoingEdges(Edge.newBuilder()
                 .setSinkNodeName(treeRootNodeName)
-                .setCondition(cond.getSpec())
+                .setCondition(cond.getCondition())
                 .build());
 
         spec.putNodes(treeLastNodeName, treeLast.build());
@@ -920,11 +948,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public WaitForConditionNodeOutputImpl waitForCondition(WorkflowCondition condition) {
+    public WaitForConditionNodeOutputImpl waitForCondition(LHExpression condition) {
         checkIfIsActive();
-        WorkflowConditionImpl condImpl = (WorkflowConditionImpl) condition;
+        LHExpressionImpl condImpl = (LHExpressionImpl) condition;
         WaitForConditionNode waitNode = WaitForConditionNode.newBuilder()
-                .setCondition(condImpl.getSpec())
+                .setCondition(condImpl.getCondition())
                 .build();
 
         String nodeName = addNode("wait-for-condition", NodeCase.WAIT_FOR_CONDITION, waitNode);
@@ -1040,13 +1068,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
         addFailureHandlerDef(handlerDef.build(), node);
     }
 
-    public WorkflowConditionImpl condition(Object lhs, Comparator comparator, Object rhs) {
-        EdgeCondition.Builder edge = EdgeCondition.newBuilder()
-                .setComparator(comparator)
-                .setLeft(assignVariable(lhs))
-                .setRight(assignVariable(rhs));
-
-        return new WorkflowConditionImpl(edge.build());
+    public LHExpression condition(Serializable lhs, Comparator comparator, Serializable rhs) {
+        return new LHExpressionImpl(lhs, comparator, rhs);
     }
 
     private String addNode(String name, NodeCase type, Message subNode) {
@@ -1133,7 +1156,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     public VariableAssignment assignVariable(Object variable) {
         checkIfIsActive();
-        return BuilderUtil.assignVariable(variable);
+        return BuilderUtil.assignVariable(variable, parent.getTypeAdapterRegistry());
     }
 
     private void checkIfIsActive() {

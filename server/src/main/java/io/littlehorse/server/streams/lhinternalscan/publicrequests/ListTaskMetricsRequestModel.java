@@ -1,97 +1,86 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
-import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
-import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsRequest;
-import io.littlehorse.sdk.common.proto.ListTaskMetricsResponse;
-import io.littlehorse.sdk.common.proto.MetricsWindowLength;
-import io.littlehorse.sdk.common.proto.TaskDefMetrics;
+import io.littlehorse.sdk.common.proto.MetricWindow;
+import io.littlehorse.sdk.common.proto.MetricWindowType;
+import io.littlehorse.sdk.common.proto.MetricsList;
 import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
-import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListMetricsReply;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
 
-@Getter
 public class ListTaskMetricsRequestModel
         extends PublicScanRequest<
-                ListTaskMetricsRequest,
-                ListTaskMetricsResponse,
-                TaskDefMetrics,
-                TaskDefMetricsModel,
-                ListTaskMetricsReply> {
+                ListTaskMetricsRequest, MetricsList, MetricWindow, MetricWindowModel, ListMetricsReply> {
 
     private TaskDefIdModel taskDefId;
-    public Date lastWindowStart;
-    public int numWindows;
-    public MetricsWindowLength windowLength;
+    private Date windowStart;
+    private Date windowEnd;
 
+    @Override
+    public LHStore getStoreType() {
+        return LHStore.CORE;
+    }
+
+    @Override
     public Class<ListTaskMetricsRequest> getProtoBaseClass() {
         return ListTaskMetricsRequest.class;
     }
 
     @Override
-    public LHStore getStoreType() {
-        return LHStore.REPARTITION;
-    }
-
     public ListTaskMetricsRequest.Builder toProto() {
-        ListTaskMetricsRequest.Builder out = ListTaskMetricsRequest.newBuilder()
-                .setLastWindowStart(LHUtil.fromDate(lastWindowStart))
-                .setNumWindows(numWindows)
-                .setWindowLength(windowLength)
-                .setTaskDefId(taskDefId.toProto());
-
-        if (bookmark != null) {
-            out.setBookmark(bookmark.toByteString());
+        ListTaskMetricsRequest.Builder out =
+                ListTaskMetricsRequest.newBuilder().setWindowStart(LHUtil.fromDate(windowStart));
+        if (taskDefId != null) {
+            out.setTaskDef(taskDefId.toProto());
         }
-        if (limit != null) {
-            out.setLimit(limit);
+        if (windowEnd != null) {
+            out.setWindowEnd(LHUtil.fromDate(windowEnd));
         }
-
         return out;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         ListTaskMetricsRequest p = (ListTaskMetricsRequest) proto;
-        lastWindowStart = LHUtil.fromProtoTs(p.getLastWindowStart());
-        numWindows = p.getNumWindows();
-        windowLength = p.getWindowLength();
-        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
-        if (p.hasLimit()) {
-            limit = p.getLimit();
-        } else {
-            limit = numWindows;
+        // Treat empty TaskDefId (empty name) as wildcard => list all tasks
+        taskDefId = LHSerializable.fromProto(p.getTaskDef(), TaskDefIdModel.class, context);
+        if (taskDefId != null
+                && (taskDefId.getName() == null || taskDefId.getName().isEmpty())) {
+            taskDefId = null;
         }
-        if (!p.getBookmark().isEmpty()) {
-            try {
-                bookmark = BookmarkPb.parseFrom(p.getBookmark());
-            } catch (InvalidProtocolBufferException e) {
-                throw new RuntimeException(e);
-            }
+        if (p.hasWindowStart()) {
+            windowStart = LHUtil.fromProtoTs(p.getWindowStart());
+        } else {
+            windowStart = new Date(System.currentTimeMillis() - 60 * 60 * 1000L);
+        }
+        if (p.hasWindowEnd()) {
+            windowEnd = LHUtil.fromProtoTs(p.getWindowEnd());
+        } else {
+            windowEnd = new Date();
         }
     }
 
+    @Override
     public GetableClassEnum getObjectType() {
-        return GetableClassEnum.TASK_DEF_METRICS;
+        return GetableClassEnum.METRIC_WINDOW;
     }
 
     @Override
     public TagStorageType indexTypeForSearch() throws LHApiException {
-        return TagStorageType.LOCAL;
+        return null;
     }
 
     @Override
@@ -101,11 +90,14 @@ public class ListTaskMetricsRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        String endKey = TaskDefMetricsModel.getObjectId(windowLength, lastWindowStart, taskDefId.toString());
-        String startKey = TaskDefMetricsModel.getObjectId(
-                windowLength,
-                new Date(lastWindowStart.getTime() - (LHUtil.getWindowLengthMillis(windowLength) * numWindows)),
-                taskDefId.toString());
-        return new ObjectIdScanBoundaryStrategy(taskDefId.toString(), startKey, endKey);
+        String partitionKey;
+        if (taskDefId != null) {
+            partitionKey = MetricWindowType.TASK_METRIC.name() + "/" + taskDefId.toString();
+        } else {
+            partitionKey = MetricWindowType.TASK_METRIC.name();
+        }
+        String startPrefixString = partitionKey + "/" + LHUtil.toLhDbFormat(windowStart);
+        String endPrefixString = partitionKey + "/" + LHUtil.toLhDbFormat(windowEnd) + "/~";
+        return new ObjectIdScanBoundaryStrategy(partitionKey, startPrefixString, endPrefixString);
     }
 }

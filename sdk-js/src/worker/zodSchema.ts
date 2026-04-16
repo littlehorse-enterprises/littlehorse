@@ -32,7 +32,8 @@
 
 import { z, type ZodTypeAny, type ZodObject, type ZodRawShape } from 'zod'
 import { VariableType } from '../proto/common_enums'
-import { VariableDef, TypeDefinition, StructFieldDef } from '../proto/common_wfspec'
+import { VariableDef, StructFieldDef } from '../proto/common_wfspec'
+import { TypeDefinition } from '../proto/type_definition'
 import { PutStructDefRequest, StructDefCompatibilityType } from '../proto/service'
 import { VariableValue, StructField } from '../proto/variable'
 import { toVariableValue } from './variableMapping'
@@ -308,6 +309,7 @@ export function toStructVariableValue(
   for (const [key, val] of Object.entries(value)) {
     const fieldSchema = (shape as Record<string, ZodTypeAny>)[key]
     const unwrappedField = fieldSchema ? unwrapZod(fieldSchema) : undefined
+    const masked = fieldSchema ? isMasked(fieldSchema) : false
     if (
       unwrappedField &&
       getStructName(unwrappedField) &&
@@ -317,9 +319,13 @@ export function toStructVariableValue(
     ) {
       fields[key] = {
         value: toStructVariableValue(val as Record<string, unknown>, unwrappedField, structDefVersion),
+        masked,
       }
     } else {
-      fields[key] = { value: toVariableValue(val) }
+      fields[key] = {
+        value: toVariableValue(val),
+        masked,
+      }
     }
   }
 

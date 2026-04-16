@@ -1,11 +1,10 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2024 LittleHorse Enterprises
 */
 package internal
 
 import (
-	"log"
-	"strconv"
+	"time"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
@@ -14,49 +13,60 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-var taskDefMetrics = &cobra.Command{
-	Use:   "taskDefMetrics <taskDefName> <windowType> <numWindows>",
-	Short: "Get TaskDef Metrics.",
-	Long: `Get TaskDef Metrics for a specified TaskDef and a specified time range.
+var listTaskMetricsCmd = &cobra.Command{
+	Use:   "taskMetrics [taskDefName]",
+	Short: "List metrics for a TaskDef (omit name to list aggregated metrics)",
+	Long: `List metrics for a TaskDef. Omitting the name lists aggregated metrics for all TaskDefs.
 
-Metrics are aggregated by windows of three types: MINUTES_5, HOURS_2, and DAYS_1.
+By default, returns metrics for the last 60 minutes.
+You can use --earliestMinutesAgo and --latestMinutesAgo to specify a custom time window.
 
-You can specify the max number of windows "ago" from now you want to get metrics. For
-example, to get TaskDef metrics for each 5-minute time window, starting now and going
-back an hour ago for TaskDef "my-task" you can:
-
-lhctl taskDefMetrics my-task MINUTES_5 12
-
-If you want to get taskDef Metrics at the cluster level, use CLUSTER_LEVEL_METRIC as your
-taskDefName.
+Examples:
+  lhctl list taskMetrics
+  lhctl list taskMetrics my-task
+  lhctl list taskMetrics my-task --latestMinutesAgo 10
+  lhctl list taskMetrics my-task --earliestMinutesAgo 120 --latestMinutesAgo 60
 `,
-	Args: cobra.ExactArgs(3),
+	Args: cobra.RangeArgs(0, 1),
 	Run: func(cmd *cobra.Command, args []string) {
-		taskDefName := args[0]
-		windowTypeStr := args[1]
-		windowType, isValid := lhproto.MetricsWindowLength_value[windowTypeStr]
-		if !isValid {
-			log.Fatal("Invalid window type! Supports only 'MINUTES_5', 'HOURS_2', 'DAYS_1'")
+		taskDefName := ""
+		if len(args) > 0 {
+			taskDefName = args[0]
 		}
-		numWindows, err := strconv.Atoi(args[2])
-		if err != nil {
-			log.Fatal(err)
-		}
-		ts := timestamppb.Now()
 
-		littlehorse.PrintResp(getGlobalClient(cmd).ListTaskDefMetrics(
+		windowStart, windowEnd := loadEarliestAndLatestStart(cmd)
+
+		if windowStart == nil && windowEnd == nil {
+			windowEnd = timestamppb.Now()
+			windowStart = timestamppb.New(
+				windowEnd.AsTime().Add(-60 * time.Minute),
+			)
+		} else if windowEnd == nil {
+			windowEnd = timestamppb.Now()
+		} else if windowStart == nil {
+			windowStart = timestamppb.New(
+				time.Now().Add(-60 * time.Minute),
+			)
+		}
+
+		req := &lhproto.ListTaskMetricsRequest{
+			WindowStart: windowStart,
+			WindowEnd:   windowEnd,
+		}
+
+		if taskDefName != "" {
+			req.TaskDef = &lhproto.TaskDefId{Name: taskDefName}
+		}
+
+		littlehorse.PrintResp(getGlobalClient(cmd).ListTaskMetrics(
 			requestContext(cmd),
-			&lhproto.ListTaskMetricsRequest{
-				LastWindowStart: ts,
-				WindowLength:    lhproto.MetricsWindowLength(windowType),
-				TaskDefId:       &lhproto.TaskDefId{Name: taskDefName},
-				NumWindows:      int32(numWindows),
-			},
+			req,
 		))
 	},
 }
 
 func init() {
-	// Do not add this command until we re-implement Metrics:
-	// rootCmd.AddCommand(taskDefMetrics)
+	listCmd.AddCommand(listTaskMetricsCmd)
+	listTaskMetricsCmd.Flags().Int("earliestMinutesAgo", -1, "Metrics for tasks that started no more than this number of minutes ago")
+	listTaskMetricsCmd.Flags().Int("latestMinutesAgo", -1, "Metrics for tasks that started at least this number of minutes ago")
 }

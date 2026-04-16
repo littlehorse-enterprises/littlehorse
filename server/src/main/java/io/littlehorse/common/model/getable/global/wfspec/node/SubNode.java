@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public abstract class SubNode<T extends Message> extends LHSerializable<T> {
             throws InvalidExpressionException;
 
     // Can be overriden
-    public Set<String> getNeededVariableNames() {
+    public Collection<String> getNeededVariableNames() {
         return new HashSet<>();
     }
 

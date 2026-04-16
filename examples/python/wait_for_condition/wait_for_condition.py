@@ -25,8 +25,9 @@ def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
         counter = wf.declare_int("counter").with_default(2)
         def subtract(handler: WorkflowThread) -> None:
-            handler.mutate(counter, VariableMutationType.SUBTRACT, 1)
-        wf.wait_for_condition(wf.condition(counter, Comparator.EQUALS, 0))
+            counter.assign(counter.subtract(1))
+        # Use the WfRunVariable comparator DSL instead of wf.condition
+        wf.wait_for_condition(counter.is_equal_to(0))
         wf.add_interrupt_handler("subtract", subtract)
 
     return Workflow("example-wait-for-condition", my_entrypoint)

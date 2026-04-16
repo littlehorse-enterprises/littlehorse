@@ -7,6 +7,7 @@ import {
   VariableValue,
 } from 'littlehorse-client/proto'
 import {
+  formatTypeDefinition,
   getTypedVariableValue,
   getVariable,
   getVariableCaseFromTypeDef,
@@ -214,7 +215,7 @@ describe('getVariable', () => {
               },
             },
           },
-          operation: VariableMutationType.MULTIPLY,
+          operation: { $case: 'mutationType', value: VariableMutationType.MULTIPLY },
         },
       },
     }
@@ -249,7 +250,7 @@ describe('getVariable', () => {
               },
             },
           },
-          operation: VariableMutationType.EXTEND,
+          operation: { $case: 'mutationType', value: VariableMutationType.EXTEND },
         },
       },
     }
@@ -284,7 +285,7 @@ describe('getVariable', () => {
               },
             },
           },
-          operation: VariableMutationType.EXTEND,
+          operation: { $case: 'mutationType', value: VariableMutationType.EXTEND },
         },
       },
     }
@@ -363,6 +364,13 @@ describe('getTypedVariableValue', () => {
     const variableValue = getTypedVariableValue('str', 'Hello World')
     expect(variableValue).toStrictEqual({ value: { $case: 'str', value: 'Hello World' } })
   })
+
+  it('should return utcTimestamp as RFC3339 string', async () => {
+    const variableValue = getTypedVariableValue('utcTimestamp', '2024-06-15T14:30:45.123456789Z')
+    expect(variableValue).toStrictEqual({
+      value: { $case: 'utcTimestamp', value: '2024-06-15T14:30:45.123456789Z' },
+    })
+  })
 })
 
 describe('getVariableDefType', () => {
@@ -426,8 +434,75 @@ describe('getVariableCaseFromTypeDef', () => {
   })
 })
 
+describe('formatTypeDefinition', () => {
+  it('should format primitive type', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'primitiveType',
+        value: VariableType.INT,
+      },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('Integer')
+  })
+
+  it('should format nested arrays recursively', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'inlineArrayDef',
+        value: {
+          arrayType: {
+            definedType: {
+              $case: 'inlineArrayDef',
+              value: {
+                arrayType: {
+                  definedType: {
+                    $case: 'primitiveType',
+                    value: VariableType.INT,
+                  },
+                  masked: false,
+                },
+              },
+            },
+            masked: false,
+          },
+        },
+      },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('Array<Array<Integer>>')
+  })
+
+  it('should format struct type', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'structDefId',
+        value: {
+          name: 'customer',
+          version: 1,
+        },
+      },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('Struct<customer,1>')
+  })
+})
+
 describe('getVariableValue', () => {
   it('should return NULL for empty value', () => {
     expect(getVariableValue({ value: {} } as VariableValue)).toEqual('NULL')
+  })
+
+  it('should render native array ints as JSON numbers', () => {
+    const variableValue = VariableValue.fromJSON({
+      array: {
+        items: [{ int: 1 }, { int: 2 }, { int: 3 }],
+      },
+    })
+
+    expect(getVariableValue(variableValue)).toEqual('[1,2,3]')
   })
 })

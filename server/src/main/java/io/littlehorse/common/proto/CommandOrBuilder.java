@@ -507,5 +507,35 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.PutCheckpointRequestOrBuilder getPutCheckpointOrBuilder();
 
+  /**
+   * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+   * @return Whether the aggregateWindowMetrics field is set.
+   */
+  boolean hasAggregateWindowMetrics();
+  /**
+   * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+   * @return The aggregateWindowMetrics.
+   */
+  io.littlehorse.common.proto.AggregateWindowMetrics getAggregateWindowMetrics();
+  /**
+   * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+   */
+  io.littlehorse.common.proto.AggregateWindowMetricsOrBuilder getAggregateWindowMetricsOrBuilder();
+
+  /**
+   * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+   * @return Whether the deleteMetricWindow field is set.
+   */
+  boolean hasDeleteMetricWindow();
+  /**
+   * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+   * @return The deleteMetricWindow.
+   */
+  io.littlehorse.common.proto.DeleteMetricWindow getDeleteMetricWindow();
+  /**
+   * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+   */
+  io.littlehorse.common.proto.DeleteMetricWindowOrBuilder getDeleteMetricWindowOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

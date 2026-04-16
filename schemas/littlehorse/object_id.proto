@@ -220,10 +220,36 @@ message TenantId {
 }
 // ID for a ScheduledWfRun
 message ScheduledWfRunId {
+  // The ID of the ScheduledWfRun.
   string id = 1;
 }
 
+// ID for an InactiveThreadRun.
 message InactiveThreadRunId {
-  WfRunId wf_run_id = 1;
+  // The WfRunId of the InactiveThreadRun.
+   WfRunId wf_run_id = 1;
+
+  // The ThreadRun number of the InactiveThreadRun.
   int32 thread_run_number = 2;
+}
+
+// Identifies a metrics window for a workflow/task/user-task object.
+// `window_start` marks the window start; `tenant_id` is optional.
+message MetricWindowId {
+  // ID for the workflow, task, or user task.
+  oneof id {
+    WfSpecId  wf_spec_id  = 1;
+    TaskDefId task_def_id = 2;
+    UserTaskDefId user_task_def_id = 3;
+  }
+
+  // Tenant for this window (optional).
+  optional TenantId tenant_id = 6;
+
+  // Start time of the window.
+  google.protobuf.Timestamp window_start = 7;
+
+  // Metric type (workflow, task, or user task)
+  optional MetricWindowType metric_type = 8;
+
 }

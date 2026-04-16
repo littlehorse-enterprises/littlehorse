@@ -5,6 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
 import "common_wfspec.proto";
+import "type_definition.proto";
 import "object_id.proto";
 
 option go_package = ".;lhproto";
@@ -267,13 +268,13 @@ message WaitForThreadsNode {
     // matches the value specified here. Must resolve to an INT.
     VariableAssignment thread_run_number = 1;
   }
+  // Specifies a list of ThreadRun's to wait for.
   message ThreadsToWaitFor {
     // Wait for one or more ThreadRun's
     repeated ThreadToWaitFor threads = 1;
   }
 
   oneof threads_to_wait_for {
-
     // Specifies that the WaitForThreadsRun will wait for the threads specified
     // here.
     ThreadsToWaitFor threads = 1;
@@ -440,8 +441,20 @@ message Node {
 // A SubNode that blocks until a condition is satisfied in the WfRun.
 // There is no output.
 message WaitForConditionNode {
-  // The condition that this node will block for.
-  EdgeCondition condition = 1;
+  // The condition that this node will block for. Must resolve to a BOOL value.
+  //
+  // A `oneof` is used to support the legacy condition format from WfSpec's
+  // created before 1.0.
+  oneof node_condition {
+    // Support for `WfSpec`s created before 1.0
+    LegacyEdgeCondition legacy_condition = 1;
+
+    // A VariableAssignment that must resolve to a BOOL. The node will block
+    // until this evaluates to true. This can be a simple boolean variable
+    // reference, a comparison expression (e.g. myVar.isLessThan(10)), or
+    // a compound boolean expression using AND/OR.
+    VariableAssignment condition = 2;
+  }
 }
 
 // A SubNode that throws a WorkflowEvent of a specific type. There is no output.
@@ -487,7 +500,7 @@ message UserTaskNode {
 }
 
 // This is a boolean expression used to evaluate whether an Edge is valid.
-message EdgeCondition {
+message LegacyEdgeCondition {
   // The Operator used to evaluate the left versus the right.
   Comparator comparator = 1;
 
@@ -503,11 +516,20 @@ message Edge {
   // The name of the Node that the Edge points to.
   string sink_node_name = 1;
 
-  // The Condition on which this Edge will be traversed. When choosing an Edge
-  // to travel after the completion of a NodeRun, the Edges are evaluated in
-  // order. The first one to either have no condition or have a condition which
-  // evaluates to `true` is taken.
-  optional EdgeCondition condition = 2;
+  // The Condition on which this Edge will be traversed. Must resolve to a BOOL value.
+  //
+  // If no condition is set, then this `Edge` is unconditional and automatically passes.
+  //
+  // A `oneof` is used to support the legacy condition format from an older API version.
+  oneof edge_condition {
+    // Support for old client versions that use the legacy condition format.
+    LegacyEdgeCondition legacy_condition = 2;
+
+    // A VariableAssignment that must resolve to a BOOL. This can be a simple
+    // boolean variable reference, a comparison expression (e.g.
+    // myVar.isLessThan(10)), or a compound boolean expression using AND/OR.
+    VariableAssignment condition = 4;
+  }
 
   // Ordered list of Variable Mutations to execute when traversing this Edge.
   repeated VariableMutation variable_mutations = 3;

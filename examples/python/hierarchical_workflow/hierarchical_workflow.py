@@ -5,7 +5,6 @@ import random
 
 import littlehorse
 from littlehorse.config import LHConfig
-from littlehorse.model import VariableType
 from littlehorse.worker import LHTaskWorker, WorkerContext
 from littlehorse.workflow import WorkflowThread, Workflow
 
@@ -22,7 +21,7 @@ def get_config() -> LHConfig:
 
 def get_parent_wf() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
-        the_name = wf.add_variable("input-name", VariableType.STR, access_level="PUBLIC_VAR")
+        the_name = wf.declare_str("input-name").as_public()
         wf.execute("greet", the_name)
 
     return Workflow("parent-wf", my_entrypoint)
@@ -30,9 +29,7 @@ def get_parent_wf() -> Workflow:
 
 def get_child_wf() -> Workflow:
     def my_entry_point(wf: WorkflowThread) -> None:
-        the_name = wf.add_variable(
-            "input-name", VariableType.STR, access_level="INHERITED_VAR"
-        )
+        the_name = wf.declare_str("input-name").as_inherited()
         wf.execute("greet", the_name)
 
     return Workflow("child-wf", my_entry_point, "parent-wf")

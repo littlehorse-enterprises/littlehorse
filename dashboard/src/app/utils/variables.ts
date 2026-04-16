@@ -1,6 +1,6 @@
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
+  Array as LHArray,
+  Struct,
   TypeDefinition,
   VariableAssignment,
   VariableDef,
@@ -8,10 +8,9 @@ import {
   VariableType,
   VariableValue,
 } from 'littlehorse-client/proto'
-import { HTMLInputTypeAttribute } from 'react'
-import { SelectBool } from '../(authenticated)/[tenantId]/(diagram)/components/Forms/components/SelectBool'
+import { getComparatorSymbol } from './comparatorUtils'
+import { normalizeUtcTimestampString } from './timestamp'
 import { lhPathToString } from './lhPath'
-import { structFromJSONString, structToJSONString } from './struct'
 import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
 
 export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): NonNullable<VariableValue['value']>['$case'] => {
@@ -20,6 +19,26 @@ export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): NonNullable
       return getVariableCaseFromType(typeDef.definedType.value)
     case 'structDefId':
       return 'struct'
+    default:
+      throw new Error('Unknown variable type.')
+  }
+}
+
+export const formatTypeDefinition = (typeDef?: TypeDefinition | TypeDefinition['definedType']): string => {
+  const definedType = !typeDef ? undefined : '$case' in typeDef ? typeDef : typeDef.definedType
+  if (!definedType) return 'void'
+
+  switch (definedType.$case) {
+    case 'primitiveType': {
+      const variableCase = getVariableCaseFromType(definedType.value)
+      return VARIABLE_CASE_LABELS[variableCase]
+    }
+    case 'structDefId':
+      return `Struct<${definedType.value.name},${definedType.value.version}>`
+    case 'inlineArrayDef': {
+      const nested = definedType.value.arrayType
+      return `Array<${formatTypeDefinition(nested)}>`
+    }
     default:
       throw new Error('Unknown variable type.')
   }
@@ -40,6 +59,7 @@ export const VARIABLE_CASE_LABELS: Record<NonNullable<VariableValue['value']>['$
   wfRunId: 'WfRunId',
   struct: 'Struct',
   utcTimestamp: 'UTC Timestamp',
+  array: 'Array',
 }
 
 /**
@@ -85,7 +105,9 @@ export const getVariableValue = ({ value }: VariableValue): string => {
     case 'wfRunId':
       return flattenWfRunId(value.value)
     case 'struct':
-      return structToJSONString(value.value)
+      return JSON.stringify(variableValueToJSON({ value }))
+    case 'array':
+      return JSON.stringify(variableValueToJSON({ value }))
     default:
       return value.value.toString()
   }
@@ -107,6 +129,81 @@ export const formatJsonOrReturnOriginalValue = (value: string) => {
   }
 }
 
+const toNumberIfPossible = (value: unknown): number | unknown => {
+  if (typeof value === 'number') return value
+  if (typeof value === 'bigint') {
+    const parsed = Number(value)
+    return Number.isSafeInteger(parsed) ? parsed : value.toString()
+  }
+  if (typeof value === 'string') {
+    const parsed = Number(value)
+    return Number.isNaN(parsed) ? value : parsed
+  }
+  return value
+}
+
+const parseJsonStringOrReturn = (value: string): unknown => {
+  try {
+    return JSON.parse(value)
+  } catch {
+    return value
+  }
+}
+
+const structToJSONObject = (struct: Struct): Record<string, unknown> => {
+  const structObject: Record<string, unknown> = {}
+  if (struct.struct == null) return structObject
+
+  for (const entry of Object.entries(struct.struct.fields)) {
+    if (entry[1].value) {
+      structObject[entry[0]] = variableValueToJSON(entry[1].value)
+    }
+  }
+
+  return structObject
+}
+
+const arrayToJSONObject = (array: LHArray): unknown[] => {
+  const arrayObject: unknown[] = []
+  if (array == null) return arrayObject
+
+  for (const entry of array.items) {
+    arrayObject.push(variableValueToJSON(entry))
+  }
+
+  return arrayObject
+}
+
+export const variableValueToJSON = (variableValue: VariableValue): unknown => {
+  const value = variableValue.value
+  if (!value) return null
+
+  switch (value.$case) {
+    case 'bytes':
+      return '[bytes]'
+    case 'wfRunId':
+      return flattenWfRunId(value.value)
+    case 'struct':
+      return structToJSONObject(value.value)
+    case 'array':
+      return arrayToJSONObject(value.value)
+    case 'int':
+      return toNumberIfPossible(value.value)
+    case 'double':
+      return toNumberIfPossible(value.value)
+    case 'bool':
+    case 'str':
+      return value.value
+    case 'jsonObj':
+    case 'jsonArr':
+      return parseJsonStringOrReturn(value.value)
+    case 'utcTimestamp':
+      return value.value.toString()
+    default:
+      return null
+  }
+}
+
 /**
  * Converts a string value to a typed VariableValue based on the provided type.
  * Handles various types including JSON objects, arrays, doubles, booleans, strings, integers, bytes, and wfRunIds.
@@ -119,29 +216,33 @@ export const getTypedVariableValue = (
   type: NonNullable<VariableValue['value']>['$case'],
   value: string
 ): VariableValue => {
-  const variable =
-    type === 'jsonObj'
-      ? { jsonObj: JSON.stringify(JSON.parse(value)) }
-      : type === 'jsonArr'
-        ? { jsonArr: JSON.stringify(JSON.parse(value)) }
-        : type === 'double'
-          ? { double: parseFloat(value) }
-          : type === 'bool'
-            ? { bool: value.toLowerCase() === 'true' }
-            : type === 'str'
-              ? { str: value }
-              : type === 'int'
-                ? { int: parseInt(value, 10) }
-                : type === 'bytes'
-                  ? { bytes: Buffer.from(value) }
-                  : type === 'wfRunId'
-                    ? { wfRunId: wfRunIdFromFlattenedId(value) }
-                    : type === 'struct'
-                      ? { struct: structFromJSONString(value) }
-                      : type === 'utcTimestamp'
-                        ? { utcTimestamp: new Date(value) }
-                        : undefined
-  return VariableValue.fromJSON(variable)
+  switch (type) {
+    case 'jsonObj':
+      return VariableValue.fromJSON({ jsonObj: JSON.stringify(JSON.parse(value)) })
+    case 'jsonArr':
+      return VariableValue.fromJSON({ jsonArr: JSON.stringify(JSON.parse(value)) })
+    case 'double':
+      return VariableValue.fromJSON({ double: parseFloat(value) })
+    case 'bool':
+      return VariableValue.fromJSON({ bool: value.toLowerCase() === 'true' })
+    case 'str':
+      return VariableValue.fromJSON({ str: value })
+    case 'int':
+      return VariableValue.fromJSON({ int: parseInt(value, 10) })
+    case 'bytes':
+      return VariableValue.fromJSON({ bytes: Buffer.from(value) })
+    case 'wfRunId':
+      return VariableValue.fromJSON({ wfRunId: wfRunIdFromFlattenedId(value) })
+    case 'struct':
+      return VariableValue.fromJSON({ struct: Struct.fromJSON(value) })
+    case 'utcTimestamp':
+      return VariableValue.fromJSON({ utcTimestamp: normalizeUtcTimestampString(value) })
+    case 'array': {
+      return VariableValue.fromJSON({ array: LHArray.fromJSON(value) })
+    }
+    default:
+      throw new Error(`Unknown variable value type: ${type}`)
+  }
 }
 
 /**
@@ -159,6 +260,8 @@ export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableVal
         return getVariableCaseFromType(value)
       case 'structDefId':
         return 'struct'
+      case 'inlineArrayDef':
+        return 'array'
       default:
         throw new Error('Unknown variable type.')
     }
@@ -220,7 +323,7 @@ const getValueFromFormatString = ({
   return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
 }
 
-const getExpressionSymbol = (expression: VariableMutationType): String => {
+const getExpressionSymbol = (expression: VariableMutationType): string => {
   switch (expression) {
     case VariableMutationType.ASSIGN:
       return '='
@@ -250,25 +353,25 @@ const formatVariableExpression = (
   depth = 0
 ): string => {
   const { lhs, rhs, operation } = value
-  const result =
-    operation === VariableMutationType.REMOVE_IF_PRESENT ||
-    operation === VariableMutationType.REMOVE_INDEX ||
-    operation === VariableMutationType.REMOVE_KEY ||
-    operation === VariableMutationType.EXTEND
-      ? `${getVariable(lhs!, depth + 1)}.${getExpressionSymbol(operation)}(${getVariable(rhs!, depth + 1)})` // Dot notation for these operations
-      : `${getVariable(lhs!, depth + 1)} ${getExpressionSymbol(operation)} ${getVariable(rhs!, depth + 1)}` // Arithmetic operations
+  if (!operation) return ''
+
+  let symbol: string
+  let useDotNotation = false
+
+  if (operation.$case === 'mutationType') {
+    const mt = operation.value
+    symbol = getExpressionSymbol(mt)
+    useDotNotation =
+      mt === VariableMutationType.REMOVE_IF_PRESENT ||
+      mt === VariableMutationType.REMOVE_INDEX ||
+      mt === VariableMutationType.REMOVE_KEY ||
+      mt === VariableMutationType.EXTEND
+  } else {
+    symbol = getComparatorSymbol(operation.value)
+  }
+
+  const result = useDotNotation
+    ? `${getVariable(lhs!, depth + 1)}.${symbol}(${getVariable(rhs!, depth + 1)})`
+    : `${getVariable(lhs!, depth + 1)} ${symbol} ${getVariable(rhs!, depth + 1)}`
   return depth > 0 ? `(${result})` : result
 }
-
-export const VariableTypeToFieldComponent = {
-  [VariableType.JSON_OBJ]: { type: 'textarea', component: Textarea },
-  [VariableType.JSON_ARR]: { type: 'textarea', component: Textarea },
-  [VariableType.DOUBLE]: { type: 'number', component: Input },
-  [VariableType.BOOL]: { type: 'checkbox', component: SelectBool },
-  [VariableType.STR]: { type: 'text', component: Input },
-  [VariableType.INT]: { type: 'number', component: Input },
-  [VariableType.BYTES]: { type: 'text', component: Input },
-  [VariableType.WF_RUN_ID]: { type: 'text', component: Input },
-  [VariableType.TIMESTAMP]: { type: 'number', component: Input },
-  [VariableType.UNRECOGNIZED]: { type: 'text', component: Input },
-} as const satisfies Record<keyof typeof VariableType, { type: HTMLInputTypeAttribute; component: React.ElementType }>

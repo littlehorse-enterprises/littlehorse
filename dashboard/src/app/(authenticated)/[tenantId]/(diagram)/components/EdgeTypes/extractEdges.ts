@@ -1,6 +1,4 @@
-import { getVariable } from '@/app/utils'
-import { getComparatorSymbol } from '@/app/utils/comparatorUtils'
-import { Edge as EdgeProto, ThreadSpec } from 'littlehorse-client/proto'
+import { ThreadSpec } from 'littlehorse-client/proto'
 import { Edge, MarkerType } from 'reactflow'
 
 export const extractEdges = (spec: ThreadSpec): Edge[] => {
@@ -18,14 +16,14 @@ export const extractEdges = (spec: ThreadSpec): Edge[] => {
       targetMap.set(edge.sinkNodeName, targetIndex + 1)
       sourceMap.set(source, sourceIndex + 1)
 
-      const label = extractEdgeLabel(edge)
+      const hasMultipleOutgoingEdges = node.outgoingEdges.length > 1
+      const isElseEdge = hasMultipleOutgoingEdges && !edge.edgeCondition
       return {
         id,
         source,
-        type: 'default',
+        type: 'custom',
         target: edge.sinkNodeName,
-        label,
-        data: edge,
+        data: { ...edge, isElseEdge },
         targetHandle: `target-${targetIndex}`,
         sourceHandle: `source-${sourceIndex}`,
         markerEnd: {
@@ -36,11 +34,4 @@ export const extractEdges = (spec: ThreadSpec): Edge[] => {
       }
     })
   })
-}
-
-const extractEdgeLabel = ({ condition }: EdgeProto) => {
-  if (!condition) return
-
-  const { left, right, comparator } = condition
-  return `${getVariable(left!)} ${getComparatorSymbol(comparator)} ${getVariable(right!)}`
 }

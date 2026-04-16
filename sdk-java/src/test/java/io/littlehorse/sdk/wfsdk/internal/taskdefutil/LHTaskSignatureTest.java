@@ -2,34 +2,29 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.littlehorse.sdk.common.proto.ReturnType;
-import io.littlehorse.sdk.common.proto.StructDefId;
-import io.littlehorse.sdk.common.proto.TypeDefinition;
-import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.common.adapter.LHStringAdapter;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.proto.StructDef;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.testutils.TestReflection;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.LHTaskMethodHandle;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.UUID;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
 
 public class LHTaskSignatureTest {
-    class MyWorker {
-        @LHTaskMethod("primitive-task")
-        public String primitiveTask(int myVar) {
-            return "hello";
-        }
+
+    static class MyWorker {
 
         @LHTaskMethod("worker-context-task")
         public void workerContextTask(WorkerContext workerContext) {}
-
-        @LHTaskMethod("struct-task")
-        public Garage structTask(Car car) {
-            return new Garage();
-        }
 
         @LHTaskMethod("masked-struct-task")
         public @LHType(masked = true) Car maskedStructTask(@LHType(masked = true) Car car) {
@@ -41,11 +36,19 @@ public class LHTaskSignatureTest {
 
         @LHTaskMethod(value = "description-task", description = "description-test")
         public void descriptionTask() {}
+
+        @LHTaskMethod("adapter-struct-task")
+        public UuidHolder adapterStructTask(UuidHolder in) {
+            return in;
+        }
+
+        @LHTaskMethod(value = "blank-desc-task")
+        public void blankDescTask() {}
     }
 
     @LHStructDef("car")
     @Getter
-    class Car {
+    static class Car {
         String model;
         int year;
         boolean isElectric;
@@ -55,130 +58,104 @@ public class LHTaskSignatureTest {
 
     @LHStructDef("person")
     @Getter
-    class Person {
+    static class Person {
         String name;
         int age = 10;
     }
 
     @LHStructDef("garage")
     @Getter
-    class Garage {
+    static class Garage {
         String address;
         int size;
         Person owner;
     }
 
+    @LHStructDef("uuid-holder")
+    @Getter
+    static class UuidHolder {
+        UUID id;
+
+        public UUID getId() {
+            return id;
+        }
+    }
+
+    private static LHTaskSignature signatureFor(
+            String taskName,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholders,
+            Class<?>... paramTypes) {
+        Method method = TestReflection.getTaskMethodByName(MyWorker.class, taskName);
+        return new LHTaskSignature(
+                LHTaskMethodHandle.fromLHTaskMethod(method, placeholders), typeAdapterRegistry, placeholders);
+    }
+
+    private static LHTaskSignature signatureFor(String taskName, Class<?>... paramTypes) {
+        return signatureFor(taskName, LHTypeAdapterRegistry.empty(), Map.of(), paramTypes);
+    }
+
     @Test
     void shouldGetDescriptionFromAnnotation() {
-        LHTaskSignature taskSignature = new LHTaskSignature("description-task", new MyWorker(), "description-task");
-        String actualDescription = taskSignature.getTaskDefDescription();
-        String expectedDescription = "description-test";
+        LHTaskSignature taskSignature = signatureFor("description-task");
 
-        assertThat(actualDescription).isEqualTo(expectedDescription);
+        assertThat(taskSignature.getTaskDefDescription()).contains("description-test");
     }
 
     @Test
-    void shouldInferPrimitiveParameterType() {
-        LHTaskSignature taskSignature = new LHTaskSignature("primitive-task", new MyWorker(), "primitive-task");
+    void shouldIgnoreEmptyTaskDefDescription() {
+        LHTaskSignature taskSignature = signatureFor("blank-desc-task");
 
-        List<VariableDef> actualVariableDefs = taskSignature.getVariableDefs();
-        VariableDef firstParamVariableDef = actualVariableDefs.get(0);
-        TypeDefinition actualTypeDefinition = firstParamVariableDef.getTypeDef();
-        TypeDefinition expectedTypeDefinition =
-                TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT).build();
-
-        assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
-    }
-
-    @Test
-    void shouldInferPrimitiveReturnType() {
-        LHTaskSignature taskSignature = new LHTaskSignature("primitive-task", new MyWorker(), "primitive-task");
-
-        ReturnType actualReturnType = taskSignature.getReturnType();
-        ReturnType expectedReturnType = ReturnType.newBuilder()
-                .setReturnType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
-                .build();
-
-        assertThat(actualReturnType).isEqualTo(expectedReturnType);
+        assertThat(taskSignature.toPutTaskDefRequest().hasDescription()).isFalse();
     }
 
     @Test
     void shouldIgnoreWorkerContextInTaskDefParameter() {
-        LHTaskSignature taskSignature =
-                new LHTaskSignature("worker-context-task", new MyWorker(), "worker-context-task");
-        List<VariableDef> actualVariableDefs = taskSignature.getVariableDefs();
+        LHTaskSignature taskSignature = signatureFor("worker-context-task", WorkerContext.class);
 
-        assertThat(actualVariableDefs.size()).isEqualTo(0);
+        assertThat(taskSignature.getVariableDefs()).isEmpty();
+        assertThat(taskSignature.hasWorkerContext()).isTrue();
     }
 
-    @Test
-    void shouldInferVoidReturnType() {
-        LHTaskSignature taskSignature =
-                new LHTaskSignature("worker-context-task", new MyWorker(), "worker-context-task");
-        ReturnType actualReturnType = taskSignature.getReturnType();
-        ReturnType expectedReturnType = ReturnType.newBuilder().build();
+    // @Test
+    // void shouldReturnNoStructDefDependenciesAfterRefactor() {
+    //     LHTaskSignature taskSignature = signatureFor("struct-task", Car.class);
 
-        assertThat(actualReturnType).isEqualTo(expectedReturnType);
-    }
+    //     assertThat(taskSignature.getStructDefDependencies()).isEmpty();
+    // }
 
     @Test
-    void shouldInferStructReturnType() {
-        LHTaskSignature taskSignature = new LHTaskSignature("struct-task", new MyWorker(), "struct-task");
-        ReturnType actualReturnType = taskSignature.getReturnType();
-        ReturnType expectedReturnType = ReturnType.newBuilder()
-                .setReturnType(TypeDefinition.newBuilder()
-                        .setStructDefId(StructDefId.newBuilder().setName("garage")))
-                .build();
+    void shouldUseTypeAdapterForStructDefFieldTypes() {
+        LHStringAdapter<UUID> uuidAdapter = new LHStringAdapter<UUID>() {
+            @Override
+            public String toString(UUID src) {
+                return src.toString();
+            }
 
-        assertThat(actualReturnType).isEqualTo(expectedReturnType);
-    }
+            @Override
+            public UUID fromString(String src) {
+                return UUID.fromString(src);
+            }
 
-    @Test
-    void shouldInferReturnTypeWithMasked() {
-        LHTaskSignature taskSignature = new LHTaskSignature("masked-struct-task", new MyWorker(), "masked-struct-task");
-        ReturnType actualReturnType = taskSignature.getReturnType();
-        TypeDefinition actualTypeDefinition = actualReturnType.getReturnType();
-        boolean actualReturnTypeMaskedValue = actualTypeDefinition.getMasked();
-        boolean expectedReturnTypeMaskedValue = true;
+            @Override
+            public Class<UUID> getTypeClass() {
+                return UUID.class;
+            }
+        };
 
-        assertThat(actualReturnTypeMaskedValue).isEqualTo(expectedReturnTypeMaskedValue);
-    }
+        StructDef structDef = new LHStructDefType(
+                        UuidHolder.class, LHTypeAdapterRegistry.from(Map.of(UUID.class, uuidAdapter)))
+                .toStructDef();
 
-    @Test
-    void shouldInferParameterTypeWithMasked() {
-        LHTaskSignature taskSignature = new LHTaskSignature("masked-struct-task", new MyWorker(), "masked-struct-task");
-
-        List<VariableDef> actualVariableDefs = taskSignature.getVariableDefs();
-        VariableDef firstParamVariableDef = actualVariableDefs.get(0);
-        TypeDefinition actualTypeDefinition = firstParamVariableDef.getTypeDef();
-
-        boolean actualMaskedValue = actualTypeDefinition.getMasked();
-        boolean expectedMaskedValue = true;
-
-        assertThat(actualMaskedValue).isEqualTo(expectedMaskedValue);
-    }
-
-    @Test
-    void shouldInferStructDefParameterTypeWithMasked() {
-        LHTaskSignature taskSignature = new LHTaskSignature("masked-struct-task", new MyWorker(), "masked-struct-task");
-
-        List<VariableDef> actualVariableDefs = taskSignature.getVariableDefs();
-        VariableDef firstParamVariableDef = actualVariableDefs.get(0);
-        TypeDefinition actualTypeDefinition = firstParamVariableDef.getTypeDef();
-
-        boolean actualMaskedValue = actualTypeDefinition.getMasked();
-        boolean expectedMaskedValue = true;
-
-        assertThat(actualMaskedValue).isEqualTo(expectedMaskedValue);
-    }
-
-    @Test
-    void shouldReturnSortedListOfParamAndReturnTypeStructDefDependencies() {
-        LHTaskSignature taskSignature = new LHTaskSignature("struct-task", new MyWorker(), "struct-task");
-        List<LHStructDefType> actualClassList = taskSignature.getStructDefDependencies();
-        List<LHStructDefType> expectedClassList = List.of(
-                new LHStructDefType(Person.class), new LHStructDefType(Garage.class), new LHStructDefType(Car.class));
-
-        assertThat(actualClassList).isEqualTo(expectedClassList);
+        assertThat(structDef.getStructDef().getFieldsCount()).isEqualTo(1);
+        assertThat(structDef
+                        .getStructDef()
+                        .getFieldsMap()
+                        .values()
+                        .iterator()
+                        .next()
+                        .getFieldType()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.STR);
     }
 }

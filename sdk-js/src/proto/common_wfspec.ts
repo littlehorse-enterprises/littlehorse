@@ -8,7 +8,14 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
-import { StructDefId, TaskDefId } from "./object_id";
+import { TaskDefId } from "./object_id";
+import {
+  Comparator,
+  comparatorFromJSON,
+  comparatorToJSON,
+  comparatorToNumber,
+  TypeDefinition,
+} from "./type_definition";
 import { VariableValue } from "./variable";
 
 /** Enumerates the available operations to mutate a variable in a WfRun. */
@@ -17,7 +24,7 @@ export enum VariableMutationType {
   ASSIGN = "ASSIGN",
   /** ADD - Add the RHS to the LHS. */
   ADD = "ADD",
-  /** EXTEND - Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR) */
+  /** EXTEND - Append the RHS to the LHS (valid if the LHS is a STR, JSON_ARR, or ARRAY) */
   EXTEND = "EXTEND",
   /** SUBTRACT - Subtract the RHS from the LHS (both must be INT or DOUBLE) */
   SUBTRACT = "SUBTRACT",
@@ -25,12 +32,16 @@ export enum VariableMutationType {
   MULTIPLY = "MULTIPLY",
   /** DIVIDE - Divide the LHS by the RHS (both must be INT or DOUBLE) */
   DIVIDE = "DIVIDE",
-  /** REMOVE_IF_PRESENT - Remove any occurrences of RHS from LHS (LHS must be JSON_ARR) */
+  /** REMOVE_IF_PRESENT - Remove any occurrences of RHS from LHS (LHS must be JSON_ARR or ARRAY) */
   REMOVE_IF_PRESENT = "REMOVE_IF_PRESENT",
-  /** REMOVE_INDEX - Remove item at index RHS from LHS (LHS must be JSON_ARR) */
+  /** REMOVE_INDEX - Remove item at index RHS from LHS (LHS must be JSON_ARR or ARRAY) */
   REMOVE_INDEX = "REMOVE_INDEX",
   /** REMOVE_KEY - Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ) */
   REMOVE_KEY = "REMOVE_KEY",
+  /** AND - Logical AND operation. Combines two boolean values; result is true if both LHS and RHS are true. */
+  AND = "AND",
+  /** OR - Logical OR operation. Combines two boolean values; result is true if either LHS or RHS is true. */
+  OR = "OR",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -63,6 +74,12 @@ export function variableMutationTypeFromJSON(object: any): VariableMutationType 
     case 8:
     case "REMOVE_KEY":
       return VariableMutationType.REMOVE_KEY;
+    case 9:
+    case "AND":
+      return VariableMutationType.AND;
+    case 10:
+    case "OR":
+      return VariableMutationType.OR;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -90,6 +107,10 @@ export function variableMutationTypeToJSON(object: VariableMutationType): string
       return "REMOVE_INDEX";
     case VariableMutationType.REMOVE_KEY:
       return "REMOVE_KEY";
+    case VariableMutationType.AND:
+      return "AND";
+    case VariableMutationType.OR:
+      return "OR";
     case VariableMutationType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -116,121 +137,11 @@ export function variableMutationTypeToNumber(object: VariableMutationType): numb
       return 7;
     case VariableMutationType.REMOVE_KEY:
       return 8;
+    case VariableMutationType.AND:
+      return 9;
+    case VariableMutationType.OR:
+      return 10;
     case VariableMutationType.UNRECOGNIZED:
-    default:
-      return -1;
-  }
-}
-
-/** Operator for comparing two values to create a boolean expression. */
-export enum Comparator {
-  /** LESS_THAN - Equivalent to `<`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
-  LESS_THAN = "LESS_THAN",
-  /** GREATER_THAN - Equivalent to `>`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
-  GREATER_THAN = "GREATER_THAN",
-  /** LESS_THAN_EQ - Equivalent to `<=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
-  LESS_THAN_EQ = "LESS_THAN_EQ",
-  /** GREATER_THAN_EQ - Equivalent to `>=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
-  GREATER_THAN_EQ = "GREATER_THAN_EQ",
-  /**
-   * EQUALS - This is valid for any variable type, and is similar to .equals() in Java.
-   *
-   * One note: if the RHS is a different type from the LHS, then LittleHorse will
-   * try to cast the RHS to the same type as the LHS. If the cast fails, then the
-   * ThreadRun fails with a VAR_SUB_ERROR.
-   */
-  EQUALS = "EQUALS",
-  /** NOT_EQUALS - This is the inverse of `EQUALS` */
-  NOT_EQUALS = "NOT_EQUALS",
-  /**
-   * IN - Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
-   *
-   * For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
-   * RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
-   * is equal to the LHS.
-   */
-  IN = "IN",
-  /** NOT_IN - The inverse of IN. */
-  NOT_IN = "NOT_IN",
-  UNRECOGNIZED = "UNRECOGNIZED",
-}
-
-export function comparatorFromJSON(object: any): Comparator {
-  switch (object) {
-    case 0:
-    case "LESS_THAN":
-      return Comparator.LESS_THAN;
-    case 1:
-    case "GREATER_THAN":
-      return Comparator.GREATER_THAN;
-    case 2:
-    case "LESS_THAN_EQ":
-      return Comparator.LESS_THAN_EQ;
-    case 3:
-    case "GREATER_THAN_EQ":
-      return Comparator.GREATER_THAN_EQ;
-    case 4:
-    case "EQUALS":
-      return Comparator.EQUALS;
-    case 5:
-    case "NOT_EQUALS":
-      return Comparator.NOT_EQUALS;
-    case 6:
-    case "IN":
-      return Comparator.IN;
-    case 7:
-    case "NOT_IN":
-      return Comparator.NOT_IN;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return Comparator.UNRECOGNIZED;
-  }
-}
-
-export function comparatorToJSON(object: Comparator): string {
-  switch (object) {
-    case Comparator.LESS_THAN:
-      return "LESS_THAN";
-    case Comparator.GREATER_THAN:
-      return "GREATER_THAN";
-    case Comparator.LESS_THAN_EQ:
-      return "LESS_THAN_EQ";
-    case Comparator.GREATER_THAN_EQ:
-      return "GREATER_THAN_EQ";
-    case Comparator.EQUALS:
-      return "EQUALS";
-    case Comparator.NOT_EQUALS:
-      return "NOT_EQUALS";
-    case Comparator.IN:
-      return "IN";
-    case Comparator.NOT_IN:
-      return "NOT_IN";
-    case Comparator.UNRECOGNIZED:
-    default:
-      return "UNRECOGNIZED";
-  }
-}
-
-export function comparatorToNumber(object: Comparator): number {
-  switch (object) {
-    case Comparator.LESS_THAN:
-      return 0;
-    case Comparator.GREATER_THAN:
-      return 1;
-    case Comparator.LESS_THAN_EQ:
-      return 2;
-    case Comparator.GREATER_THAN_EQ:
-      return 3;
-    case Comparator.EQUALS:
-      return 4;
-    case Comparator.NOT_EQUALS:
-      return 5;
-    case Comparator.IN:
-      return 6;
-    case Comparator.NOT_IN:
-      return 7;
-    case Comparator.UNRECOGNIZED:
     default:
       return -1;
   }
@@ -290,11 +201,11 @@ export interface VariableAssignment_NodeOutputReference {
 /** An Expression allows you to combine multiple values into one. */
 export interface VariableAssignment_Expression {
   /** The left-hand-side of the expression. */
-  lhs:
-    | VariableAssignment
+  lhs: VariableAssignment | undefined;
+  operation?:
+    | { $case: "mutationType"; value: VariableMutationType }
+    | { $case: "comparator"; value: Comparator }
     | undefined;
-  /** The operator in the expression. */
-  operation: VariableMutationType;
   /** The right-hand-side of the expression. */
   rhs: VariableAssignment | undefined;
 }
@@ -369,31 +280,6 @@ export interface VariableDef {
    * (i.e. it will be no longer `optional`).
    */
   typeDef?: TypeDefinition | undefined;
-}
-
-/**
- * Defines the type of a value in LittleHorse. Can be used for Task Parameters,
- * Task return types, External Event types, ThreadSpec variables, etc.
- */
-export interface TypeDefinition {
-  definedType?:
-    | { $case: "primitiveType"; value: VariableType }
-    | { $case: "structDefId"; value: StructDefId }
-    | undefined;
-  /** Set to true if values of this type contain sensitive information and must be masked. */
-  masked: boolean;
-}
-
-/**
- * Utility used among metadata objects to define their output type. For example, used in
- * TaskDef and ExternalEventDef to represent the output.
- */
-export interface ReturnType {
-  /**
-   * The type of the output. If it is not present, it is interpred as the output type
-   * being void: the TaskRun output/ExternalEvent/WorkflowEvent is always empty / NULL.
-   */
-  returnType?: TypeDefinition | undefined;
 }
 
 /**
@@ -568,7 +454,7 @@ export interface TaskNode {
   variables: VariableAssignment[];
 }
 
-/** An `InlineStructDef` is the actual representation of the Schema. */
+/** A map of InlineStructDef's field names to their StructFieldDef's. */
 export interface InlineStructDef {
   /** The fields in this schema. */
   fields: { [key: string]: StructFieldDef };
@@ -579,7 +465,7 @@ export interface InlineStructDef_FieldsEntry {
   value: StructFieldDef | undefined;
 }
 
-/** A `SchemaFieldDef` defines a field inside a `StructDef`. */
+/** The definition of a field in an InlineStructDef. */
 export interface StructFieldDef {
   /** The type of the field. */
   fieldType:
@@ -594,6 +480,7 @@ export interface StructFieldDef {
 
 /** A path of repeated Selectors resolving to a nested field in an object. */
 export interface LHPath {
+  /** The path of selectors that resolve to the field you want to access. */
   path: LHPath_Selector[];
 }
 
@@ -949,7 +836,7 @@ export const VariableAssignment_NodeOutputReference = {
 };
 
 function createBaseVariableAssignment_Expression(): VariableAssignment_Expression {
-  return { lhs: undefined, operation: VariableMutationType.ASSIGN, rhs: undefined };
+  return { lhs: undefined, operation: undefined, rhs: undefined };
 }
 
 export const VariableAssignment_Expression = {
@@ -957,8 +844,13 @@ export const VariableAssignment_Expression = {
     if (message.lhs !== undefined) {
       VariableAssignment.encode(message.lhs, writer.uint32(10).fork()).ldelim();
     }
-    if (message.operation !== VariableMutationType.ASSIGN) {
-      writer.uint32(16).int32(variableMutationTypeToNumber(message.operation));
+    switch (message.operation?.$case) {
+      case "mutationType":
+        writer.uint32(16).int32(variableMutationTypeToNumber(message.operation.value));
+        break;
+      case "comparator":
+        writer.uint32(32).int32(comparatorToNumber(message.operation.value));
+        break;
     }
     if (message.rhs !== undefined) {
       VariableAssignment.encode(message.rhs, writer.uint32(26).fork()).ldelim();
@@ -985,7 +877,14 @@ export const VariableAssignment_Expression = {
             break;
           }
 
-          message.operation = variableMutationTypeFromJSON(reader.int32());
+          message.operation = { $case: "mutationType", value: variableMutationTypeFromJSON(reader.int32()) };
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.operation = { $case: "comparator", value: comparatorFromJSON(reader.int32()) };
           continue;
         case 3:
           if (tag !== 26) {
@@ -1006,7 +905,11 @@ export const VariableAssignment_Expression = {
   fromJSON(object: any): VariableAssignment_Expression {
     return {
       lhs: isSet(object.lhs) ? VariableAssignment.fromJSON(object.lhs) : undefined,
-      operation: isSet(object.operation) ? variableMutationTypeFromJSON(object.operation) : VariableMutationType.ASSIGN,
+      operation: isSet(object.mutationType)
+        ? { $case: "mutationType", value: variableMutationTypeFromJSON(object.mutationType) }
+        : isSet(object.comparator)
+        ? { $case: "comparator", value: comparatorFromJSON(object.comparator) }
+        : undefined,
       rhs: isSet(object.rhs) ? VariableAssignment.fromJSON(object.rhs) : undefined,
     };
   },
@@ -1016,8 +919,11 @@ export const VariableAssignment_Expression = {
     if (message.lhs !== undefined) {
       obj.lhs = VariableAssignment.toJSON(message.lhs);
     }
-    if (message.operation !== VariableMutationType.ASSIGN) {
-      obj.operation = variableMutationTypeToJSON(message.operation);
+    if (message.operation?.$case === "mutationType") {
+      obj.mutationType = variableMutationTypeToJSON(message.operation.value);
+    }
+    if (message.operation?.$case === "comparator") {
+      obj.comparator = comparatorToJSON(message.operation.value);
     }
     if (message.rhs !== undefined) {
       obj.rhs = VariableAssignment.toJSON(message.rhs);
@@ -1033,7 +939,20 @@ export const VariableAssignment_Expression = {
     message.lhs = (object.lhs !== undefined && object.lhs !== null)
       ? VariableAssignment.fromPartial(object.lhs)
       : undefined;
-    message.operation = object.operation ?? VariableMutationType.ASSIGN;
+    if (
+      object.operation?.$case === "mutationType" &&
+      object.operation?.value !== undefined &&
+      object.operation?.value !== null
+    ) {
+      message.operation = { $case: "mutationType", value: object.operation.value };
+    }
+    if (
+      object.operation?.$case === "comparator" &&
+      object.operation?.value !== undefined &&
+      object.operation?.value !== null
+    ) {
+      message.operation = { $case: "comparator", value: object.operation.value };
+    }
     message.rhs = (object.rhs !== undefined && object.rhs !== null)
       ? VariableAssignment.fromPartial(object.rhs)
       : undefined;
@@ -1404,171 +1323,6 @@ export const VariableDef = {
     message.maskedValue = object.maskedValue ?? undefined;
     message.typeDef = (object.typeDef !== undefined && object.typeDef !== null)
       ? TypeDefinition.fromPartial(object.typeDef)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseTypeDefinition(): TypeDefinition {
-  return { definedType: undefined, masked: false };
-}
-
-export const TypeDefinition = {
-  encode(message: TypeDefinition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    switch (message.definedType?.$case) {
-      case "primitiveType":
-        writer.uint32(8).int32(variableTypeToNumber(message.definedType.value));
-        break;
-      case "structDefId":
-        StructDefId.encode(message.definedType.value, writer.uint32(42).fork()).ldelim();
-        break;
-    }
-    if (message.masked !== false) {
-      writer.uint32(32).bool(message.masked);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): TypeDefinition {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseTypeDefinition();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 8) {
-            break;
-          }
-
-          message.definedType = { $case: "primitiveType", value: variableTypeFromJSON(reader.int32()) };
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.definedType = { $case: "structDefId", value: StructDefId.decode(reader, reader.uint32()) };
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.masked = reader.bool();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): TypeDefinition {
-    return {
-      definedType: isSet(object.primitiveType)
-        ? { $case: "primitiveType", value: variableTypeFromJSON(object.primitiveType) }
-        : isSet(object.structDefId)
-        ? { $case: "structDefId", value: StructDefId.fromJSON(object.structDefId) }
-        : undefined,
-      masked: isSet(object.masked) ? globalThis.Boolean(object.masked) : false,
-    };
-  },
-
-  toJSON(message: TypeDefinition): unknown {
-    const obj: any = {};
-    if (message.definedType?.$case === "primitiveType") {
-      obj.primitiveType = variableTypeToJSON(message.definedType.value);
-    }
-    if (message.definedType?.$case === "structDefId") {
-      obj.structDefId = StructDefId.toJSON(message.definedType.value);
-    }
-    if (message.masked !== false) {
-      obj.masked = message.masked;
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<TypeDefinition>): TypeDefinition {
-    return TypeDefinition.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<TypeDefinition>): TypeDefinition {
-    const message = createBaseTypeDefinition();
-    if (
-      object.definedType?.$case === "primitiveType" &&
-      object.definedType?.value !== undefined &&
-      object.definedType?.value !== null
-    ) {
-      message.definedType = { $case: "primitiveType", value: object.definedType.value };
-    }
-    if (
-      object.definedType?.$case === "structDefId" &&
-      object.definedType?.value !== undefined &&
-      object.definedType?.value !== null
-    ) {
-      message.definedType = { $case: "structDefId", value: StructDefId.fromPartial(object.definedType.value) };
-    }
-    message.masked = object.masked ?? false;
-    return message;
-  },
-};
-
-function createBaseReturnType(): ReturnType {
-  return { returnType: undefined };
-}
-
-export const ReturnType = {
-  encode(message: ReturnType, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.returnType !== undefined) {
-      TypeDefinition.encode(message.returnType, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ReturnType {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseReturnType();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.returnType = TypeDefinition.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ReturnType {
-    return { returnType: isSet(object.returnType) ? TypeDefinition.fromJSON(object.returnType) : undefined };
-  },
-
-  toJSON(message: ReturnType): unknown {
-    const obj: any = {};
-    if (message.returnType !== undefined) {
-      obj.returnType = TypeDefinition.toJSON(message.returnType);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<ReturnType>): ReturnType {
-    return ReturnType.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ReturnType>): ReturnType {
-    const message = createBaseReturnType();
-    message.returnType = (object.returnType !== undefined && object.returnType !== null)
-      ? TypeDefinition.fromPartial(object.returnType)
       : undefined;
     return message;
   },

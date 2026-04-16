@@ -11,11 +11,19 @@ public interface OutputTopicConfigOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The recording level for this Tenant's Output Topic.
+   * </pre>
+   *
    * <code>.littlehorse.OutputTopicConfig.OutputTopicRecordingLevel default_recording_level = 1;</code>
    * @return The enum numeric value on the wire for defaultRecordingLevel.
    */
   int getDefaultRecordingLevelValue();
   /**
+   * <pre>
+   * The recording level for this Tenant's Output Topic.
+   * </pre>
+   *
    * <code>.littlehorse.OutputTopicConfig.OutputTopicRecordingLevel default_recording_level = 1;</code>
    * @return The defaultRecordingLevel.
    */

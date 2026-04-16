@@ -16,7 +16,6 @@ from littlehorse.model import (
     PutWfSpecRequest,
     VariableValue,
     Edge,
-    EdgeCondition,
     EntrypointNode,
     ExitNode,
     ExternalEventNode,
@@ -419,6 +418,43 @@ class TestThreadBuilder(unittest.TestCase):
             ),
         )
 
+
+class TestCastExpressions(unittest.TestCase):
+    def setUp(self) -> None:
+        def entrypoint_func(wf: WorkflowThread) -> None:
+            pass
+
+        workflow = Workflow("cast-test-workflow", entrypoint_func)
+        self.workflow_thread = WorkflowThread(workflow, entrypoint_func)
+
+    def test_node_output_cast_sets_target_type(self):
+        var = NodeOutput("my-node").cast_to_int()
+        assignment = to_variable_assignment(var)
+        self.assertIsNotNone(assignment.node_output)
+        self.assertEqual(assignment.node_output.node_name, "my-node")
+        self.assertIsNotNone(assignment.target_type)
+        self.assertEqual(assignment.target_type.primitive_type, VariableType.INT)
+
+    def test_expression_cast_sets_target_type(self):
+        expr = NodeOutput("n").add(5).cast_to_double()
+        assignment = to_variable_assignment(expr)
+        self.assertIsNotNone(assignment.expression)
+        self.assertIsNotNone(assignment.target_type)
+        self.assertEqual(assignment.target_type.primitive_type, VariableType.DOUBLE)
+
+    def test_wfrunvariable_cast_sets_target_type(self):
+        wfvar = WfRunVariable(
+            "my-var", self.workflow_thread, variable_type=VariableType.STR
+        )
+        casted = wfvar.cast_to_bool()
+        assignment = to_variable_assignment(casted)
+        self.assertEqual(
+            assignment.json_path, ""
+        )  # Protobuf string fields default to empty string
+        self.assertEqual(assignment.variable_name, "my-var")
+        self.assertIsNotNone(assignment.target_type)
+        self.assertEqual(assignment.target_type.primitive_type, VariableType.BOOL)
+
     def test_fail_with_output(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             thread.fail("my_failure_name", "my message", "my output")
@@ -533,14 +569,16 @@ class TestThreadBuilder(unittest.TestCase):
                         outgoing_edges=[
                             Edge(
                                 sink_node_name="2-task-a-TASK",
-                                condition=EdgeCondition(
-                                    comparator=Comparator.GREATER_THAN,
-                                    left=VariableAssignment(
-                                        literal_value=VariableValue(int=20)
-                                    ),
-                                    right=VariableAssignment(
-                                        literal_value=VariableValue(int=10)
-                                    ),
+                                condition=VariableAssignment(
+                                    expression=VariableAssignment.Expression(
+                                        comparator=Comparator.GREATER_THAN,
+                                        lhs=VariableAssignment(
+                                            literal_value=VariableValue(int=20)
+                                        ),
+                                        rhs=VariableAssignment(
+                                            literal_value=VariableValue(int=10)
+                                        ),
+                                    )
                                 ),
                                 variable_mutations=[
                                     VariableMutation(
@@ -668,14 +706,16 @@ class TestThreadBuilder(unittest.TestCase):
                         outgoing_edges=[
                             Edge(
                                 sink_node_name="2-nop-NOP",
-                                condition=EdgeCondition(
-                                    comparator=Comparator.LESS_THAN,
-                                    left=VariableAssignment(
-                                        literal_value=VariableValue(int=4)
-                                    ),
-                                    right=VariableAssignment(
-                                        literal_value=VariableValue(int=5)
-                                    ),
+                                condition=VariableAssignment(
+                                    expression=VariableAssignment.Expression(
+                                        comparator=Comparator.LESS_THAN,
+                                        lhs=VariableAssignment(
+                                            literal_value=VariableValue(int=4)
+                                        ),
+                                        rhs=VariableAssignment(
+                                            literal_value=VariableValue(int=5)
+                                        ),
+                                    )
                                 ),
                                 variable_mutations=[
                                     VariableMutation(
@@ -779,14 +819,16 @@ class TestThreadBuilder(unittest.TestCase):
                         outgoing_edges=[
                             Edge(
                                 sink_node_name="2-nop-NOP",
-                                condition=EdgeCondition(
-                                    comparator=Comparator.GREATER_THAN,
-                                    left=VariableAssignment(
-                                        literal_value=VariableValue(int=4)
-                                    ),
-                                    right=VariableAssignment(
-                                        literal_value=VariableValue(int=5)
-                                    ),
+                                condition=VariableAssignment(
+                                    expression=VariableAssignment.Expression(
+                                        comparator=Comparator.GREATER_THAN,
+                                        lhs=VariableAssignment(
+                                            literal_value=VariableValue(int=4)
+                                        ),
+                                        rhs=VariableAssignment(
+                                            literal_value=VariableValue(int=5)
+                                        ),
+                                    )
                                 ),
                                 variable_mutations=[
                                     VariableMutation(
@@ -873,14 +915,16 @@ class TestThreadBuilder(unittest.TestCase):
                         outgoing_edges=[
                             Edge(
                                 sink_node_name="2-my-task-TASK",
-                                condition=EdgeCondition(
-                                    comparator=Comparator.LESS_THAN,
-                                    left=VariableAssignment(
-                                        literal_value=VariableValue(int=4)
-                                    ),
-                                    right=VariableAssignment(
-                                        literal_value=VariableValue(int=5)
-                                    ),
+                                condition=VariableAssignment(
+                                    expression=VariableAssignment.Expression(
+                                        comparator=Comparator.LESS_THAN,
+                                        lhs=VariableAssignment(
+                                            literal_value=VariableValue(int=4)
+                                        ),
+                                        rhs=VariableAssignment(
+                                            literal_value=VariableValue(int=5)
+                                        ),
+                                    )
                                 ),
                                 variable_mutations=[
                                     VariableMutation(
@@ -945,14 +989,16 @@ class TestThreadBuilder(unittest.TestCase):
                             outgoing_edges=[
                                 Edge(
                                     sink_node_name="2-my-task-TASK",
-                                    condition=EdgeCondition(
-                                        left=VariableAssignment(
-                                            literal_value=VariableValue(int=5)
-                                        ),
-                                        comparator=Comparator.EQUALS,
-                                        right=VariableAssignment(
-                                            literal_value=VariableValue(int=5)
-                                        ),
+                                    condition=VariableAssignment(
+                                        expression=VariableAssignment.Expression(
+                                            lhs=VariableAssignment(
+                                                literal_value=VariableValue(int=5)
+                                            ),
+                                            comparator=Comparator.EQUALS,
+                                            rhs=VariableAssignment(
+                                                literal_value=VariableValue(int=5)
+                                            ),
+                                        )
                                     ),
                                 ),
                                 Edge(
@@ -1039,22 +1085,30 @@ class TestThreadBuilder(unittest.TestCase):
                 outgoing_edges=[
                     Edge(
                         sink_node_name="2-task-a-TASK",
-                        condition=EdgeCondition(
-                            comparator=Comparator.GREATER_THAN_EQ,
-                            left=VariableAssignment(literal_value=VariableValue(int=5)),
-                            right=VariableAssignment(
-                                literal_value=VariableValue(int=9)
-                            ),
+                        condition=VariableAssignment(
+                            expression=VariableAssignment.Expression(
+                                comparator=Comparator.GREATER_THAN_EQ,
+                                lhs=VariableAssignment(
+                                    literal_value=VariableValue(int=5)
+                                ),
+                                rhs=VariableAssignment(
+                                    literal_value=VariableValue(int=9)
+                                ),
+                            )
                         ),
                     ),
                     Edge(
                         sink_node_name="4-task-b-TASK",
-                        condition=EdgeCondition(
-                            comparator=Comparator.LESS_THAN,
-                            left=VariableAssignment(literal_value=VariableValue(int=7)),
-                            right=VariableAssignment(
-                                literal_value=VariableValue(int=4)
-                            ),
+                        condition=VariableAssignment(
+                            expression=VariableAssignment.Expression(
+                                comparator=Comparator.LESS_THAN,
+                                lhs=VariableAssignment(
+                                    literal_value=VariableValue(int=7)
+                                ),
+                                rhs=VariableAssignment(
+                                    literal_value=VariableValue(int=4)
+                                ),
+                            )
                         ),
                         variable_mutations=[
                             VariableMutation(
@@ -1068,12 +1122,16 @@ class TestThreadBuilder(unittest.TestCase):
                     ),
                     Edge(
                         sink_node_name="5-task-c-TASK",
-                        condition=EdgeCondition(
-                            comparator=Comparator.EQUALS,
-                            left=VariableAssignment(literal_value=VariableValue(int=5)),
-                            right=VariableAssignment(
-                                literal_value=VariableValue(int=5)
-                            ),
+                        condition=VariableAssignment(
+                            expression=VariableAssignment.Expression(
+                                comparator=Comparator.EQUALS,
+                                lhs=VariableAssignment(
+                                    literal_value=VariableValue(int=5)
+                                ),
+                                rhs=VariableAssignment(
+                                    literal_value=VariableValue(int=5)
+                                ),
+                            )
                         ),
                     ),
                     Edge(sink_node_name="3-nop-NOP"),
@@ -1171,22 +1229,30 @@ class TestThreadBuilder(unittest.TestCase):
                 outgoing_edges=[
                     Edge(
                         sink_node_name="2-task-a-TASK",
-                        condition=EdgeCondition(
-                            comparator=Comparator.GREATER_THAN_EQ,
-                            left=VariableAssignment(literal_value=VariableValue(int=5)),
-                            right=VariableAssignment(
-                                literal_value=VariableValue(int=9)
-                            ),
+                        condition=VariableAssignment(
+                            expression=VariableAssignment.Expression(
+                                comparator=Comparator.GREATER_THAN_EQ,
+                                lhs=VariableAssignment(
+                                    literal_value=VariableValue(int=5)
+                                ),
+                                rhs=VariableAssignment(
+                                    literal_value=VariableValue(int=9)
+                                ),
+                            )
                         ),
                     ),
                     Edge(
                         sink_node_name="4-task-b-TASK",
-                        condition=EdgeCondition(
-                            comparator=Comparator.LESS_THAN,
-                            left=VariableAssignment(literal_value=VariableValue(int=7)),
-                            right=VariableAssignment(
-                                literal_value=VariableValue(int=4)
-                            ),
+                        condition=VariableAssignment(
+                            expression=VariableAssignment.Expression(
+                                comparator=Comparator.LESS_THAN,
+                                lhs=VariableAssignment(
+                                    literal_value=VariableValue(int=7)
+                                ),
+                                rhs=VariableAssignment(
+                                    literal_value=VariableValue(int=4)
+                                ),
+                            )
                         ),
                         variable_mutations=[
                             VariableMutation(
@@ -1337,32 +1403,44 @@ class TestThreadBuilder(unittest.TestCase):
                 outgoing_edges=[
                     Edge(
                         sink_node_name="2-task-a-TASK",
-                        condition=EdgeCondition(
-                            comparator=Comparator.EQUALS,
-                            left=VariableAssignment(literal_value=VariableValue(int=5)),
-                            right=VariableAssignment(
-                                literal_value=VariableValue(int=9)
-                            ),
+                        condition=VariableAssignment(
+                            expression=VariableAssignment.Expression(
+                                comparator=Comparator.EQUALS,
+                                lhs=VariableAssignment(
+                                    literal_value=VariableValue(int=5)
+                                ),
+                                rhs=VariableAssignment(
+                                    literal_value=VariableValue(int=9)
+                                ),
+                            )
                         ),
                     ),
                     Edge(
                         sink_node_name="4-task-b-TASK",
-                        condition=EdgeCondition(
-                            comparator=Comparator.LESS_THAN,
-                            left=VariableAssignment(literal_value=VariableValue(int=7)),
-                            right=VariableAssignment(
-                                literal_value=VariableValue(int=4)
-                            ),
+                        condition=VariableAssignment(
+                            expression=VariableAssignment.Expression(
+                                comparator=Comparator.LESS_THAN,
+                                lhs=VariableAssignment(
+                                    literal_value=VariableValue(int=7)
+                                ),
+                                rhs=VariableAssignment(
+                                    literal_value=VariableValue(int=4)
+                                ),
+                            )
                         ),
                     ),
                     Edge(
                         sink_node_name="3-nop-NOP",
-                        condition=EdgeCondition(
-                            comparator=Comparator.EQUALS,
-                            left=VariableAssignment(literal_value=VariableValue(int=2)),
-                            right=VariableAssignment(
-                                literal_value=VariableValue(int=2)
-                            ),
+                        condition=VariableAssignment(
+                            expression=VariableAssignment.Expression(
+                                comparator=Comparator.EQUALS,
+                                lhs=VariableAssignment(
+                                    literal_value=VariableValue(int=2)
+                                ),
+                                rhs=VariableAssignment(
+                                    literal_value=VariableValue(int=2)
+                                ),
+                            )
                         ),
                         variable_mutations=[
                             VariableMutation(
@@ -1479,22 +1557,30 @@ class TestThreadBuilder(unittest.TestCase):
                 outgoing_edges=[
                     Edge(
                         sink_node_name="2-task-a-TASK",
-                        condition=EdgeCondition(
-                            comparator=Comparator.GREATER_THAN_EQ,
-                            left=VariableAssignment(literal_value=VariableValue(int=5)),
-                            right=VariableAssignment(
-                                literal_value=VariableValue(int=9)
-                            ),
+                        condition=VariableAssignment(
+                            expression=VariableAssignment.Expression(
+                                comparator=Comparator.GREATER_THAN_EQ,
+                                lhs=VariableAssignment(
+                                    literal_value=VariableValue(int=5)
+                                ),
+                                rhs=VariableAssignment(
+                                    literal_value=VariableValue(int=9)
+                                ),
+                            )
                         ),
                     ),
                     Edge(
                         sink_node_name="5-task-b-TASK",
-                        condition=EdgeCondition(
-                            comparator=Comparator.LESS_THAN,
-                            left=VariableAssignment(literal_value=VariableValue(int=7)),
-                            right=VariableAssignment(
-                                literal_value=VariableValue(int=4)
-                            ),
+                        condition=VariableAssignment(
+                            expression=VariableAssignment.Expression(
+                                comparator=Comparator.LESS_THAN,
+                                lhs=VariableAssignment(
+                                    literal_value=VariableValue(int=7)
+                                ),
+                                rhs=VariableAssignment(
+                                    literal_value=VariableValue(int=4)
+                                ),
+                            )
                         ),
                     ),
                     Edge(sink_node_name="3-nop-NOP"),
@@ -1668,12 +1754,16 @@ class TestThreadBuilder(unittest.TestCase):
                 outgoing_edges=[
                     Edge(
                         sink_node_name="2-complete-EXIT",
-                        condition=EdgeCondition(
-                            left=VariableAssignment(literal_value=VariableValue(int=5)),
-                            comparator=Comparator.GREATER_THAN,
-                            right=VariableAssignment(
-                                literal_value=VariableValue(int=4)
-                            ),
+                        condition=VariableAssignment(
+                            expression=VariableAssignment.Expression(
+                                lhs=VariableAssignment(
+                                    literal_value=VariableValue(int=5)
+                                ),
+                                comparator=Comparator.GREATER_THAN,
+                                rhs=VariableAssignment(
+                                    literal_value=VariableValue(int=4)
+                                ),
+                            )
                         ),
                     ),
                     Edge(sink_node_name="3-nop-NOP"),
@@ -1712,24 +1802,30 @@ class TestThreadBuilder(unittest.TestCase):
                 outgoing_edges=[
                     Edge(
                         sink_node_name="2-complete-EXIT",
-                        condition=EdgeCondition(
-                            left=VariableAssignment(literal_value=VariableValue(int=5)),
-                            comparator=Comparator.GREATER_THAN,
-                            right=VariableAssignment(
-                                literal_value=VariableValue(int=4)
-                            ),
+                        condition=VariableAssignment(
+                            expression=VariableAssignment.Expression(
+                                lhs=VariableAssignment(
+                                    literal_value=VariableValue(int=5)
+                                ),
+                                comparator=Comparator.GREATER_THAN,
+                                rhs=VariableAssignment(
+                                    literal_value=VariableValue(int=4)
+                                ),
+                            )
                         ),
                     ),
                     Edge(
                         sink_node_name="4-task-b-TASK",
-                        condition=EdgeCondition(
-                            left=VariableAssignment(
-                                literal_value=VariableValue(int=10)
-                            ),
-                            comparator=Comparator.EQUALS,
-                            right=VariableAssignment(
-                                literal_value=VariableValue(int=11)
-                            ),
+                        condition=VariableAssignment(
+                            expression=VariableAssignment.Expression(
+                                lhs=VariableAssignment(
+                                    literal_value=VariableValue(int=10)
+                                ),
+                                comparator=Comparator.EQUALS,
+                                rhs=VariableAssignment(
+                                    literal_value=VariableValue(int=11)
+                                ),
+                            )
                         ),
                     ),
                     Edge(sink_node_name="3-nop-NOP"),
@@ -1791,14 +1887,16 @@ class TestThreadBuilder(unittest.TestCase):
                         outgoing_edges=[
                             Edge(
                                 sink_node_name="2-my-task-TASK",
-                                condition=EdgeCondition(
-                                    comparator=Comparator.LESS_THAN,
-                                    left=VariableAssignment(
-                                        literal_value=VariableValue(int=4)
-                                    ),
-                                    right=VariableAssignment(
-                                        literal_value=VariableValue(int=5)
-                                    ),
+                                condition=VariableAssignment(
+                                    expression=VariableAssignment.Expression(
+                                        comparator=Comparator.LESS_THAN,
+                                        lhs=VariableAssignment(
+                                            literal_value=VariableValue(int=4)
+                                        ),
+                                        rhs=VariableAssignment(
+                                            literal_value=VariableValue(int=5)
+                                        ),
+                                    )
                                 ),
                                 variable_mutations=[
                                     VariableMutation(
@@ -1812,14 +1910,16 @@ class TestThreadBuilder(unittest.TestCase):
                             ),
                             Edge(
                                 sink_node_name="3-nop-NOP",
-                                condition=EdgeCondition(
-                                    comparator=Comparator.GREATER_THAN_EQ,
-                                    left=VariableAssignment(
-                                        literal_value=VariableValue(int=4)
-                                    ),
-                                    right=VariableAssignment(
-                                        literal_value=VariableValue(int=5)
-                                    ),
+                                condition=VariableAssignment(
+                                    expression=VariableAssignment.Expression(
+                                        comparator=Comparator.GREATER_THAN_EQ,
+                                        lhs=VariableAssignment(
+                                            literal_value=VariableValue(int=4)
+                                        ),
+                                        rhs=VariableAssignment(
+                                            literal_value=VariableValue(int=5)
+                                        ),
+                                    )
                                 ),
                             ),
                         ],
@@ -1846,14 +1946,16 @@ class TestThreadBuilder(unittest.TestCase):
                         outgoing_edges=[
                             Edge(
                                 sink_node_name="1-nop-NOP",
-                                condition=EdgeCondition(
-                                    comparator=Comparator.LESS_THAN,
-                                    left=VariableAssignment(
-                                        literal_value=VariableValue(int=4)
-                                    ),
-                                    right=VariableAssignment(
-                                        literal_value=VariableValue(int=5)
-                                    ),
+                                condition=VariableAssignment(
+                                    expression=VariableAssignment.Expression(
+                                        comparator=Comparator.LESS_THAN,
+                                        lhs=VariableAssignment(
+                                            literal_value=VariableValue(int=4)
+                                        ),
+                                        rhs=VariableAssignment(
+                                            literal_value=VariableValue(int=5)
+                                        ),
+                                    )
                                 ),
                             ),
                             Edge(sink_node_name="4-exit-EXIT"),
@@ -2219,12 +2321,14 @@ class TestThreadBuilder(unittest.TestCase):
             outgoing_edges=[
                 Edge(
                     sink_node_name="2-task-TASK",
-                    condition=EdgeCondition(
-                        comparator=Comparator.IN,
-                        left=VariableAssignment(
-                            literal_value=VariableValue(str="this-value")
-                        ),
-                        right=VariableAssignment(variable_name="my-var"),
+                    condition=VariableAssignment(
+                        expression=VariableAssignment.Expression(
+                            comparator=Comparator.IN,
+                            lhs=VariableAssignment(
+                                literal_value=VariableValue(str="this-value")
+                            ),
+                            rhs=VariableAssignment(variable_name="my-var"),
+                        )
                     ),
                 ),
                 Edge(sink_node_name="3-nop-NOP"),
@@ -2250,12 +2354,14 @@ class TestThreadBuilder(unittest.TestCase):
             outgoing_edges=[
                 Edge(
                     sink_node_name="2-task-TASK",
-                    condition=EdgeCondition(
-                        comparator=Comparator.NOT_IN,
-                        left=VariableAssignment(
-                            literal_value=VariableValue(str="this-value")
-                        ),
-                        right=VariableAssignment(variable_name="my-var"),
+                    condition=VariableAssignment(
+                        expression=VariableAssignment.Expression(
+                            comparator=Comparator.NOT_IN,
+                            lhs=VariableAssignment(
+                                literal_value=VariableValue(str="this-value")
+                            ),
+                            rhs=VariableAssignment(variable_name="my-var"),
+                        )
                     ),
                 ),
                 Edge(sink_node_name="3-nop-NOP"),
@@ -2277,12 +2383,14 @@ class TestThreadBuilder(unittest.TestCase):
             outgoing_edges=[
                 Edge(
                     sink_node_name="2-task-TASK",
-                    condition=EdgeCondition(
-                        comparator=Comparator.IN,
-                        left=VariableAssignment(variable_name="my-var"),
-                        right=VariableAssignment(
-                            literal_value=VariableValue(json_arr='["A", "B", "C"]')
-                        ),
+                    condition=VariableAssignment(
+                        expression=VariableAssignment.Expression(
+                            comparator=Comparator.IN,
+                            lhs=VariableAssignment(variable_name="my-var"),
+                            rhs=VariableAssignment(
+                                literal_value=VariableValue(json_arr='["A", "B", "C"]')
+                            ),
+                        )
                     ),
                 ),
                 Edge(sink_node_name="3-nop-NOP"),
@@ -2306,12 +2414,14 @@ class TestThreadBuilder(unittest.TestCase):
             outgoing_edges=[
                 Edge(
                     sink_node_name="2-task-TASK",
-                    condition=EdgeCondition(
-                        comparator=Comparator.NOT_IN,
-                        left=VariableAssignment(variable_name="my-var"),
-                        right=VariableAssignment(
-                            literal_value=VariableValue(json_arr='["A", "B", "C"]')
-                        ),
+                    condition=VariableAssignment(
+                        expression=VariableAssignment.Expression(
+                            comparator=Comparator.NOT_IN,
+                            lhs=VariableAssignment(variable_name="my-var"),
+                            rhs=VariableAssignment(
+                                literal_value=VariableValue(json_arr='["A", "B", "C"]')
+                            ),
+                        )
                     ),
                 ),
                 Edge(sink_node_name="3-nop-NOP"),
@@ -4035,15 +4145,15 @@ class TestWaitForCondition(unittest.TestCase):
             "1-wait-for-condition-WAIT_FOR_CONDITION"
         ].wait_for_condition
         self.assertEqual(
-            Comparator.EQUALS, wait_for_condition_node.condition.comparator
+            Comparator.EQUALS, wait_for_condition_node.condition.expression.comparator
         )
         self.assertEqual(
             VariableAssignment(literal_value=VariableValue(str="some-value")),
-            wait_for_condition_node.condition.left,
+            wait_for_condition_node.condition.expression.lhs,
         )
         self.assertEqual(
             VariableAssignment(literal_value=VariableValue(str="other-value")),
-            wait_for_condition_node.condition.right,
+            wait_for_condition_node.condition.expression.rhs,
         )
 
     def test_wait_for_threads_handle_any_failure_on_child(self):

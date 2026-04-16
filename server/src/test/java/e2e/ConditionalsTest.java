@@ -3,7 +3,6 @@ package e2e;
 import static org.assertj.core.api.Assertions.*;
 
 import e2e.Struct.Car;
-import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -11,10 +10,10 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +26,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 @LHTest
+@WithStructDefs({Car.class})
 public class ConditionalsTest {
     private LittleHorseBlockingStub client;
 
@@ -57,6 +57,18 @@ public class ConditionalsTest {
     @LHWorkflow("test-conditionals-not-in-workflow")
     private Workflow workflowNotIn;
 
+    @LHWorkflow("test-conditionals-does-contain-workflow")
+    private Workflow workflowDoesContain;
+
+    @LHWorkflow("test-conditionals-does-not-contain-workflow")
+    private Workflow workflowDoesNotContain;
+
+    @LHWorkflow("test-conditionals-bool-var-do-if")
+    private Workflow workflowBoolVarDoIf;
+
+    @LHWorkflow("test-conditionals-bool-var-do-if-else")
+    private Workflow workflowBoolVarDoIfElse;
+
     @LHWorkflow("test-nested-if")
     private Workflow workflowNestedIf;
 
@@ -66,6 +78,7 @@ public class ConditionalsTest {
     private WorkflowVerifier workflowVerifier;
 
     @Nested
+    @WithStructDefs({Car.class})
     class Equals {
         @ParameterizedTest
         @MethodSource("provideEqualsWorkflowSuccessArguments")
@@ -112,8 +125,6 @@ public class ConditionalsTest {
         @ParameterizedTest
         @MethodSource("provideStructEqualsWorkflowSuccessArguments")
         void shouldCompleteStructEqualsWorkflowWithConditionals(Car car1, Car car2, boolean expectedOutput) {
-            client.putStructDef(new LHStructDefType(Car.class).toPutStructDefRequest());
-
             workflowVerifier
                     .prepareRun(workflowStructEquals, Arg.of("struct-a", car1), Arg.of("struct-b", car2))
                     .waitForStatus(LHStatus.COMPLETED)
@@ -210,9 +221,7 @@ public class ConditionalsTest {
             workflowVerifier
                     .prepareRun(workflowLessThanEquals, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
-                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(true))
-                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
                             .isEqualTo(expectedOutput))
                     .start();
         }
@@ -236,9 +245,7 @@ public class ConditionalsTest {
             workflowVerifier
                     .prepareRun(workflowGreaterThan, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
-                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(true))
-                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
                             .isEqualTo(expectedOutput))
                     .start();
         }
@@ -290,9 +297,7 @@ public class ConditionalsTest {
             workflowVerifier
                     .prepareRun(workflowIsIn, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
-                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(true))
-                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
                             .isEqualTo(expectedOutput))
                     .start();
         }
@@ -321,9 +326,7 @@ public class ConditionalsTest {
             workflowVerifier
                     .prepareRun(workflowNotIn, Arg.of("input", inputObject))
                     .waitForStatus(LHStatus.COMPLETED)
-                    .thenVerifyTaskRunResult(0, 1, variableValue -> assertThat(variableValue.getBool())
-                            .isEqualTo(true))
-                    .thenVerifyTaskRunResult(0, 3, variableValue -> assertThat(variableValue.getBool())
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
                             .isEqualTo(expectedOutput))
                     .start();
         }
@@ -350,6 +353,118 @@ public class ConditionalsTest {
                     Arguments.of(new ConditionalsTest.InputObj("o", "one"), false),
                     Arguments.of(new ConditionalsTest.InputObj(2, "2"), false),
                     Arguments.of(new ConditionalsTest.InputObj(2, Map.of("a", 1)), true));
+        }
+    }
+
+    @Nested
+    class DoesContain {
+        @ParameterizedTest
+        @MethodSource("provideSuccessArguments")
+        void shouldCompleteDoesContainWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
+            workflowVerifier
+                    .prepareRun(workflowDoesContain, Arg.of("input", inputObject))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(expectedOutput))
+                    .start();
+        }
+
+        private static Stream<Arguments> provideSuccessArguments() {
+            // lhs is the collection/string, rhs is the element to search for
+            return Stream.of(
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("a", 1), Map.of("a", 1)), false),
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("hi", 2), "hi"), true),
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("hi", 2), 2), false),
+                    Arguments.of(
+                            new ConditionalsTest.InputObj(Arrays.asList(0), Arrays.asList(0)),
+                            false), // Will check for '[0]'
+                    Arguments.of(new ConditionalsTest.InputObj(Arrays.asList(0), 0), true),
+                    Arguments.of(new ConditionalsTest.InputObj("one", 1), false),
+                    Arguments.of(new ConditionalsTest.InputObj("one", "o"), true),
+                    Arguments.of(new ConditionalsTest.InputObj("2", 2), true),
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("a", 1), 2), false));
+        }
+    }
+
+    @Nested
+    class DoesNotContain {
+        @ParameterizedTest
+        @MethodSource("provideSuccessArguments")
+        void shouldCompleteDoesNotContainWorkflowWithConditionals(InputObj inputObject, boolean expectedOutput) {
+            workflowVerifier
+                    .prepareRun(workflowDoesNotContain, Arg.of("input", inputObject))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isEqualTo(expectedOutput))
+                    .start();
+        }
+
+        @Test
+        void shouldFailDoesNotContainWorkflowWithInvalidArguments() {
+            InputObj inputObject = new InputObj(1.0, 1);
+            workflowVerifier
+                    .prepareRun(workflowDoesNotContain, Arg.of("input", inputObject))
+                    .waitForStatus(LHStatus.ERROR)
+                    .start();
+        }
+
+        private static Stream<Arguments> provideSuccessArguments() {
+            // lhs is the collection/string, rhs is the element to search for
+            return Stream.of(
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("a", 1), Map.of("a", 1)), true),
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("hi", 2), "hi"), false),
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("hi", 2), 2), true),
+                    Arguments.of(
+                            new ConditionalsTest.InputObj(Arrays.asList(0), Arrays.asList(0)),
+                            true), // Will check for '[0]'
+                    Arguments.of(new ConditionalsTest.InputObj(Arrays.asList(0), 0), false),
+                    Arguments.of(new ConditionalsTest.InputObj("one", 1), true),
+                    Arguments.of(new ConditionalsTest.InputObj("one", "o"), false),
+                    Arguments.of(new ConditionalsTest.InputObj("2", 2), false),
+                    Arguments.of(new ConditionalsTest.InputObj(Map.of("a", 1), 2), true));
+        }
+    }
+
+    @Nested
+    class BooleanVariable {
+        @Test
+        void shouldExecuteIfBlockWhenBoolVarIsTrue() {
+            workflowVerifier
+                    .prepareRun(workflowBoolVarDoIf, Arg.of("my-bool", true))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isTrue())
+                    .start();
+        }
+
+        @Test
+        void shouldSkipIfBlockWhenBoolVarIsFalse() {
+            workflowVerifier
+                    .prepareRun(workflowBoolVarDoIf, Arg.of("my-bool", false))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.hasBool())
+                            .isFalse())
+                    .start();
+        }
+
+        @Test
+        void shouldExecuteIfBlockWhenBoolVarIsTrueWithIfElse() {
+            workflowVerifier
+                    .prepareRun(workflowBoolVarDoIfElse, Arg.of("my-bool", true))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isTrue())
+                    .start();
+        }
+
+        @Test
+        void shouldExecuteElseBlockWhenBoolVarIsFalseWithIfElse() {
+            workflowVerifier
+                    .prepareRun(workflowBoolVarDoIfElse, Arg.of("my-bool", false))
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .thenVerifyVariable(0, "result", variableValue -> assertThat(variableValue.getBool())
+                            .isFalse())
+                    .start();
         }
     }
 
@@ -394,8 +509,8 @@ public class ConditionalsTest {
             }
             execute(3);
              */
-            wf.doIf(wf.condition(input, Comparator.LESS_THAN, 15), ifBlock -> {
-                wf.doIf(wf.condition(input, Comparator.LESS_THAN, 10), ifBlock2 -> {
+            wf.doIf(input.isLessThan(15), ifBlock -> {
+                wf.doIf(input.isLessThan(10), ifBlock2 -> {
                     ifBlock2.execute("echo", 1);
                 });
                 ifBlock.execute("echo", 2);
@@ -448,12 +563,12 @@ public class ConditionalsTest {
             }
              */
             wf.doIfElse(
-                    wf.condition(input, Comparator.LESS_THAN, 10),
+                    input.isLessThan(10),
                     ifBlock -> {
                         ifBlock.execute("echo", 1);
                     },
                     elseBlock -> {
-                        wf.doIf(wf.condition(input, Comparator.LESS_THAN, 15), ifBlock -> {
+                        wf.doIf(input.isLessThan(15), ifBlock -> {
                             ifBlock.execute("echo", 2);
                         });
                         elseBlock.execute("echo", 3);
@@ -477,7 +592,7 @@ public class ConditionalsTest {
             thread.execute("ag-one");
 
             thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.EQUALS, input.jsonPath("$.rhs")),
+                    input.jsonPath("$.lhs").isEqualTo(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -498,7 +613,7 @@ public class ConditionalsTest {
             thread.execute("ag-one");
 
             thread.doIfElse(
-                    thread.condition(structA, Comparator.EQUALS, structB),
+                    structA.isEqualTo(structB),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -522,7 +637,7 @@ public class ConditionalsTest {
             thread.execute("ag-one");
 
             thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.NOT_EQUALS, input.jsonPath("$.rhs")),
+                    input.jsonPath("$.lhs").isNotEqualTo(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -546,7 +661,7 @@ public class ConditionalsTest {
             thread.execute("ag-one");
 
             thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.LESS_THAN, input.jsonPath("$.rhs")),
+                    input.jsonPath("$.lhs").isLessThan(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -565,17 +680,15 @@ public class ConditionalsTest {
             // schema.
             WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            // So that the run request succeeds even on workflows where we want
-            // a crash.
-            thread.execute("ag-one");
+            WfRunVariable result = thread.declareBool("result");
 
             thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.LESS_THAN_EQ, input.jsonPath("$.rhs")),
+                    input.jsonPath("$.lhs").isLessThanEq(input.jsonPath("$.rhs")),
                     ifBlock -> {
-                        ifBlock.execute("ag-one");
+                        result.assign(true);
                     },
                     elseBlock -> {
-                        elseBlock.execute("ag-two");
+                        result.assign(false);
                     });
         });
     }
@@ -589,17 +702,15 @@ public class ConditionalsTest {
             // schema.
             WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            // So that the run request succeeds even on workflows where we want
-            // a crash.
-            thread.execute("ag-one");
+            WfRunVariable result = thread.declareBool("result");
 
             thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.GREATER_THAN, input.jsonPath("$.rhs")),
+                    input.jsonPath("$.lhs").isGreaterThan(input.jsonPath("$.rhs")),
                     ifBlock -> {
-                        ifBlock.execute("ag-one");
+                        result.assign(true);
                     },
                     elseBlock -> {
-                        elseBlock.execute("ag-two");
+                        result.assign(false);
                     });
         });
     }
@@ -618,7 +729,7 @@ public class ConditionalsTest {
             thread.execute("ag-one");
 
             thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.GREATER_THAN_EQ, input.jsonPath("$.rhs")),
+                    input.jsonPath("$.lhs").isGreaterThanEq(input.jsonPath("$.rhs")),
                     ifBlock -> {
                         ifBlock.execute("ag-one");
                     },
@@ -637,17 +748,15 @@ public class ConditionalsTest {
             // schema.
             WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            // So that the run request succeeds even on workflows where we want
-            // a crash.
-            thread.execute("ag-one");
+            WfRunVariable result = thread.declareBool("result");
 
             thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.IN, input.jsonPath("$.rhs")),
+                    input.jsonPath("$.lhs").isIn(input.jsonPath("$.rhs")),
                     ifBlock -> {
-                        ifBlock.execute("ag-one");
+                        result.assign(true);
                     },
                     elseBlock -> {
-                        elseBlock.execute("ag-two");
+                        result.assign(false);
                     });
         });
     }
@@ -661,17 +770,78 @@ public class ConditionalsTest {
             // schema.
             WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            // So that the run request succeeds even on workflows where we want
-            // a crash.
-            thread.execute("ag-one");
+            WfRunVariable result = thread.declareBool("result");
 
             thread.doIfElse(
-                    thread.condition(input.jsonPath("$.lhs"), Comparator.NOT_IN, input.jsonPath("$.rhs")),
+                    input.jsonPath("$.lhs").isNotIn(input.jsonPath("$.rhs")),
                     ifBlock -> {
-                        ifBlock.execute("ag-one");
+                        result.assign(true);
                     },
                     elseBlock -> {
-                        elseBlock.execute("ag-two");
+                        result.assign(false);
+                    });
+        });
+    }
+
+    @LHWorkflow("test-conditionals-does-contain-workflow")
+    public Workflow getDoesContainWorkflow() {
+        return new WorkflowImpl("test-conditionals-does-contain-workflow", thread -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // LHS is the collection/string, RHS is the element to search for.
+            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+            WfRunVariable result = thread.declareBool("result");
+            thread.doIfElse(
+                    input.jsonPath("$.lhs").doesContain(input.jsonPath("$.rhs")),
+                    ifBlock -> {
+                        result.assign(true);
+                    },
+                    elseBlock -> {
+                        result.assign(false);
+                    });
+        });
+    }
+
+    @LHWorkflow("test-conditionals-does-not-contain-workflow")
+    public Workflow getDoesNotContainWorkflow() {
+        return new WorkflowImpl("test-conditionals-does-not-contain-workflow", thread -> {
+            // Use an input JSON blob with two fields, LHS and RHS.
+            // LHS is the collection/string, RHS is the element to search for.
+            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+            WfRunVariable result = thread.declareBool("result");
+            thread.doIfElse(
+                    input.jsonPath("$.lhs").doesNotContain(input.jsonPath("$.rhs")),
+                    ifBlock -> {
+                        result.assign(true);
+                    },
+                    elseBlock -> {
+                        result.assign(false);
+                    });
+        });
+    }
+
+    @LHWorkflow("test-conditionals-bool-var-do-if")
+    public Workflow getBoolVarDoIfWorkflow() {
+        return new WorkflowImpl("test-conditionals-bool-var-do-if", thread -> {
+            WfRunVariable myBool = thread.declareBool("my-bool");
+            WfRunVariable result = thread.declareBool("result");
+            thread.doIf(myBool, ifBlock -> {
+                result.assign(true);
+            });
+        });
+    }
+
+    @LHWorkflow("test-conditionals-bool-var-do-if-else")
+    public Workflow getBoolVarDoIfElseWorkflow() {
+        return new WorkflowImpl("test-conditionals-bool-var-do-if-else", thread -> {
+            WfRunVariable myBool = thread.declareBool("my-bool");
+            WfRunVariable result = thread.declareBool("result");
+            thread.doIfElse(
+                    myBool,
+                    ifBlock -> {
+                        result.assign(true);
+                    },
+                    elseBlock -> {
+                        result.assign(false);
                     });
         });
     }
@@ -701,6 +871,11 @@ public class ConditionalsTest {
         public InputObj(Object lhs, Object rhs) {
             this.lhs = lhs;
             this.rhs = rhs;
+        }
+
+        @Override
+        public String toString() {
+            return "InputObj{" + "lhs=" + lhs + ", rhs=" + rhs + '}';
         }
     }
 }

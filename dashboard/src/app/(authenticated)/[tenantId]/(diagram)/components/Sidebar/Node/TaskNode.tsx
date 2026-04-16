@@ -22,7 +22,7 @@ export const TaskNode: FC<{ node: TaskNodeProto }> = ({ node }) => {
       </div>
       <div className="flex gap-4">
         <TaskNodeMetric title="Retries" value={retries} />
-        <TaskNodeMetric title="Timeout" value={timeoutSeconds} measure="ms" />
+        <TaskNodeMetric title="Timeout" value={timeoutSeconds} measure="s" />
       </div>
 
       {exponentialBackoff && (

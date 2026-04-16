@@ -7,7 +7,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * A `SchemaFieldDef` defines a field inside a `StructDef`.
+ * The definition of a field in an InlineStructDef.
  * </pre>
  *
  * Protobuf type {@code littlehorse.StructFieldDef}
@@ -307,7 +307,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * A `SchemaFieldDef` defines a field inside a `StructDef`.
+   * The definition of a field in an InlineStructDef.
    * </pre>
    *
    * Protobuf type {@code littlehorse.StructFieldDef}

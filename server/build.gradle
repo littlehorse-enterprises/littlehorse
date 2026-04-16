@@ -5,6 +5,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'com.diffplug.spotless'
+    id("com.github.spotbugs") version "6.4.8"
 }
 
 java {
@@ -31,6 +32,18 @@ javadoc {
         'io/littlehorse/common/util/LHUtil.java'
     ]
     options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+spotbugs {
+    excludeFilter = file('spotbugs-exclude.xml')
+}
+
+tasks.spotbugsMain {
+    reports.create("html") {
+        required = true
+        outputLocation = file("$buildDir/reports/spotbugs.html")
+        setStylesheet("fancy-hist.xsl")
+    }
 }
 
 task sourcesJar(type: Jar) {
@@ -152,6 +165,26 @@ application {
     mainClass = 'io.littlehorse.App'
     executableDir = 'server'
     applicationDefaultJvmArgs = defaultJvmArgs
+}
+
+// Enable optional EXTRA_CLASSPATH support in generated start scripts (Unix & Windows)
+// This allows providing additional jars at runtime
+// Usage example (Unix):
+//   EXTRA_CLASSPATH=/opt/ext/aws-msk-iam-auth-2.2.0-all.jar ./server/bin/server
+// Usage example (Windows, PowerShell/CMD):
+//   set EXTRA_CLASSPATH=C:\ext\aws-msk-iam-auth-2.2.0-all.jar & server\bin\server.bat
+tasks.named('startScripts', CreateStartScripts) {
+    doLast {
+        unixScript.text = unixScript.text.replace(
+            'CLASSPATH=$APP_HOME/lib/',
+            'CLASSPATH=${EXTRA_CLASSPATH:-}:$APP_HOME/lib/'
+        )
+
+        windowsScript.text = windowsScript.text.replace(
+            'set CLASSPATH=%APP_HOME%\\lib\\',
+            'set CLASSPATH=%EXTRA_CLASSPATH%;%APP_HOME%\\lib\\'
+        )
+    }
 }
 
 compileJava {

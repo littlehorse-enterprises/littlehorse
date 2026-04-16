@@ -44,6 +44,8 @@ public class LHTimer extends Storeable<LHTimerPb> implements Forwardable {
             throw new IllegalArgumentException("Timer commands cannot have a response");
         }
         isRepartition = false;
+        principalId = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
+        tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
     }
 
     public LHTimer(CommandModel command, boolean isRepartition) {

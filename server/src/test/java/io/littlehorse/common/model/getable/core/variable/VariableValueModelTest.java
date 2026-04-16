@@ -35,6 +35,33 @@ public class VariableValueModelTest {
     }
 
     @Test
+    void shouldTreatEmptyValuesAsEqual() {
+        VariableValueModel left = new VariableValueModel();
+        VariableValueModel right = new VariableValueModel();
+
+        assertThat(left).isEqualTo(right);
+        assertThat(left.hashCode()).isEqualTo(right.hashCode());
+    }
+
+    @Test
+    void shouldNotThrowWhenComparingEmptyAndNonEmptyValues() {
+        VariableValueModel left = new VariableValueModel();
+        VariableValueModel right = new VariableValueModel("non-empty");
+
+        assertThat(left).isNotEqualTo(right);
+        assertThat(right).isNotEqualTo(left);
+    }
+
+    @Test
+    void shouldCompareByteValuesByContent() {
+        VariableValueModel left = new VariableValueModel(new byte[] {1, 2, 3});
+        VariableValueModel right = new VariableValueModel(new byte[] {1, 2, 3});
+
+        assertThat(left).isEqualTo(right);
+        assertThat(left.hashCode()).isEqualTo(right.hashCode());
+    }
+
+    @Test
     void castDoubleToInt() throws LHVarSubError {
         VariableValueModel doubleVarval = new VariableValueModel(22.1);
 

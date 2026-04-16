@@ -33,7 +33,6 @@ message WfRun {
   // Introduced now since with ThreadRun-level retention, we can't rely upon
   // thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed
   // from the thread_runs list once its retention period expires.
-
   int32 greatest_threadrun_number = 5;
 
   // The time the WfRun was started.
@@ -156,6 +155,7 @@ message ThreadRun {
   optional VariableValue output = 16;
 }
 
+// Represents an inactive ThreadRun which has been cleaned up by retention and archival mechanisms. 
 message InactiveThreadRun {
   ThreadRun thread_run = 1;
 }

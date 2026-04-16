@@ -43,16 +43,20 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "2-nop-NOP",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment 
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment 
                         {
                             LiteralValue = new VariableValue {Int = 5}
                         },
                         Comparator = Comparator.GreaterThanEq,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue {Int = 9}
+                        }
+                    
                         }
                     }   
                 },
@@ -113,32 +117,40 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "2-task-a-TASK",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 5 }
                         },
                         Comparator = Comparator.GreaterThanEq,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 9 }
+                        }
+                    
                         }
                     }
                 },
                 new Edge
                 {
                     SinkNodeName = "4-task-b-TASK",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 7 }
                         },
                         Comparator = Comparator.LessThan,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 4 }
+                        }
+                    
                         }
                     },
                     VariableMutations =
@@ -157,16 +169,20 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "5-task-c-TASK",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 5 }
                         },
                         Comparator = Comparator.Equals,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 5 }
+                        }
+                    
                         }
                     }
                 },
@@ -241,32 +257,40 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "2-task-a-TASK",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 5 }
                         },
                         Comparator = Comparator.GreaterThanEq,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 9 }
+                        }
+                    
                         }
                     }
                 },
                 new Edge
                 {
                     SinkNodeName = "4-task-b-TASK",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 7 }
                         },
                         Comparator = Comparator.LessThan,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 4 }
+                        }
+                    
                         }
                     },
                     VariableMutations =
@@ -364,32 +388,40 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "2-task-a-TASK",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 5 }
                         },
                         Comparator = Comparator.GreaterThanEq,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 9 }
+                        }
+                    
                         }
                     }
                 },
                 new Edge
                 {
                     SinkNodeName = "5-task-b-TASK",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 7 }
                         },
                         Comparator = Comparator.LessThan,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 4 }
+                        }
+                    
                         }
                     }
                 },
@@ -450,16 +482,20 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "2-complete-EXIT",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 5 }
                         },
                         Comparator = Comparator.GreaterThanEq,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 9 }
+                        }
+                    
                         }
                     }
                 },
@@ -650,32 +686,40 @@ public class WorkflowIfStatementTest
                 new Edge
                 {
                     SinkNodeName = "2-complete-EXIT",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 5 }
                         },
                         Comparator = Comparator.GreaterThanEq,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 9 }
+                        }
+                    
                         }
                     }
                 },
                 new Edge
                 {
                     SinkNodeName = "4-task-b-TASK",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 2 }
                         },
                         Comparator = Comparator.LessThan,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue { Int = 4 }
+                        }
+                    
                         }
                     }
                 },

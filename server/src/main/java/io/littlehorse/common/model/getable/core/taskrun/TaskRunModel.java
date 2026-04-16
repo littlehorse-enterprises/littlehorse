@@ -8,6 +8,7 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.failure.LHTaskErrorModel;
@@ -16,6 +17,7 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyM
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.IngressTypeUtils;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
@@ -257,6 +259,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
     }
 
     public void onTaskAttemptStarted(TaskClaimEventModel se) {
+        TaskAttemptModel attempt = getLatestAttempt();
+        Date scheduleTime = attempt.getScheduleTime();
+
         transitionTo(TaskStatus.TASK_RUNNING);
 
         // create a timer to mark the task is timeout if it does not finish
@@ -264,11 +269,18 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
 
         // Now that that's out of the way, we can mark the TaskRun as running.
         // Also we need to save the task worker version and client id.
-        TaskAttemptModel attempt = getLatestAttempt();
         attempt.setTaskWorkerId(se.getTaskWorkerId());
         attempt.setTaskWorkerVersion(se.getTaskWorkerVersion());
         attempt.setStartTime(se.getTime());
         attempt.setStatus(TaskStatus.TASK_RUNNING);
+
+        PartitionMetricWindowModel.trackTaskAttempt(
+                processorContext,
+                taskDefId,
+                TaskStatus.TASK_SCHEDULED,
+                TaskStatus.TASK_RUNNING,
+                scheduleTime,
+                se.getTime());
     }
 
     public void sendUpdatedTimeoutTimerCommand(CoreProcessorContext context) {
@@ -325,10 +337,26 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         attempt.setEndTime(taskRunReport.getTime());
         attempt.setLogOutput(taskRunReport.getLogOutput());
 
+        String taskOutputValidationError = null;
+        if (taskRunReport.getStatus() == TaskStatus.TASK_SUCCESS
+                && returnType.isPresent()
+                && taskRunReport.getOutput() != null) {
+            try {
+                IngressTypeUtils.applyExpectedTypeAndValidate(
+                        returnType, taskRunReport.getOutput(), executionContext.metadataManager());
+            } catch (LHApiException ex) {
+                taskOutputValidationError = "Task output incompatible with declared return type: " + ex.getMessage();
+            }
+        }
+
         if (taskRunReport.getOutput() != null
                 && taskRunReport.getOutput().getDeserializationError().isPresent()) {
             attempt.setError(new LHTaskErrorModel(
                     taskRunReport.getOutput().getDeserializationError().get(), LHErrorType.VAR_SUB_ERROR));
+            attempt.setStatus(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
+            transitionTo(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
+        } else if (taskOutputValidationError != null) {
+            attempt.setError(new LHTaskErrorModel(taskOutputValidationError, LHErrorType.VAR_SUB_ERROR));
             attempt.setStatus(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
             transitionTo(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
         } else {
@@ -339,7 +367,6 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             if (taskRunReport.getException() != null) {
                 attempt.setOutput(taskRunReport.getException().getContent());
             }
-
             if (taskRunReport.getStatus() == TaskStatus.TASK_SUCCESS) {
                 // Tell the WfRun that the TaskRun is done.
                 transitionTo(TaskStatus.TASK_SUCCESS);
@@ -349,6 +376,14 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 transitionTo(taskRunReport.getStatus());
             }
         }
+
+        PartitionMetricWindowModel.trackTaskAttempt(
+                processorContext,
+                taskDefId,
+                TaskStatus.TASK_RUNNING,
+                attempt.getStatus(),
+                attempt.getStartTime(),
+                attempt.getEndTime());
 
         // The WfRun may need to advance.
         processorContext.getableManager().get(getWfRunId()).advance(taskRunReport.getTime());
@@ -376,6 +411,14 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
 
         attempt.setStatus(TaskStatus.TASK_SCHEDULED);
         attempt.setScheduleTime(new Date());
+
+        PartitionMetricWindowModel.trackTaskAttempt(
+                processorContext,
+                taskDefId,
+                TaskStatus.TASK_PENDING,
+                TaskStatus.TASK_SCHEDULED,
+                attempt.getPendingTime(),
+                attempt.getScheduleTime());
 
         ScheduledTaskModel scheduledTask = new ScheduledTaskModel();
         scheduledTask.setVariables(inputVariables);
@@ -428,5 +471,22 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 .getableUpdates()
                 .dispatch(GetableUpdates.create(
                         taskDefId, processorContext.authorization().tenantId(), previousStatus, newStatus));
+
+        if (isTerminalStatus(newStatus)) {
+            Date endTime = getLatestAttempt() != null ? getLatestAttempt().getEndTime() : null;
+            PartitionMetricWindowModel.trackTaskRun(processorContext, taskDefId, newStatus, scheduledAt, endTime);
+        }
+    }
+
+    private static boolean isTerminalStatus(TaskStatus status) {
+        return switch (status) {
+            case TASK_SUCCESS,
+                    TASK_FAILED,
+                    TASK_EXCEPTION,
+                    TASK_TIMEOUT,
+                    TASK_OUTPUT_SERDE_ERROR,
+                    TASK_INPUT_VAR_SUB_ERROR -> true;
+            default -> false;
+        };
     }
 }

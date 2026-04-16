@@ -5,6 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 import "common_wfspec.proto";
+import "type_definition.proto";
 import "common_enums.proto";
 import "object_id.proto";
 import "variable.proto";
@@ -19,6 +20,7 @@ import "struct_def.proto";
 import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
+import "metrics.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -63,19 +65,18 @@ service LittleHorse {
    */
   rpc MigrateWfSpec(MigrateWfSpecRequest) returns (WfSpec) {}
 
-  /* EXPERIMENTAL: Creates a new `StructDef``.
+  /* Creates a StructDef.
    *
    * Note that this request is idempotent: if you
    * make a request to create a `StructDef` identical to the currently-created
    * one with the same `name`, no new `StructDef` will be created. This is the
    * same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
    *
-   * For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-   * enum within the `PutStructDefRequest`.
+   * For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
    */
   rpc PutStructDef(PutStructDefRequest) returns (StructDef) {}
 
-  // EXPERIMENTAL: Get a StructDef.
+  // Gets a StructDef.
   rpc GetStructDef(StructDefId) returns (StructDef) {}
 
   // EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
@@ -253,7 +254,7 @@ service LittleHorse {
   // Search for all available TenantIds for current Principal
   rpc SearchTenant(SearchTenantRequest) returns (TenantIdList) {}
 
-  //
+  // Search for Principals
   rpc SearchPrincipal(SearchPrincipalRequest) returns (PrincipalIdList) {}
 
   // Search for StructDef's
@@ -320,7 +321,9 @@ service LittleHorse {
   // Deletes a CorrelatedEvent
   rpc DeleteCorrelatedEvent(DeleteCorrelatedEventRequest) returns (google.protobuf.Empty) {}
 
+  // Deletes a WorkflowEventDef.
   rpc DeleteWorkflowEventDef(DeleteWorkflowEventDefRequest) returns (google.protobuf.Empty) {}
+  
   // Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
   // is the last remaining `Principal` with admin permissions. Admin permissions are defined
   // as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
@@ -332,20 +335,26 @@ service LittleHorse {
   rpc GetTaskDefMetricsWindow(TaskDefMetricsQueryRequest) returns (TaskDefMetrics) {}
   // Returns WfSpec Metrics for a specific WfSpec and a specific time window.
   rpc GetWfSpecMetricsWindow(WfSpecMetricsQueryRequest) returns (WfSpecMetrics) {}
-  // Returns a list of TaskDef Metrics Windows.
-  rpc ListTaskDefMetrics(ListTaskMetricsRequest) returns (ListTaskMetricsResponse) {}
-  // Returns a list of WfSpec Metrics Windows.
-  rpc ListWfSpecMetrics(ListWfMetricsRequest) returns (ListWfMetricsResponse) {}
+  
+  // Lists available metric windows for a given TaskDefId and time range.
+  rpc ListTaskMetrics(ListTaskMetricsRequest) returns (MetricsList) {}
+  // Lists available metric windows for a given WfSpecId and time range.
+  rpc ListWfMetrics(ListWfMetricsRequest) returns (MetricsList) {}
+  // Gets a MetricWindow by its ID.
+  rpc GetMetricWindow(MetricWindowId) returns (MetricWindow) {}
+  // Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+  rpc SearchWfMetricWindow(SearchWfMetricWindowRequest) returns (MetricWindowIdList) {}
 
-  // EXPERIMENTAL: Creates another Tenant in the LH Server.
+  // Creates a Tenant in the LH Server.
   rpc PutTenant(PutTenantRequest) returns (Tenant) {}
 
-  // EXPERIMENTAL: Gets a Tenant from the LH Server.
+  // Gets a Tenant from the LH Server.
   rpc GetTenant(TenantId) returns (Tenant) {}
 
-  // EXPERIMENTAL: Creates an Principal.
+  // Creates a Principal.
   rpc PutPrincipal(PutPrincipalRequest) returns (Principal) {}
 
+  // Gets a Principal.
   rpc GetPrincipal(PrincipalId) returns (Principal) {}
 
   // Returns the Principal of the caller.
@@ -353,6 +362,7 @@ service LittleHorse {
 
   // Gets the version of the LH Server.
   rpc GetServerVersion(google.protobuf.Empty) returns (LittleHorseVersion) {}
+
 }
 // Returns the UserTaskDef with a given name and the highest version number.
 message GetLatestUserTaskDefRequest {
@@ -435,9 +445,7 @@ message PutStructDefRequest {
   //
   // Then the request will be accepted or rejected based on the value of the
   // allowed_update_types.
-  StructDefCompatibilityType allowed_updates = 4;
-
-  
+  StructDefCompatibilityType allowed_updates = 4;  
 }
 
 // Request to validate the evolution of an existing StructDef to a new StructDef
@@ -460,6 +468,8 @@ message ValidateStructDefEvolutionResponse {
   bool is_valid = 1;
 }
 
+// This enum controls the behavior of a PutStructDefRequest and ValidateStructDefEvolutionRequest
+// when a StructDef with the same name already exists.
 enum StructDefCompatibilityType {
   // No updates are allowed.
   NO_SCHEMA_UPDATES = 0;
@@ -971,8 +981,8 @@ message SearchUserTaskDefRequest {
   }
 }
 
+// Search for StructDef's.
 message SearchStructDefRequest {
-
   // Bookmark for cursor-based pagination; pass if applicable.
   optional bytes bookmark = 1;
 
@@ -989,6 +999,7 @@ message SearchStructDefRequest {
   }
 }
 
+// List of StructDef Id's.
 message StructDefIdList {
   // The result object Id's
   repeated StructDefId results = 1;
@@ -1093,6 +1104,7 @@ message SearchTenantRequest {
       optional bytes bookmark = 2;
 }
 
+// List of Tenant Id's
 message TenantIdList {
       // The resulting object id's.
       repeated TenantId results = 1;
@@ -1115,12 +1127,13 @@ message SearchPrincipalRequest {
 
   oneof principal_criteria {
     // List only Principals that are admins
-    bool isAdmin = 5;
+    bool is_admin = 5;
     // List Principals associated with this Tenant ID
-    string tenantId = 6;
+    string tenant_id = 6;
   }
 }
 
+// List of Principal Id's
 message PrincipalIdList {
   // The resulting object id's.
   repeated PrincipalId results = 1;
@@ -1522,36 +1535,7 @@ message TaskDefMetricsQueryRequest {
   optional string task_def_name = 3;
 }
 
-// Query to retrieve TaskDef Metrics over a period of time.
-message ListTaskMetricsRequest {
-  // TaskDef id for whichwe retrieve metrics.
-  TaskDefId task_def_id = 1;
 
-  // This parameter is a timestamp that is used to determine the *last* window returned. The
-  // server will then return `num_windows` worth of data from before this timestamp.
-  google.protobuf.Timestamp last_window_start = 2;
-  // Window size
-  MetricsWindowLength window_length = 3;
-  // Number of windows to retrieve.
-  int32 num_windows = 4;
-
-  // Bookmark for cursor-based pagination; pass if applicable.
-  optional bytes bookmark = 5;
-
-  // Maximum results to return in one request.
-  optional int32 limit = 6;
-}
-
-// A list of TaskDef Metrics WIndows
-message ListTaskMetricsResponse {
-  // List of TaskDef Metrics Windows
-  repeated TaskDefMetrics results = 1;
-
-  // The bookmark can be used for cursor-based pagination. If it is null, the server
-  // has returned all results. If it is set, you can pass it into your next request
-  // to resume searching where your previous request left off.
-  optional bytes bookmark = 2;
-}
 
 // Query to retrieve a specific WfSpec Metrics Window.
 message WfSpecMetricsQueryRequest {
@@ -1564,27 +1548,6 @@ message WfSpecMetricsQueryRequest {
 
   // The window size
   MetricsWindowLength window_length = 3;
-}
-
-// Query to retrieve WfSpec Metrics over a period of time.
-message ListWfMetricsRequest {
-  // WfSpecId of metrics to get.
-  WfSpecId wf_spec_id = 1;
-
-  // This parameter is a timestamp that is used to determine the *last* window returned. The
-  // server will then return `num_windows` worth of data from before this timestamp.
-  google.protobuf.Timestamp last_window_start = 2;
-
-  // The window size
-  MetricsWindowLength window_length = 3;
-  // Number of windows to retrieve
-  int32 num_windows = 4;
-
-  // Bookmark for cursor-based pagination; pass if applicable.
-  optional bytes bookmark = 5;
-
-  // Maximum results to return in one request.
-  optional int32 limit = 6;
 }
 
 // A list of WfSpec Metrics Windows

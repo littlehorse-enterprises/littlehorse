@@ -27,7 +27,8 @@
  */
 
 import { VariableType } from '../proto/common_enums'
-import { VariableDef, TypeDefinition, StructFieldDef } from '../proto/common_wfspec'
+import { VariableDef, StructFieldDef } from '../proto/common_wfspec'
+import { TypeDefinition } from '../proto/type_definition'
 import { PutStructDefRequest, StructDefCompatibilityType } from '../proto/service'
 import { VariableValue, StructField } from '../proto/variable'
 import { toVariableValue } from './variableMapping'
@@ -282,9 +283,13 @@ export function toStructVariableValue(
     if (fieldDef?._tag === 'struct' && val !== null && val !== undefined && typeof val === 'object') {
       fields[key] = {
         value: toStructVariableValue(val as Record<string, unknown>, fieldDef.schema),
+        masked: fieldDef.masked,
       }
     } else {
-      fields[key] = { value: toVariableValue(val) }
+      fields[key] = {
+        value: toVariableValue(val),
+        masked: fieldDef?.masked ?? false,
+      }
     }
   }
 

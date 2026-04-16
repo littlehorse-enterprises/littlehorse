@@ -11,38 +11,62 @@ public interface UTActionTriggerOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Schedule a Reminder Task.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
    * @return Whether the task field is set.
    */
   boolean hasTask();
   /**
+   * <pre>
+   * Schedule a Reminder Task.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
    * @return The task.
    */
   io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask getTask();
   /**
+   * <pre>
+   * Schedule a Reminder Task.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTATask task = 1;</code>
    */
   io.littlehorse.sdk.common.proto.UTActionTrigger.UTATaskOrBuilder getTaskOrBuilder();
 
   /**
+   * <pre>
+   * Cancel the UserTaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
    * @return Whether the cancel field is set.
    */
   boolean hasCancel();
   /**
+   * <pre>
+   * Cancel the UserTaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
    * @return The cancel.
    */
   io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel getCancel();
   /**
+   * <pre>
+   * Cancel the UserTaskRun.
+   * </pre>
+   *
    * <code>.littlehorse.UTActionTrigger.UTACancel cancel = 2;</code>
    */
   io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancelOrBuilder getCancelOrBuilder();
 
   /**
    * <pre>
-   * later on, might enable scheduling entire ThreadRuns
+   * Reassign the UserTaskRun to a different user or user group.
    * </pre>
    *
    * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
@@ -51,7 +75,7 @@ public interface UTActionTriggerOrBuilder extends
   boolean hasReassign();
   /**
    * <pre>
-   * later on, might enable scheduling entire ThreadRuns
+   * Reassign the UserTaskRun to a different user or user group.
    * </pre>
    *
    * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>
@@ -60,7 +84,7 @@ public interface UTActionTriggerOrBuilder extends
   io.littlehorse.sdk.common.proto.UTActionTrigger.UTAReassign getReassign();
   /**
    * <pre>
-   * later on, might enable scheduling entire ThreadRuns
+   * Reassign the UserTaskRun to a different user or user group.
    * </pre>
    *
    * <code>.littlehorse.UTActionTrigger.UTAReassign reassign = 3;</code>

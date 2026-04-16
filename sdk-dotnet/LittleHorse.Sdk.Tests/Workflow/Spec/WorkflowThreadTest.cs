@@ -819,11 +819,15 @@ public class WorkflowThreadTest
         {
             WaitForCondition = new WaitForConditionNode
             {
-                Condition = new EdgeCondition
+                                Condition = new VariableAssignment
                 {
-                    Left = new VariableAssignment { VariableName = "counter" },
+                    Expression = new VariableAssignment.Types.Expression
+                    {
+                    Lhs = new VariableAssignment { VariableName = "counter" },
                     Comparator = Comparator.Equals,
-                    Right = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                    Rhs = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                
+                    }
                 }
             },
             OutgoingEdges = { new Edge { SinkNodeName = "2-exit-EXIT" } }
@@ -1301,9 +1305,11 @@ public class WorkflowThreadTest
                 new Edge
                 {
                     SinkNodeName = "2-add-address-TASK",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue
                             {
@@ -1311,9 +1317,11 @@ public class WorkflowThreadTest
                             }
                         },
                         Comparator = Comparator.In,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             VariableName = "data"
+                        }
+                    
                         }
                     }
                 },
@@ -1355,9 +1363,11 @@ public class WorkflowThreadTest
                 new Edge
                 {
                     SinkNodeName = "2-add-address-TASK",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue
                             {
@@ -1365,9 +1375,11 @@ public class WorkflowThreadTest
                             }
                         },
                         Comparator = Comparator.NotIn,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             VariableName = "data"
+                        }
+                    
                         }
                     }
                 },
@@ -1409,19 +1421,23 @@ public class WorkflowThreadTest
                 new Edge
                 {
                     SinkNodeName = "2-task-TASK",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             VariableName = "input"
                         },
                         Comparator = Comparator.In,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue
                             {
                                 JsonArr = "[\"A\",\"B\",\"C\"]"
                             }
+                        }
+                    
                         }
                     }
                 },
@@ -1463,19 +1479,23 @@ public class WorkflowThreadTest
                 new Edge
                 {
                     SinkNodeName = "2-task-TASK",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             VariableName = "input"
                         },
                         Comparator = Comparator.NotIn,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue
                             {
                                 JsonArr = "[\"A\",\"B\",\"C\"]"
                             }
+                        }
+                    
                         }
                     }
                 },
@@ -1523,19 +1543,23 @@ public class WorkflowThreadTest
                 new Edge
                 {
                     SinkNodeName = "2-task-TASK",
-                    Condition = new EdgeCondition
+                                        Condition = new VariableAssignment
                     {
-                        Left = new VariableAssignment
+                        Expression = new VariableAssignment.Types.Expression
+                        {
+                        Lhs = new VariableAssignment
                         {
                             VariableName = "input"
                         },
                         Comparator = comparator,
-                        Right = new VariableAssignment
+                        Rhs = new VariableAssignment
                         {
                             LiteralValue = new VariableValue
                             {
                                 Int = value
                             }
+                        }
+                    
                         }
                     }
                 },

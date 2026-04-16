@@ -6,6 +6,8 @@ import io.grpc.CompositeCallCredentials;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.TlsChannelCredentials;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapter;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.auth.OAuthClient;
 import io.littlehorse.sdk.common.auth.OAuthConfig;
 import io.littlehorse.sdk.common.auth.OAuthCredentialsProvider;
@@ -24,7 +26,9 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
@@ -119,11 +123,13 @@ public class LHConfig extends ConfigBase {
     private OAuthClient oauthClient;
     private OAuthConfig oauthConfig;
     private OAuthCredentialsProvider oauthCredentialsProvider;
+    private final LHTypeAdapterRegistry typeAdapterRegistry;
 
     /** Creates an LHConfig. Loads default values for config from env vars. */
     public LHConfig() {
         super();
         createdChannels = new HashMap<>();
+        typeAdapterRegistry = LHTypeAdapterRegistry.empty();
     }
 
     /**
@@ -134,6 +140,7 @@ public class LHConfig extends ConfigBase {
     public LHConfig(Properties props) {
         super(props);
         createdChannels = new HashMap<>();
+        typeAdapterRegistry = LHTypeAdapterRegistry.empty();
     }
 
     /**
@@ -144,6 +151,7 @@ public class LHConfig extends ConfigBase {
     public LHConfig(Path propLocation) {
         super(propLocation);
         createdChannels = new HashMap<>();
+        typeAdapterRegistry = LHTypeAdapterRegistry.empty();
     }
 
     /**
@@ -154,58 +162,140 @@ public class LHConfig extends ConfigBase {
     public LHConfig(String propLocation) {
         super(propLocation);
         createdChannels = new HashMap<>();
+        typeAdapterRegistry = LHTypeAdapterRegistry.empty();
     }
 
-    private LHConfig(ConfigSource configSource) {
+    private LHConfig(ConfigSource configSource, LHTypeAdapterRegistry typeAdapterRegistry) {
         super(configSource);
         createdChannels = new HashMap<>();
+        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
     }
 
+    /**
+     * Creates a new builder for constructing an LHConfig.
+     *
+     * @return a new LHConfigBuilder
+     */
     public static LHConfigBuilder newBuilder() {
         return new LHConfigBuilder();
     }
 
+    /**
+     * Fluent builder for composing configuration from multiple sources.
+     */
     public static class LHConfigBuilder {
 
         private final ConfigSource configSource = ConfigSource.newSource();
+        private Map<Class<?>, LHTypeAdapter<?>> typeAdaptersByClass = new LinkedHashMap<>();
 
+        /** Default constructor for the builder. */
+        public LHConfigBuilder() {}
+
+        /**
+         * Loads key/value pairs into this builder.
+         *
+         * @param map config values to load
+         * @return this builder
+         */
         public LHConfigBuilder loadFromMap(Map<?, ?> map) {
             configSource.loadFromMap(map);
             return this;
         }
 
+        /**
+         * Loads values from another ConfigSource.
+         *
+         * @param configSource source to load from
+         * @return this builder
+         */
         public LHConfigBuilder loadFromConfigSource(ConfigSource configSource) {
             configSource.loadFromConfigSource(configSource);
             return this;
         }
 
+        /**
+         * Loads Java properties into this builder.
+         *
+         * @param properties properties to load
+         * @return this builder
+         */
         public LHConfigBuilder loadFromProperties(Properties properties) {
             configSource.loadFromProperties(properties);
             return this;
         }
 
+        /**
+         * Loads properties from a file path.
+         *
+         * @param path path to a properties file
+         * @return this builder
+         */
         public LHConfigBuilder loadFromPropertiesFile(Path path) {
             configSource.loadFromPropertiesFile(path);
             return this;
         }
 
+        /**
+         * Loads properties from a file path string.
+         *
+         * @param path path to a properties file
+         * @return this builder
+         */
         public LHConfigBuilder loadFromPropertiesFile(String path) {
             configSource.loadFromPropertiesFile(path);
             return this;
         }
 
+        /**
+         * Loads properties from a file.
+         *
+         * @param file properties file
+         * @return this builder
+         */
         public LHConfigBuilder loadFromPropertiesFile(File file) {
             configSource.loadFromPropertiesFile(file);
             return this;
         }
 
+        /**
+         * Loads environment variables into this builder.
+         *
+         * @return this builder
+         */
         public LHConfigBuilder loadFromEnvVariables() {
             configSource.loadFromEnvVariables();
             return this;
         }
 
+        /**
+         * Registers a type adapter to this config. Type adapters registered to the config will be used by
+         * the SDK for type conversions anywhere that user defined classes can be found.
+         *
+         * Examples of where these Type Adapters may be used include TaskDef input and output variables and StructDef fields.
+         *
+         * @param <T> the custom Java type handled by this adapter
+         * @param adapter the type adapter to register
+         * @return this builder
+         */
+        public <T> LHConfigBuilder addTypeAdapter(LHTypeAdapter<T> adapter) {
+            Objects.requireNonNull(adapter, "Type adapter cannot be null");
+            if (typeAdaptersByClass.containsKey(adapter.getTypeClass())) {
+                throw new IllegalArgumentException("A type adapter for "
+                        + adapter.getTypeClass().getName() + " is already registered to this worker");
+            }
+
+            typeAdaptersByClass.put(adapter.getTypeClass(), adapter);
+
+            return this;
+        }
+
+        /**
+         * Builds a new LHConfig from all loaded sources.
+         *
+         * @return a new LHConfig instance
+         */
         public LHConfig build() {
-            return new LHConfig(configSource);
+            return new LHConfig(configSource, LHTypeAdapterRegistry.from(new LinkedHashMap<>(typeAdaptersByClass)));
         }
     }
 
@@ -217,6 +307,7 @@ public class LHConfig extends ConfigBase {
     public LHConfig(Map<String, Object> configs) {
         super(configs);
         createdChannels = new HashMap<>();
+        typeAdapterRegistry = LHTypeAdapterRegistry.empty();
     }
 
     /**
@@ -426,22 +517,47 @@ public class LHConfig extends ConfigBase {
         return LittleHorseGrpc.newStub(getChannel(host, port));
     }
 
+    /**
+     * Returns the configured gRPC keepalive time in milliseconds.
+     *
+     * @return keepalive interval in milliseconds
+     */
     public long getKeepaliveTimeMs() {
         return Long.valueOf(getOrSetDefault(GRPC_KEEPALIVE_TIME_MS_KEY, "45000"));
     }
 
+    /**
+     * Returns the configured gRPC keepalive timeout in milliseconds.
+     *
+     * @return keepalive timeout in milliseconds
+     */
     public long getKeepaliveTimeoutMs() {
         return Long.valueOf(getOrSetDefault(GRPC_KEEPALIVE_TIMEOUT_MS_KEY, "5000"));
     }
 
+    /**
+     * Returns the configured bootstrap API host.
+     *
+     * @return bootstrap host
+     */
     public String getApiBootstrapHost() {
         return getOrSetDefault(API_HOST_KEY, "localhost");
     }
 
+    /**
+     * Returns the configured bootstrap API port.
+     *
+     * @return bootstrap port
+     */
     public int getApiBootstrapPort() {
         return Integer.valueOf(getOrSetDefault(API_PORT_KEY, "2023"));
     }
 
+    /**
+     * Returns the configured API protocol.
+     *
+     * @return API protocol value
+     */
     public String getApiProtocol() {
         String protocol = getOrSetDefault(API_PROTOCOL_KEY, DEFAULT_PROTOCOL);
         if (!protocol.equals(DEFAULT_PROTOCOL) && !protocol.equals("TLS")) {
@@ -450,20 +566,40 @@ public class LHConfig extends ConfigBase {
         return protocol;
     }
 
+    /**
+     * Returns the configured task worker id.
+     *
+     * @return task worker id
+     */
     public String getTaskWorkerId() {
         return getOrSetDefault(
                 TASK_WORKER_ID_KEY, "worker-" + UUID.randomUUID().toString().replaceAll("-", ""));
     }
 
+    /**
+     * Returns the configured tenant id.
+     *
+     * @return tenant id used for API calls
+     */
     public TenantId getTenantId() {
         String tenantId = getOrSetDefault(TENANT_ID_KEY, "default");
         return TenantId.newBuilder().setId(tenantId).build();
     }
 
+    /**
+     * Returns the configured number of in-flight tasks per polling thread.
+     *
+     * @return in-flight task count
+     */
     public Integer getInflightTasks() {
         return Integer.valueOf(getOrSetDefault(INFLIGHT_TASKS_KEY, "1"));
     }
 
+    /**
+     * Returns whether OAuth is configured and initializes OAuth helpers when enabled.
+     *
+     * @return true when OAuth config is complete; false otherwise
+     */
     public boolean isOauth() {
         String clientId = getOrSetDefault(OAUTH_CLIENT_ID_KEY, null);
         String clientSecret = getOrSetDefault(OAUTH_CLIENT_SECRET_KEY, null);
@@ -511,5 +647,17 @@ public class LHConfig extends ConfigBase {
      */
     public int getWorkerThreads() {
         return Integer.valueOf(getOrSetDefault(NUM_WORKER_THREADS_KEY, "2"));
+    }
+
+    /**
+     * Returns an immutable registry view of all currently registered type adapters.
+     *
+     * <p>This accessor is primarily intended for SDK internal use and wiring between SDK
+     * components.
+     *
+     * @return a type adapter registry for the current configuration
+     */
+    public LHTypeAdapterRegistry getTypeAdapterRegistry() {
+        return typeAdapterRegistry;
     }
 }

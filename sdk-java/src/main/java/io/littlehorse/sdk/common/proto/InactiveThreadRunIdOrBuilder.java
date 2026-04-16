@@ -11,21 +11,37 @@ public interface InactiveThreadRunIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The WfRunId of the InactiveThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
   boolean hasWfRunId();
   /**
+   * <pre>
+   * The WfRunId of the InactiveThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    * @return The wfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
   /**
+   * <pre>
+   * The WfRunId of the InactiveThreadRun.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunId wf_run_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
 
   /**
+   * <pre>
+   * The ThreadRun number of the InactiveThreadRun.
+   * </pre>
+   *
    * <code>int32 thread_run_number = 2;</code>
    * @return The threadRunNumber.
    */

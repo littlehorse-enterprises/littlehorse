@@ -102,8 +102,10 @@ const (
 	LittleHorse_DeleteScheduledWfRun_FullMethodName       = "/littlehorse.LittleHorse/DeleteScheduledWfRun"
 	LittleHorse_GetTaskDefMetricsWindow_FullMethodName    = "/littlehorse.LittleHorse/GetTaskDefMetricsWindow"
 	LittleHorse_GetWfSpecMetricsWindow_FullMethodName     = "/littlehorse.LittleHorse/GetWfSpecMetricsWindow"
-	LittleHorse_ListTaskDefMetrics_FullMethodName         = "/littlehorse.LittleHorse/ListTaskDefMetrics"
-	LittleHorse_ListWfSpecMetrics_FullMethodName          = "/littlehorse.LittleHorse/ListWfSpecMetrics"
+	LittleHorse_ListTaskMetrics_FullMethodName            = "/littlehorse.LittleHorse/ListTaskMetrics"
+	LittleHorse_ListWfMetrics_FullMethodName              = "/littlehorse.LittleHorse/ListWfMetrics"
+	LittleHorse_GetMetricWindow_FullMethodName            = "/littlehorse.LittleHorse/GetMetricWindow"
+	LittleHorse_SearchWfMetricWindow_FullMethodName       = "/littlehorse.LittleHorse/SearchWfMetricWindow"
 	LittleHorse_PutTenant_FullMethodName                  = "/littlehorse.LittleHorse/PutTenant"
 	LittleHorse_GetTenant_FullMethodName                  = "/littlehorse.LittleHorse/GetTenant"
 	LittleHorse_PutPrincipal_FullMethodName               = "/littlehorse.LittleHorse/PutPrincipal"
@@ -141,17 +143,16 @@ type LittleHorseClient interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(ctx context.Context, in *MigrateWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
-	// EXPERIMENTAL: Creates a new `StructDef“.
+	// Creates a StructDef.
 	//
 	// Note that this request is idempotent: if you
 	// make a request to create a `StructDef` identical to the currently-created
 	// one with the same `name`, no new `StructDef` will be created. This is the
 	// same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
 	//
-	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-	// enum within the `PutStructDefRequest`.
+	// For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
 	PutStructDef(ctx context.Context, in *PutStructDefRequest, opts ...grpc.CallOption) (*StructDef, error)
-	// EXPERIMENTAL: Get a StructDef.
+	// Gets a StructDef.
 	GetStructDef(ctx context.Context, in *StructDefId, opts ...grpc.CallOption) (*StructDef, error)
 	// EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
 	ValidateStructDefEvolution(ctx context.Context, in *ValidateStructDefEvolutionRequest, opts ...grpc.CallOption) (*ValidateStructDefEvolutionResponse, error)
@@ -280,6 +281,7 @@ type LittleHorseClient interface {
 	SearchWorkflowEventDef(ctx context.Context, in *SearchWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDefIdList, error)
 	// Search for all available TenantIds for current Principal
 	SearchTenant(ctx context.Context, in *SearchTenantRequest, opts ...grpc.CallOption) (*TenantIdList, error)
+	// Search for Principals
 	SearchPrincipal(ctx context.Context, in *SearchPrincipalRequest, opts ...grpc.CallOption) (*PrincipalIdList, error)
 	// Search for StructDef's
 	SearchStructDef(ctx context.Context, in *SearchStructDefRequest, opts ...grpc.CallOption) (*StructDefIdList, error)
@@ -338,6 +340,7 @@ type LittleHorseClient interface {
 	DeleteExternalEventDef(ctx context.Context, in *DeleteExternalEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a CorrelatedEvent
 	DeleteCorrelatedEvent(ctx context.Context, in *DeleteCorrelatedEventRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Deletes a WorkflowEventDef.
 	DeleteWorkflowEventDef(ctx context.Context, in *DeleteWorkflowEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
@@ -349,16 +352,21 @@ type LittleHorseClient interface {
 	GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(ctx context.Context, in *WfSpecMetricsQueryRequest, opts ...grpc.CallOption) (*WfSpecMetrics, error)
-	// Returns a list of TaskDef Metrics Windows.
-	ListTaskDefMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*ListTaskMetricsResponse, error)
-	// Returns a list of WfSpec Metrics Windows.
-	ListWfSpecMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*ListWfMetricsResponse, error)
-	// EXPERIMENTAL: Creates another Tenant in the LH Server.
+	// Lists available metric windows for a given TaskDefId and time range.
+	ListTaskMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
+	// Lists available metric windows for a given WfSpecId and time range.
+	ListWfMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
+	// Gets a MetricWindow by its ID.
+	GetMetricWindow(ctx context.Context, in *MetricWindowId, opts ...grpc.CallOption) (*MetricWindow, error)
+	// Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+	SearchWfMetricWindow(ctx context.Context, in *SearchWfMetricWindowRequest, opts ...grpc.CallOption) (*MetricWindowIdList, error)
+	// Creates a Tenant in the LH Server.
 	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error)
-	// EXPERIMENTAL: Gets a Tenant from the LH Server.
+	// Gets a Tenant from the LH Server.
 	GetTenant(ctx context.Context, in *TenantId, opts ...grpc.CallOption) (*Tenant, error)
-	// EXPERIMENTAL: Creates an Principal.
+	// Creates a Principal.
 	PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*Principal, error)
+	// Gets a Principal.
 	GetPrincipal(ctx context.Context, in *PrincipalId, opts ...grpc.CallOption) (*Principal, error)
 	// Returns the Principal of the caller.
 	Whoami(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Principal, error)
@@ -1134,18 +1142,36 @@ func (c *littleHorseClient) GetWfSpecMetricsWindow(ctx context.Context, in *WfSp
 	return out, nil
 }
 
-func (c *littleHorseClient) ListTaskDefMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*ListTaskMetricsResponse, error) {
-	out := new(ListTaskMetricsResponse)
-	err := c.cc.Invoke(ctx, LittleHorse_ListTaskDefMetrics_FullMethodName, in, out, opts...)
+func (c *littleHorseClient) ListTaskMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error) {
+	out := new(MetricsList)
+	err := c.cc.Invoke(ctx, LittleHorse_ListTaskMetrics_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *littleHorseClient) ListWfSpecMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*ListWfMetricsResponse, error) {
-	out := new(ListWfMetricsResponse)
-	err := c.cc.Invoke(ctx, LittleHorse_ListWfSpecMetrics_FullMethodName, in, out, opts...)
+func (c *littleHorseClient) ListWfMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error) {
+	out := new(MetricsList)
+	err := c.cc.Invoke(ctx, LittleHorse_ListWfMetrics_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetMetricWindow(ctx context.Context, in *MetricWindowId, opts ...grpc.CallOption) (*MetricWindow, error) {
+	out := new(MetricWindow)
+	err := c.cc.Invoke(ctx, LittleHorse_GetMetricWindow_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) SearchWfMetricWindow(ctx context.Context, in *SearchWfMetricWindowRequest, opts ...grpc.CallOption) (*MetricWindowIdList, error) {
+	out := new(MetricWindowIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchWfMetricWindow_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1235,17 +1261,16 @@ type LittleHorseServer interface {
 	//
 	// As of 0.7.2, this feature is only partially implemented.
 	MigrateWfSpec(context.Context, *MigrateWfSpecRequest) (*WfSpec, error)
-	// EXPERIMENTAL: Creates a new `StructDef“.
+	// Creates a StructDef.
 	//
 	// Note that this request is idempotent: if you
 	// make a request to create a `StructDef` identical to the currently-created
 	// one with the same `name`, no new `StructDef` will be created. This is the
 	// same behavior as `rpc PutWfSpec` and `rpc PutUserTaskDef`.
 	//
-	// For schema evolution / compatibility rules, see the `AllowedStructDefUpdateType`
-	// enum within the `PutStructDefRequest`.
+	// For schema evolution / compatibility rules, see the `StructDefCompatibilityType` enum.
 	PutStructDef(context.Context, *PutStructDefRequest) (*StructDef, error)
-	// EXPERIMENTAL: Get a StructDef.
+	// Gets a StructDef.
 	GetStructDef(context.Context, *StructDefId) (*StructDef, error)
 	// EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
 	ValidateStructDefEvolution(context.Context, *ValidateStructDefEvolutionRequest) (*ValidateStructDefEvolutionResponse, error)
@@ -1374,6 +1399,7 @@ type LittleHorseServer interface {
 	SearchWorkflowEventDef(context.Context, *SearchWorkflowEventDefRequest) (*WorkflowEventDefIdList, error)
 	// Search for all available TenantIds for current Principal
 	SearchTenant(context.Context, *SearchTenantRequest) (*TenantIdList, error)
+	// Search for Principals
 	SearchPrincipal(context.Context, *SearchPrincipalRequest) (*PrincipalIdList, error)
 	// Search for StructDef's
 	SearchStructDef(context.Context, *SearchStructDefRequest) (*StructDefIdList, error)
@@ -1432,6 +1458,7 @@ type LittleHorseServer interface {
 	DeleteExternalEventDef(context.Context, *DeleteExternalEventDefRequest) (*emptypb.Empty, error)
 	// Deletes a CorrelatedEvent
 	DeleteCorrelatedEvent(context.Context, *DeleteCorrelatedEventRequest) (*emptypb.Empty, error)
+	// Deletes a WorkflowEventDef.
 	DeleteWorkflowEventDef(context.Context, *DeleteWorkflowEventDefRequest) (*emptypb.Empty, error)
 	// Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
@@ -1443,16 +1470,21 @@ type LittleHorseServer interface {
 	GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error)
-	// Returns a list of TaskDef Metrics Windows.
-	ListTaskDefMetrics(context.Context, *ListTaskMetricsRequest) (*ListTaskMetricsResponse, error)
-	// Returns a list of WfSpec Metrics Windows.
-	ListWfSpecMetrics(context.Context, *ListWfMetricsRequest) (*ListWfMetricsResponse, error)
-	// EXPERIMENTAL: Creates another Tenant in the LH Server.
+	// Lists available metric windows for a given TaskDefId and time range.
+	ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error)
+	// Lists available metric windows for a given WfSpecId and time range.
+	ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error)
+	// Gets a MetricWindow by its ID.
+	GetMetricWindow(context.Context, *MetricWindowId) (*MetricWindow, error)
+	// Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+	SearchWfMetricWindow(context.Context, *SearchWfMetricWindowRequest) (*MetricWindowIdList, error)
+	// Creates a Tenant in the LH Server.
 	PutTenant(context.Context, *PutTenantRequest) (*Tenant, error)
-	// EXPERIMENTAL: Gets a Tenant from the LH Server.
+	// Gets a Tenant from the LH Server.
 	GetTenant(context.Context, *TenantId) (*Tenant, error)
-	// EXPERIMENTAL: Creates an Principal.
+	// Creates a Principal.
 	PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error)
+	// Gets a Principal.
 	GetPrincipal(context.Context, *PrincipalId) (*Principal, error)
 	// Returns the Principal of the caller.
 	Whoami(context.Context, *emptypb.Empty) (*Principal, error)
@@ -1711,11 +1743,17 @@ func (UnimplementedLittleHorseServer) GetTaskDefMetricsWindow(context.Context, *
 func (UnimplementedLittleHorseServer) GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetWfSpecMetricsWindow not implemented")
 }
-func (UnimplementedLittleHorseServer) ListTaskDefMetrics(context.Context, *ListTaskMetricsRequest) (*ListTaskMetricsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListTaskDefMetrics not implemented")
+func (UnimplementedLittleHorseServer) ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListTaskMetrics not implemented")
 }
-func (UnimplementedLittleHorseServer) ListWfSpecMetrics(context.Context, *ListWfMetricsRequest) (*ListWfMetricsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListWfSpecMetrics not implemented")
+func (UnimplementedLittleHorseServer) ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListWfMetrics not implemented")
+}
+func (UnimplementedLittleHorseServer) GetMetricWindow(context.Context, *MetricWindowId) (*MetricWindow, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMetricWindow not implemented")
+}
+func (UnimplementedLittleHorseServer) SearchWfMetricWindow(context.Context, *SearchWfMetricWindowRequest) (*MetricWindowIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchWfMetricWindow not implemented")
 }
 func (UnimplementedLittleHorseServer) PutTenant(context.Context, *PutTenantRequest) (*Tenant, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutTenant not implemented")
@@ -3232,38 +3270,74 @@ func _LittleHorse_GetWfSpecMetricsWindow_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LittleHorse_ListTaskDefMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LittleHorse_ListTaskMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListTaskMetricsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LittleHorseServer).ListTaskDefMetrics(ctx, in)
+		return srv.(LittleHorseServer).ListTaskMetrics(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LittleHorse_ListTaskDefMetrics_FullMethodName,
+		FullMethod: LittleHorse_ListTaskMetrics_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LittleHorseServer).ListTaskDefMetrics(ctx, req.(*ListTaskMetricsRequest))
+		return srv.(LittleHorseServer).ListTaskMetrics(ctx, req.(*ListTaskMetricsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LittleHorse_ListWfSpecMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LittleHorse_ListWfMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListWfMetricsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LittleHorseServer).ListWfSpecMetrics(ctx, in)
+		return srv.(LittleHorseServer).ListWfMetrics(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LittleHorse_ListWfSpecMetrics_FullMethodName,
+		FullMethod: LittleHorse_ListWfMetrics_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LittleHorseServer).ListWfSpecMetrics(ctx, req.(*ListWfMetricsRequest))
+		return srv.(LittleHorseServer).ListWfMetrics(ctx, req.(*ListWfMetricsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetMetricWindow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MetricWindowId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetMetricWindow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetMetricWindow_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetMetricWindow(ctx, req.(*MetricWindowId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_SearchWfMetricWindow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchWfMetricWindowRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchWfMetricWindow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchWfMetricWindow_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchWfMetricWindow(ctx, req.(*SearchWfMetricWindowRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3708,12 +3782,20 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_GetWfSpecMetricsWindow_Handler,
 		},
 		{
-			MethodName: "ListTaskDefMetrics",
-			Handler:    _LittleHorse_ListTaskDefMetrics_Handler,
+			MethodName: "ListTaskMetrics",
+			Handler:    _LittleHorse_ListTaskMetrics_Handler,
 		},
 		{
-			MethodName: "ListWfSpecMetrics",
-			Handler:    _LittleHorse_ListWfSpecMetrics_Handler,
+			MethodName: "ListWfMetrics",
+			Handler:    _LittleHorse_ListWfMetrics_Handler,
+		},
+		{
+			MethodName: "GetMetricWindow",
+			Handler:    _LittleHorse_GetMetricWindow_Handler,
+		},
+		{
+			MethodName: "SearchWfMetricWindow",
+			Handler:    _LittleHorse_SearchWfMetricWindow_Handler,
 		},
 		{
 			MethodName: "PutTenant",

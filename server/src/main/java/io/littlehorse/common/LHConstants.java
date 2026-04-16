@@ -4,8 +4,6 @@ import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.ServerACL;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 public class LHConstants {
@@ -31,7 +29,7 @@ public class LHConstants {
     public static final String VAR_ERROR = "VAR_ERROR";
     public static final String TASK_ERROR = "TASK_ERROR";
     public static final String INTERNAL_ERROR = "INTERNAL_ERROR";
-    public static final Set<String> RESERVED_EXCEPTION_NAMES = new HashSet<>(Arrays.asList(
+    public static final Set<String> RESERVED_EXCEPTION_NAMES = Set.of(
             CHILD_FAILURE,
             VAR_SUB_ERROR,
             VAR_MUTATION_ERROR,
@@ -40,7 +38,7 @@ public class LHConstants {
             VAR_ERROR,
             TASK_ERROR,
             INTERNAL_ERROR,
-            USER_TASK_CANCELLED));
+            USER_TASK_CANCELLED);
 
     public static final int DEFAULT_TASK_TIMEOUT_SECONDS = 60;
 
@@ -64,12 +62,12 @@ public class LHConstants {
 
     public static final String PRINCIPAL_ID_HEADER_NAME = "principalId";
 
-    // Store key for metric cache
     public static final String PARTITION_METRICS_KEY = "partitionMetrics";
+    public static final long MAX_MS_PER_PARTITION_METRICS_PUNCTUATION = 500;
+    public static final Duration PARTITION_METRICS_PUNCTUATOR_INTERVAL = Duration.ofSeconds(3);
 
     public static final Duration MAX_INCOMING_REQUEST_IDLE_TIME = Duration.ofSeconds(60);
     public static final int MAX_STACK_FRAMES_PER_COMMAND = 512;
-    public static final int MAX_THREAD_RUNS_PER_WF_RUN = 64;
     public static final long MAX_MS_PER_TIMER_PUNCTUATION = 50;
     public static final long TIMER_PUNCTUATOR_HINT_CHECKPOINT_INTERVAL = 1000 * 60;
 

@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import io.littlehorse.sdk.common.adapter.LHStringAdapter;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
@@ -13,7 +15,9 @@ import io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
@@ -37,6 +41,7 @@ import io.littlehorse.sdk.wfsdk.Workflow;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import net.datafaker.Faker;
@@ -249,6 +254,53 @@ public class WorkflowThreadImplTest {
 
         Assertions.assertThat(wf.getRequiredWorkflowEventDefNames()).contains("event-one");
         Assertions.assertThat(wf.getRequiredWorkflowEventDefNames()).contains("event-from-child");
+    }
+
+    @Test
+    void shouldUseTypeAdapterForWorkflowEventRegisteredAsClass() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
+            thread.throwEvent("event-one", UUID.randomUUID()).registeredAs(UUID.class);
+        });
+        LHConfig config =
+                LHConfig.newBuilder().addTypeAdapter(new UUIDConfigAdapter()).build();
+
+        wf.compileWorkflow(config);
+
+        PutWorkflowEventDefRequest eventDef =
+                wf.getWorkflowEventDefsToRegister().stream().findFirst().orElseThrow();
+        assertThat(eventDef.getContentType().getReturnType().getPrimitiveType()).isEqualTo(VariableType.STR);
+    }
+
+    @Test
+    void shouldUseTypeAdapterForExternalEventRegisteredAsClass() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
+            thread.waitForEvent("event-one").registeredAs(UUID.class);
+        });
+        LHConfig config =
+                LHConfig.newBuilder().addTypeAdapter(new UUIDConfigAdapter()).build();
+
+        wf.compileWorkflow(config);
+
+        PutExternalEventDefRequest eventDef =
+                wf.getExternalEventDefsToRegister().stream().findFirst().orElseThrow();
+        assertThat(eventDef.getContentType().getReturnType().getPrimitiveType()).isEqualTo(VariableType.STR);
+    }
+
+    @Test
+    void shouldUseTypeAdapterFromConfigForWorkflowEventRegisteredAsClass() {
+        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
+            WfRunVariable strVar = thread.declareStr("some-var");
+            thread.throwEvent("event-one", strVar).registeredAs(UUID.class);
+        });
+
+        LHConfig config =
+                LHConfig.newBuilder().addTypeAdapter(new UUIDConfigAdapter()).build();
+
+        wf.compileWorkflow(config);
+
+        PutWorkflowEventDefRequest eventDef =
+                wf.getWorkflowEventDefsToRegister().stream().findFirst().orElseThrow();
+        assertThat(eventDef.getContentType().getReturnType().getPrimitiveType()).isEqualTo(VariableType.STR);
     }
 
     @Test
@@ -817,5 +869,23 @@ public class WorkflowThreadImplTest {
         assertThat(exitNode.getExit().hasReturnContent()).isTrue();
         assertThat(exitNode.getExit().getReturnContent().hasNodeOutput()).isTrue();
         assertEquals(exitNode.getExit().getReturnContent().getNodeOutput().getNodeName(), "1-some-task-TASK");
+    }
+
+    public static class UUIDConfigAdapter implements LHStringAdapter<UUID> {
+
+        @Override
+        public String toString(UUID src) {
+            return src.toString();
+        }
+
+        @Override
+        public UUID fromString(String src) {
+            return UUID.fromString(src);
+        }
+
+        @Override
+        public Class<UUID> getTypeClass() {
+            return UUID.class;
+        }
     }
 }

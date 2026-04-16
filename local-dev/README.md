@@ -243,7 +243,7 @@ lhctl put principal <your principal name> --acl "acl_workflow:read" --tenantId <
 ./local-dev/issue-certificates.sh
 ```
 
-5. Ensure you have the following configuration settings in your LittleHorse server `/local-dev/mlts.config` file:
+5. Ensure you have the following configuration settings in your LittleHorse server `local-dev/configs/mtls.config` file:
 ```
 LHS_LISTENERS=MTLS:2023
 LHS_LISTENERS_PROTOCOL_MAP=MTLS:MTLS

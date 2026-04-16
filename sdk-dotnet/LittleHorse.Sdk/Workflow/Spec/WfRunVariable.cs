@@ -516,9 +516,55 @@ public class WfRunVariable
     {
         return new LHExpression(this, VariableMutationType.RemoveKey, key);
     }
+
+    /// <summary>
+    /// Returns a CastExpression representing this variable cast to the specified target type.
+    /// </summary>
+    /// <param name="targetType">The target VariableType to cast to.</param>
+    /// <returns>A CastExpression wrapping this variable.</returns>
+    public CastExpression CastTo(VariableType targetType)
+    {
+        return new CastExpression(this, targetType);
+    }
+
+    /// <summary>
+    /// Returns a CastExpression that casts this variable to Int.
+    /// </summary>
+    /// <returns>A CastExpression for Int.</returns>
+    public CastExpression CastToInt() => CastTo(VariableType.Int);
+
+    /// <summary>
+    /// Returns a CastExpression that casts this variable to Double.
+    /// </summary>
+    /// <returns>A CastExpression for Double.</returns>
+    public CastExpression CastToDouble() => CastTo(VariableType.Double);
+
+    /// <summary>
+    /// Returns a CastExpression that casts this variable to Str.
+    /// </summary>
+    /// <returns>A CastExpression for Str.</returns>
+    public CastExpression CastToStr() => CastTo(VariableType.Str);
+
+    /// <summary>
+    /// Returns a CastExpression that casts this variable to Bool.
+    /// </summary>
+    /// <returns>A CastExpression for Bool.</returns>
+    public CastExpression CastToBool() => CastTo(VariableType.Bool);
+
+    /// <summary>
+    /// Returns a CastExpression that casts this variable to Bytes.
+    /// </summary>
+    /// <returns>A CastExpression for Bytes.</returns>
+    public CastExpression CastToBytes() => CastTo(VariableType.Bytes);
+
+    /// <summary>
+    /// Returns a CastExpression that casts this variable to WfRunId.
+    /// </summary>
+    /// <returns>A CastExpression for WfRunId.</returns>
+    public CastExpression CastToWfRunId() => CastTo(VariableType.WfRunId);
     
     /// <summary>
-    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
     /// evaluates to true if this WfRunVariable is LESS_THAN the provided rhs.
     ///
     /// Equivalent to WorkflowThread#condition(this, Comparator.LessThan, rhs);
@@ -529,13 +575,13 @@ public class WfRunVariable
     /// <returns>
     /// true if this WfRunVariable is LESS_THAN the provided rhs.
     /// </returns>
-    public WorkflowCondition IsLessThan(object rhs)
+    public LHExpression IsLessThan(object rhs)
     {
         return parent.Condition(this, Comparator.LessThan, rhs);
     }
     
     /// <summary>
-    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
     /// evaluates to true if this WfRunVariable is LESS_THAN_EQU the provided rhs.
     ///
     /// Equivalent to WorkflowThread#condition(this, Comparator.LessThanEq, rhs);
@@ -546,13 +592,13 @@ public class WfRunVariable
     /// <returns>
     /// true if this WfRunVariable is LESS_THAN_EQ the provided rhs.
     /// </returns>
-    public WorkflowCondition IsLessThanEq(object rhs)
+    public LHExpression IsLessThanEq(object rhs)
     {
         return parent.Condition(this, Comparator.LessThanEq, rhs);
     }
     
     /// <summary>
-    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
     /// evaluates to true if this WfRunVariable is GREATER_THAN_EQ the provided rhs.
     ///
     /// Equivalent to WorkflowThread#condition(this, Comparator.GreaterThanEq, rhs);
@@ -563,13 +609,13 @@ public class WfRunVariable
     /// <returns>
     /// true if this WfRunVariable is GREATER_THAN_EQ the provided rhs.
     /// </returns>
-    public WorkflowCondition IsGreaterThanEq(object rhs)
+    public LHExpression IsGreaterThanEq(object rhs)
     {
         return parent.Condition(this, Comparator.GreaterThanEq, rhs);
     }
     
     /// <summary>
-    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
     /// evaluates to true if this WfRunVariable is GREATER_THAN the provided rhs.
     ///
     /// Equivalent to WorkflowThread#condition(this, Comparator.GreaterThan, rhs);
@@ -580,13 +626,13 @@ public class WfRunVariable
     /// <returns>
     /// true if this WfRunVariable is GREATER_THAN the provided rhs.
     /// </returns>
-    public WorkflowCondition IsGreaterThan(object rhs)
+    public LHExpression IsGreaterThan(object rhs)
     {
         return parent.Condition(this, Comparator.GreaterThan, rhs);
     }
     
     /// <summary>
-    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
     /// evaluates to true if this WfRunVariable is EQUALS the provided rhs.
     ///
     /// Equivalent to WorkflowThread#condition(this, Comparator.Equals, rhs);
@@ -597,13 +643,13 @@ public class WfRunVariable
     /// <returns>
     /// true if this WfRunVariable is EQUALS the provided rhs.
     /// </returns>
-    public WorkflowCondition IsEqualTo(object rhs)
+    public LHExpression IsEqualTo(object rhs)
     {
         return parent.Condition(this, Comparator.Equals, rhs);
     }
     
     /// <summary>
-    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
     /// evaluates to true if this WfRunVariable is NOT_EQUALS the provided rhs.
     ///
     /// Equivalent to WorkflowThread#condition(this, Comparator.NotEquals, rhs);
@@ -614,13 +660,13 @@ public class WfRunVariable
     /// <returns>
     /// true if this WfRunVariable is NOT_EQUALS the provided rhs.
     /// </returns>
-    public WorkflowCondition IsNotEqualTo(object rhs)
+    public LHExpression IsNotEqualTo(object rhs)
     {
         return parent.Condition(this, Comparator.NotEquals, rhs);
     }
     
     /// <summary>
-    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
     /// evaluates to true if the RHS is contained inside this variable. For JSON_OBJ, returns
     /// true if the RHS is a key. For JSON_ARR, returns true if the RHS is equal to one of the
     /// elements in the array.
@@ -633,13 +679,13 @@ public class WfRunVariable
     /// <returns>
     /// true if the provided rhs is INSIDE this WfRunVariable.
     /// </returns>
-    public WorkflowCondition DoesContain(object rhs)
+    public LHExpression DoesContain(object rhs)
     {
         return parent.Condition(rhs, Comparator.In, this);
     }
     
     /// <summary>
-    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
     /// evaluates to true if the RHS is not contained inside this variable. For JSON_OBJ, returns
     /// true if the RHS is a key. For JSON_ARR, returns true if the RHS is not equal to one of the
     /// elements in the array.
@@ -652,13 +698,13 @@ public class WfRunVariable
     /// <returns>
     /// true if the provided rhs is NOT INSIDE this WfRunVariable.
     /// </returns>
-    public WorkflowCondition DoesNotContain(object rhs)
+    public LHExpression DoesNotContain(object rhs)
     {
         return parent.Condition(rhs, Comparator.NotIn, this);
     }
     
     /// <summary>
-    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
     /// evaluates to true if the value of this WfRunVariable is contained in the provided RHS.
     /// For an RHS of type JSON_OBJ, returns true if the RHS contains a key that is equal to the
     /// value of this WfRunVariable. For an RHS of type JSON_ARR, returns true if the RHS contains
@@ -672,13 +718,13 @@ public class WfRunVariable
     /// <returns>
     /// true if this WfRunVariable is INSIDE the provided rhs.
     /// </returns>
-    public WorkflowCondition IsIn(object rhs)
+    public LHExpression IsIn(object rhs)
     {
         return parent.Condition(this, Comparator.In, rhs);
     }
     
     /// <summary>
-    /// Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+    /// Returns an LHExpression (treated like a boolean in the WfSpec control flow logic) that
     /// evaluates to true if the value of this WfRunVariable is not contained in the provided RHS.
     /// For an RHS of type JSON_OBJ, returns true if the RHS does not contain a key that is equal
     /// to the value of this WfRunVariable. For an RHS of type JSON_ARR, returns true if the RHS does
@@ -692,7 +738,7 @@ public class WfRunVariable
     /// <returns>
     /// true if this WfRunVariable is NOT INSIDE the provided rhs.
     /// </returns>
-    public WorkflowCondition IsNotIn(object rhs)
+    public LHExpression IsNotIn(object rhs)
     {
         return parent.Condition(this, Comparator.NotIn, rhs);
     }

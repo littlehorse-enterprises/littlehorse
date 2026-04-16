@@ -1,9 +1,17 @@
 package io.littlehorse.sdk.common;
 
+import io.littlehorse.sdk.common.adapter.LHStringAdapter;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.proto.Array;
+import io.littlehorse.sdk.common.proto.InlineStruct;
+import io.littlehorse.sdk.common.proto.Struct;
+import io.littlehorse.sdk.common.proto.StructDefId;
+import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.worker.LHStructDef;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -158,6 +166,188 @@ public class LHLibUtilTest {
         Assertions.assertThat(parsedDate.getTime()).isEqualTo(currentDate.getTime());
     }
 
+    @Test
+    void shouldUseRegisteredTypeAdapterForSerializationAndDeserialization() {
+        LHStringAdapter<UUID> uuidAdapter = new LHStringAdapter<UUID>() {
+            @Override
+            public String toString(UUID src) {
+                return src.toString();
+            }
+
+            @Override
+            public UUID fromString(String src) {
+                return UUID.fromString(src);
+            }
+
+            @Override
+            public Class<UUID> getTypeClass() {
+                return UUID.class;
+            }
+        };
+
+        UUID uuid = UUID.randomUUID();
+        LHTypeAdapterRegistry typeAdapterRegistry = LHTypeAdapterRegistry.from(Map.of(UUID.class, uuidAdapter));
+
+        VariableValue serialized = LHLibUtil.objToVarVal(uuid, typeAdapterRegistry);
+        Object deserialized = LHLibUtil.varValToObj(serialized, UUID.class, typeAdapterRegistry);
+
+        Assertions.assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STR);
+        Assertions.assertThat(serialized.getStr()).isEqualTo(uuid.toString());
+        Assertions.assertThat(deserialized).isEqualTo(uuid);
+    }
+
+    @Test
+    void shouldUseDeclaredReturnTypeAdapterWhenSerializing() {
+        LHStringAdapter<UUID> uuidAdapter = new LHStringAdapter<UUID>() {
+            @Override
+            public String toString(UUID src) {
+                return src.toString();
+            }
+
+            @Override
+            public UUID fromString(String src) {
+                return UUID.fromString(src);
+            }
+
+            @Override
+            public Class<UUID> getTypeClass() {
+                return UUID.class;
+            }
+        };
+
+        UUID uuid = UUID.randomUUID();
+        LHTypeAdapterRegistry typeAdapterRegistry = LHTypeAdapterRegistry.from(Map.of(UUID.class, uuidAdapter));
+        VariableValue serialized = LHLibUtil.objToVarVal(uuid, UUID.class, typeAdapterRegistry);
+
+        Assertions.assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STR);
+        Assertions.assertThat(serialized.getStr()).isEqualTo(uuid.toString());
+    }
+
+    @Test
+    void shouldUseTypeAdapterInsideStructFields() {
+        LHStringAdapter<UUID> uuidAdapter = new LHStringAdapter<UUID>() {
+            @Override
+            public String toString(UUID src) {
+                return src.toString();
+            }
+
+            @Override
+            public UUID fromString(String src) {
+                return UUID.fromString(src);
+            }
+
+            @Override
+            public Class<UUID> getTypeClass() {
+                return UUID.class;
+            }
+        };
+
+        UUID uuid = UUID.randomUUID();
+        AdapterStruct original = new AdapterStruct();
+        original.setName("test-name");
+        original.setId(uuid);
+        LHTypeAdapterRegistry typeAdapterRegistry = LHTypeAdapterRegistry.from(Map.of(UUID.class, uuidAdapter));
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original, typeAdapterRegistry);
+        AdapterStruct deserialized =
+                (AdapterStruct) LHLibUtil.varValToObj(serialized, AdapterStruct.class, typeAdapterRegistry);
+
+        Assertions.assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        Assertions.assertThat(serialized
+                        .getStruct()
+                        .getStruct()
+                        .getFieldsMap()
+                        .get("id")
+                        .getValue()
+                        .getValueCase())
+                .isEqualTo(VariableValue.ValueCase.STR);
+        Assertions.assertThat(serialized
+                        .getStruct()
+                        .getStruct()
+                        .getFieldsMap()
+                        .get("id")
+                        .getValue()
+                        .getStr())
+                .isEqualTo(uuid.toString());
+        Assertions.assertThat(deserialized.getName()).isEqualTo("test-name");
+        Assertions.assertThat(deserialized.getId()).isEqualTo(uuid);
+    }
+
+    @Test
+    void shouldDeserializeInlineStructFromStructVariableValue() {
+        InlineStruct inlineStruct = InlineStruct.newBuilder()
+                .putFields(
+                        "name",
+                        StructField.newBuilder()
+                                .setValue(VariableValue.newBuilder().setStr("Luke"))
+                                .build())
+                .build();
+
+        VariableValue wrappedValue = VariableValue.newBuilder()
+                .setStruct(Struct.newBuilder()
+                        .setStructDefId(StructDefId.newBuilder().setName("customer"))
+                        .setStruct(inlineStruct))
+                .build();
+
+        Object deserialized = LHLibUtil.varValToObj(wrappedValue, InlineStruct.class);
+        Assertions.assertThat(deserialized).isEqualTo(inlineStruct);
+    }
+
+    @Test
+    void shouldSerializeInlineStructWithProvidedStructDefId() {
+        InlineStruct inlineStruct = InlineStruct.newBuilder()
+                .putFields(
+                        "email",
+                        StructField.newBuilder()
+                                .setValue(VariableValue.newBuilder().setStr("leia@rebellion.example"))
+                                .build())
+                .build();
+
+        VariableValue wrappedValue = LHLibUtil.inlineStructToVarVal(
+                inlineStruct, StructDefId.newBuilder().setName("customer").build());
+
+        Assertions.assertThat(wrappedValue.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        Assertions.assertThat(wrappedValue.getStruct().getStructDefId().getName())
+                .isEqualTo("customer");
+        Assertions.assertThat(wrappedValue.getStruct().getStruct()).isEqualTo(inlineStruct);
+    }
+
+    @Test
+    void shouldSerializeArrayAsNativeLHArrayWhenRequested() {
+        Long[] numbers = new Long[] {1L, 2L, 3L};
+
+        VariableValue val = LHLibUtil.objToVarValAsNativeArray(numbers, Long[].class, LHTypeAdapterRegistry.empty());
+
+        Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
+        Assertions.assertThat(val.getArray().getItemsCount()).isEqualTo(3);
+        Assertions.assertThat(val.getArray().getItems(0).getInt()).isEqualTo(1L);
+        Assertions.assertThat(val.getArray().getItems(1).getInt()).isEqualTo(2L);
+        Assertions.assertThat(val.getArray().getItems(2).getInt()).isEqualTo(3L);
+    }
+
+    @Test
+    void shouldFailNativeArraySerializationForNonArrayDeclaredType() {
+        Long[] numbers = new Long[] {1L};
+
+        Assertions.assertThatThrownBy(
+                        () -> LHLibUtil.objToVarValAsNativeArray(numbers, Long.class, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(io.littlehorse.sdk.common.exception.LHSerdeException.class)
+                .hasMessageContaining("must be a Java array type");
+    }
+
+    @Test
+    void shouldDeserializeNativeLHArrayToJavaArray() {
+        VariableValue nativeArray = VariableValue.newBuilder()
+                .setArray(Array.newBuilder()
+                        .addItems(VariableValue.newBuilder().setInt(7L))
+                        .addItems(VariableValue.newBuilder().setInt(9L)))
+                .build();
+
+        Object out = LHLibUtil.varValToObj(nativeArray, Long[].class, LHTypeAdapterRegistry.empty());
+
+        Assertions.assertThat((Long[]) out).containsExactly(7L, 9L);
+    }
+
     private Book getTestBook() {
         String title = "Frankenstein";
         int soldUnits = 3000000;
@@ -196,6 +386,28 @@ public class LHLibUtilTest {
             this.genres = genres;
             this.isBestseller = isBestseller;
             this.additionalAttributes = additionalAttributes;
+        }
+    }
+
+    @LHStructDef("adapter-struct")
+    public static class AdapterStruct {
+        private UUID id;
+        private String name;
+
+        public UUID getId() {
+            return id;
+        }
+
+        public void setId(UUID id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
     }
 }

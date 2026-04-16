@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.StructDefCircularDependencyException;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.PutStructDefRequest;
@@ -18,14 +19,35 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * LHStructDefType is a class that represents a StructDef type in the LittleHorse workflow SDK.
+ *
+ * It extends LHClassType and provides additional functionality specific to StructDefs, such as handling dependencies between StructDefs and generating StructDef definitions from Java classes.
+ */
 public class LHStructDefType extends LHClassType {
     private List<LHStructDefType> dependencyClasses;
     private InlineStructDef inlineStructDef;
 
     private List<LHStructProperty> structProperties;
 
+    /**
+     * Constructor for LHStructDefType that does not take a type adapter registry.
+     *
+     * If you want to use Type Adapters with your StructDef, use {@link #LHStructDefType(Class, LHTypeAdapterRegistry)} instead and provide an explicit type adapter registry.
+     *
+     * @param clazz The Java class representing the StructDef.
+     */
     public LHStructDefType(Class<?> clazz) {
-        super(clazz);
+        this(clazz, LHTypeAdapterRegistry.empty());
+    }
+
+    /**
+     * Constructor for LHStructDefType.
+     * @param clazz The Java class representing the StructDef.
+     * @param typeAdapterRegistry The type adapter registry to use when generating StructDef definitions from Java classes.
+     */
+    public LHStructDefType(Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) {
+        super(clazz, typeAdapterRegistry);
 
         if (!clazz.isAnnotationPresent(LHStructDef.class)) {
             throw new IllegalArgumentException(
@@ -34,6 +56,10 @@ public class LHStructDefType extends LHClassType {
         }
 
         this.inlineStructDef = this.buildInlineStructDef();
+    }
+
+    public LHTypeAdapterRegistry getTypeAdapterRegistry() {
+        return typeAdapterRegistry;
     }
 
     @Override
@@ -122,7 +148,8 @@ public class LHStructDefType extends LHClassType {
         tempMarked.add(this);
 
         for (LHStructProperty property : this.getStructProperties()) {
-            LHClassType coreType = property.getPropertyType().getCoreComponentType();
+            LHClassType coreType =
+                    property.getPropertyType(typeAdapterRegistry).getCoreComponentType(typeAdapterRegistry);
 
             if (coreType instanceof LHPrimitiveType) {
                 continue;
@@ -209,7 +236,7 @@ public class LHStructDefType extends LHClassType {
 
         try {
             for (LHStructProperty property : this.getStructProperties()) {
-                inlineStructDef.putFields(property.getFieldName(), property.toStructFieldDef());
+                inlineStructDef.putFields(property.getFieldName(), property.toStructFieldDef(typeAdapterRegistry));
             }
         } catch (IntrospectionException e) {
             throw new IllegalStateException("Cannot build InlineStructDef for type: " + this.clazz.getName(), e);

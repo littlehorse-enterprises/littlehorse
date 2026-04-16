@@ -33,7 +33,7 @@ public enum VariableMutationType
   ADD(1),
   /**
    * <pre>
-   * Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR)
+   * Append the RHS to the LHS (valid if the LHS is a STR, JSON_ARR, or ARRAY)
    * </pre>
    *
    * <code>EXTEND = 2;</code>
@@ -65,7 +65,7 @@ public enum VariableMutationType
   DIVIDE(5),
   /**
    * <pre>
-   * Remove any occurrences of RHS from LHS (LHS must be JSON_ARR)
+   * Remove any occurrences of RHS from LHS (LHS must be JSON_ARR or ARRAY)
    * </pre>
    *
    * <code>REMOVE_IF_PRESENT = 6;</code>
@@ -73,7 +73,7 @@ public enum VariableMutationType
   REMOVE_IF_PRESENT(6),
   /**
    * <pre>
-   * Remove item at index RHS from LHS (LHS must be JSON_ARR)
+   * Remove item at index RHS from LHS (LHS must be JSON_ARR or ARRAY)
    * </pre>
    *
    * <code>REMOVE_INDEX = 7;</code>
@@ -87,6 +87,22 @@ public enum VariableMutationType
    * <code>REMOVE_KEY = 8;</code>
    */
   REMOVE_KEY(8),
+  /**
+   * <pre>
+   * Logical AND operation. Combines two boolean values; result is true if both LHS and RHS are true.
+   * </pre>
+   *
+   * <code>AND = 9;</code>
+   */
+  AND(9),
+  /**
+   * <pre>
+   * Logical OR operation. Combines two boolean values; result is true if either LHS or RHS is true.
+   * </pre>
+   *
+   * <code>OR = 10;</code>
+   */
+  OR(10),
   UNRECOGNIZED(-1),
   ;
 
@@ -117,7 +133,7 @@ public enum VariableMutationType
   public static final int ADD_VALUE = 1;
   /**
    * <pre>
-   * Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR)
+   * Append the RHS to the LHS (valid if the LHS is a STR, JSON_ARR, or ARRAY)
    * </pre>
    *
    * <code>EXTEND = 2;</code>
@@ -149,7 +165,7 @@ public enum VariableMutationType
   public static final int DIVIDE_VALUE = 5;
   /**
    * <pre>
-   * Remove any occurrences of RHS from LHS (LHS must be JSON_ARR)
+   * Remove any occurrences of RHS from LHS (LHS must be JSON_ARR or ARRAY)
    * </pre>
    *
    * <code>REMOVE_IF_PRESENT = 6;</code>
@@ -157,7 +173,7 @@ public enum VariableMutationType
   public static final int REMOVE_IF_PRESENT_VALUE = 6;
   /**
    * <pre>
-   * Remove item at index RHS from LHS (LHS must be JSON_ARR)
+   * Remove item at index RHS from LHS (LHS must be JSON_ARR or ARRAY)
    * </pre>
    *
    * <code>REMOVE_INDEX = 7;</code>
@@ -171,6 +187,22 @@ public enum VariableMutationType
    * <code>REMOVE_KEY = 8;</code>
    */
   public static final int REMOVE_KEY_VALUE = 8;
+  /**
+   * <pre>
+   * Logical AND operation. Combines two boolean values; result is true if both LHS and RHS are true.
+   * </pre>
+   *
+   * <code>AND = 9;</code>
+   */
+  public static final int AND_VALUE = 9;
+  /**
+   * <pre>
+   * Logical OR operation. Combines two boolean values; result is true if either LHS or RHS is true.
+   * </pre>
+   *
+   * <code>OR = 10;</code>
+   */
+  public static final int OR_VALUE = 10;
 
 
   public final int getNumber() {
@@ -206,6 +238,8 @@ public enum VariableMutationType
       case 6: return REMOVE_IF_PRESENT;
       case 7: return REMOVE_INDEX;
       case 8: return REMOVE_KEY;
+      case 9: return AND;
+      case 10: return OR;
       default: return null;
     }
   }

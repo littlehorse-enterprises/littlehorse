@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.worker;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.Checkpoint;
 import io.littlehorse.sdk.common.proto.CheckpointId;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -14,6 +15,7 @@ import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReference;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * This class contains runtime information about the specific WfRun and NodeRun that is being
@@ -28,19 +30,38 @@ public class WorkerContext {
     private String logOutput;
     private int checkpointsSoFarInThisRun;
     private LittleHorseBlockingStub client;
+    private final LHTypeAdapterRegistry typeAdapterRegistry;
 
     /**
      * Constructor for internal use by the Task Worker Library.
      *
      * @param scheduledTask is the raw payload for the scheduled task.
      * @param scheduleTime is the time that the task was actually scheduled.
+     * @param client the gRPC blocking stub used to communicate with the LH server
      */
     public WorkerContext(ScheduledTask scheduledTask, Date scheduleTime, LittleHorseBlockingStub client) {
+        this(scheduledTask, scheduleTime, client, LHTypeAdapterRegistry.empty());
+    }
+
+    /**
+     * Creates a WorkerContext with a registry of type adapters.
+     *
+     * @param scheduledTask is the raw payload for the scheduled task.
+     * @param scheduleTime is the time that the task was actually scheduled.
+     * @param client the gRPC blocking stub used to communicate with the LH server
+     * @param typeAdapterRegistry registry of Type Adapters to use for mapping Checkpoint types.
+     */
+    public WorkerContext(
+            ScheduledTask scheduledTask,
+            Date scheduleTime,
+            LittleHorseBlockingStub client,
+            LHTypeAdapterRegistry typeAdapterRegistry) {
         this.scheduledTask = scheduledTask;
         this.scheduleTime = scheduleTime;
         this.logOutput = "";
         checkpointsSoFarInThisRun = 0;
         this.client = client;
+        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
     }
 
     /**
@@ -170,6 +191,14 @@ public class WorkerContext {
         return LHLibUtil.taskRunIdToString(getTaskRunId());
     }
 
+    /**
+     * Executes the provided CheckpointableFunction and persists Checkpoints as needed.
+     *
+     * @param runnable checkpointable work to execute
+     * @param clazz the return type class for the deserialization of persisted checkpoint data
+     * @param <T> the return type
+     * @return the result of the computation, possibly restored from a prior checkpoint
+     */
     public <T> T executeAndCheckpoint(CheckpointableFunction<T> runnable, Class<T> clazz) {
         if (checkpointsSoFarInThisRun < scheduledTask.getTotalObservedCheckpoints()) {
             return (T) fetchCheckpoint(checkpointsSoFarInThisRun++, clazz);
@@ -178,13 +207,14 @@ public class WorkerContext {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private <T> T fetchCheckpoint(int checkpointNumber, Class<T> clazz) {
         CheckpointId id = CheckpointId.newBuilder()
                 .setTaskRun(scheduledTask.getTaskRunId())
                 .setCheckpointNumber(checkpointNumber)
                 .build();
         Checkpoint checkpoint = client.getCheckpoint(id);
-        return (T) LHLibUtil.varValToObj(checkpoint.getValue(), clazz);
+        return (T) LHLibUtil.varValToObj(checkpoint.getValue(), clazz, typeAdapterRegistry);
     }
 
     private <T> T saveCheckpoint(CheckpointableFunction<T> runnable, Class<T> clazz) {
@@ -194,7 +224,7 @@ public class WorkerContext {
         PutCheckpointResponse response = client.putCheckpoint(PutCheckpointRequest.newBuilder()
                 .setTaskAttempt(scheduledTask.getAttemptNumber())
                 .setTaskRunId(scheduledTask.getTaskRunId())
-                .setValue(LHLibUtil.objToVarVal(result))
+                .setValue(LHLibUtil.objToVarVal(result, clazz, typeAdapterRegistry))
                 .setLogs(checkpointContext.getLogOutput())
                 .build());
 

@@ -13,6 +13,7 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.InternalDeleteWfRunRequestModel;
@@ -532,13 +533,14 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 break;
             }
 
-            if (this.threadRunsUseMeCarefully.size() > LHConstants.MAX_THREAD_RUNS_PER_WF_RUN) {
+            if (this.threadRunsUseMeCarefully.size()
+                    > this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()) {
                 putFailureOnThreadRun(
                         getThreadRun(0),
                         new FailureModel(
                                 String.format(
                                         "You exceeded the maximum number of ThreadRuns per WfRun: %s",
-                                        LHConstants.MAX_THREAD_RUNS_PER_WF_RUN),
+                                        this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()),
                                 LHErrorType.INTERNAL_ERROR.toString()),
                         time,
                         null);
@@ -558,7 +560,9 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     private boolean shouldForceArchiveCompletedThreadRuns() {
-        int threshold = (LHConstants.MAX_THREAD_RUNS_PER_WF_RUN * NEAR_MAX_THREAD_RUNS_THRESHOLD_PERCENT) / 100;
+        int threshold = (this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()
+                        * NEAR_MAX_THREAD_RUNS_THRESHOLD_PERCENT)
+                / 100;
         return this.threadRunsUseMeCarefully.size() >= threshold;
     }
 
@@ -753,6 +757,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             statusChanged = GetableUpdates.createEndEvent(
                     wfSpecId, processorContext.authorization().tenantId(), this.status, status, startTime);
         }
+        LHStatus previousStatus = this.status;
         this.status = status;
         processorContext.getableUpdates().dispatch(statusChanged);
 
@@ -774,6 +779,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 processorContext.getTaskManager().scheduleTimer(timer);
             }
         }
+        PartitionMetricWindowModel.trackWorkflow(
+                processorContext, wfSpecId, previousStatus, status, startTime, endTime);
     }
 
     private boolean isTerminated() {
@@ -827,7 +834,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
         // ThreadRuns depend on each other, for example Exception Handler Threads or
         // child threads, so we need to signal to the other threads that they might
-        // want to wake up. Ding Ding Ding! Get out of bed.
+        // want to wake up. Ding Ding Ding! Get out of bed. XD
         advance(time);
     }
 }

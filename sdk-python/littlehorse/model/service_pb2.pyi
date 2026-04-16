@@ -3,6 +3,7 @@ import datetime
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 from google.protobuf import empty_pb2 as _empty_pb2
 import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
+import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 import littlehorse.model.variable_pb2 as _variable_pb2
@@ -17,6 +18,7 @@ import littlehorse.model.struct_def_pb2 as _struct_def_pb2
 import littlehorse.model.acls_pb2 as _acls_pb2
 import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
 import littlehorse.model.scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
+import littlehorse.model.metrics_pb2 as _metrics_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -79,9 +81,9 @@ class PutTaskDefRequest(_message.Message):
     DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
     name: str
     input_vars: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.VariableDef]
-    return_type: _common_wfspec_pb2.ReturnType
+    return_type: _type_definition_pb2.ReturnType
     description: str
-    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., return_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ..., description: _Optional[str] = ...) -> None: ...
+    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., return_type: _Optional[_Union[_type_definition_pb2.ReturnType, _Mapping]] = ..., description: _Optional[str] = ...) -> None: ...
 
 class PutStructDefRequest(_message.Message):
     __slots__ = ("name", "description", "struct_def", "allowed_updates")
@@ -116,8 +118,8 @@ class PutWorkflowEventDefRequest(_message.Message):
     NAME_FIELD_NUMBER: _ClassVar[int]
     CONTENT_TYPE_FIELD_NUMBER: _ClassVar[int]
     name: str
-    content_type: _common_wfspec_pb2.ReturnType
-    def __init__(self, name: _Optional[str] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
+    content_type: _type_definition_pb2.ReturnType
+    def __init__(self, name: _Optional[str] = ..., content_type: _Optional[_Union[_type_definition_pb2.ReturnType, _Mapping]] = ...) -> None: ...
 
 class PutUserTaskDefRequest(_message.Message):
     __slots__ = ("name", "fields", "description")
@@ -137,9 +139,9 @@ class PutExternalEventDefRequest(_message.Message):
     CORRELATED_EVENT_CONFIG_FIELD_NUMBER: _ClassVar[int]
     name: str
     retention_policy: _external_event_pb2.ExternalEventRetentionPolicy
-    content_type: _common_wfspec_pb2.ReturnType
+    content_type: _type_definition_pb2.ReturnType
     correlated_event_config: _external_event_pb2.CorrelatedEventConfig
-    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ..., correlated_event_config: _Optional[_Union[_external_event_pb2.CorrelatedEventConfig, _Mapping]] = ...) -> None: ...
+    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ..., content_type: _Optional[_Union[_type_definition_pb2.ReturnType, _Mapping]] = ..., correlated_event_config: _Optional[_Union[_external_event_pb2.CorrelatedEventConfig, _Mapping]] = ...) -> None: ...
 
 class PutExternalEventRequest(_message.Message):
     __slots__ = ("wf_run_id", "external_event_def_id", "guid", "content", "thread_run_number", "node_run_position")
@@ -586,20 +588,20 @@ class TenantIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.TenantId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchPrincipalRequest(_message.Message):
-    __slots__ = ("bookmark", "limit", "earliest_start", "latest_start", "isAdmin", "tenantId")
+    __slots__ = ("bookmark", "limit", "earliest_start", "latest_start", "is_admin", "tenant_id")
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
     EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
     LATEST_START_FIELD_NUMBER: _ClassVar[int]
-    ISADMIN_FIELD_NUMBER: _ClassVar[int]
-    TENANTID_FIELD_NUMBER: _ClassVar[int]
+    IS_ADMIN_FIELD_NUMBER: _ClassVar[int]
+    TENANT_ID_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
     earliest_start: _timestamp_pb2.Timestamp
     latest_start: _timestamp_pb2.Timestamp
-    isAdmin: bool
-    tenantId: str
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., earliest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., isAdmin: _Optional[bool] = ..., tenantId: _Optional[str] = ...) -> None: ...
+    is_admin: bool
+    tenant_id: str
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., earliest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., is_admin: _Optional[bool] = ..., tenant_id: _Optional[str] = ...) -> None: ...
 
 class PrincipalIdList(_message.Message):
     __slots__ = ("results", "bookmark")
@@ -881,30 +883,6 @@ class TaskDefMetricsQueryRequest(_message.Message):
     task_def_name: str
     def __init__(self, window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., window_type: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., task_def_name: _Optional[str] = ...) -> None: ...
 
-class ListTaskMetricsRequest(_message.Message):
-    __slots__ = ("task_def_id", "last_window_start", "window_length", "num_windows", "bookmark", "limit")
-    TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
-    LAST_WINDOW_START_FIELD_NUMBER: _ClassVar[int]
-    WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
-    NUM_WINDOWS_FIELD_NUMBER: _ClassVar[int]
-    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
-    LIMIT_FIELD_NUMBER: _ClassVar[int]
-    task_def_id: _object_id_pb2.TaskDefId
-    last_window_start: _timestamp_pb2.Timestamp
-    window_length: _common_enums_pb2.MetricsWindowLength
-    num_windows: int
-    bookmark: bytes
-    limit: int
-    def __init__(self, task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., last_window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., window_length: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., num_windows: _Optional[int] = ..., bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ...) -> None: ...
-
-class ListTaskMetricsResponse(_message.Message):
-    __slots__ = ("results", "bookmark")
-    RESULTS_FIELD_NUMBER: _ClassVar[int]
-    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
-    results: _containers.RepeatedCompositeFieldContainer[TaskDefMetrics]
-    bookmark: bytes
-    def __init__(self, results: _Optional[_Iterable[_Union[TaskDefMetrics, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
-
 class WfSpecMetricsQueryRequest(_message.Message):
     __slots__ = ("wf_spec_id", "window_start", "window_length")
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
@@ -914,22 +892,6 @@ class WfSpecMetricsQueryRequest(_message.Message):
     window_start: _timestamp_pb2.Timestamp
     window_length: _common_enums_pb2.MetricsWindowLength
     def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., window_length: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ...) -> None: ...
-
-class ListWfMetricsRequest(_message.Message):
-    __slots__ = ("wf_spec_id", "last_window_start", "window_length", "num_windows", "bookmark", "limit")
-    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
-    LAST_WINDOW_START_FIELD_NUMBER: _ClassVar[int]
-    WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
-    NUM_WINDOWS_FIELD_NUMBER: _ClassVar[int]
-    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
-    LIMIT_FIELD_NUMBER: _ClassVar[int]
-    wf_spec_id: _object_id_pb2.WfSpecId
-    last_window_start: _timestamp_pb2.Timestamp
-    window_length: _common_enums_pb2.MetricsWindowLength
-    num_windows: int
-    bookmark: bytes
-    limit: int
-    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., last_window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., window_length: _Optional[_Union[_common_enums_pb2.MetricsWindowLength, str]] = ..., num_windows: _Optional[int] = ..., bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ...) -> None: ...
 
 class ListWfMetricsResponse(_message.Message):
     __slots__ = ("results", "bookmark")

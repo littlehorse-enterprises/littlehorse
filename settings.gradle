@@ -15,6 +15,7 @@ include(
 )
 
 [
+        'arrays',
         'await-workflow-event',
         'basic',
         'checkpoint-tasks',
@@ -29,6 +30,7 @@ include(
         'external-event',
         'hundred-tasks',
         'interrupt-handler',
+        'inline-struct-placeholder',
         'json',
         'mutation',
         'output-topic',
@@ -39,6 +41,7 @@ include(
         'spawn-thread-foreach',
         'struct-def',
         'timestamp',
+        'type-adapter',
         'user-tasks',
         'variables',
         'wait-for-condition',
