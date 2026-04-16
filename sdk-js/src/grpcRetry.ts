@@ -58,10 +58,19 @@ export function createResourceExhaustedRetryMiddleware() {
     }
 
     while (true) {
+      let trailingMetadata: MetadataLike | undefined
+      const nextOptions = {
+        ...options,
+        onTrailers(trailers: MetadataLike) {
+          trailingMetadata = trailers
+          options.onTrailers?.(trailers)
+        },
+      }
+
       try {
-        return yield* call.next(call.request, options)
+        return yield* call.next(call.request, nextOptions)
       } catch (error) {
-        const delayMs = getRetryDelayMs(error)
+        const delayMs = getRetryDelayMs(error, trailingMetadata)
         if (delayMs === undefined) {
           throw error
         }
@@ -74,30 +83,16 @@ export function createResourceExhaustedRetryMiddleware() {
 
 const DEFAULT_RETRY_DELAY_MS = 500
 
-function getRetryDelayMs(error: unknown): number | undefined {
+function getRetryDelayMs(error: unknown, trailingMetadata?: MetadataLike): number | undefined {
   if (!(error instanceof ClientError) || error.code !== RESOURCE_EXHAUSTED_CODE) {
     return undefined
   }
 
-  // Try to extract the retry delay from trailing metadata (grpc-status-details-bin).
-  // nice-grpc's ClientError does not carry trailing metadata, so this will
-  // only work when metadata is attached externally or in future nice-grpc versions.
-  const metadata = (error as ClientError & { metadata?: MetadataLike }).metadata
-  const fromMetadata = extractRetryDelayMsFromMetadata(metadata)
+  const fromMetadata = extractRetryDelayMsFromMetadata(trailingMetadata)
   if (fromMetadata !== undefined) {
     return fromMetadata
   }
 
-  // Try to parse the delay from the error details string (e.g. "Retry after 500ms.")
-  const match = error.details?.match(/Retry after (\d+)ms/)
-  if (match) {
-    const parsed = parseInt(match[1], 10)
-    if (parsed > 0) {
-      return parsed
-    }
-  }
-
-  // Fall back to a default delay for RESOURCE_EXHAUSTED
   return DEFAULT_RETRY_DELAY_MS
 }
 
