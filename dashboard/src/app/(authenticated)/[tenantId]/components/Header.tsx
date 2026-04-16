@@ -17,8 +17,7 @@ export const Header: FC = () => {
     async ([_cacheKey, tenantIdForRequest]) => getServerVersion(tenantIdForRequest)
   )
 
-  const serverLabel =
-    serverVersionError !== undefined ? '—' : serverVersion === undefined ? '…' : serverVersion
+  const serverLabel = serverVersionError !== undefined ? '—' : serverVersion === undefined ? '…' : serverVersion
 
   return (
     <nav className="mb-4 border-gray-200 bg-black px-8 dark:bg-gray-900">
@@ -36,9 +35,7 @@ export const Header: FC = () => {
             title="LittleHorse server (GetServerVersion) · dashboard build"
           >
             <span className="text-gray-500">Server</span> {serverLabel}
-            <span className="ml-2 text-xs opacity-70">
-              · UI {process.env.NEXT_PUBLIC_VERSION ?? 'v0.0.0-dev'}
-            </span>
+            <span className="ml-2 text-xs opacity-70">· UI {process.env.NEXT_PUBLIC_VERSION ?? 'v0.0.0-dev'}</span>
           </span>
           <TenantSelector />
           <Principal />
