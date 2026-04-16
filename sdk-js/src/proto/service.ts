@@ -33,7 +33,14 @@ import {
 } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ListTaskMetricsRequest, ListWfMetricsRequest, MetricsList } from "./metrics";
+import {
+  ListTaskMetricsRequest,
+  ListWfMetricsRequest,
+  MetricsList,
+  MetricWindow,
+  MetricWindowIdList,
+  SearchWfMetricWindowRequest,
+} from "./metrics";
 import { NodeRun } from "./node_run";
 import {
   CheckpointId,
@@ -41,6 +48,7 @@ import {
   ExternalEventDefId,
   ExternalEventId,
   InactiveThreadRunId,
+  MetricWindowId,
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
@@ -12075,7 +12083,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Lists aggregated task metrics over a time range; supports filters and returns a MetricsList. */
+    /** Lists available metric windows for a given TaskDefId and time range. */
     listTaskMetrics: {
       name: "ListTaskMetrics",
       requestType: ListTaskMetricsRequest,
@@ -12084,12 +12092,30 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList. */
+    /** Lists available metric windows for a given WfSpecId and time range. */
     listWfMetrics: {
       name: "ListWfMetrics",
       requestType: ListWfMetricsRequest,
       requestStream: false,
       responseType: MetricsList,
+      responseStream: false,
+      options: {},
+    },
+    /** Gets a MetricWindow by its ID. */
+    getMetricWindow: {
+      name: "GetMetricWindow",
+      requestType: MetricWindowId,
+      requestStream: false,
+      responseType: MetricWindow,
+      responseStream: false,
+      options: {},
+    },
+    /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
+    searchWfMetricWindow: {
+      name: "SearchWfMetricWindow",
+      requestType: SearchWfMetricWindowRequest,
+      requestStream: false,
+      responseType: MetricWindowIdList,
       responseStream: false,
       options: {},
     },
@@ -12579,16 +12605,23 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: WfSpecMetricsQueryRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<WfSpecMetrics>>;
-  /** Lists aggregated task metrics over a time range; supports filters and returns a MetricsList. */
+  /** Lists available metric windows for a given TaskDefId and time range. */
   listTaskMetrics(
     request: ListTaskMetricsRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<MetricsList>>;
-  /** Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList. */
+  /** Lists available metric windows for a given WfSpecId and time range. */
   listWfMetrics(
     request: ListWfMetricsRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<MetricsList>>;
+  /** Gets a MetricWindow by its ID. */
+  getMetricWindow(request: MetricWindowId, context: CallContext & CallContextExt): Promise<DeepPartial<MetricWindow>>;
+  /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
+  searchWfMetricWindow(
+    request: SearchWfMetricWindowRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<MetricWindowIdList>>;
   /** Creates a Tenant in the LH Server. */
   putTenant(request: PutTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
   /** Gets a Tenant from the LH Server. */
@@ -13041,16 +13074,23 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<WfSpecMetricsQueryRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<WfSpecMetrics>;
-  /** Lists aggregated task metrics over a time range; supports filters and returns a MetricsList. */
+  /** Lists available metric windows for a given TaskDefId and time range. */
   listTaskMetrics(
     request: DeepPartial<ListTaskMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<MetricsList>;
-  /** Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList. */
+  /** Lists available metric windows for a given WfSpecId and time range. */
   listWfMetrics(
     request: DeepPartial<ListWfMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<MetricsList>;
+  /** Gets a MetricWindow by its ID. */
+  getMetricWindow(request: DeepPartial<MetricWindowId>, options?: CallOptions & CallOptionsExt): Promise<MetricWindow>;
+  /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
+  searchWfMetricWindow(
+    request: DeepPartial<SearchWfMetricWindowRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<MetricWindowIdList>;
   /** Creates a Tenant in the LH Server. */
   putTenant(request: DeepPartial<PutTenantRequest>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
   /** Gets a Tenant from the LH Server. */

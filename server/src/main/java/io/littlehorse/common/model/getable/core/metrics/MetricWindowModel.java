@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
@@ -232,11 +233,19 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return List.of();
+        if (id.getWfSpecId() == null || id.getWfSpecId().getName() == null) {
+            return List.of();
+        }
+        GetableIndex<MetricWindowModel> indexes = new GetableIndex<>(
+                List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.LOCAL));
+        return List.of(indexes);
     }
 
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
+        if ("wfSpecName".equals(key)) {
+            return List.of(new IndexedField(key, id.getWfSpecId().getName(), tagStorageType.get()));
+        }
         return List.of();
     }
 

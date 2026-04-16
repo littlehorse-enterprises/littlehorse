@@ -336,10 +336,14 @@ service LittleHorse {
   // Returns WfSpec Metrics for a specific WfSpec and a specific time window.
   rpc GetWfSpecMetricsWindow(WfSpecMetricsQueryRequest) returns (WfSpecMetrics) {}
   
-  // Lists aggregated task metrics over a time range; supports filters and returns a MetricsList.
+  // Lists available metric windows for a given TaskDefId and time range.
   rpc ListTaskMetrics(ListTaskMetricsRequest) returns (MetricsList) {}
-  // Lists aggregated workflow (WfSpec) metrics over a time range; supports filters and returns a MetricsList.
+  // Lists available metric windows for a given WfSpecId and time range.
   rpc ListWfMetrics(ListWfMetricsRequest) returns (MetricsList) {}
+  // Gets a MetricWindow by its ID.
+  rpc GetMetricWindow(MetricWindowId) returns (MetricWindow) {}
+  // Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+  rpc SearchWfMetricWindow(SearchWfMetricWindowRequest) returns (MetricWindowIdList) {}
 
   // Creates a Tenant in the LH Server.
   rpc PutTenant(PutTenantRequest) returns (Tenant) {}

@@ -62,36 +62,36 @@ public final class ExternalEventOuterClass extends com.google.protobuf.Generated
     java.lang.String[] descriptorData = {
       "\n\024external_event.proto\022\013littlehorse\032\037goo" +
       "gle/protobuf/timestamp.proto\032\016variable.p" +
-      "roto\032\017object_id.proto\032\023common_wfspec.pro" +
-      "to\032\025type_definition.proto\"\223\002\n\rExternalEv" +
-      "ent\022(\n\002id\030\001 \001(\0132\034.littlehorse.ExternalEv" +
-      "entId\022.\n\ncreated_at\030\002 \001(\0132\032.google.proto" +
-      "buf.Timestamp\022+\n\007content\030\003 \001(\0132\032.littleh" +
-      "orse.VariableValue\022\036\n\021thread_run_number\030" +
-      "\004 \001(\005H\000\210\001\001\022\036\n\021node_run_position\030\005 \001(\005H\001\210" +
-      "\001\001\022\017\n\007claimed\030\006 \001(\010B\024\n\022_thread_run_numbe" +
-      "rB\024\n\022_node_run_position\"\347\002\n\020ExternalEven" +
-      "tDef\022+\n\002id\030\001 \001(\0132\037.littlehorse.ExternalE" +
-      "ventDefId\022.\n\ncreated_at\030\002 \001(\0132\032.google.p" +
-      "rotobuf.Timestamp\022C\n\020retention_policy\030\003 " +
-      "\001(\0132).littlehorse.ExternalEventRetention" +
-      "Policy\0226\n\020type_information\030\004 \001(\0132\027.littl" +
-      "ehorse.ReturnTypeH\000\210\001\001\022H\n\027correlated_eve" +
-      "nt_config\030\005 \001(\0132\".littlehorse.Correlated" +
-      "EventConfigH\001\210\001\001B\023\n\021_type_informationB\032\n" +
-      "\030_correlated_event_config\"i\n\025CorrelatedE" +
-      "ventConfig\022\030\n\013ttl_seconds\030\001 \001(\003H\000\210\001\001\022&\n\036" +
-      "delete_after_first_correlation\030\002 \001(\010B\016\n\014" +
-      "_ttl_seconds\"\321\001\n\017CorrelatedEvent\022*\n\002id\030\001" +
-      " \001(\0132\036.littlehorse.CorrelatedEventId\022.\n\n" +
-      "created_at\030\002 \001(\0132\032.google.protobuf.Times" +
-      "tamp\022+\n\007content\030\003 \001(\0132\032.littlehorse.Vari" +
-      "ableValue\0225\n\017external_events\030\004 \003(\0132\034.lit" +
-      "tlehorse.ExternalEventId\"P\n\034ExternalEven" +
-      "tRetentionPolicy\022\033\n\021seconds_after_put\030\001 " +
-      "\001(\003H\000B\023\n\021ext_evt_gc_policyBM\n\037io.littleh" +
-      "orse.sdk.common.protoP\001Z\t.;lhproto\252\002\034Lit" +
-      "tleHorse.Sdk.Common.Protob\006proto3"
+      "roto\032\017object_id.proto\032\025type_definition.p" +
+      "roto\"\223\002\n\rExternalEvent\022(\n\002id\030\001 \001(\0132\034.lit" +
+      "tlehorse.ExternalEventId\022.\n\ncreated_at\030\002" +
+      " \001(\0132\032.google.protobuf.Timestamp\022+\n\007cont" +
+      "ent\030\003 \001(\0132\032.littlehorse.VariableValue\022\036\n" +
+      "\021thread_run_number\030\004 \001(\005H\000\210\001\001\022\036\n\021node_ru" +
+      "n_position\030\005 \001(\005H\001\210\001\001\022\017\n\007claimed\030\006 \001(\010B\024" +
+      "\n\022_thread_run_numberB\024\n\022_node_run_positi" +
+      "on\"\347\002\n\020ExternalEventDef\022+\n\002id\030\001 \001(\0132\037.li" +
+      "ttlehorse.ExternalEventDefId\022.\n\ncreated_" +
+      "at\030\002 \001(\0132\032.google.protobuf.Timestamp\022C\n\020" +
+      "retention_policy\030\003 \001(\0132).littlehorse.Ext" +
+      "ernalEventRetentionPolicy\0226\n\020type_inform" +
+      "ation\030\004 \001(\0132\027.littlehorse.ReturnTypeH\000\210\001" +
+      "\001\022H\n\027correlated_event_config\030\005 \001(\0132\".lit" +
+      "tlehorse.CorrelatedEventConfigH\001\210\001\001B\023\n\021_" +
+      "type_informationB\032\n\030_correlated_event_co" +
+      "nfig\"i\n\025CorrelatedEventConfig\022\030\n\013ttl_sec" +
+      "onds\030\001 \001(\003H\000\210\001\001\022&\n\036delete_after_first_co" +
+      "rrelation\030\002 \001(\010B\016\n\014_ttl_seconds\"\321\001\n\017Corr" +
+      "elatedEvent\022*\n\002id\030\001 \001(\0132\036.littlehorse.Co" +
+      "rrelatedEventId\022.\n\ncreated_at\030\002 \001(\0132\032.go" +
+      "ogle.protobuf.Timestamp\022+\n\007content\030\003 \001(\013" +
+      "2\032.littlehorse.VariableValue\0225\n\017external" +
+      "_events\030\004 \003(\0132\034.littlehorse.ExternalEven" +
+      "tId\"P\n\034ExternalEventRetentionPolicy\022\033\n\021s" +
+      "econds_after_put\030\001 \001(\003H\000B\023\n\021ext_evt_gc_p" +
+      "olicyBM\n\037io.littlehorse.sdk.common.proto" +
+      "P\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.P" +
+      "rotob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -99,7 +99,6 @@ public final class ExternalEventOuterClass extends com.google.protobuf.Generated
           com.google.protobuf.TimestampProto.getDescriptor(),
           io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor(),
           io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
-          io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor(),
           io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.getDescriptor(),
         });
     internal_static_littlehorse_ExternalEvent_descriptor =
@@ -136,7 +135,6 @@ public final class ExternalEventOuterClass extends com.google.protobuf.Generated
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
-    io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor();
     io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.getDescriptor();
   }
 
