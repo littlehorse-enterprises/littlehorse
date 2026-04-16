@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import ANY, call, patch, MagicMock, AsyncMock
 import grpc
 from littlehorse.exceptions import OAuthException
-from littlehorse.auth import (
+from littlehorse.client_interceptors import (
     AccessToken,
     OAuthCredentialsProvider,
     MetadataInterceptor,
@@ -118,7 +118,7 @@ class TestOAuthCredentialsProvider(unittest.TestCase):
             str(exception_context.exception),
         )
 
-    @patch("littlehorse.auth.OAuth2Session")
+    @patch("littlehorse.client_interceptors.OAuth2Session")
     def test_get_not_expired_access_token(self, session_class_mock):
         expiries = datetime.now() + timedelta(days=1)
         session_class_mock.return_value.fetch_token.return_value = {
@@ -138,7 +138,7 @@ class TestOAuthCredentialsProvider(unittest.TestCase):
         )
         self.assertIs(token1, token2)
 
-    @patch("littlehorse.auth.OAuth2Session")
+    @patch("littlehorse.client_interceptors.OAuth2Session")
     def test_get_expired_access_token(self, session_class_mock):
         expiries = datetime.now() - timedelta(days=1)
         session_class_mock.return_value.fetch_token.return_value = {
@@ -207,7 +207,7 @@ class TestRetryInterceptor(unittest.TestCase):
     def test_extract_retry_delay(self):
         self.assertEqual(retry_delay_seconds(self.error), 1.5)
 
-    @patch("littlehorse.auth.time.sleep")
+    @patch("littlehorse.client_interceptors.time.sleep")
     def test_retry_unary_call(self, sleep_mock):
         interceptor = RetryInterceptor()
         outcomes = [self.error, "ok"]
@@ -276,7 +276,7 @@ class TestAsyncMetadataInterceptor(unittest.IsolatedAsyncioTestCase):
             self.assert_tenant_b_header, request_details, None
         )
 
-    @patch("littlehorse.auth.asyncio.sleep", new_callable=AsyncMock)
+    @patch("littlehorse.client_interceptors.asyncio.sleep", new_callable=AsyncMock)
     async def test_retry_async_unary_call(self, sleep_mock):
         error = FakeRpcError(
             grpc.StatusCode.RESOURCE_EXHAUSTED,

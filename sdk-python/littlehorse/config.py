@@ -5,7 +5,7 @@ from typing import Optional, Union, Any
 from grpc import CallCredentials, Channel, ChannelCredentials
 import grpc
 from jproperties import Properties
-from littlehorse.auth import (
+from littlehorse.client_interceptors import (
     OAuthCredentialsProvider,
     MetadataInterceptor,
     RetryInterceptor,
