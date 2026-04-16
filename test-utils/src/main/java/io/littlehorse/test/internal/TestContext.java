@@ -110,8 +110,8 @@ public class TestContext {
 
     public void registerStructDef(LHStructDefType structDef) {
         lhClient.putStructDef(structDef.toPutStructDefRequest().toBuilder()
-            .setAllowedUpdates(StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES)
-            .build());
+                .setAllowedUpdates(StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES)
+                .build());
     }
 
     public void registerExternalEventDef(ExternalEventDef externalEventDef) {
