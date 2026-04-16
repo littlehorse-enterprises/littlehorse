@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
+import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
@@ -108,7 +109,9 @@ public class TestContext {
     }
 
     public void registerStructDef(LHStructDefType structDef) {
-        lhClient.putStructDef(structDef.toPutStructDefRequest());
+        lhClient.putStructDef(structDef.toPutStructDefRequest().toBuilder()
+                .setAllowedUpdates(StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES)
+                .build());
     }
 
     public void registerExternalEventDef(ExternalEventDef externalEventDef) {

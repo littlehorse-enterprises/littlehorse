@@ -7,13 +7,13 @@ import lombok.Setter;
 @LHStructDef("pin-struct")
 @Getter
 @Setter
-public class PinStructWf {
+public class PinStructV1 {
     public Integer x;
-    public String y;
+    public String y = "default";
 
-    public PinStructWf() {}
+    public PinStructV1() {}
 
-    public PinStructWf(Integer x, String y) {
+    public PinStructV1(Integer x, String y) {
         this.x = x;
         this.y = y;
     }

@@ -3,28 +3,24 @@ package e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import e2e.Struct.PinStructV0;
+import e2e.Struct.PinStructV1;
 import e2e.Struct.UnknownStructDef;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.AllowedUpdateType;
-import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.sdk.common.proto.PutStructDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
-import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.common.proto.StructDefId;
-import io.littlehorse.sdk.common.proto.StructFieldDef;
-import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.test.LHTest;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
 import java.time.Duration;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -114,49 +110,10 @@ public class WfSpecLifecycleTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
+    @WithStructDefs({PinStructV0.class, PinStructV1.class})
     class StructDefPinning {
         final String WF_SPEC_NAME = "wfspec-pin-test";
-        final String STRUCT_DEF_NAME = "wfspec-pin-struct";
-
-        @BeforeAll
-        void setup() {
-            client.putStructDef(PutStructDefRequest.newBuilder()
-                    .setName(STRUCT_DEF_NAME)
-                    .setStructDef(InlineStructDef.newBuilder()
-                            .putFields(
-                                    "x",
-                                    StructFieldDef.newBuilder()
-                                            .setFieldType(
-                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
-                                            .build())
-                            .build())
-                    .build());
-
-            waitForStructDef(STRUCT_DEF_NAME, 0);
-
-            client.putStructDef(PutStructDefRequest.newBuilder()
-                    .setName(STRUCT_DEF_NAME)
-                    .setAllowedUpdates(StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES)
-                    .setStructDef(InlineStructDef.newBuilder()
-                            .putFields(
-                                    "x",
-                                    StructFieldDef.newBuilder()
-                                            .setFieldType(
-                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
-                                            .build())
-                            .putFields(
-                                    "y",
-                                    StructFieldDef.newBuilder()
-                                            .setFieldType(
-                                                    TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
-                                            .setDefaultValue(
-                                                    VariableValue.newBuilder().setStr("default"))
-                                            .build())
-                            .build())
-                    .build());
-
-            waitForStructDef(STRUCT_DEF_NAME, 1);
-        }
+        final String STRUCT_DEF_NAME = "pin-struct";
 
         @Test
         void shouldPinStructDefVersionWhenPuttingWfSpec() {
