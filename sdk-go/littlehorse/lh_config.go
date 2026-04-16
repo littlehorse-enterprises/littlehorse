@@ -159,6 +159,7 @@ func NewConfigFromEnv() *LHConfig {
 
 		GrpcKeepaliveTimeMs:    int64FromEnv(GRPC_KEEPALIVE_TIME_KEY, 45000),
 		GrpcKeepaliveTimeoutMs: int64FromEnv(GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
+		UnaryInterceptors:      defaultInterceptors(),
 
 		clients:  make(map[string]*lhproto.LittleHorseClient),
 		channels: make(map[string]*grpc.ClientConn),
@@ -196,6 +197,7 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 
 		GrpcKeepaliveTimeMs:    int64FromProp(p, GRPC_KEEPALIVE_TIME_KEY, 45000),
 		GrpcKeepaliveTimeoutMs: int64FromProp(p, GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
+		UnaryInterceptors:      defaultInterceptors(),
 
 		clients:  make(map[string]*lhproto.LittleHorseClient),
 		channels: make(map[string]*grpc.ClientConn),
@@ -328,4 +330,11 @@ func (c *tenantIdHeaderCreds) GetRequestMetadata(ctx context.Context, uri ...str
 
 func (c *tenantIdHeaderCreds) RequireTransportSecurity() bool {
 	return false
+}
+
+// defaultInterceptors returns the standard set of client interceptors that
+// should be installed by default. Currently this includes only the
+// ResourceExhaustedRetryInterceptor for transparent quota retry handling.
+func defaultInterceptors() []grpc.UnaryClientInterceptor {
+	return []grpc.UnaryClientInterceptor{ResourceExhaustedRetryInterceptor()}
 }

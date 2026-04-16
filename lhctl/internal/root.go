@@ -65,8 +65,6 @@ func getGlobalConfig(cmd *cobra.Command) littlehorse.LHConfig {
 		globalConfig = littlehorse.NewConfigFromEnv()
 	}
 
-	globalConfig.UnaryInterceptors = append(globalConfig.UnaryInterceptors, resourceExhaustedRetryInterceptor())
-
 	return *globalConfig
 }
 

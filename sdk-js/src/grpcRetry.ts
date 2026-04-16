@@ -52,35 +52,53 @@ export function extractRetryDelayMsFromMetadata(metadata?: MetadataLike): number
 }
 
 export function createResourceExhaustedRetryMiddleware() {
-  return (call: any, options: any) => {
+  return async function* (call: any, options: any) {
     if (call.method.requestStream || call.method.responseStream) {
-      return call.next(call.request, options)
+      return yield* call.next(call.request, options)
     }
 
-    return (async () => {
-      while (true) {
-        try {
-          return await call.next(call.request, options)
-        } catch (error) {
-          const delayMs = getRetryDelayMs(error)
-          if (delayMs === undefined) {
-            throw error
-          }
-
-          await sleep(delayMs)
+    while (true) {
+      try {
+        return yield* call.next(call.request, options)
+      } catch (error) {
+        const delayMs = getRetryDelayMs(error)
+        if (delayMs === undefined) {
+          throw error
         }
+
+        await sleep(delayMs)
       }
-    })()
+    }
   }
 }
+
+const DEFAULT_RETRY_DELAY_MS = 500
 
 function getRetryDelayMs(error: unknown): number | undefined {
   if (!(error instanceof ClientError) || error.code !== RESOURCE_EXHAUSTED_CODE) {
     return undefined
   }
 
+  // Try to extract the retry delay from trailing metadata (grpc-status-details-bin).
+  // nice-grpc's ClientError does not carry trailing metadata, so this will
+  // only work when metadata is attached externally or in future nice-grpc versions.
   const metadata = (error as ClientError & { metadata?: MetadataLike }).metadata
-  return extractRetryDelayMsFromMetadata(metadata)
+  const fromMetadata = extractRetryDelayMsFromMetadata(metadata)
+  if (fromMetadata !== undefined) {
+    return fromMetadata
+  }
+
+  // Try to parse the delay from the error details string (e.g. "Retry after 500ms.")
+  const match = error.details?.match(/Retry after (\d+)ms/)
+  if (match) {
+    const parsed = parseInt(match[1], 10)
+    if (parsed > 0) {
+      return parsed
+    }
+  }
+
+  // Fall back to a default delay for RESOURCE_EXHAUSTED
+  return DEFAULT_RETRY_DELAY_MS
 }
 
 function getStatusDetails(metadata?: MetadataLike): Uint8Array | undefined {

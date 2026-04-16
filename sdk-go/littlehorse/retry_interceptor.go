@@ -1,4 +1,4 @@
-package internal
+package littlehorse
 
 import (
 	"context"
@@ -10,7 +10,15 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func resourceExhaustedRetryInterceptor() grpc.UnaryClientInterceptor {
+// ResourceExhaustedRetryInterceptor returns a gRPC UnaryClientInterceptor that
+// transparently retries requests when the server responds with RESOURCE_EXHAUSTED
+// and includes a RetryInfo detail specifying how long to wait before retrying.
+//
+// This interceptor handles quota enforcement: when the LittleHorse server throttles
+// a request, it returns RESOURCE_EXHAUSTED with a retry delay. The interceptor
+// sleeps for the specified delay and then retries the request, making throttling
+// transparent to the caller.
+func ResourceExhaustedRetryInterceptor() grpc.UnaryClientInterceptor {
 	return func(
 		ctx context.Context,
 		method string,
