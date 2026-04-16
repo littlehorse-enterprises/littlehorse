@@ -21,6 +21,7 @@ dependencies = [
     "protobuf==6.33.5",
     # compile-proto.sh is using grpcio 1.69.0 (local-dev/Dockerfile)
     "grpcio==1.69.0",
+    "googleapis-common-protos>=1.63.0",
     # other utilities
     "jproperties>=2.1,<2.2",
     "authlib==1.6.9",

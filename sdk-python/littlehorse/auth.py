@@ -4,6 +4,9 @@ from typing import Any, Optional, cast
 import time
 from authlib.integrations.requests_client import OAuth2Session
 import grpc
+from google.protobuf.any_pb2 import Any as AnyProto
+from google.rpc.error_details_pb2 import RetryInfo
+from google.rpc.status_pb2 import Status
 from grpc.aio import ClientCallDetails
 
 from littlehorse.exceptions import OAuthException
@@ -97,94 +100,6 @@ def _call_details_with_tenant(
     )
 
 
-def _read_varint(data: bytes, offset: int) -> tuple[int, int]:
-    value = 0
-    shift = 0
-    while True:
-        current = data[offset]
-        offset += 1
-        value |= (current & 0x7F) << shift
-        if current < 0x80:
-            return value, offset
-        shift += 7
-
-
-def _skip_field(data: bytes, offset: int, wire_type: int) -> int:
-    if wire_type == 0:
-        _, offset = _read_varint(data, offset)
-        return offset
-    if wire_type == 2:
-        length, offset = _read_varint(data, offset)
-        return offset + length
-    raise ValueError(f"Unsupported wire type: {wire_type}")
-
-
-def _parse_duration_seconds(duration_bytes: bytes) -> Optional[float]:
-    offset = 0
-    seconds = 0
-    nanos = 0
-
-    while offset < len(duration_bytes):
-        key, offset = _read_varint(duration_bytes, offset)
-        field_number = key >> 3
-        wire_type = key & 0x07
-
-        if field_number == 1 and wire_type == 0:
-            seconds, offset = _read_varint(duration_bytes, offset)
-        elif field_number == 2 and wire_type == 0:
-            nanos, offset = _read_varint(duration_bytes, offset)
-        else:
-            offset = _skip_field(duration_bytes, offset, wire_type)
-
-    delay = seconds + (nanos / 1_000_000_000)
-    return delay if delay > 0 else None
-
-
-def _parse_retry_info_seconds(retry_info_bytes: bytes) -> Optional[float]:
-    offset = 0
-    while offset < len(retry_info_bytes):
-        key, offset = _read_varint(retry_info_bytes, offset)
-        field_number = key >> 3
-        wire_type = key & 0x07
-
-        if field_number == 1 and wire_type == 2:
-            length, offset = _read_varint(retry_info_bytes, offset)
-            duration_bytes = retry_info_bytes[offset : offset + length]
-            offset += length
-            return _parse_duration_seconds(duration_bytes)
-
-        offset = _skip_field(retry_info_bytes, offset, wire_type)
-
-    return None
-
-
-def _parse_any_retry_delay_seconds(any_bytes: bytes) -> Optional[float]:
-    offset = 0
-    type_url: Optional[str] = None
-    value: Optional[bytes] = None
-
-    while offset < len(any_bytes):
-        key, offset = _read_varint(any_bytes, offset)
-        field_number = key >> 3
-        wire_type = key & 0x07
-
-        if field_number == 1 and wire_type == 2:
-            length, offset = _read_varint(any_bytes, offset)
-            type_url = any_bytes[offset : offset + length].decode("utf-8")
-            offset += length
-        elif field_number == 2 and wire_type == 2:
-            length, offset = _read_varint(any_bytes, offset)
-            value = any_bytes[offset : offset + length]
-            offset += length
-        else:
-            offset = _skip_field(any_bytes, offset, wire_type)
-
-    if type_url is None or value is None or not type_url.endswith("/google.rpc.RetryInfo"):
-        return None
-
-    return _parse_retry_info_seconds(value)
-
-
 def retry_delay_seconds(error: grpc.RpcError) -> Optional[float]:
     if error.code() != grpc.StatusCode.RESOURCE_EXHAUSTED:
         return None
@@ -194,26 +109,19 @@ def retry_delay_seconds(error: grpc.RpcError) -> Optional[float]:
         return None
 
     for entry in trailing_metadata:
-        key = entry.key
-        value = entry.value
-        if key != STATUS_DETAILS_HEADER or not isinstance(value, bytes):
+        if entry.key != STATUS_DETAILS_HEADER or not isinstance(entry.value, bytes):
             continue
 
-        offset = 0
-        while offset < len(value):
-            field_key, offset = _read_varint(value, offset)
-            field_number = field_key >> 3
-            wire_type = field_key & 0x07
-
-            if field_number == 3 and wire_type == 2:
-                length, offset = _read_varint(value, offset)
-                detail_bytes = value[offset : offset + length]
-                offset += length
-                delay = _parse_any_retry_delay_seconds(detail_bytes)
-                if delay is not None:
+        status = Status()
+        status.ParseFromString(entry.value)
+        for detail in status.details:
+            retry_info = RetryInfo()
+            if detail.Unpack(retry_info):
+                delay = retry_info.retry_delay.seconds + (
+                    retry_info.retry_delay.nanos / 1_000_000_000
+                )
+                if delay > 0:
                     return delay
-            else:
-                offset = _skip_field(value, offset, wire_type)
 
     return None
 
