@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
+import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
@@ -49,7 +50,7 @@ public class TestContext {
 
     private final Map<String, WfSpec> wfSpecStore = new HashMap<>();
 
-    private final Set<String> registeredStructDefs = new HashSet<>();
+    private final Set<StructDefRegistrationKey> registeredStructDefs = new HashSet<>();
 
     private final Lock wfSpecStoreLock;
     private final Lock registeredStructDefsLock;
@@ -115,11 +116,12 @@ public class TestContext {
     }
 
     public void registerStructDef(LHStructDefType structDef) {
-        String structDefName = structDef.getStructDefId().getName();
+        StructDefRegistrationKey registrationKey =
+                new StructDefRegistrationKey(structDef.getStructDefId().getName(), structDef.getInlineStructDef());
 
         registeredStructDefsLock.lock();
         try {
-            if (!registeredStructDefs.add(structDefName)) {
+            if (!registeredStructDefs.add(registrationKey)) {
                 return;
             }
 
@@ -246,4 +248,6 @@ public class TestContext {
     public LHConfig getConfig() {
         return config;
     }
+
+    private record StructDefRegistrationKey(String name, InlineStructDef structDef) {}
 }
