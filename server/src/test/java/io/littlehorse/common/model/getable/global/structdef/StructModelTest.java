@@ -178,10 +178,10 @@ public class StructModelTest {
     }
 
     @Test
-    public void nullableRequiredFieldAbsentShouldFail() throws Exception {
+    public void nullableFieldAbsentShouldPass() throws Exception {
         ReadOnlyMetadataManager metadataManager = null;
 
-        // nullable=true but no default => still required (must be present)
+        // nullable=true with no explicit default => implicit null default; absence is fine
         InlineStructDefModel def = new InlineStructDefModel();
         StructFieldDef sfd = StructFieldDef.newBuilder()
                 .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
@@ -206,9 +206,8 @@ public class StructModelTest {
                         .build(),
                 null);
 
-        assertThatThrownBy(() -> model.validateAgainstSuperset(sm, metadataManager))
-                .isInstanceOf(StructValidationException.class)
-                .hasMessageContaining("Missing required field");
+        // should not throw
+        model.validateAgainstSuperset(sm, metadataManager);
     }
 
     @Test

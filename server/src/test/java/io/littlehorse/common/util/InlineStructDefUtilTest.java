@@ -75,6 +75,17 @@ public class InlineStructDefUtilTest {
     }
 
     @Test
+    public void testNoBreakingChangesWhenNullableFieldWithoutDefaultIsAdded() {
+        InlineStructDefModel oldStructDef = makeCarStructDef();
+        InlineStructDefModel newStructDef = makeCarStructDef(makeStructField("nickname", VariableType.STR, true));
+
+        assertThat(InlineStructDefUtil.getIncompatibleFields(
+                                StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES, newStructDef, oldStructDef)
+                        .size())
+                .isEqualTo(0);
+    }
+
+    @Test
     public void testStructDefsAreCompatibleWhenOptionalFieldIsRemoved() {
         InlineStructDefModel oldStructDef = makeCarStructDef(makeStructField("horsepower", VariableType.INT, 10));
         InlineStructDefModel newStructDef = makeCarStructDef();
@@ -136,6 +147,23 @@ public class InlineStructDefUtilTest {
                 StructFieldDef.newBuilder()
                         .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(type))
                         .setDefaultValue(LHLibUtil.objToVarVal(defaultValue))
+                        .build());
+    }
+
+    /**
+     * A helper method for making StructFieldDefs with nullable configuration.
+     *
+     * @param name The name of the StructFieldDef
+     * @param type The field type of the StructFieldDef
+     * @param isNullable Whether the field is nullable
+     * @return An Entry where the key is the name of the field and the value is the StructFieldDef
+     */
+    private static Entry<String, StructFieldDef> makeStructField(String name, VariableType type, boolean isNullable) {
+        return Map.entry(
+                name,
+                StructFieldDef.newBuilder()
+                        .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(type))
+                        .setIsNullable(isNullable)
                         .build());
     }
 

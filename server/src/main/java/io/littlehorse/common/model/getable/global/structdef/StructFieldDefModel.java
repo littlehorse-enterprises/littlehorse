@@ -71,11 +71,12 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
     }
 
     public boolean hasDefaultValue() {
-        return defaultValue != null && !defaultValue.isNull();
+        // Nullable fields implicitly default to null if the client does not provide a default.
+        return defaultValue != null || isNullable;
     }
 
     public boolean isRequired() {
-        return defaultValue == null;
+        return !hasDefaultValue();
     }
 
     public void validate(ReadOnlyMetadataManager metadataManager) throws StructDefValidationException {
