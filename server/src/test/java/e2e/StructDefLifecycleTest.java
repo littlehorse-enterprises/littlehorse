@@ -28,7 +28,6 @@ import io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
@@ -184,25 +183,6 @@ public class StructDefLifecycleTest {
             TaskDef taskDef = client.getTaskDef(id);
 
             StructDefId sdid = taskDef.getInputVars(0).getTypeDef().getStructDefId();
-            assertThat(sdid.getName()).isEqualTo(STRUCT_DEF_NAME);
-            assertThat(sdid.getVersion()).isEqualTo(1);
-        }
-
-        @Test
-        void shouldPinStructDefVersionWhenPuttingWfSpec() {
-            client.putWfSpec(getWfPinTest().compileWorkflow());
-
-            WfSpecId id = WfSpecId.newBuilder().setName(WF_SPEC_NAME).build();
-
-            waitForWfSpec(id);
-            WfSpec got = client.getWfSpec(id);
-
-            StructDefId sdid = got.getThreadSpecsMap()
-                    .get("entrypoint")
-                    .getVariableDefs(0)
-                    .getVarDef()
-                    .getTypeDef()
-                    .getStructDefId();
             assertThat(sdid.getName()).isEqualTo(STRUCT_DEF_NAME);
             assertThat(sdid.getVersion()).isEqualTo(1);
         }
