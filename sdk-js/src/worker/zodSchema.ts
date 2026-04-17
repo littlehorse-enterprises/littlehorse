@@ -215,7 +215,10 @@ export function buildPutStructDefRequest(
   const structDefFields: Record<string, StructFieldDef> = {}
 
   for (const [fieldName, fieldSchema] of Object.entries(shape) as [string, ZodTypeAny][]) {
-    structDefFields[fieldName] = { fieldType: zodToTypeDef(fieldSchema) }
+    structDefFields[fieldName] = {
+      fieldType: zodToTypeDef(fieldSchema),
+      isNullable: isNullable(fieldSchema),
+    }
   }
 
   return {
@@ -351,6 +354,30 @@ function primitiveDef(type: VariableType, masked: boolean = false): TypeDefiniti
 
 function isMasked(schema: ZodTypeAny): boolean {
   return (schema as any)[LH_MASKED_KEY] === true
+}
+
+function isNullable(schema: ZodTypeAny): boolean {
+  let current = schema
+
+  while (current) {
+    const typeName = (current._def as any)?.type as string | undefined
+    if (!typeName) {
+      return false
+    }
+
+    if (typeName === 'nullable') {
+      return true
+    }
+
+    if (typeName === 'optional' || typeName === 'default') {
+      current = (current._def as any).innerType
+      continue
+    }
+
+    return false
+  }
+
+  return false
 }
 
 /**

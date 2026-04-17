@@ -17,7 +17,15 @@ export function utcParts(d: Date): UtcParts {
   }
 }
 
-export function utcDateFromParts(y: number, mo: number, day: number, h: number, mi: number, s: number, ms: number): Date {
+export function utcDateFromParts(
+  y: number,
+  mo: number,
+  day: number,
+  h: number,
+  mi: number,
+  s: number,
+  ms: number
+): Date {
   return new Date(Date.UTC(y, mo, day, h, mi, s, ms))
 }
 
