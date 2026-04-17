@@ -11,9 +11,9 @@
   - [Nullable `StructField` Values](#nullable-structfield-values)
     - [Design Decision](#design-decision)
     - [Semantics](#semantics)
-    - [Interoperability with Default Values and Required Fields](#interoperability-with-default-values-and-required-fields)
-    - [Interoperability with `JSON_OBJ`](#interoperability-with-json_obj)
-      - [Differentiating LH Arrays from traditional `JSON_ARR`s](#differentiating-lh-arrays-from-traditional-json_arrs)
+    - [Interoperability with Default Values](#interoperability-with-default-values)
+  - [Interoperability with `JSON_OBJ`](#interoperability-with-json_obj)
+    - [Differentiating LH Arrays from traditional `JSON_ARR`s](#differentiating-lh-arrays-from-traditional-json_arrs)
   - [Client-Side Enhancements](#client-side-enhancements)
     - [Task Workers](#task-workers)
       - [`StructDef` References](#structdef-references)
@@ -365,28 +365,24 @@ However, there are legitimate real-world use cases where a field value must be a
 
 ### Semantics
 
-**Nullability and requiredness are orthogonal.** A field being nullable controls whether its _value_ can be `null`; a field being required controls whether it must be _present_ in the struct payload. The two axes combine as follows:
+**Nullability and default values are orthogonal.** A field being nullable controls whether its _value_ can be `null`. The two axes combine as follows:
 
-| `is_nullable` | Required (no default) | Optional (has default) |
+| `is_nullable` | No default | Has default |
 |---|---|---|
 | `false` (default) | Must be present; value must be non-null | May be absent (default applies); if present, value must be non-null |
-| `true` | Must be present; value may be null | May be absent (default applies); if present, value may be null |
+| `true` | Impossible | May be absent (default applies); If no default set, defaults to null |
 
-The key insight: **`is_nullable = true` does not make a required field optional.** A nullable required field must still appear as a key in the `InlineStruct`. It simply permits `VALUE_NOT_SET` as a valid value for that key.
+### Interoperability with Default Values
 
-### Interoperability with Default Values and Required Fields
-
-The interaction between `is_nullable`, `default_value`, and requiredness follows these rules:
+The interaction between `is_nullable` and `default_value` follows these rules:
 
 1. **Non-nullable field with a null default value** — rejected at `StructDef` definition time. `PutStructDef` will throw a validation error. It is incoherent to specify `is_nullable = false` while setting a null default value, because any time the default is applied the field would immediately violate its own non-null constraint.
 
-2. **Nullable field with no default value (required)** — the field must be present in every struct payload. `null` is an acceptable value; absence is not.
+2. **Nullable field with no default value** — the server sets the default value to a `null` `VariableValue` at StructDef definition time
 
-3. **Nullable field with a non-null default value** — the field may be absent (the non-null default applies) or present with either a non-null or a null value.
+3. **Nullable field with a default value** — the field may be absent (the non-null default applies) or present with either a non-null or a null value.
 
-4. **Nullable field with a null default value** — the field may be absent (the null default applies) or present with a null value. A non-null value is also accepted because it is type-compatible.
-
-### Interoperability with `JSON_OBJ`
+## Interoperability with `JSON_OBJ`
 
 Our conversion policy will be that we can convert a `Struct` to a `JSON_OBJ`, but we do not allow converting a `JSON_OBJ` to a `Struct`. For example:
 
@@ -416,7 +412,7 @@ In the past, this only worked if the variable on the ScheduledTask was of the ty
 
 This means that the SDK will dynamically convert the `VariableValue` into a `Car` whether it is a `STRUCT` or a `JSON_OBJ`.
 
-#### Differentiating LH Arrays from traditional `JSON_ARR`s
+### Differentiating LH Arrays from traditional `JSON_ARR`s
 
 When trying to serialize and deserialize values in the SDKs, we will define a rule for explicitly differentiating legacy `JSON_ARR` and native LittleHorse `Array`s. This will help us maintain backwards compatibility with old clients using `JSON_ARR`s.
 
