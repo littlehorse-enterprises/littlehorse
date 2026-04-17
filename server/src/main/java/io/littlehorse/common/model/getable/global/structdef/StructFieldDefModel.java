@@ -21,9 +21,13 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
 
     private VariableValueModel defaultValue;
 
+    private boolean isNullable;
+
     @Override
     public StructFieldDef.Builder toProto() {
-        StructFieldDef.Builder out = StructFieldDef.newBuilder().setFieldType(this.fieldType.toProto());
+        StructFieldDef.Builder out = StructFieldDef.newBuilder()
+                .setFieldType(this.fieldType.toProto())
+                .setIsNullable(isNullable);
 
         if (defaultValue != null) {
             out.setDefaultValue(defaultValue.toProto());
@@ -36,6 +40,7 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
     public void initFrom(Message p, ExecutionContext context) throws LHSerdeException {
         StructFieldDef proto = (StructFieldDef) p;
         fieldType = TypeDefinitionModel.fromProto(proto.getFieldType(), context);
+        isNullable = proto.getIsNullable();
 
         if (proto.hasDefaultValue()) {
             defaultValue = VariableValueModel.fromProto(proto.getDefaultValue(), context);
@@ -45,6 +50,13 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
     public void validateAgainst(StructFieldModel structField, ReadOnlyMetadataManager metadataManager)
             throws StructValidationException {
         structField.setMasked(fieldType.isMasked());
+
+        if (structField.getValue().isNull()) {
+            if (!isNullable) {
+                throw new StructValidationException("Field is not nullable but received null value");
+            }
+            return;
+        }
 
         try {
             fieldType.validateCompatibility(structField.getValue(), metadataManager);
@@ -67,6 +79,12 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
     }
 
     public void validate(ReadOnlyMetadataManager metadataManager) throws StructDefValidationException {
+        // A null default value on a non-nullable field is incoherent: the default would
+        // immediately violate the non-null constraint every time it is applied.
+        if (defaultValue != null && defaultValue.isNull() && !isNullable) {
+            throw new StructDefValidationException("Non-nullable field cannot have a null default value");
+        }
+
         // Validates field type against default value
         if (defaultValue != null && !defaultValue.isNull()) {
             try {

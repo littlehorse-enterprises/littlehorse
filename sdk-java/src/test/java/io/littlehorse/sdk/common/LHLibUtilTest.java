@@ -410,4 +410,96 @@ public class LHLibUtilTest {
             this.name = name;
         }
     }
+
+    @LHStructDef("nullable-field-struct")
+    public static class NullableFieldStruct {
+        private String required;
+        private String optional;
+
+        public String getRequired() {
+            return required;
+        }
+
+        public void setRequired(String required) {
+            this.required = required;
+        }
+
+        public String getOptional() {
+            return optional;
+        }
+
+        public void setOptional(String optional) {
+            this.optional = optional;
+        }
+    }
+
+    @Test
+    void shouldSerializeNullFieldAsValueNotSet() throws Exception {
+        NullableFieldStruct pojo = new NullableFieldStruct();
+        pojo.setRequired("hello");
+        pojo.setOptional(null); // null field
+
+        Struct struct = LHLibUtil.serializeToStruct(pojo);
+
+        // Both fields must be present in the InlineStruct
+        Assertions.assertThat(struct.getStruct().containsFields("required")).isTrue();
+        Assertions.assertThat(struct.getStruct().containsFields("optional")).isTrue();
+
+        // The null field must serialize to VALUE_NOT_SET
+        VariableValue optionalVal =
+                struct.getStruct().getFieldsMap().get("optional").getValue();
+        Assertions.assertThat(optionalVal.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
+
+        // The non-null field must serialize normally
+        VariableValue requiredVal =
+                struct.getStruct().getFieldsMap().get("required").getValue();
+        Assertions.assertThat(requiredVal.getStr()).isEqualTo("hello");
+    }
+
+    @Test
+    void shouldDeserializeValueNotSetFieldAsNullOnPojo() throws Exception {
+        // Build a Struct where 'optional' is present but VALUE_NOT_SET
+        VariableValue structVal = VariableValue.newBuilder()
+                .setStruct(Struct.newBuilder()
+                        .setStructDefId(StructDefId.newBuilder()
+                                .setName("nullable-field-struct")
+                                .build())
+                        .setStruct(InlineStruct.newBuilder()
+                                .putFields(
+                                        "required",
+                                        StructField.newBuilder()
+                                                .setValue(VariableValue.newBuilder()
+                                                        .setStr("world"))
+                                                .build())
+                                .putFields(
+                                        "optional",
+                                        StructField.newBuilder()
+                                                .setValue(VariableValue.newBuilder()
+                                                        .build()) // VALUE_NOT_SET
+                                                .build())
+                                .build())
+                        .build())
+                .build();
+
+        NullableFieldStruct pojo = (NullableFieldStruct) LHLibUtil.varValToObj(structVal, NullableFieldStruct.class);
+
+        Assertions.assertThat(pojo.getRequired()).isEqualTo("world");
+        Assertions.assertThat(pojo.getOptional()).isNull();
+    }
+
+    @Test
+    void shouldRoundTripNullFieldThroughSerializeAndDeserialize() throws Exception {
+        NullableFieldStruct original = new NullableFieldStruct();
+        original.setRequired("round-trip");
+        original.setOptional(null);
+
+        Struct struct = LHLibUtil.serializeToStruct(original);
+
+        VariableValue structVal = VariableValue.newBuilder().setStruct(struct).build();
+        NullableFieldStruct deserialized =
+                (NullableFieldStruct) LHLibUtil.varValToObj(structVal, NullableFieldStruct.class);
+
+        Assertions.assertThat(deserialized.getRequired()).isEqualTo("round-trip");
+        Assertions.assertThat(deserialized.getOptional()).isNull();
+    }
 }
