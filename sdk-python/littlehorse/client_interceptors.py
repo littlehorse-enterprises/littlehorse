@@ -4,7 +4,6 @@ from typing import Any, Optional, cast
 import time
 from authlib.integrations.requests_client import OAuth2Session
 import grpc
-from google.protobuf.any_pb2 import Any as AnyProto
 from google.rpc.error_details_pb2 import RetryInfo
 from google.rpc.status_pb2 import Status
 from grpc.aio import ClientCallDetails
