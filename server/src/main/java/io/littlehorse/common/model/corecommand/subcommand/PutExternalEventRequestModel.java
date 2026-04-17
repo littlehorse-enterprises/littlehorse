@@ -5,6 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
@@ -87,7 +88,7 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
             try {
                 IngressTypeUtils.applyExpectedTypeAndValidate(
                         type.getOutputType(), content, executionContext.metadataManager());
-            } catch (io.littlehorse.common.exceptions.LHApiException ex) {
+            } catch (TypeValidationException ex) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
                         "Invalid type of content for event. Check the return type of ExternalEventDef " + eed.getName()
