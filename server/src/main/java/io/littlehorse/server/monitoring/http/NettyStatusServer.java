@@ -10,6 +10,7 @@ import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioSocketChannel;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpRequestDecoder;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseEncoder;
+import io.grpc.netty.shaded.io.netty.util.concurrent.Future;
 import io.littlehorse.server.monitoring.StatusServer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -53,10 +54,12 @@ public class NettyStatusServer implements StatusServer {
 
     @Override
     public void close() {
-        workerGroup.shutdownGracefully().awaitUninterruptibly(10, TimeUnit.SECONDS);
-        bossGroup.shutdownGracefully().awaitUninterruptibly(10, TimeUnit.SECONDS);
-        workerGroup.close();
-        bossGroup.close();
+        // Initiate both shutdowns concurrently with a quiet period of 0 to avoid
+        // Netty's default 2-second quiet period per group (which was causing a 4s delay).
+        Future<?> workerFuture = workerGroup.shutdownGracefully(0, 10, TimeUnit.SECONDS);
+        Future<?> bossFuture = bossGroup.shutdownGracefully(0, 10, TimeUnit.SECONDS);
+        workerFuture.awaitUninterruptibly(10, TimeUnit.SECONDS);
+        bossFuture.awaitUninterruptibly(10, TimeUnit.SECONDS);
     }
 
     /**
