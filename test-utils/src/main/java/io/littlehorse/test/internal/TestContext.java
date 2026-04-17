@@ -26,9 +26,11 @@ import io.littlehorse.test.exception.LHTestExceptionUtil;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -47,12 +49,16 @@ public class TestContext {
 
     private final Map<String, WfSpec> wfSpecStore = new HashMap<>();
 
+    private final Set<String> registeredStructDefs = new HashSet<>();
+
     private final Lock wfSpecStoreLock;
+    private final Lock registeredStructDefsLock;
 
     public TestContext(TestBootstrapper bootstrapper) {
         this.config = bootstrapper.getWorkerConfig();
         this.lhClient = this.config.getBlockingStub();
         this.wfSpecStoreLock = new ReentrantLock();
+        this.registeredStructDefsLock = new ReentrantLock();
     }
 
     public List<String> discoverTaskDefNames(Object testInstance) {
@@ -109,9 +115,20 @@ public class TestContext {
     }
 
     public void registerStructDef(LHStructDefType structDef) {
-        lhClient.putStructDef(structDef.toPutStructDefRequest().toBuilder()
-                .setAllowedUpdates(StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES)
-                .build());
+        String structDefName = structDef.getStructDefId().getName();
+
+        registeredStructDefsLock.lock();
+        try {
+            if (!registeredStructDefs.add(structDefName)) {
+                return;
+            }
+
+            lhClient.putStructDef(structDef.toPutStructDefRequest().toBuilder()
+                    .setAllowedUpdates(StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES)
+                    .build());
+        } finally {
+            registeredStructDefsLock.unlock();
+        }
     }
 
     public void registerExternalEventDef(ExternalEventDef externalEventDef) {
