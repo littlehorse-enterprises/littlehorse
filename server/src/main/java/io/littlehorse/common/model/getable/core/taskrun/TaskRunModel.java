@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
@@ -344,7 +345,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             try {
                 IngressTypeUtils.applyExpectedTypeAndValidate(
                         returnType, taskRunReport.getOutput(), executionContext.metadataManager());
-            } catch (LHApiException ex) {
+            } catch (TypeValidationException ex) {
                 taskOutputValidationError = "Task output incompatible with declared return type: " + ex.getMessage();
             }
         }

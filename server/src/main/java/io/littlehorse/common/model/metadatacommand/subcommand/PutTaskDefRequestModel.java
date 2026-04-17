@@ -112,12 +112,12 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
     private void validateReferencedStructDefs(MetadataProcessorContext context) {
         try {
             for (VariableDefModel inputVar : inputVars) {
-                inputVar.getTypeDef().validateStructDefExists(context.metadataManager());
+                inputVar.getTypeDef().validateStructDefExistsAndPinVersion(context.metadataManager());
             }
 
             returnType.getOutputType().ifPresent(typeDef -> {
                 try {
-                    typeDef.validateStructDefExists(context.metadataManager());
+                    typeDef.validateStructDefExistsAndPinVersion(context.metadataManager());
                 } catch (UnknownStructDefException e) {
                     throw new LHApiException(Status.INVALID_ARGUMENT, e.getMessage());
                 }
