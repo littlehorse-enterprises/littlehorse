@@ -109,7 +109,7 @@ message StructFieldDef {
   TypeDefinition field_type = 1;
   
   // The default value of the field, which should match the Field Type. If not
-  // provided, then the field is treated as required.
+  // provided, then the field has no default.
   optional VariableValue default_value = 2;
 
   // If true, then the field is treated as nullable, and its value may be set to null.
@@ -252,9 +252,8 @@ Note that the `Variable`, `VariableDef`, `ThreadVarDef`, `ReturnType`, `TaskDef`
 ### `StructDef` Schema Evolution
 
 At first, we will allow only Fully-Compatible schema changes:
-* Add optional fields
-* Add required fields with a default
-* Remove optional fields.
+* Add fields that have a default value or are nullable
+* Remove fields that have a default value or are nullable
 
 Making a `PutStructDefRequest` with an identical `InlineStructDef` to what already exists will not cause a new Schema to be created. This follows the idempotence pattern already observed with all of our metadata Getables (including `WfSpec`, `UserTaskDef`, `TaskDef`, etc).
 
@@ -265,8 +264,9 @@ enum StructDefCompatibilityType {
   NO_SCHEMA_UPDATES = 0;
 
   // Allowed to make fully compatible (both backward-and-forward compatible)
-  // changes to the `struct_def` in this request.
-  FULLY_COMPATIBLE = 1;
+  // changes to the `struct_def` in this request. Only fields that are nullable
+  // or have a default value may be added.
+  FULLY_COMPATIBLE_SCHEMA_UPDATES = 1;
 }
 
 // Request to create a new `StructDef`.
@@ -488,7 +488,6 @@ The `LHTaskWorker` should be extended to allow automatically creating a `StructD
 @LHStructDef(name = "car")
 class Car {
     String make;
-
     String model;
 }
 
