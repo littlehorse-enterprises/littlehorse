@@ -186,22 +186,6 @@ public class WfSpecLifecycleTest {
         }
     }
 
-    private void waitForStructDef(String name, Integer version) {
-        Awaitility.await()
-                .atMost(Duration.ofMillis(500))
-                .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
-                .until(() -> {
-                    io.littlehorse.sdk.common.proto.StructDefId.Builder structDefId =
-                            io.littlehorse.sdk.common.proto.StructDefId.newBuilder()
-                                    .setName(name);
-                    if (version != null) {
-                        structDefId.setVersion(version);
-                    }
-                    client.getStructDef(structDefId.build());
-                    return true;
-                });
-    }
-
     private void waitForWfSpec(WfSpecId id) {
         Awaitility.await()
                 .atMost(Duration.ofMillis(500))
