@@ -165,7 +165,9 @@ public class LHStructDefTypeTest {
                         "author",
                         StructFieldDef.newBuilder()
                                 .setFieldType(TypeDefinition.newBuilder()
-                                        .setStructDefId(StructDefId.newBuilder().setName("author").setVersion(-1)))
+                                        .setStructDefId(StructDefId.newBuilder()
+                                                .setName("author")
+                                                .setVersion(-1)))
                                 .build())
                 .build();
 
