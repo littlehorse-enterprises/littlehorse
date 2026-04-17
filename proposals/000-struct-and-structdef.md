@@ -34,11 +34,12 @@
     - [Example](#example)
     - [Convention](#convention-1)
     - [Setting `StructDef` Field Names via SDK](#setting-structdef-field-names-via-sdk)
-  - [Deprecating JSON\_OBJ?](#deprecating-json_obj)
-  - [External Events?](#external-events)
-  - [Implementation and Performance](#implementation-and-performance)
-  - [Testing](#testing)
-  - [Further Work](#further-work)
+  - [Further Discussion](#further-discussion)
+    - [Deprecating JSON\_OBJ?](#deprecating-json_obj)
+    - [External Events?](#external-events)
+    - [Implementation and Performance](#implementation-and-performance)
+    - [Testing](#testing)
+    - [Further Work](#further-work)
 
 
 Authors: Colt McNealy, Jacob Snarr
@@ -787,26 +788,30 @@ public class Car {
 }
 ```
 
-## Deprecating JSON_OBJ?
+## Further Discussion
+
+The information above should be sufficient to get a working implementation done in Java. However, I wanted to make some notes.
+
+### Deprecating JSON_OBJ?
 
 I do not like `JSON_OBJ` at all. However, we have real users using `JSON_OBJ` and as such cannot pull the rug out from under it (even though we are before 1.0). A proper deprecation and removal strategy is beyond the scope of this Proposal; however, once this Proposal is implemented we will be in a position to fully support both `Struct` and `JSON_OBJ` types (and they will be partially interoperable).
 
-## External Events?
+### External Events?
 
 This proposal does not _directly_ discuss External Events. That is not an oversight: the `ExternalEventDef` contains a `TypeDefinition` so it will automatically inherit `Struct` capabilities.
 
-## Implementation and Performance
+### Implementation and Performance
 
 Since this proposal is very API-driven rather than performance-driven, there aren’t many implementation details that are worthy of being noted in the proposal. However, some notes:
 
 * We will need to make sure that any schema validation happening inside a `Command#process()` call is very fast.
 * We want to avoid json deserialization as much as possible. This is part of the motivation for not using JSONSchema.
 
-## Testing
+### Testing
 
 We will write end to end tests.
 
-## Further Work
+### Further Work
 
 Some further work includes:
 
