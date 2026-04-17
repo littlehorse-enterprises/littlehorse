@@ -8,6 +8,10 @@
     - [Existing Protobuf](#existing-protobuf)
     - [`StructDef` Schema Evolution](#structdef-schema-evolution)
       - [Validating `StructDef` Schema Evolution](#validating-structdef-schema-evolution)
+  - [Nullable `StructField` Values](#nullable-structfield-values)
+    - [Design Decision](#design-decision)
+    - [Semantics](#semantics)
+    - [Interoperability with Default Values and Required Fields](#interoperability-with-default-values-and-required-fields)
     - [Interoperability with `JSON_OBJ`](#interoperability-with-json_obj)
       - [Differentiating LH Arrays from traditional `JSON_ARR`s](#differentiating-lh-arrays-from-traditional-json_arrs)
   - [Client-Side Enhancements](#client-side-enhancements)
@@ -30,12 +34,11 @@
     - [Example](#example)
     - [Convention](#convention-1)
     - [Setting `StructDef` Field Names via SDK](#setting-structdef-field-names-via-sdk)
-  - [Further Discussion](#further-discussion)
-    - [Deprecating JSON\_OBJ?](#deprecating-json_obj)
-    - [External Events?](#external-events)
-    - [Implementation and Performance](#implementation-and-performance)
-    - [Testing](#testing)
-    - [Further Work](#further-work)
+  - [Deprecating JSON\_OBJ?](#deprecating-json_obj)
+  - [External Events?](#external-events)
+  - [Implementation and Performance](#implementation-and-performance)
+  - [Testing](#testing)
+  - [Further Work](#further-work)
 
 
 Authors: Colt McNealy, Jacob Snarr
@@ -107,6 +110,9 @@ message StructFieldDef {
   // The default value of the field, which should match the Field Type. If not
   // provided, then the field is treated as required.
   optional VariableValue default_value = 2;
+
+  // 
+  bool is_nullable = 3;
 }
 
 // A `StructDef` is a versioned metadata object (tenant-scoped) inside LittleHorse
@@ -346,6 +352,39 @@ service LittleHorse {
 }
 ```
 
+
+
+## Nullable `StructField` Values
+
+### Design Decision
+
+By default, every `StructField` in a `StructDef` is **non-nullable**: a field's value may not be `null` (i.e. `VALUE_NOT_SET` in the `VariableValue` oneof). This mirrors LittleHorse's recent philosophy of strong-typing and rejecting ambiguity at compile time — the same reason we introduced strong typing for `Struct`s in the first place.
+
+However, there are legitimate real-world use cases where a field value must be allowed to be null (e.g. an optional middle name, an unset expiry date, or a nullable foreign-key reference) and where you don't want a default value either (eg. Strings -> `""`, Integers --> `0`). To support these without compromising the default safety guarantees, we add an `is_nullable` flag to `StructFieldDef`.
+
+### Semantics
+
+**Nullability and requiredness are orthogonal.** A field being nullable controls whether its _value_ can be `null`; a field being required controls whether it must be _present_ in the struct payload. The two axes combine as follows:
+
+| `is_nullable` | Required (no default) | Optional (has default) |
+|---|---|---|
+| `false` (default) | Must be present; value must be non-null | May be absent (default applies); if present, value must be non-null |
+| `true` | Must be present; value may be null | May be absent (default applies); if present, value may be null |
+
+The key insight: **`is_nullable = true` does not make a required field optional.** A nullable required field must still appear as a key in the `InlineStruct`. It simply permits `VALUE_NOT_SET` as a valid value for that key.
+
+### Interoperability with Default Values and Required Fields
+
+The interaction between `is_nullable`, `default_value`, and requiredness follows these rules:
+
+1. **Non-nullable field with a null default value** — rejected at `StructDef` definition time. `PutStructDef` will throw a validation error. It is incoherent to specify `is_nullable = false` while setting a null default value, because any time the default is applied the field would immediately violate its own non-null constraint.
+
+2. **Nullable field with no default value (required)** — the field must be present in every struct payload. `null` is an acceptable value; absence is not.
+
+3. **Nullable field with a non-null default value** — the field may be absent (the non-null default applies) or present with either a non-null or a null value.
+
+4. **Nullable field with a null default value** — the field may be absent (the null default applies) or present with a null value. A non-null value is also accepted because it is type-compatible.
+
 ### Interoperability with `JSON_OBJ`
 
 Our conversion policy will be that we can convert a `Struct` to a `JSON_OBJ`, but we do not allow converting a `JSON_OBJ` to a `Struct`. For example:
@@ -447,10 +486,8 @@ The `LHTaskWorker` should be extended to allow automatically creating a `StructD
 ```java
 @LHStructDef(name = "car")
 class Car {
-    @LHStructField(required = true)
     String make;
 
-    @LHStructField(required = false)
     String model;
 }
 
@@ -750,30 +787,26 @@ public class Car {
 }
 ```
 
-## Further Discussion
-
-The information above should be sufficient to get a working implementation done in Java. However, I wanted to make some notes.
-
-### Deprecating JSON_OBJ?
+## Deprecating JSON_OBJ?
 
 I do not like `JSON_OBJ` at all. However, we have real users using `JSON_OBJ` and as such cannot pull the rug out from under it (even though we are before 1.0). A proper deprecation and removal strategy is beyond the scope of this Proposal; however, once this Proposal is implemented we will be in a position to fully support both `Struct` and `JSON_OBJ` types (and they will be partially interoperable).
 
-### External Events?
+## External Events?
 
 This proposal does not _directly_ discuss External Events. That is not an oversight: the `ExternalEventDef` contains a `TypeDefinition` so it will automatically inherit `Struct` capabilities.
 
-### Implementation and Performance
+## Implementation and Performance
 
 Since this proposal is very API-driven rather than performance-driven, there aren’t many implementation details that are worthy of being noted in the proposal. However, some notes:
 
 * We will need to make sure that any schema validation happening inside a `Command#process()` call is very fast.
 * We want to avoid json deserialization as much as possible. This is part of the motivation for not using JSONSchema.
 
-### Testing
+## Testing
 
 We will write end to end tests.
 
-### Further Work
+## Further Work
 
 Some further work includes:
 
