@@ -112,7 +112,7 @@ message StructFieldDef {
   // provided, then the field is treated as required.
   optional VariableValue default_value = 2;
 
-  // 
+  // If true, then the field is treated as nullable, and its value may be set to null.
   bool is_nullable = 3;
 }
 
