@@ -8,8 +8,12 @@
     - [Existing Protobuf](#existing-protobuf)
     - [`StructDef` Schema Evolution](#structdef-schema-evolution)
       - [Validating `StructDef` Schema Evolution](#validating-structdef-schema-evolution)
-    - [Interoperability with `JSON_OBJ`](#interoperability-with-json_obj)
-      - [Differentiating LH Arrays from traditional `JSON_ARR`s](#differentiating-lh-arrays-from-traditional-json_arrs)
+  - [Nullable `StructField` Values](#nullable-structfield-values)
+    - [Design Decision](#design-decision)
+    - [Semantics](#semantics)
+    - [Interoperability with Default Values](#interoperability-with-default-values)
+  - [Interoperability with `JSON_OBJ`](#interoperability-with-json_obj)
+    - [Differentiating LH Arrays from traditional `JSON_ARR`s](#differentiating-lh-arrays-from-traditional-json_arrs)
   - [Client-Side Enhancements](#client-side-enhancements)
     - [Task Workers](#task-workers)
       - [`StructDef` References](#structdef-references)
@@ -105,8 +109,11 @@ message StructFieldDef {
   TypeDefinition field_type = 1;
   
   // The default value of the field, which should match the Field Type. If not
-  // provided, then the field is treated as required.
+  // provided, then the field has no default.
   optional VariableValue default_value = 2;
+
+  // If true, then the field is treated as nullable, and its value may be set to null.
+  bool is_nullable = 3;
 }
 
 // A `StructDef` is a versioned metadata object (tenant-scoped) inside LittleHorse
@@ -245,9 +252,8 @@ Note that the `Variable`, `VariableDef`, `ThreadVarDef`, `ReturnType`, `TaskDef`
 ### `StructDef` Schema Evolution
 
 At first, we will allow only Fully-Compatible schema changes:
-* Add optional fields
-* Add required fields with a default
-* Remove optional fields.
+* Add fields that have a default value or are nullable
+* Remove fields that have a default value or are nullable
 
 Making a `PutStructDefRequest` with an identical `InlineStructDef` to what already exists will not cause a new Schema to be created. This follows the idempotence pattern already observed with all of our metadata Getables (including `WfSpec`, `UserTaskDef`, `TaskDef`, etc).
 
@@ -258,8 +264,9 @@ enum StructDefCompatibilityType {
   NO_SCHEMA_UPDATES = 0;
 
   // Allowed to make fully compatible (both backward-and-forward compatible)
-  // changes to the `struct_def` in this request.
-  FULLY_COMPATIBLE = 1;
+  // changes to the `struct_def` in this request. Only fields that are nullable
+  // or have a default value may be added.
+  FULLY_COMPATIBLE_SCHEMA_UPDATES = 1;
 }
 
 // Request to create a new `StructDef`.
@@ -346,7 +353,36 @@ service LittleHorse {
 }
 ```
 
-### Interoperability with `JSON_OBJ`
+
+
+## Nullable `StructField` Values
+
+### Design Decision
+
+By default, every `StructField` in a `StructDef` is **non-nullable**: a field's value may not be `null` (i.e. `VALUE_NOT_SET` in the `VariableValue` oneof). This mirrors LittleHorse's recent philosophy of strong-typing and rejecting ambiguity at compile time — the same reason we introduced strong typing for `Struct`s in the first place.
+
+However, there are legitimate real-world use cases where a field value must be allowed to be null (e.g. an optional middle name, an unset expiry date, or a nullable foreign-key reference) and where you don't want a default value either (eg. Strings -> `""`, Integers --> `0`). To support these without compromising the default safety guarantees, we add an `is_nullable` flag to `StructFieldDef`.
+
+### Semantics
+
+**Nullability and default values are orthogonal.** A field being nullable controls whether its _value_ can be `null`. The two axes combine as follows:
+
+| `is_nullable` | No default | Has default |
+|---|---|---|
+| `false` (default) | Must be present; value must be non-null | May be absent (default applies); if present, value must be non-null |
+| `true` | Impossible | May be absent (default applies); If no default set, defaults to null |
+
+### Interoperability with Default Values
+
+The interaction between `is_nullable` and `default_value` follows these rules:
+
+1. **Non-nullable field with a null default value** — rejected at `StructDef` definition time. `PutStructDef` will throw a validation error. It is incoherent to specify `is_nullable = false` while setting a null default value, because any time the default is applied the field would immediately violate its own non-null constraint.
+
+2. **Nullable field with no default value** — the server sets the default value to a `null` `VariableValue` at StructDef definition time
+
+3. **Nullable field with a default value** — the field may be absent (the non-null default applies) or present with either a non-null or a null value.
+
+## Interoperability with `JSON_OBJ`
 
 Our conversion policy will be that we can convert a `Struct` to a `JSON_OBJ`, but we do not allow converting a `JSON_OBJ` to a `Struct`. For example:
 
@@ -376,7 +412,7 @@ In the past, this only worked if the variable on the ScheduledTask was of the ty
 
 This means that the SDK will dynamically convert the `VariableValue` into a `Car` whether it is a `STRUCT` or a `JSON_OBJ`.
 
-#### Differentiating LH Arrays from traditional `JSON_ARR`s
+### Differentiating LH Arrays from traditional `JSON_ARR`s
 
 When trying to serialize and deserialize values in the SDKs, we will define a rule for explicitly differentiating legacy `JSON_ARR` and native LittleHorse `Array`s. This will help us maintain backwards compatibility with old clients using `JSON_ARR`s.
 
@@ -447,10 +483,7 @@ The `LHTaskWorker` should be extended to allow automatically creating a `StructD
 ```java
 @LHStructDef(name = "car")
 class Car {
-    @LHStructField(required = true)
     String make;
-
-    @LHStructField(required = false)
     String model;
 }
 

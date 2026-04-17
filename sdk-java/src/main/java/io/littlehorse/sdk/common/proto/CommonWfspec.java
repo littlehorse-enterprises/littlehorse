@@ -196,20 +196,20 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
       "ctDef\0228\n\006fields\030\001 \003(\0132(.littlehorse.Inli" +
       "neStructDef.FieldsEntry\032J\n\013FieldsEntry\022\013" +
       "\n\003key\030\001 \001(\t\022*\n\005value\030\002 \001(\0132\033.littlehorse" +
-      ".StructFieldDef:\0028\001\"\213\001\n\016StructFieldDef\022/" +
+      ".StructFieldDef:\0028\001\"\240\001\n\016StructFieldDef\022/" +
       "\n\nfield_type\030\001 \001(\0132\033.littlehorse.TypeDef" +
       "inition\0226\n\rdefault_value\030\002 \001(\0132\032.littleh" +
-      "orse.VariableValueH\000\210\001\001B\020\n\016_default_valu" +
-      "e\"q\n\006LHPath\022*\n\004path\030\001 \003(\0132\034.littlehorse." +
-      "LHPath.Selector\032;\n\010Selector\022\r\n\003key\030\001 \001(\t" +
-      "H\000\022\017\n\005index\030\002 \001(\005H\000B\017\n\rselector_type*\251\001\n" +
-      "\024VariableMutationType\022\n\n\006ASSIGN\020\000\022\007\n\003ADD" +
-      "\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010MULTIPLY" +
-      "\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REMOVE_IF_PRESENT\020\006\022\020\n" +
-      "\014REMOVE_INDEX\020\007\022\016\n\nREMOVE_KEY\020\010\022\007\n\003AND\020\t" +
-      "\022\006\n\002OR\020\nBM\n\037io.littlehorse.sdk.common.pr" +
-      "otoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Commo" +
-      "n.Protob\006proto3"
+      "orse.VariableValueH\000\210\001\001\022\023\n\013is_nullable\030\003" +
+      " \001(\010B\020\n\016_default_value\"q\n\006LHPath\022*\n\004path" +
+      "\030\001 \003(\0132\034.littlehorse.LHPath.Selector\032;\n\010" +
+      "Selector\022\r\n\003key\030\001 \001(\tH\000\022\017\n\005index\030\002 \001(\005H\000" +
+      "B\017\n\rselector_type*\251\001\n\024VariableMutationTy" +
+      "pe\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010S" +
+      "UBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021R" +
+      "EMOVE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n\n" +
+      "REMOVE_KEY\020\010\022\007\n\003AND\020\t\022\006\n\002OR\020\nBM\n\037io.litt" +
+      "lehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034" +
+      "LittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -314,7 +314,7 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_StructFieldDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_StructFieldDef_descriptor,
-        new java.lang.String[] { "FieldType", "DefaultValue", });
+        new java.lang.String[] { "FieldType", "DefaultValue", "IsNullable", });
     internal_static_littlehorse_LHPath_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_littlehorse_LHPath_fieldAccessorTable = new

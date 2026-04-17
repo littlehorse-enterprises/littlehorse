@@ -32,6 +32,9 @@ public class LHStructProperty {
     @Getter
     private final boolean ignored;
 
+    @Getter
+    private final boolean isNullable;
+
     private final LHStructDefType parentStructDef;
 
     public LHStructProperty(PropertyDescriptor pd, LHStructDefType parentStructDef) {
@@ -41,6 +44,7 @@ public class LHStructProperty {
         this.fieldName = findFieldName();
         this.masked = findIsMasked();
         this.ignored = findIsIgnored();
+        this.isNullable = findIsNullable();
     }
 
     public VariableValue getValueFrom(Object o) throws LHSerdeException {
@@ -104,7 +108,8 @@ public class LHStructProperty {
                 .setMasked(this.isMasked())
                 .build();
 
-        StructFieldDef.Builder fieldDef = StructFieldDef.newBuilder().setFieldType(typeDef);
+        StructFieldDef.Builder fieldDef =
+                StructFieldDef.newBuilder().setFieldType(typeDef).setIsNullable(isNullable);
 
         Optional<VariableValue> defaultValue = this.getDefaultValue();
         if (defaultValue.isPresent()) {
@@ -218,6 +223,14 @@ public class LHStructProperty {
         if (lhStructField == null || lhStructField.name().isBlank()) return pd.getName();
 
         return lhStructField.name();
+    }
+
+    private boolean findIsNullable() {
+        LHStructField lhStructField = getAnnotation(LHStructField.class);
+
+        if (lhStructField == null) return false;
+
+        return lhStructField.isNullable();
     }
 
     private boolean hasReadMethod() {

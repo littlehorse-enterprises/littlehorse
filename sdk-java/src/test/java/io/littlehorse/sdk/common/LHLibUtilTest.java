@@ -1,5 +1,7 @@
 package io.littlehorse.sdk.common;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.Array;
@@ -12,6 +14,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.LHStructField;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -409,5 +412,58 @@ public class LHLibUtilTest {
         public void setName(String name) {
             this.name = name;
         }
+    }
+
+    @LHStructDef("nullable-field-struct")
+    public static class NullableFieldStruct {
+        // Below annotation doesn't do anything in this test but serves as documentation for the intent
+        // of the field.
+        @LHStructField(isNullable = true)
+        private String nullableField;
+
+        public String getNullableField() {
+            return nullableField;
+        }
+
+        public void setNullableField(String nullableField) {
+            this.nullableField = nullableField;
+        }
+    }
+
+    @Test
+    void shouldSerializeNullFieldAsValueNotSet() {
+        NullableFieldStruct pojo = new NullableFieldStruct();
+        pojo.setNullableField(null);
+
+        Struct struct = LHLibUtil.serializeToStruct(pojo);
+
+        VariableValue nullableFieldVal =
+                struct.getStruct().getFieldsMap().get("nullableField").getValue();
+
+        Assertions.assertThat(nullableFieldVal.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
+    }
+
+    @Test
+    void shouldDeserializeValueNotSetFieldAsNullOnPojo() {
+        // Build a Struct where 'nullableField' is present but null VALUE_NOT_SET
+        VariableValue structVal = VariableValue.newBuilder()
+                .setStruct(Struct.newBuilder()
+                        .setStructDefId(StructDefId.newBuilder()
+                                .setName("nullable-field-struct")
+                                .build())
+                        .setStruct(InlineStruct.newBuilder()
+                                .putFields(
+                                        "nullableField",
+                                        StructField.newBuilder()
+                                                .setValue(VariableValue.newBuilder()
+                                                        .build()) // VALUE_NOT_SET
+                                                .build())
+                                .build())
+                        .build())
+                .build();
+
+        NullableFieldStruct pojo = (NullableFieldStruct) LHLibUtil.varValToObj(structVal, NullableFieldStruct.class);
+
+        assertThat(pojo.getNullableField()).isNull();
     }
 }

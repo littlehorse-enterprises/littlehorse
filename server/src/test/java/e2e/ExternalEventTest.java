@@ -129,7 +129,8 @@ public class ExternalEventTest {
                 .thenSendExternalEventWithContent(STRUCT_EVT_NAME, car)
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyTaskRunResult(0, 2, variableValue -> {
-                    Assertions.assertThat(variableValue).isEqualTo(LHLibUtil.objToVarVal(car));
+                    Assertions.assertThat(variableValue.getStruct().getStruct())
+                            .isEqualTo(LHLibUtil.objToVarVal(car).getStruct().getStruct());
                 })
                 .start(id);
     }
