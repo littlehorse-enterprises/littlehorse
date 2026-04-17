@@ -48,7 +48,12 @@ class ChannelId:
         self.name = name
 
     def __eq__(self, __value: object) -> bool:
-        return isinstance(__value, ChannelId) and vars(self) == vars(__value)
+        return (
+            isinstance(__value, ChannelId)
+            and self.server == __value.server
+            and self.is_async == __value.is_async
+            and self.name == __value.name
+        )
 
     def __hash__(self) -> int:
         return hash(str(self))
@@ -289,7 +294,7 @@ class LHConfig:
 
     def establish_channel(
         self, server: Optional[str] = None, async_channel: bool = False
-    ) -> Any:
+    ) -> Channel:
         """Open a RPC channel. Returns a new channel.
 
         Args:
@@ -310,7 +315,9 @@ class LHConfig:
             ("grpc.http2.max_pings_without_data", 0),
         ]
 
-        def create_channel(target: str, options: Any, secure_channel: bool) -> Any:
+        def create_channel(
+            target: str, options: Any, secure_channel: bool
+        ) -> Channel:
             credentials: Optional[ChannelCredentials] = None
             if not self.is_secure():
                 self._log.warning("Establishing insecure channel at %s", server)
