@@ -425,8 +425,8 @@ public class LHLibUtilTest {
             return nullableField;
         }
 
-        public void setNullableField(String optional) {
-            this.nullableField = optional;
+        public void setNullableField(String nullableField) {
+            this.nullableField = nullableField;
         }
     }
 
@@ -437,15 +437,15 @@ public class LHLibUtilTest {
 
         Struct struct = LHLibUtil.serializeToStruct(pojo);
 
-        VariableValue optionalVal =
-                struct.getStruct().getFieldsMap().get("optional").getValue();
+        VariableValue nullableFieldVal =
+                struct.getStruct().getFieldsMap().get("nullableField").getValue();
 
-        Assertions.assertThat(optionalVal.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
+        Assertions.assertThat(nullableFieldVal.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
     }
 
     @Test
     void shouldDeserializeValueNotSetFieldAsNullOnPojo() {
-        // Build a Struct where 'optional' is present but null VALUE_NOT_SET
+        // Build a Struct where 'nullableField' is present but null VALUE_NOT_SET
         VariableValue structVal = VariableValue.newBuilder()
                 .setStruct(Struct.newBuilder()
                         .setStructDefId(StructDefId.newBuilder()
@@ -453,7 +453,7 @@ public class LHLibUtilTest {
                                 .build())
                         .setStruct(InlineStruct.newBuilder()
                                 .putFields(
-                                        "optional",
+                                        "nullableField",
                                         StructField.newBuilder()
                                                 .setValue(VariableValue.newBuilder()
                                                         .build()) // VALUE_NOT_SET
