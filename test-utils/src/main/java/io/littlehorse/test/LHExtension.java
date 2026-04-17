@@ -26,9 +26,11 @@ import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.awaitility.Awaitility;
@@ -141,7 +143,7 @@ public class LHExtension
     }
 
     private static void registerStructDefs(Class<?> testClass, TestContext testContext) throws IllegalAccessException {
-        List<LHStructDefType> structDefRequests = scanStructDefsSetup(testClass);
+        Set<LHStructDefType> structDefRequests = scanStructDefsSetup(testClass);
         structDefRequests.forEach(testContext::registerStructDef);
     }
 
@@ -178,14 +180,14 @@ public class LHExtension
         }
     }
 
-    private static List<LHStructDefType> scanStructDefsSetup(AnnotatedElement instanceClass) {
+    private static Set<LHStructDefType> scanStructDefsSetup(AnnotatedElement instanceClass) {
         LHTypeAdapterRegistry typeAdapterRegistry = LHTypeAdapterRegistry.empty();
         if (instanceClass.isAnnotationPresent(WithStructDefs.class)) {
             return List.of(instanceClass.getAnnotation(WithStructDefs.class).value()).stream()
                     .map(clazz -> new LHStructDefType(clazz, typeAdapterRegistry))
-                    .toList();
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
         }
-        return List.of();
+        return Set.of();
     }
 
     private WithWorkers[] scanWorkersSetup(AnnotatedElement instanceClass) {

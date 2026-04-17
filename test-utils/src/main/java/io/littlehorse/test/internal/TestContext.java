@@ -5,10 +5,12 @@ import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
+import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
+import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
@@ -25,9 +27,11 @@ import io.littlehorse.test.exception.LHTestExceptionUtil;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -46,12 +50,16 @@ public class TestContext {
 
     private final Map<String, WfSpec> wfSpecStore = new HashMap<>();
 
+    private final Set<StructDefRegistrationKey> registeredStructDefs = new HashSet<>();
+
     private final Lock wfSpecStoreLock;
+    private final Lock registeredStructDefsLock;
 
     public TestContext(TestBootstrapper bootstrapper) {
         this.config = bootstrapper.getWorkerConfig();
         this.lhClient = this.config.getBlockingStub();
         this.wfSpecStoreLock = new ReentrantLock();
+        this.registeredStructDefsLock = new ReentrantLock();
     }
 
     public List<String> discoverTaskDefNames(Object testInstance) {
@@ -108,7 +116,21 @@ public class TestContext {
     }
 
     public void registerStructDef(LHStructDefType structDef) {
-        lhClient.putStructDef(structDef.toPutStructDefRequest());
+        StructDefRegistrationKey registrationKey =
+                new StructDefRegistrationKey(structDef.getStructDefId().getName(), structDef.getInlineStructDef());
+
+        registeredStructDefsLock.lock();
+        try {
+            if (!registeredStructDefs.add(registrationKey)) {
+                return;
+            }
+
+            lhClient.putStructDef(structDef.toPutStructDefRequest().toBuilder()
+                    .setAllowedUpdates(StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES)
+                    .build());
+        } finally {
+            registeredStructDefsLock.unlock();
+        }
     }
 
     public void registerExternalEventDef(ExternalEventDef externalEventDef) {
@@ -226,4 +248,6 @@ public class TestContext {
     public LHConfig getConfig() {
         return config;
     }
+
+    private record StructDefRegistrationKey(String name, InlineStructDef structDef) {}
 }
