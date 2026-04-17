@@ -7,8 +7,8 @@ import com.google.rpc.RetryInfo;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.grpc.protobuf.StatusProto;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeletePrincipalRequest;
@@ -102,9 +102,8 @@ public class QuotaTest {
     private LittleHorseBlockingStub createRawClient() {
         String host = config.getApiBootstrapHost();
         int port = config.getApiBootstrapPort();
-        ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port)
-                .usePlaintext()
-                .build();
+        ManagedChannel channel =
+                ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
         return LittleHorseGrpc.newBlockingStub(channel);
     }
 
@@ -152,16 +151,18 @@ public class QuotaTest {
                 .build());
 
         Awaitility.await().atMost(Duration.ofSeconds(4)).untilAsserted(() -> {
-            QuotaIdList results = client.searchQuota(SearchQuotaRequest.newBuilder()
-                    .setTenantId(tenantId())
-                    .build());
+            QuotaIdList results = client.searchQuota(
+                    SearchQuotaRequest.newBuilder().setTenantId(tenantId()).build());
             assertThat(results.getResultsList()).hasSizeGreaterThanOrEqualTo(2);
         });
 
         // Cleanup
-        client.deleteQuota(DeleteQuotaRequest.newBuilder().setId(tenantQuota.getId()).build());
-        client.deleteQuota(DeleteQuotaRequest.newBuilder().setId(principalQuota.getId()).build());
-        client.deletePrincipal(DeletePrincipalRequest.newBuilder().setId(principalId).build());
+        client.deleteQuota(
+                DeleteQuotaRequest.newBuilder().setId(tenantQuota.getId()).build());
+        client.deleteQuota(
+                DeleteQuotaRequest.newBuilder().setId(principalQuota.getId()).build());
+        client.deletePrincipal(
+                DeletePrincipalRequest.newBuilder().setId(principalId).build());
     }
 
     /**
@@ -183,8 +184,7 @@ public class QuotaTest {
 
             // Inspect the first throttled response for RetryInfo
             StatusRuntimeException first = result.throttled().getFirst();
-            com.google.rpc.Status rpcStatus =
-                    StatusProto.fromStatusAndTrailers(first.getStatus(), first.getTrailers());
+            com.google.rpc.Status rpcStatus = StatusProto.fromStatusAndTrailers(first.getStatus(), first.getTrailers());
 
             assertThat(rpcStatus).isNotNull();
             assertThat(rpcStatus.getCode()).isEqualTo(com.google.rpc.Code.RESOURCE_EXHAUSTED.getNumber());
@@ -242,7 +242,8 @@ public class QuotaTest {
         setQuota(2);
         awaitQuota(2);
 
-        client.deleteQuota(DeleteQuotaRequest.newBuilder().setId(tenantQuotaId()).build());
+        client.deleteQuota(
+                DeleteQuotaRequest.newBuilder().setId(tenantQuotaId()).build());
 
         Awaitility.await().atMost(Duration.ofSeconds(4)).until(() -> {
             try {

@@ -5,8 +5,6 @@ import com.google.protobuf.Duration;
 import com.google.rpc.Code;
 import com.google.rpc.RetryInfo;
 import com.google.rpc.Status;
-
-import io.grpc.StatusRuntimeException;
 import io.grpc.protobuf.StatusProto;
 import io.littlehorse.common.model.getable.global.acl.QuotaModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -15,7 +13,6 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,21 +42,22 @@ public class RequestQuotaManager {
             for (StateHandle handle : handles) {
                 retryDelayMs = Math.max(
                         retryDelayMs,
-                        handle.getState().previewRetryDelayMillis(
-                                handle.getQuota().getWriteRequestsPerSecond(), serverCount, nowNanos));
+                        handle.getState()
+                                .previewRetryDelayMillis(
+                                        handle.getQuota().getWriteRequestsPerSecond(), serverCount, nowNanos));
             }
 
             if (retryDelayMs > 0) {
                 Status status = Status.newBuilder()
-                    .setCode(Code.RESOURCE_EXHAUSTED.getNumber())
-                    .setMessage("Quota exceeded. Retry after %dms.".formatted(retryDelayMs))
-                    .addDetails(Any.pack(RetryInfo.newBuilder()
-                        .setRetryDelay(Duration.newBuilder()
-                                .setSeconds(retryDelayMs / 1_000)
-                                .setNanos((int) ((retryDelayMs % 1_000) * 1_000_000))
-                                .build())
-                        .build()))
-                    .build();
+                        .setCode(Code.RESOURCE_EXHAUSTED.getNumber())
+                        .setMessage("Quota exceeded. Retry after %dms.".formatted(retryDelayMs))
+                        .addDetails(Any.pack(RetryInfo.newBuilder()
+                                .setRetryDelay(Duration.newBuilder()
+                                        .setSeconds(retryDelayMs / 1_000)
+                                        .setNanos((int) ((retryDelayMs % 1_000) * 1_000_000))
+                                        .build())
+                                .build()))
+                        .build();
 
                 throw StatusProto.toStatusRuntimeException(status);
             }
@@ -95,5 +93,4 @@ public class RequestQuotaManager {
         String key = quota.getObjectId().toString();
         return new StateHandle(quota, quotaStates.computeIfAbsent(key, ignored -> new QuotaState()));
     }
-
 }
