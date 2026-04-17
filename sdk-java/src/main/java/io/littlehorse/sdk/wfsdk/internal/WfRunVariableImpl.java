@@ -16,8 +16,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,12 +85,9 @@ class WfRunVariableImpl implements WfRunVariable {
         return wfRunVar;
     }
 
-    public static WfRunVariableImpl createStructDefVar(String name, LHStructDefType clazz, WorkflowThreadImpl parent) {
+    public static WfRunVariableImpl createVarFromLHClassType(
+            String name, LHClassType clazz, WorkflowThreadImpl parent) {
         return new WfRunVariableImpl(name, parent, clazz.getTypeDefinition());
-    }
-
-    public static WfRunVariableImpl createArrayVar(String name, LHArrayType arrayType, WorkflowThreadImpl parent) {
-        return new WfRunVariableImpl(name, parent, arrayType.getTypeDefinition());
     }
 
     @Override

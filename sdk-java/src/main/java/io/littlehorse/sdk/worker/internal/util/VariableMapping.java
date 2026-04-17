@@ -75,7 +75,10 @@ public class VariableMapping {
             case PRIMITIVE_TYPE:
                 return providedType.getPrimitiveType() == expectedType.getPrimitiveType();
             case STRUCT_DEF_ID:
-                return providedType.getStructDefId().equals(expectedType.getStructDefId());
+                return providedType
+                        .getStructDefId()
+                        .getName()
+                        .equals(expectedType.getStructDefId().getName());
             case INLINE_ARRAY_DEF:
                 return areTypesCompatible(
                         providedType.getInlineArrayDef().getArrayType(),
@@ -108,7 +111,10 @@ public class VariableMapping {
             case PRIMITIVE_TYPE:
                 return typeDefinition.getPrimitiveType().name();
             case STRUCT_DEF_ID:
-                return "StructDef<" + typeDefinition.getStructDefId().getName() + ">";
+                return String.format(
+                        "StructDef<%s, %d>",
+                        typeDefinition.getStructDefId().getName(),
+                        typeDefinition.getStructDefId().getVersion());
             case INLINE_ARRAY_DEF:
                 return "Array<"
                         + formatTypeDefinition(

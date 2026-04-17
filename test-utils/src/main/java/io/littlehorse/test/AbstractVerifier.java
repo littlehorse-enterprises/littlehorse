@@ -20,21 +20,37 @@ import java.util.List;
 public class AbstractVerifier implements Verifier {
     protected final LittleHorseBlockingStub lhClient;
     protected final Workflow workflow;
+    protected final WfSpec wfSpec;
     private final Collection<Arg> workflowArgs;
 
     private final TestContext context;
     protected final List<Step> steps = new ArrayList<>();
 
-    public AbstractVerifier(TestContext context, Workflow workflow, Collection<Arg> workflowArgs) {
+    private AbstractVerifier(TestContext context, Workflow workflow, WfSpec wfSpec, Collection<Arg> workflowArgs) {
+        if (workflow == null && wfSpec == null) {
+            throw new IllegalStateException("Must provide either workflow or wfSpec");
+        }
         this.lhClient = context.getLhClient();
         this.workflow = workflow;
+        this.wfSpec = wfSpec;
         this.workflowArgs = workflowArgs;
         this.context = context;
     }
 
+    public AbstractVerifier(TestContext context, Workflow workflow, Collection<Arg> workflowArgs) {
+        this(context, workflow, null, workflowArgs);
+    }
+
+    public AbstractVerifier(TestContext context, WfSpec wfSpec, Collection<Arg> workflowArgs) {
+        this(context, null, wfSpec, workflowArgs);
+    }
+
     @Override
     public WfRunId start(WfRunId wfRunId) {
-        WfSpec wfSpec = context.registerWfSpecIfNotPresent(workflow);
+        WfSpec wfSpec = this.wfSpec;
+        if (wfSpec == null) {
+            wfSpec = context.registerWfSpecIfNotPresent(workflow);
+        }
 
         // All we need to do is wait until the WfSpec is created. After that, LittleHorse
         // should guarantee read-your-own-writes. Any error returned by the API at this point

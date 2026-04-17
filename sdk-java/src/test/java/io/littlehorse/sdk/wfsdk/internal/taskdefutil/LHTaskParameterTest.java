@@ -166,7 +166,8 @@ public class LHTaskParameterTest {
         VariableDef expectedVariableDef = VariableDef.newBuilder()
                 .setName("param1")
                 .setTypeDef(TypeDefinition.newBuilder()
-                        .setStructDefId(StructDefId.newBuilder().setName("customer"))
+                        .setStructDefId(
+                                StructDefId.newBuilder().setName("customer").setVersion(-1))
                         .build())
                 .build();
 

@@ -7,35 +7,26 @@ import e2e.Struct.CarWithExtraField;
 import e2e.Struct.CarWithMissingField;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
-import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@WithStructDefs({Car.class})
 public class StructValidationsTest {
-    private LittleHorseBlockingStub client;
     private WorkflowVerifier verifier;
 
     @LHWorkflow("structs-wf")
     private Workflow structWorkflow;
-
-    @BeforeEach
-    public void setup() {
-        LHStructDefType lhStructDefType = new LHStructDefType(Car.class, LHTypeAdapterRegistry.empty());
-        client.putStructDef(lhStructDefType.toPutStructDefRequest());
-    }
 
     @Test
     void shouldPassWithValidStruct() {

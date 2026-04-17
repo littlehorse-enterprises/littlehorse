@@ -138,9 +138,9 @@ public class CommandProcessorTest {
 
         mockProcessorContext.scheduledPunctuators().get(0).getPunctuator().punctuate(System.currentTimeMillis());
 
-        assertThat(mockProcessorContext.forwarded()).hasSize(1);
+        assertThat(mockProcessorContext.forwarded()).hasSize(2);
         Record<? extends String, ? extends CommandProcessorOutput> forwardedRecord =
-                mockProcessorContext.forwarded().get(0).record();
+                mockProcessorContext.forwarded().get(1).record();
         assertThat(HeadersUtil.tenantIdFromMetadata(forwardedRecord.headers()).getId())
                 .isEqualTo(tenantId.getId());
 

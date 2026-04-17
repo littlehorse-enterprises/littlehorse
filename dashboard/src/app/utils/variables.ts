@@ -9,6 +9,7 @@ import {
   VariableValue,
 } from 'littlehorse-client/proto'
 import { getComparatorSymbol } from './comparatorUtils'
+import { normalizeUtcTimestampString } from './timestamp'
 import { lhPathToString } from './lhPath'
 import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
 
@@ -235,7 +236,7 @@ export const getTypedVariableValue = (
     case 'struct':
       return VariableValue.fromJSON({ struct: Struct.fromJSON(value) })
     case 'utcTimestamp':
-      return VariableValue.fromJSON({ utcTimestamp: new Date(value) })
+      return VariableValue.fromJSON({ utcTimestamp: normalizeUtcTimestampString(value) })
     case 'array': {
       return VariableValue.fromJSON({ array: LHArray.fromJSON(value) })
     }

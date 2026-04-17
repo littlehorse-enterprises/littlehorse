@@ -24,6 +24,7 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.LHTaskMethodHandle;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
@@ -51,11 +52,16 @@ public class TaskDefLifecycleTest {
 
     @Test
     void shouldBeIdempotent() {
+        Method taskMethod = getMethodFor(TaskWorker.class, "greet");
         PutTaskDefRequest task = new LHTaskSignature(
-                        getMethodFor(TaskWorker.class, "greet"), LHTypeAdapterRegistry.empty(), Map.of())
+                        LHTaskMethodHandle.fromLHTaskMethod(taskMethod, Map.of()),
+                        LHTypeAdapterRegistry.empty(),
+                        Map.of())
                 .toPutTaskDefRequest();
         PutTaskDefRequest taskCopy = new LHTaskSignature(
-                        getMethodFor(TaskWorker.class, "greet"), LHTypeAdapterRegistry.empty(), Map.of())
+                        LHTaskMethodHandle.fromLHTaskMethod(taskMethod, Map.of()),
+                        LHTypeAdapterRegistry.empty(),
+                        Map.of())
                 .toPutTaskDefRequest();
         TaskDef original = client.putTaskDef(task);
         TaskDef copy = client.putTaskDef(taskCopy);
@@ -65,13 +71,16 @@ public class TaskDefLifecycleTest {
 
     @Test
     void shouldThrowAlreadyExistWhenTaskDefDifferent() {
-
+        Method taskMethod = getMethodFor(TaskWorker.class, "greet-with-update");
         client.putTaskDef(new LHTaskSignature(
-                        getMethodFor(TaskWorker.class, "greet-with-update"), LHTypeAdapterRegistry.empty(), Map.of())
+                        LHTaskMethodHandle.fromLHTaskMethod(taskMethod, Map.of()),
+                        LHTypeAdapterRegistry.empty(),
+                        Map.of())
                 .toPutTaskDefRequest());
 
+        Method taskMethodUpdated = getMethodFor(TaskWorkerUpdated.class, "greet-with-update");
         PutTaskDefRequest taskUpdated = new LHTaskSignature(
-                        getMethodFor(TaskWorkerUpdated.class, "greet-with-update"),
+                        LHTaskMethodHandle.fromLHTaskMethod(taskMethodUpdated, Map.of()),
                         LHTypeAdapterRegistry.empty(),
                         Map.of())
                 .toPutTaskDefRequest();
