@@ -75,6 +75,20 @@ public class WfRunVariable
 
     
     /// <summary>
+    /// Creates a variable from a LittleHorse class type.
+    /// </summary>
+    /// <param name="name">The name of the WfRunVariable.</param>
+    /// <param name="lhClassType">The LittleHorse type wrapper.</param>
+    /// <param name="parent">The WorkflowThread where the variable belongs to.</param>
+    /// <returns>A new <see cref="WfRunVariable"/> instance.</returns>
+    public static WfRunVariable CreateVarFromLHClassType(string name, LHClassType lhClassType, WorkflowThread parent)
+    {
+        WfRunVariable wfRunVar = new WfRunVariable(name, parent);
+        wfRunVar.InitializeFromLHClassType(lhClassType);
+        return wfRunVar;
+    }
+
+    /// <summary>
     /// Creates a Struct variable with the provided LHStructDefType.
     /// </summary>
     /// <param name="name">The name of the WfRunVariable.</param>
@@ -83,9 +97,7 @@ public class WfRunVariable
     /// <returns>A new <see cref="WfRunVariable"/> instance.</returns>
     public static WfRunVariable CreateStructDefVar(string name, LHStructDefType structDefType, WorkflowThread parent)
     {
-        WfRunVariable wfRunVar = new WfRunVariable(name, parent);
-        wfRunVar.InitializeAsStructDef(structDefType);
-        return wfRunVar;
+        return CreateVarFromLHClassType(name, structDefType, parent);
     }
 
     /// <summary>
@@ -97,8 +109,25 @@ public class WfRunVariable
     /// <returns>A new <see cref="WfRunVariable"/> instance.</returns>
     public static WfRunVariable CreateStructDefVar(string name, string structDefName, WorkflowThread parent)
     {
+        return CreateStructDefVar(name, structDefName, -1, parent);
+    }
+
+    /// <summary>
+    /// Creates a Struct variable with the provided StructDef name and version.
+    /// </summary>
+    /// <param name="name">The name of the WfRunVariable.</param>
+    /// <param name="structDefName">The name of the StructDef.</param>
+    /// <param name="structDefVersion">The version of the StructDef.</param>
+    /// <param name="parent">The WorkflowThread where the variable belongs to.</param>
+    /// <returns>A new <see cref="WfRunVariable"/> instance.</returns>
+    public static WfRunVariable CreateStructDefVar(
+        string name,
+        string structDefName,
+        int structDefVersion,
+        WorkflowThread parent)
+    {
         WfRunVariable wfRunVar = new WfRunVariable(name, parent);
-        wfRunVar.InitializeAsStructDef(structDefName);
+        wfRunVar.InitializeAsStructDef(structDefName, structDefVersion);
         return wfRunVar;
     }
     
@@ -127,18 +156,24 @@ public class WfRunVariable
         }
     }
 
-    private void InitializeAsStructDef(LHStructDefType structDefType)
+    private void InitializeFromLHClassType(LHClassType lhClassType)
     {
-        TypeDef = structDefType.GetTypeDefinition();
+        TypeDef = lhClassType.GetTypeDefinition();
     }
 
     private void InitializeAsStructDef(string structDefName)
+    {
+        InitializeAsStructDef(structDefName, -1);
+    }
+
+    private void InitializeAsStructDef(string structDefName, int structDefVersion)
     {
         TypeDef = new TypeDefinition
         {
             StructDefId = new StructDefId
             {
-                Name = structDefName
+                Name = structDefName,
+                Version = structDefVersion
             }
         };
     }
