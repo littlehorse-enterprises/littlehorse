@@ -9,6 +9,7 @@ import com.google.rpc.RetryInfo;
 import io.grpc.Metadata;
 import io.grpc.Status;
 import io.grpc.protobuf.StatusProto;
+import io.littlehorse.sdk.common.config.retryinterceptor.ResourceExhaustedRetryInterceptor;
 import org.junit.jupiter.api.Test;
 
 class ResourceExhaustedRetryInterceptorTest {

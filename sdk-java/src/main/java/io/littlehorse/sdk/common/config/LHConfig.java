@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.auth.OAuthClient;
 import io.littlehorse.sdk.common.auth.OAuthConfig;
 import io.littlehorse.sdk.common.auth.OAuthCredentialsProvider;
 import io.littlehorse.sdk.common.auth.TenantMetadataProvider;
+import io.littlehorse.sdk.common.config.retryinterceptor.ResourceExhaustedRetryInterceptor;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;

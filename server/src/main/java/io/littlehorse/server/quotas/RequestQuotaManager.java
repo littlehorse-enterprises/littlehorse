@@ -48,6 +48,12 @@ public class RequestQuotaManager {
             }
 
             if (retryDelayMs > 0) {
+                // Record debt so future requests see already-scheduled retries
+                for (StateHandle handle : handles) {
+                    handle.getState()
+                            .recordAccepted(handle.getQuota().getWriteRequestsPerSecond(), serverCount, nowNanos);
+                }
+
                 Status status = Status.newBuilder()
                         .setCode(Code.RESOURCE_EXHAUSTED.getNumber())
                         .setMessage("Quota exceeded. Retry after %dms.".formatted(retryDelayMs))
