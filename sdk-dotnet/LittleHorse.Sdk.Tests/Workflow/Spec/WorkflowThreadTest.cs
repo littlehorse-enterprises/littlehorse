@@ -167,6 +167,52 @@ public class WorkflowThreadTest
     }
 
     [Fact]
+    public void WfThread_DeclareStructByName_ShouldCompileWithLatestVersionSentinel()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            wf.DeclareStruct("customer", "customer");
+        }
+
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        var compiled = workflowThread.Compile();
+
+        Assert.Single(compiled.VariableDefs);
+        Assert.Equal("customer", compiled.VariableDefs[0].VarDef.Name);
+        Assert.Equal(
+            TypeDefinition.DefinedTypeOneofCase.StructDefId,
+            compiled.VariableDefs[0].VarDef.TypeDef.DefinedTypeCase);
+        Assert.Equal("customer", compiled.VariableDefs[0].VarDef.TypeDef.StructDefId.Name);
+        Assert.Equal(-1, compiled.VariableDefs[0].VarDef.TypeDef.StructDefId.Version);
+    }
+
+    [Fact]
+    public void WfThread_DeclareStructByNameAndVersion_ShouldCompileWithExplicitVersion()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            wf.DeclareStruct("customer", "customer", 5);
+        }
+
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        var compiled = workflowThread.Compile();
+
+        Assert.Single(compiled.VariableDefs);
+        Assert.Equal("customer", compiled.VariableDefs[0].VarDef.Name);
+        Assert.Equal(
+            TypeDefinition.DefinedTypeOneofCase.StructDefId,
+            compiled.VariableDefs[0].VarDef.TypeDef.DefinedTypeCase);
+        Assert.Equal("customer", compiled.VariableDefs[0].VarDef.TypeDef.StructDefId.Name);
+        Assert.Equal(5, compiled.VariableDefs[0].VarDef.TypeDef.StructDefId.Version);
+    }
+
+    [Fact]
     public void WfThread_InvokingExecuteTasksWithArgs_ShouldBuildSpecWithTaskNodeAndVariablesDefs()
     {
         var workflowName = "TestWorkflow";
