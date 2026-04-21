@@ -528,28 +528,40 @@ class TestUtilsStructIntegration(unittest.TestCase):
 class TestWorkflowStructIntegration(unittest.TestCase):
     def test_declare_struct_with_class(self):
         def my_entrypoint(wf: WorkflowThread) -> None:
-            var = wf.declare_struct("my-addr", Address)
-            self.assertEqual(var._struct_def_name, "address")
-            self.assertEqual(var._struct_def_version, -1)
-            self.assertEqual(var.name, "my-addr")
+            wf.declare_struct("my-addr", Address)
 
-        Workflow("test-declare-class", my_entrypoint).compile()
+        wf_spec = Workflow("test-declare-class", my_entrypoint).compile()
+        thread_spec = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        var_def = thread_spec.variable_defs[0].var_def
+
+        self.assertEqual(var_def.name, "my-addr")
+        self.assertEqual(var_def.type_def.struct_def_id.name, "address")
+        self.assertEqual(var_def.type_def.struct_def_id.version, -1)
 
     def test_declare_struct_with_string(self):
+        # Arrange
         def my_entrypoint(wf: WorkflowThread) -> None:
-            var = wf.declare_struct("my-str-addr", "my-custom-struct")
-            self.assertEqual(var._struct_def_name, "my-custom-struct")
-            self.assertEqual(var._struct_def_version, -1)
+            wf.declare_struct("my-str-addr", "my-custom-struct")
 
-        Workflow("test-declare-string", my_entrypoint).compile()
+        wf_spec = Workflow("test-declare-string", my_entrypoint).compile()
+        thread_spec = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        var_def = thread_spec.variable_defs[0].var_def
+
+        self.assertEqual(var_def.name, "my-str-addr")
+        self.assertEqual(var_def.type_def.struct_def_id.name, "my-custom-struct")
+        self.assertEqual(var_def.type_def.struct_def_id.version, -1)
 
     def test_declare_struct_with_explicit_version(self):
         def my_entrypoint(wf: WorkflowThread) -> None:
-            var = wf.declare_struct("my-versioned-addr", "my-custom-struct", 3)
-            self.assertEqual(var._struct_def_name, "my-custom-struct")
-            self.assertEqual(var._struct_def_version, 3)
+            wf.declare_struct("my-versioned-addr", "my-custom-struct", 3)
 
-        Workflow("test-declare-versioned-string", my_entrypoint).compile()
+        wf_spec = Workflow("test-declare-versioned-string", my_entrypoint).compile()
+        thread_spec = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        var_def = thread_spec.variable_defs[0].var_def
+
+        self.assertEqual(var_def.name, "my-versioned-addr")
+        self.assertEqual(var_def.type_def.struct_def_id.name, "my-custom-struct")
+        self.assertEqual(var_def.type_def.struct_def_id.version, 3)
 
     def test_declare_struct_not_decorated_raises(self):
         def my_entrypoint(wf: WorkflowThread) -> None:
@@ -557,30 +569,6 @@ class TestWorkflowStructIntegration(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             Workflow("test-declare-bad", my_entrypoint).compile()
-
-    def test_compile_struct_variable(self):
-        def my_entrypoint(wf: WorkflowThread) -> None:
-            wf.declare_struct("addr-var", Address)
-
-        wf_spec = Workflow("compile-struct", my_entrypoint).compile()
-        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
-        var_def = entrypoint.variable_defs[0].var_def
-
-        self.assertTrue(var_def.type_def.HasField("struct_def_id"))
-        self.assertEqual(var_def.type_def.struct_def_id.name, "address")
-        self.assertEqual(var_def.type_def.struct_def_id.version, -1)
-
-    def test_compile_struct_variable_with_explicit_version(self):
-        def my_entrypoint(wf: WorkflowThread) -> None:
-            wf.declare_struct("addr-var", "address", 5)
-
-        wf_spec = Workflow("compile-struct-versioned", my_entrypoint).compile()
-        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
-        var_def = entrypoint.variable_defs[0].var_def
-
-        self.assertTrue(var_def.type_def.HasField("struct_def_id"))
-        self.assertEqual(var_def.type_def.struct_def_id.name, "address")
-        self.assertEqual(var_def.type_def.struct_def_id.version, 5)
 
 
 # ---------------------------------------------------------------------------
