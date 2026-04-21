@@ -165,7 +165,9 @@ public class LHStructDefTypeTest {
                         "author",
                         StructFieldDef.newBuilder()
                                 .setFieldType(TypeDefinition.newBuilder()
-                                        .setStructDefId(StructDefId.newBuilder().setName("author")))
+                                        .setStructDefId(StructDefId.newBuilder()
+                                                .setName("author")
+                                                .setVersion(-1)))
                                 .build())
                 .build();
 
@@ -270,7 +272,7 @@ public class LHStructDefTypeTest {
 
         TypeDefinition actualTypeDefinition = structDefType.getTypeDefinition();
         TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
-                .setStructDefId(StructDefId.newBuilder().setName("author"))
+                .setStructDefId(StructDefId.newBuilder().setName("author").setVersion(-1))
                 .build();
 
         assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);

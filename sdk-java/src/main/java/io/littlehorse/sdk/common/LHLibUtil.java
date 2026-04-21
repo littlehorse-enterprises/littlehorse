@@ -869,6 +869,10 @@ public class LHLibUtil {
             for (LHStructProperty property : lhStructProperties) {
                 VariableValue fieldValue = property.getValueFrom(o, typeAdapterRegistry);
 
+                if (fieldValue == null) {
+                    fieldValue = VariableValue.newBuilder().build();
+                }
+
                 StructField structField =
                         StructField.newBuilder().setValue(fieldValue).build();
 

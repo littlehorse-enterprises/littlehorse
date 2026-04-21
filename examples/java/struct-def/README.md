@@ -53,6 +53,15 @@ In a separate terminal, we'll run the same command again but this time with some
 ./gradlew example-struct-def:run --args 'BARC Speeder 1HGCM82633A004352'
 ```
 
+To showcase nullable Struct fields, run with a plate that starts with `NOADDR`:
+
+```
+./gradlew example-struct-def:run --args 'Starfighter Naboo NOADDR-42'
+```
+
+In this branch, `MyWorker#getCarOwner` returns a `Person` with `homeAddress = null`.
+The `Person.homeAddress` field is declared as nullable via `@LHStructField(isNullable = true)`.
+
 You can check the results of this workflow run using `lhctl`:
 
 ```

@@ -348,7 +348,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                 }
                 if (vd.getTypeDef().getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID) {
                     try {
-                        vd.getTypeDef().validateStructDefExists(ctx.metadataManager());
+                        vd.getTypeDef().validateStructDefExistsAndPinVersion(ctx.metadataManager());
                     } catch (UnknownStructDefException e) {
                         throw new InvalidWfSpecException(
                                 "Var name %s defined in thread %s refers to non-existent StructDef %s"
