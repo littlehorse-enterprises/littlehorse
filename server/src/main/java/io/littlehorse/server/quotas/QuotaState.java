@@ -8,27 +8,29 @@ class QuotaState {
     private static final long NANOS_PER_WINDOW = WINDOW_MS * 1_000_000;
     private static final int MAX_WINDOWS_OF_DEBT = 5;
 
-    private int availablePermits;
-    private int capacityPerWindow;
+    private int permitDebt; // Used to calculate retry delay
+    private int permitsLeftInThisWindow; // Keeps track of whether we can accept requests in this window
+    private int permitsPerWindow;
     private long lastRefillNanos;
     private boolean initialized;
 
     QuotaState() {
-        this.availablePermits = 0;
-        this.capacityPerWindow = 0;
+        this.permitDebt = 0;
+        this.permitsPerWindow = 0;
         this.lastRefillNanos = 0L;
+        this.permitsLeftInThisWindow = 0;
         this.initialized = false;
     }
 
     long recordRequestAndCalculateDelay(QuotaModel quota, int serverCount) {
         maybeRefreshWindow(quota, serverCount);
-        availablePermits -= 1.0;
+        permitsLeftInThisWindow--;
         return calculateDelayMs();
     }
 
     private long calculateDelayMs() {
         // If we still have permits, allow the request immediately.
-        if (availablePermits >= 0) {
+        if (permitsLeftInThisWindow >= 0) {
             return 0L;
         }
 
@@ -37,9 +39,9 @@ class QuotaState {
         //   which will come in again soon after when the retry delay expires
         // - the refresh() caps the debt to limit the recovery time
         // This is the way. Obi-Wan.
+        permitDebt++;
 
-        double permitDebt = -1.0 * availablePermits;
-        double numberOfWindowsToWait = 1.0 + (permitDebt / capacityPerWindow);
+        double numberOfWindowsToWait = 1.0 + (permitDebt / permitsPerWindow);
         long delayMs = (long) (WINDOW_MS * numberOfWindowsToWait);
         return delayMs;
     }
@@ -48,10 +50,10 @@ class QuotaState {
         long nowNanos = System.currentTimeMillis();
 
         double requestsPerSec = Math.max(1.0, quota.getWriteRequestsPerSecond() / (double) serverCount);
-        this.capacityPerWindow = (int) Math.ceil(Math.max(1.0, requestsPerSec * WINDOW_MS / 1000));
+        this.permitsPerWindow = (int) Math.ceil(Math.max(1.0, requestsPerSec * WINDOW_MS / 1000));
 
         if (!initialized) {
-            this.availablePermits = capacityPerWindow;
+            this.permitDebt = permitsPerWindow;
             this.lastRefillNanos = nowNanos;
             this.initialized = true;
             return;
@@ -60,18 +62,13 @@ class QuotaState {
         long elapsedWindows = (nowNanos - lastRefillNanos) / NANOS_PER_WINDOW;
         if (elapsedWindows > 0) {
             lastRefillNanos = nowNanos;
-
-            // In cases of super high load, we need to "cap the debt". This is the
-            // "token bucket" pattern.
-            if (availablePermits < MAX_WINDOWS_OF_DEBT * capacityPerWindow * -1) {
-                availablePermits = MAX_WINDOWS_OF_DEBT * capacityPerWindow * -1;
-            }
+            this.permitsLeftInThisWindow = this.permitsPerWindow;
 
             // Refresh the available permits. Note that, with debt, availablePermits can be negative.
-            availablePermits += capacityPerWindow * elapsedWindows;
+            permitDebt -= permitsPerWindow * elapsedWindows;
 
             // Make sure permits didn't go above what it should be.
-            availablePermits = Math.min(capacityPerWindow, availablePermits);
+            permitDebt = Math.min(permitsPerWindow, permitDebt);
         }
     }
 }
