@@ -169,8 +169,7 @@ func goTypeToStructFieldDef(t reflect.Type) (*lhproto.StructFieldDef, error) {
 			FieldType: &lhproto.TypeDefinition{
 				DefinedType: &lhproto.TypeDefinition_StructDefId{
 					StructDefId: &lhproto.StructDefId{
-						Name:    info.Name,
-						Version: -1,
+						Name: info.Name,
 					},
 				},
 			},
@@ -327,7 +326,7 @@ func ToLhStruct(structInstance interface{}) (*lhproto.Struct, error) {
 	}
 
 	return &lhproto.Struct{
-		StructDefId: &lhproto.StructDefId{Name: info.Name, Version: -1},
+		StructDefId: &lhproto.StructDefId{Name: info.Name},
 		Struct:      inlineStruct,
 	}, nil
 }
@@ -389,7 +388,7 @@ func goValueToStructField(v reflect.Value) (*lhproto.StructField, error) {
 				Value: &lhproto.VariableValue{
 					Value: &lhproto.VariableValue_Struct{
 						Struct: &lhproto.Struct{
-							StructDefId: &lhproto.StructDefId{Name: info.Name, Version: -1},
+							StructDefId: &lhproto.StructDefId{Name: info.Name},
 							Struct:      inlineStruct,
 						},
 					},

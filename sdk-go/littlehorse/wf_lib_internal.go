@@ -1092,7 +1092,7 @@ func (t *WorkflowThread) addVariable(
 }
 
 func (t *WorkflowThread) addStructVariable(
-	name string, structDefName string, structDefVersion int32,
+	name string, structDefName string,
 ) *WfRunVariable {
 	t.checkIfIsActive()
 
@@ -1100,8 +1100,7 @@ func (t *WorkflowThread) addStructVariable(
 		TypeDef: &lhproto.TypeDefinition{
 			DefinedType: &lhproto.TypeDefinition_StructDefId{
 				StructDefId: &lhproto.StructDefId{
-					Name:    structDefName,
-					Version: structDefVersion,
+					Name: structDefName,
 				},
 			},
 		},
