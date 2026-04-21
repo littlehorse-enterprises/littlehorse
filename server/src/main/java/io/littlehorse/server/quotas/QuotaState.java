@@ -41,7 +41,7 @@ class QuotaState {
         // This is the way. Obi-Wan.
         permitDebt++;
 
-        double numberOfWindowsToWait = 1.0 + (permitDebt / permitsPerWindow);
+        double numberOfWindowsToWait = 1.0 + ((double) permitDebt / permitsPerWindow);
         long delayMs = (long) (WINDOW_MS * numberOfWindowsToWait);
         return delayMs;
     }
