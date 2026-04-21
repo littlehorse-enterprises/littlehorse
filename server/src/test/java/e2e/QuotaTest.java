@@ -81,6 +81,7 @@ public class QuotaTest {
 
     private void awaitQuota(int expectedRate) {
         Awaitility.await().atMost(Duration.ofSeconds(4)).untilAsserted(() -> {
+            Thread.sleep(500);
             Quota q = client.getQuota(tenantQuotaId());
             assertThat(q.getWriteRequestsPerSecond()).isEqualTo(expectedRate);
         });
@@ -176,7 +177,7 @@ public class QuotaTest {
         try {
             awaitQuota(2);
 
-            BurstResult result = sendBurst(rawClient, 20);
+            BurstResult result = sendBurst(rawClient, 6);
 
             assertThat(result.throttled())
                     .as("At least some requests should have been throttled")
@@ -229,19 +230,17 @@ public class QuotaTest {
         try {
             awaitQuota(1000);
 
-            BurstResult underQuota = sendBurst(rawClient, 5);
+            BurstResult underQuota = sendBurst(rawClient, 20);
             assertThat(underQuota.throttled())
                     .as("No requests should be throttled under a generous quota")
                     .isEmpty();
-            assertThat(underQuota.successes()).isEqualTo(5);
+            assertThat(underQuota.successes()).isEqualTo(20);
         } finally {
             deleteQuotaSilently(tenantQuotaId());
         }
 
         // Set a restrictive quota then delete it — nothing should be throttled after
         setQuota(2);
-        awaitQuota(2);
-
         client.deleteQuota(
                 DeleteQuotaRequest.newBuilder().setId(tenantQuotaId()).build());
 
@@ -254,7 +253,7 @@ public class QuotaTest {
             }
         });
 
-        BurstResult afterDeletion = sendBurst(rawClient, 10);
+        BurstResult afterDeletion = sendBurst(rawClient, 50);
         assertThat(afterDeletion.throttled())
                 .as("No requests should be throttled after quota deletion")
                 .isEmpty();
