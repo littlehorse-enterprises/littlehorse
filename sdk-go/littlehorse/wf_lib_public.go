@@ -627,8 +627,23 @@ func (t *WorkflowThread) DeclareJsonObj(name string) *WfRunVariable {
 //
 // Unlike ExternalEventDefs, StructDefs are NOT automatically registered by RegisterWfSpec.
 // You must register them manually using RegisterStructDef before calling RegisterWfSpec.
-func (t *WorkflowThread) DeclareStruct(name string, structDefName string) *WfRunVariable {
-	return t.addStructVariable(name, structDefName)
+//
+// This uses the latest version of the given StructDef according to the server.
+func (t *WorkflowThread) DeclareStruct(
+	name string,
+	structDefName string,
+) *WfRunVariable {
+	return t.addStructVariable(name, structDefName, -1)
+}
+
+// DeclareStructWithVersion declares a Struct variable using an explicit
+// StructDef version.
+func (t *WorkflowThread) DeclareStructWithVersion(
+	name string,
+	structDefName string,
+	structDefVersion int,
+) *WfRunVariable {
+	return t.addStructVariable(name, structDefName, int32(structDefVersion))
 }
 
 func (t *WorkflowThread) Complete(result interface{}) {
