@@ -193,12 +193,14 @@ class InlineStructDef(_message.Message):
     def __init__(self, fields: _Optional[_Mapping[str, StructFieldDef]] = ...) -> None: ...
 
 class StructFieldDef(_message.Message):
-    __slots__ = ("field_type", "default_value")
+    __slots__ = ("field_type", "default_value", "is_nullable")
     FIELD_TYPE_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
+    IS_NULLABLE_FIELD_NUMBER: _ClassVar[int]
     field_type: _type_definition_pb2.TypeDefinition
     default_value: _variable_pb2.VariableValue
-    def __init__(self, field_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    is_nullable: bool
+    def __init__(self, field_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., is_nullable: _Optional[bool] = ...) -> None: ...
 
 class LHPath(_message.Message):
     __slots__ = ("path",)

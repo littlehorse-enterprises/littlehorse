@@ -145,9 +145,17 @@ public class InputVarsTest {
                 .waitForTaskStatus(0, 1, TaskStatus.TASK_SUCCESS)
                 .waitForTaskStatus(0, 2, TaskStatus.TASK_SUCCESS)
                 .thenVerifyTaskRunResult(
-                        0, 1, variableValue -> Assertions.assertEquals(expectedStructFromTask1, variableValue))
+                        0,
+                        1,
+                        variableValue -> Assertions.assertEquals(
+                                expectedStructFromTask1.getStruct().getStruct(),
+                                variableValue.getStruct().getStruct()))
                 .thenVerifyTaskRunResult(
-                        0, 2, variableValue -> Assertions.assertEquals(expectedStructFromTask2, variableValue))
+                        0,
+                        2,
+                        variableValue -> Assertions.assertEquals(
+                                expectedStructFromTask2.getStruct().getStruct(),
+                                variableValue.getStruct().getStruct()))
                 .start();
     }
 
