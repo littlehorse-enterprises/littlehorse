@@ -180,8 +180,11 @@ public class ExpressionModel extends LHSerializable<Expression> {
             return switch (this.mutateWithOperation) {
                 case AND -> lhs != null && (lhs.getBoolVal() && rhs.getBoolVal());
                 case OR -> lhs != null && (lhs.getBoolVal() || rhs.getBoolVal());
-                default -> throw new IllegalStateException(
-                        "Unknown value for VariableMutationType enum %d".formatted(mutateWithOperation.getNumber()));
+                default -> {
+                    String message =
+                            "Unknown value for VariableMutationType enum %d".formatted(mutateWithOperation.getNumber());
+                    throw new IllegalStateException(message);
+                }
             };
         } else {
             switch (this.mutateByComparison) {
