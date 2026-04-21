@@ -493,6 +493,25 @@ func TestDeclareStructAddsStructDefIdVariable(t *testing.T) {
 	structDefId := varDef.VarDef.TypeDef.GetStructDefId()
 	assert.NotNil(t, structDefId, "TypeDefinition should have StructDefId set")
 	assert.Equal(t, "person", structDefId.GetName())
+	assert.Equal(t, int32(-1), structDefId.GetVersion())
+}
+
+func TestDeclareStructWithExplicitVersionAddsVersionedStructDefId(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
+		thread.DeclareStruct("my-person", "person", 3)
+	}, "struct-version-test")
+
+	putWf, err := wf.Compile()
+	assert.Nil(t, err)
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	assert.Len(t, entrypoint.VariableDefs, 1)
+
+	varDef := entrypoint.VariableDefs[0]
+	structDefId := varDef.VarDef.TypeDef.GetStructDefId()
+	assert.NotNil(t, structDefId, "TypeDefinition should have StructDefId set")
+	assert.Equal(t, "person", structDefId.GetName())
+	assert.Equal(t, int32(3), structDefId.GetVersion())
 }
 
 func TestDeclareStructVariableIsPrivateByDefault(t *testing.T) {
@@ -524,10 +543,12 @@ func TestDeclareMultipleStructVariables(t *testing.T) {
 	// First var is struct with StructDefId
 	assert.Equal(t, "person-var", entrypoint.VariableDefs[0].VarDef.Name)
 	assert.Equal(t, "person", entrypoint.VariableDefs[0].VarDef.TypeDef.GetStructDefId().GetName())
+	assert.Equal(t, int32(-1), entrypoint.VariableDefs[0].VarDef.TypeDef.GetStructDefId().GetVersion())
 
 	// Second var is struct with StructDefId
 	assert.Equal(t, "address-var", entrypoint.VariableDefs[1].VarDef.Name)
 	assert.Equal(t, "address", entrypoint.VariableDefs[1].VarDef.TypeDef.GetStructDefId().GetName())
+	assert.Equal(t, int32(-1), entrypoint.VariableDefs[1].VarDef.TypeDef.GetStructDefId().GetVersion())
 
 	// Third var is a regular STR
 	assert.Equal(t, "normal-str", entrypoint.VariableDefs[2].VarDef.Name)
@@ -569,6 +590,7 @@ func TestDeclareStructSearchable(t *testing.T) {
 	assert.Equal(t, "my-struct", varDef.VarDef.Name)
 	assert.True(t, varDef.Searchable)
 	assert.Equal(t, "my-struct-def", varDef.VarDef.TypeDef.GetStructDefId().GetName())
+	assert.Equal(t, int32(-1), varDef.VarDef.TypeDef.GetStructDefId().GetVersion())
 }
 
 // --- Tests for ReflectTypeToTypeDef ---
@@ -579,6 +601,7 @@ func TestReflectTypeToTypeDef_StructWithLHStructDef(t *testing.T) {
 
 	assert.NotNil(t, typeDef.GetStructDefId())
 	assert.Equal(t, "simple-struct", typeDef.GetStructDefId().GetName())
+	assert.Equal(t, int32(-1), typeDef.GetStructDefId().GetVersion())
 }
 
 func TestReflectTypeToTypeDef_PointerToStruct(t *testing.T) {
@@ -587,6 +610,7 @@ func TestReflectTypeToTypeDef_PointerToStruct(t *testing.T) {
 
 	assert.NotNil(t, typeDef.GetStructDefId())
 	assert.Equal(t, "simple-struct", typeDef.GetStructDefId().GetName())
+	assert.Equal(t, int32(-1), typeDef.GetStructDefId().GetVersion())
 }
 
 func TestReflectTypeToTypeDef_PrimitiveTypes(t *testing.T) {
@@ -622,6 +646,7 @@ func TestToLhStruct_SimpleStruct(t *testing.T) {
 	proto, err := littlehorse.ToLhStruct(s)
 	assert.Nil(t, err)
 	assert.Equal(t, "simple-struct", proto.StructDefId.GetName())
+	assert.Equal(t, int32(-1), proto.StructDefId.GetVersion())
 
 	fields := proto.Struct.GetFields()
 	assert.Equal(t, "Alice", fields["name"].Value.GetStr())
