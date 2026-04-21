@@ -822,7 +822,10 @@ def _to_variable_def(param: inspect.Parameter) -> VariableDef:
         return VariableDef(
             name=lh_type.name,
             type_def=TypeDefinition(
-                struct_def_id=StructDefId(name=get_struct_def_name(raw_type)),
+                struct_def_id=StructDefId(
+                    name=get_struct_def_name(raw_type),
+                    version=-1,
+                ),
                 masked=lh_type.masked,
             ),
         )
@@ -861,7 +864,10 @@ def _return_to_lh_schema(return_type: type) -> Optional[ReturnType]:
     if isinstance(raw_return, type) and is_lh_struct(raw_return):
         return ReturnType(
             return_type=TypeDefinition(
-                struct_def_id=StructDefId(name=get_struct_def_name(raw_return)),
+                struct_def_id=StructDefId(
+                    name=get_struct_def_name(raw_return),
+                    version=-1,
+                ),
                 masked=lh_type.masked if lh_type else False,
             )
         )
