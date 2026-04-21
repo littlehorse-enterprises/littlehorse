@@ -43,4 +43,4 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 015 | [Dynamic Child Workflows](./015-run-child-workflow-dynamically.md) | Eduwer Camacaro | N/A |
 | 016 | [Java `LHTaskWorker` Support Generic Structs](./016-java-structdef-placeholder-resolution.md) | Colt McNealy | [#2132](https://github.com/littlehorse-enterprises/littlehorse/pull/2132) |
 | 017 | [TypeScript WfSpec minimal API](./017-typescript-wfspec-minimal-api.md) | Hazim Arafa | [#2162](https://github.com/littlehorse-enterprises/littlehorse/pull/2132) |
-| 018 | [Struct Field Assignment in `WfSpec`s](./018-struct-field-assignment-in-wfspec.md) | OpenCode | N/A |
+| 019 | [Buildling `Struct`s Inside `WfSpec`](./019-struct-field-assignment-in-wfspec.md) | Colt McNealy | #2219 |
