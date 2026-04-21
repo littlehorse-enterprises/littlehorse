@@ -93,6 +93,18 @@ public class LHStructPropertyTest
     }
 
     [Fact]
+    public void LHStructDefType_GetTypeDefinition_UsesLatestVersionSentinel()
+    {
+        var structDefType = new LHStructDefType(typeof(Library));
+
+        TypeDefinition typeDef = structDefType.GetTypeDefinition();
+
+        Assert.Equal(TypeDefinition.DefinedTypeOneofCase.StructDefId, typeDef.DefinedTypeCase);
+        Assert.Equal("library", typeDef.StructDefId.Name);
+        Assert.Equal(-1, typeDef.StructDefId.Version);
+    }
+
+    [Fact]
     public void GetValueFrom_ReturnsVariableValue()
     {
         var property = CreateProperty(nameof(Library.Name));
