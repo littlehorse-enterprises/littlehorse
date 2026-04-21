@@ -15,12 +15,10 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.TaskId;
 
-@Slf4j
 public class AsyncWaiters {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AsyncWaiters.class);
     private final ConcurrentHashMap<String, FutureResponseAndWaitingClient> responses = new ConcurrentHashMap<>();
     private final Map<WorkflowEventDefIdAndTenant, CompletableFuture<WorkflowEvent>> workflowEvents =
             new ConcurrentHashMap<>();

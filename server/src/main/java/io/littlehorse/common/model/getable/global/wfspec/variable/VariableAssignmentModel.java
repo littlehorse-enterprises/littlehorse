@@ -27,19 +27,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Data
-@EqualsAndHashCode(callSuper = false)
 public class VariableAssignmentModel extends LHSerializable<VariableAssignment> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(VariableAssignmentModel.class);
     private PathCase pathCase;
     private String jsonPath;
     private LHPathModel lhPath;
-
     private SourceCase rhsSourceType;
     private String variableName;
     private VariableValueModel rhsLiteralValue;
@@ -56,9 +49,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public void initFrom(Message proto, ExecutionContext context) {
         VariableAssignment p = (VariableAssignment) proto;
         if (p.hasTargetType()) targetType = TypeDefinitionModel.fromProto(p.getTargetType(), context);
-
         pathCase = p.getPathCase();
-
         switch (pathCase) {
             case JSON_PATH:
                 jsonPath = p.getJsonPath();
@@ -68,7 +59,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case PATH_NOT_SET:
         }
-
         rhsSourceType = p.getSourceCase();
         switch (rhsSourceType) {
             case VARIABLE_NAME:
@@ -88,15 +78,13 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 expression = LHSerializable.fromProto(p.getExpression(), ExpressionModel.class, context);
                 break;
             case SOURCE_NOT_SET:
-                // nothing to do;
         }
+        // nothing to do;
     }
 
     public VariableAssignment.Builder toProto() {
         VariableAssignment.Builder out = VariableAssignment.newBuilder();
-
         if (targetType != null) out.setTargetType(targetType.toProto());
-
         switch (pathCase) {
             case JSON_PATH:
                 out.setJsonPath(jsonPath);
@@ -106,7 +94,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case PATH_NOT_SET:
         }
-
         switch (rhsSourceType) {
             case VARIABLE_NAME:
                 out.setVariableName(variableName);
@@ -124,9 +111,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 out.setExpression(expression.toProto());
                 break;
             case SOURCE_NOT_SET:
-                // not possible.
         }
-
+        // not possible.
         return out;
     }
 
@@ -162,13 +148,10 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public boolean canBeType(TypeDefinitionModel type, ThreadSpecModel tspec) {
         // Eww, gross...I really wish I designed strong typing into the system from day 1.
         if (jsonPath != null) return true;
-
         TypeDefinitionModel baseType = null;
-
         switch (rhsSourceType) {
             case VARIABLE_NAME:
                 VariableDefModel varDef = tspec.getVarDef(variableName).getVarDef();
-
                 // This will need to be refactored once we introduce Structs and StructDefs.
                 baseType = varDef.getTypeDef();
                 break;
@@ -193,7 +176,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
                 throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
-
         return TypeCastingUtils.canBeType(baseType, type);
     }
 
@@ -209,7 +191,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         if (targetType == null) {
             return sourceValue;
         }
-
         try {
             return targetType.applyCast(sourceValue);
         } catch (IllegalArgumentException e) {
@@ -234,9 +215,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             // which is why I wish we could kill JSON_OBJ with fire. Unfortunately, people use it...
             return Optional.empty();
         }
-
         TypeDefinitionModel typeDef = null;
-
         switch (rhsSourceType) {
             case VARIABLE_NAME:
                 typeDef = wfSpec.fetchThreadSpec(threadSpecName)
@@ -281,11 +260,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
                 throw new InvalidExpressionException("VariableAssignment passed with missing source");
         }
-
         if (lhPath != null) {
             return typeDef.getNestedType(lhPath, manager);
         }
-
         return Optional.ofNullable(typeDef);
     }
 
@@ -321,5 +298,175 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             out.addAll(expression.getRhs().getRequiredVariableNames());
         }
         return out;
+    }
+
+    public VariableAssignmentModel() {}
+
+    public PathCase getPathCase() {
+        return this.pathCase;
+    }
+
+    public String getJsonPath() {
+        return this.jsonPath;
+    }
+
+    public LHPathModel getLhPath() {
+        return this.lhPath;
+    }
+
+    public SourceCase getRhsSourceType() {
+        return this.rhsSourceType;
+    }
+
+    public String getVariableName() {
+        return this.variableName;
+    }
+
+    public VariableValueModel getRhsLiteralValue() {
+        return this.rhsLiteralValue;
+    }
+
+    public FormatStringModel getFormatString() {
+        return this.formatString;
+    }
+
+    public NodeOutputReferenceModel getNodeOutputReference() {
+        return this.nodeOutputReference;
+    }
+
+    public ExpressionModel getExpression() {
+        return this.expression;
+    }
+
+    public TypeDefinitionModel getTargetType() {
+        return this.targetType;
+    }
+
+    public void setPathCase(final PathCase pathCase) {
+        this.pathCase = pathCase;
+    }
+
+    public void setJsonPath(final String jsonPath) {
+        this.jsonPath = jsonPath;
+    }
+
+    public void setLhPath(final LHPathModel lhPath) {
+        this.lhPath = lhPath;
+    }
+
+    public void setRhsSourceType(final SourceCase rhsSourceType) {
+        this.rhsSourceType = rhsSourceType;
+    }
+
+    public void setVariableName(final String variableName) {
+        this.variableName = variableName;
+    }
+
+    public void setRhsLiteralValue(final VariableValueModel rhsLiteralValue) {
+        this.rhsLiteralValue = rhsLiteralValue;
+    }
+
+    public void setFormatString(final FormatStringModel formatString) {
+        this.formatString = formatString;
+    }
+
+    public void setNodeOutputReference(final NodeOutputReferenceModel nodeOutputReference) {
+        this.nodeOutputReference = nodeOutputReference;
+    }
+
+    public void setExpression(final ExpressionModel expression) {
+        this.expression = expression;
+    }
+
+    public void setTargetType(final TypeDefinitionModel targetType) {
+        this.targetType = targetType;
+    }
+
+    @Override
+    public String toString() {
+        return "VariableAssignmentModel(pathCase=" + this.getPathCase() + ", jsonPath=" + this.getJsonPath()
+                + ", lhPath=" + this.getLhPath() + ", rhsSourceType=" + this.getRhsSourceType() + ", variableName="
+                + this.getVariableName() + ", rhsLiteralValue=" + this.getRhsLiteralValue() + ", formatString="
+                + this.getFormatString() + ", nodeOutputReference=" + this.getNodeOutputReference() + ", expression="
+                + this.getExpression() + ", targetType=" + this.getTargetType() + ")";
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof VariableAssignmentModel)) return false;
+        final VariableAssignmentModel other = (VariableAssignmentModel) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$pathCase = this.getPathCase();
+        final Object other$pathCase = other.getPathCase();
+        if (this$pathCase == null ? other$pathCase != null : !this$pathCase.equals(other$pathCase)) return false;
+        final Object this$jsonPath = this.getJsonPath();
+        final Object other$jsonPath = other.getJsonPath();
+        if (this$jsonPath == null ? other$jsonPath != null : !this$jsonPath.equals(other$jsonPath)) return false;
+        final Object this$lhPath = this.getLhPath();
+        final Object other$lhPath = other.getLhPath();
+        if (this$lhPath == null ? other$lhPath != null : !this$lhPath.equals(other$lhPath)) return false;
+        final Object this$rhsSourceType = this.getRhsSourceType();
+        final Object other$rhsSourceType = other.getRhsSourceType();
+        if (this$rhsSourceType == null ? other$rhsSourceType != null : !this$rhsSourceType.equals(other$rhsSourceType))
+            return false;
+        final Object this$variableName = this.getVariableName();
+        final Object other$variableName = other.getVariableName();
+        if (this$variableName == null ? other$variableName != null : !this$variableName.equals(other$variableName))
+            return false;
+        final Object this$rhsLiteralValue = this.getRhsLiteralValue();
+        final Object other$rhsLiteralValue = other.getRhsLiteralValue();
+        if (this$rhsLiteralValue == null
+                ? other$rhsLiteralValue != null
+                : !this$rhsLiteralValue.equals(other$rhsLiteralValue)) return false;
+        final Object this$formatString = this.getFormatString();
+        final Object other$formatString = other.getFormatString();
+        if (this$formatString == null ? other$formatString != null : !this$formatString.equals(other$formatString))
+            return false;
+        final Object this$nodeOutputReference = this.getNodeOutputReference();
+        final Object other$nodeOutputReference = other.getNodeOutputReference();
+        if (this$nodeOutputReference == null
+                ? other$nodeOutputReference != null
+                : !this$nodeOutputReference.equals(other$nodeOutputReference)) return false;
+        final Object this$expression = this.getExpression();
+        final Object other$expression = other.getExpression();
+        if (this$expression == null ? other$expression != null : !this$expression.equals(other$expression))
+            return false;
+        final Object this$targetType = this.getTargetType();
+        final Object other$targetType = other.getTargetType();
+        if (this$targetType == null ? other$targetType != null : !this$targetType.equals(other$targetType))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof VariableAssignmentModel;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $pathCase = this.getPathCase();
+        result = result * PRIME + ($pathCase == null ? 43 : $pathCase.hashCode());
+        final Object $jsonPath = this.getJsonPath();
+        result = result * PRIME + ($jsonPath == null ? 43 : $jsonPath.hashCode());
+        final Object $lhPath = this.getLhPath();
+        result = result * PRIME + ($lhPath == null ? 43 : $lhPath.hashCode());
+        final Object $rhsSourceType = this.getRhsSourceType();
+        result = result * PRIME + ($rhsSourceType == null ? 43 : $rhsSourceType.hashCode());
+        final Object $variableName = this.getVariableName();
+        result = result * PRIME + ($variableName == null ? 43 : $variableName.hashCode());
+        final Object $rhsLiteralValue = this.getRhsLiteralValue();
+        result = result * PRIME + ($rhsLiteralValue == null ? 43 : $rhsLiteralValue.hashCode());
+        final Object $formatString = this.getFormatString();
+        result = result * PRIME + ($formatString == null ? 43 : $formatString.hashCode());
+        final Object $nodeOutputReference = this.getNodeOutputReference();
+        result = result * PRIME + ($nodeOutputReference == null ? 43 : $nodeOutputReference.hashCode());
+        final Object $expression = this.getExpression();
+        result = result * PRIME + ($expression == null ? 43 : $expression.hashCode());
+        final Object $targetType = this.getTargetType();
+        result = result * PRIME + ($targetType == null ? 43 : $targetType.hashCode());
+        return result;
     }
 }

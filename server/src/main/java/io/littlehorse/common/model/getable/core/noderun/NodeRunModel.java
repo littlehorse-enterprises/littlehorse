@@ -44,17 +44,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Getter
-@Setter
-@Slf4j
 public class NodeRunModel extends CoreGetable<NodeRun> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(NodeRunModel.class);
     private NodeRunIdModel id;
     private WfSpecIdModel wfSpecId;
     private String threadSpecName;
@@ -65,7 +58,6 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     private String errorMessage;
     private List<FailureModel> failures = new ArrayList<>();
     private List<Integer> failureHandlerIds = new ArrayList<>();
-
     private NodeTypeCase type;
     private ExternalEventNodeRunModel externalEventRun;
     private TaskNodeRunModel taskRun;
@@ -80,11 +72,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     private WaitForConditionNodeRunModel waitForConditionNodeRun;
     private RunChildWfNodeRunModel runChildWfNodeRun;
     private WaitForChildWfNodeRunModel waitForChildWfNodeRun;
-
     private ExecutionContext executionContext;
-
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
     // Use `NodeRunModel#getThreadRun()`, as this field is lazy-loaded.
     private ThreadRunModel threadRunDoNotUseMe;
 
@@ -103,19 +91,15 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public void initFrom(Message p, ExecutionContext context) {
         NodeRun proto = (NodeRun) p;
         id = LHSerializable.fromProto(proto.getId(), NodeRunIdModel.class, context);
-
         arrivalTime = LHUtil.fromProtoTs(proto.getArrivalTime());
         if (proto.hasEndTime()) {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
-
         wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, context);
         threadSpecName = proto.getThreadSpecName();
         nodeName = proto.getNodeName();
         status = proto.getStatus();
-
         if (proto.hasErrorMessage()) errorMessage = proto.getErrorMessage();
-
         type = proto.getNodeTypeCase();
         switch (type) {
             case TASK:
@@ -165,7 +149,6 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             case NODETYPE_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
-
         for (Failure failure : proto.getFailuresList()) {
             failures.add(FailureModel.fromProto(failure, context));
         }
@@ -221,11 +204,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 .setWfSpecId(wfSpecId.toProto())
                 .setThreadSpecName(threadSpecName)
                 .setNodeName(nodeName);
-
         if (endTime != null) out.setEndTime(LHUtil.fromDate(endTime));
-
         if (errorMessage != null) out.setErrorMessage(errorMessage);
-
         switch (type) {
             case TASK:
                 out.setTask(taskRun.toProto());
@@ -268,14 +248,12 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 break;
             case NODETYPE_NOT_SET:
         }
-
         for (FailureModel failure : failures) {
             out.addFailures(failure.toProto());
         }
         for (Integer id : failureHandlerIds) {
             out.addFailureHandlerIds(id);
         }
-
         return out;
     }
 
@@ -375,9 +353,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             type = NodeTypeCase.WAIT_FOR_CHILD_WF;
             this.waitForChildWfNodeRun = (WaitForChildWfNodeRunModel) subNodeRun;
         } else {
-            throw new RuntimeException("Didn't recognize " + subNodeRun.getClass());
+            throw new RuntimeException("Didn\'t recognize " + subNodeRun.getClass());
         }
-
         subNodeRun.nodeRun = this;
     }
 
@@ -495,7 +472,6 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             errorMessage = exn.getFailure().getMessage();
             throw exn;
         }
-
         if (completed) {
             status = LHStatus.COMPLETED;
             endTime = executionContext
@@ -540,7 +516,6 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         if (status != LHStatus.COMPLETED) {
             throw new IllegalStateException("Cannot get output from a non-completed NodeRun");
         }
-
         return getSubNodeRun().getOutput(processorContext);
     }
 
@@ -556,7 +531,6 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             // If the NodeRun is already completed, failed, or halted, then we're done (:
             return true;
         }
-
         if (getSubNodeRun().maybeHalt(processorContext)) {
             status = LHStatus.HALTED;
             return true;
@@ -633,9 +607,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             throws NodeFailureException {
         NodeModel currentNode = getNode();
         ThreadRunModel thread = getThreadRun();
-
         for (EdgeModel edge : currentNode.getOutgoingEdges()) {
-
             // We can either fail when evaluating the outgoing edge or when mutating
             // the variables. We want to know when the error happens so we can adjust the
             // error message properly.
@@ -647,7 +619,6 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                     if (failures.isEmpty()) {
                         edge.mutateVariables(thread, this.getOutput(processorContext));
                     }
-
                     // If we get here, we have found an edge that was valid, and the variable
                     // mutations returned successfully. We return to the ThreadRunModel the
                     // WfSpec Node to which this Edge points.
@@ -662,7 +633,6 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 throw new NodeFailureException(failure);
             }
         }
-
         // If we get this far, it means that none of the Edges had a valid condition.
         // This means that the WfSpec was invalid. This isn't possible if the user uses
         // our SDK's.
@@ -671,5 +641,205 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 LHErrorType.VAR_SUB_ERROR.toString());
         failures.add(invalidWfSpecFailure);
         throw new NodeFailureException(invalidWfSpecFailure);
+    }
+
+    public NodeRunIdModel getId() {
+        return this.id;
+    }
+
+    public WfSpecIdModel getWfSpecId() {
+        return this.wfSpecId;
+    }
+
+    public String getThreadSpecName() {
+        return this.threadSpecName;
+    }
+
+    public LHStatus getStatus() {
+        return this.status;
+    }
+
+    public Date getArrivalTime() {
+        return this.arrivalTime;
+    }
+
+    public Date getEndTime() {
+        return this.endTime;
+    }
+
+    public String getNodeName() {
+        return this.nodeName;
+    }
+
+    public String getErrorMessage() {
+        return this.errorMessage;
+    }
+
+    public List<FailureModel> getFailures() {
+        return this.failures;
+    }
+
+    public List<Integer> getFailureHandlerIds() {
+        return this.failureHandlerIds;
+    }
+
+    public NodeTypeCase getType() {
+        return this.type;
+    }
+
+    public ExternalEventNodeRunModel getExternalEventRun() {
+        return this.externalEventRun;
+    }
+
+    public TaskNodeRunModel getTaskRun() {
+        return this.taskRun;
+    }
+
+    public ExitRunModel getExitRun() {
+        return this.exitRun;
+    }
+
+    public EntrypointRunModel getEntrypointRun() {
+        return this.entrypointRun;
+    }
+
+    public StartThreadRunModel getStartThreadRun() {
+        return this.startThreadRun;
+    }
+
+    public StartMultipleThreadsRunModel getStartMultipleThreadsRun() {
+        return this.startMultipleThreadsRun;
+    }
+
+    public WaitForThreadsRunModel getWaitForThreadsRun() {
+        return this.waitForThreadsRun;
+    }
+
+    public SleepNodeRunModel getSleepNodeRun() {
+        return this.sleepNodeRun;
+    }
+
+    public UserTaskNodeRunModel getUserTaskRun() {
+        return this.userTaskRun;
+    }
+
+    public ThrowEventNodeRunModel getThrowEventNodeRun() {
+        return this.throwEventNodeRun;
+    }
+
+    public WaitForConditionNodeRunModel getWaitForConditionNodeRun() {
+        return this.waitForConditionNodeRun;
+    }
+
+    public RunChildWfNodeRunModel getRunChildWfNodeRun() {
+        return this.runChildWfNodeRun;
+    }
+
+    public WaitForChildWfNodeRunModel getWaitForChildWfNodeRun() {
+        return this.waitForChildWfNodeRun;
+    }
+
+    public ExecutionContext getExecutionContext() {
+        return this.executionContext;
+    }
+
+    public void setId(final NodeRunIdModel id) {
+        this.id = id;
+    }
+
+    public void setWfSpecId(final WfSpecIdModel wfSpecId) {
+        this.wfSpecId = wfSpecId;
+    }
+
+    public void setThreadSpecName(final String threadSpecName) {
+        this.threadSpecName = threadSpecName;
+    }
+
+    public void setStatus(final LHStatus status) {
+        this.status = status;
+    }
+
+    public void setArrivalTime(final Date arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public void setEndTime(final Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setNodeName(final String nodeName) {
+        this.nodeName = nodeName;
+    }
+
+    public void setErrorMessage(final String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public void setFailures(final List<FailureModel> failures) {
+        this.failures = failures;
+    }
+
+    public void setFailureHandlerIds(final List<Integer> failureHandlerIds) {
+        this.failureHandlerIds = failureHandlerIds;
+    }
+
+    public void setType(final NodeTypeCase type) {
+        this.type = type;
+    }
+
+    public void setExternalEventRun(final ExternalEventNodeRunModel externalEventRun) {
+        this.externalEventRun = externalEventRun;
+    }
+
+    public void setTaskRun(final TaskNodeRunModel taskRun) {
+        this.taskRun = taskRun;
+    }
+
+    public void setExitRun(final ExitRunModel exitRun) {
+        this.exitRun = exitRun;
+    }
+
+    public void setEntrypointRun(final EntrypointRunModel entrypointRun) {
+        this.entrypointRun = entrypointRun;
+    }
+
+    public void setStartThreadRun(final StartThreadRunModel startThreadRun) {
+        this.startThreadRun = startThreadRun;
+    }
+
+    public void setStartMultipleThreadsRun(final StartMultipleThreadsRunModel startMultipleThreadsRun) {
+        this.startMultipleThreadsRun = startMultipleThreadsRun;
+    }
+
+    public void setWaitForThreadsRun(final WaitForThreadsRunModel waitForThreadsRun) {
+        this.waitForThreadsRun = waitForThreadsRun;
+    }
+
+    public void setSleepNodeRun(final SleepNodeRunModel sleepNodeRun) {
+        this.sleepNodeRun = sleepNodeRun;
+    }
+
+    public void setUserTaskRun(final UserTaskNodeRunModel userTaskRun) {
+        this.userTaskRun = userTaskRun;
+    }
+
+    public void setThrowEventNodeRun(final ThrowEventNodeRunModel throwEventNodeRun) {
+        this.throwEventNodeRun = throwEventNodeRun;
+    }
+
+    public void setWaitForConditionNodeRun(final WaitForConditionNodeRunModel waitForConditionNodeRun) {
+        this.waitForConditionNodeRun = waitForConditionNodeRun;
+    }
+
+    public void setRunChildWfNodeRun(final RunChildWfNodeRunModel runChildWfNodeRun) {
+        this.runChildWfNodeRun = runChildWfNodeRun;
+    }
+
+    public void setWaitForChildWfNodeRun(final WaitForChildWfNodeRunModel waitForChildWfNodeRun) {
+        this.waitForChildWfNodeRun = waitForChildWfNodeRun;
+    }
+
+    public void setExecutionContext(final ExecutionContext executionContext) {
+        this.executionContext = executionContext;
     }
 }

@@ -7,18 +7,10 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class FailureModel extends LHSerializable<Failure> {
-
     public String failureName;
-
-    @Getter
     public String message;
-
     public VariableValueModel content;
     private boolean properlyHandled;
     private Integer failureHandlerThreadRunId;
@@ -51,10 +43,8 @@ public class FailureModel extends LHSerializable<Failure> {
                 .setMessage(message)
                 .setFailureName(failureName)
                 .setWasProperlyHandled(properlyHandled);
-
         if (content != null) out.setContent(content.toProto());
         if (failureHandlerThreadRunId != null) out.setFailureHandlerThreadrunId(failureHandlerThreadRunId);
-
         return out;
     }
 
@@ -64,11 +54,9 @@ public class FailureModel extends LHSerializable<Failure> {
         failureName = p.getFailureName();
         message = p.getMessage();
         properlyHandled = p.getWasProperlyHandled();
-
         if (p.hasContent()) {
             content = VariableValueModel.fromProto(p.getContent(), context);
         }
-
         if (p.hasFailureHandlerThreadrunId()) {
             failureHandlerThreadRunId = p.getFailureHandlerThreadrunId();
         }
@@ -84,5 +72,45 @@ public class FailureModel extends LHSerializable<Failure> {
 
     public FailureModel copyWithPrefix(String prefix) {
         return new FailureModel(prefix + message, failureName, content);
+    }
+
+    public String getFailureName() {
+        return this.failureName;
+    }
+
+    public VariableValueModel getContent() {
+        return this.content;
+    }
+
+    public boolean isProperlyHandled() {
+        return this.properlyHandled;
+    }
+
+    public Integer getFailureHandlerThreadRunId() {
+        return this.failureHandlerThreadRunId;
+    }
+
+    public void setFailureName(final String failureName) {
+        this.failureName = failureName;
+    }
+
+    public void setMessage(final String message) {
+        this.message = message;
+    }
+
+    public void setContent(final VariableValueModel content) {
+        this.content = content;
+    }
+
+    public void setProperlyHandled(final boolean properlyHandled) {
+        this.properlyHandled = properlyHandled;
+    }
+
+    public void setFailureHandlerThreadRunId(final Integer failureHandlerThreadRunId) {
+        this.failureHandlerThreadRunId = failureHandlerThreadRunId;
+    }
+
+    public String getMessage() {
+        return this.message;
     }
 }

@@ -17,12 +17,10 @@ import java.io.Closeable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 
-@Slf4j
 public class PrometheusMetricExporter implements Closeable {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PrometheusMetricExporter.class);
     private List<KafkaStreamsMetrics> kafkaStreamsMeters;
     private PrometheusMeterRegistry prometheusRegistry;
     private LHServerConfig config;
@@ -47,35 +45,26 @@ public class PrometheusMetricExporter implements Closeable {
             MetadataCache metadataCache,
             StandbyMetrics standbyMetrics,
             InstanceState coreState) {
-
         this.kafkaStreamsMeters = new ArrayList<>();
         kafkaStreamsMeters.add(new KafkaStreamsMetrics(coreStreams, Tags.of("topology", "core")));
         if (timerStreams != null) {
             kafkaStreamsMeters.add(new KafkaStreamsMetrics(timerStreams, Tags.of("topology", "timer")));
         }
-
         for (KafkaStreamsMetrics ksm : kafkaStreamsMeters) {
             ksm.bindTo(prometheusRegistry);
         }
-
         LHCacheMetrics cacheMetrics = new LHCacheMetrics(metadataCache, "metadata");
         cacheMetrics.bindTo(prometheusRegistry);
-
         standbyMetrics.bindTo(prometheusRegistry);
         coreState.bindTo(prometheusRegistry);
-
         taskQueueManagerMetrics = new TaskQueueManagerMetrics(taskQueueManager);
         taskQueueManagerMetrics.bindTo(prometheusRegistry);
-
         JvmMemoryMetrics jvmMeter = new JvmMemoryMetrics();
         jvmMeter.bindTo(prometheusRegistry);
-
         JvmThreadMetrics jvmThreadMetrics = new JvmThreadMetrics();
         jvmThreadMetrics.bindTo(prometheusRegistry);
-
         DiskSpaceMetrics diskSpaceMetrics = new DiskSpaceMetrics(new File(config.getStateDirectory()));
         diskSpaceMetrics.bindTo(prometheusRegistry);
-
         ProcessorMetrics processorMetrics = new ProcessorMetrics();
         processorMetrics.bindTo(prometheusRegistry);
     }

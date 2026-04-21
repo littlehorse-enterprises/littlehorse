@@ -12,7 +12,6 @@ import io.littlehorse.server.streams.storeinternals.TimerIteratorHintModel;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.Cancellable;
@@ -21,9 +20,11 @@ import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 public class TimerCoreProcessor implements Processor<String, LHTimer, String, Object> {
+    private static final Logger log = LoggerFactory.getLogger(TimerCoreProcessor.class);
 
     private ProcessorContext<String, Object> context;
     private ClusterScopedStore lhKeyValueStore;

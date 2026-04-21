@@ -23,16 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Getter
-@Setter
-@Slf4j
 public class PrincipalModel extends ClusterMetadataGetable<Principal> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PrincipalModel.class);
     private PrincipalIdModel id;
     private Map<String, ServerACLsModel> perTenantAcls = new HashMap<>();
     private ServerACLsModel globalAcls;
@@ -46,7 +40,6 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
         this.id = LHSerializable.fromProto(principal.getId(), PrincipalIdModel.class, context);
         this.globalAcls = LHSerializable.fromProto(principal.getGlobalAcls(), ServerACLsModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(principal.getCreatedAt());
-
         for (Map.Entry<String, ServerACLs> tenantAcls :
                 principal.getPerTenantAclsMap().entrySet()) {
             perTenantAcls.put(
@@ -57,20 +50,16 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
 
     @Override
     public Principal.Builder toProto() {
-
         Principal.Builder out =
                 Principal.newBuilder().setId(this.id.toProto()).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
-
         if (globalAcls != null) {
             out.setGlobalAcls(globalAcls.toProto());
         }
-
         for (Map.Entry<String, ServerACLsModel> perTenantACL : perTenantAcls.entrySet()) {
             String tenantId = perTenantACL.getKey();
             ServerACLs acls = perTenantACL.getValue().toProto().build();
             out.putPerTenantAcls(tenantId, acls);
         }
-
         return out;
     }
 
@@ -116,7 +105,6 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
                     .map(tenantId -> new IndexedField(key, tenantId, TagStorageType.LOCAL))
                     .toList();
         }
-
         log.warn("Unrecognized index key for PrincipalModel: {}", key);
         return List.of();
     }
@@ -150,5 +138,33 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
 
     public boolean canCreateTenants() {
         return globalAcls.allows(ACLResource.ACL_TENANT, ACLAction.WRITE_METADATA);
+    }
+
+    public PrincipalIdModel getId() {
+        return this.id;
+    }
+
+    public Map<String, ServerACLsModel> getPerTenantAcls() {
+        return this.perTenantAcls;
+    }
+
+    public ServerACLsModel getGlobalAcls() {
+        return this.globalAcls;
+    }
+
+    public void setId(final PrincipalIdModel id) {
+        this.id = id;
+    }
+
+    public void setPerTenantAcls(final Map<String, ServerACLsModel> perTenantAcls) {
+        this.perTenantAcls = perTenantAcls;
+    }
+
+    public void setGlobalAcls(final ServerACLsModel globalAcls) {
+        this.globalAcls = globalAcls;
+    }
+
+    public void setCreatedAt(final Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

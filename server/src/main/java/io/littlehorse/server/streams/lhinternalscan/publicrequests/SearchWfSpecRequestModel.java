@@ -25,16 +25,10 @@ import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
-@Setter
 public class SearchWfSpecRequestModel
         extends PublicScanRequest<SearchWfSpecRequest, WfSpecIdList, WfSpecId, WfSpecIdModel, SearchWfSpecReply> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SearchWfSpecRequestModel.class);
     private WfSpecCriteriaCase type;
     private String name;
     private String taskDefName;
@@ -60,7 +54,6 @@ public class SearchWfSpecRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
-
         type = p.getWfSpecCriteriaCase();
         switch (type) {
             case NAME:
@@ -73,8 +66,8 @@ public class SearchWfSpecRequestModel
                 taskDefName = p.getTaskDefName();
                 break;
             case WFSPECCRITERIA_NOT_SET:
-                // nothing to do, we just return all the WfSpec's.
         }
+        // nothing to do, we just return all the WfSpec's.
         this.executionContext = context;
     }
 
@@ -97,8 +90,8 @@ public class SearchWfSpecRequestModel
                 out.setTaskDefName(taskDefName);
                 break;
             case WFSPECCRITERIA_NOT_SET:
-                // nothing to do, we just return all the WfSpec's.
         }
+        // nothing to do, we just return all the WfSpec's.
         return out;
     }
 
@@ -147,5 +140,45 @@ public class SearchWfSpecRequestModel
         } else {
             return ObjectIdScanBoundaryStrategy.prefixMetadataScan();
         }
+    }
+
+    public WfSpecCriteriaCase getType() {
+        return this.type;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getTaskDefName() {
+        return this.taskDefName;
+    }
+
+    public String getPrefix() {
+        return this.prefix;
+    }
+
+    public ExecutionContext getExecutionContext() {
+        return this.executionContext;
+    }
+
+    public void setType(final WfSpecCriteriaCase type) {
+        this.type = type;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setTaskDefName(final String taskDefName) {
+        this.taskDefName = taskDefName;
+    }
+
+    public void setPrefix(final String prefix) {
+        this.prefix = prefix;
+    }
+
+    public void setExecutionContext(final ExecutionContext executionContext) {
+        this.executionContext = executionContext;
     }
 }

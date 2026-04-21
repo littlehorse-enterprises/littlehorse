@@ -27,11 +27,8 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.Date;
 import java.util.Optional;
-import lombok.Setter;
 
-@Setter
 public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEventRequest> {
-
     private WfRunIdModel wfRunId;
     private ExternalEventDefIdModel externalEventDefId;
     private String guid;
@@ -55,11 +52,9 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
                 .setWfRunId(wfRunId.toProto())
                 .setExternalEventDefId(externalEventDefId.toProto())
                 .setContent(content.toProto());
-
         if (guid != null) out.setGuid(guid);
         if (threadRunNumber != null) out.setThreadRunNumber(threadRunNumber);
         if (nodeRunPosition != null) out.setNodeRunPosition(nodeRunPosition);
-
         return out;
     }
 
@@ -72,14 +67,11 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         if (eed == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "No ExternalEventDef named " + externalEventDefId);
         }
-
         if (guid == null) guid = LHUtil.generateGuid();
         ExternalEventIdModel externalEventId = new ExternalEventIdModel(wfRunId, externalEventDefId, guid);
-
         if (getableManager.get(externalEventId) != null) {
             throw new LHApiException(Status.ALREADY_EXISTS, "ExternalEvent already exists");
         }
-
         // Reject ExternalEvent's with the wrong content type. Note that if the ExternalEventDef was created prior
         // to 0.13.2 or the user did not provide content_type information, we don't have typing information and
         // just use the Chulla Vida strategy.
@@ -95,11 +87,9 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
                                 + ": " + ex.getMessage());
             }
         }
-
         ExternalEventModel evt =
                 new ExternalEventModel(content, externalEventId, threadRunNumber, nodeRunPosition, eventTime);
         getableManager.put(evt);
-
         Optional<Date> expirationTime = eed.getRetentionPolicy().scheduleCleanup(eventTime);
         if (expirationTime.isPresent()) {
             DeleteExternalEventRequestModel deleteExternalEvent =
@@ -108,7 +98,6 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
             CommandModel deleteExtEventCmd = new CommandModel(deleteExternalEvent, expirationTime.get());
             executionContext.getTaskManager().scheduleTimer(new LHTimer(deleteExtEventCmd));
         }
-
         WfRunModel wfRun = getableManager.get(wfRunId);
         if (wfRun != null) {
             wfRun.processExternalEvent(evt);
@@ -116,7 +105,6 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         } else {
             // it's a pre-emptive event.
         }
-
         return evt.toProto().build();
     }
 
@@ -127,7 +115,6 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         externalEventDefId =
                 LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
         content = VariableValueModel.fromProto(p.getContent(), context);
-
         if (p.hasGuid()) guid = p.getGuid();
         if (p.hasThreadRunNumber()) threadRunNumber = p.getThreadRunNumber();
         if (p.hasNodeRunPosition()) nodeRunPosition = p.getNodeRunPosition();
@@ -137,5 +124,29 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         PutExternalEventRequestModel out = new PutExternalEventRequestModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public void setWfRunId(final WfRunIdModel wfRunId) {
+        this.wfRunId = wfRunId;
+    }
+
+    public void setExternalEventDefId(final ExternalEventDefIdModel externalEventDefId) {
+        this.externalEventDefId = externalEventDefId;
+    }
+
+    public void setGuid(final String guid) {
+        this.guid = guid;
+    }
+
+    public void setContent(final VariableValueModel content) {
+        this.content = content;
+    }
+
+    public void setThreadRunNumber(final Integer threadRunNumber) {
+        this.threadRunNumber = threadRunNumber;
+    }
+
+    public void setNodeRunPosition(final Integer nodeRunPosition) {
+        this.nodeRunPosition = nodeRunPosition;
     }
 }

@@ -9,11 +9,8 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import lombok.Getter;
 
 public class LHPathModel extends LHSerializable<LHPath> {
-
-    @Getter
     private List<Selector> path;
 
     public LHPathModel() {}
@@ -52,7 +49,6 @@ public class LHPathModel extends LHSerializable<LHPath> {
      */
     public String toJsonPathStr() {
         StringBuilder pathBuilder = new StringBuilder("$");
-
         for (Selector selector : path) {
             switch (selector.getSelectorTypeCase()) {
                 case INDEX:
@@ -64,7 +60,10 @@ public class LHPathModel extends LHSerializable<LHPath> {
                 case SELECTORTYPE_NOT_SET:
             }
         }
-
         return pathBuilder.toString();
+    }
+
+    public List<Selector> getPath() {
+        return this.path;
     }
 }

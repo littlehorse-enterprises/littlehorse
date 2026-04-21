@@ -23,11 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
 public class SearchCorrelatedEventRequestModel
         extends PublicScanRequest<
                 SearchCorrelatedEventRequest,
@@ -35,7 +31,8 @@ public class SearchCorrelatedEventRequestModel
                 CorrelatedEventId,
                 CorrelatedEventIdModel,
                 SearchCorrelatedEventReply> {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(SearchCorrelatedEventRequestModel.class);
     private Date earliestStart;
     private Date latestStart;
     private ExternalEventDefIdModel externalEventDefId;
@@ -50,7 +47,6 @@ public class SearchCorrelatedEventRequestModel
     public SearchCorrelatedEventRequest.Builder toProto() {
         SearchCorrelatedEventRequest.Builder out =
                 SearchCorrelatedEventRequest.newBuilder().setExternalEventDefId(externalEventDefId.toProto());
-
         if (earliestStart != null) out.setEarliestStart(LHUtil.fromDate(earliestStart));
         if (latestStart != null) out.setLatestStart(LHUtil.fromDate(latestStart));
         if (bookmark != null) {
@@ -59,9 +55,7 @@ public class SearchCorrelatedEventRequestModel
         if (limit != null) {
             out.setLimit(limit);
         }
-
         if (hasExternalEvents != null) out.setHasExternalEvents(hasExternalEvents);
-
         return out;
     }
 
@@ -70,12 +64,9 @@ public class SearchCorrelatedEventRequestModel
         SearchCorrelatedEventRequest p = (SearchCorrelatedEventRequest) proto;
         this.externalEventDefId =
                 LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, ignored);
-
         if (p.hasHasExternalEvents()) hasExternalEvents = p.getHasExternalEvents();
-
         if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
-
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
             try {
@@ -105,7 +96,6 @@ public class SearchCorrelatedEventRequestModel
     public List<Attribute> getSearchAttributes() {
         List<Attribute> out = new ArrayList<>();
         out.add(new Attribute("extEvtDefName", this.getExternalEventDefId().getName()));
-
         if (this.hasExternalEvents != null) {
             out.add(new Attribute("hasExtEvts", String.valueOf(hasExternalEvents)));
         }
@@ -116,5 +106,21 @@ public class SearchCorrelatedEventRequestModel
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
         return new TagScanBoundaryStrategy(
                 searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
+    }
+
+    public Date getEarliestStart() {
+        return this.earliestStart;
+    }
+
+    public Date getLatestStart() {
+        return this.latestStart;
+    }
+
+    public ExternalEventDefIdModel getExternalEventDefId() {
+        return this.externalEventDefId;
+    }
+
+    public Boolean getHasExternalEvents() {
+        return this.hasExternalEvents;
     }
 }

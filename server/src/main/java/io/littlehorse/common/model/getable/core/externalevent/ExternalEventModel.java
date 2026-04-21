@@ -17,20 +17,14 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Getter
 public class ExternalEventModel extends CoreGetable<ExternalEvent> implements CoreOutputTopicGetable<ExternalEvent> {
-
     private ExternalEventIdModel id;
     private Date createdAt;
     private VariableValueModel content;
     private Integer threadRunNumber;
     private Integer nodeRunPosition;
-
-    @Setter
     private boolean claimed;
 
     public ExternalEventModel() {}
@@ -78,7 +72,6 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> implements Co
         }
         content = VariableValueModel.fromProto(p.getContent(), context);
         claimed = p.getClaimed();
-
         if (p.hasThreadRunNumber()) {
             threadRunNumber = p.getThreadRunNumber();
         }
@@ -93,14 +86,12 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> implements Co
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
                 .setContent(content.toProto())
                 .setClaimed(claimed);
-
         if (threadRunNumber != null) {
             out.setThreadRunNumber(threadRunNumber);
         }
         if (nodeRunPosition != null) {
             out.setNodeRunPosition(nodeRunPosition);
         }
-
         return out;
     }
 
@@ -182,5 +173,21 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> implements Co
 
     public String getExternalEventDefName() {
         return id.getExternalEventDefId().getName();
+    }
+
+    public ExternalEventIdModel getId() {
+        return this.id;
+    }
+
+    public VariableValueModel getContent() {
+        return this.content;
+    }
+
+    public boolean isClaimed() {
+        return this.claimed;
+    }
+
+    public void setClaimed(final boolean claimed) {
+        this.claimed = claimed;
     }
 }

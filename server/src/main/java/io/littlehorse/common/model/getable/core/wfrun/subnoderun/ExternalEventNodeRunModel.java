@@ -30,13 +30,9 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Date;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
 public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ExternalEventNodeRunModel.class);
     private ExternalEventDefIdModel externalEventDefId;
     private Date eventTime;
     private ExternalEventIdModel externalEventId;
@@ -83,25 +79,21 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
                 .setExternalEventDefId(externalEventDefId.toProto())
                 .setTimedOut(timedOut)
                 .setMaskCorrelationKey(maskCorrelationKey);
-
         if (eventTime != null) {
             out.setEventTime(LHUtil.fromDate(eventTime));
         }
-
         if (externalEventId != null) {
             out.setExternalEventId(externalEventId.toProto());
         }
         if (correlationKey != null) {
             out.setCorrelationKey(correlationKey);
         }
-
         return out;
     }
 
     @Override
     public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         if (externalEventId != null) return true;
-
         if (timedOut) {
             if (correlationKey != null) {
                 // Don't want to leave dangling EventCorrelationMarker's as they don't have a TTL
@@ -110,20 +102,16 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
             FailureModel failure = new FailureModel("ExternalEvent did not arrive in time", LHErrorType.TIMEOUT.name());
             throw new NodeFailureException(failure);
         }
-
         NodeModel node = nodeRun.getNode();
         ExternalEventNodeModel eNode = node.getExternalEventNode();
-
         ExternalEventModel evt =
                 processorContext.getableManager().getUnclaimedEvent(nodeRun.getId(), eNode.getExternalEventDefId());
         if (evt == null) {
             // It hasn't come in yet.
             return false;
         }
-
         eventTime = evt.getCreatedAt();
         evt.markClaimedBy(nodeRun);
-
         this.externalEventId = evt.getObjectId();
         return true;
     }
@@ -163,7 +151,6 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         try {
             VariableValueModel timeoutSeconds = nodeRun.getThreadRun()
                     .assignVariable(getNode().externalEventNode.getTimeoutSeconds());
-
             // TODO: Decide how to StructDefs
             if (timeoutSeconds.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
                 throw new LHVarSubError(
@@ -176,16 +163,13 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
                         "Resulting TimeoutSeconds was of type "
                                 + timeoutSeconds.getTypeDefinition().getPrimitiveType() + " not INT!");
             }
-
             LHTimer timer = new LHTimer();
             timer.partitionKey = nodeRun.getPartitionKey().get();
             timer.maturationTime = new Date(new Date().getTime() + (timeoutSeconds.getIntVal() * 1000));
-
             CommandModel cmd = new CommandModel();
             ExternalEventTimeoutModel timeoutEvt = new ExternalEventTimeoutModel(nodeRun.getId());
             cmd.setSubCommand(timeoutEvt);
             cmd.time = timer.getMaturationTime();
-
             timer.payload = cmd.toProto().build().toByteArray();
             processorContext.getTaskManager().scheduleTimer(timer);
             log.trace(
@@ -211,23 +195,19 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
                                 + correlationIdVar.getTypeDefinition().getPrimitiveType() + " not STR!");
             }
             this.correlationKey = correlationIdVar.getStrVal();
-
             LHTimer timer = new LHTimer();
             timer.partitionKey = correlationKey;
             timer.maturationTime = context.currentCommand().getTime(); // Want the boomerang to be immediate
             timer.setRepartition(true);
-
             UpdateCorrelationMarkerModel update = new UpdateCorrelationMarkerModel();
             update.setAction(CorrelationUpdateAction.CORRELATE);
             update.setWaitingNodeRun(nodeRun.getId());
             update.setCorrelationKey(correlationKey);
             update.setExternalEventDefId(externalEventDefId);
-
             CommandModel command = new CommandModel(update);
             command.setTime(new Date());
             timer.setPayload(command.toBytes());
             context.getTaskManager().scheduleTimer(timer);
-
         } catch (LHVarSubError exn) {
             throw new NodeFailureException(new FailureModel(
                     "Failed determining correlationId for ext evt node: " + exn.getMessage(), LHConstants.VAR_ERROR));
@@ -242,13 +222,11 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         timer.partitionKey = correlationKey;
         timer.maturationTime = context.currentCommand().getTime(); // Want the boomerang to be immediate
         timer.setRepartition(true);
-
         UpdateCorrelationMarkerModel update = new UpdateCorrelationMarkerModel();
         update.setAction(CorrelationUpdateAction.UNCORRELATE);
         update.setWaitingNodeRun(nodeRun.getId());
         update.setCorrelationKey(correlationKey);
         update.setExternalEventDefId(externalEventDefId);
-
         CommandModel command = new CommandModel(update);
         command.setTime(new Date());
         timer.setPayload(command.toBytes());
@@ -260,7 +238,6 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
             log.trace("ignoring timeout; already completed or failed");
             return;
         }
-
         timedOut = true;
     }
 
@@ -268,5 +245,29 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
         ExternalEventNodeRunModel out = new ExternalEventNodeRunModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public ExternalEventDefIdModel getExternalEventDefId() {
+        return this.externalEventDefId;
+    }
+
+    public Date getEventTime() {
+        return this.eventTime;
+    }
+
+    public ExternalEventIdModel getExternalEventId() {
+        return this.externalEventId;
+    }
+
+    public boolean isTimedOut() {
+        return this.timedOut;
+    }
+
+    public String getCorrelationKey() {
+        return this.correlationKey;
+    }
+
+    public boolean isMaskCorrelationKey() {
+        return this.maskCorrelationKey;
     }
 }

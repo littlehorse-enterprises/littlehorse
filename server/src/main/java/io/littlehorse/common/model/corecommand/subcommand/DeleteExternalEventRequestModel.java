@@ -12,15 +12,8 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventRequest;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class DeleteExternalEventRequestModel extends CoreSubCommand<DeleteExternalEventRequest> {
-
     private ExternalEventIdModel id;
 
     public String getPartitionKey() {
@@ -34,7 +27,6 @@ public class DeleteExternalEventRequestModel extends CoreSubCommand<DeleteExtern
     public DeleteExternalEventRequest.Builder toProto() {
         DeleteExternalEventRequest.Builder out =
                 DeleteExternalEventRequest.newBuilder().setId(id.toProto());
-
         return out;
     }
 
@@ -58,5 +50,15 @@ public class DeleteExternalEventRequestModel extends CoreSubCommand<DeleteExtern
         DeleteExternalEventRequestModel out = new DeleteExternalEventRequestModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public ExternalEventIdModel getId() {
+        return this.id;
+    }
+
+    public DeleteExternalEventRequestModel() {}
+
+    public DeleteExternalEventRequestModel(final ExternalEventIdModel id) {
+        this.id = id;
     }
 }

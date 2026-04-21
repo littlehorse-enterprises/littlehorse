@@ -11,23 +11,11 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
-@EqualsAndHashCode(
-        of = {"windowStart", "windowType", "wfSpecId"},
-        callSuper = false)
 public class WfMetricUpdateModel extends Storeable<WfMetricUpdate> {
-
-    @Getter
     private Date windowStart;
-
-    @Getter
     private MetricsWindowLength windowType;
-
-    @Getter
     private WfSpecIdModel wfSpecId;
-
     public long numEntries;
     public long startToCompleteMax;
     public long startToCompleteTotal;
@@ -85,5 +73,54 @@ public class WfMetricUpdateModel extends Storeable<WfMetricUpdate> {
     @Override
     public StoreableType getType() {
         return StoreableType.TASK_METRIC_UPDATE;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof WfMetricUpdateModel)) return false;
+        final WfMetricUpdateModel other = (WfMetricUpdateModel) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$windowStart = this.getWindowStart();
+        final Object other$windowStart = other.getWindowStart();
+        if (this$windowStart == null ? other$windowStart != null : !this$windowStart.equals(other$windowStart))
+            return false;
+        final Object this$windowType = this.getWindowType();
+        final Object other$windowType = other.getWindowType();
+        if (this$windowType == null ? other$windowType != null : !this$windowType.equals(other$windowType))
+            return false;
+        final Object this$wfSpecId = this.getWfSpecId();
+        final Object other$wfSpecId = other.getWfSpecId();
+        if (this$wfSpecId == null ? other$wfSpecId != null : !this$wfSpecId.equals(other$wfSpecId)) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof WfMetricUpdateModel;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $windowStart = this.getWindowStart();
+        result = result * PRIME + ($windowStart == null ? 43 : $windowStart.hashCode());
+        final Object $windowType = this.getWindowType();
+        result = result * PRIME + ($windowType == null ? 43 : $windowType.hashCode());
+        final Object $wfSpecId = this.getWfSpecId();
+        result = result * PRIME + ($wfSpecId == null ? 43 : $wfSpecId.hashCode());
+        return result;
+    }
+
+    public Date getWindowStart() {
+        return this.windowStart;
+    }
+
+    public MetricsWindowLength getWindowType() {
+        return this.windowType;
+    }
+
+    public WfSpecIdModel getWfSpecId() {
+        return this.wfSpecId;
     }
 }

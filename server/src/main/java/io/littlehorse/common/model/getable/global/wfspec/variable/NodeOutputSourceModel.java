@@ -5,11 +5,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource;
 import io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource.PathCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class NodeOutputSourceModel extends LHSerializable<NodeOutputSource> {
-
     private PathCase pathCase;
     private String jsonPath;
     private LHPathModel lhPath;
@@ -20,7 +17,6 @@ public class NodeOutputSourceModel extends LHSerializable<NodeOutputSource> {
 
     public NodeOutputSource.Builder toProto() {
         NodeOutputSource.Builder out = NodeOutputSource.newBuilder();
-
         switch (pathCase) {
             case JSONPATH:
                 out.setJsonpath(this.jsonPath);
@@ -30,16 +26,13 @@ public class NodeOutputSourceModel extends LHSerializable<NodeOutputSource> {
                 break;
             case PATH_NOT_SET:
         }
-
         return out;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         NodeOutputSource p = (NodeOutputSource) proto;
-
         pathCase = p.getPathCase();
-
         switch (pathCase) {
             case JSONPATH:
                 this.jsonPath = p.getJsonpath();
@@ -55,5 +48,17 @@ public class NodeOutputSourceModel extends LHSerializable<NodeOutputSource> {
         NodeOutputSourceModel out = new NodeOutputSourceModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public PathCase getPathCase() {
+        return this.pathCase;
+    }
+
+    public String getJsonPath() {
+        return this.jsonPath;
+    }
+
+    public LHPathModel getLhPath() {
+        return this.lhPath;
     }
 }

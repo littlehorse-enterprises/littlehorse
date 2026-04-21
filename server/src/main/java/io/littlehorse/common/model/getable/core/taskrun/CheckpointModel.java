@@ -15,13 +15,8 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class CheckpointModel extends CoreGetable<Checkpoint> implements CoreOutputTopicGetable<Checkpoint> {
-
     private CheckpointIdModel id;
     private VariableValueModel value;
     private String logs;
@@ -45,7 +40,6 @@ public class CheckpointModel extends CoreGetable<Checkpoint> implements CoreOutp
         if (logs != null) {
             out.setLogs(logs);
         }
-
         return out;
     }
 
@@ -77,5 +71,33 @@ public class CheckpointModel extends CoreGetable<Checkpoint> implements CoreOutp
     @Override
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public CheckpointIdModel getId() {
+        return this.id;
+    }
+
+    public VariableValueModel getValue() {
+        return this.value;
+    }
+
+    public String getLogs() {
+        return this.logs;
+    }
+
+    public void setId(final CheckpointIdModel id) {
+        this.id = id;
+    }
+
+    public void setValue(final VariableValueModel value) {
+        this.value = value;
+    }
+
+    public void setLogs(final String logs) {
+        this.logs = logs;
+    }
+
+    public void setCreatedAt(final Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

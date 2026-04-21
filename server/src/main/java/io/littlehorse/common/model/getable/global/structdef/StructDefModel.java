@@ -18,22 +18,11 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
 public class StructDefModel extends MetadataGetable<StructDef> {
-
-    @Setter
     private StructDefIdModel id;
-
-    @Setter
     private String description;
-
-    @Getter
-    @Setter
     private InlineStructDefModel structDef;
-
-    @Setter
     public Date createdAt;
 
     public StructDefModel() {}
@@ -50,11 +39,9 @@ public class StructDefModel extends MetadataGetable<StructDef> {
                 .setId(id.toProto())
                 .setStructDef(structDef.toProto())
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
-
         if (description != null) {
             out.setDescription(description);
         }
-
         return out;
     }
 
@@ -70,18 +57,15 @@ public class StructDefModel extends MetadataGetable<StructDef> {
             throws StructValidationException {
         InlineStructDefModel inlineStructDef = this.structDef;
         InlineStructModel inlineStruct = struct.getInlineStruct();
-
         inlineStructDef.validateAgainstSuperset(inlineStruct, metadataManager);
     }
 
     @Override
     public void initFrom(Message p, ExecutionContext context) throws LHSerdeException {
         StructDef proto = (StructDef) p;
-
         id = LHSerializable.fromProto(proto.getId(), StructDefIdModel.class, context);
         structDef = LHSerializable.fromProto(proto.getStructDef(), InlineStructDefModel.class, context);
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-
         if (proto.hasDescription()) {
             description = proto.getDescription();
         }
@@ -115,5 +99,25 @@ public class StructDefModel extends MetadataGetable<StructDef> {
 
     public void bumpVersion(int oldVersion) {
         id.setVersion(oldVersion + 1);
+    }
+
+    public void setId(final StructDefIdModel id) {
+        this.id = id;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+    public InlineStructDefModel getStructDef() {
+        return this.structDef;
+    }
+
+    public void setStructDef(final InlineStructDefModel structDef) {
+        this.structDef = structDef;
+    }
+
+    public void setCreatedAt(final Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

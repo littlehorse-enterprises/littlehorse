@@ -11,15 +11,8 @@ import io.littlehorse.sdk.common.proto.CorrelatedEvent;
 import io.littlehorse.sdk.common.proto.CorrelatedEventId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-@EqualsAndHashCode(callSuper = false)
 public class CorrelatedEventIdModel extends CoreObjectId<CorrelatedEventId, CorrelatedEvent, CorrelatedEventModel> {
-
     private String key;
     private ExternalEventDefIdModel externalEventDefId;
 
@@ -75,5 +68,53 @@ public class CorrelatedEventIdModel extends CoreObjectId<CorrelatedEventId, Corr
 
     public String getExternalEventDefName() {
         return externalEventDefId.getName();
+    }
+
+    public String getKey() {
+        return this.key;
+    }
+
+    public ExternalEventDefIdModel getExternalEventDefId() {
+        return this.externalEventDefId;
+    }
+
+    public void setKey(final String key) {
+        this.key = key;
+    }
+
+    public void setExternalEventDefId(final ExternalEventDefIdModel externalEventDefId) {
+        this.externalEventDefId = externalEventDefId;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof CorrelatedEventIdModel)) return false;
+        final CorrelatedEventIdModel other = (CorrelatedEventIdModel) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$key = this.getKey();
+        final Object other$key = other.getKey();
+        if (this$key == null ? other$key != null : !this$key.equals(other$key)) return false;
+        final Object this$externalEventDefId = this.getExternalEventDefId();
+        final Object other$externalEventDefId = other.getExternalEventDefId();
+        if (this$externalEventDefId == null
+                ? other$externalEventDefId != null
+                : !this$externalEventDefId.equals(other$externalEventDefId)) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof CorrelatedEventIdModel;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $key = this.getKey();
+        result = result * PRIME + ($key == null ? 43 : $key.hashCode());
+        final Object $externalEventDefId = this.getExternalEventDefId();
+        result = result * PRIME + ($externalEventDefId == null ? 43 : $externalEventDefId.hashCode());
+        return result;
     }
 }

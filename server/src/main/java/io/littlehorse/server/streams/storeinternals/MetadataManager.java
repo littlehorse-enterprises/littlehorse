@@ -13,10 +13,11 @@ import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.util.MetadataCache;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 public class MetadataManager extends ReadOnlyMetadataManager {
+    private static final Logger log = LoggerFactory.getLogger(MetadataManager.class);
 
     private ClusterScopedStore clusterStore;
     private TenantScopedStore tenantStore;

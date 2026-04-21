@@ -6,13 +6,9 @@ import io.littlehorse.common.Storeable;
 import io.littlehorse.common.proto.MetricsHint;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class MetricsHintModel extends Storeable<MetricsHint> {
-
     public static final String METRICS_HINT_KEY = "metrics_hint";
-
     private Timestamp lastProcessedTimestamp;
 
     public MetricsHintModel() {}
@@ -45,5 +41,9 @@ public class MetricsHintModel extends Storeable<MetricsHint> {
     @Override
     public String getStoreKey() {
         return MetricsHintModel.METRICS_HINT_KEY;
+    }
+
+    public Timestamp getLastProcessedTimestamp() {
+        return this.lastProcessedTimestamp;
     }
 }

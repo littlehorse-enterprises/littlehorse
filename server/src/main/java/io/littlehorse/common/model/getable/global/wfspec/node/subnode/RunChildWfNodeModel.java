@@ -31,13 +31,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
 public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RunChildWfNodeModel.class);
     private String wfSpecName;
     private VariableAssignmentModel wfSpecVar;
     private int majorVersion;
@@ -56,7 +52,6 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
         } else if (wfSpecVar != null) {
             out.setWfSpecVar(wfSpecVar.toProto());
         }
-
         for (Map.Entry<String, VariableAssignmentModel> inputVar : inputs.entrySet()) {
             out.putInputs(inputVar.getKey(), inputVar.getValue().toProto().build());
         }
@@ -72,7 +67,6 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
         } else if (p.hasWfSpecVar()) {
             this.wfSpecVar = VariableAssignmentModel.fromProto(p.getWfSpecVar(), ignored);
         }
-
         for (Map.Entry<String, VariableAssignment> entry : p.getInputsMap().entrySet()) {
             this.inputs.put(
                     entry.getKey(), LHSerializable.fromProto(entry.getValue(), VariableAssignmentModel.class, ignored));
@@ -159,7 +153,7 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
                 // Pin major version to the latest available right now.
                 if (wfSpec == null) {
                     throw new NodeFailureException(new FailureModel(
-                            "Couldn't find WfSpec %s".formatted(wfSpecName), LHConstants.CHILD_FAILURE));
+                            "Couldn\'t find WfSpec %s".formatted(wfSpecName), LHConstants.CHILD_FAILURE));
                 }
                 if (majorVersion == -1) {
                     this.majorVersion = wfSpec.getId().getMajorVersion();
@@ -171,5 +165,21 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
         } else {
             return service.getWfSpec(wfSpecName, majorVersion, null);
         }
+    }
+
+    public String getWfSpecName() {
+        return this.wfSpecName;
+    }
+
+    public VariableAssignmentModel getWfSpecVar() {
+        return this.wfSpecVar;
+    }
+
+    public int getMajorVersion() {
+        return this.majorVersion;
+    }
+
+    public Map<String, VariableAssignmentModel> getInputs() {
+        return this.inputs;
     }
 }

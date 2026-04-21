@@ -16,15 +16,8 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-@EqualsAndHashCode(of = "id", callSuper = false)
 public class TenantModel extends ClusterMetadataGetable<Tenant> {
-
     private TenantIdModel id;
     private Date createdAt;
     private OutputTopicConfigModel outputTopicConfig;
@@ -47,11 +40,9 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
     @Override
     public Tenant.Builder toProto() {
         Tenant.Builder result = Tenant.newBuilder().setId(id.toProto()).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
-
         if (outputTopicConfig != null) {
             result.setOutputTopicConfig(outputTopicConfig.toProto());
         }
-
         return result;
     }
 
@@ -60,7 +51,6 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
         Tenant tenant = (Tenant) proto;
         this.id = LHSerializable.fromProto(tenant.getId(), TenantIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(tenant.getCreatedAt());
-
         if (tenant.hasOutputTopicConfig()) {
             this.outputTopicConfig =
                     LHSerializable.fromProto(tenant.getOutputTopicConfig(), OutputTopicConfigModel.class, context);
@@ -91,5 +81,50 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         return null;
+    }
+
+    public TenantIdModel getId() {
+        return this.id;
+    }
+
+    public OutputTopicConfigModel getOutputTopicConfig() {
+        return this.outputTopicConfig;
+    }
+
+    public void setId(final TenantIdModel id) {
+        this.id = id;
+    }
+
+    public void setCreatedAt(final Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setOutputTopicConfig(final OutputTopicConfigModel outputTopicConfig) {
+        this.outputTopicConfig = outputTopicConfig;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof TenantModel)) return false;
+        final TenantModel other = (TenantModel) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$id = this.getId();
+        final Object other$id = other.getId();
+        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof TenantModel;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $id = this.getId();
+        result = result * PRIME + ($id == null ? 43 : $id.hashCode());
+        return result;
     }
 }

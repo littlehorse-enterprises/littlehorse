@@ -11,13 +11,8 @@ import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class UserTaskRunIdModel extends CoreObjectId<UserTaskRunId, UserTaskRun, UserTaskRunModel> {
-
     private WfRunIdModel wfRunId;
     private String userTaskGuid;
 
@@ -76,5 +71,21 @@ public class UserTaskRunIdModel extends CoreObjectId<UserTaskRunId, UserTaskRun,
     @Override
     public Optional<WfRunIdModel> getGroupingWfRunId() {
         return Optional.of(wfRunId);
+    }
+
+    public WfRunIdModel getWfRunId() {
+        return this.wfRunId;
+    }
+
+    public String getUserTaskGuid() {
+        return this.userTaskGuid;
+    }
+
+    public void setWfRunId(final WfRunIdModel wfRunId) {
+        this.wfRunId = wfRunId;
+    }
+
+    public void setUserTaskGuid(final String userTaskGuid) {
+        this.userTaskGuid = userTaskGuid;
     }
 }

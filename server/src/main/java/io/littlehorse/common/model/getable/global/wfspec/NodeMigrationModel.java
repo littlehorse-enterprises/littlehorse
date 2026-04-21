@@ -4,13 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.NodeMigration;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class NodeMigrationModel extends LHSerializable<NodeMigration> {
-
     private String newNodeName;
     private ExecutionContext context;
 
@@ -30,5 +25,21 @@ public class NodeMigrationModel extends LHSerializable<NodeMigration> {
         NodeMigration p = (NodeMigration) proto;
         newNodeName = p.getNewNodeName();
         this.context = executionContext;
+    }
+
+    public String getNewNodeName() {
+        return this.newNodeName;
+    }
+
+    public ExecutionContext getContext() {
+        return this.context;
+    }
+
+    public void setNewNodeName(final String newNodeName) {
+        this.newNodeName = newNodeName;
+    }
+
+    public void setContext(final ExecutionContext context) {
+        this.context = context;
     }
 }

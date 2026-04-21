@@ -8,11 +8,8 @@ import io.littlehorse.common.proto.TimerIteratorHint;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
 
-@Getter
 public class TimerIteratorHintModel extends Storeable<TimerIteratorHint> {
-
     /**
      * All `Timer`'s for every Tenant go in the same bucket.
      */
@@ -50,5 +47,9 @@ public class TimerIteratorHintModel extends Storeable<TimerIteratorHint> {
     @Override
     public String getStoreKey() {
         return TimerIteratorHintModel.TIMER_ITERATOR_HINT_KEY;
+    }
+
+    public Timestamp getLastProcessedTimer() {
+        return this.lastProcessedTimer;
     }
 }

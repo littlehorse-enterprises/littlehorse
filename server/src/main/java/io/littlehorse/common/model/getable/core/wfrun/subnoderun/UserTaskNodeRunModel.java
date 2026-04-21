@@ -27,13 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
-
     private UserTaskRunIdModel userTaskRunId;
     private ExecutionContext executionContext;
     private CoreProcessorContext processorContext;
@@ -65,9 +60,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     @Override
     public UserTaskNodeRun.Builder toProto() {
         UserTaskNodeRun.Builder out = UserTaskNodeRun.newBuilder();
-
         if (userTaskRunId != null) out.setUserTaskRunId(userTaskRunId.toProto());
-
         return out;
     }
 
@@ -85,11 +78,9 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     @Override
     public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         UserTaskRunModel userTask = processorContext.getableManager().get(userTaskRunId);
-
         if (userTask.getStatus() != UserTaskRunStatus.DONE) {
             throw new IllegalStateException("Tried to get output of non-DONE user task");
         }
-
         Map<String, Object> rawOutput = new HashMap<>();
         for (Map.Entry<String, VariableValueModel> entry : userTask.getResults().entrySet()) {
             rawOutput.put(entry.getKey(), entry.getValue().getVal());
@@ -102,7 +93,6 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
         // The UserTaskNode arrive() function should create a UserTaskRun.
         NodeModel node = getNodeRun().getNode();
         UserTaskNodeModel utn = node.getUserTaskNode();
-
         UserTaskDefModel utd =
                 processorContext.service().getUserTaskDef(utn.getUserTaskDefName(), utn.getUserTaskDefVersion());
         if (utd == null) {
@@ -113,7 +103,6 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
         }
         UserTaskRunModel out = new UserTaskRunModel(utd, utn, getNodeRun(), processorContext);
         // Now we create a new UserTaskRun.
-
         userTaskRunId = out.getObjectId();
         out.onArrival(time);
         processorContext.getableManager().put(out);
@@ -130,10 +119,8 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     public List<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableIds(CoreProcessorContext context) {
         List<CoreObjectId<?, ?, ?>> out = new ArrayList<>();
         out.add(userTaskRunId);
-
         UserTaskRunModel userTaskRun = context.getableManager().get(userTaskRunId);
         if (userTaskRun == null) return out;
-
         for (int i = 0; i < userTaskRun.getEvents().size(); i++) {
             UserTaskEventModel event = userTaskRun.getEvents().get(i);
             if (event.getExecuted() != null) {
@@ -147,7 +134,30 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
                 }
             }
         }
-
         return out;
+    }
+
+    public UserTaskRunIdModel getUserTaskRunId() {
+        return this.userTaskRunId;
+    }
+
+    public ExecutionContext getExecutionContext() {
+        return this.executionContext;
+    }
+
+    public CoreProcessorContext getProcessorContext() {
+        return this.processorContext;
+    }
+
+    public void setUserTaskRunId(final UserTaskRunIdModel userTaskRunId) {
+        this.userTaskRunId = userTaskRunId;
+    }
+
+    public void setExecutionContext(final ExecutionContext executionContext) {
+        this.executionContext = executionContext;
+    }
+
+    public void setProcessorContext(final CoreProcessorContext processorContext) {
+        this.processorContext = processorContext;
     }
 }

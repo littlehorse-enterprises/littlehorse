@@ -7,18 +7,11 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
-import lombok.Getter;
 
 public class VarNameAndValModel extends LHSerializable<VarNameAndVal> {
-
-    @Getter
     String varName;
-
     VariableValueModel value;
-
-    @Getter
     boolean masked;
-
     ExecutionContext context;
 
     public VarNameAndValModel() {}
@@ -41,7 +34,6 @@ public class VarNameAndValModel extends LHSerializable<VarNameAndVal> {
             out.setValue(new VariableValueModel(LHConstants.STRING_MASK).toProto());
         }
         out.setMasked(masked);
-
         return out;
     }
 
@@ -52,5 +44,13 @@ public class VarNameAndValModel extends LHSerializable<VarNameAndVal> {
         value = VariableValueModel.fromProto(p.getValue(), context);
         masked = p.getMasked();
         this.context = context;
+    }
+
+    public String getVarName() {
+        return this.varName;
+    }
+
+    public boolean isMasked() {
+        return this.masked;
     }
 }

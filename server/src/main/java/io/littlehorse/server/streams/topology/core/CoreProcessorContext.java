@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -50,11 +49,9 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * Execution context used in the Core Sub-Topology. This is the processor where the real work of
  * scheduling WfRun's is actually done.
  */
-@Slf4j
 public class CoreProcessorContext implements ExecutionContext {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CoreProcessorContext.class);
     private final LHServerConfig config;
-
     private final AuthorizationContext authContext;
     private final ProcessorContext<String, CommandProcessorOutput> processorContext;
     private final MetadataCache metadataCache;
@@ -67,9 +64,7 @@ public class CoreProcessorContext implements ExecutionContext {
     private final TenantScopedStore coreStore;
     private final ReadOnlyMetadataManager metadataManager;
     private WfService service;
-
     private List<WorkflowEventModel> eventsToThrow;
-
     private final LHServer server;
     private GetableUpdates getableUpdates;
     private MetricsUpdater metricsAggregator;
@@ -85,10 +80,8 @@ public class CoreProcessorContext implements ExecutionContext {
             MetadataCache metadataCache,
             LHServer server,
             PartitionMetricsMemoryStore partitionMetricsMemoryStore) {
-
         this.processorContext = processorContext;
         this.metadataCache = metadataCache;
-
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = nativeGlobalStore();
         this.tenantId = HeadersUtil.tenantIdFromMetadata(recordHeaders);
         ReadOnlyClusterScopedStore clusterMetadataStore =
@@ -96,14 +89,12 @@ public class CoreProcessorContext implements ExecutionContext {
         ReadOnlyTenantScopedStore tenantMetadataStore =
                 ReadOnlyTenantScopedStore.newInstance(nativeGlobalStore, tenantId, this);
         this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
-
         this.config = config;
         this.globalTaskQueueManager = globalTaskQueueManager;
         this.recordMetadata = recordHeaders;
         this.server = server;
         this.coreStore = TenantScopedStore.newInstance(nativeCoreStore(), tenantId, this);
         this.partitionMetricsMemoryStore = partitionMetricsMemoryStore;
-
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
         this.eventsToThrow = new ArrayList<>();
@@ -134,7 +125,6 @@ public class CoreProcessorContext implements ExecutionContext {
     public void maybeCorrelateEventToWfRuns(CorrelatedEventModel event) {
         EventCorrelationMarkerModel marker = getCorrelationMarkerManager()
                 .getMarker(event.getId().getKey(), event.getId().getExternalEventDefId());
-
         log.trace(
                 "marker with key {} and event id {} is {}",
                 event.getId().getKey(),
@@ -157,7 +147,6 @@ public class CoreProcessorContext implements ExecutionContext {
         // What we need to do is fetch the `EventCorrelationMarkerModel` if it exists, and if so:
         // 1. Delete it (if specified to do so in the `ExternalEventDefModel`)
         // 2. Forward ExternalEvents
-
         for (NodeRunIdModel waitingNodeRun : marker.getSourceNodeRuns()) {
             ExternalEventIdModel externalEventId = new ExternalEventIdModel(
                     waitingNodeRun.getWfRunId(),
@@ -170,20 +159,15 @@ public class CoreProcessorContext implements ExecutionContext {
             request.setNodeRunPosition(waitingNodeRun.getPosition());
             request.setContent(correlatedEvent.getContent());
             request.setExternalEventDefId(correlatedEvent.getId().getExternalEventDefId());
-
             correlatedEvent.getExternalEvents().add(externalEventId);
-
             CommandModel command = new CommandModel(request);
             command.time = new Date();
-
             LHTimer timer = new LHTimer(command);
             timer.partitionKey = command.getPartitionKey();
             timer.setMaturationTime(command.time);
             timer.setRepartition(true);
-
             getTaskManager().forwardTimer(timer);
         }
-
         // Either save the marker or delete it
         ExternalEventDefModel externalEventDef =
                 metadataManager().get(correlatedEvent.getId().getExternalEventDefId());
@@ -193,7 +177,6 @@ public class CoreProcessorContext implements ExecutionContext {
         } else {
             getableManager().put(correlatedEvent);
         }
-
         getCorrelationMarkerManager().clearMarker(marker);
     }
 
@@ -290,8 +273,8 @@ public class CoreProcessorContext implements ExecutionContext {
     public GetableUpdates getableUpdates() {
         if (getableUpdates == null) {
             getableUpdates = new GetableUpdates();
-            // TODO: enable metrics here
         }
+        // TODO: enable metrics here
         return getableUpdates;
     }
 

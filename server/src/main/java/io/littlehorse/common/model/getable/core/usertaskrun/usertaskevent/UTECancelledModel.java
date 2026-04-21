@@ -4,11 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class UTECancelledModel extends LHSerializable<UTECancelled> {
-
     private String message = "";
 
     public UTECancelledModel() {}
@@ -30,5 +27,9 @@ public class UTECancelledModel extends LHSerializable<UTECancelled> {
     public void initFrom(Message proto, ExecutionContext context) {
         UTECancelled p = (UTECancelled) proto;
         this.message = p.getMessage();
+    }
+
+    public String getMessage() {
+        return this.message;
     }
 }

@@ -27,11 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import lombok.Getter;
 
-@Getter
 public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
-
     private final Map<WfMetricId, StatusChangesModel> wfMetrics = new HashMap<>();
     private final Map<TaskMetricId, StatusChangesModel> taskMetrics = new HashMap<>();
 
@@ -260,5 +257,13 @@ public class PartitionMetricsModel extends Storeable<PartitionMetrics> {
         public int hashCode() {
             return Objects.hash(taskDefId, tenantId);
         }
+    }
+
+    public Map<WfMetricId, StatusChangesModel> getWfMetrics() {
+        return this.wfMetrics;
+    }
+
+    public Map<TaskMetricId, StatusChangesModel> getTaskMetrics() {
+        return this.taskMetrics;
     }
 }

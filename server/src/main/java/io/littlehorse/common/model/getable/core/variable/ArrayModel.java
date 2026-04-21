@@ -8,16 +8,9 @@ import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
-import lombok.Getter;
-import lombok.Setter;
 
 public class ArrayModel extends LHSerializable<Array> {
-
-    @Getter
     private ArrayList<VariableValueModel> items;
-
-    @Getter
-    @Setter
     private TypeDefinitionModel elementType;
 
     public ArrayModel() {}
@@ -37,7 +30,6 @@ public class ArrayModel extends LHSerializable<Array> {
             this.elementType = null;
             return;
         }
-
         if (other.items != null) {
             this.items = new ArrayList<>();
             for (VariableValueModel item : other.items) {
@@ -46,7 +38,6 @@ public class ArrayModel extends LHSerializable<Array> {
         } else {
             this.items = new ArrayList<>();
         }
-
         this.elementType = other.elementType == null ? null : new TypeDefinitionModel(other.elementType);
     }
 
@@ -77,5 +68,17 @@ public class ArrayModel extends LHSerializable<Array> {
     @Override
     public Class<Array> getProtoBaseClass() {
         return Array.class;
+    }
+
+    public ArrayList<VariableValueModel> getItems() {
+        return this.items;
+    }
+
+    public TypeDefinitionModel getElementType() {
+        return this.elementType;
+    }
+
+    public void setElementType(final TypeDefinitionModel elementType) {
+        this.elementType = elementType;
     }
 }

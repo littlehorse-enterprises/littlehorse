@@ -30,20 +30,21 @@ import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * This is the processor that validates and processes commands to update metadata,
  * such as WfSpec/TaskDef/ExternalEventDef/UserTaskDef.
  */
-@Slf4j
 public class MetadataProcessor implements Processor<String, MetadataCommand, String, CommandProcessorOutput> {
+    private static final Logger log = LoggerFactory.getLogger(MetadataProcessor.class);
 
     private final LHServerConfig config;
     private final LHServer server;

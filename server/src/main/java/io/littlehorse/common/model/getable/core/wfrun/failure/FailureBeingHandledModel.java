@@ -4,13 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.FailureBeingHandled;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class FailureBeingHandledModel extends LHSerializable<FailureBeingHandled> {
-
     private int threadRunNumber;
     private int nodeRunPosition;
     private int failureNumber;
@@ -39,5 +34,29 @@ public class FailureBeingHandledModel extends LHSerializable<FailureBeingHandled
         FailureBeingHandledModel out = new FailureBeingHandledModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public int getThreadRunNumber() {
+        return this.threadRunNumber;
+    }
+
+    public int getNodeRunPosition() {
+        return this.nodeRunPosition;
+    }
+
+    public int getFailureNumber() {
+        return this.failureNumber;
+    }
+
+    public void setThreadRunNumber(final int threadRunNumber) {
+        this.threadRunNumber = threadRunNumber;
+    }
+
+    public void setNodeRunPosition(final int nodeRunPosition) {
+        this.nodeRunPosition = nodeRunPosition;
+    }
+
+    public void setFailureNumber(final int failureNumber) {
+        this.failureNumber = failureNumber;
     }
 }

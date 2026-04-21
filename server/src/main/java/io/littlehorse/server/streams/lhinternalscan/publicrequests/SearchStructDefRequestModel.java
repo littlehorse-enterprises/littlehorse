@@ -19,13 +19,11 @@ import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchStructDefReply;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class SearchStructDefRequestModel
         extends PublicScanRequest<
                 SearchStructDefRequest, StructDefIdList, StructDefId, StructDefIdModel, SearchStructDefReply> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SearchStructDefRequestModel.class);
     private StructDefCriteriaCase type;
     private String name;
     private String prefix;
@@ -65,7 +63,6 @@ public class SearchStructDefRequestModel
         if (limit != null) {
             out.setLimit(limit);
         }
-
         switch (type) {
             case NAME:
                 out.setName(name);
@@ -74,9 +71,8 @@ public class SearchStructDefRequestModel
                 out.setPrefix(prefix);
                 break;
             case STRUCTDEFCRITERIA_NOT_SET:
-                // nothing to do, we just return all the StructDef's
         }
-
+        // nothing to do, we just return all the StructDef's
         return out;
     }
 
@@ -91,7 +87,6 @@ public class SearchStructDefRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
-
         type = p.getStructDefCriteriaCase();
         switch (type) {
             case NAME:
@@ -101,8 +96,8 @@ public class SearchStructDefRequestModel
                 prefix = p.getPrefix();
                 break;
             case STRUCTDEFCRITERIA_NOT_SET:
-                // nothing to do, we just return all the StructDef's
         }
+        // nothing to do, we just return all the StructDef's
     }
 
     @Override

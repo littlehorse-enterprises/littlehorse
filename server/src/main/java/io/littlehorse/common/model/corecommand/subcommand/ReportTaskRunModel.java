@@ -18,13 +18,8 @@ import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
-
     private TaskRunIdModel taskRunId;
     private Date time;
     private TaskStatus status;
@@ -51,7 +46,6 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
         if (task == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided taskRunId was invalid");
         }
-
         task.onTaskAttemptResultReported(this);
         return Empty.getDefaultInstance();
     }
@@ -64,12 +58,10 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
                 .setStatus(status)
                 .setAttemptNumber(attemptNumber)
                 .setTotalCheckpoints(totalCheckpoints);
-
         if (output != null) b.setOutput(output.toProto());
         if (logOutput != null) b.setLogOutput(logOutput.toProto());
         if (error != null) b.setError(error.toProto());
         if (exception != null) b.setException(exception.toProto());
-
         return b;
     }
 
@@ -81,19 +73,15 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
         this.status = p.getStatus();
         this.attemptNumber = p.getAttemptNumber();
         this.totalCheckpoints = p.getTotalCheckpoints();
-
         if (p.hasOutput()) {
             this.output = VariableValueModel.fromProto(p.getOutput(), context);
         }
-
         if (p.hasLogOutput()) {
             this.logOutput = VariableValueModel.fromProto(p.getLogOutput(), context);
         }
-
         if (p.hasError()) {
             this.error = LHSerializable.fromProto(p.getError(), LHTaskErrorModel.class, context);
         }
-
         if (p.hasException()) {
             this.exception = LHSerializable.fromProto(p.getException(), LHTaskExceptionModel.class, context);
         }
@@ -103,5 +91,77 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
         ReportTaskRunModel out = new ReportTaskRunModel();
         out.initFrom(proto, context);
         return out;
+    }
+
+    public TaskRunIdModel getTaskRunId() {
+        return this.taskRunId;
+    }
+
+    public Date getTime() {
+        return this.time;
+    }
+
+    public TaskStatus getStatus() {
+        return this.status;
+    }
+
+    public VariableValueModel getOutput() {
+        return this.output;
+    }
+
+    public VariableValueModel getLogOutput() {
+        return this.logOutput;
+    }
+
+    public int getAttemptNumber() {
+        return this.attemptNumber;
+    }
+
+    public LHTaskErrorModel getError() {
+        return this.error;
+    }
+
+    public LHTaskExceptionModel getException() {
+        return this.exception;
+    }
+
+    public int getTotalCheckpoints() {
+        return this.totalCheckpoints;
+    }
+
+    public void setTaskRunId(final TaskRunIdModel taskRunId) {
+        this.taskRunId = taskRunId;
+    }
+
+    public void setTime(final Date time) {
+        this.time = time;
+    }
+
+    public void setStatus(final TaskStatus status) {
+        this.status = status;
+    }
+
+    public void setOutput(final VariableValueModel output) {
+        this.output = output;
+    }
+
+    public void setLogOutput(final VariableValueModel logOutput) {
+        this.logOutput = logOutput;
+    }
+
+    public void setAttemptNumber(final int attemptNumber) {
+        this.attemptNumber = attemptNumber;
+    }
+
+    public void setError(final LHTaskErrorModel error) {
+        this.error = error;
+    }
+
+    public void setException(final LHTaskExceptionModel exception) {
+        this.exception = exception;
+    }
+
+    public void setTotalCheckpoints(final int totalCheckpoints) {
+        this.totalCheckpoints = totalCheckpoints;
     }
 }

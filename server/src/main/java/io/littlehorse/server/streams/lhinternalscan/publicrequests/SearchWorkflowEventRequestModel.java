@@ -22,11 +22,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
 public class SearchWorkflowEventRequestModel
         extends PublicScanRequest<
                 SearchWorkflowEventRequest,
@@ -34,7 +30,8 @@ public class SearchWorkflowEventRequestModel
                 WorkflowEventId,
                 WorkflowEventIdModel,
                 SearchWorkflowEventReply> {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(SearchWorkflowEventRequestModel.class);
     private Date earliestStart;
     private Date latestStart;
     private WorkflowEventDefIdModel workflowEventDefId;
@@ -59,28 +56,20 @@ public class SearchWorkflowEventRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
-
         if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
-
         workflowEventDefId =
                 WorkflowEventDefIdModel.fromProto(p.getWorkflowEventDefId(), WorkflowEventDefIdModel.class, context);
-
         this.context = context;
     }
 
     public SearchWorkflowEventRequest.Builder toProto() {
         SearchWorkflowEventRequest.Builder builder = SearchWorkflowEventRequest.newBuilder();
-
         if (bookmark != null) builder.setBookmark(bookmark.toByteString());
-
         if (limit != null) builder.setLimit(limit);
-
         if (earliestStart != null) builder.setEarliestStart(LHUtil.fromDate(earliestStart));
         if (latestStart != null) builder.setLatestStart(LHUtil.fromDate(latestStart));
-
         builder.setWorkflowEventDefId(workflowEventDefId.toProto());
-
         return builder;
     }
 
@@ -93,13 +82,11 @@ public class SearchWorkflowEventRequestModel
         if (workflowEventDefId.getName().isBlank()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument: WorkflowEventDefId.");
         }
-
         if (context.service().getWorkflowEventDef(workflowEventDefId.getName()) == null) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
                     "WorkflowEventDef \"%s\" does not exist.".formatted(workflowEventDefId.getName()));
         }
-
         return TagStorageType.LOCAL;
     }
 
@@ -112,5 +99,21 @@ public class SearchWorkflowEventRequestModel
     @Override
     public LHStore getStoreType() {
         return LHStore.CORE;
+    }
+
+    public Date getEarliestStart() {
+        return this.earliestStart;
+    }
+
+    public Date getLatestStart() {
+        return this.latestStart;
+    }
+
+    public WorkflowEventDefIdModel getWorkflowEventDefId() {
+        return this.workflowEventDefId;
+    }
+
+    public ExecutionContext getContext() {
+        return this.context;
     }
 }

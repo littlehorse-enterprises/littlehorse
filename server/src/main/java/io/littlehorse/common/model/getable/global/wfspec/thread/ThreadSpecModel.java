@@ -36,22 +36,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Slf4j
-@Setter
-@Getter
 public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ThreadSpecModel.class);
     public String name;
-
     public Map<String, NodeModel> nodes;
     public List<ThreadVarDefModel> variableDefs;
     public List<InterruptDefModel> interruptDefs;
-
     private ThreadRetentionPolicyModel retentionPolicy;
 
     public ThreadSpecModel() {
@@ -65,10 +57,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     }
 
     // Below is Serde
-
     public ThreadSpec.Builder toProto() {
         ThreadSpec.Builder out = ThreadSpec.newBuilder();
-
         for (Map.Entry<String, NodeModel> e : nodes.entrySet()) {
             out.putNodes(e.getKey(), e.getValue().toProto().build());
         }
@@ -78,7 +68,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         for (InterruptDefModel idef : interruptDefs) {
             out.addInterruptDefs(idef.toProto());
         }
-
         if (retentionPolicy != null) {
             out.setRetentionPolicy(retentionPolicy.toProto());
         }
@@ -98,18 +87,15 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 this.entrypointNodeName = n.name;
             }
         }
-
         for (ThreadVarDef tvd : proto.getVariableDefsList()) {
             ThreadVarDefModel tvdm = LHSerializable.fromProto(tvd, ThreadVarDefModel.class, context);
             variableDefs.add(tvdm);
         }
-
         for (InterruptDef idefpb : proto.getInterruptDefsList()) {
             InterruptDefModel idef = InterruptDefModel.fromProto(idefpb, context);
             idef.ownerThreadSpecModel = this;
             interruptDefs.add(idef);
         }
-
         if (proto.hasRetentionPolicy()) {
             retentionPolicy =
                     LHSerializable.fromProto(proto.getRetentionPolicy(), ThreadRetentionPolicyModel.class, context);
@@ -117,9 +103,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     }
 
     // Below is Implementation
-
     public String entrypointNodeName;
-
     public WfSpecModel wfSpec;
 
     /*
@@ -131,7 +115,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         for (ThreadVarDefModel vd : variableDefs) {
             out.put(vd.getVarDef().getName(), vd);
         }
-
         return out;
     }
 
@@ -173,14 +156,12 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     }
 
     // Returns all the external event def names used for **interrupts**
-
     private Set<String> interruptExternalEventDefs;
 
     public Set<String> getInterruptExternalEventDefs() {
         if (interruptExternalEventDefs != null) {
             return interruptExternalEventDefs;
         }
-
         interruptExternalEventDefs = new HashSet<>();
         for (InterruptDefModel idef : interruptDefs) {
             interruptExternalEventDefs.add(idef.getExternalEventDefId().getName());
@@ -189,7 +170,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     }
 
     // Returns all the external event def names used for **EXTERNAL_EVENT nodes**
-
     public Set<String> getNodeExternalEventDefs() {
         Set<String> out = new HashSet<>();
         for (NodeModel n : nodes.values()) {
@@ -201,7 +181,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     }
 
     // Returns the names of the nodes used by other nodes in this thread.
-
     public Set<String> getRequiredNodeNames() {
         Set<String> usedNodeNames = new HashSet<>();
         for (NodeModel nodeModel : nodes.values()) {
@@ -242,7 +221,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         if (varDef != null) {
             return Pair.of(this.name, varDef);
         }
-
         return wfSpec.lookupVarDef(name);
     }
 
@@ -254,7 +232,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         if (entrypointNodeName == null) {
             throw new InvalidThreadSpecException(this, "missing ENTRYPOINT node!");
         }
-
         boolean seenEntrypoint = false;
         for (NodeModel node : nodes.values()) {
             for (String varName : node.getRequiredVariableNames()) {
@@ -277,7 +254,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 throw new InvalidThreadSpecException(this, exn.getMessage());
             }
         }
-
         for (InterruptDefModel idef : interruptDefs) {
             try {
                 idef.validate();
@@ -292,13 +268,13 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
         // Exit node validation requires that every ExitNode returns the same type, so we only need one.
         try {
-            Optional<ExitNodeModel> nonErrorExitNode = nodes.values().stream()
-                    .filter(node -> node.getType() == NodeCase.EXIT)
+            Optional<ExitNodeModel> nonErrorExitNode =
                     // ignore nodes that throw exceptions
-                    .filter(node -> node.getExitNode().getResultCase() != ResultCase.FAILURE_DEF)
-                    .map(NodeModel::getExitNode)
-                    .findFirst();
-
+                    nodes.values().stream()
+                            .filter(node -> node.getType() == NodeCase.EXIT)
+                            .filter(node -> node.getExitNode().getResultCase() != ResultCase.FAILURE_DEF)
+                            .map(NodeModel::getExitNode)
+                            .findFirst();
             if (nonErrorExitNode.isEmpty()) return Optional.of(new ReturnTypeModel());
             return nonErrorExitNode.get().getOutputType(manager);
         } catch (InvalidExpressionException exn) {
@@ -308,15 +284,14 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
     }
 
     private void validateExitNodeReturnTypes(MetadataProcessorContext ctx) throws InvalidThreadSpecException {
-        List<ExitNodeModel> exitNodes = nodes.values().stream()
-                .filter(node -> node.getType() == NodeCase.EXIT)
+        List<ExitNodeModel> exitNodes =
                 // ignore nodes that throw exceptions
-                .filter(node -> node.getExitNode().getResultCase() != ResultCase.FAILURE_DEF)
-                .map(NodeModel::getExitNode)
-                .toList();
-
+                nodes.values().stream()
+                        .filter(node -> node.getType() == NodeCase.EXIT)
+                        .filter(node -> node.getExitNode().getResultCase() != ResultCase.FAILURE_DEF)
+                        .map(NodeModel::getExitNode)
+                        .toList();
         Optional<TypeDefinitionModel> firstSeenOutputType = null;
-
         for (ExitNodeModel exitNode : exitNodes) {
             try {
                 Optional<ReturnTypeModel> returnTypeOption = exitNode.getThreadReturnType(ctx.metadataManager());
@@ -325,12 +300,10 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 }
                 Optional<TypeDefinitionModel> typeDefOption =
                         returnTypeOption.get().getOutputType();
-
                 if (firstSeenOutputType == null) {
                     // Record the first one we see.
                     firstSeenOutputType = typeDefOption;
                 }
-
                 // This checks to make sure that if one returns empty and the other does not, then we throw an error
                 if ((firstSeenOutputType.isPresent() && typeDefOption.isEmpty())
                         || (firstSeenOutputType.isEmpty() && typeDefOption.isPresent())) {
@@ -338,7 +311,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                             this,
                             "Detected an EXIT node that returns void and another EXIT node that returns non-void");
                 }
-
                 // If we are returning something, we need to make sure they're all the same.
                 if (firstSeenOutputType.isPresent()
                         && !firstSeenOutputType.get().equals(typeDefOption.get())) {
@@ -347,10 +319,11 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 }
             } catch (InvalidExpressionException impossible) {
                 throw new IllegalStateException(
-                        "We already called getOutputType() earlier, so it shouldn't throw an error here.");
+                        "We already called getOutputType() earlier, so it shouldn\'t throw an error here.");
             }
         }
     }
+
     /*
      * Rules for ExternalEventDef usage:
      * 1. An ExternalEventDef may only be used for an EXTERNAL_EVENT node OR
@@ -372,10 +345,8 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 throw new InvalidThreadSpecException(
                         this, "ExternalEventDef " + eedn + " used for Node and Interrupt!");
             }
-
             for (ThreadSpecModel tspec : wfSpec.threadSpecs.values()) {
                 if (tspec.name.equals(name)) continue;
-
                 if (tspec.getInterruptExternalEventDefs().contains(eedn)) {
                     throw new InvalidThreadSpecException(
                             this, "ExternalEventDef " + eedn + " used by multiple threads as interrupt!");
@@ -408,7 +379,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             } catch (InvalidVariableDefException exn) {
                 throw new InvalidThreadSpecException(this, exn);
             }
-
             if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
                 if (inputVariables.containsKey(varName)) {
                     throw new InvalidThreadSpecException(
@@ -416,7 +386,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 }
             }
         }
-
         for (Map.Entry<String, VariableValueModel> e : inputVariables.entrySet()) {
             String varName = e.getKey();
             if (getVd(varName) == null) {
@@ -435,9 +404,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             if (defPair == null) {
                 throw new InvalidThreadSpecException(
                         null,
-                        "Timeout on node "
-                                + nodeName
-                                + " refers to missing variable "
+                        "Timeout on node " + nodeName + " refers to missing variable "
                                 + timeoutSeconds.getVariableName());
             }
         }
@@ -455,14 +422,12 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             Map<String, VariableAssignmentModel> vars, ThreadSpecModel variableAssignorThread)
             throws InvalidThreadSpecException {
         Map<String, ThreadVarDefModel> inputVarDefs = getInputVariableDefs();
-
         for (Map.Entry<String, ThreadVarDefModel> e : inputVarDefs.entrySet()) {
             VariableAssignmentModel assn = vars.get(e.getKey());
             if (assn == null) {
                 // It will be created as NULL for the input.
                 continue;
             }
-
             if (!assn.canBeType(e.getValue().getVarDef().getTypeDef(), variableAssignorThread)) {
                 throw new InvalidThreadSpecException(
                         this,
@@ -470,14 +435,12 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                                 + e.getValue().getVarDef().getTypeDef());
             }
         }
-
         for (Map.Entry<String, VariableAssignmentModel> e : vars.entrySet()) {
             if (this.localGetVarDef(e.getKey()) == null) {
                 throw new InvalidThreadSpecException(
                         variableAssignorThread, "Var " + e.getKey() + " provided but not needed for thread " + name);
             }
         }
-
         for (ThreadVarDefModel tvdm : getRequiredVarDefs()) {
             if (!vars.containsKey(tvdm.getVarDef().getName())) {
                 throw new InvalidThreadSpecException(
@@ -509,7 +472,6 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         // This is tricky...
         ThreadVarDefModel out = localGetVarDef(varName);
         if (out != null) return out;
-
         Pair<String, ThreadVarDefModel> result = wfSpec.lookupVarDef(varName);
         if (result != null) {
             return result.getRight();
@@ -522,5 +484,65 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         ThreadSpecModel out = new ThreadSpecModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setNodes(final Map<String, NodeModel> nodes) {
+        this.nodes = nodes;
+    }
+
+    public void setVariableDefs(final List<ThreadVarDefModel> variableDefs) {
+        this.variableDefs = variableDefs;
+    }
+
+    public void setInterruptDefs(final List<InterruptDefModel> interruptDefs) {
+        this.interruptDefs = interruptDefs;
+    }
+
+    public void setRetentionPolicy(final ThreadRetentionPolicyModel retentionPolicy) {
+        this.retentionPolicy = retentionPolicy;
+    }
+
+    public void setEntrypointNodeName(final String entrypointNodeName) {
+        this.entrypointNodeName = entrypointNodeName;
+    }
+
+    public void setWfSpec(final WfSpecModel wfSpec) {
+        this.wfSpec = wfSpec;
+    }
+
+    public void setInterruptExternalEventDefs(final Set<String> interruptExternalEventDefs) {
+        this.interruptExternalEventDefs = interruptExternalEventDefs;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Map<String, NodeModel> getNodes() {
+        return this.nodes;
+    }
+
+    public List<ThreadVarDefModel> getVariableDefs() {
+        return this.variableDefs;
+    }
+
+    public List<InterruptDefModel> getInterruptDefs() {
+        return this.interruptDefs;
+    }
+
+    public ThreadRetentionPolicyModel getRetentionPolicy() {
+        return this.retentionPolicy;
+    }
+
+    public String getEntrypointNodeName() {
+        return this.entrypointNodeName;
+    }
+
+    public WfSpecModel getWfSpec() {
+        return this.wfSpec;
     }
 }

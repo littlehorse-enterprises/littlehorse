@@ -13,18 +13,11 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Date;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Getter
-@Setter
-@Slf4j
 public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TaskAttemptModel.class);
     private VariableValueModel output;
     private VariableValueModel logOutput;
-
     private Date scheduleTime;
     private Date startTime;
     private Date endTime;
@@ -34,7 +27,6 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     private LHTaskExceptionModel exception;
     private LHTaskErrorModel error;
     private boolean maskedValue;
-
     // Transient: not serialized to proto. Set when the attempt is created (enters PENDING state).
     // Used for pending_to_scheduled latency metrics. May be null if loaded from store.
     private Date pendingTime;
@@ -85,7 +77,6 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     @Override
     public TaskAttempt.Builder toProto() {
         TaskAttempt.Builder out = TaskAttempt.newBuilder();
-
         if (taskWorkerId != null) {
             out.setTaskWorkerId(taskWorkerId);
         }
@@ -113,10 +104,8 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
         if (exception != null) {
             out.setException(exception.toProto());
         }
-
         out.setStatus(status);
         out.setMaskedValue(maskedValue);
-
         return out;
     }
 
@@ -182,5 +171,101 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
             return Optional.ofNullable(this.getException().getContent());
         }
         return Optional.empty();
+    }
+
+    public VariableValueModel getOutput() {
+        return this.output;
+    }
+
+    public VariableValueModel getLogOutput() {
+        return this.logOutput;
+    }
+
+    public Date getScheduleTime() {
+        return this.scheduleTime;
+    }
+
+    public Date getStartTime() {
+        return this.startTime;
+    }
+
+    public Date getEndTime() {
+        return this.endTime;
+    }
+
+    public String getTaskWorkerId() {
+        return this.taskWorkerId;
+    }
+
+    public String getTaskWorkerVersion() {
+        return this.taskWorkerVersion;
+    }
+
+    public TaskStatus getStatus() {
+        return this.status;
+    }
+
+    public LHTaskExceptionModel getException() {
+        return this.exception;
+    }
+
+    public LHTaskErrorModel getError() {
+        return this.error;
+    }
+
+    public boolean isMaskedValue() {
+        return this.maskedValue;
+    }
+
+    public Date getPendingTime() {
+        return this.pendingTime;
+    }
+
+    public void setOutput(final VariableValueModel output) {
+        this.output = output;
+    }
+
+    public void setLogOutput(final VariableValueModel logOutput) {
+        this.logOutput = logOutput;
+    }
+
+    public void setScheduleTime(final Date scheduleTime) {
+        this.scheduleTime = scheduleTime;
+    }
+
+    public void setStartTime(final Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(final Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setTaskWorkerId(final String taskWorkerId) {
+        this.taskWorkerId = taskWorkerId;
+    }
+
+    public void setTaskWorkerVersion(final String taskWorkerVersion) {
+        this.taskWorkerVersion = taskWorkerVersion;
+    }
+
+    public void setStatus(final TaskStatus status) {
+        this.status = status;
+    }
+
+    public void setException(final LHTaskExceptionModel exception) {
+        this.exception = exception;
+    }
+
+    public void setError(final LHTaskErrorModel error) {
+        this.error = error;
+    }
+
+    public void setMaskedValue(final boolean maskedValue) {
+        this.maskedValue = maskedValue;
+    }
+
+    public void setPendingTime(final Date pendingTime) {
+        this.pendingTime = pendingTime;
     }
 }

@@ -8,16 +8,11 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.TaskId;
 
-@Slf4j
 public class TaskQueueManager {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TaskQueueManager.class);
     private final ConcurrentHashMap<TenantTaskName, OneTaskQueue> taskQueues;
-
-    @Getter
     private LHServer backend;
 
     public TaskQueueManager(LHServer backend) {
@@ -58,7 +53,6 @@ public class TaskQueueManager {
     }
 
     private record TenantTaskName(TenantIdModel tenantId, String taskDefName) {
-
         public TenantTaskName {
             Objects.requireNonNull(tenantId.getId());
         }
@@ -74,5 +68,9 @@ public class TaskQueueManager {
         public int hashCode() {
             return Objects.hash(tenantId, taskDefName);
         }
+    }
+
+    public LHServer getBackend() {
+        return this.backend;
     }
 }

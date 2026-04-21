@@ -31,15 +31,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Setter
-@Getter
-@Slf4j
 public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDeleteWfRunRequest> {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(InternalDeleteWfRunRequestModel.class);
     private WfRunIdModel wfRunId;
     private DeleteWfRunBookmark bookmark;
 
@@ -75,7 +70,6 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
         GetableManager manager = ctx.getableManager();
         WfRunModel wfRun = manager.get(wfRunId);
         if (wfRun == null) return Empty.getDefaultInstance();
-
         DeleteWfRunBookmark resultToResumeFrom =
                 cleanupAsMuchAsPossible(wfRun, manager, ctx, config.getMaxDeletesPerCommand());
         if (resultToResumeFrom != null) {
@@ -105,43 +99,33 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
             startingThread = bookmark.getLastThreadRunNumber();
             startingNodeRun = bookmark.getLastNodeRunPosition();
         }
-
         ThreadRunIterator threadRunIterator = wfRun.getThreadRunIterator();
-
         while (threadRunIterator.hasNext()) {
             ThreadRunModel thread = threadRunIterator.next();
             if (thread.getNumber() < startingThread) {
                 continue;
             }
-
             int nodeRunPositionStart = thread.getNumber() == startingThread ? startingNodeRun : 0;
-
             if (thread.isInactive()) {
                 inactiveThreadRunIds.add(new InactiveThreadRunIdModel(wfRunId, thread.getNumber()));
             }
-
             thread.getThreadSpec().getRequiredNodeNames().forEach(nodeName -> {
                 String storeKey = Storeable.getGroupedFullStoreKey(
                         wfRunId, StoreableType.NODE_OUTPUT, thread.getNumber() + "/" + nodeName);
                 nodeOutputStoreKeys.add(storeKey);
             });
-
             for (int nodeRunPosition = nodeRunPositionStart;
                     nodeRunPosition <= thread.getCurrentNodePosition();
                     nodeRunPosition++) {
                 thingsDone++;
                 NodeRunModel nodeRun = thread.getNodeRun(nodeRunPosition);
-
                 if (nodeRun == null) continue;
-
                 // Delete things created by the NodeRun, eg TaskRun / UserTaskRun / WorkflowEvent
                 List<? extends CoreObjectId<?, ?, ?>> createdGetables =
                         nodeRun.getSubNodeRun().getCreatedSubGetableIds(ctx);
-
                 for (CoreObjectId<?, ?, ?> createdGetable : createdGetables) {
                     manager.delete((CoreObjectId<?, ?, ?>) createdGetable);
                 }
-
                 // ExternalEventNodeRun's can create correlation markers. Deleting those are tricky.
                 if (nodeRun.getExternalEventRun() != null) {
                     ExternalEventNodeRunModel extEvtNr = nodeRun.getExternalEventRun();
@@ -150,10 +134,8 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
                         extEvtNr.sendRemoveCorrelationMarkerCommand(ctx);
                     }
                 }
-
                 // Delete the NodeRun
                 manager.delete(nodeRun.getObjectId());
-
                 if (thingsDone >= maxDeletesInOneCommand) {
                     log.debug("Not done deleting nodeRuns for {}", wfRunId);
                     DeleteWfRunBookmark.Builder result = DeleteWfRunBookmark.newBuilder()
@@ -162,22 +144,18 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
                     return result.build();
                 }
             }
-
             // Delete the variables belonging to that ThreadRun
             ThreadSpecModel threadSpec = thread.getThreadSpec();
             for (ThreadVarDefModel varDef : threadSpec.getVariableDefs()) {
                 if (varDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) continue;
-
                 VariableIdModel id = new VariableIdModel(
                         wfRunId, thread.getNumber(), varDef.getVarDef().getName());
                 manager.delete(id);
             }
         }
-
         for (InactiveThreadRunIdModel inactiveThreadRunId : inactiveThreadRunIds) {
             manager.delete(inactiveThreadRunId);
         }
-
         manager.deleteNodeOutputs(nodeOutputStoreKeys);
         boolean deletedAllEvents = manager.tryToDeleteAllExternalEventsFor(wfRunId, maxDeletesInOneCommand);
         if (!deletedAllEvents) {
@@ -186,9 +164,7 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
                     .setLastThreadRunNumber(Integer.MAX_VALUE)
                     .build();
         }
-
         log.trace("Completing WfRun deletion for {}", wfRunId);
-
         manager.delete(wfRunId);
         return null;
     }
@@ -197,5 +173,21 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
         InternalDeleteWfRunRequestModel out = new InternalDeleteWfRunRequestModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public void setWfRunId(final WfRunIdModel wfRunId) {
+        this.wfRunId = wfRunId;
+    }
+
+    public void setBookmark(final DeleteWfRunBookmark bookmark) {
+        this.bookmark = bookmark;
+    }
+
+    public WfRunIdModel getWfRunId() {
+        return this.wfRunId;
+    }
+
+    public DeleteWfRunBookmark getBookmark() {
+        return this.bookmark;
     }
 }

@@ -22,17 +22,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
 public class VariableMutationModel extends LHSerializable<VariableMutation> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(VariableMutationModel.class);
     private String lhsName;
     private String lhsJsonPath;
     private VariableMutationType operation;
-
     private RhsValueCase rhsValueType;
     private VariableAssignmentModel rhsRhsAssignment;
     private VariableValueModel rhsLiteralValue;
@@ -47,9 +42,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
     public VariableMutation.Builder toProto() {
         VariableMutation.Builder out =
                 VariableMutation.newBuilder().setLhsName(lhsName).setOperation(operation);
-
         if (lhsJsonPath != null) out.setLhsJsonPath(lhsJsonPath);
-
         switch (rhsValueType) {
             case LITERAL_VALUE:
                 out.setLiteralValue(rhsLiteralValue.toProto());
@@ -61,9 +54,8 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                 out.setNodeOutput(nodeOutputSource.toProto()); // just set the flag
                 break;
             case RHSVALUE_NOT_SET:
-                // not possible
         }
-
+        // not possible
         return out;
     }
 
@@ -73,7 +65,6 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         lhsName = p.getLhsName();
         if (p.hasLhsJsonPath()) lhsJsonPath = p.getLhsJsonPath();
         operation = p.getOperation();
-
         rhsValueType = p.getRhsValueCase();
         switch (rhsValueType) {
             case LITERAL_VALUE:
@@ -86,8 +77,8 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                 nodeOutputSource = NodeOutputSourceModel.fromProto(p.getNodeOutput(), context);
                 break;
             case RHSVALUE_NOT_SET:
-                // not possible
         }
+        // not possible
     }
 
     public static VariableMutationModel fromProto(VariableMutation p, ExecutionContext context) {
@@ -114,7 +105,6 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             }
             result = rawVariable.getValue();
         }
-
         return result.getCopy();
     }
 
@@ -122,7 +112,6 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             ThreadRunModel thread, Map<String, VariableValueModel> txnCache, VariableValueModel nodeOutput)
             throws LHVarSubError {
         VariableValueModel out = null;
-
         if (rhsValueType == RhsValueCase.LITERAL_VALUE) {
             out = rhsLiteralValue;
         } else if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT) {
@@ -148,17 +137,14 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             throws LHVarSubError {
         VariableValueModel lhsVal = getLhsValue(thread, txnCache);
         VariableValueModel rhsVal = getRhsValue(thread, txnCache, nodeOutput);
-
         // This will need to be refactored once we introduce Structs.
         TypeDefinitionModel lhsRealType =
                 thread.getThreadSpec().getVarDef(lhsName).getVarDef().getTypeDef();
-
         try {
             // NOTE Part 2: see below
             if (lhsJsonPath != null) {
                 VariableValueModel lhsJsonPathed = lhsVal.jsonPath(lhsJsonPath);
                 TypeDefinitionModel typeToCoerceTo = lhsJsonPathed.getTypeDefinition();
-
                 // If the key does not exist in the LHS, we just plop the RHS there. Otherwise,
                 // we want to coerce the
                 // type to the rhs.
@@ -166,9 +152,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                         lhsJsonPathed.getTypeDefinition().isNull()
                                 ? rhsVal
                                 : lhsJsonPathed.operate(operation, rhsVal, typeToCoerceTo);
-
                 VariableValueModel currentLhs = getVarValFromThreadInTxn(lhsName, thread, txnCache);
-
                 currentLhs.updateJsonViaJsonPath(lhsJsonPath, thingToPut.getVal());
                 txnCache.put(lhsName, currentLhs);
             } else {
@@ -198,16 +182,13 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             // Can't validate anything, sorry.
             return;
         }
-
         TypeDefinitionModel lhsType = threadSpec.getVarDef(lhsName).getVarDef().getTypeDef();
-
         try {
             Optional<TypeDefinitionModel> rhsType =
                     rhsRhsAssignment.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
             if (rhsType.isEmpty()) {
                 return;
             }
-
             if (operation == VariableMutationType.ASSIGN) {
                 if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT && rhsRhsAssignment.getTargetType() != null) {
                     // Step 1: Validate the explicit cast (original type -> cast target)
@@ -224,7 +205,6 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                                 + ". This conversion is not supported.");
                     }
                     TypeCastingUtils.validateTypeCompatibility(originalType, castTargetType);
-
                     // Step 2: Validate assignment (cast target type -> lhs type)
                     TypeCastingUtils.validateTypeCompatibility(castTargetType, lhsType.getPrimitiveType());
                 } else {
@@ -238,7 +218,6 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                     TypeCastingUtils.validateTypeCompatibility(rhsActualType, lhsActualType);
                 }
             }
-
             Optional<TypeDefinitionModel> resultingType = lhsType.getTypeStrategy()
                     .resolveOperation(manager, operation, rhsType.get().getTypeStrategy());
             if (resultingType.isPresent() && !lhsType.isCompatibleWith(resultingType.get())) {
@@ -248,5 +227,33 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         } catch (InvalidExpressionException exn) {
             throw new InvalidMutationException("Mutation of variable " + lhsName + " invalid: " + exn.getMessage());
         }
+    }
+
+    public String getLhsName() {
+        return this.lhsName;
+    }
+
+    public String getLhsJsonPath() {
+        return this.lhsJsonPath;
+    }
+
+    public VariableMutationType getOperation() {
+        return this.operation;
+    }
+
+    public RhsValueCase getRhsValueType() {
+        return this.rhsValueType;
+    }
+
+    public VariableAssignmentModel getRhsRhsAssignment() {
+        return this.rhsRhsAssignment;
+    }
+
+    public VariableValueModel getRhsLiteralValue() {
+        return this.rhsLiteralValue;
+    }
+
+    public NodeOutputSourceModel getNodeOutputSource() {
+        return this.nodeOutputSource;
     }
 }

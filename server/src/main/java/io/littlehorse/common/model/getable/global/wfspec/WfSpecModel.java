@@ -47,27 +47,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Getter
-@Setter
 public class WfSpecModel extends MetadataGetable<WfSpec> {
-
     private WfSpecIdModel id = new WfSpecIdModel();
-
     public Date createdAt;
     public long lastOffset;
     private WorkflowRetentionPolicyModel retentionPolicy;
-
     public Map<String, ThreadSpecModel> threadSpecs = new HashMap<>();
     private Map<String, ThreadVarDefModel> frozenVariables = new HashMap<>();
-
     public String entrypointThreadName;
     private WfSpecVersionMigrationModel migration;
     private ParentWfSpecReferenceModel parentWfSpec;
-
     // Internal, not related to Proto.
     private Map<String, String> varToThreadSpec = new HashMap<>();
     private boolean initializedVarToThreadSpec = false;
@@ -132,26 +123,21 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(createdAt))
                 .setEntrypointThreadName(entrypointThreadName);
-
         if (threadSpecs != null) {
             for (Map.Entry<String, ThreadSpecModel> p : threadSpecs.entrySet()) {
                 out.putThreadSpecs(p.getKey(), p.getValue().toProto().build());
             }
         }
-
         if (retentionPolicy != null) {
             out.setRetentionPolicy(retentionPolicy.toProto());
         }
-
         if (migration != null) {
             out.setMigration(migration.toProto());
         }
-
         for (ThreadVarDefModel tvdm : frozenVariables.values()) {
             out.addFrozenVariables(tvdm.toProto());
         }
         if (parentWfSpec != null) out.setParentWfSpec(parentWfSpec.toProto());
-
         return out;
     }
 
@@ -161,7 +147,6 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         entrypointThreadName = proto.getEntrypointThreadName();
         id = LHSerializable.fromProto(proto.getId(), WfSpecIdModel.class, context);
-
         for (Map.Entry<String, ThreadSpec> e : proto.getThreadSpecsMap().entrySet()) {
             ThreadSpecModel ts = new ThreadSpecModel();
             ts.wfSpec = this;
@@ -169,26 +154,21 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
             ts.initFrom(e.getValue(), context);
             threadSpecs.put(e.getKey(), ts);
         }
-
         if (proto.hasRetentionPolicy()) {
             retentionPolicy =
                     LHSerializable.fromProto(proto.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
         }
-
         if (proto.hasMigration()) {
             migration = LHSerializable.fromProto(proto.getMigration(), WfSpecVersionMigrationModel.class, context);
         }
-
         if (proto.hasRetentionPolicy()) {
             retentionPolicy =
                     LHSerializable.fromProto(proto.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
         }
-
         for (ThreadVarDef tvd : proto.getFrozenVariablesList()) {
             ThreadVarDefModel tvdm = LHSerializable.fromProto(tvd, ThreadVarDefModel.class, context);
             frozenVariables.put(tvdm.getVarDef().getName(), tvdm);
         }
-
         if (proto.hasParentWfSpec()) {
             parentWfSpec = LHSerializable.fromProto(
                     proto.getParentWfSpec(), ParentWfSpecReferenceModel.class, executionContext);
@@ -230,9 +210,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new InvalidWfSpecException("unknown entrypoint thread: " + entrypointThreadName);
         }
-
         validateVariablesHelper(ctx);
-
         for (Map.Entry<String, ThreadSpecModel> e : threadSpecs.entrySet()) {
             ThreadSpecModel ts = e.getValue();
             try {
@@ -241,11 +219,9 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                 throw new InvalidWfSpecException(exn);
             }
         }
-
         if (oldVersion.isPresent()) {
             checkCompatibilityAndSetVersion(oldVersion.get(), ctx.metadataManager());
         }
-
         if (parentWfSpec != null) {
             if (getParentWfSpec(ctx) == null) {
                 throw new InvalidWfSpecException(
@@ -363,7 +339,6 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         }
         // Seen Vars is now loaded.
         initializedVarToThreadSpec = true;
-
         for (ThreadSpecModel tspec : threadSpecs.values()) {
             for (String varName : tspec.getNamesOfVariablesUsed()) {
                 if (!varToThreadSpec.containsKey(varName)) {
@@ -371,7 +346,6 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                 }
             }
         }
-
         // Now we curate the list of variables which are "frozen" in time and cannot
         // change their types. This includes two types:
         // - Required variables in the entrypoint threadRun
@@ -409,7 +383,6 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
             String varName = frozenVarDef.getKey();
             ThreadVarDefModel oldDef = frozenVarDef.getValue();
             ThreadVarDefModel currentVarDef = getAllVariables().get(varName);
-
             if (currentVarDef != null) {
                 // We check that the current one is compatible with the old.
                 // TODO: validate jsonpath stuff.
@@ -428,7 +401,6 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                 frozenVariables.put(varName, oldDef);
             }
         }
-
         if (WfSpecUtil.hasBreakingChanges(this, old, manager)) {
             id.setMajorVersion(old.getId().getMajorVersion() + 1);
             id.setRevision(0);
@@ -444,12 +416,10 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         WfRunModel out = new WfRunModel(processorContext);
         out.setId(new WfRunIdModel(evt.getId()));
         if (evt.getParentWfRunId() != null) out.getId().setParentWfRunId(evt.getParentWfRunId());
-
         out.setWfSpec(this);
         out.setWfSpecId(getObjectId());
         out.startTime = currentCommand.getTime();
         out.transitionTo(LHStatus.RUNNING);
-
         out.startThread(
                 entrypointThreadName, currentCommand.getTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
         getableManager.put(out);
@@ -471,5 +441,97 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         return ((WfSpecIdModel) ObjectIdModel.fromString(fullId, WfSpecIdModel.class))
                 .toProto()
                 .build();
+    }
+
+    public WfSpecIdModel getId() {
+        return this.id;
+    }
+
+    public long getLastOffset() {
+        return this.lastOffset;
+    }
+
+    public WorkflowRetentionPolicyModel getRetentionPolicy() {
+        return this.retentionPolicy;
+    }
+
+    public Map<String, ThreadSpecModel> getThreadSpecs() {
+        return this.threadSpecs;
+    }
+
+    public Map<String, ThreadVarDefModel> getFrozenVariables() {
+        return this.frozenVariables;
+    }
+
+    public String getEntrypointThreadName() {
+        return this.entrypointThreadName;
+    }
+
+    public WfSpecVersionMigrationModel getMigration() {
+        return this.migration;
+    }
+
+    public ParentWfSpecReferenceModel getParentWfSpec() {
+        return this.parentWfSpec;
+    }
+
+    public Map<String, String> getVarToThreadSpec() {
+        return this.varToThreadSpec;
+    }
+
+    public boolean isInitializedVarToThreadSpec() {
+        return this.initializedVarToThreadSpec;
+    }
+
+    public MetadataProcessorContext getExecutionContext() {
+        return this.executionContext;
+    }
+
+    public void setId(final WfSpecIdModel id) {
+        this.id = id;
+    }
+
+    public void setCreatedAt(final Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setLastOffset(final long lastOffset) {
+        this.lastOffset = lastOffset;
+    }
+
+    public void setRetentionPolicy(final WorkflowRetentionPolicyModel retentionPolicy) {
+        this.retentionPolicy = retentionPolicy;
+    }
+
+    public void setThreadSpecs(final Map<String, ThreadSpecModel> threadSpecs) {
+        this.threadSpecs = threadSpecs;
+    }
+
+    public void setFrozenVariables(final Map<String, ThreadVarDefModel> frozenVariables) {
+        this.frozenVariables = frozenVariables;
+    }
+
+    public void setEntrypointThreadName(final String entrypointThreadName) {
+        this.entrypointThreadName = entrypointThreadName;
+    }
+
+    public void setMigration(final WfSpecVersionMigrationModel migration) {
+        this.migration = migration;
+    }
+
+    public void setParentWfSpec(final ParentWfSpecReferenceModel parentWfSpec) {
+        this.parentWfSpec = parentWfSpec;
+    }
+
+    public void setVarToThreadSpec(final Map<String, String> varToThreadSpec) {
+        this.varToThreadSpec = varToThreadSpec;
+    }
+
+    public void setInitializedVarToThreadSpec(final boolean initializedVarToThreadSpec) {
+        this.initializedVarToThreadSpec = initializedVarToThreadSpec;
+    }
+
+    public void setExecutionContext(final MetadataProcessorContext executionContext) {
+        this.executionContext = executionContext;
     }
 }

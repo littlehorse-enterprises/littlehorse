@@ -14,7 +14,6 @@ import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
@@ -23,9 +22,11 @@ import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 public class RepartitionCommandProcessor implements Processor<String, RepartitionCommand, Void, Void> {
+    private static final Logger log = LoggerFactory.getLogger(RepartitionCommandProcessor.class);
 
     private ProcessorContext<Void, Void> ctx;
 

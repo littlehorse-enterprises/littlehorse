@@ -11,25 +11,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.TaskMetadata;
 import org.apache.kafka.streams.ThreadMetadata;
 import org.apache.kafka.streams.processor.TaskId;
 
-@Slf4j
 public class InstanceState implements MeterBinder, KafkaStreams.StateListener, Closeable {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(InstanceState.class);
     private final KafkaStreams streams;
-
-    @Getter
     private KafkaStreams.State currentState;
-
     private static final String METRIC_NAME = "active_tasks_count";
-
-    @Getter
     private final Map<Integer, Integer> activeTaskBySubTopology = new HashMap<>();
-
     private static final int GLOBAL_SUB_TOPOLOGY_ID = 0;
     private static final int CORE_SUB_TOPOLOGY_ID = 1;
     private static final int REPARTITION_SUB_TOPOLOGY_ID = 2;
@@ -73,7 +65,6 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener, C
                 currentActiveTaskIds.add(activeTask.taskId());
             }
         }
-
         if (newState == KafkaStreams.State.RUNNING) {
             activeTasks.set(currentActiveTaskIds);
             try {
@@ -90,4 +81,12 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener, C
 
     @Override
     public void close() throws IOException {}
+
+    public KafkaStreams.State getCurrentState() {
+        return this.currentState;
+    }
+
+    public Map<Integer, Integer> getActiveTaskBySubTopology() {
+        return this.activeTaskBySubTopology;
+    }
 }

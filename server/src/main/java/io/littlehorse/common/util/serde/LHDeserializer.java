@@ -2,12 +2,10 @@ package io.littlehorse.common.util.serde;
 
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Deserializer;
 
-@Slf4j
 public class LHDeserializer<T extends LHSerializable<?>> implements Deserializer<T> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LHDeserializer.class);
     private Class<T> cls;
 
     // When we do encryption, we'll need to inject the LHConfig object for

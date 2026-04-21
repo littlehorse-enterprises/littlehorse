@@ -18,12 +18,10 @@ import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ListNodeRunsRequestModel
         extends PublicScanRequest<ListNodeRunsRequest, NodeRunList, NodeRun, NodeRunModel, ListNodeRunReply> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ListNodeRunsRequestModel.class);
     public WfRunIdModel wfRunId;
     public Integer threadRunNumber;
 
@@ -33,7 +31,6 @@ public class ListNodeRunsRequestModel
 
     public ListNodeRunsRequest.Builder toProto() {
         ListNodeRunsRequest.Builder out = ListNodeRunsRequest.newBuilder().setWfRunId(wfRunId.toProto());
-
         if (bookmark != null) out.setBookmark(bookmark.toByteString());
         if (limit != null) out.setLimit(limit);
         if (threadRunNumber != null) out.setThreadRunNumber(threadRunNumber);

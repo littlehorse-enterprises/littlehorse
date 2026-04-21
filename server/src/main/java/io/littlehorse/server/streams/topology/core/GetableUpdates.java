@@ -9,13 +9,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import lombok.Getter;
 
 /**
  * Hold information about new events related to WfRuns
  */
 public class GetableUpdates {
-
     private final List<GetableStatusListener> getableStatusListeners = new ArrayList<>();
 
     GetableUpdates() {}
@@ -47,9 +45,7 @@ public class GetableUpdates {
         return new TaskRunStatusUpdate(taskDefId, tenantId, previousStatus, newStatus);
     }
 
-    @Getter
     public static class GetableStatusUpdate {
-
         private final Date creationDate;
         private final TenantIdModel tenantId;
         private final long firstEventLatency;
@@ -66,9 +62,20 @@ public class GetableUpdates {
             this.firstEventLatency = System.currentTimeMillis() - firstEventDate.getTime();
             ;
         }
+
+        public Date getCreationDate() {
+            return this.creationDate;
+        }
+
+        public TenantIdModel getTenantId() {
+            return this.tenantId;
+        }
+
+        public long getFirstEventLatency() {
+            return this.firstEventLatency;
+        }
     }
 
-    @Getter
     public static class WfRunStatusUpdate extends GetableStatusUpdate {
         private final LHStatus previousStatus;
         private final LHStatus newStatus;
@@ -93,9 +100,20 @@ public class GetableUpdates {
             this.wfSpecId = wfSpecId;
             this.newStatus = Objects.requireNonNull(newStatus);
         }
+
+        public LHStatus getPreviousStatus() {
+            return this.previousStatus;
+        }
+
+        public LHStatus getNewStatus() {
+            return this.newStatus;
+        }
+
+        public WfSpecIdModel getWfSpecId() {
+            return this.wfSpecId;
+        }
     }
 
-    @Getter
     public static class TaskRunStatusUpdate extends GetableStatusUpdate {
         private final TaskDefIdModel taskDefId;
         private final TaskStatus previousStatus;
@@ -107,6 +125,18 @@ public class GetableUpdates {
             this.taskDefId = taskDefId;
             this.previousStatus = previousStatus;
             this.newStatus = newStatus;
+        }
+
+        public TaskDefIdModel getTaskDefId() {
+            return this.taskDefId;
+        }
+
+        public TaskStatus getPreviousStatus() {
+            return this.previousStatus;
+        }
+
+        public TaskStatus getNewStatus() {
+            return this.newStatus;
         }
     }
 

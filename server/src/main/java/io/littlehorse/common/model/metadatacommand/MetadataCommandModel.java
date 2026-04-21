@@ -26,17 +26,10 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
-@Setter
 public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MetadataCommandModel.class);
     private Date time;
-
     private MetadataCommandCase type;
     private PutWfSpecRequestModel putWfSpecRequest;
     private PutTaskDefRequestModel putTaskDefRequest;
@@ -74,11 +67,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     public MetadataCommand.Builder toProto() {
         MetadataCommand.Builder out = MetadataCommand.newBuilder();
         out.setTime(LHUtil.fromDate(time));
-
         if (commandId != null) {
             out.setCommandId(commandId);
         }
-
         switch (type) {
             case PUT_WF_SPEC:
                 out.setPutWfSpec(putWfSpecRequest.toProto());
@@ -135,11 +126,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     public void initFrom(Message proto, ExecutionContext context) {
         MetadataCommand p = (MetadataCommand) proto;
         time = LHUtil.fromProtoTs(p.getTime());
-
         if (p.hasCommandId()) {
             commandId = p.getCommandId();
         }
-
         type = p.getMetadataCommandCase();
         switch (type) {
             case PUT_WF_SPEC:
@@ -310,5 +299,142 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     @Override
     public String getPartitionKey() {
         return "partition-key-not-needed-only-one-partition";
+    }
+
+    public Date getTime() {
+        return this.time;
+    }
+
+    public MetadataCommandCase getType() {
+        return this.type;
+    }
+
+    public PutWfSpecRequestModel getPutWfSpecRequest() {
+        return this.putWfSpecRequest;
+    }
+
+    public PutTaskDefRequestModel getPutTaskDefRequest() {
+        return this.putTaskDefRequest;
+    }
+
+    public PutStructDefRequestModel getPutStructDefRequest() {
+        return this.putStructDefRequest;
+    }
+
+    public PutExternalEventDefRequestModel getPutExternalEventDefRequest() {
+        return this.putExternalEventDefRequest;
+    }
+
+    public DeleteWfSpecRequestModel getDeleteWfSpec() {
+        return this.deleteWfSpec;
+    }
+
+    public DeleteTaskDefRequestModel getDeleteTaskDef() {
+        return this.deleteTaskDef;
+    }
+
+    public DeleteExternalEventDefRequestModel getDeleteExternalEventDef() {
+        return this.deleteExternalEventDef;
+    }
+
+    public DeleteWorkflowEventDefRequestModel getDeleteWorkflowEventDefRequest() {
+        return this.deleteWorkflowEventDefRequest;
+    }
+
+    public PutUserTaskDefRequestModel getPutUserTaskDefRequest() {
+        return this.putUserTaskDefRequest;
+    }
+
+    public DeleteUserTaskDefRequestModel getDeleteUserTaskDef() {
+        return this.deleteUserTaskDef;
+    }
+
+    public PutPrincipalRequestModel getPutPrincipal() {
+        return this.putPrincipal;
+    }
+
+    public DeletePrincipalRequestModel getDeletePrincipal() {
+        return this.deletePrincipal;
+    }
+
+    public PutTenantRequestModel getPutTenant() {
+        return this.putTenant;
+    }
+
+    public PutWorkflowEventDefRequestModel getPutWorkflowEventDef() {
+        return this.putWorkflowEventDef;
+    }
+
+    public DeleteStructDefRequestModel getDeleteStructDef() {
+        return this.deleteStructDef;
+    }
+
+    public void setTime(final Date time) {
+        this.time = time;
+    }
+
+    public void setType(final MetadataCommandCase type) {
+        this.type = type;
+    }
+
+    public void setPutWfSpecRequest(final PutWfSpecRequestModel putWfSpecRequest) {
+        this.putWfSpecRequest = putWfSpecRequest;
+    }
+
+    public void setPutTaskDefRequest(final PutTaskDefRequestModel putTaskDefRequest) {
+        this.putTaskDefRequest = putTaskDefRequest;
+    }
+
+    public void setPutStructDefRequest(final PutStructDefRequestModel putStructDefRequest) {
+        this.putStructDefRequest = putStructDefRequest;
+    }
+
+    public void setPutExternalEventDefRequest(final PutExternalEventDefRequestModel putExternalEventDefRequest) {
+        this.putExternalEventDefRequest = putExternalEventDefRequest;
+    }
+
+    public void setDeleteWfSpec(final DeleteWfSpecRequestModel deleteWfSpec) {
+        this.deleteWfSpec = deleteWfSpec;
+    }
+
+    public void setDeleteTaskDef(final DeleteTaskDefRequestModel deleteTaskDef) {
+        this.deleteTaskDef = deleteTaskDef;
+    }
+
+    public void setDeleteExternalEventDef(final DeleteExternalEventDefRequestModel deleteExternalEventDef) {
+        this.deleteExternalEventDef = deleteExternalEventDef;
+    }
+
+    public void setDeleteWorkflowEventDefRequest(
+            final DeleteWorkflowEventDefRequestModel deleteWorkflowEventDefRequest) {
+        this.deleteWorkflowEventDefRequest = deleteWorkflowEventDefRequest;
+    }
+
+    public void setPutUserTaskDefRequest(final PutUserTaskDefRequestModel putUserTaskDefRequest) {
+        this.putUserTaskDefRequest = putUserTaskDefRequest;
+    }
+
+    public void setDeleteUserTaskDef(final DeleteUserTaskDefRequestModel deleteUserTaskDef) {
+        this.deleteUserTaskDef = deleteUserTaskDef;
+    }
+
+    public void setPutPrincipal(final PutPrincipalRequestModel putPrincipal) {
+        this.putPrincipal = putPrincipal;
+    }
+
+    public void setDeletePrincipal(final DeletePrincipalRequestModel deletePrincipal) {
+        this.deletePrincipal = deletePrincipal;
+    }
+
+    public void setPutTenant(final PutTenantRequestModel putTenant) {
+        this.putTenant = putTenant;
+    }
+
+    public void setPutWorkflowEventDef(final PutWorkflowEventDefRequestModel putWorkflowEventDef) {
+        this.putWorkflowEventDef = putWorkflowEventDef;
+    }
+
+    public void setDeleteStructDef(final DeleteStructDefRequestModel deleteStructDef) {
+        this.deleteStructDef = deleteStructDef;
     }
 }

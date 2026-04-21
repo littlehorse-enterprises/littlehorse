@@ -9,13 +9,8 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
 
-@Setter
-@EqualsAndHashCode(callSuper = false)
 public class ReturnTypeModel extends LHSerializable<ReturnType> {
-
     private TypeDefinitionModel returnType;
 
     public ReturnTypeModel() {}
@@ -42,9 +37,7 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
     @Override
     public ReturnType.Builder toProto() {
         ReturnType.Builder out = ReturnType.newBuilder();
-
         if (returnType != null) out.setReturnType(returnType.toProto());
-
         return out;
     }
 
@@ -74,7 +67,36 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
             }
             return;
         }
-
         returnType.validateCompatibility(value, metadataManager);
+    }
+
+    public void setReturnType(final TypeDefinitionModel returnType) {
+        this.returnType = returnType;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof ReturnTypeModel)) return false;
+        final ReturnTypeModel other = (ReturnTypeModel) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$returnType = this.returnType;
+        final Object other$returnType = other.returnType;
+        if (this$returnType == null ? other$returnType != null : !this$returnType.equals(other$returnType))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof ReturnTypeModel;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $returnType = this.returnType;
+        result = result * PRIME + ($returnType == null ? 43 : $returnType.hashCode());
+        return result;
     }
 }

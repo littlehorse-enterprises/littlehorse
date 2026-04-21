@@ -5,12 +5,9 @@ import io.littlehorse.common.proto.TagStorageType;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Getter
 public class GetableIndex<T extends AbstractGetable<?>> {
-
     private List<Pair<String, ValueType>> attributes;
     private Optional<TagStorageType> tagStorageType;
     private Predicate<T> predicate;
@@ -43,6 +40,18 @@ public class GetableIndex<T extends AbstractGetable<?>> {
 
     public enum ValueType {
         SINGLE,
-        DYNAMIC,
+        DYNAMIC;
+    }
+
+    public List<Pair<String, ValueType>> getAttributes() {
+        return this.attributes;
+    }
+
+    public Optional<TagStorageType> getTagStorageType() {
+        return this.tagStorageType;
+    }
+
+    public Predicate<T> getPredicate() {
+        return this.predicate;
     }
 }

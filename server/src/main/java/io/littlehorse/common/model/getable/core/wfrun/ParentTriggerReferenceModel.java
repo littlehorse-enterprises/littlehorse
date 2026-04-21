@@ -5,13 +5,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class ParentTriggerReferenceModel extends LHSerializable<WfRun.ParentTriggerReference> {
-
     private NodeRunIdModel triggeringNodeRun;
     private NodeRunIdModel waitingNodeRun;
 
@@ -24,11 +19,9 @@ public class ParentTriggerReferenceModel extends LHSerializable<WfRun.ParentTrig
     public WfRun.ParentTriggerReference.Builder toProto() {
         WfRun.ParentTriggerReference.Builder out =
                 WfRun.ParentTriggerReference.newBuilder().setTriggeringNodeRun(triggeringNodeRun.toProto());
-
         if (waitingNodeRun != null) {
             out.setWaitingNodeRun(waitingNodeRun.toProto());
         }
-
         return out;
     }
 
@@ -36,7 +29,6 @@ public class ParentTriggerReferenceModel extends LHSerializable<WfRun.ParentTrig
     public void initFrom(Message proto, ExecutionContext context) {
         WfRun.ParentTriggerReference p = (WfRun.ParentTriggerReference) proto;
         triggeringNodeRun = LHSerializable.fromProto(p.getTriggeringNodeRun(), NodeRunIdModel.class, context);
-
         if (p.hasWaitingNodeRun()) {
             waitingNodeRun = LHSerializable.fromProto(p.getWaitingNodeRun(), NodeRunIdModel.class, context);
         }
@@ -46,5 +38,21 @@ public class ParentTriggerReferenceModel extends LHSerializable<WfRun.ParentTrig
         ParentTriggerReferenceModel out = new ParentTriggerReferenceModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public NodeRunIdModel getTriggeringNodeRun() {
+        return this.triggeringNodeRun;
+    }
+
+    public NodeRunIdModel getWaitingNodeRun() {
+        return this.waitingNodeRun;
+    }
+
+    public void setTriggeringNodeRun(final NodeRunIdModel triggeringNodeRun) {
+        this.triggeringNodeRun = triggeringNodeRun;
+    }
+
+    public void setWaitingNodeRun(final NodeRunIdModel waitingNodeRun) {
+        this.waitingNodeRun = waitingNodeRun;
     }
 }

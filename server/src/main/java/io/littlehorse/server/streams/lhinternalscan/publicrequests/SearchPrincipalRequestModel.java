@@ -24,13 +24,11 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class SearchPrincipalRequestModel
         extends PublicScanRequest<
                 SearchPrincipalRequest, PrincipalIdList, PrincipalId, PrincipalIdModel, SearchPrincipalRequestReply> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SearchPrincipalRequestModel.class);
     private PrincipalCriteriaCase type;
     private Boolean isAdmin;
     private String tenantId;
@@ -64,14 +62,10 @@ public class SearchPrincipalRequestModel
     @Override
     public SearchPrincipalRequest.Builder toProto() throws LHApiException {
         SearchPrincipalRequest.Builder builder = SearchPrincipalRequest.newBuilder();
-
         if (bookmark != null) builder.setBookmark(bookmark.toByteString());
-
         if (limit != null) builder.setLimit(limit);
-
         if (earliestStart != null) builder.setEarliestStart(LHUtil.fromDate(earliestStart));
         if (latestStart != null) builder.setLatestStart(LHUtil.fromDate(latestStart));
-
         switch (type) {
             case IS_ADMIN:
                 builder.setIsAdmin(isAdmin);
@@ -82,14 +76,12 @@ public class SearchPrincipalRequestModel
             default:
                 break;
         }
-
         return builder;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         SearchPrincipalRequest p = (SearchPrincipalRequest) proto;
-
         if (p.hasBookmark()) {
             try {
                 this.bookmark = BookmarkPb.parseFrom(p.getBookmark());
@@ -100,10 +92,8 @@ public class SearchPrincipalRequestModel
         if (p.hasLimit()) {
             this.limit = p.getLimit();
         }
-
         if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
-
         type = p.getPrincipalCriteriaCase();
         switch (type) {
             case IS_ADMIN:
@@ -126,11 +116,8 @@ public class SearchPrincipalRequestModel
     public List<Attribute> getSearchAttributes() throws LHApiException {
         if (tenantId != null && isAdmin != null)
             return List.of(new Attribute("tenantId", tenantId), new Attribute("isAdmin", String.valueOf(isAdmin)));
-
         if (tenantId != null) return List.of(new Attribute("tenantId", tenantId));
-
         if (isAdmin != null) return List.of(new Attribute("isAdmin", String.valueOf(isAdmin)));
-
         return List.of();
     }
 }

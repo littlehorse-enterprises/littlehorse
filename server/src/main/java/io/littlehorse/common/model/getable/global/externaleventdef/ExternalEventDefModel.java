@@ -16,24 +16,13 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 // Don't put lombok here, see `returnType` and `createdAt`
+
 public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
-
-    @Getter
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ExternalEventDefModel.class);
     private ExternalEventDefIdModel id;
-
-    @Getter
     private ExternalEventRetentionPolicyModel retentionPolicy;
-
-    @Getter
-    @Setter
     private CorrelatedEventConfigModel correlatedEventConfig;
-
     // Do not use lombok for this
     private Date createdAt;
     private ReturnTypeModel returnType;
@@ -69,14 +58,12 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
                 .setRetentionPolicy(retentionPolicy.toProto());
-
         // For compatibility purposes, we support ExternalEventDef's that don't have the ReturnType set.
         if (returnType != null) {
             b.setTypeInformation(returnType.toProto());
         } else {
             log.trace("Handling ExternalEventDef created prior to 0.13.2 or with lazy user: no type information");
         }
-
         if (correlatedEventConfig != null) {
             b.setCorrelatedEventConfig(correlatedEventConfig.toProto());
         }
@@ -95,7 +82,6 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
             this.correlatedEventConfig = LHSerializable.fromProto(
                     proto.getCorrelatedEventConfig(), CorrelatedEventConfigModel.class, context);
         }
-
         retentionPolicy =
                 LHSerializable.fromProto(proto.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class, context);
     }
@@ -137,5 +123,21 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
      */
     public Optional<ReturnTypeModel> getReturnType() {
         return Optional.ofNullable(returnType);
+    }
+
+    public ExternalEventDefIdModel getId() {
+        return this.id;
+    }
+
+    public ExternalEventRetentionPolicyModel getRetentionPolicy() {
+        return this.retentionPolicy;
+    }
+
+    public CorrelatedEventConfigModel getCorrelatedEventConfig() {
+        return this.correlatedEventConfig;
+    }
+
+    public void setCorrelatedEventConfig(final CorrelatedEventConfigModel correlatedEventConfig) {
+        this.correlatedEventConfig = correlatedEventConfig;
     }
 }

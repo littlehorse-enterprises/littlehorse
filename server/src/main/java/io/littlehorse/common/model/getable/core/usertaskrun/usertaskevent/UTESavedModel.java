@@ -8,13 +8,8 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-@Getter
-@AllArgsConstructor
 public class UTESavedModel extends LHSerializable<UTESaved> {
-
     private String userId;
     private Map<String, VariableValueModel> results;
 
@@ -31,11 +26,9 @@ public class UTESavedModel extends LHSerializable<UTESaved> {
     public UTESaved.Builder toProto() {
         UTESaved.Builder out = UTESaved.newBuilder();
         out.setUserId(userId);
-
         for (Map.Entry<String, VariableValueModel> entry : results.entrySet()) {
             out.putResults(entry.getKey(), entry.getValue().toProto().build());
         }
-
         return out;
     }
 
@@ -47,5 +40,18 @@ public class UTESavedModel extends LHSerializable<UTESaved> {
             VariableValueModel varVal = VariableValueModel.fromProto(entry.getValue(), ctx);
             results.put(entry.getKey(), varVal);
         }
+    }
+
+    public String getUserId() {
+        return this.userId;
+    }
+
+    public Map<String, VariableValueModel> getResults() {
+        return this.results;
+    }
+
+    public UTESavedModel(final String userId, final Map<String, VariableValueModel> results) {
+        this.userId = userId;
+        this.results = results;
     }
 }

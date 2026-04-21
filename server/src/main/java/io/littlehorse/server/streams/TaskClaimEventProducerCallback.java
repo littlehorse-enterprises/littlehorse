@@ -2,13 +2,11 @@ package io.littlehorse.server.streams;
 
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-@Slf4j
 public class TaskClaimEventProducerCallback implements Callback {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TaskClaimEventProducerCallback.class);
     private final ScheduledTaskModel scheduledTask;
     private final PollTaskRequestObserver client;
 

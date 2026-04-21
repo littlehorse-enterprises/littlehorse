@@ -6,13 +6,8 @@ import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
-@EqualsAndHashCode(callSuper = false)
 public class InlineArrayDefModel extends LHSerializable<InlineArrayDef> {
-
-    @Getter
     private TypeDefinitionModel arrayType;
 
     public InlineArrayDefModel() {}
@@ -58,5 +53,34 @@ public class InlineArrayDefModel extends LHSerializable<InlineArrayDef> {
     @Override
     public String toString() {
         return "Array<" + arrayType.toString() + ">";
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof InlineArrayDefModel)) return false;
+        final InlineArrayDefModel other = (InlineArrayDefModel) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$arrayType = this.getArrayType();
+        final Object other$arrayType = other.getArrayType();
+        if (this$arrayType == null ? other$arrayType != null : !this$arrayType.equals(other$arrayType)) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof InlineArrayDefModel;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $arrayType = this.getArrayType();
+        result = result * PRIME + ($arrayType == null ? 43 : $arrayType.hashCode());
+        return result;
+    }
+
+    public TypeDefinitionModel getArrayType() {
+        return this.arrayType;
     }
 }

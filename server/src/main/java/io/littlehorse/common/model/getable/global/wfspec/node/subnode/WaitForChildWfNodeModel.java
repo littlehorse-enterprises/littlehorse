@@ -18,11 +18,8 @@ import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Getter;
 
-@Getter
 public class WaitForChildWfNodeModel extends SubNode<WaitForChildWfNode> {
-
     private VariableAssignmentModel childWfRunId;
     private String childWfRunSourceNode;
 
@@ -70,7 +67,6 @@ public class WaitForChildWfNodeModel extends SubNode<WaitForChildWfNode> {
             throw new InvalidNodeException(
                     "Specified node " + childWfRunSourceNode + " is not of type RunChildWf", node);
         }
-
         // Now validate the input
         if (!childWfRunId.canBeType(VariableType.WF_RUN_ID, node.getThreadSpec())) {
             throw new InvalidNodeException("Provided value is not a valid WF_RUN_ID", node);
@@ -85,5 +81,13 @@ public class WaitForChildWfNodeModel extends SubNode<WaitForChildWfNode> {
     private NodeModel getSourceNode() {
         ThreadSpecModel threadSpec = node.getThreadSpec();
         return threadSpec.getNode(childWfRunSourceNode);
+    }
+
+    public VariableAssignmentModel getChildWfRunId() {
+        return this.childWfRunId;
+    }
+
+    public String getChildWfRunSourceNode() {
+        return this.childWfRunSourceNode;
     }
 }

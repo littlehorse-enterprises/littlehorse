@@ -141,11 +141,6 @@ dependencies {
     // Prometheus
     implementation "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
 
-    // Lombok stuff
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testImplementation project(":test-utils")
     testImplementation project(":test-utils-container")
 

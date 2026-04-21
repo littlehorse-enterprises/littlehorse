@@ -16,12 +16,10 @@ import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class SearchTaskDefRequestModel
         extends PublicScanRequest<SearchTaskDefRequest, TaskDefIdList, TaskDefId, TaskDefIdModel, SearchTaskDefReply> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SearchTaskDefRequestModel.class);
     public String prefix;
 
     public Class<SearchTaskDefRequest> getProtoBaseClass() {
@@ -60,7 +58,6 @@ public class SearchTaskDefRequestModel
             out.setLimit(limit);
         }
         if (prefix != null) out.setPrefix(prefix);
-
         return out;
     }
 

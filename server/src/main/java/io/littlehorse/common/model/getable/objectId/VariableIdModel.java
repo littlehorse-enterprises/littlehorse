@@ -11,16 +11,11 @@ import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.sdk.common.proto.VariableId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
 public class VariableIdModel extends CoreObjectId<VariableId, Variable, VariableModel> {
-
     private WfRunIdModel wfRunId;
     private int threadRunNumber;
-
-    @Setter // for unit test
+    // for unit test
     private String name;
 
     public Class<VariableId> getProtoBaseClass() {
@@ -78,5 +73,21 @@ public class VariableIdModel extends CoreObjectId<VariableId, Variable, Variable
     @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.VARIABLE;
+    }
+
+    public WfRunIdModel getWfRunId() {
+        return this.wfRunId;
+    }
+
+    public int getThreadRunNumber() {
+        return this.threadRunNumber;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
     }
 }

@@ -46,13 +46,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class NodeModel extends LHSerializable<Node> {
-
     public NodeCase type;
     public TaskNodeModel taskNode;
     public ExternalEventNodeModel externalEventNode;
@@ -76,15 +71,12 @@ public class NodeModel extends LHSerializable<Node> {
 
     public Node.Builder toProto() {
         Node.Builder out = Node.newBuilder();
-
         for (EdgeModel o : outgoingEdges) {
             out.addOutgoingEdges(o.toProto());
         }
-
         for (FailureHandlerDefModel eh : failureHandlers) {
             out.addFailureHandlers(eh.toProto());
         }
-
         switch (type) {
             case TASK:
                 out.setTask(taskNode.toProto());
@@ -131,7 +123,6 @@ public class NodeModel extends LHSerializable<Node> {
             case NODE_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
-
         return out;
     }
 
@@ -139,17 +130,14 @@ public class NodeModel extends LHSerializable<Node> {
     public void initFrom(Message p, ExecutionContext context) {
         Node proto = (Node) p;
         type = proto.getNodeCase();
-
         for (Edge epb : proto.getOutgoingEdgesList()) {
             EdgeModel edge = EdgeModel.fromProto(epb, context);
             edge.setThreadSpecModel(threadSpec);
             outgoingEdges.add(edge);
         }
-
         for (FailureHandlerDef ehpb : proto.getFailureHandlersList()) {
             failureHandlers.add(FailureHandlerDefModel.fromProto(ehpb, context));
         }
-
         switch (type) {
             case TASK:
                 taskNode = new TaskNodeModel();
@@ -211,7 +199,6 @@ public class NodeModel extends LHSerializable<Node> {
     }
 
     // Implementation details below
-
     public NodeModel() {
         outgoingEdges = new ArrayList<>();
         failureHandlers = new ArrayList<>();
@@ -219,7 +206,6 @@ public class NodeModel extends LHSerializable<Node> {
 
     public List<EdgeModel> outgoingEdges;
     public String name;
-
     public ThreadSpecModel threadSpec;
 
     public Optional<FailureHandlerDefModel> getHandlerFor(FailureModel failure) {
@@ -239,7 +225,6 @@ public class NodeModel extends LHSerializable<Node> {
         } catch (InvalidExpressionException exn) {
             throw new InvalidNodeException("Invalid output type for the Node: " + exn.getMessage(), this);
         }
-
         for (EdgeModel e : outgoingEdges) {
             try {
                 e.validate(this, ctx.metadataManager(), threadSpec);
@@ -306,13 +291,10 @@ public class NodeModel extends LHSerializable<Node> {
      */
     public Set<String> getRequiredVariableNames() {
         Set<String> out = new HashSet<>();
-
         for (EdgeModel edge : outgoingEdges) {
             out.addAll(edge.getRequiredVariableNames());
         }
-
         out.addAll(getSubNode().getNeededVariableNames());
-
         return out;
     }
 
@@ -343,5 +325,157 @@ public class NodeModel extends LHSerializable<Node> {
      */
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) throws InvalidExpressionException {
         return getSubNode().getOutputType(manager);
+    }
+
+    public NodeCase getType() {
+        return this.type;
+    }
+
+    public TaskNodeModel getTaskNode() {
+        return this.taskNode;
+    }
+
+    public ExternalEventNodeModel getExternalEventNode() {
+        return this.externalEventNode;
+    }
+
+    public EntrypointNodeModel getEntrypointNode() {
+        return this.entrypointNode;
+    }
+
+    public ExitNodeModel getExitNode() {
+        return this.exitNode;
+    }
+
+    public StartThreadNodeModel getStartThreadNode() {
+        return this.startThreadNode;
+    }
+
+    public WaitForThreadsNodeModel getWaitForThreadsNode() {
+        return this.waitForThreadsNode;
+    }
+
+    public NopNodeModel getNop() {
+        return this.nop;
+    }
+
+    public SleepNodeModel getSleepNode() {
+        return this.sleepNode;
+    }
+
+    public UserTaskNodeModel getUserTaskNode() {
+        return this.userTaskNode;
+    }
+
+    public StartMultipleThreadsNodeModel getStartMultipleThreadsNode() {
+        return this.startMultipleThreadsNode;
+    }
+
+    public ThrowEventNodeModel getThrowEventNode() {
+        return this.throwEventNode;
+    }
+
+    public WaitForConditionNodeModel getWaitForConditionNode() {
+        return this.waitForConditionNode;
+    }
+
+    public RunChildWfNodeModel getRunChildWfNode() {
+        return this.runChildWfNode;
+    }
+
+    public WaitForChildWfNodeModel getWaitForChildWfNode() {
+        return this.waitForChildWfNode;
+    }
+
+    public List<FailureHandlerDefModel> getFailureHandlers() {
+        return this.failureHandlers;
+    }
+
+    public List<EdgeModel> getOutgoingEdges() {
+        return this.outgoingEdges;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public ThreadSpecModel getThreadSpec() {
+        return this.threadSpec;
+    }
+
+    public void setType(final NodeCase type) {
+        this.type = type;
+    }
+
+    public void setTaskNode(final TaskNodeModel taskNode) {
+        this.taskNode = taskNode;
+    }
+
+    public void setExternalEventNode(final ExternalEventNodeModel externalEventNode) {
+        this.externalEventNode = externalEventNode;
+    }
+
+    public void setEntrypointNode(final EntrypointNodeModel entrypointNode) {
+        this.entrypointNode = entrypointNode;
+    }
+
+    public void setExitNode(final ExitNodeModel exitNode) {
+        this.exitNode = exitNode;
+    }
+
+    public void setStartThreadNode(final StartThreadNodeModel startThreadNode) {
+        this.startThreadNode = startThreadNode;
+    }
+
+    public void setWaitForThreadsNode(final WaitForThreadsNodeModel waitForThreadsNode) {
+        this.waitForThreadsNode = waitForThreadsNode;
+    }
+
+    public void setNop(final NopNodeModel nop) {
+        this.nop = nop;
+    }
+
+    public void setSleepNode(final SleepNodeModel sleepNode) {
+        this.sleepNode = sleepNode;
+    }
+
+    public void setUserTaskNode(final UserTaskNodeModel userTaskNode) {
+        this.userTaskNode = userTaskNode;
+    }
+
+    public void setStartMultipleThreadsNode(final StartMultipleThreadsNodeModel startMultipleThreadsNode) {
+        this.startMultipleThreadsNode = startMultipleThreadsNode;
+    }
+
+    public void setThrowEventNode(final ThrowEventNodeModel throwEventNode) {
+        this.throwEventNode = throwEventNode;
+    }
+
+    public void setWaitForConditionNode(final WaitForConditionNodeModel waitForConditionNode) {
+        this.waitForConditionNode = waitForConditionNode;
+    }
+
+    public void setRunChildWfNode(final RunChildWfNodeModel runChildWfNode) {
+        this.runChildWfNode = runChildWfNode;
+    }
+
+    public void setWaitForChildWfNode(final WaitForChildWfNodeModel waitForChildWfNode) {
+        this.waitForChildWfNode = waitForChildWfNode;
+    }
+
+    public void setFailureHandlers(final List<FailureHandlerDefModel> failureHandlers) {
+        this.failureHandlers = failureHandlers;
+    }
+
+    public void setOutgoingEdges(final List<EdgeModel> outgoingEdges) {
+        this.outgoingEdges = outgoingEdges;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setThreadSpec(final ThreadSpecModel threadSpec) {
+        this.threadSpec = threadSpec;
     }
 }

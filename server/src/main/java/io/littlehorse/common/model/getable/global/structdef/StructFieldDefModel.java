@@ -10,17 +10,10 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
-@EqualsAndHashCode(callSuper = false)
 public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
-
-    @Getter
     private TypeDefinitionModel fieldType;
-
     private VariableValueModel defaultValue;
-
     private boolean isNullable;
 
     @Override
@@ -28,11 +21,9 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
         StructFieldDef.Builder out = StructFieldDef.newBuilder()
                 .setFieldType(this.fieldType.toProto())
                 .setIsNullable(isNullable);
-
         if (defaultValue != null) {
             out.setDefaultValue(defaultValue.toProto());
         }
-
         return out;
     }
 
@@ -41,7 +32,6 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
         StructFieldDef proto = (StructFieldDef) p;
         fieldType = TypeDefinitionModel.fromProto(proto.getFieldType(), context);
         isNullable = proto.getIsNullable();
-
         if (proto.hasDefaultValue()) {
             defaultValue = VariableValueModel.fromProto(proto.getDefaultValue(), context);
         }
@@ -50,14 +40,12 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
     public void validateAgainst(StructFieldModel structField, ReadOnlyMetadataManager metadataManager)
             throws StructValidationException {
         structField.setMasked(fieldType.isMasked());
-
         if (structField.getValue().isNull()) {
             if (!isNullable) {
                 throw new StructValidationException("Field is not nullable but received null value");
             }
             return;
         }
-
         try {
             fieldType.validateCompatibility(structField.getValue(), metadataManager);
         } catch (TypeValidationException e) {
@@ -85,7 +73,6 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
         if (defaultValue != null && defaultValue.isNull() && !isNullable) {
             throw new StructDefValidationException("Non-nullable field cannot have a null default value");
         }
-
         // Validates field type against default value
         if (defaultValue != null && !defaultValue.isNull()) {
             try {
@@ -94,5 +81,42 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
                 throw new StructDefValidationException(e, "StructFieldDef validation failed: " + e.getMessage());
             }
         }
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof StructFieldDefModel)) return false;
+        final StructFieldDefModel other = (StructFieldDefModel) o;
+        if (!other.canEqual((Object) this)) return false;
+        if (this.isNullable != other.isNullable) return false;
+        final Object this$fieldType = this.getFieldType();
+        final Object other$fieldType = other.getFieldType();
+        if (this$fieldType == null ? other$fieldType != null : !this$fieldType.equals(other$fieldType)) return false;
+        final Object this$defaultValue = this.defaultValue;
+        final Object other$defaultValue = other.defaultValue;
+        if (this$defaultValue == null ? other$defaultValue != null : !this$defaultValue.equals(other$defaultValue))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof StructFieldDefModel;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + (this.isNullable ? 79 : 97);
+        final Object $fieldType = this.getFieldType();
+        result = result * PRIME + ($fieldType == null ? 43 : $fieldType.hashCode());
+        final Object $defaultValue = this.defaultValue;
+        result = result * PRIME + ($defaultValue == null ? 43 : $defaultValue.hashCode());
+        return result;
+    }
+
+    public TypeDefinitionModel getFieldType() {
+        return this.fieldType;
     }
 }

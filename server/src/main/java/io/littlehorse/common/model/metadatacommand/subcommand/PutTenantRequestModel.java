@@ -19,15 +19,8 @@ import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-@EqualsAndHashCode(callSuper = false)
 public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> implements ClusterLevelCommand {
-
     private String id;
     private OutputTopicConfigModel outputTopicConfig;
 
@@ -50,11 +43,9 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     @Override
     public PutTenantRequest.Builder toProto() {
         PutTenantRequest.Builder result = PutTenantRequest.newBuilder().setId(id);
-
         if (outputTopicConfig != null) {
             result.setOutputTopicConfig(this.outputTopicConfig.toProto());
         }
-
         return result;
     }
 
@@ -66,7 +57,6 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     @Override
     public Tenant process(MetadataProcessorContext context) {
         MetadataManager metadataManager = context.metadataManager();
-
         PrincipalModel caller =
                 context.service().getPrincipal(context.authorization().principalId());
         if (!caller.canCreateTenants()) {
@@ -76,7 +66,6 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
                             "Missing permission %s over resource %s.",
                             ACLAction.WRITE_METADATA, ACLResource.ACL_TENANT));
         }
-
         TenantModel tenant = metadataManager.get(new TenantIdModel(id));
         if (tenant == null) {
             if (this.id.isEmpty() || !LHUtil.isValidLHName(this.id) || Character.isDigit(this.id.charAt(0))) {
@@ -95,5 +84,53 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
             });
         }
         return tenant.toProto().build();
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public OutputTopicConfigModel getOutputTopicConfig() {
+        return this.outputTopicConfig;
+    }
+
+    public void setId(final String id) {
+        this.id = id;
+    }
+
+    public void setOutputTopicConfig(final OutputTopicConfigModel outputTopicConfig) {
+        this.outputTopicConfig = outputTopicConfig;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof PutTenantRequestModel)) return false;
+        final PutTenantRequestModel other = (PutTenantRequestModel) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$id = this.getId();
+        final Object other$id = other.getId();
+        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+        final Object this$outputTopicConfig = this.getOutputTopicConfig();
+        final Object other$outputTopicConfig = other.getOutputTopicConfig();
+        if (this$outputTopicConfig == null
+                ? other$outputTopicConfig != null
+                : !this$outputTopicConfig.equals(other$outputTopicConfig)) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof PutTenantRequestModel;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $id = this.getId();
+        result = result * PRIME + ($id == null ? 43 : $id.hashCode());
+        final Object $outputTopicConfig = this.getOutputTopicConfig();
+        result = result * PRIME + ($outputTopicConfig == null ? 43 : $outputTopicConfig.hashCode());
+        return result;
     }
 }

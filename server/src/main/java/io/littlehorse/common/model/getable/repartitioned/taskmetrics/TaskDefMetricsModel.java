@@ -16,11 +16,8 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
 
-@Getter
 public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
-
     public Date windowStart;
     public MetricsWindowLength type;
     public TaskDefIdModel taskDefId;
@@ -58,7 +55,6 @@ public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
                 .setStartToCompleteAvg(startToCompleteAvg)
                 .setStartToCompleteMax(startToCompleteMax)
                 .setTotalScheduled(totalScheduled);
-
         return out;
     }
 
@@ -98,5 +94,49 @@ public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
 
     public static String getObjectId(MetricsWindowLength windowType, Date time, String taskDefName) {
         return new TaskDefMetricsIdModel(time, windowType, new TaskDefIdModel(taskDefName)).toString();
+    }
+
+    public Date getWindowStart() {
+        return this.windowStart;
+    }
+
+    public MetricsWindowLength getType() {
+        return this.type;
+    }
+
+    public TaskDefIdModel getTaskDefId() {
+        return this.taskDefId;
+    }
+
+    public long getScheduleToStartMax() {
+        return this.scheduleToStartMax;
+    }
+
+    public long getScheduleToStartAvg() {
+        return this.scheduleToStartAvg;
+    }
+
+    public long getStartToCompleteMax() {
+        return this.startToCompleteMax;
+    }
+
+    public long getStartToCompleteAvg() {
+        return this.startToCompleteAvg;
+    }
+
+    public long getTotalCompleted() {
+        return this.totalCompleted;
+    }
+
+    public long getTotalErrored() {
+        return this.totalErrored;
+    }
+
+    public long getTotalStarted() {
+        return this.totalStarted;
+    }
+
+    public long getTotalScheduled() {
+        return this.totalScheduled;
     }
 }

@@ -23,13 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
-@Setter
 public class SearchUserTaskRunRequestModel
         extends PublicScanRequest<
                 SearchUserTaskRunRequest,
@@ -37,13 +31,11 @@ public class SearchUserTaskRunRequestModel
                 UserTaskRunId,
                 UserTaskRunIdModel,
                 SearchUserTaskRunReply> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SearchUserTaskRunRequestModel.class);
     private UserTaskRunStatus status;
     private String userTaskDefName;
-
     private String userId;
     private String userGroup;
-
     private Date latestStart;
     private Date earliestStart;
     private TagStorageType storageTypePbByStatus;
@@ -67,13 +59,10 @@ public class SearchUserTaskRunRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
-
         if (p.hasUserGroup()) userGroup = p.getUserGroup();
         if (p.hasUserId()) userId = p.getUserId();
-
         if (p.hasStatus()) status = p.getStatus();
         if (p.hasUserTaskDefName()) userTaskDefName = p.getUserTaskDefName();
-
         if (p.hasLatestStart()) {
             latestStart = LHUtil.fromProtoTs(p.getLatestStart());
         }
@@ -90,20 +79,16 @@ public class SearchUserTaskRunRequestModel
         if (limit != null) {
             out.setLimit(limit);
         }
-
         if (userGroup != null) out.setUserGroup(userGroup);
         if (userId != null) out.setUserId(userId);
-
         if (status != null) out.setStatus(status);
         if (userTaskDefName != null) out.setUserTaskDefName(userTaskDefName);
-
         if (latestStart != null) {
             out.setLatestStart(LHUtil.fromDate(latestStart));
         }
         if (earliestStart != null) {
             out.setEarliestStart(LHUtil.fromDate(earliestStart));
         }
-
         return out;
     }
 
@@ -116,7 +101,6 @@ public class SearchUserTaskRunRequestModel
     @Override
     public List<Attribute> getSearchAttributes() {
         // Ordering is important. See UserTaskRunModel#getIndexConfigurations()
-
         List<Attribute> attributes = new ArrayList<>();
         if (status != null) {
             attributes.add(new Attribute("status", this.getStatus().toString()));
@@ -124,11 +108,9 @@ public class SearchUserTaskRunRequestModel
         if (userTaskDefName != null) {
             attributes.add(new Attribute("userTaskDefName", this.getUserTaskDefName()));
         }
-
         if (userId != null) {
             attributes.add(new Attribute("userId", this.userId));
         }
-
         if (userGroup != null) {
             attributes.add(new Attribute("userGroup", this.userGroup));
         }
@@ -161,8 +143,63 @@ public class SearchUserTaskRunRequestModel
     //                     .map(Optional::get)
     //                     .findFirst();
     // }
-
     public LHStore getStoreType() {
         return indexTypeForSearch() == TagStorageType.LOCAL ? LHStore.CORE : LHStore.REPARTITION;
+    }
+
+    public UserTaskRunStatus getStatus() {
+        return this.status;
+    }
+
+    public String getUserTaskDefName() {
+        return this.userTaskDefName;
+    }
+
+    public String getUserId() {
+        return this.userId;
+    }
+
+    public String getUserGroup() {
+        return this.userGroup;
+    }
+
+    public Date getLatestStart() {
+        return this.latestStart;
+    }
+
+    public Date getEarliestStart() {
+        return this.earliestStart;
+    }
+
+    public TagStorageType getStorageTypePbByStatus() {
+        return this.storageTypePbByStatus;
+    }
+
+    public void setStatus(final UserTaskRunStatus status) {
+        this.status = status;
+    }
+
+    public void setUserTaskDefName(final String userTaskDefName) {
+        this.userTaskDefName = userTaskDefName;
+    }
+
+    public void setUserId(final String userId) {
+        this.userId = userId;
+    }
+
+    public void setUserGroup(final String userGroup) {
+        this.userGroup = userGroup;
+    }
+
+    public void setLatestStart(final Date latestStart) {
+        this.latestStart = latestStart;
+    }
+
+    public void setEarliestStart(final Date earliestStart) {
+        this.earliestStart = earliestStart;
+    }
+
+    public void setStorageTypePbByStatus(final TagStorageType storageTypePbByStatus) {
+        this.storageTypePbByStatus = storageTypePbByStatus;
     }
 }

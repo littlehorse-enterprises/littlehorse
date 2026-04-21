@@ -19,12 +19,10 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.*;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
-@Slf4j
 public class GetableManager extends ReadOnlyGetableManager {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(GetableManager.class);
     private final CommandModel command;
     private final TenantScopedStore store;
     private final TagStorageManager tagStorageManager;
@@ -57,13 +55,10 @@ public class GetableManager extends ReadOnlyGetableManager {
      *                               with also the same objectId.
      */
     public <U extends Message, T extends CoreGetable<U>> void put(T getable) throws IllegalStateException {
-
         log.trace("Putting {} with key {}", getable.getClass(), getable.getObjectId());
-
         @SuppressWarnings("unchecked")
         GetableToStore<U, T> bufferedResult = (GetableToStore<U, T>)
                 uncommittedChanges.get(getable.getObjectId().getStoreableKey());
-
         if (bufferedResult != null) {
             if (bufferedResult.getObjectToStore() != getable) {
                 throw new IllegalStateException(
@@ -73,13 +68,10 @@ public class GetableManager extends ReadOnlyGetableManager {
             // we are storing. We can safely return now.
             return;
         }
-
         if (getable instanceof ExternalEventModel) {
             WfRunStoredInventoryModel inventory = getOrCreateStoredInventory(
                     ((ExternalEventModel) getable).getId().getWfRunId());
-
             ExternalEventIdModel evtId = ((ExternalEventModel) getable).getObjectId();
-
             // Only add it if it doesn't already exist
             if (!inventory.getExternalEventIds().stream().anyMatch(candidate -> {
                 return evtId.equals(candidate);
@@ -88,7 +80,6 @@ public class GetableManager extends ReadOnlyGetableManager {
             }
             store.put(inventory);
         }
-
         // At this point, we know that `getable` has not yet been stored *in this
         // transaction* since it's not in the buffer. So we need to store it.
         //
@@ -98,7 +89,6 @@ public class GetableManager extends ReadOnlyGetableManager {
         // have to call get().
         boolean alreadyExists =
                 uncommittedChanges.containsKey(getable.getObjectId().getStoreableKey());
-
         GetableToStore<U, T> toPut;
         if (alreadyExists) {
             @SuppressWarnings("unchecked")
@@ -108,7 +98,6 @@ public class GetableManager extends ReadOnlyGetableManager {
         } else {
             toPut = new GetableToStore<>((Class<T>) getable.getClass());
         }
-
         toPut.setObjectToStore(getable);
         uncommittedChanges.put(getable.getObjectId().getStoreableKey(), toPut);
     }
@@ -134,14 +123,11 @@ public class GetableManager extends ReadOnlyGetableManager {
      * @return the Getable we deleted, if it exists, or null otherwise.
      */
     public <U extends Message, T extends CoreGetable<U>> T delete(CoreObjectId<?, U, T> id) {
-
         log.trace("Deleting {} with key {}", id.getType(), id.getStoreableKey());
         T thingToDelete = get(id);
-
         if (thingToDelete == null) {
             return null;
         }
-
         if (thingToDelete instanceof ExternalEventModel) {
             WfRunStoredInventoryModel inventory = getOrCreateStoredInventory(
                     ((ExternalEventModel) thingToDelete).getId().getWfRunId());
@@ -152,30 +138,25 @@ public class GetableManager extends ReadOnlyGetableManager {
                 store.put(inventory);
             }
         }
-
         // Then we need to update the GetableToStore to reflect that we're
         // going to delete it. Also note that since we called get(), we know
         // that the thing is already in the buffer.
         @SuppressWarnings("unchecked")
         GetableToStore<U, T> bufferEntry = (GetableToStore<U, T>) uncommittedChanges.get(id.getStoreableKey());
-
         if (bufferEntry == null) {
             throw new IllegalStateException("Impossible to get null buffer entry after successfull this#get()");
         }
         // Mark it for deletion
         bufferEntry.setObjectToStore(null);
-
         return thingToDelete;
     }
 
     public <U extends Message, T extends CoreGetable<U>> void deleteAllByPrefix(String prefix, Class<T> cls) {
         log.trace("Deleting all {} with prefix {}", cls.getSimpleName(), prefix);
-
         // Note this iterates in a non-paginated way through all NodeRun's in the
         // WfRun. Fine for most use-cases, but if there's a WfRUn that runs for a
         // year and has hundreds of tasks per day, it will be a problem.
         List<GetableToStore<U, T>> allItems = iterateOverPrefixAndPutInUncommittedChanges(prefix, cls);
-
         for (GetableToStore<U, T> itemToDelete : allItems) {
             // Marking the objectToStore as null causes the flush() to delete it.
             itemToDelete.setObjectToStore(null);
@@ -184,7 +165,6 @@ public class GetableManager extends ReadOnlyGetableManager {
 
     public boolean tryToDeleteAllExternalEventsFor(WfRunIdModel wfRunId, int maxDeletesInOneCommand) {
         log.trace("Deleting a bunch of ExternalEvents for WfRun {}", wfRunId);
-
         int deletedEvents = 0;
         WfRunStoredInventoryModel inventory = getOrCreateStoredInventory(wfRunId);
         for (ExternalEventIdModel externalEventId : inventory.getExternalEventIds()) {
@@ -222,11 +202,9 @@ public class GetableManager extends ReadOnlyGetableManager {
             T getable = entity.getObjectToStore();
             store.put(new StoredGetable<>(getable));
             tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
-
             if (outputTopicConfig != null && getable instanceof CoreOutputTopicGetable) {
                 CoreOutputTopicGetable<U> outputTopicCandidate = (CoreOutputTopicGetable<U>) getable;
                 U previouslyStoredProto = entity.getPreviouslyStoredProto();
-
                 if (outputTopicCandidate.shouldProduceToOutputTopic(
                         previouslyStoredProto, ctx.metadataManager(), this, outputTopicConfig)) {
                     return Optional.of(new OutputTopicRecordModel(outputTopicCandidate, command.getTime()));
@@ -243,9 +221,7 @@ public class GetableManager extends ReadOnlyGetableManager {
     @SuppressWarnings("unchecked")
     public void commit() {
         List<OutputTopicRecordModel> outputTopicRecords = new ArrayList<>();
-
         Map<String, GetableToStore<?, ?>> uncommittedChangesCopy = Map.copyOf(uncommittedChanges);
-
         for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChangesCopy.entrySet()) {
             String storeableKey = entry.getKey();
             GetableToStore entity = entry.getValue();
@@ -254,7 +230,6 @@ public class GetableManager extends ReadOnlyGetableManager {
                 outputTopicRecords.add(newRecord.get());
             }
         }
-
         // For any WfRun record, if the status is running, we want it to be the first
         // in the list. Otherwise, we want the WfRun to be the last in the list.
         outputTopicRecords.sort((o1, o2) -> {
@@ -269,13 +244,10 @@ public class GetableManager extends ReadOnlyGetableManager {
             }
             return 0;
         });
-
         for (OutputTopicRecordModel record : outputTopicRecords) {
             ctx.forward(record);
         }
-
         uncommittedChanges.clear();
-
         // Note: no need to call uncommittedChanges.clear() because on every
         // Command, we create a completely new GetableStorageManager.
     }

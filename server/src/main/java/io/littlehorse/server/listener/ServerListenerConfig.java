@@ -11,16 +11,10 @@ import io.littlehorse.server.auth.authenticators.InsecureAuthenticator;
 import io.littlehorse.server.auth.authenticators.MTLSAuthenticator;
 import io.littlehorse.server.auth.authenticators.OAuthAuthenticator;
 import java.io.IOException;
-import lombok.Builder;
-import lombok.Getter;
-
 // https://github.com/grpc/grpc-java/blob/master/examples/example-tls/README.md
 // https://www.cloudflare.com/learning/access-management/what-is-mutual-tls/
 
-@Getter
-@Builder
 public class ServerListenerConfig {
-
     private String name;
     private int port;
     private ListenerProtocol protocol;
@@ -73,5 +67,105 @@ public class ServerListenerConfig {
             case MTLS -> new MTLSAuthenticator();
             default -> InsecureAuthenticator.create();
         };
+    }
+
+    ServerListenerConfig(
+            final String name,
+            final int port,
+            final ListenerProtocol protocol,
+            final AuthorizationProtocol authorizationProtocol,
+            final LHServerConfig config) {
+        this.name = name;
+        this.port = port;
+        this.protocol = protocol;
+        this.authorizationProtocol = authorizationProtocol;
+        this.config = config;
+    }
+
+    public static class ServerListenerConfigBuilder {
+        private String name;
+        private int port;
+        private ListenerProtocol protocol;
+        private AuthorizationProtocol authorizationProtocol;
+        private LHServerConfig config;
+
+        ServerListenerConfigBuilder() {}
+
+        /**
+         * @return {@code this}.
+         */
+        public ServerListenerConfig.ServerListenerConfigBuilder name(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        /**
+         * @return {@code this}.
+         */
+        public ServerListenerConfig.ServerListenerConfigBuilder port(final int port) {
+            this.port = port;
+            return this;
+        }
+
+        /**
+         * @return {@code this}.
+         */
+        public ServerListenerConfig.ServerListenerConfigBuilder protocol(final ListenerProtocol protocol) {
+            this.protocol = protocol;
+            return this;
+        }
+
+        /**
+         * @return {@code this}.
+         */
+        public ServerListenerConfig.ServerListenerConfigBuilder authorizationProtocol(
+                final AuthorizationProtocol authorizationProtocol) {
+            this.authorizationProtocol = authorizationProtocol;
+            return this;
+        }
+
+        /**
+         * @return {@code this}.
+         */
+        public ServerListenerConfig.ServerListenerConfigBuilder config(final LHServerConfig config) {
+            this.config = config;
+            return this;
+        }
+
+        public ServerListenerConfig build() {
+            return new ServerListenerConfig(
+                    this.name, this.port, this.protocol, this.authorizationProtocol, this.config);
+        }
+
+        @Override
+        public String toString() {
+            return "ServerListenerConfig.ServerListenerConfigBuilder(name=" + this.name + ", port=" + this.port
+                    + ", protocol=" + this.protocol + ", authorizationProtocol=" + this.authorizationProtocol
+                    + ", config=" + this.config + ")";
+        }
+    }
+
+    public static ServerListenerConfig.ServerListenerConfigBuilder builder() {
+        return new ServerListenerConfig.ServerListenerConfigBuilder();
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getPort() {
+        return this.port;
+    }
+
+    public ListenerProtocol getProtocol() {
+        return this.protocol;
+    }
+
+    public AuthorizationProtocol getAuthorizationProtocol() {
+        return this.authorizationProtocol;
+    }
+
+    public LHServerConfig getConfig() {
+        return this.config;
     }
 }

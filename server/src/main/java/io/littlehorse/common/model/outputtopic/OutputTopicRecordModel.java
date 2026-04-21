@@ -18,17 +18,9 @@ import io.littlehorse.sdk.common.proto.OutputTopicRecord;
 import io.littlehorse.sdk.common.proto.OutputTopicRecord.PayloadCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-@EqualsAndHashCode(callSuper = false)
 public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
-
     private Timestamp timestamp;
-
     private PayloadCase payloadCase;
     private WfRunModel wfRun;
     private ExternalEventModel externalEvent;
@@ -56,7 +48,6 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
     @Override
     public OutputTopicRecord.Builder toProto() {
         OutputTopicRecord.Builder out = OutputTopicRecord.newBuilder().setTimestamp(timestamp);
-
         switch (payloadCase) {
             case WF_RUN:
                 out.setWfRun(wfRun.toProto());
@@ -84,16 +75,13 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
                 break;
             case PAYLOAD_NOT_SET:
         }
-
         return out;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext ignored) {
         OutputTopicRecord p = (OutputTopicRecord) proto;
-
         timestamp = p.getTimestamp();
-
         payloadCase = p.getPayloadCase();
         switch (payloadCase) {
             case WF_RUN:
@@ -155,7 +143,6 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
         if (thing == null) {
             throw new IllegalArgumentException();
         }
-
         if (WfRunModel.class.isAssignableFrom(thing.getClass())) {
             this.payloadCase = PayloadCase.WF_RUN;
             this.wfRun = (WfRunModel) thing;
@@ -183,5 +170,162 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
         } else {
             throw new IllegalArgumentException("Unrecognized Output Topic Event thing: " + thing.getClass());
         }
+    }
+
+    public Timestamp getTimestamp() {
+        return this.timestamp;
+    }
+
+    public PayloadCase getPayloadCase() {
+        return this.payloadCase;
+    }
+
+    public WfRunModel getWfRun() {
+        return this.wfRun;
+    }
+
+    public ExternalEventModel getExternalEvent() {
+        return this.externalEvent;
+    }
+
+    public WorkflowEventModel getWorkflowEvent() {
+        return this.workflowEvent;
+    }
+
+    public UserTaskRunModel getUserTaskRun() {
+        return this.userTaskRun;
+    }
+
+    public VariableModel getVariable() {
+        return this.variable;
+    }
+
+    public TaskRunModel getTaskRun() {
+        return this.taskRun;
+    }
+
+    public CorrelatedEventModel getCorrelatedEvent() {
+        return this.correlatedEvent;
+    }
+
+    public CheckpointModel getCheckpoint() {
+        return this.checkpoint;
+    }
+
+    public void setTimestamp(final Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setPayloadCase(final PayloadCase payloadCase) {
+        this.payloadCase = payloadCase;
+    }
+
+    public void setWfRun(final WfRunModel wfRun) {
+        this.wfRun = wfRun;
+    }
+
+    public void setExternalEvent(final ExternalEventModel externalEvent) {
+        this.externalEvent = externalEvent;
+    }
+
+    public void setWorkflowEvent(final WorkflowEventModel workflowEvent) {
+        this.workflowEvent = workflowEvent;
+    }
+
+    public void setUserTaskRun(final UserTaskRunModel userTaskRun) {
+        this.userTaskRun = userTaskRun;
+    }
+
+    public void setVariable(final VariableModel variable) {
+        this.variable = variable;
+    }
+
+    public void setTaskRun(final TaskRunModel taskRun) {
+        this.taskRun = taskRun;
+    }
+
+    public void setCorrelatedEvent(final CorrelatedEventModel correlatedEvent) {
+        this.correlatedEvent = correlatedEvent;
+    }
+
+    public void setCheckpoint(final CheckpointModel checkpoint) {
+        this.checkpoint = checkpoint;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof OutputTopicRecordModel)) return false;
+        final OutputTopicRecordModel other = (OutputTopicRecordModel) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$timestamp = this.getTimestamp();
+        final Object other$timestamp = other.getTimestamp();
+        if (this$timestamp == null ? other$timestamp != null : !this$timestamp.equals(other$timestamp)) return false;
+        final Object this$payloadCase = this.getPayloadCase();
+        final Object other$payloadCase = other.getPayloadCase();
+        if (this$payloadCase == null ? other$payloadCase != null : !this$payloadCase.equals(other$payloadCase))
+            return false;
+        final Object this$wfRun = this.getWfRun();
+        final Object other$wfRun = other.getWfRun();
+        if (this$wfRun == null ? other$wfRun != null : !this$wfRun.equals(other$wfRun)) return false;
+        final Object this$externalEvent = this.getExternalEvent();
+        final Object other$externalEvent = other.getExternalEvent();
+        if (this$externalEvent == null ? other$externalEvent != null : !this$externalEvent.equals(other$externalEvent))
+            return false;
+        final Object this$workflowEvent = this.getWorkflowEvent();
+        final Object other$workflowEvent = other.getWorkflowEvent();
+        if (this$workflowEvent == null ? other$workflowEvent != null : !this$workflowEvent.equals(other$workflowEvent))
+            return false;
+        final Object this$userTaskRun = this.getUserTaskRun();
+        final Object other$userTaskRun = other.getUserTaskRun();
+        if (this$userTaskRun == null ? other$userTaskRun != null : !this$userTaskRun.equals(other$userTaskRun))
+            return false;
+        final Object this$variable = this.getVariable();
+        final Object other$variable = other.getVariable();
+        if (this$variable == null ? other$variable != null : !this$variable.equals(other$variable)) return false;
+        final Object this$taskRun = this.getTaskRun();
+        final Object other$taskRun = other.getTaskRun();
+        if (this$taskRun == null ? other$taskRun != null : !this$taskRun.equals(other$taskRun)) return false;
+        final Object this$correlatedEvent = this.getCorrelatedEvent();
+        final Object other$correlatedEvent = other.getCorrelatedEvent();
+        if (this$correlatedEvent == null
+                ? other$correlatedEvent != null
+                : !this$correlatedEvent.equals(other$correlatedEvent)) return false;
+        final Object this$checkpoint = this.getCheckpoint();
+        final Object other$checkpoint = other.getCheckpoint();
+        if (this$checkpoint == null ? other$checkpoint != null : !this$checkpoint.equals(other$checkpoint))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof OutputTopicRecordModel;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $timestamp = this.getTimestamp();
+        result = result * PRIME + ($timestamp == null ? 43 : $timestamp.hashCode());
+        final Object $payloadCase = this.getPayloadCase();
+        result = result * PRIME + ($payloadCase == null ? 43 : $payloadCase.hashCode());
+        final Object $wfRun = this.getWfRun();
+        result = result * PRIME + ($wfRun == null ? 43 : $wfRun.hashCode());
+        final Object $externalEvent = this.getExternalEvent();
+        result = result * PRIME + ($externalEvent == null ? 43 : $externalEvent.hashCode());
+        final Object $workflowEvent = this.getWorkflowEvent();
+        result = result * PRIME + ($workflowEvent == null ? 43 : $workflowEvent.hashCode());
+        final Object $userTaskRun = this.getUserTaskRun();
+        result = result * PRIME + ($userTaskRun == null ? 43 : $userTaskRun.hashCode());
+        final Object $variable = this.getVariable();
+        result = result * PRIME + ($variable == null ? 43 : $variable.hashCode());
+        final Object $taskRun = this.getTaskRun();
+        result = result * PRIME + ($taskRun == null ? 43 : $taskRun.hashCode());
+        final Object $correlatedEvent = this.getCorrelatedEvent();
+        result = result * PRIME + ($correlatedEvent == null ? 43 : $correlatedEvent.hashCode());
+        final Object $checkpoint = this.getCheckpoint();
+        result = result * PRIME + ($checkpoint == null ? 43 : $checkpoint.hashCode());
+        return result;
     }
 }

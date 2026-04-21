@@ -14,17 +14,11 @@ import io.littlehorse.sdk.common.proto.MetricWindowType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWindow, MetricWindowModel> {
-
     private WfSpecIdModel wfSpecId;
     private TaskDefIdModel taskDefId;
     private UserTaskDefIdModel userTaskDefId;
-
     private Date windowStart;
     private MetricWindowType metricType;
     private TenantIdModel tenantId;
@@ -94,7 +88,6 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         MetricWindowId p = (MetricWindowId) proto;
-
         switch (p.getIdCase()) {
             case WF_SPEC_ID:
                 this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
@@ -116,7 +109,6 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
                 }
                 break;
         }
-
         if (p.hasWindowStart()) {
             windowStart = LHUtil.fromProtoTs(p.getWindowStart());
         }
@@ -181,12 +173,59 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
             default:
                 throw new IllegalArgumentException("Unknown metric type: " + metricType);
         }
-
         windowStart = new Date(Long.valueOf(split[split.length - 1]));
     }
 
     @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.METRIC_WINDOW;
+    }
+
+    public WfSpecIdModel getWfSpecId() {
+        return this.wfSpecId;
+    }
+
+    public TaskDefIdModel getTaskDefId() {
+        return this.taskDefId;
+    }
+
+    public UserTaskDefIdModel getUserTaskDefId() {
+        return this.userTaskDefId;
+    }
+
+    public Date getWindowStart() {
+        return this.windowStart;
+    }
+
+    public MetricWindowType getMetricType() {
+        return this.metricType;
+    }
+
+    public TenantIdModel getTenantId() {
+        return this.tenantId;
+    }
+
+    public void setWfSpecId(final WfSpecIdModel wfSpecId) {
+        this.wfSpecId = wfSpecId;
+    }
+
+    public void setTaskDefId(final TaskDefIdModel taskDefId) {
+        this.taskDefId = taskDefId;
+    }
+
+    public void setUserTaskDefId(final UserTaskDefIdModel userTaskDefId) {
+        this.userTaskDefId = userTaskDefId;
+    }
+
+    public void setWindowStart(final Date windowStart) {
+        this.windowStart = windowStart;
+    }
+
+    public void setMetricType(final MetricWindowType metricType) {
+        this.metricType = metricType;
+    }
+
+    public void setTenantId(final TenantIdModel tenantId) {
+        this.tenantId = tenantId;
     }
 }

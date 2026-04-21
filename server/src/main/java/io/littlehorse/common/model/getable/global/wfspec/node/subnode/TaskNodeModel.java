@@ -37,28 +37,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Getter
-@Setter
-@Slf4j
 public class TaskNodeModel extends SubNode<TaskNode> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TaskNodeModel.class);
     private TaskToExecuteCase taskToExecuteType;
     private TaskDefIdModel taskDefId; // BE CAREFUL WHEN USING THIS
     private VariableAssignmentModel dynamicTask;
-
     private List<VariableAssignmentModel> variables;
     private int timeoutSeconds;
-
     // private TaskDefModel taskDef;
     private WfService wfService;
-
     private int simpleRetries;
     private ExponentialBackoffRetryPolicyModel exponentialBackoffRetryPolicy;
-
     private NodeModel node;
 
     public TaskNodeModel() {
@@ -76,16 +66,13 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         TaskNode p = (TaskNode) proto;
-
         timeoutSeconds = p.getTimeoutSeconds();
         if (timeoutSeconds == 0) {
             timeoutSeconds = LHConstants.DEFAULT_TASK_TIMEOUT_SECONDS;
         }
-
         for (VariableAssignment assn : p.getVariablesList()) {
             variables.add(VariableAssignmentModel.fromProto(assn, context));
         }
-
         this.taskToExecuteType = p.getTaskToExecuteCase();
         switch (taskToExecuteType) {
             case TASK_DEF_ID:
@@ -97,7 +84,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             case TASKTOEXECUTE_NOT_SET:
                 throw new IllegalStateException("Task Node did not set taskdef");
         }
-
         simpleRetries = p.getRetries();
         if (p.hasExponentialBackoff()) {
             exponentialBackoffRetryPolicy = LHSerializable.fromProto(
@@ -108,7 +94,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     public TaskNode.Builder toProto() {
         TaskNode.Builder out =
                 TaskNode.newBuilder().setTimeoutSeconds(timeoutSeconds).setRetries(simpleRetries);
-
         for (VariableAssignmentModel va : variables) {
             out.addVariables(va.toProto());
         }
@@ -122,7 +107,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             case TASKTOEXECUTE_NOT_SET:
                 throw new IllegalStateException("Task Node did not set taskdef");
         }
-
         if (exponentialBackoffRetryPolicy != null) {
             out.setExponentialBackoff(exponentialBackoffRetryPolicy.toProto());
         }
@@ -137,19 +121,13 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             if (taskDef == null) {
                 throw new InvalidNodeException("Refers to nonexistent TaskDef " + taskDefId, node);
             }
-
             // Now need to validate that all of the variables are provided.
             if (variables.size() != taskDef.inputVars.size()) {
                 throw new InvalidNodeException(
-                        "For TaskDef "
-                                + taskDef.getName()
-                                + " we need "
-                                + taskDef.inputVars.size()
-                                + " input vars, but we have "
-                                + variables.size(),
+                        "For TaskDef " + taskDef.getName() + " we need " + taskDef.inputVars.size()
+                                + " input vars, but we have " + variables.size(),
                         node);
             }
-
             // Currently, we don't do any type-checking for JSON_ARR or JSON_OBJ variables
             // because they are not strongly-typed. Future versions of LittleHorse will
             // include the ability to register a schema for JSON Variables. For strongly-
@@ -167,7 +145,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                             .map(TypeDefinitionModel::getPrimitiveType)
                             .orElse(null);
                     VariableType taskInputType = taskDefVar.getTypeDef().getPrimitiveType();
-
                     if (assn.getTargetType() != null) {
                         // If explicit cast, validate the cast itself (original type -> cast target)
                         VariableType castTargetType = assn.getTargetType().getPrimitiveType();
@@ -185,7 +162,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                             throw new InvalidNodeException(
                                     "Cannot assign " + sourceVariableType + " to " + taskInputType + ".", node);
                         }
-
                     } else {
                         // No explicit cast, only allow assignment if possible without cast
                         if (!TypeCastingUtils.canBeType(sourceVariableType, taskInputType)) {
@@ -195,7 +171,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                                     node);
                         }
                     }
-
                 } catch (InvalidExpressionException | InvalidMutationException | IllegalArgumentException exception) {
                     throw new InvalidNodeException(
                             "Task input variable with name " + taskDefVar.getName() + " at position " + i + ": "
@@ -204,11 +179,9 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                 }
             }
         }
-
         if (timeoutSeconds == 0) {
             timeoutSeconds = LHConstants.DEFAULT_TASK_TIMEOUT_SECONDS;
         }
-
         validateRetryPolicy();
     }
 
@@ -274,18 +247,15 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     public List<VarNameAndValModel> assignInputVars(ThreadRunModel thread, CoreProcessorContext processorContext)
             throws LHVarSubError {
         TaskDefModel taskDef = getTaskDef(thread, processorContext);
-
         List<VarNameAndValModel> out = new ArrayList<>();
         if (taskDef.getInputVars().size() != variables.size()) {
             throw new LHVarSubError(null, "Impossible: got different number of taskdef vars and node input vars");
         }
-
         for (int i = 0; i < taskDef.inputVars.size(); i++) {
             VariableDefModel requiredVarDef = taskDef.inputVars.get(i);
             VariableAssignmentModel assn = variables.get(i);
             String varName = requiredVarDef.getName();
             VariableValueModel val;
-
             if (assn != null) {
                 val = thread.assignVariable(assn);
             } else {
@@ -293,7 +263,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
             }
             out.add(requiredVarDef.assignValue(val, processorContext.metadataManager()));
         }
-
         return out;
     }
 
@@ -316,5 +285,74 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         // With dynamic tasks, we can't know what the output type will be. We're forced to default to
         // Chulla Vida typing mode.
         return Optional.empty();
+    }
+
+    public TaskToExecuteCase getTaskToExecuteType() {
+        return this.taskToExecuteType;
+    }
+
+    public TaskDefIdModel getTaskDefId() {
+        return this.taskDefId;
+    }
+
+    public VariableAssignmentModel getDynamicTask() {
+        return this.dynamicTask;
+    }
+
+    public List<VariableAssignmentModel> getVariables() {
+        return this.variables;
+    }
+
+    public int getTimeoutSeconds() {
+        return this.timeoutSeconds;
+    }
+
+    public WfService getWfService() {
+        return this.wfService;
+    }
+
+    public int getSimpleRetries() {
+        return this.simpleRetries;
+    }
+
+    public ExponentialBackoffRetryPolicyModel getExponentialBackoffRetryPolicy() {
+        return this.exponentialBackoffRetryPolicy;
+    }
+
+    public NodeModel getNode() {
+        return this.node;
+    }
+
+    public void setTaskToExecuteType(final TaskToExecuteCase taskToExecuteType) {
+        this.taskToExecuteType = taskToExecuteType;
+    }
+
+    public void setTaskDefId(final TaskDefIdModel taskDefId) {
+        this.taskDefId = taskDefId;
+    }
+
+    public void setDynamicTask(final VariableAssignmentModel dynamicTask) {
+        this.dynamicTask = dynamicTask;
+    }
+
+    public void setVariables(final List<VariableAssignmentModel> variables) {
+        this.variables = variables;
+    }
+
+    public void setTimeoutSeconds(final int timeoutSeconds) {
+        this.timeoutSeconds = timeoutSeconds;
+    }
+
+    public void setWfService(final WfService wfService) {
+        this.wfService = wfService;
+    }
+
+    public void setSimpleRetries(final int simpleRetries) {
+        this.simpleRetries = simpleRetries;
+    }
+
+    public void setExponentialBackoffRetryPolicy(
+            final ExponentialBackoffRetryPolicyModel exponentialBackoffRetryPolicy) {
+        this.exponentialBackoffRetryPolicy = exponentialBackoffRetryPolicy;
     }
 }

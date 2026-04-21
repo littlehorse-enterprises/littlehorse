@@ -19,22 +19,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
 public class TaskDefModel extends MetadataGetable<TaskDef> {
-
-    @Setter
     private TaskDefIdModel id;
-
     public Date createdAt;
     public List<VariableDefModel> inputVars;
-
-    @Setter
     private ReturnTypeModel returnType;
-
-    @Setter
     private String description;
 
     public TaskDefModel() {
@@ -73,15 +63,12 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
                 .setReturnType(returnType.toProto());
-
         if (description != null) {
             b.setDescription(description);
         }
-
         for (VariableDefModel entry : inputVars) {
             b.addInputVars(entry.toProto());
         }
-
         return b;
     }
 
@@ -90,15 +77,12 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
         TaskDef proto = (TaskDef) p;
         id = LHSerializable.fromProto(proto.getId(), TaskDefIdModel.class, context);
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-
         if (proto.hasDescription()) {
             description = proto.getDescription();
         }
-
         for (VariableDef entry : proto.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry, context));
         }
-
         // The `return_type` was introduced over a year ago; we don't have anyone using LittleHorse without
         // return types now. Safe to ignore / evolve it.
         returnType = LHSerializable.fromProto(proto.getReturnType(), ReturnTypeModel.class, context);
@@ -116,5 +100,33 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
 
     public static TaskDefId parseId(String fullId) {
         return TaskDefId.newBuilder().setName(fullId).build();
+    }
+
+    public TaskDefIdModel getId() {
+        return this.id;
+    }
+
+    public List<VariableDefModel> getInputVars() {
+        return this.inputVars;
+    }
+
+    public ReturnTypeModel getReturnType() {
+        return this.returnType;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setId(final TaskDefIdModel id) {
+        this.id = id;
+    }
+
+    public void setReturnType(final ReturnTypeModel returnType) {
+        this.returnType = returnType;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
     }
 }

@@ -31,20 +31,17 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.List;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class SearchVariableRequestModel
         extends PublicScanRequest<
                 SearchVariableRequest, VariableIdList, VariableId, VariableIdModel, SearchVariableReply> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SearchVariableRequestModel.class);
     // from proto
     private VariableValueModel value;
     private String varName;
     private String wfSpecName;
     private Integer wfSpecMajorVersion;
     private Integer wfSpecRevision;
-
     // Not from proto
     private WfService service;
 
@@ -67,13 +64,11 @@ public class SearchVariableRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
-
         varName = p.getVarName();
         wfSpecName = p.getWfSpecName();
         value = VariableValueModel.fromProto(p.getValue(), ctx);
         if (p.hasWfSpecMajorVersion()) wfSpecMajorVersion = p.getWfSpecMajorVersion();
         if (p.hasWfSpecRevision()) wfSpecRevision = p.getWfSpecRevision();
-
         // :porg:
         this.service = ctx.service();
     }
@@ -83,13 +78,10 @@ public class SearchVariableRequestModel
                 .setVarName(varName)
                 .setWfSpecName(wfSpecName)
                 .setValue(value.toProto());
-
         if (bookmark != null) out.setBookmark(bookmark.toByteString());
         if (limit != null) out.setLimit(limit);
-
         if (wfSpecMajorVersion != null) out.setWfSpecMajorVersion(wfSpecMajorVersion);
         if (wfSpecRevision != null) out.setWfSpecRevision(wfSpecRevision);
-
         return out;
     }
 
@@ -124,11 +116,9 @@ public class SearchVariableRequestModel
     public TagStorageType indexTypeForSearch() {
         // Do some validations here.
         WfSpecModel spec = service.getWfSpec(wfSpecName, wfSpecMajorVersion, wfSpecRevision);
-
         if (spec == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn't find WfSpec %s".formatted(wfSpecName));
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Couldn\'t find WfSpec %s".formatted(wfSpecName));
         }
-
         if (varName.contains("_$")) {
             String jsonPath = varName.substring(varName.indexOf("_$") + 1);
             String actualVariableName = varName.substring(0, varName.indexOf("_$"));
@@ -137,14 +127,12 @@ public class SearchVariableRequestModel
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT, "Provided WfSpec has no variable named " + actualVariableName);
             }
-
             VariableType primitiveType = varDef.getVarDef().getTypeDef().getPrimitiveType();
             if (primitiveType != VariableType.JSON_ARR && primitiveType != VariableType.JSON_OBJ) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
                         "Specified variable " + actualVariableName + " is not of type JSON_OBJ or JSON_ARR");
             }
-
             Optional<JsonIndexModel> jsonIndex = varDef.getJsonIndexes().stream()
                     .filter(index -> index.getFieldPath().equals(jsonPath))
                     .findFirst();
@@ -158,11 +146,9 @@ public class SearchVariableRequestModel
             if (varDef == null) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "Provided WfSpec has no variable named " + varName);
             }
-
             if (!varDef.isSearchable()) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "Provided variable has no index");
             }
-
             TypeDefinitionModel varType = varDef.getVarDef().getTypeDef();
             if (isTypeSearchable(varType)) {
                 try {
@@ -173,7 +159,6 @@ public class SearchVariableRequestModel
                 }
             }
         }
-
         return TagStorageType.LOCAL;
     }
 
@@ -208,7 +193,6 @@ public class SearchVariableRequestModel
 
     private static boolean isTypeSearchable(TypeDefinitionModel type) {
         if (type.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) return false;
-
         switch (type.getPrimitiveType()) {
             case INT:
             case BOOL:

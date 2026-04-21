@@ -21,16 +21,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Getter;
 
 public class ThrowEventNodeModel extends SubNode<ThrowEventNode> {
-
-    @Getter
     private WorkflowEventDefIdModel workflowEventDefId;
-
-    @Getter
     private VariableAssignmentModel content;
-
     private ExecutionContext context;
 
     @Override
@@ -78,5 +72,13 @@ public class ThrowEventNodeModel extends SubNode<ThrowEventNode> {
     @Override
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
         return Optional.of(new ReturnTypeModel());
+    }
+
+    public WorkflowEventDefIdModel getWorkflowEventDefId() {
+        return this.workflowEventDefId;
+    }
+
+    public VariableAssignmentModel getContent() {
+        return this.content;
     }
 }

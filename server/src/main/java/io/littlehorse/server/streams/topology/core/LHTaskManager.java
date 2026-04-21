@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -23,21 +22,16 @@ import org.apache.kafka.streams.processor.api.Record;
 /**
  * This class provides useful methods for managing LH tasks
  */
-@Slf4j
 public class LHTaskManager {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LHTaskManager.class);
     private final List<LHTimer> timersToSchedule = new ArrayList<>();
-
     private final Map<String, ScheduledTaskModel> scheduledTaskPuts = new HashMap<>();
-
     private final String timerTopicName;
     private final String commandTopicName;
     private final AuthorizationContext authContext;
-
     private final ProcessorContext<String, CommandProcessorOutput> processorContext;
     private final TaskQueueManager taskQueueManager;
     private final TenantScopedStore coreStore;
-
     private Date latestClearedTask;
 
     public LHTaskManager(
@@ -76,19 +70,16 @@ public class LHTaskManager {
         boolean isLegacy = false;
         ScheduledTaskModel scheduledTask =
                 this.coreStore.get(ScheduledTaskModel.getScheduledTaskKey(taskRun), ScheduledTaskModel.class);
-
         if (scheduledTask == null) {
             isLegacy = true;
             scheduledTask = coreStore.get(ScheduledTaskModel.getLegacyKey(taskRun), ScheduledTaskModel.class);
         }
-
         if (scheduledTask != null) {
             scheduledTaskPuts.put(scheduledTask.getStoreKey(), null);
             if (!isLegacy && (latestClearedTask == null || latestClearedTask.compareTo(taskRun.getCreatedAt()) < 0)) {
                 latestClearedTask = taskRun.getCreatedAt();
             }
         }
-
         return scheduledTask;
     }
 
@@ -111,13 +102,11 @@ public class LHTaskManager {
                 this.coreStore.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
             }
         }
-
         if (latestClearedTask != null) {
             // TODO: Refactor the LHTaskManager so that we can do this every 1,000 TaskRun's rather than
             // every single TaskRun. In the grand scheme of things, most of these writes will go to the
             // Write Buffer, but it will still be slightly better for performance to do it less
             // frequently.
-
             coreStore.put(new TaskQueueHintModel(latestClearedTask));
         }
     }

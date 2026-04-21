@@ -16,13 +16,7 @@ import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
-@Setter
 /*
  * In certain crash-failure scenarios, it is possible for there to be two
  * in-flight
@@ -32,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
  * ignored.
  */
 public class TaskClaimEventModel extends CoreSubCommand<TaskClaimEventPb> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TaskClaimEventModel.class);
     private TaskRunIdModel taskRunId;
     private Date time;
     private String taskWorkerVersion;
@@ -72,11 +66,9 @@ public class TaskClaimEventModel extends CoreSubCommand<TaskClaimEventPb> {
             log.debug("Got claimTask for non-existent taskRun {}", taskRunId);
             throw new LHApiException(Status.INVALID_ARGUMENT, "Got claimTask for nonexistent taskRun {}" + taskRunId);
         }
-
         // Needs to be done before we process the event, since processing the event
         // will delete the task schedule request.
         ScheduledTaskModel scheduledTask = executionContext.getTaskManager().markTaskAsScheduled(taskRun);
-
         // It's totally fine for the scheduledTask to be null. That happens when someone already
         // claimed that task. This happens when a server is recovering from a crash. The fact that it
         // is null prevents it from being scheduled twice.
@@ -106,5 +98,37 @@ public class TaskClaimEventModel extends CoreSubCommand<TaskClaimEventPb> {
         this.taskWorkerVersion = proto.getTaskWorkerVersion();
         this.taskWorkerId = proto.getTaskWorkerId();
         this.time = LHUtil.fromProtoTs(proto.getTime());
+    }
+
+    public TaskRunIdModel getTaskRunId() {
+        return this.taskRunId;
+    }
+
+    public Date getTime() {
+        return this.time;
+    }
+
+    public String getTaskWorkerVersion() {
+        return this.taskWorkerVersion;
+    }
+
+    public String getTaskWorkerId() {
+        return this.taskWorkerId;
+    }
+
+    public void setTaskRunId(final TaskRunIdModel taskRunId) {
+        this.taskRunId = taskRunId;
+    }
+
+    public void setTime(final Date time) {
+        this.time = time;
+    }
+
+    public void setTaskWorkerVersion(final String taskWorkerVersion) {
+        this.taskWorkerVersion = taskWorkerVersion;
+    }
+
+    public void setTaskWorkerId(final String taskWorkerId) {
+        this.taskWorkerId = taskWorkerId;
     }
 }

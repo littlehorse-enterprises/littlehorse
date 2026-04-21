@@ -13,15 +13,14 @@ import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseStatus;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpVersion;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.LastHttpContent;
 import java.nio.charset.StandardCharsets;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * A Netty channel handler that processes HTTP requests by delegating to registered endpoints.
  * This handler supports request routing, error handling, and response generation based on
  * the registered endpoints in the StatusServer.
  */
-@Slf4j
 class ServiceHandler extends SimpleChannelInboundHandler<HttpObject> {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ServiceHandler.class);
     private final NettyStatusServer.HttpEndpointRegistry registry;
 
     ServiceHandler(NettyStatusServer.HttpEndpointRegistry registry) {

@@ -6,11 +6,8 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.LHTaskException;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class LHTaskExceptionModel extends LHSerializable<LHTaskException> {
-
     private String name;
     private String message;
     private VariableValueModel content;
@@ -31,5 +28,17 @@ public class LHTaskExceptionModel extends LHSerializable<LHTaskException> {
     @Override
     public Class<LHTaskException> getProtoBaseClass() {
         return LHTaskException.class;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public VariableValueModel getContent() {
+        return this.content;
     }
 }

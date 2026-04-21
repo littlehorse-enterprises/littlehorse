@@ -11,13 +11,10 @@ import io.littlehorse.sdk.common.proto.DeleteCorrelatedEventRequest;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Setter
 public class DeleteCorrelatedEventRequestModel extends CoreSubCommand<DeleteCorrelatedEventRequest> {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(DeleteCorrelatedEventRequestModel.class);
     private CorrelatedEventIdModel id;
 
     @Override
@@ -41,19 +38,21 @@ public class DeleteCorrelatedEventRequestModel extends CoreSubCommand<DeleteCorr
     @Override
     public Empty process(CoreProcessorContext ctx, LHServerConfig config) {
         GetableManager manager = ctx.getableManager();
-
         CorrelatedEventModel correlatedEvent = manager.delete(id);
         if (correlatedEvent == null) {
             log.trace("correlated event {} was already deleted or never existed", id);
         } else {
             log.trace("successfully deleted correlated event {}", id);
         }
-
         return Empty.getDefaultInstance();
     }
 
     @Override
     public String getPartitionKey() {
         return id.getPartitionKey().get();
+    }
+
+    public void setId(final CorrelatedEventIdModel id) {
+        this.id = id;
     }
 }

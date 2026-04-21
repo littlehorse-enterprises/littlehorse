@@ -8,11 +8,8 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Optional;
-import lombok.Getter;
 
-@Getter
 public class ExternalEventRetentionPolicyModel extends LHSerializable<ExternalEventRetentionPolicy> {
-
     private ExtEvtGcPolicyCase type;
     private Integer secondsAfterPut;
 
@@ -28,7 +25,6 @@ public class ExternalEventRetentionPolicyModel extends LHSerializable<ExternalEv
     @Override
     public ExternalEventRetentionPolicy.Builder toProto() {
         ExternalEventRetentionPolicy.Builder out = ExternalEventRetentionPolicy.newBuilder();
-
         switch (type) {
             case SECONDS_AFTER_PUT:
                 out.setSecondsAfterPut(secondsAfterPut);
@@ -64,5 +60,13 @@ public class ExternalEventRetentionPolicyModel extends LHSerializable<ExternalEv
             default:
                 return Optional.empty();
         }
+    }
+
+    public ExtEvtGcPolicyCase getType() {
+        return this.type;
+    }
+
+    public Integer getSecondsAfterPut() {
+        return this.secondsAfterPut;
     }
 }

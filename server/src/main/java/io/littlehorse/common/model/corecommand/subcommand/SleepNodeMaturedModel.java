@@ -14,13 +14,9 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
 public class SleepNodeMaturedModel extends CoreSubCommand<SleepNodeMaturedPb> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SleepNodeMaturedModel.class);
     private NodeRunIdModel nodeRunId;
 
     public SleepNodeMaturedModel() {}
@@ -62,20 +58,21 @@ public class SleepNodeMaturedModel extends CoreSubCommand<SleepNodeMaturedPb> {
             log.debug("Uh oh, invalid timer event, no associated WfRun found.");
             return null;
         }
-
         WfSpecModel wfSpecModel = service.getWfSpec(wfRunModel.getWfSpecId());
         if (wfSpecModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfSpec found.");
             return null;
         }
-
         try {
             wfRunModel.processSleepNodeMatured(
                     this, executionContext.currentCommand().getTime());
         } catch (LHValidationException exn) {
             log.debug("Uh, invalid timer event: {}", exn.getMessage(), exn);
         }
-
         return Empty.getDefaultInstance();
+    }
+
+    public NodeRunIdModel getNodeRunId() {
+        return this.nodeRunId;
     }
 }

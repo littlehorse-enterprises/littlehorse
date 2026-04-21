@@ -7,22 +7,11 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import java.util.List;
 import java.util.Objects;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class GetableToStore<U extends Message, T extends AbstractGetable<U>> {
-
-    @Setter(AccessLevel.NONE)
     private final TagsCache tagsPresentBeforeUpdate;
-
-    @Setter(AccessLevel.NONE)
     private final GetableClassEnum objectType;
-
     private T objectToStore;
-
     private U previouslyStoredProto;
 
     public boolean isDeletion() {
@@ -46,5 +35,29 @@ public class GetableToStore<U extends Message, T extends AbstractGetable<U>> {
     public GetableToStore(Class<T> cls) {
         this.objectType = AbstractGetable.getTypeEnum(cls);
         this.tagsPresentBeforeUpdate = new TagsCache(List.of());
+    }
+
+    public TagsCache getTagsPresentBeforeUpdate() {
+        return this.tagsPresentBeforeUpdate;
+    }
+
+    public GetableClassEnum getObjectType() {
+        return this.objectType;
+    }
+
+    public T getObjectToStore() {
+        return this.objectToStore;
+    }
+
+    public U getPreviouslyStoredProto() {
+        return this.previouslyStoredProto;
+    }
+
+    public void setObjectToStore(final T objectToStore) {
+        this.objectToStore = objectToStore;
+    }
+
+    public void setPreviouslyStoredProto(final U previouslyStoredProto) {
+        this.previouslyStoredProto = previouslyStoredProto;
     }
 }

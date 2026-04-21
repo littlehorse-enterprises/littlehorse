@@ -4,11 +4,8 @@ import io.littlehorse.common.model.PartitionMetricWindowModel;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 public class PartitionMetricsMemoryStore {
-
     private final Map<String, PartitionMetricWindowModel> metrics = new HashMap<>();
 
     public void put(PartitionMetricWindowModel windowMetric) {
@@ -34,4 +31,6 @@ public class PartitionMetricsMemoryStore {
     public void delete(String key) {
         metrics.remove(key);
     }
+
+    public PartitionMetricsMemoryStore() {}
 }

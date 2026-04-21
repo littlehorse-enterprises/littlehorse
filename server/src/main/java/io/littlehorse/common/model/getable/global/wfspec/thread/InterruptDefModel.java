@@ -9,18 +9,12 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefMod
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.sdk.common.proto.InterruptDef;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class InterruptDefModel extends LHSerializable<InterruptDef> {
-
     private ExternalEventDefIdModel externalEventDefId;
     public String handlerSpecName;
-
     public ThreadSpecModel ownerThreadSpecModel;
-
     public ThreadSpecModel handler;
-
     public ExternalEventDefModel eed;
     private ExecutionContext context;
 
@@ -52,32 +46,49 @@ public class InterruptDefModel extends LHSerializable<InterruptDef> {
 
     public void validate() throws InvalidInterruptDefException {
         eed = context.service().getExternalEventDef(externalEventDefId.getName());
-
         if (eed == null) {
             throw new InvalidInterruptDefException("Refers to missing ExternalEventDef " + externalEventDefId);
         }
-
         handler = ownerThreadSpecModel.wfSpec.threadSpecs.get(handlerSpecName);
         if (handler == null) {
             throw new InvalidInterruptDefException("Refers to missing ThreadSpec: " + handlerSpecName);
         }
-
         // As of now, Interrupt Handler Threads can only have one input variable.
         // The triggering ExternalEvent gets passed directly to that input variable,
         // which is named as INPUT (a reserved word).
-
         if (handler.variableDefs.size() > 1) {
             throw new InvalidInterruptDefException(
-                    "Interrupt Handler thread " + handler.name + " should only have 'INPUT' var.");
+                    "Interrupt Handler thread " + handler.name + " should only have \'INPUT\' var.");
         } else if (handler.variableDefs.size() == 1) {
             VariableDefModel theVarDef = handler.getVariableDefs().get(0).getVarDef();
             if (!theVarDef.getName().equals(LHConstants.EXT_EVT_HANDLER_VAR)) {
-                throw new InvalidInterruptDefException("Interrupt Handler thread "
-                        + handler.name
-                        + " can only have '"
-                        + LHConstants.EXT_EVT_HANDLER_VAR
-                        + "' as an input var");
+                throw new InvalidInterruptDefException("Interrupt Handler thread " + handler.name + " can only have \'"
+                        + LHConstants.EXT_EVT_HANDLER_VAR + "\' as an input var");
             }
         }
+    }
+
+    public ExternalEventDefIdModel getExternalEventDefId() {
+        return this.externalEventDefId;
+    }
+
+    public String getHandlerSpecName() {
+        return this.handlerSpecName;
+    }
+
+    public ThreadSpecModel getOwnerThreadSpecModel() {
+        return this.ownerThreadSpecModel;
+    }
+
+    public ThreadSpecModel getHandler() {
+        return this.handler;
+    }
+
+    public ExternalEventDefModel getEed() {
+        return this.eed;
+    }
+
+    public ExecutionContext getContext() {
+        return this.context;
     }
 }

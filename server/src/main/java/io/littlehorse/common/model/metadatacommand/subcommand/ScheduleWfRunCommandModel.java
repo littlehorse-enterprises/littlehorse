@@ -22,17 +22,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ScheduleWfRunCommandModel.class);
     private ScheduledWfRunIdModel scheduledId;
     private String wfSpecName;
     private Integer majorVersion;
     private Integer revision;
     private Map<String, VariableValueModel> variables = new HashMap<>();
     private String cronExpression;
-
     private WfRunIdModel parentWfRunId;
 
     public ScheduleWfRunCommandModel() {}
@@ -89,7 +87,6 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
         if (parentWfRunId != null) {
             out.setParentWfRunId(parentWfRunId.toProto());
         }
-
         for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
         }
@@ -113,7 +110,6 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
             executionContext.getTaskManager().scheduleTimer(runWfTimer);
             Optional<Date> scheduledTime = LHUtil.nextDate(
                     cronExpression, executionContext.currentCommand().getTime());
-
             if (scheduledTime.isPresent()) {
                 CommandModel nextSchedule = new CommandModel(copy(), scheduledTime.get());
                 LHTimer nextScheduleTimer = new LHTimer(nextSchedule);

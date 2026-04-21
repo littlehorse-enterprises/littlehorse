@@ -10,13 +10,9 @@ import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
 public class ExternalEventTimeoutModel extends CoreSubCommand<ExternalEventNodeTimeoutPb> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ExternalEventTimeoutModel.class);
     private NodeRunIdModel nodeRunId;
 
     public ExternalEventTimeoutModel() {}
@@ -51,14 +47,11 @@ public class ExternalEventTimeoutModel extends CoreSubCommand<ExternalEventNodeT
     @Override
     public Empty process(CoreProcessorContext executionContext, LHServerConfig config) {
         WfRunModel wfRunModel = executionContext.getableManager().get(nodeRunId.getWfRunId());
-
         if (wfRunModel == null) {
             log.debug("Got an externalEventTimeout for missing wfRun {}", nodeRunId.getWfRunId());
             return null;
         }
-
         wfRunModel.processExtEvtTimeout(this);
-
         return Empty.getDefaultInstance();
     }
 
@@ -66,5 +59,9 @@ public class ExternalEventTimeoutModel extends CoreSubCommand<ExternalEventNodeT
         ExternalEventTimeoutModel out = new ExternalEventTimeoutModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public NodeRunIdModel getNodeRunId() {
+        return this.nodeRunId;
     }
 }

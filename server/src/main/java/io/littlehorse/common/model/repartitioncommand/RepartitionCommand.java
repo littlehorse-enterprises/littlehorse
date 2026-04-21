@@ -12,17 +12,11 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
-@Setter
-@Getter
 public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
-
     public Date time;
     public String commandId;
-
     public RepartitionCommandCase type;
     private CreateRemoteTag createRemoteTag;
     private RemoveRemoteTag removeRemoteTag;
@@ -82,7 +76,6 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
         RepartitionCommandPb.Builder out = RepartitionCommandPb.newBuilder();
         out.setTime(LHUtil.fromDate(time));
         if (commandId != null) out.setCommandId(commandId);
-
         switch (type) {
             case CREATE_REMOTE_TAG:
                 out.setCreateRemoteTag(createRemoteTag.toProto());
@@ -105,11 +98,9 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         RepartitionCommandPb p = (RepartitionCommandPb) proto;
-
         type = p.getRepartitionCommandCase();
         if (p.hasCommandId()) commandId = p.getCommandId();
         time = LHUtil.fromProtoTs(p.getTime());
-
         switch (type) {
             case CREATE_REMOTE_TAG:
                 createRemoteTag = LHSerializable.fromProto(p.getCreateRemoteTag(), CreateRemoteTag.class, context);
@@ -128,5 +119,61 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
             case REPARTITIONCOMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
+    }
+
+    public void setTime(final Date time) {
+        this.time = time;
+    }
+
+    public void setCommandId(final String commandId) {
+        this.commandId = commandId;
+    }
+
+    public void setType(final RepartitionCommandCase type) {
+        this.type = type;
+    }
+
+    public void setCreateRemoteTag(final CreateRemoteTag createRemoteTag) {
+        this.createRemoteTag = createRemoteTag;
+    }
+
+    public void setRemoveRemoteTag(final RemoveRemoteTag removeRemoteTag) {
+        this.removeRemoteTag = removeRemoteTag;
+    }
+
+    public void setAggregateWfMetrics(final AggregateWfMetricsModel aggregateWfMetrics) {
+        this.aggregateWfMetrics = aggregateWfMetrics;
+    }
+
+    public void setAggregateTaskMetrics(final AggregateTaskMetricsModel aggregateTaskMetrics) {
+        this.aggregateTaskMetrics = aggregateTaskMetrics;
+    }
+
+    public Date getTime() {
+        return this.time;
+    }
+
+    public String getCommandId() {
+        return this.commandId;
+    }
+
+    public RepartitionCommandCase getType() {
+        return this.type;
+    }
+
+    public CreateRemoteTag getCreateRemoteTag() {
+        return this.createRemoteTag;
+    }
+
+    public RemoveRemoteTag getRemoveRemoteTag() {
+        return this.removeRemoteTag;
+    }
+
+    public AggregateWfMetricsModel getAggregateWfMetrics() {
+        return this.aggregateWfMetrics;
+    }
+
+    public AggregateTaskMetricsModel getAggregateTaskMetrics() {
+        return this.aggregateTaskMetrics;
     }
 }

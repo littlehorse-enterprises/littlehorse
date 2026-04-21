@@ -30,21 +30,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
 public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHeartBeatRequest> {
-
-    @Setter // for unit test
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TaskWorkerHeartBeatRequestModel.class);
+    // for unit test
     private String clientId;
-
     private TaskDefIdModel taskDefId;
-
     private String listenerName;
-
     private TaskWorkerAssignor assignor;
     private Set<HostModel> hosts;
 
@@ -61,20 +54,16 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         GetableManager getableManager = executionContext.getableManager();
         // Get the group, a group contains all the task worker for that specific task
         TaskWorkerGroupModel taskWorkerGroup = getableManager.get(new TaskWorkerGroupIdModel(taskDefId));
-
         // If it does not exist then create it with empty workers
         if (taskWorkerGroup == null) {
             taskWorkerGroup = new TaskWorkerGroupModel();
             taskWorkerGroup.createdAt = new Date();
             taskWorkerGroup.id = new TaskWorkerGroupIdModel(taskDefId);
         }
-
         // Remove inactive taskWorker
         removeInactiveWorkers(taskWorkerGroup);
-
         // Get the specific worker, each worker is supposed to have a unique client id
         TaskWorkerMetadataModel taskWorker = taskWorkerGroup.taskWorkers.get(clientId);
-
         // If it is null then create it and add it to the task worker group
         if (taskWorker == null) {
             taskWorker = new TaskWorkerMetadataModel();
@@ -93,10 +82,8 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         }
         // Update the latest heartbeat with the current timestamp
         taskWorker.latestHeartbeat = new Date();
-
         // Save the data
         getableManager.put(taskWorkerGroup);
-
         // Prepare the response with the assigned host for this specific task worker
         // (taskWorker.hosts)
         Set<LHHostInfo> yourHosts = new HashSet<>();
@@ -118,14 +105,12 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
     private RegisterTaskWorkerResponse prepareReply(Set<LHHostInfo> yourHosts) {
         RegisterTaskWorkerResponse.Builder reply = RegisterTaskWorkerResponse.newBuilder();
         reply.addAllYourHosts(yourHosts);
-
         // If there are no hosts for any reason, then reply an error.
         // This SHOULD be impossible unless there's a bug in LittleHorse.
         if (reply.getYourHostsCount() == 0) {
             log.error("Server hosts unavailable, this SHOULD be impossible");
             throw new LHApiException(Status.INTERNAL, "Should be impossible to have no server hosts");
         }
-
         return reply.build();
     }
 
@@ -167,5 +152,29 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         TaskWorkerHeartBeatRequestModel out = new TaskWorkerHeartBeatRequestModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public String getClientId() {
+        return this.clientId;
+    }
+
+    public TaskDefIdModel getTaskDefId() {
+        return this.taskDefId;
+    }
+
+    public String getListenerName() {
+        return this.listenerName;
+    }
+
+    public TaskWorkerAssignor getAssignor() {
+        return this.assignor;
+    }
+
+    public Set<HostModel> getHosts() {
+        return this.hosts;
+    }
+
+    public void setClientId(final String clientId) {
+        this.clientId = clientId;
     }
 }

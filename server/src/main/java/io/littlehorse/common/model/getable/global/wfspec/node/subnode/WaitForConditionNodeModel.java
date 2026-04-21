@@ -21,14 +21,9 @@ import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
-import lombok.Getter;
 
 public class WaitForConditionNodeModel extends SubNode<WaitForConditionNode> {
-
-    @Getter
     private LegacyEdgeConditionModel legacyCondition;
-
-    @Getter
     private VariableAssignmentModel condition;
 
     @Override
@@ -106,5 +101,13 @@ public class WaitForConditionNodeModel extends SubNode<WaitForConditionNode> {
                     "Failed evaluating condition on WAIT_FOR_CONDITION_NODE: " + exn.getMessage(),
                     LHErrorType.VAR_SUB_ERROR.name()));
         }
+    }
+
+    public LegacyEdgeConditionModel getLegacyCondition() {
+        return this.legacyCondition;
+    }
+
+    public VariableAssignmentModel getCondition() {
+        return this.condition;
     }
 }

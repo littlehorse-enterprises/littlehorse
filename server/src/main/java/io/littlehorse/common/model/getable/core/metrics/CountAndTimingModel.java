@@ -4,13 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.CountAndTiming;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
 public class CountAndTimingModel extends LHSerializable<CountAndTiming> {
     private int count;
     private long minLatencyMs;
@@ -68,4 +62,38 @@ public class CountAndTimingModel extends LHSerializable<CountAndTiming> {
                 .setMaxLatencyMs(maxLatencyMs)
                 .setTotalLatencyMs(totalLatencyMs);
     }
+
+    public int getCount() {
+        return this.count;
+    }
+
+    public long getMinLatencyMs() {
+        return this.minLatencyMs;
+    }
+
+    public long getMaxLatencyMs() {
+        return this.maxLatencyMs;
+    }
+
+    public long getTotalLatencyMs() {
+        return this.totalLatencyMs;
+    }
+
+    public void setCount(final int count) {
+        this.count = count;
+    }
+
+    public void setMinLatencyMs(final long minLatencyMs) {
+        this.minLatencyMs = minLatencyMs;
+    }
+
+    public void setMaxLatencyMs(final long maxLatencyMs) {
+        this.maxLatencyMs = maxLatencyMs;
+    }
+
+    public void setTotalLatencyMs(final long totalLatencyMs) {
+        this.totalLatencyMs = totalLatencyMs;
+    }
+
+    public CountAndTimingModel() {}
 }

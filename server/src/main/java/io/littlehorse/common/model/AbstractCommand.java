@@ -5,11 +5,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.proto.LHStoreType;
 import java.util.Optional;
-import lombok.Setter;
 
-@Setter
 public abstract class AbstractCommand<T extends Message> extends LHSerializable<T> {
-
     protected String commandId;
 
     public abstract LHStoreType getStore();
@@ -21,5 +18,9 @@ public abstract class AbstractCommand<T extends Message> extends LHSerializable<
 
     public Optional<String> getCommandId() {
         return Optional.ofNullable(commandId);
+    }
+
+    public void setCommandId(final String commandId) {
+        this.commandId = commandId;
     }
 }

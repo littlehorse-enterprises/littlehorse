@@ -2,12 +2,8 @@ package e2e.Struct;
 
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
-import lombok.Getter;
-import lombok.Setter;
 
 @LHStructDef("struct-user-credentials")
-@Getter
-@Setter
 public class UserCredentials {
     public String username;
     public String password;
@@ -22,5 +18,17 @@ public class UserCredentials {
     @LHStructField(masked = true)
     public String getPassword() {
         return password;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setUsername(final String username) {
+        this.username = username;
+    }
+
+    public void setPassword(final String password) {
+        this.password = password;
     }
 }

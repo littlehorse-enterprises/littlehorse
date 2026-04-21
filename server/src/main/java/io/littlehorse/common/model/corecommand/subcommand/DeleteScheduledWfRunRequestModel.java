@@ -10,11 +10,10 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class DeleteScheduledWfRunRequestModel extends CoreSubCommand<DeleteScheduledWfRunRequest> {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(DeleteScheduledWfRunRequestModel.class);
     private ScheduledWfRunIdModel id;
 
     @Override

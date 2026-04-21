@@ -4,11 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.CorrelatedEventConfig;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class CorrelatedEventConfigModel extends LHSerializable<CorrelatedEventConfig> {
-
     private Long ttlSeconds;
     private boolean deleteAfterFirstCorrelation;
 
@@ -30,5 +27,13 @@ public class CorrelatedEventConfigModel extends LHSerializable<CorrelatedEventCo
         CorrelatedEventConfig p = (CorrelatedEventConfig) proto;
         if (p.hasTtlSeconds()) this.ttlSeconds = p.getTtlSeconds();
         this.deleteAfterFirstCorrelation = p.getDeleteAfterFirstCorrelation();
+    }
+
+    public Long getTtlSeconds() {
+        return this.ttlSeconds;
+    }
+
+    public boolean isDeleteAfterFirstCorrelation() {
+        return this.deleteAfterFirstCorrelation;
     }
 }

@@ -20,12 +20,9 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import lombok.Getter;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
-@Getter
 public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> implements RepartitionSubCommand {
-
     private WfSpecIdModel wfSpecId;
     private TenantIdModel tenantId;
     private final Collection<WfMetricUpdateModel> metricUpdates;
@@ -78,7 +75,6 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
     @Override
     public void process(TenantScopedStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
         for (WfMetricUpdateModel metricUpdate : metricUpdates) {
-
             // TODO: We should NOT do this. The RepartitionContext should do this for us. We also shouldn't
             // be passing in a TenantScopedStore; rather, we should pass in the context.
             StoredGetable<WfSpecMetrics, WfSpecMetricsModel> storedMetrics = repartitionedStore.get(
@@ -108,5 +104,17 @@ public class AggregateWfMetricsModel extends LHSerializable<AggregateWfMetrics> 
         BigDecimal calculatedAvg = BigDecimal.valueOf(metricUpdate.startToCompleteTotal)
                 .divide(BigDecimal.valueOf(Math.max(wfSpecMetric.totalCompleted, 1L)), 4, RoundingMode.HALF_UP);
         wfSpecMetric.startToCompleteAvg = calculatedAvg.longValue();
+    }
+
+    public WfSpecIdModel getWfSpecId() {
+        return this.wfSpecId;
+    }
+
+    public TenantIdModel getTenantId() {
+        return this.tenantId;
+    }
+
+    public Collection<WfMetricUpdateModel> getMetricUpdates() {
+        return this.metricUpdates;
     }
 }

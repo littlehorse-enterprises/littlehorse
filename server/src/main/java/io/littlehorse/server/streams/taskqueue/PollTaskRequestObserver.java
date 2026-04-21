@@ -12,28 +12,17 @@ import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PollTaskRequestObserver.class);
     private StreamObserver<PollTaskResponse> responseObserver;
     private TaskQueueManager taskQueueManager;
-
-    @Getter
     private final PrincipalIdModel principalId;
-
     private TaskDefIdModel taskDefId;
     private String clientId;
     private String taskWorkerVersion;
-
-    @Getter
     private final TenantIdModel tenantId;
-
-    @Getter
     private final RequestExecutionContext requestContext;
-
     private CoreStoreProvider coreStoreProvider;
     private final MetadataCache metadataCache;
     private LHServerConfig config;
@@ -83,9 +72,9 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             // See Javadoc for StreamObserver.onError for more details.
             responseObserver.onError(t);
         } catch (Exception e) {
-            // Smallowed to fail silently since the client connection is already broken, so there's no point in trying
-            // to send an error back to the client.
         }
+        // Smallowed to fail silently since the client connection is already broken, so there's no point in trying
+        // to send an error back to the client.
         log.debug(
                 "Instance {}: Client {} disconnected from task queue {}",
                 taskQueueManager.getBackend().getInstanceName(),
@@ -104,11 +93,9 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         } else if (!taskDefId.getName().equals(req.getTaskDefId().getName())) {
             log.error("TaskDefName not null: {} but doesnt match {}", taskDefId, req.getTaskDefId());
         }
-
         taskDefId = LHSerializable.fromProto(req.getTaskDefId(), TaskDefIdModel.class, requestContext);
         clientId = req.getClientId();
         taskWorkerVersion = req.getTaskWorkerVersion();
-
         taskQueueManager.onPollRequest(this, tenantId, requestContext);
     }
 
@@ -135,5 +122,17 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
                     PollTaskResponse.newBuilder().setResult(toExecute.toProto()).build();
             responseObserver.onNext(response);
         }
+    }
+
+    public PrincipalIdModel getPrincipalId() {
+        return this.principalId;
+    }
+
+    public TenantIdModel getTenantId() {
+        return this.tenantId;
+    }
+
+    public RequestExecutionContext getRequestContext() {
+        return this.requestContext;
     }
 }

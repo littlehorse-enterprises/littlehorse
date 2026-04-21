@@ -10,17 +10,9 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@EqualsAndHashCode(callSuper = false)
 public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
-
     private String id;
-
-    @Setter
     private WfRunIdModel parentWfRunId;
 
     public WfRunIdModel() {}
@@ -82,7 +74,6 @@ public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
         if (storeKey.contains("_")) {
             // then it's a composite id
             String[] splits = storeKey.split("_");
-
             this.id = splits[splits.length - 1];
             this.parentWfRunId = (WfRunIdModel)
                     ObjectIdModel.fromString(storeKey.substring(0, storeKey.lastIndexOf("_")), WfRunIdModel.class);
@@ -94,5 +85,44 @@ public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
     @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.WF_RUN;
+    }
+
+    public WfRunIdModel getParentWfRunId() {
+        return this.parentWfRunId;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof WfRunIdModel)) return false;
+        final WfRunIdModel other = (WfRunIdModel) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$id = this.getId();
+        final Object other$id = other.getId();
+        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+        final Object this$parentWfRunId = this.getParentWfRunId();
+        final Object other$parentWfRunId = other.getParentWfRunId();
+        if (this$parentWfRunId == null ? other$parentWfRunId != null : !this$parentWfRunId.equals(other$parentWfRunId))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof WfRunIdModel;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $id = this.getId();
+        result = result * PRIME + ($id == null ? 43 : $id.hashCode());
+        final Object $parentWfRunId = this.getParentWfRunId();
+        result = result * PRIME + ($parentWfRunId == null ? 43 : $parentWfRunId.hashCode());
+        return result;
+    }
+
+    public void setParentWfRunId(final WfRunIdModel parentWfRunId) {
+        this.parentWfRunId = parentWfRunId;
     }
 }

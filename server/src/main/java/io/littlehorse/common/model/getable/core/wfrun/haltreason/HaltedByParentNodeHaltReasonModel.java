@@ -5,14 +5,9 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.sdk.common.proto.HaltedByParentNodeHaltReason;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class HaltedByParentNodeHaltReasonModel extends LHSerializable<HaltedByParentNodeHaltReason>
         implements SubHaltReason {
-
     private int parentThreadRunNumber;
     private int waitingNodeRunPosition;
 
@@ -54,5 +49,21 @@ public class HaltedByParentNodeHaltReasonModel extends LHSerializable<HaltedByPa
         HaltedByParentNodeHaltReasonModel out = new HaltedByParentNodeHaltReasonModel();
         out.initFrom(proto, context);
         return out;
+    }
+
+    public int getParentThreadRunNumber() {
+        return this.parentThreadRunNumber;
+    }
+
+    public int getWaitingNodeRunPosition() {
+        return this.waitingNodeRunPosition;
+    }
+
+    public void setParentThreadRunNumber(final int parentThreadRunNumber) {
+        this.parentThreadRunNumber = parentThreadRunNumber;
+    }
+
+    public void setWaitingNodeRunPosition(final int waitingNodeRunPosition) {
+        this.waitingNodeRunPosition = waitingNodeRunPosition;
     }
 }

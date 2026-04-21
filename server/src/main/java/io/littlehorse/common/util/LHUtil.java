@@ -34,12 +34,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-@Slf4j
 public class LHUtil {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LHUtil.class);
     public static final Gson LH_GSON = new GsonBuilder()
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
             .serializeNulls()
@@ -53,11 +51,9 @@ public class LHUtil {
     public static Date fromProtoTs(Timestamp proto) {
         if (proto == null) return null;
         Date out = Date.from(Instant.ofEpochSecond(proto.getSeconds(), proto.getNanos()));
-
         if (out.getTime() == 0) {
             out = new Date();
         }
-
         return out;
     }
 
@@ -101,17 +97,15 @@ public class LHUtil {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(stringToIndex.getBytes());
             stringToIndex.hashCode();
-
             // Convert byte array to hexadecimal representation
             StringBuilder hexString = new StringBuilder();
             for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
+                String hex = Integer.toHexString(255 & b);
                 if (hex.length() == 1) {
                     hexString.append('0');
                 }
                 hexString.append(hex);
             }
-
             return stringToIndex.substring(0, 64) + hexString.toString().substring(0, 16);
         } catch (NoSuchAlgorithmException impossible) {
             // Handle the exception (e.g., log or throw a custom exception)
@@ -126,7 +120,7 @@ public class LHUtil {
     public static String toLhDbFormat(Timestamp timestamp) {
         return timestamp == null
                 ? "null"
-                : String.valueOf(timestamp.getSeconds() * 1000 + timestamp.getNanos() / 1_000_000);
+                : String.valueOf(timestamp.getSeconds() * 1000 + timestamp.getNanos() / 1000000);
     }
 
     public static Date getWindowStart(Date time, MetricsWindowLength type) {
@@ -159,7 +153,9 @@ public class LHUtil {
         return val == null ? "null" : val.toString();
     }
 
-    /** @precondition every input string is a valid LHName. */
+    /**
+     * @precondition every input string is a valid LHName.
+     */
     public static String getCompositeId(String... components) {
         return String.join("/", components);
     }
@@ -196,7 +192,6 @@ public class LHUtil {
     public static String toLHName(String oldStr) {
         String str = new String(oldStr);
         str = str.toLowerCase();
-
         str = str.replaceAll("[. _\n]", "-");
         str = str.replaceAll("[^0-9a-z-]", "");
         str = str.replaceAll("-[-]+", "-");
@@ -256,7 +251,6 @@ public class LHUtil {
     public static boolean deepEquals(Object left, Object right) {
         if (left == null && right == null) return true;
         if (left == null || right == null) return false;
-
         if (left.getClass() == Long.class) {
             left = Double.valueOf((Long) left);
         }
@@ -275,16 +269,13 @@ public class LHUtil {
         if (left.getClass() == Float.class) {
             left = Double.valueOf((Float) left);
         }
-
         if (!left.getClass().equals(right.getClass())) {
             return false;
         }
-
         if (left instanceof List) {
             List<Object> lList = (List<Object>) left;
             List<Object> rList = (List<Object>) right;
             if (rList.size() != lList.size()) return false;
-
             for (int i = 0; i < lList.size(); i++) {
                 if (!deepEquals(lList.get(i), rList.get(i))) {
                     return false;
@@ -294,7 +285,6 @@ public class LHUtil {
         } else if (left instanceof Map) {
             Map<String, Object> rMap = (Map<String, Object>) right;
             Map<String, Object> lMap = (Map<String, Object>) left;
-
             for (Map.Entry<String, Object> e : rMap.entrySet()) {
                 if (!deepEquals(e.getValue(), lMap.get(e.getKey()))) {
                     return false;
@@ -309,7 +299,6 @@ public class LHUtil {
     public static boolean isUserError(Throwable exn) {
         if (StatusRuntimeException.class.isAssignableFrom(exn.getClass())) {
             StatusRuntimeException sre = (StatusRuntimeException) exn;
-
             switch (sre.getStatus().getCode()) {
                 case NOT_FOUND,
                         INVALID_ARGUMENT,
@@ -321,7 +310,6 @@ public class LHUtil {
                         // RESOURCE_EXHAUSTED used for quota violations.
                         RESOURCE_EXHAUSTED:
                     return true;
-
                 case OK,
                         UNKNOWN,
                         UNIMPLEMENTED,
@@ -370,12 +358,10 @@ public class LHUtil {
         if (!prefix.equals(Storeable.GROUPED_WF_RUN_PREFIX)) {
             return null;
         }
-
         final String tenantId = parts[0];
         final String wfRunId = parts[3];
         final String storeableType = parts[4];
         final String getableType = parts[5];
-
         StringBuilder legacyKey = new StringBuilder()
                 .append(tenantId)
                 .append("/")
@@ -384,7 +370,6 @@ public class LHUtil {
                 .append(getableType)
                 .append("/")
                 .append(wfRunId);
-
         if (parts.length > 6) {
             String restOfKey = String.join("/", Arrays.copyOfRange(parts, 6, parts.length));
             legacyKey.append("/").append(restOfKey);
@@ -395,7 +380,7 @@ public class LHUtil {
     public enum LHComparisonRule {
         IDENTITY,
         MAGNITUDE,
-        INCLUDES,
+        INCLUDES;
     }
 
     public static LHComparisonRule getRuleFromComparator(Comparator comparator) {

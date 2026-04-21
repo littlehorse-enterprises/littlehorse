@@ -8,13 +8,8 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.TaskNodeReference;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class TaskNodeReferenceModel extends LHSerializable<TaskNodeReference> implements TaskRunSubSource {
-
     private NodeRunIdModel nodeRunId;
     private ExecutionContext context;
     private CoreProcessorContext processorContext;
@@ -33,7 +28,6 @@ public class TaskNodeReferenceModel extends LHSerializable<TaskNodeReference> im
     @Override
     public TaskNodeReference.Builder toProto() {
         TaskNodeReference.Builder out = TaskNodeReference.newBuilder().setNodeRunId(nodeRunId.toProto());
-
         return out;
     }
 
@@ -48,5 +42,29 @@ public class TaskNodeReferenceModel extends LHSerializable<TaskNodeReference> im
     @Override
     public WfRunIdModel getWfRunId() {
         return nodeRunId.getWfRunId();
+    }
+
+    public NodeRunIdModel getNodeRunId() {
+        return this.nodeRunId;
+    }
+
+    public ExecutionContext getContext() {
+        return this.context;
+    }
+
+    public CoreProcessorContext getProcessorContext() {
+        return this.processorContext;
+    }
+
+    public void setNodeRunId(final NodeRunIdModel nodeRunId) {
+        this.nodeRunId = nodeRunId;
+    }
+
+    public void setContext(final ExecutionContext context) {
+        this.context = context;
+    }
+
+    public void setProcessorContext(final CoreProcessorContext processorContext) {
+        this.processorContext = processorContext;
     }
 }

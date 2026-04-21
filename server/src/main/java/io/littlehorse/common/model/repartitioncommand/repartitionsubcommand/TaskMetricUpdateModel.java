@@ -16,13 +16,10 @@ import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
-@Getter
 public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implements RepartitionSubCommand {
-
     private TaskDefIdModel taskDefId;
     public Date windowStart;
     public MetricsWindowLength windowType;
@@ -67,7 +64,6 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
                 .setStartToCompleteMax(startToCompleteMax)
                 .setNumEntries(numEntries)
                 .setTotalScheduled(totalScheduled);
-
         return out;
     }
 
@@ -95,18 +91,15 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
         if (!o.windowType.equals(windowType)) {
             throw new RuntimeException("Merging non-matched windows!");
         }
-
         numEntries += o.numEntries;
         if (o.scheduleToStartMax > scheduleToStartMax) {
             scheduleToStartMax = o.scheduleToStartMax;
         }
         scheduleToStartTotal += o.scheduleToStartTotal;
-
         if (o.startToCompleteMax > startToCompleteMax) {
             startToCompleteMax = o.startToCompleteMax;
         }
         startToCompleteTotal += o.startToCompleteTotal;
-
         totalCompleted += o.totalCompleted;
         totalErrored += o.totalErrored;
         totalStarted += o.totalStarted;
@@ -126,7 +119,6 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
         out.windowStart = windowStart;
         out.totalScheduled = totalScheduled;
         out.type = windowType;
-
         return out;
     }
 
@@ -165,5 +157,53 @@ public class TaskMetricUpdateModel extends Storeable<TaskMetricUpdate> implement
 
     public Date getCreatedAt() {
         return windowStart;
+    }
+
+    public TaskDefIdModel getTaskDefId() {
+        return this.taskDefId;
+    }
+
+    public Date getWindowStart() {
+        return this.windowStart;
+    }
+
+    public MetricsWindowLength getWindowType() {
+        return this.windowType;
+    }
+
+    public long getNumEntries() {
+        return this.numEntries;
+    }
+
+    public long getScheduleToStartMax() {
+        return this.scheduleToStartMax;
+    }
+
+    public long getScheduleToStartTotal() {
+        return this.scheduleToStartTotal;
+    }
+
+    public long getStartToCompleteMax() {
+        return this.startToCompleteMax;
+    }
+
+    public long getStartToCompleteTotal() {
+        return this.startToCompleteTotal;
+    }
+
+    public long getTotalCompleted() {
+        return this.totalCompleted;
+    }
+
+    public long getTotalErrored() {
+        return this.totalErrored;
+    }
+
+    public long getTotalStarted() {
+        return this.totalStarted;
+    }
+
+    public long getTotalScheduled() {
+        return this.totalScheduled;
     }
 }

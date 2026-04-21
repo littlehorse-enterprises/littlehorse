@@ -12,13 +12,8 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
-
     public NodeRunModel nodeRun;
 
     /**
@@ -108,5 +103,9 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
      */
     public List<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableIds(CoreProcessorContext context) {
         return List.of();
+    }
+
+    public NodeRunModel getNodeRun() {
+        return this.nodeRun;
     }
 }
