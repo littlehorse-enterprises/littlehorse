@@ -32,28 +32,25 @@ public class RequestQuotaManager {
         QuotaModel principalQuota = context.metadataManager().get(new QuotaIdModel(tenantId, principalId));
         if (tenantQuota == null && principalQuota == null) return;
 
-        long nowNanos = System.nanoTime();
         int serverCount = Math.max(1, internalComms.getAllInternalHosts().size());
 
-        synchronized (this) {
-            long retryDelayMs = 0L;
-            if (tenantQuota != null) {
-                retryDelayMs = consumeAndGetDelay(tenantQuota, serverCount, nowNanos);
-            }
-            if (principalQuota != null) {
-                retryDelayMs = Math.max(retryDelayMs, consumeAndGetDelay(principalQuota, serverCount, nowNanos));
-            }
+        long retryDelayMs = 0L;
+        if (tenantQuota != null) {
+            retryDelayMs = consumeAndGetDelay(tenantQuota, serverCount);
+        }
+        if (principalQuota != null) {
+            retryDelayMs = Math.max(retryDelayMs, consumeAndGetDelay(principalQuota, serverCount));
+        }
 
-            if (retryDelayMs > 0) {
-                throw StatusProto.toStatusRuntimeException(resourceExhaustedStatus(retryDelayMs));
-            }
+        if (retryDelayMs > 0) {
+            throw StatusProto.toStatusRuntimeException(resourceExhaustedStatus(retryDelayMs));
         }
     }
 
-    private long consumeAndGetDelay(QuotaModel quota, int serverCount, long nowNanos) {
+    private long consumeAndGetDelay(QuotaModel quota, int serverCount) {
         String key = quota.getObjectId().toString();
         QuotaState state = quotaStates.computeIfAbsent(key, k -> new QuotaState());
-        return state.recordRequestAndCalculateDelay(quota.getWriteRequestsPerSecond(), serverCount, nowNanos);
+        return state.recordRequestAndCalculateDelay(quota, serverCount);
     }
 
     private static Status resourceExhaustedStatus(long retryDelayMs) {

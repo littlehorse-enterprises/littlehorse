@@ -1,28 +1,34 @@
 package io.littlehorse.server.quotas;
 
+import io.littlehorse.common.model.getable.global.acl.QuotaModel;
+
 class QuotaState {
 
     private static final long WINDOW_MS = 500L;
-    private static final long NANOS_PER_SECOND = 1_000_000_000L;
+    private static final long NANOS_PER_WINDOW = WINDOW_MS * 1_000_000;
     private static final int MAX_WINDOWS_OF_DEBT = 5;
 
-    private double availablePermits;
+    private int availablePermits;
+    private int capacityPerWindow;
     private long lastRefillNanos;
     private boolean initialized;
 
     QuotaState() {
-        this.availablePermits = 0.0;
+        this.availablePermits = 0;
+        this.capacityPerWindow = 0;
         this.lastRefillNanos = 0L;
         this.initialized = false;
     }
 
-    long recordRequestAndCalculateDelay(int writeRequestsPerSecond, int serverCount, long nowNanos) {
-        double ratePerSecond = perServerRate(writeRequestsPerSecond, serverCount);
-        double permitsPerWindow = ratePerSecond * (WINDOW_MS / 1000.0);
-        refresh(ratePerSecond, nowNanos);
-        availablePermits -= 1.0;
+    synchronized long recordRequestAndCalculateDelay(QuotaModel quota, int serverCount) {
+        maybeRefreshWindow(quota, serverCount);
+        availablePermits--;
+        return calculateDelayMs();
+    }
 
+    private long calculateDelayMs() {
         if (availablePermits >= 0) {
+            System.out.println("accepting req");
             return 0L;
         }
 
@@ -33,34 +39,39 @@ class QuotaState {
         // This is the way. Obi-Wan.
 
         double permitDebt = -1.0 * availablePermits;
-        double numberOfWindowsToWait = 1.0 + (permitDebt / permitsPerWindow);
+        double numberOfWindowsToWait = 1.0 + (permitDebt / capacityPerWindow);
         long delayMs = (long) (WINDOW_MS * numberOfWindowsToWait);
-
         return delayMs;
     }
 
-    private static double perServerRate(int writeRequestsPerSecond, int serverCount) {
-        return Math.max(1.0, writeRequestsPerSecond / (double) serverCount);
-    }
+    private void maybeRefreshWindow(QuotaModel quota, int serverCount) {
+        long nowNanos = System.nanoTime();
 
-    private void refresh(double ratePerSecond, long nowNanos) {
-        double capacity = Math.max(1.0, ratePerSecond * WINDOW_MS / 1_000.0);
+        double requestsPerSec = Math.max(1.0, quota.getWriteRequestsPerSecond() / (double) serverCount);
+        this.capacityPerWindow = (int) Math.ceil(Math.max(1.0, requestsPerSec * WINDOW_MS / 1000));
+
         if (!initialized) {
-            availablePermits = capacity;
-            lastRefillNanos = nowNanos;
-            initialized = true;
+            this.availablePermits = capacityPerWindow;
+            this.lastRefillNanos = nowNanos;
+            this.initialized = true;
             return;
         }
 
-        double elapsedSeconds = (nowNanos - lastRefillNanos) / (double) NANOS_PER_SECOND;
-        if (elapsedSeconds > 0) {
-            availablePermits = Math.min(capacity, availablePermits + (elapsedSeconds * ratePerSecond));
-
-            // Cap the debt at MAX_WINDOWS_OF_DEBT upon each refresh.
-            if (availablePermits < -1 * MAX_WINDOWS_OF_DEBT * capacity) {
-                availablePermits = -1 * MAX_WINDOWS_OF_DEBT * capacity;
-            }
+        long elapsedWindows = (nowNanos - lastRefillNanos) / NANOS_PER_WINDOW;
+        if (elapsedWindows > 0) {
             lastRefillNanos = nowNanos;
+
+            // In cases of super high load, we need to "cap the debt". This is the
+            // "token bucket" pattern.
+            if (availablePermits < MAX_WINDOWS_OF_DEBT * capacityPerWindow * -1) {
+                availablePermits = MAX_WINDOWS_OF_DEBT * capacityPerWindow * -1;
+            }
+
+            // Refresh the available permits. Note that, with debt, availablePermits can be negative.
+            availablePermits += capacityPerWindow * elapsedWindows;
+
+            // Make sure permits didn't go above what it should be.
+            availablePermits = Math.min(capacityPerWindow, availablePermits);
         }
     }
 }
