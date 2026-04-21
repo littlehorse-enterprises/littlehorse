@@ -498,7 +498,7 @@ func TestDeclareStructAddsStructDefIdVariable(t *testing.T) {
 
 func TestDeclareStructWithExplicitVersionAddsVersionedStructDefId(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
-		thread.DeclareStruct("my-person", "person", 3)
+		thread.DeclareStructWithVersion("my-person", "person", 3)
 	}, "struct-version-test")
 
 	putWf, err := wf.Compile()
