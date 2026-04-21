@@ -6,7 +6,6 @@ class QuotaState {
 
     private static final long WINDOW_MS = 500L;
     private static final long NANOS_PER_WINDOW = WINDOW_MS * 1_000_000;
-    // private static final int MAX_WINDOWS_OF_DEBT = 5;
 
     private int permitDebt; // Used to calculate retry delay
     private int permitsLeftInThisWindow; // Keeps track of whether we can accept requests in this window
@@ -22,7 +21,7 @@ class QuotaState {
         this.initialized = false;
     }
 
-    long recordRequestAndCalculateDelay(QuotaModel quota, int serverCount) {
+    synchronized long recordRequestAndCalculateDelay(QuotaModel quota, int serverCount) {
         maybeRefreshWindow(quota, serverCount);
         permitsLeftInThisWindow--;
         return calculateDelayMs();
@@ -54,7 +53,7 @@ class QuotaState {
         this.permitsPerWindow = (int) Math.ceil(Math.max(1.0, requestsPerSec * WINDOW_MS / 1000));
 
         if (!initialized) {
-            this.permitDebt = permitsPerWindow;
+            this.permitDebt = 0;
             this.lastRefillNanos = nowNanos;
             this.permitsLeftInThisWindow = this.permitsPerWindow;
             this.initialized = true;
@@ -66,11 +65,10 @@ class QuotaState {
             lastRefillNanos = nowNanos;
             this.permitsLeftInThisWindow = this.permitsPerWindow;
 
-            // Refresh the available permits. Note that, with debt, availablePermits can be negative.
+            // Re-calculate permit debt. This helps us give better throttling experience after
+            // a large spikey batch dump.
             permitDebt -= permitsPerWindow * elapsedWindows;
-
-            // Make sure permits didn't go above what it should be.
-            permitDebt = Math.min(permitsPerWindow, permitDebt);
+            permitDebt = Math.max(0, permitDebt); // Permit debt can't be negative
         }
     }
 }
