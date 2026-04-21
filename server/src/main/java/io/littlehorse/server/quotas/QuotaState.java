@@ -27,6 +27,11 @@ class QuotaState {
     }
 
     private long calculateDelayMs() {
+        // If we still have permits, allow the request immediately.
+        if (availablePermits >= 0) {
+            return 0L;
+        }
+
         // Here's where we implement permit debt:
         // - Under high load, send increasingly high backoff to account for throttled requests
         //   which will come in again soon after when the retry delay expires
