@@ -6,7 +6,7 @@ class QuotaState {
 
     private static final long WINDOW_MS = 500L;
     private static final long NANOS_PER_WINDOW = WINDOW_MS * 1_000_000;
-    private static final int MAX_WINDOWS_OF_DEBT = 5;
+    // private static final int MAX_WINDOWS_OF_DEBT = 5;
 
     private int permitDebt; // Used to calculate retry delay
     private int permitsLeftInThisWindow; // Keeps track of whether we can accept requests in this window
@@ -47,14 +47,16 @@ class QuotaState {
     }
 
     private void maybeRefreshWindow(QuotaModel quota, int serverCount) {
-        long nowNanos = System.currentTimeMillis();
+        long nowNanos = System.nanoTime();
 
+        // The Quota or the number of servers may have changed!
         double requestsPerSec = Math.max(1.0, quota.getWriteRequestsPerSecond() / (double) serverCount);
         this.permitsPerWindow = (int) Math.ceil(Math.max(1.0, requestsPerSec * WINDOW_MS / 1000));
 
         if (!initialized) {
             this.permitDebt = permitsPerWindow;
             this.lastRefillNanos = nowNanos;
+            this.permitsLeftInThisWindow = this.permitsPerWindow;
             this.initialized = true;
             return;
         }
