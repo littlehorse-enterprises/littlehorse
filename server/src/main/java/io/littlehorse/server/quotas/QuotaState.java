@@ -6,6 +6,7 @@ class QuotaState {
 
     private static final long WINDOW_MS = 500L;
     private static final long NANOS_PER_WINDOW = WINDOW_MS * 1_000_000;
+    private static final long MAX_WINDOWS_OF_DEBT = 60; // 30 seconds max throttle
 
     private int permitDebt; // Used to calculate retry delay
     private int permitsLeftInThisWindow; // Keeps track of whether we can accept requests in this window
@@ -68,7 +69,12 @@ class QuotaState {
             // Re-calculate permit debt. This helps us give better throttling experience after
             // a large spikey batch dump.
             permitDebt -= permitsPerWindow * elapsedWindows;
-            permitDebt = Math.max(0, permitDebt); // Permit debt can't be negative
+
+            // Permit debt can't be negative
+            permitDebt = Math.max(0, permitDebt);
+
+            // Put a limit on debt.
+            permitDebt = (int) Math.min(permitDebt, permitsPerWindow * MAX_WINDOWS_OF_DEBT);
         }
     }
 }
