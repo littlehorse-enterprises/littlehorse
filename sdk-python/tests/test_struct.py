@@ -530,6 +530,7 @@ class TestWorkflowStructIntegration(unittest.TestCase):
         def my_entrypoint(wf: WorkflowThread) -> None:
             var = wf.declare_struct("my-addr", Address)
             self.assertEqual(var._struct_def_name, "address")
+            self.assertEqual(var._struct_def_version, -1)
             self.assertEqual(var.name, "my-addr")
 
         Workflow("test-declare-class", my_entrypoint).compile()
