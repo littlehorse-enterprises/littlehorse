@@ -9,7 +9,6 @@ import io.grpc.Status;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 import javax.annotation.Nullable;
 
 final class RetryingUnaryClientCall<ReqT, RespT> extends ClientCall<ReqT, RespT> {
