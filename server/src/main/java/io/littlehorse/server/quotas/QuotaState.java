@@ -20,18 +20,13 @@ class QuotaState {
         this.initialized = false;
     }
 
-    synchronized long recordRequestAndCalculateDelay(QuotaModel quota, int serverCount) {
+    long recordRequestAndCalculateDelay(QuotaModel quota, int serverCount) {
         maybeRefreshWindow(quota, serverCount);
-        availablePermits--;
+        availablePermits -= 1.0;
         return calculateDelayMs();
     }
 
     private long calculateDelayMs() {
-        if (availablePermits >= 0) {
-            System.out.println("accepting req");
-            return 0L;
-        }
-
         // Here's where we implement permit debt:
         // - Under high load, send increasingly high backoff to account for throttled requests
         //   which will come in again soon after when the retry delay expires
@@ -45,7 +40,7 @@ class QuotaState {
     }
 
     private void maybeRefreshWindow(QuotaModel quota, int serverCount) {
-        long nowNanos = System.nanoTime();
+        long nowNanos = System.currentTimeMillis();
 
         double requestsPerSec = Math.max(1.0, quota.getWriteRequestsPerSecond() / (double) serverCount);
         this.capacityPerWindow = (int) Math.ceil(Math.max(1.0, requestsPerSec * WINDOW_MS / 1000));
