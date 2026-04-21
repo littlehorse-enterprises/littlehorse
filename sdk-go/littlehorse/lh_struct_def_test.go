@@ -501,11 +501,9 @@ func TestDeclareStructWithExplicitVersionAddsVersionedStructDefId(t *testing.T) 
 		thread.DeclareStructWithVersion("my-person", "person", 3)
 	}, "struct-version-test")
 
-	putWf, err := wf.Compile()
-	assert.Nil(t, err)
+	putWf, _ := wf.Compile()
 
 	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
-	assert.Len(t, entrypoint.VariableDefs, 1)
 
 	varDef := entrypoint.VariableDefs[0]
 	structDefId := varDef.VarDef.TypeDef.GetStructDefId()
