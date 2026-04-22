@@ -42,7 +42,7 @@ public class StructBuilderTest {
                     var fields = variableValue.getStruct().getStruct().getFieldsMap();
                     assertThat(fields.get("brand").getValue().getStr()).isEqualTo("Toyota");
                     assertThat(fields.get("model").getValue().getStr()).isEqualTo("Camry");
-                    assertThat(fields.get("mileage").getValue().getInt()).isEqualTo(0);
+                    assertThat(fields.get("mileage").getValue().getInt()).isEqualTo(42);
                 })
                 .start();
     }

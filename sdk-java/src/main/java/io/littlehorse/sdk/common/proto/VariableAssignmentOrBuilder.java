@@ -211,6 +211,33 @@ public interface VariableAssignmentOrBuilder extends
 
   /**
    * <pre>
+   * Builds a Struct using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+   * @return Whether the structBuilder field is set.
+   */
+  boolean hasStructBuilder();
+  /**
+   * <pre>
+   * Builds a Struct using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+   * @return The structBuilder.
+   */
+  io.littlehorse.sdk.common.proto.StructBuilder getStructBuilder();
+  /**
+   * <pre>
+   * Builds a Struct using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.StructBuilderOrBuilder getStructBuilderOrBuilder();
+
+  /**
+   * <pre>
    * If specified, the resolved value will be cast to this type before being used.
    * This allows explicit type conversions anywhere VariableAssignment is used.
    * The cast operation is non-mutating: original values remain unchanged.

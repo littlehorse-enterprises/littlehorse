@@ -134,6 +134,19 @@ public interface WorkflowThread {
     LHFormatString format(String format, Serializable... args);
 
     /**
+     * Creates a builder for a Struct value with the specified StructDef name.
+     * @param structDefName the StructDef name
+     * @return a Struct builder
+     */
+    LHStructBuilder buildStruct(String structDefName);
+
+    /**
+     * Creates a builder for a nested inline Struct value.
+     * @return an inline Struct builder
+     */
+    LHStructBuilder buildInlineStruct();
+
+    /**
      * Creates a variable of type INT in the ThreadSpec.
      * @param name is the name of the variable.
      * @return a WfRunVariable.
