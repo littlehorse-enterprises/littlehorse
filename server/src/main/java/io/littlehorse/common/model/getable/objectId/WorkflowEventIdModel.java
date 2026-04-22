@@ -11,9 +11,7 @@ import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.common.proto.WorkflowEventId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.Getter;
 
-@Getter
 public class WorkflowEventIdModel extends CoreObjectId<WorkflowEventId, WorkflowEvent, WorkflowEventModel> {
     private WfRunIdModel wfRunId;
     private WorkflowEventDefIdModel workflowEventDefId;
@@ -76,5 +74,17 @@ public class WorkflowEventIdModel extends CoreObjectId<WorkflowEventId, Workflow
     @Override
     public Optional<WfRunIdModel> getGroupingWfRunId() {
         return Optional.of(wfRunId);
+    }
+
+    public WfRunIdModel getWfRunId() {
+        return this.wfRunId;
+    }
+
+    public WorkflowEventDefIdModel getWorkflowEventDefId() {
+        return this.workflowEventDefId;
+    }
+
+    public int getId() {
+        return this.id;
     }
 }

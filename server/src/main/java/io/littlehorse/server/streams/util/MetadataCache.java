@@ -4,10 +4,9 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.store.StoredGetable;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class MetadataCache extends LHCache<String, StoredGetable<? extends Message, ? extends MetadataGetable<?>>> {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MetadataCache.class);
 
     public MetadataCache() {}
 

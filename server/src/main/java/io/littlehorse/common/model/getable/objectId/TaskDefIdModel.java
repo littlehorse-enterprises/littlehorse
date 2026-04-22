@@ -7,13 +7,8 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class TaskDefIdModel extends MetadataId<TaskDefId, TaskDef, TaskDefModel> {
-
     public String name;
 
     public TaskDefIdModel() {}
@@ -52,5 +47,13 @@ public class TaskDefIdModel extends MetadataId<TaskDefId, TaskDef, TaskDefModel>
     @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.TASK_DEF;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
     }
 }

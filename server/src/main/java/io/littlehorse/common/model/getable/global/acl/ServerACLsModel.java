@@ -9,11 +9,8 @@ import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
 
-@Getter
 public class ServerACLsModel extends LHSerializable<ServerACLs> {
-
     private List<ServerACLModel> acls = new ArrayList<>();
 
     @Override
@@ -47,5 +44,9 @@ public class ServerACLsModel extends LHSerializable<ServerACLs> {
      */
     public boolean allows(ACLResource resource, ACLAction action) {
         return acls.stream().anyMatch(acl -> acl.allows(resource, action));
+    }
+
+    public List<ServerACLModel> getAcls() {
+        return this.acls;
     }
 }

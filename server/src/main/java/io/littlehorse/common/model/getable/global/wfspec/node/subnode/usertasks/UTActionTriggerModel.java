@@ -10,18 +10,13 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger.ActionCase;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
 public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(UTActionTriggerModel.class);
     public ActionCase actionType;
     public UTATaskModel task;
     public UTACancelModel cancel;
     public UTAReassignModel reassign;
-
     public UTHook hook;
     public VariableAssignmentModel delaySeconds;
 
@@ -33,7 +28,6 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
     @Override
     public UTActionTrigger.Builder toProto() {
         UTActionTrigger.Builder out = UTActionTrigger.newBuilder();
-
         switch (actionType) {
             case TASK:
                 out.setTask(task.toProto());
@@ -64,8 +58,8 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
                 cancel.schedule(utr, this, processorContext);
                 break;
             case ACTION_NOT_SET:
-                // nothing to do
         }
+        // nothing to do
     }
 
     @Override
@@ -87,5 +81,29 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
             case ACTION_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
+    }
+
+    public ActionCase getActionType() {
+        return this.actionType;
+    }
+
+    public UTATaskModel getTask() {
+        return this.task;
+    }
+
+    public UTACancelModel getCancel() {
+        return this.cancel;
+    }
+
+    public UTAReassignModel getReassign() {
+        return this.reassign;
+    }
+
+    public UTHook getHook() {
+        return this.hook;
+    }
+
+    public VariableAssignmentModel getDelaySeconds() {
+        return this.delaySeconds;
     }
 }

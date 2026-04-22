@@ -24,11 +24,8 @@ import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.Getter;
 
-@Getter
 public class ExpressionModel extends LHSerializable<Expression> {
-
     private VariableAssignmentModel lhs;
     private VariableAssignmentModel rhs;
     private Comparator mutateByComparison;
@@ -76,11 +73,9 @@ public class ExpressionModel extends LHSerializable<Expression> {
         } else {
             Optional<TypeDefinitionModel> lhsTypeOption = lhs.resolveType(manager, wfSpec, threadSpecName);
             Optional<TypeDefinitionModel> rhsTypeOption = rhs.resolveType(manager, wfSpec, threadSpecName);
-
             if (lhsTypeOption.isEmpty() || rhsTypeOption.isEmpty()) {
                 return Optional.empty();
             }
-
             TypeDefinitionModel lhsType = lhsTypeOption.get();
             TypeDefinitionModel rhsType = rhsTypeOption.get();
             return lhsType.resolveTypeAfterMutationWith(mutateWithOperation, rhsType, manager);
@@ -99,14 +94,11 @@ public class ExpressionModel extends LHSerializable<Expression> {
     private VariableValueModel evaluateMutationWithOperation(VariableAssignerFunc variableFinder) throws LHVarSubError {
         VariableValueModel lhsVal = variableFinder.assign(lhs);
         VariableValueModel rhsVal = variableFinder.assign(rhs);
-
         TypeDefinitionModel typeToCoerceTo = lhsVal.getTypeDefinition();
-
         if (lhsVal.getTypeDefinition().getPrimitiveType() == VariableType.INT
                 && rhsVal.getTypeDefinition().getPrimitiveType() == VariableType.DOUBLE) {
             typeToCoerceTo = new TypeDefinitionModel(VariableType.DOUBLE);
         }
-
         return lhsVal.operate(mutateWithOperation, rhsVal, typeToCoerceTo);
     }
 
@@ -115,10 +107,8 @@ public class ExpressionModel extends LHSerializable<Expression> {
         if (mutateByComparison == null) return;
         // TODO (#1458): after we support using VariableAssignment, make sure that the
         // resolveType() is BOOL.
-
         Optional<TypeDefinitionModel> lhsTypeOptional = Optional.empty();
         Optional<TypeDefinitionModel> rhsTypeOptional = Optional.empty();
-
         try {
             lhsTypeOptional = lhs.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
             rhsTypeOptional = rhs.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
@@ -126,15 +116,11 @@ public class ExpressionModel extends LHSerializable<Expression> {
             throw new InvalidEdgeException(
                     "Unable to resolve type of VariableAssignment:" + e.getMessage(), source.getName());
         }
-
         // Could be JSON_OBJ or JSON_ARR internal value that we can't refer the type of
         if (lhsTypeOptional.isEmpty() || rhsTypeOptional.isEmpty()) return;
-
         TypeDefinitionModel lhsType = lhsTypeOptional.get();
         TypeDefinitionModel rhsType = rhsTypeOptional.get();
-
         Optional<String> errorMessage = checkTypeComparisonIncompatibility(lhsType, mutateByComparison, rhsType);
-
         if (errorMessage.isPresent()) {
             throw new InvalidEdgeException(errorMessage.get(), source.getName());
         }
@@ -143,41 +129,33 @@ public class ExpressionModel extends LHSerializable<Expression> {
     public static Optional<String> checkTypeComparisonIncompatibility(
             TypeDefinitionModel lhsType, Comparator comparator, TypeDefinitionModel rhsType) {
         LHUtil.LHComparisonRule rule = LHUtil.getRuleFromComparator(comparator);
-
         // All types can be compared agaisnt NULL
         if (rhsType.getDefinedTypeCase() == TypeDefinition.DefinedTypeCase.DEFINEDTYPE_NOT_SET) {
             return Optional.empty();
         }
-
         if (!rhsType.getComparisonRules().contains(rule)) {
             return Optional.of(
                     String.format("You cannot compare RHS type %s using Comparator %s", rhsType, comparator));
         }
         if (rule == LHUtil.LHComparisonRule.IDENTITY) {
             boolean typesEqual = lhsType.equals(rhsType);
-
             boolean lhsTypeIsComparable = lhsType.getComparisonRules().contains(LHUtil.LHComparisonRule.MAGNITUDE);
             boolean rhsTypeIsComparable = rhsType.getComparisonRules().contains(LHUtil.LHComparisonRule.MAGNITUDE);
-
             if (!typesEqual && (!lhsTypeIsComparable || !rhsTypeIsComparable)) {
                 return Optional.of(String.format(
                         "You can only compare LHS type %s with its own type, but tried to compare it to %s",
                         lhsType, rhsType));
             }
         }
-
         if (rule == LHUtil.LHComparisonRule.INCLUDES) {
             boolean rhsSupportsIncludes = rhsType.getComparisonRules().contains(LHUtil.LHComparisonRule.INCLUDES);
-
             if (!rhsSupportsIncludes) {
                 return Optional.of(String.format("You cannot use LHS type %s with Comparator %s", lhsType, comparator));
             }
-
             boolean isJsonArr = (rhsType.getDefinedTypeCase() == TypeDefinition.DefinedTypeCase.PRIMITIVE_TYPE
                     && rhsType.getPrimitiveType() == VariableType.JSON_ARR);
             boolean lhsIsString = (lhsType.getDefinedTypeCase() == TypeDefinition.DefinedTypeCase.PRIMITIVE_TYPE
                     && lhsType.getPrimitiveType() == VariableType.STR);
-
             if (!isJsonArr && !lhsIsString) {
                 return Optional.of(String.format("You cannot use LHS type %s with Comparator %s", lhsType, comparator));
             }
@@ -196,10 +174,8 @@ public class ExpressionModel extends LHSerializable<Expression> {
      * @throws LHVarSubError if there is a problem getting variables.
      */
     public boolean isSatisfied(ThreadRunModel threadRun) throws LHVarSubError {
-
         VariableValueModel lhs = threadRun.assignVariable(this.lhs);
         VariableValueModel rhs = threadRun.assignVariable(this.rhs);
-
         if (mutateWithOperation != null) {
             return switch (this.mutateWithOperation) {
                 case AND -> lhs != null && (lhs.getBoolVal() && rhs.getBoolVal());
@@ -228,7 +204,6 @@ public class ExpressionModel extends LHSerializable<Expression> {
                     return !Comparer.contains(rhs, lhs);
                 case UNRECOGNIZED:
             }
-
             // This is impossible; it means that we added a new value to the Comparator
             // proto
             // without updating the LH Server to handle it. So we can throw an
@@ -243,5 +218,21 @@ public class ExpressionModel extends LHSerializable<Expression> {
                 || (mutateWithOperation != null
                         && (mutateWithOperation == VariableMutationType.AND
                                 || mutateWithOperation == VariableMutationType.OR));
+    }
+
+    public VariableAssignmentModel getLhs() {
+        return this.lhs;
+    }
+
+    public VariableAssignmentModel getRhs() {
+        return this.rhs;
+    }
+
+    public Comparator getMutateByComparison() {
+        return this.mutateByComparison;
+    }
+
+    public VariableMutationType getMutateWithOperation() {
+        return this.mutateWithOperation;
     }
 }

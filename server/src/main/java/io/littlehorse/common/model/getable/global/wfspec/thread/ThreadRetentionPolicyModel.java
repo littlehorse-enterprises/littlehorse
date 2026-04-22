@@ -7,11 +7,8 @@ import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.ThreadGcPolicyCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
 
-@Getter
 public class ThreadRetentionPolicyModel extends LHSerializable<ThreadRetentionPolicy> {
-
     private ThreadGcPolicyCase type;
     private long secondsAfterTermination;
 
@@ -28,8 +25,8 @@ public class ThreadRetentionPolicyModel extends LHSerializable<ThreadRetentionPo
                 out.setSecondsAfterThreadTermination(secondsAfterTermination);
                 break;
             case THREADGCPOLICY_NOT_SET:
-                // nothing to do
         }
+        // nothing to do
         return out;
     }
 
@@ -37,18 +34,16 @@ public class ThreadRetentionPolicyModel extends LHSerializable<ThreadRetentionPo
     public void initFrom(Message proto, ExecutionContext context) {
         ThreadRetentionPolicy p = (ThreadRetentionPolicy) proto;
         type = p.getThreadGcPolicyCase();
-
         switch (type) {
             case SECONDS_AFTER_THREAD_TERMINATION:
                 secondsAfterTermination = p.getSecondsAfterThreadTermination();
                 break;
             case THREADGCPOLICY_NOT_SET:
-                // nothing to do
         }
+        // nothing to do
     }
 
     private Date getScheduledTerminationFor(Date threadEndTime) {
-
         switch (type) {
             case SECONDS_AFTER_THREAD_TERMINATION:
                 return new Date(threadEndTime
@@ -57,7 +52,6 @@ public class ThreadRetentionPolicyModel extends LHSerializable<ThreadRetentionPo
                         .toEpochMilli());
             case THREADGCPOLICY_NOT_SET:
         }
-
         // If a future implementation of WorkflowRetentionPolicy returns null,
         // it means that the WfRun gets to hang out forever.
         return null;
@@ -72,5 +66,13 @@ public class ThreadRetentionPolicyModel extends LHSerializable<ThreadRetentionPo
             return !(new Date().before(getScheduledTerminationFor(threadEndTime)));
         }
         return false;
+    }
+
+    public ThreadGcPolicyCase getType() {
+        return this.type;
+    }
+
+    public long getSecondsAfterTermination() {
+        return this.secondsAfterTermination;
     }
 }

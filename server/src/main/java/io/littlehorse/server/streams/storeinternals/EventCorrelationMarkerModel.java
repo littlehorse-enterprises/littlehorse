@@ -12,11 +12,8 @@ import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.Getter;
 
-@Getter
 public class EventCorrelationMarkerModel extends Storeable<EventCorrelationMarker> {
-
     private Set<NodeRunIdModel> sourceNodeRuns = new HashSet<>();
     private ExternalEventDefIdModel eventDefId;
     private String correlationKey;
@@ -38,7 +35,6 @@ public class EventCorrelationMarkerModel extends Storeable<EventCorrelationMarke
         EventCorrelationMarker.Builder out = EventCorrelationMarker.newBuilder()
                 .setEventDefId(eventDefId.toProto())
                 .setCorrelationKey(correlationKey);
-
         for (NodeRunIdModel nodeRun : sourceNodeRuns) {
             out.addSourceNodeRuns(nodeRun.toProto());
         }
@@ -50,7 +46,6 @@ public class EventCorrelationMarkerModel extends Storeable<EventCorrelationMarke
         EventCorrelationMarker p = (EventCorrelationMarker) proto;
         this.correlationKey = p.getCorrelationKey();
         this.eventDefId = LHSerializable.fromProto(p.getEventDefId(), ExternalEventDefIdModel.class, context);
-
         for (NodeRunId nrid : p.getSourceNodeRunsList()) {
             this.sourceNodeRuns.add(LHSerializable.fromProto(nrid, NodeRunIdModel.class, context));
         }
@@ -80,5 +75,17 @@ public class EventCorrelationMarkerModel extends Storeable<EventCorrelationMarke
 
     public boolean isEmpty() {
         return sourceNodeRuns.isEmpty();
+    }
+
+    public Set<NodeRunIdModel> getSourceNodeRuns() {
+        return this.sourceNodeRuns;
+    }
+
+    public ExternalEventDefIdModel getEventDefId() {
+        return this.eventDefId;
+    }
+
+    public String getCorrelationKey() {
+        return this.correlationKey;
     }
 }

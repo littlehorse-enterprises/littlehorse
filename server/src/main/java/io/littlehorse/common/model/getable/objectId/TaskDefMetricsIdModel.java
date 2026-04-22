@@ -13,11 +13,8 @@ import io.littlehorse.sdk.common.proto.TaskDefMetricsId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
-import lombok.Getter;
 
-@Getter
 public class TaskDefMetricsIdModel extends RepartitionedId<TaskDefMetricsId, TaskDefMetrics, TaskDefMetricsModel> {
-
     private Date windowStart;
     private MetricsWindowLength windowType;
     private TaskDefIdModel taskDefId;
@@ -79,5 +76,17 @@ public class TaskDefMetricsIdModel extends RepartitionedId<TaskDefMetricsId, Tas
     public static TaskDefMetricsIdModel getObjectId(
             Date windowStart, MetricsWindowLength type, TaskDefIdModel taskDefId) {
         return new TaskDefMetricsIdModel(windowStart, type, taskDefId);
+    }
+
+    public Date getWindowStart() {
+        return this.windowStart;
+    }
+
+    public MetricsWindowLength getWindowType() {
+        return this.windowType;
+    }
+
+    public TaskDefIdModel getTaskDefId() {
+        return this.taskDefId;
     }
 }

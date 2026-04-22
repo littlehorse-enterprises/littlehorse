@@ -14,28 +14,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import lombok.Getter;
 
 public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
-
-    @Getter
     private Map<String, StructFieldDefModel> fields = new HashMap<>();
 
     @Override
     public InlineStructDef.Builder toProto() {
         InlineStructDef.Builder out = InlineStructDef.newBuilder();
-
         for (Entry<String, StructFieldDefModel> field : fields.entrySet()) {
             out.putFields(field.getKey(), field.getValue().toProto().build());
         }
-
         return out;
     }
 
     @Override
     public void initFrom(Message p, ExecutionContext context) throws LHSerdeException {
         InlineStructDef proto = (InlineStructDef) p;
-
         for (Entry<String, StructFieldDef> structFieldDef : proto.getFieldsMap().entrySet()) {
             fields.put(
                     structFieldDef.getKey(),
@@ -54,9 +48,8 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
                 validateStructDefFieldName(field.getKey());
             } catch (InvalidStructDefFieldNameException e) {
                 throw new StructDefValidationException(
-                        e, String.format("StructDef field name '%s' invalid: %s", field.getKey(), e.getMessage()));
+                        e, String.format("StructDef field name \'%s\' invalid: %s", field.getKey(), e.getMessage()));
             }
-
             try {
                 // Ensure any STRUCT_DEF_ID referenced in the field's type exists and is pinned to the concrete latest
                 // version
@@ -67,11 +60,10 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
                         throw new StructDefValidationException(e, e.getMessage());
                     }
                 }
-
                 field.getValue().validate(metadataManager);
             } catch (StructDefValidationException e) {
                 throw new StructDefValidationException(
-                        e, String.format("StructDef field '%s' invalid: %s", field.getKey(), e.getMessage()));
+                        e, String.format("StructDef field \'%s\' invalid: %s", field.getKey(), e.getMessage()));
             }
         }
     }
@@ -81,19 +73,15 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
         if (name == null) {
             throw new InvalidStructDefFieldNameException("illegal state, names cannot be null");
         }
-
         if (!Character.isLetter(name.charAt(0))) {
             throw new InvalidStructDefFieldNameException("first character must be a letter");
         }
-
         if (Character.isUpperCase(name.charAt(0))) {
             throw new InvalidStructDefFieldNameException("first letter must be lowercase");
         }
-
         if (name.contains("_")) {
             throw new InvalidStructDefFieldNameException("cannot include underscores, must follow camelCase");
         }
-
         if (!name.matches("^[a-zA-Z0-9]+$")) {
             throw new InvalidStructDefFieldNameException("cannot include special characters, must be alphanumeric");
         }
@@ -116,17 +104,15 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
             // If InlineStruct is missing required field...
             String fieldName = entry.getKey();
             StructFieldDefModel fieldDef = entry.getValue();
-
             if (fieldDef.isRequired() && !inlineStruct.getFields().containsKey(fieldName)) {
                 throw new StructValidationException("Missing required field %s".formatted(fieldName));
             } else if (inlineStruct.getFields().containsKey(fieldName)) {
                 StructFieldModel fieldValue = inlineStruct.getFields().get(fieldName);
-
                 try {
                     fieldDef.validateAgainst(fieldValue, metadataManager);
                 } catch (StructValidationException e) {
                     throw new StructValidationException(
-                            String.format("Field '%s' is invalid: %s", fieldName, e.getMessage()));
+                            String.format("Field \'%s\' is invalid: %s", fieldName, e.getMessage()));
                 }
             }
         }
@@ -142,5 +128,9 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
         InlineStructDefModel out = new InlineStructDefModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public Map<String, StructFieldDefModel> getFields() {
+        return this.fields;
     }
 }

@@ -22,9 +22,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class SearchWfMetricWindowRequestModel
         extends PublicScanRequest<
                 SearchWfMetricWindowRequest,
@@ -32,7 +30,8 @@ public class SearchWfMetricWindowRequestModel
                 MetricWindowId,
                 MetricWindowIdModel,
                 SearchWfMetricWindowReply> {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(SearchWfMetricWindowRequestModel.class);
     private String wfSpecName;
     private Date earliestStart;
     private Date latestStart;

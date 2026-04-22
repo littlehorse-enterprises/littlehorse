@@ -8,9 +8,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class WorkflowEventDefIdModel extends MetadataId<WorkflowEventDefId, WorkflowEventDef, WorkflowEventDefModel> {
     private String name;
 
@@ -49,5 +47,9 @@ public class WorkflowEventDefIdModel extends MetadataId<WorkflowEventDefId, Work
     @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.WORKFLOW_EVENT_DEF;
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

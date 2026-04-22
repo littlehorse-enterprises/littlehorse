@@ -23,17 +23,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
 public class EdgeModel extends LHSerializable<Edge> {
-
     private String sinkNodeName;
     private LegacyEdgeConditionModel legacyCondition;
     private VariableAssignmentModel condition;
-
-    @Getter
     public List<VariableMutationModel> variableMutations;
 
     public EdgeModel() {
@@ -48,15 +42,12 @@ public class EdgeModel extends LHSerializable<Edge> {
     @Override
     public Edge.Builder toProto() {
         Edge.Builder out = Edge.newBuilder().setSinkNodeName(sinkNodeName);
-
         for (VariableMutationModel v : variableMutations) {
             out.addVariableMutations(v.toProto());
         }
-
         if (condition != null) {
             out.setCondition(condition.toProto());
         }
-
         if (legacyCondition != null) {
             out.setLegacyCondition(legacyCondition.toProto());
         }
@@ -73,7 +64,6 @@ public class EdgeModel extends LHSerializable<Edge> {
         if (proto.hasLegacyCondition()) {
             legacyCondition = LegacyEdgeConditionModel.fromProto(proto.getLegacyCondition(), context);
         }
-
         for (VariableMutation vmpb : proto.getVariableMutationsList()) {
             VariableMutationModel vm = new VariableMutationModel();
             vm.initFrom(vmpb, context);
@@ -89,8 +79,6 @@ public class EdgeModel extends LHSerializable<Edge> {
 
     // Implementation details below
     private NodeModel sinkNode;
-
-    @Setter
     private ThreadSpecModel threadSpecModel;
 
     /**
@@ -112,19 +100,15 @@ public class EdgeModel extends LHSerializable<Edge> {
      */
     public Set<String> getRequiredVariableNames() {
         Set<String> out = new HashSet<>();
-
         if (condition != null) {
             out.addAll(condition.getRequiredVariableNames());
         }
-
         if (legacyCondition != null) {
             out.addAll(legacyCondition.getRequiredVariableNames());
         }
-
         for (VariableMutationModel mut : variableMutations) {
             out.addAll(mut.getRequiredVariableNames());
         }
-
         return out;
     }
 
@@ -151,13 +135,11 @@ public class EdgeModel extends LHSerializable<Edge> {
     public void mutateVariables(ThreadRunModel threadRun, Optional<VariableValueModel> nodeRunOutput)
             throws LHVarSubError {
         VariableValueModel nodeRunOutputVar = nodeRunOutput.isEmpty() ? null : nodeRunOutput.get();
-
         // Need to do this atomically in a transaction, so that if one of the
         // mutations fail then we roll them all back.
         // That's why we write to an in-memory Map. If all mutations succeed,
         // then we flush the contents of the Map to the Variables.
         Map<String, VariableValueModel> writeAheadBuffer = new HashMap<>();
-
         // First thing we do is run through all of the mutations with the "buffer"
         for (VariableMutationModel mutation : variableMutations) {
             try {
@@ -175,7 +157,6 @@ public class EdgeModel extends LHSerializable<Edge> {
                                 .formatted(mutation.getLhsName(), mutation.getOperation()));
             }
         }
-
         // If we got here so far, that means that all of the mutations are valid. We need to flush them
         // to the data store by actually telling the ThreadRun to mutate the variables.
         for (Map.Entry<String, VariableValueModel> entry : writeAheadBuffer.entrySet()) {
@@ -188,14 +169,12 @@ public class EdgeModel extends LHSerializable<Edge> {
         if (this.getSinkNodeName().equals(source.getName())) {
             throw new InvalidEdgeException("Self loop not allowed!", this.getSinkNodeName());
         }
-
         NodeModel sink = threadSpec.nodes.get(this.getSinkNodeName());
         if (sink == null) {
             throw new InvalidEdgeException(
                     String.format("Outgoing edge referring to missing node %s!", this.getSinkNodeName()),
                     this.getSinkNodeName());
         }
-
         if (sink.type == NodeCase.ENTRYPOINT) {
             throw new InvalidEdgeException(
                     String.format("Entrypoint node has incoming edge from node %s.", threadSpec.name, source.getName()),
@@ -214,5 +193,29 @@ public class EdgeModel extends LHSerializable<Edge> {
                 throw new InvalidEdgeException(exn, this.getSinkNodeName());
             }
         }
+    }
+
+    public String getSinkNodeName() {
+        return this.sinkNodeName;
+    }
+
+    public LegacyEdgeConditionModel getLegacyCondition() {
+        return this.legacyCondition;
+    }
+
+    public VariableAssignmentModel getCondition() {
+        return this.condition;
+    }
+
+    public ThreadSpecModel getThreadSpecModel() {
+        return this.threadSpecModel;
+    }
+
+    public List<VariableMutationModel> getVariableMutations() {
+        return this.variableMutations;
+    }
+
+    public void setThreadSpecModel(final ThreadSpecModel threadSpecModel) {
+        this.threadSpecModel = threadSpecModel;
     }
 }

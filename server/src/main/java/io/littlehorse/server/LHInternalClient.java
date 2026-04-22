@@ -20,12 +20,10 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.state.HostInfo;
 
-@Slf4j
 public final class LHInternalClient {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LHInternalClient.class);
     private final Map<String, ManagedChannel> channels = new ConcurrentHashMap<>();
     private final ChannelCredentials clientCreds;
     private final ExecutorService networkThreads;
@@ -61,7 +59,6 @@ public final class LHInternalClient {
             WaitForCommandResponse response, Class<T> responseCls) {
         try {
             ByteString bytes = response.getResult();
-
             return (T) responseCls.getMethod("parseFrom", ByteString.class).invoke(null, bytes);
         } catch (Exception exn) {
             log.error(exn.getMessage(), exn);

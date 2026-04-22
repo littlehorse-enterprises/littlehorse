@@ -9,16 +9,9 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructDef;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
 public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructDefModel> {
-
-    @Getter
     private String name;
-
-    @Getter
-    @Setter
     private int version;
 
     public StructDefIdModel() {}
@@ -31,7 +24,6 @@ public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructD
     @Override
     public StructDefId.Builder toProto() {
         StructDefId.Builder out = StructDefId.newBuilder().setName(name).setVersion(version);
-
         return out;
     }
 
@@ -77,5 +69,17 @@ public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructD
         StructDefIdModel out = new StructDefIdModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getVersion() {
+        return this.version;
+    }
+
+    public void setVersion(final int version) {
+        this.version = version;
     }
 }

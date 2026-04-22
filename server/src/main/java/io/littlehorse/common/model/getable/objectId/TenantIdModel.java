@@ -8,11 +8,8 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class TenantIdModel extends ClusterMetadataId<TenantId, Tenant, TenantModel> {
-
     private String id;
 
     public TenantIdModel() {}
@@ -50,5 +47,9 @@ public class TenantIdModel extends ClusterMetadataId<TenantId, Tenant, TenantMod
     @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.TENANT;
+    }
+
+    public String getId() {
+        return this.id;
     }
 }

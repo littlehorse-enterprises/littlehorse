@@ -17,13 +17,8 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUserTaskRunRequest> {
-
     private UserTaskRunIdModel userTaskRunId;
     private String userId;
     private Map<String, VariableValueModel> results = new HashMap<>();
@@ -48,7 +43,6 @@ public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUser
         CompleteUserTaskRunRequest p = (CompleteUserTaskRunRequest) proto;
         userId = p.getUserId();
         userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
-
         for (Map.Entry<String, VariableValue> entry : p.getResultsMap().entrySet()) {
             results.put(entry.getKey(), VariableValueModel.fromProto(entry.getValue(), context));
         }
@@ -57,9 +51,8 @@ public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUser
     public Empty process(CoreProcessorContext executionContext, LHServerConfig config) {
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
         if (utr == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find provided UserTaskRun");
+            throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find provided UserTaskRun");
         }
-
         utr.processTaskCompletedEvent(this);
         executionContext.getableManager().get(userTaskRunId.getWfRunId()).advance(time);
         return Empty.getDefaultInstance();
@@ -71,5 +64,37 @@ public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUser
 
     public String getPartitionKey() {
         return getWfRunId();
+    }
+
+    public UserTaskRunIdModel getUserTaskRunId() {
+        return this.userTaskRunId;
+    }
+
+    public String getUserId() {
+        return this.userId;
+    }
+
+    public Map<String, VariableValueModel> getResults() {
+        return this.results;
+    }
+
+    public Date getTime() {
+        return this.time;
+    }
+
+    public void setUserTaskRunId(final UserTaskRunIdModel userTaskRunId) {
+        this.userTaskRunId = userTaskRunId;
+    }
+
+    public void setUserId(final String userId) {
+        this.userId = userId;
+    }
+
+    public void setResults(final Map<String, VariableValueModel> results) {
+        this.results = results;
+    }
+
+    public void setTime(final Date time) {
+        this.time = time;
     }
 }

@@ -16,12 +16,11 @@ import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTenantRequestReply;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class SearchTenantRequestModel
         extends PublicScanRequest<
                 SearchTenantRequest, TenantIdList, TenantId, TenantIdModel, SearchTenantRequestReply> {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SearchTenantRequestModel.class);
     private ExecutionContext context;
 
     @Override
@@ -43,11 +42,8 @@ public class SearchTenantRequestModel
     @Override
     public SearchTenantRequest.Builder toProto() {
         SearchTenantRequest.Builder builder = SearchTenantRequest.newBuilder();
-
         if (bookmark != null) builder.setBookmark(bookmark.toByteString());
-
         if (limit != null) builder.setLimit(limit);
-
         return builder;
     }
 

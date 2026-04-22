@@ -22,16 +22,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
-@Setter
 public class SearchTaskRunRequestModel
         extends PublicScanRequest<SearchTaskRunRequest, TaskRunIdList, TaskRunId, TaskRunIdModel, SearchTaskRunReply> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SearchTaskRunRequestModel.class);
     private TaskStatus status;
     private String taskDefName;
     private Date earliestStart;
@@ -56,24 +50,19 @@ public class SearchTaskRunRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
-
         taskDefName = p.getTaskDefName();
         if (p.hasStatus()) status = p.getStatus();
-
         if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
     }
 
     public SearchTaskRunRequest.Builder toProto() {
         SearchTaskRunRequest.Builder out = SearchTaskRunRequest.newBuilder().setTaskDefName(taskDefName);
-
         if (bookmark != null) out.setBookmark(bookmark.toByteString());
         if (limit != null) out.setLimit(limit);
-
         if (status != null) out.setStatus(status);
         if (earliestStart != null) out.setEarliestStart(LHUtil.fromDate(earliestStart));
         if (latestStart != null) out.setLatestStart(LHUtil.fromDate(latestStart));
-
         return out;
     }
 
@@ -87,11 +76,9 @@ public class SearchTaskRunRequestModel
     public List<Attribute> getSearchAttributes() {
         List<Attribute> out = new ArrayList<>();
         out.add(new Attribute("taskDefName", taskDefName));
-
         if (status != null) {
             out.add(new Attribute("status", status.toString()));
         }
-
         return out;
     }
 
@@ -109,5 +96,37 @@ public class SearchTaskRunRequestModel
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
         return new TagScanBoundaryStrategy(
                 searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
+    }
+
+    public TaskStatus getStatus() {
+        return this.status;
+    }
+
+    public String getTaskDefName() {
+        return this.taskDefName;
+    }
+
+    public Date getEarliestStart() {
+        return this.earliestStart;
+    }
+
+    public Date getLatestStart() {
+        return this.latestStart;
+    }
+
+    public void setStatus(final TaskStatus status) {
+        this.status = status;
+    }
+
+    public void setTaskDefName(final String taskDefName) {
+        this.taskDefName = taskDefName;
+    }
+
+    public void setEarliestStart(final Date earliestStart) {
+        this.earliestStart = earliestStart;
+    }
+
+    public void setLatestStart(final Date latestStart) {
+        this.latestStart = latestStart;
     }
 }

@@ -6,11 +6,8 @@ import io.littlehorse.common.proto.LHStatusChanged;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class LHStatusChangedModel extends LHSerializable<LHStatusChanged> {
-
     private LHStatus previousStatus;
     private LHStatus newStatus;
 
@@ -55,5 +52,13 @@ public class LHStatusChangedModel extends LHSerializable<LHStatusChanged> {
     @Override
     public Class<LHStatusChanged> getProtoBaseClass() {
         return LHStatusChanged.class;
+    }
+
+    public LHStatus getPreviousStatus() {
+        return this.previousStatus;
+    }
+
+    public LHStatus getNewStatus() {
+        return this.newStatus;
     }
 }

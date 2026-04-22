@@ -6,13 +6,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.TagsCachePb;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Objects;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
-
     private String id;
     private boolean isRemote;
 
@@ -25,7 +20,6 @@ public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
 
     public CachedTag(Tag tag) {
         this.id = tag.getStoreKey();
-
         // When we re-enable remote tags, this will be more complex.
         this.isRemote = tag.isRemote();
     }
@@ -63,5 +57,21 @@ public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
     @Override
     public Class<? extends GeneratedMessage> getProtoBaseClass() {
         return null;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public boolean isRemote() {
+        return this.isRemote;
+    }
+
+    public void setId(final String id) {
+        this.id = id;
+    }
+
+    public void setRemote(final boolean isRemote) {
+        this.isRemote = isRemote;
     }
 }

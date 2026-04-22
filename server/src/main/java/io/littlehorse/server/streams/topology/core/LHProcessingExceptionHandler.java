@@ -6,15 +6,13 @@ import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.errors.RecordTooLargeException;
-
 // This class will implement ProcessingException handler on Kafka Streams 3.9
 // See KIP-1033
-@Slf4j
-public class LHProcessingExceptionHandler {
 
+public class LHProcessingExceptionHandler {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LHProcessingExceptionHandler.class);
     private final LHServer server;
     private final AsyncWaiters asyncWaiters;
 
@@ -71,9 +69,10 @@ public class LHProcessingExceptionHandler {
                         asyncWaiters.getOrRegisterFuture(commandId.get(), Message.class, new CompletableFuture<>());
                 completable.completeExceptionally(ex.getCause());
             } catch (Exception e) {
-                // Nothing to do
             }
-        } catch (RecordTooLargeException rtle) {
+        } catch (
+                // Nothing to do
+                RecordTooLargeException rtle) {
             // Log and continue. This will include a record-dropped metric
             log.warn("Record dropped: ", rtle);
         } catch (KafkaException ke) {

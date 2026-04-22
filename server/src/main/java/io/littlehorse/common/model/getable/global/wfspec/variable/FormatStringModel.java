@@ -7,13 +7,8 @@ import io.littlehorse.sdk.common.proto.VariableAssignment.FormatString;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class FormatStringModel extends LHSerializable<FormatString> {
-
     private VariableAssignmentModel format;
     private List<VariableAssignmentModel> args;
 
@@ -40,5 +35,21 @@ public class FormatStringModel extends LHSerializable<FormatString> {
         for (VariableAssignment arg : p.getArgsList()) {
             args.add(VariableAssignmentModel.fromProto(arg, context));
         }
+    }
+
+    public VariableAssignmentModel getFormat() {
+        return this.format;
+    }
+
+    public List<VariableAssignmentModel> getArgs() {
+        return this.args;
+    }
+
+    public void setFormat(final VariableAssignmentModel format) {
+        this.format = format;
+    }
+
+    public void setArgs(final List<VariableAssignmentModel> args) {
+        this.args = args;
     }
 }

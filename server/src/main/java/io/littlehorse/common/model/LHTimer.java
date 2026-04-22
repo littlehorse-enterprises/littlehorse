@@ -15,13 +15,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.Forwardable;
 import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class LHTimer extends Storeable<LHTimerPb> implements Forwardable {
-
     public Date maturationTime;
     public String topic;
     public String partitionKey;
@@ -36,7 +31,7 @@ public class LHTimer extends Storeable<LHTimerPb> implements Forwardable {
     public LHTimer(CommandModel command) {
         maturationTime = command.getTime();
         if (maturationTime == null) {
-            throw new IllegalArgumentException("Command's time was null!");
+            throw new IllegalArgumentException("Command\'s time was null!");
         }
         payload = command.toProto().build().toByteArray();
         partitionKey = command.getPartitionKey();
@@ -61,7 +56,6 @@ public class LHTimer extends Storeable<LHTimerPb> implements Forwardable {
         partitionKey = p.getPartitionKey();
         payload = p.getPayload().toByteArray();
         isRepartition = p.getIsRepartition();
-
         if (p.hasPrincipalId()) {
             principalId = LHSerializable.fromProto(p.getPrincipalId(), PrincipalIdModel.class, context);
         } else {
@@ -69,14 +63,12 @@ public class LHTimer extends Storeable<LHTimerPb> implements Forwardable {
             // internal system" which is DIFFERENT FROM the `anonymous` principal
             principalId = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
         }
-
         if (p.hasTenantId()) {
             tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
         } else {
             // TODO: not all timers will belong to a tenant. This logic should change to
             tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
         }
-
         if (p.hasStoreKey()) {
             this.storeKeyInternal = p.getStoreKey();
         } else {
@@ -88,15 +80,16 @@ public class LHTimer extends Storeable<LHTimerPb> implements Forwardable {
     }
 
     public LHTimerPb.Builder toProto() {
-        LHTimerPb.Builder out = LHTimerPb.newBuilder()
-                .setMaturationTime(LHUtil.fromDate(maturationTime))
-                .setPartitionKey(partitionKey)
-                .setTopic(topic)
-                .setPayload(ByteString.copyFrom(payload))
-                .setStoreKey(getStoreKey())
-                .setIsRepartition(isRepartition)
-                .setPrincipalId(principalId.toProto()) // TODO: allow nulls
-                .setTenantId(tenantId.toProto()); // TODO: Allow nulls
+        LHTimerPb.Builder out = // TODO: allow nulls
+                LHTimerPb.newBuilder()
+                        .setMaturationTime(LHUtil.fromDate(maturationTime))
+                        .setPartitionKey(partitionKey)
+                        .setTopic(topic)
+                        .setPayload(ByteString.copyFrom(payload))
+                        .setStoreKey(getStoreKey())
+                        .setIsRepartition(isRepartition)
+                        .setPrincipalId(principalId.toProto())
+                        .setTenantId(tenantId.toProto()); // TODO: Allow nulls
         return out;
     }
 
@@ -119,5 +112,69 @@ public class LHTimer extends Storeable<LHTimerPb> implements Forwardable {
 
     public byte[] getPayload(LHServerConfig config) {
         return payload;
+    }
+
+    public Date getMaturationTime() {
+        return this.maturationTime;
+    }
+
+    public String getTopic() {
+        return this.topic;
+    }
+
+    public String getPartitionKey() {
+        return this.partitionKey;
+    }
+
+    public byte[] getPayload() {
+        return this.payload;
+    }
+
+    public TenantIdModel getTenantId() {
+        return this.tenantId;
+    }
+
+    public PrincipalIdModel getPrincipalId() {
+        return this.principalId;
+    }
+
+    public String getStoreKeyInternal() {
+        return this.storeKeyInternal;
+    }
+
+    public boolean isRepartition() {
+        return this.isRepartition;
+    }
+
+    public void setMaturationTime(final Date maturationTime) {
+        this.maturationTime = maturationTime;
+    }
+
+    public void setTopic(final String topic) {
+        this.topic = topic;
+    }
+
+    public void setPartitionKey(final String partitionKey) {
+        this.partitionKey = partitionKey;
+    }
+
+    public void setPayload(final byte[] payload) {
+        this.payload = payload;
+    }
+
+    public void setTenantId(final TenantIdModel tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public void setPrincipalId(final PrincipalIdModel principalId) {
+        this.principalId = principalId;
+    }
+
+    public void setStoreKeyInternal(final String storeKeyInternal) {
+        this.storeKeyInternal = storeKeyInternal;
+    }
+
+    public void setRepartition(final boolean isRepartition) {
+        this.isRepartition = isRepartition;
     }
 }

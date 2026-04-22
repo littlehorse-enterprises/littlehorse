@@ -27,13 +27,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
-
     private TaskRunIdModel taskRunId;
     private ExecutionContext executionContext;
     private CoreProcessorContext processorContext;
@@ -63,22 +58,17 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     @Override
     public TaskNodeRun.Builder toProto() {
         TaskNodeRun.Builder out = TaskNodeRun.newBuilder();
-
         if (taskRunId != null) out.setTaskRunId(taskRunId.toProto());
-
         return out;
     }
 
     @Override
     public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         TaskRunModel taskRun = processorContext.getableManager().get(taskRunId);
-
         if (taskRun.isStillRunning()) return false;
-
         if (taskRun.getStatus() == TaskStatus.TASK_SUCCESS) {
             return true;
         }
-
         // If we got this far, then there was a failure!
         TaskAttemptModel lastAttempt = taskRun.getLatestAttempt();
         FailureModel failure = lastAttempt
@@ -93,9 +83,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         // The TaskNode arrive() function should create a TaskRun. Note that
         // creating a TaskRun also causes the first TaskAttempt to be scheduled.
-
         TaskNodeModel node = nodeRun.getNode().getTaskNode();
-
         TaskDefModel td;
         try {
             td = node.getTaskDef(nodeRun.getThreadRun(), processorContext);
@@ -109,19 +97,15 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
             throw new NodeFailureException(
                     new FailureModel("Appears that TaskDef was deleted!", LHConstants.TASK_ERROR));
         }
-
         List<VarNameAndValModel> inputVariables;
-
         try {
             inputVariables = node.assignInputVars(nodeRun.getThreadRun(), processorContext);
         } catch (LHVarSubError exn) {
             throw new NodeFailureException(new FailureModel(
                     "Failed calculating TaskRun Input Vars: " + exn.getMessage(), LHConstants.VAR_SUB_ERROR));
         }
-
         // Create a TaskRun
         TaskNodeReferenceModel source = new TaskNodeReferenceModel(nodeRun.getObjectId(), nodeRun.getWfSpecId());
-
         this.taskRunId = new TaskRunIdModel(nodeRun.getId(), processorContext);
         TaskRunModel task = new TaskRunModel(
                 inputVariables,
@@ -132,7 +116,6 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
                 td.getId());
         task.setId(taskRunId);
         task.dispatchTaskToQueue();
-
         // When creating a new Getable for the first time, we need to explicitly save it.
         processorContext.getableManager().put(task);
     }
@@ -141,7 +124,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         TaskRunModel taskRun = processorContext.getableManager().get(taskRunId);
         if (taskRun.getStatus() != TaskStatus.TASK_SUCCESS) {
-            throw new IllegalStateException("somehow called getOutput() on taskRun that's not done yet");
+            throw new IllegalStateException("somehow called getOutput() on taskRun that\'s not done yet");
         }
         return Optional.of(taskRun.getLatestAttempt().getOutput());
     }
@@ -157,7 +140,6 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     public List<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableIds(CoreProcessorContext context) {
         List<CoreObjectId<?, ?, ?>> out = new ArrayList<>();
         out.add((CoreObjectId<?, ?, ?>) taskRunId);
-
         TaskRunModel taskRun = context.getableManager().get(taskRunId);
         if (taskRun != null) {
             for (int i = 0; i < taskRun.getTotalCheckpoints(); i++) {
@@ -165,5 +147,29 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
             }
         }
         return out;
+    }
+
+    public TaskRunIdModel getTaskRunId() {
+        return this.taskRunId;
+    }
+
+    public ExecutionContext getExecutionContext() {
+        return this.executionContext;
+    }
+
+    public CoreProcessorContext getProcessorContext() {
+        return this.processorContext;
+    }
+
+    public void setTaskRunId(final TaskRunIdModel taskRunId) {
+        this.taskRunId = taskRunId;
+    }
+
+    public void setExecutionContext(final ExecutionContext executionContext) {
+        this.executionContext = executionContext;
+    }
+
+    public void setProcessorContext(final CoreProcessorContext processorContext) {
+        this.processorContext = processorContext;
     }
 }

@@ -9,15 +9,8 @@ import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.proto.DeleteMetricWindow;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class DeleteMetricWindowModel extends CoreSubCommand<DeleteMetricWindow> {
-
     private MetricWindowIdModel id;
 
     @Override
@@ -47,5 +40,15 @@ public class DeleteMetricWindowModel extends CoreSubCommand<DeleteMetricWindow> 
             executionContext.getableManager().delete(id);
         }
         return Empty.getDefaultInstance();
+    }
+
+    public MetricWindowIdModel getId() {
+        return this.id;
+    }
+
+    public DeleteMetricWindowModel() {}
+
+    public DeleteMetricWindowModel(final MetricWindowIdModel id) {
+        this.id = id;
     }
 }

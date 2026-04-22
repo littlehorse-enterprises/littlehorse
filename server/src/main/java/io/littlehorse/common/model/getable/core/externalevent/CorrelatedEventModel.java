@@ -19,17 +19,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Getter
-@Setter
-@Slf4j
 public class CorrelatedEventModel extends CoreGetable<CorrelatedEvent>
         implements CoreOutputTopicGetable<CorrelatedEvent> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CorrelatedEventModel.class);
     private CorrelatedEventIdModel id;
     private VariableValueModel content;
     private Date createdAt;
@@ -46,11 +40,9 @@ public class CorrelatedEventModel extends CoreGetable<CorrelatedEvent>
                 .setCreatedAt(LHLibUtil.fromDate(createdAt))
                 .setContent(content.toProto())
                 .setId(id.toProto());
-
         for (ExternalEventIdModel extEvtId : externalEvents) {
             out.addExternalEvents(extEvtId.toProto());
         }
-
         return out;
     }
 
@@ -60,7 +52,6 @@ public class CorrelatedEventModel extends CoreGetable<CorrelatedEvent>
         this.id = LHSerializable.fromProto(p.getId(), CorrelatedEventIdModel.class, ignored);
         this.content = LHSerializable.fromProto(p.getContent(), VariableValueModel.class, ignored);
         this.createdAt = LHLibUtil.fromProtoTs(p.getCreatedAt());
-
         this.externalEvents = new ArrayList<>();
         for (ExternalEventId extEvtId : p.getExternalEventsList()) {
             this.externalEvents.add(LHSerializable.fromProto(extEvtId, ExternalEventIdModel.class, ignored));
@@ -99,5 +90,37 @@ public class CorrelatedEventModel extends CoreGetable<CorrelatedEvent>
         }
         log.warn("Received unknown key for CorrelatedEvent Index: {}", key);
         return null;
+    }
+
+    public CorrelatedEventIdModel getId() {
+        return this.id;
+    }
+
+    public VariableValueModel getContent() {
+        return this.content;
+    }
+
+    public Date getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public List<ExternalEventIdModel> getExternalEvents() {
+        return this.externalEvents;
+    }
+
+    public void setId(final CorrelatedEventIdModel id) {
+        this.id = id;
+    }
+
+    public void setContent(final VariableValueModel content) {
+        this.content = content;
+    }
+
+    public void setCreatedAt(final Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setExternalEvents(final List<ExternalEventIdModel> externalEvents) {
+        this.externalEvents = externalEvents;
     }
 }

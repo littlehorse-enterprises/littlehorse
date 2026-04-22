@@ -19,26 +19,18 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class ScheduledTaskModel extends Storeable<ScheduledTask> {
-
     // For compatibility we use "a" as a prefix since it is the first ASCII
     // character. This guarantees that the start of the iteration doesn't ignore
     // any previous keys.
     public static final String STORE_KEY_PREFIX_FOR_COMPATIBILITY = "a/";
-
     private TaskRunIdModel taskRunId;
     private TaskDefIdModel taskDefId;
     private int attemptNumber;
     private int totalCheckpoints;
-
     private List<VarNameAndValModel> variables;
     private Date createdAt;
-
     private TaskRunSourceModel source;
 
     public ScheduledTaskModel() {
@@ -59,7 +51,6 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
                 new UserTaskTriggerReferenceModel(userTaskRun, processorContext), processorContext);
         this.taskDefId = taskDefId;
         this.attemptNumber = 0;
-
         // This is just the wfRunId.
         this.taskRunId = new TaskRunIdModel(userTaskRun);
     }
@@ -76,7 +67,6 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         for (VarNameAndValModel v : variables) {
             out.addVariables(v.toProto());
         }
-
         return out;
     }
 
@@ -92,11 +82,9 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         attemptNumber = p.getAttemptNumber();
         this.totalCheckpoints = p.getTotalObservedCheckpoints();
-
         for (VarNameAndVal v : p.getVariablesList()) {
             variables.add(LHSerializable.fromProto(v, VarNameAndValModel.class, context));
         }
-
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         if (this.createdAt.getTime() == 0) {
             this.createdAt = new Date();
@@ -133,5 +121,61 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         // TaskRun, so we don't need to worry about the attemptNumber.
         return STORE_KEY_PREFIX_FOR_COMPATIBILITY + LHUtil.toLhDbFormat(taskAttemptCreatedAt) + "/"
                 + taskRunId.toString();
+    }
+
+    public TaskRunIdModel getTaskRunId() {
+        return this.taskRunId;
+    }
+
+    public TaskDefIdModel getTaskDefId() {
+        return this.taskDefId;
+    }
+
+    public int getAttemptNumber() {
+        return this.attemptNumber;
+    }
+
+    public int getTotalCheckpoints() {
+        return this.totalCheckpoints;
+    }
+
+    public List<VarNameAndValModel> getVariables() {
+        return this.variables;
+    }
+
+    public Date getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public TaskRunSourceModel getSource() {
+        return this.source;
+    }
+
+    public void setTaskRunId(final TaskRunIdModel taskRunId) {
+        this.taskRunId = taskRunId;
+    }
+
+    public void setTaskDefId(final TaskDefIdModel taskDefId) {
+        this.taskDefId = taskDefId;
+    }
+
+    public void setAttemptNumber(final int attemptNumber) {
+        this.attemptNumber = attemptNumber;
+    }
+
+    public void setTotalCheckpoints(final int totalCheckpoints) {
+        this.totalCheckpoints = totalCheckpoints;
+    }
+
+    public void setVariables(final List<VarNameAndValModel> variables) {
+        this.variables = variables;
+    }
+
+    public void setCreatedAt(final Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setSource(final TaskRunSourceModel source) {
+        this.source = source;
     }
 }

@@ -8,11 +8,10 @@ import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.lang.reflect.InvocationTargetException;
-import lombok.extern.slf4j.Slf4j;
-
 // `P` is the proto class used to serialize.
-@Slf4j
+
 public abstract class LHSerializable<T extends Message> {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LHSerializable.class);
 
     public abstract GeneratedMessage.Builder<?> toProto();
 
@@ -44,7 +43,7 @@ public abstract class LHSerializable<T extends Message> {
                 | InvocationTargetException
                 | InstantiationException
                 | IllegalAccessException exn) {
-            log.error("This shouldn't be possible", exn);
+            log.error("This shouldn\'t be possible", exn);
             throw new RuntimeException(exn);
         }
     }
@@ -56,7 +55,6 @@ public abstract class LHSerializable<T extends Message> {
         try {
             T out = load(cls);
             Class<? extends GeneratedMessage> protoClass = out.getProtoBaseClass();
-
             GeneratedMessage proto = protoClass.cast(
                     protoClass.getMethod("parseFrom", byte[].class).invoke(null, b));
             out.initFrom(proto, context);
@@ -72,7 +70,6 @@ public abstract class LHSerializable<T extends Message> {
         try {
             T out = load(cls);
             Class<? extends GeneratedMessage> protoClass = out.getProtoBaseClass();
-
             GeneratedMessage proto = protoClass.cast(
                     protoClass.getMethod("parseFrom", ByteString.class).invoke(null, b));
             out.initFrom(proto, context);
@@ -87,7 +84,6 @@ public abstract class LHSerializable<T extends Message> {
         try {
             T out = load(cls);
             Class<? extends GeneratedMessage> protoClass = out.getProtoBaseClass();
-
             GeneratedMessage proto = protoClass.cast(
                     protoClass.getMethod("parseFrom", byte[].class).invoke(null, b));
             return proto;
@@ -106,7 +102,6 @@ public abstract class LHSerializable<T extends Message> {
             throws LHSerdeException {
         GeneratedMessage.Builder<?> builder;
         T out;
-
         try {
             out = load(cls);
             builder = (GeneratedMessage.Builder<?>)
@@ -114,13 +109,11 @@ public abstract class LHSerializable<T extends Message> {
         } catch (Exception exn) {
             throw new LHSerdeException(exn, "Failed to reflect the protobuilder");
         }
-
         try {
             JsonFormat.parser().merge(json, builder);
         } catch (InvalidProtocolBufferException exn) {
             throw new LHSerdeException(exn, "bad protobuf for " + cls.getName());
         }
-
         out.initFrom(builder.build(), context);
         return out;
     }
@@ -128,7 +121,6 @@ public abstract class LHSerializable<T extends Message> {
     // public byte[] serialize() {
     // return toProto().build().toByteArray();
     // }
-
     @Override
     public String toString() {
         return toJson();

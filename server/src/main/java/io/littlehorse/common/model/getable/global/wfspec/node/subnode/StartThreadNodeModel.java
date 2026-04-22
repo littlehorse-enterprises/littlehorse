@@ -25,11 +25,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Getter;
 
-@Getter
 public class StartThreadNodeModel extends SubNode<StartThreadNode> {
-
     public String threadSpecName;
     public Map<String, VariableAssignmentModel> variables;
 
@@ -52,27 +49,22 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
 
     public StartThreadNode.Builder toProto() {
         StartThreadNode.Builder out = StartThreadNode.newBuilder().setThreadSpecName(threadSpecName);
-
         for (Map.Entry<String, VariableAssignmentModel> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
         }
-
         return out;
     }
 
     @Override
     public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
         WfSpecModel wfSpecModel = node.threadSpec.wfSpec;
-
         if (threadSpecName.equals(node.threadSpec.name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to start same thread");
         }
-
         ThreadSpecModel childThreadSpecModel = wfSpecModel.threadSpecs.get(threadSpecName);
         if (childThreadSpecModel == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to start nonexistent thread " + threadSpecName);
         }
-
         try {
             childThreadSpecModel.validateStartVariablesByType(variables);
         } catch (InvalidThreadSpecException exn) {
@@ -110,5 +102,13 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
     @Override
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
         return Optional.of(new ReturnTypeModel(VariableType.INT));
+    }
+
+    public String getThreadSpecName() {
+        return this.threadSpecName;
+    }
+
+    public Map<String, VariableAssignmentModel> getVariables() {
+        return this.variables;
     }
 }

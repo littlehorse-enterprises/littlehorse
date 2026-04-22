@@ -11,13 +11,8 @@ import io.littlehorse.sdk.common.proto.WfSpecVersionMigration;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMigration> {
-
     private int newMajorVersion;
     private int newRevision;
     private Map<String, ThreadSpecMigrationModel> threadSpecMigrations;
@@ -37,12 +32,10 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
         WfSpecVersionMigration.Builder out = WfSpecVersionMigration.newBuilder()
                 .setNewMajorVersion(newMajorVersion)
                 .setNewRevision(newRevision);
-
         for (Map.Entry<String, ThreadSpecMigrationModel> entry : threadSpecMigrations.entrySet()) {
             out.putThreadSpecMigrations(
                     entry.getKey(), entry.getValue().toProto().build());
         }
-
         return out;
     }
 
@@ -51,7 +44,6 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
         WfSpecVersionMigration p = (WfSpecVersionMigration) proto;
         newMajorVersion = p.getNewMajorVersion();
         newRevision = p.getNewRevision();
-
         for (Map.Entry<String, ThreadSpecMigration> e :
                 p.getThreadSpecMigrationsMap().entrySet()) {
             threadSpecMigrations.put(
@@ -72,18 +64,15 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
             ThreadSpecMigrationModel migration = e.getValue();
             ThreadSpecModel sourceThread = oldWfSpec.getThreadSpecs().get(sourceThreadName);
             ThreadSpecModel destinationThread = newWfSpec.getThreadSpecs().get(migration.getNewThreadSpecName());
-
             if (sourceThread == null) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT, "Source WfSpec has no threadSpec %s".formatted(sourceThreadName));
             }
-
             if (destinationThread == null) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
                         "Destination WfSpec has no threadSpec %s".formatted(migration.getNewThreadSpecName()));
             }
-
             validateThreadMigration(migration, sourceThread, destinationThread);
         }
     }
@@ -98,7 +87,6 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
                 migration.getNodeMigrations().entrySet()) {
             NodeMigrationModel nodeMigration = e.getValue();
             String sourceNodeName = e.getKey();
-
             NodeModel sourceNode = source.getNodes().get(sourceNodeName);
             if (sourceNode == null) {
                 throw new LHApiException(
@@ -106,7 +94,6 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
                         "ThreadSpec %s on source WfSpec does not have node %s"
                                 .formatted(source.getName(), sourceNodeName));
             }
-
             String destNodeName = nodeMigration.getNewNodeName();
             NodeModel destNode = dest.getNodes().get(destNodeName);
             if (destNode == null) {
@@ -116,5 +103,37 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
                                 .formatted(dest.getName(), destNodeName));
             }
         }
+    }
+
+    public int getNewMajorVersion() {
+        return this.newMajorVersion;
+    }
+
+    public int getNewRevision() {
+        return this.newRevision;
+    }
+
+    public Map<String, ThreadSpecMigrationModel> getThreadSpecMigrations() {
+        return this.threadSpecMigrations;
+    }
+
+    public ExecutionContext getContext() {
+        return this.context;
+    }
+
+    public void setNewMajorVersion(final int newMajorVersion) {
+        this.newMajorVersion = newMajorVersion;
+    }
+
+    public void setNewRevision(final int newRevision) {
+        this.newRevision = newRevision;
+    }
+
+    public void setThreadSpecMigrations(final Map<String, ThreadSpecMigrationModel> threadSpecMigrations) {
+        this.threadSpecMigrations = threadSpecMigrations;
+    }
+
+    public void setContext(final ExecutionContext context) {
+        this.context = context;
     }
 }

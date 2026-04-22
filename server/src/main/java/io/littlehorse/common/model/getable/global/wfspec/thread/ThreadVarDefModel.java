@@ -10,13 +10,8 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class ThreadVarDefModel extends LHSerializable<ThreadVarDef> {
-
     private VariableDefModel varDef;
     private boolean required;
     private boolean searchable;
@@ -62,7 +57,6 @@ public class ThreadVarDefModel extends LHSerializable<ThreadVarDef> {
                 .setSearchable(searchable)
                 .setVarDef(varDef.toProto())
                 .setAccessLevel(accessLevel);
-
         for (JsonIndexModel jim : jsonIndexes) {
             out.addJsonIndexes(jim.toProto());
         }
@@ -88,5 +82,45 @@ public class ThreadVarDefModel extends LHSerializable<ThreadVarDef> {
      */
     public boolean isSearchableOn(String jsonFieldKey) {
         return jsonIndexes.stream().anyMatch(jsonIdx -> jsonIdx.getFieldPath().equals(jsonFieldKey));
+    }
+
+    public VariableDefModel getVarDef() {
+        return this.varDef;
+    }
+
+    public boolean isRequired() {
+        return this.required;
+    }
+
+    public boolean isSearchable() {
+        return this.searchable;
+    }
+
+    public List<JsonIndexModel> getJsonIndexes() {
+        return this.jsonIndexes;
+    }
+
+    public WfRunVariableAccessLevel getAccessLevel() {
+        return this.accessLevel;
+    }
+
+    public void setVarDef(final VariableDefModel varDef) {
+        this.varDef = varDef;
+    }
+
+    public void setRequired(final boolean required) {
+        this.required = required;
+    }
+
+    public void setSearchable(final boolean searchable) {
+        this.searchable = searchable;
+    }
+
+    public void setJsonIndexes(final List<JsonIndexModel> jsonIndexes) {
+        this.jsonIndexes = jsonIndexes;
+    }
+
+    public void setAccessLevel(final WfRunVariableAccessLevel accessLevel) {
+        this.accessLevel = accessLevel;
     }
 }

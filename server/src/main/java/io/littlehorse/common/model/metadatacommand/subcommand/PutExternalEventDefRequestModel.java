@@ -16,11 +16,8 @@ import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
-import lombok.Getter;
 
-@Getter
 public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExternalEventDefRequest> {
-
     private String name;
     private ExternalEventRetentionPolicyModel retentionPolicy;
     private ReturnTypeModel contentType;
@@ -35,14 +32,12 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
     public PutExternalEventDefRequest.Builder toProto() {
         PutExternalEventDefRequest.Builder out =
                 PutExternalEventDefRequest.newBuilder().setName(name).setRetentionPolicy(retentionPolicy.toProto());
-
         if (contentType != null) {
             out.setContentType(contentType.toProto());
         }
         if (correlatedEventConfig != null) {
             out.setCorrelatedEventConfig(correlatedEventConfig.toProto());
         }
-
         return out;
     }
 
@@ -64,18 +59,14 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
     @Override
     public ExternalEventDef process(MetadataProcessorContext context) {
         MetadataManager metadataManager = context.metadataManager();
-
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "ExternalEventDefName must be a valid hostname");
         }
-
         validateReferencedStructDefs(context);
-
         ExternalEventDefModel spec = new ExternalEventDefModel(name, retentionPolicy, contentType);
         if (correlatedEventConfig != null) {
             spec.setCorrelatedEventConfig(correlatedEventConfig);
         }
-
         metadataManager.put(spec);
         return spec.toProto().build();
     }
@@ -88,7 +79,6 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
 
     private void validateReferencedStructDefs(MetadataProcessorContext context) {
         if (contentType == null) return;
-
         contentType.getOutputType().ifPresent(typeDef -> {
             try {
                 typeDef.validateStructDefExistsAndPinVersion(context.metadataManager());
@@ -96,5 +86,21 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
                 throw new LHApiException(Status.INVALID_ARGUMENT, e.getMessage());
             }
         });
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public ExternalEventRetentionPolicyModel getRetentionPolicy() {
+        return this.retentionPolicy;
+    }
+
+    public ReturnTypeModel getContentType() {
+        return this.contentType;
+    }
+
+    public CorrelatedEventConfigModel getCorrelatedEventConfig() {
+        return this.correlatedEventConfig;
     }
 }

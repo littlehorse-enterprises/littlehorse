@@ -4,11 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class ParentWfSpecReferenceModel extends LHSerializable<ParentWfSpecReference> {
-
     private String wfSpecName;
     private int wfSpecMajorVersion;
 
@@ -36,5 +33,13 @@ public class ParentWfSpecReferenceModel extends LHSerializable<ParentWfSpecRefer
         ParentWfSpecReference p = (ParentWfSpecReference) proto;
         wfSpecName = p.getWfSpecName();
         wfSpecMajorVersion = p.getWfSpecMajorVersion();
+    }
+
+    public String getWfSpecName() {
+        return this.wfSpecName;
+    }
+
+    public int getWfSpecMajorVersion() {
+        return this.wfSpecMajorVersion;
     }
 }

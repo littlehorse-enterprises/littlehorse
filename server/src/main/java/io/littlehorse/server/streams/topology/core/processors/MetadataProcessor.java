@@ -30,7 +30,6 @@ import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.Processor;
@@ -42,14 +41,12 @@ import org.apache.kafka.streams.state.KeyValueStore;
  * This is the processor that validates and processes commands to update metadata,
  * such as WfSpec/TaskDef/ExternalEventDef/UserTaskDef.
  */
-@Slf4j
 public class MetadataProcessor implements Processor<String, MetadataCommand, String, CommandProcessorOutput> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MetadataProcessor.class);
     private final LHServerConfig config;
     private final LHServer server;
     private final MetadataCache metadataCache;
     private final LHProcessingExceptionHandler exceptionHandler;
-
     private ProcessorContext<String, CommandProcessorOutput> streamsContext;
     private KeyValueStore<String, Bytes> metadataStore;
     private final AsyncWaiters asyncWaiters;
@@ -66,40 +63,30 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.streamsContext = ctx;
         this.metadataStore = ctx.getStateStore(ServerTopology.METADATA_STORE);
-
         maybeInitializeStartupResources();
     }
 
     private void maybeInitializeStartupResources() {
         BackgroundContext context = new BackgroundContext();
-
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(metadataStore, context);
-
         InitializationLogModel storedInitializationLogModel =
                 clusterStore.get(InitializationLogModel.SERVER_INITIALIZED_KEY, InitializationLogModel.class);
-
         TenantScopedStore tenantScopedStore =
                 TenantScopedStore.newInstance(metadataStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), context);
-
         MetadataManager metadataManager = new MetadataManager(clusterStore, tenantScopedStore, metadataCache, null);
-
         // If server has not been initialized..
         if (storedInitializationLogModel == null) {
             log.info("Initializing Cluster...");
             InitializationLog.Builder initializationLogBuilder = InitializationLog.newBuilder()
                     .setInitVersion(Version.getCurrentServerVersion())
                     .setInitTime(LHUtil.fromDate(new Date()));
-
             Tenant initialDefaultTenant = getDefaultTenant(context, metadataManager);
             initializationLogBuilder.setInitDefaultTenant(initialDefaultTenant);
-
             Principal initialAnonymousPrincipal = getAnonymousPrincipal(context, metadataManager);
             initializationLogBuilder.setInitAnonymousPrincipal(initialAnonymousPrincipal);
-
             InitializationLogModel initializationLogModel = InitializationLogModel.fromProto(
                     initializationLogBuilder.build(), InitializationLogModel.class, context);
             clusterStore.put(initializationLogModel);
-
             log.info("Initialization Log put to store!");
             log.info(initializationLogModel.toString());
         }
@@ -110,19 +97,15 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
     // Gets the anonymous Principal configuration. If one does not exist, create a new one.
     public Tenant getDefaultTenant(BackgroundContext context, MetadataManager metadataManager) {
         TenantModel defaultTenantModel = InitializationLogModel.getDefaultTenantModel(context);
-
         // Check if it exists already
         TenantModel storedDefaultTenantModel = metadataManager.get(defaultTenantModel.getObjectId());
-
         // If so, return the existing default Tenant
         if (storedDefaultTenantModel != null) {
             return storedDefaultTenantModel.toProto().build();
         }
-
         // Otherwise, put the default implementation to the store and return it
         metadataManager.put(defaultTenantModel);
         log.info("Default Tenant put to store!");
-
         return defaultTenantModel.toProto().build();
     }
 
@@ -130,19 +113,15 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
     public Principal getAnonymousPrincipal(BackgroundContext context, MetadataManager metadataManager) {
         // Get the default implementation of the anonymous Principal
         PrincipalModel anonymousPrincipalModel = InitializationLogModel.getAnonymousPrincipalModel(context);
-
         // Check if it exists already
         PrincipalModel storedAnonymousPrincipalModel = metadataManager.get(new PrincipalIdModel("anonymous"));
-
         // If so, return the existing anonymous Principal
         if (storedAnonymousPrincipalModel != null) {
             return storedAnonymousPrincipalModel.toProto().build();
         }
-
         // Otherwise, put the default implementation to the store and return it
         metadataManager.put(anonymousPrincipalModel);
         log.info("Anonymous Principal put to store!");
-
         return anonymousPrincipalModel.toProto().build();
     }
 
@@ -159,15 +138,12 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
                 config.getLHInstanceName(),
                 command.getType(),
                 command.getCommandId());
-
         try {
             Message response = command.process(metadataContext);
             if (command.hasResponse()) {
-
                 CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
                         command.getCommandId().get(), Message.class, new CompletableFuture<>());
                 completable.complete(response);
-
                 // This allows us to set a larger commit interval for the Core Topology
                 // without affecting latency of updates to the metadata global store.
                 //

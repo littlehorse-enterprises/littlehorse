@@ -8,16 +8,14 @@ import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.exceptions.LHApiException;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 
 /**
  * This class defines a centralized error handler for public RPC methods, translating exceptions into appropriate gRPC {@code Status} codes.
  * This class is designed to be closer to the network layer which means, that it should be executed before any other interceptor in the call.
  */
-@Slf4j
 public class GlobalExceptionHandler implements ServerInterceptor {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(GlobalExceptionHandler.class);
     public static final String INTERNAL_ERROR_MESSAGE =
             "An unexpected internal error occurred. Please contact support for assistance.";
 

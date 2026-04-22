@@ -12,13 +12,9 @@ import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
 public class StoredGetable<U extends Message, T extends AbstractGetable<U>> extends Storeable<StoredGetablePb> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(StoredGetable.class);
     private TagsCache indexCache;
     private T storedObject;
     private GetableClassEnum objectType;
@@ -106,5 +102,17 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
 
     public static String getMetadataRocksDBKey(String key, GetableClassEnum objType) {
         return objType.getNumber() + "/" + key;
+    }
+
+    public TagsCache getIndexCache() {
+        return this.indexCache;
+    }
+
+    public T getStoredObject() {
+        return this.storedObject;
+    }
+
+    public GetableClassEnum getObjectType() {
+        return this.objectType;
     }
 }

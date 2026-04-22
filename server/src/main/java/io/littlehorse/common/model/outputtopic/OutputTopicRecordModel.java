@@ -18,15 +18,9 @@ import io.littlehorse.sdk.common.proto.OutputTopicRecord;
 import io.littlehorse.sdk.common.proto.OutputTopicRecord.PayloadCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
-
     private Timestamp timestamp;
-
     private PayloadCase payloadCase;
     private WfRunModel wfRun;
     private ExternalEventModel externalEvent;
@@ -54,7 +48,6 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
     @Override
     public OutputTopicRecord.Builder toProto() {
         OutputTopicRecord.Builder out = OutputTopicRecord.newBuilder().setTimestamp(timestamp);
-
         switch (payloadCase) {
             case WF_RUN:
                 out.setWfRun(wfRun.toProto());
@@ -82,16 +75,13 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
                 break;
             case PAYLOAD_NOT_SET:
         }
-
         return out;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext ignored) {
         OutputTopicRecord p = (OutputTopicRecord) proto;
-
         timestamp = p.getTimestamp();
-
         payloadCase = p.getPayloadCase();
         switch (payloadCase) {
             case WF_RUN:
@@ -153,7 +143,6 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
         if (thing == null) {
             throw new IllegalArgumentException();
         }
-
         if (WfRunModel.class.isAssignableFrom(thing.getClass())) {
             this.payloadCase = PayloadCase.WF_RUN;
             this.wfRun = (WfRunModel) thing;
@@ -181,5 +170,85 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
         } else {
             throw new IllegalArgumentException("Unrecognized Output Topic Event thing: " + thing.getClass());
         }
+    }
+
+    public Timestamp getTimestamp() {
+        return this.timestamp;
+    }
+
+    public PayloadCase getPayloadCase() {
+        return this.payloadCase;
+    }
+
+    public WfRunModel getWfRun() {
+        return this.wfRun;
+    }
+
+    public ExternalEventModel getExternalEvent() {
+        return this.externalEvent;
+    }
+
+    public WorkflowEventModel getWorkflowEvent() {
+        return this.workflowEvent;
+    }
+
+    public UserTaskRunModel getUserTaskRun() {
+        return this.userTaskRun;
+    }
+
+    public VariableModel getVariable() {
+        return this.variable;
+    }
+
+    public TaskRunModel getTaskRun() {
+        return this.taskRun;
+    }
+
+    public CorrelatedEventModel getCorrelatedEvent() {
+        return this.correlatedEvent;
+    }
+
+    public CheckpointModel getCheckpoint() {
+        return this.checkpoint;
+    }
+
+    public void setTimestamp(final Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setPayloadCase(final PayloadCase payloadCase) {
+        this.payloadCase = payloadCase;
+    }
+
+    public void setWfRun(final WfRunModel wfRun) {
+        this.wfRun = wfRun;
+    }
+
+    public void setExternalEvent(final ExternalEventModel externalEvent) {
+        this.externalEvent = externalEvent;
+    }
+
+    public void setWorkflowEvent(final WorkflowEventModel workflowEvent) {
+        this.workflowEvent = workflowEvent;
+    }
+
+    public void setUserTaskRun(final UserTaskRunModel userTaskRun) {
+        this.userTaskRun = userTaskRun;
+    }
+
+    public void setVariable(final VariableModel variable) {
+        this.variable = variable;
+    }
+
+    public void setTaskRun(final TaskRunModel taskRun) {
+        this.taskRun = taskRun;
+    }
+
+    public void setCorrelatedEvent(final CorrelatedEventModel correlatedEvent) {
+        this.correlatedEvent = correlatedEvent;
+    }
+
+    public void setCheckpoint(final CheckpointModel checkpoint) {
+        this.checkpoint = checkpoint;
     }
 }

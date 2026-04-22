@@ -11,13 +11,8 @@ import io.littlehorse.sdk.common.proto.CorrelatedEvent;
 import io.littlehorse.sdk.common.proto.CorrelatedEventId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class CorrelatedEventIdModel extends CoreObjectId<CorrelatedEventId, CorrelatedEvent, CorrelatedEventModel> {
-
     private String key;
     private ExternalEventDefIdModel externalEventDefId;
 
@@ -73,5 +68,21 @@ public class CorrelatedEventIdModel extends CoreObjectId<CorrelatedEventId, Corr
 
     public String getExternalEventDefName() {
         return externalEventDefId.getName();
+    }
+
+    public String getKey() {
+        return this.key;
+    }
+
+    public ExternalEventDefIdModel getExternalEventDefId() {
+        return this.externalEventDefId;
+    }
+
+    public void setKey(final String key) {
+        this.key = key;
+    }
+
+    public void setExternalEventDefId(final ExternalEventDefIdModel externalEventDefId) {
+        this.externalEventDefId = externalEventDefId;
     }
 }

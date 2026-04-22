@@ -17,14 +17,8 @@ import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUserTaskDefReply;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 // TODO: there seems to be quite a bit of code duplication here, see SearchWfSpec.
-@Slf4j
-@Getter
-@Setter
+
 public class SearchUserTaskDefRequestModel
         extends PublicScanRequest<
                 SearchUserTaskDefRequest,
@@ -32,7 +26,7 @@ public class SearchUserTaskDefRequestModel
                 UserTaskDefId,
                 UserTaskDefIdModel,
                 SearchUserTaskDefReply> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SearchUserTaskDefRequestModel.class);
     private UserTaskDefCriteriaCase type;
     private String name;
     private String prefix;
@@ -61,7 +55,6 @@ public class SearchUserTaskDefRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
-
         type = p.getUserTaskDefCriteriaCase();
         switch (type) {
             case NAME:
@@ -71,8 +64,8 @@ public class SearchUserTaskDefRequestModel
                 prefix = p.getPrefix();
                 break;
             case USERTASKDEFCRITERIA_NOT_SET:
-                // nothing to do, we just return all the UserTaskDef's.
         }
+        // nothing to do, we just return all the UserTaskDef's.
     }
 
     public SearchUserTaskDefRequest.Builder toProto() {
@@ -91,8 +84,8 @@ public class SearchUserTaskDefRequestModel
                 out.setPrefix(prefix);
                 break;
             case USERTASKDEFCRITERIA_NOT_SET:
-                // nothing to do, we just return all the UserTaskDef's.
         }
+        // nothing to do, we just return all the UserTaskDef's.
         return out;
     }
 
@@ -116,5 +109,29 @@ public class SearchUserTaskDefRequestModel
         } else {
             return ObjectIdScanBoundaryStrategy.prefixMetadataScan();
         }
+    }
+
+    public UserTaskDefCriteriaCase getType() {
+        return this.type;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getPrefix() {
+        return this.prefix;
+    }
+
+    public void setType(final UserTaskDefCriteriaCase type) {
+        this.type = type;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setPrefix(final String prefix) {
+        this.prefix = prefix;
     }
 }

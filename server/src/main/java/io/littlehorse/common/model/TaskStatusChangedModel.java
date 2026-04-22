@@ -6,9 +6,7 @@ import io.littlehorse.common.proto.TaskStatusChanged;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class TaskStatusChangedModel extends LHSerializable<TaskStatusChanged> {
     private TaskStatus previousStatus;
     private TaskStatus newStatus;
@@ -60,5 +58,13 @@ public class TaskStatusChangedModel extends LHSerializable<TaskStatusChanged> {
 
     public boolean isScheduled() {
         return this.newStatus.equals(TaskStatus.TASK_SCHEDULED);
+    }
+
+    public TaskStatus getPreviousStatus() {
+        return this.previousStatus;
+    }
+
+    public TaskStatus getNewStatus() {
+        return this.newStatus;
     }
 }

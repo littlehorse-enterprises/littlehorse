@@ -60,14 +60,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Getter
-@Setter
 public abstract class AbstractGetable<T extends Message> extends LHSerializable<T> {
-
     public abstract Date getCreatedAt();
 
     public Optional<String> getPartitionKey() {
@@ -175,8 +170,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             case INACTIVE_THREAD_RUN:
                 return InactiveThreadRunModel.class;
             case UNRECOGNIZED:
-                // default:
         }
+        // default:
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");
     }
 
@@ -257,7 +252,6 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                     dynamicIndexedFields.addAll(this.getIndexValues(stringValueTypePair.getKey(), tagStorageType));
                 }
             }
-
             List<List<IndexedField>> combine = combine(singleIndexedValues, dynamicIndexedFields);
             for (List<IndexedField> list : combine) {
                 List<Pair<String, String>> pairs = list.stream()

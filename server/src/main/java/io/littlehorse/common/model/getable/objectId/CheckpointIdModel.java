@@ -9,13 +9,8 @@ import io.littlehorse.sdk.common.proto.Checkpoint;
 import io.littlehorse.sdk.common.proto.CheckpointId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class CheckpointIdModel extends CoreObjectId<CheckpointId, Checkpoint, CheckpointModel> {
-
     private TaskRunIdModel taskRun;
     private int checkpointNumber;
 
@@ -63,5 +58,21 @@ public class CheckpointIdModel extends CoreObjectId<CheckpointId, Checkpoint, Ch
         int separatorIndex = key.lastIndexOf("/");
         checkpointNumber = Integer.valueOf(key.substring(key.lastIndexOf("/") + 1));
         taskRun = (TaskRunIdModel) TaskRunIdModel.fromString(key.substring(0, separatorIndex), TaskRunIdModel.class);
+    }
+
+    public TaskRunIdModel getTaskRun() {
+        return this.taskRun;
+    }
+
+    public int getCheckpointNumber() {
+        return this.checkpointNumber;
+    }
+
+    public void setTaskRun(final TaskRunIdModel taskRun) {
+        this.taskRun = taskRun;
+    }
+
+    public void setCheckpointNumber(final int checkpointNumber) {
+        this.checkpointNumber = checkpointNumber;
     }
 }

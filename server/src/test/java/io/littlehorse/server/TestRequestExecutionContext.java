@@ -21,16 +21,13 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
-import lombok.Getter;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.mockito.Mockito;
 
-@Getter
 public class TestRequestExecutionContext extends RequestExecutionContext {
-
     private final String clientId;
     private final String tenantId;
     private final KeyValueStore<String, Bytes> globalMetadataNativeStore;
@@ -78,14 +75,12 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
                 TenantScopedStore.newInstance(coreNativeStore, new TenantIdModel(tenantId), new BackgroundContext());
         MetadataManager initManager = new MetadataManager(clusterInitStore, coreInitStore, metadataCache);
         initManager.put(new TenantModel(new TenantIdModel(tenantId)));
-
         initManager.put(TenantModel.fromProto(
                 Tenant.newBuilder()
                         .setId(TenantId.newBuilder().setId(LHConstants.DEFAULT_TENANT))
                         .build(),
                 TenantModel.class,
                 null));
-
         initManager.put(PrincipalModel.fromProto(
                 Principal.newBuilder()
                         .setId(PrincipalId.newBuilder().setId(LHConstants.ANONYMOUS_PRINCIPAL))
@@ -93,7 +88,6 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
                         .build(),
                 PrincipalModel.class,
                 null));
-
         return new TestRequestExecutionContext(
                 new PrincipalIdModel(clientId),
                 new TenantIdModel(tenantId),
@@ -118,5 +112,33 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
         } else {
             throw new IllegalArgumentException("%s not supported yet".formatted(storeName));
         }
+    }
+
+    public String getClientId() {
+        return this.clientId;
+    }
+
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    public KeyValueStore<String, Bytes> getGlobalMetadataNativeStore() {
+        return this.globalMetadataNativeStore;
+    }
+
+    public KeyValueStore<String, Bytes> getCoreNativeStore() {
+        return this.coreNativeStore;
+    }
+
+    public MetadataCache getMetadataCache() {
+        return this.metadataCache;
+    }
+
+    public LHServerConfig getLhConfig() {
+        return this.lhConfig;
+    }
+
+    public MockProcessorContext<String, CommandProcessorOutput> getProcessorContext() {
+        return this.processorContext;
     }
 }

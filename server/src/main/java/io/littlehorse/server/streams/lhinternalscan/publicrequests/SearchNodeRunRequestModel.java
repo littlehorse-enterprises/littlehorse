@@ -22,14 +22,10 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
 public class SearchNodeRunRequestModel
         extends PublicScanRequest<SearchNodeRunRequest, NodeRunIdList, NodeRunId, NodeRunIdModel, SearchNodeRunReply> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SearchNodeRunRequestModel.class);
     private Timestamp earliestStart;
     private Timestamp latestStart;
     private ExternalEventDefIdModel externalEventDefId;
@@ -53,10 +49,8 @@ public class SearchNodeRunRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
-
         if (p.hasEarliestStart()) earliestStart = p.getEarliestStart();
         if (p.hasLatestStart()) latestStart = p.getLatestStart();
-
         externalEventDefId =
                 ExternalEventDefIdModel.fromProto(p.getExternalEventDef(), ExternalEventDefIdModel.class, context);
     }
@@ -70,7 +64,6 @@ public class SearchNodeRunRequestModel
         if (limit != null) {
             out.setLimit(limit);
         }
-
         if (earliestStart != null) out.setEarliestStart(earliestStart);
         if (latestStart != null) out.setLatestStart(latestStart);
         return out;
@@ -103,5 +96,17 @@ public class SearchNodeRunRequestModel
     @Override
     public List<Attribute> getSearchAttributes() {
         return List.of(new Attribute("extEvtDefName", externalEventDefId.toString()));
+    }
+
+    public Timestamp getEarliestStart() {
+        return this.earliestStart;
+    }
+
+    public Timestamp getLatestStart() {
+        return this.latestStart;
+    }
+
+    public ExternalEventDefIdModel getExternalEventDefId() {
+        return this.externalEventDefId;
     }
 }

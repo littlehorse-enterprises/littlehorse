@@ -42,15 +42,9 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class CommandModel extends AbstractCommand<Command> {
-
     public Date time;
-
     public CommandCase type;
     public ReportTaskRunModel reportTaskRun;
     public TaskClaimEventModel taskClaimEvent;
@@ -109,7 +103,6 @@ public class CommandModel extends AbstractCommand<Command> {
         if (commandId != null) {
             out.setCommandId(commandId);
         }
-
         switch (type) {
             case REPORT_TASK_RUN:
                 out.setReportTaskRun(reportTaskRun.toProto());
@@ -220,11 +213,9 @@ public class CommandModel extends AbstractCommand<Command> {
     public void initFrom(Message proto, ExecutionContext context) {
         Command p = (Command) proto;
         time = LHUtil.fromProtoTs(p.getTime());
-
         if (p.hasCommandId()) {
             commandId = p.getCommandId();
         }
-
         type = p.getCommandCase();
         switch (type) {
             case REPORT_TASK_RUN:
@@ -556,5 +547,285 @@ public class CommandModel extends AbstractCommand<Command> {
 
     public Message process(CoreProcessorContext executionContext, LHServerConfig config) {
         return getSubCommand().process(executionContext, config);
+    }
+
+    public Date getTime() {
+        return this.time;
+    }
+
+    public CommandCase getType() {
+        return this.type;
+    }
+
+    public ReportTaskRunModel getReportTaskRun() {
+        return this.reportTaskRun;
+    }
+
+    public TaskClaimEventModel getTaskClaimEvent() {
+        return this.taskClaimEvent;
+    }
+
+    public PutExternalEventRequestModel getPutExternalEventRequest() {
+        return this.putExternalEventRequest;
+    }
+
+    public RunWfRequestModel getRunWf() {
+        return this.runWf;
+    }
+
+    public StopWfRunRequestModel getStopWfRun() {
+        return this.stopWfRun;
+    }
+
+    public ResumeWfRunRequestModel getResumeWfRun() {
+        return this.resumeWfRun;
+    }
+
+    public SleepNodeMaturedModel getSleepNodeMatured() {
+        return this.sleepNodeMatured;
+    }
+
+    public InternalDeleteWfRunRequestModel getDeleteWfRun() {
+        return this.deleteWfRun;
+    }
+
+    public ExternalEventTimeoutModel getExternalEventTimeout() {
+        return this.externalEventTimeout;
+    }
+
+    public TaskWorkerHeartBeatRequestModel getTaskWorkerHeartBeat() {
+        return this.taskWorkerHeartBeat;
+    }
+
+    public DeleteExternalEventRequestModel getDeleteExternalEvent() {
+        return this.deleteExternalEvent;
+    }
+
+    public AssignUserTaskRunRequestModel getAssignUserTaskRun() {
+        return this.assignUserTaskRun;
+    }
+
+    public CompleteUserTaskRunRequestModel getCompleteUserTaskRun() {
+        return this.completeUserTaskRun;
+    }
+
+    public TriggeredTaskRun getTriggeredTaskRun() {
+        return this.triggeredTaskRun;
+    }
+
+    public DeadlineReassignUserTaskModel getReassignUserTask() {
+        return this.reassignUserTask;
+    }
+
+    public CancelUserTaskRunRequestModel getCancelUserTaskRun() {
+        return this.cancelUserTaskRun;
+    }
+
+    public PutUserTaskRunCommentReqeustModel getPutUserTaskRunComment() {
+        return this.putUserTaskRunComment;
+    }
+
+    public EditUserTaskRunCommentRequestModel getEditUserTaskRunComment() {
+        return this.editUserTaskRunComment;
+    }
+
+    public DeleteUserTaskRunCommentRequestModel getDeleteUserTaskRunComment() {
+        return this.deleteUserTaskRunComment;
+    }
+
+    public TaskAttemptRetryReadyModel getTaskAttemptRetryReady() {
+        return this.taskAttemptRetryReady;
+    }
+
+    public BulkUpdateJobModel getBulkJob() {
+        return this.bulkJob;
+    }
+
+    public RescueThreadRunRequestModel getRescueThreadRun() {
+        return this.rescueThreadRun;
+    }
+
+    public DeleteTaskWorkerGroupRequestModel getDeleteTaskWorkerGroup() {
+        return this.deleteTaskWorkerGroup;
+    }
+
+    public SaveUserTaskRunProgressRequestModel getSaveUserTaskRunProgress() {
+        return this.saveUserTaskRunProgress;
+    }
+
+    public ScheduleWfRunCommandModel getScheduleWfRun() {
+        return this.scheduleWfRun;
+    }
+
+    public ScheduleWfRequestModel getScheduleWfRunRequest() {
+        return this.scheduleWfRunRequest;
+    }
+
+    public DeleteScheduledWfRunRequestModel getDeleteScheduledWfRun() {
+        return this.deleteScheduledWfRun;
+    }
+
+    public PutCorrelatedEventRequestModel getPutCorrelatedEvent() {
+        return this.putCorrelatedEvent;
+    }
+
+    public UpdateCorrelationMarkerModel getUpdateCorrellationMarker() {
+        return this.updateCorrellationMarker;
+    }
+
+    public DeleteCorrelatedEventRequestModel getDeleteCorrelatedEvent() {
+        return this.deleteCorrelatedEvent;
+    }
+
+    public PutCheckpointRequestModel getPutCheckpoint() {
+        return this.putCheckpoint;
+    }
+
+    public AggregateWindowMetricsModel getAggregateWindowMetrics() {
+        return this.aggregateWindowMetrics;
+    }
+
+    public DeleteMetricWindowModel getDeleteMetricWindow() {
+        return this.deleteMetricWindow;
+    }
+
+    public void setTime(final Date time) {
+        this.time = time;
+    }
+
+    public void setType(final CommandCase type) {
+        this.type = type;
+    }
+
+    public void setReportTaskRun(final ReportTaskRunModel reportTaskRun) {
+        this.reportTaskRun = reportTaskRun;
+    }
+
+    public void setTaskClaimEvent(final TaskClaimEventModel taskClaimEvent) {
+        this.taskClaimEvent = taskClaimEvent;
+    }
+
+    public void setPutExternalEventRequest(final PutExternalEventRequestModel putExternalEventRequest) {
+        this.putExternalEventRequest = putExternalEventRequest;
+    }
+
+    public void setRunWf(final RunWfRequestModel runWf) {
+        this.runWf = runWf;
+    }
+
+    public void setStopWfRun(final StopWfRunRequestModel stopWfRun) {
+        this.stopWfRun = stopWfRun;
+    }
+
+    public void setResumeWfRun(final ResumeWfRunRequestModel resumeWfRun) {
+        this.resumeWfRun = resumeWfRun;
+    }
+
+    public void setSleepNodeMatured(final SleepNodeMaturedModel sleepNodeMatured) {
+        this.sleepNodeMatured = sleepNodeMatured;
+    }
+
+    public void setDeleteWfRun(final InternalDeleteWfRunRequestModel deleteWfRun) {
+        this.deleteWfRun = deleteWfRun;
+    }
+
+    public void setExternalEventTimeout(final ExternalEventTimeoutModel externalEventTimeout) {
+        this.externalEventTimeout = externalEventTimeout;
+    }
+
+    public void setTaskWorkerHeartBeat(final TaskWorkerHeartBeatRequestModel taskWorkerHeartBeat) {
+        this.taskWorkerHeartBeat = taskWorkerHeartBeat;
+    }
+
+    public void setDeleteExternalEvent(final DeleteExternalEventRequestModel deleteExternalEvent) {
+        this.deleteExternalEvent = deleteExternalEvent;
+    }
+
+    public void setAssignUserTaskRun(final AssignUserTaskRunRequestModel assignUserTaskRun) {
+        this.assignUserTaskRun = assignUserTaskRun;
+    }
+
+    public void setCompleteUserTaskRun(final CompleteUserTaskRunRequestModel completeUserTaskRun) {
+        this.completeUserTaskRun = completeUserTaskRun;
+    }
+
+    public void setTriggeredTaskRun(final TriggeredTaskRun triggeredTaskRun) {
+        this.triggeredTaskRun = triggeredTaskRun;
+    }
+
+    public void setReassignUserTask(final DeadlineReassignUserTaskModel reassignUserTask) {
+        this.reassignUserTask = reassignUserTask;
+    }
+
+    public void setCancelUserTaskRun(final CancelUserTaskRunRequestModel cancelUserTaskRun) {
+        this.cancelUserTaskRun = cancelUserTaskRun;
+    }
+
+    public void setPutUserTaskRunComment(final PutUserTaskRunCommentReqeustModel putUserTaskRunComment) {
+        this.putUserTaskRunComment = putUserTaskRunComment;
+    }
+
+    public void setEditUserTaskRunComment(final EditUserTaskRunCommentRequestModel editUserTaskRunComment) {
+        this.editUserTaskRunComment = editUserTaskRunComment;
+    }
+
+    public void setDeleteUserTaskRunComment(final DeleteUserTaskRunCommentRequestModel deleteUserTaskRunComment) {
+        this.deleteUserTaskRunComment = deleteUserTaskRunComment;
+    }
+
+    public void setTaskAttemptRetryReady(final TaskAttemptRetryReadyModel taskAttemptRetryReady) {
+        this.taskAttemptRetryReady = taskAttemptRetryReady;
+    }
+
+    public void setBulkJob(final BulkUpdateJobModel bulkJob) {
+        this.bulkJob = bulkJob;
+    }
+
+    public void setRescueThreadRun(final RescueThreadRunRequestModel rescueThreadRun) {
+        this.rescueThreadRun = rescueThreadRun;
+    }
+
+    public void setDeleteTaskWorkerGroup(final DeleteTaskWorkerGroupRequestModel deleteTaskWorkerGroup) {
+        this.deleteTaskWorkerGroup = deleteTaskWorkerGroup;
+    }
+
+    public void setSaveUserTaskRunProgress(final SaveUserTaskRunProgressRequestModel saveUserTaskRunProgress) {
+        this.saveUserTaskRunProgress = saveUserTaskRunProgress;
+    }
+
+    public void setScheduleWfRun(final ScheduleWfRunCommandModel scheduleWfRun) {
+        this.scheduleWfRun = scheduleWfRun;
+    }
+
+    public void setScheduleWfRunRequest(final ScheduleWfRequestModel scheduleWfRunRequest) {
+        this.scheduleWfRunRequest = scheduleWfRunRequest;
+    }
+
+    public void setDeleteScheduledWfRun(final DeleteScheduledWfRunRequestModel deleteScheduledWfRun) {
+        this.deleteScheduledWfRun = deleteScheduledWfRun;
+    }
+
+    public void setPutCorrelatedEvent(final PutCorrelatedEventRequestModel putCorrelatedEvent) {
+        this.putCorrelatedEvent = putCorrelatedEvent;
+    }
+
+    public void setUpdateCorrellationMarker(final UpdateCorrelationMarkerModel updateCorrellationMarker) {
+        this.updateCorrellationMarker = updateCorrellationMarker;
+    }
+
+    public void setDeleteCorrelatedEvent(final DeleteCorrelatedEventRequestModel deleteCorrelatedEvent) {
+        this.deleteCorrelatedEvent = deleteCorrelatedEvent;
+    }
+
+    public void setPutCheckpoint(final PutCheckpointRequestModel putCheckpoint) {
+        this.putCheckpoint = putCheckpoint;
+    }
+
+    public void setAggregateWindowMetrics(final AggregateWindowMetricsModel aggregateWindowMetrics) {
+        this.aggregateWindowMetrics = aggregateWindowMetrics;
+    }
+
+    public void setDeleteMetricWindow(final DeleteMetricWindowModel deleteMetricWindow) {
+        this.deleteMetricWindow = deleteMetricWindow;
     }
 }

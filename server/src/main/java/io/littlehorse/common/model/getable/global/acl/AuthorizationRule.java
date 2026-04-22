@@ -3,11 +3,8 @@ package io.littlehorse.common.model.getable.global.acl;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import java.util.Objects;
-import lombok.Getter;
 
-@Getter
 public class AuthorizationRule {
-
     private ACLResource resource;
     private ACLAction action;
 
@@ -31,5 +28,13 @@ public class AuthorizationRule {
     @Override
     public int hashCode() {
         return Objects.hash(resource, action);
+    }
+
+    public ACLResource getResource() {
+        return this.resource;
+    }
+
+    public ACLAction getAction() {
+        return this.action;
     }
 }

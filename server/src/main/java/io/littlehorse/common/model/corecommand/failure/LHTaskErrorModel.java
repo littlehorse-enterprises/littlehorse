@@ -6,11 +6,8 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHTaskError;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class LHTaskErrorModel extends LHSerializable<LHTaskError> {
-
     private String message;
     private LHErrorType type;
 
@@ -36,5 +33,13 @@ public class LHTaskErrorModel extends LHSerializable<LHTaskError> {
     @Override
     public Class<LHTaskError> getProtoBaseClass() {
         return LHTaskError.class;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public LHErrorType getType() {
+        return this.type;
     }
 }

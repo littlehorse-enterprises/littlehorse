@@ -156,7 +156,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 
@@ -165,9 +164,8 @@ import org.apache.kafka.streams.errors.InvalidStateStoreException;
  * Any exception thrown by an RPC method within this class will be intercepted and
  * handled by the {@code GlobalExceptionHandler} to ensure consistent error management.
  */
-@Slf4j
 public class LHServerListener extends LittleHorseImplBase implements Closeable {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LHServerListener.class);
     private final Context.Key<RequestExecutionContext> contextKey;
     private final LHServerConfig serverConfig;
     private final TaskQueueManager taskQueueManager;
@@ -179,7 +177,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final Duration successDurationTimeout;
     private final AsyncWaiters asyncWaiters;
     private final LHInternalClient lhInternalClient;
-
     private Server grpcListener;
 
     private RequestExecutionContext requestContext() {
@@ -198,7 +195,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             CommandSender commandSender,
             AsyncWaiters asyncWaiters,
             LHInternalClient lhInternalClient) {
-
         // All dependencies are passed in as arguments; nothing is instantiated here,
         // because all listeners share the same threading infrastructure.
         this.lhInternalClient = lhInternalClient;
@@ -212,16 +208,13 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         this.contextKey = contextKey;
         this.successDurationTimeout =
                 Duration.ofMillis(serverConfig.getStreamsSessionTimeout()).plusSeconds(10);
-
         this.grpcListener = null;
-
         ServerBuilder<?> builder = Grpc.newServerBuilderForPort(
                         listenerConfig.getPort(), listenerConfig.getCredentials())
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
                 .addService(this)
                 .executor(networkThreads);
-
         for (ServerInterceptor interceptor : interceptors) {
             builder.intercept(interceptor);
         }
@@ -258,7 +251,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         WfSpecIdModel wfSpecId = LHSerializable.fromProto(req, WfSpecIdModel.class, requestContext());
         WfSpecModel wfSpec = requestContext()
                 .metadataManager()
-                .getOrThrow(wfSpecId, () -> new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
+                .getOrThrow(wfSpecId, () -> new LHApiException(Status.NOT_FOUND, "Couldn\'t find specified WfSpec"));
         ctx.onNext(wfSpec.toProto().build());
         ctx.onCompleted();
     }
@@ -271,7 +264,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ScheduledWfRunModel scheduledWfRun = requestContext()
                 .getableManager()
                 .getOrThrow(
-                        scheduledWfId, () -> new LHApiException(Status.NOT_FOUND, "Couldn't find specified object"));
+                        scheduledWfId, () -> new LHApiException(Status.NOT_FOUND, "Couldn\'t find specified object"));
         ctx.onNext(scheduledWfRun.toProto().build());
         ctx.onCompleted();
     }
@@ -298,7 +291,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         Integer majorVersion = req.hasMajorVersion() ? req.getMajorVersion() : null;
         WfSpecModel wfSpec = requestContext().service().getWfSpec(req.getName(), majorVersion, null);
         if (wfSpec == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");
+            throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find specified WfSpec");
         } else {
             ctx.onNext(wfSpec.toProto().build());
             ctx.onCompleted();
@@ -310,7 +303,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void getLatestUserTaskDef(GetLatestUserTaskDefRequest req, StreamObserver<UserTaskDef> ctx) {
         UserTaskDefModel utd = getServiceFromContext().getUserTaskDef(req.getName(), null);
         if (utd == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskDef %s".formatted(req.getName()));
+            throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find UserTaskDef %s".formatted(req.getName()));
         } else {
             ctx.onNext(utd.toProto().build());
             ctx.onCompleted();
@@ -324,7 +317,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         if (utd == null) {
             throw new LHApiException(
                     Status.NOT_FOUND,
-                    "Couldn't find UserTaskDef %s version %d".formatted(req.getName(), req.getVersion()));
+                    "Couldn\'t find UserTaskDef %s version %d".formatted(req.getName(), req.getVersion()));
         } else {
             ctx.onNext(utd.toProto().build());
             ctx.onCompleted();
@@ -336,7 +329,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void getTaskDef(TaskDefId req, StreamObserver<TaskDef> ctx) {
         TaskDefModel td = getServiceFromContext().getTaskDef(req.getName());
         if (td == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find TaskDef %s".formatted(req.getName()));
+            throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find TaskDef %s".formatted(req.getName()));
         } else {
             ctx.onNext(td.toProto().build());
             ctx.onCompleted();
@@ -347,11 +340,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.READ)
     public void getStructDef(StructDefId req, StreamObserver<StructDef> ctx) {
         StructDefModel sd = getServiceFromContext().getStructDef(req.getName(), req.getVersion());
-
         if (sd == null) {
             throw new LHApiException(
                     Status.NOT_FOUND,
-                    "Couldn't find StructDef %s version %d".formatted(req.getName(), req.getVersion()));
+                    "Couldn\'t find StructDef %s version %d".formatted(req.getName(), req.getVersion()));
         } else {
             ctx.onNext(sd.toProto().build());
             ctx.onCompleted();
@@ -374,7 +366,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void getExternalEventDef(ExternalEventDefId req, StreamObserver<ExternalEventDef> ctx) {
         ExternalEventDefModel eed = getServiceFromContext().getExternalEventDef(req.getName());
         if (eed == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find ExternalEventDef %s".formatted(req.getName()));
+            throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find ExternalEventDef %s".formatted(req.getName()));
         } else {
             ctx.onNext(eed.toProto().build());
             ctx.onCompleted();
@@ -386,7 +378,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void getWorkflowEventDef(WorkflowEventDefId req, StreamObserver<WorkflowEventDef> ctx) {
         WorkflowEventDefModel wed = getServiceFromContext().getWorkflowEventDef(req.getName());
         if (wed == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find WorkflowEventDef %s".formatted(req.getName()));
+            throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find WorkflowEventDef %s".formatted(req.getName()));
         } else {
             ctx.onNext(wed.toProto().build());
             ctx.onCompleted();
@@ -414,7 +406,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             ValidateStructDefEvolutionRequest req, StreamObserver<ValidateStructDefEvolutionResponse> ctx) {
         ValidateStructDefEvolutionRequestModel reqModel =
                 LHSerializable.fromProto(req, ValidateStructDefEvolutionRequestModel.class, requestContext());
-
         ctx.onNext(reqModel.validate(requestContext().metadataManager()));
         ctx.onCompleted();
     }
@@ -470,15 +461,12 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.WRITE_METADATA)
     public void assignUserTaskRun(AssignUserTaskRunRequest req, StreamObserver<Empty> ctx) {
-
         if (req.hasUserId() && req.getUserId().trim().isEmpty()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "UserId can't be empty");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "UserId can\'t be empty");
         }
-
         if (req.hasUserGroup() && req.getUserGroup().trim().isEmpty()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "UserGroup can't be empty");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "UserGroup can\'t be empty");
         }
-
         AssignUserTaskRunRequestModel reqModel =
                 LHSerializable.fromProto(req, AssignUserTaskRunRequestModel.class, requestContext());
         processCommand(new CommandModel(reqModel), ctx, Empty.class);
@@ -513,7 +501,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putUserTaskRunComment(PutUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
         PutUserTaskRunCommentReqeustModel reqModel =
                 LHSerializable.fromProto(req, PutUserTaskRunCommentReqeustModel.class, requestContext());
-
         processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
     }
 
@@ -522,7 +509,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteUserTaskRunComment(DeleteUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
         DeleteUserTaskRunCommentRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteUserTaskRunCommentRequestModel.class, requestContext());
-
         processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
     }
 
@@ -531,7 +517,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void editUserTaskRunComment(EditUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
         EditUserTaskRunCommentRequestModel reqModel =
                 LHSerializable.fromProto(req, EditUserTaskRunCommentRequestModel.class, requestContext());
-
         processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
     }
 
@@ -578,15 +563,13 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void runWf(RunWfRequest req, StreamObserver<WfRun> ctx) {
         if (Strings.isNullOrEmpty(req.getWfSpecName())) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument 'wf_spec_name'");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument \'wf_spec_name\'");
         }
-
         if (req.hasId()) {
             if (req.getId().equals("") || !LHUtil.isValidLHName(req.getId())) {
-                throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument 'id' must be a valid hostname");
+                throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument \'id\' must be a valid hostname");
             }
         }
-
         RunWfRequestModel reqModel = LHSerializable.fromProto(req, RunWfRequestModel.class, requestContext());
         processCommand(new CommandModel(reqModel), ctx, WfRun.class);
     }
@@ -618,18 +601,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void registerTaskWorker(
             RegisterTaskWorkerRequest req, StreamObserver<RegisterTaskWorkerResponse> responseObserver) {
         log.trace("Receiving RegisterTaskWorkerRequest (heartbeat) from: " + req.getTaskWorkerId());
-
         TaskWorkerHeartBeatRequest heartBeatPb = TaskWorkerHeartBeatRequest.newBuilder()
                 .setClientId(req.getTaskWorkerId())
                 .setListenerName(this.listenerName)
                 .setTaskDefId(req.getTaskDefId())
                 .build();
-
         TaskWorkerHeartBeatRequestModel heartBeat =
                 LHSerializable.fromProto(heartBeatPb, TaskWorkerHeartBeatRequestModel.class, requestContext());
-
         ClusterHealthRequestObserver clusterHealthRequestObserver = new ClusterHealthRequestObserver(responseObserver);
-
         processCommand(new CommandModel(heartBeat), clusterHealthRequestObserver, RegisterTaskWorkerResponse.class);
     }
 
@@ -880,7 +859,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             ctx.onError(LHUtil.toGrpcError(exn));
             return;
         }
-
         try {
             InternalScanResponse raw = internalComms.doScan(req.getInternalSearch(requestContext()));
             if (raw.hasUpdatedBookmark()) {
@@ -1088,7 +1066,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         WorkflowEventIdModel id = LHSerializable.fromProto(req, WorkflowEventIdModel.class, requestContext());
         WorkflowEventModel workflowEvent = internalComms.getObject(id, WorkflowEventModel.class, requestContext());
         if (workflowEvent == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find WorkflowEvent");
+            throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find WorkflowEvent");
         }
         ctx.onNext(workflowEvent.toProto().build());
         ctx.onCompleted();

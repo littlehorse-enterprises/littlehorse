@@ -10,13 +10,8 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class ServerACLModel extends LHSerializable<ServerACL> {
-
     private List<ACLResource> resources = new ArrayList<>();
     private List<ACLAction> allowedActions = new ArrayList<>();
     private Optional<String> name = Optional.empty();
@@ -67,5 +62,37 @@ public class ServerACLModel extends LHSerializable<ServerACL> {
         boolean hasEnoughResources =
                 (resources.contains(resource) || resources.contains(ACLResource.ACL_ALL_RESOURCES));
         return hasEnoughActions && hasEnoughResources;
+    }
+
+    public List<ACLResource> getResources() {
+        return this.resources;
+    }
+
+    public List<ACLAction> getAllowedActions() {
+        return this.allowedActions;
+    }
+
+    public Optional<String> getName() {
+        return this.name;
+    }
+
+    public Optional<String> getPrefix() {
+        return this.prefix;
+    }
+
+    public void setResources(final List<ACLResource> resources) {
+        this.resources = resources;
+    }
+
+    public void setAllowedActions(final List<ACLAction> allowedActions) {
+        this.allowedActions = allowedActions;
+    }
+
+    public void setName(final Optional<String> name) {
+        this.name = name;
+    }
+
+    public void setPrefix(final Optional<String> prefix) {
+        this.prefix = prefix;
     }
 }

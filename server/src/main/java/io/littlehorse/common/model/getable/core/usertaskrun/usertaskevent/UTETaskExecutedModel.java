@@ -5,13 +5,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class UTETaskExecutedModel extends LHSerializable<UTETaskExecuted> {
-
     private TaskRunIdModel taskRunId;
 
     public UTETaskExecutedModel() {}
@@ -34,5 +29,13 @@ public class UTETaskExecutedModel extends LHSerializable<UTETaskExecuted> {
     public void initFrom(Message proto, ExecutionContext context) {
         UTETaskExecuted p = (UTETaskExecuted) proto;
         taskRunId = LHSerializable.fromProto(p.getTaskRun(), TaskRunIdModel.class, context);
+    }
+
+    public TaskRunIdModel getTaskRunId() {
+        return this.taskRunId;
+    }
+
+    public void setTaskRunId(final TaskRunIdModel taskRunId) {
+        this.taskRunId = taskRunId;
     }
 }

@@ -18,16 +18,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Getter;
 
-@Getter
 public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
-
     private ExternalEventDefIdModel externalEventDefId;
     private VariableAssignmentModel timeoutSeconds;
     private VariableAssignmentModel corrrelationId;
     private boolean maskCorrelationId;
-
     // Not in the proto
     private ExternalEventDefModel externalEventDef;
 
@@ -45,7 +41,6 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         if (p.hasTimeoutSeconds()) {
             timeoutSeconds = VariableAssignmentModel.fromProto(p.getTimeoutSeconds(), ignored);
         }
-
         if (p.hasCorrelationKey()) {
             this.corrrelationId =
                     LHSerializable.fromProto(p.getCorrelationKey(), VariableAssignmentModel.class, ignored);
@@ -57,7 +52,6 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         ExternalEventNode.Builder out = ExternalEventNode.newBuilder()
                 .setExternalEventDefId(externalEventDefId.toProto())
                 .setMaskCorrelationKey(maskCorrelationId);
-
         if (timeoutSeconds != null) out.setTimeoutSeconds(timeoutSeconds.toProto());
         if (corrrelationId != null) out.setCorrelationKey(corrrelationId.toProto());
         return out;
@@ -82,9 +76,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         // compatibility rules on the EED to ensure that this isn't an issue.
         ExternalEventDefModel eed =
                 ctx.metadataManager().get(new ExternalEventDefIdModel(externalEventDefId.getName()));
-
         // TODO: validate the timeout
-
         if (eed == null) {
             throw new InvalidNodeException("Refers to nonexistent ExternalEventDef " + externalEventDefId, node);
         }
@@ -98,5 +90,25 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
         ExternalEventDefModel event = manager.get(externalEventDefId);
         return event.getReturnType();
+    }
+
+    public ExternalEventDefIdModel getExternalEventDefId() {
+        return this.externalEventDefId;
+    }
+
+    public VariableAssignmentModel getTimeoutSeconds() {
+        return this.timeoutSeconds;
+    }
+
+    public VariableAssignmentModel getCorrrelationId() {
+        return this.corrrelationId;
+    }
+
+    public boolean isMaskCorrelationId() {
+        return this.maskCorrelationId;
+    }
+
+    public ExternalEventDefModel getExternalEventDef() {
+        return this.externalEventDef;
     }
 }

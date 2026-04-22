@@ -15,11 +15,8 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
 
-@Getter
 public class WorkflowEventDefModel extends MetadataGetable<WorkflowEventDef> {
-
     private WorkflowEventDefIdModel id;
     private Date createdAt;
     private ReturnTypeModel contentType;
@@ -71,5 +68,13 @@ public class WorkflowEventDefModel extends MetadataGetable<WorkflowEventDef> {
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         return null;
+    }
+
+    public WorkflowEventDefIdModel getId() {
+        return this.id;
+    }
+
+    public ReturnTypeModel getContentType() {
+        return this.contentType;
     }
 }

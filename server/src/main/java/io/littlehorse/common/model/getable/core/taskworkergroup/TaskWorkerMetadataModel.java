@@ -9,15 +9,11 @@ import io.littlehorse.sdk.common.proto.TaskWorkerMetadata;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.*;
 import java.util.stream.Collectors;
-import lombok.Getter;
 
 public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata>
         implements Comparable<TaskWorkerMetadataModel> {
-
     public String taskWorkerId;
     public Date latestHeartbeat;
-
-    @Getter
     public Set<HostModel> hosts = new TreeSet<>();
 
     @Override
@@ -64,5 +60,9 @@ public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata>
     @Override
     public int hashCode() {
         return Objects.hash(taskWorkerId);
+    }
+
+    public Set<HostModel> getHosts() {
+        return this.hosts;
     }
 }

@@ -15,19 +15,13 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsRun.WaitingThreadStatus;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
 
-@Setter
-@Getter
 public class WaitForThreadModel extends LHSerializable<WaitForThread> {
-
     private Date threadEndTime;
     private LHStatus threadStatus;
     private int threadRunNumber;
     private WaitingThreadStatus waitingStatus;
     private Integer failureHandlerThreadRunId;
-
     private CoreProcessorContext context;
     private NodeRunModel nodeRun;
 
@@ -40,17 +34,14 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
             CoreProcessorContext context)
             throws NodeFailureException {
         this.context = context;
-
         ThreadRunModel parentThreadRunModel = waitForThreadNodeRunModel.getThreadRun();
         this.threadRunNumber = threadRunNumberToWaitFor;
         ThreadRunModel threadRun = parentThreadRunModel.getWfRun().getThreadRun(threadRunNumber);
-
         if (threadRun == null) {
             throw new NodeFailureException(new FailureModel(
-                    "Couldn't wait for nonexistent threadRun: " + threadRunNumber,
+                    "Couldn\'t wait for nonexistent threadRun: " + threadRunNumber,
                     LHErrorType.VAR_SUB_ERROR.toString()));
         }
-
         // Make sure we're not waiting for a parent thread or grandparent, etc.
         ThreadRunModel potentialParent = parentThreadRunModel;
         while (potentialParent != null) {
@@ -60,7 +51,6 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
             }
             potentialParent = potentialParent.getParent();
         }
-
         this.threadStatus = threadRun.getStatus();
         this.waitingStatus = WaitingThreadStatus.THREAD_IN_PROGRESS;
         this.nodeRun = waitForThreadNodeRunModel;
@@ -80,11 +70,9 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         threadStatus = p.getThreadStatus();
         threadRunNumber = p.getThreadRunNumber();
         waitingStatus = p.getWaitingStatus();
-
         if (p.hasFailureHandlerThreadRunId()) {
             failureHandlerThreadRunId = p.getFailureHandlerThreadRunId();
         }
-
         this.context = context.castOnSupport(CoreProcessorContext.class);
     }
 
@@ -96,14 +84,12 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
             out.setThreadEndTime(LHUtil.fromDate(threadEndTime));
         }
         out.setWaitingStatus(waitingStatus);
-
         if (failureHandlerThreadRunId != null) out.setFailureHandlerThreadRunId(failureHandlerThreadRunId);
         return out;
     }
 
     public LHStatus getThreadStatus() {
         if (nodeRun == null) return threadStatus;
-
         LHStatus out =
                 nodeRun.getThreadRun().getWfRun().getThreadRun(threadRunNumber).getStatus();
         threadStatus = out;
@@ -114,5 +100,57 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
 
     public boolean isFailed() {
         return threadStatus == LHStatus.EXCEPTION || threadStatus == LHStatus.ERROR;
+    }
+
+    public void setThreadEndTime(final Date threadEndTime) {
+        this.threadEndTime = threadEndTime;
+    }
+
+    public void setThreadStatus(final LHStatus threadStatus) {
+        this.threadStatus = threadStatus;
+    }
+
+    public void setThreadRunNumber(final int threadRunNumber) {
+        this.threadRunNumber = threadRunNumber;
+    }
+
+    public void setWaitingStatus(final WaitingThreadStatus waitingStatus) {
+        this.waitingStatus = waitingStatus;
+    }
+
+    public void setFailureHandlerThreadRunId(final Integer failureHandlerThreadRunId) {
+        this.failureHandlerThreadRunId = failureHandlerThreadRunId;
+    }
+
+    public void setContext(final CoreProcessorContext context) {
+        this.context = context;
+    }
+
+    public void setNodeRun(final NodeRunModel nodeRun) {
+        this.nodeRun = nodeRun;
+    }
+
+    public Date getThreadEndTime() {
+        return this.threadEndTime;
+    }
+
+    public int getThreadRunNumber() {
+        return this.threadRunNumber;
+    }
+
+    public WaitingThreadStatus getWaitingStatus() {
+        return this.waitingStatus;
+    }
+
+    public Integer getFailureHandlerThreadRunId() {
+        return this.failureHandlerThreadRunId;
+    }
+
+    public CoreProcessorContext getContext() {
+        return this.context;
+    }
+
+    public NodeRunModel getNodeRun() {
+        return this.nodeRun;
     }
 }

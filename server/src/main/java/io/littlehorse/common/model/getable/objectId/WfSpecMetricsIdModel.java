@@ -13,11 +13,8 @@ import io.littlehorse.sdk.common.proto.WfSpecMetricsId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
-import lombok.Getter;
 
-@Getter
 public class WfSpecMetricsIdModel extends RepartitionedId<WfSpecMetricsId, WfSpecMetrics, WfSpecMetricsModel> {
-
     private Date windowStart;
     private MetricsWindowLength windowType;
     private WfSpecIdModel wfSpecId;
@@ -79,5 +76,17 @@ public class WfSpecMetricsIdModel extends RepartitionedId<WfSpecMetricsId, WfSpe
     @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.WF_SPEC_METRICS;
+    }
+
+    public Date getWindowStart() {
+        return this.windowStart;
+    }
+
+    public MetricsWindowLength getWindowType() {
+        return this.windowType;
+    }
+
+    public WfSpecIdModel getWfSpecId() {
+        return this.wfSpecId;
     }
 }

@@ -31,22 +31,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
-@Setter
 public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WaitForThreadsNodeModel.class);
     private ExecutionContext context;
-
     private ThreadsToWaitForCase type;
     private ThreadsToWaitForModel threads;
     private VariableAssignmentModel threadList;
     private WaitForThreadsStrategy strategy;
-
     private List<FailureHandlerDefModel> perThreadFailureHandlers;
 
     public Class<WaitForThreadsNode> getProtoBaseClass() {
@@ -59,10 +51,8 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
 
     public void initFrom(Message proto, ExecutionContext context) {
         this.context = context;
-
         WaitForThreadsNode p = (WaitForThreadsNode) proto;
         type = p.getThreadsToWaitForCase();
-
         switch (type) {
             case THREADS:
                 threads = LHSerializable.fromProto(p.getThreads(), ThreadsToWaitForModel.class, context);
@@ -73,11 +63,9 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
             case THREADSTOWAITFOR_NOT_SET:
                 log.warn("should be impossible to get unset threadsToWaitFor");
         }
-
         for (FailureHandlerDef handler : p.getPerThreadFailureHandlersList()) {
             perThreadFailureHandlers.add(FailureHandlerDefModel.fromProto(handler, context));
         }
-
         this.strategy = p.getStrategy();
     }
 
@@ -93,7 +81,6 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
             case THREADSTOWAITFOR_NOT_SET:
                 log.warn("should be impossible to get unset threadsToWaitFor");
         }
-
         for (FailureHandlerDefModel handler : perThreadFailureHandlers) {
             out.addPerThreadFailureHandlers(handler.toProto());
         }
@@ -110,7 +97,6 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
             throws LHVarSubError, NodeFailureException {
         ThreadRunModel thread = nodeRun.getThreadRun();
         List<WaitForThreadModel> out = new ArrayList<>();
-
         switch (type) {
             case THREADS:
                 for (ThreadToWaitForModel ttwf : threads.getThreads()) {
@@ -123,7 +109,6 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
                 break;
             case THREAD_LIST:
                 VariableValueModel threadListVar = thread.assignVariable(threadList);
-
                 for (Object threadNumberObj : threadListVar.getJsonArrVal()) {
                     out.add(new WaitForThreadModel(
                             nodeRun, Integer.valueOf(threadNumberObj.toString()), currentCommandTime, context));
@@ -138,7 +123,6 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     @Override
     public Set<String> getNeededVariableNames() {
         Set<String> out = new HashSet<>();
-
         switch (type) {
             case THREADS:
                 for (ThreadToWaitForModel ttwf : threads.getThreads()) {
@@ -151,7 +135,6 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
             case THREADSTOWAITFOR_NOT_SET:
                 log.warn("Should be impossible");
         }
-
         return out;
     }
 
@@ -181,5 +164,53 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
         // Wait for threads does not return anything
         return Optional.of(new ReturnTypeModel());
+    }
+
+    public ExecutionContext getContext() {
+        return this.context;
+    }
+
+    public ThreadsToWaitForCase getType() {
+        return this.type;
+    }
+
+    public ThreadsToWaitForModel getThreads() {
+        return this.threads;
+    }
+
+    public VariableAssignmentModel getThreadList() {
+        return this.threadList;
+    }
+
+    public WaitForThreadsStrategy getStrategy() {
+        return this.strategy;
+    }
+
+    public List<FailureHandlerDefModel> getPerThreadFailureHandlers() {
+        return this.perThreadFailureHandlers;
+    }
+
+    public void setContext(final ExecutionContext context) {
+        this.context = context;
+    }
+
+    public void setType(final ThreadsToWaitForCase type) {
+        this.type = type;
+    }
+
+    public void setThreads(final ThreadsToWaitForModel threads) {
+        this.threads = threads;
+    }
+
+    public void setThreadList(final VariableAssignmentModel threadList) {
+        this.threadList = threadList;
+    }
+
+    public void setStrategy(final WaitForThreadsStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public void setPerThreadFailureHandlers(final List<FailureHandlerDefModel> perThreadFailureHandlers) {
+        this.perThreadFailureHandlers = perThreadFailureHandlers;
     }
 }

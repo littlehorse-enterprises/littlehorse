@@ -2,11 +2,8 @@ package io.littlehorse.server.listener;
 
 import java.io.File;
 import java.util.Objects;
-import lombok.Getter;
 
-@Getter
 public class TLSConfig {
-
     private final File certChain;
     private final File privateKey;
 
@@ -26,5 +23,13 @@ public class TLSConfig {
     @Override
     public int hashCode() {
         return Objects.hash(certChain, privateKey);
+    }
+
+    public File getCertChain() {
+        return this.certChain;
+    }
+
+    public File getPrivateKey() {
+        return this.privateKey;
     }
 }

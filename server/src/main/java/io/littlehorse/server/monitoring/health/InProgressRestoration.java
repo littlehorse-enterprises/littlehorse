@@ -2,23 +2,16 @@ package io.littlehorse.server.monitoring.health;
 
 import io.littlehorse.common.LHServerConfig;
 import java.util.Objects;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.kafka.common.TopicPartition;
 
 /**
  * Used by the StreamsHealthWatcher to represent the state of an
  * in-progress restoration (whether for an active or standby task).
  */
-@Getter
-@Setter
 public class InProgressRestoration {
-
     String topic;
     int partition;
-
     LHProcessorType processor;
-
     long totalRestored;
     long endOffset;
     long currentOffset;
@@ -30,7 +23,6 @@ public class InProgressRestoration {
         this.topic = tp.topic();
         this.partition = tp.partition();
         this.processor = ServerHealthState.fromTopic(topic, config);
-
         this.currentOffset = startOffset;
         this.endOffset = endOffset;
     }
@@ -60,5 +52,53 @@ public class InProgressRestoration {
     @Override
     public int hashCode() {
         return Objects.hash(topic, partition, processor, totalRestored, endOffset, currentOffset);
+    }
+
+    public String getTopic() {
+        return this.topic;
+    }
+
+    public int getPartition() {
+        return this.partition;
+    }
+
+    public LHProcessorType getProcessor() {
+        return this.processor;
+    }
+
+    public long getTotalRestored() {
+        return this.totalRestored;
+    }
+
+    public long getEndOffset() {
+        return this.endOffset;
+    }
+
+    public long getCurrentOffset() {
+        return this.currentOffset;
+    }
+
+    public void setTopic(final String topic) {
+        this.topic = topic;
+    }
+
+    public void setPartition(final int partition) {
+        this.partition = partition;
+    }
+
+    public void setProcessor(final LHProcessorType processor) {
+        this.processor = processor;
+    }
+
+    public void setTotalRestored(final long totalRestored) {
+        this.totalRestored = totalRestored;
+    }
+
+    public void setEndOffset(final long endOffset) {
+        this.endOffset = endOffset;
+    }
+
+    public void setCurrentOffset(final long currentOffset) {
+        this.currentOffset = currentOffset;
     }
 }

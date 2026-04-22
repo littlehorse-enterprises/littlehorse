@@ -16,18 +16,11 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
 public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
-
     public Date windowStart;
     public MetricsWindowLength type;
-
-    @Setter
     private WfSpecIdModel wfSpecId;
-
     public long totalCompleted;
     public long totalErrored;
     public long totalStarted;
@@ -57,7 +50,6 @@ public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
                 .setTotalStarted(totalStarted)
                 .setStartToCompleteAvg(startToCompleteAvg)
                 .setStartToCompleteMax(startToCompleteMax);
-
         return out;
     }
 
@@ -95,5 +87,45 @@ public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         return List.of();
+    }
+
+    public Date getWindowStart() {
+        return this.windowStart;
+    }
+
+    public MetricsWindowLength getType() {
+        return this.type;
+    }
+
+    public WfSpecIdModel getWfSpecId() {
+        return this.wfSpecId;
+    }
+
+    public long getTotalCompleted() {
+        return this.totalCompleted;
+    }
+
+    public long getTotalErrored() {
+        return this.totalErrored;
+    }
+
+    public long getTotalStarted() {
+        return this.totalStarted;
+    }
+
+    public long getStartToCompleteMax() {
+        return this.startToCompleteMax;
+    }
+
+    public long getStartToCompleteAvg() {
+        return this.startToCompleteAvg;
+    }
+
+    public ExecutionContext getExecutionContext() {
+        return this.executionContext;
+    }
+
+    public void setWfSpecId(final WfSpecIdModel wfSpecId) {
+        this.wfSpecId = wfSpecId;
     }
 }

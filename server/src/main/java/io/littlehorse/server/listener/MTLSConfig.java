@@ -2,11 +2,8 @@ package io.littlehorse.server.listener;
 
 import java.io.File;
 import java.util.Objects;
-import lombok.Getter;
 
-@Getter
 public class MTLSConfig extends TLSConfig {
-
     private final File caCertificate;
 
     public MTLSConfig(File caCertificate, File certChain, File privateKey) {
@@ -26,5 +23,9 @@ public class MTLSConfig extends TLSConfig {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), caCertificate);
+    }
+
+    public File getCaCertificate() {
+        return this.caCertificate;
     }
 }

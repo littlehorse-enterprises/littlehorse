@@ -34,8 +34,6 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.Admin;
@@ -57,11 +55,9 @@ import org.rocksdb.RateLimiterMode;
 import org.rocksdb.RocksDB;
 import org.rocksdb.WriteBufferManager;
 
-@Slf4j
 public class LHServerConfig extends ConfigBase {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LHServerConfig.class);
     private String instanceName;
-
     // Kafka Global Configs
     public static final String KAFKA_BOOTSTRAP_KEY = "LHS_KAFKA_BOOTSTRAP_SERVERS";
     public static final String LHS_CLUSTER_ID_KEY = "LHS_CLUSTER_ID"; // determines application.id
@@ -72,7 +68,6 @@ public class LHServerConfig extends ConfigBase {
     public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
     public static final String SHOULD_CREATE_OUTPUT_TOPICS_KEY = "LHS_SHOULD_CREATE_OUTPUT_TOPICS";
     public static final String RACK_ID_KEY = "LHS_RACK_ID";
-
     // Optional Performance-Related Configs for Kafka Streams
     public static final String CORE_STREAM_THREADS_KEY = "LHS_CORE_STREAM_THREADS";
     public static final String TIMER_STREAM_THREADS_KEY = "LHS_TIMER_STREAM_THREADS";
@@ -98,20 +93,16 @@ public class LHServerConfig extends ConfigBase {
     public static final String KAFKA_CLIENT_OVERRIDE_PREFIX = "LHS_KAFKA_CONFIG_";
     public static final String CORE_KAFKA_PRODUCER_OVERRIDE_PREFIX = "LHS_KAFKA_PRODUCER_CONFIG_";
     public static final String CORE_KAFKA_STREAMS_OVERRIDE_PREFIX = "LHS_CORE_KS_CONFIG_";
-
     // General LittleHorse Runtime Behavior Config Env Vars
     public static final String INTERNAL_BIND_PORT_KEY = "LHS_INTERNAL_BIND_PORT";
     public static final String INTERNAL_ADVERTISED_HOST_KEY = "LHS_INTERNAL_ADVERTISED_HOST";
     public static final String INTERNAL_ADVERTISED_PORT_KEY = "LHS_INTERNAL_ADVERTISED_PORT";
-
     public static final String MAX_BULK_JOB_ITER_DURATION_MS = "LHS_MAX_BULK_JOB_ITER_DURATION_MS";
     public static final String BULK_JOB_DELAY_INTERVAL_SECONDS = "LHS_BULK_JOB_DELAY_INTERVAL_SECONDS";
-
     // MTLS for internal interactive query port
     public static final String INTERNAL_CA_CERT_KEY = "LHS_INTERNAL_CA_CERT";
     public static final String INTERNAL_SERVER_CERT_KEY = "LHS_INTERNAL_SERVER_CERT";
     public static final String INTERNAL_SERVER_KEY_KEY = "LHS_INTERNAL_SERVER_KEY";
-
     // Kafka authentication/security
     public static final String KAFKA_SECURITY_PROTOCOL_KEY = "LHS_KAFKA_SECURITY_PROTOCOL";
     public static final String KAFKA_TRUSTSTORE_KEY = "LHS_KAFKA_TRUSTSTORE";
@@ -123,7 +114,6 @@ public class LHServerConfig extends ConfigBase {
     public static final String KAFKA_SASL_MECHANISM_KEY = "LHS_KAFKA_SASL_MECHANISM";
     public static final String KAFKA_SASL_JAAS_CONFIG_KEY = "LHS_KAFKA_SASL_JAAS_CONFIG";
     public static final String KAFKA_SASL_JAAS_CONFIG_FILE_KEY = "LHS_KAFKA_SASL_JAAS_CONFIG_FILE";
-
     // PROMETHEUS
     public static final String HEALTH_SERVICE_PORT_KEY = "LHS_HEALTH_SERVICE_PORT";
     public static final String HEALTH_PATH_METRICS_KEY = "LHS_HEALTH_PATH_METRICS";
@@ -132,7 +122,6 @@ public class LHServerConfig extends ConfigBase {
     public static final String HEALTH_PATH_STATUS_KEY = "LHS_HEALTH_PATH_STATUS";
     public static final String HEALTH_PATH_DISK_USAGE_KEY = "LHS_HEALTH_PATH_DISK_USAGE";
     public static final String HEALTH_PATH_STANDBY_KEY = "HEALTH_PATH_STANDBY";
-
     // ADVERTISED LISTENERS
     public static final String ADVERTISED_LISTENERS_KEY = "LHS_ADVERTISED_LISTENERS";
     public static final String LISTENERS_KEY = "LHS_LISTENERS";
@@ -148,29 +137,20 @@ public class LHServerConfig extends ConfigBase {
     private List<AdvertisedListenerConfig> advertisedListenerConfigs;
     private Map<String, ListenerProtocol> listenersProtocolMap;
     private Map<String, AuthorizationProtocol> listenersAuthorizationMap;
-
     // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
-
     // useful for testing and might be useful for certain incidents
     public static final String X_MAX_DELETES_PER_COMMAND_KEY = "LHS_X_MAX_DELETES_PER_COMMAND";
     // Enable timer streams processing
     public static final String X_ENABLE_TIMER_STREAMS_KEY = "LHS_X_ENABLE_TIMER_STREAMS";
     // How long (in ms) to retain metric before deleting them
     public static final String X_METRIC_RETENTION_MS_KEY = "LHS_X_METRIC_RETENTION_MS";
-
     // Maximum number of thread runs per workflow run.
     public static final String X_MAX_THREAD_RUNS_PER_WF_RUN = "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN";
     // Instance configs
     private String lhsMetricsLevel;
-
     // Singletons for RocksConfigSetter
-    @Getter
     private Cache globalRocksdbBlockCache;
-
-    @Getter
     private WriteBufferManager globalRocksdbWriteBufferManager;
-
-    @Getter
     private RateLimiter globalRocksdbRateLimiter;
 
     public LHServerConfig() {
@@ -326,45 +306,37 @@ public class LHServerConfig extends ConfigBase {
         String coreCommandTopicName = getCoreCmdTopicName(clusterId);
         NewTopic coreCommand =
                 new NewTopic(coreCommandTopicName, partitionsByTopic.get(coreCommandTopicName), replicationFactor);
-
         String repartitionTopicName = getRepartitionTopicName(clusterId);
         NewTopic repartition =
                 new NewTopic(repartitionTopicName, partitionsByTopic.get(repartitionTopicName), replicationFactor);
-
         String timerTopicName = getTimerTopic(clusterId);
         NewTopic timer = new NewTopic(timerTopicName, partitionsByTopic.get(timerTopicName), replicationFactor);
-
         String coreChangelogTopicName = getCoreStoreChangelogTopic(clusterId);
         NewTopic coreStoreChangelog = new NewTopic(
                         coreChangelogTopicName, partitionsByTopic.get(coreChangelogTopicName), replicationFactor)
                 .configs(compactedTopicConfig);
-
         String repartitionStoreChangelogTopicName = getRepartitionStoreChangelogTopic(clusterId);
         NewTopic repartitionStoreChangelog = new NewTopic(
                         repartitionStoreChangelogTopicName,
                         partitionsByTopic.get(repartitionStoreChangelogTopicName),
                         replicationFactor)
                 .configs(compactedTopicConfig);
-
         String timerStoreChangelogTopicName = getTimerStoreChangelogTopic(clusterId);
         NewTopic timerStoreChangelog = new NewTopic(
                         timerStoreChangelogTopicName,
                         partitionsByTopic.get(timerStoreChangelogTopicName),
                         replicationFactor)
                 .configs(compactedTopicConfig);
-
         String metadataStoreChangelogTopicName = getMetadataStoreChangelogTopic(clusterId);
         NewTopic metadataStoreChangelog = new NewTopic(
                         metadataStoreChangelogTopicName,
                         partitionsByTopic.get(metadataStoreChangelogTopicName),
                         replicationFactor)
                 .configs(compactedTopicConfig);
-
         String metadataCommandTopicName = getMetadataCmdTopicName(clusterId);
         NewTopic metadataCommand = new NewTopic(
                         metadataCommandTopicName, partitionsByTopic.get(metadataCommandTopicName), replicationFactor)
                 .configs(compactedTopicConfig);
-
         return List.of(
                 coreCommand,
                 metadataCommand,
@@ -412,11 +384,9 @@ public class LHServerConfig extends ConfigBase {
     public Pair<NewTopic, NewTopic> getOutputTopicsFor(TenantModel tenant) {
         String executionTopicName = getExecutionOutputTopicName(tenant.getId());
         String metadataTopicName = getMetadataOutputTopicName(tenant.getId());
-
         // metadata topic is compacted
         Map<String, String> compactedTopicConfig =
                 Map.of(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
-
         return Pair.of(
                 new NewTopic(metadataTopicName, 1, getReplicationFactor()).configs(compactedTopicConfig),
                 new NewTopic(executionTopicName, getOutputToppicPartitions(), getReplicationFactor()));
@@ -433,7 +403,6 @@ public class LHServerConfig extends ConfigBase {
     public Optional<Short> getLHInstanceId() {
         String instanceId = getOrSetDefault(LHS_INSTANCE_ID_KEY, null);
         if (instanceId == null) return Optional.empty();
-
         short ordinalVal = Short.valueOf(instanceId);
         if (ordinalVal < 0) {
             throw new LHMisconfigurationException("LHS_INSTANCE_ID cannot be negative");
@@ -443,11 +412,9 @@ public class LHServerConfig extends ConfigBase {
 
     public String getLHInstanceName() {
         if (instanceName != null) return instanceName;
-
         instanceName = getLHInstanceId().isPresent()
                 ? getLHInstanceId().get().toString()
                 : UUID.randomUUID().toString();
-
         return instanceName;
     }
 
@@ -518,36 +485,29 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public OAuthConfig getOAuthConfig() {
-
         String clientId = getOrSetDefault(OAUTH_CLIENT_ID, null);
         String clientSecret = getOrSetDefault(OAUTH_CLIENT_SECRET, null);
         String introspectionEndpoint = getOrSetDefault(OAUTH_INTROSPECT_URL, null);
-
         String clientIdFile = getOrSetDefault(OAUTH_CLIENT_ID_FILE, null);
         String clientSecretFile = getOrSetDefault(OAUTH_CLIENT_SECRET_FILE, null);
-
         if (clientSecretFile != null) {
             log.info("Loading OAuth2 Client Secret from file");
             clientSecret = loadSettingFromFile(clientSecretFile);
         }
-
         if (clientIdFile != null) {
             log.info("Loading OAuth2 Client Id from file");
             clientId = loadSettingFromFile(clientIdFile);
         }
-
         if (clientId == null || clientSecret == null || introspectionEndpoint == null) {
             throw new LHMisconfigurationException(
                     "OAuth configuration called but not provided. Check missing client id, client secret or introspection endpoint url");
         }
-
         final URI parsedUrl;
         try {
             parsedUrl = URI.create(introspectionEndpoint);
         } catch (IllegalArgumentException e) {
             throw new LHMisconfigurationException("Malformed URL check " + OAUTH_INTROSPECT_URL);
         }
-
         return OAuthConfig.builder()
                 .introspectionEndpointURI(parsedUrl)
                 .clientId(clientId)
@@ -558,50 +518,40 @@ public class LHServerConfig extends ConfigBase {
     public MTLSConfig getMTLSConfiguration(String listenerName) {
         String keyConfigName = "LHS_LISTENER_" + listenerName + "_KEY";
         String certConfigName = "LHS_LISTENER_" + listenerName + "_CERT";
-
         File certChain = getFile(certConfigName);
         File privateKey = getFile(keyConfigName);
         File caCertificate = getFile(CA_CERT);
-
         if (certChain == null || privateKey == null || caCertificate == null) {
             throw new LHMisconfigurationException(
                     "Invalid configuration: Listener " + listenerName + " was configured to use MTLS but "
                             + keyConfigName + ", " + certConfigName + " and/or " + CA_CERT + " are missing");
         }
-
         return new MTLSConfig(caCertificate, certChain, privateKey);
     }
 
     public TLSConfig getTLSConfiguration(String listenerName) {
         String keyConfigName = "LHS_LISTENER_" + listenerName + "_KEY";
         String certConfigName = "LHS_LISTENER_" + listenerName + "_CERT";
-
         File certChain = getFile(certConfigName);
         File privateKey = getFile(keyConfigName);
-
         if (certChain == null || privateKey == null) {
             throw new LHMisconfigurationException("Invalid configuration: Listener " + listenerName
                     + " was configured to use TLS but " + keyConfigName + " and/or " + certConfigName + " are missing");
         }
-
         return new TLSConfig(certChain, privateKey);
     }
 
     @SuppressWarnings("null")
     private File getFile(String configName) {
         String fileLocation = getOrSetDefault(configName, null);
-
         if (Strings.isNullOrEmpty(fileLocation)) {
             return null;
         }
-
         File file = new File(fileLocation);
-
         if (!file.isFile()) {
             throw new LHMisconfigurationException(
                     "Invalid configuration: File location specified on " + configName + " is invalid");
         }
-
         return file;
     }
 
@@ -610,23 +560,17 @@ public class LHServerConfig extends ConfigBase {
         if (listenersAuthorizationMap != null) {
             return listenersAuthorizationMap;
         }
-
         String rawAuthProtocolMap = getOrSetDefault(LHServerConfig.LISTENERS_AUTHENTICATION_MAP_KEY, null);
-
         if (Strings.isNullOrEmpty(rawAuthProtocolMap)) {
             return listenersAuthorizationMap = Map.of();
         }
-
         String regexAllAuthProtocols =
                 Arrays.stream(AuthorizationProtocol.values()).map(Enum::name).collect(Collectors.joining("|"));
-
         if (!rawAuthProtocolMap.matches("([a-zA-Z0-9_-]+:(" + regexAllAuthProtocols + ")+,?)+")) {
             throw new LHMisconfigurationException(
                     "Invalid configuration: " + LHServerConfig.LISTENERS_AUTHENTICATION_MAP_KEY);
         }
-
         List<String> rawAuthProtocols = Arrays.asList(rawAuthProtocolMap.split(","));
-
         return (listenersAuthorizationMap = rawAuthProtocols.stream()
                 .map(protocolMap -> protocolMap.split(":"))
                 .collect(
@@ -637,19 +581,14 @@ public class LHServerConfig extends ConfigBase {
         if (listenersProtocolMap != null) {
             return listenersProtocolMap;
         }
-
         String rawProtocolMap = getOrSetDefault(LHServerConfig.LISTENERS_PROTOCOL_MAP_KEY, "PLAIN:PLAIN");
-
         String regexAllProtocols =
                 Arrays.stream(ListenerProtocol.values()).map(Enum::name).collect(Collectors.joining("|"));
-
         if (!rawProtocolMap.matches("([a-zA-Z0-9_-]+:(" + regexAllProtocols + ")+,?)+")) {
             throw new LHMisconfigurationException(
                     "Invalid configuration: " + LHServerConfig.LISTENERS_PROTOCOL_MAP_KEY);
         }
-
         List<String> rawProtocols = Arrays.asList(rawProtocolMap.split(","));
-
         return (listenersProtocolMap = rawProtocols.stream()
                 .map(protocolMap -> protocolMap.split(":"))
                 .collect(Collectors.toMap(strings -> strings[0], strings -> ListenerProtocol.valueOf(strings[1]))));
@@ -659,17 +598,13 @@ public class LHServerConfig extends ConfigBase {
         if (listenerConfigs != null) {
             return listenerConfigs;
         }
-
         String rawListenersConfig = getOrSetDefault(LHServerConfig.LISTENERS_KEY, "PLAIN:2023");
         Map<String, ListenerProtocol> protocolMap = getListenersProtocolMap();
         Map<String, AuthorizationProtocol> authMap = getListenersAuthorizationMap();
-
         if (!rawListenersConfig.matches("([a-zA-Z0-9_-]+:\\d+,?)+")) {
             throw new LHMisconfigurationException("Invalid configuration: " + LHServerConfig.LISTENERS_KEY);
         }
-
         List<String> rawListenersConfigs = Arrays.asList(rawListenersConfig.split(","));
-
         listenerConfigs = rawListenersConfigs.stream()
                 .map(listener -> {
                     String[] split = listener.split(":");
@@ -679,13 +614,11 @@ public class LHServerConfig extends ConfigBase {
                             protocolMap.get(name) == null ? ListenerProtocol.PLAIN : protocolMap.get(name);
                     AuthorizationProtocol authProtocol =
                             authMap.get(name) == null ? AuthorizationProtocol.NONE : authMap.get(name);
-
                     if (authProtocol == AuthorizationProtocol.MTLS && protocol != ListenerProtocol.MTLS) {
                         throw new LHMisconfigurationException(
                                 "Invalid configuration: Listener " + name
                                         + " LHS_LISTENERS_PROTOCOL_MAP has to be MTLS in order to support MTLS for authentication");
                     }
-
                     return ServerListenerConfig.builder()
                             .name(name)
                             .port(Integer.parseInt(port))
@@ -695,18 +628,15 @@ public class LHServerConfig extends ConfigBase {
                             .build();
                 })
                 .toList();
-
         int totalDifferentPorts = listenerConfigs.stream()
                 .map(ServerListenerConfig::getPort)
                 .collect(Collectors.toSet())
                 .size();
-
         if (totalDifferentPorts != listenerConfigs.size()) {
             listenerConfigs = null;
             throw new LHMisconfigurationException(
                     "Invalid configuration: " + LHServerConfig.LISTENERS_KEY + ". Ports should be different");
         }
-
         return listenerConfigs;
     }
 
@@ -714,22 +644,17 @@ public class LHServerConfig extends ConfigBase {
         if (advertisedListenerConfigs != null) {
             return advertisedListenerConfigs;
         }
-
         String rawListenersConfig = getOrSetDefault(LHServerConfig.ADVERTISED_LISTENERS_KEY, "PLAIN://localhost:2023");
-
         if (!rawListenersConfig.matches("([a-zA-Z0-9_-]+://[a-zA-Z0-9.\\-]+:\\d+,?)+")) {
             throw new LHMisconfigurationException("Invalid configuration: " + LHServerConfig.ADVERTISED_LISTENERS_KEY);
         }
-
         List<String> rawAdvertisedListenerConfigs = Arrays.asList(rawListenersConfig.split(","));
-
         advertisedListenerConfigs = rawAdvertisedListenerConfigs.stream()
                 .map(listener -> {
                     String[] split = listener.split(":(//)?");
                     String name = split[0].trim();
                     String host = split[1].trim();
                     String port = split[2].trim();
-
                     return AdvertisedListenerConfig.builder()
                             .name(name)
                             .port(Integer.parseInt(port))
@@ -737,7 +662,6 @@ public class LHServerConfig extends ConfigBase {
                             .build();
                 })
                 .toList();
-
         return advertisedListenerConfigs;
     }
 
@@ -824,18 +748,14 @@ public class LHServerConfig extends ConfigBase {
      */
     private void addKafkaSecuritySettings(Properties conf) {
         String securityProtocol = getOrSetDefault(KAFKA_SECURITY_PROTOCOL_KEY, "PLAINTEXT");
-
         String keystoreLoc = getOrSetDefault(KAFKA_KEYSTORE_KEY, null);
         String keystorePassword =
                 getFromConfigOrFile(KAFKA_KEYSTORE_PASSWORD_KEY, KAFKA_KEYSTORE_PASSWORD_FILE_KEY, null);
-
         String truststoreLoc = getOrSetDefault(KAFKA_TRUSTSTORE_KEY, null);
         String truststorePassword =
                 getFromConfigOrFile(KAFKA_TRUSTSTORE_PASSWORD_KEY, KAFKA_TRUSTSTORE_PASSWORD_FILE_KEY, null);
-
         String saslMechanism = getOrSetDefault(KAFKA_SASL_MECHANISM_KEY, null);
         String jaasConfig = getFromConfigOrFile(KAFKA_SASL_JAAS_CONFIG_KEY, KAFKA_SASL_JAAS_CONFIG_FILE_KEY, null);
-
         conf.put("security.protocol", securityProtocol);
         if (securityProtocol.equals("PLAINTEXT")) {
             if (keystoreLoc != null
@@ -848,7 +768,6 @@ public class LHServerConfig extends ConfigBase {
                         "Check your LHS_KAFKA_SECURITY_PROTOCOL. Cannot have PLAINTEXT with other security configs.");
             }
             log.info("Connecting to Kafka with PLAINTEXT");
-
         } else if (securityProtocol.equals("SSL")) {
             if (keystoreLoc != null) {
                 if (keystorePassword == null) {
@@ -863,7 +782,6 @@ public class LHServerConfig extends ConfigBase {
             } else {
                 log.info("Connecting to Kafka with TLS.");
             }
-
         } else if (securityProtocol.equals("SASL_SSL")) {
             if (saslMechanism == null || jaasConfig == null) {
                 throw new LHMisconfigurationException("Must set SASL mechanism and Jaas Config using SASL_SSL");
@@ -874,7 +792,6 @@ public class LHServerConfig extends ConfigBase {
             throw new LHMisconfigurationException(
                     "Only SASL_SSL, PLAINTEXT, and SSL supported for LHS_KAFKA_SECURITY_PROTOCOL");
         }
-
         if (truststoreLoc != null) {
             if (truststorePassword == null) {
                 throw new LHMisconfigurationException("LHS_KAFKA_TRUSTORE set but no password provided");
@@ -908,9 +825,7 @@ public class LHServerConfig extends ConfigBase {
         Properties result = getBaseStreamsConfig();
         result.put("application.id", getKafkaGroupId("core"));
         result.put("client.id", this.getClientId("core"));
-
         result.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);
-
         result.put("num.stream.threads", Integer.valueOf(getOrSetDefault(CORE_STREAM_THREADS_KEY, "1")));
         // The Core Topology is EOS. Note that we have engineered the application to not be sensitive
         // to commit latency (long story). The only thing that is affected by commit latency is the
@@ -933,7 +848,6 @@ public class LHServerConfig extends ConfigBase {
         result.put(
                 "statestore.cache.max.bytes",
                 Long.valueOf(getOrSetDefault(CORE_STATESTORE_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 32))));
-
         // Kafka Streams calls KafkaProducer#commitTransaction() which flushes messages upon committing the kafka
         // transaction. We _could_ linger.ms to the commit interval; however, the problem with this is that the
         // timer topology needs to be able to read the records. The Timer Topology is set to read_uncommitted and
@@ -946,7 +860,6 @@ public class LHServerConfig extends ConfigBase {
         // We set linger.ms to the same interval as the Timer Punctuator interval (500ms). This gives us approximately
         // 1-second precision on timers.
         result.put(StreamsConfig.producerPrefix("linger.ms"), LHConstants.TIMER_PUNCTUATOR_INTERVAL.toMillis());
-
         applyKafkaConfigOverrides(result, CORE_KAFKA_STREAMS_OVERRIDE_PREFIX);
         result.put(StreamsConfig.consumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG), "100");
         return result;
@@ -959,7 +872,6 @@ public class LHServerConfig extends ConfigBase {
         props.put("processing.guarantee", "at_least_once");
         props.put("consumer.isolation.level", "read_uncommitted");
         props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(TIMER_STREAM_THREADS_KEY, "1")));
-
         // The timer topology is ALOS, so we can have a larger commit interval with less of a problem. Looking at the
         // workload of the timer topology, the majority is TaskRun timeouts, which is as follows:
         //
@@ -976,21 +888,17 @@ public class LHServerConfig extends ConfigBase {
         int commitInterval =
                 Integer.valueOf(getOrSetDefault(LHServerConfig.TIMER_STREAMS_COMMIT_INTERVAL_KEY, "30000"));
         props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, commitInterval);
-
         props.put(
                 "statestore.cache.max.bytes",
                 Long.valueOf(getOrSetDefault(TIMER_STATESTORE_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 64))));
-
         // For the Timer, which is ALOS, the linger ms does potentially impact the latency of a timer coming in.
         // Future work might allow this to be a separate config from the linger ms used for the GRPC server.
         props.put(StreamsConfig.producerPrefix("linger.ms"), getOrSetDefault(LINGER_MS_KEY, "0"));
-
         return props;
     }
 
     private Properties getBaseStreamsConfig() {
         Properties props = new Properties();
-
         props.put(StreamsConfig.producerPrefix(ProducerConfig.COMPRESSION_TYPE_CONFIG), "lz4");
         props.put(StreamsConfig.producerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
         props.put(StreamsConfig.consumerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
@@ -1002,18 +910,14 @@ public class LHServerConfig extends ConfigBase {
                 "rebootstrap");
         props.put(
                 StreamsConfig.adminClientPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
-
         // Reduce the chattiness of the logs to once every 15 minutes (Streams default 2 minutes).
         props.put(StreamsConfig.LOG_SUMMARY_INTERVAL_MS_CONFIG, 1000 * 60 * 15);
-
         props.put(
                 "application.server",
                 getOrSetDefault(LHServerConfig.INTERNAL_ADVERTISED_HOST_KEY, "localhost") + ":"
                         + this.getInternalAdvertisedPort());
-
         props.put("bootstrap.servers", this.getBootstrapServers());
         props.put("state.dir", getStateDirectory());
-
         // We want a request to be able to fail and be handled (if non-fatal) before a transaction times out.
         // Therefore, request timeout should be less than transaction timeout / session timeout.
         props.put("request.timeout.ms", (int) (getStreamsSessionTimeout() * 0.75));
@@ -1025,48 +929,37 @@ public class LHServerConfig extends ConfigBase {
         props.put("metrics.recording.level", getServerMetricLevel());
         props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), getStreamsSessionTimeout());
         props.put(StreamsConfig.producerPrefix(ProducerConfig.MAX_REQUEST_SIZE_CONFIG), getProducerMaxRequestSize());
-
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
         props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
         props.put("default.production.exception.handler", DefaultProductionExceptionHandler.class);
         props.put("default.value.serde", Serdes.StringSerde.class.getName());
         props.put("default.key.serde", Serdes.StringSerde.class.getName());
-
         if (getRackId() != null) {
             // This enables high-availability assignment (standby's are scheduled in different
             // racks than the active tasks)
             props.put("rack.aware.assignment.tags", "lhrack");
             props.put("client.tag.lhrack", getRackId());
-
             // Enable follower fetching for standby tasks and restoration.
             // Follower fetching increases latency by a few dozen milliseconds for tail reads.
             // Therefore, we only fetch from followers on the standby tasks.
             props.put("restore.consumer.client.rack", getRackId());
-
             // It's fine to slightly increase latency for the global consumer. Even though the
             // global consumer doesn't read much data, it still sends fetch requests quite often.
             // Those fetch requests can be somewhat costly.
             props.put("global.consumer.client.rack", getRackId());
-
-            // As of Kafka 3.9, there is nothing we can do to optimize the group coordinator traffic.
         }
-
+        // As of Kafka 3.9, there is nothing we can do to optimize the group coordinator traffic.
         // Set the RocksDB Config Setter, and inject this LHServerConfig into the options set
         // into it.
         props.put(RocksConfigSetter.LH_SERVER_CONFIG_KEY, this);
         props.put("rocksdb.config.setter", RocksConfigSetter.class);
-
         props.put("consumer.session.timeout.ms", getStreamsSessionTimeout());
-
         props.put(StreamsConfig.restoreConsumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG), 100);
-
         // The delay before the state cleanup thread runs. This is used to clean up state stores
         props.put("state.cleanup.delay.ms", getStreamsStateCleanupDelayMs());
-
         // In case we need to authenticate to Kafka, this sets it.
         addKafkaSecuritySettings(props);
         applyKafkaConfigOverrides(props, KAFKA_CLIENT_OVERRIDE_PREFIX);
-
         return props;
     }
 
@@ -1074,7 +967,6 @@ public class LHServerConfig extends ConfigBase {
         for (Object keyObj : props.keySet()) {
             String key = (String) keyObj;
             if (!key.startsWith(overridePrefix)) continue;
-
             String kafkaKey =
                     key.substring(overridePrefix.length()).replace("_", ".").toLowerCase();
             target.put(kafkaKey, props.get(key));
@@ -1162,13 +1054,11 @@ public class LHServerConfig extends ConfigBase {
             // unexpected out-of-memory errors
             this.globalRocksdbBlockCache = new LRUCache(cacheSize, -1, true);
         }
-
         long totalWriteBufferSize = Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, "-1"));
         if (totalWriteBufferSize != -1) {
             this.globalRocksdbWriteBufferManager =
                     new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache, true);
         }
-
         long rateLimit = Long.valueOf(getOrSetDefault(ROCKSDB_RATE_LIMIT_BYTES_KEY, "-1"));
         boolean limitReads = Boolean.valueOf(getOrSetDefault(ROCKSDB_RATE_LIMIT_INCLUDE_READS_KEY, "false"));
         if (rateLimit > 0) {
@@ -1192,19 +1082,16 @@ public class LHServerConfig extends ConfigBase {
         String caCertFile = getOrSetDefault(INTERNAL_CA_CERT_KEY, null);
         String serverCertFile = getOrSetDefault(INTERNAL_SERVER_CERT_KEY, null);
         String serverKeyFile = getOrSetDefault(INTERNAL_SERVER_KEY_KEY, null);
-
         if (caCertFile == null) {
             log.info("No ca cert file found, deploying insecure!");
             return null;
         }
-
         if (serverCertFile == null || serverKeyFile == null) {
             throw new LHMisconfigurationException("CA cert file provided but missing cert or key");
         }
         File serverCert = new File(serverCertFile);
         File serverKey = new File(serverKeyFile);
         File rootCA = new File(caCertFile);
-
         try {
             return TlsServerCredentials.newBuilder()
                     .keyManager(serverCert, serverKey)
@@ -1230,7 +1117,6 @@ public class LHServerConfig extends ConfigBase {
         File serverCert = new File(serverCertFile);
         File serverKey = new File(serverKeyFile);
         File rootCA = new File(caCertFile);
-
         try {
             return TlsChannelCredentials.newBuilder()
                     .keyManager(serverCert, serverKey)
@@ -1260,5 +1146,17 @@ public class LHServerConfig extends ConfigBase {
                                 : entry.getValue()))
                 .sorted()
                 .collect(Collectors.joining("\n"));
+    }
+
+    public Cache getGlobalRocksdbBlockCache() {
+        return this.globalRocksdbBlockCache;
+    }
+
+    public WriteBufferManager getGlobalRocksdbWriteBufferManager() {
+        return this.globalRocksdbWriteBufferManager;
+    }
+
+    public RateLimiter getGlobalRocksdbRateLimiter() {
+        return this.globalRocksdbRateLimiter;
     }
 }

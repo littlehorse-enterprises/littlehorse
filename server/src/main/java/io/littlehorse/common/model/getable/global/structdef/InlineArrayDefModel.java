@@ -6,11 +6,8 @@ import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
 public class InlineArrayDefModel extends LHSerializable<InlineArrayDef> {
-
-    @Getter
     private TypeDefinitionModel arrayType;
 
     public InlineArrayDefModel() {}
@@ -56,5 +53,9 @@ public class InlineArrayDefModel extends LHSerializable<InlineArrayDef> {
     @Override
     public String toString() {
         return "Array<" + arrayType.toString() + ">";
+    }
+
+    public TypeDefinitionModel getArrayType() {
+        return this.arrayType;
     }
 }

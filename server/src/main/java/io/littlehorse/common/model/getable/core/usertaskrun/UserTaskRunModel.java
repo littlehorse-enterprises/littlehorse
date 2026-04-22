@@ -58,31 +58,21 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Slf4j
-@Getter
-@Setter
 public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOutputTopicGetable<UserTaskRun> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(UserTaskRunModel.class);
     private UserTaskRunIdModel id;
     private UserTaskDefIdModel userTaskDefId;
-
     private List<UserTaskEventModel> events = new ArrayList<>();
-
     private Map<String, VariableValueModel> results = new HashMap<>();
     private String userGroup;
     private String userId;
-
     private UserTaskRunStatus status;
     private String notes;
     private Date scheduledTime;
     private NodeRunIdModel nodeRunId;
     private int epoch;
-
     // Below are non-proto fields
     private UserTaskNodeModel userTaskNode;
     private ExecutionContext executionContext;
@@ -125,12 +115,9 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
                 .setUserTaskDefId(userTaskDefId.toProto())
                 .setScheduledTime(LHUtil.fromDate(scheduledTime))
                 .setNodeRunId(nodeRunId.toProto());
-
         if (userId != null) out.setUserId(userId);
         if (userGroup != null) out.setUserGroup(userGroup);
-
         if (notes != null) out.setNotes(notes);
-
         for (UserTaskEventModel event : events) {
             out.addEvents(event.toProto());
         }
@@ -138,7 +125,6 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             out.putResults(result.getKey(), result.getValue().toProto().build());
         }
         out.setEpoch(this.epoch);
-
         return out;
     }
 
@@ -155,19 +141,15 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         status = p.getStatus();
         scheduledTime = LHLibUtil.fromProtoTs(p.getScheduledTime());
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
-
         if (p.hasUserId()) userId = p.getUserId();
         if (p.hasUserGroup()) userGroup = p.getUserGroup();
-
         if (p.hasNotes()) notes = p.getNotes();
-
         for (UserTaskEvent ute : p.getEventsList()) {
             events.add(LHSerializable.fromProto(ute, UserTaskEventModel.class, context));
         }
         for (Map.Entry<String, VariableValue> result : p.getResultsMap().entrySet()) {
             results.put(result.getKey(), VariableValueModel.fromProto(result.getValue(), context));
         }
-
         lastEventForComment = new HashMap<>();
         commentIdCounter = 0;
         for (UserTaskEventModel event : events) {
@@ -208,11 +190,9 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
     public void assignTo(String newUserId, String newUserGroup, boolean canScheduleActions) {
         String oldUserId = this.userId;
         String oldUserGroup = this.userGroup;
-
         this.userId = newUserId;
         this.userGroup = newUserGroup;
         this.epoch += 1;
-
         // If the assignment changed, then we need to schedule any triggers.
         if (canScheduleActions && !Objects.equals(newUserId, oldUserId) && newUserId != null) {
             for (UTActionTriggerModel trigger : getUtNode().getActions(UTHook.ON_TASK_ASSIGNED)) {
@@ -224,12 +204,10 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
                 }
             }
         }
-
         // Log the assigment.
         UTEAssignedModel assignedEvent = new UTEAssignedModel(oldUserId, newUserId, oldUserGroup, newUserGroup);
         events.add(new UserTaskEventModel(
                 assignedEvent, processorContext.currentCommand().getTime()));
-
         if (this.userId != null) {
             this.status = UserTaskRunStatus.ASSIGNED;
         } else {
@@ -240,7 +218,6 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
     public void onArrival(Date time) throws NodeFailureException {
         UserTaskNodeModel node = getNodeRun().getNode().getUserTaskNode();
         status = UserTaskRunStatus.UNASSIGNED;
-
         // Need to either assign to a user or to a group.
         try {
             if (node.getNotes() != null) {
@@ -248,35 +225,28 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
                         .getThreadRun()
                         .assignVariable(node.getNotes())
                         .asStr();
-
                 notes = notesVal.getStrVal();
             }
             ThreadRunModel thread = getNodeRun().getThreadRun();
-
             String newUserId = node.getUserId() == null
                     ? null
                     : thread.assignVariable(node.getUserId()).asStr().getStrVal();
             String newUserGroup = node.getUserGroup() == null
                     ? null
                     : thread.assignVariable(node.getUserGroup()).asStr().getStrVal();
-
             if (newUserId == null && newUserGroup == null) {
                 throw new NodeFailureException(new FailureModel("Invalid user task assignment", LHConstants.VAR_ERROR));
             }
-
             if (newUserId != null && newUserId.trim().isEmpty()) {
-                throw new NodeFailureException(
-                        new FailureModel("Invalid user task assignment. UserId can't be empty", LHConstants.VAR_ERROR));
+                throw new NodeFailureException(new FailureModel(
+                        "Invalid user task assignment. UserId can\'t be empty", LHConstants.VAR_ERROR));
             }
-
             if (newUserGroup != null && newUserGroup.trim().isEmpty()) {
                 throw new NodeFailureException(new FailureModel(
-                        "Invalid group task assignment. UserGroup can't be empty", LHConstants.VAR_ERROR));
+                        "Invalid group task assignment. UserGroup can\'t be empty", LHConstants.VAR_ERROR));
             }
-
             // Set owners and schedule all on-assignment hooks
             this.assignTo(newUserId, newUserGroup, true);
-
             // Schedule all on-arrival hooks.
             for (UTActionTriggerModel action : getUtNode().getActions(UTHook.ON_ARRIVAL)) {
                 scheduleAction(action);
@@ -298,10 +268,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             log.debug("Not doing deadline reassignment on UT. Status {}", status);
             return;
         }
-
         String newUserGroup = null;
         String newUserId = null;
-
         ThreadRunModel thread = getNodeRun().getThreadRun();
         try {
             if (trigger.getNewUserGroup() != null) {
@@ -318,11 +286,9 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
                     LHErrorType.VAR_SUB_ERROR.toString());
             return;
         }
-
         if (newUserId == null && newUserGroup == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Both userId and userGroup are null on reassignment.");
         }
-
         this.assignTo(newUserId, newUserGroup, true);
     }
 
@@ -367,7 +333,6 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         if (isTerminated()) {
             throw new LHApiException(Status.FAILED_PRECONDITION, "UserTaskRun is in status " + status);
         }
-
         this.results = req.getResults();
         UTESavedModel saved = new UTESavedModel(req.getUserId(), req.getResults());
         this.events.add(new UserTaskEventModel(saved, ctx.currentCommand().getTime()));
@@ -378,26 +343,20 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             log.warn("Tried to complete a user task that was not running");
             return;
         }
-
         if (event.getUserId() != null && !event.getUserId().equals(userId)) {
             log.trace("Complete User Task Run event had different ID, adding reassignment");
-
             // Note: currently, the CompleteUserTaskRun doesn't take in a group. So we don't
             // change the group.
-
             // The task is being completed, so we don't want to schedule any hooks.
             boolean scheduleHooks = false;
             this.assignTo(event.getUserId(), this.userGroup, scheduleHooks);
         }
-
         UserTaskDefModel userTaskDef = executionContext
                 .metadataManager()
                 .get(new UserTaskDefIdModel(
                         getUserTaskDefId().getName(), getUserTaskDefId().getVersion()));
-
         Map<String, UserTaskFieldModel> userTaskFieldsGroupedByName = userTaskDef.getFields().stream()
                 .collect(Collectors.toMap(UserTaskFieldModel::getName, Function.identity()));
-
         for (Map.Entry<String, VariableValueModel> field : event.getResults().entrySet()) {
             UserTaskFieldModel userTaskFieldFromTaskDef = userTaskFieldsGroupedByName.get(field.getKey());
             // TODO: Support StructDefs
@@ -480,13 +439,11 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
                 if (index.contains("userGroup") && utr.getUserGroup() == null) return false;
                 return true;
             };
-
             List<Pair<String, GetableIndex.ValueType>> attributes = index.stream()
                     .map(attrib -> Pair.of(attrib, GetableIndex.ValueType.SINGLE))
                     .toList();
             out.add(new GetableIndex<UserTaskRunModel>(attributes, Optional.of(TagStorageType.LOCAL), isIndexActive));
         }
-
         return out;
     }
 
@@ -514,5 +471,141 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         }
         log.warn("Tried to get value for unknown index field {}", key);
         return List.of();
+    }
+
+    public UserTaskRunIdModel getId() {
+        return this.id;
+    }
+
+    public UserTaskDefIdModel getUserTaskDefId() {
+        return this.userTaskDefId;
+    }
+
+    public List<UserTaskEventModel> getEvents() {
+        return this.events;
+    }
+
+    public Map<String, VariableValueModel> getResults() {
+        return this.results;
+    }
+
+    public String getUserGroup() {
+        return this.userGroup;
+    }
+
+    public String getUserId() {
+        return this.userId;
+    }
+
+    public UserTaskRunStatus getStatus() {
+        return this.status;
+    }
+
+    public String getNotes() {
+        return this.notes;
+    }
+
+    public Date getScheduledTime() {
+        return this.scheduledTime;
+    }
+
+    public NodeRunIdModel getNodeRunId() {
+        return this.nodeRunId;
+    }
+
+    public int getEpoch() {
+        return this.epoch;
+    }
+
+    public UserTaskNodeModel getUserTaskNode() {
+        return this.userTaskNode;
+    }
+
+    public ExecutionContext getExecutionContext() {
+        return this.executionContext;
+    }
+
+    public CoreProcessorContext getProcessorContext() {
+        return this.processorContext;
+    }
+
+    public FailureModel getFailureToThrowKenobi() {
+        return this.failureToThrowKenobi;
+    }
+
+    public Map<Integer, UserTaskEventModel> getLastEventForComment() {
+        return this.lastEventForComment;
+    }
+
+    public int getCommentIdCounter() {
+        return this.commentIdCounter;
+    }
+
+    public void setId(final UserTaskRunIdModel id) {
+        this.id = id;
+    }
+
+    public void setUserTaskDefId(final UserTaskDefIdModel userTaskDefId) {
+        this.userTaskDefId = userTaskDefId;
+    }
+
+    public void setEvents(final List<UserTaskEventModel> events) {
+        this.events = events;
+    }
+
+    public void setResults(final Map<String, VariableValueModel> results) {
+        this.results = results;
+    }
+
+    public void setUserGroup(final String userGroup) {
+        this.userGroup = userGroup;
+    }
+
+    public void setUserId(final String userId) {
+        this.userId = userId;
+    }
+
+    public void setStatus(final UserTaskRunStatus status) {
+        this.status = status;
+    }
+
+    public void setNotes(final String notes) {
+        this.notes = notes;
+    }
+
+    public void setScheduledTime(final Date scheduledTime) {
+        this.scheduledTime = scheduledTime;
+    }
+
+    public void setNodeRunId(final NodeRunIdModel nodeRunId) {
+        this.nodeRunId = nodeRunId;
+    }
+
+    public void setEpoch(final int epoch) {
+        this.epoch = epoch;
+    }
+
+    public void setUserTaskNode(final UserTaskNodeModel userTaskNode) {
+        this.userTaskNode = userTaskNode;
+    }
+
+    public void setExecutionContext(final ExecutionContext executionContext) {
+        this.executionContext = executionContext;
+    }
+
+    public void setProcessorContext(final CoreProcessorContext processorContext) {
+        this.processorContext = processorContext;
+    }
+
+    public void setFailureToThrowKenobi(final FailureModel failureToThrowKenobi) {
+        this.failureToThrowKenobi = failureToThrowKenobi;
+    }
+
+    public void setLastEventForComment(final Map<Integer, UserTaskEventModel> lastEventForComment) {
+        this.lastEventForComment = lastEventForComment;
+    }
+
+    public void setCommentIdCounter(final int commentIdCounter) {
+        this.commentIdCounter = commentIdCounter;
     }
 }

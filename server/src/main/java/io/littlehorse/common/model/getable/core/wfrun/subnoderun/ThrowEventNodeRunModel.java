@@ -25,11 +25,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Setter;
 
-@Setter
 public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
-
     private WorkflowEventIdModel workflowEventId;
     private CoreProcessorContext processorExecutionContext;
     private WorkflowEventDefIdModel eventDefId;
@@ -68,12 +65,10 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
         } else {
             workflowEventId = new WorkflowEventIdModel(nodeRun.getId().getWfRunId(), this.eventDefId, 0);
         }
-
         try {
             VariableValueModel content = getNodeRun()
                     .getThreadRun()
                     .assignVariable(getNode().getThrowEventNode().getContent());
-
             // If the WorkflowEventDef defines a return type and it's an inline array,
             // set the authoritative element type on the produced content array so that
             // empty/native arrays inherit the expected element type (matches RunWf/Task
@@ -90,10 +85,8 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
                             .setElementType(out.get().getInlineArrayDef().getArrayType());
                 }
             }
-
             WorkflowEventModel event = new WorkflowEventModel(workflowEventId, content, nodeRun);
             processorContext.getableManager().put(event);
-
             processorContext.notifyOfEventThrown(event);
         } catch (LHVarSubError exn) {
             throw new NodeFailureException(new FailureModel(
@@ -122,5 +115,17 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
     @Override
     public List<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableIds(CoreProcessorContext context) {
         return List.of(workflowEventId);
+    }
+
+    public void setWorkflowEventId(final WorkflowEventIdModel workflowEventId) {
+        this.workflowEventId = workflowEventId;
+    }
+
+    public void setProcessorExecutionContext(final CoreProcessorContext processorExecutionContext) {
+        this.processorExecutionContext = processorExecutionContext;
+    }
+
+    public void setEventDefId(final WorkflowEventDefIdModel eventDefId) {
+        this.eventDefId = eventDefId;
     }
 }

@@ -23,13 +23,8 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
-
     private String wfSpecName;
     private Integer majorVersion;
     private Integer revision;
@@ -39,7 +34,6 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
     public String getPartitionKey() {
         if (id == null) id = LHUtil.generateGuid();
-
         // Child wfrun needs access to state of parent, so it needs to be on the same partition
         if (parentWfRunId != null) {
             return parentWfRunId.getPartitionKey().get();
@@ -60,7 +54,6 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         if (id != null) out.setId(id);
         if (majorVersion != null) out.setMajorVersion(majorVersion);
         if (revision != null) out.setRevision(revision);
-
         for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
         }
@@ -77,12 +70,10 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         if (p.hasId()) id = p.getId();
         if (p.hasMajorVersion()) majorVersion = p.getMajorVersion();
         if (p.hasRevision()) revision = p.getRevision();
-
         for (Map.Entry<String, VariableValue> e : p.getVariablesMap().entrySet()) {
             VariableValueModel variableValue = VariableValueModel.fromProto(e.getValue(), context);
             variables.put(e.getKey(), variableValue);
         }
-
         if (p.hasParentWfRunId()) {
             parentWfRunId = LHSerializable.fromProto(p.getParentWfRunId(), WfRunIdModel.class, context);
         }
@@ -95,26 +86,21 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
     @Override
     public WfRun process(CoreProcessorContext processorContext, LHServerConfig config) {
         if (Strings.isNullOrEmpty(wfSpecName)) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument 'wf_spec_name'");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument \'wf_spec_name\'");
         }
-
         if (id != null && !this.isIdValid()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument 'id' must be a valid hostname");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument \'id\' must be a valid hostname");
         }
-
         GetableManager getableManager = processorContext.getableManager();
         WfSpecModel spec = processorContext.service().getWfSpec(wfSpecName, majorVersion, revision);
         if (spec == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");
+            throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find specified WfSpec");
         }
-
         // TODO: Add WfRun Start Metrics
-
         WfRunModel oldWfRun = getableManager.get(new WfRunIdModel(id, parentWfRunId));
         if (oldWfRun != null) {
             throw new LHApiException(Status.ALREADY_EXISTS, "WfRun with id " + id + " already exists!");
         }
-
         // Validate the requests
         if (spec.getParentWfSpec() != null && parentWfRunId == null) {
             throw new LHApiException(
@@ -126,7 +112,6 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT, "WfSpec %s does not refer to a parent WfSpec.".formatted(wfSpecName));
         }
-
         // Validate that parent WfRun exists and is on this partition.
         if (parentWfRunId != null) {
             ParentWfSpecReferenceModel parentSpec = spec.getParentWfSpec();
@@ -144,7 +129,6 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
                                 .formatted(parent.getWfSpec().getName(), parentSpec.getWfSpecName()));
             }
         }
-
         // Validate input variables before saving anything.
         ThreadSpecModel entrypointThread = spec.getEntrypointThread();
         try {
@@ -152,10 +136,8 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         } catch (LHValidationException exn) {
             throw new LHApiException(Status.INVALID_ARGUMENT, exn.getMessage());
         }
-
         WfRunModel newRun = spec.startNewRun(this, processorContext);
         newRun.advance(processorContext.currentCommand().getTime());
-
         return newRun.toProto().build();
     }
 
@@ -163,5 +145,53 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         RunWfRequestModel out = new RunWfRequestModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public String getWfSpecName() {
+        return this.wfSpecName;
+    }
+
+    public Integer getMajorVersion() {
+        return this.majorVersion;
+    }
+
+    public Integer getRevision() {
+        return this.revision;
+    }
+
+    public Map<String, VariableValueModel> getVariables() {
+        return this.variables;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public WfRunIdModel getParentWfRunId() {
+        return this.parentWfRunId;
+    }
+
+    public void setWfSpecName(final String wfSpecName) {
+        this.wfSpecName = wfSpecName;
+    }
+
+    public void setMajorVersion(final Integer majorVersion) {
+        this.majorVersion = majorVersion;
+    }
+
+    public void setRevision(final Integer revision) {
+        this.revision = revision;
+    }
+
+    public void setVariables(final Map<String, VariableValueModel> variables) {
+        this.variables = variables;
+    }
+
+    public void setId(final String id) {
+        this.id = id;
+    }
+
+    public void setParentWfRunId(final WfRunIdModel parentWfRunId) {
+        this.parentWfRunId = parentWfRunId;
     }
 }

@@ -25,11 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class WfService {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WfService.class);
     private final ReadOnlyMetadataManager metadataManager;
 
     public WfService(ReadOnlyMetadataManager metadataManager) {
@@ -39,7 +37,6 @@ public class WfService {
     public WfSpecModel getWfSpec(String name, Integer majorVersion, Integer revision) {
         Supplier<WfSpecModel> findWfSpec = () -> {
             final WfSpecModel storedResult;
-
             if (majorVersion != null && revision != null) {
                 storedResult = metadataManager.get(new WfSpecIdModel(name, majorVersion, revision));
             } else if (majorVersion != null) {
@@ -48,7 +45,6 @@ public class WfService {
             } else {
                 storedResult = metadataManager.getLastFromPrefix(WfSpecIdModel.getPrefix(name), WfSpecModel.class);
             }
-
             return storedResult;
         };
         return findWfSpec.get();
@@ -80,19 +76,17 @@ public class WfService {
     }
 
     /**
-     *  Implementation inspired by {@link WfService#getWfSpec(String, Integer, Integer)}
+     * Implementation inspired by {@link WfService#getWfSpec(String, Integer, Integer)}
      */
     public StructDefModel getStructDef(String name, Integer version) {
         Supplier<StructDefModel> findStructDef = () -> {
             final StructDefModel storedResult;
-
             if (version != null && version != -1) {
                 storedResult = metadataManager.get(new StructDefIdModel(name, version));
             } else {
                 storedResult =
                         metadataManager.getLastFromPrefix(StructDefIdModel.getPrefix(name), StructDefModel.class);
             }
-
             return storedResult;
         };
         return findStructDef.get();
@@ -111,15 +105,12 @@ public class WfService {
         if (id == null) {
             id = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
         }
-
         PrincipalModel principalModel = metadataManager.get(id);
-
         if (principalModel == null && id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
             log.info(
                     "Anonymous Principal not found in store, likely due to initialization of global store. Should resolve within seconds.");
             throw new LHApiException(Status.UNAVAILABLE, "Server Initializing");
         }
-
         return principalModel;
     }
 

@@ -9,11 +9,8 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.Setter;
 
-@Setter
 public class ReturnTypeModel extends LHSerializable<ReturnType> {
-
     private TypeDefinitionModel returnType;
 
     public ReturnTypeModel() {}
@@ -40,9 +37,7 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
     @Override
     public ReturnType.Builder toProto() {
         ReturnType.Builder out = ReturnType.newBuilder();
-
         if (returnType != null) out.setReturnType(returnType.toProto());
-
         return out;
     }
 
@@ -72,7 +67,10 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
             }
             return;
         }
-
         returnType.validateCompatibility(value, metadataManager);
+    }
+
+    public void setReturnType(final TypeDefinitionModel returnType) {
+        this.returnType = returnType;
     }
 }

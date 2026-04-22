@@ -16,7 +16,6 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
-import lombok.Getter;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -26,9 +25,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
 import org.mockito.Mockito;
 
-@Getter
 public class TestCoreProcessorContext extends CoreProcessorContext {
-
     private final MetadataCache metadataCache;
     private final LHServerConfig lhConfig;
     private final TaskQueueManager globalTaskQueueManager;
@@ -65,7 +62,6 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
         this.server = server;
         this.partitionMetricsMemoryStore = partitionMetricsMemoryStore;
-
         this.coreStore = Mockito.spy(TenantScopedStore.newInstance(
                 processorContext.getStateStore(ServerTopology.CORE_STORE), tenantId, this));
         this.tenantMetadataStore = Mockito.spy(TenantScopedStore.newInstance(
@@ -121,5 +117,45 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
     @Override
     public MetadataManager metadataManager() {
         return new MetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
+    }
+
+    public MetadataCache getMetadataCache() {
+        return this.metadataCache;
+    }
+
+    public LHServerConfig getLhConfig() {
+        return this.lhConfig;
+    }
+
+    public TaskQueueManager getGlobalTaskQueueManager() {
+        return this.globalTaskQueueManager;
+    }
+
+    public TenantScopedStore getCoreStore() {
+        return this.coreStore;
+    }
+
+    public TenantScopedStore getTenantMetadataStore() {
+        return this.tenantMetadataStore;
+    }
+
+    public ClusterScopedStore getClusterMetadataStore() {
+        return this.clusterMetadataStore;
+    }
+
+    public Headers getRecordMetadata() {
+        return this.recordMetadata;
+    }
+
+    public LHServer getServer() {
+        return this.server;
+    }
+
+    public PartitionMetricsMemoryStore getPartitionMetricsMemoryStore() {
+        return this.partitionMetricsMemoryStore;
+    }
+
+    public GetableManager getGetableManager() {
+        return this.getableManager;
     }
 }

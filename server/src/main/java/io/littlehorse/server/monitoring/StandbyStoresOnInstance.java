@@ -3,8 +3,6 @@ package io.littlehorse.server.monitoring;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.streams.processor.StandbyUpdateListener;
 
@@ -13,10 +11,8 @@ import org.apache.kafka.streams.processor.StandbyUpdateListener;
  * This class is responsible for managing and monitoring the topic partitions associated
  * with the current application instance.
  */
-@Getter
-@Slf4j
 public final class StandbyStoresOnInstance {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(StandbyStoresOnInstance.class);
     private final String storeName;
     private final Set<StandbyTopicPartitionMetrics> partitions = new HashSet<>();
     private final int clusterPartitions;
@@ -45,9 +41,10 @@ public final class StandbyStoresOnInstance {
      * @return sum of lag values for all partitions.
      */
     public synchronized long totalLag() {
-        return partitions.stream()
+        return // ignore sentinel values (-1)
+        partitions.stream()
                 .map(StandbyTopicPartitionMetrics::getCurrentLag)
-                .map(lag -> Math.max(0, lag)) // ignore sentinel values (-1)
+                .map(lag -> Math.max(0, lag))
                 .mapToLong(Long::longValue)
                 .sum();
     }
@@ -81,5 +78,17 @@ public final class StandbyStoresOnInstance {
             final StandbyUpdateListener.SuspendReason reason) {
         log.info("TopicPartition %s suspended with reason %s ".formatted(topicPartition, reason));
         partitions.remove(new StandbyTopicPartitionMetrics(topicPartition, currentOffset, endOffset));
+    }
+
+    public String getStoreName() {
+        return this.storeName;
+    }
+
+    public Set<StandbyTopicPartitionMetrics> getPartitions() {
+        return this.partitions;
+    }
+
+    public int getClusterPartitions() {
+        return this.clusterPartitions;
     }
 }

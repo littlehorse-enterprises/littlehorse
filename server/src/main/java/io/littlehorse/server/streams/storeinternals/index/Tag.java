@@ -15,12 +15,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Setter
 public class Tag extends Storeable<TagPb> {
-
     public TagStorageType tagType;
     public GetableClassEnum objectType;
     public List<Attribute> attributes;
@@ -47,7 +44,6 @@ public class Tag extends Storeable<TagPb> {
         createdAt = getable.getCreatedAt();
         describedObjectId = getable.getObjectId().toString();
         this.tagType = type;
-
         for (Pair<String, String> p : atts) {
             attributes.add(new Attribute(p.getLeft(), p.getRight()));
         }
@@ -73,7 +69,6 @@ public class Tag extends Storeable<TagPb> {
                 .setCreated(LHUtil.fromDate(createdAt))
                 .setStoreKey(this.getStoreKey())
                 .setTagType(tagType);
-
         for (Attribute attr : attributes) {
             out.addAttributes(attr.toProto());
         }
@@ -86,11 +81,9 @@ public class Tag extends Storeable<TagPb> {
         objectType = p.getObjectType();
         describedObjectId = p.getDescribedObjectId();
         createdAt = LHUtil.fromProtoTs(p.getCreated());
-
         for (AttributePb attr : p.getAttributesList()) {
             attributes.add(Attribute.fromProto(attr, context));
         }
-
         tagType = p.getTagType();
     }
 
@@ -131,7 +124,6 @@ public class Tag extends Storeable<TagPb> {
 
     public String getStoreKey() {
         StringBuilder builder = new StringBuilder(getAttributeString());
-
         builder.append("/");
         builder.append(LHUtil.toLhDbFormat(createdAt));
         builder.append("/");
@@ -160,5 +152,25 @@ public class Tag extends Storeable<TagPb> {
 
     public GetableClassEnum getObjectType() {
         return objectType;
+    }
+
+    public void setTagType(final TagStorageType tagType) {
+        this.tagType = tagType;
+    }
+
+    public void setObjectType(final GetableClassEnum objectType) {
+        this.objectType = objectType;
+    }
+
+    public void setAttributes(final List<Attribute> attributes) {
+        this.attributes = attributes;
+    }
+
+    public void setCreatedAt(final Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setDescribedObjectId(final String describedObjectId) {
+        this.describedObjectId = describedObjectId;
     }
 }

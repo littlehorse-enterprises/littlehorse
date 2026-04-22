@@ -4,11 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class NodeOutputReferenceModel extends LHSerializable<NodeOutputReference> {
-
     private String nodeName;
 
     @Override
@@ -25,5 +22,9 @@ public class NodeOutputReferenceModel extends LHSerializable<NodeOutputReference
     public void initFrom(Message proto, ExecutionContext ignored) {
         NodeOutputReference p = (NodeOutputReference) proto;
         nodeName = p.getNodeName();
+    }
+
+    public String getNodeName() {
+        return this.nodeName;
     }
 }

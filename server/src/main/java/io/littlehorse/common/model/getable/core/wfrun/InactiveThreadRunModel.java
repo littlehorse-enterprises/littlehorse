@@ -17,14 +17,10 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
 
 public class InactiveThreadRunModel extends CoreGetable<InactiveThreadRun>
         implements CoreOutputTopicGetable<InactiveThreadRun> {
-
     private InactiveThreadRunIdModel id;
-
-    @Getter
     private ThreadRunModel threadRun;
 
     public InactiveThreadRunModel() {}
@@ -79,5 +75,9 @@ public class InactiveThreadRunModel extends CoreGetable<InactiveThreadRun>
             ReadOnlyGetableManager getableManager,
             OutputTopicConfigModel config) {
         return false;
+    }
+
+    public ThreadRunModel getThreadRun() {
+        return this.threadRun;
     }
 }

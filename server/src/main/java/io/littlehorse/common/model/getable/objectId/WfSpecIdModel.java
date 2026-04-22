@@ -8,14 +8,9 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
-
 // Used by WfSpec, TaskDef, and ExternalEventDef
-@Getter
-@Setter
-public class WfSpecIdModel extends MetadataId<WfSpecId, WfSpec, WfSpecModel> {
 
+public class WfSpecIdModel extends MetadataId<WfSpecId, WfSpec, WfSpecModel> {
     private String name;
     private int majorVersion;
     private int revision;
@@ -78,5 +73,29 @@ public class WfSpecIdModel extends MetadataId<WfSpecId, WfSpec, WfSpecModel> {
 
     public GetableClassEnum getType() {
         return GetableClassEnum.WF_SPEC;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getMajorVersion() {
+        return this.majorVersion;
+    }
+
+    public int getRevision() {
+        return this.revision;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setMajorVersion(final int majorVersion) {
+        this.majorVersion = majorVersion;
+    }
+
+    public void setRevision(final int revision) {
+        this.revision = revision;
     }
 }

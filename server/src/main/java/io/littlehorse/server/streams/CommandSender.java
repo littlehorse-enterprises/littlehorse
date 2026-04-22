@@ -32,15 +32,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.state.HostInfo;
 
-@Slf4j
 public class CommandSender {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CommandSender.class);
     private final BackendInternalComms internalComms;
     private final ExecutorService networkThreadpool;
     private final LHProducer commandProducer;
@@ -96,7 +94,7 @@ public class CommandSender {
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         return producer.send(
                         command.getPartitionKey(), command, command.getTopic(serverConfig), commandMetadata.toArray())
-                .thenCompose((recordMetadata) -> waitForCommand(command, responseCls, context));
+                .thenCompose(recordMetadata -> waitForCommand(command, responseCls, context));
     }
 
     @SuppressWarnings("unchecked")

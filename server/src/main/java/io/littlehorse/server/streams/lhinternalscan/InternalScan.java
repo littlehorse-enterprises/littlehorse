@@ -14,25 +14,17 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.Sc
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class InternalScan extends LHSerializable<InternalScanPb> {
-
     public ScanResultTypePb resultType;
     public int limit;
     public BookmarkPb bookmark;
     public GetableClassEnum objectType;
     public String storeName;
-
     public String partitionKey;
-
     public ScanBoundaryCase type;
     public TagScanPb tagScan;
     public BoundedObjectIdScanPb boundedObjectIdScan;
-
     public List<ScanFilterModel> filters = new ArrayList<>();
 
     public Class<InternalScanPb> getProtoBaseClass() {
@@ -45,12 +37,10 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
                 .setStoreName(storeName)
                 .setObjectType(objectType)
                 .setResultType(resultType);
-
         if (bookmark != null) out.setBookmark(bookmark);
         if (partitionKey != null) {
             out.setPartitionKey(partitionKey);
         }
-
         switch (type) {
             case TAG_SCAN:
                 out.setTagScan(tagScan);
@@ -61,11 +51,9 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
             case SCANBOUNDARY_NOT_SET:
                 throw new RuntimeException("not possible");
         }
-
         for (ScanFilterModel filter : filters) {
             out.addFilters(filter.toProto());
         }
-
         return out;
     }
 
@@ -77,9 +65,7 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
         if (p.hasBookmark()) bookmark = p.getBookmark();
         objectType = p.getObjectType();
         storeName = p.getStoreName();
-
         if (p.hasPartitionKey()) partitionKey = p.getPartitionKey();
-
         type = p.getScanBoundaryCase();
         switch (type) {
             case TAG_SCAN:
@@ -91,9 +77,88 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
             case SCANBOUNDARY_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
-
         for (ScanFilter filter : p.getFiltersList()) {
             filters.add(LHSerializable.fromProto(filter, ScanFilterModel.class, context));
         }
+    }
+
+    public ScanResultTypePb getResultType() {
+        return this.resultType;
+    }
+
+    public int getLimit() {
+        return this.limit;
+    }
+
+    public BookmarkPb getBookmark() {
+        return this.bookmark;
+    }
+
+    public GetableClassEnum getObjectType() {
+        return this.objectType;
+    }
+
+    public String getStoreName() {
+        return this.storeName;
+    }
+
+    public String getPartitionKey() {
+        return this.partitionKey;
+    }
+
+    public ScanBoundaryCase getType() {
+        return this.type;
+    }
+
+    public TagScanPb getTagScan() {
+        return this.tagScan;
+    }
+
+    public BoundedObjectIdScanPb getBoundedObjectIdScan() {
+        return this.boundedObjectIdScan;
+    }
+
+    public List<ScanFilterModel> getFilters() {
+        return this.filters;
+    }
+
+    public void setResultType(final ScanResultTypePb resultType) {
+        this.resultType = resultType;
+    }
+
+    public void setLimit(final int limit) {
+        this.limit = limit;
+    }
+
+    public void setBookmark(final BookmarkPb bookmark) {
+        this.bookmark = bookmark;
+    }
+
+    public void setObjectType(final GetableClassEnum objectType) {
+        this.objectType = objectType;
+    }
+
+    public void setStoreName(final String storeName) {
+        this.storeName = storeName;
+    }
+
+    public void setPartitionKey(final String partitionKey) {
+        this.partitionKey = partitionKey;
+    }
+
+    public void setType(final ScanBoundaryCase type) {
+        this.type = type;
+    }
+
+    public void setTagScan(final TagScanPb tagScan) {
+        this.tagScan = tagScan;
+    }
+
+    public void setBoundedObjectIdScan(final BoundedObjectIdScanPb boundedObjectIdScan) {
+        this.boundedObjectIdScan = boundedObjectIdScan;
+    }
+
+    public void setFilters(final List<ScanFilterModel> filters) {
+        this.filters = filters;
     }
 }

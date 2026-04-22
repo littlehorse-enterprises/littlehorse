@@ -7,13 +7,8 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class ExternalEventDefIdModel extends MetadataId<ExternalEventDefId, ExternalEventDef, ExternalEventDefModel> {
-
     private String name;
 
     public ExternalEventDefIdModel() {}
@@ -52,5 +47,13 @@ public class ExternalEventDefIdModel extends MetadataId<ExternalEventDefId, Exte
     @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.EXTERNAL_EVENT_DEF;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
     }
 }

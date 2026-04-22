@@ -6,27 +6,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class CommandWaiter {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CommandWaiter.class);
     private String commandId;
-
     private WaitForCommandResponse response;
     private Throwable caughtException;
     private Lock lock;
-
-    @Getter
     private Date arrivalTime;
-
-    @Getter
     private CompletableFuture<WaitForCommandResponse> completableFuture;
-
-    @Getter
     private final int commandPartition;
-
     private AtomicBoolean alreadyCompleted;
 
     public CommandWaiter(String commandId, int commandPartition) {
@@ -73,7 +62,6 @@ public class CommandWaiter {
     private boolean maybeMatch() {
         if (completableFuture == null) return false;
         if (caughtException == null && response == null) return false;
-
         if (caughtException != null) {
             log.debug("Waiter for command {} is aborting client request due to command process failure", commandId);
             completableFuture.completeExceptionally(caughtException);
@@ -92,5 +80,17 @@ public class CommandWaiter {
                             .build())
                     .build());
         }
+    }
+
+    public Date getArrivalTime() {
+        return this.arrivalTime;
+    }
+
+    public CompletableFuture<WaitForCommandResponse> getCompletableFuture() {
+        return this.completableFuture;
+    }
+
+    public int getCommandPartition() {
+        return this.commandPartition;
     }
 }

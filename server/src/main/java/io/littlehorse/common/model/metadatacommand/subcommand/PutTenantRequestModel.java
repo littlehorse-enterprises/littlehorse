@@ -19,13 +19,8 @@ import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> implements ClusterLevelCommand {
-
     private String id;
     private OutputTopicConfigModel outputTopicConfig;
 
@@ -48,11 +43,9 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     @Override
     public PutTenantRequest.Builder toProto() {
         PutTenantRequest.Builder result = PutTenantRequest.newBuilder().setId(id);
-
         if (outputTopicConfig != null) {
             result.setOutputTopicConfig(this.outputTopicConfig.toProto());
         }
-
         return result;
     }
 
@@ -64,7 +57,6 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     @Override
     public Tenant process(MetadataProcessorContext context) {
         MetadataManager metadataManager = context.metadataManager();
-
         PrincipalModel caller =
                 context.service().getPrincipal(context.authorization().principalId());
         if (!caller.canCreateTenants()) {
@@ -74,7 +66,6 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
                             "Missing permission %s over resource %s.",
                             ACLAction.WRITE_METADATA, ACLResource.ACL_TENANT));
         }
-
         TenantModel tenant = metadataManager.get(new TenantIdModel(id));
         if (tenant == null) {
             if (this.id.isEmpty() || !LHUtil.isValidLHName(this.id) || Character.isDigit(this.id.charAt(0))) {
@@ -93,5 +84,21 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
             });
         }
         return tenant.toProto().build();
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public OutputTopicConfigModel getOutputTopicConfig() {
+        return this.outputTopicConfig;
+    }
+
+    public void setId(final String id) {
+        this.id = id;
+    }
+
+    public void setOutputTopicConfig(final OutputTopicConfigModel outputTopicConfig) {
+        this.outputTopicConfig = outputTopicConfig;
     }
 }

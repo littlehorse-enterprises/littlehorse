@@ -21,13 +21,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class ExitNodeModel extends SubNode<ExitNode> {
-
     private ResultCase resultCase;
     private FailureDefModel failureDef;
     private VariableAssignmentModel returnContent;
@@ -48,9 +43,9 @@ public class ExitNodeModel extends SubNode<ExitNode> {
                 returnContent = LHSerializable.fromProto(p.getReturnContent(), VariableAssignmentModel.class, context);
                 break;
             case RESULT_NOT_SET:
-                // there's nothing to do: this ExitNode completes the ThreadRun successfully
-                // without returning content.
         }
+        // there's nothing to do: this ExitNode completes the ThreadRun successfully
+        // without returning content.
     }
 
     public ExitNode.Builder toProto() {
@@ -63,9 +58,9 @@ public class ExitNodeModel extends SubNode<ExitNode> {
                 out.setReturnContent(returnContent.toProto());
                 break;
             case RESULT_NOT_SET:
-                // there's nothing to do: this ExitNode completes the ThreadRun successfully
-                // without returning content.
         }
+        // there's nothing to do: this ExitNode completes the ThreadRun successfully
+        // without returning content.
         return out;
     }
 
@@ -110,7 +105,30 @@ public class ExitNodeModel extends SubNode<ExitNode> {
         if (returnContent == null) return Optional.of(new ReturnTypeModel());
         Optional<TypeDefinitionModel> typeDefOption = returnContent.resolveType(
                 manager, node.getThreadSpec().getWfSpec(), node.getThreadSpec().getName());
-
         return Optional.of(new ReturnTypeModel(typeDefOption.get()));
+    }
+
+    public ResultCase getResultCase() {
+        return this.resultCase;
+    }
+
+    public FailureDefModel getFailureDef() {
+        return this.failureDef;
+    }
+
+    public VariableAssignmentModel getReturnContent() {
+        return this.returnContent;
+    }
+
+    public void setResultCase(final ResultCase resultCase) {
+        this.resultCase = resultCase;
+    }
+
+    public void setFailureDef(final FailureDefModel failureDef) {
+        this.failureDef = failureDef;
+    }
+
+    public void setReturnContent(final VariableAssignmentModel returnContent) {
+        this.returnContent = returnContent;
     }
 }

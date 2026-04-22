@@ -27,19 +27,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
-@Setter
 public class VariableAssignmentModel extends LHSerializable<VariableAssignment> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(VariableAssignmentModel.class);
     private PathCase pathCase;
     private String jsonPath;
     private LHPathModel lhPath;
-
     private SourceCase rhsSourceType;
     private String variableName;
     private VariableValueModel rhsLiteralValue;
@@ -56,9 +49,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public void initFrom(Message proto, ExecutionContext context) {
         VariableAssignment p = (VariableAssignment) proto;
         if (p.hasTargetType()) targetType = TypeDefinitionModel.fromProto(p.getTargetType(), context);
-
         pathCase = p.getPathCase();
-
         switch (pathCase) {
             case JSON_PATH:
                 jsonPath = p.getJsonPath();
@@ -68,7 +59,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case PATH_NOT_SET:
         }
-
         rhsSourceType = p.getSourceCase();
         switch (rhsSourceType) {
             case VARIABLE_NAME:
@@ -88,15 +78,13 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 expression = LHSerializable.fromProto(p.getExpression(), ExpressionModel.class, context);
                 break;
             case SOURCE_NOT_SET:
-                // nothing to do;
         }
+        // nothing to do;
     }
 
     public VariableAssignment.Builder toProto() {
         VariableAssignment.Builder out = VariableAssignment.newBuilder();
-
         if (targetType != null) out.setTargetType(targetType.toProto());
-
         switch (pathCase) {
             case JSON_PATH:
                 out.setJsonPath(jsonPath);
@@ -106,7 +94,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case PATH_NOT_SET:
         }
-
         switch (rhsSourceType) {
             case VARIABLE_NAME:
                 out.setVariableName(variableName);
@@ -124,9 +111,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 out.setExpression(expression.toProto());
                 break;
             case SOURCE_NOT_SET:
-                // not possible.
         }
-
+        // not possible.
         return out;
     }
 
@@ -162,13 +148,10 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public boolean canBeType(TypeDefinitionModel type, ThreadSpecModel tspec) {
         // Eww, gross...I really wish I designed strong typing into the system from day 1.
         if (jsonPath != null) return true;
-
         TypeDefinitionModel baseType = null;
-
         switch (rhsSourceType) {
             case VARIABLE_NAME:
                 VariableDefModel varDef = tspec.getVarDef(variableName).getVarDef();
-
                 // This will need to be refactored once we introduce Structs and StructDefs.
                 baseType = varDef.getTypeDef();
                 break;
@@ -193,7 +176,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
                 throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
-
         return TypeCastingUtils.canBeType(baseType, type);
     }
 
@@ -209,7 +191,6 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         if (targetType == null) {
             return sourceValue;
         }
-
         try {
             return targetType.applyCast(sourceValue);
         } catch (IllegalArgumentException e) {
@@ -234,9 +215,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             // which is why I wish we could kill JSON_OBJ with fire. Unfortunately, people use it...
             return Optional.empty();
         }
-
         TypeDefinitionModel typeDef = null;
-
         switch (rhsSourceType) {
             case VARIABLE_NAME:
                 typeDef = wfSpec.fetchThreadSpec(threadSpecName)
@@ -281,11 +260,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
                 throw new InvalidExpressionException("VariableAssignment passed with missing source");
         }
-
         if (lhPath != null) {
             return typeDef.getNestedType(lhPath, manager);
         }
-
         return Optional.ofNullable(typeDef);
     }
 
@@ -321,5 +298,85 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             out.addAll(expression.getRhs().getRequiredVariableNames());
         }
         return out;
+    }
+
+    public PathCase getPathCase() {
+        return this.pathCase;
+    }
+
+    public String getJsonPath() {
+        return this.jsonPath;
+    }
+
+    public LHPathModel getLhPath() {
+        return this.lhPath;
+    }
+
+    public SourceCase getRhsSourceType() {
+        return this.rhsSourceType;
+    }
+
+    public String getVariableName() {
+        return this.variableName;
+    }
+
+    public VariableValueModel getRhsLiteralValue() {
+        return this.rhsLiteralValue;
+    }
+
+    public FormatStringModel getFormatString() {
+        return this.formatString;
+    }
+
+    public NodeOutputReferenceModel getNodeOutputReference() {
+        return this.nodeOutputReference;
+    }
+
+    public ExpressionModel getExpression() {
+        return this.expression;
+    }
+
+    public TypeDefinitionModel getTargetType() {
+        return this.targetType;
+    }
+
+    public void setPathCase(final PathCase pathCase) {
+        this.pathCase = pathCase;
+    }
+
+    public void setJsonPath(final String jsonPath) {
+        this.jsonPath = jsonPath;
+    }
+
+    public void setLhPath(final LHPathModel lhPath) {
+        this.lhPath = lhPath;
+    }
+
+    public void setRhsSourceType(final SourceCase rhsSourceType) {
+        this.rhsSourceType = rhsSourceType;
+    }
+
+    public void setVariableName(final String variableName) {
+        this.variableName = variableName;
+    }
+
+    public void setRhsLiteralValue(final VariableValueModel rhsLiteralValue) {
+        this.rhsLiteralValue = rhsLiteralValue;
+    }
+
+    public void setFormatString(final FormatStringModel formatString) {
+        this.formatString = formatString;
+    }
+
+    public void setNodeOutputReference(final NodeOutputReferenceModel nodeOutputReference) {
+        this.nodeOutputReference = nodeOutputReference;
+    }
+
+    public void setExpression(final ExpressionModel expression) {
+        this.expression = expression;
+    }
+
+    public void setTargetType(final TypeDefinitionModel targetType) {
+        this.targetType = targetType;
     }
 }

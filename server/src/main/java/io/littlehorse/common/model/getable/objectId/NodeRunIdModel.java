@@ -11,13 +11,8 @@ import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class NodeRunIdModel extends CoreObjectId<NodeRunId, NodeRun, NodeRunModel> {
-
     private WfRunIdModel wfRunId;
     private int threadRunNumber;
     private int position;
@@ -82,5 +77,29 @@ public class NodeRunIdModel extends CoreObjectId<NodeRunId, NodeRun, NodeRunMode
     @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.NODE_RUN;
+    }
+
+    public WfRunIdModel getWfRunId() {
+        return this.wfRunId;
+    }
+
+    public int getThreadRunNumber() {
+        return this.threadRunNumber;
+    }
+
+    public int getPosition() {
+        return this.position;
+    }
+
+    public void setWfRunId(final WfRunIdModel wfRunId) {
+        this.wfRunId = wfRunId;
+    }
+
+    public void setThreadRunNumber(final int threadRunNumber) {
+        this.threadRunNumber = threadRunNumber;
+    }
+
+    public void setPosition(final int position) {
+        this.position = position;
     }
 }

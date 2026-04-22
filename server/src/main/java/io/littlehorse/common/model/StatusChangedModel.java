@@ -9,11 +9,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
 
-@Getter
 public class StatusChangedModel extends LHSerializable<StatusChanged> {
-
     private Date time;
     private LHStatusChangedModel lhStatusChanged;
     private TaskStatusChangedModel taskStatusChanged;
@@ -67,5 +64,21 @@ public class StatusChangedModel extends LHSerializable<StatusChanged> {
     @Override
     public Class<StatusChanged> getProtoBaseClass() {
         return StatusChanged.class;
+    }
+
+    public Date getTime() {
+        return this.time;
+    }
+
+    public LHStatusChangedModel getLhStatusChanged() {
+        return this.lhStatusChanged;
+    }
+
+    public TaskStatusChangedModel getTaskStatusChanged() {
+        return this.taskStatusChanged;
+    }
+
+    public long getFirstEventToLastDelay() {
+        return this.firstEventToLastDelay;
     }
 }

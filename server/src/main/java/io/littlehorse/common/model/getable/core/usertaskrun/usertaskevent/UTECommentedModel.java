@@ -5,17 +5,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class UTECommentedModel extends LHSerializable<UTECommented> {
-
     private Integer userCommentId;
     private String userId;
     private String comment;
@@ -46,5 +37,37 @@ public class UTECommentedModel extends LHSerializable<UTECommented> {
     @Override
     public Class<UTECommented> getProtoBaseClass() {
         return UTECommented.class;
+    }
+
+    public Integer getUserCommentId() {
+        return this.userCommentId;
+    }
+
+    public String getUserId() {
+        return this.userId;
+    }
+
+    public String getComment() {
+        return this.comment;
+    }
+
+    public void setUserCommentId(final Integer userCommentId) {
+        this.userCommentId = userCommentId;
+    }
+
+    public void setUserId(final String userId) {
+        this.userId = userId;
+    }
+
+    public void setComment(final String comment) {
+        this.comment = comment;
+    }
+
+    public UTECommentedModel() {}
+
+    public UTECommentedModel(final Integer userCommentId, final String userId, final String comment) {
+        this.userCommentId = userCommentId;
+        this.userId = userId;
+        this.comment = comment;
     }
 }

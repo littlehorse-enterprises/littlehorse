@@ -7,11 +7,8 @@ import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.WfGcPolicyCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
 
-@Getter
 public class WorkflowRetentionPolicyModel extends LHSerializable<WorkflowRetentionPolicy> {
-
     private WfGcPolicyCase type;
     private long secondsAfterTermination;
 
@@ -28,8 +25,8 @@ public class WorkflowRetentionPolicyModel extends LHSerializable<WorkflowRetenti
                 out.setSecondsAfterWfTermination(secondsAfterTermination);
                 break;
             case WFGCPOLICY_NOT_SET:
-                // nothing to do
         }
+        // nothing to do
         return out;
     }
 
@@ -37,19 +34,17 @@ public class WorkflowRetentionPolicyModel extends LHSerializable<WorkflowRetenti
     public void initFrom(Message proto, ExecutionContext context) {
         WorkflowRetentionPolicy p = (WorkflowRetentionPolicy) proto;
         type = p.getWfGcPolicyCase();
-
         switch (type) {
             case SECONDS_AFTER_WF_TERMINATION:
                 secondsAfterTermination = p.getSecondsAfterWfTermination();
                 break;
             case WFGCPOLICY_NOT_SET:
-                // nothing to do
         }
+        // nothing to do
     }
 
     public Date scheduleTerminationFor(WfRunModel terminatedWfRun) {
         Date terminatedTime = terminatedWfRun.getEndTime();
-
         switch (type) {
             case SECONDS_AFTER_WF_TERMINATION:
                 return new Date(terminatedTime
@@ -58,9 +53,16 @@ public class WorkflowRetentionPolicyModel extends LHSerializable<WorkflowRetenti
                         .toEpochMilli());
             case WFGCPOLICY_NOT_SET:
         }
-
         // If a future implementation of WorkflowRetentionPolicy returns null,
         // it means that the WfRun gets to hang out forever.
         return null;
+    }
+
+    public WfGcPolicyCase getType() {
+        return this.type;
+    }
+
+    public long getSecondsAfterTermination() {
+        return this.secondsAfterTermination;
     }
 }

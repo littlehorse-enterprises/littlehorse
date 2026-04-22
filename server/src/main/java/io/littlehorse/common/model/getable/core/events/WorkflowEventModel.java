@@ -19,12 +19,9 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Getter
 public class WorkflowEventModel extends CoreGetable<WorkflowEvent> implements CoreOutputTopicGetable<WorkflowEvent> {
-
     private WorkflowEventIdModel id;
     private VariableValueModel content;
     private Date createdAt;
@@ -88,5 +85,17 @@ public class WorkflowEventModel extends CoreGetable<WorkflowEvent> implements Co
 
     public String getWorkflowEventDefName() {
         return id.getWorkflowEventDefId().getName();
+    }
+
+    public WorkflowEventIdModel getId() {
+        return this.id;
+    }
+
+    public VariableValueModel getContent() {
+        return this.content;
+    }
+
+    public NodeRunIdModel getNodeRunId() {
+        return this.nodeRunId;
     }
 }

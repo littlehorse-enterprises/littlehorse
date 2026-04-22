@@ -2,12 +2,9 @@ package io.littlehorse.server.monitoring;
 
 import java.io.Serializable;
 import java.util.Objects;
-import lombok.Getter;
 import org.apache.kafka.common.TopicPartition;
 
-@Getter
 public class StandbyTopicPartitionMetrics implements Serializable {
-
     private final int partition;
     private final String topic;
     private final long currentOffset;
@@ -34,5 +31,25 @@ public class StandbyTopicPartitionMetrics implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(partition, topic);
+    }
+
+    public int getPartition() {
+        return this.partition;
+    }
+
+    public String getTopic() {
+        return this.topic;
+    }
+
+    public long getCurrentOffset() {
+        return this.currentOffset;
+    }
+
+    public long getEndOffset() {
+        return this.endOffset;
+    }
+
+    public long getCurrentLag() {
+        return this.currentLag;
     }
 }

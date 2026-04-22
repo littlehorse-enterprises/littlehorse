@@ -10,28 +10,17 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Represents a persistently stored node output value.
  * Node outputs are stored separately from NodeRuns.
  */
 public class NodeOutputModel extends Storeable<NodeOutput> {
-
-    @Getter
-    @Setter
     private WfRunIdModel wfRunId;
-
-    @Getter
     private VariableValueModel value;
-
     private int threadRunNumber;
-
     private int nodeRunPosition;
-
     private String nodeName;
-
     private Date createdAt;
 
     public NodeOutputModel() {}
@@ -86,5 +75,17 @@ public class NodeOutputModel extends Storeable<NodeOutput> {
     @Override
     public Optional<WfRunIdModel> getGroupingWfRunId() {
         return Optional.ofNullable(wfRunId);
+    }
+
+    public WfRunIdModel getWfRunId() {
+        return this.wfRunId;
+    }
+
+    public void setWfRunId(final WfRunIdModel wfRunId) {
+        this.wfRunId = wfRunId;
+    }
+
+    public VariableValueModel getValue() {
+        return this.value;
     }
 }

@@ -11,13 +11,9 @@ import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Getter
-@Slf4j
 public class ExternalEventIdModel extends CoreObjectId<ExternalEventId, ExternalEvent, ExternalEventModel> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ExternalEventIdModel.class);
     private WfRunIdModel wfRunId;
     private ExternalEventDefIdModel externalEventDefId;
     private String guid;
@@ -88,5 +84,17 @@ public class ExternalEventIdModel extends CoreObjectId<ExternalEventId, External
 
     public String getExternalEventDefName() {
         return externalEventDefId.getName();
+    }
+
+    public WfRunIdModel getWfRunId() {
+        return this.wfRunId;
+    }
+
+    public ExternalEventDefIdModel getExternalEventDefId() {
+        return this.externalEventDefId;
+    }
+
+    public String getGuid() {
+        return this.guid;
     }
 }

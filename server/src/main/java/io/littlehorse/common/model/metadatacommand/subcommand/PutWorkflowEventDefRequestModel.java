@@ -15,12 +15,9 @@ import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
-import lombok.Getter;
 
-@Getter
 public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkflowEventDefRequest>
         implements ClusterLevelCommand {
-
     private String name;
     private ReturnTypeModel contentType;
 
@@ -53,9 +50,7 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
     @Override
     public WorkflowEventDef process(MetadataProcessorContext executionContext) {
         validateReferencedStructDefs(executionContext);
-
         WorkflowEventDefIdModel id = new WorkflowEventDefIdModel(name);
-
         WorkflowEventDefModel old = executionContext.metadataManager().get(id);
         if (old != null) {
             if (!old.getContentType().equals(contentType)) {
@@ -65,7 +60,6 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
             }
             return old.toProto().build();
         }
-
         WorkflowEventDefModel newEventDef = new WorkflowEventDefModel(id, contentType);
         executionContext.metadataManager().put(newEventDef);
         return newEventDef.toProto().build();
@@ -79,5 +73,13 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
                 throw new LHApiException(Status.INVALID_ARGUMENT, e.getMessage());
             }
         });
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public ReturnTypeModel getContentType() {
+        return this.contentType;
     }
 }

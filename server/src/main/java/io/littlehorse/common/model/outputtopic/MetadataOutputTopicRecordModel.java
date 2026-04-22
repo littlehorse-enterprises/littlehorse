@@ -12,11 +12,8 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.
 import io.littlehorse.sdk.common.proto.MetadataOutputTopicRecord;
 import io.littlehorse.sdk.common.proto.MetadataOutputTopicRecord.MetadataRecordCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutputTopicRecord> {
-
     private MetadataRecordCase recordCase;
     private WfSpecModel wfSpec;
     private TaskDefModel taskDef;
@@ -39,7 +36,6 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
     @Override
     public MetadataOutputTopicRecord.Builder toProto() {
         MetadataOutputTopicRecord.Builder result = MetadataOutputTopicRecord.newBuilder();
-
         switch (recordCase) {
             case WF_SPEC:
                 result.setWfSpec(wfSpec.toProto());
@@ -61,7 +57,6 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
                 break;
             case METADATARECORD_NOT_SET:
         }
-
         return result;
     }
 
@@ -135,5 +130,33 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
         } else {
             throw new IllegalStateException("Unknown type: " + thing.getClass());
         }
+    }
+
+    public MetadataRecordCase getRecordCase() {
+        return this.recordCase;
+    }
+
+    public WfSpecModel getWfSpec() {
+        return this.wfSpec;
+    }
+
+    public TaskDefModel getTaskDef() {
+        return this.taskDef;
+    }
+
+    public ExternalEventDefModel getExternalEventDef() {
+        return this.externalEventDef;
+    }
+
+    public WorkflowEventDefModel getWorkflowEventDef() {
+        return this.workflowEventDef;
+    }
+
+    public UserTaskDefModel getUserTaskDef() {
+        return this.userTaskDef;
+    }
+
+    public StructDefModel getStructDef() {
+        return this.structDef;
     }
 }

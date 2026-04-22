@@ -28,17 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
 public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThreadsRun> {
-
-    @Setter
     private String threadSpecName;
-
     private List<Integer> childThreadIds = new ArrayList<>();
-
     private ExecutionContext context;
 
     @Override
@@ -72,7 +65,6 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
         StartMultipleThreadsNodeModel node = getNode().getStartMultipleThreadsNode();
         try {
             VariableValueModel iterableVar = nodeRun.getThreadRun().assignVariable(node.getIterable());
-
             // Support both LH native ARRAY and JSON_ARR
             List<VariableValueModel> iterItems = new ArrayList<>();
             if (iterableVar.getValueType() == VariableValue.ValueCase.ARRAY) {
@@ -91,26 +83,21 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
             } else {
                 throw new LHVarSubError(null, "Iterable must be ARRAY or JSON_ARR, got " + iterableVar.getValueType());
             }
-
             for (VariableValueModel iterInput : iterItems) {
                 // Construct input variables
                 Map<String, VariableValueModel> inputs = new HashMap<>();
-
                 for (Map.Entry<String, VariableAssignmentModel> inputVar :
                         node.getVariables().entrySet()) {
                     inputs.put(inputVar.getKey(), nodeRun.getThreadRun().assignVariable(inputVar.getValue()));
                 }
-
                 String threadSpecName = node.getThreadSpecName();
                 int parentThreadNumber = nodeRun.getId().getThreadRunNumber();
                 ThreadSpecModel threadSpec = getWfSpec().getThreadSpecs().get(threadSpecName);
                 if (threadSpec.getInputVariableDefs().containsKey(WorkflowThread.HANDLER_INPUT_VAR)) {
                     inputs.put(WorkflowThread.HANDLER_INPUT_VAR, iterInput);
                 }
-
                 // Throws LHValidationError if variables not valid
                 threadSpec.validateStartVariables(inputs, processorContext.metadataManager());
-
                 ThreadRunModel child = nodeRun.getThreadRun()
                         .getWfRun()
                         .startThread(threadSpecName, time, parentThreadNumber, inputs, ThreadType.CHILD);
@@ -129,5 +116,21 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
         VariableValue val = LHLibUtil.objToVarVal(childThreadIds);
         VariableValueModel valModel = VariableValueModel.fromProto(val, context);
         return Optional.of(valModel);
+    }
+
+    public String getThreadSpecName() {
+        return this.threadSpecName;
+    }
+
+    public List<Integer> getChildThreadIds() {
+        return this.childThreadIds;
+    }
+
+    public ExecutionContext getContext() {
+        return this.context;
+    }
+
+    public void setThreadSpecName(final String threadSpecName) {
+        this.threadSpecName = threadSpecName;
     }
 }

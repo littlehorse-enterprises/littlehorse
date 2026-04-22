@@ -9,11 +9,8 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
-import lombok.Getter;
 
-@Getter
 public class EntrypointRunModel extends SubNodeRun<EntrypointRun> {
-
     private CoreProcessorContext context;
 
     @Override
@@ -46,5 +43,9 @@ public class EntrypointRunModel extends SubNodeRun<EntrypointRun> {
         EntrypointRunModel out = new EntrypointRunModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public CoreProcessorContext getContext() {
+        return this.context;
     }
 }

@@ -24,17 +24,11 @@ import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalRequest> implements ClusterLevelCommand {
-
     private String id;
     private Map<String, ServerACLsModel> perTenantAcls = new HashMap<>();
     private ServerACLsModel globalAcls;
-
     private boolean overwrite;
 
     @Override
@@ -42,7 +36,6 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         PutPrincipalRequest p = (PutPrincipalRequest) proto;
         this.id = p.getId();
         this.globalAcls = LHSerializable.fromProto(p.getGlobalAcls(), ServerACLsModel.class, context);
-
         for (Map.Entry<String, ServerACLs> tenantAcls : p.getPerTenantAclsMap().entrySet()) {
             perTenantAcls.put(
                     tenantAcls.getKey(),
@@ -77,7 +70,6 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                 context.service().getPrincipal(context.authorization().principalId());
         PrincipalModel toSave = new PrincipalModel();
         toSave.setId(new PrincipalIdModel(id));
-
         char[] disallowedCharacters = {'/', '\\'};
         // Check if the ID contains any disallowed characters
         for (char disallowedChar : disallowedCharacters) {
@@ -86,19 +78,16 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                         Status.INVALID_ARGUMENT, "Principal ID cannot contain slashes or backslashes.");
             }
         }
-
         if (oldPrincipal != null) {
             if (!overwrite) {
                 throw new LHApiException(
                         Status.ALREADY_EXISTS,
                         "Must set overwrite == true to modify existing Principal %s".formatted(id));
             }
-
             // Here, are overwriting an old. Must ensure that we don't lock everyone out
             // of the cluster: ensure that after this request is processed, there should
             // still be a Principal with Cluster Admin privileges.
             ensureThatThereIsStillAnAdminPrincipal(oldPrincipal, context);
-
             toSave.setCreatedAt(oldPrincipal.getCreatedAt());
         }
         boolean canWriteAdminPrincipals = requester.isAdmin();
@@ -106,7 +95,6 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
             throw new LHApiException(
                     Status.INVALID_ARGUMENT, "Only admin users can create a principal with global privileges");
         }
-
         if (!requester.hasPermissionToEditPrincipals()) {
             throw new LHApiException(
                     Status.PERMISSION_DENIED,
@@ -114,9 +102,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                             "Missing permission %s over resource %s.",
                             ACLAction.WRITE_METADATA, ACLResource.ACL_PRINCIPAL));
         }
-
         validateIfPerTenantACLHasClusterScopedResources();
-
         for (Map.Entry<String, ServerACLsModel> perTenantAcl : perTenantAcls.entrySet()) {
             TenantIdModel tenantId = new TenantIdModel(perTenantAcl.getKey());
             ServerACLsModel acls = perTenantAcl.getValue();
@@ -124,13 +110,11 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
             if (tenant == null) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
-                        "PutPrincipalRequest specified ACL's for a nonexistent tenant: %s".formatted(tenantId));
+                        "PutPrincipalRequest specified ACL\'s for a nonexistent tenant: %s".formatted(tenantId));
             }
             toSave.getPerTenantAcls().put(perTenantAcl.getKey(), acls);
         }
-
         toSave.setGlobalAcls(globalAcls);
-
         metadataManager.put(toSave);
         return toSave.toProto().build();
     }
@@ -160,13 +144,11 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
             // don't need to worry.
             return;
         }
-
         if (globalAcls.getAcls().stream().anyMatch(ServerACLModel::isAdmin)) {
             // then the resulting principal after this request is Admin, so we don't
             // need to worry about losing the Last Admin.
             return;
         }
-
         // At this point, we know that:
         // 1. There used to be an Admin Principal with this ID
         // 2. After this request, that Principal will no longer be Admin
@@ -179,5 +161,37 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                     Status.FAILED_PRECONDITION,
                     "Cannot remove admin privileges from Principal %s: %s is the last Admin left.".formatted(id, id));
         }
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public Map<String, ServerACLsModel> getPerTenantAcls() {
+        return this.perTenantAcls;
+    }
+
+    public ServerACLsModel getGlobalAcls() {
+        return this.globalAcls;
+    }
+
+    public boolean isOverwrite() {
+        return this.overwrite;
+    }
+
+    public void setId(final String id) {
+        this.id = id;
+    }
+
+    public void setPerTenantAcls(final Map<String, ServerACLsModel> perTenantAcls) {
+        this.perTenantAcls = perTenantAcls;
+    }
+
+    public void setGlobalAcls(final ServerACLsModel globalAcls) {
+        this.globalAcls = globalAcls;
+    }
+
+    public void setOverwrite(final boolean overwrite) {
+        this.overwrite = overwrite;
     }
 }

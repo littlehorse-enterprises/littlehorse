@@ -3,11 +3,8 @@ package io.littlehorse.common;
 import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
 
-@Getter
 public class TestStreamObserver<T> implements StreamObserver<T> {
-
     private final List<T> values = new ArrayList<>();
     private Throwable throwable;
     private boolean completed;
@@ -31,5 +28,17 @@ public class TestStreamObserver<T> implements StreamObserver<T> {
             throw new IllegalStateException("Already completed");
         }
         this.completed = true;
+    }
+
+    public List<T> getValues() {
+        return this.values;
+    }
+
+    public Throwable getThrowable() {
+        return this.throwable;
+    }
+
+    public boolean isCompleted() {
+        return this.completed;
     }
 }

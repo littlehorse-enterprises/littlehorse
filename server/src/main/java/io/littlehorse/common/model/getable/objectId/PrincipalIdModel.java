@@ -8,10 +8,8 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
 public class PrincipalIdModel extends ClusterMetadataId<PrincipalId, Principal, PrincipalModel> {
-    @Getter
     private String id;
 
     public PrincipalIdModel() {}
@@ -49,5 +47,9 @@ public class PrincipalIdModel extends ClusterMetadataId<PrincipalId, Principal, 
     @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.PRINCIPAL;
+    }
+
+    public String getId() {
+        return this.id;
     }
 }

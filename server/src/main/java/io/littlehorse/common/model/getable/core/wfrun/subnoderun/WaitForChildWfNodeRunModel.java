@@ -17,11 +17,8 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
-import lombok.Getter;
 
-@Getter
 public class WaitForChildWfNodeRunModel extends SubNodeRun<WaitForChildWfNodeRun> {
-
     private WfRunIdModel childWfRunId;
 
     @Override
@@ -32,9 +29,7 @@ public class WaitForChildWfNodeRunModel extends SubNodeRun<WaitForChildWfNodeRun
     @Override
     public WaitForChildWfNodeRun.Builder toProto() {
         WaitForChildWfNodeRun.Builder out = WaitForChildWfNodeRun.newBuilder();
-
         if (childWfRunId != null) out.setChildWfRunId(childWfRunId.toProto());
-
         return out;
     }
 
@@ -51,15 +46,12 @@ public class WaitForChildWfNodeRunModel extends SubNodeRun<WaitForChildWfNodeRun
         try {
             VariableValueModel result = nodeRun.getThreadRun()
                     .assignVariable(getNode().getWaitForChildWfNode().getChildWfRunId());
-
             if (result.getWfRunId() == null) {
                 throw new NodeFailureException(new FailureModel(
                         "Received non-WF_RUN_ID value of type " + result.getTypeDefinition(),
                         LHErrorType.VAR_SUB_ERROR.toString()));
             }
-
             this.childWfRunId = result.getWfRunId();
-
             GetableManager manager = processorContext.getableManager();
             WfRunModel childWf = manager.get(this.childWfRunId);
             if (childWf != null && childWf.getParentTrigger() != null) {
@@ -75,7 +67,6 @@ public class WaitForChildWfNodeRunModel extends SubNodeRun<WaitForChildWfNodeRun
     public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         GetableManager manager = processorContext.getableManager();
         WfRunModel childWf = manager.get(this.childWfRunId);
-
         switch (childWf.getStatus()) {
             case STARTING:
             case RUNNING:
@@ -102,5 +93,9 @@ public class WaitForChildWfNodeRunModel extends SubNodeRun<WaitForChildWfNodeRun
     public Optional<VariableValueModel> getOutput(CoreProcessorContext processorContext) {
         WfRunModel childWfRun = processorContext.getableManager().get(childWfRunId);
         return Optional.ofNullable(childWfRun.getThreadRun(0).getOutput());
+    }
+
+    public WfRunIdModel getChildWfRunId() {
+        return this.childWfRunId;
     }
 }

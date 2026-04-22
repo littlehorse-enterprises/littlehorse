@@ -18,11 +18,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import lombok.Getter;
 
-@Getter
 public class StartMultipleThreadsNodeModel extends SubNode<StartMultipleThreadsNode> {
-
     private String threadSpecName;
     private Map<String, VariableAssignmentModel> variables;
     private VariableAssignmentModel iterable;
@@ -69,5 +66,17 @@ public class StartMultipleThreadsNodeModel extends SubNode<StartMultipleThreadsN
     @Override
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
         return Optional.of(new ReturnTypeModel(VariableType.JSON_ARR));
+    }
+
+    public String getThreadSpecName() {
+        return this.threadSpecName;
+    }
+
+    public Map<String, VariableAssignmentModel> getVariables() {
+        return this.variables;
+    }
+
+    public VariableAssignmentModel getIterable() {
+        return this.iterable;
     }
 }

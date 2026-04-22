@@ -23,13 +23,8 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow> {
-
     private MetricWindowIdModel id;
     private Map<String, CountAndTimingModel> metrics;
 
@@ -88,7 +83,6 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
             metricKey = previousStatus.name().toLowerCase() + "_to_"
                     + newStatus.name().toLowerCase();
         }
-
         incrementCountAndLatency(metricKey, latencyMs);
     }
 
@@ -97,7 +91,6 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         if (startTime == null) return;
         endTime = endTime == null ? new Date() : endTime;
         long latencyMs = endTime.getTime() - startTime.getTime();
-
         String metricKey;
         if (previousStatus == TaskStatus.TASK_PENDING && newStatus == TaskStatus.TASK_SCHEDULED) {
             metricKey = MetricWindowModel.TASKATTEMPT_PENDING_TO_SCHEDULED;
@@ -112,7 +105,6 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
             String next = newStatus.name().replace("TASK_", "").toLowerCase();
             metricKey = "taskattempt_" + prev + "_to_" + next;
         }
-
         incrementCountAndLatency(metricKey, latencyMs);
     }
 
@@ -206,11 +198,9 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
     @Override
     public PartitionMetricWindow.Builder toProto() {
         PartitionMetricWindow.Builder out = PartitionMetricWindow.newBuilder().setId(id.toProto());
-
         for (Map.Entry<String, CountAndTimingModel> entry : metrics.entrySet()) {
             out.putMetrics(entry.getKey(), entry.getValue().toProto().build());
         }
-
         return out;
     }
 
@@ -227,5 +217,21 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
     @Override
     public StoreableType getType() {
         return StoreableType.PARTITION_METRICS;
+    }
+
+    public MetricWindowIdModel getId() {
+        return this.id;
+    }
+
+    public Map<String, CountAndTimingModel> getMetrics() {
+        return this.metrics;
+    }
+
+    public void setId(final MetricWindowIdModel id) {
+        this.id = id;
+    }
+
+    public void setMetrics(final Map<String, CountAndTimingModel> metrics) {
+        this.metrics = metrics;
     }
 }

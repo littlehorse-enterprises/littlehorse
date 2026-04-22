@@ -22,9 +22,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class SearchScheduledWfRunRequestModel
         extends PublicScanRequest<
                 SearchScheduledWfRunRequest,
@@ -32,7 +30,8 @@ public class SearchScheduledWfRunRequestModel
                 ScheduledWfRunId,
                 ScheduledWfRunIdModel,
                 SearchScheduledWfRunReply> {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(SearchScheduledWfRunRequestModel.class);
     private String wfSpecName;
     private Integer majorVersion;
     private Integer revision;
@@ -90,7 +89,6 @@ public class SearchScheduledWfRunRequestModel
     @Override
     public List<Attribute> getSearchAttributes() throws LHApiException {
         List<Attribute> out = new ArrayList<>();
-
         if (majorVersion != null) {
             if (revision == null) {
                 log.info("query for: " + wfSpecName + "/" + LHUtil.toLHDbVersionFormat(majorVersion));

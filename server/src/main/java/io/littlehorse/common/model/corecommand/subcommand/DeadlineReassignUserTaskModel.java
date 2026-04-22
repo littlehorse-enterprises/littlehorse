@@ -16,13 +16,8 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassignUserTask> {
-
     private UserTaskRunIdModel source;
     private VariableAssignmentModel newUserId;
     private VariableAssignmentModel newUserGroup;
@@ -72,9 +67,7 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
         if (userTaskRun == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified NodeRun not a UserTaskRun");
         }
-
         userTaskRun.deadlineReassign(this);
-
         WfRunModel wfRun =
                 executionContext.getableManager().get(userTaskRun.getId().getWfRunId());
         wfRun.advance(new Date());
@@ -84,5 +77,37 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
     @Override
     public String getPartitionKey() {
         return this.source.getPartitionKey().get();
+    }
+
+    public UserTaskRunIdModel getSource() {
+        return this.source;
+    }
+
+    public VariableAssignmentModel getNewUserId() {
+        return this.newUserId;
+    }
+
+    public VariableAssignmentModel getNewUserGroup() {
+        return this.newUserGroup;
+    }
+
+    public long getEpoch() {
+        return this.epoch;
+    }
+
+    public void setSource(final UserTaskRunIdModel source) {
+        this.source = source;
+    }
+
+    public void setNewUserId(final VariableAssignmentModel newUserId) {
+        this.newUserId = newUserId;
+    }
+
+    public void setNewUserGroup(final VariableAssignmentModel newUserGroup) {
+        this.newUserGroup = newUserGroup;
+    }
+
+    public void setEpoch(final long epoch) {
+        this.epoch = epoch;
     }
 }

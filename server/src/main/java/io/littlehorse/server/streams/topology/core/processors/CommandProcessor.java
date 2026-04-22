@@ -40,7 +40,6 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
@@ -50,15 +49,13 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-@Slf4j
 public class CommandProcessor implements Processor<String, Command, String, CommandProcessorOutput> {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CommandProcessor.class);
     protected ProcessorContext<String, CommandProcessorOutput> ctx;
     private final LHServerConfig config;
     private final LHServer server;
     private final MetadataCache metadataCache;
     private final TaskQueueManager globalTaskQueueManager;
-
     protected KeyValueStore<String, Bytes> nativeStore;
     protected KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
@@ -66,7 +63,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private long serverStartWindowTime;
     private final AsyncWaiters asyncWaiters;
     private final PartitionMetricsMemoryStore partitionMetricsMemoryStore;
-
     private final LHProcessingExceptionHandler exceptionHandler;
 
     public CommandProcessor(
@@ -97,7 +93,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL,
                 PunctuationType.WALL_CLOCK_TIME,
                 this::collectPartitionMetrics);
-
         log.info("Completed the init() process on partition {}", ctx.taskId().partition());
     }
 
@@ -118,7 +113,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         try {
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
-
             if (command.hasResponse()) {
                 CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
                         command.getCommandId().get(), Message.class, new CompletableFuture<>());
@@ -166,10 +160,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void rehydrateTenant(TenantModel tenant) {
         TenantScopedStore coreDefaultStore =
                 TenantScopedStore.newInstance(this.nativeStore, tenant.getId(), new BackgroundContext());
-
         TaskQueueHintModel hint =
                 coreDefaultStore.get(TaskQueueHintModel.TASK_QUEUE_HINT_KEY, TaskQueueHintModel.class);
-
         if (hint == null) {
             log.warn("Could not find task queue hint, may need to iterate over many tombstones");
         }
@@ -233,7 +225,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         if (hint == null || hint.getLastProcessedTimestamp() == null) {
             return this.serverStartWindowTime;
         }
-
         long lastSeenWindowTime = toMillis(hint.getLastProcessedTimestamp());
         String startPrefix = LHConstants.PARTITION_METRICS_KEY + "/" + lastSeenWindowTime;
         String endPrefix = LHConstants.PARTITION_METRICS_KEY + "/" + serverStartWindowTime;

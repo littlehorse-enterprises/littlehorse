@@ -16,11 +16,8 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class RescueThreadRunRequestModel extends CoreSubCommand<RescueThreadRunRequest> {
-
     private WfRunIdModel wfRunId;
     private int threadRunNumber;
     private boolean skipCurrentNode;
@@ -56,9 +53,8 @@ public class RescueThreadRunRequestModel extends CoreSubCommand<RescueThreadRunR
         GetableManager getableManager = ctx.getableManager();
         WfRunModel wfRun = getableManager.get(wfRunId);
         if (wfRun == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find WfRun %s".formatted(wfRunId));
+            throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find WfRun %s".formatted(wfRunId));
         }
-
         try {
             wfRun.rescueThreadRun(threadRunNumber, skipCurrentNode, ctx);
         } catch (MissingThreadRunException exn) {
@@ -70,7 +66,18 @@ public class RescueThreadRunRequestModel extends CoreSubCommand<RescueThreadRunR
         } catch (Exception exn) {
             throw new LHApiException(Status.INTERNAL, exn.getMessage());
         }
-
         return wfRun.toProto().build();
+    }
+
+    public WfRunIdModel getWfRunId() {
+        return this.wfRunId;
+    }
+
+    public int getThreadRunNumber() {
+        return this.threadRunNumber;
+    }
+
+    public boolean isSkipCurrentNode() {
+        return this.skipCurrentNode;
     }
 }

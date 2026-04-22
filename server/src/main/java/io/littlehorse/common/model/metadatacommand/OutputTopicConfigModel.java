@@ -5,13 +5,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class OutputTopicConfigModel extends LHSerializable<OutputTopicConfig> {
-
     private OutputTopicRecordingLevel defaultRecordingLevel;
 
     @Override
@@ -23,7 +18,6 @@ public class OutputTopicConfigModel extends LHSerializable<OutputTopicConfig> {
     public OutputTopicConfig.Builder toProto() {
         OutputTopicConfig.Builder result =
                 OutputTopicConfig.newBuilder().setDefaultRecordingLevel(defaultRecordingLevel);
-
         return result;
     }
 
@@ -31,5 +25,13 @@ public class OutputTopicConfigModel extends LHSerializable<OutputTopicConfig> {
     public void initFrom(Message proto, ExecutionContext ignored) {
         OutputTopicConfig p = (OutputTopicConfig) proto;
         this.defaultRecordingLevel = p.getDefaultRecordingLevel();
+    }
+
+    public OutputTopicRecordingLevel getDefaultRecordingLevel() {
+        return this.defaultRecordingLevel;
+    }
+
+    public void setDefaultRecordingLevel(final OutputTopicRecordingLevel defaultRecordingLevel) {
+        this.defaultRecordingLevel = defaultRecordingLevel;
     }
 }

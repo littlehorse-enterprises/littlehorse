@@ -6,20 +6,17 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class Comparer {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(Comparer.class);
 
     public static int compare(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
         try {
             if (left.getVal() == null && right.getVal() != null) return -1;
             if (right.getVal() == null && left.getVal() != null) return 1;
             if (right.getVal() == null && left.getVal() == null) return 0;
-
             @SuppressWarnings("all")
             int result = ((Comparable) left.getVal()).compareTo((Comparable) right.getVal());
-
             return result;
         } catch (Exception exn) {
             throw new LHVarSubError(exn, "Failed comparing the provided values.");
@@ -31,12 +28,10 @@ public class Comparer {
             // Can only do for Str, Arr, and Obj
             if (left.getValueType() == ValueCase.STR) {
                 String rStr = right.asStr().getStrVal();
-
                 return left.asStr().getStrVal().contains(rStr);
             } else if (left.getValueType() == ValueCase.JSON_ARR) {
                 Object rObj = right.getVal();
                 List<Object> lhs = left.asArr().getJsonArrVal();
-
                 for (Object o : lhs) {
                     if (LHUtil.deepEquals(o, rObj)) {
                         return true;
@@ -52,7 +47,7 @@ public class Comparer {
                 }
                 return false;
             } else {
-                throw new LHVarSubError(null, "Can't do CONTAINS on " + left.getValueType());
+                throw new LHVarSubError(null, "Can\'t do CONTAINS on " + left.getValueType());
             }
         } catch (Exception ex) {
             log.error("Error while evaluating CONTAINS with left={} right={}", left, right, ex);

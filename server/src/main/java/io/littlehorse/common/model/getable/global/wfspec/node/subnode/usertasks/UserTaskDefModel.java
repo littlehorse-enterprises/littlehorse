@@ -16,16 +16,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
 
 public class UserTaskDefModel extends MetadataGetable<UserTaskDef> {
-
     public String name;
     public Date createdAt;
-
-    @Getter
     public List<UserTaskFieldModel> fields;
-
     public String description;
     public int version;
 
@@ -42,9 +37,7 @@ public class UserTaskDefModel extends MetadataGetable<UserTaskDef> {
                 .setName(name)
                 .setCreatedAt(LHUtil.fromDate(createdAt))
                 .setVersion(version);
-
         if (description != null) out.setDescription(description);
-
         for (UserTaskFieldModel utf : fields) {
             out.addFields(utf.toProto());
         }
@@ -58,7 +51,6 @@ public class UserTaskDefModel extends MetadataGetable<UserTaskDef> {
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         version = p.getVersion();
         if (p.hasDescription()) description = p.getDescription();
-
         for (UserTaskField utf : p.getFieldsList()) {
             fields.add(LHSerializable.fromProto(utf, UserTaskFieldModel.class, context));
         }
@@ -80,5 +72,9 @@ public class UserTaskDefModel extends MetadataGetable<UserTaskDef> {
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
         return List.of();
+    }
+
+    public List<UserTaskFieldModel> getFields() {
+        return this.fields;
     }
 }

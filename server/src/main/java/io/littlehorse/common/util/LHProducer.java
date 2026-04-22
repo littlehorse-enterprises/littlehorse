@@ -5,7 +5,6 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -14,9 +13,8 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.utils.Bytes;
 
-@Slf4j
 public class LHProducer implements Closeable {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LHProducer.class);
     private final Producer<String, Bytes> prod;
 
     public LHProducer(Properties config) {
@@ -53,7 +51,6 @@ public class LHProducer implements Closeable {
     }
 
     private static class CompletableFutureCallback extends CompletableFuture<RecordMetadata> implements Callback {
-
         @Override
         public void onCompletion(RecordMetadata metadata, Exception exception) {
             if (exception != null) {

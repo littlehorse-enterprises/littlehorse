@@ -10,16 +10,9 @@ import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
 public class WfRunStoredInventoryModel extends Storeable<WfRunStoredInventory> {
-
-    @Getter
-    @Setter
     private WfRunIdModel wfRunId;
-
-    @Getter
     private List<ExternalEventIdModel> externalEventIds;
 
     public WfRunStoredInventoryModel() {
@@ -43,9 +36,7 @@ public class WfRunStoredInventoryModel extends Storeable<WfRunStoredInventory> {
     @Override
     public void initFrom(Message proto, ExecutionContext ignored) {
         WfRunStoredInventory p = (WfRunStoredInventory) proto;
-
         wfRunId = WfRunIdModel.fromProto(p.getWfRunId(), WfRunIdModel.class, ignored);
-
         for (ExternalEventId externalEventId : p.getExternalEventsList()) {
             externalEventIds.add(ExternalEventIdModel.fromProto(externalEventId, ExternalEventIdModel.class, ignored));
         }
@@ -59,5 +50,17 @@ public class WfRunStoredInventoryModel extends Storeable<WfRunStoredInventory> {
     @Override
     public StoreableType getType() {
         return StoreableType.WFRUN_STORED_INVENTORY;
+    }
+
+    public WfRunIdModel getWfRunId() {
+        return this.wfRunId;
+    }
+
+    public void setWfRunId(final WfRunIdModel wfRunId) {
+        this.wfRunId = wfRunId;
+    }
+
+    public List<ExternalEventIdModel> getExternalEventIds() {
+        return this.externalEventIds;
     }
 }

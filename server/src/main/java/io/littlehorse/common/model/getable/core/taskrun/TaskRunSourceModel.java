@@ -7,13 +7,8 @@ import io.littlehorse.sdk.common.proto.TaskRunSource;
 import io.littlehorse.sdk.common.proto.TaskRunSource.TaskRunSourceCase;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
-
     private TaskRunSourceCase type;
     private TaskNodeReferenceModel taskNode;
     private UserTaskTriggerReferenceModel userTaskTrigger;
@@ -54,8 +49,8 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
                         LHSerializable.fromProto(p.getUserTaskTrigger(), UserTaskTriggerReferenceModel.class, context);
                 break;
             case TASKRUNSOURCE_NOT_SET:
-                // Not really possible. Maybe throw error?
         }
+        // Not really possible. Maybe throw error?
     }
 
     @Override
@@ -70,8 +65,8 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
                 out.setUserTaskTrigger(userTaskTrigger.toProto());
                 break;
             case TASKRUNSOURCE_NOT_SET:
-                // Not really possible. Maybe throw error?
         }
+        // Not really possible. Maybe throw error?
         return out;
     }
 
@@ -82,9 +77,41 @@ public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
             case USER_TASK_TRIGGER:
                 return userTaskTrigger;
             case TASKRUNSOURCE_NOT_SET:
-                // Not really possible. Maybe throw error?
         }
+        // Not really possible. Maybe throw error?
         // This is impossible.
         return null;
+    }
+
+    public TaskRunSourceCase getType() {
+        return this.type;
+    }
+
+    public TaskNodeReferenceModel getTaskNode() {
+        return this.taskNode;
+    }
+
+    public UserTaskTriggerReferenceModel getUserTaskTrigger() {
+        return this.userTaskTrigger;
+    }
+
+    public WfSpecIdModel getWfSpecId() {
+        return this.wfSpecId;
+    }
+
+    public void setType(final TaskRunSourceCase type) {
+        this.type = type;
+    }
+
+    public void setTaskNode(final TaskNodeReferenceModel taskNode) {
+        this.taskNode = taskNode;
+    }
+
+    public void setUserTaskTrigger(final UserTaskTriggerReferenceModel userTaskTrigger) {
+        this.userTaskTrigger = userTaskTrigger;
+    }
+
+    public void setWfSpecId(final WfSpecIdModel wfSpecId) {
+        this.wfSpecId = wfSpecId;
     }
 }

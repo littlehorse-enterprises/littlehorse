@@ -17,11 +17,8 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.Getter;
 
-@Getter
 public class SaveUserTaskRunProgressRequestModel extends CoreSubCommand<SaveUserTaskRunProgressRequest> {
-
     private UserTaskRunIdModel userTaskRunId;
     private Map<String, VariableValueModel> results;
     private String userId;
@@ -64,26 +61,38 @@ public class SaveUserTaskRunProgressRequestModel extends CoreSubCommand<SaveUser
     public UserTaskRun process(CoreProcessorContext executionContext, LHServerConfig config) {
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
         if (utr == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find provided UserTaskRun");
+            throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find provided UserTaskRun");
         }
-
         // Validate that the user is permitted to save the progress
         if (policy == SaveUserTaskRunAssignmentPolicy.FAIL_IF_CLAIMED_BY_OTHER) {
             if (utr.getUserId() != null && !userId.equals(utr.getUserId())) {
                 throw new LHApiException(Status.FAILED_PRECONDITION, "UserTaskRun is assigned to another user");
             }
         }
-
         utr.processProgressSavedEvent(this, executionContext);
-
         // No need to call WfRunModel#advance() since saving the progress of a UserTaskRun
         // will never cause any ThreadRun's to advance.
-
         return utr.toProto().build();
     }
 
     @Override
     public String getPartitionKey() {
         return userTaskRunId.getPartitionKey().get();
+    }
+
+    public UserTaskRunIdModel getUserTaskRunId() {
+        return this.userTaskRunId;
+    }
+
+    public Map<String, VariableValueModel> getResults() {
+        return this.results;
+    }
+
+    public String getUserId() {
+        return this.userId;
+    }
+
+    public SaveUserTaskRunAssignmentPolicy getPolicy() {
+        return this.policy;
     }
 }

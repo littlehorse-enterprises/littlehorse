@@ -7,11 +7,8 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
 
-@Getter
 public class ThreadsToWaitForModel extends LHSerializable<ThreadsToWaitFor> {
-
     private List<ThreadToWaitForModel> threads;
 
     public ThreadsToWaitForModel() {
@@ -35,5 +32,9 @@ public class ThreadsToWaitForModel extends LHSerializable<ThreadsToWaitFor> {
         for (ThreadToWaitFor thread : p.getThreadsList()) {
             threads.add(LHSerializable.fromProto(thread, ThreadToWaitForModel.class, ctx));
         }
+    }
+
+    public List<ThreadToWaitForModel> getThreads() {
+        return this.threads;
     }
 }

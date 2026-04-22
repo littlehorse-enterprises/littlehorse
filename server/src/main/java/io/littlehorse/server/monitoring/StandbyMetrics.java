@@ -9,10 +9,9 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public final class StandbyMetrics implements MeterBinder, Closeable {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(StandbyMetrics.class);
     private final String METRIC_NAME = "kafka_streams_lag_standby_store";
     private final String STANDBY_PARTITIONS_METRIC_NAME = "standby_partitions";
     private final String STORE_NAME = "store_name";
@@ -41,7 +40,6 @@ public final class StandbyMetrics implements MeterBinder, Closeable {
                 .tag(STORE_NAME, storeName)
                 .tag(INSTANCE_ID, instanceId)
                 .register(registry));
-
         // total lag per store
         standbyStores.forEach(
                 (storeName, storeStatus) -> Gauge.builder(METRIC_NAME, storeStatus, StandbyStoresOnInstance::totalLag)

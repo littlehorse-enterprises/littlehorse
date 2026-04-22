@@ -9,11 +9,9 @@ import java.io.Closeable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class TaskQueueManagerMetrics implements MeterBinder, Closeable {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TaskQueueManagerMetrics.class);
     public static final String METRIC_NAME = "lh_in_memory_task_queue_size";
     public static final String TENANT_ID_TAG = "tenant_id";
     public static final String TASK_NAME_TAG = "task_name";

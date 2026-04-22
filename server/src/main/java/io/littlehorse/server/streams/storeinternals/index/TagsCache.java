@@ -10,13 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class TagsCache extends LHSerializable<TagsCachePb> {
-
     public Set<CachedTag> tags = new HashSet<>();
 
     public TagsCache() {}
@@ -56,6 +51,14 @@ public class TagsCache extends LHSerializable<TagsCachePb> {
 
     public boolean contains(Tag tag) {
         return tags.contains(new CachedTag(tag));
+    }
+
+    public Set<CachedTag> getTags() {
+        return this.tags;
+    }
+
+    public void setTags(final Set<CachedTag> tags) {
+        this.tags = tags;
     }
     // public void setTagIds(List<String> tagIds) {
     // this.tagIds = tagIds;

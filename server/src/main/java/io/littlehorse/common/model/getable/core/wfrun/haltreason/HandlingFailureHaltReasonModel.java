@@ -10,13 +10,9 @@ import io.littlehorse.sdk.common.proto.HandlingFailureHaltReason;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailureHaltReason> implements SubHaltReason {
-
-    @Getter
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(HandlingFailureHaltReasonModel.class);
     private int handlerThreadId;
 
     public HandlingFailureHaltReasonModel() {}
@@ -51,15 +47,12 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
                 "HandlingFailureHaltReason for failed thread {}: handler thread " + "status is {}",
                 handlerThread.getFailureBeingHandled().getThreadRunNumber(),
                 handlerThread.getStatus());
-
         ThreadRunModel originalThatFailed =
                 wfRunModel.getThreadRun(handlerThread.failureBeingHandled.getThreadRunNumber());
         NodeRunModel handledNode =
                 originalThatFailed.getNodeRun(handlerThread.failureBeingHandled.getNodeRunPosition());
-
         if (handlerThread.status == LHStatus.COMPLETED) {
             handledNode.getLatestFailure().get().setProperlyHandled(true);
-
             if (handledNode.getType() == NodeTypeCase.WAIT_FOR_THREADS) {
                 // The current implementation of failure handlers for wait_thread nodes
                 // is an all-or-nothing handler that catches all failed children.
@@ -90,5 +83,9 @@ public class HandlingFailureHaltReasonModel extends LHSerializable<HandlingFailu
         HandlingFailureHaltReasonModel out = new HandlingFailureHaltReasonModel();
         out.initFrom(proto, context);
         return out;
+    }
+
+    public int getHandlerThreadId() {
+        return this.handlerThreadId;
     }
 }

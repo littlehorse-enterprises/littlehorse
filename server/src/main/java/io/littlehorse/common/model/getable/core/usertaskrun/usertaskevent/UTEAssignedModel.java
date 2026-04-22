@@ -4,17 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssigned;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class UTEAssignedModel extends LHSerializable<UTEAssigned> {
-
     private String oldUserId;
     private String newUserId;
     private String oldUserGroup;
@@ -42,5 +33,47 @@ public class UTEAssignedModel extends LHSerializable<UTEAssigned> {
         if (p.hasOldUserGroup()) oldUserGroup = p.getOldUserGroup();
         if (p.hasNewUserId()) newUserId = p.getNewUserId();
         if (p.hasOldUserId()) oldUserId = p.getOldUserId();
+    }
+
+    public String getOldUserId() {
+        return this.oldUserId;
+    }
+
+    public String getNewUserId() {
+        return this.newUserId;
+    }
+
+    public String getOldUserGroup() {
+        return this.oldUserGroup;
+    }
+
+    public String getNewUserGroup() {
+        return this.newUserGroup;
+    }
+
+    public void setOldUserId(final String oldUserId) {
+        this.oldUserId = oldUserId;
+    }
+
+    public void setNewUserId(final String newUserId) {
+        this.newUserId = newUserId;
+    }
+
+    public void setOldUserGroup(final String oldUserGroup) {
+        this.oldUserGroup = oldUserGroup;
+    }
+
+    public void setNewUserGroup(final String newUserGroup) {
+        this.newUserGroup = newUserGroup;
+    }
+
+    public UTEAssignedModel() {}
+
+    public UTEAssignedModel(
+            final String oldUserId, final String newUserId, final String oldUserGroup, final String newUserGroup) {
+        this.oldUserId = oldUserId;
+        this.newUserId = newUserId;
+        this.oldUserGroup = oldUserGroup;
+        this.newUserGroup = newUserGroup;
     }
 }

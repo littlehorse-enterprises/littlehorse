@@ -13,11 +13,9 @@ import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.util.MetadataCache;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class MetadataManager extends ReadOnlyMetadataManager {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MetadataManager.class);
     private ClusterScopedStore clusterStore;
     private TenantScopedStore tenantStore;
     private TenantScopedGetableCallback callback;
@@ -49,7 +47,6 @@ public class MetadataManager extends ReadOnlyMetadataManager {
                 clusterStore.delete(tagId, StoreableType.TAG);
             }
         }
-
         StoredGetable<U, T> toStore = new StoredGetable<U, T>(getable);
         clusterStore.put(toStore);
         for (Tag tag : getable.getIndexEntries()) {
@@ -68,13 +65,11 @@ public class MetadataManager extends ReadOnlyMetadataManager {
                 tenantStore.delete(tagId, StoreableType.TAG);
             }
         }
-
         StoredGetable<U, T> toStore = new StoredGetable<U, T>(getable);
         tenantStore.put(toStore);
         for (Tag tag : getable.getIndexEntries()) {
             tenantStore.put(tag);
         }
-
         if (this.callback != null) {
             callback.observe(getable);
         }
@@ -84,15 +79,12 @@ public class MetadataManager extends ReadOnlyMetadataManager {
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> storeResult = tenantStore.get(id.getStoreableKey(), StoredGetable.class);
         log.trace("trying to delete " + id.getStoreableKey());
-
         if (storeResult == null) {
             throw new LHApiException(
                     Status.NOT_FOUND,
-                    "Couldn't find provided " + id.getObjectClass().getSimpleName());
+                    "Couldn\'t find provided " + id.getObjectClass().getSimpleName());
         }
-
         tenantStore.delete(id.getStoreableKey(), StoreableType.STORED_GETABLE);
-
         // Now delete all the tags
         for (String tagId : storeResult.getIndexCache().getTagIds()) {
             tenantStore.delete(tagId, StoreableType.TAG);
@@ -103,15 +95,12 @@ public class MetadataManager extends ReadOnlyMetadataManager {
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> storeResult = clusterStore.get(id.getStoreableKey(), StoredGetable.class);
         log.trace("trying to delete " + id.getStoreableKey());
-
         if (storeResult == null) {
             throw new LHApiException(
                     Status.NOT_FOUND,
-                    "Couldn't find provided " + id.getObjectClass().getSimpleName());
+                    "Couldn\'t find provided " + id.getObjectClass().getSimpleName());
         }
-
         clusterStore.delete(id.getStoreableKey(), StoreableType.STORED_GETABLE);
-
         // Now delete all the tags
         for (String tagId : storeResult.getIndexCache().getTagIds()) {
             clusterStore.delete(tagId, StoreableType.TAG);

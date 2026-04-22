@@ -4,11 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
 
-@Getter
 public class UTECompletedModel extends LHSerializable<UTECompleted> {
-
     public UTECompletedModel() {}
 
     public Class<UTECompleted> getProtoBaseClass() {

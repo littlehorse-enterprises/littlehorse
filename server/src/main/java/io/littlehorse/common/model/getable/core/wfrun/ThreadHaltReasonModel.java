@@ -13,13 +13,8 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.SubHaltReason;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
-
     public ParentHaltedModel parentHalted;
     public InterruptedModel interrupted;
     public PendingInterruptHaltReasonModel pendingInterrupt;
@@ -27,11 +22,8 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
     public PendingFailureHandlerHaltReasonModel pendingFailure;
     public ManualHaltModel manualHalt;
     public HaltedByParentNodeHaltReasonModel haltedByParent;
-
     public ReasonCase type;
-
     public ThreadRunModel threadRun;
-
     public WfRunModel wfRunModel;
 
     public Class<ThreadHaltReason> getProtoBaseClass() {
@@ -66,7 +58,6 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
 
     public ThreadHaltReason.Builder toProto() {
         ThreadHaltReason.Builder out = ThreadHaltReason.newBuilder();
-
         switch (type) {
             case PARENT_HALTED:
                 out.setParentHalted(parentHalted.toProto());
@@ -92,7 +83,6 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
             case REASON_NOT_SET:
                 throw new RuntimeException("not possible");
         }
-
         return out;
     }
 
@@ -100,7 +90,6 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
     public void initFrom(Message proto, ExecutionContext context) {
         ThreadHaltReason p = (ThreadHaltReason) proto;
         type = p.getReasonCase();
-
         switch (type) {
             case PARENT_HALTED:
                 parentHalted = ParentHaltedModel.fromProto(p.getParentHalted(), context);
@@ -138,5 +127,85 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
         ThreadHaltReasonModel out = new ThreadHaltReasonModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public ParentHaltedModel getParentHalted() {
+        return this.parentHalted;
+    }
+
+    public InterruptedModel getInterrupted() {
+        return this.interrupted;
+    }
+
+    public PendingInterruptHaltReasonModel getPendingInterrupt() {
+        return this.pendingInterrupt;
+    }
+
+    public HandlingFailureHaltReasonModel getHandlingFailure() {
+        return this.handlingFailure;
+    }
+
+    public PendingFailureHandlerHaltReasonModel getPendingFailure() {
+        return this.pendingFailure;
+    }
+
+    public ManualHaltModel getManualHalt() {
+        return this.manualHalt;
+    }
+
+    public HaltedByParentNodeHaltReasonModel getHaltedByParent() {
+        return this.haltedByParent;
+    }
+
+    public ReasonCase getType() {
+        return this.type;
+    }
+
+    public ThreadRunModel getThreadRun() {
+        return this.threadRun;
+    }
+
+    public WfRunModel getWfRunModel() {
+        return this.wfRunModel;
+    }
+
+    public void setParentHalted(final ParentHaltedModel parentHalted) {
+        this.parentHalted = parentHalted;
+    }
+
+    public void setInterrupted(final InterruptedModel interrupted) {
+        this.interrupted = interrupted;
+    }
+
+    public void setPendingInterrupt(final PendingInterruptHaltReasonModel pendingInterrupt) {
+        this.pendingInterrupt = pendingInterrupt;
+    }
+
+    public void setHandlingFailure(final HandlingFailureHaltReasonModel handlingFailure) {
+        this.handlingFailure = handlingFailure;
+    }
+
+    public void setPendingFailure(final PendingFailureHandlerHaltReasonModel pendingFailure) {
+        this.pendingFailure = pendingFailure;
+    }
+
+    public void setManualHalt(final ManualHaltModel manualHalt) {
+        this.manualHalt = manualHalt;
+    }
+
+    public void setHaltedByParent(final HaltedByParentNodeHaltReasonModel haltedByParent) {
+        this.haltedByParent = haltedByParent;
+    }
+
+    public void setType(final ReasonCase type) {
+        this.type = type;
+    }
+
+    public void setThreadRun(final ThreadRunModel threadRun) {
+        this.threadRun = threadRun;
+    }
+
+    public void setWfRunModel(final WfRunModel wfRunModel) {
+        this.wfRunModel = wfRunModel;
     }
 }

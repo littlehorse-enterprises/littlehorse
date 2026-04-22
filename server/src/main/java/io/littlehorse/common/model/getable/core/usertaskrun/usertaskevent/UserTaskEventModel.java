@@ -7,13 +7,8 @@ import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
-
     private Date time;
     private EventCase type;
     private UTETaskExecutedModel executed;
@@ -81,7 +76,6 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
 
     public UserTaskEvent.Builder toProto() {
         UserTaskEvent.Builder out = UserTaskEvent.newBuilder().setTime(LHUtil.fromDate(time));
-
         switch (type) {
             case TASK_EXECUTED:
                 out.setTaskExecuted(executed.toProto());
@@ -118,7 +112,6 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
         UserTaskEvent p = (UserTaskEvent) proto;
         time = LHUtil.fromProtoTs(p.getTime());
         type = p.getEventCase();
-
         switch (type) {
             case TASK_EXECUTED:
                 executed = LHSerializable.fromProto(p.getTaskExecuted(), UTETaskExecutedModel.class, context);
@@ -147,5 +140,85 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
             case EVENT_NOT_SET:
                 throw new RuntimeException("not possible");
         }
+    }
+
+    public Date getTime() {
+        return this.time;
+    }
+
+    public EventCase getType() {
+        return this.type;
+    }
+
+    public UTETaskExecutedModel getExecuted() {
+        return this.executed;
+    }
+
+    public UTEAssignedModel getAssigned() {
+        return this.assigned;
+    }
+
+    public UTECancelledModel getCancelled() {
+        return this.cancelled;
+    }
+
+    public UTESavedModel getSaved() {
+        return this.saved;
+    }
+
+    public UTECommentedModel getCommented() {
+        return this.commented;
+    }
+
+    public UTECommentDeletedModel getCommentDeleted() {
+        return this.commentDeleted;
+    }
+
+    public UTECommentEditedModel getCommentEdited() {
+        return this.commentEdited;
+    }
+
+    public UTECompletedModel getCompleted() {
+        return this.completed;
+    }
+
+    public void setTime(final Date time) {
+        this.time = time;
+    }
+
+    public void setType(final EventCase type) {
+        this.type = type;
+    }
+
+    public void setExecuted(final UTETaskExecutedModel executed) {
+        this.executed = executed;
+    }
+
+    public void setAssigned(final UTEAssignedModel assigned) {
+        this.assigned = assigned;
+    }
+
+    public void setCancelled(final UTECancelledModel cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public void setSaved(final UTESavedModel saved) {
+        this.saved = saved;
+    }
+
+    public void setCommented(final UTECommentedModel commented) {
+        this.commented = commented;
+    }
+
+    public void setCommentDeleted(final UTECommentDeletedModel commentDeleted) {
+        this.commentDeleted = commentDeleted;
+    }
+
+    public void setCommentEdited(final UTECommentEditedModel commentEdited) {
+        this.commentEdited = commentEdited;
+    }
+
+    public void setCompleted(final UTECompletedModel completed) {
+        this.completed = completed;
     }
 }

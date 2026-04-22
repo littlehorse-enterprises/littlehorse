@@ -4,15 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
 public class ExponentialBackoffRetryPolicyModel extends LHSerializable<ExponentialBackoffRetryPolicy> {
-
     private int baseIntervalMs;
     private long maxDelayMs;
     private float multiplier;
@@ -28,7 +21,6 @@ public class ExponentialBackoffRetryPolicyModel extends LHSerializable<Exponenti
                 .setBaseIntervalMs(baseIntervalMs)
                 .setMaxDelayMs(maxDelayMs)
                 .setMultiplier(multiplier);
-
         return out;
     }
 
@@ -50,8 +42,27 @@ public class ExponentialBackoffRetryPolicyModel extends LHSerializable<Exponenti
         // Calculate the delay using exponential backoff with a multiplier
         double exponentialBackoff = Math.pow(multiplier, attemptNumber - 1);
         long delay = (long) (baseIntervalMs * exponentialBackoff);
-
         // Cap the delay to the maximum allowed delay
         return Math.min(delay, maxDelayMs);
+    }
+
+    public ExponentialBackoffRetryPolicyModel() {}
+
+    public ExponentialBackoffRetryPolicyModel(final int baseIntervalMs, final long maxDelayMs, final float multiplier) {
+        this.baseIntervalMs = baseIntervalMs;
+        this.maxDelayMs = maxDelayMs;
+        this.multiplier = multiplier;
+    }
+
+    public int getBaseIntervalMs() {
+        return this.baseIntervalMs;
+    }
+
+    public long getMaxDelayMs() {
+        return this.maxDelayMs;
+    }
+
+    public float getMultiplier() {
+        return this.multiplier;
     }
 }

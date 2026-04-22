@@ -15,11 +15,8 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Getter;
 
-@Getter
 public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowMetrics> {
-
     private PartitionMetricWindowModel metricWindow;
 
     public AggregateWindowMetricsModel() {}
@@ -71,5 +68,9 @@ public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowM
         }
         executionContext.getableManager().put(aggregatedWindowMetric);
         return null;
+    }
+
+    public PartitionMetricWindowModel getMetricWindow() {
+        return this.metricWindow;
     }
 }

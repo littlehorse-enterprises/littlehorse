@@ -8,13 +8,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDefId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class UserTaskDefIdModel extends MetadataId<UserTaskDefId, UserTaskDef, UserTaskDefModel> {
-
     private String name;
     private int version;
 
@@ -63,5 +58,21 @@ public class UserTaskDefIdModel extends MetadataId<UserTaskDefId, UserTaskDef, U
     @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.USER_TASK_DEF;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getVersion() {
+        return this.version;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setVersion(final int version) {
+        this.version = version;
     }
 }

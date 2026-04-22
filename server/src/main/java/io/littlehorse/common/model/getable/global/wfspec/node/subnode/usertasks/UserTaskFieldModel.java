@@ -5,13 +5,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.UserTaskField;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class UserTaskFieldModel extends LHSerializable<UserTaskField> {
-
     private String name;
     private VariableType type;
     private String description;
@@ -29,7 +24,6 @@ public class UserTaskFieldModel extends LHSerializable<UserTaskField> {
         type = p.getType();
         displayName = p.getDisplayName();
         required = p.getRequired();
-
         if (p.hasDescription()) description = p.getDescription();
     }
 
@@ -39,8 +33,47 @@ public class UserTaskFieldModel extends LHSerializable<UserTaskField> {
                 .setType(type)
                 .setRequired(required)
                 .setDisplayName(displayName);
-
         if (description != null) out.setDescription(description);
         return out;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public VariableType getType() {
+        return this.type;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
+    public boolean isRequired() {
+        return this.required;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setType(final VariableType type) {
+        this.type = type;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+    public void setDisplayName(final String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setRequired(final boolean required) {
+        this.required = required;
     }
 }

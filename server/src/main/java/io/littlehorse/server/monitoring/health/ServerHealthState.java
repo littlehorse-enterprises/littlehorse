@@ -9,28 +9,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
 import org.apache.kafka.streams.TaskMetadata;
 
-@Getter
-@Setter
 public class ServerHealthState {
-
     private String host;
     private int port;
     private String instanceId;
-
     private List<ActiveTaskState> coreActiveTasks;
     private List<ActiveTaskState> repartitionActiveTasks;
     private List<ActiveTaskState> timerActiveTasks;
     private List<StandbyTaskState> coreStandbyTasks;
     private List<StandbyTaskState> repartitionStandbyTasks;
     private List<StandbyTaskState> timerStandbyTasks;
-
     private State coreState;
     private State timerState;
     private List<InProgressRestoration> restorations;
@@ -50,26 +43,21 @@ public class ServerHealthState {
             KafkaStreams timerStreams,
             Map<TopicPartition, InProgressRestoration> restorations,
             Map<String, StandbyStoresOnInstance> standbyTasks) {
-
         this();
-
         this.host = config.getInternalAdvertisedHost();
         this.port = config.getInternalAdvertisedPort();
         this.instanceId = config.getLHInstanceName();
         this.restorations = restorations.values().stream().toList();
-
         this.coreActiveTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.activeTasks().stream())
                 .filter(activeTask -> fromTask(activeTask, config) == LHProcessorType.CORE)
                 .map(coreTask -> new ActiveTaskState(coreTask, restorations, config))
                 .toList());
-
         this.repartitionActiveTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.activeTasks().stream())
                 .filter(activeTask -> fromTask(activeTask, config) == LHProcessorType.REPARTITION)
                 .map(coreTask -> new ActiveTaskState(coreTask, restorations, config))
                 .toList());
-
         this.coreStandbyTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.standbyTasks().stream())
                 .filter(standbyTask -> fromTask(standbyTask, config) == LHProcessorType.CORE)
@@ -78,7 +66,6 @@ public class ServerHealthState {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList());
-
         this.repartitionStandbyTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.standbyTasks().stream())
                 .filter(standbyTask -> fromTask(standbyTask, config) == LHProcessorType.REPARTITION)
@@ -88,7 +75,6 @@ public class ServerHealthState {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList());
-
         if (timerStreams != null) {
             this.timerStandbyTasks.addAll(timerStreams.metadataForLocalThreads().stream()
                     .flatMap(thread -> thread.standbyTasks().stream())
@@ -103,7 +89,6 @@ public class ServerHealthState {
                     .toList());
             this.timerState = timerStreams.state();
         }
-
         this.coreState = coreStreams.state();
     }
 
@@ -133,11 +118,9 @@ public class ServerHealthState {
 
     public static LHProcessorType fromTopic(String topic, LHServerConfig config) {
         String truncated = topic.substring(config.getLHClusterId().length());
-
         if (truncated.contains("core-store") || truncated.contains("core-cmd")) {
             return LHProcessorType.CORE;
         }
-
         if (truncated.contains("repartition-store") || truncated.contains("repartition-cmd")) {
             return LHProcessorType.REPARTITION;
         }
@@ -184,5 +167,101 @@ public class ServerHealthState {
                 coreState,
                 timerState,
                 restorations);
+    }
+
+    public String getHost() {
+        return this.host;
+    }
+
+    public int getPort() {
+        return this.port;
+    }
+
+    public String getInstanceId() {
+        return this.instanceId;
+    }
+
+    public List<ActiveTaskState> getCoreActiveTasks() {
+        return this.coreActiveTasks;
+    }
+
+    public List<ActiveTaskState> getRepartitionActiveTasks() {
+        return this.repartitionActiveTasks;
+    }
+
+    public List<ActiveTaskState> getTimerActiveTasks() {
+        return this.timerActiveTasks;
+    }
+
+    public List<StandbyTaskState> getCoreStandbyTasks() {
+        return this.coreStandbyTasks;
+    }
+
+    public List<StandbyTaskState> getRepartitionStandbyTasks() {
+        return this.repartitionStandbyTasks;
+    }
+
+    public List<StandbyTaskState> getTimerStandbyTasks() {
+        return this.timerStandbyTasks;
+    }
+
+    public State getCoreState() {
+        return this.coreState;
+    }
+
+    public State getTimerState() {
+        return this.timerState;
+    }
+
+    public List<InProgressRestoration> getRestorations() {
+        return this.restorations;
+    }
+
+    public void setHost(final String host) {
+        this.host = host;
+    }
+
+    public void setPort(final int port) {
+        this.port = port;
+    }
+
+    public void setInstanceId(final String instanceId) {
+        this.instanceId = instanceId;
+    }
+
+    public void setCoreActiveTasks(final List<ActiveTaskState> coreActiveTasks) {
+        this.coreActiveTasks = coreActiveTasks;
+    }
+
+    public void setRepartitionActiveTasks(final List<ActiveTaskState> repartitionActiveTasks) {
+        this.repartitionActiveTasks = repartitionActiveTasks;
+    }
+
+    public void setTimerActiveTasks(final List<ActiveTaskState> timerActiveTasks) {
+        this.timerActiveTasks = timerActiveTasks;
+    }
+
+    public void setCoreStandbyTasks(final List<StandbyTaskState> coreStandbyTasks) {
+        this.coreStandbyTasks = coreStandbyTasks;
+    }
+
+    public void setRepartitionStandbyTasks(final List<StandbyTaskState> repartitionStandbyTasks) {
+        this.repartitionStandbyTasks = repartitionStandbyTasks;
+    }
+
+    public void setTimerStandbyTasks(final List<StandbyTaskState> timerStandbyTasks) {
+        this.timerStandbyTasks = timerStandbyTasks;
+    }
+
+    public void setCoreState(final State coreState) {
+        this.coreState = coreState;
+    }
+
+    public void setTimerState(final State timerState) {
+        this.timerState = timerState;
+    }
+
+    public void setRestorations(final List<InProgressRestoration> restorations) {
+        this.restorations = restorations;
     }
 }
