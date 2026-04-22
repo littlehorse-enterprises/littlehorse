@@ -56,7 +56,7 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
         }
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
         if (utr == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find UserTaskRun " + userTaskRunId);
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskRun " + userTaskRunId);
         }
         if (!overrideClaim && utr.getUserId() != null) {
             throw new LHApiException(
@@ -65,7 +65,7 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
         if (utr.isTerminated()) {
             throw new LHApiException(
                     Status.FAILED_PRECONDITION,
-                    "Couldn\'t reassign User Task Run since it  is in terminal status " + utr.getStatus());
+                    "Couldn't reassign User Task Run since it  is in terminal status " + utr.getStatus());
         }
         // LittleHorse currently does not store users, as such we cannot verify whether the user/userGroup
         // are valid values.
