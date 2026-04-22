@@ -48,6 +48,10 @@ What we need to do is allow users to create an `InlineStruct` and initialize the
 
 ### Java SDK Examples
 
+Here's how it will look in the Java SDK.
+
+#### Basic
+
 ```java
 WfRunVariable email = wf.declareStr("email").required(); // input var
 WfRunVariable userRecord = wf.declareStruct("user", User.class); // Internal Struct
@@ -64,6 +68,42 @@ userRecord.assign(struct);
 wf.execute("save-user", userRecord);
 ```
 
+#### Nested Structs
+
+Let's say we have the following `StructDef` class:
+
+```java
+class Address {
+  public String streetAddress;
+  public String state;
+  public int zip;
+}
+
+@LHStructDef("person")
+class Person {
+  public String name;
+  public Address address;
+}
+```
+
+We'd need to allow doing the following:
+
+```java
+WfRunVariable name = wf.declareStr("name").required(); // input var
+WfRunVariable personRecord = wf.declareStruct("my-person", Person.class);
+
+NodeOutput addressJson = wf.execute("fetch-address-json", name);
+
+LHStructBuilder personStruct = wf.buildStruct("person")
+    .put("name", name)
+    .put("address", wf.buildInlineStruct()
+          .put("streetAddress", addressJson.jsonPath("$."))
+          .put("state", addressJson.jsonPath("$.state"))
+          .put("zip", addressJson.jsonPath("$.zip")));
+
+personRecord.assign(personStruct);
+```
+
 ### Protobuf
 
 We will add a new entry to the `oneof` in the `oneof source`.
@@ -78,16 +118,34 @@ message VariableAssignment {
     // Builds a Struct.
     StructBuilder struct_builder = 8;
   }
+}
 
-  // Builds an InlineStruct using data available in the context of this ThreadRun.
-  message StructBuilder {
-    // Sets the value for the fields of each 
-    map<string, VariableAssignment> fields = 1;
+// Builds a Struct using data available in the context of this ThreadRun.
+message StructBuilder {
+  // The ID of the StructDef we're building. If the version is -1, it uses the latest.
+  StructDefId struct_def_id = 1;
 
-    // The ID of the StructDef we're building. If the version is -1, it uses the latest.
-    StructDefId struct_def_id = 2;
+  // Determines the content of the InlineStruct.
+  InlineStructBuilder value = 2;
+}
+
+// Builds an InlineStruct from values available to a ThreadRun.
+message InlineStructBuilder {
+  // Determines the values for each field in the resulting InlineStruct.
+  map<string, InlineStructFieldValue> fields = 1;
+}
+
+message InlineStructFieldValue {
+  // Determines the Source value for this field.
+  oneof struct_value {
+    // Simple value that already exists in the context of the ThreadRun.
+    VariableAssignment simple_value = 1;
+
+    // Builds a nested sub-structure of a Struct
+    InlineStructBuilder sub_structure = 2;
   }
 }
+
 ```
 
 Editing the `VariableAssignment` keeps this as flexible as possible, and with minimal proto & code changes.
