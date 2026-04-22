@@ -9,13 +9,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
 import org.apache.kafka.streams.TaskMetadata;
 
-@Data
+@Getter
+@Setter
 public class ServerHealthState {
 
     private String host;
@@ -146,5 +148,41 @@ public class ServerHealthState {
             return LHProcessorType.TIMER;
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ServerHealthState that = (ServerHealthState) o;
+        return port == that.port
+                && Objects.equals(host, that.host)
+                && Objects.equals(instanceId, that.instanceId)
+                && Objects.equals(coreActiveTasks, that.coreActiveTasks)
+                && Objects.equals(repartitionActiveTasks, that.repartitionActiveTasks)
+                && Objects.equals(timerActiveTasks, that.timerActiveTasks)
+                && Objects.equals(coreStandbyTasks, that.coreStandbyTasks)
+                && Objects.equals(repartitionStandbyTasks, that.repartitionStandbyTasks)
+                && Objects.equals(timerStandbyTasks, that.timerStandbyTasks)
+                && coreState == that.coreState
+                && timerState == that.timerState
+                && Objects.equals(restorations, that.restorations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                host,
+                port,
+                instanceId,
+                coreActiveTasks,
+                repartitionActiveTasks,
+                timerActiveTasks,
+                coreStandbyTasks,
+                repartitionStandbyTasks,
+                timerStandbyTasks,
+                coreState,
+                timerState,
+                restorations);
     }
 }

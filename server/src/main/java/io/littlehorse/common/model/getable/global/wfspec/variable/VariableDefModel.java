@@ -14,7 +14,6 @@ import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 @Slf4j
-@EqualsAndHashCode(callSuper = false)
 public class VariableDefModel extends LHSerializable<VariableDef> {
 
     private TypeDefinitionModel typeDef;

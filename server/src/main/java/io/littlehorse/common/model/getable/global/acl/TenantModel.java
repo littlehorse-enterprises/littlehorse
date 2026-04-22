@@ -16,13 +16,11 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = "id", callSuper = false)
 public class TenantModel extends ClusterMetadataGetable<Tenant> {
 
     private TenantIdModel id;

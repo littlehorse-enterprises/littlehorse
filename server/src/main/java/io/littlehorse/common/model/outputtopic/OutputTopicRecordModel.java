@@ -18,13 +18,11 @@ import io.littlehorse.sdk.common.proto.OutputTopicRecord;
 import io.littlehorse.sdk.common.proto.OutputTopicRecord.PayloadCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = false)
 public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
 
     private Timestamp timestamp;

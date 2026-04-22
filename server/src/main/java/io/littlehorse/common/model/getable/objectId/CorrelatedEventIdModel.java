@@ -11,13 +11,11 @@ import io.littlehorse.sdk.common.proto.CorrelatedEvent;
 import io.littlehorse.sdk.common.proto.CorrelatedEventId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = false)
 public class CorrelatedEventIdModel extends CoreObjectId<CorrelatedEventId, CorrelatedEvent, CorrelatedEventModel> {
 
     private String key;

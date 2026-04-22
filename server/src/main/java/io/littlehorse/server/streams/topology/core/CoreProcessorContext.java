@@ -72,7 +72,6 @@ public class CoreProcessorContext implements ExecutionContext {
 
     private final LHServer server;
     private GetableUpdates getableUpdates;
-    private MetricsUpdater metricsAggregator;
     private final TenantIdModel tenantId;
     private final PartitionMetricsMemoryStore partitionMetricsMemoryStore;
 
@@ -250,9 +249,6 @@ public class CoreProcessorContext implements ExecutionContext {
         if (hasTaskManager()) {
             currentTaskManager.forwardPendingTimers();
             currentTaskManager.forwardPendingTasks();
-        }
-        if (metricsAggregator != null) {
-            metricsAggregator.maybePersistState();
         }
         server.onEventThrown(eventsToThrow, authContext.tenantId());
     }

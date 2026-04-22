@@ -1,11 +1,10 @@
 package io.littlehorse.server.listener;
 
 import java.io.File;
-import lombok.EqualsAndHashCode;
+import java.util.Objects;
 import lombok.Getter;
 
 @Getter
-@EqualsAndHashCode
 public class TLSConfig {
 
     private final File certChain;
@@ -14,5 +13,18 @@ public class TLSConfig {
     public TLSConfig(File certChain, File privateKey) {
         this.certChain = certChain;
         this.privateKey = privateKey;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TLSConfig that = (TLSConfig) o;
+        return Objects.equals(certChain, that.certChain) && Objects.equals(privateKey, that.privateKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(certChain, privateKey);
     }
 }

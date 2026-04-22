@@ -27,13 +27,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 public class VariableAssignmentModel extends LHSerializable<VariableAssignment> {
 
     private PathCase pathCase;

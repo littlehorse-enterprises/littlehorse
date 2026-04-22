@@ -5,12 +5,12 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssigned;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@EqualsAndHashCode(callSuper = false)
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UTEAssignedModel extends LHSerializable<UTEAssigned> {

@@ -10,11 +10,11 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 public class ServerACLModel extends LHSerializable<ServerACL> {
 
     private List<ACLResource> resources = new ArrayList<>();

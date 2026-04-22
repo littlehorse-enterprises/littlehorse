@@ -5,13 +5,11 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = false)
 public class OutputTopicConfigModel extends LHSerializable<OutputTopicConfig> {
 
     private OutputTopicRecordingLevel defaultRecordingLevel;

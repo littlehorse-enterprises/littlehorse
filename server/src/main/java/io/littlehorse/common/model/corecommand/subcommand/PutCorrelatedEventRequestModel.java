@@ -21,13 +21,13 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelatedEventRequest> {
 
     private String key;

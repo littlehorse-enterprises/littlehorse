@@ -8,9 +8,6 @@ import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
-import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
-import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
@@ -27,7 +24,6 @@ import java.util.stream.StreamSupport;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
-import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
 import org.assertj.core.api.Assertions;
@@ -97,18 +93,6 @@ public class UserTaskRunModelStorageManagerTest {
                 Spliterators.spliteratorUnknownSize(
                         localStoreWrapper.prefixScan(keyPrefix, Tag.class), Spliterator.ORDERED),
                 false);
-    }
-
-    private List<String> storedRemoteTagPrefixStoreKeys() {
-        return mockProcessorContext.forwarded().stream()
-                .map(MockProcessorContext.CapturedForward::record)
-                .map(Record::value)
-                .map(CommandProcessorOutput::getPayload)
-                .map(lhSerializable -> (RepartitionCommand) lhSerializable)
-                .map(RepartitionCommand::getSubCommand)
-                .filter(subCommand -> subCommand instanceof CreateRemoteTag)
-                .map(RepartitionSubCommand::getPartitionKey)
-                .toList();
     }
 
     private List<String> storedTagPrefixStoreKeys() {

@@ -9,11 +9,9 @@ import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
-@EqualsAndHashCode(callSuper = false)
 public class ServerACLsModel extends LHSerializable<ServerACLs> {
 
     private List<ServerACLModel> acls = new ArrayList<>();

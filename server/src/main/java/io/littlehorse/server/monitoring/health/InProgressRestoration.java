@@ -1,14 +1,17 @@
 package io.littlehorse.server.monitoring.health;
 
 import io.littlehorse.common.LHServerConfig;
-import lombok.Data;
+import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.kafka.common.TopicPartition;
 
 /**
  * Used by the StreamsHealthWatcher to represent the state of an
  * in-progress restoration (whether for an active or standby task).
  */
-@Data
+@Getter
+@Setter
 public class InProgressRestoration {
 
     String topic;
@@ -39,5 +42,23 @@ public class InProgressRestoration {
     public void onBatchRestored(long batchEndOffset, long numRestored) {
         totalRestored += numRestored;
         currentOffset = batchEndOffset;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InProgressRestoration that = (InProgressRestoration) o;
+        return partition == that.partition
+                && totalRestored == that.totalRestored
+                && endOffset == that.endOffset
+                && currentOffset == that.currentOffset
+                && Objects.equals(topic, that.topic)
+                && processor == that.processor;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(topic, partition, processor, totalRestored, endOffset, currentOffset);
     }
 }

@@ -7,11 +7,11 @@ import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@EqualsAndHashCode(callSuper = false)
-@Data
+@Getter
+@Setter
 public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
 
     private Date time;

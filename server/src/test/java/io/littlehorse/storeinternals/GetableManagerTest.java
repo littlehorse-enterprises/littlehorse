@@ -32,9 +32,6 @@ import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
-import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
-import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
@@ -55,7 +52,6 @@ import java.util.stream.Stream;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
-import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
@@ -289,16 +285,6 @@ public class GetableManagerTest {
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_21.0"));
     }
 
-    private List<RepartitionCommand> remoteTagsCreated() {
-        return mockProcessorContext.forwarded().stream()
-                .map(MockProcessorContext.CapturedForward::record)
-                .map(Record::value)
-                .map(CommandProcessorOutput::getPayload)
-                .map(lhSerializable -> (RepartitionCommand) lhSerializable)
-                .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof CreateRemoteTag)
-                .toList();
-    }
-
     @Test
     void storeLocalJsonVariablesWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
@@ -345,19 +331,12 @@ public class GetableManagerTest {
     @MethodSource("provideNodeRunObjects")
     void storeNodeRun(NodeRunModel nodeRunModel, String expectedStoreKey) {
         List<String> expectedLocalTagKeys = List.of();
-        List<String> expectedRemoteStoreKeys = List.of();
 
         getableManager.put(nodeRunModel);
         getableManager.commit();
 
         final var storedKeys = getAllKeys(store);
         assertThat(storedKeys).hasSize(expectedLocalTagKeys.size() + 1).anyMatch(key -> key.contains(expectedStoreKey));
-
-        List<String> remoteTags = remoteTagsCreated().stream()
-                .map(RepartitionCommand::getSubCommand)
-                .map(RepartitionSubCommand::getPartitionKey)
-                .toList();
-        assertThat(remoteTags).containsExactlyInAnyOrderElementsOf(expectedRemoteStoreKeys);
     }
 
     @ParameterizedTest

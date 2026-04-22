@@ -133,4 +133,18 @@ public abstract class LHSerializable<T extends Message> {
     public String toString() {
         return toJson();
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || !getClass().equals(other.getClass())) {
+            return false;
+        }
+        return toProto().build().equals(((LHSerializable<?>) other).toProto().build());
+    }
+
+    @Override
+    public int hashCode() {
+        return toProto().build().hashCode();
+    }
 }

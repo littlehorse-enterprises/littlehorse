@@ -9,11 +9,9 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
-import lombok.EqualsAndHashCode;
 import lombok.Setter;
 
 @Setter
-@EqualsAndHashCode(callSuper = false)
 public class ReturnTypeModel extends LHSerializable<ReturnType> {
 
     private TypeDefinitionModel returnType;

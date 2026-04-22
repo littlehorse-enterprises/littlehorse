@@ -5,11 +5,11 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.UserTaskField;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 public class UserTaskFieldModel extends LHSerializable<UserTaskField> {
 
     private String name;

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +27,6 @@ import org.apache.commons.lang3.tuple.Pair;
 @Getter
 @Setter
 @Slf4j
-@EqualsAndHashCode(callSuper = false)
 public class CorrelatedEventModel extends CoreGetable<CorrelatedEvent>
         implements CoreOutputTopicGetable<CorrelatedEvent> {
 
