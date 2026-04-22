@@ -11,6 +11,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 
 public class ReturnTypeModel extends LHSerializable<ReturnType> {
+
     private TypeDefinitionModel returnType;
 
     public ReturnTypeModel() {}
@@ -37,7 +38,9 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
     @Override
     public ReturnType.Builder toProto() {
         ReturnType.Builder out = ReturnType.newBuilder();
+
         if (returnType != null) out.setReturnType(returnType.toProto());
+
         return out;
     }
 
@@ -67,6 +70,7 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
             }
             return;
         }
+
         returnType.validateCompatibility(value, metadataManager);
     }
 

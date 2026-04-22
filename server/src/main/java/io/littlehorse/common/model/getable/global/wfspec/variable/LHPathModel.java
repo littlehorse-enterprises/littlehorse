@@ -49,6 +49,7 @@ public class LHPathModel extends LHSerializable<LHPath> {
      */
     public String toJsonPathStr() {
         StringBuilder pathBuilder = new StringBuilder("$");
+
         for (Selector selector : path) {
             switch (selector.getSelectorTypeCase()) {
                 case INDEX:
@@ -60,6 +61,7 @@ public class LHPathModel extends LHSerializable<LHPath> {
                 case SELECTORTYPE_NOT_SET:
             }
         }
+
         return pathBuilder.toString();
     }
 

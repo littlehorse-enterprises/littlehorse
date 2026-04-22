@@ -89,6 +89,7 @@ public class SearchScheduledWfRunRequestModel
     @Override
     public List<Attribute> getSearchAttributes() throws LHApiException {
         List<Attribute> out = new ArrayList<>();
+
         if (majorVersion != null) {
             if (revision == null) {
                 log.info("query for: " + wfSpecName + "/" + LHUtil.toLHDbVersionFormat(majorVersion));

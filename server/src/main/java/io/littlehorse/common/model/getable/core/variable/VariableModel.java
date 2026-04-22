@@ -41,6 +41,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
     private VariableIdModel id;
     private Date createdAt;
     private WfSpecIdModel wfSpecId;
+
     private WfSpecModel wfSpec;
     private ExecutionContext executionContext;
     private boolean masked;
@@ -54,6 +55,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
             int threadRunNumber,
             WfSpecModel wfSpec,
             boolean masked) {
+
         this.id = new VariableIdModel(wfRunId, threadRunNumber, name);
         Objects.requireNonNull(value, "Empty or value expected for variable: " + name);
         this.value = value;
@@ -111,6 +113,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
                 .setValue(value.toProto())
                 .setWfSpecId(wfSpecId.toProto())
                 .setMasked(masked);
+
         return out;
     }
 
@@ -143,6 +146,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
                                 Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
                         Optional.empty(),
                         variable -> ((VariableModel) variable).isIndexable()),
+
                 // with workflow name only
                 new GetableIndex<>(
                         List.of(
@@ -169,12 +173,14 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
         if (config.getDefaultRecordingLevel() == OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
             return false;
         }
+
         // Only PUBLIC_VAR variables should be pushed out.
         WfRunModel wfRun = getableManager.get(id.getWfRunId());
         String threadSpecName = wfRun.getThreadRun(id.getThreadRunNumber()).getThreadSpecName();
         ThreadSpecModel threadSpec =
                 metadataManager.get(wfRun.getWfSpecId()).getThreadSpecs().get(threadSpecName);
         ThreadVarDefModel variableDef = threadSpec.getVarDef(id.getName());
+
         WfRunVariableAccessLevel accessLevel = variableDef.getAccessLevel();
         return accessLevel == WfRunVariableAccessLevel.PUBLIC_VAR
                 || accessLevel == WfRunVariableAccessLevel.INHERITED_VAR;
@@ -206,16 +212,20 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
         VariableValueModel value = getValue();
         WfSpecModel wfSpec = getWfSpec();
         ThreadVarDefModel threadVarDef = wfSpec.getAllVariables().get(this.getName());
+
         TagStorageType indexType = TagStorageType.LOCAL;
+
         if (!threadVarDef.isSearchable() && threadVarDef.getJsonIndexes().isEmpty()) {
             return List.of();
         }
+
         // Current behavior is that null variables are NOT indexed. This may change in future
         // releases, but it will be a backwards-compatible change.
         if (value.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
             log.warn("Tags unimplemented for variable type definition: {}", value.getTypeDefinition());
             return List.of();
         }
+
         switch (value.getTypeDefinition().getPrimitiveType()) {
             case STR -> {
                 return List.of(new IndexedField(this.getName(), value.getStrVal(), indexType));
@@ -232,6 +242,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
             case JSON_OBJ -> {
                 // Needs work
                 Set<Pair<String, Object>> flattenedMap = flattenJsonObj(value.getJsonObjVal());
+
                 return flattenedMap.stream()
                         .filter(flatKeyValue -> threadVarDef.isSearchableOn(flatKeyValue.getKey()))
                         .map(flatKeyValue -> {
@@ -263,6 +274,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
                 flattenedPairs.add(Pair.of("", listItem));
             }
         }
+
         return flattenedPairs.stream()
                 .map(flatKeyValue -> {
                     if (!flatKeyValue.getKey().isEmpty()) {
@@ -279,9 +291,11 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
 
     private static Set<Pair<String, Object>> flattenJsonObj(Map<String, Object> map) {
         Set<Pair<String, Object>> flattenedMap = new HashSet<>();
+
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
+
             flattenedMap.addAll(flattenValue("$." + key, value));
         }
         return flattenedMap;
@@ -289,6 +303,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
 
     private static Set<Pair<String, Object>> flattenValue(String flatKey, Object value) {
         Set<Pair<String, Object>> out = new HashSet<>();
+
         if (value instanceof Map valueMap) {
             for (Map.Entry<String, Object> entry : ((Map<String, Object>) valueMap).entrySet()) {
                 out.addAll(flattenValue(flatKey + "." + entry.getKey(), entry.getValue()));

@@ -31,6 +31,7 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
     private Integer revision;
     private Map<String, VariableValueModel> variables = new HashMap<>();
     private String cronExpression;
+
     private WfRunIdModel parentWfRunId;
 
     public ScheduleWfRunCommandModel() {}
@@ -87,6 +88,7 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
         if (parentWfRunId != null) {
             out.setParentWfRunId(parentWfRunId.toProto());
         }
+
         for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
         }
@@ -110,6 +112,7 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
             executionContext.getTaskManager().scheduleTimer(runWfTimer);
             Optional<Date> scheduledTime = LHUtil.nextDate(
                     cronExpression, executionContext.currentCommand().getTime());
+
             if (scheduledTime.isPresent()) {
                 CommandModel nextSchedule = new CommandModel(copy(), scheduledTime.get());
                 LHTimer nextScheduleTimer = new LHTimer(nextSchedule);

@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Optional;
 
 public class WfSpecMetricsIdModel extends RepartitionedId<WfSpecMetricsId, WfSpecMetrics, WfSpecMetricsModel> {
+
     private Date windowStart;
     private MetricsWindowLength windowType;
     private WfSpecIdModel wfSpecId;

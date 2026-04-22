@@ -11,11 +11,13 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 public class StructFieldModel extends LHSerializable<StructField> {
     private VariableValueModel value;
     private boolean masked;
+
     private ExecutionContext context;
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         StructField p = (StructField) proto;
+
         this.context = context;
         this.value = VariableValueModel.fromProto(p.getValue(), context);
         this.masked = p.getMasked();
@@ -24,11 +26,13 @@ public class StructFieldModel extends LHSerializable<StructField> {
     @Override
     public StructField.Builder toProto() {
         StructField.Builder out = StructField.newBuilder().setMasked(masked);
+
         if (masked && context != null && context.support(RequestExecutionContext.class)) {
             out.setValue(new VariableValueModel(LHConstants.STRING_MASK).toProto());
         } else {
             out.setValue(value.toProto());
         }
+
         return out;
     }
 

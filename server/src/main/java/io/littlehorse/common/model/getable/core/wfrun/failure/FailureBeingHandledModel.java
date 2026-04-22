@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.FailureBeingHandled;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class FailureBeingHandledModel extends LHSerializable<FailureBeingHandled> {
+
     private int threadRunNumber;
     private int nodeRunPosition;
     private int failureNumber;

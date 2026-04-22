@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.LHSerializable;
 
 public class CommandProcessorOutput implements Forwardable {
+
     public String topic;
     public LHSerializable<?> payload;
     public String partitionKey;

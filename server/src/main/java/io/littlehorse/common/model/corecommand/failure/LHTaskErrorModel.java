@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.LHTaskError;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class LHTaskErrorModel extends LHSerializable<LHTaskError> {
+
     private String message;
     private LHErrorType type;
 

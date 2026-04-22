@@ -63,6 +63,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class AbstractGetable<T extends Message> extends LHSerializable<T> {
+
     public abstract Date getCreatedAt();
 
     public Optional<String> getPartitionKey() {
@@ -252,6 +253,7 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                     dynamicIndexedFields.addAll(this.getIndexValues(stringValueTypePair.getKey(), tagStorageType));
                 }
             }
+
             List<List<IndexedField>> combine = combine(singleIndexedValues, dynamicIndexedFields);
             for (List<IndexedField> list : combine) {
                 List<Pair<String, String>> pairs = list.stream()

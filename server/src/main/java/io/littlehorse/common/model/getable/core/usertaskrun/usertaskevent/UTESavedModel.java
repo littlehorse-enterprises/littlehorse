@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UTESavedModel extends LHSerializable<UTESaved> {
+
     private String userId;
     private Map<String, VariableValueModel> results;
 
@@ -26,9 +27,11 @@ public class UTESavedModel extends LHSerializable<UTESaved> {
     public UTESaved.Builder toProto() {
         UTESaved.Builder out = UTESaved.newBuilder();
         out.setUserId(userId);
+
         for (Map.Entry<String, VariableValueModel> entry : results.entrySet()) {
             out.putResults(entry.getKey(), entry.getValue().toProto().build());
         }
+
         return out;
     }
 

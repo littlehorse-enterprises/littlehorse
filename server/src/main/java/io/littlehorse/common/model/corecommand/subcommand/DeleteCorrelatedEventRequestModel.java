@@ -38,12 +38,14 @@ public class DeleteCorrelatedEventRequestModel extends CoreSubCommand<DeleteCorr
     @Override
     public Empty process(CoreProcessorContext ctx, LHServerConfig config) {
         GetableManager manager = ctx.getableManager();
+
         CorrelatedEventModel correlatedEvent = manager.delete(id);
         if (correlatedEvent == null) {
             log.trace("correlated event {} was already deleted or never existed", id);
         } else {
             log.trace("successfully deleted correlated event {}", id);
         }
+
         return Empty.getDefaultInstance();
     }
 

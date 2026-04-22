@@ -13,6 +13,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 
 public class CorrelatedEventIdModel extends CoreObjectId<CorrelatedEventId, CorrelatedEvent, CorrelatedEventModel> {
+
     private String key;
     private ExternalEventDefIdModel externalEventDefId;
 

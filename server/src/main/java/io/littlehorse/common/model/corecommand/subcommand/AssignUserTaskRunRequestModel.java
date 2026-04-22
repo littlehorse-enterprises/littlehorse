@@ -20,6 +20,7 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AssignUserTaskRunRequestModel.class);
     private UserTaskRunIdModel userTaskRunId;
     private boolean overrideClaim;
+
     private String userId;
     private String userGroup;
 
@@ -41,6 +42,7 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
         AssignUserTaskRunRequest p = (AssignUserTaskRunRequest) proto;
         userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         overrideClaim = p.getOverrideClaim();
+
         if (p.hasUserGroup()) userGroup = p.getUserGroup();
         if (p.hasUserId()) userId = p.getUserId();
     }
@@ -51,31 +53,39 @@ public class AssignUserTaskRunRequestModel extends CoreSubCommand<AssignUserTask
 
     @Override
     public Empty process(CoreProcessorContext executionContext, LHServerConfig config) {
+
         if (userGroup == null && userId == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "must provide either UserGroup or userId");
         }
+
         UserTaskRunModel utr = executionContext.getableManager().get(userTaskRunId);
         if (utr == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find UserTaskRun " + userTaskRunId);
         }
+
         if (!overrideClaim && utr.getUserId() != null) {
             throw new LHApiException(
                     Status.FAILED_PRECONDITION, "User Task Run already assigned to " + utr.getUserId());
         }
+
         if (utr.isTerminated()) {
             throw new LHApiException(
                     Status.FAILED_PRECONDITION,
                     "Couldn\'t reassign User Task Run since it  is in terminal status " + utr.getStatus());
         }
+
         // LittleHorse currently does not store users, as such we cannot verify whether the user/userGroup
         // are valid values.
+
         log.debug("Reassigning user task run {} to user: {}, group: {}", userTaskRunId, userId, userGroup);
         utr.assignTo(userId, userGroup, true);
         WfRunModel wfRunModel = executionContext.getableManager().get(getWfRunId());
         if (wfRunModel == null) {
             throw new LHApiException(Status.DATA_LOSS, "Impossible: got UserTaskRun but missing WfRun");
         }
+
         wfRunModel.advance(new Date());
+
         return Empty.getDefaultInstance();
     }
 

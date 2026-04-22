@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ThreadsToWaitForModel extends LHSerializable<ThreadsToWaitFor> {
+
     private List<ThreadToWaitForModel> threads;
 
     public ThreadsToWaitForModel() {

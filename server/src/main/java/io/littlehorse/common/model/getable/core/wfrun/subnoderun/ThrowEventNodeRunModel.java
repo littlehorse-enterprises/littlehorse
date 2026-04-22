@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
+
     private WorkflowEventIdModel workflowEventId;
     private CoreProcessorContext processorExecutionContext;
     private WorkflowEventDefIdModel eventDefId;
@@ -65,10 +66,12 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
         } else {
             workflowEventId = new WorkflowEventIdModel(nodeRun.getId().getWfRunId(), this.eventDefId, 0);
         }
+
         try {
             VariableValueModel content = getNodeRun()
                     .getThreadRun()
                     .assignVariable(getNode().getThrowEventNode().getContent());
+
             // If the WorkflowEventDef defines a return type and it's an inline array,
             // set the authoritative element type on the produced content array so that
             // empty/native arrays inherit the expected element type (matches RunWf/Task
@@ -85,8 +88,10 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
                             .setElementType(out.get().getInlineArrayDef().getArrayType());
                 }
             }
+
             WorkflowEventModel event = new WorkflowEventModel(workflowEventId, content, nodeRun);
             processorContext.getableManager().put(event);
+
             processorContext.notifyOfEventThrown(event);
         } catch (LHVarSubError exn) {
             throw new NodeFailureException(new FailureModel(

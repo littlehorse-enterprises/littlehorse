@@ -21,16 +21,20 @@ import java.util.Date;
 import java.util.List;
 
 public class ScheduledTaskModel extends Storeable<ScheduledTask> {
+
     // For compatibility we use "a" as a prefix since it is the first ASCII
     // character. This guarantees that the start of the iteration doesn't ignore
     // any previous keys.
     public static final String STORE_KEY_PREFIX_FOR_COMPATIBILITY = "a/";
+
     private TaskRunIdModel taskRunId;
     private TaskDefIdModel taskDefId;
     private int attemptNumber;
     private int totalCheckpoints;
+
     private List<VarNameAndValModel> variables;
     private Date createdAt;
+
     private TaskRunSourceModel source;
 
     public ScheduledTaskModel() {
@@ -51,6 +55,7 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
                 new UserTaskTriggerReferenceModel(userTaskRun, processorContext), processorContext);
         this.taskDefId = taskDefId;
         this.attemptNumber = 0;
+
         // This is just the wfRunId.
         this.taskRunId = new TaskRunIdModel(userTaskRun);
     }
@@ -67,6 +72,7 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         for (VarNameAndValModel v : variables) {
             out.addVariables(v.toProto());
         }
+
         return out;
     }
 
@@ -82,9 +88,11 @@ public class ScheduledTaskModel extends Storeable<ScheduledTask> {
         taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
         attemptNumber = p.getAttemptNumber();
         this.totalCheckpoints = p.getTotalObservedCheckpoints();
+
         for (VarNameAndVal v : p.getVariablesList()) {
             variables.add(LHSerializable.fromProto(v, VarNameAndValModel.class, context));
         }
+
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         if (this.createdAt.getTime() == 0) {
             this.createdAt = new Date();

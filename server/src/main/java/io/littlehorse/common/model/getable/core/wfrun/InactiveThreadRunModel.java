@@ -20,6 +20,7 @@ import java.util.Optional;
 
 public class InactiveThreadRunModel extends CoreGetable<InactiveThreadRun>
         implements CoreOutputTopicGetable<InactiveThreadRun> {
+
     private InactiveThreadRunIdModel id;
     private ThreadRunModel threadRun;
 

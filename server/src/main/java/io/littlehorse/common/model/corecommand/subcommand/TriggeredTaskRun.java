@@ -53,6 +53,7 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
         TriggeredTaskRunPb.Builder out = TriggeredTaskRunPb.newBuilder()
                 .setTaskToSchedule(taskToSchedule.toProto())
                 .setSource(source.toProto());
+
         return out;
     }
 
@@ -66,37 +67,46 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
     @Override
     public Empty process(CoreProcessorContext executionContext, LHServerConfig config) {
         WfRunIdModel wfRunId = source.getWfRunId();
+
         log.trace("Might schedule a one-off task for wfRun {} due to UserTask", wfRunId);
         WfRunModel wfRunModel = executionContext.getableManager().get(wfRunId);
         if (wfRunModel == null) {
             log.trace("WfRun no longer exists! Skipping the scheduled action trigger");
             return null;
         }
+
         // Now verify that the thing hasn't yet been completed.
         ThreadRunModel thread = wfRunModel.getThreadRun(source.getThreadRunNumber());
+
         // This can happen in the case of ThreadRetentionPolicy being set.
         if (thread == null) {
             log.trace("Triggered scheduled task refers to missing thread!");
             return null;
         }
+
         // Get the NodeRun
         NodeRunModel userTaskNR = executionContext.getableManager().get(source);
         UserTaskRunIdModel userTaskRunId = userTaskNR.getUserTaskRun().getUserTaskRunId();
         UserTaskRunModel userTaskRun = executionContext.getableManager().get(userTaskRunId);
+
         if (userTaskNR.getStatus() != LHStatus.RUNNING) {
             log.trace("NodeRun is not RUNNING anymore, so can\'t take action!");
             return null;
         }
+
         // At this point, need to update the events.
         log.trace("Scheduling a one-off task for wfRun {} due to UserTask", wfRunId);
+
         try {
             List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread, executionContext);
             TaskRunIdModel taskRunId = new TaskRunIdModel(userTaskRun);
             TaskDefModel taskDef = taskToSchedule.getTaskDef(thread, executionContext);
             TaskDefIdModel id = taskDef.getId();
+
             ScheduledTaskModel toSchedule =
                     new ScheduledTaskModel(taskDef.getObjectId(), inputVars, userTaskRun, executionContext);
             toSchedule.setTaskRunId(taskRunId);
+
             TaskRunModel taskRun = new TaskRunModel(
                     inputVars,
                     new TaskRunSourceModel(
@@ -105,7 +115,9 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
                     executionContext,
                     taskRunId,
                     id);
+
             executionContext.getableManager().put(taskRun);
+
             taskRun.dispatchTaskToQueue();
             userTaskRun.getEvents().add(new UserTaskEventModel(new UTETaskExecutedModel(taskRunId), new Date()));
         } catch (LHVarSubError exn) {

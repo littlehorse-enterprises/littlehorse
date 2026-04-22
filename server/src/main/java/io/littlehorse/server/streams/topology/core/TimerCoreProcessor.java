@@ -28,6 +28,7 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, Ob
     private Cancellable punctuator;
     private long lastSeenTimestampMillis;
     private long lastCheckpointedHintTimeMillis;
+
     private final boolean forwardTimers;
 
     public TimerCoreProcessor(boolean forwardTimers) {
@@ -42,6 +43,7 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, Ob
         if (forwardTimers) {
             this.punctuator = context.schedule(
                     LHConstants.TIMER_PUNCTUATOR_INTERVAL, PunctuationType.WALL_CLOCK_TIME, this::clearTimers);
+
             TimerIteratorHintModel timerHint =
                     lhKeyValueStore.get(TimerIteratorHintModel.TIMER_ITERATOR_HINT_KEY, TimerIteratorHintModel.class);
             if (timerHint != null) {
@@ -75,14 +77,17 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, Ob
         String end = LHUtil.toLhDbFormat(new Date(timestamp));
         String lastSeenKey =
                 lastSeenTimestampMillis == 0L ? "000000" : LHUtil.toLhDbFormat(new Date(lastSeenTimestampMillis));
+
         try (LHKeyValueIterator<LHTimer> iter = lhKeyValueStore.range(lastSeenKey, end, LHTimer.class)) {
             long startTimeMs = System.currentTimeMillis();
+
             while (iter.hasNext()) {
                 LHIterKeyValue<LHTimer> entry = iter.next();
                 LHTimer timer = entry.getValue();
                 sendOneTimer(timer);
                 lhKeyValueStore.delete(entry.getKey(), StoreableType.LH_TIMER);
                 lastSeenTimestampMillis = timer.getMaturationTime().getTime();
+
                 if (System.currentTimeMillis() - startTimeMs > LHConstants.MAX_MS_PER_TIMER_PUNCTUATION) {
                     // TODO: add a prometheus metric to track the lag for each partition of how far we have
                     // left to iterate.
@@ -90,6 +95,7 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, Ob
                 }
             }
         }
+
         // Maybe store a hint. We only need to do this once every minute or so.
         // To understand why we do this, look at this RocksDB documentation:
         // https://github.com/facebook/rocksdb/wiki/Implement-Queue-Service-Using-RocksDB

@@ -9,6 +9,7 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 
 public class GetableSearchImpl implements GetableSearch {
+
     private GetableClassEnum getableClassEnum;
     private SearchScanBoundaryStrategy searchScanBoundary;
 
@@ -31,11 +32,11 @@ public class GetableSearchImpl implements GetableSearch {
             out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
             out.setPartitionKey(searchScanBoundary.getSearchAttributeString());
         }
+
         if (Tag.isLocal(tagStorageType)) {
             out.storeName = ServerTopology.CORE_STORE;
             out.resultType = ScanResultTypePb.OBJECT_ID;
-        } else {
-            // remote tag
+        } else { // remote tag
             out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
             out.setResultType(ScanResultTypePb.OBJECT_ID);
             out.setPartitionKey(searchScanBoundary.getSearchAttributeString());

@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class ThreadToWaitForModel extends LHSerializable<ThreadToWaitFor> {
+
     private VariableAssignmentModel threadRunNumber;
 
     public Class<ThreadToWaitFor> getProtoBaseClass() {

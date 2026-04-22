@@ -48,6 +48,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class NodeModel extends LHSerializable<Node> {
+
     public NodeCase type;
     public TaskNodeModel taskNode;
     public ExternalEventNodeModel externalEventNode;
@@ -71,12 +72,15 @@ public class NodeModel extends LHSerializable<Node> {
 
     public Node.Builder toProto() {
         Node.Builder out = Node.newBuilder();
+
         for (EdgeModel o : outgoingEdges) {
             out.addOutgoingEdges(o.toProto());
         }
+
         for (FailureHandlerDefModel eh : failureHandlers) {
             out.addFailureHandlers(eh.toProto());
         }
+
         switch (type) {
             case TASK:
                 out.setTask(taskNode.toProto());
@@ -123,6 +127,7 @@ public class NodeModel extends LHSerializable<Node> {
             case NODE_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
+
         return out;
     }
 
@@ -130,14 +135,17 @@ public class NodeModel extends LHSerializable<Node> {
     public void initFrom(Message p, ExecutionContext context) {
         Node proto = (Node) p;
         type = proto.getNodeCase();
+
         for (Edge epb : proto.getOutgoingEdgesList()) {
             EdgeModel edge = EdgeModel.fromProto(epb, context);
             edge.setThreadSpecModel(threadSpec);
             outgoingEdges.add(edge);
         }
+
         for (FailureHandlerDef ehpb : proto.getFailureHandlersList()) {
             failureHandlers.add(FailureHandlerDefModel.fromProto(ehpb, context));
         }
+
         switch (type) {
             case TASK:
                 taskNode = new TaskNodeModel();
@@ -199,6 +207,7 @@ public class NodeModel extends LHSerializable<Node> {
     }
 
     // Implementation details below
+
     public NodeModel() {
         outgoingEdges = new ArrayList<>();
         failureHandlers = new ArrayList<>();
@@ -206,6 +215,7 @@ public class NodeModel extends LHSerializable<Node> {
 
     public List<EdgeModel> outgoingEdges;
     public String name;
+
     public ThreadSpecModel threadSpec;
 
     public Optional<FailureHandlerDefModel> getHandlerFor(FailureModel failure) {
@@ -225,6 +235,7 @@ public class NodeModel extends LHSerializable<Node> {
         } catch (InvalidExpressionException exn) {
             throw new InvalidNodeException("Invalid output type for the Node: " + exn.getMessage(), this);
         }
+
         for (EdgeModel e : outgoingEdges) {
             try {
                 e.validate(this, ctx.metadataManager(), threadSpec);
@@ -291,10 +302,13 @@ public class NodeModel extends LHSerializable<Node> {
      */
     public Set<String> getRequiredVariableNames() {
         Set<String> out = new HashSet<>();
+
         for (EdgeModel edge : outgoingEdges) {
             out.addAll(edge.getRequiredVariableNames());
         }
+
         out.addAll(getSubNode().getNeededVariableNames());
+
         return out;
     }
 

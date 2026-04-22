@@ -9,6 +9,7 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class TaskRunSourceModel extends LHSerializable<TaskRunSource> {
+
     private TaskRunSourceCase type;
     private TaskNodeReferenceModel taskNode;
     private UserTaskTriggerReferenceModel userTaskTrigger;

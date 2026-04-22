@@ -11,6 +11,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 // Used by WfSpec, TaskDef, and ExternalEventDef
 
 public class WfSpecIdModel extends MetadataId<WfSpecId, WfSpec, WfSpecModel> {
+
     private String name;
     private int majorVersion;
     private int revision;

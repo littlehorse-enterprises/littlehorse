@@ -30,6 +30,7 @@ public class ArrayModel extends LHSerializable<Array> {
             this.elementType = null;
             return;
         }
+
         if (other.items != null) {
             this.items = new ArrayList<>();
             for (VariableValueModel item : other.items) {
@@ -38,6 +39,7 @@ public class ArrayModel extends LHSerializable<Array> {
         } else {
             this.items = new ArrayList<>();
         }
+
         this.elementType = other.elementType == null ? null : new TypeDefinitionModel(other.elementType);
     }
 

@@ -16,15 +16,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InternalScan extends LHSerializable<InternalScanPb> {
+
     public ScanResultTypePb resultType;
     public int limit;
     public BookmarkPb bookmark;
     public GetableClassEnum objectType;
     public String storeName;
+
     public String partitionKey;
+
     public ScanBoundaryCase type;
     public TagScanPb tagScan;
     public BoundedObjectIdScanPb boundedObjectIdScan;
+
     public List<ScanFilterModel> filters = new ArrayList<>();
 
     public Class<InternalScanPb> getProtoBaseClass() {
@@ -37,10 +41,12 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
                 .setStoreName(storeName)
                 .setObjectType(objectType)
                 .setResultType(resultType);
+
         if (bookmark != null) out.setBookmark(bookmark);
         if (partitionKey != null) {
             out.setPartitionKey(partitionKey);
         }
+
         switch (type) {
             case TAG_SCAN:
                 out.setTagScan(tagScan);
@@ -51,9 +57,11 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
             case SCANBOUNDARY_NOT_SET:
                 throw new RuntimeException("not possible");
         }
+
         for (ScanFilterModel filter : filters) {
             out.addFilters(filter.toProto());
         }
+
         return out;
     }
 
@@ -65,7 +73,9 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
         if (p.hasBookmark()) bookmark = p.getBookmark();
         objectType = p.getObjectType();
         storeName = p.getStoreName();
+
         if (p.hasPartitionKey()) partitionKey = p.getPartitionKey();
+
         type = p.getScanBoundaryCase();
         switch (type) {
             case TAG_SCAN:
@@ -77,6 +87,7 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
             case SCANBOUNDARY_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
+
         for (ScanFilter filter : p.getFiltersList()) {
             filters.add(LHSerializable.fromProto(filter, ScanFilterModel.class, context));
         }

@@ -22,6 +22,7 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
     private KeyValueStore<String, Bytes> store;
     private final MetadataCache metadataCache;
     String patternString = "(\\w+)/(\\w+)/(\\w.+)";
+
     Pattern pattern = Pattern.compile(patternString);
 
     public MetadataGlobalStoreProcessor(MetadataCache metadataCache) {

@@ -8,6 +8,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class HaltedByParentNodeHaltReasonModel extends LHSerializable<HaltedByParentNodeHaltReason>
         implements SubHaltReason {
+
     private int parentThreadRunNumber;
     private int waitingNodeRunPosition;
 

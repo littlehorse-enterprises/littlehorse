@@ -22,6 +22,7 @@ import java.util.Optional;
 
 public class TaskDefModel extends MetadataGetable<TaskDef> {
     private TaskDefIdModel id;
+
     public Date createdAt;
     public List<VariableDefModel> inputVars;
     private ReturnTypeModel returnType;
@@ -63,12 +64,15 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
                 .setReturnType(returnType.toProto());
+
         if (description != null) {
             b.setDescription(description);
         }
+
         for (VariableDefModel entry : inputVars) {
             b.addInputVars(entry.toProto());
         }
+
         return b;
     }
 
@@ -77,12 +81,15 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
         TaskDef proto = (TaskDef) p;
         id = LHSerializable.fromProto(proto.getId(), TaskDefIdModel.class, context);
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
+
         if (proto.hasDescription()) {
             description = proto.getDescription();
         }
+
         for (VariableDef entry : proto.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry, context));
         }
+
         // The `return_type` was introduced over a year ago; we don't have anyone using LittleHorse without
         // return types now. Safe to ignore / evolve it.
         returnType = LHSerializable.fromProto(proto.getReturnType(), ReturnTypeModel.class, context);

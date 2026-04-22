@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class StartMultipleThreadsNodeModel extends SubNode<StartMultipleThreadsNode> {
+
     private String threadSpecName;
     private Map<String, VariableAssignmentModel> variables;
     private VariableAssignmentModel iterable;

@@ -58,17 +58,20 @@ public class SleepNodeMaturedModel extends CoreSubCommand<SleepNodeMaturedPb> {
             log.debug("Uh oh, invalid timer event, no associated WfRun found.");
             return null;
         }
+
         WfSpecModel wfSpecModel = service.getWfSpec(wfRunModel.getWfSpecId());
         if (wfSpecModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfSpec found.");
             return null;
         }
+
         try {
             wfRunModel.processSleepNodeMatured(
                     this, executionContext.currentCommand().getTime());
         } catch (LHValidationException exn) {
             log.debug("Uh, invalid timer event: {}", exn.getMessage(), exn);
         }
+
         return Empty.getDefaultInstance();
     }
 

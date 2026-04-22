@@ -54,6 +54,7 @@ public class SearchWfSpecRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
+
         type = p.getWfSpecCriteriaCase();
         switch (type) {
             case NAME:

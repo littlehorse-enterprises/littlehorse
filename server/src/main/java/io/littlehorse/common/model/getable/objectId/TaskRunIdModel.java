@@ -16,6 +16,7 @@ import java.util.Optional;
 
 public class TaskRunIdModel extends CoreObjectId<TaskRunId, TaskRun, TaskRunModel> {
     public WfRunIdModel wfRunId;
+
     public String taskGuid;
 
     public TaskRunIdModel() {}

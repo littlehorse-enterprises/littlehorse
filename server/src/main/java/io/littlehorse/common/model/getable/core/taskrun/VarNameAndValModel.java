@@ -10,8 +10,10 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 
 public class VarNameAndValModel extends LHSerializable<VarNameAndVal> {
     String varName;
+
     VariableValueModel value;
     boolean masked;
+
     ExecutionContext context;
 
     public VarNameAndValModel() {}
@@ -34,6 +36,7 @@ public class VarNameAndValModel extends LHSerializable<VarNameAndVal> {
             out.setValue(new VariableValueModel(LHConstants.STRING_MASK).toProto());
         }
         out.setMasked(masked);
+
         return out;
     }
 

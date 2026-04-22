@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class TenantIdModel extends ClusterMetadataId<TenantId, Tenant, TenantModel> {
+
     private String id;
 
     public TenantIdModel() {}

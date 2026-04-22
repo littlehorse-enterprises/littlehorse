@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ThreadVarDefModel extends LHSerializable<ThreadVarDef> {
+
     private VariableDefModel varDef;
     private boolean required;
     private boolean searchable;
@@ -57,6 +58,7 @@ public class ThreadVarDefModel extends LHSerializable<ThreadVarDef> {
                 .setSearchable(searchable)
                 .setVarDef(varDef.toProto())
                 .setAccessLevel(accessLevel);
+
         for (JsonIndexModel jim : jsonIndexes) {
             out.addJsonIndexes(jim.toProto());
         }

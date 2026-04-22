@@ -64,6 +64,7 @@ public class SearchWorkflowEventDefRequestModel
             out.setLimit(limit);
         }
         if (prefix != null) out.setPrefix(prefix);
+
         return out;
     }
 

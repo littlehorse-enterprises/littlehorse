@@ -58,6 +58,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     private String errorMessage;
     private List<FailureModel> failures = new ArrayList<>();
     private List<Integer> failureHandlerIds = new ArrayList<>();
+
     private NodeTypeCase type;
     private ExternalEventNodeRunModel externalEventRun;
     private TaskNodeRunModel taskRun;
@@ -72,6 +73,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     private WaitForConditionNodeRunModel waitForConditionNodeRun;
     private RunChildWfNodeRunModel runChildWfNodeRun;
     private WaitForChildWfNodeRunModel waitForChildWfNodeRun;
+
     private ExecutionContext executionContext;
     // Use `NodeRunModel#getThreadRun()`, as this field is lazy-loaded.
     private ThreadRunModel threadRunDoNotUseMe;
@@ -91,15 +93,19 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public void initFrom(Message p, ExecutionContext context) {
         NodeRun proto = (NodeRun) p;
         id = LHSerializable.fromProto(proto.getId(), NodeRunIdModel.class, context);
+
         arrivalTime = LHUtil.fromProtoTs(proto.getArrivalTime());
         if (proto.hasEndTime()) {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
+
         wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, context);
         threadSpecName = proto.getThreadSpecName();
         nodeName = proto.getNodeName();
         status = proto.getStatus();
+
         if (proto.hasErrorMessage()) errorMessage = proto.getErrorMessage();
+
         type = proto.getNodeTypeCase();
         switch (type) {
             case TASK:
@@ -149,6 +155,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             case NODETYPE_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
+
         for (Failure failure : proto.getFailuresList()) {
             failures.add(FailureModel.fromProto(failure, context));
         }
@@ -204,8 +211,11 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 .setWfSpecId(wfSpecId.toProto())
                 .setThreadSpecName(threadSpecName)
                 .setNodeName(nodeName);
+
         if (endTime != null) out.setEndTime(LHUtil.fromDate(endTime));
+
         if (errorMessage != null) out.setErrorMessage(errorMessage);
+
         switch (type) {
             case TASK:
                 out.setTask(taskRun.toProto());
@@ -248,12 +258,14 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 break;
             case NODETYPE_NOT_SET:
         }
+
         for (FailureModel failure : failures) {
             out.addFailures(failure.toProto());
         }
         for (Integer id : failureHandlerIds) {
             out.addFailureHandlerIds(id);
         }
+
         return out;
     }
 
@@ -355,6 +367,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         } else {
             throw new RuntimeException("Didn\'t recognize " + subNodeRun.getClass());
         }
+
         subNodeRun.nodeRun = this;
     }
 
@@ -472,6 +485,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             errorMessage = exn.getFailure().getMessage();
             throw exn;
         }
+
         if (completed) {
             status = LHStatus.COMPLETED;
             endTime = executionContext
@@ -516,6 +530,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         if (status != LHStatus.COMPLETED) {
             throw new IllegalStateException("Cannot get output from a non-completed NodeRun");
         }
+
         return getSubNodeRun().getOutput(processorContext);
     }
 
@@ -531,6 +546,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             // If the NodeRun is already completed, failed, or halted, then we're done (:
             return true;
         }
+
         if (getSubNodeRun().maybeHalt(processorContext)) {
             status = LHStatus.HALTED;
             return true;
@@ -607,7 +623,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             throws NodeFailureException {
         NodeModel currentNode = getNode();
         ThreadRunModel thread = getThreadRun();
+
         for (EdgeModel edge : currentNode.getOutgoingEdges()) {
+
             // We can either fail when evaluating the outgoing edge or when mutating
             // the variables. We want to know when the error happens so we can adjust the
             // error message properly.
@@ -619,6 +637,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                     if (failures.isEmpty()) {
                         edge.mutateVariables(thread, this.getOutput(processorContext));
                     }
+
                     // If we get here, we have found an edge that was valid, and the variable
                     // mutations returned successfully. We return to the ThreadRunModel the
                     // WfSpec Node to which this Edge points.
@@ -633,6 +652,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 throw new NodeFailureException(failure);
             }
         }
+
         // If we get this far, it means that none of the Edges had a valid condition.
         // This means that the WfSpec was invalid. This isn't possible if the user uses
         // our SDK's.

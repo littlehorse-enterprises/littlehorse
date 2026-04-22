@@ -66,9 +66,11 @@ public class TaskClaimEventModel extends CoreSubCommand<TaskClaimEventPb> {
             log.debug("Got claimTask for non-existent taskRun {}", taskRunId);
             throw new LHApiException(Status.INVALID_ARGUMENT, "Got claimTask for nonexistent taskRun {}" + taskRunId);
         }
+
         // Needs to be done before we process the event, since processing the event
         // will delete the task schedule request.
         ScheduledTaskModel scheduledTask = executionContext.getTaskManager().markTaskAsScheduled(taskRun);
+
         // It's totally fine for the scheduledTask to be null. That happens when someone already
         // claimed that task. This happens when a server is recovering from a crash. The fact that it
         // is null prevents it from being scheduled twice.

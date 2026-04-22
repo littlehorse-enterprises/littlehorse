@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class ExternalEventDefIdModel extends MetadataId<ExternalEventDefId, ExternalEventDef, ExternalEventDefModel> {
+
     private String name;
 
     public ExternalEventDefIdModel() {}

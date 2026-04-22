@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUserTaskRunRequest> {
+
     private UserTaskRunIdModel userTaskRunId;
     private String userId;
     private Map<String, VariableValueModel> results = new HashMap<>();
@@ -43,6 +44,7 @@ public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUser
         CompleteUserTaskRunRequest p = (CompleteUserTaskRunRequest) proto;
         userId = p.getUserId();
         userTaskRunId = LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
+
         for (Map.Entry<String, VariableValue> entry : p.getResultsMap().entrySet()) {
             results.put(entry.getKey(), VariableValueModel.fromProto(entry.getValue(), context));
         }
@@ -53,6 +55,7 @@ public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUser
         if (utr == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find provided UserTaskRun");
         }
+
         utr.processTaskCompletedEvent(this);
         executionContext.getableManager().get(userTaskRunId.getWfRunId()).advance(time);
         return Empty.getDefaultInstance();

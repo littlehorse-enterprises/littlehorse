@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.UserTaskDefId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class UserTaskDefIdModel extends MetadataId<UserTaskDefId, UserTaskDef, UserTaskDefModel> {
+
     private String name;
     private int version;
 

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FormatStringModel extends LHSerializable<FormatString> {
+
     private VariableAssignmentModel format;
     private List<VariableAssignmentModel> args;
 

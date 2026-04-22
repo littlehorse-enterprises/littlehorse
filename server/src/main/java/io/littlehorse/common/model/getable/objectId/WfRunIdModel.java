@@ -12,6 +12,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 
 public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
+
     private String id;
     private WfRunIdModel parentWfRunId;
 
@@ -74,6 +75,7 @@ public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
         if (storeKey.contains("_")) {
             // then it's a composite id
             String[] splits = storeKey.split("_");
+
             this.id = splits[splits.length - 1];
             this.parentWfRunId = (WfRunIdModel)
                     ObjectIdModel.fromString(storeKey.substring(0, storeKey.lastIndexOf("_")), WfRunIdModel.class);

@@ -20,6 +20,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
+
     private TaskRunIdModel taskRunId;
     private Date time;
     private TaskStatus status;
@@ -46,6 +47,7 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
         if (task == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided taskRunId was invalid");
         }
+
         task.onTaskAttemptResultReported(this);
         return Empty.getDefaultInstance();
     }
@@ -58,10 +60,12 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
                 .setStatus(status)
                 .setAttemptNumber(attemptNumber)
                 .setTotalCheckpoints(totalCheckpoints);
+
         if (output != null) b.setOutput(output.toProto());
         if (logOutput != null) b.setLogOutput(logOutput.toProto());
         if (error != null) b.setError(error.toProto());
         if (exception != null) b.setException(exception.toProto());
+
         return b;
     }
 
@@ -73,15 +77,19 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
         this.status = p.getStatus();
         this.attemptNumber = p.getAttemptNumber();
         this.totalCheckpoints = p.getTotalCheckpoints();
+
         if (p.hasOutput()) {
             this.output = VariableValueModel.fromProto(p.getOutput(), context);
         }
+
         if (p.hasLogOutput()) {
             this.logOutput = VariableValueModel.fromProto(p.getLogOutput(), context);
         }
+
         if (p.hasError()) {
             this.error = LHSerializable.fromProto(p.getError(), LHTaskErrorModel.class, context);
         }
+
         if (p.hasException()) {
             this.exception = LHSerializable.fromProto(p.getException(), LHTaskExceptionModel.class, context);
         }

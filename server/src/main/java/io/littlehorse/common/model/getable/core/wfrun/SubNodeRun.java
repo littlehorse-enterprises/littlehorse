@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
+
     public NodeRunModel nodeRun;
 
     /**

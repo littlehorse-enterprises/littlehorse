@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class LHStatusChangedModel extends LHSerializable<LHStatusChanged> {
+
     private LHStatus previousStatus;
     private LHStatus newStatus;
 

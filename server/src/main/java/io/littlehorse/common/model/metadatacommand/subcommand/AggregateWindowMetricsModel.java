@@ -17,6 +17,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class AggregateWindowMetricsModel extends CoreSubCommand<AggregateWindowMetrics> {
+
     private PartitionMetricWindowModel metricWindow;
 
     public AggregateWindowMetricsModel() {}

@@ -34,6 +34,7 @@ import java.util.Set;
 public class RequestAuthorizer implements LHServerInterceptor {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RequestAuthorizer.class);
     private final CoreStoreProvider coreStoreProvider;
+
     private final AclVerifier aclVerifier;
     private final Context.Key<RequestExecutionContext> executionContextKey;
     private final MetadataCache metadataCache;
@@ -58,10 +59,12 @@ public class RequestAuthorizer implements LHServerInterceptor {
         PrincipalIdModel clientId = clientIdStr == null
                 ? null
                 : (PrincipalIdModel) ObjectIdModel.fromString(clientIdStr.trim(), PrincipalIdModel.class);
+
         String tenantIdStr = headers.get(TENANT_ID);
         TenantIdModel tenantId = tenantIdStr == null
                 ? null
                 : (TenantIdModel) ObjectIdModel.fromString(tenantIdStr.trim(), TenantIdModel.class);
+
         Context context = Context.current();
         try {
             RequestExecutionContext requestContext = contextFor(clientId, tenantId, call.getMethodDescriptor());
@@ -93,6 +96,7 @@ public class RequestAuthorizer implements LHServerInterceptor {
     }
 
     private static class AclVerifier {
+
         private final Map<String, AuthMetadata> methodMetadata = new HashMap<>();
         private final List<ACLAction> adminActions = List.of(ACLAction.ALL_ACTIONS);
         private final List<ACLResource> adminResources = List.of(ACLResource.ACL_ALL_RESOURCES);
@@ -129,7 +133,9 @@ public class RequestAuthorizer implements LHServerInterceptor {
         private void verify(MethodDescriptor<?, ?> serviceMethod, AuthorizationContext authContext) {
             String methodName = serviceMethod.getBareMethodName();
             AuthMetadata authMetadata = methodMetadata.get(methodName);
+
             Collection<ServerACLModel> acls = authContext.acls();
+
             Set<ACLAction> clientAllowedActions = new HashSet<>();
             Set<ACLResource> clientAllowedResources = new HashSet<>();
             for (ServerACLModel clientAcl : acls) {
@@ -146,6 +152,7 @@ public class RequestAuthorizer implements LHServerInterceptor {
         public boolean doesServiceRequireClusterScopedResources(MethodDescriptor<?, ?> serviceMethod) {
             String methodName = serviceMethod.getBareMethodName();
             AuthMetadata authMetadata = methodMetadata.get(methodName);
+
             return authMetadata.requiredResources().contains(ACLResource.ACL_TENANT)
                     || authMetadata.requiredResources().contains(ACLResource.ACL_PRINCIPAL);
         }

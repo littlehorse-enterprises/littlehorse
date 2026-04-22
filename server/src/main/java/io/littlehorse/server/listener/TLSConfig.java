@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Objects;
 
 public class TLSConfig {
+
     private final File certChain;
     private final File privateKey;
 

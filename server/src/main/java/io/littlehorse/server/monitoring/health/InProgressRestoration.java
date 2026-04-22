@@ -9,9 +9,12 @@ import org.apache.kafka.common.TopicPartition;
  * in-progress restoration (whether for an active or standby task).
  */
 public class InProgressRestoration {
+
     String topic;
     int partition;
+
     LHProcessorType processor;
+
     long totalRestored;
     long endOffset;
     long currentOffset;
@@ -23,6 +26,7 @@ public class InProgressRestoration {
         this.topic = tp.topic();
         this.partition = tp.partition();
         this.processor = ServerHealthState.fromTopic(topic, config);
+
         this.currentOffset = startOffset;
         this.endOffset = endOffset;
     }

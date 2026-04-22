@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class GetableIndex<T extends AbstractGetable<?>> {
+
     private List<Pair<String, ValueType>> attributes;
     private Optional<TagStorageType> tagStorageType;
     private Predicate<T> predicate;

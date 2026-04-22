@@ -40,14 +40,17 @@ public class MetricsCollectorRestoreListener implements StateRestoreListener {
                 storeName,
                 topicPartition.partition(),
                 (endingOffset - startingOffset));
+
         Counter counter =
                 registry.counter("kafka_stream_state_restoration_started", createTags(topicPartition, storeName));
         counter.increment();
+
         AtomicLong gauge = registry.gauge(
                 "kafka_stream_state_restoration_planned_records",
                 createTags(topicPartition, storeName),
                 new AtomicLong(0));
         gauge.set(endingOffset - startingOffset);
+
         startTimeCache.put(topicPartition, Instant.now());
     }
 
@@ -67,6 +70,7 @@ public class MetricsCollectorRestoreListener implements StateRestoreListener {
             final long batchEndOffset,
             final long numRestored) {
         log.debug("Restored batch {} for {} partition {}", numRestored, storeName, topicPartition.partition());
+
         AtomicLong gauge = registry.gauge(
                 "kafka_stream_state_restoration_restored_records",
                 createTags(topicPartition, storeName),
@@ -77,9 +81,11 @@ public class MetricsCollectorRestoreListener implements StateRestoreListener {
     @Override
     public void onRestoreEnd(final TopicPartition topicPartition, final String storeName, final long totalRestored) {
         log.debug("Restoration complete for {} partition {}", storeName, topicPartition.partition());
+
         Counter counter =
                 registry.counter("kafka_stream_state_restoration_ended", createTags(topicPartition, storeName));
         counter.increment();
+
         Timer timer = registry.timer("kafka_stream_state_restoration_latency", createTags(topicPartition, storeName));
         timer.record(Duration.between(startTimeCache.get(topicPartition), Instant.now()));
     }

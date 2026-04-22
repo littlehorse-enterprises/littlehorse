@@ -36,7 +36,9 @@ public class WfRunStoredInventoryModel extends Storeable<WfRunStoredInventory> {
     @Override
     public void initFrom(Message proto, ExecutionContext ignored) {
         WfRunStoredInventory p = (WfRunStoredInventory) proto;
+
         wfRunId = WfRunIdModel.fromProto(p.getWfRunId(), WfRunIdModel.class, ignored);
+
         for (ExternalEventId externalEventId : p.getExternalEventsList()) {
             externalEventIds.add(ExternalEventIdModel.fromProto(externalEventId, ExternalEventIdModel.class, ignored));
         }

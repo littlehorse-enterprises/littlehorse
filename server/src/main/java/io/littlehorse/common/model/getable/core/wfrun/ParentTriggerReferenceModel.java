@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class ParentTriggerReferenceModel extends LHSerializable<WfRun.ParentTriggerReference> {
+
     private NodeRunIdModel triggeringNodeRun;
     private NodeRunIdModel waitingNodeRun;
 
@@ -19,9 +20,11 @@ public class ParentTriggerReferenceModel extends LHSerializable<WfRun.ParentTrig
     public WfRun.ParentTriggerReference.Builder toProto() {
         WfRun.ParentTriggerReference.Builder out =
                 WfRun.ParentTriggerReference.newBuilder().setTriggeringNodeRun(triggeringNodeRun.toProto());
+
         if (waitingNodeRun != null) {
             out.setWaitingNodeRun(waitingNodeRun.toProto());
         }
+
         return out;
     }
 
@@ -29,6 +32,7 @@ public class ParentTriggerReferenceModel extends LHSerializable<WfRun.ParentTrig
     public void initFrom(Message proto, ExecutionContext context) {
         WfRun.ParentTriggerReference p = (WfRun.ParentTriggerReference) proto;
         triggeringNodeRun = LHSerializable.fromProto(p.getTriggeringNodeRun(), NodeRunIdModel.class, context);
+
         if (p.hasWaitingNodeRun()) {
             waitingNodeRun = LHSerializable.fromProto(p.getWaitingNodeRun(), NodeRunIdModel.class, context);
         }

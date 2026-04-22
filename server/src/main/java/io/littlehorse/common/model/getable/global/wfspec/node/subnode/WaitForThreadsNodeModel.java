@@ -35,10 +35,12 @@ import java.util.Set;
 public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WaitForThreadsNodeModel.class);
     private ExecutionContext context;
+
     private ThreadsToWaitForCase type;
     private ThreadsToWaitForModel threads;
     private VariableAssignmentModel threadList;
     private WaitForThreadsStrategy strategy;
+
     private List<FailureHandlerDefModel> perThreadFailureHandlers;
 
     public Class<WaitForThreadsNode> getProtoBaseClass() {
@@ -51,8 +53,10 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
 
     public void initFrom(Message proto, ExecutionContext context) {
         this.context = context;
+
         WaitForThreadsNode p = (WaitForThreadsNode) proto;
         type = p.getThreadsToWaitForCase();
+
         switch (type) {
             case THREADS:
                 threads = LHSerializable.fromProto(p.getThreads(), ThreadsToWaitForModel.class, context);
@@ -63,9 +67,11 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
             case THREADSTOWAITFOR_NOT_SET:
                 log.warn("should be impossible to get unset threadsToWaitFor");
         }
+
         for (FailureHandlerDef handler : p.getPerThreadFailureHandlersList()) {
             perThreadFailureHandlers.add(FailureHandlerDefModel.fromProto(handler, context));
         }
+
         this.strategy = p.getStrategy();
     }
 
@@ -81,6 +87,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
             case THREADSTOWAITFOR_NOT_SET:
                 log.warn("should be impossible to get unset threadsToWaitFor");
         }
+
         for (FailureHandlerDefModel handler : perThreadFailureHandlers) {
             out.addPerThreadFailureHandlers(handler.toProto());
         }
@@ -97,6 +104,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
             throws LHVarSubError, NodeFailureException {
         ThreadRunModel thread = nodeRun.getThreadRun();
         List<WaitForThreadModel> out = new ArrayList<>();
+
         switch (type) {
             case THREADS:
                 for (ThreadToWaitForModel ttwf : threads.getThreads()) {
@@ -109,6 +117,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
                 break;
             case THREAD_LIST:
                 VariableValueModel threadListVar = thread.assignVariable(threadList);
+
                 for (Object threadNumberObj : threadListVar.getJsonArrVal()) {
                     out.add(new WaitForThreadModel(
                             nodeRun, Integer.valueOf(threadNumberObj.toString()), currentCommandTime, context));
@@ -123,6 +132,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     @Override
     public Set<String> getNeededVariableNames() {
         Set<String> out = new HashSet<>();
+
         switch (type) {
             case THREADS:
                 for (ThreadToWaitForModel ttwf : threads.getThreads()) {
@@ -135,6 +145,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
             case THREADSTOWAITFOR_NOT_SET:
                 log.warn("Should be impossible");
         }
+
         return out;
     }
 

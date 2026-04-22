@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class ParentWfSpecReferenceModel extends LHSerializable<ParentWfSpecReference> {
+
     private String wfSpecName;
     private int wfSpecMajorVersion;
 

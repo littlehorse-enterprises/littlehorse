@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class ExponentialBackoffRetryPolicyModel extends LHSerializable<ExponentialBackoffRetryPolicy> {
+
     private int baseIntervalMs;
     private long maxDelayMs;
     private float multiplier;
@@ -21,6 +22,7 @@ public class ExponentialBackoffRetryPolicyModel extends LHSerializable<Exponenti
                 .setBaseIntervalMs(baseIntervalMs)
                 .setMaxDelayMs(maxDelayMs)
                 .setMultiplier(multiplier);
+
         return out;
     }
 
@@ -42,6 +44,7 @@ public class ExponentialBackoffRetryPolicyModel extends LHSerializable<Exponenti
         // Calculate the delay using exponential backoff with a multiplier
         double exponentialBackoff = Math.pow(multiplier, attemptNumber - 1);
         long delay = (long) (baseIntervalMs * exponentialBackoff);
+
         // Cap the delay to the maximum allowed delay
         return Math.min(delay, maxDelayMs);
     }

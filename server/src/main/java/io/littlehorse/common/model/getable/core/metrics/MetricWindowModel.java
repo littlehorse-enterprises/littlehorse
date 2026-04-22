@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class MetricWindowModel extends CoreGetable<MetricWindow> {
+
     public static final String STARTED = "started";
     public static final String RUNNING_TO_COMPLETED = "running_to_completed";
     public static final String RUNNING_TO_ERROR = "running_to_error";
@@ -32,6 +33,7 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
     public static final String RUNNING_TO_HALTED = "running_to_halted";
     public static final String HALTING_TO_HALTED = "halting_to_halted";
     public static final String HALTED_TO_RUNNING = "halted_to_running";
+
     public static final String TASKRUN_CREATED_TO_COMPLETED = "taskrun_created_to_completed";
     public static final String TASKRUN_CREATED_TO_ERROR = "taskrun_created_to_error";
     public static final String TASKRUN_CREATED_TO_EXCEPTION = "taskrun_created_to_exception";
@@ -40,6 +42,7 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
     public static final String TASKATTEMPT_RUNNING_TO_ERROR = "taskattempt_running_to_error";
     public static final String TASKATTEMPT_RUNNING_TO_SUCCESS = "taskattempt_running_to_success";
     public static final String TASKATTEMPT_RUNNING_TO_EXCEPTION = "taskattempt_running_to_exception";
+
     private MetricWindowIdModel id;
     private Map<String, CountAndTimingModel> metrics;
 
@@ -71,6 +74,7 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
         MetricWindow p = (MetricWindow) proto;
         id = LHSerializable.fromProto(p.getId(), MetricWindowIdModel.class, context);
         metrics = new HashMap<>();
+
         if (p.hasWorkflow()) {
             WfMetrics wfMetrics = p.getWorkflow();
             addMetricIfPresent(metrics, STARTED, wfMetrics.hasStarted(), wfMetrics.getStarted(), context);
@@ -100,6 +104,7 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
                     wfMetrics.hasRunningToHalted(),
                     wfMetrics.getRunningToHalted(),
                     context);
+
             addMetricIfPresent(
                     metrics,
                     HALTING_TO_HALTED,
@@ -114,6 +119,7 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
                     context);
             return;
         }
+
         if (p.hasTask()) {
             TaskMetrics taskMetrics = p.getTask();
             addMetricIfPresent(
@@ -170,6 +176,7 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
     @Override
     public MetricWindow.Builder toProto() {
         MetricWindow.Builder out = MetricWindow.newBuilder().setId(id.toProto());
+
         if (id.getMetricType() == MetricWindowType.WORKFLOW_METRIC) {
             WfMetrics.Builder wfMetrics = WfMetrics.newBuilder();
             putMetricIfPresent(wfMetrics::setStarted, STARTED);
@@ -193,6 +200,7 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
             putMetricIfPresent(taskMetrics::setTaskattemptRunningToException, TASKATTEMPT_RUNNING_TO_EXCEPTION);
             out.setTask(taskMetrics);
         }
+
         return out;
     }
 

@@ -39,6 +39,7 @@ public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelated
                 .setKey(key)
                 .setExternalEventDefId(externalEventDefId.toProto())
                 .setContent(content.toProto());
+
         return builder;
     }
 
@@ -48,6 +49,7 @@ public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelated
         this.key = proto.getKey();
         this.externalEventDefId =
                 LHSerializable.fromProto(proto.getExternalEventDefId(), ExternalEventDefIdModel.class, ignored);
+
         this.content = LHSerializable.fromProto(proto.getContent(), VariableValueModel.class, ignored);
     }
 
@@ -62,6 +64,7 @@ public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelated
         if (key.contains("/") || key.contains("~")) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "CorrelatedEvent keys cannot contain \'/\' or \'~\'");
         }
+
         ExternalEventDefModel externalEventDef = context.metadataManager().get(externalEventDefId);
         if (externalEventDef == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Could not find specified ExternalEventDef");
@@ -80,7 +83,9 @@ public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelated
                         "Invalid type of content for event: " + externalEventDef.getName() + ": " + e.getMessage());
             }
         }
+
         GetableManager manager = context.getableManager();
+
         CorrelatedEventIdModel id = new CorrelatedEventIdModel(key, externalEventDefId);
         CorrelatedEventModel oldEvent = manager.get(id);
         if (oldEvent != null) {
@@ -90,8 +95,10 @@ public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelated
         correlatedEvent.setId(id);
         correlatedEvent.setCreatedAt(context.currentCommand().getTime());
         correlatedEvent.setContent(content);
+
         manager.put(correlatedEvent);
         context.maybeCorrelateEventToWfRuns(correlatedEvent);
+
         if (externalEventDef.getCorrelatedEventConfig().getTtlSeconds() != null) {
             DeleteCorrelatedEventRequestModel deleteRequest = new DeleteCorrelatedEventRequestModel();
             deleteRequest.setId(id);
@@ -100,6 +107,7 @@ public class PutCorrelatedEventRequestModel extends CoreSubCommand<PutCorrelated
                     + (1000 * externalEventDef.getCorrelatedEventConfig().getTtlSeconds())));
             context.getTaskManager().scheduleTimer(new LHTimer(command));
         }
+
         return correlatedEvent.toProto().build();
     }
 

@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.kafka.streams.processor.TaskId;
 
 public class TaskQueueManager {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TaskQueueManager.class);
     private final ConcurrentHashMap<TenantTaskName, OneTaskQueue> taskQueues;
     private LHServer backend;
@@ -53,6 +54,7 @@ public class TaskQueueManager {
     }
 
     private record TenantTaskName(TenantIdModel tenantId, String taskDefName) {
+
         public TenantTaskName {
             Objects.requireNonNull(tenantId.getId());
         }

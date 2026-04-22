@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata>
         implements Comparable<TaskWorkerMetadataModel> {
+
     public String taskWorkerId;
     public Date latestHeartbeat;
     public Set<HostModel> hosts = new TreeSet<>();

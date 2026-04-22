@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.NodeMigration;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class NodeMigrationModel extends LHSerializable<NodeMigration> {
+
     private String newNodeName;
     private ExecutionContext context;
 

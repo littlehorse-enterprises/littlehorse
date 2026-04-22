@@ -59,6 +59,7 @@ public final class LHInternalClient {
             WaitForCommandResponse response, Class<T> responseCls) {
         try {
             ByteString bytes = response.getResult();
+
             return (T) responseCls.getMethod("parseFrom", ByteString.class).invoke(null, bytes);
         } catch (Exception exn) {
             log.error(exn.getMessage(), exn);

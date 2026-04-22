@@ -21,6 +21,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 public class UTAReassignModel extends LHSerializable<UTAReassign> {
+
     private VariableAssignmentModel userId;
     private VariableAssignmentModel userGroup;
     private ExecutionContext executionContext;
@@ -50,6 +51,7 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
             throws LHVarSubError {
         LHTaskManager taskManager = processorContext.getTaskManager();
         NodeRunModel nodeRunModel = utr.getNodeRun();
+
         // Figure out when the task should be scheduled.
         VariableValueModel delaySeconds = nodeRunModel.getThreadRun().assignVariable(trigger.delaySeconds);
         if (delaySeconds.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
@@ -62,13 +64,17 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
                     "Delay for User Task Action was not an INT, got a "
                             + delaySeconds.getTypeDefinition().getPrimitiveType());
         }
+
         Instant maturationTime = Instant.now().plus(delaySeconds.asInt().getIntVal(), ChronoUnit.SECONDS);
+
         // Create the command
         CommandModel command = new CommandModel(
                 new DeadlineReassignUserTaskModel(utr.getId(), userId, userGroup, utr.getEpoch()),
                 Date.from(maturationTime));
+
         // Schedule the task
         LHTimer timer = new LHTimer(command);
+
         taskManager.scheduleTimer(timer);
     }
 

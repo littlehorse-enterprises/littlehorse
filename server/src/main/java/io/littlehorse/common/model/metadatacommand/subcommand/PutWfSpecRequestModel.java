@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> {
+
     public String name;
     public Map<String, ThreadSpecModel> threadSpecs;
     public String entrypointThreadName;
@@ -53,10 +54,13 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         if (retentionPolicy != null) {
             out.setRetentionPolicy(retentionPolicy.toProto());
         }
+
         out.setAllowedUpdates(allowedUpdateType);
+
         for (Map.Entry<String, ThreadSpecModel> e : threadSpecs.entrySet()) {
             out.putThreadSpecs(e.getKey(), e.getValue().toProto().build());
         }
+
         if (parentWfSpec != null) out.setParentWfSpec(parentWfSpec.toProto());
         return out;
     }
@@ -73,6 +77,7 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         for (Map.Entry<String, ThreadSpec> e : p.getThreadSpecsMap().entrySet()) {
             threadSpecs.put(e.getKey(), ThreadSpecModel.fromProto(e.getValue(), context));
         }
+
         if (p.hasParentWfSpec()) {
             parentWfSpec = LHSerializable.fromProto(p.getParentWfSpec(), ParentWfSpecReferenceModel.class, context);
         }
@@ -84,28 +89,34 @@ public class PutWfSpecRequestModel extends MetadataSubCommand<PutWfSpecRequest> 
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "WfSpecName must be a valid hostname");
         }
+
         WfSpecModel spec = new WfSpecModel(executionContext);
         spec.setId(new WfSpecIdModel(name, 0, 0)); // version gets set later, don't worry
         spec.entrypointThreadName = entrypointThreadName;
         spec.threadSpecs = threadSpecs;
         spec.createdAt = new Date();
         if (parentWfSpec != null) spec.setParentWfSpec(parentWfSpec);
+
         spec.setRetentionPolicy(retentionPolicy);
         for (Map.Entry<String, ThreadSpecModel> entry : spec.threadSpecs.entrySet()) {
             ThreadSpecModel tspec = entry.getValue();
             tspec.wfSpec = spec;
             tspec.name = entry.getKey();
         }
+
         WfSpecModel oldVersion = executionContext.service().getWfSpec(name, null, null);
         Optional<WfSpecModel> optWfSpec = oldVersion == null ? Optional.empty() : Optional.of(oldVersion);
+
         try {
             spec.validateAndMaybeBumpVersion(optWfSpec, executionContext);
         } catch (InvalidWfSpecException exn) {
             throw new LHApiException(Status.INVALID_ARGUMENT, exn.getMessage());
         }
+
         if (optWfSpec.isPresent() && WfSpecUtil.equals(spec, oldVersion)) {
             return optWfSpec.get().toProto().build();
         }
+
         verifyUpdateType(allowedUpdateType, spec, optWfSpec, executionContext.metadataManager());
         metadataManager.put(spec);
         return spec.toProto().build();

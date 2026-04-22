@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class TenantModel extends ClusterMetadataGetable<Tenant> {
+
     private TenantIdModel id;
     private Date createdAt;
     private OutputTopicConfigModel outputTopicConfig;
@@ -40,9 +41,11 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
     @Override
     public Tenant.Builder toProto() {
         Tenant.Builder result = Tenant.newBuilder().setId(id.toProto()).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+
         if (outputTopicConfig != null) {
             result.setOutputTopicConfig(outputTopicConfig.toProto());
         }
+
         return result;
     }
 
@@ -51,6 +54,7 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
         Tenant tenant = (Tenant) proto;
         this.id = LHSerializable.fromProto(tenant.getId(), TenantIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(tenant.getCreatedAt());
+
         if (tenant.hasOutputTopicConfig()) {
             this.outputTopicConfig =
                     LHSerializable.fromProto(tenant.getOutputTopicConfig(), OutputTopicConfigModel.class, context);

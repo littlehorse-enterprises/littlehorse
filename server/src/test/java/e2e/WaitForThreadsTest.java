@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
             "thread-2-event"
         })
 public class WaitForThreadsTest {
+
     private WorkflowVerifier workflowVerifier;
 
     @LHWorkflow("wait-for-threads-with-exception-handler")
@@ -165,11 +166,13 @@ public class WaitForThreadsTest {
             WfRunVariable person2Approved = thread.addVariable("person-2-approved", VariableType.BOOL);
             WfRunVariable person3Approved = thread.addVariable("person-3-approved", VariableType.BOOL);
             WfRunVariable allApproved = thread.addVariable("all-approved", VariableType.BOOL);
+
             // Variables are initialized to NULL. Need to set to a real value.
             thread.mutate(allApproved, VariableMutationType.ASSIGN, false);
             thread.mutate(person1Approved, VariableMutationType.ASSIGN, false);
             thread.mutate(person2Approved, VariableMutationType.ASSIGN, false);
             thread.mutate(person3Approved, VariableMutationType.ASSIGN, false);
+
             BiFunction<WfRunVariable, String, ThreadFunc> buildChildThread = (approvalVariable, approvalName) -> {
                 return approvalThread -> {
                     WfRunVariable jsonVariable =
@@ -188,6 +191,7 @@ public class WaitForThreadsTest {
                             });
                 };
             };
+
             // Wait for all users to approve the transaction
             SpawnedThread p1Thread =
                     thread.spawnThread(buildChildThread.apply(person1Approved, "person-1"), "person-1", null);
@@ -195,10 +199,13 @@ public class WaitForThreadsTest {
                     thread.spawnThread(buildChildThread.apply(person2Approved, "person-2"), "person-2", null);
             SpawnedThread p3Thread =
                     thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
+
             NodeOutput nodeOutput = thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
+
             thread.handleException(nodeOutput, "denied-by-user", xnHandler -> {
                 xnHandler.execute("exc-handler");
             });
+
             // Tell the reminder workflow to stop
             thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
         });
@@ -212,11 +219,13 @@ public class WaitForThreadsTest {
             WfRunVariable person2Approved = thread.addVariable("person-2-approved", VariableType.BOOL);
             WfRunVariable person3Approved = thread.addVariable("person-3-approved", VariableType.BOOL);
             WfRunVariable allApproved = thread.addVariable("all-approved", VariableType.BOOL);
+
             // Variables are initialized to NULL. Need to set to a real value.
             thread.mutate(allApproved, VariableMutationType.ASSIGN, false);
             thread.mutate(person1Approved, VariableMutationType.ASSIGN, false);
             thread.mutate(person2Approved, VariableMutationType.ASSIGN, false);
             thread.mutate(person3Approved, VariableMutationType.ASSIGN, false);
+
             BiFunction<WfRunVariable, String, ThreadFunc> buildChildThread = (approvalVariable, approvalName) -> {
                 return approvalThread -> {
                     WfRunVariable jsonVariable =
@@ -235,6 +244,7 @@ public class WaitForThreadsTest {
                             });
                 };
             };
+
             // Wait for all users to approve the transaction
             SpawnedThread p1Thread =
                     thread.spawnThread(buildChildThread.apply(person1Approved, "person-1"), "person-1", null);
@@ -242,7 +252,9 @@ public class WaitForThreadsTest {
                     thread.spawnThread(buildChildThread.apply(person2Approved, "person-2"), "person-2", null);
             SpawnedThread p3Thread =
                     thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
+
             thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
+
             // Tell the reminder workflow to stop
             thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
         });
@@ -263,6 +275,7 @@ public class WaitForThreadsTest {
                     buildSpawnThread.apply("input1", "thread-1-event"), "child-1", Map.of("input1", Map.of()));
             SpawnedThread child2 = thread.spawnThread(
                     buildSpawnThread.apply("input2", "thread-2-event"), "child-2", Map.of("input2", Map.of()));
+
             thread.waitForThreads(SpawnedThreads.of(child1, child2));
         });
     }

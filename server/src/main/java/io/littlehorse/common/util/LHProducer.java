@@ -51,6 +51,7 @@ public class LHProducer implements Closeable {
     }
 
     private static class CompletableFutureCallback extends CompletableFuture<RecordMetadata> implements Callback {
+
         @Override
         public void onCompletion(RecordMetadata metadata, Exception exception) {
             if (exception != null) {

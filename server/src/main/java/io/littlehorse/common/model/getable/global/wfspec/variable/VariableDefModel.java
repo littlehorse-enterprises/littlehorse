@@ -28,6 +28,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         VariableDef p = (VariableDef) proto;
+
         // Version 0.13.2 refactored the proto by:
         // - Deprecate VariableType.type and VariableType.masked
         // - Introduce the TypeDefinition, which wraps them.
@@ -44,6 +45,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
             // This means the proto is up-to-date, so we're all good.
             this.typeDef = LHSerializable.fromProto(p.getTypeDef(), TypeDefinitionModel.class, context);
         }
+
         name = p.getName();
         if (p.hasDefaultValue()) {
             defaultValue = VariableValueModel.fromProto(p.getDefaultValue(), context);
@@ -53,6 +55,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     public VariableDef.Builder toProto() {
         VariableDef.Builder out =
                 VariableDef.newBuilder().setTypeDef(typeDef.toProto()).setName(name);
+
         if (defaultValue != null) out.setDefaultValue(defaultValue.toProto());
         return out;
     }
@@ -74,6 +77,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     public void validateValue(VariableValueModel value, ReadOnlyMetadataManager metadataManager)
             throws InvalidVariableDefException {
         if (value.isNull()) return;
+
         try {
             IngressTypeUtils.applyExpectedTypeAndValidate(Optional.of(typeDef), value, metadataManager);
             return;

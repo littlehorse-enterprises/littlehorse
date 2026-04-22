@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.UserTaskEvent.UTECompleted;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class UTECompletedModel extends LHSerializable<UTECompleted> {
+
     public UTECompletedModel() {}
 
     public Class<UTECompleted> getProtoBaseClass() {

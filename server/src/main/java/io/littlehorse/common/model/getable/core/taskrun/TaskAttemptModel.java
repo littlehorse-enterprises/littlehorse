@@ -18,6 +18,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TaskAttemptModel.class);
     private VariableValueModel output;
     private VariableValueModel logOutput;
+
     private Date scheduleTime;
     private Date startTime;
     private Date endTime;
@@ -27,6 +28,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     private LHTaskExceptionModel exception;
     private LHTaskErrorModel error;
     private boolean maskedValue;
+
     // Transient: not serialized to proto. Set when the attempt is created (enters PENDING state).
     // Used for pending_to_scheduled latency metrics. May be null if loaded from store.
     private Date pendingTime;
@@ -77,6 +79,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     @Override
     public TaskAttempt.Builder toProto() {
         TaskAttempt.Builder out = TaskAttempt.newBuilder();
+
         if (taskWorkerId != null) {
             out.setTaskWorkerId(taskWorkerId);
         }
@@ -104,8 +107,10 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
         if (exception != null) {
             out.setException(exception.toProto());
         }
+
         out.setStatus(status);
         out.setMaskedValue(maskedValue);
+
         return out;
     }
 

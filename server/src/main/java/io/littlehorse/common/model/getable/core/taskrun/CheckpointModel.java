@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class CheckpointModel extends CoreGetable<Checkpoint> implements CoreOutputTopicGetable<Checkpoint> {
+
     private CheckpointIdModel id;
     private VariableValueModel value;
     private String logs;
@@ -40,6 +41,7 @@ public class CheckpointModel extends CoreGetable<Checkpoint> implements CoreOutp
         if (logs != null) {
             out.setLogs(logs);
         }
+
         return out;
     }
 

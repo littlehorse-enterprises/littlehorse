@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.errors.RecordTooLargeException;
+
 // This class will implement ProcessingException handler on Kafka Streams 3.9
 // See KIP-1033
 

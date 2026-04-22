@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class UserTaskFieldModel extends LHSerializable<UserTaskField> {
+
     private String name;
     private VariableType type;
     private String description;
@@ -24,6 +25,7 @@ public class UserTaskFieldModel extends LHSerializable<UserTaskField> {
         type = p.getType();
         displayName = p.getDisplayName();
         required = p.getRequired();
+
         if (p.hasDescription()) description = p.getDescription();
     }
 
@@ -33,6 +35,7 @@ public class UserTaskFieldModel extends LHSerializable<UserTaskField> {
                 .setType(type)
                 .setRequired(required)
                 .setDisplayName(displayName);
+
         if (description != null) out.setDescription(description);
         return out;
     }

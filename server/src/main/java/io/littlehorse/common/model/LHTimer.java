@@ -17,6 +17,7 @@ import io.littlehorse.server.streams.topology.core.Forwardable;
 import java.util.Date;
 
 public class LHTimer extends Storeable<LHTimerPb> implements Forwardable {
+
     public Date maturationTime;
     public String topic;
     public String partitionKey;
@@ -56,6 +57,7 @@ public class LHTimer extends Storeable<LHTimerPb> implements Forwardable {
         partitionKey = p.getPartitionKey();
         payload = p.getPayload().toByteArray();
         isRepartition = p.getIsRepartition();
+
         if (p.hasPrincipalId()) {
             principalId = LHSerializable.fromProto(p.getPrincipalId(), PrincipalIdModel.class, context);
         } else {
@@ -63,12 +65,14 @@ public class LHTimer extends Storeable<LHTimerPb> implements Forwardable {
             // internal system" which is DIFFERENT FROM the `anonymous` principal
             principalId = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
         }
+
         if (p.hasTenantId()) {
             tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
         } else {
             // TODO: not all timers will belong to a tenant. This logic should change to
             tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
         }
+
         if (p.hasStoreKey()) {
             this.storeKeyInternal = p.getStoreKey();
         } else {

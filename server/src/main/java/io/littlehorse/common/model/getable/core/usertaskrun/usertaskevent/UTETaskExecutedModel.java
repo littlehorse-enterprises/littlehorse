@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.UserTaskEvent.UTETaskExecuted;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class UTETaskExecutedModel extends LHSerializable<UTETaskExecuted> {
+
     private TaskRunIdModel taskRunId;
 
     public UTETaskExecutedModel() {}

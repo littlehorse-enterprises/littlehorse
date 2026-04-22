@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLev
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class OutputTopicConfigModel extends LHSerializable<OutputTopicConfig> {
+
     private OutputTopicRecordingLevel defaultRecordingLevel;
 
     @Override
@@ -18,6 +19,7 @@ public class OutputTopicConfigModel extends LHSerializable<OutputTopicConfig> {
     public OutputTopicConfig.Builder toProto() {
         OutputTopicConfig.Builder result =
                 OutputTopicConfig.newBuilder().setDefaultRecordingLevel(defaultRecordingLevel);
+
         return result;
     }
 

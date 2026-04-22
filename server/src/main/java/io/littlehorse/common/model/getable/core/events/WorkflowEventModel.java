@@ -22,6 +22,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class WorkflowEventModel extends CoreGetable<WorkflowEvent> implements CoreOutputTopicGetable<WorkflowEvent> {
+
     private WorkflowEventIdModel id;
     private VariableValueModel content;
     private Date createdAt;

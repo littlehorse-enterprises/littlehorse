@@ -15,6 +15,7 @@ import java.io.IOException;
 // https://www.cloudflare.com/learning/access-management/what-is-mutual-tls/
 
 public class ServerListenerConfig {
+
     private String name;
     private int port;
     private ListenerProtocol protocol;

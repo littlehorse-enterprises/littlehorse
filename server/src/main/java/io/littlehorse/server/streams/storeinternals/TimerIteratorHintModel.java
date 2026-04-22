@@ -10,6 +10,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class TimerIteratorHintModel extends Storeable<TimerIteratorHint> {
+
     /**
      * All `Timer`'s for every Tenant go in the same bucket.
      */

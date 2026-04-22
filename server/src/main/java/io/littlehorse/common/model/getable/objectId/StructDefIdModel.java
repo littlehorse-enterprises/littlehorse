@@ -24,6 +24,7 @@ public class StructDefIdModel extends MetadataId<StructDefId, StructDef, StructD
     @Override
     public StructDefId.Builder toProto() {
         StructDefId.Builder out = StructDefId.newBuilder().setName(name).setVersion(version);
+
         return out;
     }
 

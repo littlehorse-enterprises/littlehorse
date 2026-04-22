@@ -10,6 +10,7 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class TaskNodeReferenceModel extends LHSerializable<TaskNodeReference> implements TaskRunSubSource {
+
     private NodeRunIdModel nodeRunId;
     private ExecutionContext context;
     private CoreProcessorContext processorContext;
@@ -28,6 +29,7 @@ public class TaskNodeReferenceModel extends LHSerializable<TaskNodeReference> im
     @Override
     public TaskNodeReference.Builder toProto() {
         TaskNodeReference.Builder out = TaskNodeReference.newBuilder().setNodeRunId(nodeRunId.toProto());
+
         return out;
     }
 

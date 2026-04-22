@@ -26,6 +26,7 @@ import org.apache.kafka.streams.state.Stores;
 import org.mockito.Mockito;
 
 public class TestCoreProcessorContext extends CoreProcessorContext {
+
     private final MetadataCache metadataCache;
     private final LHServerConfig lhConfig;
     private final TaskQueueManager globalTaskQueueManager;
@@ -62,6 +63,7 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
         this.server = server;
         this.partitionMetricsMemoryStore = partitionMetricsMemoryStore;
+
         this.coreStore = Mockito.spy(TenantScopedStore.newInstance(
                 processorContext.getStateStore(ServerTopology.CORE_STORE), tenantId, this));
         this.tenantMetadataStore = Mockito.spy(TenantScopedStore.newInstance(

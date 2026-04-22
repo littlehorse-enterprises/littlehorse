@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.topology.core;
 
 public class CommandException extends RuntimeException {
+
     private final boolean userError;
     private final boolean notifyClientOnError;
 

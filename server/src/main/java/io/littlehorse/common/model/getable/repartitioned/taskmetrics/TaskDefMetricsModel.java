@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
+
     public Date windowStart;
     public MetricsWindowLength type;
     public TaskDefIdModel taskDefId;
@@ -55,6 +56,7 @@ public class TaskDefMetricsModel extends RepartitionedGetable<TaskDefMetrics> {
                 .setStartToCompleteAvg(startToCompleteAvg)
                 .setStartToCompleteMax(startToCompleteMax)
                 .setTotalScheduled(totalScheduled);
+
         return out;
     }
 

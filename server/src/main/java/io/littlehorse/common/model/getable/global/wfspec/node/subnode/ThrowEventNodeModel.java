@@ -25,6 +25,7 @@ import java.util.Set;
 public class ThrowEventNodeModel extends SubNode<ThrowEventNode> {
     private WorkflowEventDefIdModel workflowEventDefId;
     private VariableAssignmentModel content;
+
     private ExecutionContext context;
 
     @Override

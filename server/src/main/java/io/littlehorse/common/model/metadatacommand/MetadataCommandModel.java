@@ -30,6 +30,7 @@ import java.util.Date;
 public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MetadataCommandModel.class);
     private Date time;
+
     private MetadataCommandCase type;
     private PutWfSpecRequestModel putWfSpecRequest;
     private PutTaskDefRequestModel putTaskDefRequest;
@@ -67,9 +68,11 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     public MetadataCommand.Builder toProto() {
         MetadataCommand.Builder out = MetadataCommand.newBuilder();
         out.setTime(LHUtil.fromDate(time));
+
         if (commandId != null) {
             out.setCommandId(commandId);
         }
+
         switch (type) {
             case PUT_WF_SPEC:
                 out.setPutWfSpec(putWfSpecRequest.toProto());
@@ -126,9 +129,11 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     public void initFrom(Message proto, ExecutionContext context) {
         MetadataCommand p = (MetadataCommand) proto;
         time = LHUtil.fromProtoTs(p.getTime());
+
         if (p.hasCommandId()) {
             commandId = p.getCommandId();
         }
+
         type = p.getMetadataCommandCase();
         switch (type) {
             case PUT_WF_SPEC:

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class WorkflowEventDefModel extends MetadataGetable<WorkflowEventDef> {
+
     private WorkflowEventDefIdModel id;
     private Date createdAt;
     private ReturnTypeModel contentType;

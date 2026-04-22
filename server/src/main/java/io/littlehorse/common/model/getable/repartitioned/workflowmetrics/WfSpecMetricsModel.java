@@ -18,9 +18,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
+
     public Date windowStart;
     public MetricsWindowLength type;
     private WfSpecIdModel wfSpecId;
+
     public long totalCompleted;
     public long totalErrored;
     public long totalStarted;
@@ -50,6 +52,7 @@ public class WfSpecMetricsModel extends RepartitionedGetable<WfSpecMetrics> {
                 .setTotalStarted(totalStarted)
                 .setStartToCompleteAvg(startToCompleteAvg)
                 .setStartToCompleteMax(startToCompleteMax);
+
         return out;
     }
 

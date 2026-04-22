@@ -10,12 +10,14 @@ import java.util.concurrent.locks.ReentrantLock;
 public class CommandWaiter {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CommandWaiter.class);
     private String commandId;
+
     private WaitForCommandResponse response;
     private Throwable caughtException;
     private Lock lock;
     private Date arrivalTime;
     private CompletableFuture<WaitForCommandResponse> completableFuture;
     private final int commandPartition;
+
     private AtomicBoolean alreadyCompleted;
 
     public CommandWaiter(String commandId, int commandPartition) {
@@ -62,6 +64,7 @@ public class CommandWaiter {
     private boolean maybeMatch() {
         if (completableFuture == null) return false;
         if (caughtException == null && response == null) return false;
+
         if (caughtException != null) {
             log.debug("Waiter for command {} is aborting client request due to command process failure", commandId);
             completableFuture.completeExceptionally(caughtException);

@@ -33,6 +33,7 @@ public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelati
                 .setExternalEventDefId(externalEventDefId.toProto())
                 .setWaitingNodeRun(waitingNodeRun.toProto())
                 .setAction(action);
+
         return out;
     }
 
@@ -50,6 +51,7 @@ public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelati
     public Empty process(CoreProcessorContext context, LHServerConfig config) {
         CorrelationMarkerManager manager = context.getCorrelationMarkerManager();
         EventCorrelationMarkerModel marker = manager.getOrCreateMarker(correlationKey, externalEventDefId);
+
         switch (action) {
             case CORRELATE:
                 marker.addCorrelation(waitingNodeRun);
@@ -63,6 +65,7 @@ public class UpdateCorrelationMarkerModel extends CoreSubCommand<UpdateCorrelati
         manager.saveCorrelationMarker(marker);
         log.trace("Saved correleation marker {}", marker);
         context.maybeCorrelateEventToWfRuns(marker);
+
         return Empty.getDefaultInstance();
     }
 

@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class ExitNodeModel extends SubNode<ExitNode> {
+
     private ResultCase resultCase;
     private FailureDefModel failureDef;
     private VariableAssignmentModel returnContent;
@@ -105,6 +106,7 @@ public class ExitNodeModel extends SubNode<ExitNode> {
         if (returnContent == null) return Optional.of(new ReturnTypeModel());
         Optional<TypeDefinitionModel> typeDefOption = returnContent.resolveType(
                 manager, node.getThreadSpec().getWfSpec(), node.getThreadSpec().getName());
+
         return Optional.of(new ReturnTypeModel(typeDefOption.get()));
     }
 

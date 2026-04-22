@@ -58,6 +58,7 @@ public class SearchTaskDefRequestModel
             out.setLimit(limit);
         }
         if (prefix != null) out.setPrefix(prefix);
+
         return out;
     }
 

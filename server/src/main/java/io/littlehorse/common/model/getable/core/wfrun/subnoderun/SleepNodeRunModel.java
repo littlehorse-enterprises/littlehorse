@@ -21,8 +21,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
+
     private Date maturationTime;
     private boolean matured;
+
     // Only contains value in Processor execution context.
     private CoreProcessorContext processorContext;
 
@@ -66,12 +68,14 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
         if (sleepNode == null) {
             throw new RuntimeException("not possible to have non-sleep-node here.");
         }
+
         try {
             maturationTime = sleepNode.getMaturationTime(nodeRun.getThreadRun());
             Objects.requireNonNull(maturationTime, "Maturation resolved to null.");
             SleepNodeMaturedModel snm = new SleepNodeMaturedModel(nodeRun.getId());
             CommandModel command = new CommandModel(snm, maturationTime);
             processorContext.getTaskManager().scheduleTimer(new LHTimer(command));
+
         } catch (LHVarSubError exn) {
             FailureModel failure = new FailureModel(
                     "Failed calculating maturation for timer: " + exn.getMessage(), LHConstants.VAR_SUB_ERROR);
@@ -97,10 +101,12 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
         if (matured) {
             return;
         }
+
         SleepNodeModel sleepNode = getNode().sleepNode;
         if (sleepNode == null || sleepNode.type == SleepLengthCase.RAW_SECONDS) {
             return;
         }
+
         try {
             Date newMaturationTime = sleepNode.getMaturationTime(nodeRun.getThreadRun());
             Objects.requireNonNull(newMaturationTime, "Maturation resolved to null.");

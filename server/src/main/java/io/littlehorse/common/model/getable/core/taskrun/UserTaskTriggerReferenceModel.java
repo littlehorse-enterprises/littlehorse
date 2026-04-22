@@ -11,8 +11,10 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTriggerReference>
         implements TaskRunSubSource {
+
     private NodeRunIdModel nodeRunId;
     private int userTaskEventNumber;
+
     private String userId;
     private String userGroup;
 
@@ -22,6 +24,7 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
         nodeRunId = utr.getNodeRunId();
         // Trust in the Force
         userTaskEventNumber = utr.getEvents().size();
+
         this.userId = utr.getUserId();
         this.userGroup = utr.getUserGroup();
     }
@@ -36,12 +39,15 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
         UserTaskTriggerReference.Builder out = UserTaskTriggerReference.newBuilder()
                 .setNodeRunId(nodeRunId.toProto())
                 .setUserTaskEventNumber(userTaskEventNumber);
+
         if (userId != null) {
             out.setUserId(this.userId);
         }
+
         if (userGroup != null) {
             out.setUserGroup(this.userGroup);
         }
+
         return out;
     }
 
@@ -50,9 +56,11 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
         UserTaskTriggerReference p = (UserTaskTriggerReference) proto;
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
         userTaskEventNumber = p.getUserTaskEventNumber();
+
         if (p.hasUserId()) {
             userId = p.getUserId();
         }
+
         if (p.hasUserGroup()) {
             userGroup = p.getUserGroup();
         }

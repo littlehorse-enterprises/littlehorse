@@ -16,7 +16,9 @@ public class InlineStructModel extends LHSerializable<InlineStruct> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         InlineStruct p = (InlineStruct) proto;
+
         fields = new HashMap<>();
+
         for (Entry<String, StructField> entry : p.getFieldsMap().entrySet()) {
             fields.put(entry.getKey(), StructFieldModel.fromProto(entry.getValue(), StructFieldModel.class, context));
         }
@@ -25,9 +27,11 @@ public class InlineStructModel extends LHSerializable<InlineStruct> {
     @Override
     public InlineStruct.Builder toProto() {
         InlineStruct.Builder out = InlineStruct.newBuilder();
+
         for (Entry<String, StructFieldModel> entry : fields.entrySet()) {
             out.putFields(entry.getKey(), entry.getValue().toProto().build());
         }
+
         return out;
     }
 

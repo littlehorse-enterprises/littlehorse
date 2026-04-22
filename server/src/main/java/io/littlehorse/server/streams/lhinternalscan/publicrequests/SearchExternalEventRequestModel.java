@@ -57,22 +57,32 @@ public class SearchExternalEventRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
+
         if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
+
         externalEventDefId =
                 ExternalEventDefIdModel.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
+
         if (p.hasIsClaimed()) isClaimed = p.getIsClaimed();
+
         this.context = context;
     }
 
     public SearchExternalEventRequest.Builder toProto() {
         SearchExternalEventRequest.Builder builder = SearchExternalEventRequest.newBuilder();
+
         if (bookmark != null) builder.setBookmark(bookmark.toByteString());
+
         if (limit != null) builder.setLimit(limit);
+
         if (earliestStart != null) builder.setEarliestStart(LHUtil.fromDate(earliestStart));
         if (latestStart != null) builder.setLatestStart(LHUtil.fromDate(latestStart));
+
         builder.setExternalEventDefId(externalEventDefId.toProto());
+
         if (isClaimed != null) builder.setIsClaimed(isClaimed);
+
         return builder;
     }
 
@@ -81,6 +91,7 @@ public class SearchExternalEventRequestModel
             return List.of(
                     new Attribute("extEvtDefName", externalEventDefId.toString()),
                     new Attribute("isClaimed", isClaimed.toString()));
+
         return List.of(new Attribute("extEvtDefName", externalEventDefId.toString()));
     }
 
@@ -89,11 +100,13 @@ public class SearchExternalEventRequestModel
         if (externalEventDefId.getName().isBlank()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument: ExternalEventDefId.");
         }
+
         if (context.service().getExternalEventDef(externalEventDefId.getName()) == null) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
                     "ExternalEventDef \"%s\" does not exist.".formatted(externalEventDefId.getName()));
         }
+
         return TagStorageType.LOCAL;
     }
 

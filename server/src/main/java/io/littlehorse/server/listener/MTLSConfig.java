@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Objects;
 
 public class MTLSConfig extends TLSConfig {
+
     private final File caCertificate;
 
     public MTLSConfig(File caCertificate, File certChain, File privateKey) {

@@ -20,6 +20,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class ExternalEventModel extends CoreGetable<ExternalEvent> implements CoreOutputTopicGetable<ExternalEvent> {
+
     private ExternalEventIdModel id;
     private Date createdAt;
     private VariableValueModel content;
@@ -72,6 +73,7 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> implements Co
         }
         content = VariableValueModel.fromProto(p.getContent(), context);
         claimed = p.getClaimed();
+
         if (p.hasThreadRunNumber()) {
             threadRunNumber = p.getThreadRunNumber();
         }
@@ -86,12 +88,14 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> implements Co
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
                 .setContent(content.toProto())
                 .setClaimed(claimed);
+
         if (threadRunNumber != null) {
             out.setThreadRunNumber(threadRunNumber);
         }
         if (nodeRunPosition != null) {
             out.setNodeRunPosition(nodeRunPosition);
         }
+
         return out;
     }
 

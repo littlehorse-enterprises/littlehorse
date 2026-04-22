@@ -20,7 +20,9 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
+
     private Timestamp timestamp;
+
     private PayloadCase payloadCase;
     private WfRunModel wfRun;
     private ExternalEventModel externalEvent;
@@ -48,6 +50,7 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
     @Override
     public OutputTopicRecord.Builder toProto() {
         OutputTopicRecord.Builder out = OutputTopicRecord.newBuilder().setTimestamp(timestamp);
+
         switch (payloadCase) {
             case WF_RUN:
                 out.setWfRun(wfRun.toProto());
@@ -75,13 +78,16 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
                 break;
             case PAYLOAD_NOT_SET:
         }
+
         return out;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext ignored) {
         OutputTopicRecord p = (OutputTopicRecord) proto;
+
         timestamp = p.getTimestamp();
+
         payloadCase = p.getPayloadCase();
         switch (payloadCase) {
             case WF_RUN:
@@ -143,6 +149,7 @@ public class OutputTopicRecordModel extends LHSerializable<OutputTopicRecord> {
         if (thing == null) {
             throw new IllegalArgumentException();
         }
+
         if (WfRunModel.class.isAssignableFrom(thing.getClass())) {
             this.payloadCase = PayloadCase.WF_RUN;
             this.wfRun = (WfRunModel) thing;

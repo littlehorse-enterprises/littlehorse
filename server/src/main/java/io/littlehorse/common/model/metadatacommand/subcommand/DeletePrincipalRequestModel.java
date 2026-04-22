@@ -45,13 +45,18 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
                     "Deleting the anonymous principal is not allowed. However, "
                             + "you can remove its permissions via the PutPrincipal request.");
         }
+
         if (id.equals(context.authorization().principalId())) {
             throw new LHApiException(Status.PERMISSION_DENIED, "Cannot delete your own principal");
         }
+
         PrincipalModel caller =
                 context.service().getPrincipal(context.authorization().principalId());
+
         ensureThatCallerCanEditPrincipalsInRelevantTenants(context, caller);
+
         ensureThatThereIsStillAnAdminPrincipal(context, caller);
+
         log.trace("deleting principal {}", id);
         context.metadataManager().delete(id);
         return Empty.getDefaultInstance();
@@ -62,6 +67,7 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
             // Since the caller is admin, and we do not delete the Caller, we are fine.
             return;
         }
+
         PrincipalModel toDelete = ctx.service().getPrincipal(id);
         if (toDelete == null || !toDelete.isAdmin()) {
             // We're not removing an admin principal, so we're good.
@@ -69,6 +75,7 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
             // Also, note that the LH API treats a delete on a nonexistent resource as "OK"
             return;
         }
+
         Collection<PrincipalIdModel> adminPrincipals = ctx.service().adminPrincipalIds();
         if (adminPrincipals.size() == 1) {
             // Then we know that we are deleting the last admin Principal.

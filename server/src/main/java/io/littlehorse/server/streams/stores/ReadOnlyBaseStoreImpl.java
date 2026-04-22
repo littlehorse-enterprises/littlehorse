@@ -32,6 +32,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ReadOnlyBaseStoreImpl.class);
     protected final TenantIdModel tenantId;
+
     protected final ExecutionContext executionContext;
     private final ReadOnlyKeyValueStore<String, Bytes> nativeStore;
     protected MetadataCache metadataCache;
@@ -40,6 +41,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
             ReadOnlyKeyValueStore<String, Bytes> nativeStore,
             TenantIdModel tenantId,
             ExecutionContext executionContext) {
+
         if (nativeStore == null) {
             throw new NullPointerException();
         }
@@ -55,6 +57,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     @Override
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
         String fullKey = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
+
         if (metadataCache != null) {
             return getMetadataObject(fullKey, cls);
         }
@@ -62,6 +65,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
         if (stored != null) {
             return LHSerializable.fromProto(stored, cls, executionContext);
         }
+
         String legacyKey = LHUtil.toLegacyFormat(fullKey);
         if (legacyKey != null) {
             stored = getFromNativeStore(legacyKey, cls);
@@ -69,6 +73,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
                 return LHSerializable.fromProto(stored, cls, executionContext);
             }
         }
+
         return null;
     }
 
@@ -102,7 +107,9 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     private <U extends Message, T extends Storeable<U>> GeneratedMessage getFromNativeStore(
             String keyToLookFor, Class<T> cls) {
         Bytes raw = nativeStore.get(keyToLookFor);
+
         if (raw == null) return null;
+
         try {
             return LHSerializable.protoFromBytes(raw.get(), cls);
         } catch (LHSerdeException exn) {
@@ -118,6 +125,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     @Override
     public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(String key, Class<T> cls) {
         String actualPrefix = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, key));
+
         return new LHKeyValueIterator<>(
                 nativeStore.prefixScan(actualPrefix, Serdes.String().serializer()), cls, executionContext);
     }
@@ -137,6 +145,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
         // character.
         String start = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, prefix));
         String end = start + '~';
+
         return new LHKeyValueIterator<>(nativeStore.reverseRange(start, end), cls, executionContext);
     }
 

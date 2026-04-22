@@ -11,14 +11,17 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import org.apache.kafka.streams.processor.TaskId;
+
 // One instance of this class is responsible for coordinating the grpc backend for
 // one specific TaskDef on one LH Server host.
 
 public class OneTaskQueue {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OneTaskQueue.class);
     private final String taskDefName;
+
     private final TaskQueueManager parent;
     private final TenantIdModel tenantId;
+
     private final Lock lock = new ReentrantLock();
     private final Queue<PollTaskRequestObserver> hungryClients = new LinkedList<>();
     private final String instanceName;
@@ -86,12 +89,14 @@ public class OneTaskQueue {
                 instanceName,
                 scheduledTask.getWfRunId(),
                 hungryClients.isEmpty());
+
         PollTaskRequestObserver luckyClient = synchronizedBlock(() -> {
             if (!hungryClients.isEmpty()) {
                 if (!pendingTasks.isEmpty()) {
                     throw new RuntimeException("Can\'t have pending tasks and hungry clients");
                 }
                 return hungryClients.poll();
+
             } else {
                 pendingTasks.add(new QueueItem(taskId, scheduledTask));
                 return null;
@@ -110,6 +115,7 @@ public class OneTaskQueue {
      *                        client who made the PollTaskRequest.
      */
     public void onPollRequest(PollTaskRequestObserver requestObserver, RequestExecutionContext requestContext) {
+
         QueueItem nextItem = synchronizedBlock(() -> {
             if (pendingTasks.isEmpty()) {
                 hungryClients.add(requestObserver);

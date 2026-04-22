@@ -20,11 +20,13 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class InsecureAuthenticatorTest {
+
     private InsecureAuthenticator authenticator = new InsecureAuthenticator();
     private TrackableInterceptor trackableInterceptor = new TrackableInterceptor();
     private final ServerServiceDefinition testServiceDefinition = buildTestServiceDefinition(
             ServerServiceDefinition.builder(LittleHorseGrpc.getServiceDescriptor()),
             LittleHorseGrpc.getServiceDescriptor().getMethods());
+
     private ServerCall<Object, Object> mockCall = mock();
     private final Metadata requestHeaders = new Metadata();
 

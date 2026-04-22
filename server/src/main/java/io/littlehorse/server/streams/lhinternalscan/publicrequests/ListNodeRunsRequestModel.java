@@ -31,6 +31,7 @@ public class ListNodeRunsRequestModel
 
     public ListNodeRunsRequest.Builder toProto() {
         ListNodeRunsRequest.Builder out = ListNodeRunsRequest.newBuilder().setWfRunId(wfRunId.toProto());
+
         if (bookmark != null) out.setBookmark(bookmark.toByteString());
         if (limit != null) out.setLimit(limit);
         if (threadRunNumber != null) out.setThreadRunNumber(threadRunNumber);

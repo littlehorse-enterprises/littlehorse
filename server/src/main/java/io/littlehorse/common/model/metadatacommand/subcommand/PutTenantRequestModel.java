@@ -21,6 +21,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 
 public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> implements ClusterLevelCommand {
+
     private String id;
     private OutputTopicConfigModel outputTopicConfig;
 
@@ -43,9 +44,11 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     @Override
     public PutTenantRequest.Builder toProto() {
         PutTenantRequest.Builder result = PutTenantRequest.newBuilder().setId(id);
+
         if (outputTopicConfig != null) {
             result.setOutputTopicConfig(this.outputTopicConfig.toProto());
         }
+
         return result;
     }
 
@@ -57,6 +60,7 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     @Override
     public Tenant process(MetadataProcessorContext context) {
         MetadataManager metadataManager = context.metadataManager();
+
         PrincipalModel caller =
                 context.service().getPrincipal(context.authorization().principalId());
         if (!caller.canCreateTenants()) {
@@ -66,6 +70,7 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
                             "Missing permission %s over resource %s.",
                             ACLAction.WRITE_METADATA, ACLResource.ACL_TENANT));
         }
+
         TenantModel tenant = metadataManager.get(new TenantIdModel(id));
         if (tenant == null) {
             if (this.id.isEmpty() || !LHUtil.isValidLHName(this.id) || Character.isDigit(this.id.charAt(0))) {

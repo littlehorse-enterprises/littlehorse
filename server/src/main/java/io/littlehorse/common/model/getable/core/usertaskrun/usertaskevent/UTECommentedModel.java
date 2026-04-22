@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommented;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class UTECommentedModel extends LHSerializable<UTECommented> {
+
     private Integer userCommentId;
     private String userId;
     private String comment;

@@ -28,6 +28,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.mockito.Mockito;
 
 public class TestRequestExecutionContext extends RequestExecutionContext {
+
     private final String clientId;
     private final String tenantId;
     private final KeyValueStore<String, Bytes> globalMetadataNativeStore;
@@ -75,12 +76,14 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
                 TenantScopedStore.newInstance(coreNativeStore, new TenantIdModel(tenantId), new BackgroundContext());
         MetadataManager initManager = new MetadataManager(clusterInitStore, coreInitStore, metadataCache);
         initManager.put(new TenantModel(new TenantIdModel(tenantId)));
+
         initManager.put(TenantModel.fromProto(
                 Tenant.newBuilder()
                         .setId(TenantId.newBuilder().setId(LHConstants.DEFAULT_TENANT))
                         .build(),
                 TenantModel.class,
                 null));
+
         initManager.put(PrincipalModel.fromProto(
                 Principal.newBuilder()
                         .setId(PrincipalId.newBuilder().setId(LHConstants.ANONYMOUS_PRINCIPAL))
@@ -88,6 +91,7 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
                         .build(),
                 PrincipalModel.class,
                 null));
+
         return new TestRequestExecutionContext(
                 new PrincipalIdModel(clientId),
                 new TenantIdModel(tenantId),

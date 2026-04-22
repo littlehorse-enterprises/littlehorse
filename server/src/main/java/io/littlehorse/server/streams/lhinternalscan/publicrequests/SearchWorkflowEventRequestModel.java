@@ -56,20 +56,28 @@ public class SearchWorkflowEventRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
+
         if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
+
         workflowEventDefId =
                 WorkflowEventDefIdModel.fromProto(p.getWorkflowEventDefId(), WorkflowEventDefIdModel.class, context);
+
         this.context = context;
     }
 
     public SearchWorkflowEventRequest.Builder toProto() {
         SearchWorkflowEventRequest.Builder builder = SearchWorkflowEventRequest.newBuilder();
+
         if (bookmark != null) builder.setBookmark(bookmark.toByteString());
+
         if (limit != null) builder.setLimit(limit);
+
         if (earliestStart != null) builder.setEarliestStart(LHUtil.fromDate(earliestStart));
         if (latestStart != null) builder.setLatestStart(LHUtil.fromDate(latestStart));
+
         builder.setWorkflowEventDefId(workflowEventDefId.toProto());
+
         return builder;
     }
 
@@ -82,11 +90,13 @@ public class SearchWorkflowEventRequestModel
         if (workflowEventDefId.getName().isBlank()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument: WorkflowEventDefId.");
         }
+
         if (context.service().getWorkflowEventDef(workflowEventDefId.getName()) == null) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
                     "WorkflowEventDef \"%s\" does not exist.".formatted(workflowEventDefId.getName()));
         }
+
         return TagStorageType.LOCAL;
     }
 

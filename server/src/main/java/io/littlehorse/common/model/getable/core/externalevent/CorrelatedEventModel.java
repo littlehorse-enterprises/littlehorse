@@ -40,9 +40,11 @@ public class CorrelatedEventModel extends CoreGetable<CorrelatedEvent>
                 .setCreatedAt(LHLibUtil.fromDate(createdAt))
                 .setContent(content.toProto())
                 .setId(id.toProto());
+
         for (ExternalEventIdModel extEvtId : externalEvents) {
             out.addExternalEvents(extEvtId.toProto());
         }
+
         return out;
     }
 
@@ -52,6 +54,7 @@ public class CorrelatedEventModel extends CoreGetable<CorrelatedEvent>
         this.id = LHSerializable.fromProto(p.getId(), CorrelatedEventIdModel.class, ignored);
         this.content = LHSerializable.fromProto(p.getContent(), VariableValueModel.class, ignored);
         this.createdAt = LHLibUtil.fromProtoTs(p.getCreatedAt());
+
         this.externalEvents = new ArrayList<>();
         for (ExternalEventId extEvtId : p.getExternalEventsList()) {
             this.externalEvents.add(LHSerializable.fromProto(extEvtId, ExternalEventIdModel.class, ignored));

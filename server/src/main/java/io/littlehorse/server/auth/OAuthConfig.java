@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Objects;
 
 public class OAuthConfig {
+
     private final String clientId;
     private final String clientSecret;
     private final URI introspectionEndpointURI;

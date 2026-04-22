@@ -47,16 +47,20 @@ public class ReadOnlyMetadataManager {
         if (bufferedResult != null) {
             return bufferedResult.getObjectToStore();
         }
+
         // Next check the store.
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> storeResult =
                 (StoredGetable<U, T>) tenantStore.get(id.getStoreableKey(), StoredGetable.class);
+
         if (storeResult == null) return null;
+
         // If we got here, that means that:
         // 1. The Getable exists in the store, and
         // 2. This is the first time in this txn (eg. Command Processing) that
         // we are getting the
         out = storeResult.getStoredObject();
+
         uncommittedChanges.put(id.getStoreableKey(), new GetableToStore<>(storeResult, id.getObjectClass()));
         return out;
     }
@@ -79,16 +83,20 @@ public class ReadOnlyMetadataManager {
         if (bufferedResult != null) {
             return bufferedResult.getObjectToStore();
         }
+
         // Next check the store.
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> storeResult =
                 (StoredGetable<U, T>) clusterStore.get(id.getStoreableKey(), StoredGetable.class);
+
         if (storeResult == null) return null;
+
         // If we got here, that means that:
         // 1. The Getable exists in the store, and
         // 2. This is the first time in this txn (eg. Command Processing) that
         // we are getting the
         out = storeResult.getStoredObject();
+
         uncommittedChanges.put(id.getStoreableKey(), new GetableToStore<>(storeResult, id.getObjectClass()));
         return out;
     }
@@ -105,6 +113,7 @@ public class ReadOnlyMetadataManager {
     public List<Tag> clusterScopedTagScan(GetableClassEnum objectType, List<Attribute> attributes) {
         String startKey = Tag.getAttributeString(objectType, attributes);
         String endKey = startKey + "~";
+
         try (LHKeyValueIterator<Tag> rangeResult = clusterStore.range(startKey, endKey, Tag.class)) {
             final List<Tag> result = new ArrayList<>();
             rangeResult.forEachRemaining(tagLHIterKeyValue -> {

@@ -36,8 +36,11 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
             org.slf4j.LoggerFactory.getLogger(TaskWorkerHeartBeatRequestModel.class);
     // for unit test
     private String clientId;
+
     private TaskDefIdModel taskDefId;
+
     private String listenerName;
+
     private TaskWorkerAssignor assignor;
     private Set<HostModel> hosts;
 
@@ -54,16 +57,20 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         GetableManager getableManager = executionContext.getableManager();
         // Get the group, a group contains all the task worker for that specific task
         TaskWorkerGroupModel taskWorkerGroup = getableManager.get(new TaskWorkerGroupIdModel(taskDefId));
+
         // If it does not exist then create it with empty workers
         if (taskWorkerGroup == null) {
             taskWorkerGroup = new TaskWorkerGroupModel();
             taskWorkerGroup.createdAt = new Date();
             taskWorkerGroup.id = new TaskWorkerGroupIdModel(taskDefId);
         }
+
         // Remove inactive taskWorker
         removeInactiveWorkers(taskWorkerGroup);
+
         // Get the specific worker, each worker is supposed to have a unique client id
         TaskWorkerMetadataModel taskWorker = taskWorkerGroup.taskWorkers.get(clientId);
+
         // If it is null then create it and add it to the task worker group
         if (taskWorker == null) {
             taskWorker = new TaskWorkerMetadataModel();
@@ -82,8 +89,10 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
         }
         // Update the latest heartbeat with the current timestamp
         taskWorker.latestHeartbeat = new Date();
+
         // Save the data
         getableManager.put(taskWorkerGroup);
+
         // Prepare the response with the assigned host for this specific task worker
         // (taskWorker.hosts)
         Set<LHHostInfo> yourHosts = new HashSet<>();
@@ -105,12 +114,14 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
     private RegisterTaskWorkerResponse prepareReply(Set<LHHostInfo> yourHosts) {
         RegisterTaskWorkerResponse.Builder reply = RegisterTaskWorkerResponse.newBuilder();
         reply.addAllYourHosts(yourHosts);
+
         // If there are no hosts for any reason, then reply an error.
         // This SHOULD be impossible unless there's a bug in LittleHorse.
         if (reply.getYourHostsCount() == 0) {
             log.error("Server hosts unavailable, this SHOULD be impossible");
             throw new LHApiException(Status.INTERNAL, "Should be impossible to have no server hosts");
         }
+
         return reply.build();
     }
 

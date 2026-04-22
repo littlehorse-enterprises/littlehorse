@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestStreamObserver<T> implements StreamObserver<T> {
+
     private final List<T> values = new ArrayList<>();
     private Throwable throwable;
     private boolean completed;

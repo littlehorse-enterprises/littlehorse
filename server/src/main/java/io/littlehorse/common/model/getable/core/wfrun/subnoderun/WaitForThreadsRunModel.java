@@ -58,6 +58,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     @Override
     public WaitForThreadsRun.Builder toProto() {
         WaitForThreadsRun.Builder out = WaitForThreadsRun.newBuilder();
+
         for (WaitForThreadModel wft : threads) {
             out.addThreads(wft.toProto());
         }
@@ -79,10 +80,13 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     public boolean checkIfProcessingCompleted(CoreProcessorContext processorContext) throws NodeFailureException {
         // This is stupid but it's required to make things work.
         threads.stream().forEach(child -> child.setNodeRun(nodeRun));
+
         for (WaitForThreadModel child : threads) {
             updateStatusOfChildThread(child, processorContext);
         }
+
         WaitForThreadsStrategy strategy = getNode().getWaitForThreadsNode().getStrategy();
+
         switch (strategy) {
             case WAIT_FOR_ALL:
                 return waitForAllStrategy();
@@ -92,16 +96,19 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
                 return waitForFirstStrategy();
             case UNRECOGNIZED:
         }
+
         throw new IllegalStateException("Unrecognized enum " + strategy);
     }
 
     private boolean waitForAllStrategy() throws NodeFailureException {
         boolean allCompletedOrHandled = true;
         WfRunModel wfRun = getWfRun();
+
         for (WaitForThreadModel child : threads) {
             if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_UNSUCCESSFUL) {
                 propagateFailure(getLastFailureFrom(child, wfRun), child);
             }
+
             if (child.getWaitingStatus() != WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED) {
                 allCompletedOrHandled = false;
             }
@@ -120,10 +127,12 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
                 return true;
             }
         }
+
         if (allFailed) {
             throw new NodeFailureException(
                     new FailureModel("All child threads failed", LHErrorType.CHILD_FAILURE.toString()));
         }
+
         return false;
     }
 
@@ -172,17 +181,22 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED) {
             return;
         }
+
         WfRunModel wfRun = getWfRun();
         ThreadRunModel childThreadRun = wfRun.getThreadRun(child.getThreadRunNumber());
         child.setThreadStatus(childThreadRun.getStatus());
+
         if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_IN_PROGRESS) {
+
             // need to look at the waiting thread.
             if (childThreadRun.getStatus() == LHStatus.COMPLETED) {
                 child.setWaitingStatus(WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED);
+
             } else if (childThreadRun.getStatus() == LHStatus.EXCEPTION
                     || childThreadRun.getStatus() == LHStatus.ERROR) {
                 FailureModel latestFailure =
                         childThreadRun.getCurrentNodeRun().getLatestFailure().get();
+
                 FailureHandlerDefModel handler = getHandlerFor(latestFailure);
                 if (handler != null) {
                     child.setWaitingStatus(WaitingThreadStatus.THREAD_HANDLING_FAILURE);
@@ -193,12 +207,15 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
             }
         } else if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_HANDLING_FAILURE) {
             ThreadRunModel failureHandler = wfRun.getThreadRun(child.getFailureHandlerThreadRunId());
+
             if (failureHandler.getStatus() == LHStatus.COMPLETED) {
                 // The failure handler succeeded, so we count this thread as "properly handled"
                 child.setWaitingStatus(WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED);
                 nodeRun.getThreadRun().getHandledFailedChildren().add(child.getThreadRunNumber());
+
             } else if (failureHandler.getStatus() == LHStatus.EXCEPTION
                     || failureHandler.getStatus() == LHStatus.ERROR) {
+
                 child.setWaitingStatus(WaitingThreadStatus.THREAD_UNSUCCESSFUL);
             }
         }
@@ -231,6 +248,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
             ThreadRunModel failureHandler = wfRun.getThreadRun(failedChild.getFailureHandlerThreadRunId());
             lastFailure = failureHandler.getCurrentNodeRun().getLatestFailure().get();
         }
+
         return lastFailure;
     }
 
@@ -240,6 +258,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
         haltReason.setHaltedByParent(new HaltedByParentNodeHaltReasonModel(
                 getNodeRun().getThreadRunNumber(), getNodeRun().getId().getPosition()));
         haltReason.setType(ReasonCase.HALTED_BY_PARENT);
+
         for (WaitForThreadModel childThread : threads) {
             switch (childThread.getWaitingStatus()) {
                 case THREAD_HANDLING_FAILURE:
@@ -285,14 +304,18 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
          * 2. We don't need to resurrect the failed ThreadRun after the Failure Handler
          *    completes; so we don't need to play with the ThreadHaltReasons.
          */
+
         log.trace("Starting failure handler for failed child threadrun {}", failedChildThread);
+
         failedChildThread.setWaitingStatus(WaitingThreadStatus.THREAD_HANDLING_FAILURE);
+
         WfSpecModel wfSpec = processorContext.service().getWfSpec(nodeRun.getWfSpecId());
         ThreadSpecModel handlerSpec = wfSpec.threadSpecs.get(failureHandlerDef.getHandlerSpecName());
         Map<String, VariableValueModel> vars = new HashMap<>();
         if (handlerSpec.variableDefs.size() > 0) {
             vars.put(WorkflowThread.HANDLER_INPUT_VAR, failure.getContent());
         }
+
         // If this fails, then it means that we have an invalid WfSpec.
         try {
             handlerSpec.validateStartVariables(vars, processorContext.metadataManager());
@@ -302,6 +325,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
                             .formatted(handlerSpec.getName(), failedChildThread.getThreadRunNumber(), exn.getMessage()),
                     LHErrorType.CHILD_FAILURE.toString()));
         }
+
         // At this point, we can just start the ThreadRun.
         ThreadRunModel failureHandler = getWfRun()
                 .startThread(

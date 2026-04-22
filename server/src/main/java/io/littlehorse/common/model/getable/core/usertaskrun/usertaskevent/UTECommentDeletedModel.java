@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.UserTaskEvent.UTECommentDeleted;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class UTECommentDeletedModel extends LHSerializable<UTECommentDeleted> {
+
     private Integer userCommentId;
     private String userId;
 

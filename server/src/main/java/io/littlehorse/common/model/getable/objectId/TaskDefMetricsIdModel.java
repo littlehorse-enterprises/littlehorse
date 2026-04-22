@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Optional;
 
 public class TaskDefMetricsIdModel extends RepartitionedId<TaskDefMetricsId, TaskDefMetrics, TaskDefMetricsModel> {
+
     private Date windowStart;
     private MetricsWindowLength windowType;
     private TaskDefIdModel taskDefId;

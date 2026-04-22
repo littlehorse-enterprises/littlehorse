@@ -41,6 +41,7 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
             metadataCache.evictCache(fullKey);
         }
         nativeStore.delete(fullKey);
+
         String legacyKey = LHUtil.toLegacyFormat(fullKey);
         if (legacyKey != null) {
             if (metadataCache != null) {

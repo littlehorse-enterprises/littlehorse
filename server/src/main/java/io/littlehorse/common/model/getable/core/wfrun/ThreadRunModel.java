@@ -62,23 +62,30 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ThreadRunModel.class);
     private WfSpecIdModel wfSpecId;
     public int number;
+
     public LHStatus status;
     public String threadSpecName;
     public int currentNodePosition;
+
     public Date startTime;
     public Date endTime;
+
     public String errorMessage;
+
     public List<Integer> childThreadIds = new ArrayList<>();
     public Integer parentThreadId;
+
     public List<ThreadHaltReasonModel> haltReasons = new ArrayList<>();
     private ExternalEventIdModel interruptTriggerId;
     public FailureBeingHandledModel failureBeingHandled;
     public List<Integer> handledFailedChildren = new ArrayList<>();
     private VariableValueModel output;
+
     public ThreadType type;
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
     private CoreProcessorContext processorContext;
+
     // Used to mark ThreadRuns returned by the `ThreadRunIterator` as `inactive` or not.
     private boolean inactive;
 
@@ -108,18 +115,22 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         for (Integer childId : proto.getChildThreadIdsList()) {
             childThreadIds.add(childId);
         }
+
         if (proto.hasInterruptTriggerId()) {
             interruptTriggerId =
                     LHSerializable.fromProto(proto.getInterruptTriggerId(), ExternalEventIdModel.class, context);
         }
+
         for (ThreadHaltReason thrpb : proto.getHaltReasonsList()) {
             ThreadHaltReasonModel thr = ThreadHaltReasonModel.fromProto(thrpb, context);
             thr.threadRun = this;
             haltReasons.add(thr);
         }
+
         if (proto.hasFailureBeingHandled()) {
             failureBeingHandled = FailureBeingHandledModel.fromProto(proto.getFailureBeingHandled(), context);
         }
+
         for (int handledFailedChildId : proto.getHandledFailedChildrenList()) {
             handledFailedChildren.add(handledFailedChildId);
         }
@@ -140,9 +151,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 .setStartTime(LHUtil.fromDate(startTime))
                 .setType(type)
                 .setWfSpecId(wfSpecId.toProto());
+
         if (errorMessage != null) {
             out.setErrorMessage(errorMessage);
         }
+
         if (endTime != null) {
             out.setEndTime(LHUtil.fromDate(endTime));
         }
@@ -150,6 +163,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             out.setParentThreadId(parentThreadId);
         }
         out.addAllChildThreadIds(childThreadIds);
+
         for (ThreadHaltReasonModel thr : haltReasons) {
             out.addHaltReasons(thr.toProto());
         }
@@ -180,7 +194,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     // For Scheduler
+
     public WfRunModel wfRun;
+
     private ThreadSpecModel threadSpecModel;
 
     public ThreadSpecModel getThreadSpec() {
@@ -192,11 +208,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public NodeModel getCurrentNode() {
         NodeRunModel currRun = getCurrentNodeRun();
+
         // TODO (#465): Determine which version of WfSpec we should get the ThreadSpec from.
         ThreadSpecModel threadSpec = getThreadSpec();
         if (currRun == null) {
             return threadSpec.nodes.get(threadSpec.getEntrypointNodeName());
         }
+
         return threadSpec.nodes.get(currRun.getNodeName());
     }
 
@@ -217,12 +235,16 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         if (currentNodePosition != -1) {
             throw new IllegalStateException("Should only be called on creation");
         }
+
         currentNodePosition = 0;
+
         Date now = new Date();
         ThreadSpecModel threadSpec = getThreadSpec();
         setStatus(LHStatus.RUNNING);
         setStartTime(now);
+
         NodeModel entrypointNode = threadSpec.getNodes().get(threadSpec.getEntrypointNodeName());
+
         NodeRunModel entrypointRun = new NodeRunModel(processorContext);
         entrypointRun.setThreadRun(this);
         entrypointRun.setNodeName(entrypointNode.getName());
@@ -233,14 +255,17 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         entrypointRun.setArrivalTime(now);
         entrypointRun.setSubNodeRun(entrypointNode.getSubNode().createSubNodeRun(now, processorContext));
         putNodeRun(entrypointRun);
+
         for (ThreadVarDefModel threadVarDef : threadSpec.getVariableDefs()) {
             VariableDefModel varDef = threadVarDef.getVarDef();
             String varName = varDef.getName();
             VariableValueModel val = null;
+
             if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
                 // We do NOT create a variable since we want to use the one from the parent.
                 continue;
             }
+
             if (variables.containsKey(varName)) {
                 val = variables.get(varName);
                 if (val.isNull()) {
@@ -249,6 +274,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             } else if (varDef.getDefaultValue() != null) {
                 val = varDef.getDefaultValue();
             }
+
             if (val == null) {
                 val = new VariableValueModel();
             }
@@ -256,6 +282,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                     varName, val, wfRun.getId(), this.number, threadSpec.getWfSpec(), varDef.isMaskedValue());
             processorContext.getableManager().put(variable);
         }
+
         entrypointRun.setStatus(LHStatus.RUNNING);
     }
 
@@ -299,6 +326,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             // TODO: how do we wanna handle exceptions?
             return;
         }
+
         nr.getSleepNodeRun().processSleepNodeMatured(e);
     }
 
@@ -317,11 +345,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         if (!foundIt) {
             throw new RuntimeException("Not possible");
         }
+
         ThreadHaltReasonModel thr = new ThreadHaltReasonModel();
         thr.threadRun = this;
         thr.type = ReasonCase.INTERRUPTED;
         thr.interrupted = new InterruptedModel();
         thr.interrupted.interruptThreadId = handlerThreadId;
+
         haltReasons.add(thr);
     }
 
@@ -332,8 +362,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         haltReason.type = ReasonCase.PENDING_INTERRUPT;
         haltReason.pendingInterrupt = new PendingInterruptHaltReasonModel();
         haltReason.pendingInterrupt.externalEventId = trigger.getObjectId();
+
         // This also stops the children
         halt(haltReason);
+
         // Now make sure that the parent WfRun has the info necessary to launch the
         // interrupt on the next call to advance
         PendingInterruptModel pi = new PendingInterruptModel();
@@ -355,6 +387,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void rescue(boolean skipCurrentNode, CoreProcessorContext ctx) throws ThreadRunRescueFailedException {
         // First, Optional<Status> refers to the grpc status which can be thrown as an error
         // to the client.
+
         // Note that any child ThreadRuns that were HALTED with the reason PARENT_HALTED
         // will be automatically un-halted when the status of this ThreadRun moves from
         // ERROR to RUNNING
@@ -362,6 +395,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             throw new IllegalStateException("This is a bug: ThreadRun %s on WfRun %s tried to be rescued from status %s"
                     .formatted(number, wfRun.getId(), status));
         }
+
         try {
             NodeRunModel currentNR = getCurrentNodeRun();
             NodeModel toActivate;
@@ -376,6 +410,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             setStatus(LHStatus.ERROR);
             throw new ThreadRunRescueFailedException("Could not rescue threadRun: " + exn.getMessage());
         }
+
         this.setEndTime(null); // no longer terminated.
         if (getNumber() == 0) {
             // WfRun status needs to reflect the threadRun status.
@@ -386,6 +421,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 NodeRunModel parentCurrentNR = parent.getCurrentNodeRun();
                 if (parentCurrentNR.getType() == NodeTypeCase.WAIT_FOR_THREADS
                         || parentCurrentNR.getType() == NodeTypeCase.EXIT) {
+
                     FailureModel parentFailure =
                             parent.getCurrentNodeRun().getLatestFailure().get();
                     if (parentFailure.getFailureName().equals(LHErrorType.CHILD_FAILURE.toString())) {
@@ -399,17 +435,22 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void halt(ThreadHaltReasonModel reason) {
         reason.setThreadRun(this);
         if (isTerminated()) return;
+
         // if we got this far, then we know that we are still running. Add the
         // halt reason.
         haltReasons.add(reason);
+
         if (status != LHStatus.HALTED) setStatus(LHStatus.HALTING);
+
         // Now need to halt all the children.
         ThreadHaltReasonModel childHaltReason = new ThreadHaltReasonModel();
         childHaltReason.type = ReasonCase.PARENT_HALTED;
         childHaltReason.parentHalted = new ParentHaltedModel();
         childHaltReason.parentHalted.parentThreadId = number;
+
         for (int childId : childThreadIds) {
             ThreadRunModel child = wfRun.getThreadRun(childId);
+
             // In almost all cases, we want to stop all children.
             // However, if the child is an interrupt thread, and the parent got
             // interrupted again, we let the two interrupts continue side-by-side.
@@ -423,6 +464,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 child.halt(childHaltReason);
             }
         }
+
         getCurrentNodeRun().maybeHalt(processorContext);
         boolean halted = maybeFinishHaltingProcess();
         if (number == 0 && halted && !reason.isTransitioningHaltState()) {
@@ -442,6 +484,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
     public boolean maybeFinishHaltingProcess() {
         if (isTerminated() || status == LHStatus.HALTED) return true;
+
         if (status != LHStatus.HALTING) {
             throw new IllegalStateException("Cant finish halting if not halting");
         }
@@ -451,6 +494,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 allChildrenHalted = false;
             }
         }
+
         if (getCurrentNodeRun().maybeHalt(processorContext) && allChildrenHalted) {
             setStatus(LHStatus.HALTED);
             return true;
@@ -473,24 +517,31 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
     public boolean advance(Date eventTime) {
         if (isTerminated()) return false;
+
         if (status == LHStatus.HALTED) {
             return maybeUnHaltIfAllHaltReasonsResolved();
         }
+
         if (status == LHStatus.HALTING) {
             return maybeFinishHaltingProcess();
         }
+
         NodeRunModel currentNR = getCurrentNodeRun();
         try {
             // At this point, we know it's a RUNNING or STARTING thread, so we advance it.
             if (currentNR.getLatestFailure().isPresent()) {
                 return maybeAdvanceFromFailedNodeRun();
             }
+
             boolean canAdvance = currentNR.checkIfProcessingCompleted(processorContext);
+
             if (!canAdvance) {
                 // then we're still waiting on the NodeRun, nothing happened.
                 return false;
             }
+
             storeNodeOutput(currentNR);
+
             if (currentNR.getType() == NodeTypeCase.EXIT) {
                 // Then we're done!
                 setStatus(LHStatus.COMPLETED);
@@ -503,6 +554,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         } catch (NodeFailureException exn) {
             respondToNodeFailure(exn);
         }
+
         return true;
     }
 
@@ -538,9 +590,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         if (!getCurrentNode().getHandlerFor(failure).isPresent()) {
             throw new IllegalStateException("The Failure should be handleable, otherwise we fail earlier");
         }
+
         if (failure.getFailureHandlerThreadRunId() == null) {
+
             return false;
         }
+
         boolean handled =
                 wfRun.getThreadRun(failure.getFailureHandlerThreadRunId()).getStatus() == LHStatus.COMPLETED;
         if (handled) {
@@ -562,6 +617,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     private void respondToNodeFailure(NodeFailureException exn) {
         NodeModel node = getCurrentNode();
         FailureModel failure = exn.getFailure();
+
         Optional<FailureHandlerDefModel> handlerOption = node.getHandlerFor(failure);
         if (handlerOption.isEmpty()) {
             for (int childId : childThreadIds) {
@@ -589,6 +645,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
     private boolean maybeUnHaltIfAllHaltReasonsResolved() {
         haltReasons.removeIf(ThreadHaltReasonModel::isResolved);
+
         if (haltReasons.isEmpty()) {
             log.debug("Thread {} is alive again!", number);
             var previousStatus = status;
@@ -617,6 +674,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         PendingFailureHandlerModel pfh = new PendingFailureHandlerModel();
         pfh.failedThreadRun = this.number;
         pfh.handlerSpecName = handler.handlerSpecName;
+
         /*
          * It should be noted that the current implementation of Failure Handling is as follows:
          * - We HALT the ThreadRun that threw the Failure
@@ -628,10 +686,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
          * only the do we start the FailureHandler.
          */
         wfRun.pendingFailures.add(pfh);
+
         ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
         haltReason.type = ReasonCase.PENDING_FAILURE;
         haltReason.pendingFailure = new PendingFailureHandlerHaltReasonModel();
         haltReason.pendingFailure.nodeRunPosition = currentNodePosition;
+
         // This also stops the children
         halt(haltReason);
     }
@@ -657,10 +717,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         if (!foundIt) {
             throw new RuntimeException("Not possible");
         }
+
         ThreadHaltReasonModel thr = new ThreadHaltReasonModel();
         thr.threadRun = this;
         thr.type = ReasonCase.HANDLING_FAILURE;
         thr.handlingFailure = new HandlingFailureHaltReasonModel(handlerThreadNumber);
+
         childThreadIds.add(handlerThreadNumber);
         haltReasons.add(thr);
     }
@@ -692,6 +754,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         this.errorMessage = failure.message;
         setStatus(failure.getStatus());
         this.endTime = time;
+
         if (interruptTriggerId != null) {
             // then we're an interrupt thread and need to fail the parent. Parent is guaranteed to
             // to be not-null in this case
@@ -703,6 +766,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             // grace.
             getParent().failWithoutGrace(failure, time);
         }
+
         wfRun.handleThreadStatus(number, new Date(), status);
     }
 
@@ -713,7 +777,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public void activateNode(NodeModel node) throws NodeFailureException {
         Date arrivalTime = new Date();
+
         currentNodePosition++;
+
         NodeRunModel cnr = new NodeRunModel(processorContext);
         cnr.setThreadRun(this);
         cnr.setNodeName(node.name);
@@ -723,7 +789,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         cnr.setThreadSpecName(threadSpecName);
         cnr.setArrivalTime(arrivalTime);
         cnr.setSubNodeRun(node.getSubNode().createSubNodeRun(arrivalTime, processorContext));
+
         putNodeRun(cnr);
+
         cnr.arrive(arrivalTime, processorContext);
     }
 
@@ -757,9 +825,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 } else {
                     val = getVariable(assn.getVariableName()).getValue();
                 }
+
                 if (val == null) {
                     throw new LHVarSubError(null, "Variable " + assn.getVariableName() + " not in scope!");
                 }
+
                 break;
             case FORMAT_STRING:
                 // first, assign the format string
@@ -778,12 +848,15 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                             "Format String template isn\'t a STR; it\'s a "
                                     + formatStringVarVal.getTypeDefinition().getPrimitiveType());
                 }
+
                 List<Object> formatArgs = new ArrayList<>();
+
                 // second, assign the vars
                 for (VariableAssignmentModel argAssn : assn.getFormatString().getArgs()) {
                     VariableValueModel variableValue = assignVariable(argAssn, txnCache);
                     formatArgs.add(variableValue.getVal());
                 }
+
                 // Finally, format the String.
                 try {
                     val = new VariableValueModel(
@@ -808,6 +881,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 // This should have been caught by the WfSpecModel#validate()
                 throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");
         }
+
         switch (assn.getPathCase()) {
             case JSON_PATH:
                 val = val.jsonPath(assn.getJsonPath());
@@ -817,6 +891,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 break;
             case PATH_NOT_SET:
         }
+
         val = assn.applyCast(val);
         return val;
     }
@@ -939,6 +1014,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         if (getParent() != null) {
             return getParent().getVariable(varName);
         }
+
         // Last thing to check is whether the variable is inherited.
         ThreadVarDefModel threadVarDef = processorContext
                 .service()
@@ -955,6 +1031,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 return parentWfRun.getThreadRun(0).getVariable(varName);
             }
         }
+
         return null;
     }
 

@@ -15,15 +15,18 @@ import org.apache.kafka.streams.KafkaStreams.State;
 import org.apache.kafka.streams.TaskMetadata;
 
 public class ServerHealthState {
+
     private String host;
     private int port;
     private String instanceId;
+
     private List<ActiveTaskState> coreActiveTasks;
     private List<ActiveTaskState> repartitionActiveTasks;
     private List<ActiveTaskState> timerActiveTasks;
     private List<StandbyTaskState> coreStandbyTasks;
     private List<StandbyTaskState> repartitionStandbyTasks;
     private List<StandbyTaskState> timerStandbyTasks;
+
     private State coreState;
     private State timerState;
     private List<InProgressRestoration> restorations;
@@ -43,21 +46,26 @@ public class ServerHealthState {
             KafkaStreams timerStreams,
             Map<TopicPartition, InProgressRestoration> restorations,
             Map<String, StandbyStoresOnInstance> standbyTasks) {
+
         this();
+
         this.host = config.getInternalAdvertisedHost();
         this.port = config.getInternalAdvertisedPort();
         this.instanceId = config.getLHInstanceName();
         this.restorations = restorations.values().stream().toList();
+
         this.coreActiveTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.activeTasks().stream())
                 .filter(activeTask -> fromTask(activeTask, config) == LHProcessorType.CORE)
                 .map(coreTask -> new ActiveTaskState(coreTask, restorations, config))
                 .toList());
+
         this.repartitionActiveTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.activeTasks().stream())
                 .filter(activeTask -> fromTask(activeTask, config) == LHProcessorType.REPARTITION)
                 .map(coreTask -> new ActiveTaskState(coreTask, restorations, config))
                 .toList());
+
         this.coreStandbyTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.standbyTasks().stream())
                 .filter(standbyTask -> fromTask(standbyTask, config) == LHProcessorType.CORE)
@@ -66,6 +74,7 @@ public class ServerHealthState {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList());
+
         this.repartitionStandbyTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.standbyTasks().stream())
                 .filter(standbyTask -> fromTask(standbyTask, config) == LHProcessorType.REPARTITION)
@@ -75,6 +84,7 @@ public class ServerHealthState {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList());
+
         if (timerStreams != null) {
             this.timerStandbyTasks.addAll(timerStreams.metadataForLocalThreads().stream()
                     .flatMap(thread -> thread.standbyTasks().stream())
@@ -89,6 +99,7 @@ public class ServerHealthState {
                     .toList());
             this.timerState = timerStreams.state();
         }
+
         this.coreState = coreStreams.state();
     }
 
@@ -118,9 +129,11 @@ public class ServerHealthState {
 
     public static LHProcessorType fromTopic(String topic, LHServerConfig config) {
         String truncated = topic.substring(config.getLHClusterId().length());
+
         if (truncated.contains("core-store") || truncated.contains("core-cmd")) {
             return LHProcessorType.CORE;
         }
+
         if (truncated.contains("repartition-store") || truncated.contains("repartition-cmd")) {
             return LHProcessorType.REPARTITION;
         }

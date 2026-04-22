@@ -13,12 +13,15 @@ import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.Arrays;
 
 public class StructModel extends LHSerializable<Struct> implements Comparable<StructModel> {
+
     private StructDefIdModel structDefId;
+
     private InlineStructModel inlineStruct;
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         Struct p = (Struct) proto;
+
         this.structDefId = StructDefIdModel.fromProto(p.getStructDefId(), context);
         this.inlineStruct = InlineStructModel.fromProto(p.getStruct(), InlineStructModel.class, context);
     }
@@ -26,8 +29,10 @@ public class StructModel extends LHSerializable<Struct> implements Comparable<St
     @Override
     public Struct.Builder toProto() {
         Struct.Builder out = Struct.newBuilder();
+
         out.setStructDefId(structDefId.toProto());
         out.setStruct(inlineStruct.toProto());
+
         return out;
     }
 
@@ -37,16 +42,20 @@ public class StructModel extends LHSerializable<Struct> implements Comparable<St
         if (expectedStructDefId == null) {
             throw new StructValidationException("Expected StructDefId cannot be null");
         }
+
         StructDefModel structDef = new WfService(metadataManager).getStructDef(expectedStructDefId);
+
         if (structDef == null) {
             throw new StructValidationException("StructDef %s does not exist.".formatted(expectedStructDefId));
         }
+
         try {
             structDef.validateAgainstSuperset(this, metadataManager);
         } catch (StructValidationException e) {
             throw new StructValidationException(String.format(
                     "Struct incompatible with StructDef %s: %s", structDef.getObjectId(), e.getMessage()));
         }
+
         this.structDefId = expectedStructDefId;
     }
 
@@ -61,6 +70,7 @@ public class StructModel extends LHSerializable<Struct> implements Comparable<St
     @Override
     public int compareTo(StructModel o) {
         if (o == null) return -1;
+
         return Arrays.compare(
                 this.toProto().build().toByteArray(), o.toProto().build().toByteArray());
     }

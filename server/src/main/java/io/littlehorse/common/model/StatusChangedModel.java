@@ -11,6 +11,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class StatusChangedModel extends LHSerializable<StatusChanged> {
+
     private Date time;
     private LHStatusChangedModel lhStatusChanged;
     private TaskStatusChangedModel taskStatusChanged;

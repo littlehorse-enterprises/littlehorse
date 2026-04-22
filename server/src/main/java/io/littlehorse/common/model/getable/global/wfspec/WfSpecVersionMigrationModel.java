@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMigration> {
+
     private int newMajorVersion;
     private int newRevision;
     private Map<String, ThreadSpecMigrationModel> threadSpecMigrations;
@@ -32,10 +33,12 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
         WfSpecVersionMigration.Builder out = WfSpecVersionMigration.newBuilder()
                 .setNewMajorVersion(newMajorVersion)
                 .setNewRevision(newRevision);
+
         for (Map.Entry<String, ThreadSpecMigrationModel> entry : threadSpecMigrations.entrySet()) {
             out.putThreadSpecMigrations(
                     entry.getKey(), entry.getValue().toProto().build());
         }
+
         return out;
     }
 
@@ -44,6 +47,7 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
         WfSpecVersionMigration p = (WfSpecVersionMigration) proto;
         newMajorVersion = p.getNewMajorVersion();
         newRevision = p.getNewRevision();
+
         for (Map.Entry<String, ThreadSpecMigration> e :
                 p.getThreadSpecMigrationsMap().entrySet()) {
             threadSpecMigrations.put(
@@ -64,15 +68,18 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
             ThreadSpecMigrationModel migration = e.getValue();
             ThreadSpecModel sourceThread = oldWfSpec.getThreadSpecs().get(sourceThreadName);
             ThreadSpecModel destinationThread = newWfSpec.getThreadSpecs().get(migration.getNewThreadSpecName());
+
             if (sourceThread == null) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT, "Source WfSpec has no threadSpec %s".formatted(sourceThreadName));
             }
+
             if (destinationThread == null) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
                         "Destination WfSpec has no threadSpec %s".formatted(migration.getNewThreadSpecName()));
             }
+
             validateThreadMigration(migration, sourceThread, destinationThread);
         }
     }
@@ -87,6 +94,7 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
                 migration.getNodeMigrations().entrySet()) {
             NodeMigrationModel nodeMigration = e.getValue();
             String sourceNodeName = e.getKey();
+
             NodeModel sourceNode = source.getNodes().get(sourceNodeName);
             if (sourceNode == null) {
                 throw new LHApiException(
@@ -94,6 +102,7 @@ public class WfSpecVersionMigrationModel extends LHSerializable<WfSpecVersionMig
                         "ThreadSpec %s on source WfSpec does not have node %s"
                                 .formatted(source.getName(), sourceNodeName));
             }
+
             String destNodeName = nodeMigration.getNewNodeName();
             NodeModel destNode = dest.getNodes().get(destNodeName);
             if (destNode == null) {

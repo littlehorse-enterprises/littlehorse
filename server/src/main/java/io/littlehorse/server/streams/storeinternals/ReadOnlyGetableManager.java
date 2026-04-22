@@ -65,21 +65,26 @@ public class ReadOnlyGetableManager {
     public <U extends Message, T extends CoreGetable<U>> T get(CoreObjectId<?, U, T> id) {
         log.trace("Getting {} with key {}", id.getType(), id);
         T out = null;
+
         // First check the cache.
         @SuppressWarnings("unchecked")
         GetableToStore<U, T> bufferedResult = (GetableToStore<U, T>) uncommittedChanges.get(id.getStoreableKey());
         if (bufferedResult != null) {
             return bufferedResult.getObjectToStore();
         }
+
         // Next check the store.
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> storeResult = (StoredGetable<U, T>) store.get(id.getStoreableKey(), StoredGetable.class);
+
         if (storeResult == null) return null;
+
         // If we got here, that means that:
         // 1. The Getable exists in the store, and
         // 2. This is the first time in this txn (eg. Command Processing) that
         // we are getting the
         out = storeResult.getStoredObject();
+
         uncommittedChanges.put(id.getStoreableKey(), new GetableToStore<>(storeResult, id.getObjectClass()));
         return out;
     }
@@ -96,11 +101,14 @@ public class ReadOnlyGetableManager {
     // Note that this is an expensive operation. It's used when deleting a WfRun.
     protected <U extends Message, T extends CoreGetable<U>>
             List<GetableToStore<U, T>> iterateOverPrefixAndPutInUncommittedChanges(String prefix, Class<T> cls) {
+
         List<GetableToStore<U, T>> out = iterateOverPrefixInternal(prefix, cls);
+
         // put everything in the buffer.
         for (GetableToStore<U, T> thing : out) {
             uncommittedChanges.put(thing.getObjectToStore().getObjectId().getStoreableKey(), thing);
         }
+
         return out;
     }
 
@@ -144,6 +152,7 @@ public class ReadOnlyGetableManager {
         // 1. Get the first (if any) from the Tag Scan
         // 2. Get the first (if any) from the buffer (getablesToStore())
         // 3. Return whichever of the first two was created earlier.
+
         WfRunIdModel wfRunId = nodeRunId.getWfRunId();
         ExternalEventModel earliestFromTags = null;
         ExternalEventModel earliestFromGetablesToStore = null;
@@ -152,7 +161,9 @@ public class ReadOnlyGetableManager {
                 new Attribute("wfRunId", wfRunId.toString()),
                 new Attribute("extEvtDefName", externalEventDefId.toString()),
                 new Attribute("isClaimed", "false"));
+
         String prefixToScan = Tag.getAttributeString(GetableClassEnum.EXTERNAL_EVENT, attributes) + "/";
+
         try (LHKeyValueIterator<Tag> iterator = store.prefixScan(prefixToScan, Tag.class)) {
             while (iterator.hasNext()) {
                 LHIterKeyValue<Tag> next = iterator.next();
@@ -166,6 +177,7 @@ public class ReadOnlyGetableManager {
                 }
             }
         }
+
         // Check the buffer
         // Overwrite what's in the store with what's in the buffer.
         for (GetableToStore<?, ?> getableInBuffer : uncommittedChanges.values()) {
@@ -185,6 +197,7 @@ public class ReadOnlyGetableManager {
                 earliestFromGetablesToStore = candidate;
             }
         }
+
         if (earliestFromTags != null && earliestFromGetablesToStore != null) {
             return earliestFromTags.getCreatedAt().compareTo(earliestFromGetablesToStore.getCreatedAt()) < 0
                     ? earliestFromTags
@@ -215,21 +228,27 @@ public class ReadOnlyGetableManager {
     private <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefixInternal(
             String prefix, Class<T> cls) {
         Map<String, GetableToStore<U, T>> all = new HashMap<>();
+
         // First iterate over what's in the store.
         String storePrefix = StoredGetable.getRocksDBKey(prefix, AbstractGetable.getTypeEnum(cls));
+
         try (LHKeyValueIterator<?> iterator = store.range(storePrefix, storePrefix + "~", StoredGetable.class)) {
+
             while (iterator.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iterator.next();
+
                 StoredGetable<U, T> item = (StoredGetable<U, T>) next.getValue();
                 all.put(item.getStoreKey(), new GetableToStore<>(item, cls));
             }
         }
+
         // Overwrite what's in the store with what's in the buffer.
         for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
             if (entry.getKey().startsWith(storePrefix)) {
                 all.put(entry.getKey(), (GetableToStore<U, T>) entry.getValue());
             }
         }
+
         return all.entrySet().stream()
                 .map(Map.Entry::getValue)
                 .filter(Objects::nonNull)

@@ -52,6 +52,7 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
         } else if (wfSpecVar != null) {
             out.setWfSpecVar(wfSpecVar.toProto());
         }
+
         for (Map.Entry<String, VariableAssignmentModel> inputVar : inputs.entrySet()) {
             out.putInputs(inputVar.getKey(), inputVar.getValue().toProto().build());
         }
@@ -67,6 +68,7 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
         } else if (p.hasWfSpecVar()) {
             this.wfSpecVar = VariableAssignmentModel.fromProto(p.getWfSpecVar(), ignored);
         }
+
         for (Map.Entry<String, VariableAssignment> entry : p.getInputsMap().entrySet()) {
             this.inputs.put(
                     entry.getKey(), LHSerializable.fromProto(entry.getValue(), VariableAssignmentModel.class, ignored));

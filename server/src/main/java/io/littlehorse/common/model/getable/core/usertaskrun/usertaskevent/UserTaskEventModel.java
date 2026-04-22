@@ -9,6 +9,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
+
     private Date time;
     private EventCase type;
     private UTETaskExecutedModel executed;
@@ -76,6 +77,7 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
 
     public UserTaskEvent.Builder toProto() {
         UserTaskEvent.Builder out = UserTaskEvent.newBuilder().setTime(LHUtil.fromDate(time));
+
         switch (type) {
             case TASK_EXECUTED:
                 out.setTaskExecuted(executed.toProto());
@@ -112,6 +114,7 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
         UserTaskEvent p = (UserTaskEvent) proto;
         time = LHUtil.fromProtoTs(p.getTime());
         type = p.getEventCase();
+
         switch (type) {
             case TASK_EXECUTED:
                 executed = LHSerializable.fromProto(p.getTaskExecuted(), UTETaskExecutedModel.class, context);

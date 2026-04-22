@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class WaitForChildWfNodeModel extends SubNode<WaitForChildWfNode> {
+
     private VariableAssignmentModel childWfRunId;
     private String childWfRunSourceNode;
 
@@ -67,6 +68,7 @@ public class WaitForChildWfNodeModel extends SubNode<WaitForChildWfNode> {
             throw new InvalidNodeException(
                     "Specified node " + childWfRunSourceNode + " is not of type RunChildWf", node);
         }
+
         // Now validate the input
         if (!childWfRunId.canBeType(VariableType.WF_RUN_ID, node.getThreadSpec())) {
             throw new InvalidNodeException("Provided value is not a valid WF_RUN_ID", node);

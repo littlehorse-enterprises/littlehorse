@@ -15,6 +15,7 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
+
     public ParentHaltedModel parentHalted;
     public InterruptedModel interrupted;
     public PendingInterruptHaltReasonModel pendingInterrupt;
@@ -22,8 +23,11 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
     public PendingFailureHandlerHaltReasonModel pendingFailure;
     public ManualHaltModel manualHalt;
     public HaltedByParentNodeHaltReasonModel haltedByParent;
+
     public ReasonCase type;
+
     public ThreadRunModel threadRun;
+
     public WfRunModel wfRunModel;
 
     public Class<ThreadHaltReason> getProtoBaseClass() {
@@ -58,6 +62,7 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
 
     public ThreadHaltReason.Builder toProto() {
         ThreadHaltReason.Builder out = ThreadHaltReason.newBuilder();
+
         switch (type) {
             case PARENT_HALTED:
                 out.setParentHalted(parentHalted.toProto());
@@ -83,6 +88,7 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
             case REASON_NOT_SET:
                 throw new RuntimeException("not possible");
         }
+
         return out;
     }
 
@@ -90,6 +96,7 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
     public void initFrom(Message proto, ExecutionContext context) {
         ThreadHaltReason p = (ThreadHaltReason) proto;
         type = p.getReasonCase();
+
         switch (type) {
             case PARENT_HALTED:
                 parentHalted = ParentHaltedModel.fromProto(p.getParentHalted(), context);

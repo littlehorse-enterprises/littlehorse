@@ -18,6 +18,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassignUserTask> {
+
     private UserTaskRunIdModel source;
     private VariableAssignmentModel newUserId;
     private VariableAssignmentModel newUserGroup;
@@ -67,7 +68,9 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
         if (userTaskRun == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified NodeRun not a UserTaskRun");
         }
+
         userTaskRun.deadlineReassign(this);
+
         WfRunModel wfRun =
                 executionContext.getableManager().get(userTaskRun.getId().getWfRunId());
         wfRun.advance(new Date());

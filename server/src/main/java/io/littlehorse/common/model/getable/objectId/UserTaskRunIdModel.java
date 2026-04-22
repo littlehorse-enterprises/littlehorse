@@ -13,6 +13,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 
 public class UserTaskRunIdModel extends CoreObjectId<UserTaskRunId, UserTaskRun, UserTaskRunModel> {
+
     private WfRunIdModel wfRunId;
     private String userTaskGuid;
 

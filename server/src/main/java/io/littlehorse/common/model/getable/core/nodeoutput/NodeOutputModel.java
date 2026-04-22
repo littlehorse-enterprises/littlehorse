@@ -18,9 +18,13 @@ import java.util.Optional;
 public class NodeOutputModel extends Storeable<NodeOutput> {
     private WfRunIdModel wfRunId;
     private VariableValueModel value;
+
     private int threadRunNumber;
+
     private int nodeRunPosition;
+
     private String nodeName;
+
     private Date createdAt;
 
     public NodeOutputModel() {}

@@ -14,15 +14,18 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 
 public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PollTaskRequestObserver.class);
     private StreamObserver<PollTaskResponse> responseObserver;
     private TaskQueueManager taskQueueManager;
     private final PrincipalIdModel principalId;
+
     private TaskDefIdModel taskDefId;
     private String clientId;
     private String taskWorkerVersion;
     private final TenantIdModel tenantId;
     private final RequestExecutionContext requestContext;
+
     private CoreStoreProvider coreStoreProvider;
     private final MetadataCache metadataCache;
     private LHServerConfig config;
@@ -93,9 +96,11 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         } else if (!taskDefId.getName().equals(req.getTaskDefId().getName())) {
             log.error("TaskDefName not null: {} but doesnt match {}", taskDefId, req.getTaskDefId());
         }
+
         taskDefId = LHSerializable.fromProto(req.getTaskDefId(), TaskDefIdModel.class, requestContext);
         clientId = req.getClientId();
         taskWorkerVersion = req.getTaskWorkerVersion();
+
         taskQueueManager.onPollRequest(this, tenantId, requestContext);
     }
 

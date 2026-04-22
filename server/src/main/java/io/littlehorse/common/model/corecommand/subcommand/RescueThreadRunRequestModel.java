@@ -18,6 +18,7 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class RescueThreadRunRequestModel extends CoreSubCommand<RescueThreadRunRequest> {
+
     private WfRunIdModel wfRunId;
     private int threadRunNumber;
     private boolean skipCurrentNode;
@@ -55,6 +56,7 @@ public class RescueThreadRunRequestModel extends CoreSubCommand<RescueThreadRunR
         if (wfRun == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find WfRun %s".formatted(wfRunId));
         }
+
         try {
             wfRun.rescueThreadRun(threadRunNumber, skipCurrentNode, ctx);
         } catch (MissingThreadRunException exn) {
@@ -66,6 +68,7 @@ public class RescueThreadRunRequestModel extends CoreSubCommand<RescueThreadRunR
         } catch (Exception exn) {
             throw new LHApiException(Status.INTERNAL, exn.getMessage());
         }
+
         return wfRun.toProto().build();
     }
 

@@ -6,6 +6,7 @@ import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.streams.TaskMetadata;
 
 public class StandbyTaskState {
+
     private int partition;
     private long lag;
     private long changelogEndOffset;
@@ -14,7 +15,9 @@ public class StandbyTaskState {
 
     public StandbyTaskState(TaskMetadata meta, StandbyTopicPartitionMetrics storeLagInfo) {
         Set<TopicPartition> topics = meta.topicPartitions();
+
         TopicPartition tp = topics.stream().findFirst().get();
+
         this.partition = tp.partition();
         this.changelogEndOffset = storeLagInfo.getEndOffset();
         this.lag = storeLagInfo.getCurrentLag();

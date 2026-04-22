@@ -7,6 +7,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class JsonIndexModel extends LHSerializable<JsonIndex> {
+
     private String fieldPath;
     private VariableType fieldType;
 
@@ -18,6 +19,7 @@ public class JsonIndexModel extends LHSerializable<JsonIndex> {
     @Override
     public JsonIndex.Builder toProto() {
         JsonIndex.Builder out = JsonIndex.newBuilder().setFieldPath(fieldPath).setFieldType(fieldType);
+
         return out;
     }
 

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ServerACLModel extends LHSerializable<ServerACL> {
+
     private List<ACLResource> resources = new ArrayList<>();
     private List<ACLAction> allowedActions = new ArrayList<>();
     private Optional<String> name = Optional.empty();

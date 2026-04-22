@@ -42,8 +42,11 @@ public class SearchTenantRequestModel
     @Override
     public SearchTenantRequest.Builder toProto() {
         SearchTenantRequest.Builder builder = SearchTenantRequest.newBuilder();
+
         if (bookmark != null) builder.setBookmark(bookmark.toByteString());
+
         if (limit != null) builder.setLimit(limit);
+
         return builder;
     }
 

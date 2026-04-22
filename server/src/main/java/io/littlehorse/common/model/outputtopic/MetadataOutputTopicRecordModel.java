@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.MetadataOutputTopicRecord.MetadataRecordC
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutputTopicRecord> {
+
     private MetadataRecordCase recordCase;
     private WfSpecModel wfSpec;
     private TaskDefModel taskDef;
@@ -36,6 +37,7 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
     @Override
     public MetadataOutputTopicRecord.Builder toProto() {
         MetadataOutputTopicRecord.Builder result = MetadataOutputTopicRecord.newBuilder();
+
         switch (recordCase) {
             case WF_SPEC:
                 result.setWfSpec(wfSpec.toProto());
@@ -57,6 +59,7 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
                 break;
             case METADATARECORD_NOT_SET:
         }
+
         return result;
     }
 

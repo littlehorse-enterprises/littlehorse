@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.proto.ACLResource;
 import java.util.Objects;
 
 public class AuthorizationRule {
+
     private ACLResource resource;
     private ACLAction action;
 

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PartitionMetricsMemoryStore {
+
     private final Map<String, PartitionMetricWindowModel> metrics = new HashMap<>();
 
     public void put(PartitionMetricWindowModel windowMetric) {

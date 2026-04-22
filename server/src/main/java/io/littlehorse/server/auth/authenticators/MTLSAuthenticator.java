@@ -26,21 +26,27 @@ public class MTLSAuthenticator implements LHServerInterceptor {
     @Override
     public <ReqT, RespT> Listener<ReqT> interceptCall(
             ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
+
         SSLSession clientTlsInfo = call.getAttributes().get(Grpc.TRANSPORT_ATTR_SSL_SESSION);
+
         if (clientTlsInfo == null) {
             throw new IllegalStateException(
                     "MTLSAuthenticator should only be used on MTLS ports, so SSLSession should be present");
         }
+
         String commonName;
         try {
             // Determine commonName from the client certificate
             Principal peerPrincipal = clientTlsInfo.getPeerPrincipal(); // NOT a littlehorse Principal
+
             LdapName ln = new LdapName(peerPrincipal.getName());
+
             List<String> commonNames = ln.getRdns().stream()
                     .filter(rdn -> rdn.getType().equalsIgnoreCase("CN"))
                     .map(Rdn::getValue)
                     .map(Object::toString)
                     .toList();
+
             if (commonNames.size() == 0) {
                 // This happens when the client certificate does not have a CommonName.
                 // Note that the interceptor wouldn't even be called if the SSL handshake failed,
@@ -52,6 +58,7 @@ public class MTLSAuthenticator implements LHServerInterceptor {
             } else {
                 commonName = commonNames.get(0);
             }
+
             headers.put(CLIENT_ID, commonName);
             log.trace("Got common name from client certificate: {}", commonName);
             return next.startCall(call, headers);

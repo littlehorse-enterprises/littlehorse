@@ -54,8 +54,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
     private int timeoutSeconds;
     private TaskStatus status;
     private int totalCheckpoints;
+
     private int simpleTotalAttempts;
     private ExponentialBackoffRetryPolicyModel exponentialBackoffRetryPolicy;
+
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
     private CoreProcessorContext processorContext;
@@ -81,9 +83,12 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         this.executionContext = processorContext;
         this.processorContext = processorContext;
         this.id = id;
+
         this.simpleTotalAttempts = 1 + node.getSimpleRetries();
         this.exponentialBackoffRetryPolicy = node.getExponentialBackoffRetryPolicy();
+
         this.attempts.add(new TaskAttemptModel());
+
         transitionTo(TaskStatus.TASK_SCHEDULED);
     }
 
@@ -101,6 +106,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         status = p.getStatus();
         timeoutSeconds = p.getTimeoutSeconds();
         taskRunSource = LHSerializable.fromProto(p.getSource(), TaskRunSourceModel.class, context);
+
         for (TaskAttempt attempt : p.getAttemptsList()) {
             attempts.add(LHSerializable.fromProto(attempt, TaskAttemptModel.class, context));
         }
@@ -108,10 +114,12 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             inputVariables.add(LHSerializable.fromProto(v, VarNameAndValModel.class, context));
         }
         simpleTotalAttempts = p.getTotalAttempts();
+
         if (p.hasExponentialBackoff()) {
             exponentialBackoffRetryPolicy = LHSerializable.fromProto(
                     p.getExponentialBackoff(), ExponentialBackoffRetryPolicyModel.class, context);
         }
+
         this.totalCheckpoints = p.getTotalCheckpoints();
         this.executionContext = context;
         this.processorContext = context.castOnSupport(CoreProcessorContext.class);
@@ -128,6 +136,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 .setId(id.toProto())
                 .setTotalAttempts(simpleTotalAttempts)
                 .setTotalCheckpoints(totalCheckpoints);
+
         for (VarNameAndValModel v : inputVariables) {
             out.addInputVariables(v.toProto());
         }
@@ -137,6 +146,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         if (exponentialBackoffRetryPolicy != null) {
             out.setExponentialBackoff(exponentialBackoffRetryPolicy.toProto());
         }
+
         return out;
     }
 
@@ -245,15 +255,19 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
     public void onTaskAttemptStarted(TaskClaimEventModel se) {
         TaskAttemptModel attempt = getLatestAttempt();
         Date scheduleTime = attempt.getScheduleTime();
+
         transitionTo(TaskStatus.TASK_RUNNING);
+
         // create a timer to mark the task is timeout if it does not finish
         sendUpdatedTimeoutTimerCommand(processorContext);
+
         // Now that that's out of the way, we can mark the TaskRun as running.
         // Also we need to save the task worker version and client id.
         attempt.setTaskWorkerId(se.getTaskWorkerId());
         attempt.setTaskWorkerVersion(se.getTaskWorkerVersion());
         attempt.setStartTime(se.getTime());
         attempt.setStatus(TaskStatus.TASK_RUNNING);
+
         PartitionMetricWindowModel.trackTaskAttempt(
                 processorContext,
                 taskDefId,
@@ -283,10 +297,13 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         if (taskRunReport.getAttemptNumber() >= attempts.size()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Task Attempt does not exist!");
         }
+
         if (totalCheckpoints != taskRunReport.getTotalCheckpoints()) {
             log.trace("Ignoring stale ReportTaskRun from previous observed generation.");
         }
+
         TaskAttemptModel attempt = attempts.get(taskRunReport.getAttemptNumber());
+
         if (attempt.getStatus() != TaskStatus.TASK_RUNNING) {
             // The task result has already been processed, so ignore this event.
             // Example:
@@ -305,12 +322,15 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             return;
         }
         TaskDefModel taskDef = executionContext.metadataManager().get(taskDefId);
+
         Optional<TypeDefinitionModel> returnType = taskDef.getReturnType().getOutputType();
         if (returnType.isPresent() && returnType.get().isMasked()) {
             attempt.setMaskedValue(true);
         }
+
         attempt.setEndTime(taskRunReport.getTime());
         attempt.setLogOutput(taskRunReport.getLogOutput());
+
         String taskOutputValidationError = null;
         if (taskRunReport.getStatus() == TaskStatus.TASK_SUCCESS
                 && returnType.isPresent()
@@ -322,6 +342,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 taskOutputValidationError = "Task output incompatible with declared return type: " + ex.getMessage();
             }
         }
+
         if (taskRunReport.getOutput() != null
                 && taskRunReport.getOutput().getDeserializationError().isPresent()) {
             attempt.setError(new LHTaskErrorModel(
@@ -349,6 +370,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 transitionTo(taskRunReport.getStatus());
             }
         }
+
         PartitionMetricWindowModel.trackTaskAttempt(
                 processorContext,
                 taskDefId,
@@ -356,6 +378,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 attempt.getStatus(),
                 attempt.getStartTime(),
                 attempt.getEndTime());
+
         // The WfRun may need to advance.
         processorContext.getableManager().get(getWfRunId()).advance(taskRunReport.getTime());
     }
@@ -379,8 +402,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         if (attempt.getStatus() != TaskStatus.TASK_PENDING) {
             throw new IllegalStateException("Cannot schedule task attempt that isn\'t in PENDING state");
         }
+
         attempt.setStatus(TaskStatus.TASK_SCHEDULED);
         attempt.setScheduleTime(new Date());
+
         PartitionMetricWindowModel.trackTaskAttempt(
                 processorContext,
                 taskDefId,
@@ -388,6 +413,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 TaskStatus.TASK_SCHEDULED,
                 attempt.getPendingTime(),
                 attempt.getScheduleTime());
+
         ScheduledTaskModel scheduledTask = new ScheduledTaskModel();
         scheduledTask.setVariables(inputVariables);
         scheduledTask.setAttemptNumber(attempts.size() - 1);
@@ -396,6 +422,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         scheduledTask.setTaskDefId(taskDefId);
         scheduledTask.setTaskRunId(id);
         scheduledTask.setTotalCheckpoints(totalCheckpoints);
+
         processorContext.getTaskManager().scheduleTask(scheduledTask);
     }
 
@@ -406,10 +433,12 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             // This really shouldn't happen I think
             return false;
         }
+
         if (latest.getStatus() != TaskStatus.TASK_FAILED && latest.getStatus() != TaskStatus.TASK_TIMEOUT) {
             // Can only retry timeout or task failure.
             return false;
         }
+
         return simpleTotalAttempts > attempts.size();
     }
 
@@ -419,10 +448,12 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             dispatchTaskToQueue();
             return;
         }
+
         long delayMs = exponentialBackoffRetryPolicy.calculateDelayForNextAttempt(attempts.size());
         Date maturationTime = new Date(System.currentTimeMillis() + delayMs);
         LHTimer timer = new LHTimer(new CommandModel(new TaskAttemptRetryReadyModel(id), maturationTime));
         processorContext.getTaskManager().scheduleTimer(timer);
+
         TaskAttemptModel nextAttempt = new TaskAttemptModel();
         attempts.add(nextAttempt);
     }
@@ -434,6 +465,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 .getableUpdates()
                 .dispatch(GetableUpdates.create(
                         taskDefId, processorContext.authorization().tenantId(), previousStatus, newStatus));
+
         if (isTerminalStatus(newStatus)) {
             Date endTime = getLatestAttempt() != null ? getLatestAttempt().getEndTime() : null;
             PartitionMetricWindowModel.trackTaskRun(processorContext, taskDefId, newStatus, scheduledAt, endTime);

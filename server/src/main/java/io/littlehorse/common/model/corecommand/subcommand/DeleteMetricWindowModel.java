@@ -11,6 +11,7 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class DeleteMetricWindowModel extends CoreSubCommand<DeleteMetricWindow> {
+
     private MetricWindowIdModel id;
 
     @Override

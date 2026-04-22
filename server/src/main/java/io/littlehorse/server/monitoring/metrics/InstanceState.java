@@ -20,8 +20,10 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener, C
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(InstanceState.class);
     private final KafkaStreams streams;
     private KafkaStreams.State currentState;
+
     private static final String METRIC_NAME = "active_tasks_count";
     private final Map<Integer, Integer> activeTaskBySubTopology = new HashMap<>();
+
     private static final int GLOBAL_SUB_TOPOLOGY_ID = 0;
     private static final int CORE_SUB_TOPOLOGY_ID = 1;
     private static final int REPARTITION_SUB_TOPOLOGY_ID = 2;
@@ -65,6 +67,7 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener, C
                 currentActiveTaskIds.add(activeTask.taskId());
             }
         }
+
         if (newState == KafkaStreams.State.RUNNING) {
             activeTasks.set(currentActiveTaskIds);
             try {

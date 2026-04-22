@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Optional;
 
 public class EntrypointRunModel extends SubNodeRun<EntrypointRun> {
+
     private CoreProcessorContext context;
 
     @Override

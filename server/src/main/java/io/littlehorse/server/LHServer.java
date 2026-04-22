@@ -47,8 +47,10 @@ public class LHServer {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LHServer.class);
     private LHServerConfig config;
     private TaskQueueManager taskQueueManager;
+
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
+
     private BackendInternalComms internalComms;
     private HealthService healthService;
     private Context.Key<RequestExecutionContext> contextKey = Context.key("executionContextKey");
@@ -86,6 +88,7 @@ public class LHServer {
             log.error("Uncaught exception for " + throwable.getMessage());
             return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
         });
+
         if (config.isTimerStreamsEnabled()) {
             this.timerStreams =
                     new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
@@ -94,9 +97,11 @@ public class LHServer {
                 return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
             });
         }
+
         coreStoreProvider = new CoreStoreProvider(this.coreStreams);
         this.internalComms = new BackendInternalComms(
                 config, coreStreams, timerStreams, metadataCache, contextKey, coreStoreProvider, asyncWaiters);
+
         // Health Server Setup
         this.healthService = new HealthService(
                 new NettyStatusServer(),
@@ -164,6 +169,7 @@ public class LHServer {
         String fakeUuid = String.format(
                 "%08d-0000-0000-0000-000000000000", config.getLHInstanceId().get());
         String fileContent = String.format("{\"processId\":\"" + fakeUuid + "\"}");
+
         try {
             Path stateDir = Path.of(config.getStateDirectory());
             Path streamsDir = stateDir.resolve(config.getKafkaGroupId(topology));
@@ -175,6 +181,7 @@ public class LHServer {
                 writer.write(fileContent);
                 log.info("Overwrote kafka-streams-process-metadata with content: {}", fileContent);
             }
+
         } catch (IOException exn) {
             throw new LHMisconfigurationException("Failed overriding Streams Process ID", exn);
         }
@@ -193,6 +200,7 @@ public class LHServer {
     }
 
     public void close() {
+
         CountDownLatch streamLatch = new CountDownLatch(timerStreams != null ? 2 : 1);
         if (timerStreams != null) {
             new Thread(() -> {
@@ -203,6 +211,7 @@ public class LHServer {
                     })
                     .start();
         }
+
         new Thread(() -> {
                     log.info("Closing core Kafka Streams");
                     coreStreams.close(new CloseOptions().leaveGroup(true));
@@ -216,7 +225,9 @@ public class LHServer {
         } catch (InterruptedException exn) {
             throw new IllegalStateException("Failed to shut down Kafka Stream threads", exn);
         }
+
         CountDownLatch latch = new CountDownLatch(2);
+
         new Thread(() -> {
                     log.info("Closing internalComms");
                     internalComms.close();
@@ -224,6 +235,7 @@ public class LHServer {
                     log.info("Done closing internalComms");
                 })
                 .start();
+
         new Thread(() -> {
                     log.info("Closing health service");
                     healthService.close();
@@ -237,6 +249,7 @@ public class LHServer {
         } catch (InterruptedException exn) {
             throw new IllegalStateException("Failed to shut down internalComms and health service", exn);
         }
+
         for (LHServerListener listener : listeners) {
             log.info("Closing listener {}", listener);
             listener.close();

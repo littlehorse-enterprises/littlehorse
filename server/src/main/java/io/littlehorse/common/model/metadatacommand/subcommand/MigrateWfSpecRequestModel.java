@@ -16,6 +16,7 @@ import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 
 public class MigrateWfSpecRequestModel extends MetadataSubCommand<MigrateWfSpecRequest> {
+
     private WfSpecIdModel oldWfSpecId;
     private WfSpecVersionMigrationModel migration;
 
@@ -29,6 +30,7 @@ public class MigrateWfSpecRequestModel extends MetadataSubCommand<MigrateWfSpecR
         MigrateWfSpecRequest.Builder out = MigrateWfSpecRequest.newBuilder()
                 .setOldWfSpec(oldWfSpecId.toProto())
                 .setMigration(migration.toProto());
+
         return out;
     }
 
@@ -44,10 +46,12 @@ public class MigrateWfSpecRequestModel extends MetadataSubCommand<MigrateWfSpecR
         WfService service = metadataContext.service();
         MetadataManager metadataManager = metadataContext.metadataManager();
         WfSpecModel oldWfSpec = service.getWfSpec(oldWfSpecId);
+
         if (oldWfSpec == null) {
             throw new LHApiException(
                     Status.NOT_FOUND, "Migration refers to nonexisting WfSpec %s".formatted(oldWfSpecId.toString()));
         }
+
         WfSpecModel newWfSpec = service.getWfSpec(getNewWfSpecId());
         if (newWfSpec == null) {
             throw new LHApiException(
@@ -55,10 +59,13 @@ public class MigrateWfSpecRequestModel extends MetadataSubCommand<MigrateWfSpecR
                     "Migration refers to nonexisting WfSpec %s version %d"
                             .formatted(this.oldWfSpecId.getName(), migration.getNewMajorVersion()));
         }
+
         migration.validate(oldWfSpec, newWfSpec);
         newWfSpec.setMigration(migration);
+
         // Future work: do a bulk update to "force" the update rather than doing lazy loading,
         // which means that the WfRun is updated only when it next advances.
+
         metadataManager.put(newWfSpec);
         // return newWfSpec.toProto().build();
         throw new LHApiException(Status.UNIMPLEMENTED, "WfSpec Version Migration is ongoing");

@@ -11,6 +11,7 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class ParentHaltedModel extends LHSerializable<ParentHalted> implements SubHaltReason {
+
     public int parentThreadId;
 
     @Override
@@ -35,6 +36,7 @@ public class ParentHaltedModel extends LHSerializable<ParentHalted> implements S
     public boolean isResolved(ThreadRunModel haltedThread) {
         WfRunModel wfRun = haltedThread.getWfRun();
         ThreadRunModel parent = wfRun.getThreadRun(parentThreadId);
+
         if (parent.getStatus() == LHStatus.HALTING || parent.getStatus() == LHStatus.HALTED) {
             return isParentOnlyHaltedBecauseWeAreInterruptingIt(parent, haltedThread);
         } else if (parent.getStatus() == LHStatus.EXCEPTION || parent.getStatus() == LHStatus.ERROR) {
@@ -46,6 +48,7 @@ public class ParentHaltedModel extends LHSerializable<ParentHalted> implements S
 
     private boolean isParentOnlyHaltedBecauseWeAreInterruptingIt(ThreadRunModel parent, ThreadRunModel haltedThread) {
         if (parent.getHaltReasons().size() > 1) return false;
+
         ThreadHaltReasonModel haltReason = parent.getHaltReasons().get(0);
         if (haltReason.getType() == ReasonCase.INTERRUPTED) {
             return haltReason.getInterrupted().interruptThreadId == haltedThread.getNumber();

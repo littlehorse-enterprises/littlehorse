@@ -13,6 +13,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 
 public class VariableIdModel extends CoreObjectId<VariableId, Variable, VariableModel> {
+
     private WfRunIdModel wfRunId;
     private int threadRunNumber;
     // for unit test

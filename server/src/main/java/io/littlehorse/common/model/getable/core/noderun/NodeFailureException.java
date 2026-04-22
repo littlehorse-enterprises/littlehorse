@@ -8,6 +8,7 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
  * the ThreadRunModel#fail() method, since the NodeRunModel should not
  */
 public class NodeFailureException extends Exception {
+
     /**
      * The LittleHorse Workflow Failure that was thrown.
      */

@@ -40,6 +40,7 @@ public final class StandbyMetrics implements MeterBinder, Closeable {
                 .tag(STORE_NAME, storeName)
                 .tag(INSTANCE_ID, instanceId)
                 .register(registry));
+
         // total lag per store
         standbyStores.forEach(
                 (storeName, storeStatus) -> Gauge.builder(METRIC_NAME, storeStatus, StandbyStoresOnInstance::totalLag)

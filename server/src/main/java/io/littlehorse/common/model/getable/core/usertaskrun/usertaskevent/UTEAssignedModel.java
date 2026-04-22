@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.UserTaskEvent.UTEAssigned;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class UTEAssignedModel extends LHSerializable<UTEAssigned> {
+
     private String oldUserId;
     private String newUserId;
     private String oldUserGroup;

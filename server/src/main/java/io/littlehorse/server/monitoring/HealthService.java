@@ -31,11 +31,13 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
     private final StatusServer statusServer;
     private final Gson gson = new Gson();
     private LHServerConfig config;
+
     private Map<TopicPartition, InProgressRestoration> restorations;
     private final Map<String, Integer> numberOfPartitionPerTopic;
     private InstanceState coreState;
     private final Map<String, StandbyStoresOnInstance> standbyStores = new ConcurrentHashMap<>();
     private State timerState;
+
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
 
@@ -49,7 +51,9 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             BackendInternalComms internalComms) {
         this.prom = new PrometheusMetricExporter(config);
         this.statusServer = statusServer;
+
         this.numberOfPartitionPerTopic = config.partitionsByTopic();
+
         this.coreState = new InstanceState(coreStreams, internalComms);
         this.prom.bind(
                 coreStreams,
@@ -58,8 +62,10 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
                 metadataCache,
                 new StandbyMetrics(standbyStores, config.getLHInstanceName()),
                 coreState);
+
         this.coreStreams = coreStreams;
         this.timerStreams = timerStreams;
+
         this.config = config;
         this.restorations = new ConcurrentHashMap<>();
         statusServer.handle(config.getPrometheusExporterPath(), ContentType.TEXT, () -> prom.handleRequest());
@@ -68,9 +74,11 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         statusServer.handle(config.getStatusPath(), ContentType.JSON, this::getStatus);
         statusServer.handle(config.getDiskUsagePath(), ContentType.JSON, this::getDiskUsage);
         statusServer.handle(config.getStandbyStatusPath(), ContentType.JSON, this::getStandbyStatus);
+
         coreStreams.setStandbyUpdateListener(this);
         coreStreams.setGlobalStateRestoreListener(this);
         coreStreams.setStateListener(coreState);
+
         if (timerStreams != null) {
             this.timerState = State.CREATED;
             timerStreams.setGlobalStateRestoreListener(this);
@@ -128,6 +136,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         // it is possible we are restoring state, which means that some partitions might actually
         // be alive, and those partitions can answer requests).
         Predicate<State> isReady = state -> state == State.RUNNING || state == State.REBALANCING;
+
         if (isReady.test(coreState.getCurrentState())) {
             return "OK!";
         } else {
@@ -149,8 +158,10 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             }
             return false;
         };
+
         boolean coreAlive = isAlive.test(coreState.getCurrentState());
         boolean timerAlive = timerState == null || isAlive.test(timerState);
+
         if (coreAlive && timerAlive) {
             return "OK!";
         } else {

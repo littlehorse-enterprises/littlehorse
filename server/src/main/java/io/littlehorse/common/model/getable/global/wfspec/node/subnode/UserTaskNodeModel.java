@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserTaskNodeModel extends SubNode<UserTaskNode> {
+
     private String userTaskDefName;
     private VariableAssignmentModel userGroup;
     private VariableAssignmentModel userId;
@@ -50,24 +51,30 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
     public UserTaskNode.Builder toProto() {
         UserTaskNode.Builder out = UserTaskNode.newBuilder().setUserTaskDefName(userTaskDefName);
+
         if (userId != null) {
             out.setUserId(userId.toProto());
         }
         if (userGroup != null) {
             out.setUserGroup(userGroup.toProto());
         }
+
         for (UTActionTriggerModel action : actions) {
             out.addActions(action.toProto());
         }
+
         if (userTaskDefVersion != null) {
             out.setUserTaskDefVersion(userTaskDefVersion);
         }
+
         if (notes != null) {
             out.setNotes(notes.toProto());
         }
+
         if (onCancellationException != null) {
             out.setOnCancellationExceptionName(onCancellationException.toProto());
         }
+
         return out;
     }
 
@@ -77,12 +84,15 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         userTaskDefName = p.getUserTaskDefName();
         if (p.hasUserGroup()) userGroup = VariableAssignmentModel.fromProto(p.getUserGroup(), context);
         if (p.hasUserId()) userId = VariableAssignmentModel.fromProto(p.getUserId(), context);
+
         if (p.hasUserTaskDefVersion()) {
             userTaskDefVersion = p.getUserTaskDefVersion();
         }
+
         for (UTActionTrigger action : p.getActionsList()) {
             actions.add(LHSerializable.fromProto(action, UTActionTriggerModel.class, context));
         }
+
         if (p.hasNotes()) {
             notes = LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class, context);
         }
@@ -118,20 +128,25 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         } else {
             utd = metadataManager.get(new UserTaskDefIdModel(userTaskDefName, userTaskDefVersion));
         }
+
         if (utd == null) {
             throw new InvalidNodeException(
                     "Specified UserTaskDef " + userTaskDefName + "/" + userTaskDefVersion + " not found", node);
         }
+
         // Now pin the version
         userTaskDefVersion = utd.version;
+
         if (userId == null && userGroup == null) {
             throw new InvalidNodeException("Must specify userGroup or userId", node);
         }
+
         if (userId != null
                 && userId.getRhsLiteralValue() != null
                 && userId.getRhsLiteralValue().getStrVal().trim().isEmpty()) {
             throw new InvalidNodeException("UserId can\'t be empty", node);
         }
+
         if (userGroup != null
                 && userGroup.getRhsLiteralValue() != null
                 && userGroup.getRhsLiteralValue().getStrVal().trim().isEmpty()) {

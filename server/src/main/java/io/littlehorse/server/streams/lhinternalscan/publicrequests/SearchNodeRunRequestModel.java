@@ -49,8 +49,10 @@ public class SearchNodeRunRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
+
         if (p.hasEarliestStart()) earliestStart = p.getEarliestStart();
         if (p.hasLatestStart()) latestStart = p.getLatestStart();
+
         externalEventDefId =
                 ExternalEventDefIdModel.fromProto(p.getExternalEventDef(), ExternalEventDefIdModel.class, context);
     }
@@ -64,6 +66,7 @@ public class SearchNodeRunRequestModel
         if (limit != null) {
             out.setLimit(limit);
         }
+
         if (earliestStart != null) out.setEarliestStart(earliestStart);
         if (latestStart != null) out.setLatestStart(latestStart);
         return out;

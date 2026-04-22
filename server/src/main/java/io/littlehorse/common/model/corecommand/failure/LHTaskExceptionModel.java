@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.LHTaskException;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class LHTaskExceptionModel extends LHSerializable<LHTaskException> {
+
     private String name;
     private String message;
     private VariableValueModel content;

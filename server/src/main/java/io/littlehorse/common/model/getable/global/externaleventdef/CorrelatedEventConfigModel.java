@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.CorrelatedEventConfig;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class CorrelatedEventConfigModel extends LHSerializable<CorrelatedEventConfig> {
+
     private Long ttlSeconds;
     private boolean deleteAfterFirstCorrelation;
 

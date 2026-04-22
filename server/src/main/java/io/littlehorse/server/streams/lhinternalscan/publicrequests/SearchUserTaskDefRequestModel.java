@@ -55,6 +55,7 @@ public class SearchUserTaskDefRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
+
         type = p.getUserTaskDefCriteriaCase();
         switch (type) {
             case NAME:

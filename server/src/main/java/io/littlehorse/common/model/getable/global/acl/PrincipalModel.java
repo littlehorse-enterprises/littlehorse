@@ -40,6 +40,7 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
         this.id = LHSerializable.fromProto(principal.getId(), PrincipalIdModel.class, context);
         this.globalAcls = LHSerializable.fromProto(principal.getGlobalAcls(), ServerACLsModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(principal.getCreatedAt());
+
         for (Map.Entry<String, ServerACLs> tenantAcls :
                 principal.getPerTenantAclsMap().entrySet()) {
             perTenantAcls.put(
@@ -50,16 +51,20 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
 
     @Override
     public Principal.Builder toProto() {
+
         Principal.Builder out =
                 Principal.newBuilder().setId(this.id.toProto()).setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+
         if (globalAcls != null) {
             out.setGlobalAcls(globalAcls.toProto());
         }
+
         for (Map.Entry<String, ServerACLsModel> perTenantACL : perTenantAcls.entrySet()) {
             String tenantId = perTenantACL.getKey();
             ServerACLs acls = perTenantACL.getValue().toProto().build();
             out.putPerTenantAcls(tenantId, acls);
         }
+
         return out;
     }
 
@@ -105,6 +110,7 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
                     .map(tenantId -> new IndexedField(key, tenantId, TagStorageType.LOCAL))
                     .toList();
         }
+
         log.warn("Unrecognized index key for PrincipalModel: {}", key);
         return List.of();
     }

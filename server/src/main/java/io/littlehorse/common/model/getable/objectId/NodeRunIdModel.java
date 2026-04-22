@@ -13,6 +13,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 
 public class NodeRunIdModel extends CoreObjectId<NodeRunId, NodeRun, NodeRunModel> {
+
     private WfRunIdModel wfRunId;
     private int threadRunNumber;
     private int position;

@@ -14,6 +14,7 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class DeleteExternalEventRequestModel extends CoreSubCommand<DeleteExternalEventRequest> {
+
     private ExternalEventIdModel id;
 
     public String getPartitionKey() {
@@ -27,6 +28,7 @@ public class DeleteExternalEventRequestModel extends CoreSubCommand<DeleteExtern
     public DeleteExternalEventRequest.Builder toProto() {
         DeleteExternalEventRequest.Builder out =
                 DeleteExternalEventRequest.newBuilder().setId(id.toProto());
+
         return out;
     }
 

@@ -177,6 +177,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final Duration successDurationTimeout;
     private final AsyncWaiters asyncWaiters;
     private final LHInternalClient lhInternalClient;
+
     private Server grpcListener;
 
     private RequestExecutionContext requestContext() {
@@ -195,6 +196,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             CommandSender commandSender,
             AsyncWaiters asyncWaiters,
             LHInternalClient lhInternalClient) {
+
         // All dependencies are passed in as arguments; nothing is instantiated here,
         // because all listeners share the same threading infrastructure.
         this.lhInternalClient = lhInternalClient;
@@ -208,13 +210,16 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         this.contextKey = contextKey;
         this.successDurationTimeout =
                 Duration.ofMillis(serverConfig.getStreamsSessionTimeout()).plusSeconds(10);
+
         this.grpcListener = null;
+
         ServerBuilder<?> builder = Grpc.newServerBuilderForPort(
                         listenerConfig.getPort(), listenerConfig.getCredentials())
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
                 .addService(this)
                 .executor(networkThreads);
+
         for (ServerInterceptor interceptor : interceptors) {
             builder.intercept(interceptor);
         }
@@ -340,6 +345,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.READ)
     public void getStructDef(StructDefId req, StreamObserver<StructDef> ctx) {
         StructDefModel sd = getServiceFromContext().getStructDef(req.getName(), req.getVersion());
+
         if (sd == null) {
             throw new LHApiException(
                     Status.NOT_FOUND,
@@ -406,6 +412,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             ValidateStructDefEvolutionRequest req, StreamObserver<ValidateStructDefEvolutionResponse> ctx) {
         ValidateStructDefEvolutionRequestModel reqModel =
                 LHSerializable.fromProto(req, ValidateStructDefEvolutionRequestModel.class, requestContext());
+
         ctx.onNext(reqModel.validate(requestContext().metadataManager()));
         ctx.onCompleted();
     }
@@ -461,12 +468,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.WRITE_METADATA)
     public void assignUserTaskRun(AssignUserTaskRunRequest req, StreamObserver<Empty> ctx) {
+
         if (req.hasUserId() && req.getUserId().trim().isEmpty()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "UserId can\'t be empty");
         }
+
         if (req.hasUserGroup() && req.getUserGroup().trim().isEmpty()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "UserGroup can\'t be empty");
         }
+
         AssignUserTaskRunRequestModel reqModel =
                 LHSerializable.fromProto(req, AssignUserTaskRunRequestModel.class, requestContext());
         processCommand(new CommandModel(reqModel), ctx, Empty.class);
@@ -501,6 +511,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putUserTaskRunComment(PutUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
         PutUserTaskRunCommentReqeustModel reqModel =
                 LHSerializable.fromProto(req, PutUserTaskRunCommentReqeustModel.class, requestContext());
+
         processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
     }
 
@@ -509,6 +520,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void deleteUserTaskRunComment(DeleteUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
         DeleteUserTaskRunCommentRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteUserTaskRunCommentRequestModel.class, requestContext());
+
         processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
     }
 
@@ -517,6 +529,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void editUserTaskRunComment(EditUserTaskRunCommentRequest req, StreamObserver<UserTaskRun> ctx) {
         EditUserTaskRunCommentRequestModel reqModel =
                 LHSerializable.fromProto(req, EditUserTaskRunCommentRequestModel.class, requestContext());
+
         processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class);
     }
 
@@ -565,11 +578,13 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         if (Strings.isNullOrEmpty(req.getWfSpecName())) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument \'wf_spec_name\'");
         }
+
         if (req.hasId()) {
             if (req.getId().equals("") || !LHUtil.isValidLHName(req.getId())) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument \'id\' must be a valid hostname");
             }
         }
+
         RunWfRequestModel reqModel = LHSerializable.fromProto(req, RunWfRequestModel.class, requestContext());
         processCommand(new CommandModel(reqModel), ctx, WfRun.class);
     }
@@ -601,14 +616,18 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void registerTaskWorker(
             RegisterTaskWorkerRequest req, StreamObserver<RegisterTaskWorkerResponse> responseObserver) {
         log.trace("Receiving RegisterTaskWorkerRequest (heartbeat) from: " + req.getTaskWorkerId());
+
         TaskWorkerHeartBeatRequest heartBeatPb = TaskWorkerHeartBeatRequest.newBuilder()
                 .setClientId(req.getTaskWorkerId())
                 .setListenerName(this.listenerName)
                 .setTaskDefId(req.getTaskDefId())
                 .build();
+
         TaskWorkerHeartBeatRequestModel heartBeat =
                 LHSerializable.fromProto(heartBeatPb, TaskWorkerHeartBeatRequestModel.class, requestContext());
+
         ClusterHealthRequestObserver clusterHealthRequestObserver = new ClusterHealthRequestObserver(responseObserver);
+
         processCommand(new CommandModel(heartBeat), clusterHealthRequestObserver, RegisterTaskWorkerResponse.class);
     }
 
@@ -859,6 +878,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             ctx.onError(LHUtil.toGrpcError(exn));
             return;
         }
+
         try {
             InternalScanResponse raw = internalComms.doScan(req.getInternalSearch(requestContext()));
             if (raw.hasUpdatedBookmark()) {

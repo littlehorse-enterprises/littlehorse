@@ -17,6 +17,7 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
     public UTATaskModel task;
     public UTACancelModel cancel;
     public UTAReassignModel reassign;
+
     public UTHook hook;
     public VariableAssignmentModel delaySeconds;
 
@@ -28,6 +29,7 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
     @Override
     public UTActionTrigger.Builder toProto() {
         UTActionTrigger.Builder out = UTActionTrigger.newBuilder();
+
         switch (actionType) {
             case TASK:
                 out.setTask(task.toProto());

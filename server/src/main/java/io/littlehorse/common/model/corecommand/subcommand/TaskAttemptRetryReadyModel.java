@@ -13,6 +13,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class TaskAttemptRetryReadyModel extends CoreSubCommand<TaskAttemptRetryReady> {
+
     private TaskRunIdModel id;
 
     public TaskAttemptRetryReadyModel() {}
@@ -29,6 +30,7 @@ public class TaskAttemptRetryReadyModel extends CoreSubCommand<TaskAttemptRetryR
     @Override
     public TaskAttemptRetryReady.Builder toProto() {
         TaskAttemptRetryReady.Builder out = TaskAttemptRetryReady.newBuilder().setId(id.toProto());
+
         return out;
     }
 

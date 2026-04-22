@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SaveUserTaskRunProgressRequestModel extends CoreSubCommand<SaveUserTaskRunProgressRequest> {
+
     private UserTaskRunIdModel userTaskRunId;
     private Map<String, VariableValueModel> results;
     private String userId;
@@ -63,15 +64,19 @@ public class SaveUserTaskRunProgressRequestModel extends CoreSubCommand<SaveUser
         if (utr == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn\'t find provided UserTaskRun");
         }
+
         // Validate that the user is permitted to save the progress
         if (policy == SaveUserTaskRunAssignmentPolicy.FAIL_IF_CLAIMED_BY_OTHER) {
             if (utr.getUserId() != null && !userId.equals(utr.getUserId())) {
                 throw new LHApiException(Status.FAILED_PRECONDITION, "UserTaskRun is assigned to another user");
             }
         }
+
         utr.processProgressSavedEvent(this, executionContext);
+
         // No need to call WfRunModel#advance() since saving the progress of a UserTaskRun
         // will never cause any ThreadRun's to advance.
+
         return utr.toProto().build();
     }
 

@@ -11,7 +11,9 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(FailureHandlerDefModel.class);
     public String specificFailure;
     public String handlerSpecName;
+
     public NodeModel node;
+
     private LHFailureType type;
 
     public FailureHandlerDefModel() {}
@@ -22,6 +24,7 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
 
     public FailureHandlerDef.Builder toProto() {
         FailureHandlerDef.Builder out = FailureHandlerDef.newBuilder().setHandlerSpecName(handlerSpecName);
+
         if (specificFailure != null) out.setSpecificFailure(specificFailure);
         if (type != null) out.setAnyFailureOfType(type);
         return out;
@@ -52,18 +55,23 @@ public class FailureHandlerDefModel extends LHSerializable<FailureHandlerDef> {
             log.debug("Wildcard failure handler...accepting.");
             return true;
         }
+
         if (specificFailure.equals(failureName)) {
             log.debug("Exact match exception handler");
             return true;
         }
+
         log.debug("Specific: {} handling: {}", this.specificFailure, failureName);
+
         if (specificFailure.equals(LHConstants.VAR_ERROR)) {
             return (failureName.equals(LHConstants.VAR_MUTATION_ERROR)
                     || failureName.equals(LHConstants.VAR_SUB_ERROR));
         }
+
         if (specificFailure.equals(LHConstants.TASK_ERROR)) {
             return (failureName.equals(LHConstants.TASK_FAILURE) || failureName.equals(LHConstants.TIMEOUT));
         }
+
         return false;
     }
 

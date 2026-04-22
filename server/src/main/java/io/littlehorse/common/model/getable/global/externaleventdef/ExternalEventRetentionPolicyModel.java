@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Optional;
 
 public class ExternalEventRetentionPolicyModel extends LHSerializable<ExternalEventRetentionPolicy> {
+
     private ExtEvtGcPolicyCase type;
     private Integer secondsAfterPut;
 
@@ -25,6 +26,7 @@ public class ExternalEventRetentionPolicyModel extends LHSerializable<ExternalEv
     @Override
     public ExternalEventRetentionPolicy.Builder toProto() {
         ExternalEventRetentionPolicy.Builder out = ExternalEventRetentionPolicy.newBuilder();
+
         switch (type) {
             case SECONDS_AFTER_PUT:
                 out.setSecondsAfterPut(secondsAfterPut);

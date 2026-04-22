@@ -18,6 +18,7 @@ import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 
 public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkflowEventDefRequest>
         implements ClusterLevelCommand {
+
     private String name;
     private ReturnTypeModel contentType;
 
@@ -50,7 +51,9 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
     @Override
     public WorkflowEventDef process(MetadataProcessorContext executionContext) {
         validateReferencedStructDefs(executionContext);
+
         WorkflowEventDefIdModel id = new WorkflowEventDefIdModel(name);
+
         WorkflowEventDefModel old = executionContext.metadataManager().get(id);
         if (old != null) {
             if (!old.getContentType().equals(contentType)) {
@@ -60,6 +63,7 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
             }
             return old.toProto().build();
         }
+
         WorkflowEventDefModel newEventDef = new WorkflowEventDefModel(id, contentType);
         executionContext.metadataManager().put(newEventDef);
         return newEventDef.toProto().build();

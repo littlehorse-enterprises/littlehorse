@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class NodeOutputReferenceModel extends LHSerializable<NodeOutputReference> {
+
     private String nodeName;
 
     @Override

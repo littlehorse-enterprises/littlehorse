@@ -64,6 +64,7 @@ public class SearchExternalEventDefRequestModel
             out.setLimit(limit);
         }
         if (prefix != null) out.setPrefix(prefix);
+
         return out;
     }
 

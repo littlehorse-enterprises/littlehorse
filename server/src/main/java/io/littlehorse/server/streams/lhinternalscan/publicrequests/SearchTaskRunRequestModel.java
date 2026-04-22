@@ -50,19 +50,24 @@ public class SearchTaskRunRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
+
         taskDefName = p.getTaskDefName();
         if (p.hasStatus()) status = p.getStatus();
+
         if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
     }
 
     public SearchTaskRunRequest.Builder toProto() {
         SearchTaskRunRequest.Builder out = SearchTaskRunRequest.newBuilder().setTaskDefName(taskDefName);
+
         if (bookmark != null) out.setBookmark(bookmark.toByteString());
         if (limit != null) out.setLimit(limit);
+
         if (status != null) out.setStatus(status);
         if (earliestStart != null) out.setEarliestStart(LHUtil.fromDate(earliestStart));
         if (latestStart != null) out.setLatestStart(LHUtil.fromDate(latestStart));
+
         return out;
     }
 
@@ -76,9 +81,11 @@ public class SearchTaskRunRequestModel
     public List<Attribute> getSearchAttributes() {
         List<Attribute> out = new ArrayList<>();
         out.add(new Attribute("taskDefName", taskDefName));
+
         if (status != null) {
             out.add(new Attribute("status", status.toString()));
         }
+
         return out;
     }
 

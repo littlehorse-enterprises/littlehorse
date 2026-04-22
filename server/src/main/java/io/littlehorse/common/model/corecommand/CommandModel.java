@@ -44,7 +44,9 @@ import java.util.Date;
 import java.util.Optional;
 
 public class CommandModel extends AbstractCommand<Command> {
+
     public Date time;
+
     public CommandCase type;
     public ReportTaskRunModel reportTaskRun;
     public TaskClaimEventModel taskClaimEvent;
@@ -103,6 +105,7 @@ public class CommandModel extends AbstractCommand<Command> {
         if (commandId != null) {
             out.setCommandId(commandId);
         }
+
         switch (type) {
             case REPORT_TASK_RUN:
                 out.setReportTaskRun(reportTaskRun.toProto());
@@ -213,9 +216,11 @@ public class CommandModel extends AbstractCommand<Command> {
     public void initFrom(Message proto, ExecutionContext context) {
         Command p = (Command) proto;
         time = LHUtil.fromProtoTs(p.getTime());
+
         if (p.hasCommandId()) {
             commandId = p.getCommandId();
         }
+
         type = p.getCommandCase();
         switch (type) {
             case REPORT_TASK_RUN:

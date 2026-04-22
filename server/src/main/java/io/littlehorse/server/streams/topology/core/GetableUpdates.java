@@ -14,6 +14,7 @@ import java.util.Objects;
  * Hold information about new events related to WfRuns
  */
 public class GetableUpdates {
+
     private final List<GetableStatusListener> getableStatusListeners = new ArrayList<>();
 
     GetableUpdates() {}
@@ -46,6 +47,7 @@ public class GetableUpdates {
     }
 
     public static class GetableStatusUpdate {
+
         private final Date creationDate;
         private final TenantIdModel tenantId;
         private final long firstEventLatency;

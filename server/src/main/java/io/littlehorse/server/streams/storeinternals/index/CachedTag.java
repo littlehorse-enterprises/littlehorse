@@ -8,6 +8,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Objects;
 
 public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
+
     private String id;
     private boolean isRemote;
 
@@ -20,6 +21,7 @@ public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
 
     public CachedTag(Tag tag) {
         this.id = tag.getStoreKey();
+
         // When we re-enable remote tags, this will be more complex.
         this.isRemote = tag.isRemote();
     }

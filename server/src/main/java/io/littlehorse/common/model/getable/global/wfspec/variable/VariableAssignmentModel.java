@@ -33,6 +33,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     private PathCase pathCase;
     private String jsonPath;
     private LHPathModel lhPath;
+
     private SourceCase rhsSourceType;
     private String variableName;
     private VariableValueModel rhsLiteralValue;
@@ -49,7 +50,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public void initFrom(Message proto, ExecutionContext context) {
         VariableAssignment p = (VariableAssignment) proto;
         if (p.hasTargetType()) targetType = TypeDefinitionModel.fromProto(p.getTargetType(), context);
+
         pathCase = p.getPathCase();
+
         switch (pathCase) {
             case JSON_PATH:
                 jsonPath = p.getJsonPath();
@@ -59,6 +62,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case PATH_NOT_SET:
         }
+
         rhsSourceType = p.getSourceCase();
         switch (rhsSourceType) {
             case VARIABLE_NAME:
@@ -84,7 +88,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
 
     public VariableAssignment.Builder toProto() {
         VariableAssignment.Builder out = VariableAssignment.newBuilder();
+
         if (targetType != null) out.setTargetType(targetType.toProto());
+
         switch (pathCase) {
             case JSON_PATH:
                 out.setJsonPath(jsonPath);
@@ -94,6 +100,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case PATH_NOT_SET:
         }
+
         switch (rhsSourceType) {
             case VARIABLE_NAME:
                 out.setVariableName(variableName);
@@ -148,10 +155,13 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     public boolean canBeType(TypeDefinitionModel type, ThreadSpecModel tspec) {
         // Eww, gross...I really wish I designed strong typing into the system from day 1.
         if (jsonPath != null) return true;
+
         TypeDefinitionModel baseType = null;
+
         switch (rhsSourceType) {
             case VARIABLE_NAME:
                 VariableDefModel varDef = tspec.getVarDef(variableName).getVarDef();
+
                 // This will need to be refactored once we introduce Structs and StructDefs.
                 baseType = varDef.getTypeDef();
                 break;
@@ -176,6 +186,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
                 throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
+
         return TypeCastingUtils.canBeType(baseType, type);
     }
 
@@ -191,6 +202,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         if (targetType == null) {
             return sourceValue;
         }
+
         try {
             return targetType.applyCast(sourceValue);
         } catch (IllegalArgumentException e) {
@@ -215,7 +227,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             // which is why I wish we could kill JSON_OBJ with fire. Unfortunately, people use it...
             return Optional.empty();
         }
+
         TypeDefinitionModel typeDef = null;
+
         switch (rhsSourceType) {
             case VARIABLE_NAME:
                 typeDef = wfSpec.fetchThreadSpec(threadSpecName)
@@ -260,9 +274,11 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // it is better to return INVALID_ARGUMENT than INTERNAL.
                 throw new InvalidExpressionException("VariableAssignment passed with missing source");
         }
+
         if (lhPath != null) {
             return typeDef.getNestedType(lhPath, manager);
         }
+
         return Optional.ofNullable(typeDef);
     }
 

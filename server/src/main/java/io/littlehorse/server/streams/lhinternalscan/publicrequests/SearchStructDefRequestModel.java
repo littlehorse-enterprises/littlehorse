@@ -63,6 +63,7 @@ public class SearchStructDefRequestModel
         if (limit != null) {
             out.setLimit(limit);
         }
+
         switch (type) {
             case NAME:
                 out.setName(name);
@@ -87,6 +88,7 @@ public class SearchStructDefRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
+
         type = p.getStructDefCriteriaCase();
         switch (type) {
             case NAME:

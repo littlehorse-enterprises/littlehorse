@@ -9,6 +9,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class ThreadRetentionPolicyModel extends LHSerializable<ThreadRetentionPolicy> {
+
     private ThreadGcPolicyCase type;
     private long secondsAfterTermination;
 
@@ -34,6 +35,7 @@ public class ThreadRetentionPolicyModel extends LHSerializable<ThreadRetentionPo
     public void initFrom(Message proto, ExecutionContext context) {
         ThreadRetentionPolicy p = (ThreadRetentionPolicy) proto;
         type = p.getThreadGcPolicyCase();
+
         switch (type) {
             case SECONDS_AFTER_THREAD_TERMINATION:
                 secondsAfterTermination = p.getSecondsAfterThreadTermination();
@@ -44,6 +46,7 @@ public class ThreadRetentionPolicyModel extends LHSerializable<ThreadRetentionPo
     }
 
     private Date getScheduledTerminationFor(Date threadEndTime) {
+
         switch (type) {
             case SECONDS_AFTER_THREAD_TERMINATION:
                 return new Date(threadEndTime
@@ -52,6 +55,7 @@ public class ThreadRetentionPolicyModel extends LHSerializable<ThreadRetentionPo
                         .toEpochMilli());
             case THREADGCPOLICY_NOT_SET:
         }
+
         // If a future implementation of WorkflowRetentionPolicy returns null,
         // it means that the WfRun gets to hang out forever.
         return null;

@@ -11,6 +11,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 
 public class VariableMatchModel extends LHSerializable<VariableMatch> {
+
     private VariableValueModel value;
     private String varName;
 
@@ -36,7 +37,9 @@ public class VariableMatchModel extends LHSerializable<VariableMatch> {
     public boolean matchesCriteria(WfRunIdModel wfRunId, RequestExecutionContext ctx) {
         VariableIdModel varId = new VariableIdModel(wfRunId, 0, varName);
         VariableModel var = ctx.getableManager().get(varId);
+
         if (var == null) return false;
+
         VariableValueModel actualVal = var.getValue();
         return actualVal.equals(this.value);
     }

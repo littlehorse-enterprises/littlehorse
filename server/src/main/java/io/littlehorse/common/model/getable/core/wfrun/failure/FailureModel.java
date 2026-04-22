@@ -9,8 +9,10 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class FailureModel extends LHSerializable<Failure> {
+
     public String failureName;
     public String message;
+
     public VariableValueModel content;
     private boolean properlyHandled;
     private Integer failureHandlerThreadRunId;
@@ -43,8 +45,10 @@ public class FailureModel extends LHSerializable<Failure> {
                 .setMessage(message)
                 .setFailureName(failureName)
                 .setWasProperlyHandled(properlyHandled);
+
         if (content != null) out.setContent(content.toProto());
         if (failureHandlerThreadRunId != null) out.setFailureHandlerThreadrunId(failureHandlerThreadRunId);
+
         return out;
     }
 
@@ -54,9 +58,11 @@ public class FailureModel extends LHSerializable<Failure> {
         failureName = p.getFailureName();
         message = p.getMessage();
         properlyHandled = p.getWasProperlyHandled();
+
         if (p.hasContent()) {
             content = VariableValueModel.fromProto(p.getContent(), context);
         }
+
         if (p.hasFailureHandlerThreadrunId()) {
             failureHandlerThreadRunId = p.getFailureHandlerThreadrunId();
         }

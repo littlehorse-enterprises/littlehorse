@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.apache.kafka.common.TopicPartition;
 
 public class StandbyTopicPartitionMetrics implements Serializable {
+
     private final int partition;
     private final String topic;
     private final long currentOffset;

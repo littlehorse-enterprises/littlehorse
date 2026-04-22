@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TagsCache extends LHSerializable<TagsCachePb> {
+
     public Set<CachedTag> tags = new HashSet<>();
 
     public TagsCache() {}

@@ -6,6 +6,7 @@ import io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelled;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class UTECancelledModel extends LHSerializable<UTECancelled> {
+
     private String message = "";
 
     public UTECancelledModel() {}

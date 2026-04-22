@@ -7,6 +7,7 @@ import io.littlehorse.common.proto.LHStoreType;
 import java.util.Optional;
 
 public abstract class AbstractCommand<T extends Message> extends LHSerializable<T> {
+
     protected String commandId;
 
     public abstract LHStoreType getStore();

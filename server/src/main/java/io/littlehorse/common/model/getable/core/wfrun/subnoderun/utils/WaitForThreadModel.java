@@ -17,11 +17,13 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
 public class WaitForThreadModel extends LHSerializable<WaitForThread> {
+
     private Date threadEndTime;
     private LHStatus threadStatus;
     private int threadRunNumber;
     private WaitingThreadStatus waitingStatus;
     private Integer failureHandlerThreadRunId;
+
     private CoreProcessorContext context;
     private NodeRunModel nodeRun;
 
@@ -34,14 +36,17 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
             CoreProcessorContext context)
             throws NodeFailureException {
         this.context = context;
+
         ThreadRunModel parentThreadRunModel = waitForThreadNodeRunModel.getThreadRun();
         this.threadRunNumber = threadRunNumberToWaitFor;
         ThreadRunModel threadRun = parentThreadRunModel.getWfRun().getThreadRun(threadRunNumber);
+
         if (threadRun == null) {
             throw new NodeFailureException(new FailureModel(
                     "Couldn\'t wait for nonexistent threadRun: " + threadRunNumber,
                     LHErrorType.VAR_SUB_ERROR.toString()));
         }
+
         // Make sure we're not waiting for a parent thread or grandparent, etc.
         ThreadRunModel potentialParent = parentThreadRunModel;
         while (potentialParent != null) {
@@ -51,6 +56,7 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
             }
             potentialParent = potentialParent.getParent();
         }
+
         this.threadStatus = threadRun.getStatus();
         this.waitingStatus = WaitingThreadStatus.THREAD_IN_PROGRESS;
         this.nodeRun = waitForThreadNodeRunModel;
@@ -70,9 +76,11 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
         threadStatus = p.getThreadStatus();
         threadRunNumber = p.getThreadRunNumber();
         waitingStatus = p.getWaitingStatus();
+
         if (p.hasFailureHandlerThreadRunId()) {
             failureHandlerThreadRunId = p.getFailureHandlerThreadRunId();
         }
+
         this.context = context.castOnSupport(CoreProcessorContext.class);
     }
 
@@ -84,12 +92,14 @@ public class WaitForThreadModel extends LHSerializable<WaitForThread> {
             out.setThreadEndTime(LHUtil.fromDate(threadEndTime));
         }
         out.setWaitingStatus(waitingStatus);
+
         if (failureHandlerThreadRunId != null) out.setFailureHandlerThreadRunId(failureHandlerThreadRunId);
         return out;
     }
 
     public LHStatus getThreadStatus() {
         if (nodeRun == null) return threadStatus;
+
         LHStatus out =
                 nodeRun.getThreadRun().getWfRun().getThreadRun(threadRunNumber).getStatus();
         threadStatus = out;

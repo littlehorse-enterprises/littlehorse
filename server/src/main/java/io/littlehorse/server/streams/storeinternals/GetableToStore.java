@@ -11,7 +11,9 @@ import java.util.Objects;
 public class GetableToStore<U extends Message, T extends AbstractGetable<U>> {
     private final TagsCache tagsPresentBeforeUpdate;
     private final GetableClassEnum objectType;
+
     private T objectToStore;
+
     private U previouslyStoredProto;
 
     public boolean isDeletion() {

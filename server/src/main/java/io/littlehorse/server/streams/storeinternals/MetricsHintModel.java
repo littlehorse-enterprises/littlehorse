@@ -8,7 +8,9 @@ import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class MetricsHintModel extends Storeable<MetricsHint> {
+
     public static final String METRICS_HINT_KEY = "metrics_hint";
+
     private Timestamp lastProcessedTimestamp;
 
     public MetricsHintModel() {}

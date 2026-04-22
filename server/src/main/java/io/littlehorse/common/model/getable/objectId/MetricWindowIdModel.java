@@ -16,9 +16,11 @@ import java.util.Date;
 import java.util.Optional;
 
 public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWindow, MetricWindowModel> {
+
     private WfSpecIdModel wfSpecId;
     private TaskDefIdModel taskDefId;
     private UserTaskDefIdModel userTaskDefId;
+
     private Date windowStart;
     private MetricWindowType metricType;
     private TenantIdModel tenantId;
@@ -88,6 +90,7 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         MetricWindowId p = (MetricWindowId) proto;
+
         switch (p.getIdCase()) {
             case WF_SPEC_ID:
                 this.wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
@@ -109,6 +112,7 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
                 }
                 break;
         }
+
         if (p.hasWindowStart()) {
             windowStart = LHUtil.fromProtoTs(p.getWindowStart());
         }
@@ -173,6 +177,7 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
             default:
                 throw new IllegalArgumentException("Unknown metric type: " + metricType);
         }
+
         windowStart = new Date(Long.valueOf(split[split.length - 1]));
     }
 

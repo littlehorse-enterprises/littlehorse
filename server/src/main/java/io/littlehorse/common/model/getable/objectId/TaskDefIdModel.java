@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class TaskDefIdModel extends MetadataId<TaskDefId, TaskDef, TaskDefModel> {
+
     public String name;
 
     public TaskDefIdModel() {}

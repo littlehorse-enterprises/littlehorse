@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServerACLsModel extends LHSerializable<ServerACLs> {
+
     private List<ServerACLModel> acls = new ArrayList<>();
 
     @Override
