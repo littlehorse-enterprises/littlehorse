@@ -9,6 +9,7 @@ import { useDiagram } from '../hooks/useDiagram'
 import { useReplaceQueryValue } from '../hooks/useReplaceQueryValue'
 import { useScrollbar } from '../hooks/useScrollbar'
 import { useThreadRunPagination } from '../hooks/useThreadRunPagination'
+import { sortThreadNames } from '../utils/sortThreadNames'
 
 export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }) => {
   const { thread, setThread } = useDiagram()
@@ -71,7 +72,8 @@ export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }
 
   const threads = useMemo((): { name: string; number: number }[] => {
     if (!wfRun) {
-      return Object.keys(spec.threadSpecs).map(name => ({ name, number: 0 }))
+      const sorted = sortThreadNames(spec)
+      return sorted.map(name => ({ name, number: 0 }))
     }
 
     return threadRuns.map(threadRun => ({

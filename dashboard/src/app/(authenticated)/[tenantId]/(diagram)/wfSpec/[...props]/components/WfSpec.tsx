@@ -7,6 +7,7 @@ import { LucidePlayCircle } from 'lucide-react'
 import { FC, useCallback, useState } from 'react'
 import { Diagram } from '../../../components/Diagram'
 import { useModal } from '../../../hooks/useModal'
+import { sortThreadNames } from '../../../utils/sortThreadNames'
 import { Details } from './Details'
 import { ScheduledWfRuns } from './ScheduledWfRuns'
 import { Thread } from './Thread'
@@ -38,9 +39,7 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
       <DiagramProvider value={{ thread, setThread, selectedNode, setSelectedNode }}>
         <Diagram spec={spec} />
       </DiagramProvider>
-      {Object.keys(spec.threadSpecs)
-        .reverse()
-        .map(name => (
+      {sortThreadNames(spec).map(name => (
           <Thread key={name} name={name} spec={spec.threadSpecs[name]} />
         ))}
 
