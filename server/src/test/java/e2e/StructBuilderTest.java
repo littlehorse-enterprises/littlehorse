@@ -34,9 +34,7 @@ public class StructBuilderTest {
 
     @Test
     void shouldBuildStructFromInputsAndAssign() {
-        verifier.prepareRun(structBuilderWorkflow,
-                        Arg.of("brand-input", "Toyota"),
-                        Arg.of("model-input", "Camry"))
+        verifier.prepareRun(structBuilderWorkflow, Arg.of("brand-input", "Toyota"), Arg.of("model-input", "Camry"))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "my-car", variableValue -> {
                     var fields = variableValue.getStruct().getStruct().getFieldsMap();
@@ -49,9 +47,7 @@ public class StructBuilderTest {
 
     @Test
     void shouldBuildStructWithTaskOutput() {
-        verifier.prepareRun(structBuilderWorkflow,
-                        Arg.of("brand-input", "Honda"),
-                        Arg.of("model-input", "Civic"))
+        verifier.prepareRun(structBuilderWorkflow, Arg.of("brand-input", "Honda"), Arg.of("model-input", "Civic"))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "my-car", variableValue -> {
                     var fields = variableValue.getStruct().getStruct().getFieldsMap();
@@ -64,7 +60,8 @@ public class StructBuilderTest {
 
     @Test
     void shouldBuildStructWithNestedInlineStruct() {
-        verifier.prepareRun(nestedStructBuilderWorkflow,
+        verifier.prepareRun(
+                        nestedStructBuilderWorkflow,
                         Arg.of("name-input", "Obi-Wan"),
                         Arg.of("street-input", "123 Jedi Temple"),
                         Arg.of("state-input", "Coruscant"),
@@ -74,7 +71,8 @@ public class StructBuilderTest {
                     var personFields = variableValue.getStruct().getStruct().getFieldsMap();
                     assertThat(personFields.get("name").getValue().getStr()).isEqualTo("Obi-Wan");
 
-                    var addressFields = personFields.get("address")
+                    var addressFields = personFields
+                            .get("address")
                             .getValue()
                             .getStruct()
                             .getStruct()
@@ -117,10 +115,12 @@ public class StructBuilderTest {
 
             LHStructBuilder personBuilder = wf.buildStruct("struct-person-with-address")
                     .put("name", nameInput)
-                    .put("address", wf.buildInlineStruct()
-                            .put("street", streetInput)
-                            .put("state", stateInput)
-                            .put("zip", zipInput));
+                    .put(
+                            "address",
+                            wf.buildInlineStruct()
+                                    .put("street", streetInput)
+                                    .put("state", stateInput)
+                                    .put("zip", zipInput));
 
             personVar.assign(personBuilder);
 

@@ -32,7 +32,8 @@ public class InlineStructBuilderModel extends LHSerializable<InlineStructBuilder
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         InlineStructBuilder p = (InlineStructBuilder) proto;
-        for (Map.Entry<String, io.littlehorse.sdk.common.proto.InlineStructFieldValue> entry : p.getFieldsMap().entrySet()) {
+        for (Map.Entry<String, io.littlehorse.sdk.common.proto.InlineStructFieldValue> entry :
+                p.getFieldsMap().entrySet()) {
             fields.put(entry.getKey(), InlineStructFieldValueModel.fromProto(entry.getValue(), context));
         }
     }

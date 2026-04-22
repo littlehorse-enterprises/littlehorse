@@ -212,7 +212,8 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                 if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT
                         && rhsRhsAssignment.getRhsSourceType()
                                 == io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase.STRUCT_BUILDER) {
-                    rhsRhsAssignment.getStructBuilder()
+                    rhsRhsAssignment
+                            .getStructBuilder()
                             .validateAgainst(lhsType, source, manager, threadSpec.getWfSpec(), threadSpec.getName());
                 }
 

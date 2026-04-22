@@ -71,12 +71,14 @@ class LHStructBuilderImpl implements LHStructBuilder {
             }
 
             return InlineStructFieldValue.newBuilder()
-                    .setSimpleValue(BuilderUtil.assignVariable(nested, thread.getParent().getTypeAdapterRegistry()))
+                    .setSimpleValue(BuilderUtil.assignVariable(
+                            nested, thread.getParent().getTypeAdapterRegistry()))
                     .build();
         }
 
         return InlineStructFieldValue.newBuilder()
-                .setSimpleValue(BuilderUtil.assignVariable(value, thread.getParent().getTypeAdapterRegistry()))
+                .setSimpleValue(
+                        BuilderUtil.assignVariable(value, thread.getParent().getTypeAdapterRegistry()))
                 .build();
     }
 }

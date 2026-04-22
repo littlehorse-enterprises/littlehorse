@@ -164,12 +164,13 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                             node.getThreadSpec().getWfSpec(),
                             node.getThreadSpec().getName());
                     if (assn.getRhsSourceType() == SourceCase.STRUCT_BUILDER) {
-                        assn.getStructBuilder().validateAgainst(
-                                taskDefVar.getTypeDef(),
-                                node,
-                                ctx.metadataManager(),
-                                node.getThreadSpec().getWfSpec(),
-                                node.getThreadSpec().getName());
+                        assn.getStructBuilder()
+                                .validateAgainst(
+                                        taskDefVar.getTypeDef(),
+                                        node,
+                                        ctx.metadataManager(),
+                                        node.getThreadSpec().getWfSpec(),
+                                        node.getThreadSpec().getName());
                     }
                     VariableType sourceVariableType = sourceVariableTypeOpt
                             .map(TypeDefinitionModel::getPrimitiveType)

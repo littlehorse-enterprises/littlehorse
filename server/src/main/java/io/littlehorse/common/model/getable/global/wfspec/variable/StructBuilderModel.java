@@ -16,7 +16,6 @@ import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -114,14 +113,14 @@ public class StructBuilderModel extends LHSerializable<StructBuilder> {
         }
 
         if (!missingRequired.isEmpty()) {
-            throw new InvalidExpressionException(
-                    "Missing required field(s) for StructDef "
-                            + expectedType.getStructDefId()
-                            + ": "
-                            + String.join(", ", missingRequired));
+            throw new InvalidExpressionException("Missing required field(s) for StructDef "
+                    + expectedType.getStructDefId()
+                    + ": "
+                    + String.join(", ", missingRequired));
         }
 
-        for (Map.Entry<String, InlineStructFieldValueModel> entry : builder.getFields().entrySet()) {
+        for (Map.Entry<String, InlineStructFieldValueModel> entry :
+                builder.getFields().entrySet()) {
             String fieldName = entry.getKey();
             StructFieldDefModel fieldDef = fieldDefs.get(fieldName);
             if (fieldDef == null) {
@@ -133,13 +132,14 @@ public class StructBuilderModel extends LHSerializable<StructBuilder> {
             if (fieldValue.getStructValueCase() == StructValueCase.SIMPLE_VALUE) {
                 VariableAssignmentModel assn = fieldValue.getSimpleValue();
                 if (assn.getRhsSourceType() == SourceCase.STRUCT_BUILDER) {
-                    assn.getStructBuilder().validateAgainst(fieldDef.getFieldType(), source, manager, wfSpec, threadSpecName);
+                    assn.getStructBuilder()
+                            .validateAgainst(fieldDef.getFieldType(), source, manager, wfSpec, threadSpecName);
                     continue;
                 }
                 Optional<TypeDefinitionModel> sourceType = assn.resolveType(manager, wfSpec, threadSpecName);
                 if (sourceType.isPresent() && !fieldDef.getFieldType().isCompatibleWith(sourceType.get())) {
-                    throw new InvalidExpressionException(
-                            "Field '" + fieldName + "' expects " + fieldDef.getFieldType() + " but got " + sourceType.get());
+                    throw new InvalidExpressionException("Field '" + fieldName + "' expects " + fieldDef.getFieldType()
+                            + " but got " + sourceType.get());
                 }
             } else if (fieldValue.getStructValueCase() == StructValueCase.SUB_STRUCTURE) {
                 TypeDefinitionModel nestedExpected = fieldDef.getFieldType();
@@ -167,11 +167,10 @@ public class StructBuilderModel extends LHSerializable<StructBuilder> {
     }
 
     private void pinInlineStructVersions(
-            InlineStructBuilderModel builder,
-            StructDefModel structDef,
-            ReadOnlyMetadataManager manager)
+            InlineStructBuilderModel builder, StructDefModel structDef, ReadOnlyMetadataManager manager)
             throws InvalidExpressionException {
-        for (Map.Entry<String, InlineStructFieldValueModel> entry : builder.getFields().entrySet()) {
+        for (Map.Entry<String, InlineStructFieldValueModel> entry :
+                builder.getFields().entrySet()) {
             StructFieldDefModel fieldDef = structDef.getStructDef().getFields().get(entry.getKey());
             if (fieldDef == null) {
                 continue;
@@ -182,9 +181,11 @@ public class StructBuilderModel extends LHSerializable<StructBuilder> {
                     && fieldValue.getSimpleValue().getRhsSourceType() == SourceCase.STRUCT_BUILDER) {
                 fieldValue.getSimpleValue().getStructBuilder().pinStructVersions(manager);
             } else if (fieldValue.getStructValueCase() == StructValueCase.SUB_STRUCTURE) {
-                StructDefModel nestedStructDef = new WfService(manager).getStructDef(fieldDef.getFieldType().getStructDefId());
+                StructDefModel nestedStructDef = new WfService(manager)
+                        .getStructDef(fieldDef.getFieldType().getStructDefId());
                 if (nestedStructDef == null) {
-                    throw new InvalidExpressionException("StructDef not found: " + fieldDef.getFieldType().getStructDefId());
+                    throw new InvalidExpressionException(
+                            "StructDef not found: " + fieldDef.getFieldType().getStructDefId());
                 }
                 pinInlineStructVersions(fieldValue.getSubStructure(), nestedStructDef, manager);
             }
