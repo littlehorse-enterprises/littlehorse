@@ -337,8 +337,8 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
                                       <AlertDialogHeader>
                                         <AlertDialogTitle>Delete Correlated Event</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                          Are you sure you want to delete the correlated event with key "
-                                          {correlatedEvent.id?.key}"?
+                                          Are you sure you want to delete the correlated event with key &apos;
+                                          {correlatedEvent.id?.key}&apos;?
                                         </AlertDialogDescription>
                                       </AlertDialogHeader>
                                       <AlertDialogFooter>
