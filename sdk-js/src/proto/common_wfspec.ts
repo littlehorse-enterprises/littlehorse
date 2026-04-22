@@ -475,7 +475,11 @@ export interface StructFieldDef {
    * The default value of the field, which should match the Field Type. If not
    * provided, then the field is treated as required.
    */
-  defaultValue?: VariableValue | undefined;
+  defaultValue?:
+    | VariableValue
+    | undefined;
+  /** If true, then the field is treated as nullable, and its value may be set to null. */
+  isNullable: boolean;
 }
 
 /** A path of repeated Selectors resolving to a nested field in an object. */
@@ -2065,7 +2069,7 @@ export const InlineStructDef_FieldsEntry = {
 };
 
 function createBaseStructFieldDef(): StructFieldDef {
-  return { fieldType: undefined, defaultValue: undefined };
+  return { fieldType: undefined, defaultValue: undefined, isNullable: false };
 }
 
 export const StructFieldDef = {
@@ -2075,6 +2079,9 @@ export const StructFieldDef = {
     }
     if (message.defaultValue !== undefined) {
       VariableValue.encode(message.defaultValue, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.isNullable !== false) {
+      writer.uint32(24).bool(message.isNullable);
     }
     return writer;
   },
@@ -2100,6 +2107,13 @@ export const StructFieldDef = {
 
           message.defaultValue = VariableValue.decode(reader, reader.uint32());
           continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isNullable = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2113,6 +2127,7 @@ export const StructFieldDef = {
     return {
       fieldType: isSet(object.fieldType) ? TypeDefinition.fromJSON(object.fieldType) : undefined,
       defaultValue: isSet(object.defaultValue) ? VariableValue.fromJSON(object.defaultValue) : undefined,
+      isNullable: isSet(object.isNullable) ? globalThis.Boolean(object.isNullable) : false,
     };
   },
 
@@ -2123,6 +2138,9 @@ export const StructFieldDef = {
     }
     if (message.defaultValue !== undefined) {
       obj.defaultValue = VariableValue.toJSON(message.defaultValue);
+    }
+    if (message.isNullable !== false) {
+      obj.isNullable = message.isNullable;
     }
     return obj;
   },
@@ -2138,6 +2156,7 @@ export const StructFieldDef = {
     message.defaultValue = (object.defaultValue !== undefined && object.defaultValue !== null)
       ? VariableValue.fromPartial(object.defaultValue)
       : undefined;
+    message.isNullable = object.isNullable ?? false;
     return message;
   },
 };

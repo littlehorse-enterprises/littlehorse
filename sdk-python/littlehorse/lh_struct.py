@@ -300,7 +300,10 @@ def _python_type_to_type_definition(
     # Check for struct
     if isinstance(python_type, type) and is_lh_struct(python_type):
         return TypeDefinition(
-            struct_def_id=StructDefId(name=get_struct_def_name(python_type)),
+            struct_def_id=StructDefId(
+                name=get_struct_def_name(python_type),
+                version=-1,
+            ),
             masked=masked,
         )
 
@@ -494,7 +497,7 @@ def serialize_to_struct(obj: Any) -> Struct:
         inline.fields[prop.field_name].CopyFrom(StructField(value=field_val))
 
     return Struct(
-        struct_def_id=StructDefId(name=info.name),
+        struct_def_id=StructDefId(name=info.name, version=-1),
         struct=inline,
     )
 

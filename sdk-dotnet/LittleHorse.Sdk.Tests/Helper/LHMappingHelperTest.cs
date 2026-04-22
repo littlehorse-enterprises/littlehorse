@@ -334,6 +334,7 @@ public class LHMappingHelperTest
         Assert.NotNull(result.ReturnType_);
         Assert.Equal(TypeDefinition.DefinedTypeOneofCase.StructDefId, result.ReturnType_.DefinedTypeCase);
         Assert.Equal("test-struct", result.ReturnType_.StructDefId.Name);
+        Assert.Equal(-1, result.ReturnType_.StructDefId.Version);
     }
 
     [Fact]
@@ -354,6 +355,7 @@ public class LHMappingHelperTest
 
         Assert.Equal(VariableValue.ValueOneofCase.Struct, result.ValueCase);
         Assert.Equal("test-struct", result.Struct.StructDefId.Name);
+        Assert.Equal(-1, result.Struct.StructDefId.Version);
         Assert.True(result.Struct.Struct_.Fields.ContainsKey("name"));
         Assert.True(result.Struct.Struct_.Fields.ContainsKey("age"));
         Assert.Equal("Ada", result.Struct.Struct_.Fields["name"].Value.Str);
@@ -369,6 +371,7 @@ public class LHMappingHelperTest
 
         Assert.Equal(VariableValue.ValueOneofCase.Struct, result.ValueCase);
         Assert.Equal("test-struct-ignored", result.Struct.StructDefId.Name);
+        Assert.Equal(-1, result.Struct.StructDefId.Version);
         Assert.True(result.Struct.Struct_.Fields.ContainsKey("name"));
         Assert.False(result.Struct.Struct_.Fields.ContainsKey("secret"));
     }

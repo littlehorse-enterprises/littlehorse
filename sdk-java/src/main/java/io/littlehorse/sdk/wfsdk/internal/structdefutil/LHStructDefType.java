@@ -30,6 +30,22 @@ public class LHStructDefType extends LHClassType {
 
     private List<LHStructProperty> structProperties;
 
+    /**
+     * Constructor for LHStructDefType that does not take a type adapter registry.
+     *
+     * If you want to use Type Adapters with your StructDef, use {@link #LHStructDefType(Class, LHTypeAdapterRegistry)} instead and provide an explicit type adapter registry.
+     *
+     * @param clazz The Java class representing the StructDef.
+     */
+    public LHStructDefType(Class<?> clazz) {
+        this(clazz, LHTypeAdapterRegistry.empty());
+    }
+
+    /**
+     * Constructor for LHStructDefType.
+     * @param clazz The Java class representing the StructDef.
+     * @param typeAdapterRegistry The type adapter registry to use when generating StructDef definitions from Java classes.
+     */
     public LHStructDefType(Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) {
         super(clazz, typeAdapterRegistry);
 
@@ -56,6 +72,7 @@ public class LHStructDefType extends LHClassType {
         return TypeDefinition.newBuilder()
                 .setStructDefId(StructDefId.newBuilder()
                         .setName(this.getStructDefAnnotation().value())
+                        .setVersion(-1)
                         .build())
                 .build();
     }
@@ -63,7 +80,7 @@ public class LHStructDefType extends LHClassType {
     public StructDefId getStructDefId() {
         String structName = this.getStructDefAnnotation().value();
 
-        return StructDefId.newBuilder().setName(structName).build();
+        return StructDefId.newBuilder().setName(structName).setVersion(-1).build();
     }
 
     private LHStructDef getStructDefAnnotation() {

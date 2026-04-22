@@ -202,7 +202,10 @@ export function buildPutStructDefRequest(
   const structDefFields: { [key: string]: StructFieldDef } = {}
 
   for (const [fieldName, field] of Object.entries(schema.fields)) {
-    structDefFields[fieldName] = { fieldType: fieldDefToTypeDef(field) }
+    structDefFields[fieldName] = {
+      fieldType: fieldDefToTypeDef(field),
+      isNullable: false,
+    }
   }
 
   return {

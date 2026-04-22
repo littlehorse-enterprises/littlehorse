@@ -12,7 +12,7 @@ public class Person {
     private String firstName;
     private String lastName;
 
-    @LHStructField(masked = true)
+    @LHStructField(masked = true, isNullable = true)
     private Address homeAddress;
 
     public Person() {}

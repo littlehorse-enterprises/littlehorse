@@ -2,7 +2,8 @@ from typing import Any
 import unittest
 import uuid
 import datetime
-from unittest.mock import Mock, AsyncMock
+import signal
+from unittest.mock import Mock, AsyncMock, patch
 
 from littlehorse.exceptions import TaskSchemaMismatchException
 from littlehorse.model import (
@@ -31,6 +32,7 @@ from littlehorse.worker import (
     LHLivenessController,
     LHTaskWorkerHealth,
     TaskWorkerHealthReason,
+    shutdown_hook,
 )
 
 
@@ -528,6 +530,38 @@ class TestLHLivenessController(unittest.TestCase):
             controller.health(),
             LHTaskWorkerHealth(False, TaskWorkerHealthReason.SERVER_REBALANCING),
         )
+
+
+class TestShutdownHook(unittest.TestCase):
+    def test_registers_signal_handlers_on_supported_event_loops(self):
+        worker = Mock()
+        loop = Mock()
+
+        with patch("littlehorse.worker.asyncio.get_running_loop", return_value=loop):
+            shutdown_hook(worker)
+
+        self.assertEqual(loop.add_signal_handler.call_count, 2)
+        registered_signals = {
+            call.args[0] for call in loop.add_signal_handler.call_args_list
+        }
+        self.assertEqual(registered_signals, {signal.SIGTERM, signal.SIGINT})
+
+    def test_falls_back_when_add_signal_handler_is_not_implemented(self):
+        worker = Mock()
+        loop = Mock()
+        loop.add_signal_handler.side_effect = NotImplementedError
+
+        with (
+            patch("littlehorse.worker.asyncio.get_running_loop", return_value=loop),
+            patch("littlehorse.worker.signal.signal") as signal_signal,
+        ):
+            shutdown_hook(worker)
+
+        self.assertEqual(signal_signal.call_count, 2)
+
+        registered_handler = signal_signal.call_args_list[0].args[1]
+        registered_handler(signal.SIGINT, None)
+        worker.stop.assert_called_once()
 
 
 if __name__ == "__main__":

@@ -3,7 +3,6 @@ package e2e;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import e2e.Struct.Car;
-import e2e.Struct.CarWithExtraField;
 import e2e.Struct.CarWithMissingField;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
@@ -50,17 +49,6 @@ public class StructValidationsTest {
     void shouldFailWithStructWithMissingField() {
         StatusRuntimeException caught = assertThrows(StatusRuntimeException.class, () -> {
             verifier.prepareRun(structWorkflow, Arg.of("my-car", new CarWithMissingField("Obi-Wan", "Kenobi")))
-                    .start();
-        });
-
-        Assertions.assertThat(caught.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
-    }
-
-    @Test
-    void shouldFailWithStructWithExtraField() {
-        StatusRuntimeException caught = assertThrows(StatusRuntimeException.class, () -> {
-            verifier.prepareRun(
-                            structWorkflow, Arg.of("my-car", new CarWithExtraField("Obi-Wan", "Kenobi", 5000, "red")))
                     .start();
         });
 

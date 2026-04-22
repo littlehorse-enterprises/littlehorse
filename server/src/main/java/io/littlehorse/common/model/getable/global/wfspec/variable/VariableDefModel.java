@@ -2,10 +2,10 @@ package io.littlehorse.common.model.getable.global.wfspec.variable;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.validation.InvalidVariableDefException;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.IngressTypeUtils;
@@ -89,7 +89,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         try {
             IngressTypeUtils.applyExpectedTypeAndValidate(Optional.of(typeDef), value, metadataManager);
             return;
-        } catch (LHApiException e) {
+        } catch (TypeValidationException e) {
             throw new InvalidVariableDefException(this, e.getMessage());
         }
     }

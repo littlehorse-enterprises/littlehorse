@@ -127,6 +127,21 @@ private static final long serialVersionUID = 0L;
     return defaultValue_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : defaultValue_;
   }
 
+  public static final int IS_NULLABLE_FIELD_NUMBER = 3;
+  private boolean isNullable_ = false;
+  /**
+   * <pre>
+   * If true, then the field is treated as nullable, and its value may be set to null.
+   * </pre>
+   *
+   * <code>bool is_nullable = 3;</code>
+   * @return The isNullable.
+   */
+  @java.lang.Override
+  public boolean getIsNullable() {
+    return isNullable_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -147,6 +162,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(2, getDefaultValue());
     }
+    if (isNullable_ != false) {
+      output.writeBool(3, isNullable_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -163,6 +181,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getDefaultValue());
+    }
+    if (isNullable_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(3, isNullable_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -189,6 +211,8 @@ private static final long serialVersionUID = 0L;
       if (!getDefaultValue()
           .equals(other.getDefaultValue())) return false;
     }
+    if (getIsNullable()
+        != other.getIsNullable()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -208,6 +232,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + DEFAULT_VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getDefaultValue().hashCode();
     }
+    hash = (37 * hash) + IS_NULLABLE_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getIsNullable());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -360,6 +387,7 @@ private static final long serialVersionUID = 0L;
         defaultValueBuilder_.dispose();
         defaultValueBuilder_ = null;
       }
+      isNullable_ = false;
       return this;
     }
 
@@ -406,6 +434,9 @@ private static final long serialVersionUID = 0L;
             : defaultValueBuilder_.build();
         to_bitField0_ |= 0x00000002;
       }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.isNullable_ = isNullable_;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -426,6 +457,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasDefaultValue()) {
         mergeDefaultValue(other.getDefaultValue());
+      }
+      if (other.getIsNullable() != false) {
+        setIsNullable(other.getIsNullable());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -467,6 +501,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 24: {
+              isNullable_ = input.readBool();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -805,6 +844,50 @@ private static final long serialVersionUID = 0L;
         defaultValue_ = null;
       }
       return defaultValueBuilder_;
+    }
+
+    private boolean isNullable_ ;
+    /**
+     * <pre>
+     * If true, then the field is treated as nullable, and its value may be set to null.
+     * </pre>
+     *
+     * <code>bool is_nullable = 3;</code>
+     * @return The isNullable.
+     */
+    @java.lang.Override
+    public boolean getIsNullable() {
+      return isNullable_;
+    }
+    /**
+     * <pre>
+     * If true, then the field is treated as nullable, and its value may be set to null.
+     * </pre>
+     *
+     * <code>bool is_nullable = 3;</code>
+     * @param value The isNullable to set.
+     * @return This builder for chaining.
+     */
+    public Builder setIsNullable(boolean value) {
+
+      isNullable_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If true, then the field is treated as nullable, and its value may be set to null.
+     * </pre>
+     *
+     * <code>bool is_nullable = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearIsNullable() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      isNullable_ = false;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.StructFieldDef)

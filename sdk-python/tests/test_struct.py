@@ -192,6 +192,7 @@ class TestStructProperty(unittest.TestCase):
         td = by_python["home_address"].type_def
         self.assertTrue(td.HasField("struct_def_id"))
         self.assertEqual(td.struct_def_id.name, "address")
+        self.assertEqual(td.struct_def_id.version, -1)
 
     def test_not_decorated_raises(self):
         with self.assertRaises(TypeError):
@@ -228,6 +229,7 @@ class TestClassToInlineStructDef(unittest.TestCase):
         home = inline.fields["homeAddress"]
         self.assertTrue(home.field_type.HasField("struct_def_id"))
         self.assertEqual(home.field_type.struct_def_id.name, "address")
+        self.assertEqual(home.field_type.struct_def_id.version, -1)
 
     def test_default_value_present(self):
         inline = class_to_inline_struct_def(Address)
@@ -303,6 +305,7 @@ class TestSerializeToStruct(unittest.TestCase):
         struct = serialize_to_struct(addr)
         self.assertIsInstance(struct, Struct)
         self.assertEqual(struct.struct_def_id.name, "address")
+        self.assertEqual(struct.struct_def_id.version, -1)
         self.assertEqual(struct.struct.fields["houseNumber"].value.int, 42)
         self.assertEqual(struct.struct.fields["street"].value.str, "Elm St")
 
@@ -320,11 +323,13 @@ class TestSerializeToStruct(unittest.TestCase):
 
         struct = serialize_to_struct(person)
         self.assertEqual(struct.struct_def_id.name, "person")
+        self.assertEqual(struct.struct_def_id.version, -1)
         self.assertEqual(struct.struct.fields["firstName"].value.str, "Bruce")
 
         # Nested
         inner = struct.struct.fields["homeAddress"].value.struct
         self.assertEqual(inner.struct_def_id.name, "address")
+        self.assertEqual(inner.struct_def_id.version, -1)
         self.assertEqual(inner.struct.fields["street"].value.str, "Main")
 
 
@@ -500,6 +505,7 @@ class TestUtilsStructIntegration(unittest.TestCase):
         vv = to_variable_value(addr)
         self.assertEqual(vv.WhichOneof("value"), "struct")
         self.assertEqual(vv.struct.struct_def_id.name, "address")
+        self.assertEqual(vv.struct.struct_def_id.version, -1)
 
     def test_extract_value_with_struct(self):
         inner_struct = Struct(
@@ -522,18 +528,40 @@ class TestUtilsStructIntegration(unittest.TestCase):
 class TestWorkflowStructIntegration(unittest.TestCase):
     def test_declare_struct_with_class(self):
         def my_entrypoint(wf: WorkflowThread) -> None:
-            var = wf.declare_struct("my-addr", Address)
-            self.assertEqual(var._struct_def_name, "address")
-            self.assertEqual(var.name, "my-addr")
+            wf.declare_struct("my-addr", Address)
 
-        Workflow("test-declare-class", my_entrypoint).compile()
+        wf_spec = Workflow("test-declare-class", my_entrypoint).compile()
+        thread_spec = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        var_def = thread_spec.variable_defs[0].var_def
+
+        self.assertEqual(var_def.name, "my-addr")
+        self.assertEqual(var_def.type_def.struct_def_id.name, "address")
+        self.assertEqual(var_def.type_def.struct_def_id.version, -1)
 
     def test_declare_struct_with_string(self):
+        # Arrange
         def my_entrypoint(wf: WorkflowThread) -> None:
-            var = wf.declare_struct("my-str-addr", "my-custom-struct")
-            self.assertEqual(var._struct_def_name, "my-custom-struct")
+            wf.declare_struct("my-str-addr", "my-custom-struct")
 
-        Workflow("test-declare-string", my_entrypoint).compile()
+        wf_spec = Workflow("test-declare-string", my_entrypoint).compile()
+        thread_spec = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        var_def = thread_spec.variable_defs[0].var_def
+
+        self.assertEqual(var_def.name, "my-str-addr")
+        self.assertEqual(var_def.type_def.struct_def_id.name, "my-custom-struct")
+        self.assertEqual(var_def.type_def.struct_def_id.version, -1)
+
+    def test_declare_struct_with_explicit_version(self):
+        def my_entrypoint(wf: WorkflowThread) -> None:
+            wf.declare_struct("my-versioned-addr", "my-custom-struct", 3)
+
+        wf_spec = Workflow("test-declare-versioned-string", my_entrypoint).compile()
+        thread_spec = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        var_def = thread_spec.variable_defs[0].var_def
+
+        self.assertEqual(var_def.name, "my-versioned-addr")
+        self.assertEqual(var_def.type_def.struct_def_id.name, "my-custom-struct")
+        self.assertEqual(var_def.type_def.struct_def_id.version, 3)
 
     def test_declare_struct_not_decorated_raises(self):
         def my_entrypoint(wf: WorkflowThread) -> None:
@@ -541,17 +569,6 @@ class TestWorkflowStructIntegration(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             Workflow("test-declare-bad", my_entrypoint).compile()
-
-    def test_compile_struct_variable(self):
-        def my_entrypoint(wf: WorkflowThread) -> None:
-            wf.declare_struct("addr-var", Address)
-
-        wf_spec = Workflow("compile-struct", my_entrypoint).compile()
-        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
-        var_def = entrypoint.variable_defs[0].var_def
-
-        self.assertTrue(var_def.type_def.HasField("struct_def_id"))
-        self.assertEqual(var_def.type_def.struct_def_id.name, "address")
 
 
 # ---------------------------------------------------------------------------
@@ -666,6 +683,7 @@ class TestWorkerStructIntegration(unittest.TestCase):
         vdef = _to_variable_def(param)
         self.assertTrue(vdef.type_def.HasField("struct_def_id"))
         self.assertEqual(vdef.type_def.struct_def_id.name, "address")
+        self.assertEqual(vdef.type_def.struct_def_id.version, -1)
 
     def test_to_variable_def_primitive_param(self):
         from littlehorse.worker import _to_variable_def
@@ -684,6 +702,7 @@ class TestWorkerStructIntegration(unittest.TestCase):
         result = _return_to_lh_schema(Person)
         self.assertTrue(result.return_type.HasField("struct_def_id"))
         self.assertEqual(result.return_type.struct_def_id.name, "person")
+        self.assertEqual(result.return_type.struct_def_id.version, -1)
 
     def test_return_to_lh_schema_primitive(self):
         from littlehorse.worker import _return_to_lh_schema

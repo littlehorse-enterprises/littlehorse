@@ -62,7 +62,8 @@ namespace LittleHorse.Sdk.Helper
       {
         StructDefId = new StructDefId
         {
-          Name = GetStructDefAnnotation().Value
+          Name = GetStructDefAnnotation().Value,
+          Version = -1
         }
       };
     }
@@ -74,7 +75,8 @@ namespace LittleHorse.Sdk.Helper
     {
       return new StructDefId
       {
-        Name = GetStructDefAnnotation().Value
+        Name = GetStructDefAnnotation().Value,
+        Version = -1
       };
     }
 
