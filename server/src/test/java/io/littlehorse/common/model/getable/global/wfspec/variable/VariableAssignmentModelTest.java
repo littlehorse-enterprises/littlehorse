@@ -69,17 +69,6 @@ public class VariableAssignmentModelTest {
 
     @Test
     void shouldResolveSizeOfToIntForArrayOperands() throws LHValidationException, InvalidExpressionException {
-        VariableAssignmentModel operand = new VariableAssignmentModel();
-        operand.setVariableName("my-array-var");
-        operand.setRhsSourceType(SourceCase.VARIABLE_NAME);
-
-        SizeOfModel sizeOf = new SizeOfModel();
-        sizeOf.setOperand(operand);
-
-        VariableAssignmentModel varAssn = new VariableAssignmentModel();
-        varAssn.setSizeOf(sizeOf);
-        varAssn.setRhsSourceType(SourceCase.SIZE_OF);
-
         ThreadVarDefModel arrayVar = new ThreadVarDefModel();
         arrayVar.setAccessLevel(WfRunVariableAccessLevel.PRIVATE_VAR);
         arrayVar.setVarDef(new VariableDefModel());
@@ -96,6 +85,29 @@ public class VariableAssignmentModelTest {
         threadSpec.setName("entrypoint");
         threadSpec.setWfSpec(wfSpec);
 
+        VariableAssignmentModel varAssn = getSizeOfAssignment("my-array-var");
+        Optional<TypeDefinitionModel> resolvedType = varAssn.resolveType(null, wfSpec, "entrypoint");
+        Assertions.assertThat(resolvedType).isPresent();
+        Assertions.assertThat(resolvedType.get().getPrimitiveType()).isEqualTo(VariableType.INT);
+    }
+
+    @Test
+    void shouldResolveSizeOfToIntForStringOperands() throws LHValidationException, InvalidExpressionException {
+        ThreadVarDefModel stringVar = new ThreadVarDefModel();
+        stringVar.setAccessLevel(WfRunVariableAccessLevel.PRIVATE_VAR);
+        stringVar.setVarDef(new VariableDefModel());
+        stringVar.getVarDef().setName("my-string-var");
+        stringVar.getVarDef().setTypeDef(new TypeDefinitionModel(VariableType.STR));
+
+        ThreadSpecModel threadSpec = new ThreadSpecModel();
+        threadSpec.setVariableDefs(List.of(stringVar));
+
+        WfSpecModel wfSpec = new WfSpecModel();
+        wfSpec.setThreadSpecs(Map.of("entrypoint", threadSpec));
+        threadSpec.setName("entrypoint");
+        threadSpec.setWfSpec(wfSpec);
+
+        VariableAssignmentModel varAssn = getSizeOfAssignment("my-string-var");
         Optional<TypeDefinitionModel> resolvedType = varAssn.resolveType(null, wfSpec, "entrypoint");
         Assertions.assertThat(resolvedType).isPresent();
         Assertions.assertThat(resolvedType.get().getPrimitiveType()).isEqualTo(VariableType.INT);
@@ -103,17 +115,6 @@ public class VariableAssignmentModelTest {
 
     @Test
     void shouldRejectSizeOfForNonCollectionOperandTypes() throws LHValidationException {
-        VariableAssignmentModel operand = new VariableAssignmentModel();
-        operand.setVariableName("my-int-var");
-        operand.setRhsSourceType(SourceCase.VARIABLE_NAME);
-
-        SizeOfModel sizeOf = new SizeOfModel();
-        sizeOf.setOperand(operand);
-
-        VariableAssignmentModel varAssn = new VariableAssignmentModel();
-        varAssn.setSizeOf(sizeOf);
-        varAssn.setRhsSourceType(SourceCase.SIZE_OF);
-
         ThreadVarDefModel intVar = new ThreadVarDefModel();
         intVar.setAccessLevel(WfRunVariableAccessLevel.PRIVATE_VAR);
         intVar.setVarDef(new VariableDefModel());
@@ -128,8 +129,23 @@ public class VariableAssignmentModelTest {
         threadSpec.setName("entrypoint");
         threadSpec.setWfSpec(wfSpec);
 
+        VariableAssignmentModel varAssn = getSizeOfAssignment("my-int-var");
         Assertions.assertThatThrownBy(() -> varAssn.resolveType(null, wfSpec, "entrypoint"))
                 .isInstanceOf(InvalidExpressionException.class)
                 .hasMessageContaining("size()");
+    }
+
+    private VariableAssignmentModel getSizeOfAssignment(String variableName) {
+        VariableAssignmentModel operand = new VariableAssignmentModel();
+        operand.setVariableName(variableName);
+        operand.setRhsSourceType(SourceCase.VARIABLE_NAME);
+
+        SizeOfModel sizeOf = new SizeOfModel();
+        sizeOf.setOperand(operand);
+
+        VariableAssignmentModel varAssn = new VariableAssignmentModel();
+        varAssn.setSizeOf(sizeOf);
+        varAssn.setRhsSourceType(SourceCase.SIZE_OF);
+        return varAssn;
     }
 }

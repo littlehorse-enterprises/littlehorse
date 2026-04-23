@@ -205,6 +205,16 @@ public class VariableValueModelTest {
     }
 
     @Test
+    void shouldResolveSizeForString() throws LHVarSubError {
+        VariableValueModel stringValue = new VariableValueModel("hello");
+
+        VariableValueModel sizeValue = stringValue.sizeOf();
+
+        assertThat(sizeValue.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.INT);
+        assertThat(sizeValue.getIntVal()).isEqualTo(5L);
+    }
+
+    @Test
     void shouldResolveSizeForNativeArray() throws LHVarSubError {
         ArrayList<VariableValueModel> items = new ArrayList<>();
         items.add(new VariableValueModel(10L));

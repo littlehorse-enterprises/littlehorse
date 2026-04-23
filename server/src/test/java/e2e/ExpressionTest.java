@@ -269,13 +269,19 @@ public class ExpressionTest {
 
     @Test
     void shouldEvaluateSizeInAssignmentConditionalAndTaskInput() {
-        verifier.prepareRun(expressionWf, Arg.of("size-json-input", List.of(10, 20, 30, 40)))
+        verifier.prepareRun(
+                        expressionWf,
+                        Arg.of("size-json-input", List.of(10, 20, 30, 40)),
+                        Arg.of("size-str-input", "hello!"))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "array-size", variable -> {
                     Assertions.assertEquals(3L, variable.getInt());
                 })
                 .thenVerifyVariable(0, "json-size", variable -> {
                     Assertions.assertEquals(4L, variable.getInt());
+                })
+                .thenVerifyVariable(0, "str-size", variable -> {
+                    Assertions.assertEquals(6L, variable.getInt());
                 })
                 .thenVerifyVariable(0, "size-task-result", variable -> {
                     Assertions.assertEquals(6L, variable.getInt());
@@ -383,8 +389,10 @@ public class ExpressionTest {
 
             // size() tests across assignment, conditionals, and task inputs.
             var sizeJsonInput = wf.declareJsonArr("size-json-input");
+            var sizeStrInput = wf.declareStr("size-str-input");
             var arraySize = wf.declareInt("array-size");
             var jsonSize = wf.declareInt("json-size");
+            var strSize = wf.declareInt("str-size");
             var sizeTaskResult = wf.declareInt("size-task-result");
             var sizeBranch = wf.declareStr("size-branch");
             var invalidSizeJson = wf.declareJsonObj("invalid-size-json");
@@ -405,6 +413,10 @@ public class ExpressionTest {
 
             wf.doIf(sizeJsonInput.isNotEqualTo(null), then -> {
                 jsonSize.assign(sizeJsonInput.size());
+            });
+
+            wf.doIf(sizeStrInput.isNotEqualTo(null), then -> {
+                strSize.assign(sizeStrInput.size());
             });
 
             wf.doIf(invalidSizeJson.isNotEqualTo(null), then -> {
