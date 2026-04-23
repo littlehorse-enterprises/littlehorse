@@ -241,6 +241,7 @@ public class QuotaTest {
 
         // Set a restrictive quota then delete it — nothing should be throttled after
         setQuota(2);
+        awaitQuota(2);
         client.deleteQuota(
                 DeleteQuotaRequest.newBuilder().setId(tenantQuotaId()).build());
 
