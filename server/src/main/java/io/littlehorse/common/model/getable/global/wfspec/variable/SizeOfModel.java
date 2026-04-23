@@ -4,14 +4,14 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@Data
-@EqualsAndHashCode(callSuper = false)
 public class SizeOfModel extends LHSerializable<SizeOf> {
 
     private VariableAssignmentModel operand;
+
+    public VariableAssignmentModel getOperand() {
+        return operand;
+    }
 
     @Override
     public Class<SizeOf> getProtoBaseClass() {
