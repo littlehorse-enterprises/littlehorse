@@ -39,6 +39,9 @@ class BuilderUtil {
         if (variable instanceof CastExpressionImpl) {
             return buildFromCastExpression((CastExpressionImpl) variable, typeAdapterRegistry);
         }
+        if (variable instanceof SizeOfExpressionImpl) {
+            return buildFromSizeOfExpression((SizeOfExpressionImpl) variable, typeAdapterRegistry);
+        }
         if (variable instanceof LHExpressionImpl) {
             return buildFromLHExpression((LHExpressionImpl) variable, typeAdapterRegistry);
         }
@@ -95,6 +98,14 @@ class BuilderUtil {
                         .setPrimitiveType(castingExpresion.getTargetType())
                         .setMasked(false)
                         .build())
+                .build();
+    }
+
+    private static VariableAssignment buildFromSizeOfExpression(
+            SizeOfExpressionImpl expression, LHTypeAdapterRegistry typeAdapterRegistry) {
+        return VariableAssignment.newBuilder()
+                .setSizeOf(VariableAssignment.SizeOf.newBuilder()
+                        .setOperand(assignVariable(expression.getOperand(), typeAdapterRegistry)))
                 .build();
     }
 

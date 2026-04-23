@@ -680,6 +680,28 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         return new VariableValueModel(m);
     }
 
+    public VariableValueModel sizeOf() throws LHVarSubError {
+        switch (getValueType()) {
+            case STR:
+                if (strVal == null) {
+                    throw new LHVarSubError(null, "Cannot get size of null string");
+                }
+                return new VariableValueModel(strVal.length());
+            case JSON_ARR:
+                if (jsonArrVal == null) {
+                    throw new LHVarSubError(null, "Cannot get size of null json array");
+                }
+                return new VariableValueModel(jsonArrVal.size());
+            case ARRAY:
+                if (array == null || array.getItems() == null) {
+                    throw new LHVarSubError(null, "Cannot get size of null array");
+                }
+                return new VariableValueModel(array.getItems().size());
+            default:
+                throw new LHVarSubError(null, "Cannot resolve size() for var of type " + valueType);
+        }
+    }
+
     public Object getVal() {
         switch (valueType) {
             case INT:
@@ -1018,6 +1040,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case BYTES:
             case JSON_ARR:
             case WF_RUN_ID:
+            case STRUCT:
+            case ARRAY:
             case VALUE_NOT_SET:
                 valuePair = null;
         }

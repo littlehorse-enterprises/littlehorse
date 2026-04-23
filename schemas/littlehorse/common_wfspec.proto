@@ -40,6 +40,12 @@ message VariableAssignment {
     string node_name = 1;
   }
 
+  // A SizeOf operation evaluates to the number of elements in a STR, JSON_ARR, or ARRAY value.
+  message SizeOf {
+    // The value whose size should be resolved.
+    VariableAssignment operand = 1;
+  }
+
   // An Expression allows you to combine multiple values into one.
   message Expression {
     // The left-hand-side of the expression.
@@ -85,6 +91,9 @@ message VariableAssignment {
     NodeOutputReference node_output = 5;
     // Assign the value of an Expression.
     Expression expression = 6;
+    // Assign the size of the resolved operand value.
+    // Valid for ARRAY and JSON_ARR values.
+    SizeOf size_of = 9;
   }
 
   // If specified, the resolved value will be cast to this type before being used.

@@ -884,6 +884,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 ExpressionModel expression = assn.getExpression();
                 val = expression.evaluate(this, varAssn -> assignVariable(varAssn, txnCache));
                 break;
+            case SIZE_OF:
+                val = assignVariable(assn.getSizeOf().getOperand(), txnCache).sizeOf();
+                break;
             case SOURCE_NOT_SET:
                 // This should have been caught by the WfSpecModel#validate()
                 throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");

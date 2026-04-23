@@ -164,6 +164,7 @@ export interface VariableAssignment {
     | { $case: "formatString"; value: VariableAssignment_FormatString }
     | { $case: "nodeOutput"; value: VariableAssignment_NodeOutputReference }
     | { $case: "expression"; value: VariableAssignment_Expression }
+    | { $case: "sizeOf"; value: VariableAssignment_SizeOf }
     | undefined;
   /**
    * If specified, the resolved value will be cast to this type before being used.
@@ -196,6 +197,12 @@ export interface VariableAssignment_FormatString {
 export interface VariableAssignment_NodeOutputReference {
   /** The name of the Node to pull output from. */
   nodeName: string;
+}
+
+/** A SizeOf operation evaluates to the number of elements in a STR, JSON_ARR, or ARRAY value. */
+export interface VariableAssignment_SizeOf {
+  /** The value whose size should be resolved. */
+  operand: VariableAssignment | undefined;
 }
 
 /** An Expression allows you to combine multiple values into one. */
@@ -522,6 +529,9 @@ export const VariableAssignment = {
       case "expression":
         VariableAssignment_Expression.encode(message.source.value, writer.uint32(50).fork()).ldelim();
         break;
+      case "sizeOf":
+        VariableAssignment_SizeOf.encode(message.source.value, writer.uint32(74).fork()).ldelim();
+        break;
     }
     if (message.targetType !== undefined) {
       TypeDefinition.encode(message.targetType, writer.uint32(58).fork()).ldelim();
@@ -594,6 +604,13 @@ export const VariableAssignment = {
             value: VariableAssignment_Expression.decode(reader, reader.uint32()),
           };
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.source = { $case: "sizeOf", value: VariableAssignment_SizeOf.decode(reader, reader.uint32()) };
+          continue;
         case 7:
           if (tag !== 58) {
             break;
@@ -627,6 +644,8 @@ export const VariableAssignment = {
         ? { $case: "nodeOutput", value: VariableAssignment_NodeOutputReference.fromJSON(object.nodeOutput) }
         : isSet(object.expression)
         ? { $case: "expression", value: VariableAssignment_Expression.fromJSON(object.expression) }
+        : isSet(object.sizeOf)
+        ? { $case: "sizeOf", value: VariableAssignment_SizeOf.fromJSON(object.sizeOf) }
         : undefined,
       targetType: isSet(object.targetType) ? TypeDefinition.fromJSON(object.targetType) : undefined,
     };
@@ -654,6 +673,9 @@ export const VariableAssignment = {
     }
     if (message.source?.$case === "expression") {
       obj.expression = VariableAssignment_Expression.toJSON(message.source.value);
+    }
+    if (message.source?.$case === "sizeOf") {
+      obj.sizeOf = VariableAssignment_SizeOf.toJSON(message.source.value);
     }
     if (message.targetType !== undefined) {
       obj.targetType = TypeDefinition.toJSON(message.targetType);
@@ -698,6 +720,9 @@ export const VariableAssignment = {
     }
     if (object.source?.$case === "expression" && object.source?.value !== undefined && object.source?.value !== null) {
       message.source = { $case: "expression", value: VariableAssignment_Expression.fromPartial(object.source.value) };
+    }
+    if (object.source?.$case === "sizeOf" && object.source?.value !== undefined && object.source?.value !== null) {
+      message.source = { $case: "sizeOf", value: VariableAssignment_SizeOf.fromPartial(object.source.value) };
     }
     message.targetType = (object.targetType !== undefined && object.targetType !== null)
       ? TypeDefinition.fromPartial(object.targetType)
@@ -835,6 +860,65 @@ export const VariableAssignment_NodeOutputReference = {
   fromPartial(object: DeepPartial<VariableAssignment_NodeOutputReference>): VariableAssignment_NodeOutputReference {
     const message = createBaseVariableAssignment_NodeOutputReference();
     message.nodeName = object.nodeName ?? "";
+    return message;
+  },
+};
+
+function createBaseVariableAssignment_SizeOf(): VariableAssignment_SizeOf {
+  return { operand: undefined };
+}
+
+export const VariableAssignment_SizeOf = {
+  encode(message: VariableAssignment_SizeOf, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.operand !== undefined) {
+      VariableAssignment.encode(message.operand, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): VariableAssignment_SizeOf {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseVariableAssignment_SizeOf();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.operand = VariableAssignment.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): VariableAssignment_SizeOf {
+    return { operand: isSet(object.operand) ? VariableAssignment.fromJSON(object.operand) : undefined };
+  },
+
+  toJSON(message: VariableAssignment_SizeOf): unknown {
+    const obj: any = {};
+    if (message.operand !== undefined) {
+      obj.operand = VariableAssignment.toJSON(message.operand);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<VariableAssignment_SizeOf>): VariableAssignment_SizeOf {
+    return VariableAssignment_SizeOf.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<VariableAssignment_SizeOf>): VariableAssignment_SizeOf {
+    const message = createBaseVariableAssignment_SizeOf();
+    message.operand = (object.operand !== undefined && object.operand !== null)
+      ? VariableAssignment.fromPartial(object.operand)
+      : undefined;
     return message;
   },
 };

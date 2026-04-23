@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.CastExpressionImpl;
 import io.littlehorse.sdk.wfsdk.internal.LHExpressionImpl;
+import io.littlehorse.sdk.wfsdk.internal.SizeOfExpressionImpl;
 import java.io.Serializable;
 
 /**
@@ -105,6 +106,17 @@ public interface LHExpression extends Serializable {
      */
     default LHExpression removeKey(Serializable key) {
         return new LHExpressionImpl(this, VariableMutationType.REMOVE_KEY, key);
+    }
+
+    /**
+     * Returns an expression whose value is the runtime size of this expression.
+     *
+     * Valid for STR, ARRAY, and JSON_ARR expressions.
+     *
+     * @return an expression that resolves to INT size at workflow runtime.
+     */
+    default LHExpression size() {
+        return new SizeOfExpressionImpl(this);
     }
 
     /**
