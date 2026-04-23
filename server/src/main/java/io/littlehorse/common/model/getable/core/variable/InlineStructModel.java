@@ -10,10 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import lombok.Getter;
+import lombok.Setter;
 
 public class InlineStructModel extends LHSerializable<InlineStruct> {
 
     @Getter
+    @Setter
     private Map<String, StructFieldModel> fields;
 
     @Override

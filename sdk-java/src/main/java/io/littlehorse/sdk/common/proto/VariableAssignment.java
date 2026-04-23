@@ -3708,7 +3708,8 @@ private static final long serialVersionUID = 0L;
     FORMAT_STRING(4),
     NODE_OUTPUT(5),
     EXPRESSION(6),
-    SIZE_OF(9),
+    STRUCT_BUILDER(9),
+    SIZE_OF(10),
     SOURCE_NOT_SET(0);
     private final int value;
     private SourceCase(int value) {
@@ -3731,7 +3732,8 @@ private static final long serialVersionUID = 0L;
         case 4: return FORMAT_STRING;
         case 5: return NODE_OUTPUT;
         case 6: return EXPRESSION;
-        case 9: return SIZE_OF;
+        case 9: return STRUCT_BUILDER;
+        case 10: return SIZE_OF;
         case 0: return SOURCE_NOT_SET;
         default: return null;
       }
@@ -4096,19 +4098,62 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance();
   }
 
-  public static final int SIZE_OF_FIELD_NUMBER = 9;
+  public static final int STRUCT_BUILDER_FIELD_NUMBER = 9;
+  /**
+   * <pre>
+   * Builds a Struct using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+   * @return Whether the structBuilder field is set.
+   */
+  @java.lang.Override
+  public boolean hasStructBuilder() {
+    return sourceCase_ == 9;
+  }
+  /**
+   * <pre>
+   * Builds a Struct using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+   * @return The structBuilder.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructBuilder getStructBuilder() {
+    if (sourceCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.StructBuilder) source_;
+    }
+    return io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Builds a Struct using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructBuilderOrBuilder getStructBuilderOrBuilder() {
+    if (sourceCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.StructBuilder) source_;
+    }
+    return io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance();
+  }
+
+  public static final int SIZE_OF_FIELD_NUMBER = 10;
   /**
    * <pre>
    * Assign the size of the resolved operand value.
    * Valid for STR, ARRAY, and JSON_ARR values.
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
    * @return Whether the sizeOf field is set.
    */
   @java.lang.Override
   public boolean hasSizeOf() {
-    return sourceCase_ == 9;
+    return sourceCase_ == 10;
   }
   /**
    * <pre>
@@ -4116,12 +4161,12 @@ private static final long serialVersionUID = 0L;
    * Valid for STR, ARRAY, and JSON_ARR values.
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
    * @return The sizeOf.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf getSizeOf() {
-    if (sourceCase_ == 9) {
+    if (sourceCase_ == 10) {
        return (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_;
     }
     return io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
@@ -4132,11 +4177,11 @@ private static final long serialVersionUID = 0L;
    * Valid for STR, ARRAY, and JSON_ARR values.
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOfOrBuilder getSizeOfOrBuilder() {
-    if (sourceCase_ == 9) {
+    if (sourceCase_ == 10) {
        return (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_;
     }
     return io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
@@ -4228,7 +4273,10 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(8, (io.littlehorse.sdk.common.proto.LHPath) path_);
     }
     if (sourceCase_ == 9) {
-      output.writeMessage(9, (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_);
+      output.writeMessage(9, (io.littlehorse.sdk.common.proto.StructBuilder) source_);
+    }
+    if (sourceCase_ == 10) {
+      output.writeMessage(10, (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -4271,7 +4319,11 @@ private static final long serialVersionUID = 0L;
     }
     if (sourceCase_ == 9) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_);
+        .computeMessageSize(9, (io.littlehorse.sdk.common.proto.StructBuilder) source_);
+    }
+    if (sourceCase_ == 10) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(10, (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -4329,6 +4381,10 @@ private static final long serialVersionUID = 0L;
             .equals(other.getExpression())) return false;
         break;
       case 9:
+        if (!getStructBuilder()
+            .equals(other.getStructBuilder())) return false;
+        break;
+      case 10:
         if (!getSizeOf()
             .equals(other.getSizeOf())) return false;
         break;
@@ -4384,6 +4440,10 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getExpression().hashCode();
         break;
       case 9:
+        hash = (37 * hash) + STRUCT_BUILDER_FIELD_NUMBER;
+        hash = (53 * hash) + getStructBuilder().hashCode();
+        break;
+      case 10:
         hash = (37 * hash) + SIZE_OF_FIELD_NUMBER;
         hash = (53 * hash) + getSizeOf().hashCode();
         break;
@@ -4552,6 +4612,9 @@ private static final long serialVersionUID = 0L;
       if (expressionBuilder_ != null) {
         expressionBuilder_.clear();
       }
+      if (structBuilderBuilder_ != null) {
+        structBuilderBuilder_.clear();
+      }
       if (sizeOfBuilder_ != null) {
         sizeOfBuilder_.clear();
       }
@@ -4599,7 +4662,7 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.VariableAssignment result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000100) != 0)) {
+      if (((from_bitField0_ & 0x00000200) != 0)) {
         result.targetType_ = targetTypeBuilder_ == null
             ? targetType_
             : targetTypeBuilder_.build();
@@ -4634,6 +4697,10 @@ private static final long serialVersionUID = 0L;
         result.source_ = expressionBuilder_.build();
       }
       if (sourceCase_ == 9 &&
+          structBuilderBuilder_ != null) {
+        result.source_ = structBuilderBuilder_.build();
+      }
+      if (sourceCase_ == 10 &&
           sizeOfBuilder_ != null) {
         result.source_ = sizeOfBuilder_.build();
       }
@@ -4690,6 +4757,10 @@ private static final long serialVersionUID = 0L;
         }
         case EXPRESSION: {
           mergeExpression(other.getExpression());
+          break;
+        }
+        case STRUCT_BUILDER: {
+          mergeStructBuilder(other.getStructBuilder());
           break;
         }
         case SIZE_OF: {
@@ -4770,7 +4841,7 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   internalGetTargetTypeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000100;
+              bitField0_ |= 0x00000200;
               break;
             } // case 58
             case 66: {
@@ -4782,11 +4853,18 @@ private static final long serialVersionUID = 0L;
             } // case 66
             case 74: {
               input.readMessage(
-                  internalGetSizeOfFieldBuilder().getBuilder(),
+                  internalGetStructBuilderFieldBuilder().getBuilder(),
                   extensionRegistry);
               sourceCase_ = 9;
               break;
             } // case 74
+            case 82: {
+              input.readMessage(
+                  internalGetSizeOfFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              sourceCase_ = 10;
+              break;
+            } // case 82
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5974,6 +6052,184 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.StructBuilder, io.littlehorse.sdk.common.proto.StructBuilder.Builder, io.littlehorse.sdk.common.proto.StructBuilderOrBuilder> structBuilderBuilder_;
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     * @return Whether the structBuilder field is set.
+     */
+    @java.lang.Override
+    public boolean hasStructBuilder() {
+      return sourceCase_ == 9;
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     * @return The structBuilder.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.StructBuilder getStructBuilder() {
+      if (structBuilderBuilder_ == null) {
+        if (sourceCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.StructBuilder) source_;
+        }
+        return io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance();
+      } else {
+        if (sourceCase_ == 9) {
+          return structBuilderBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    public Builder setStructBuilder(io.littlehorse.sdk.common.proto.StructBuilder value) {
+      if (structBuilderBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        source_ = value;
+        onChanged();
+      } else {
+        structBuilderBuilder_.setMessage(value);
+      }
+      sourceCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    public Builder setStructBuilder(
+        io.littlehorse.sdk.common.proto.StructBuilder.Builder builderForValue) {
+      if (structBuilderBuilder_ == null) {
+        source_ = builderForValue.build();
+        onChanged();
+      } else {
+        structBuilderBuilder_.setMessage(builderForValue.build());
+      }
+      sourceCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    public Builder mergeStructBuilder(io.littlehorse.sdk.common.proto.StructBuilder value) {
+      if (structBuilderBuilder_ == null) {
+        if (sourceCase_ == 9 &&
+            source_ != io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance()) {
+          source_ = io.littlehorse.sdk.common.proto.StructBuilder.newBuilder((io.littlehorse.sdk.common.proto.StructBuilder) source_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          source_ = value;
+        }
+        onChanged();
+      } else {
+        if (sourceCase_ == 9) {
+          structBuilderBuilder_.mergeFrom(value);
+        } else {
+          structBuilderBuilder_.setMessage(value);
+        }
+      }
+      sourceCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    public Builder clearStructBuilder() {
+      if (structBuilderBuilder_ == null) {
+        if (sourceCase_ == 9) {
+          sourceCase_ = 0;
+          source_ = null;
+          onChanged();
+        }
+      } else {
+        if (sourceCase_ == 9) {
+          sourceCase_ = 0;
+          source_ = null;
+        }
+        structBuilderBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.StructBuilder.Builder getStructBuilderBuilder() {
+      return internalGetStructBuilderFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.StructBuilderOrBuilder getStructBuilderOrBuilder() {
+      if ((sourceCase_ == 9) && (structBuilderBuilder_ != null)) {
+        return structBuilderBuilder_.getMessageOrBuilder();
+      } else {
+        if (sourceCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.StructBuilder) source_;
+        }
+        return io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.StructBuilder, io.littlehorse.sdk.common.proto.StructBuilder.Builder, io.littlehorse.sdk.common.proto.StructBuilderOrBuilder> 
+        internalGetStructBuilderFieldBuilder() {
+      if (structBuilderBuilder_ == null) {
+        if (!(sourceCase_ == 9)) {
+          source_ = io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance();
+        }
+        structBuilderBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.StructBuilder, io.littlehorse.sdk.common.proto.StructBuilder.Builder, io.littlehorse.sdk.common.proto.StructBuilderOrBuilder>(
+                (io.littlehorse.sdk.common.proto.StructBuilder) source_,
+                getParentForChildren(),
+                isClean());
+        source_ = null;
+      }
+      sourceCase_ = 9;
+      onChanged();
+      return structBuilderBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf, io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.SizeOfOrBuilder> sizeOfBuilder_;
     /**
      * <pre>
@@ -5981,12 +6237,12 @@ private static final long serialVersionUID = 0L;
      * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
      * @return Whether the sizeOf field is set.
      */
     @java.lang.Override
     public boolean hasSizeOf() {
-      return sourceCase_ == 9;
+      return sourceCase_ == 10;
     }
     /**
      * <pre>
@@ -5994,18 +6250,18 @@ private static final long serialVersionUID = 0L;
      * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
      * @return The sizeOf.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf getSizeOf() {
       if (sizeOfBuilder_ == null) {
-        if (sourceCase_ == 9) {
+        if (sourceCase_ == 10) {
           return (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_;
         }
         return io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
       } else {
-        if (sourceCase_ == 9) {
+        if (sourceCase_ == 10) {
           return sizeOfBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
@@ -6017,7 +6273,7 @@ private static final long serialVersionUID = 0L;
      * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
      */
     public Builder setSizeOf(io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf value) {
       if (sizeOfBuilder_ == null) {
@@ -6029,7 +6285,7 @@ private static final long serialVersionUID = 0L;
       } else {
         sizeOfBuilder_.setMessage(value);
       }
-      sourceCase_ = 9;
+      sourceCase_ = 10;
       return this;
     }
     /**
@@ -6038,7 +6294,7 @@ private static final long serialVersionUID = 0L;
      * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
      */
     public Builder setSizeOf(
         io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.Builder builderForValue) {
@@ -6048,7 +6304,7 @@ private static final long serialVersionUID = 0L;
       } else {
         sizeOfBuilder_.setMessage(builderForValue.build());
       }
-      sourceCase_ = 9;
+      sourceCase_ = 10;
       return this;
     }
     /**
@@ -6057,11 +6313,11 @@ private static final long serialVersionUID = 0L;
      * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
      */
     public Builder mergeSizeOf(io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf value) {
       if (sizeOfBuilder_ == null) {
-        if (sourceCase_ == 9 &&
+        if (sourceCase_ == 10 &&
             source_ != io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance()) {
           source_ = io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_)
               .mergeFrom(value).buildPartial();
@@ -6070,13 +6326,13 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (sourceCase_ == 9) {
+        if (sourceCase_ == 10) {
           sizeOfBuilder_.mergeFrom(value);
         } else {
           sizeOfBuilder_.setMessage(value);
         }
       }
-      sourceCase_ = 9;
+      sourceCase_ = 10;
       return this;
     }
     /**
@@ -6085,17 +6341,17 @@ private static final long serialVersionUID = 0L;
      * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
      */
     public Builder clearSizeOf() {
       if (sizeOfBuilder_ == null) {
-        if (sourceCase_ == 9) {
+        if (sourceCase_ == 10) {
           sourceCase_ = 0;
           source_ = null;
           onChanged();
         }
       } else {
-        if (sourceCase_ == 9) {
+        if (sourceCase_ == 10) {
           sourceCase_ = 0;
           source_ = null;
         }
@@ -6109,7 +6365,7 @@ private static final long serialVersionUID = 0L;
      * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.Builder getSizeOfBuilder() {
       return internalGetSizeOfFieldBuilder().getBuilder();
@@ -6120,14 +6376,14 @@ private static final long serialVersionUID = 0L;
      * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOfOrBuilder getSizeOfOrBuilder() {
-      if ((sourceCase_ == 9) && (sizeOfBuilder_ != null)) {
+      if ((sourceCase_ == 10) && (sizeOfBuilder_ != null)) {
         return sizeOfBuilder_.getMessageOrBuilder();
       } else {
-        if (sourceCase_ == 9) {
+        if (sourceCase_ == 10) {
           return (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_;
         }
         return io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
@@ -6139,13 +6395,13 @@ private static final long serialVersionUID = 0L;
      * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf, io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.SizeOfOrBuilder> 
         internalGetSizeOfFieldBuilder() {
       if (sizeOfBuilder_ == null) {
-        if (!(sourceCase_ == 9)) {
+        if (!(sourceCase_ == 10)) {
           source_ = io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
         }
         sizeOfBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -6155,7 +6411,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         source_ = null;
       }
-      sourceCase_ = 9;
+      sourceCase_ = 10;
       onChanged();
       return sizeOfBuilder_;
     }
@@ -6175,7 +6431,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the targetType field is set.
      */
     public boolean hasTargetType() {
-      return ((bitField0_ & 0x00000100) != 0);
+      return ((bitField0_ & 0x00000200) != 0);
     }
     /**
      * <pre>
@@ -6214,7 +6470,7 @@ private static final long serialVersionUID = 0L;
       } else {
         targetTypeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000100;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
@@ -6235,7 +6491,7 @@ private static final long serialVersionUID = 0L;
       } else {
         targetTypeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000100;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
@@ -6251,7 +6507,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeTargetType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
       if (targetTypeBuilder_ == null) {
-        if (((bitField0_ & 0x00000100) != 0) &&
+        if (((bitField0_ & 0x00000200) != 0) &&
           targetType_ != null &&
           targetType_ != io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) {
           getTargetTypeBuilder().mergeFrom(value);
@@ -6262,7 +6518,7 @@ private static final long serialVersionUID = 0L;
         targetTypeBuilder_.mergeFrom(value);
       }
       if (targetType_ != null) {
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000200;
         onChanged();
       }
       return this;
@@ -6278,7 +6534,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
     public Builder clearTargetType() {
-      bitField0_ = (bitField0_ & ~0x00000100);
+      bitField0_ = (bitField0_ & ~0x00000200);
       targetType_ = null;
       if (targetTypeBuilder_ != null) {
         targetTypeBuilder_.dispose();
@@ -6298,7 +6554,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.TypeDefinition.Builder getTargetTypeBuilder() {
-      bitField0_ |= 0x00000100;
+      bitField0_ |= 0x00000200;
       onChanged();
       return internalGetTargetTypeFieldBuilder().getBuilder();
     }

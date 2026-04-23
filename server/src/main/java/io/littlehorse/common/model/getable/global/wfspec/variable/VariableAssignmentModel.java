@@ -47,6 +47,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     private FormatStringModel formatString;
     private NodeOutputReferenceModel nodeOutputReference;
     private ExpressionModel expression;
+    private StructBuilderModel structBuilder;
     private SizeOfModel sizeOf;
     private TypeDefinitionModel targetType;
 
@@ -89,6 +90,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             case EXPRESSION:
                 expression = LHSerializable.fromProto(p.getExpression(), ExpressionModel.class, context);
                 break;
+            case STRUCT_BUILDER:
+                structBuilder = StructBuilderModel.fromProto(p.getStructBuilder(), context);
             case SIZE_OF:
                 sizeOf = LHSerializable.fromProto(p.getSizeOf(), SizeOfModel.class, context);
                 break;
@@ -128,6 +131,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             case EXPRESSION:
                 out.setExpression(expression.toProto());
                 break;
+            case STRUCT_BUILDER:
+                out.setStructBuilder(structBuilder.toProto());
             case SIZE_OF:
                 out.setSizeOf(sizeOf.toProto());
                 break;
@@ -154,6 +159,26 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             for (VariableAssignmentModel arg : formatString.getArgs()) {
                 out.addAll(arg.getRequiredWfRunVarNames());
             }
+        } else if (rhsSourceType == SourceCase.STRUCT_BUILDER) {
+            out.addAll(structBuilder.getRequiredWfRunVarNames());
+        }
+        return out;
+    }
+
+    public Set<String> getRequiredNodeNames() {
+        Set<String> out = new HashSet<>();
+        if (rhsSourceType == SourceCase.NODE_OUTPUT) {
+            out.add(nodeOutputReference.getNodeName());
+        } else if (rhsSourceType == SourceCase.FORMAT_STRING) {
+            out.addAll(formatString.getFormat().getRequiredNodeNames());
+            for (VariableAssignmentModel arg : formatString.getArgs()) {
+                out.addAll(arg.getRequiredNodeNames());
+            }
+        } else if (rhsSourceType == SourceCase.EXPRESSION) {
+            out.addAll(expression.getLhs().getRequiredNodeNames());
+            out.addAll(expression.getRhs().getRequiredNodeNames());
+        } else if (rhsSourceType == SourceCase.STRUCT_BUILDER) {
+            out.addAll(structBuilder.getRequiredNodeNames());
         }
         if (rhsSourceType == SourceCase.SIZE_OF) {
             out.addAll(sizeOf.getOperand().getRequiredWfRunVarNames());
@@ -194,6 +219,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // TODO (#1124): look at the node to determine if the output of the node
                 // can be a given type.
                 return true;
+            case STRUCT_BUILDER:
+                baseType = structBuilder.getTypeDefinition();
+                break;
             case SIZE_OF:
                 baseType = new TypeDefinitionModel(VariableType.INT);
                 break;
@@ -285,6 +313,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                     typeDef = expressionTypeDef.get();
                 }
                 break;
+            case STRUCT_BUILDER:
+                typeDef = structBuilder.getTypeDefinition();
+                break;
             case SIZE_OF:
                 Optional<TypeDefinitionModel> sizeOperandType =
                         sizeOf.getOperand().getSourceType(manager, wfSpec, threadSpecName);
@@ -321,6 +352,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             throws InvalidEdgeException, InvalidExpressionException {
         if (expression != null) {
             expression.validate(source, manager, threadSpec);
+        } else if (structBuilder != null) {
+            structBuilder.validate(source, manager, threadSpec);
         } else {
             Optional<TypeDefinitionModel> sourceType = getSourceType(manager, threadSpec.wfSpec, threadSpec.getName());
             if (sourceType.isEmpty()
@@ -347,6 +380,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             out.add(variableName);
         } else if (rhsSourceType == SourceCase.SIZE_OF) {
             out.addAll(sizeOf.getOperand().getRequiredVariableNames());
+        } else if (structBuilder != null) {
+            out.addAll(structBuilder.getRequiredVariableNames());
         }
         return out;
     }

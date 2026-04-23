@@ -23,7 +23,9 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import lombok.Getter;
 
 @Getter
@@ -243,5 +245,11 @@ public class ExpressionModel extends LHSerializable<Expression> {
                 || (mutateWithOperation != null
                         && (mutateWithOperation == VariableMutationType.AND
                                 || mutateWithOperation == VariableMutationType.OR));
+    }
+
+    public Set<String> getRequiredNodeNames() {
+        Set<String> out = new HashSet<>(lhs.getRequiredNodeNames());
+        out.addAll(rhs.getRequiredNodeNames());
+        return out;
     }
 }

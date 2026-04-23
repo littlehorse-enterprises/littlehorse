@@ -211,11 +211,38 @@ public interface VariableAssignmentOrBuilder extends
 
   /**
    * <pre>
+   * Builds a Struct using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+   * @return Whether the structBuilder field is set.
+   */
+  boolean hasStructBuilder();
+  /**
+   * <pre>
+   * Builds a Struct using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+   * @return The structBuilder.
+   */
+  io.littlehorse.sdk.common.proto.StructBuilder getStructBuilder();
+  /**
+   * <pre>
+   * Builds a Struct using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.StructBuilderOrBuilder getStructBuilderOrBuilder();
+
+  /**
+   * <pre>
    * Assign the size of the resolved operand value.
    * Valid for STR, ARRAY, and JSON_ARR values.
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
    * @return Whether the sizeOf field is set.
    */
   boolean hasSizeOf();
@@ -225,7 +252,7 @@ public interface VariableAssignmentOrBuilder extends
    * Valid for STR, ARRAY, and JSON_ARR values.
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
    * @return The sizeOf.
    */
   io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf getSizeOf();
@@ -235,7 +262,7 @@ public interface VariableAssignmentOrBuilder extends
    * Valid for STR, ARRAY, and JSON_ARR values.
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
+   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignment.SizeOfOrBuilder getSizeOfOrBuilder();
 
