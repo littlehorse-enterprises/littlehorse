@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.global.acl.QuotaModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.QuotaIdModel;
@@ -13,7 +14,6 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
-import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

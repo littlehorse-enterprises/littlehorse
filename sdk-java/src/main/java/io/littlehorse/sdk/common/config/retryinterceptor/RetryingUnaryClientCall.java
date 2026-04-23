@@ -3,6 +3,7 @@ package io.littlehorse.sdk.common.config.retryinterceptor;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ClientCall;
+import io.grpc.Deadline;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.Status;
@@ -149,6 +150,14 @@ final class RetryingUnaryClientCall<ReqT, RespT> extends ClientCall<ReqT, RespT>
         if (currentHalfClosed) {
             newDelegate.halfClose();
         }
+    }
+
+    boolean canRetryWithinDeadline(long retryDelayMillis) {
+        Deadline deadline = callOptions.getDeadline();
+        if (deadline == null) {
+            return true;
+        }
+        return deadline.timeRemaining(TimeUnit.MILLISECONDS) > retryDelayMillis;
     }
 
     void scheduleRetry(long delayMillis) {

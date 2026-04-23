@@ -45,7 +45,7 @@ final class AttemptListener<ReqT, RespT> extends ClientCall.Listener<RespT> {
     @Override
     public void onClose(Status status, Metadata trailers) {
         Long retryDelayMillis = receivedMessage ? null : getRetryDelayMillis(status, trailers);
-        if (retryDelayMillis != null) {
+        if (retryDelayMillis != null && owner.canRetryWithinDeadline(retryDelayMillis)) {
             synchronized (owner.getLock()) {
                 if (owner.getDelegate() != attemptDelegate || owner.isClosed() || owner.isCancelled()) {
                     return;
