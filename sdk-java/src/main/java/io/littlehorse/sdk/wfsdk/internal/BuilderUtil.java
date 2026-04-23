@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.LHPath;
 import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.StructBuilder;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
@@ -35,6 +36,9 @@ class BuilderUtil {
         }
         if (LHFormatStringImpl.class.equals(variable.getClass())) {
             return buildFromFormatString((LHFormatStringImpl) variable, typeAdapterRegistry);
+        }
+        if (variable instanceof LHStructBuilderImpl) {
+            return buildFromStructBuilder((LHStructBuilderImpl) variable);
         }
         if (variable instanceof CastExpressionImpl) {
             return buildFromCastExpression((CastExpressionImpl) variable, typeAdapterRegistry);
@@ -96,6 +100,11 @@ class BuilderUtil {
                         .setMasked(false)
                         .build())
                 .build();
+    }
+
+    private static VariableAssignment buildFromStructBuilder(LHStructBuilderImpl structBuilder) {
+        StructBuilder builderProto = structBuilder.toProto();
+        return VariableAssignment.newBuilder().setStructBuilder(builderProto).build();
     }
 
     private static VariableAssignment buildFromLHExpression(

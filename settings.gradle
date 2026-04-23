@@ -39,6 +39,7 @@ include(
         'saga',
         'casting',
         'spawn-thread-foreach',
+        'struct-builder',
         'struct-def',
         'timestamp',
         'type-adapter',

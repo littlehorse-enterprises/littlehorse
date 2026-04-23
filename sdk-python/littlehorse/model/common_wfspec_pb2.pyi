@@ -37,7 +37,7 @@ AND: VariableMutationType
 OR: VariableMutationType
 
 class VariableAssignment(_message.Message):
-    __slots__ = ("json_path", "lh_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "target_type")
+    __slots__ = ("json_path", "lh_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "struct_builder", "target_type")
     class FormatString(_message.Message):
         __slots__ = ("format", "args")
         FORMAT_FIELD_NUMBER: _ClassVar[int]
@@ -68,6 +68,7 @@ class VariableAssignment(_message.Message):
     FORMAT_STRING_FIELD_NUMBER: _ClassVar[int]
     NODE_OUTPUT_FIELD_NUMBER: _ClassVar[int]
     EXPRESSION_FIELD_NUMBER: _ClassVar[int]
+    STRUCT_BUILDER_FIELD_NUMBER: _ClassVar[int]
     TARGET_TYPE_FIELD_NUMBER: _ClassVar[int]
     json_path: str
     lh_path: LHPath
@@ -76,8 +77,38 @@ class VariableAssignment(_message.Message):
     format_string: VariableAssignment.FormatString
     node_output: VariableAssignment.NodeOutputReference
     expression: VariableAssignment.Expression
+    struct_builder: StructBuilder
     target_type: _type_definition_pb2.TypeDefinition
-    def __init__(self, json_path: _Optional[str] = ..., lh_path: _Optional[_Union[LHPath, _Mapping]] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., target_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ...) -> None: ...
+    def __init__(self, json_path: _Optional[str] = ..., lh_path: _Optional[_Union[LHPath, _Mapping]] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., struct_builder: _Optional[_Union[StructBuilder, _Mapping]] = ..., target_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ...) -> None: ...
+
+class StructBuilder(_message.Message):
+    __slots__ = ("struct_def_id", "value")
+    STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    struct_def_id: _object_id_pb2.StructDefId
+    value: InlineStructBuilder
+    def __init__(self, struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., value: _Optional[_Union[InlineStructBuilder, _Mapping]] = ...) -> None: ...
+
+class InlineStructBuilder(_message.Message):
+    __slots__ = ("fields",)
+    class FieldsEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: InlineStructFieldValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[InlineStructFieldValue, _Mapping]] = ...) -> None: ...
+    FIELDS_FIELD_NUMBER: _ClassVar[int]
+    fields: _containers.MessageMap[str, InlineStructFieldValue]
+    def __init__(self, fields: _Optional[_Mapping[str, InlineStructFieldValue]] = ...) -> None: ...
+
+class InlineStructFieldValue(_message.Message):
+    __slots__ = ("simple_value", "sub_structure")
+    SIMPLE_VALUE_FIELD_NUMBER: _ClassVar[int]
+    SUB_STRUCTURE_FIELD_NUMBER: _ClassVar[int]
+    simple_value: VariableAssignment
+    sub_structure: InlineStructBuilder
+    def __init__(self, simple_value: _Optional[_Union[VariableAssignment, _Mapping]] = ..., sub_structure: _Optional[_Union[InlineStructBuilder, _Mapping]] = ...) -> None: ...
 
 class VariableMutation(_message.Message):
     __slots__ = ("lhs_name", "lhs_json_path", "operation", "rhs_assignment", "literal_value", "node_output")

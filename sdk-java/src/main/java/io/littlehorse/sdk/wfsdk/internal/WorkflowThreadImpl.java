@@ -46,6 +46,7 @@ import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.InterruptHandler;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.LHFormatString;
+import io.littlehorse.sdk.wfsdk.LHStructBuilder;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedChildWf;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -313,6 +314,21 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     public LHFormatStringImpl format(String format, Serializable... args) {
         return new LHFormatStringImpl(this, format, args);
+    }
+
+    @Override
+    public LHStructBuilder buildStruct(String structDefName) {
+        return new LHStructBuilderImpl(this, structDefName);
+    }
+
+    @Override
+    public LHStructBuilder buildStruct(String structDefName, int version) {
+        return new LHStructBuilderImpl(this, structDefName, version);
+    }
+
+    @Override
+    public InlineLHStructBuilderImpl buildInlineStruct() {
+        return new InlineLHStructBuilderImpl(this);
     }
 
     @Override
