@@ -4100,7 +4100,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * Assign the size of the resolved operand value.
-   * Valid for ARRAY and JSON_ARR values.
+   * Valid for STR, ARRAY, and JSON_ARR values.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
@@ -4113,7 +4113,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * Assign the size of the resolved operand value.
-   * Valid for ARRAY and JSON_ARR values.
+   * Valid for STR, ARRAY, and JSON_ARR values.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
@@ -4129,7 +4129,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * Assign the size of the resolved operand value.
-   * Valid for ARRAY and JSON_ARR values.
+   * Valid for STR, ARRAY, and JSON_ARR values.
    * </pre>
    *
    * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
@@ -5978,7 +5978,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Assign the size of the resolved operand value.
-     * Valid for ARRAY and JSON_ARR values.
+     * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
@@ -5991,7 +5991,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Assign the size of the resolved operand value.
-     * Valid for ARRAY and JSON_ARR values.
+     * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
@@ -6014,7 +6014,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Assign the size of the resolved operand value.
-     * Valid for ARRAY and JSON_ARR values.
+     * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
@@ -6035,7 +6035,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Assign the size of the resolved operand value.
-     * Valid for ARRAY and JSON_ARR values.
+     * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
@@ -6054,7 +6054,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Assign the size of the resolved operand value.
-     * Valid for ARRAY and JSON_ARR values.
+     * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
@@ -6082,7 +6082,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Assign the size of the resolved operand value.
-     * Valid for ARRAY and JSON_ARR values.
+     * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
@@ -6106,7 +6106,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Assign the size of the resolved operand value.
-     * Valid for ARRAY and JSON_ARR values.
+     * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
@@ -6117,7 +6117,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Assign the size of the resolved operand value.
-     * Valid for ARRAY and JSON_ARR values.
+     * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>
@@ -6136,7 +6136,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Assign the size of the resolved operand value.
-     * Valid for ARRAY and JSON_ARR values.
+     * Valid for STR, ARRAY, and JSON_ARR values.
      * </pre>
      *
      * <code>.littlehorse.VariableAssignment.SizeOf size_of = 9;</code>

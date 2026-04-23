@@ -92,7 +92,7 @@ message VariableAssignment {
     // Assign the value of an Expression.
     Expression expression = 6;
     // Assign the size of the resolved operand value.
-    // Valid for ARRAY and JSON_ARR values.
+    // Valid for STR, ARRAY, and JSON_ARR values.
     SizeOf size_of = 9;
   }
 

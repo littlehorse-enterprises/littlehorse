@@ -357,7 +357,7 @@ type VariableAssignment_Expression_ struct {
 
 type VariableAssignment_SizeOf_ struct {
 	// Assign the size of the resolved operand value.
-	// Valid for ARRAY and JSON_ARR values.
+	// Valid for STR, ARRAY, and JSON_ARR values.
 	SizeOf *VariableAssignment_SizeOf `protobuf:"bytes,9,opt,name=size_of,json=sizeOf,proto3,oneof"`
 }
 
