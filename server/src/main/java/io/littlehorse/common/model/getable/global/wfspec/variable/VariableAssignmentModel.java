@@ -92,6 +92,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case STRUCT_BUILDER:
                 structBuilder = StructBuilderModel.fromProto(p.getStructBuilder(), context);
+                break;
             case SIZE_OF:
                 sizeOf = LHSerializable.fromProto(p.getSizeOf(), SizeOfModel.class, context);
                 break;
@@ -133,6 +134,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case STRUCT_BUILDER:
                 out.setStructBuilder(structBuilder.toProto());
+                break;
             case SIZE_OF:
                 out.setSizeOf(sizeOf.toProto());
                 break;
