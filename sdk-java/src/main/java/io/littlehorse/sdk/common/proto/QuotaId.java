@@ -93,7 +93,7 @@ private static final long serialVersionUID = 0L;
    * If unset, the quota applies to all `Principal`s in the `Tenant`.
    * </pre>
    *
-   * <code>.littlehorse.PrincipalId principal = 2;</code>
+   * <code>optional .littlehorse.PrincipalId principal = 2;</code>
    * @return Whether the principal field is set.
    */
   @java.lang.Override
@@ -105,7 +105,7 @@ private static final long serialVersionUID = 0L;
    * If unset, the quota applies to all `Principal`s in the `Tenant`.
    * </pre>
    *
-   * <code>.littlehorse.PrincipalId principal = 2;</code>
+   * <code>optional .littlehorse.PrincipalId principal = 2;</code>
    * @return The principal.
    */
   @java.lang.Override
@@ -117,7 +117,7 @@ private static final long serialVersionUID = 0L;
    * If unset, the quota applies to all `Principal`s in the `Tenant`.
    * </pre>
    *
-   * <code>.littlehorse.PrincipalId principal = 2;</code>
+   * <code>optional .littlehorse.PrincipalId principal = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getPrincipalOrBuilder() {
@@ -646,7 +646,7 @@ private static final long serialVersionUID = 0L;
      * If unset, the quota applies to all `Principal`s in the `Tenant`.
      * </pre>
      *
-     * <code>.littlehorse.PrincipalId principal = 2;</code>
+     * <code>optional .littlehorse.PrincipalId principal = 2;</code>
      * @return Whether the principal field is set.
      */
     public boolean hasPrincipal() {
@@ -657,7 +657,7 @@ private static final long serialVersionUID = 0L;
      * If unset, the quota applies to all `Principal`s in the `Tenant`.
      * </pre>
      *
-     * <code>.littlehorse.PrincipalId principal = 2;</code>
+     * <code>optional .littlehorse.PrincipalId principal = 2;</code>
      * @return The principal.
      */
     public io.littlehorse.sdk.common.proto.PrincipalId getPrincipal() {
@@ -672,7 +672,7 @@ private static final long serialVersionUID = 0L;
      * If unset, the quota applies to all `Principal`s in the `Tenant`.
      * </pre>
      *
-     * <code>.littlehorse.PrincipalId principal = 2;</code>
+     * <code>optional .littlehorse.PrincipalId principal = 2;</code>
      */
     public Builder setPrincipal(io.littlehorse.sdk.common.proto.PrincipalId value) {
       if (principalBuilder_ == null) {
@@ -692,7 +692,7 @@ private static final long serialVersionUID = 0L;
      * If unset, the quota applies to all `Principal`s in the `Tenant`.
      * </pre>
      *
-     * <code>.littlehorse.PrincipalId principal = 2;</code>
+     * <code>optional .littlehorse.PrincipalId principal = 2;</code>
      */
     public Builder setPrincipal(
         io.littlehorse.sdk.common.proto.PrincipalId.Builder builderForValue) {
@@ -710,7 +710,7 @@ private static final long serialVersionUID = 0L;
      * If unset, the quota applies to all `Principal`s in the `Tenant`.
      * </pre>
      *
-     * <code>.littlehorse.PrincipalId principal = 2;</code>
+     * <code>optional .littlehorse.PrincipalId principal = 2;</code>
      */
     public Builder mergePrincipal(io.littlehorse.sdk.common.proto.PrincipalId value) {
       if (principalBuilder_ == null) {
@@ -735,7 +735,7 @@ private static final long serialVersionUID = 0L;
      * If unset, the quota applies to all `Principal`s in the `Tenant`.
      * </pre>
      *
-     * <code>.littlehorse.PrincipalId principal = 2;</code>
+     * <code>optional .littlehorse.PrincipalId principal = 2;</code>
      */
     public Builder clearPrincipal() {
       bitField0_ = (bitField0_ & ~0x00000002);
@@ -752,7 +752,7 @@ private static final long serialVersionUID = 0L;
      * If unset, the quota applies to all `Principal`s in the `Tenant`.
      * </pre>
      *
-     * <code>.littlehorse.PrincipalId principal = 2;</code>
+     * <code>optional .littlehorse.PrincipalId principal = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.PrincipalId.Builder getPrincipalBuilder() {
       bitField0_ |= 0x00000002;
@@ -764,7 +764,7 @@ private static final long serialVersionUID = 0L;
      * If unset, the quota applies to all `Principal`s in the `Tenant`.
      * </pre>
      *
-     * <code>.littlehorse.PrincipalId principal = 2;</code>
+     * <code>optional .littlehorse.PrincipalId principal = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getPrincipalOrBuilder() {
       if (principalBuilder_ != null) {
@@ -779,7 +779,7 @@ private static final long serialVersionUID = 0L;
      * If unset, the quota applies to all `Principal`s in the `Tenant`.
      * </pre>
      *
-     * <code>.littlehorse.PrincipalId principal = 2;</code>
+     * <code>optional .littlehorse.PrincipalId principal = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.PrincipalId, io.littlehorse.sdk.common.proto.PrincipalId.Builder, io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder> 

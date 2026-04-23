@@ -312,7 +312,7 @@ export interface QuotaId {
     | TenantId
     | undefined;
   /** If unset, the quota applies to all `Principal`s in the `Tenant`. */
-  principal: PrincipalId | undefined;
+  principal?: PrincipalId | undefined;
 }
 
 /** List of ACL's for LittleHorse */

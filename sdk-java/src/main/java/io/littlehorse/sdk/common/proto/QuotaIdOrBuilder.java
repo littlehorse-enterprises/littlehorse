@@ -42,7 +42,7 @@ public interface QuotaIdOrBuilder extends
    * If unset, the quota applies to all `Principal`s in the `Tenant`.
    * </pre>
    *
-   * <code>.littlehorse.PrincipalId principal = 2;</code>
+   * <code>optional .littlehorse.PrincipalId principal = 2;</code>
    * @return Whether the principal field is set.
    */
   boolean hasPrincipal();
@@ -51,7 +51,7 @@ public interface QuotaIdOrBuilder extends
    * If unset, the quota applies to all `Principal`s in the `Tenant`.
    * </pre>
    *
-   * <code>.littlehorse.PrincipalId principal = 2;</code>
+   * <code>optional .littlehorse.PrincipalId principal = 2;</code>
    * @return The principal.
    */
   io.littlehorse.sdk.common.proto.PrincipalId getPrincipal();
@@ -60,7 +60,7 @@ public interface QuotaIdOrBuilder extends
    * If unset, the quota applies to all `Principal`s in the `Tenant`.
    * </pre>
    *
-   * <code>.littlehorse.PrincipalId principal = 2;</code>
+   * <code>optional .littlehorse.PrincipalId principal = 2;</code>
    */
   io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getPrincipalOrBuilder();
 }
