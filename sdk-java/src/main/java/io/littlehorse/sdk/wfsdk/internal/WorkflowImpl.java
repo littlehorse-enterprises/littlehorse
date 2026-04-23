@@ -10,7 +10,6 @@ import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
-import io.littlehorse.sdk.wfsdk.LHStructBuilder;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
@@ -200,13 +199,5 @@ public class WorkflowImpl extends Workflow {
 
     Stack<WorkflowThreadImpl> getThreads() {
         return this.threads;
-    }
-
-    public LHStructBuilder buildStruct(String structDefName) {
-        return threads.peek().buildStruct(structDefName);
-    }
-
-    public LHStructBuilder buildInlineStruct() {
-        return threads.peek().buildInlineStruct();
     }
 }

@@ -170,23 +170,6 @@ public abstract class Workflow {
     }
 
     /**
-     * Creates a Struct builder on the active workflow thread.
-     * @param structDefName the StructDef name
-     * @return a Struct builder
-     */
-    public LHStructBuilder buildStruct(String structDefName) {
-        return ((WorkflowImpl) this).buildStruct(structDefName);
-    }
-
-    /**
-     * Creates a nested inline Struct builder on the active workflow thread.
-     * @return an inline Struct builder
-     */
-    public LHStructBuilder buildInlineStruct() {
-        return ((WorkflowImpl) this).buildInlineStruct();
-    }
-
-    /**
      * Defines the type of update to perform when saving the WfSpec:
      * AllowedUpdateType.ALL (Default): Creates a new WfSpec with a different version (either major or revision).
      * AllowedUpdateType.MINOR_REVISION_ONLY: Creates a new WfSpec with a different revision if the change is a major version it fails.

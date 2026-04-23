@@ -318,12 +318,17 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     @Override
     public LHStructBuilder buildStruct(String structDefName) {
-        return new LHStructBuilderImpl(this, structDefName, false);
+        return new LHStructBuilderImpl(this, structDefName);
     }
 
     @Override
-    public LHStructBuilder buildInlineStruct() {
-        return new LHStructBuilderImpl(this, null, true);
+    public LHStructBuilder buildStruct(String structDefName, int version) {
+        return new LHStructBuilderImpl(this, structDefName, version);
+    }
+
+    @Override
+    public InlineLHStructBuilderImpl buildInlineStruct() {
+        return new InlineLHStructBuilderImpl(this);
     }
 
     @Override

@@ -25,6 +25,7 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.InterruptedMode
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ParentHaltedModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingFailureHandlerHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingInterruptHaltReasonModel;
+import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.InterruptDefModel;
@@ -38,6 +39,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Exp
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
@@ -923,15 +925,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     private InlineStructModel buildInlineStructValue(
-            InlineStructBuilderModel builder,
-            io.littlehorse.common.model.getable.objectId.StructDefIdModel structDefId,
-            Map<String, VariableValueModel> txnCache)
+            InlineStructBuilderModel builder, StructDefIdModel structDefId, Map<String, VariableValueModel> txnCache)
             throws LHVarSubError {
         InlineStructModel inlineStruct = new InlineStructModel();
         Map<String, StructFieldModel> fields = new HashMap<>();
 
-        Map<String, io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel> fieldDefs = new WfService(
-                        processorContext.metadataManager())
+        Map<String, StructFieldDefModel> fieldDefs = new WfService(processorContext.metadataManager())
                 .getStructDef(structDefId)
                 .getStructDef()
                 .getFields();

@@ -46,6 +46,15 @@ void foo(String email) {
 
 What we need to do is allow users to create an `InlineStruct` and initialize the required values in a single `VariableMutation`.
 
+### Java SDK Design
+
+The SDK exposes two separate builder types:
+
+- **`LHStructBuilder`** — for named Struct values backed by a `StructDef`. Extends `Serializable`, so it can be passed as a task argument, assigned to a variable, or used anywhere a `Serializable` is expected.
+- **`InlineLHStructBuilder`** — for nested inline sub-structures. Does **not** extend `Serializable`, so it can only appear as a field value inside another builder (via an overloaded `put` method). This prevents accidentally passing an inline builder to `execute()`, `assign()`, or any other API that accepts `Serializable`.
+
+Version pinning is done at construction time via an overloaded `buildStruct` factory method rather than a fluent `withVersion()` call, making the version immutable once the builder is created.
+
 ### Java SDK Examples
 
 Here's how it will look in the Java SDK.
@@ -58,14 +67,23 @@ WfRunVariable userRecord = wf.declareStruct("user", User.class); // Internal Str
 
 NodeOutput fullName = wf.execute("fetch-full-name", email);
 
+// Uses latest StructDef version
 LHStructBuilder struct = wf.buildStruct("user")
-        .withVersion(3) // optional
         .put("email", email)
         .put("fullName", fullName);
 
 userRecord.assign(struct);
 
 wf.execute("save-user", userRecord);
+```
+
+#### Pinned Version
+
+```java
+// Pins to StructDef version 3
+LHStructBuilder struct = wf.buildStruct("user", 3)
+        .put("email", email)
+        .put("fullName", fullName);
 ```
 
 #### Nested Structs
@@ -103,6 +121,8 @@ LHStructBuilder personStruct = wf.buildStruct("person")
 
 personRecord.assign(personStruct);
 ```
+
+Note that `wf.buildInlineStruct()` returns `InlineLHStructBuilder`, which is accepted by the `put(String, InlineLHStructBuilder)` overload on `LHStructBuilder`. Attempting to pass the inline builder directly to `wf.execute(...)` or `variable.assign(...)` would be a compile error since `InlineLHStructBuilder` is not `Serializable`.
 
 ### Protobuf
 
@@ -168,3 +188,10 @@ ChatGPT came up with an idea of initializing any `Struct` variable to not be NUL
 ### Use `InlineStruct` not `Struct`
 
 I thought about not specifying the `StructDef` we're building for. This would allow for a lot of flexible usage. However, that defeats the purpose of `Struct`s as they are suddenly no longer compatible with the type safety of structs.
+
+### Single `LHStructBuilder` Interface with `withVersion()`
+
+An earlier design had a single `LHStructBuilder` interface (extending `Serializable`) shared by both named and inline builders, with a `withVersion(int)` method for version pinning. This was rejected because:
+
+1. **No compile-time safety** — an inline builder could accidentally be passed to `execute()` or `assign()` since it was `Serializable`. The `inlineOnly` flag only caught misuse at runtime.
+2. **`withVersion()` leaked named-builder semantics** — it was only valid on named builders, and inline builders had to throw at runtime if called. Moving version to the constructor makes it immutable and removes the invalid API surface.
