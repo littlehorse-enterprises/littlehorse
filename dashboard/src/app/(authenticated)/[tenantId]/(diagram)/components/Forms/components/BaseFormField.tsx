@@ -28,7 +28,6 @@ export const BaseFormField: FC<BaseFormFieldProps> = ({
   const {
     varDef: { name },
     required,
-    accessLevel,
   } = variables
 
   const handleSetNull = () => {
