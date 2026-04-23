@@ -206,7 +206,9 @@ test {
 
 task e2e(type: Test, dependsOn: [compileJava]){
     systemProperty("api.version", "1.44") // Docker version compatible with {testcontainersVersion}
-    useJUnitPlatform()
+    useJUnitPlatform {
+        excludeTags "slow"
+    }
     filter {
         includeTestsMatching "e2e.**"
         excludeTestsMatching "io.littlehorse.**"
@@ -222,6 +224,25 @@ task e2e(type: Test, dependsOn: [compileJava]){
     // // Enables parallelism on the e2e tests
     // maxParallelForks = 2
     // systemProperty "junit.jupiter.execution.parallel.enabled", "true"
+}
+
+task e2eSlow(type: Test, dependsOn: [compileJava]){
+    description = "Run slow e2e tests"
+    systemProperty("api.version", "1.44") // Docker version compatible with {testcontainersVersion}
+    useJUnitPlatform {
+        includeTags "slow"
+    }
+    filter {
+        includeTestsMatching "e2e.**"
+        excludeTestsMatching "io.littlehorse.**"
+    }
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '-Xms8192m', '-Xmx8192m', '-Xss2m', '-XX:+UseParallelGC', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+    classpath = sourceSets.test.runtimeClasspath
+    testClassesDirs = sourceSets.test.output.classesDirs
 }
 
 spotless {

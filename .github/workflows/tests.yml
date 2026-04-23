@@ -136,6 +136,22 @@ jobs:
       - name: E2E Tests
         run: ./gradlew server:e2e
 
+  tests-server-e2e-slow:
+    if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: "corretto"
+          java-version: 25
+
+      - name: Slow E2E Tests
+        run: ./gradlew server:e2eSlow
+
   tests-test-utils:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
     runs-on: ubuntu-latest
