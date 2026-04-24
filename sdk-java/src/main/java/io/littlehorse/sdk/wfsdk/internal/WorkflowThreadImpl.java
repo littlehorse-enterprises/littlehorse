@@ -367,6 +367,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
             node.putInputs(input.getKey(), assignVariable(input.getValue()));
         }
         String nodeName = addNode("run-" + wfSpecName, NodeCase.RUN_CHILD_WF, node.build());
+        parent.addChildWfSpecName(wfSpecName);
         return new SpawnedChildWfImpl(nodeName, this);
     }
 
