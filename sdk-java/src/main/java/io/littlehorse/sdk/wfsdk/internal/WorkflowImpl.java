@@ -29,6 +29,7 @@ public class WorkflowImpl extends Workflow {
     private Map<String, LHTaskSignature> taskSignatures;
     private Set<String> requiredTaskDefNames;
     private Set<String> requiredEedNames;
+    private Set<String> requiredChildWfSpecNames;
     private Set<String> requiredWorkflowEventDefNames;
     private Stack<WorkflowThreadImpl> threads;
     private Set<ExternalEventDefRegistration> externalEventsToRegister;
@@ -40,6 +41,7 @@ public class WorkflowImpl extends Workflow {
         this.requiredTaskDefNames = new HashSet<>();
         this.requiredWorkflowEventDefNames = new HashSet<>();
         this.requiredEedNames = new HashSet<>();
+        this.requiredChildWfSpecNames = new HashSet<>();
         this.threads = new Stack<>();
         this.externalEventsToRegister = new HashSet<>();
     }
@@ -101,6 +103,10 @@ public class WorkflowImpl extends Workflow {
         requiredEedNames.add(eedName);
     }
 
+    void addChildWfSpecName(String childWfSpecName) {
+        requiredChildWfSpecNames.add(childWfSpecName);
+    }
+
     void addWorkflowEventDefName(String name) {
         requiredWorkflowEventDefNames.add(name);
     }
@@ -119,6 +125,14 @@ public class WorkflowImpl extends Workflow {
             compiledWorkflow = compileWorkflowHelper();
         }
         return requiredEedNames;
+    }
+
+    @Override
+    public Set<String> getRequiredChildWfSpecNames() {
+        if (compiledWorkflow == null) {
+            compiledWorkflow = compileWorkflowHelper();
+        }
+        return requiredChildWfSpecNames;
     }
 
     @Override
