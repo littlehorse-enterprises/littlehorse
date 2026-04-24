@@ -341,21 +341,27 @@ var searchScheduledWfsCmd = &cobra.Command{
 	Short: "List all scheduled wf runs for a given wf spec",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-
-		var majorVersion *int32
-		if raw, _ := cmd.Flags().GetInt32("majorVersion"); raw == -1 {
-			majorVersion = nil
-		} else {
-			majorVersion = &raw
-		}
-
-		var revision *int32
-		if raw, _ := cmd.Flags().GetInt32("revision"); raw == -1 {
-			revision = nil
-		} else {
-			revision = &raw
-		}
 		wfSpecName := args[0]
+		var majorVersion *int32
+		var revision *int32
+
+		if len(args) > 1 {
+			majorVersionInt, err := strconv.Atoi(args[1])
+			if err != nil {
+				log.Fatal("Couldn't convert majorVersion to int:\n", err)
+			}
+			val := int32(majorVersionInt)
+			majorVersion = &val
+		}
+
+		if len(args) > 2 {
+			revisionInt, err := strconv.Atoi(args[2])
+			if err != nil {
+				log.Fatal("Couldn't convert revision to int:\n", err)
+			}
+			val := int32(revisionInt)
+			revision = &val
+		}
 		req := &lhproto.SearchScheduledWfRunRequest{
 			WfSpecName:   wfSpecName,
 			MajorVersion: majorVersion,
