@@ -112,7 +112,7 @@ class BuilderUtil {
                         .setOperand(assignVariable(expression.getOperand(), typeAdapterRegistry)))
                 .build();
     }
-    
+
     private static VariableAssignment buildFromStructBuilder(LHStructBuilderImpl structBuilder) {
         StructBuilder builderProto = structBuilder.toProto();
         return VariableAssignment.newBuilder().setStructBuilder(builderProto).build();
