@@ -84,6 +84,8 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
       return variable.source.value.nodeName
     case 'variableName':
       return getValueFromVariableName(variable.source, variable.path)
+    case 'sizeOf':
+      return `${getVariable(variable.source.value.operand!, depth + 1)}.size()`
     default:
       return ''
   }
