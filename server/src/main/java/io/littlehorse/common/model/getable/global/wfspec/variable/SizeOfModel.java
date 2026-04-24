@@ -13,6 +13,10 @@ public class SizeOfModel extends LHSerializable<SizeOf> {
         return operand;
     }
 
+    public void setOperand(VariableAssignmentModel operand) {
+        this.operand = operand;
+    }
+
     @Override
     public Class<SizeOf> getProtoBaseClass() {
         return SizeOf.class;
