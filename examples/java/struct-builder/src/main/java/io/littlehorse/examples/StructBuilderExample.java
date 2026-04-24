@@ -58,10 +58,10 @@ public class StructBuilderExample {
                     .put(
                             "address",
                             wf.buildInlineStruct()
-                                    .put("street", addressOutput.jsonPath("$.street"))
-                                    .put("city", addressOutput.jsonPath("$.city"))
-                                    .put("state", addressOutput.jsonPath("$.state"))
-                                    .put("zip", addressOutput.jsonPath("$.zip")));
+                                    .put("street", addressOutput.get("street"))
+                                    .put("city", addressOutput.get("city"))
+                                    .put("state", addressOutput.get("state"))
+                                    .put("zip", addressOutput.get("zip")));
 
             personRecord.assign(personStruct);
 
