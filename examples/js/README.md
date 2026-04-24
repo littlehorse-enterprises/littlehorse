@@ -1,12 +1,13 @@
 # LittleHorse JavaScript Examples
 
-JavaScript/TypeScript SDK examples for LittleHorse workers.
+JavaScript/TypeScript examples for LittleHorse workflow features.
 
 ## Prerequisites
 
 - Running LittleHorse server (see [`../README.md`](../README.md)).
 - `lhctl` installed and configured.
-- Node.js (see per-example README for version details).
+- Node.js 18+.
+- npm (run `npm install` inside each example directory).
 
 Verify server connectivity:
 
@@ -14,23 +15,22 @@ Verify server connectivity:
 lhctl whoami
 ```
 
-## Running JS examples
+## Running JavaScript examples
 
-Example (`simple-worker`):
+From an example directory (after `npm install`):
 
 ```bash
-cd examples/js/simple-worker
-npm install
 npm start
 ```
 
-Use another terminal for workflow registration/runs:
-
-```bash
-lhctl deploy wfSpec example-basic-wfspec.json
-```
+Most examples start a long-lived worker process. Keep that command running and use another terminal for `npm run run-wf` or `lhctl run ...` (see each example’s README).
 
 ## JavaScript Example Index
 
-- [`simple-worker/`](./simple-worker/README.md): Basic task worker example.
-- [`structs/`](./structs/README.md): Struct-based worker and workflow example.
+- [`basic/`](./basic/README.md): Minimal hello-world workflow.
+- [`expressions/`](./expressions/README.md): Expressions and variable manipulation.
+- [`json/`](./json/README.md): JSON variable examples.
+- [`mutation/`](./mutation/README.md): Variable mutation behavior.
+- [`structs/`](./structs/README.md): Struct definition and usage.
+- [`variables/`](./variables/README.md): Variable declaration and assignment.
+- [`worker-context/`](./worker-context/README.md): Access worker context metadata.

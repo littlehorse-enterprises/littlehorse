@@ -169,19 +169,12 @@ dotnet run
 
 #### JavaScript
 
-First, install dependencies and register the `WfSpec`:
+Install dependencies, then start the worker (this registers the `TaskDef` and the `WfSpec` from TypeScript, same idea as the Java basic example):
 
 ```sh
-cd examples/js/simple-worker
+cd examples/js/basic
 npm install
 npm start
-```
-
-Then in another terminal, register the `WfSpec` (note that our JS sdk does not yet support creation of `WfSpec`s, so we use `lhctl` here)
-
-```sh
-cd examples/js/simple-worker
-lhctl deploy wfSpec example-basic-wfspec.json
 ```
 
 ### Run a `WfRun` (Workflow Run)

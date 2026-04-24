@@ -1,5 +1,6 @@
 import {
   LHConfig,
+  Workflow,
   createTaskWorker,
   WorkerContext,
   buildPutStructDefRequest,
@@ -9,10 +10,16 @@ import {
 import { Address, Person, ParkingTicketReport } from './schemas.js'
 import type { Person as PersonType, ParkingTicketReport as ParkingTicketReportType } from './schemas.js'
 
-/**
- * Task: given a ParkingTicketReport, look up and return the car owner.
- * Returns a plain Person object — the worker's outputSchema handles serialization.
- */
+function issueParkingTicketWorkflow() {
+  return Workflow.newWorkflow('example-issue-parking-ticket', thread => {
+    const carInput = thread.declareStruct('car-input', 'parking-ticket-report')
+    const ownerLookup = thread.execute('get-car-owner', carInput)
+    const carOwner = thread.declareStruct('car-owner', 'person')
+    carOwner.assign(ownerLookup)
+    thread.execute('mail-ticket', carOwner)
+  })
+}
+
 function getCarOwner(report: ParkingTicketReportType, _ctx: WorkerContext): PersonType {
   console.log(`[get-car-owner] Looking up owner for plate: ${report.licensePlateNumber}`)
   return {
@@ -22,9 +29,6 @@ function getCarOwner(report: ParkingTicketReportType, _ctx: WorkerContext): Pers
   }
 }
 
-/**
- * Task: given a Person, "mail" them a parking ticket.
- */
 function mailTicket(person: PersonType, _ctx: WorkerContext): string {
   console.log(`[mail-ticket] Notifying ${person.firstName} ${person.lastName} of parking ticket.`)
   return `Ticket sent to ${person.firstName} ${person.lastName} at ${person.homeAddress?.houseNumber} ${person.homeAddress?.street}`
@@ -41,7 +45,6 @@ async function main() {
     inputVars: { person: Person },
   })
 
-  // Register all StructDefs in dependency order
   const seen = new Set<string>()
   const schemasToRegister: typeof Person[] = []
   for (const schema of [...getStructDependencies(Person), ...getStructDependencies(ParkingTicketReport)]) {
@@ -56,13 +59,14 @@ async function main() {
     await getCarOwnerWorker.registerStructDef(buildPutStructDefRequest(schema))
   }
 
-  // Register TaskDefs
   console.log('Registering TaskDef "get-car-owner"...')
   await getCarOwnerWorker.registerTaskDef()
   console.log('Registering TaskDef "mail-ticket"...')
   await mailTicketWorker.registerTaskDef()
 
-  // Start both workers
+  console.log('Registering WfSpec "example-issue-parking-ticket"...')
+  await Workflow.registerWfSpec(issueParkingTicketWorkflow(), config.getClient())
+
   await getCarOwnerWorker.start()
   await mailTicketWorker.start()
 

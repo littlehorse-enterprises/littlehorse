@@ -1,11 +1,13 @@
-import { LHConfig, createTaskWorker, WorkerContext } from 'littlehorse-client'
+import { LHConfig, createTaskWorker, WorkerContext, Workflow } from 'littlehorse-client'
 import { z } from 'zod'
 
-/**
- * This is the task function that gets executed every time the "greet" task
- * is scheduled. The LH Server sends input variables as positional arguments;
- * the WorkerContext is appended as the last argument automatically.
- */
+function basicWorkflow() {
+  return Workflow.newWorkflow('example-basic', thread => {
+    const inputName = thread.declareStr('input-name')
+    thread.execute('greet', inputName)
+  })
+}
+
 async function greet(name: string, ctx: WorkerContext): Promise<string> {
   const msg = `Hello, ${name}! (WfRun ${ctx.getWfRunId()?.id})`
   ctx.log(msg)
@@ -14,23 +16,23 @@ async function greet(name: string, ctx: WorkerContext): Promise<string> {
 }
 
 async function main() {
-  // Connect to the LH Server (defaults to localhost:2023)
   const config = LHConfig.from({})
+  const client = config.getClient()
 
   const worker = createTaskWorker(greet, 'greet', config, {
     inputVars: { name: z.string() },
   })
 
-  // Register the TaskDef if it doesn't exist yet
   if (!(await worker.doesTaskDefExist())) {
     console.log('TaskDef "greet" not found, registering...')
     await worker.registerTaskDef()
   }
 
-  // Start polling for tasks
+  console.log('Registering WfSpec "example-basic"...')
+  await Workflow.registerWfSpec(basicWorkflow(), client)
+
   await worker.start()
 
-  // Graceful shutdown on Ctrl+C
   process.on('SIGINT', async () => {
     console.log('\nShutting down...')
     await worker.close()
