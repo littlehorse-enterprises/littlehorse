@@ -893,6 +893,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 ExpressionModel expression = assn.getExpression();
                 val = expression.evaluate(this, varAssn -> assignVariable(varAssn, txnCache));
                 break;
+            case SIZE_OF:
+                val = assignVariable(assn.getSizeOf().getOperand(), txnCache).sizeOf();
+                break;
             case STRUCT_BUILDER:
                 val = buildStructValue(assn, txnCache);
                 break;

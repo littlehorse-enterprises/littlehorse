@@ -9,9 +9,11 @@ import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -265,6 +267,44 @@ public class ExpressionTest {
                 .start();
     }
 
+    @Test
+    void shouldEvaluateSizeInAssignmentConditionalAndTaskInput() {
+        verifier.prepareRun(
+                        expressionWf,
+                        Arg.of("size-json-input", List.of(10, 20, 30, 40)),
+                        Arg.of("size-str-input", "hello!"))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "array-size", variable -> {
+                    Assertions.assertEquals(3L, variable.getInt());
+                })
+                .thenVerifyVariable(0, "json-size", variable -> {
+                    Assertions.assertEquals(4L, variable.getInt());
+                })
+                .thenVerifyVariable(0, "str-size", variable -> {
+                    Assertions.assertEquals(6L, variable.getInt());
+                })
+                .thenVerifyVariable(0, "size-task-result", variable -> {
+                    Assertions.assertEquals(6L, variable.getInt());
+                })
+                .thenVerifyVariable(0, "size-branch", variable -> {
+                    Assertions.assertEquals("gt2", variable.getStr());
+                })
+                .start();
+    }
+
+    @Test
+    void shouldFailWhenEvaluatingSizeOnNonCollectionValue() {
+        verifier.prepareRun(expressionWf, Arg.of("invalid-size-json", Map.of("value", 123)))
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyLastNodeRun(0, nodeRun -> {
+                    Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
+                    Failure sizeFailure = nodeRun.getFailures(0);
+                    Assertions.assertEquals(sizeFailure.getFailureName(), LHErrorType.VAR_SUB_ERROR.toString());
+                    Assertions.assertTrue(sizeFailure.getMessage().contains("Cannot resolve size()"));
+                })
+                .start();
+    }
+
     /*
      * Each of the tests in here *could* be their own Workflow; however, registering a
      * workflow takes ~200ms in our testing. Each of these test cases takes about 15ms
@@ -346,11 +386,58 @@ public class ExpressionTest {
             var orResult = wf.declareBool("or-result");
             andResult.assign(boolA.and(boolB));
             orResult.assign(boolA.or(boolB));
+
+            // size() tests across assignment, conditionals, and task inputs.
+            var sizeJsonInput = wf.declareJsonArr("size-json-input");
+            var sizeStrInput = wf.declareStr("size-str-input");
+            var arraySize = wf.declareInt("array-size");
+            var jsonSize = wf.declareInt("json-size");
+            var strSize = wf.declareInt("str-size");
+            var sizeTaskResult = wf.declareInt("size-task-result");
+            var sizeBranch = wf.declareStr("size-branch");
+            var invalidSizeJson = wf.declareJsonObj("invalid-size-json");
+            var invalidSizeResult = wf.declareInt("invalid-size-result");
+
+            var producedArray = wf.execute("expr-produce-size-array");
+            arraySize.assign(producedArray.size());
+            sizeTaskResult.assign(wf.execute("expr-double", producedArray.size()));
+
+            wf.doIfElse(
+                    producedArray.size().isGreaterThan(2),
+                    then -> {
+                        sizeBranch.assign("gt2");
+                    },
+                    otherwise -> {
+                        sizeBranch.assign("lte2");
+                    });
+
+            wf.doIf(sizeJsonInput.isNotEqualTo(null), then -> {
+                jsonSize.assign(sizeJsonInput.size());
+            });
+
+            wf.doIf(sizeStrInput.isNotEqualTo(null), then -> {
+                strSize.assign(sizeStrInput.size());
+            });
+
+            wf.doIf(invalidSizeJson.isNotEqualTo(null), then -> {
+                invalidSizeResult.assign(invalidSizeJson.jsonPath("$.value").size());
+            });
         });
     }
 
     @LHTaskMethod("expr-add-one")
     public int addOne(int input) {
         return input + 1;
+    }
+
+    @LHTaskMethod("expr-double")
+    public int doubleValue(int input) {
+        return input * 2;
+    }
+
+    @LHTaskMethod("expr-produce-size-array")
+    @LHType(isLHArray = true)
+    public Long[] produceSizeArray() {
+        return new Long[] {1L, 2L, 3L};
     }
 }
