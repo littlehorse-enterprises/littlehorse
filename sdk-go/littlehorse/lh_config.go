@@ -44,8 +44,8 @@ const (
 	OAUTH_CALLBACK_PORT_KEY        = "LHC_OAUTH_CALLBACK_PORT"
 	OAUTH_CREDENTIALS_LOCATION_KEY = "LHC_OAUTH_CREDENTIALS_LOCATION"
 
-	GRPC_KEEPALIVE_TIME_KEY    = "LHC_GRPC_KEEPALIVE_TIME_MS"
-	GRPC_KEEPALIVE_TIMEOUT_KEY = "LHC_GRPC_KEEPALIVE_TIMEOUT_MS"
+	GRPC_KEEPALIVE_TIME_KEY           = "LHC_GRPC_KEEPALIVE_TIME_MS"
+	GRPC_KEEPALIVE_TIMEOUT_KEY        = "LHC_GRPC_KEEPALIVE_TIMEOUT_MS"
 	GRPC_RESOURCE_EXHAUSTED_RETRY_KEY = "LHC_GRPC_RESOURCE_EXHAUSTED_RETRY"
 
 	DEFAULT_OAUTH_CALLBACK_PORT = 25242
@@ -66,10 +66,10 @@ type LHConfig struct {
 	NumWorkerThreads  int32
 	TaskWorkerVersion string
 
-	GrpcKeepaliveTimeMs    int64
-	GrpcKeepaliveTimeoutMs int64
+	GrpcKeepaliveTimeMs        int64
+	GrpcKeepaliveTimeoutMs     int64
 	GrpcResourceExhaustedRetry bool
-	UnaryInterceptors      []grpc.UnaryClientInterceptor
+	UnaryInterceptors          []grpc.UnaryClientInterceptor
 
 	clients  map[string]*lhproto.LittleHorseClient
 	channels map[string]*grpc.ClientConn
