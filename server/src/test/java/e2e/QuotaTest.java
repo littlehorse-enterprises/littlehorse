@@ -37,9 +37,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@Tag("slow")
 public class QuotaTest {
 
     private LittleHorseBlockingStub client;
