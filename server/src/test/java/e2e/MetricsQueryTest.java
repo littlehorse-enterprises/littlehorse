@@ -18,9 +18,11 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@Tag("slow")
 public class MetricsQueryTest {
 
     private WorkflowVerifier workflowVerifier;

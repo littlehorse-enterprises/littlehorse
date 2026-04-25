@@ -49,3 +49,5 @@ export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVa
     </FormProvider>
   )
 })
+
+WfRunForm.displayName = 'WfRunForm'

@@ -37,16 +37,6 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
     return nodeRun?.failures?.length > 0
   }, [selectedNode, nodeRunIndex, showNodeRun])
 
-  const nodeType = useMemo(() => {
-    if (!selectedNode || !selectedNode.data.node) return ''
-
-    return selectedNode.data.node.$case || ''
-  }, [selectedNode, nodeRunIndex])
-
-  const capitalizedNodeType = useMemo(() => {
-    return nodeType.charAt(0).toUpperCase() + nodeType.slice(1)
-  }, [nodeType])
-
   return (
     <aside className={`flex max-w-full flex-col overflow-hidden pl-4 ${maxHeightClass}`}>
       {isValidNode && selectedNode && (selectedNode as { type?: string }).type !== 'cycle' && (

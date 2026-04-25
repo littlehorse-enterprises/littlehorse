@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
@@ -13,6 +14,7 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
@@ -190,5 +192,47 @@ public class VariableValueModelTest {
         VariableValueModel strVarVal = valueWfRunId.asStr();
         assertThat(strVarVal.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.STR);
         assertThat(strVarVal.getStrVal()).isEqualTo("parent_child");
+    }
+
+    @Test
+    void shouldResolveSizeForJsonArray() throws LHVarSubError {
+        VariableValueModel arrayValue = new VariableValueModel(List.of(1L, 2L, 3L));
+
+        VariableValueModel sizeValue = arrayValue.sizeOf();
+
+        assertThat(sizeValue.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.INT);
+        assertThat(sizeValue.getIntVal()).isEqualTo(3L);
+    }
+
+    @Test
+    void shouldResolveSizeForString() throws LHVarSubError {
+        VariableValueModel stringValue = new VariableValueModel("hello");
+
+        VariableValueModel sizeValue = stringValue.sizeOf();
+
+        assertThat(sizeValue.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.INT);
+        assertThat(sizeValue.getIntVal()).isEqualTo(5L);
+    }
+
+    @Test
+    void shouldResolveSizeForNativeArray() throws LHVarSubError {
+        ArrayList<VariableValueModel> items = new ArrayList<>();
+        items.add(new VariableValueModel(10L));
+        items.add(new VariableValueModel(20L));
+
+        ArrayModel arrayModel = new ArrayModel(items, new TypeDefinitionModel(VariableType.INT));
+        VariableValueModel arrayValue = new VariableValueModel(arrayModel);
+
+        VariableValueModel sizeValue = arrayValue.sizeOf();
+
+        assertThat(sizeValue.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.INT);
+        assertThat(sizeValue.getIntVal()).isEqualTo(2L);
+    }
+
+    @Test
+    void shouldRejectSizeForNonCollectionTypes() {
+        VariableValueModel intValue = new VariableValueModel(1L);
+
+        assertThatThrownBy(intValue::sizeOf).isInstanceOf(LHVarSubError.class).hasMessageContaining("size()");
     }
 }

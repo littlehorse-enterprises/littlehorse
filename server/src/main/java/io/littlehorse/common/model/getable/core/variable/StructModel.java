@@ -12,12 +12,15 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.Arrays;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class StructModel extends LHSerializable<Struct> implements Comparable<StructModel> {
 
+    @Setter
     private StructDefIdModel structDefId;
 
+    @Setter
     private InlineStructModel inlineStruct;
 
     @Override

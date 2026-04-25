@@ -216,6 +216,13 @@ public abstract class Workflow {
     public abstract Set<String> getRequiredExternalEventDefNames();
 
     /**
+     * Returns the names of all `WfSpec`s run as a child by this workflow.
+     *
+     * @return a Set of Strings containing the names of all `WfSpec`s used by this workflow.
+     */
+    public abstract Set<String> getRequiredChildWfSpecNames();
+
+    /**
      * Returns ExternalEventDef registrations declared via ExternalEventNodeOutput#registeredAs.
      *
      * @return a Set of PutExternalEventDefRequest for ExternalEventDefs that will be registered

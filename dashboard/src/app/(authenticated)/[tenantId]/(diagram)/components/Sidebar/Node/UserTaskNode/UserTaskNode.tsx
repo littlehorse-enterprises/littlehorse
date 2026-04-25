@@ -72,7 +72,7 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
               if (!action) return
               const { value, $case } = action
               return (
-                <div className="border-t-2 border-slate-100 ">
+                <div key={`action-${index}`} className="border-t-2 border-slate-100 ">
                   <Accordion type="single" collapsible>
                     <AccordionItem value={`action-${index}`}>
                       <AccordionTrigger>
