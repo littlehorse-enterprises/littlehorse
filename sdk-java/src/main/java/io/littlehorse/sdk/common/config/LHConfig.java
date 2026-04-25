@@ -49,6 +49,7 @@ public class LHConfig extends ConfigBase {
         LHC_API_HOST,
         LHC_API_PORT,
         LHC_API_PROTOCOL,
+        LHC_GRPC_RESOURCE_EXHAUSTED_RETRY,
         LHC_TENANT_ID,
         LHC_CLIENT_CERT,
         LHC_CLIENT_KEY,
@@ -72,6 +73,9 @@ public class LHConfig extends ConfigBase {
 
     /** The bootstrap protocol for the LH Server. */
     public static final String API_PROTOCOL_KEY = ConfigKeys.LHC_API_PROTOCOL.name();
+
+    /** Enables transparent retries for RESOURCE_EXHAUSTED unary gRPC calls. */
+    public static final String GRPC_RESOURCE_EXHAUSTED_RETRY_KEY = ConfigKeys.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY.name();
 
     /** The Client Id. */
     public static final String TASK_WORKER_ID_KEY = ConfigKeys.LHW_TASK_WORKER_ID.name();
@@ -499,7 +503,10 @@ public class LHConfig extends ConfigBase {
                 .keepAliveTimeout(getKeepaliveTimeoutMs(), TimeUnit.MILLISECONDS)
                 .keepAliveWithoutCalls(true);
 
-        Channel out = ClientInterceptors.intercept(builder.build(), RESOURCE_EXHAUSTED_RETRY_INTERCEPTOR);
+        Channel out = builder.build();
+        if (shouldRetryOnResourceExhausted()) {
+            out = ClientInterceptors.intercept(out, RESOURCE_EXHAUSTED_RETRY_INTERCEPTOR);
+        }
         createdChannels.put(hostKey, out);
         return out;
     }
@@ -538,6 +545,15 @@ public class LHConfig extends ConfigBase {
      */
     public long getKeepaliveTimeoutMs() {
         return Long.valueOf(getOrSetDefault(GRPC_KEEPALIVE_TIMEOUT_MS_KEY, "5000"));
+    }
+
+    /**
+     * Returns whether RESOURCE_EXHAUSTED unary gRPC calls should be transparently retried.
+     *
+     * @return true when the retry interceptor is enabled
+     */
+    public boolean shouldRetryOnResourceExhausted() {
+        return Boolean.parseBoolean(getOrSetDefault(GRPC_RESOURCE_EXHAUSTED_RETRY_KEY, "true"));
     }
 
     /**

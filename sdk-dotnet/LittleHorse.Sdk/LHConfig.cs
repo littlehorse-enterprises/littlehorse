@@ -106,6 +106,8 @@ namespace LittleHorse.Sdk {
         /// </summary>
         public string? TenantId => _inputVariables.LHC_TENANT_ID;
 
+        internal bool ResourceExhaustedRetryEnabled => _inputVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY;
+
         /// <summary>
         /// Retrieves the Bootstrap protocol from the configuration properties.
         /// </summary>
@@ -177,7 +179,12 @@ namespace LittleHorse.Sdk {
                 _createdChannels.Add(channelKey, channel);
             }
 
-            return new LittleHorseClient(channel.Intercept(new ResourceExhaustedRetryInterceptor()));
+            if (ResourceExhaustedRetryEnabled)
+            {
+                return new LittleHorseClient(channel.Intercept(new ResourceExhaustedRetryInterceptor()));
+            }
+
+            return new LittleHorseClient(channel);
         }
 
         private GrpcChannel CreateChannel(string host, int port)

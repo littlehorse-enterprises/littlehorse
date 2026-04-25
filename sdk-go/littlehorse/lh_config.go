@@ -46,6 +46,7 @@ const (
 
 	GRPC_KEEPALIVE_TIME_KEY    = "LHC_GRPC_KEEPALIVE_TIME_MS"
 	GRPC_KEEPALIVE_TIMEOUT_KEY = "LHC_GRPC_KEEPALIVE_TIMEOUT_MS"
+	GRPC_RESOURCE_EXHAUSTED_RETRY_KEY = "LHC_GRPC_RESOURCE_EXHAUSTED_RETRY"
 
 	DEFAULT_OAUTH_CALLBACK_PORT = 25242
 	DEFAULT_PROTOCOL            = "PLAINTEXT"
@@ -67,6 +68,7 @@ type LHConfig struct {
 
 	GrpcKeepaliveTimeMs    int64
 	GrpcKeepaliveTimeoutMs int64
+	GrpcResourceExhaustedRetry bool
 	UnaryInterceptors      []grpc.UnaryClientInterceptor
 
 	clients  map[string]*lhproto.LittleHorseClient
@@ -157,9 +159,10 @@ func NewConfigFromEnv() *LHConfig {
 		NumWorkerThreads:  int32FromEnv(NUM_WORKER_THREADS_KEY, 8),
 		TaskWorkerVersion: os.Getenv(TASK_WORKER_VERSION_KEY),
 
-		GrpcKeepaliveTimeMs:    int64FromEnv(GRPC_KEEPALIVE_TIME_KEY, 45000),
-		GrpcKeepaliveTimeoutMs: int64FromEnv(GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
-		UnaryInterceptors:      defaultInterceptors(),
+		GrpcKeepaliveTimeMs:        int64FromEnv(GRPC_KEEPALIVE_TIME_KEY, 45000),
+		GrpcKeepaliveTimeoutMs:     int64FromEnv(GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
+		GrpcResourceExhaustedRetry: boolFromEnv(GRPC_RESOURCE_EXHAUSTED_RETRY_KEY, true),
+		UnaryInterceptors:          unaryInterceptorsFor(boolFromEnv(GRPC_RESOURCE_EXHAUSTED_RETRY_KEY, true)),
 
 		clients:  make(map[string]*lhproto.LittleHorseClient),
 		channels: make(map[string]*grpc.ClientConn),
@@ -195,9 +198,10 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 		NumWorkerThreads:  int32FromProp(p, NUM_WORKER_THREADS_KEY, 8),
 		TaskWorkerVersion: p.GetString(TASK_WORKER_VERSION_KEY, ""),
 
-		GrpcKeepaliveTimeMs:    int64FromProp(p, GRPC_KEEPALIVE_TIME_KEY, 45000),
-		GrpcKeepaliveTimeoutMs: int64FromProp(p, GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
-		UnaryInterceptors:      defaultInterceptors(),
+		GrpcKeepaliveTimeMs:        int64FromProp(p, GRPC_KEEPALIVE_TIME_KEY, 45000),
+		GrpcKeepaliveTimeoutMs:     int64FromProp(p, GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
+		GrpcResourceExhaustedRetry: boolFromProp(p, GRPC_RESOURCE_EXHAUSTED_RETRY_KEY, true),
+		UnaryInterceptors:          unaryInterceptorsFor(boolFromProp(p, GRPC_RESOURCE_EXHAUSTED_RETRY_KEY, true)),
 
 		clients:  make(map[string]*lhproto.LittleHorseClient),
 		channels: make(map[string]*grpc.ClientConn),
@@ -257,6 +261,34 @@ func int64FromProp(p *properties.Properties, key string, defaultVal int64) int64
 func int32FromProp(p *properties.Properties, key string, defaultVal int32) int32 {
 	val := p.GetInt(key, int(defaultVal))
 	return int32(val)
+}
+
+func boolFromEnv(key string, defaultVal bool) bool {
+	val := os.Getenv(key)
+	if val == "" {
+		return defaultVal
+	}
+
+	parsed, err := strconv.ParseBool(val)
+	if err != nil {
+		return defaultVal
+	}
+
+	return parsed
+}
+
+func boolFromProp(p *properties.Properties, key string, defaultVal bool) bool {
+	val, ok := p.Get(key)
+	if !ok {
+		return defaultVal
+	}
+
+	parsed, err := strconv.ParseBool(val)
+	if err != nil {
+		return defaultVal
+	}
+
+	return parsed
 }
 
 func getEnvOrDefault(key, defaultVal string) string {
@@ -337,4 +369,11 @@ func (c *tenantIdHeaderCreds) RequireTransportSecurity() bool {
 // ResourceExhaustedRetryInterceptor for transparent quota retry handling.
 func defaultInterceptors() []grpc.UnaryClientInterceptor {
 	return []grpc.UnaryClientInterceptor{ResourceExhaustedRetryInterceptor()}
+}
+
+func unaryInterceptorsFor(resourceExhaustedRetry bool) []grpc.UnaryClientInterceptor {
+	if !resourceExhaustedRetry {
+		return nil
+	}
+	return defaultInterceptors()
 }

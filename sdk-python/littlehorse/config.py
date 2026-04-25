@@ -39,6 +39,7 @@ TASK_WORKER_ID = "LHW_TASK_WORKER_ID"
 TASK_WORKER_VERSION = "LHW_TASK_WORKER_VERSION"
 GRPC_KEEPALIVE_TIME_MS = "LHC_GRPC_KEEPALIVE_TIME_MS"
 GRPC_KEEPALIVE_TIMEOUT_MS = "LHC_GRPC_KEEPALIVE_TIMEOUT_MS"
+GRPC_RESOURCE_EXHAUSTED_RETRY = "LHC_GRPC_RESOURCE_EXHAUSTED_RETRY"
 
 
 class ChannelId:
@@ -275,6 +276,18 @@ class LHConfig:
         return int(self.get_or_set_default(GRPC_KEEPALIVE_TIMEOUT_MS, "5000"))
 
     @property
+    def grpc_resource_exhausted_retry(self) -> bool:
+        """Returns whether transparent RESOURCE_EXHAUSTED retries are enabled.
+
+        Returns:
+            bool: True when retry interceptors should be installed. Default True.
+        """
+        return (
+            self.get_or_set_default(GRPC_RESOURCE_EXHAUSTED_RETRY, "true").lower()
+            != "false"
+        )
+
+    @property
     def num_worker_threads(self) -> int:
         """Returns the number of worker threads to run.
 
@@ -333,12 +346,13 @@ class LHConfig:
 
             # https://github.com/grpc/grpc/issues/31442
             async_interceptors = [
-                AsyncUnaryUnaryRetryInterceptor(),
                 AsyncUnaryUnaryMetadataInterceptor(self.tenant_id),
                 AsyncStreamStreamMetadataInterceptor(self.tenant_id),
                 AsyncStreamUnaryMetadataInterceptor(self.tenant_id),
                 AsyncUnaryStreamMetadataInterceptor(self.tenant_id),
             ]
+            if self.grpc_resource_exhausted_retry:
+                async_interceptors.insert(0, AsyncUnaryUnaryRetryInterceptor())
             if async_channel and secure_channel:
                 assert credentials is not None
                 return grpc.aio.secure_channel(
@@ -355,16 +369,20 @@ class LHConfig:
                 )
             elif secure_channel:
                 assert credentials is not None
+                interceptors = [MetadataInterceptor(self.tenant_id)]
+                if self.grpc_resource_exhausted_retry:
+                    interceptors.insert(0, RetryInterceptor())
                 return grpc.intercept_channel(
                     grpc.secure_channel(target, credentials, options=channel_args),
-                    RetryInterceptor(),
-                    MetadataInterceptor(self.tenant_id),
+                    *interceptors,
                 )
             else:
+                interceptors = [MetadataInterceptor(self.tenant_id)]
+                if self.grpc_resource_exhausted_retry:
+                    interceptors.insert(0, RetryInterceptor())
                 return grpc.intercept_channel(
                     grpc.insecure_channel(target, options=channel_args),
-                    RetryInterceptor(),
-                    MetadataInterceptor(self.tenant_id),
+                    *interceptors,
                 )
 
         def get_ssl_config() -> ChannelCredentials:

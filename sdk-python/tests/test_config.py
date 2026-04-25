@@ -216,6 +216,17 @@ class TestLHConfig(unittest.TestCase):
         config = LHConfig()
         self.assertFalse(config.has_authentication())
 
+    def test_resource_exhausted_retry_enabled_by_default(self):
+        config = LHConfig()
+
+        self.assertTrue(config.grpc_resource_exhausted_retry)
+
+    def test_resource_exhausted_retry_can_be_disabled(self):
+        os.environ["LHC_GRPC_RESOURCE_EXHAUSTED_RETRY"] = "false"
+        config = LHConfig()
+
+        self.assertFalse(config.grpc_resource_exhausted_retry)
+
     @patch("littlehorse.config.grpc")
     def test_establish_insecure_channel(self, grpc_package_mock):
         config = LHConfig()
@@ -230,6 +241,14 @@ class TestLHConfig(unittest.TestCase):
             ],
         )
         grpc_package_mock.intercept_channel.assert_called_once_with(ANY, ANY, ANY)
+
+    @patch("littlehorse.config.grpc")
+    def test_establish_insecure_channel_without_retry_interceptor(self, grpc_package_mock):
+        os.environ["LHC_GRPC_RESOURCE_EXHAUSTED_RETRY"] = "false"
+        config = LHConfig()
+        config.establish_channel()
+
+        grpc_package_mock.intercept_channel.assert_called_once_with(ANY, ANY)
 
     @patch("littlehorse.config.grpc")
     def test_establish_insecure_channel_with_custom_server(self, grpc_package_mock):
