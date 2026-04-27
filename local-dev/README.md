@@ -10,9 +10,11 @@ We appreciate any contributions to our codebase. Please note that by contributin
     - [Setting up Dev Dependencies](#setting-up-dev-dependencies)
   - [Running the Server Natively](#running-the-server-natively)
     - [Running the Dashboard](#running-the-dashboard)
+    - [Running the Canary Natively](#running-the-canary-natively)
     - [Debug Cycle and Hard Cleanup](#debug-cycle-and-hard-cleanup)
     - [Running Multiple LH Servers](#running-multiple-lh-servers)
     - [Testing with OAuth2](#testing-with-oauth2)
+    - [Testing with TLS](#testing-with-tls)
     - [Testing with mTLS](#testing-with-mtls)
   - [Building Locally](#building-locally)
     - [Building the Docker Images](#building-the-docker-images)
@@ -35,6 +37,12 @@ The LittleHorse repository contains the following components:
 - [`sdk-python`](../sdk-python)
     - Library for creating `WfSpec`'s in Python.
     - Library for executing `TaskRun`'s in Python.
+- [`sdk-js`](../sdk-js)
+    - Library for creating `WfSpec`'s in JavaScript/TypeScript.
+    - Library for executing `TaskRun`'s in JavaScript/TypeScript.
+- [`sdk-dotnet`](../sdk-dotnet)
+    - Library for creating `WfSpec`'s in .NET.
+    - Library for executing `TaskRun`'s in .NET.
 - [`dashboard`](../dashboard)
   - Web UI for LH.
 - [`canary`](../canary)
@@ -42,7 +50,9 @@ The LittleHorse repository contains the following components:
 - [`lhctl`](../lhctl)
     - The `lhctl` command line interface.
 - [`test-utils`](../test-utils/)
-  - A new framework for running end-to-end tests in our pipeline.
+  - A framework for running end-to-end tests in our pipeline.
+- [`test-utils-container`](../test-utils-container/)
+  - Containerized test utilities for running end-to-end tests.
 - [`examples`](../examples)
     - A series of examples with different level of complexity.
 - [`schemas`](../schemas)
@@ -61,14 +71,13 @@ This repository requires the following system dependencies:
     - [server](server): Java 21
 - `gradle`, preferably version 8 or later.
 - `docker` and `docker-compose-plugin`.
-- `go`, `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc` and `protoc-gen-grpc-java`.
-    - [Protocol Buffer Compiler](https://grpc.io/docs/protoc-installation/)
-    - [Java gRPC compiler plugin](https://github.com/grpc/grpc-java/blob/master/compiler/README.md)
-    - This needs to be put somewhere in your `PATH`.
+- `go` (required for `lhctl` and `sdk-go` development).
 - `pre-commit` (this is a dev dependency)
 - `python` and [poetry](https://python-poetry.org/).
     - [sdk-python](sdk-python): >= 3.9
 - `nvm` and `node` >= 20
+
+> **Note:** Protobuf compilation (`./local-dev/compile-proto.sh`) is fully Docker-based and does **not** require local installation of `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc`, or `protoc-gen-grpc-java`.
 
 ### Setup Pre-commit
 
@@ -81,19 +90,19 @@ pre-commit install
 - Only java:
 
   ```
-  export SKIP=install-python,install-dashboard,install-sdk-js,format-python,format-go,format-sdk-js,lint-python,mypy,go-tests,python-tests,dashboard-build,dashboard-tests,sdk-js-tests
+  export SKIP=install-python,install-sdk-js,format-python,format-go,format-sdk-js,lint-python,mypy,go-tests,python-tests,sdk-js-tests
   ```
 
 - Only go:
 
   ```
-  export SKIP=install-python,install-dashboard,install-sdk-js,format-python,format-java,format-sdk-js,lint-python,mypy,python-tests,dashboard-build,dashboard-tests,sdk-js-tests,java-build,javadoc
+  export SKIP=install-python,install-sdk-js,format-python,format-java,format-sdk-js,lint-python,mypy,python-tests,sdk-js-tests,java-build,javadoc
   ```
 
 - Only python:
 
   ```
-  export SKIP=install-dashboard,install-sdk-js,format-go,format-java,format-sdk-js,dashboard-build,dashboard-tests,sdk-js-tests,java-build,javadoc,go-tests
+  export SKIP=install-sdk-js,format-go,format-java,format-sdk-js,sdk-js-tests,java-build,javadoc,go-tests
   ```
 
 - Only js:
@@ -110,7 +119,11 @@ LittleHorse depends upon Kafka as its backing data store. You can set up Kafka v
 ./local-dev/setup.sh
 ```
 
-Note that this will also set up a Keycloak container in case you want to test LittleHorse's OAuth capabilities.
+To additionally set up a Keycloak container for testing LittleHorse's OAuth capabilities, pass the `--keycloak` flag:
+
+```
+./local-dev/setup.sh --keycloak
+```
 
 ## Running the Server Natively
 
@@ -129,15 +142,7 @@ Next, you can start the LH server itself. The server can be started in a single 
 You can confirm that the Server is running via:
 
 ```
-lhctl search wfSpec
-```
-
-Result:
-
-```
-{
-  "results": []
-}
+lhctl whoami
 ```
 
 ### Running the Dashboard
@@ -151,6 +156,16 @@ npm run dev
 ```
 
 The dashboard will be accessible on `localhost:3000` by default. This assumes that you have the LH Server accessible and running on `localhost:2023` with no authentication. That can be done as described above.
+
+### Running the Canary Natively
+
+The LH Canary is a synthetic monitoring tool that continuously runs LittleHorse workflows to verify that the cluster is functioning correctly. You can run it natively (without Docker) via:
+
+```
+./local-dev/do-canary.sh
+```
+
+This will build and run the canary using the `canary/canary.properties` configuration file.
 
 ### Debug Cycle and Hard Cleanup
 
@@ -175,7 +190,7 @@ between the different Brokers. Therefore, you'll need to be able to test with mu
 Running two brokers is slightly tricky as you must configure the ports, advertised hostnames, and Kafka group instance
 ID's correctly.
 
-However, you can start two Brokers in your terminal as follows:
+However, you can start two or three Brokers in your terminal as follows:
 
 ```
 # The first server has an external API port of 2023
@@ -184,6 +199,10 @@ However, you can start two Brokers in your terminal as follows:
 # <In another terminal>
 # The second server has an external API port of 2033
 ./local-dev/do-server.sh server-2
+
+# <In another terminal>
+# The third server has an external API port of 2043
+./local-dev/do-server.sh server-3
 ```
 
 ### Testing with OAuth2
@@ -222,37 +241,67 @@ http://localhost:8888
 - Password: `admin`
 
 
-### Testing with mTLS
+### Testing with TLS
 
-1. Create a tenant
-```bash
-lhctl put tenant <your tenant name>
-```
+1. Generate your certificates (requires `openssl`):
 
-2. Create the principal you wish you authenticate through:
-```bash
-lhctl put principal <your principal name> --acl "acl_workflow:read" --tenantId <your tenant name> --overwrite
-```
-*Replace `<your principal name>` with your desired Principal name*
-
-3. Update your `issue-certificates.sh` file
-	1. Replace `CN=localhost` with `CN=<your principal name>`
-
-4. Generate your certificates
 ```bash
 ./local-dev/issue-certificates.sh
 ```
 
-5. Ensure you have the following configuration settings in your LittleHorse server `local-dev/configs/mtls.config` file:
+2. Run LittleHorse server with the TLS config:
+
+```bash
+./local-dev/do-server.sh tls
+```
+
+> Check file [tls.config](configs/tls.config)
+
+3. Configure your client (`~/.config/littlehorse.config`):
+
+```
+LHC_API_HOST=localhost
+LHC_API_PORT=2023
+LHC_API_PROTOCOL=TLS
+LHC_CA_CERT=/<path to your workspace>/littlehorse/local-dev/certs/ca/ca.crt
+```
+
+### Testing with mTLS
+
+1. Create a tenant:
+
+```bash
+lhctl put tenant <your tenant name>
+```
+
+2. Create the principal you wish to authenticate through:
+
+```bash
+lhctl put principal <your principal name> --acl "acl_workflow:read" --tenantId <your tenant name> --overwrite
+```
+
+3. Update your `issue-certificates.sh` file:
+    - In the client certificate section, replace `CN=obiwan` with `CN=<your principal name>`
+
+4. Generate your certificates (requires `openssl`):
+
+```bash
+./local-dev/issue-certificates.sh
+```
+
+5. The `local-dev/configs/mtls.config` file is pre-configured with the correct settings:
+
 ```
 LHS_LISTENERS=MTLS:2023
 LHS_LISTENERS_PROTOCOL_MAP=MTLS:MTLS
 
 LHS_CA_CERT=local-dev/certs/ca/ca.crt
-LHS_LISTENER_MTLS_CERT=local-dev/certs/server/server.crt LHS_LISTENER_MTLS_KEY=local-dev/certs/server/server.key
+LHS_LISTENER_MTLS_CERT=local-dev/certs/server/server.crt
+LHS_LISTENER_MTLS_KEY=local-dev/certs/server/server.key
 ```
 
-6. Set up your LittleHorse Worker configuration file:
+6. Set up your LittleHorse Worker configuration file (`~/.config/littlehorse.config`):
+
 ```
 LHW_TASK_WORKER_VERSION=local.dev
 LHC_API_HOST=localhost
@@ -262,14 +311,17 @@ LHC_CLIENT_CERT=/<path to your workspace>/littlehorse/local-dev/certs/client/cli
 LHC_CLIENT_KEY=/<path to your workspace>/littlehorse/local-dev/certs/client/client.key
 LHC_CA_CERT=/<path to your workspace>/littlehorse/local-dev/certs/ca/ca.crt
 ```
-*Note: Replace `<path to your workspace>` with the full path to your LittleHorse repository folder to properly locate your certificates and keys*
 
-7. Run LittleHorse server with the mTLS Config
+*Note: Replace `<path to your workspace>` with the full path to your LittleHorse repository folder.*
+
+7. Run LittleHorse server with the mTLS config:
+
 ```bash
 ./local-dev/do-server.sh mtls
 ```
 
-8. Check which Principal you are authenticating as
+8. Check which Principal you are authenticating as:
+
 ```
 lhctl whoami
 ```
@@ -302,6 +354,14 @@ To build the canary image:
 
 > It creates `littlehorse/lh-canary:latest`.
 
+To build the standalone image (server + dashboard combined):
+
+```
+./local-dev/build.sh --standalone
+```
+
+> It creates `littlehorse/lh-standalone:latest`.
+
 ### Compiling the Protobuf
 
 If you make a change to anything in the `schemas` directory, you will need to compile the protobuf:
@@ -309,6 +369,8 @@ If you make a change to anything in the `schemas` directory, you will need to co
 ```
 ./local-dev/compile-proto.sh
 ```
+
+This script builds a Docker image with all required tools (`protoc`, `protoc-gen-go`, `protoc-gen-go-grpc`, `protoc-gen-grpc-java`, etc.) and runs compilation inside that container. No local installation of protobuf tools is required.
 
 ## Release a New Version
 
