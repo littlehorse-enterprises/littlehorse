@@ -45,7 +45,7 @@ public class MetronomeRunWfExecutor implements HealthStatusBinder {
     private final int sampleRate;
     private ScheduledFuture<?> scheduledFuture;
     private final Semaphore inflightRequests;
-    private final Deadline expiredDeadline = Deadline.after(30, TimeUnit.SECONDS);
+    private final Deadline expiredDeadline = Deadline.after(0, TimeUnit.NANOSECONDS);
 
     public MetronomeRunWfExecutor(
             final BeatProducer producer,
