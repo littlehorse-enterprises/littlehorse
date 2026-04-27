@@ -107,6 +107,8 @@ message MetadataCommand {
         PutStructDefRequest put_struct_def = 17;
 
         DeleteStructDefRequest delete_struct_def = 18;
+        PutQuotaRequest put_quota = 19;
+        DeleteQuotaRequest delete_quota = 20;
     }
 }
 

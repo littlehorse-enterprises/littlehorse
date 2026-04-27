@@ -1,5 +1,6 @@
 import { Channel, ChannelCredentials, Client, Metadata, createChannel, createClientFactory } from 'nice-grpc'
 import { LittleHorseDefinition } from './proto/service'
+import { createResourceExhaustedRetryMiddleware } from './grpcRetry'
 import getPropertiesFile from './utils/getPropertiesFile'
 import getPropertiesArgs, { ConfigArgs } from './utils/getPropertiesArgs'
 import { readFileSync } from 'fs'
@@ -8,6 +9,7 @@ export const CONFIG_NAMES = [
   'LHC_API_HOST',
   'LHC_API_PORT',
   'LHC_API_PROTOCOL',
+  'LHC_GRPC_RESOURCE_EXHAUSTED_RETRY',
   'LHC_TENANT_ID',
   'LHC_CA_CERT',
   'LHC_CLIENT_CERT',
@@ -16,6 +18,10 @@ export const CONFIG_NAMES = [
 
 export type Config = {
   [key in ConfigName]?: string
+}
+
+function isResourceExhaustedRetryEnabled(config?: string): boolean {
+  return config?.toLowerCase() !== 'false'
 }
 export type ConfigName = (typeof CONFIG_NAMES)[number]
 
@@ -34,6 +40,7 @@ export class LHConfig {
   private caCert?: string
   private clientCert?: string
   private clientKey?: string
+  private resourceExhaustedRetryEnabled: boolean = true
   private channel: Channel
 
   private channelCredentials?: ChannelCredentials
@@ -47,6 +54,9 @@ export class LHConfig {
     this.caCert = mergedConfig.LHC_CA_CERT
     this.clientCert = mergedConfig.LHC_CLIENT_CERT
     this.clientKey = mergedConfig.LHC_CLIENT_KEY
+    this.resourceExhaustedRetryEnabled = isResourceExhaustedRetryEnabled(
+      mergedConfig.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY
+    )
 
     if (this.protocol === 'TLS') {
       const rootCa = this.caCert ? readFileSync(this.caCert) : undefined
@@ -60,7 +70,7 @@ export class LHConfig {
       }
     }
 
-    this.channel = createChannel(`${this.apiHost}:${this.apiPort}`, this.channelCredentials)
+    this.channel = this.openChannel(this.apiHost!, this.apiPort!)
   }
 
   /**
@@ -87,14 +97,34 @@ export class LHConfig {
    * @returns a gRPC client for littlehorse
    */
   public getClient(accessToken?: string): Client<typeof LittleHorseDefinition> {
-    return createClientFactory()
+    return this.createClientForChannel(this.channel, accessToken)
+  }
+
+  public openChannel(host: string, port: string | number): Channel {
+    return createChannel(`${host}:${port}`, this.channelCredentials)
+  }
+
+  public createClientForChannel(
+    channel: Channel,
+    accessToken?: string
+  ): Client<typeof LittleHorseDefinition> {
+    const factory = createClientFactory()
+    if (this.resourceExhaustedRetryEnabled) {
+      factory.use(createResourceExhaustedRetryMiddleware())
+    }
+
+    return factory
       .use((call, options) =>
         call.next(call.request, {
           ...options,
           metadata: this.getMetadata(options.metadata, accessToken),
         })
       )
-      .create(LittleHorseDefinition, this.channel)
+      .create(LittleHorseDefinition, channel)
+  }
+
+  getResourceExhaustedRetryEnabled(): boolean {
+    return this.resourceExhaustedRetryEnabled
   }
 
   private getMetadata(metadata?: Metadata, accessToken?: string): Metadata {

@@ -161,11 +161,17 @@ The `RESOURCE_EXHAUSTED` + `RetryInfo` response requires an `onError()`, which w
 
 Task workers will be throttled by the `rpc ReportTask` which is a unary grpc call. The transparent retries will delay the workers as they're currently implemented and provide a sufficient mechanism for throttling task workers.
 
-### Delay Time Calculations
+### Delay Time Calculations (Token Bucket with Debt)
 
-Windows will refresh every 500 milliseconds (half second). Once the quota for a window has been exhausted, the server will start rejecting requests and setting a 500ms delay on retry.
+We use a **token bucket with debt** (also known as a deficit token bucket or permit borrowing) strategy. The token bucket refills at the configured rate, and its capacity equals one window's worth of permits (i.e. `rate * 500ms`). Windows refresh every 500 milliseconds (half second).
 
-Once there are more requests queued up for the coming window than allowed in that window, the requests are delayed 1000ms, until the following window is filled, and so on.
+Whether a request is accepted or throttled, one permit is consumed. Throttling can drive `availablePermits` negative. This "debt" ensures that subsequent requests see the already-scheduled retries and receive proportionally longer delays.
+
+For example, let's assume 5 requests per window and each window is 500ms. Here's a sequence of events:
+
+1. First five requests come in and are accepted. Now I have zero permits.
+2. Next five requests come in befoore the first window closes...they're all throttled 500ms. I now have **negative 5 permits.**
+3. If an additional request comes in before the first window closes, it gets delayed by 1000ms. This is because I know the other requests that were already throttled are coming into the next window.
 
 ### Calculating Per-Server Throttles
 
@@ -202,6 +208,6 @@ This proposal is the first time we're taking advantage of GRPC's built-in retry 
 
 _NOTE: This could potentially be implemented based on necessity; though it is quite possibly not needed and as such may never be implemented._
 
-To address the problem of uneven load distribution causing artificially small quotas, we could allow each server to forward quota utilization & throttling information every minute to a central processor, and dynamically adjust 
+To address the problem of uneven load distribution causing artificially small quotas, we could allow each server to forward quota utilization & throttling information every minute to a central processor, and dynamically adjust
 
 However, this is complex and is probably not very valuable and as such is out of scope for now.

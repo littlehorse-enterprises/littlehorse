@@ -6,6 +6,7 @@ public static class DefaultLHConfigVariables
     public static int LHC_API_PORT => 2023;
     public static string LHC_API_PROTOCOL => "PLAINTEXT";
     public static string LHC_CLIENT_ID => "client-";
+    public static bool LHC_GRPC_RESOURCE_EXHAUSTED_RETRY => true;
     public static int LHW_NUM_WORKER_THREADS => 8;
     public static string LHW_TASK_WORKER_VERSION => string.Empty;
 }

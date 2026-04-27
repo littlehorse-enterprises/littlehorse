@@ -18,6 +18,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Environment.SetEnvironmentVariable("LHC_OAUTH_CLIENT_ID", null);
             Environment.SetEnvironmentVariable("LHC_OAUTH_CLIENT_SECRET", null);
             Environment.SetEnvironmentVariable("LHC_OAUTH_ACCESS_TOKEN_URL", null);
+            Environment.SetEnvironmentVariable("LHC_GRPC_RESOURCE_EXHAUSTED_RETRY", null);
             Environment.SetEnvironmentVariable("LHW_NUM_WORKER_THREADS", null);
             Environment.SetEnvironmentVariable("LHW_TASK_WORKER_VERSION", null);
         }
@@ -35,6 +36,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             string oauthClientId = "oauth-client-id";
             string oauthClientSecret = "oauth-client-secret";
             string oauthAccessTokenUrl = "oauth-access-token-url";
+            string resourceExhaustedRetry = "false";
             string numberWorkerThreads = "15";
             string taskWorkerVersion = "task-worker-version";
             
@@ -48,6 +50,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Environment.SetEnvironmentVariable("LHC_OAUTH_CLIENT_ID", oauthClientId);
             Environment.SetEnvironmentVariable("LHC_OAUTH_CLIENT_SECRET", oauthClientSecret);
             Environment.SetEnvironmentVariable("LHC_OAUTH_ACCESS_TOKEN_URL", oauthAccessTokenUrl);
+            Environment.SetEnvironmentVariable("LHC_GRPC_RESOURCE_EXHAUSTED_RETRY", resourceExhaustedRetry);
             Environment.SetEnvironmentVariable("LHW_NUM_WORKER_THREADS", numberWorkerThreads);
             Environment.SetEnvironmentVariable("LHW_TASK_WORKER_VERSION", taskWorkerVersion);
 
@@ -63,6 +66,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(oauthClientId, inputVariables.LHC_OAUTH_CLIENT_ID);
             Assert.Equal(oauthClientSecret, inputVariables.LHC_OAUTH_CLIENT_SECRET);
             Assert.Equal(oauthAccessTokenUrl, inputVariables.LHC_OAUTH_ACCESS_TOKEN_URL);
+            Assert.Equal(bool.Parse(resourceExhaustedRetry), inputVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY);
             Assert.Equal(int.Parse(numberWorkerThreads), inputVariables.LHW_NUM_WORKER_THREADS);
             Assert.Equal(taskWorkerVersion, inputVariables.LHW_TASK_WORKER_VERSION);
             
@@ -78,6 +82,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(DefaultLHConfigVariables.LHC_API_PORT, inputVariables.LHC_API_PORT);
             Assert.Equal(DefaultLHConfigVariables.LHC_API_PROTOCOL, inputVariables.LHC_API_PROTOCOL);
             Assert.StartsWith(DefaultLHConfigVariables.LHC_CLIENT_ID, inputVariables.LHC_CLIENT_ID);
+            Assert.Equal(DefaultLHConfigVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY, inputVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY);
             Assert.Equal(DefaultLHConfigVariables.LHW_NUM_WORKER_THREADS, inputVariables.LHW_NUM_WORKER_THREADS);
             Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
         }
@@ -93,6 +98,7 @@ namespace LittleHorse.Sdk.Tests.Internal
                 { "LHC_API_PORT", "111" },
                 { "LHC_API_PROTOCOL", "TLS" },
                 { "LHC_CA_CERT", "ca_file_path" },
+                { "LHC_GRPC_RESOURCE_EXHAUSTED_RETRY", "false" },
                 { "LHW_TASK_WORKER_VERSION", "test" }
             };
             TestUtils.WriteContentInFile(keyValueLHConfigs, inputVariablesFilePath);
@@ -103,6 +109,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(int.Parse(keyValueLHConfigs["LHC_API_PORT"]), inputVariables.LHC_API_PORT);
             Assert.Equal(keyValueLHConfigs["LHC_API_PROTOCOL"], inputVariables.LHC_API_PROTOCOL);
             Assert.Equal(keyValueLHConfigs["LHC_CA_CERT"], inputVariables.LHC_CA_CERT);
+            Assert.False(inputVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY);
             Assert.Equal(keyValueLHConfigs["LHW_TASK_WORKER_VERSION"], inputVariables.LHW_TASK_WORKER_VERSION);
         }
         
@@ -126,6 +133,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(DefaultLHConfigVariables.LHC_API_PORT, inputVariables.LHC_API_PORT);
             Assert.Equal(DefaultLHConfigVariables.LHC_API_PROTOCOL, inputVariables.LHC_API_PROTOCOL);
             Assert.StartsWith(DefaultLHConfigVariables.LHC_CLIENT_ID, inputVariables.LHC_CLIENT_ID);
+            Assert.Equal(DefaultLHConfigVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY, inputVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY);
             Assert.Equal(DefaultLHConfigVariables.LHW_NUM_WORKER_THREADS, inputVariables.LHW_NUM_WORKER_THREADS);
             Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
         }
@@ -144,6 +152,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(DefaultLHConfigVariables.LHC_API_PORT, inputVariables.LHC_API_PORT);
             Assert.Equal(DefaultLHConfigVariables.LHC_API_PROTOCOL, inputVariables.LHC_API_PROTOCOL);
             Assert.StartsWith(DefaultLHConfigVariables.LHC_CLIENT_ID, inputVariables.LHC_CLIENT_ID);
+            Assert.Equal(DefaultLHConfigVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY, inputVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY);
             Assert.Equal(DefaultLHConfigVariables.LHW_NUM_WORKER_THREADS, inputVariables.LHW_NUM_WORKER_THREADS);
             Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
         }
@@ -168,6 +177,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(int.Parse(keyValueLHConfigs["LHC_API_PORT"]), inputVariables.LHC_API_PORT);
             Assert.Equal(DefaultLHConfigVariables.LHC_API_PROTOCOL, inputVariables.LHC_API_PROTOCOL);
             Assert.Null(inputVariables.LHC_CA_CERT);
+            Assert.Equal(DefaultLHConfigVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY, inputVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY);
             Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
         }
         
@@ -191,6 +201,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(DefaultLHConfigVariables.LHC_API_PORT, inputVariables.LHC_API_PORT);
             Assert.Equal(DefaultLHConfigVariables.LHC_API_PROTOCOL, inputVariables.LHC_API_PROTOCOL);
             Assert.StartsWith(DefaultLHConfigVariables.LHC_CLIENT_ID, inputVariables.LHC_CLIENT_ID);
+            Assert.Equal(DefaultLHConfigVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY, inputVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY);
             Assert.Equal(DefaultLHConfigVariables.LHW_NUM_WORKER_THREADS, inputVariables.LHW_NUM_WORKER_THREADS);
             Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
         }
@@ -203,6 +214,7 @@ namespace LittleHorse.Sdk.Tests.Internal
                     { "LHC_API_HOST", "localhost" },
                     { "LHC_API_PORT", "123" },
                     { "LHC_API_PROTOCOL", "TLS" },
+                    { "LHC_GRPC_RESOURCE_EXHAUSTED_RETRY", "false" },
                     { "LHC_CA_CERT", "ca_test.crt" }
                 };
 
@@ -212,6 +224,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(int.Parse(args["LHC_API_PORT"]!), inputVariables.LHC_API_PORT);
             Assert.Equal(args["LHC_API_PROTOCOL"], inputVariables.LHC_API_PROTOCOL);
             Assert.Equal(args["LHC_CA_CERT"], inputVariables.LHC_CA_CERT);
+            Assert.False(inputVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY);
         }
         
         [Fact]
@@ -225,6 +238,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(DefaultLHConfigVariables.LHC_API_PORT, inputVariables.LHC_API_PORT);
             Assert.Equal(DefaultLHConfigVariables.LHC_API_PROTOCOL, inputVariables.LHC_API_PROTOCOL);
             Assert.StartsWith(DefaultLHConfigVariables.LHC_CLIENT_ID, inputVariables.LHC_CLIENT_ID);
+            Assert.Equal(DefaultLHConfigVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY, inputVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY);
             Assert.Equal(DefaultLHConfigVariables.LHW_NUM_WORKER_THREADS, inputVariables.LHW_NUM_WORKER_THREADS);
             Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
         }
@@ -244,6 +258,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(int.Parse(args["LHC_API_PORT"]!), inputVariables.LHC_API_PORT);
             Assert.Equal(DefaultLHConfigVariables.LHC_API_PROTOCOL, inputVariables.LHC_API_PROTOCOL);
             Assert.StartsWith(DefaultLHConfigVariables.LHC_CLIENT_ID, inputVariables.LHC_CLIENT_ID);
+            Assert.Equal(DefaultLHConfigVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY, inputVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY);
             Assert.Equal(DefaultLHConfigVariables.LHW_NUM_WORKER_THREADS, inputVariables.LHW_NUM_WORKER_THREADS);
             Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
         }

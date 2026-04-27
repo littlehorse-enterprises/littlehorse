@@ -10,8 +10,6 @@ package io.littlehorse.sdk.common.proto;
  * A Tenant is a logically isolated environment within LittleHorse. All workflows and
  * associated data (WfSpec, WfRun, TaskDef, TaskRun, NodeRun, etc) are scoped to within
  * a Tenant.
- *
- * Future versions will include quotas on a per-Tenant basis.
  * </pre>
  *
  * Protobuf type {@code littlehorse.Tenant}
@@ -368,8 +366,6 @@ private static final long serialVersionUID = 0L;
    * A Tenant is a logically isolated environment within LittleHorse. All workflows and
    * associated data (WfSpec, WfRun, TaskDef, TaskRun, NodeRun, etc) are scoped to within
    * a Tenant.
-   *
-   * Future versions will include quotas on a per-Tenant basis.
    * </pre>
    *
    * Protobuf type {@code littlehorse.Tenant}
