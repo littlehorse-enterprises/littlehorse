@@ -1,4 +1,4 @@
-name: weekly-snapshot
+name: snapshot
 run-name: Snapshot ${{ github.ref_name }}
 on:
   workflow_dispatch:
