@@ -18,6 +18,7 @@ public class CommandProcessorMetrics implements MeterBinder {
     @Override
     public void bindTo(MeterRegistry registry) {
         this.registry = registry;
+        registry.counter(METRIC_NAME);
         for (Command.CommandCase commandType : Command.CommandCase.values()) {
             if (commandType != Command.CommandCase.COMMAND_NOT_SET) {
                 registry.counter(METRIC_NAME, COMMAND_TYPE_TAG, commandType.name());
@@ -31,6 +32,7 @@ public class CommandProcessorMetrics implements MeterBinder {
             return;
         }
         if (command.getType() != Command.CommandCase.COMMAND_NOT_SET) {
+            registry.counter(METRIC_NAME).increment();
             registry.get(METRIC_NAME)
                     .tag(COMMAND_TYPE_TAG, command.getType().name())
                     .counter()

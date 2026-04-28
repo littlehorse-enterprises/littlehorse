@@ -90,7 +90,14 @@ class HealthServiceTest {
                 .setStateListener(any());
 
         healthService = new HealthService(
-                statusServer, config, coreStreams, timerStreams, taskQueueManager, metadataCache, internalComms, commandProcessorMetrics);
+                statusServer,
+                config,
+                coreStreams,
+                timerStreams,
+                taskQueueManager,
+                metadataCache,
+                internalComms,
+                commandProcessorMetrics);
     }
 
     @Nested

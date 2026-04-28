@@ -90,6 +90,44 @@ class CommandProcessorMetricsTest {
     }
 
     @Test
+    void shouldIncrementGeneralMetricOnEveryObserve() {
+        CommandModel runWf = Mockito.mock(CommandModel.class);
+        Mockito.when(runWf.getType()).thenReturn(Command.CommandCase.RUN_WF);
+
+        CommandModel taskClaim = Mockito.mock(CommandModel.class);
+        Mockito.when(taskClaim.getType()).thenReturn(Command.CommandCase.TASK_CLAIM_EVENT);
+
+        metrics.observe(runWf);
+        metrics.observe(taskClaim);
+        metrics.observe(runWf);
+
+        Counter general = registry.get(METRIC_NAME).counters().stream()
+                .filter(c -> c.getId().getTags().isEmpty())
+                .findFirst()
+                .orElseThrow();
+        assertThat(general.count()).isEqualTo(3.0);
+    }
+
+    @Test
+    void shouldIncrementBothGeneralAndTagSpecificMetrics() {
+        CommandModel command = Mockito.mock(CommandModel.class);
+        Mockito.when(command.getType()).thenReturn(Command.CommandCase.RUN_WF);
+
+        metrics.observe(command);
+
+        Counter general = registry.get(METRIC_NAME).counters().stream()
+                .filter(c -> c.getId().getTags().isEmpty())
+                .findFirst()
+                .orElseThrow();
+        Counter tagSpecific = registry.get(METRIC_NAME)
+                .tag(COMMAND_TYPE_TAG, Command.CommandCase.RUN_WF.name())
+                .counter();
+
+        assertThat(general.count()).isEqualTo(1.0);
+        assertThat(tagSpecific.count()).isEqualTo(1.0);
+    }
+
+    @Test
     void shouldNotThrowWhenObserveIsCalledBeforeBindTo() {
         CommandProcessorMetrics unboundMetrics = new CommandProcessorMetrics();
         CommandModel command = Mockito.mock(CommandModel.class);
