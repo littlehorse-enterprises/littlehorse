@@ -19,6 +19,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
@@ -68,13 +69,16 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private final PartitionMetricsMemoryStore partitionMetricsMemoryStore;
 
     private final LHProcessingExceptionHandler exceptionHandler;
+    private final CommandProcessorMetrics metrics;
 
     public CommandProcessor(
             LHServerConfig config,
             LHServer server,
             MetadataCache metadataCache,
             TaskQueueManager globalTaskQueueManager,
-            AsyncWaiters asyncWaiters) {
+            AsyncWaiters asyncWaiters,
+            CommandProcessorMetrics metrics) {
+        this.metrics = metrics;
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
@@ -109,6 +113,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void processHelper(final Record<String, Command> commandRecord) {
         CoreProcessorContext executionContext = buildExecutionContext(commandRecord);
         CommandModel command = executionContext.currentCommand();
+        metrics.observe(command);
         log.trace(
                 "{} Processing command of type {} with commandId {} with partition key {}",
                 config.getLHInstanceName(),

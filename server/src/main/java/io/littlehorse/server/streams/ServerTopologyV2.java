@@ -6,6 +6,7 @@ import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.util.serde.ProtobufDeserializer;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.store.BoundedBytesSerde;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -90,9 +91,10 @@ public class ServerTopologyV2 extends Topology {
             LHServer server,
             MetadataCache metadataCache,
             TaskQueueManager globalTaskQueueManager,
-            AsyncWaiters asyncWaiters) {
-        this.commandProcessorSupplier =
-                () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager, asyncWaiters);
+            AsyncWaiters asyncWaiters,
+            CommandProcessorMetrics commandProcessorMetrics) {
+        this.commandProcessorSupplier = () -> new CommandProcessor(
+                config, server, metadataCache, globalTaskQueueManager, asyncWaiters, commandProcessorMetrics);
         this.routerProcessorSupplier = () -> ProcessorOutputRouter.createCommandProcessorRouter(
                 TIMER_PROCESSOR_NAME, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR);
         this.routerProcessor2Supplier = () -> ProcessorOutputRouter.createCommandProcessorRouter(
@@ -100,8 +102,8 @@ public class ServerTopologyV2 extends Topology {
         this.routerProcessorTimer2Supplier = ProcessorOutputRouter::createTimerProcessorRouter;
         this.timerProcessorSupplier = () -> new TimerCoreProcessor(true);
         this.passthroughRepartitionProcessor = ProcessorOutputRouter::createPassthroughRepartitionRouter;
-        this.timerCommandProcessorSupplier =
-                () -> new TimerCommandProcessor(config, server, metadataCache, globalTaskQueueManager, asyncWaiters);
+        this.timerCommandProcessorSupplier = () -> new TimerCommandProcessor(
+                config, server, metadataCache, globalTaskQueueManager, asyncWaiters, commandProcessorMetrics);
         this.metadataStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(METADATA_STORE_NAME), Serdes.String(), Serdes.Bytes());
         this.timerWithoutForwardProcessorSupplier = () -> new TimerCoreProcessor(false);
