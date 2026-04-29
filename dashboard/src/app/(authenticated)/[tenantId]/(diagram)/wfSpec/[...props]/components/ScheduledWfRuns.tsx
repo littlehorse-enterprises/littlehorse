@@ -1,7 +1,7 @@
 'use client'
 
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
-import VersionTag from '@/app/(authenticated)/[tenantId]/components/VersionTag'
+import { TableWrapper } from '@/app/(authenticated)/[tenantId]/components/tables/TableWrapper'
 import { FUTURE_TIME_RANGES, TimeRange } from '@/app/constants'
 import { formatDateReadable, getVariableValue, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
 import { getCronTimeWindow } from '@/app/utils/getCronTimeWindow'
@@ -9,53 +9,26 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { parseExpression } from 'cron-parser'
-import { ScheduledWfRun, WfSpec, WfSpecId } from 'littlehorse-client/proto'
+import { ScheduledWfRun, WfSpec } from 'littlehorse-client/proto'
 import { ClockIcon, RefreshCwIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import useSWR from 'swr'
 import { getScheduleWfSpec } from '../actions/getScheduleWfSpec'
 import { VariableValuePillRow } from './VariableValuePillRow'
 
+const EMPTY = '—'
+
 const variablesSummary = (row: ScheduledWfRun): string => {
   const entries = Object.entries(row.variables ?? {})
-  if (entries.length === 0) return '—'
+  if (entries.length === 0) return EMPTY
   return entries.map(([k, v]) => `${k}: ${getVariableValue(v)}`).join(' · ')
 }
 
 const nextRunLabel = (cronExpression: string) =>
   utcToLocalDateTime(parseExpression(cronExpression).next().toDate().toISOString())
 
-const ScheduledWfSpecRef = ({
-  wfSpecId,
-  isolateRowClick,
-}: {
-  wfSpecId: WfSpecId | undefined
-  isolateRowClick?: boolean
-}) => {
-  if (!wfSpecId?.name) {
-    return <span className="text-muted-foreground">—</span>
-  }
-  const { name, majorVersion, revision } = wfSpecId
-  const versionPath = `${majorVersion}.${revision}`
-  const inner = (
-    <div className="flex min-w-0 flex-col gap-1.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2">
-      <LinkWithTenant
-        className="truncate font-medium text-blue-600 hover:text-blue-800 hover:underline"
-        href={`/wfSpec/${name}/${versionPath}`}
-      >
-        {name}
-      </LinkWithTenant>
-      <VersionTag label={`v${versionPath}`} />
-    </div>
-  )
-  if (isolateRowClick) {
-    return <div onClick={e => e.stopPropagation()}>{inner}</div>
-  }
-  return inner
-}
-
-export const ScheduledWfRuns = (spec: WfSpec) => {
+export const ScheduledWfRuns: FC<WfSpec> = spec => {
   const [currentWindow, setWindow] = useState<TimeRange>(-1)
   const [detailRow, setDetailRow] = useState<ScheduledWfRun | null>(null)
   const tenantId = useParams().tenantId as string
@@ -130,14 +103,13 @@ export const ScheduledWfRuns = (spec: WfSpec) => {
           No scheduled workflow runs {currentWindow === -1 ? 'for this WfSpec' : 'match this time window'}.
         </p>
       ) : (
-        <div className="rounded-md border">
+        <TableWrapper>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="min-w-[8rem]">Schedule ID</TableHead>
                 <TableHead className="min-w-[6rem]">Cron</TableHead>
                 <TableHead className="min-w-[10rem]">Next run</TableHead>
-                <TableHead className="min-w-[8rem]">WfSpec</TableHead>
                 <TableHead className="min-w-[9rem]">Created</TableHead>
                 <TableHead className="min-w-[7rem]">Parent WfRun</TableHead>
                 <TableHead>Input variables</TableHead>
@@ -145,13 +117,13 @@ export const ScheduledWfRuns = (spec: WfSpec) => {
             </TableHeader>
             <TableBody>
               {filteredScheduledWfRuns.map(row => {
-                const idStr = row.id?.id ?? '—'
+                const idStr = row.id?.id ?? EMPTY
                 return (
                   <TableRow
                     key={idStr}
                     role="button"
                     tabIndex={0}
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:bg-muted/50"
                     onClick={() => setDetailRow(row)}
                     onKeyDown={e => {
                       if (e.key === 'Enter' || e.key === ' ') {
@@ -162,15 +134,12 @@ export const ScheduledWfRuns = (spec: WfSpec) => {
                     aria-label={`View details for scheduled run ${idStr}`}
                   >
                     <TableCell className="max-w-[14rem] font-mono text-xs">{idStr}</TableCell>
-                    <TableCell className="whitespace-nowrap font-mono text-xs">{row.cronExpression || '—'}</TableCell>
+                    <TableCell className="whitespace-nowrap font-mono text-xs">{row.cronExpression || EMPTY}</TableCell>
                     <TableCell className="whitespace-nowrap text-sm">
-                      {row.cronExpression ? nextRunLabel(row.cronExpression) : '—'}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      <ScheduledWfSpecRef isolateRowClick wfSpecId={row.wfSpecId} />
+                      {row.cronExpression ? nextRunLabel(row.cronExpression) : EMPTY}
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-sm">
-                      {row.createdAt ? formatDateReadable(row.createdAt) : '—'}
+                      {row.createdAt ? formatDateReadable(row.createdAt) : EMPTY}
                     </TableCell>
                     <TableCell className="text-sm" onClick={e => e.stopPropagation()}>
                       {row.parentWfRunId?.id ? (
@@ -182,12 +151,12 @@ export const ScheduledWfRuns = (spec: WfSpec) => {
                           {row.parentWfRunId.id}
                         </LinkWithTenant>
                       ) : (
-                        '—'
+                        EMPTY
                       )}
                     </TableCell>
                     <TableCell className="max-w-lg align-top">
                       {Object.keys(row.variables ?? {}).length === 0 ? (
-                        <span className="text-sm text-muted-foreground">—</span>
+                        <span className="text-sm text-muted-foreground">{EMPTY}</span>
                       ) : (
                         <div className="flex min-w-0 flex-col gap-1.5" title={variablesSummary(row)}>
                           {Object.entries(row.variables).map(([name, v]) => (
@@ -201,7 +170,7 @@ export const ScheduledWfRuns = (spec: WfSpec) => {
               })}
             </TableBody>
           </Table>
-        </div>
+        </TableWrapper>
       )}
 
       <Dialog
@@ -221,15 +190,11 @@ export const ScheduledWfRuns = (spec: WfSpec) => {
               </DialogHeader>
               <dl className="grid grid-cols-[8rem_1fr] gap-x-4 gap-y-3 text-sm">
                 <dt className="text-muted-foreground">Cron</dt>
-                <dd className="font-mono text-xs">{detailRow.cronExpression || '—'}</dd>
+                <dd className="font-mono text-xs">{detailRow.cronExpression || EMPTY}</dd>
                 <dt className="text-muted-foreground">Next run</dt>
-                <dd>{detailRow.cronExpression ? nextRunLabel(detailRow.cronExpression) : '—'}</dd>
-                <dt className="text-muted-foreground">WfSpec</dt>
-                <dd>
-                  <ScheduledWfSpecRef wfSpecId={detailRow.wfSpecId} />
-                </dd>
+                <dd>{detailRow.cronExpression ? nextRunLabel(detailRow.cronExpression) : EMPTY}</dd>
                 <dt className="text-muted-foreground">Created</dt>
-                <dd>{detailRow.createdAt ? formatDateReadable(detailRow.createdAt) : '—'}</dd>
+                <dd>{detailRow.createdAt ? formatDateReadable(detailRow.createdAt) : EMPTY}</dd>
                 <dt className="text-muted-foreground">Parent WfRun</dt>
                 <dd>
                   {detailRow.parentWfRunId?.id ? (
@@ -240,7 +205,7 @@ export const ScheduledWfRuns = (spec: WfSpec) => {
                       {detailRow.parentWfRunId.id}
                     </LinkWithTenant>
                   ) : (
-                    '—'
+                    EMPTY
                   )}
                 </dd>
               </dl>

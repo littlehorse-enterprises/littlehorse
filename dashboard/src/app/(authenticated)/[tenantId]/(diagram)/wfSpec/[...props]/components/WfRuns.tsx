@@ -1,48 +1,53 @@
 'use client'
 
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
+import { TableWrapper } from '@/app/(authenticated)/[tenantId]/components/tables/TableWrapper'
 import VersionTag from '@/app/(authenticated)/[tenantId]/components/VersionTag'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
-import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
 import { WfRunResponse } from '@/app/actions/getWfRun'
+import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
 import { formatDate, getStatus, getVariableValue, wfRunIdToPath } from '@/app/utils'
-import { getVariableDefType, getTypedVariableValue } from '@/app/utils/variables'
 import { computeStartTimeWindow, StartTimeWindow } from '@/app/utils/dateTime'
+import { getTypedVariableValue, getVariableDefType } from '@/app/utils/variables'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { cn } from '@/lib/utils'
-import { LHStatus, Variable, VariableDef, VariableMatch, WfRun, WfSpec, WfSpecId } from 'littlehorse-client/proto'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { cn } from '@/lib/utils'
+import { LHStatus, Variable, VariableMatch, WfSpec } from 'littlehorse-client/proto'
 import { ArrowDown, ArrowUp, ArrowUpDown, RefreshCwIcon } from 'lucide-react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { FC, useCallback, useMemo, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite'
 import { PaginatedWfRunResponseList, searchWfRun } from '../actions/searchWfRun'
+import { VariableFilter } from './types'
 import { VariableValuePillRow } from './VariableValuePillRow'
 import { WfRunsHeader } from './WfRunsHeader'
 import { WF_RUN_STATUS } from '../../../components/Sidebar/Components/StatusColor'
+
+const EMPTY = '—'
 
 type SortKey = 'startTime' | 'endTime' | 'id'
 type SortState = { key: SortKey; dir: 'asc' | 'desc' }
 
 const defaultSort = (): SortState => ({ key: 'startTime', dir: 'desc' })
 
-const buildVariableFilters = (filter: { varDef: VariableDef; value: string } | null): VariableMatch[] => {
+const buildVariableFilters = (filter: VariableFilter | null): VariableMatch[] => {
   if (!filter?.value?.trim()) return []
   return [
     {
-      varName: filter.varDef.name!,
+      varName: filter.varDef.name,
       value: getTypedVariableValue(getVariableDefType(filter.varDef), filter.value.trim()),
     },
   ]
 }
 
-const formatDuration = (start?: string, end?: string) => {
-  if (!start) return '—'
+// Local helper kept distinct from utils/dateTime#formatDuration which takes ms.
+const formatRangeDuration = (start?: string, end?: string) => {
+  if (!start) return EMPTY
   const s = Date.parse(start)
-  if (Number.isNaN(s)) return '—'
+  if (Number.isNaN(s)) return EMPTY
   const e = end ? Date.parse(end) : Date.now()
-  if (Number.isNaN(e)) return '—'
+  if (Number.isNaN(e)) return EMPTY
   const sec = Math.max(0, Math.floor((e - s) / 1000))
   if (sec < 60) return `${sec}s`
   const m = Math.floor(sec / 60)
@@ -53,14 +58,8 @@ const formatDuration = (start?: string, end?: string) => {
   return `${h}h ${rm}m`
 }
 
-const entrypointVariablesText = (variables: Variable[] | undefined) => {
-  if (!variables?.length) return '—'
-  const ev = variables.filter(v => v.id?.threadRunNumber === 0 && v.value)
-  if (!ev.length) return '—'
-  return ev
-    .map(v => `${v.id!.name}: ${getVariableValue(v.value!)}`)
-    .join(' · ')
-}
+const entrypointVariablesText = (variables: Variable[]) =>
+  variables.map(v => `${v.id!.name}: ${getVariableValue(v.value!)}`).join(' · ')
 
 const compareRows = (a: WfRunResponse, b: WfRunResponse, sort: SortState) => {
   const wa = a.wfRun
@@ -73,21 +72,13 @@ const compareRows = (a: WfRunResponse, b: WfRunResponse, sort: SortState) => {
   }
   switch (sort.key) {
     case 'startTime': {
-      const as = parseT(wa.startTime)
-      const bs = parseT(wb.startTime)
-      return (as - bs) * m
+      return (parseT(wa.startTime) - parseT(wb.startTime)) * m
     }
     case 'endTime': {
-      const aEnd = wa.endTime
-        ? Date.parse(wa.endTime)
-        : sort.dir === 'desc'
-          ? 0
-          : Number.MAX_SAFE_INTEGER
-      const bEnd = wb.endTime
-        ? Date.parse(wb.endTime)
-        : sort.dir === 'desc'
-          ? 0
-          : Number.MAX_SAFE_INTEGER
+      // Running runs (no endTime) are pinned last regardless of direction.
+      const sentinel = sort.dir === 'desc' ? 0 : Number.MAX_SAFE_INTEGER
+      const aEnd = wa.endTime ? Date.parse(wa.endTime) : sentinel
+      const bEnd = wb.endTime ? Date.parse(wb.endTime) : sentinel
       return ((Number.isNaN(aEnd) ? 0 : aEnd) - (Number.isNaN(bEnd) ? 0 : bEnd)) * m
     }
     case 'id': {
@@ -98,48 +89,21 @@ const compareRows = (a: WfRunResponse, b: WfRunResponse, sort: SortState) => {
   }
 }
 
-const WfRunTableSpec = ({ id }: { id: WfSpecId | undefined }) => {
-  if (!id?.name) {
-    return <span className="text-muted-foreground">—</span>
-  }
-  const versionPath = `${id.majorVersion}.${id.revision}`
-  return (
-    <div className="flex min-w-0 flex-col items-start gap-1 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2">
-      <LinkWithTenant
-        className="truncate font-medium text-blue-600 hover:text-blue-800 hover:underline"
-        href={`/wfSpec/${id.name}/${versionPath}`}
-      >
-        {id.name}
-      </LinkWithTenant>
-      <VersionTag label={`v${versionPath}`} />
-    </div>
-  )
-}
-
-const SortableTh = ({
-  label,
-  sortKey,
-  sort,
-  onSort,
-  className,
-  title: thTitle,
-}: {
+const SortableTh: FC<{
   label: string
   sortKey: SortKey
   sort: SortState
   onSort: (k: SortKey) => void
   className?: string
-  title?: string
-}) => {
+}> = ({ label, sortKey, sort, onSort, className }) => {
   const active = sort.key === sortKey
   return (
-    <TableHead className={className} title={thTitle}>
+    <TableHead className={className}>
       <Button
         type="button"
         variant="ghost"
-        className="h-8 gap-1 px-1.5 -ml-1.5 font-medium text-muted-foreground hover:text-foreground"
+        className="-ml-1.5 h-8 gap-1 px-1.5 font-medium text-muted-foreground hover:text-foreground"
         onClick={() => onSort(sortKey)}
-        title={thTitle}
       >
         {label}
         {active ? (
@@ -169,11 +133,8 @@ type WfRunsKey = [
   string,
 ]
 
-type VariableFilter = { varDef: VariableDef; value: string }
-
 export const WfRuns: FC<WfSpec> = spec => {
   const searchParams = useSearchParams()
-  const router = useRouter()
   const { tenantId } = useWhoAmI()
   const status = (searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL') as
     | LHStatus
@@ -185,7 +146,10 @@ export const WfRuns: FC<WfSpec> = spec => {
 
   const startTime = useMemo(() => computeStartTimeWindow(window), [window])
 
-  const filterKey = useMemo(() => (variableFilter ? `${variableFilter.varDef.name}\0${variableFilter.value}` : ''), [variableFilter])
+  const filterKey = useMemo(
+    () => (variableFilter ? `${variableFilter.varDef.name}\0${variableFilter.value}` : ''),
+    [variableFilter]
+  )
 
   const onSort = useCallback((key: SortKey) => {
     setSort(prev => {
@@ -201,6 +165,10 @@ export const WfRuns: FC<WfSpec> = spec => {
 
   const variableFilters = useMemo(() => buildVariableFilters(variableFilter), [variableFilter])
 
+  const wfSpecName = spec.id?.name ?? ''
+  const wfSpecMajorVersion = spec.id?.majorVersion ?? 0
+  const wfSpecRevision = spec.id?.revision ?? 0
+
   const getKey: SWRInfiniteKeyLoader<PaginatedWfRunResponseList, WfRunsKey | null> = useCallback(
     (_pageIndex, previousPageData) => {
       if (previousPageData && !previousPageData.bookmarkAsString) return null
@@ -211,45 +179,34 @@ export const WfRuns: FC<WfSpec> = spec => {
         limit,
         startTime,
         previousPageData?.bookmarkAsString,
-        spec.id!.name,
-        spec.id!.majorVersion,
-        spec.id!.revision,
-        filterKey,
-      ] as WfRunsKey
-    },
-    [status, tenantId, limit, startTime, spec.id, filterKey]
-  )
-
-  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunResponseList>(
-    getKey,
-    async (key: WfRunsKey) => {
-      const [, wfStatus, tId, lim, stWin, bookmarkAsString, wfSpecName, wfSpecMajorVersion, wfSpecRevision] = key
-      return await searchWfRun({
         wfSpecName,
         wfSpecMajorVersion,
         wfSpecRevision,
-        variableFilters,
-        limit: lim,
-        status: wfStatus === 'ALL' ? undefined : wfStatus,
-        tenantId: tId,
-        bookmarkAsString,
-        ...stWin,
-      })
-    }
+        filterKey,
+      ] as WfRunsKey
+    },
+    [status, tenantId, limit, startTime, wfSpecName, wfSpecMajorVersion, wfSpecRevision, filterKey]
   )
+
+  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunResponseList>(getKey, async (key: WfRunsKey) => {
+    const [, wfStatus, tId, lim, stWin, bookmarkAsString, name, major, revision] = key
+    return await searchWfRun({
+      wfSpecName: name,
+      wfSpecMajorVersion: major,
+      wfSpecRevision: revision,
+      variableFilters,
+      limit: lim,
+      status: wfStatus === 'ALL' ? undefined : wfStatus,
+      tenantId: tId,
+      bookmarkAsString,
+      ...stWin,
+    })
+  })
 
   const rows = useMemo(() => (data ? data.flatMap(p => p.results) : []), [data])
   const sortedRows = useMemo(() => [...rows].sort((a, b) => compareRows(a, b, sort)), [rows, sort])
   const isPending = !data && !error
   const hasNextPage = !!(data && data[data.length - 1]?.bookmarkAsString)
-
-  const openWfRun = useCallback(
-    (wf: WfRun) => {
-      if (!wf.id) return
-      router.push(`/${tenantId}/wfRun/${wfRunIdToPath(wf.id)}`)
-    },
-    [router, tenantId]
-  )
 
   return (
     <div className="mb-4 flex min-h-0 flex-col">
@@ -278,7 +235,7 @@ export const WfRuns: FC<WfSpec> = spec => {
               No workflow runs for this WfSpec with the current filters{variableFilter ? ' and variable search' : ''}.
             </p>
           ) : (
-            <div className="rounded-md border">
+            <TableWrapper>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -287,7 +244,7 @@ export const WfRuns: FC<WfSpec> = spec => {
                       sortKey="id"
                       sort={sort}
                       onSort={onSort}
-                      className="min-w-[18rem] w-[20rem] max-w-[24rem]"
+                      className="w-[20rem] min-w-[18rem] max-w-[24rem]"
                     />
                     <TableHead className="min-w-[5rem]">Status</TableHead>
                     <SortableTh
@@ -297,15 +254,8 @@ export const WfRuns: FC<WfSpec> = spec => {
                       onSort={onSort}
                       className="min-w-[9rem]"
                     />
-                    <SortableTh
-                      label="Ended"
-                      sortKey="endTime"
-                      sort={sort}
-                      onSort={onSort}
-                      className="min-w-[9rem]"
-                    />
+                    <SortableTh label="Ended" sortKey="endTime" sort={sort} onSort={onSort} className="min-w-[9rem]" />
                     <TableHead className="w-[1%]">Duration</TableHead>
-                    <TableHead className="min-w-[6rem]">WfSpec</TableHead>
                     <TableHead className="min-w-[6rem]">Parent WfRun</TableHead>
                     <TableHead className="min-w-[12rem]">Entry variables (thread 0)</TableHead>
                   </TableRow>
@@ -315,29 +265,13 @@ export const WfRuns: FC<WfSpec> = spec => {
                     const w = row.wfRun
                     if (!w.id) return null
                     const path = `/wfRun/${wfRunIdToPath(w.id)}`
-                    const entrypointVars = (row.variables ?? []).filter(
-                      v => v.id?.threadRunNumber === 0 && v.value
-                    )
-                    const vtext = entrypointVariablesText(row.variables)
+                    const entrypointVars = (row.variables ?? []).filter(v => v.id?.threadRunNumber === 0 && v.value)
                     return (
-                      <TableRow
-                        key={w.id.id}
-                        role="link"
-                        tabIndex={0}
-                        className="cursor-pointer"
-                        onClick={() => openWfRun(w)}
-                        onKeyDown={e => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            openWfRun(w)
-                          }
-                        }}
-                      >
-                        <TableCell className="min-w-[18rem] w-[20rem] max-w-[24rem] overflow-hidden font-mono text-xs">
+                      <TableRow key={w.id.id} className="hover:bg-muted/50">
+                        <TableCell className="w-[20rem] min-w-[18rem] max-w-[24rem] overflow-hidden font-mono text-xs">
                           <LinkWithTenant
                             className="block min-w-0 truncate text-blue-600 hover:underline"
                             href={path}
-                            onClick={e => e.stopPropagation()}
                             title={w.id.id}
                           >
                             {w.id.id}
@@ -355,18 +289,15 @@ export const WfRuns: FC<WfSpec> = spec => {
                           </span>
                         </TableCell>
                         <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
-                          {w.startTime ? formatDate(new Date(w.startTime)) : '—'}
+                          {w.startTime ? formatDate(new Date(w.startTime)) : EMPTY}
                         </TableCell>
                         <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
-                          {w.endTime ? formatDate(new Date(w.endTime)) : '—'}
+                          {w.endTime ? formatDate(new Date(w.endTime)) : EMPTY}
                         </TableCell>
                         <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
-                          {formatDuration(w.startTime, w.endTime)}
+                          {formatRangeDuration(w.startTime, w.endTime)}
                         </TableCell>
-                        <TableCell className="min-w-0 text-sm" onClick={e => e.stopPropagation()}>
-                          <WfRunTableSpec id={w.wfSpecId} />
-                        </TableCell>
-                        <TableCell onClick={e => e.stopPropagation()}>
+                        <TableCell>
                           {w.id.parentWfRunId?.id ? (
                             <LinkWithTenant
                               className="text-sm text-blue-600 hover:underline"
@@ -375,23 +306,19 @@ export const WfRuns: FC<WfSpec> = spec => {
                               {w.id.parentWfRunId.id}
                             </LinkWithTenant>
                           ) : (
-                            <span className="text-muted-foreground">—</span>
+                            <span className="text-muted-foreground">{EMPTY}</span>
                           )}
                         </TableCell>
                         <TableCell className="max-w-lg align-top">
                           {entrypointVars.length === 0 ? (
-                            <span className="text-sm text-muted-foreground">—</span>
+                            <span className="text-sm text-muted-foreground">{EMPTY}</span>
                           ) : (
                             <div
                               className="flex min-w-0 flex-col gap-1.5"
-                              title={vtext === '—' ? undefined : vtext}
+                              title={entrypointVariablesText(entrypointVars)}
                             >
                               {entrypointVars.map(v => (
-                                <VariableValuePillRow
-                                  key={v.id?.name}
-                                  varName={v.id!.name!}
-                                  value={v.value!}
-                                />
+                                <VariableValuePillRow key={v.id?.name} varName={v.id!.name!} value={v.value!} />
                               ))}
                             </div>
                           )}
@@ -401,7 +328,7 @@ export const WfRuns: FC<WfSpec> = spec => {
                   })}
                 </TableBody>
               </Table>
-            </div>
+            </TableWrapper>
           )}
         </div>
       )}

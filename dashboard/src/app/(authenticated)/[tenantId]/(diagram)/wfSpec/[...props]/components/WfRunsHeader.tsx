@@ -10,26 +10,20 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { VariableDef, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, VariableDef, WfSpec } from 'littlehorse-client/proto'
 import { ClockIcon, XIcon } from 'lucide-react'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { LHStatus } from 'littlehorse-client/proto'
+import { VariableFilter } from './types'
 
 const searchableVarDefs = (spec: WfSpec): VariableDef[] => {
-  return Object.keys(spec.threadSpecs)
-    .flatMap(thread =>
-      spec.threadSpecs[thread].variableDefs
-        .filter(d => d.searchable)
-        .map(d => d.varDef)
-        .filter((v): v is VariableDef => v !== undefined)
-    )
-}
-
-type VariableFilter = {
-  varDef: VariableDef
-  value: string
+  return Object.keys(spec.threadSpecs).flatMap(thread =>
+    spec.threadSpecs[thread].variableDefs
+      .filter(d => d.searchable)
+      .map(d => d.varDef)
+      .filter((v): v is VariableDef => v !== undefined)
+  )
 }
 
 type Props = {
@@ -58,10 +52,13 @@ export const WfRunsHeader: FC<Props> = ({
   const [selectedName, setSelectedName] = useState(() => variableFilter?.varDef.name ?? variables[0]?.name ?? '')
   const [valueDraft, setValueDraft] = useState(variableFilter?.value ?? '')
 
+  // Keep the dialog draft synced with the source-of-truth filter so external clears reset it.
   useEffect(() => {
     if (variableFilter) {
       setSelectedName(variableFilter.varDef.name)
       setValueDraft(variableFilter.value)
+    } else {
+      setValueDraft('')
     }
   }, [variableFilter])
 
