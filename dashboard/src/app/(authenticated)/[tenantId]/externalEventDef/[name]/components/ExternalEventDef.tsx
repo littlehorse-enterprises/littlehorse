@@ -2,7 +2,7 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
 import { wfRunIdToPath, getVariableValue, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import {
   AlertDialog,
@@ -46,12 +46,12 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const [isClaimed, setIsClaimed] = useState<boolean>(true)
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('eedef-external-events')
 
   // Correlated Events state
   const [correlatedCreatedAfter, setCorrelatedCreatedAfter] = useState('')
   const [correlatedCreatedBefore, setCorrelatedCreatedBefore] = useState('')
-  const [correlatedLimit, setCorrelatedLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [correlatedLimit, setCorrelatedLimit] = usePersistedSearchLimit('eedef-correlated-events')
   const [hasExternalEvents, setHasExternalEvents] = useState<boolean>(false)
   const [isDeleting, setIsDeleting] = useState(false)
 

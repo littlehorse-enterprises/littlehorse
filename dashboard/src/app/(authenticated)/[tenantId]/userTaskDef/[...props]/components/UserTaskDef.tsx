@@ -8,7 +8,7 @@ import {
 } from '@/app/(authenticated)/[tenantId]/userTaskDef/[...props]/actions/searchUserTaskRun'
 
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
 import { localDateTimeToUTCIsoString, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -40,7 +40,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const tenantId = useParams().tenantId as string
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('global')
   const [userIdToSearchFor] = useDebounce(userId, DEBOUNCE_DELAY)
   const [userGroupToSearchFor] = useDebounce(userGroup, DEBOUNCE_DELAY)
 

@@ -2,7 +2,8 @@
 
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
-import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
+import { TIME_RANGES, TimeRange } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
 import { getStatus, wfRunIdToPath } from '@/app/utils'
 import { computeStartTimeWindow, StartTimeWindow } from '@/app/utils/dateTime'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -25,7 +26,7 @@ export const ChildWorkflows: FC<{ parentWfRunId: WfRunId; spec: WfSpec }> = ({ p
   const status = (searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL') as
     | LHStatus
     | 'ALL'
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('global')
   const [window, setWindow] = useState<TimeRange>(TIME_RANGES[0])
 
   const startTime = useMemo(() => computeStartTimeWindow(window), [window])

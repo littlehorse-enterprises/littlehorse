@@ -1,7 +1,7 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { wfRunIdToPath } from '@/app/utils/wfRun'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
 import { getTypedVariableValue, getVariableDefType } from '@/app/utils/variables'
 import { Button } from '@/components/ui/button'
 import {
@@ -38,7 +38,7 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
   const [variable, setVariable] = useState(variables[0])
   const [variableValue, setVariableValue] = useState('')
   const [variableValueDebounced] = useDebounce(variableValue, 250)
-  const [limit, setLimit] = useState(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('global')
   const tenantId = useParams().tenantId as string
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({

@@ -3,7 +3,7 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { PaginatedWfSpecList, searchWfSpecs } from '@/app/actions/getWfSpecsByTaskDef'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
 import { localDateTimeToUTCIsoString, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -30,8 +30,8 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const tenantId = useParams().tenantId as string
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
-  const [wfSpecLimit, setWfSpecLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('taskdef-task-runs')
+  const [wfSpecLimit, setWfSpecLimit] = usePersistedSearchLimit('taskdef-wf-specs')
   const taskDefName = spec.id?.name || ''
 
   const {
@@ -39,7 +39,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
     hasNextPage: wfSpecsHasNextPage,
     fetchNextPage: wfSpecsFetchNextPage,
   } = useInfiniteQuery({
-    queryKey: ['wfSpecs', tenantId, limit, taskDefName],
+    queryKey: ['wfSpecs', tenantId, wfSpecLimit, taskDefName],
     initialPageParam: undefined,
     getNextPageParam: (lastPage: PaginatedWfSpecList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
