@@ -42,6 +42,8 @@ export enum VariableMutationType {
   AND = "AND",
   /** OR - Logical OR operation. Combines two boolean values; result is true if either LHS or RHS is true. */
   OR = "OR",
+  /** POW - Raise the LHS to the power of the RHS (both must be INT or DOUBLE) */
+  POW = "POW",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -80,6 +82,9 @@ export function variableMutationTypeFromJSON(object: any): VariableMutationType 
     case 10:
     case "OR":
       return VariableMutationType.OR;
+    case 11:
+    case "POW":
+      return VariableMutationType.POW;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -111,6 +116,8 @@ export function variableMutationTypeToJSON(object: VariableMutationType): string
       return "AND";
     case VariableMutationType.OR:
       return "OR";
+    case VariableMutationType.POW:
+      return "POW";
     case VariableMutationType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -141,6 +148,8 @@ export function variableMutationTypeToNumber(object: VariableMutationType): numb
       return 9;
     case VariableMutationType.OR:
       return 10;
+    case VariableMutationType.POW:
+      return 11;
     case VariableMutationType.UNRECOGNIZED:
     default:
       return -1;

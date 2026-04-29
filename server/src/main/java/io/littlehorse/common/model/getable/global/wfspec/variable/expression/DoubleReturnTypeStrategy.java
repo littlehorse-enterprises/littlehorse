@@ -19,7 +19,7 @@ public class DoubleReturnTypeStrategy implements LHTypeStrategy {
         if (other.isNumeric(manager)) {
             return Optional.of(new TypeDefinitionModel(VariableType.DOUBLE));
         }
-        throw new InvalidExpressionException("Cannot add non-numeric type " + other.toString() + " to an DOUBLE");
+        throw new InvalidExpressionException("Cannot add non-numeric type " + other.toString() + " to a DOUBLE");
     }
 
     @Override
@@ -28,7 +28,7 @@ public class DoubleReturnTypeStrategy implements LHTypeStrategy {
         if (other.isNumeric(manager)) {
             return Optional.of(new TypeDefinitionModel(VariableType.DOUBLE));
         }
-        throw new InvalidExpressionException("Cannot subtract non-numeric type " + other.toString() + " to an DOUBLE");
+        throw new InvalidExpressionException("Cannot subtract non-numeric type " + other.toString() + " to a DOUBLE");
     }
 
     @Override
@@ -37,7 +37,7 @@ public class DoubleReturnTypeStrategy implements LHTypeStrategy {
         if (other.isNumeric(manager)) {
             return Optional.of(new TypeDefinitionModel(VariableType.DOUBLE));
         }
-        throw new InvalidExpressionException("Cannot multiply non-numeric type " + other.toString() + " to an DOUBLE");
+        throw new InvalidExpressionException("Cannot multiply non-numeric type " + other.toString() + " to a DOUBLE");
     }
 
     @Override
@@ -46,31 +46,41 @@ public class DoubleReturnTypeStrategy implements LHTypeStrategy {
         if (other.isNumeric(manager)) {
             return Optional.of(new TypeDefinitionModel(VariableType.DOUBLE));
         }
-        throw new InvalidExpressionException("Cannot divide non-numeric type " + other.toString() + " to an DOUBLE");
+        throw new InvalidExpressionException("Cannot divide non-numeric type " + other.toString() + " to a DOUBLE");
+    }
+
+    @Override
+    public Optional<TypeDefinitionModel> pow(ReadOnlyMetadataManager manager, LHTypeStrategy other)
+            throws InvalidExpressionException {
+        if (other.isNumeric(manager)) {
+            return Optional.of(new TypeDefinitionModel(VariableType.DOUBLE));
+        }
+        throw new InvalidExpressionException(
+                "Cannot exponentiate non-numeric type " + other.toString() + " to a DOUBLE");
     }
 
     @Override
     public Optional<TypeDefinitionModel> removeIfPresent(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
-        throw new InvalidExpressionException("Cannot call REMOVE_IF_PRESENT on an DOUBLE");
+        throw new InvalidExpressionException("Cannot call REMOVE_IF_PRESENT on a DOUBLE");
     }
 
     @Override
     public Optional<TypeDefinitionModel> removeKey(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
-        throw new InvalidExpressionException("Cannot call REMOVE_KEY on an DOUBLE");
+        throw new InvalidExpressionException("Cannot call REMOVE_KEY on a DOUBLE");
     }
 
     @Override
     public Optional<TypeDefinitionModel> removeIndex(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
-        throw new InvalidExpressionException("Cannot call REMOVE_INDEX on an DOUBLE");
+        throw new InvalidExpressionException("Cannot call REMOVE_INDEX on a DOUBLE");
     }
 
     @Override
     public Optional<TypeDefinitionModel> extend(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
-        throw new InvalidExpressionException("Cannot call EXTEND on an DOUBLE");
+        throw new InvalidExpressionException("Cannot call EXTEND on a DOUBLE");
     }
 
     @Override

@@ -103,6 +103,14 @@ public enum VariableMutationType
    * <code>OR = 10;</code>
    */
   OR(10),
+  /**
+   * <pre>
+   * Raise the LHS to the power of the RHS (both must be INT or DOUBLE)
+   * </pre>
+   *
+   * <code>POW = 11;</code>
+   */
+  POW(11),
   UNRECOGNIZED(-1),
   ;
 
@@ -203,6 +211,14 @@ public enum VariableMutationType
    * <code>OR = 10;</code>
    */
   public static final int OR_VALUE = 10;
+  /**
+   * <pre>
+   * Raise the LHS to the power of the RHS (both must be INT or DOUBLE)
+   * </pre>
+   *
+   * <code>POW = 11;</code>
+   */
+  public static final int POW_VALUE = 11;
 
 
   public final int getNumber() {
@@ -240,6 +256,7 @@ public enum VariableMutationType
       case 8: return REMOVE_KEY;
       case 9: return AND;
       case 10: return OR;
+      case 11: return POW;
       default: return null;
     }
   }

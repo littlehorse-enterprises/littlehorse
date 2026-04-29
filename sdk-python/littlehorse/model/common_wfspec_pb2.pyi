@@ -24,6 +24,7 @@ class VariableMutationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     REMOVE_KEY: _ClassVar[VariableMutationType]
     AND: _ClassVar[VariableMutationType]
     OR: _ClassVar[VariableMutationType]
+    POW: _ClassVar[VariableMutationType]
 ASSIGN: VariableMutationType
 ADD: VariableMutationType
 EXTEND: VariableMutationType
@@ -35,6 +36,7 @@ REMOVE_INDEX: VariableMutationType
 REMOVE_KEY: VariableMutationType
 AND: VariableMutationType
 OR: VariableMutationType
+POW: VariableMutationType
 
 class VariableAssignment(_message.Message):
     __slots__ = ("json_path", "lh_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "struct_builder", "size_of", "target_type")

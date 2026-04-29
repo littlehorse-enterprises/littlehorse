@@ -656,6 +656,16 @@ public interface WorkflowThread {
 
     /**
      * Returns an expression that can be passed into a variable assignment/mutation or a TaskRun. The
+     * expression is given by taking the modulus of the left hand by the right hand. This method does not result
+     * in any modifications being made to a variable; it only returns a value calculated inline.
+     * @param base is the left hand side of the expression, which is used as the base for the exponentiation.
+     * @param exponent is the right hand side of the expression, which is used as the exponent for the base.
+     * @return an LHExpression representing the result of the exponentiation.
+     */
+    LHExpression pow(Serializable base, Serializable exponent);
+
+    /**
+     * Returns an expression that can be passed into a variable assignment/mutation or a TaskRun. The
      * expression is given by subtracting the right hand from the left hand. This method does not result
      * in any modifications being made to a variable; it only returns a value calculated inline.
      * @param lhs is the left hand side of the expression.

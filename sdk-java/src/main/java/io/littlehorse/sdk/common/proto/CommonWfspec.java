@@ -243,14 +243,14 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
       "\022\023\n\013is_nullable\030\003 \001(\010B\020\n\016_default_value\"" +
       "q\n\006LHPath\022*\n\004path\030\001 \003(\0132\034.littlehorse.LH" +
       "Path.Selector\032;\n\010Selector\022\r\n\003key\030\001 \001(\tH\000" +
-      "\022\017\n\005index\030\002 \001(\005H\000B\017\n\rselector_type*\251\001\n\024V" +
+      "\022\017\n\005index\030\002 \001(\005H\000B\017\n\rselector_type*\262\001\n\024V" +
       "ariableMutationType\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001" +
       "\022\n\n\006EXTEND\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004" +
       "\022\n\n\006DIVIDE\020\005\022\025\n\021REMOVE_IF_PRESENT\020\006\022\020\n\014R" +
       "EMOVE_INDEX\020\007\022\016\n\nREMOVE_KEY\020\010\022\007\n\003AND\020\t\022\006" +
-      "\n\002OR\020\nBM\n\037io.littlehorse.sdk.common.prot" +
-      "oP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common." +
-      "Protob\006proto3"
+      "\n\002OR\020\n\022\007\n\003POW\020\013BM\n\037io.littlehorse.sdk.co" +
+      "mmon.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sd" +
+      "k.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

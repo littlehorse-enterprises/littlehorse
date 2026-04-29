@@ -37,6 +37,12 @@ public class BoolReturnTypeStrategy implements LHTypeStrategy {
     }
 
     @Override
+    public Optional<TypeDefinitionModel> pow(ReadOnlyMetadataManager manager, LHTypeStrategy other)
+            throws InvalidExpressionException {
+        throw new InvalidExpressionException("Cannot exponentiate a BOOL");
+    }
+
+    @Override
     public Optional<TypeDefinitionModel> removeIfPresent(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot call REMOVE_IF_PRESENT on a BOOL");
