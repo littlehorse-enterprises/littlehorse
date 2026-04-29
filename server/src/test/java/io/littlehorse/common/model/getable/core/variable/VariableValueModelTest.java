@@ -348,6 +348,8 @@ public class VariableValueModelTest {
         assertThat(typeDef.getInlineArrayDef().getArrayType().getInlineArrayDef()).isNotNull();
         assertThat(typeDef.getInlineArrayDef().getArrayType().getInlineArrayDef().getArrayType().getPrimitiveType())
             .isEqualTo(VariableType.INT);
+    }
+    
     void shouldPowIntByInt() throws LHVarSubError {
         VariableValueModel lhs = new VariableValueModel(2L);
         VariableValueModel rhs = new VariableValueModel(3L);
