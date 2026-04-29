@@ -276,7 +276,8 @@ public class VariableValueModelTest {
         TypeDefinitionModel typeDef = val.getTypeDefinition();
 
         assertThat(typeDef.getInlineArrayDef()).isNotNull();
-        assertThat(typeDef.getInlineArrayDef().getArrayType().getPrimitiveType()).isEqualTo(VariableType.STR);
+        assertThat(typeDef.getInlineArrayDef().getArrayType().getPrimitiveType())
+                .isEqualTo(VariableType.STR);
     }
 
     @Test
@@ -301,7 +302,8 @@ public class VariableValueModelTest {
         TypeDefinitionModel typeDef = val.getTypeDefinition();
 
         assertThat(typeDef.getInlineArrayDef()).isNotNull();
-        assertThat(typeDef.getInlineArrayDef().getArrayType().getPrimitiveType()).isEqualTo(VariableType.INT);
+        assertThat(typeDef.getInlineArrayDef().getArrayType().getPrimitiveType())
+                .isEqualTo(VariableType.INT);
     }
 
     @Test
@@ -314,7 +316,8 @@ public class VariableValueModelTest {
 
         TypeDefinitionModel typeDef = val.getTypeDefinition();
 
-        assertThat(typeDef.getInlineArrayDef().getArrayType().getPrimitiveType()).isEqualTo(VariableType.DOUBLE);
+        assertThat(typeDef.getInlineArrayDef().getArrayType().getPrimitiveType())
+                .isEqualTo(VariableType.DOUBLE);
     }
 
     @Test
@@ -345,11 +348,16 @@ public class VariableValueModelTest {
         TypeDefinitionModel typeDef = val.getTypeDefinition();
 
         assertThat(typeDef.getInlineArrayDef()).isNotNull();
-        assertThat(typeDef.getInlineArrayDef().getArrayType().getInlineArrayDef()).isNotNull();
-        assertThat(typeDef.getInlineArrayDef().getArrayType().getInlineArrayDef().getArrayType().getPrimitiveType())
-            .isEqualTo(VariableType.INT);
+        assertThat(typeDef.getInlineArrayDef().getArrayType().getInlineArrayDef())
+                .isNotNull();
+        assertThat(typeDef.getInlineArrayDef()
+                        .getArrayType()
+                        .getInlineArrayDef()
+                        .getArrayType()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.INT);
     }
-    
+
     void shouldPowIntByInt() throws LHVarSubError {
         VariableValueModel lhs = new VariableValueModel(2L);
         VariableValueModel rhs = new VariableValueModel(3L);
