@@ -53,7 +53,10 @@ public class IntReturnTypeStrategy implements LHTypeStrategy {
     public Optional<TypeDefinitionModel> pow(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         if (other.isNumeric(manager)) {
-            return Optional.of(new TypeDefinitionModel(VariableType.INT));
+            if (other.getIdentity().getPrimitiveType() == VariableType.INT) {
+                return Optional.of(new TypeDefinitionModel(VariableType.INT));
+            }
+            return Optional.of(new TypeDefinitionModel(VariableType.DOUBLE));
         }
         throw new InvalidExpressionException("Cannot exponentiate non-numeric type " + other.toString() + " to an INT");
     }
