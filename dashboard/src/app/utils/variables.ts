@@ -335,6 +335,8 @@ const getExpressionSymbol = (expression: VariableMutationType): string => {
       return '-'
     case VariableMutationType.DIVIDE:
       return '/'
+    case VariableMutationType.POW:
+      return '**'
     case VariableMutationType.MULTIPLY:
       return '*'
     case VariableMutationType.EXTEND:

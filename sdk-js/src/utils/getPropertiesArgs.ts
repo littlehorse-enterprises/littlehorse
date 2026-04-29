@@ -4,6 +4,7 @@ export type ConfigArgs = {
   apiHost: string
   apiPort: string
   protocol: string
+  grpcResourceExhaustedRetry: string
   tenantId: string
   caCert: string
   clientCert: string
@@ -18,6 +19,7 @@ const argsMapping: Mapping = {
   apiHost: 'LHC_API_HOST',
   apiPort: 'LHC_API_PORT',
   protocol: 'LHC_API_PROTOCOL',
+  grpcResourceExhaustedRetry: 'LHC_GRPC_RESOURCE_EXHAUSTED_RETRY',
   tenantId: 'LHC_TENANT_ID',
   caCert: 'LHC_CA_CERT',
   clientCert: 'LHC_CLIENT_CERT',

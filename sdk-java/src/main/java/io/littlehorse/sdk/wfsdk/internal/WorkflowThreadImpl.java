@@ -476,6 +476,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
+    public LHExpression pow(Serializable base, Serializable exponent) {
+        return new LHExpressionImpl(base, VariableMutationType.POW, exponent);
+    }
+
+    @Override
     public LHExpression subtract(Serializable lhs, Serializable rhs) {
         return new LHExpressionImpl(lhs, VariableMutationType.SUBTRACT, rhs);
     }

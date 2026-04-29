@@ -80,6 +80,7 @@ const (
 	LittleHorse_SearchWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/SearchWorkflowEventDef"
 	LittleHorse_SearchTenant_FullMethodName               = "/littlehorse.LittleHorse/SearchTenant"
 	LittleHorse_SearchPrincipal_FullMethodName            = "/littlehorse.LittleHorse/SearchPrincipal"
+	LittleHorse_SearchQuota_FullMethodName                = "/littlehorse.LittleHorse/SearchQuota"
 	LittleHorse_SearchStructDef_FullMethodName            = "/littlehorse.LittleHorse/SearchStructDef"
 	LittleHorse_GetInactiveThreadRun_FullMethodName       = "/littlehorse.LittleHorse/GetInactiveThreadRun"
 	LittleHorse_RegisterTaskWorker_FullMethodName         = "/littlehorse.LittleHorse/RegisterTaskWorker"
@@ -99,6 +100,7 @@ const (
 	LittleHorse_DeleteCorrelatedEvent_FullMethodName      = "/littlehorse.LittleHorse/DeleteCorrelatedEvent"
 	LittleHorse_DeleteWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/DeleteWorkflowEventDef"
 	LittleHorse_DeletePrincipal_FullMethodName            = "/littlehorse.LittleHorse/DeletePrincipal"
+	LittleHorse_DeleteQuota_FullMethodName                = "/littlehorse.LittleHorse/DeleteQuota"
 	LittleHorse_DeleteScheduledWfRun_FullMethodName       = "/littlehorse.LittleHorse/DeleteScheduledWfRun"
 	LittleHorse_GetTaskDefMetricsWindow_FullMethodName    = "/littlehorse.LittleHorse/GetTaskDefMetricsWindow"
 	LittleHorse_GetWfSpecMetricsWindow_FullMethodName     = "/littlehorse.LittleHorse/GetWfSpecMetricsWindow"
@@ -108,6 +110,8 @@ const (
 	LittleHorse_SearchWfMetricWindow_FullMethodName       = "/littlehorse.LittleHorse/SearchWfMetricWindow"
 	LittleHorse_PutTenant_FullMethodName                  = "/littlehorse.LittleHorse/PutTenant"
 	LittleHorse_GetTenant_FullMethodName                  = "/littlehorse.LittleHorse/GetTenant"
+	LittleHorse_PutQuota_FullMethodName                   = "/littlehorse.LittleHorse/PutQuota"
+	LittleHorse_GetQuota_FullMethodName                   = "/littlehorse.LittleHorse/GetQuota"
 	LittleHorse_PutPrincipal_FullMethodName               = "/littlehorse.LittleHorse/PutPrincipal"
 	LittleHorse_GetPrincipal_FullMethodName               = "/littlehorse.LittleHorse/GetPrincipal"
 	LittleHorse_Whoami_FullMethodName                     = "/littlehorse.LittleHorse/Whoami"
@@ -283,6 +287,8 @@ type LittleHorseClient interface {
 	SearchTenant(ctx context.Context, in *SearchTenantRequest, opts ...grpc.CallOption) (*TenantIdList, error)
 	// Search for Principals
 	SearchPrincipal(ctx context.Context, in *SearchPrincipalRequest, opts ...grpc.CallOption) (*PrincipalIdList, error)
+	// Search for Quotas.
+	SearchQuota(ctx context.Context, in *SearchQuotaRequest, opts ...grpc.CallOption) (*QuotaIdList, error)
 	// Search for StructDef's
 	SearchStructDef(ctx context.Context, in *SearchStructDefRequest, opts ...grpc.CallOption) (*StructDefIdList, error)
 	// Get an InactiveThreadRun
@@ -346,6 +352,8 @@ type LittleHorseClient interface {
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
 	// as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
 	DeletePrincipal(ctx context.Context, in *DeletePrincipalRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Deletes a `Quota`.
+	DeleteQuota(ctx context.Context, in *DeleteQuotaRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a scheduled run and prevents any further associated WfRun from being executed.
 	DeleteScheduledWfRun(ctx context.Context, in *DeleteScheduledWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
@@ -364,6 +372,10 @@ type LittleHorseClient interface {
 	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error)
 	// Gets a Tenant from the LH Server.
 	GetTenant(ctx context.Context, in *TenantId, opts ...grpc.CallOption) (*Tenant, error)
+	// Creates or updates a Quota.
+	PutQuota(ctx context.Context, in *PutQuotaRequest, opts ...grpc.CallOption) (*Quota, error)
+	// Gets a Quota.
+	GetQuota(ctx context.Context, in *QuotaId, opts ...grpc.CallOption) (*Quota, error)
 	// Creates a Principal.
 	PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*Principal, error)
 	// Gets a Principal.
@@ -922,6 +934,15 @@ func (c *littleHorseClient) SearchPrincipal(ctx context.Context, in *SearchPrinc
 	return out, nil
 }
 
+func (c *littleHorseClient) SearchQuota(ctx context.Context, in *SearchQuotaRequest, opts ...grpc.CallOption) (*QuotaIdList, error) {
+	out := new(QuotaIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchQuota_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) SearchStructDef(ctx context.Context, in *SearchStructDefRequest, opts ...grpc.CallOption) (*StructDefIdList, error) {
 	out := new(StructDefIdList)
 	err := c.cc.Invoke(ctx, LittleHorse_SearchStructDef_FullMethodName, in, out, opts...)
@@ -1115,6 +1136,15 @@ func (c *littleHorseClient) DeletePrincipal(ctx context.Context, in *DeletePrinc
 	return out, nil
 }
 
+func (c *littleHorseClient) DeleteQuota(ctx context.Context, in *DeleteQuotaRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, LittleHorse_DeleteQuota_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) DeleteScheduledWfRun(ctx context.Context, in *DeleteScheduledWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LittleHorse_DeleteScheduledWfRun_FullMethodName, in, out, opts...)
@@ -1190,6 +1220,24 @@ func (c *littleHorseClient) PutTenant(ctx context.Context, in *PutTenantRequest,
 func (c *littleHorseClient) GetTenant(ctx context.Context, in *TenantId, opts ...grpc.CallOption) (*Tenant, error) {
 	out := new(Tenant)
 	err := c.cc.Invoke(ctx, LittleHorse_GetTenant_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) PutQuota(ctx context.Context, in *PutQuotaRequest, opts ...grpc.CallOption) (*Quota, error) {
+	out := new(Quota)
+	err := c.cc.Invoke(ctx, LittleHorse_PutQuota_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetQuota(ctx context.Context, in *QuotaId, opts ...grpc.CallOption) (*Quota, error) {
+	out := new(Quota)
+	err := c.cc.Invoke(ctx, LittleHorse_GetQuota_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1401,6 +1449,8 @@ type LittleHorseServer interface {
 	SearchTenant(context.Context, *SearchTenantRequest) (*TenantIdList, error)
 	// Search for Principals
 	SearchPrincipal(context.Context, *SearchPrincipalRequest) (*PrincipalIdList, error)
+	// Search for Quotas.
+	SearchQuota(context.Context, *SearchQuotaRequest) (*QuotaIdList, error)
 	// Search for StructDef's
 	SearchStructDef(context.Context, *SearchStructDefRequest) (*StructDefIdList, error)
 	// Get an InactiveThreadRun
@@ -1464,6 +1514,8 @@ type LittleHorseServer interface {
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
 	// as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
 	DeletePrincipal(context.Context, *DeletePrincipalRequest) (*emptypb.Empty, error)
+	// Deletes a `Quota`.
+	DeleteQuota(context.Context, *DeleteQuotaRequest) (*emptypb.Empty, error)
 	// Deletes a scheduled run and prevents any further associated WfRun from being executed.
 	DeleteScheduledWfRun(context.Context, *DeleteScheduledWfRunRequest) (*emptypb.Empty, error)
 	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
@@ -1482,6 +1534,10 @@ type LittleHorseServer interface {
 	PutTenant(context.Context, *PutTenantRequest) (*Tenant, error)
 	// Gets a Tenant from the LH Server.
 	GetTenant(context.Context, *TenantId) (*Tenant, error)
+	// Creates or updates a Quota.
+	PutQuota(context.Context, *PutQuotaRequest) (*Quota, error)
+	// Gets a Quota.
+	GetQuota(context.Context, *QuotaId) (*Quota, error)
 	// Creates a Principal.
 	PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error)
 	// Gets a Principal.
@@ -1677,6 +1733,9 @@ func (UnimplementedLittleHorseServer) SearchTenant(context.Context, *SearchTenan
 func (UnimplementedLittleHorseServer) SearchPrincipal(context.Context, *SearchPrincipalRequest) (*PrincipalIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchPrincipal not implemented")
 }
+func (UnimplementedLittleHorseServer) SearchQuota(context.Context, *SearchQuotaRequest) (*QuotaIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchQuota not implemented")
+}
 func (UnimplementedLittleHorseServer) SearchStructDef(context.Context, *SearchStructDefRequest) (*StructDefIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchStructDef not implemented")
 }
@@ -1734,6 +1793,9 @@ func (UnimplementedLittleHorseServer) DeleteWorkflowEventDef(context.Context, *D
 func (UnimplementedLittleHorseServer) DeletePrincipal(context.Context, *DeletePrincipalRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeletePrincipal not implemented")
 }
+func (UnimplementedLittleHorseServer) DeleteQuota(context.Context, *DeleteQuotaRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteQuota not implemented")
+}
 func (UnimplementedLittleHorseServer) DeleteScheduledWfRun(context.Context, *DeleteScheduledWfRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteScheduledWfRun not implemented")
 }
@@ -1760,6 +1822,12 @@ func (UnimplementedLittleHorseServer) PutTenant(context.Context, *PutTenantReque
 }
 func (UnimplementedLittleHorseServer) GetTenant(context.Context, *TenantId) (*Tenant, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTenant not implemented")
+}
+func (UnimplementedLittleHorseServer) PutQuota(context.Context, *PutQuotaRequest) (*Quota, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutQuota not implemented")
+}
+func (UnimplementedLittleHorseServer) GetQuota(context.Context, *QuotaId) (*Quota, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetQuota not implemented")
 }
 func (UnimplementedLittleHorseServer) PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutPrincipal not implemented")
@@ -2866,6 +2934,24 @@ func _LittleHorse_SearchPrincipal_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_SearchQuota_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchQuotaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchQuota(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchQuota_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchQuota(ctx, req.(*SearchQuotaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_SearchStructDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SearchStructDefRequest)
 	if err := dec(in); err != nil {
@@ -3216,6 +3302,24 @@ func _LittleHorse_DeletePrincipal_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_DeleteQuota_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteQuotaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).DeleteQuota(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_DeleteQuota_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).DeleteQuota(ctx, req.(*DeleteQuotaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_DeleteScheduledWfRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteScheduledWfRunRequest)
 	if err := dec(in); err != nil {
@@ -3374,6 +3478,42 @@ func _LittleHorse_GetTenant_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).GetTenant(ctx, req.(*TenantId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_PutQuota_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutQuotaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutQuota(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutQuota_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutQuota(ctx, req.(*PutQuotaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetQuota_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuotaId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetQuota(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetQuota_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetQuota(ctx, req.(*QuotaId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3698,6 +3838,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_SearchPrincipal_Handler,
 		},
 		{
+			MethodName: "SearchQuota",
+			Handler:    _LittleHorse_SearchQuota_Handler,
+		},
+		{
 			MethodName: "SearchStructDef",
 			Handler:    _LittleHorse_SearchStructDef_Handler,
 		},
@@ -3770,6 +3914,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_DeletePrincipal_Handler,
 		},
 		{
+			MethodName: "DeleteQuota",
+			Handler:    _LittleHorse_DeleteQuota_Handler,
+		},
+		{
 			MethodName: "DeleteScheduledWfRun",
 			Handler:    _LittleHorse_DeleteScheduledWfRun_Handler,
 		},
@@ -3804,6 +3952,14 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTenant",
 			Handler:    _LittleHorse_GetTenant_Handler,
+		},
+		{
+			MethodName: "PutQuota",
+			Handler:    _LittleHorse_PutQuota_Handler,
+		},
+		{
+			MethodName: "GetQuota",
+			Handler:    _LittleHorse_GetQuota_Handler,
 		},
 		{
 			MethodName: "PutPrincipal",
