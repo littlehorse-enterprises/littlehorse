@@ -8,6 +8,7 @@ import {
 } from 'littlehorse-client/proto'
 import {
   formatTypeDefinition,
+  getPrimitiveFormDefaultValue,
   getTypedVariableValue,
   getVariable,
   getVariableCaseFromTypeDef,
@@ -370,6 +371,41 @@ describe('getTypedVariableValue', () => {
     expect(variableValue).toStrictEqual({
       value: { $case: 'utcTimestamp', value: '2024-06-15T14:30:45.123456789Z' },
     })
+  })
+})
+
+describe('getPrimitiveFormDefaultValue', () => {
+  it('returns undefined when no default is provided', () => {
+    expect(getPrimitiveFormDefaultValue(undefined)).toBeUndefined()
+    expect(getPrimitiveFormDefaultValue({} as VariableValue)).toBeUndefined()
+  })
+
+  it('returns the str value for STR defaults', () => {
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'str', value: 'hello' } })).toEqual('hello')
+  })
+
+  it('preserves empty string defaults', () => {
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'str', value: '' } })).toEqual('')
+  })
+
+  it('returns numeric values for INT/DOUBLE defaults', () => {
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'int', value: '42' as any } })).toEqual('42')
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'double', value: 1.5 } })).toEqual(1.5)
+  })
+
+  it('serializes BOOL defaults as form-friendly strings', () => {
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'bool', value: true } })).toEqual('true')
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'bool', value: false } })).toEqual('false')
+  })
+
+  it('returns the JSON string for JSON_OBJ/JSON_ARR defaults', () => {
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'jsonObj', value: '{"a":1}' } })).toEqual('{"a":1}')
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'jsonArr', value: '[1,2]' } })).toEqual('[1,2]')
+  })
+
+  it('returns undefined for non-primitive cases', () => {
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'bytes', value: Buffer.from('') } as any })).toBeUndefined()
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'struct', value: {} as any } })).toBeUndefined()
   })
 })
 

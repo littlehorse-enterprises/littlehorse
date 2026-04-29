@@ -17,7 +17,7 @@ import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
 import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
 import { DOT_REPLACEMENT_PATTERN, StructFormContextValue, StructFormProvider } from '../Forms/context/StructFormContext'
-import { FormValues, WfRunForm } from '../Forms/WfRunForm'
+import { FormValues, WfRunForm, WfRunFormSubmitMeta } from '../Forms/WfRunForm'
 
 export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
   const { showModal, setShowModal } = useModal()
@@ -50,7 +50,7 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
   )
 
   const formatVariablesPayload = useCallback(
-    (values: FormValues) => {
+    (values: FormValues, dirtyFields: WfRunFormSubmitMeta['dirtyFields']) => {
       const { structValues: _ignoredStructValues, ...primitiveValues } = values as FormValues & {
         structValues?: Record<string, unknown>
       }
@@ -66,6 +66,12 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
 
       const transformedObj = Object.keys(primitiveValues).reduce((acc: RunWfRequest['variables'], key) => {
         if (primitiveValues[key] === undefined) return acc
+
+        // Only send primitive variables the user actually changed away from
+        // the WfSpec default. Otherwise the server applies its own default and
+        // we avoid overwriting it (see issue #2205).
+        if (!dirtyFields[key]) return acc
+
         const transformedKey = key.split(DOT_REPLACEMENT_PATTERN).join('.')
 
         if (
@@ -87,13 +93,13 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
     [matchVariableType, wfSpecVariables]
   )
 
-  const handleFormSubmit = async (values: FormValues) => {
+  const handleFormSubmit = async (values: FormValues, meta: WfRunFormSubmitMeta) => {
     const customWfRunId = values.customWfRunId as string
     const parentWfRunId = values.parentWfRunId as string
     delete values.customWfRunId
     delete values.parentWfRunId
     if (!wfSpec.id || (wfSpec.parentWfSpec && !parentWfRunId)) return
-    const variables = formatVariablesPayload(values)
+    const variables = formatVariablesPayload(values, meta.dirtyFields)
 
     try {
       const wfRun = await runWfSpec({
