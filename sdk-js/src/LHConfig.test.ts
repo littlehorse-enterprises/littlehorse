@@ -88,4 +88,18 @@ describe('LHConfig', () => {
     expect(readFileSync).toHaveBeenCalledWith('/path/to/client.crt')
     expect(ChannelCredentials.createSsl).toHaveBeenCalledWith(undefined)
   })
+
+  it('enables resource exhausted retry by default', () => {
+    const config = LHConfig.from({})
+
+    expect(config.getResourceExhaustedRetryEnabled()).toBe(true)
+  })
+
+  it('allows disabling resource exhausted retry', () => {
+    const config = LHConfig.from({
+      grpcResourceExhaustedRetry: 'false',
+    })
+
+    expect(config.getResourceExhaustedRetryEnabled()).toBe(false)
+  })
 })

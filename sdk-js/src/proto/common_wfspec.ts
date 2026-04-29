@@ -8,7 +8,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
-import { TaskDefId } from "./object_id";
+import { StructDefId, TaskDefId } from "./object_id";
 import {
   Comparator,
   comparatorFromJSON,
@@ -42,6 +42,8 @@ export enum VariableMutationType {
   AND = "AND",
   /** OR - Logical OR operation. Combines two boolean values; result is true if either LHS or RHS is true. */
   OR = "OR",
+  /** POW - Raise the LHS to the power of the RHS (both must be INT or DOUBLE) */
+  POW = "POW",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -80,6 +82,9 @@ export function variableMutationTypeFromJSON(object: any): VariableMutationType 
     case 10:
     case "OR":
       return VariableMutationType.OR;
+    case 11:
+    case "POW":
+      return VariableMutationType.POW;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -111,6 +116,8 @@ export function variableMutationTypeToJSON(object: VariableMutationType): string
       return "AND";
     case VariableMutationType.OR:
       return "OR";
+    case VariableMutationType.POW:
+      return "POW";
     case VariableMutationType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -141,6 +148,8 @@ export function variableMutationTypeToNumber(object: VariableMutationType): numb
       return 9;
     case VariableMutationType.OR:
       return 10;
+    case VariableMutationType.POW:
+      return 11;
     case VariableMutationType.UNRECOGNIZED:
     default:
       return -1;
@@ -164,6 +173,8 @@ export interface VariableAssignment {
     | { $case: "formatString"; value: VariableAssignment_FormatString }
     | { $case: "nodeOutput"; value: VariableAssignment_NodeOutputReference }
     | { $case: "expression"; value: VariableAssignment_Expression }
+    | { $case: "structBuilder"; value: StructBuilder }
+    | { $case: "sizeOf"; value: VariableAssignment_SizeOf }
     | undefined;
   /**
    * If specified, the resolved value will be cast to this type before being used.
@@ -198,6 +209,12 @@ export interface VariableAssignment_NodeOutputReference {
   nodeName: string;
 }
 
+/** A SizeOf operation evaluates to the number of elements in a STR, JSON_ARR, or ARRAY value. */
+export interface VariableAssignment_SizeOf {
+  /** The value whose size should be resolved. */
+  operand: VariableAssignment | undefined;
+}
+
 /** An Expression allows you to combine multiple values into one. */
 export interface VariableAssignment_Expression {
   /** The left-hand-side of the expression. */
@@ -208,6 +225,34 @@ export interface VariableAssignment_Expression {
     | undefined;
   /** The right-hand-side of the expression. */
   rhs: VariableAssignment | undefined;
+}
+
+/** Builds a Struct using data available in the context of this ThreadRun. */
+export interface StructBuilder {
+  /** The ID of the StructDef we're building. If the version is -1, it uses the latest. */
+  structDefId:
+    | StructDefId
+    | undefined;
+  /** Determines the content of the InlineStruct. */
+  value: InlineStructBuilder | undefined;
+}
+
+/** Builds an InlineStruct from values available to a ThreadRun. */
+export interface InlineStructBuilder {
+  /** Determines the values for each field in the resulting InlineStruct. */
+  fields: { [key: string]: InlineStructFieldValue };
+}
+
+export interface InlineStructBuilder_FieldsEntry {
+  key: string;
+  value: InlineStructFieldValue | undefined;
+}
+
+export interface InlineStructFieldValue {
+  structValue?: { $case: "simpleValue"; value: VariableAssignment } | {
+    $case: "subStructure";
+    value: InlineStructBuilder;
+  } | undefined;
 }
 
 /**
@@ -522,6 +567,12 @@ export const VariableAssignment = {
       case "expression":
         VariableAssignment_Expression.encode(message.source.value, writer.uint32(50).fork()).ldelim();
         break;
+      case "structBuilder":
+        StructBuilder.encode(message.source.value, writer.uint32(74).fork()).ldelim();
+        break;
+      case "sizeOf":
+        VariableAssignment_SizeOf.encode(message.source.value, writer.uint32(82).fork()).ldelim();
+        break;
     }
     if (message.targetType !== undefined) {
       TypeDefinition.encode(message.targetType, writer.uint32(58).fork()).ldelim();
@@ -594,6 +645,20 @@ export const VariableAssignment = {
             value: VariableAssignment_Expression.decode(reader, reader.uint32()),
           };
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.source = { $case: "structBuilder", value: StructBuilder.decode(reader, reader.uint32()) };
+          continue;
+        case 10:
+          if (tag !== 82) {
+            break;
+          }
+
+          message.source = { $case: "sizeOf", value: VariableAssignment_SizeOf.decode(reader, reader.uint32()) };
+          continue;
         case 7:
           if (tag !== 58) {
             break;
@@ -627,6 +692,10 @@ export const VariableAssignment = {
         ? { $case: "nodeOutput", value: VariableAssignment_NodeOutputReference.fromJSON(object.nodeOutput) }
         : isSet(object.expression)
         ? { $case: "expression", value: VariableAssignment_Expression.fromJSON(object.expression) }
+        : isSet(object.structBuilder)
+        ? { $case: "structBuilder", value: StructBuilder.fromJSON(object.structBuilder) }
+        : isSet(object.sizeOf)
+        ? { $case: "sizeOf", value: VariableAssignment_SizeOf.fromJSON(object.sizeOf) }
         : undefined,
       targetType: isSet(object.targetType) ? TypeDefinition.fromJSON(object.targetType) : undefined,
     };
@@ -654,6 +723,12 @@ export const VariableAssignment = {
     }
     if (message.source?.$case === "expression") {
       obj.expression = VariableAssignment_Expression.toJSON(message.source.value);
+    }
+    if (message.source?.$case === "structBuilder") {
+      obj.structBuilder = StructBuilder.toJSON(message.source.value);
+    }
+    if (message.source?.$case === "sizeOf") {
+      obj.sizeOf = VariableAssignment_SizeOf.toJSON(message.source.value);
     }
     if (message.targetType !== undefined) {
       obj.targetType = TypeDefinition.toJSON(message.targetType);
@@ -698,6 +773,14 @@ export const VariableAssignment = {
     }
     if (object.source?.$case === "expression" && object.source?.value !== undefined && object.source?.value !== null) {
       message.source = { $case: "expression", value: VariableAssignment_Expression.fromPartial(object.source.value) };
+    }
+    if (
+      object.source?.$case === "structBuilder" && object.source?.value !== undefined && object.source?.value !== null
+    ) {
+      message.source = { $case: "structBuilder", value: StructBuilder.fromPartial(object.source.value) };
+    }
+    if (object.source?.$case === "sizeOf" && object.source?.value !== undefined && object.source?.value !== null) {
+      message.source = { $case: "sizeOf", value: VariableAssignment_SizeOf.fromPartial(object.source.value) };
     }
     message.targetType = (object.targetType !== undefined && object.targetType !== null)
       ? TypeDefinition.fromPartial(object.targetType)
@@ -839,6 +922,65 @@ export const VariableAssignment_NodeOutputReference = {
   },
 };
 
+function createBaseVariableAssignment_SizeOf(): VariableAssignment_SizeOf {
+  return { operand: undefined };
+}
+
+export const VariableAssignment_SizeOf = {
+  encode(message: VariableAssignment_SizeOf, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.operand !== undefined) {
+      VariableAssignment.encode(message.operand, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): VariableAssignment_SizeOf {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseVariableAssignment_SizeOf();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.operand = VariableAssignment.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): VariableAssignment_SizeOf {
+    return { operand: isSet(object.operand) ? VariableAssignment.fromJSON(object.operand) : undefined };
+  },
+
+  toJSON(message: VariableAssignment_SizeOf): unknown {
+    const obj: any = {};
+    if (message.operand !== undefined) {
+      obj.operand = VariableAssignment.toJSON(message.operand);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<VariableAssignment_SizeOf>): VariableAssignment_SizeOf {
+    return VariableAssignment_SizeOf.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<VariableAssignment_SizeOf>): VariableAssignment_SizeOf {
+    const message = createBaseVariableAssignment_SizeOf();
+    message.operand = (object.operand !== undefined && object.operand !== null)
+      ? VariableAssignment.fromPartial(object.operand)
+      : undefined;
+    return message;
+  },
+};
+
 function createBaseVariableAssignment_Expression(): VariableAssignment_Expression {
   return { lhs: undefined, operation: undefined, rhs: undefined };
 }
@@ -960,6 +1102,332 @@ export const VariableAssignment_Expression = {
     message.rhs = (object.rhs !== undefined && object.rhs !== null)
       ? VariableAssignment.fromPartial(object.rhs)
       : undefined;
+    return message;
+  },
+};
+
+function createBaseStructBuilder(): StructBuilder {
+  return { structDefId: undefined, value: undefined };
+}
+
+export const StructBuilder = {
+  encode(message: StructBuilder, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.structDefId !== undefined) {
+      StructDefId.encode(message.structDefId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.value !== undefined) {
+      InlineStructBuilder.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): StructBuilder {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStructBuilder();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.structDefId = StructDefId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = InlineStructBuilder.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): StructBuilder {
+    return {
+      structDefId: isSet(object.structDefId) ? StructDefId.fromJSON(object.structDefId) : undefined,
+      value: isSet(object.value) ? InlineStructBuilder.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: StructBuilder): unknown {
+    const obj: any = {};
+    if (message.structDefId !== undefined) {
+      obj.structDefId = StructDefId.toJSON(message.structDefId);
+    }
+    if (message.value !== undefined) {
+      obj.value = InlineStructBuilder.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<StructBuilder>): StructBuilder {
+    return StructBuilder.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<StructBuilder>): StructBuilder {
+    const message = createBaseStructBuilder();
+    message.structDefId = (object.structDefId !== undefined && object.structDefId !== null)
+      ? StructDefId.fromPartial(object.structDefId)
+      : undefined;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? InlineStructBuilder.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseInlineStructBuilder(): InlineStructBuilder {
+  return { fields: {} };
+}
+
+export const InlineStructBuilder = {
+  encode(message: InlineStructBuilder, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    Object.entries(message.fields).forEach(([key, value]) => {
+      InlineStructBuilder_FieldsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
+    });
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InlineStructBuilder {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInlineStructBuilder();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          const entry1 = InlineStructBuilder_FieldsEntry.decode(reader, reader.uint32());
+          if (entry1.value !== undefined) {
+            message.fields[entry1.key] = entry1.value;
+          }
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InlineStructBuilder {
+    return {
+      fields: isObject(object.fields)
+        ? Object.entries(object.fields).reduce<{ [key: string]: InlineStructFieldValue }>((acc, [key, value]) => {
+          acc[key] = InlineStructFieldValue.fromJSON(value);
+          return acc;
+        }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: InlineStructBuilder): unknown {
+    const obj: any = {};
+    if (message.fields) {
+      const entries = Object.entries(message.fields);
+      if (entries.length > 0) {
+        obj.fields = {};
+        entries.forEach(([k, v]) => {
+          obj.fields[k] = InlineStructFieldValue.toJSON(v);
+        });
+      }
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<InlineStructBuilder>): InlineStructBuilder {
+    return InlineStructBuilder.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InlineStructBuilder>): InlineStructBuilder {
+    const message = createBaseInlineStructBuilder();
+    message.fields = Object.entries(object.fields ?? {}).reduce<{ [key: string]: InlineStructFieldValue }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = InlineStructFieldValue.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    return message;
+  },
+};
+
+function createBaseInlineStructBuilder_FieldsEntry(): InlineStructBuilder_FieldsEntry {
+  return { key: "", value: undefined };
+}
+
+export const InlineStructBuilder_FieldsEntry = {
+  encode(message: InlineStructBuilder_FieldsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      InlineStructFieldValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InlineStructBuilder_FieldsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInlineStructBuilder_FieldsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = InlineStructFieldValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InlineStructBuilder_FieldsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? InlineStructFieldValue.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: InlineStructBuilder_FieldsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = InlineStructFieldValue.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<InlineStructBuilder_FieldsEntry>): InlineStructBuilder_FieldsEntry {
+    return InlineStructBuilder_FieldsEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InlineStructBuilder_FieldsEntry>): InlineStructBuilder_FieldsEntry {
+    const message = createBaseInlineStructBuilder_FieldsEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? InlineStructFieldValue.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseInlineStructFieldValue(): InlineStructFieldValue {
+  return { structValue: undefined };
+}
+
+export const InlineStructFieldValue = {
+  encode(message: InlineStructFieldValue, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    switch (message.structValue?.$case) {
+      case "simpleValue":
+        VariableAssignment.encode(message.structValue.value, writer.uint32(10).fork()).ldelim();
+        break;
+      case "subStructure":
+        InlineStructBuilder.encode(message.structValue.value, writer.uint32(18).fork()).ldelim();
+        break;
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InlineStructFieldValue {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInlineStructFieldValue();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.structValue = { $case: "simpleValue", value: VariableAssignment.decode(reader, reader.uint32()) };
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.structValue = { $case: "subStructure", value: InlineStructBuilder.decode(reader, reader.uint32()) };
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InlineStructFieldValue {
+    return {
+      structValue: isSet(object.simpleValue)
+        ? { $case: "simpleValue", value: VariableAssignment.fromJSON(object.simpleValue) }
+        : isSet(object.subStructure)
+        ? { $case: "subStructure", value: InlineStructBuilder.fromJSON(object.subStructure) }
+        : undefined,
+    };
+  },
+
+  toJSON(message: InlineStructFieldValue): unknown {
+    const obj: any = {};
+    if (message.structValue?.$case === "simpleValue") {
+      obj.simpleValue = VariableAssignment.toJSON(message.structValue.value);
+    }
+    if (message.structValue?.$case === "subStructure") {
+      obj.subStructure = InlineStructBuilder.toJSON(message.structValue.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<InlineStructFieldValue>): InlineStructFieldValue {
+    return InlineStructFieldValue.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InlineStructFieldValue>): InlineStructFieldValue {
+    const message = createBaseInlineStructFieldValue();
+    if (
+      object.structValue?.$case === "simpleValue" &&
+      object.structValue?.value !== undefined &&
+      object.structValue?.value !== null
+    ) {
+      message.structValue = { $case: "simpleValue", value: VariableAssignment.fromPartial(object.structValue.value) };
+    }
+    if (
+      object.structValue?.$case === "subStructure" &&
+      object.structValue?.value !== undefined &&
+      object.structValue?.value !== null
+    ) {
+      message.structValue = { $case: "subStructure", value: InlineStructBuilder.fromPartial(object.structValue.value) };
+    }
     return message;
   },
 };

@@ -156,7 +156,8 @@ public class RequestAuthorizer implements LHServerInterceptor {
             AuthMetadata authMetadata = methodMetadata.get(methodName);
 
             return authMetadata.requiredResources().contains(ACLResource.ACL_TENANT)
-                    || authMetadata.requiredResources().contains(ACLResource.ACL_PRINCIPAL);
+                    || authMetadata.requiredResources().contains(ACLResource.ACL_PRINCIPAL)
+                    || authMetadata.requiredResources().contains(ACLResource.ACL_QUOTA);
         }
 
         private boolean isActionAllowed(AuthMetadata metadata, Set<ACLAction> clientAllowedActions) {

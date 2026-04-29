@@ -337,6 +337,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return and(rhs);
         } else if (operation == VariableMutationType.OR) {
             return or(rhs);
+        } else if (operation == VariableMutationType.POW) {
+            return pow(rhs);
         }
         throw new RuntimeException("Unsupported operation: " + operation);
     }
@@ -488,6 +490,52 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     public VariableValueModel or(VariableValueModel rhs) throws LHVarSubError {
         return new VariableValueModel(asBool().getBoolVal() || rhs.asBool().getBoolVal());
+    }
+
+    public VariableValueModel pow(VariableValueModel rhs) throws LHVarSubError {
+        if (getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE
+                || getTypeDefinition().getPrimitiveType() == null
+                || (getTypeDefinition().getPrimitiveType() != VariableType.INT
+                        && getTypeDefinition().getPrimitiveType() != VariableType.DOUBLE)) {
+            throw new LHVarSubError(
+                    null, String.format("Cannot exponentiate base value of type %s", getTypeDefinition()));
+        }
+        if (rhs.getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE
+                || rhs.getTypeDefinition().getPrimitiveType() == null
+                || (rhs.getTypeDefinition().getPrimitiveType() != VariableType.INT
+                        && rhs.getTypeDefinition().getPrimitiveType() != VariableType.DOUBLE)) {
+            throw new LHVarSubError(null, String.format("Cannot exponentiate by type %s", rhs.getTypeDefinition()));
+        }
+
+        if (getTypeDefinition().getPrimitiveType() == VariableType.DOUBLE
+                || rhs.getTypeDefinition().getPrimitiveType() == VariableType.DOUBLE) {
+            double result = Math.pow(asDouble().doubleVal, rhs.asDouble().doubleVal);
+            if (!Double.isFinite(result)) {
+                throw new LHVarSubError(
+                        null,
+                        String.format(
+                                "Exponentiation result is not finite: Base %s, Exponent %s",
+                                asDouble().doubleVal, rhs.asDouble().doubleVal));
+            }
+            return new VariableValueModel(result);
+        } else {
+            double result = Math.pow(asInt().intVal, rhs.asInt().intVal);
+            if (!Double.isFinite(result)) {
+                throw new LHVarSubError(
+                        null,
+                        String.format(
+                                "Exponentiation result is not finite: Base %s, Exponent %s",
+                                asInt().intVal, rhs.asInt().intVal));
+            }
+            if (result > Long.MAX_VALUE || result < Long.MIN_VALUE) {
+                throw new LHVarSubError(
+                        null,
+                        String.format(
+                                "Exponentiation result is out of range for INT: Base %s, Exponent %s",
+                                asInt().intVal, rhs.asInt().intVal));
+            }
+            return new VariableValueModel((long) result);
+        }
     }
 
     public VariableValueModel multiply(VariableValueModel rhs) throws LHVarSubError {
@@ -678,6 +726,28 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         Map<String, Object> m = asObj().jsonObjVal;
         m.remove(other.asStr().strVal);
         return new VariableValueModel(m);
+    }
+
+    public VariableValueModel sizeOf() throws LHVarSubError {
+        switch (getValueType()) {
+            case STR:
+                if (strVal == null) {
+                    throw new LHVarSubError(null, "Cannot get size of null string");
+                }
+                return new VariableValueModel(strVal.length());
+            case JSON_ARR:
+                if (jsonArrVal == null) {
+                    throw new LHVarSubError(null, "Cannot get size of null json array");
+                }
+                return new VariableValueModel(jsonArrVal.size());
+            case ARRAY:
+                if (array == null || array.getItems() == null) {
+                    throw new LHVarSubError(null, "Cannot get size of null array");
+                }
+                return new VariableValueModel(array.getItems().size());
+            default:
+                throw new LHVarSubError(null, "Cannot resolve size() for var of type " + valueType);
+        }
     }
 
     public Object getVal() {
@@ -1018,6 +1088,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case BYTES:
             case JSON_ARR:
             case WF_RUN_ID:
+            case STRUCT:
+            case ARRAY:
             case VALUE_NOT_SET:
                 valuePair = null;
         }

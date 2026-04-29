@@ -1,8 +1,10 @@
-name: weekly-snapshot
-run-name: Snaptshot ${{ github.ref_name }}
+name: snapshot
+run-name: Snapshot ${{ github.ref_name }}
 on:
-  schedule:
-    - cron: "0 0 * * 5"
+  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 permissions:
       packages: write

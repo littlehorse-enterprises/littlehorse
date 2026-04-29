@@ -185,6 +185,11 @@ public class LHExtension
         if (instanceClass.isAnnotationPresent(WithStructDefs.class)) {
             return List.of(instanceClass.getAnnotation(WithStructDefs.class).value()).stream()
                     .map(clazz -> new LHStructDefType(clazz, typeAdapterRegistry))
+                    .flatMap(structDef -> {
+                        List<LHStructDefType> out = new ArrayList<>(structDef.getDependencyClasses());
+                        out.add(structDef);
+                        return out.stream();
+                    })
                     .collect(Collectors.toCollection(LinkedHashSet::new));
         }
         return Set.of();

@@ -32,16 +32,6 @@ public class ArrayReturnTypeStrategy implements LHTypeStrategy {
     }
 
     @Override
-    public boolean isNumeric(ReadOnlyMetadataManager manager) {
-        return false;
-    }
-
-    @Override
-    public String getDescription() {
-        return inlineArrayDef.toString();
-    }
-
-    @Override
     public Optional<TypeDefinitionModel> multiply(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot multiply an Array.");
@@ -51,6 +41,12 @@ public class ArrayReturnTypeStrategy implements LHTypeStrategy {
     public Optional<TypeDefinitionModel> divide(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot divide an Array.");
+    }
+
+    @Override
+    public Optional<TypeDefinitionModel> pow(ReadOnlyMetadataManager manager, LHTypeStrategy other)
+            throws InvalidExpressionException {
+        throw new InvalidExpressionException("Cannot exponentiate an Array.");
     }
 
     @Override
@@ -91,5 +87,15 @@ public class ArrayReturnTypeStrategy implements LHTypeStrategy {
 
     private boolean matchesArrayDefType(TypeDefinitionModel other) {
         return this.inlineArrayDef.getArrayType().equals(other);
+    }
+
+    @Override
+    public boolean isNumeric(ReadOnlyMetadataManager manager) {
+        return false;
+    }
+
+    @Override
+    public String getDescription() {
+        return inlineArrayDef.toString();
     }
 }

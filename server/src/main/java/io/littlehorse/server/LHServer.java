@@ -15,6 +15,7 @@ import io.littlehorse.server.interceptors.RequestBlocker;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.monitoring.http.NettyStatusServer;
+import io.littlehorse.server.quotas.RequestQuotaManager;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
@@ -64,6 +65,7 @@ public class LHServer {
     private final LHInternalClient lhInternalClient;
     private final AsyncWaiters asyncWaiters = new AsyncWaiters();
     private final RequestBlocker requestBlocker = new RequestBlocker();
+    private final RequestQuotaManager requestQuotaManager;
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -121,6 +123,7 @@ public class LHServer {
                 config.getStreamsSessionTimeout(),
                 config,
                 internalComms.getAsyncWaiters());
+        this.requestQuotaManager = new RequestQuotaManager(internalComms);
         this.listeners = config.getListeners().stream()
                 .map(s -> this.createListener(s, networkThreadpool))
                 .toList();
@@ -141,6 +144,7 @@ public class LHServer {
                         requestBlocker),
                 contextKey,
                 commandSender,
+                requestQuotaManager,
                 internalComms.getAsyncWaiters(),
                 lhInternalClient);
     }

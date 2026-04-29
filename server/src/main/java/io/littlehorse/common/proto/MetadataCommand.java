@@ -70,6 +70,8 @@ private static final long serialVersionUID = 0L;
     DELETE_WORKFLOW_EVENT_DEF(16),
     PUT_STRUCT_DEF(17),
     DELETE_STRUCT_DEF(18),
+    PUT_QUOTA(19),
+    DELETE_QUOTA(20),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -102,6 +104,8 @@ private static final long serialVersionUID = 0L;
         case 16: return DELETE_WORKFLOW_EVENT_DEF;
         case 17: return PUT_STRUCT_DEF;
         case 18: return DELETE_STRUCT_DEF;
+        case 19: return PUT_QUOTA;
+        case 20: return DELETE_QUOTA;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -667,6 +671,68 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.DeleteStructDefRequest.getDefaultInstance();
   }
 
+  public static final int PUT_QUOTA_FIELD_NUMBER = 19;
+  /**
+   * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+   * @return Whether the putQuota field is set.
+   */
+  @java.lang.Override
+  public boolean hasPutQuota() {
+    return metadataCommandCase_ == 19;
+  }
+  /**
+   * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+   * @return The putQuota.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutQuotaRequest getPutQuota() {
+    if (metadataCommandCase_ == 19) {
+       return (io.littlehorse.sdk.common.proto.PutQuotaRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.PutQuotaRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutQuotaRequestOrBuilder getPutQuotaOrBuilder() {
+    if (metadataCommandCase_ == 19) {
+       return (io.littlehorse.sdk.common.proto.PutQuotaRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.PutQuotaRequest.getDefaultInstance();
+  }
+
+  public static final int DELETE_QUOTA_FIELD_NUMBER = 20;
+  /**
+   * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+   * @return Whether the deleteQuota field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeleteQuota() {
+    return metadataCommandCase_ == 20;
+  }
+  /**
+   * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+   * @return The deleteQuota.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.DeleteQuotaRequest getDeleteQuota() {
+    if (metadataCommandCase_ == 20) {
+       return (io.littlehorse.sdk.common.proto.DeleteQuotaRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.DeleteQuotaRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.DeleteQuotaRequestOrBuilder getDeleteQuotaOrBuilder() {
+    if (metadataCommandCase_ == 20) {
+       return (io.littlehorse.sdk.common.proto.DeleteQuotaRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.DeleteQuotaRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -731,6 +797,12 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 18) {
       output.writeMessage(18, (io.littlehorse.sdk.common.proto.DeleteStructDefRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 19) {
+      output.writeMessage(19, (io.littlehorse.sdk.common.proto.PutQuotaRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 20) {
+      output.writeMessage(20, (io.littlehorse.sdk.common.proto.DeleteQuotaRequest) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -807,6 +879,14 @@ private static final long serialVersionUID = 0L;
     if (metadataCommandCase_ == 18) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(18, (io.littlehorse.sdk.common.proto.DeleteStructDefRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 19) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(19, (io.littlehorse.sdk.common.proto.PutQuotaRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 20) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(20, (io.littlehorse.sdk.common.proto.DeleteQuotaRequest) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -895,6 +975,14 @@ private static final long serialVersionUID = 0L;
         if (!getDeleteStructDef()
             .equals(other.getDeleteStructDef())) return false;
         break;
+      case 19:
+        if (!getPutQuota()
+            .equals(other.getPutQuota())) return false;
+        break;
+      case 20:
+        if (!getDeleteQuota()
+            .equals(other.getDeleteQuota())) return false;
+        break;
       case 0:
       default:
     }
@@ -977,6 +1065,14 @@ private static final long serialVersionUID = 0L;
       case 18:
         hash = (37 * hash) + DELETE_STRUCT_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getDeleteStructDef().hashCode();
+        break;
+      case 19:
+        hash = (37 * hash) + PUT_QUOTA_FIELD_NUMBER;
+        hash = (53 * hash) + getPutQuota().hashCode();
+        break;
+      case 20:
+        hash = (37 * hash) + DELETE_QUOTA_FIELD_NUMBER;
+        hash = (53 * hash) + getDeleteQuota().hashCode();
         break;
       case 0:
       default:
@@ -1173,6 +1269,12 @@ private static final long serialVersionUID = 0L;
       if (deleteStructDefBuilder_ != null) {
         deleteStructDefBuilder_.clear();
       }
+      if (putQuotaBuilder_ != null) {
+        putQuotaBuilder_.clear();
+      }
+      if (deleteQuotaBuilder_ != null) {
+        deleteQuotaBuilder_.clear();
+      }
       metadataCommandCase_ = 0;
       metadataCommand_ = null;
       return this;
@@ -1286,6 +1388,14 @@ private static final long serialVersionUID = 0L;
           deleteStructDefBuilder_ != null) {
         result.metadataCommand_ = deleteStructDefBuilder_.build();
       }
+      if (metadataCommandCase_ == 19 &&
+          putQuotaBuilder_ != null) {
+        result.metadataCommand_ = putQuotaBuilder_.build();
+      }
+      if (metadataCommandCase_ == 20 &&
+          deleteQuotaBuilder_ != null) {
+        result.metadataCommand_ = deleteQuotaBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -1367,6 +1477,14 @@ private static final long serialVersionUID = 0L;
         }
         case DELETE_STRUCT_DEF: {
           mergeDeleteStructDef(other.getDeleteStructDef());
+          break;
+        }
+        case PUT_QUOTA: {
+          mergePutQuota(other.getPutQuota());
+          break;
+        }
+        case DELETE_QUOTA: {
+          mergeDeleteQuota(other.getDeleteQuota());
           break;
         }
         case METADATACOMMAND_NOT_SET: {
@@ -1516,6 +1634,20 @@ private static final long serialVersionUID = 0L;
               metadataCommandCase_ = 18;
               break;
             } // case 146
+            case 154: {
+              input.readMessage(
+                  internalGetPutQuotaFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 19;
+              break;
+            } // case 154
+            case 162: {
+              input.readMessage(
+                  internalGetDeleteQuotaFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 20;
+              break;
+            } // case 162
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3912,6 +4044,290 @@ private static final long serialVersionUID = 0L;
       metadataCommandCase_ = 18;
       onChanged();
       return deleteStructDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.PutQuotaRequest, io.littlehorse.sdk.common.proto.PutQuotaRequest.Builder, io.littlehorse.sdk.common.proto.PutQuotaRequestOrBuilder> putQuotaBuilder_;
+    /**
+     * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+     * @return Whether the putQuota field is set.
+     */
+    @java.lang.Override
+    public boolean hasPutQuota() {
+      return metadataCommandCase_ == 19;
+    }
+    /**
+     * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+     * @return The putQuota.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutQuotaRequest getPutQuota() {
+      if (putQuotaBuilder_ == null) {
+        if (metadataCommandCase_ == 19) {
+          return (io.littlehorse.sdk.common.proto.PutQuotaRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.PutQuotaRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 19) {
+          return putQuotaBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.PutQuotaRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+     */
+    public Builder setPutQuota(io.littlehorse.sdk.common.proto.PutQuotaRequest value) {
+      if (putQuotaBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        putQuotaBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 19;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+     */
+    public Builder setPutQuota(
+        io.littlehorse.sdk.common.proto.PutQuotaRequest.Builder builderForValue) {
+      if (putQuotaBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        putQuotaBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 19;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+     */
+    public Builder mergePutQuota(io.littlehorse.sdk.common.proto.PutQuotaRequest value) {
+      if (putQuotaBuilder_ == null) {
+        if (metadataCommandCase_ == 19 &&
+            metadataCommand_ != io.littlehorse.sdk.common.proto.PutQuotaRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutQuotaRequest.newBuilder((io.littlehorse.sdk.common.proto.PutQuotaRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 19) {
+          putQuotaBuilder_.mergeFrom(value);
+        } else {
+          putQuotaBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 19;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+     */
+    public Builder clearPutQuota() {
+      if (putQuotaBuilder_ == null) {
+        if (metadataCommandCase_ == 19) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 19) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        putQuotaBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PutQuotaRequest.Builder getPutQuotaBuilder() {
+      return internalGetPutQuotaFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutQuotaRequestOrBuilder getPutQuotaOrBuilder() {
+      if ((metadataCommandCase_ == 19) && (putQuotaBuilder_ != null)) {
+        return putQuotaBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 19) {
+          return (io.littlehorse.sdk.common.proto.PutQuotaRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.PutQuotaRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.PutQuotaRequest, io.littlehorse.sdk.common.proto.PutQuotaRequest.Builder, io.littlehorse.sdk.common.proto.PutQuotaRequestOrBuilder> 
+        internalGetPutQuotaFieldBuilder() {
+      if (putQuotaBuilder_ == null) {
+        if (!(metadataCommandCase_ == 19)) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutQuotaRequest.getDefaultInstance();
+        }
+        putQuotaBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.PutQuotaRequest, io.littlehorse.sdk.common.proto.PutQuotaRequest.Builder, io.littlehorse.sdk.common.proto.PutQuotaRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutQuotaRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 19;
+      onChanged();
+      return putQuotaBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.DeleteQuotaRequest, io.littlehorse.sdk.common.proto.DeleteQuotaRequest.Builder, io.littlehorse.sdk.common.proto.DeleteQuotaRequestOrBuilder> deleteQuotaBuilder_;
+    /**
+     * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+     * @return Whether the deleteQuota field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeleteQuota() {
+      return metadataCommandCase_ == 20;
+    }
+    /**
+     * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+     * @return The deleteQuota.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.DeleteQuotaRequest getDeleteQuota() {
+      if (deleteQuotaBuilder_ == null) {
+        if (metadataCommandCase_ == 20) {
+          return (io.littlehorse.sdk.common.proto.DeleteQuotaRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.DeleteQuotaRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 20) {
+          return deleteQuotaBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.DeleteQuotaRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+     */
+    public Builder setDeleteQuota(io.littlehorse.sdk.common.proto.DeleteQuotaRequest value) {
+      if (deleteQuotaBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        deleteQuotaBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 20;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+     */
+    public Builder setDeleteQuota(
+        io.littlehorse.sdk.common.proto.DeleteQuotaRequest.Builder builderForValue) {
+      if (deleteQuotaBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        deleteQuotaBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 20;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+     */
+    public Builder mergeDeleteQuota(io.littlehorse.sdk.common.proto.DeleteQuotaRequest value) {
+      if (deleteQuotaBuilder_ == null) {
+        if (metadataCommandCase_ == 20 &&
+            metadataCommand_ != io.littlehorse.sdk.common.proto.DeleteQuotaRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteQuotaRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteQuotaRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 20) {
+          deleteQuotaBuilder_.mergeFrom(value);
+        } else {
+          deleteQuotaBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 20;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+     */
+    public Builder clearDeleteQuota() {
+      if (deleteQuotaBuilder_ == null) {
+        if (metadataCommandCase_ == 20) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 20) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        deleteQuotaBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+     */
+    public io.littlehorse.sdk.common.proto.DeleteQuotaRequest.Builder getDeleteQuotaBuilder() {
+      return internalGetDeleteQuotaFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.DeleteQuotaRequestOrBuilder getDeleteQuotaOrBuilder() {
+      if ((metadataCommandCase_ == 20) && (deleteQuotaBuilder_ != null)) {
+        return deleteQuotaBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 20) {
+          return (io.littlehorse.sdk.common.proto.DeleteQuotaRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.DeleteQuotaRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.DeleteQuotaRequest, io.littlehorse.sdk.common.proto.DeleteQuotaRequest.Builder, io.littlehorse.sdk.common.proto.DeleteQuotaRequestOrBuilder> 
+        internalGetDeleteQuotaFieldBuilder() {
+      if (deleteQuotaBuilder_ == null) {
+        if (!(metadataCommandCase_ == 20)) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteQuotaRequest.getDefaultInstance();
+        }
+        deleteQuotaBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.DeleteQuotaRequest, io.littlehorse.sdk.common.proto.DeleteQuotaRequest.Builder, io.littlehorse.sdk.common.proto.DeleteQuotaRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.DeleteQuotaRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 20;
+      onChanged();
+      return deleteQuotaBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetadataCommand)

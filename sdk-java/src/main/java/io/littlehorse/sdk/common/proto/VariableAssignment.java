@@ -1757,6 +1757,644 @@ private static final long serialVersionUID = 0L;
 
   }
 
+  public interface SizeOfOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.VariableAssignment.SizeOf)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * The value whose size should be resolved.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment operand = 1;</code>
+     * @return Whether the operand field is set.
+     */
+    boolean hasOperand();
+    /**
+     * <pre>
+     * The value whose size should be resolved.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment operand = 1;</code>
+     * @return The operand.
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignment getOperand();
+    /**
+     * <pre>
+     * The value whose size should be resolved.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment operand = 1;</code>
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getOperandOrBuilder();
+  }
+  /**
+   * <pre>
+   * A SizeOf operation evaluates to the number of elements in a STR, JSON_ARR, or ARRAY value.
+   * </pre>
+   *
+   * Protobuf type {@code littlehorse.VariableAssignment.SizeOf}
+   */
+  public static final class SizeOf extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:littlehorse.VariableAssignment.SizeOf)
+      SizeOfOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 32,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        SizeOf.class.getName());
+    }
+    // Use SizeOf.newBuilder() to construct.
+    private SizeOf(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private SizeOf() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_SizeOf_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_SizeOf_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.class, io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int OPERAND_FIELD_NUMBER = 1;
+    private io.littlehorse.sdk.common.proto.VariableAssignment operand_;
+    /**
+     * <pre>
+     * The value whose size should be resolved.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment operand = 1;</code>
+     * @return Whether the operand field is set.
+     */
+    @java.lang.Override
+    public boolean hasOperand() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * The value whose size should be resolved.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment operand = 1;</code>
+     * @return The operand.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment getOperand() {
+      return operand_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : operand_;
+    }
+    /**
+     * <pre>
+     * The value whose size should be resolved.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment operand = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getOperandOrBuilder() {
+      return operand_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : operand_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(1, getOperand());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getOperand());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf other = (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) obj;
+
+      if (hasOperand() != other.hasOperand()) return false;
+      if (hasOperand()) {
+        if (!getOperand()
+            .equals(other.getOperand())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasOperand()) {
+        hash = (37 * hash) + OPERAND_FIELD_NUMBER;
+        hash = (53 * hash) + getOperand().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * A SizeOf operation evaluates to the number of elements in a STR, JSON_ARR, or ARRAY value.
+     * </pre>
+     *
+     * Protobuf type {@code littlehorse.VariableAssignment.SizeOf}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.VariableAssignment.SizeOf)
+        io.littlehorse.sdk.common.proto.VariableAssignment.SizeOfOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_SizeOf_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_SizeOf_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.class, io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.Builder.class);
+      }
+
+      // Construct using io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetOperandFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        operand_ = null;
+        if (operandBuilder_ != null) {
+          operandBuilder_.dispose();
+          operandBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_SizeOf_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf build() {
+        io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf buildPartial() {
+        io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf result = new io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.operand_ = operandBuilder_ == null
+              ? operand_
+              : operandBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf other) {
+        if (other == io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance()) return this;
+        if (other.hasOperand()) {
+          mergeOperand(other.getOperand());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    internalGetOperandFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private io.littlehorse.sdk.common.proto.VariableAssignment operand_;
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> operandBuilder_;
+      /**
+       * <pre>
+       * The value whose size should be resolved.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       * @return Whether the operand field is set.
+       */
+      public boolean hasOperand() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <pre>
+       * The value whose size should be resolved.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       * @return The operand.
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignment getOperand() {
+        if (operandBuilder_ == null) {
+          return operand_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : operand_;
+        } else {
+          return operandBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * The value whose size should be resolved.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      public Builder setOperand(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+        if (operandBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          operand_ = value;
+        } else {
+          operandBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The value whose size should be resolved.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      public Builder setOperand(
+          io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
+        if (operandBuilder_ == null) {
+          operand_ = builderForValue.build();
+        } else {
+          operandBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The value whose size should be resolved.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      public Builder mergeOperand(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+        if (operandBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0) &&
+            operand_ != null &&
+            operand_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+            getOperandBuilder().mergeFrom(value);
+          } else {
+            operand_ = value;
+          }
+        } else {
+          operandBuilder_.mergeFrom(value);
+        }
+        if (operand_ != null) {
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * The value whose size should be resolved.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      public Builder clearOperand() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        operand_ = null;
+        if (operandBuilder_ != null) {
+          operandBuilder_.dispose();
+          operandBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The value whose size should be resolved.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getOperandBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return internalGetOperandFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * The value whose size should be resolved.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getOperandOrBuilder() {
+        if (operandBuilder_ != null) {
+          return operandBuilder_.getMessageOrBuilder();
+        } else {
+          return operand_ == null ?
+              io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : operand_;
+        }
+      }
+      /**
+       * <pre>
+       * The value whose size should be resolved.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
+          internalGetOperandFieldBuilder() {
+        if (operandBuilder_ == null) {
+          operandBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                  getOperand(),
+                  getParentForChildren(),
+                  isClean());
+          operand_ = null;
+        }
+        return operandBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.VariableAssignment.SizeOf)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.VariableAssignment.SizeOf)
+    private static final io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf();
+    }
+
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SizeOf>
+        PARSER = new com.google.protobuf.AbstractParser<SizeOf>() {
+      @java.lang.Override
+      public SizeOf parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<SizeOf> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SizeOf> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface ExpressionOrBuilder extends
       // @@protoc_insertion_point(interface_extends:littlehorse.VariableAssignment.Expression)
       com.google.protobuf.MessageOrBuilder {
@@ -3070,6 +3708,8 @@ private static final long serialVersionUID = 0L;
     FORMAT_STRING(4),
     NODE_OUTPUT(5),
     EXPRESSION(6),
+    STRUCT_BUILDER(9),
+    SIZE_OF(10),
     SOURCE_NOT_SET(0);
     private final int value;
     private SourceCase(int value) {
@@ -3092,6 +3732,8 @@ private static final long serialVersionUID = 0L;
         case 4: return FORMAT_STRING;
         case 5: return NODE_OUTPUT;
         case 6: return EXPRESSION;
+        case 9: return STRUCT_BUILDER;
+        case 10: return SIZE_OF;
         case 0: return SOURCE_NOT_SET;
         default: return null;
       }
@@ -3456,6 +4098,95 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance();
   }
 
+  public static final int STRUCT_BUILDER_FIELD_NUMBER = 9;
+  /**
+   * <pre>
+   * Builds a Struct using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+   * @return Whether the structBuilder field is set.
+   */
+  @java.lang.Override
+  public boolean hasStructBuilder() {
+    return sourceCase_ == 9;
+  }
+  /**
+   * <pre>
+   * Builds a Struct using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+   * @return The structBuilder.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructBuilder getStructBuilder() {
+    if (sourceCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.StructBuilder) source_;
+    }
+    return io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Builds a Struct using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructBuilderOrBuilder getStructBuilderOrBuilder() {
+    if (sourceCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.StructBuilder) source_;
+    }
+    return io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance();
+  }
+
+  public static final int SIZE_OF_FIELD_NUMBER = 10;
+  /**
+   * <pre>
+   * Assign the size of the resolved operand value.
+   * Valid for STR, ARRAY, and JSON_ARR values.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
+   * @return Whether the sizeOf field is set.
+   */
+  @java.lang.Override
+  public boolean hasSizeOf() {
+    return sourceCase_ == 10;
+  }
+  /**
+   * <pre>
+   * Assign the size of the resolved operand value.
+   * Valid for STR, ARRAY, and JSON_ARR values.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
+   * @return The sizeOf.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf getSizeOf() {
+    if (sourceCase_ == 10) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Assign the size of the resolved operand value.
+   * Valid for STR, ARRAY, and JSON_ARR values.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOfOrBuilder getSizeOfOrBuilder() {
+    if (sourceCase_ == 10) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
+  }
+
   public static final int TARGET_TYPE_FIELD_NUMBER = 7;
   private io.littlehorse.sdk.common.proto.TypeDefinition targetType_;
   /**
@@ -3541,6 +4272,12 @@ private static final long serialVersionUID = 0L;
     if (pathCase_ == 8) {
       output.writeMessage(8, (io.littlehorse.sdk.common.proto.LHPath) path_);
     }
+    if (sourceCase_ == 9) {
+      output.writeMessage(9, (io.littlehorse.sdk.common.proto.StructBuilder) source_);
+    }
+    if (sourceCase_ == 10) {
+      output.writeMessage(10, (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -3579,6 +4316,14 @@ private static final long serialVersionUID = 0L;
     if (pathCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, (io.littlehorse.sdk.common.proto.LHPath) path_);
+    }
+    if (sourceCase_ == 9) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(9, (io.littlehorse.sdk.common.proto.StructBuilder) source_);
+    }
+    if (sourceCase_ == 10) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(10, (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -3635,6 +4380,14 @@ private static final long serialVersionUID = 0L;
         if (!getExpression()
             .equals(other.getExpression())) return false;
         break;
+      case 9:
+        if (!getStructBuilder()
+            .equals(other.getStructBuilder())) return false;
+        break;
+      case 10:
+        if (!getSizeOf()
+            .equals(other.getSizeOf())) return false;
+        break;
       case 0:
       default:
     }
@@ -3685,6 +4438,14 @@ private static final long serialVersionUID = 0L;
       case 6:
         hash = (37 * hash) + EXPRESSION_FIELD_NUMBER;
         hash = (53 * hash) + getExpression().hashCode();
+        break;
+      case 9:
+        hash = (37 * hash) + STRUCT_BUILDER_FIELD_NUMBER;
+        hash = (53 * hash) + getStructBuilder().hashCode();
+        break;
+      case 10:
+        hash = (37 * hash) + SIZE_OF_FIELD_NUMBER;
+        hash = (53 * hash) + getSizeOf().hashCode();
         break;
       case 0:
       default:
@@ -3851,6 +4612,12 @@ private static final long serialVersionUID = 0L;
       if (expressionBuilder_ != null) {
         expressionBuilder_.clear();
       }
+      if (structBuilderBuilder_ != null) {
+        structBuilderBuilder_.clear();
+      }
+      if (sizeOfBuilder_ != null) {
+        sizeOfBuilder_.clear();
+      }
       targetType_ = null;
       if (targetTypeBuilder_ != null) {
         targetTypeBuilder_.dispose();
@@ -3895,7 +4662,7 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.VariableAssignment result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000080) != 0)) {
+      if (((from_bitField0_ & 0x00000200) != 0)) {
         result.targetType_ = targetTypeBuilder_ == null
             ? targetType_
             : targetTypeBuilder_.build();
@@ -3928,6 +4695,14 @@ private static final long serialVersionUID = 0L;
       if (sourceCase_ == 6 &&
           expressionBuilder_ != null) {
         result.source_ = expressionBuilder_.build();
+      }
+      if (sourceCase_ == 9 &&
+          structBuilderBuilder_ != null) {
+        result.source_ = structBuilderBuilder_.build();
+      }
+      if (sourceCase_ == 10 &&
+          sizeOfBuilder_ != null) {
+        result.source_ = sizeOfBuilder_.build();
       }
     }
 
@@ -3982,6 +4757,14 @@ private static final long serialVersionUID = 0L;
         }
         case EXPRESSION: {
           mergeExpression(other.getExpression());
+          break;
+        }
+        case STRUCT_BUILDER: {
+          mergeStructBuilder(other.getStructBuilder());
+          break;
+        }
+        case SIZE_OF: {
+          mergeSizeOf(other.getSizeOf());
           break;
         }
         case SOURCE_NOT_SET: {
@@ -4058,7 +4841,7 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   internalGetTargetTypeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000080;
+              bitField0_ |= 0x00000200;
               break;
             } // case 58
             case 66: {
@@ -4068,6 +4851,20 @@ private static final long serialVersionUID = 0L;
               pathCase_ = 8;
               break;
             } // case 66
+            case 74: {
+              input.readMessage(
+                  internalGetStructBuilderFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              sourceCase_ = 9;
+              break;
+            } // case 74
+            case 82: {
+              input.readMessage(
+                  internalGetSizeOfFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              sourceCase_ = 10;
+              break;
+            } // case 82
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5254,6 +6051,371 @@ private static final long serialVersionUID = 0L;
       return expressionBuilder_;
     }
 
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.StructBuilder, io.littlehorse.sdk.common.proto.StructBuilder.Builder, io.littlehorse.sdk.common.proto.StructBuilderOrBuilder> structBuilderBuilder_;
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     * @return Whether the structBuilder field is set.
+     */
+    @java.lang.Override
+    public boolean hasStructBuilder() {
+      return sourceCase_ == 9;
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     * @return The structBuilder.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.StructBuilder getStructBuilder() {
+      if (structBuilderBuilder_ == null) {
+        if (sourceCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.StructBuilder) source_;
+        }
+        return io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance();
+      } else {
+        if (sourceCase_ == 9) {
+          return structBuilderBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    public Builder setStructBuilder(io.littlehorse.sdk.common.proto.StructBuilder value) {
+      if (structBuilderBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        source_ = value;
+        onChanged();
+      } else {
+        structBuilderBuilder_.setMessage(value);
+      }
+      sourceCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    public Builder setStructBuilder(
+        io.littlehorse.sdk.common.proto.StructBuilder.Builder builderForValue) {
+      if (structBuilderBuilder_ == null) {
+        source_ = builderForValue.build();
+        onChanged();
+      } else {
+        structBuilderBuilder_.setMessage(builderForValue.build());
+      }
+      sourceCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    public Builder mergeStructBuilder(io.littlehorse.sdk.common.proto.StructBuilder value) {
+      if (structBuilderBuilder_ == null) {
+        if (sourceCase_ == 9 &&
+            source_ != io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance()) {
+          source_ = io.littlehorse.sdk.common.proto.StructBuilder.newBuilder((io.littlehorse.sdk.common.proto.StructBuilder) source_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          source_ = value;
+        }
+        onChanged();
+      } else {
+        if (sourceCase_ == 9) {
+          structBuilderBuilder_.mergeFrom(value);
+        } else {
+          structBuilderBuilder_.setMessage(value);
+        }
+      }
+      sourceCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    public Builder clearStructBuilder() {
+      if (structBuilderBuilder_ == null) {
+        if (sourceCase_ == 9) {
+          sourceCase_ = 0;
+          source_ = null;
+          onChanged();
+        }
+      } else {
+        if (sourceCase_ == 9) {
+          sourceCase_ = 0;
+          source_ = null;
+        }
+        structBuilderBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.StructBuilder.Builder getStructBuilderBuilder() {
+      return internalGetStructBuilderFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.StructBuilderOrBuilder getStructBuilderOrBuilder() {
+      if ((sourceCase_ == 9) && (structBuilderBuilder_ != null)) {
+        return structBuilderBuilder_.getMessageOrBuilder();
+      } else {
+        if (sourceCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.StructBuilder) source_;
+        }
+        return io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Builds a Struct using data available in the ThreadRun.
+     * </pre>
+     *
+     * <code>.littlehorse.StructBuilder struct_builder = 9;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.StructBuilder, io.littlehorse.sdk.common.proto.StructBuilder.Builder, io.littlehorse.sdk.common.proto.StructBuilderOrBuilder> 
+        internalGetStructBuilderFieldBuilder() {
+      if (structBuilderBuilder_ == null) {
+        if (!(sourceCase_ == 9)) {
+          source_ = io.littlehorse.sdk.common.proto.StructBuilder.getDefaultInstance();
+        }
+        structBuilderBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.StructBuilder, io.littlehorse.sdk.common.proto.StructBuilder.Builder, io.littlehorse.sdk.common.proto.StructBuilderOrBuilder>(
+                (io.littlehorse.sdk.common.proto.StructBuilder) source_,
+                getParentForChildren(),
+                isClean());
+        source_ = null;
+      }
+      sourceCase_ = 9;
+      onChanged();
+      return structBuilderBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf, io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.SizeOfOrBuilder> sizeOfBuilder_;
+    /**
+     * <pre>
+     * Assign the size of the resolved operand value.
+     * Valid for STR, ARRAY, and JSON_ARR values.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
+     * @return Whether the sizeOf field is set.
+     */
+    @java.lang.Override
+    public boolean hasSizeOf() {
+      return sourceCase_ == 10;
+    }
+    /**
+     * <pre>
+     * Assign the size of the resolved operand value.
+     * Valid for STR, ARRAY, and JSON_ARR values.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
+     * @return The sizeOf.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf getSizeOf() {
+      if (sizeOfBuilder_ == null) {
+        if (sourceCase_ == 10) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
+      } else {
+        if (sourceCase_ == 10) {
+          return sizeOfBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Assign the size of the resolved operand value.
+     * Valid for STR, ARRAY, and JSON_ARR values.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
+     */
+    public Builder setSizeOf(io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf value) {
+      if (sizeOfBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        source_ = value;
+        onChanged();
+      } else {
+        sizeOfBuilder_.setMessage(value);
+      }
+      sourceCase_ = 10;
+      return this;
+    }
+    /**
+     * <pre>
+     * Assign the size of the resolved operand value.
+     * Valid for STR, ARRAY, and JSON_ARR values.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
+     */
+    public Builder setSizeOf(
+        io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.Builder builderForValue) {
+      if (sizeOfBuilder_ == null) {
+        source_ = builderForValue.build();
+        onChanged();
+      } else {
+        sizeOfBuilder_.setMessage(builderForValue.build());
+      }
+      sourceCase_ = 10;
+      return this;
+    }
+    /**
+     * <pre>
+     * Assign the size of the resolved operand value.
+     * Valid for STR, ARRAY, and JSON_ARR values.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
+     */
+    public Builder mergeSizeOf(io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf value) {
+      if (sizeOfBuilder_ == null) {
+        if (sourceCase_ == 10 &&
+            source_ != io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance()) {
+          source_ = io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          source_ = value;
+        }
+        onChanged();
+      } else {
+        if (sourceCase_ == 10) {
+          sizeOfBuilder_.mergeFrom(value);
+        } else {
+          sizeOfBuilder_.setMessage(value);
+        }
+      }
+      sourceCase_ = 10;
+      return this;
+    }
+    /**
+     * <pre>
+     * Assign the size of the resolved operand value.
+     * Valid for STR, ARRAY, and JSON_ARR values.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
+     */
+    public Builder clearSizeOf() {
+      if (sizeOfBuilder_ == null) {
+        if (sourceCase_ == 10) {
+          sourceCase_ = 0;
+          source_ = null;
+          onChanged();
+        }
+      } else {
+        if (sourceCase_ == 10) {
+          sourceCase_ = 0;
+          source_ = null;
+        }
+        sizeOfBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Assign the size of the resolved operand value.
+     * Valid for STR, ARRAY, and JSON_ARR values.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.Builder getSizeOfBuilder() {
+      return internalGetSizeOfFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Assign the size of the resolved operand value.
+     * Valid for STR, ARRAY, and JSON_ARR values.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment.SizeOfOrBuilder getSizeOfOrBuilder() {
+      if ((sourceCase_ == 10) && (sizeOfBuilder_ != null)) {
+        return sizeOfBuilder_.getMessageOrBuilder();
+      } else {
+        if (sourceCase_ == 10) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Assign the size of the resolved operand value.
+     * Valid for STR, ARRAY, and JSON_ARR values.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.SizeOf size_of = 10;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf, io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.SizeOfOrBuilder> 
+        internalGetSizeOfFieldBuilder() {
+      if (sizeOfBuilder_ == null) {
+        if (!(sourceCase_ == 10)) {
+          source_ = io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
+        }
+        sizeOfBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf, io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.SizeOfOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_,
+                getParentForChildren(),
+                isClean());
+        source_ = null;
+      }
+      sourceCase_ = 10;
+      onChanged();
+      return sizeOfBuilder_;
+    }
+
     private io.littlehorse.sdk.common.proto.TypeDefinition targetType_;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> targetTypeBuilder_;
@@ -5269,7 +6431,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the targetType field is set.
      */
     public boolean hasTargetType() {
-      return ((bitField0_ & 0x00000080) != 0);
+      return ((bitField0_ & 0x00000200) != 0);
     }
     /**
      * <pre>
@@ -5308,7 +6470,7 @@ private static final long serialVersionUID = 0L;
       } else {
         targetTypeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
@@ -5329,7 +6491,7 @@ private static final long serialVersionUID = 0L;
       } else {
         targetTypeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
@@ -5345,7 +6507,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeTargetType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
       if (targetTypeBuilder_ == null) {
-        if (((bitField0_ & 0x00000080) != 0) &&
+        if (((bitField0_ & 0x00000200) != 0) &&
           targetType_ != null &&
           targetType_ != io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) {
           getTargetTypeBuilder().mergeFrom(value);
@@ -5356,7 +6518,7 @@ private static final long serialVersionUID = 0L;
         targetTypeBuilder_.mergeFrom(value);
       }
       if (targetType_ != null) {
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000200;
         onChanged();
       }
       return this;
@@ -5372,7 +6534,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
     public Builder clearTargetType() {
-      bitField0_ = (bitField0_ & ~0x00000080);
+      bitField0_ = (bitField0_ & ~0x00000200);
       targetType_ = null;
       if (targetTypeBuilder_ != null) {
         targetTypeBuilder_.dispose();
@@ -5392,7 +6554,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.TypeDefinition.Builder getTargetTypeBuilder() {
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000200;
       onChanged();
       return internalGetTargetTypeFieldBuilder().getBuilder();
     }

@@ -13,7 +13,6 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.StartThreadNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
-import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -93,9 +92,7 @@ public class StartThreadNodeModel extends SubNode<StartThreadNode> {
     public Set<String> getNeededNodeNames() {
         Set<String> out = new HashSet<>();
         for (VariableAssignmentModel assignment : variables.values()) {
-            if (assignment.getRhsSourceType() == SourceCase.NODE_OUTPUT) {
-                out.add(assignment.getNodeOutputReference().getNodeName());
-            }
+            out.addAll(assignment.getRequiredNodeNames());
         }
         return out;
     }

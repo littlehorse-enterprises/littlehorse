@@ -40,6 +40,12 @@ message VariableAssignment {
     string node_name = 1;
   }
 
+  // A SizeOf operation evaluates to the number of elements in a STR, JSON_ARR, or ARRAY value.
+  message SizeOf {
+    // The value whose size should be resolved.
+    VariableAssignment operand = 1;
+  }
+
   // An Expression allows you to combine multiple values into one.
   message Expression {
     // The left-hand-side of the expression.
@@ -85,6 +91,11 @@ message VariableAssignment {
     NodeOutputReference node_output = 5;
     // Assign the value of an Expression.
     Expression expression = 6;
+    // Builds a Struct using data available in the ThreadRun.
+    StructBuilder struct_builder = 9;
+    // Assign the size of the resolved operand value.
+    // Valid for STR, ARRAY, and JSON_ARR values.
+    SizeOf size_of = 10;
   }
 
   // If specified, the resolved value will be cast to this type before being used.
@@ -92,6 +103,32 @@ message VariableAssignment {
   // The cast operation is non-mutating: original values remain unchanged.
   // Note: Only primitive type conversions are supported.
   optional TypeDefinition target_type = 7;
+}
+
+// Builds a Struct using data available in the context of this ThreadRun.
+message StructBuilder {
+  // The ID of the StructDef we're building. If the version is -1, it uses the latest.
+  StructDefId struct_def_id = 1;
+
+  // Determines the content of the InlineStruct.
+  InlineStructBuilder value = 2;
+}
+
+// Builds an InlineStruct from values available to a ThreadRun.
+message InlineStructBuilder {
+  // Determines the values for each field in the resulting InlineStruct.
+  map<string, InlineStructFieldValue> fields = 1;
+}
+
+message InlineStructFieldValue {
+  // Determines the Source value for this field.
+  oneof struct_value {
+    // Simple value that already exists in the context of the ThreadRun.
+    VariableAssignment simple_value = 1;
+
+    // Builds a nested sub-structure of a Struct.
+    InlineStructBuilder sub_structure = 2;
+  }
 }
 
 // Enumerates the available operations to mutate a variable in a WfRun.
@@ -118,6 +155,8 @@ enum VariableMutationType {
   AND = 9;
   // Logical OR operation. Combines two boolean values; result is true if either LHS or RHS is true.
   OR = 10;
+  // Raise the LHS to the power of the RHS (both must be INT or DOUBLE)
+  POW = 11;
 }
 
 // A VariableMutation defines a modification made to one of a ThreadRun's variables.
