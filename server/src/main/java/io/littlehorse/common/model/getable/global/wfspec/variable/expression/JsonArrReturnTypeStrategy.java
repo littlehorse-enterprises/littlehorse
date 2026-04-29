@@ -38,6 +38,12 @@ public class JsonArrReturnTypeStrategy implements LHTypeStrategy {
     }
 
     @Override
+    public Optional<TypeDefinitionModel> pow(ReadOnlyMetadataManager manager, LHTypeStrategy other)
+            throws InvalidExpressionException {
+        throw new InvalidExpressionException("Cannot exponentiate a JSON_ARR");
+    }
+
+    @Override
     public Optional<TypeDefinitionModel> removeIfPresent(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         if (!other.isPrimitive(manager)) {

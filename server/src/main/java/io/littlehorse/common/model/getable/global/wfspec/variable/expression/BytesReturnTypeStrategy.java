@@ -37,6 +37,12 @@ public class BytesReturnTypeStrategy implements LHTypeStrategy {
     }
 
     @Override
+    public Optional<TypeDefinitionModel> pow(ReadOnlyMetadataManager manager, LHTypeStrategy other)
+            throws InvalidExpressionException {
+        throw new InvalidExpressionException("Cannot exponentiate a BYTES");
+    }
+
+    @Override
     public Optional<TypeDefinitionModel> removeIfPresent(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot call REMOVE_IF_PRESENT on a BYTES");

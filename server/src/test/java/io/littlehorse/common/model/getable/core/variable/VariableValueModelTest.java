@@ -235,4 +235,117 @@ public class VariableValueModelTest {
 
         assertThatThrownBy(intValue::sizeOf).isInstanceOf(LHVarSubError.class).hasMessageContaining("size()");
     }
+
+    @Test
+    void shouldPowIntByInt() throws LHVarSubError {
+        VariableValueModel lhs = new VariableValueModel(2L);
+        VariableValueModel rhs = new VariableValueModel(3L);
+
+        VariableValueModel result = lhs.pow(rhs);
+
+        assertThat(result.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.INT);
+        assertThat(result.getIntVal()).isEqualTo(8L);
+    }
+
+    @Test
+    void shouldPowIntByZero() throws LHVarSubError {
+        VariableValueModel lhs = new VariableValueModel(7L);
+        VariableValueModel rhs = new VariableValueModel(0L);
+
+        VariableValueModel result = lhs.pow(rhs);
+
+        assertThat(result.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.INT);
+        assertThat(result.getIntVal()).isEqualTo(1L);
+    }
+
+    @Test
+    void shouldPowZeroByZero() throws LHVarSubError {
+        VariableValueModel lhs = new VariableValueModel(0L);
+        VariableValueModel rhs = new VariableValueModel(0L);
+
+        VariableValueModel result = lhs.pow(rhs);
+
+        assertThat(result.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.INT);
+        assertThat(result.getIntVal()).isEqualTo(1L);
+    }
+
+    @Test
+    void shouldPowWithDoubleExponent() throws LHVarSubError {
+        VariableValueModel lhs = new VariableValueModel(81L);
+        VariableValueModel rhs = new VariableValueModel(0.5);
+
+        VariableValueModel result = lhs.pow(rhs);
+
+        assertThat(result.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.DOUBLE);
+        assertThat(result.getDoubleVal()).isEqualTo(9.0);
+    }
+
+    @Test
+    void shouldPowWithNegativeExponentForInts() throws LHVarSubError {
+        VariableValueModel lhs = new VariableValueModel(2L);
+        VariableValueModel rhs = new VariableValueModel(-1L);
+
+        VariableValueModel result = lhs.pow(rhs);
+
+        assertThat(result.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.INT);
+        assertThat(result.getIntVal()).isEqualTo(0L);
+    }
+
+    @Test
+    void shouldPowWithNegativeExponentForDoubles() throws LHVarSubError {
+        VariableValueModel lhs = new VariableValueModel(2L);
+        VariableValueModel rhs = new VariableValueModel(-1.0);
+
+        VariableValueModel result = lhs.pow(rhs);
+
+        assertThat(result.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.DOUBLE);
+        assertThat(result.getDoubleVal()).isEqualTo(0.5);
+    }
+
+    @Test
+    void shouldRejectPowZeroToNegativeIntExponent() {
+        VariableValueModel lhs = new VariableValueModel(0L);
+        VariableValueModel rhs = new VariableValueModel(-1L);
+
+        assertThatThrownBy(() -> lhs.pow(rhs)).isInstanceOf(LHVarSubError.class).hasMessageContaining("not finite");
+    }
+
+    @Test
+    void shouldRejectPowZeroToNegativeDoubleExponent() {
+        VariableValueModel lhs = new VariableValueModel(0L);
+        VariableValueModel rhs = new VariableValueModel(-1.0);
+
+        assertThatThrownBy(() -> lhs.pow(rhs)).isInstanceOf(LHVarSubError.class).hasMessageContaining("not finite");
+    }
+
+    @Test
+    void shouldRejectPowWhenBaseIsNotNumeric() {
+        VariableValueModel lhs = new VariableValueModel("hello");
+        VariableValueModel rhs = new VariableValueModel(2L);
+
+        assertThatThrownBy(() -> lhs.pow(rhs))
+                .isInstanceOf(LHVarSubError.class)
+                .hasMessageContaining("Cannot exponentiate base value of type");
+    }
+
+    @Test
+    void shouldRejectPowWhenExponentIsNotNumeric() {
+        VariableValueModel lhs = new VariableValueModel(2L);
+        VariableValueModel rhs = new VariableValueModel(true);
+
+        assertThatThrownBy(() -> lhs.pow(rhs))
+                .isInstanceOf(LHVarSubError.class)
+                .hasMessageContaining("Cannot exponentiate by type");
+    }
+
+    @Test
+    void shouldSupportPowViaOperate() throws LHVarSubError {
+        VariableValueModel lhs = new VariableValueModel(3L);
+        VariableValueModel rhs = new VariableValueModel(2L);
+
+        VariableValueModel result = lhs.operate(VariableMutationType.POW, rhs, lhs.getTypeDefinition());
+
+        assertThat(result.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.INT);
+        assertThat(result.getIntVal()).isEqualTo(9L);
+    }
 }
