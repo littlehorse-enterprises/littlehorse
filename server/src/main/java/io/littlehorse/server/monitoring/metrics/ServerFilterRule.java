@@ -44,9 +44,9 @@ public class ServerFilterRule {
         public MeterFilterReply accept(Meter.Id id) {
             MeterFilterReply prefixResult = super.accept(id);
             if (id.getTag(tag) != null) {
-                return prefixResult;
+                return condition;
             }
-            return MeterFilterReply.NEUTRAL;
+            return prefixResult;
         }
     }
 }

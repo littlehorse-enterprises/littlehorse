@@ -1,9 +1,14 @@
 package io.littlehorse.server.monitoring.metrics;
 
 import io.micrometer.core.instrument.config.MeterFilterReply;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 public final class ServerFilterRules {
+
+    private static final Logger log = LoggerFactory.getLogger(ServerFilterRules.class);
 
     private ServerFilterRules() {}
 
@@ -52,7 +57,7 @@ public final class ServerFilterRules {
             // TODO: Wait for KIP-869 and gather state restoration metrics.
             accept("lh_in_memory_task_queue_size"),
             accept("lh_cache_size"),
-            accept("lh_command_processor_commands_total"),
+//            accept("lh_command_processor_commands_total"),
             accept("lh_command_processor_commands_total", "type"),
 
             // Kafka Streams State Stuff
@@ -112,6 +117,7 @@ public final class ServerFilterRules {
     }
 
     public static List<ServerFilterRule> fromLevel(String level) {
+        log.info("Applying metric filter rules for level: " + level);
         if (level.equals("TRACE")) {
             return TRACE_RULES;
         } else if (level.equals("DEBUG")) {

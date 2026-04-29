@@ -8,6 +8,8 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.proto.Command;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import io.micrometer.prometheusmetrics.PrometheusConfig;
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -153,5 +155,47 @@ class CommandProcessorMetricsTest {
                         .isZero();
             }
         }
+    }
+
+    @Test
+    void shouldOnlyShowGeneralCounterWhenInfoLevelIsEnabled() {
+        PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+        new ServerMetricFilter(registry, ServerFilterRules.fromLevel("INFO"))
+                .initialize();
+        CommandProcessorMetrics metrics = new CommandProcessorMetrics();
+        metrics.bindTo(registry);
+
+        CommandModel runWfCommand = Mockito.mock(CommandModel.class);
+        Mockito.when(runWfCommand.getType()).thenReturn(Command.CommandCase.RUN_WF);
+
+        CommandModel taskClaimCommand = Mockito.mock(CommandModel.class);
+        Mockito.when(taskClaimCommand.getType()).thenReturn(Command.CommandCase.TASK_CLAIM_EVENT);
+
+        metrics.observe(runWfCommand);
+        metrics.observe(runWfCommand);
+        metrics.observe(taskClaimCommand);
+
+        assertThat(registry.scrape()).contains("lh_command_processor_commands_total 3.0");
+    }
+
+    @Test
+    void shouldOnlyShowAllCounterWhenDebugLevelIsEnabled() {
+        PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+        new ServerMetricFilter(registry, ServerFilterRules.fromLevel("DEBUG"))
+                .initialize();
+        CommandProcessorMetrics metrics = new CommandProcessorMetrics();
+        metrics.bindTo(registry);
+
+        CommandModel runWfCommand = Mockito.mock(CommandModel.class);
+        Mockito.when(runWfCommand.getType()).thenReturn(Command.CommandCase.RUN_WF);
+
+        CommandModel taskClaimCommand = Mockito.mock(CommandModel.class);
+        Mockito.when(taskClaimCommand.getType()).thenReturn(Command.CommandCase.TASK_CLAIM_EVENT);
+
+        metrics.observe(runWfCommand);
+        metrics.observe(runWfCommand);
+        metrics.observe(taskClaimCommand);
+
+        assertThat(registry.scrape()).contains("lh_command_processor_commands_total{type=\"RUN_WF\"} 2.0");
     }
 }
