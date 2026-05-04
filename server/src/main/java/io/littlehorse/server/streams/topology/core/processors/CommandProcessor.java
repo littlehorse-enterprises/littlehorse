@@ -113,7 +113,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void processHelper(final Record<String, Command> commandRecord) {
         CoreProcessorContext executionContext = buildExecutionContext(commandRecord);
         CommandModel command = executionContext.currentCommand();
-        metrics.observe(command);
         log.trace(
                 "{} Processing command of type {} with commandId {} with partition key {}",
                 config.getLHInstanceName(),
@@ -121,6 +120,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 command.getCommandId(),
                 command.getPartitionKey());
         try {
+            metrics.observe(command);
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
 
