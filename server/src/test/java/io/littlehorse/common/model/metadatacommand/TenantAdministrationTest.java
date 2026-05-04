@@ -51,6 +51,7 @@ public class TenantAdministrationTest {
 
     @Mock
     private LHServer server;
+
     private final CommandProcessorMetrics metrics = mock();
 
     private ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);

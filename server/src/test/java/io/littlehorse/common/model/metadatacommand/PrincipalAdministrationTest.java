@@ -62,6 +62,7 @@ public class PrincipalAdministrationTest {
 
     @Mock
     private LHServer server;
+
     private final CommandProcessorMetrics metrics = mock();
 
     private final MetadataCache metadataCache = new MetadataCache();

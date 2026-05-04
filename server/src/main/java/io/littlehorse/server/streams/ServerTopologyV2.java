@@ -110,7 +110,8 @@ public class ServerTopologyV2 extends Topology {
         this.coreCommandTopic = config.getCoreCmdTopicName();
         this.repartitionTopic = config.getRepartitionTopicName();
         this.metadataTopic = config.getMetadataCmdTopicName();
-        this.metadataProcessorSupplier = () -> new MetadataProcessor(config, server, metadataCache, asyncWaiters, commandProcessorMetrics);
+        this.metadataProcessorSupplier =
+                () -> new MetadataProcessor(config, server, metadataCache, asyncWaiters, commandProcessorMetrics);
         this.coreStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(CORE_STORE_NAME),
                 Serdes.String(),
