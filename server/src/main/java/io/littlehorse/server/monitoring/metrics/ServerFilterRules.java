@@ -16,7 +16,6 @@ public final class ServerFilterRules {
             // TODO: Wait for KIP-869 and gather state restoration metrics.
             accept("lh_in_memory_task_queue_size"),
             accept("lh_cache_size"),
-            deny("lh_subcommands_processed"),
             accept("lh_commands_processed"),
 
             // Kafka Streams State Stuff
@@ -50,7 +49,8 @@ public final class ServerFilterRules {
             deny("kafka_stream_processor"),
             deny("kafka_producer"),
             deny("kafka_consumer"),
-            deny("kafka_admin"));
+            deny("kafka_admin"),
+            deny("lh_subcommands_processed"));
 
     // relevance ordered
     public static final List<ServerFilterRule> DEBUG_RULES = List.of(
