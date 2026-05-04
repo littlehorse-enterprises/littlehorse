@@ -49,6 +49,10 @@ public interface LHExpression extends Serializable {
         return new LHExpressionImpl(this, VariableMutationType.DIVIDE, other);
     }
 
+    default LHExpression pow(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.POW, other);
+    }
+
     /**
      * Returns an expression whose value is this expression extended by the `other`.
      * @param other the value to extend this expression by.
