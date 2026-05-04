@@ -83,7 +83,7 @@ public class CommandProcessorTest {
 
     @BeforeEach
     public void setup() {
-        commandProcessor = new CommandProcessor(config, server, metadataCache, taskQueueManager, mock());
+        commandProcessor = new CommandProcessor(config, server, metadataCache, taskQueueManager, mock(), mock());
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
         globalInMemoryStore.init(mockProcessorContext.getStateStoreContext(), globalInMemoryStore);
     }
