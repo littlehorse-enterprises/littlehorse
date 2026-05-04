@@ -25,6 +25,7 @@ import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.ServerACL;
 import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
@@ -61,6 +62,7 @@ public class PrincipalAdministrationTest {
 
     @Mock
     private LHServer server;
+    private final CommandProcessorMetrics metrics = mock();
 
     private final MetadataCache metadataCache = new MetadataCache();
     private final KeyValueStore<String, Bytes> nativeMetadataStore = Stores.keyValueStoreBuilder(
@@ -92,7 +94,7 @@ public class PrincipalAdministrationTest {
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache, asyncWaiters);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, asyncWaiters, metrics);
         defaultStore.put(new StoredGetable<>(new TenantModel(tenantId)));
 
         PrincipalModel requester = new PrincipalModel();

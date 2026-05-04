@@ -119,7 +119,7 @@ public class ServerTopology {
                 );
         topo.addProcessor(
                 METADATA_PROCESSOR,
-                () -> new MetadataProcessor(config, server, metadataCache, asyncWaiters),
+                () -> new MetadataProcessor(config, server, metadataCache, asyncWaiters, metrics),
                 METADATA_SOURCE);
         StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());

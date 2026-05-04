@@ -14,6 +14,7 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
@@ -50,6 +51,7 @@ public class TenantAdministrationTest {
 
     @Mock
     private LHServer server;
+    private final CommandProcessorMetrics metrics = mock();
 
     private ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
@@ -80,7 +82,7 @@ public class TenantAdministrationTest {
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache, asyncWaiters);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, asyncWaiters, metrics);
     }
 
     @Test
