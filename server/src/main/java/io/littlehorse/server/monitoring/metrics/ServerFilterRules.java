@@ -1,10 +1,9 @@
 package io.littlehorse.server.monitoring.metrics;
 
 import io.micrometer.core.instrument.config.MeterFilterReply;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public final class ServerFilterRules {
 
@@ -17,7 +16,8 @@ public final class ServerFilterRules {
             // TODO: Wait for KIP-869 and gather state restoration metrics.
             accept("lh_in_memory_task_queue_size"),
             accept("lh_cache_size"),
-            accept("lh_command_processor_commands_total"),
+            deny("lh_subcommands_processed"),
+            accept("lh_commands_processed"),
 
             // Kafka Streams State Stuff
             accept("kafka_stream_state_compaction_pending"),
@@ -57,8 +57,6 @@ public final class ServerFilterRules {
             // TODO: Wait for KIP-869 and gather state restoration metrics.
             accept("lh_in_memory_task_queue_size"),
             accept("lh_cache_size"),
-//            accept("lh_command_processor_commands_total"),
-            accept("lh_command_processor_commands_total", "type"),
 
             // Kafka Streams State Stuff
             accept("kafka_stream_state_compaction_pending"),
@@ -104,16 +102,8 @@ public final class ServerFilterRules {
         return new ServerFilterRule(prefix, MeterFilterReply.ACCEPT);
     }
 
-    public static ServerFilterRule accept(String prefix, String tag) {
-        return new ServerFilterRule(prefix, tag, MeterFilterReply.ACCEPT);
-    }
-
     public static ServerFilterRule deny(String prefix) {
         return new ServerFilterRule(prefix, MeterFilterReply.DENY);
-    }
-
-    public static ServerFilterRule deny(String prefix, String tag) {
-        return new ServerFilterRule(prefix, tag, MeterFilterReply.DENY);
     }
 
     public static List<ServerFilterRule> fromLevel(String level) {

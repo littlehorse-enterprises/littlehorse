@@ -9,19 +9,23 @@ import org.slf4j.LoggerFactory;
 
 public class CommandProcessorMetrics implements MeterBinder {
 
+    private static final String CORE_COMMAND_TYPE = "core";
+    private static final String METADATA_COMMAND_TYPE = "metadata";
     private final Logger logger = LoggerFactory.getLogger(CommandProcessorMetrics.class);
 
-    static final String METRIC_NAME = "lh_command_processor_commands_total";
+    static final String METRIC_NAME = "lh.commands.processed";
+    static final String METRIC_NAME_BY_TYPE = "lh.subcommands.processed";
     static final String COMMAND_TYPE_TAG = "type";
     private MeterRegistry registry;
 
     @Override
     public void bindTo(MeterRegistry registry) {
         this.registry = registry;
-        registry.counter(METRIC_NAME);
+        registry.counter(METRIC_NAME, COMMAND_TYPE_TAG, CORE_COMMAND_TYPE);
+        registry.counter(METRIC_NAME, COMMAND_TYPE_TAG, METADATA_COMMAND_TYPE);
         for (Command.CommandCase commandType : Command.CommandCase.values()) {
             if (commandType != Command.CommandCase.COMMAND_NOT_SET) {
-                registry.counter(METRIC_NAME, COMMAND_TYPE_TAG, commandType.name());
+                registry.counter(METRIC_NAME_BY_TYPE, COMMAND_TYPE_TAG, commandType.name());
             }
         }
     }
@@ -32,10 +36,15 @@ public class CommandProcessorMetrics implements MeterBinder {
             return;
         }
         if (command.getType() != Command.CommandCase.COMMAND_NOT_SET) {
-            registry.counter(METRIC_NAME).increment();
+            // Increase both the general counter and the counter for the specific command type
             registry.get(METRIC_NAME)
-                    .tag(COMMAND_TYPE_TAG, command.getType().name())
+                    .tag(COMMAND_TYPE_TAG, CORE_COMMAND_TYPE)
                     .counter()
+                    .increment();
+            registry.counter(
+                            METRIC_NAME_BY_TYPE,
+                            COMMAND_TYPE_TAG,
+                            command.getType().name())
                     .increment();
         }
     }

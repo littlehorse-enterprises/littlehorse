@@ -2,6 +2,7 @@ package io.littlehorse.server.monitoring.metrics;
 
 import static io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics.COMMAND_TYPE_TAG;
 import static io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics.METRIC_NAME;
+import static io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics.METRIC_NAME_BY_TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -29,7 +30,7 @@ class CommandProcessorMetricsTest {
     void shouldRegisterCountersForAllCommandTypes() {
         for (Command.CommandCase commandType : Command.CommandCase.values()) {
             if (commandType != Command.CommandCase.COMMAND_NOT_SET) {
-                Counter counter = registry.get(METRIC_NAME)
+                Counter counter = registry.get(METRIC_NAME_BY_TYPE)
                         .tag(COMMAND_TYPE_TAG, commandType.name())
                         .counter();
                 assertThat(counter).isNotNull();
@@ -45,7 +46,7 @@ class CommandProcessorMetricsTest {
 
         metrics.observe(command);
 
-        Counter counter = registry.get(METRIC_NAME)
+        Counter counter = registry.get(METRIC_NAME_BY_TYPE)
                 .tag(COMMAND_TYPE_TAG, Command.CommandCase.RUN_WF.name())
                 .counter();
         assertThat(counter.count()).isEqualTo(1.0);
@@ -60,7 +61,7 @@ class CommandProcessorMetricsTest {
         metrics.observe(command);
         metrics.observe(command);
 
-        Counter counter = registry.get(METRIC_NAME)
+        Counter counter = registry.get(METRIC_NAME_BY_TYPE)
                 .tag(COMMAND_TYPE_TAG, Command.CommandCase.RUN_WF.name())
                 .counter();
         assertThat(counter.count()).isEqualTo(3.0);
@@ -78,13 +79,13 @@ class CommandProcessorMetricsTest {
         metrics.observe(runWfCommand);
         metrics.observe(taskClaimCommand);
 
-        assertThat(registry.get(METRIC_NAME)
+        assertThat(registry.get(METRIC_NAME_BY_TYPE)
                         .tag(COMMAND_TYPE_TAG, Command.CommandCase.RUN_WF.name())
                         .counter()
                         .count())
                 .isEqualTo(2.0);
 
-        assertThat(registry.get(METRIC_NAME)
+        assertThat(registry.get(METRIC_NAME_BY_TYPE)
                         .tag(COMMAND_TYPE_TAG, Command.CommandCase.TASK_CLAIM_EVENT.name())
                         .counter()
                         .count())
@@ -103,10 +104,7 @@ class CommandProcessorMetricsTest {
         metrics.observe(taskClaim);
         metrics.observe(runWf);
 
-        Counter general = registry.get(METRIC_NAME).counters().stream()
-                .filter(c -> c.getId().getTags().isEmpty())
-                .findFirst()
-                .orElseThrow();
+        Counter general = registry.get(METRIC_NAME).tag("type", "core").counter();
         assertThat(general.count()).isEqualTo(3.0);
     }
 
@@ -117,11 +115,8 @@ class CommandProcessorMetricsTest {
 
         metrics.observe(command);
 
-        Counter general = registry.get(METRIC_NAME).counters().stream()
-                .filter(c -> c.getId().getTags().isEmpty())
-                .findFirst()
-                .orElseThrow();
-        Counter tagSpecific = registry.get(METRIC_NAME)
+        Counter general = registry.get(METRIC_NAME).tag("type", "core").counter();
+        Counter tagSpecific = registry.get(METRIC_NAME_BY_TYPE)
                 .tag(COMMAND_TYPE_TAG, Command.CommandCase.RUN_WF.name())
                 .counter();
 
@@ -144,11 +139,12 @@ class CommandProcessorMetricsTest {
         Mockito.when(command.getType()).thenReturn(Command.CommandCase.COMMAND_NOT_SET);
 
         metrics.observe(command);
+        registry.getMeters();
 
         // All counters should remain at zero
         for (Command.CommandCase commandType : Command.CommandCase.values()) {
             if (commandType != Command.CommandCase.COMMAND_NOT_SET) {
-                assertThat(registry.get(METRIC_NAME)
+                assertThat(registry.get(METRIC_NAME_BY_TYPE)
                                 .tag(COMMAND_TYPE_TAG, commandType.name())
                                 .counter()
                                 .count())
@@ -158,31 +154,28 @@ class CommandProcessorMetricsTest {
     }
 
     @Test
-    void shouldOnlyShowGeneralCounterWhenInfoLevelIsEnabled() {
+    void shouldScrapeOnlyCommandsProcessedWhenInfoLevel() {
         PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-        new ServerMetricFilter(registry, ServerFilterRules.fromLevel("INFO"))
-                .initialize();
+        new ServerMetricFilter(registry, ServerFilterRules.fromLevel("INFO")).initialize();
         CommandProcessorMetrics metrics = new CommandProcessorMetrics();
         metrics.bindTo(registry);
 
         CommandModel runWfCommand = Mockito.mock(CommandModel.class);
         Mockito.when(runWfCommand.getType()).thenReturn(Command.CommandCase.RUN_WF);
 
-        CommandModel taskClaimCommand = Mockito.mock(CommandModel.class);
-        Mockito.when(taskClaimCommand.getType()).thenReturn(Command.CommandCase.TASK_CLAIM_EVENT);
-
         metrics.observe(runWfCommand);
         metrics.observe(runWfCommand);
-        metrics.observe(taskClaimCommand);
+        metrics.observe(runWfCommand);
 
-        assertThat(registry.scrape()).contains("lh_command_processor_commands_total 3.0");
+        assertThat(registry.scrape()).contains("lh_commands_processed_total{type=\"core\"} 3.0");
+        assertThat(registry.scrape()).contains("lh_commands_processed_total{type=\"metadata\"} 0.0");
+        assertThat(registry.scrape()).doesNotContain("lh_subcommands_processed_total");
     }
 
     @Test
-    void shouldOnlyShowAllCounterWhenDebugLevelIsEnabled() {
+    void shouldScrapeCommandsAndSubcommandsWhenDebugLevel() {
         PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-        new ServerMetricFilter(registry, ServerFilterRules.fromLevel("DEBUG"))
-                .initialize();
+        new ServerMetricFilter(registry, ServerFilterRules.fromLevel("DEBUG")).initialize();
         CommandProcessorMetrics metrics = new CommandProcessorMetrics();
         metrics.bindTo(registry);
 
@@ -194,8 +187,12 @@ class CommandProcessorMetricsTest {
 
         metrics.observe(runWfCommand);
         metrics.observe(runWfCommand);
+        metrics.observe(runWfCommand);
         metrics.observe(taskClaimCommand);
 
-        assertThat(registry.scrape()).contains("lh_command_processor_commands_total{type=\"RUN_WF\"} 2.0");
+        assertThat(registry.scrape()).contains("lh_commands_processed_total{type=\"core\"} 4.0");
+        assertThat(registry.scrape()).contains("lh_commands_processed_total{type=\"metadata\"} 0.0");
+        assertThat(registry.scrape()).contains("lh_subcommands_processed_total{type=\"RUN_WF\"} 3.0");
+        assertThat(registry.scrape()).contains("lh_subcommands_processed_total{type=\"TASK_CLAIM_EVENT\"} 1.0");
     }
 }
