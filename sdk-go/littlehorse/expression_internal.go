@@ -31,6 +31,9 @@ func (e *castExpression) Multiply(other interface{}) LHExpression {
 func (e *castExpression) Divide(other interface{}) LHExpression {
 	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_DIVIDE}
 }
+func (e *castExpression) Pow(exponent interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: exponent, operation: lhproto.VariableMutationType_POW}
+}
 func (e *castExpression) Extend(other interface{}) LHExpression {
 	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_EXTEND}
 }
@@ -135,6 +138,14 @@ func (e *lhExpression) Divide(other interface{}) LHExpression {
 		lhs:       e,
 		rhs:       other,
 		operation: lhproto.VariableMutationType_DIVIDE,
+	}
+}
+
+func (e *lhExpression) Pow(exponent interface{}) LHExpression {
+	return &lhExpression{
+		lhs:       e,
+		rhs:       exponent,
+		operation: lhproto.VariableMutationType_POW,
 	}
 }
 
@@ -251,6 +262,9 @@ func (n *TaskNodeOutput) Multiply(other interface{}) LHExpression {
 func (n *TaskNodeOutput) Divide(other interface{}) LHExpression {
 	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_DIVIDE}
 }
+func (n *TaskNodeOutput) Pow(exponent interface{}) LHExpression {
+	return &lhExpression{lhs: n, rhs: exponent, operation: lhproto.VariableMutationType_POW}
+}
 func (n *TaskNodeOutput) Extend(other interface{}) LHExpression {
 	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_EXTEND}
 }
@@ -336,6 +350,9 @@ func (n *WaitForThreadsNodeOutput) Multiply(other interface{}) LHExpression {
 }
 func (n *WaitForThreadsNodeOutput) Divide(other interface{}) LHExpression {
 	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_DIVIDE}
+}
+func (n *WaitForThreadsNodeOutput) Pow(exponent interface{}) LHExpression {
+	return &lhExpression{lhs: n, rhs: exponent, operation: lhproto.VariableMutationType_POW}
 }
 func (n *WaitForThreadsNodeOutput) Extend(other interface{}) LHExpression {
 	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_EXTEND}
@@ -423,6 +440,9 @@ func (n *ExternalEventNodeOutput) Multiply(other interface{}) LHExpression {
 func (n *ExternalEventNodeOutput) Divide(other interface{}) LHExpression {
 	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_DIVIDE}
 }
+func (n *ExternalEventNodeOutput) Pow(exponent interface{}) LHExpression {
+	return &lhExpression{lhs: n, rhs: exponent, operation: lhproto.VariableMutationType_POW}
+}
 func (n *ExternalEventNodeOutput) Extend(other interface{}) LHExpression {
 	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_EXTEND}
 }
@@ -509,6 +529,9 @@ func (n *UserTaskNodeOutput) Multiply(other interface{}) LHExpression {
 func (n *UserTaskNodeOutput) Divide(other interface{}) LHExpression {
 	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_DIVIDE}
 }
+func (n *UserTaskNodeOutput) Pow(exponent interface{}) LHExpression {
+	return &lhExpression{lhs: n, rhs: exponent, operation: lhproto.VariableMutationType_POW}
+}
 func (n *UserTaskNodeOutput) Extend(other interface{}) LHExpression {
 	return &lhExpression{lhs: n, rhs: other, operation: lhproto.VariableMutationType_EXTEND}
 }
@@ -594,6 +617,9 @@ func (e *comparatorExpression) Multiply(other interface{}) LHExpression {
 }
 func (e *comparatorExpression) Divide(other interface{}) LHExpression {
 	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_DIVIDE}
+}
+func (e *comparatorExpression) Pow(exponent interface{}) LHExpression {
+	return &lhExpression{lhs: e, rhs: exponent, operation: lhproto.VariableMutationType_POW}
 }
 func (e *comparatorExpression) Extend(other interface{}) LHExpression {
 	return &lhExpression{lhs: e, rhs: other, operation: lhproto.VariableMutationType_EXTEND}
