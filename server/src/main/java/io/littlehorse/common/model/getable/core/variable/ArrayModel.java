@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.core.variable;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Array;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ArrayModel extends LHSerializable<Array> {
+public final class ArrayModel extends LHSerializable<Array> {
 
     @Getter
     private ArrayList<VariableValueModel> items;
@@ -33,9 +34,7 @@ public class ArrayModel extends LHSerializable<Array> {
 
     public ArrayModel(ArrayModel other) {
         if (other == null) {
-            this.items = new ArrayList<>();
-            this.elementType = null;
-            return;
+            throw new IllegalArgumentException("Cannot copy-construct ArrayModel from null");
         }
 
         if (other.items != null) {
@@ -72,6 +71,10 @@ public class ArrayModel extends LHSerializable<Array> {
         if (p.hasElementType()) {
             this.elementType = TypeDefinitionModel.fromProto(p.getElementType(), TypeDefinitionModel.class, context);
         }
+    }
+
+    public InlineArrayDefModel getInlineArrayDef() {
+        return new InlineArrayDefModel(elementType);
     }
 
     @Override
