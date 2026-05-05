@@ -194,6 +194,9 @@ class LHExpression:
     def divide(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.DIVIDE, other)
 
+    def pow(self, exponent: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.POW, exponent)
+
     def extend(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.EXTEND, other)
 
@@ -263,6 +266,9 @@ class CastExpression:
 
     def divide(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.DIVIDE, other)
+
+    def pow(self, exponent: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.POW, exponent)
 
     def extend(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.EXTEND, other)
@@ -458,6 +464,9 @@ class NodeOutput(LHExpression):
 
     def divide(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.DIVIDE, other)
+
+    def pow(self, exponent: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.POW, exponent)
 
     def extend(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.EXTEND, other)
@@ -869,6 +878,9 @@ class WfRunVariable:
 
     def divide(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.DIVIDE, other)
+
+    def pow(self, exponent: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.POW, exponent)
 
     def extend(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.EXTEND, other)
@@ -1771,6 +1783,9 @@ class WorkflowThread:
 
     def divide(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.DIVIDE, rhs)
+
+    def pow(self, base: Any, exponent: Any) -> LHExpression:
+        return LHExpression(base, VariableMutationType.POW, exponent)
 
     def subtract(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.SUBTRACT, rhs)
