@@ -473,6 +473,16 @@ public class WfRunVariable
     {
         return new LHExpression(this, VariableMutationType.Divide, other);
     }
+
+    // <summary>
+    /// Returns an expression whose value is this expression raised to the power of the <c>exponent</c>.
+    /// </summary>
+    /// <param name="exponent"> The value to raise this expression to the power of.</param>
+    /// <returns> An expression whose value is this expression raised to the power of the <c>exponent</c>.</returns>
+    public LHExpression Pow(object exponent) 
+    {
+        return new LHExpression(this, VariableMutationType.Pow, exponent);
+    }
     
     /// <summary>
     /// Returns an expression whose value is this expression extended by the `other`.

@@ -2,8 +2,12 @@ package io.littlehorse.server.monitoring.metrics;
 
 import io.micrometer.core.instrument.config.MeterFilterReply;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class ServerFilterRules {
+
+    private static final Logger log = LoggerFactory.getLogger(ServerFilterRules.class);
 
     private ServerFilterRules() {}
 
@@ -12,6 +16,7 @@ public final class ServerFilterRules {
             // TODO: Wait for KIP-869 and gather state restoration metrics.
             accept("lh_in_memory_task_queue_size"),
             accept("lh_cache_size"),
+            accept("lh_commands_processed"),
 
             // Kafka Streams State Stuff
             accept("kafka_stream_state_compaction_pending"),
@@ -44,7 +49,8 @@ public final class ServerFilterRules {
             deny("kafka_stream_processor"),
             deny("kafka_producer"),
             deny("kafka_consumer"),
-            deny("kafka_admin"));
+            deny("kafka_admin"),
+            deny("lh_subcommands_processed"));
 
     // relevance ordered
     public static final List<ServerFilterRule> DEBUG_RULES = List.of(
@@ -101,6 +107,7 @@ public final class ServerFilterRules {
     }
 
     public static List<ServerFilterRule> fromLevel(String level) {
+        log.info("Applying metric filter rules for level: " + level);
         if (level.equals("TRACE")) {
             return TRACE_RULES;
         } else if (level.equals("DEBUG")) {
