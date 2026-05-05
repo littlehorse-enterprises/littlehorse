@@ -15,6 +15,7 @@ import io.littlehorse.server.monitoring.health.InProgressRestoration;
 import io.littlehorse.server.monitoring.health.ServerHealthState;
 import io.littlehorse.server.monitoring.http.ContentType;
 import io.littlehorse.server.monitoring.http.LHHttpException;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -44,6 +45,7 @@ class HealthServiceTest {
     private final TaskQueueManager taskQueueManager = mock();
     private final MetadataCache metadataCache = mock();
     private final BackendInternalComms internalComms = mock();
+    private final CommandProcessorMetrics commandProcessorMetrics = mock();
     private final Map<String, Supplier<String>> handlers = new HashMap<>();
     private KafkaStreams.StateListener coreStateListener;
     private KafkaStreams.StateListener timerStateListener;
@@ -88,7 +90,14 @@ class HealthServiceTest {
                 .setStateListener(any());
 
         healthService = new HealthService(
-                statusServer, config, coreStreams, timerStreams, taskQueueManager, metadataCache, internalComms);
+                statusServer,
+                config,
+                coreStreams,
+                timerStreams,
+                taskQueueManager,
+                metadataCache,
+                internalComms,
+                commandProcessorMetrics);
     }
 
     @Nested
