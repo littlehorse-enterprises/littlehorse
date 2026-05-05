@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
@@ -237,6 +238,126 @@ public class VariableValueModelTest {
     }
 
     @Test
+    void getTypeDefinitionReturnsPrimitiveTypeForInt() {
+        VariableValueModel val = new VariableValueModel(42L);
+        assertThat(val.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.INT);
+    }
+
+    @Test
+    void getTypeDefinitionReturnsPrimitiveTypeForDouble() {
+        VariableValueModel val = new VariableValueModel(3.14);
+        assertThat(val.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.DOUBLE);
+    }
+
+    @Test
+    void getTypeDefinitionReturnsPrimitiveTypeForStr() {
+        VariableValueModel val = new VariableValueModel("hello");
+        assertThat(val.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.STR);
+    }
+
+    @Test
+    void getTypeDefinitionReturnsPrimitiveTypeForBool() {
+        VariableValueModel val = new VariableValueModel(true);
+        assertThat(val.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.BOOL);
+    }
+
+    @Test
+    void getTypeDefinitionReturnsNullTypeForUnsetValue() {
+        VariableValueModel val = new VariableValueModel();
+        assertThat(val.getTypeDefinition().isNull()).isTrue();
+    }
+
+    @Test
+    void getTypeDefinitionForArrayWithExplicitElementTypeUsesElementType() {
+        TypeDefinitionModel elemType = new TypeDefinitionModel(VariableType.STR);
+        ArrayModel arr = new ArrayModel(new ArrayList<>(), elemType);
+        VariableValueModel val = new VariableValueModel(arr);
+
+        TypeDefinitionModel typeDef = val.getTypeDefinition();
+
+        assertThat(typeDef.getInlineArrayDef()).isNotNull();
+        assertThat(typeDef.getInlineArrayDef().getArrayType().getPrimitiveType())
+                .isEqualTo(VariableType.STR);
+    }
+
+    @Test
+    void getTypeDefinitionForEmptyArrayWithNoElementTypeReturnsNullInnerType() {
+        ArrayModel arr = new ArrayModel(new ArrayList<>(), null);
+        VariableValueModel val = new VariableValueModel(arr);
+
+        TypeDefinitionModel typeDef = val.getTypeDefinition();
+
+        assertThat(typeDef.getInlineArrayDef()).isNotNull();
+        assertThat(typeDef.getInlineArrayDef().getArrayType().isNull()).isTrue();
+    }
+
+    @Test
+    void getTypeDefinitionForArrayWithNoElementTypeInfersFromFirstItem() {
+        ArrayList<VariableValueModel> items = new ArrayList<>();
+        items.add(new VariableValueModel(99L));
+        items.add(new VariableValueModel(7L));
+        ArrayModel arr = new ArrayModel(items, null);
+        VariableValueModel val = new VariableValueModel(arr);
+
+        TypeDefinitionModel typeDef = val.getTypeDefinition();
+
+        assertThat(typeDef.getInlineArrayDef()).isNotNull();
+        assertThat(typeDef.getInlineArrayDef().getArrayType().getPrimitiveType())
+                .isEqualTo(VariableType.INT);
+    }
+
+    @Test
+    void getTypeDefinitionForArrayPrefersExplicitElementTypeOverItems() {
+        TypeDefinitionModel elemType = new TypeDefinitionModel(VariableType.DOUBLE);
+        ArrayList<VariableValueModel> items = new ArrayList<>();
+        items.add(new VariableValueModel(1L)); // INT — should be ignored
+        ArrayModel arr = new ArrayModel(items, elemType);
+        VariableValueModel val = new VariableValueModel(arr);
+
+        TypeDefinitionModel typeDef = val.getTypeDefinition();
+
+        assertThat(typeDef.getInlineArrayDef().getArrayType().getPrimitiveType())
+                .isEqualTo(VariableType.DOUBLE);
+    }
+
+    @Test
+    void getTypeDefinitionForEmptyArrayWithStructElementTypeReturnsStructType() {
+        StructDefIdModel structDefId = new StructDefIdModel("MyStruct", 0);
+        TypeDefinitionModel elemType = new TypeDefinitionModel(structDefId);
+        ArrayModel arr = new ArrayModel(new ArrayList<>(), elemType);
+        VariableValueModel val = new VariableValueModel(arr);
+
+        TypeDefinitionModel typeDef = val.getTypeDefinition();
+
+        assertThat(typeDef.getInlineArrayDef()).isNotNull();
+        assertThat(typeDef.getInlineArrayDef().getArrayType().getStructDefId()).isEqualTo(structDefId);
+    }
+
+    @Test
+    void getTypeDefinitionForArrayOfArraysWithNoElementTypeReturnsArrayType() {
+        ArrayList<VariableValueModel> innerItems = new ArrayList<>();
+        innerItems.add(new VariableValueModel(1L));
+        innerItems.add(new VariableValueModel(2L));
+        ArrayModel innerArray = new ArrayModel(innerItems, null);
+
+        ArrayList<VariableValueModel> outerItems = new ArrayList<>();
+        outerItems.add(new VariableValueModel(innerArray));
+        ArrayModel outerArray = new ArrayModel(outerItems, null);
+        VariableValueModel val = new VariableValueModel(outerArray);
+
+        TypeDefinitionModel typeDef = val.getTypeDefinition();
+
+        assertThat(typeDef.getInlineArrayDef()).isNotNull();
+        assertThat(typeDef.getInlineArrayDef().getArrayType().getInlineArrayDef())
+                .isNotNull();
+        assertThat(typeDef.getInlineArrayDef()
+                        .getArrayType()
+                        .getInlineArrayDef()
+                        .getArrayType()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.INT);
+    }
+
     void shouldPowIntByInt() throws LHVarSubError {
         VariableValueModel lhs = new VariableValueModel(2L);
         VariableValueModel rhs = new VariableValueModel(3L);
