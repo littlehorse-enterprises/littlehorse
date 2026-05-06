@@ -3,6 +3,7 @@ import { Diagram } from '@/app/(authenticated)/[tenantId]/(diagram)/components/D
 import { ThreadType } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { getWfRun, WfRunResponse } from '@/app/actions/getWfRun'
+import { routes } from '@/app/routes'
 import { wfRunIdToPath } from '@/app/utils'
 import { Separator } from '@/components/ui/separator'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
@@ -45,7 +46,8 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
 
   const wfSpecUrl = useMemo(() => {
     const { name, majorVersion, revision } = wfRun.wfSpecId ?? {}
-    return `/wfSpec/${name}/${majorVersion}/${revision}`
+    if (name == null || majorVersion == null || revision == null) return ''
+    return routes.wfSpec.detailWithRevision(name, majorVersion, revision)
   }, [wfRun.wfSpecId])
 
   if (!wfRunId) {

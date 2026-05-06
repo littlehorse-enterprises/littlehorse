@@ -1,4 +1,5 @@
 import { getLatestWfSpecs } from '@/app/actions/getLatestWfSpec'
+import { routes } from '@/app/routes'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { WfSpecData } from '@/types'
 import { Calendar } from 'lucide-react'
@@ -74,7 +75,7 @@ export const WfSpecTable: FC<WfSpecTableProps> = ({
             <TableRow key={wfSpec.name} className="hover:bg-gray-50">
               <TableCell>
                 <LinkWithTenant
-                  href={`/wfSpec/${wfSpec.name}/${wfSpec.latestVersion}`}
+                  href={routes.wfSpec.detail(wfSpec.name, wfSpec.latestVersion)}
                   className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
                 >
                   {wfSpec.name}
@@ -88,7 +89,10 @@ export const WfSpecTable: FC<WfSpecTableProps> = ({
               <TableCell>
                 {wfSpec.parentWfSpec ? (
                   <LinkWithTenant
-                    href={`/wfSpec/${wfSpec.parentWfSpec.wfSpecName}/${wfSpec.parentWfSpec.wfSpecMajorVersion}.0`}
+                    href={routes.wfSpec.detail(
+                      wfSpec.parentWfSpec.wfSpecName,
+                      `${wfSpec.parentWfSpec.wfSpecMajorVersion}.0`
+                    )}
                     className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
                   >
                     {wfSpec.parentWfSpec.wfSpecName} (v{wfSpec.parentWfSpec.wfSpecMajorVersion})
