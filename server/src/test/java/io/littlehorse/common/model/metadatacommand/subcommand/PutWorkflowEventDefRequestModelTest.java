@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
 import com.google.protobuf.Message;
@@ -14,6 +15,7 @@ import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.TestMetadataManager;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -60,6 +62,8 @@ public class PutWorkflowEventDefRequestModelTest {
     @Mock
     private LHServer server;
 
+    private final CommandProcessorMetrics metrics = mock();
+
     private final AsyncWaiters asyncWaiters = new AsyncWaiters();
 
     private final MetadataCache metadataCache = new MetadataCache();
@@ -69,7 +73,7 @@ public class PutWorkflowEventDefRequestModelTest {
     @BeforeEach
     public void setup() {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache, asyncWaiters);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, asyncWaiters, metrics);
         metadataManager = TestMetadataManager.create(nativeMetadataStore, tenantId, executionContext);
     }
 

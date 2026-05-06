@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.Version;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
@@ -53,14 +54,20 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
     private ProcessorContext<String, CommandProcessorOutput> streamsContext;
     private KeyValueStore<String, Bytes> metadataStore;
     private final AsyncWaiters asyncWaiters;
+    private final CommandProcessorMetrics metrics;
 
     public MetadataProcessor(
-            LHServerConfig config, LHServer server, MetadataCache metadataCache, AsyncWaiters asyncWaiters) {
+            LHServerConfig config,
+            LHServer server,
+            MetadataCache metadataCache,
+            AsyncWaiters asyncWaiters,
+            CommandProcessorMetrics metrics) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
         this.exceptionHandler = new LHProcessingExceptionHandler(server, asyncWaiters);
         this.asyncWaiters = asyncWaiters;
+        this.metrics = metrics;
     }
 
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
@@ -161,6 +168,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
                 command.getCommandId());
 
         try {
+            metrics.observe(command);
             Message response = command.process(metadataContext);
             if (command.hasResponse()) {
 

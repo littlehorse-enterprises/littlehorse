@@ -15,6 +15,7 @@ import io.littlehorse.server.interceptors.RequestBlocker;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.monitoring.http.NettyStatusServer;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.quotas.RequestQuotaManager;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.CommandSender;
@@ -66,6 +67,7 @@ public class LHServer {
     private final AsyncWaiters asyncWaiters = new AsyncWaiters();
     private final RequestBlocker requestBlocker = new RequestBlocker();
     private final RequestQuotaManager requestQuotaManager;
+    private final CommandProcessorMetrics commandProcessorMetrics = new CommandProcessorMetrics();
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -84,9 +86,8 @@ public class LHServer {
                 overrideStreamsProcessId("timer");
             }
         }
-        //        Topology coreTopology = ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager,
-        // asyncWaiters);
-        Topology coreTopology = new ServerTopologyV2(config, this, metadataCache, taskQueueManager, asyncWaiters);
+        Topology coreTopology = new ServerTopologyV2(
+                config, this, metadataCache, taskQueueManager, asyncWaiters, commandProcessorMetrics);
         this.coreStreams = new KafkaStreams(coreTopology, config.getCoreStreamsConfig());
         coreStreams.setUncaughtExceptionHandler(throwable -> {
             log.error("Uncaught exception for " + throwable.getMessage());
@@ -114,7 +115,8 @@ public class LHServer {
                 timerStreams,
                 taskQueueManager,
                 metadataCache,
-                internalComms);
+                internalComms,
+                commandProcessorMetrics);
         this.commandSender = new CommandSender(
                 internalComms,
                 networkThreadpool,
