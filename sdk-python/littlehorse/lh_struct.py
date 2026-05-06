@@ -43,7 +43,7 @@ from littlehorse.model import (
     VariableValue,
     WfRunId,
 )
-from littlehorse.model.variable_pb2 import InlineStruct, Struct, StructField
+from littlehorse.model.type_definition_pb2 import InlineStruct, Struct, StructField
 
 # ---------------------------------------------------------------------------
 # Sentinel / metadata helpers
