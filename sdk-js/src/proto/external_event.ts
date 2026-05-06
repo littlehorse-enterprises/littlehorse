@@ -9,8 +9,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { CorrelatedEventId, ExternalEventDefId, ExternalEventId } from "./object_id";
-import { ReturnType } from "./type_definition";
-import { VariableValue } from "./variable";
+import { ReturnType, VariableValue } from "./type_definition";
 
 /**
  * An ExternalEvent represents A Thing That Happened outside the context of a WfRun.

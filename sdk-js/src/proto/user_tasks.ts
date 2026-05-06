@@ -9,7 +9,7 @@ import _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRunId, TaskRunId, UserTaskDefId, UserTaskRunId } from "./object_id";
-import { VariableValue } from "./variable";
+import { VariableValue } from "./type_definition";
 
 /** The status that a UserTaskRun can be in. */
 export enum UserTaskRunStatus {

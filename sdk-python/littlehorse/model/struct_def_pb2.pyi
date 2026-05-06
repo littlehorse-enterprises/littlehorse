@@ -1,6 +1,6 @@
 import datetime
 
-import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
+import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 from google.protobuf import descriptor as _descriptor
@@ -19,5 +19,5 @@ class StructDef(_message.Message):
     id: _object_id_pb2.StructDefId
     description: str
     created_at: _timestamp_pb2.Timestamp
-    struct_def: _common_wfspec_pb2.InlineStructDef
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., description: _Optional[str] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., struct_def: _Optional[_Union[_common_wfspec_pb2.InlineStructDef, _Mapping]] = ...) -> None: ...
+    struct_def: _type_definition_pb2.InlineStructDef
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., description: _Optional[str] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., struct_def: _Optional[_Union[_type_definition_pb2.InlineStructDef, _Mapping]] = ...) -> None: ...

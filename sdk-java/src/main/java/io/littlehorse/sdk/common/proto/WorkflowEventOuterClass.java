@@ -46,26 +46,24 @@ public final class WorkflowEventOuterClass extends com.google.protobuf.Generated
   static {
     java.lang.String[] descriptorData = {
       "\n\024workflow_event.proto\022\013littlehorse\032\037goo" +
-      "gle/protobuf/timestamp.proto\032\016variable.p" +
-      "roto\032\017object_id.proto\032\025type_definition.p" +
-      "roto\"\303\001\n\rWorkflowEvent\022(\n\002id\030\001 \001(\0132\034.lit" +
-      "tlehorse.WorkflowEventId\022+\n\007content\030\002 \001(" +
-      "\0132\032.littlehorse.VariableValue\022.\n\ncreated" +
-      "_at\030\003 \001(\0132\032.google.protobuf.Timestamp\022+\n" +
-      "\013node_run_id\030\004 \001(\0132\026.littlehorse.NodeRun" +
-      "Id\"\236\001\n\020WorkflowEventDef\022+\n\002id\030\001 \001(\0132\037.li" +
-      "ttlehorse.WorkflowEventDefId\022.\n\ncreated_" +
-      "at\030\002 \001(\0132\032.google.protobuf.Timestamp\022-\n\014" +
-      "content_type\030\003 \001(\0132\027.littlehorse.ReturnT" +
-      "ypeBM\n\037io.littlehorse.sdk.common.protoP\001" +
-      "Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Pro" +
-      "tob\006proto3"
+      "gle/protobuf/timestamp.proto\032\017object_id." +
+      "proto\032\025type_definition.proto\"\303\001\n\rWorkflo" +
+      "wEvent\022(\n\002id\030\001 \001(\0132\034.littlehorse.Workflo" +
+      "wEventId\022+\n\007content\030\002 \001(\0132\032.littlehorse." +
+      "VariableValue\022.\n\ncreated_at\030\003 \001(\0132\032.goog" +
+      "le.protobuf.Timestamp\022+\n\013node_run_id\030\004 \001" +
+      "(\0132\026.littlehorse.NodeRunId\"\236\001\n\020WorkflowE" +
+      "ventDef\022+\n\002id\030\001 \001(\0132\037.littlehorse.Workfl" +
+      "owEventDefId\022.\n\ncreated_at\030\002 \001(\0132\032.googl" +
+      "e.protobuf.Timestamp\022-\n\014content_type\030\003 \001" +
+      "(\0132\027.littlehorse.ReturnTypeBM\n\037io.little" +
+      "horse.sdk.common.protoP\001Z\t.;lhproto\252\002\034Li" +
+      "ttleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.TimestampProto.getDescriptor(),
-          io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor(),
           io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
           io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.getDescriptor(),
         });
@@ -83,7 +81,6 @@ public final class WorkflowEventOuterClass extends com.google.protobuf.Generated
         new java.lang.String[] { "Id", "CreatedAt", "ContentType", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
-    io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
     io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.getDescriptor();
   }

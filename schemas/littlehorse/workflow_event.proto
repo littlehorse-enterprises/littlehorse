@@ -3,7 +3,6 @@ syntax = "proto3";
 package littlehorse;
 
 import "google/protobuf/timestamp.proto";
-import "variable.proto";
 import "object_id.proto";
 import "type_definition.proto";
 

@@ -2,7 +2,7 @@ import datetime
 
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
-import littlehorse.model.variable_pb2 as _variable_pb2
+import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -18,8 +18,8 @@ class ScheduledWfRun(_message.Message):
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
         key: str
-        value: _variable_pb2.VariableValue
-        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+        value: _type_definition_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     VARIABLES_FIELD_NUMBER: _ClassVar[int]
@@ -28,8 +28,8 @@ class ScheduledWfRun(_message.Message):
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.ScheduledWfRunId
     wf_spec_id: _object_id_pb2.WfSpecId
-    variables: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    variables: _containers.MessageMap[str, _type_definition_pb2.VariableValue]
     parent_wf_run_id: _object_id_pb2.WfRunId
     cron_expression: str
     created_at: _timestamp_pb2.Timestamp
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.ScheduledWfRunId, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., cron_expression: _Optional[str] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.ScheduledWfRunId, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., variables: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., cron_expression: _Optional[str] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...

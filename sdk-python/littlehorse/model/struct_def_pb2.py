@@ -22,12 +22,12 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
-import littlehorse.model.common_wfspec_pb2 as common__wfspec__pb2
+import littlehorse.model.type_definition_pb2 as type__definition__pb2
 import littlehorse.model.object_id_pb2 as object__id__pb2
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10struct_def.proto\x12\x0blittlehorse\x1a\x13\x63ommon_wfspec.proto\x1a\x0fobject_id.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xbd\x01\n\tStructDef\x12$\n\x02id\x18\x01 \x01(\x0b\x32\x18.littlehorse.StructDefId\x12\x18\n\x0b\x64\x65scription\x18\x02 \x01(\tH\x00\x88\x01\x01\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x30\n\nstruct_def\x18\x04 \x01(\x0b\x32\x1c.littlehorse.InlineStructDefB\x0e\n\x0c_descriptionBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10struct_def.proto\x12\x0blittlehorse\x1a\x15type_definition.proto\x1a\x0fobject_id.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xbd\x01\n\tStructDef\x12$\n\x02id\x18\x01 \x01(\x0b\x32\x18.littlehorse.StructDefId\x12\x18\n\x0b\x64\x65scription\x18\x02 \x01(\tH\x00\x88\x01\x01\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x30\n\nstruct_def\x18\x04 \x01(\x0b\x32\x1c.littlehorse.InlineStructDefB\x0e\n\x0c_descriptionBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -35,6 +35,6 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'struct_def_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Proto'
-  _globals['_STRUCTDEF']._serialized_start=105
-  _globals['_STRUCTDEF']._serialized_end=294
+  _globals['_STRUCTDEF']._serialized_start=107
+  _globals['_STRUCTDEF']._serialized_end=296
 # @@protoc_insertion_point(module_scope)

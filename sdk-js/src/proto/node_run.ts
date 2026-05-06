@@ -18,7 +18,7 @@ import {
   WfSpecId,
   WorkflowEventId,
 } from "./object_id";
-import { VariableValue } from "./variable";
+import { VariableValue } from "./type_definition";
 
 /**
  * A NodeRun is a running instance of a Node in a ThreadRun. Note that a NodeRun

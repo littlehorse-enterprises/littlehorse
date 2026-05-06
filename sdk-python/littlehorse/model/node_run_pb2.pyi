@@ -2,7 +2,7 @@ import datetime
 
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
-import littlehorse.model.variable_pb2 as _variable_pb2
+import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
@@ -116,15 +116,15 @@ class RunChildWfNodeRun(_message.Message):
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
         key: str
-        value: _variable_pb2.VariableValue
-        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+        value: _type_definition_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
     CHILD_WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     INPUTS_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     child_wf_run_id: _object_id_pb2.WfRunId
-    inputs: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    inputs: _containers.MessageMap[str, _type_definition_pb2.VariableValue]
     wf_spec_id: _object_id_pb2.WfSpecId
-    def __init__(self, child_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., inputs: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
+    def __init__(self, child_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., inputs: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
 
 class WaitForChildWfNodeRun(_message.Message):
     __slots__ = ("child_wf_run_id",)
@@ -196,7 +196,7 @@ class Failure(_message.Message):
     FAILURE_HANDLER_THREADRUN_ID_FIELD_NUMBER: _ClassVar[int]
     failure_name: str
     message: str
-    content: _variable_pb2.VariableValue
+    content: _type_definition_pb2.VariableValue
     was_properly_handled: bool
     failure_handler_threadrun_id: int
-    def __init__(self, failure_name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., was_properly_handled: _Optional[bool] = ..., failure_handler_threadrun_id: _Optional[int] = ...) -> None: ...
+    def __init__(self, failure_name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., was_properly_handled: _Optional[bool] = ..., failure_handler_threadrun_id: _Optional[int] = ...) -> None: ...

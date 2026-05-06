@@ -8,7 +8,7 @@
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { ScheduledWfRunId, WfRunId, WfSpecId } from "./object_id";
-import { VariableValue } from "./variable";
+import { VariableValue } from "./type_definition";
 
 /**
  * A `ScheduledWfRun` is an object in the LittleHorse API that triggers a `WfRun` to be started

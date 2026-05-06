@@ -4,7 +4,6 @@ package littlehorse;
 
 // import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
-import "variable.proto";
 import "object_id.proto";
 import "type_definition.proto";
 
@@ -359,25 +358,6 @@ message TaskNode {
 
   // Input variables into the TaskDef.
   repeated VariableAssignment variables = 4;
-}
-
-// A map of InlineStructDef's field names to their StructFieldDef's.
-message InlineStructDef {
-  // The fields in this schema.
-  map<string, StructFieldDef> fields = 1;
-}
-
-// The definition of a field in an InlineStructDef.
-message StructFieldDef {
-  // The type of the field.
-  TypeDefinition field_type = 1;
-  
-  // The default value of the field, which should match the Field Type. If not
-  // provided, then the field is treated as required.
-  optional VariableValue default_value = 2;
-
-  // If true, then the field is treated as nullable, and its value may be set to null.
-  bool is_nullable = 3;
 }
 
 // A path of repeated Selectors resolving to a nested field in an object.

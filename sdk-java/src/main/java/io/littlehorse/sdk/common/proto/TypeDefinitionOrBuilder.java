@@ -94,6 +94,33 @@ public interface TypeDefinitionOrBuilder extends
 
   /**
    * <pre>
+   * An inline Struct definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+   * @return Whether the inlineStructDef field is set.
+   */
+  boolean hasInlineStructDef();
+  /**
+   * <pre>
+   * An inline Struct definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+   * @return The inlineStructDef.
+   */
+  io.littlehorse.sdk.common.proto.InlineStructDef getInlineStructDef();
+  /**
+   * <pre>
+   * An inline Struct definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+   */
+  io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getInlineStructDefOrBuilder();
+
+  /**
+   * <pre>
    * Set to true if values of this type contain sensitive information and must be masked.
    * </pre>
    *

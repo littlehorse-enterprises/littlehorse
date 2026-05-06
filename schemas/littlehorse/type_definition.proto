@@ -4,6 +4,7 @@ package littlehorse;
 
 import "object_id.proto";
 import "common_enums.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -26,6 +27,9 @@ message TypeDefinition {
 
     // An inline Array definition.
     InlineArrayDef inline_array_def = 6;
+
+    // An inline Struct definition.
+    InlineStructDef inline_struct_def = 7;
   }
 
   // For compatibility purposes.
@@ -39,6 +43,105 @@ message TypeDefinition {
 message InlineArrayDef {
   // Type definition for each element in the array.
   TypeDefinition array_type = 1;
+}
+
+// A map of InlineStructDef's field names to their StructFieldDef's.
+message InlineStructDef {
+  // The fields in this schema.
+  map<string, StructFieldDef> fields = 1;
+}
+
+// The definition of a field in an InlineStructDef.
+message StructFieldDef {
+  // The type of the field.
+  TypeDefinition field_type = 1;
+  
+  // The default value of the field, which should match the Field Type. If not
+  // provided, then the field is treated as required.
+  optional VariableValue default_value = 2;
+
+  // If true, then the field is treated as nullable, and its value may be set to null.
+  bool is_nullable = 3;
+}
+
+// VariableValue is a structure containing a value in LittleHorse. It can be
+// used to pass input variables into a WfRun/ThreadRun/TaskRun/etc, as output
+// from a TaskRun, as the value of a WfRun's Variable, etc.
+message VariableValue {
+  reserved 1;
+
+  // The value held in this VariableValue. If this is unset, treat it as
+  // a NULL.
+  oneof value {
+    // A String representing a serialized json object.
+    string json_obj = 2;
+
+    // A String representing a serialized json list.
+    string json_arr = 3;
+
+    // A 64-bit floating point number.
+    double double = 4;
+
+    // A boolean.
+    bool bool = 5;
+
+    // A string.
+    string str = 6;
+
+    // The `INT` variable type is stored as a 64-bit integer. The
+    // `INT` can be cast to a `DOUBLE`.
+    int64 int = 7;
+
+    // An arbitrary String of bytes.
+    bytes bytes = 8;
+
+    // Reference to a WfRunId
+    WfRunId wf_run_id = 9;
+
+    // A timestamp (UTC)
+    google.protobuf.Timestamp utc_timestamp = 10;
+
+    // A Struct object.
+    Struct struct = 11;
+
+    // An Array object.
+    Array array = 12;
+  }
+}
+
+// An Array is a strongly-typed list of values.
+message Array {
+  repeated VariableValue items = 1;
+  
+  // Optional, authoritative element type for this array.
+  // Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+  // If absent, element type may be unknown and must be derived from items or treated as wildcard.
+  optional TypeDefinition element_type = 2;
+}
+
+// A Struct is a strongly-typed structure containing fields. The Struct is defined
+// according to the `Schema` object.
+message Struct {
+  // The id of the schema.
+  StructDefId struct_def_id = 1;
+  // The content of the Struct
+  InlineStruct struct = 2;
+}
+
+// An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`.
+message InlineStruct {
+  // The fields in the inline struct.
+  map<string, StructField> fields = 1;
+}
+
+// A StructField represents the value for a single field in a struct.
+message StructField {
+  // The `value` of the field is an untyped `VariableValue`.
+  VariableValue value = 1;
+
+  // Whether or not this StructField value is masked.
+  // Set by the server based on the StructDef's field definition for this configuration.
+  bool masked = 2;
 }
 
 // Utility used among metadata objects to define their output type. For example, used in
