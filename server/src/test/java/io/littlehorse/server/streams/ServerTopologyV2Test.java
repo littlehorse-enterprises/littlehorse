@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -24,6 +25,7 @@ public class ServerTopologyV2Test {
     private final MetadataCache metadataCache = mock();
     private final TaskQueueManager globalTaskQueueManager = mock();
     private final AsyncWaiters asyncWaiters = mock();
+    private final CommandProcessorMetrics commandProcessorMetrics = mock();
 
     @BeforeEach
     public void setup() {
@@ -34,7 +36,8 @@ public class ServerTopologyV2Test {
 
     @Test
     public void shouldCreateValidTopology() {
-        Topology topology = new ServerTopologyV2(config, server, metadataCache, globalTaskQueueManager, asyncWaiters);
+        Topology topology = new ServerTopologyV2(
+                config, server, metadataCache, globalTaskQueueManager, asyncWaiters, commandProcessorMetrics);
         TopologyTestDriver driver = new TopologyTestDriver(topology);
         driver.close();
         System.out.println(topology.describe().toString());
@@ -42,10 +45,11 @@ public class ServerTopologyV2Test {
 
     @Test
     public void shouldBeCompatibleWithV1Topology() {
-        TopologyDescription topology =
-                new ServerTopologyV2(config, server, metadataCache, globalTaskQueueManager, asyncWaiters).describe();
+        TopologyDescription topology = new ServerTopologyV2(
+                        config, server, metadataCache, globalTaskQueueManager, asyncWaiters, commandProcessorMetrics)
+                .describe();
         TopologyDescription topologyV1 = ServerTopology.initCoreTopology(
-                        config, server, metadataCache, globalTaskQueueManager, asyncWaiters)
+                        config, server, metadataCache, globalTaskQueueManager, asyncWaiters, commandProcessorMetrics)
                 .describe();
         assertThat(topology.subtopologies()).hasSameSizeAs(topologyV1.subtopologies());
         TopologyDescription.Subtopology[] subtopologies =

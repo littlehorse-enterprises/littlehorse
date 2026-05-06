@@ -7,6 +7,7 @@ import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.common.util.serde.ProtobufDeserializer;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.store.BoundedBytesSerde;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -89,7 +90,8 @@ public class ServerTopology {
             LHServer server,
             MetadataCache metadataCache,
             TaskQueueManager globalTaskQueueManager,
-            AsyncWaiters asyncWaiters) {
+            AsyncWaiters asyncWaiters,
+            CommandProcessorMetrics metrics) {
         Topology topo = new Topology();
 
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
@@ -117,7 +119,7 @@ public class ServerTopology {
                 );
         topo.addProcessor(
                 METADATA_PROCESSOR,
-                () -> new MetadataProcessor(config, server, metadataCache, asyncWaiters),
+                () -> new MetadataProcessor(config, server, metadataCache, asyncWaiters, metrics),
                 METADATA_SOURCE);
         StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());
@@ -138,7 +140,8 @@ public class ServerTopology {
                 );
         topo.addProcessor(
                 CORE_PROCESSOR,
-                () -> new CommandProcessor(config, server, metadataCache, globalTaskQueueManager, asyncWaiters),
+                () -> new CommandProcessor(
+                        config, server, metadataCache, globalTaskQueueManager, asyncWaiters, metrics),
                 CORE_SOURCE);
         topo.addSink(
                 CORE_PROCESSOR_SINK,

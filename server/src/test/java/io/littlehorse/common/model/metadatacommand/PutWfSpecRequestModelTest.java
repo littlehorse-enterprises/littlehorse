@@ -21,6 +21,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -63,6 +64,8 @@ public class PutWfSpecRequestModelTest {
     @Mock
     private LHServer server;
 
+    private final CommandProcessorMetrics metrics = mock();
+
     private final MetadataCache metadataCache = new MetadataCache();
 
     private MetadataProcessor metadataProcessor;
@@ -95,7 +98,7 @@ public class PutWfSpecRequestModelTest {
     @BeforeEach
     public void setup() {
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
-        metadataProcessor = new MetadataProcessor(config, server, metadataCache, asyncWaiters);
+        metadataProcessor = new MetadataProcessor(config, server, metadataCache, asyncWaiters, metrics);
     }
 
     @ParameterizedTest
