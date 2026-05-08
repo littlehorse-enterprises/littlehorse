@@ -307,13 +307,13 @@ public class LHStructDefTypeTest {
     public void shouldRejectStructDefFieldResolvingToJsonObj() {
         assertThatThrownBy(() -> new LHStructDefType(InvalidJsonObjHolder.class, LHTypeAdapterRegistry.empty()))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("forbidden type JSON_OBJ");
+                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
     }
 
     @Test
     public void shouldRejectStructDefFieldResolvingToJsonArr() {
         assertThatThrownBy(() -> new LHStructDefType(InvalidJsonArrHolder.class, LHTypeAdapterRegistry.empty()))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("forbidden type JSON_ARR");
+                .hasMessageContaining("Forbidden JSON type: JSON_ARR");
     }
 }

@@ -274,7 +274,7 @@ public class LHTaskReturnTypeTest {
                     new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
                 })
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("forbidden type JSON_OBJ");
+                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
     }
 
     @Test
@@ -304,6 +304,6 @@ public class LHTaskReturnTypeTest {
                     new LHTaskReturnType(taskMethod, typeAdapterRegistry, Map.of());
                 })
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("forbidden type JSON_OBJ");
+                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
     }
 }

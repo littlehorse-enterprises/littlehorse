@@ -184,7 +184,7 @@ public class LHTaskSignatureTest {
 
         assertThatThrownBy(() -> new LHStructDefType(UuidHolder.class, typeAdapterRegistry))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("forbidden type JSON_OBJ");
+                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
     }
 
     @Test
@@ -209,6 +209,6 @@ public class LHTaskSignatureTest {
 
         assertThatThrownBy(() -> new LHStructDefType(UuidHolder.class, typeAdapterRegistry))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("forbidden type JSON_ARR");
+                .hasMessageContaining("Forbidden JSON type: JSON_ARR");
     }
 }

@@ -247,7 +247,7 @@ public class LHTaskParameterTest {
                     new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of());
                 })
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("forbidden type JSON_OBJ");
+                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
     }
 
     @Test
@@ -278,6 +278,6 @@ public class LHTaskParameterTest {
                     new LHTaskParameter(parameter, typeAdapterRegistry, Map.of());
                 })
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("forbidden type JSON_ARR");
+                .hasMessageContaining("Forbidden JSON type: JSON_ARR");
     }
 }
