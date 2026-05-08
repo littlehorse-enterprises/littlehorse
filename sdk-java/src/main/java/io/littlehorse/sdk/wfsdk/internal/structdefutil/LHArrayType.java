@@ -20,6 +20,10 @@ public final class LHArrayType extends LHClassType {
                     "LHArrayType can only be created from array classes. Provided class: " + clazz.getName()
                             + ". Please add brackets to your class to declare an array type, e.g. MyType[] instead of MyType.");
         }
+        if (byte[].class.equals(clazz)) {
+            throw new IllegalArgumentException(
+                    "byte[] is not supported as an array type in LittleHorse, they have special handling as a primitive type. If you want an array of multiple bytes items, consider using `byte[][]`.");
+        }
 
         Class<?> componentClass = clazz.getComponentType();
 

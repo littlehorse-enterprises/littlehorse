@@ -162,14 +162,14 @@ public class LHStructProperty {
             return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry);
         }
 
-        if (shouldUseNativeArraySerialization()) {
+        if (isNativeArray()) {
             return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry);
         }
 
         return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry);
     }
 
-    private boolean shouldUseNativeArraySerialization() {
+    private boolean isNativeArray() {
         return pd.getPropertyType().isArray() && !byte[].class.equals(pd.getPropertyType());
     }
 
