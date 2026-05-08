@@ -102,20 +102,7 @@ public class LHStructProperty {
     }
 
     public StructFieldDef toStructFieldDef(LHTypeAdapterRegistry typeAdapterRegistry) {
-        LHClassType propertyClass = this.getPropertyType(typeAdapterRegistry);
-        TypeDefinition typeDef = propertyClass.getTypeDefinition().toBuilder()
-                .setMasked(this.isMasked())
-                .build();
-
-        try {
-            LHTypeConstraintValidator.ensureNoJsonPrimitiveTypes(typeDef);
-        } catch (ForbiddenJsonTypeException ex) {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "Invalid StructDef field [%s] on class %s: %s",
-                            this.fieldName, this.parentStructDef.getClassType().getCanonicalName(), ex.getMessage()),
-                    ex);
-        }
+        TypeDefinition typeDef = resolveValidatedFieldType(typeAdapterRegistry);
 
         StructFieldDef.Builder fieldDef =
                 StructFieldDef.newBuilder().setFieldType(typeDef).setIsNullable(isNullable);
@@ -126,6 +113,27 @@ public class LHStructProperty {
         }
 
         return fieldDef.build();
+    }
+
+    private TypeDefinition resolveValidatedFieldType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        LHClassType propertyClass;
+        try {
+            propertyClass = this.getPropertyType(typeAdapterRegistry);
+
+            LHTypeConstraintValidator.ensureNoJsonPrimitiveTypes(propertyClass.getTypeDefinition());
+        } catch (IllegalArgumentException | ForbiddenJsonTypeException ex) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "Invalid StructDef field [%s] on class %s: %s",
+                            this.fieldName, this.parentStructDef.getClassType().getCanonicalName(), ex.getMessage()),
+                    ex);
+        }
+
+        TypeDefinition typeDef = propertyClass.getTypeDefinition().toBuilder()
+                .setMasked(this.isMasked())
+                .build();
+
+        return typeDef;
     }
 
     public Optional<VariableValue> getDefaultValue() {
