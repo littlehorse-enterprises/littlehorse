@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import e2e.Struct.Person;
 import e2e.Struct.PersonPojo;
+import e2e.Struct.PhoneNumbers;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -38,8 +39,8 @@ public class LHPathTest {
     public void shouldPerformGetOnStruct() {
         Person person = new Person(
                 "Obi-Wan Kenobi",
-                List.of("Yoda", "Anakin Skywalker"),
-                Map.of("home", "111-222-3344", "work", "555-667-7788"));
+                new String[] {"Yoda", "Anakin Skywalker"},
+                new PhoneNumbers("111-222-3344", "555-667-7788"));
 
         verifier.prepareRun(lhPathStructsWf, Arg.of("person", person))
                 .waitForStatus(LHStatus.COMPLETED)
