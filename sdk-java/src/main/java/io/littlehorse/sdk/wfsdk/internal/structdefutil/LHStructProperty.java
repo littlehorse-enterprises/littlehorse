@@ -61,8 +61,7 @@ public class LHStructProperty {
             Object val = pd.getReadMethod().invoke(o);
             if (val == null) return null;
 
-            LHStructField structField = getAnnotation(LHStructField.class);
-            if (structField != null && structField.isLHArray() && val.getClass().isArray()) {
+            if (shouldUseNativeArraySerialization() && val.getClass().isArray()) {
                 return LHLibUtil.objToVarValAsNativeArray(val, pd.getPropertyType(), typeAdapterRegistry);
             }
 
@@ -108,6 +107,18 @@ public class LHStructProperty {
                 .setMasked(this.isMasked())
                 .build();
 
+        try {
+            LHTypeConstraintValidator.ensureNoJsonPrimitiveTypes(typeDef);
+        } catch (ForbiddenJsonTypeException ex) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "StructDef field [%s] on class %s resolves to forbidden type %s. Within StructDefs, use native equivalents such as StructDefs for nested object types and Java arrays for native LH arrays. You can also opt to use a Type Adapter and map your class to a non-JSON primitive type.",
+                            this.fieldName,
+                            this.parentStructDef.getClassType().getCanonicalName(),
+                            ex.getForbiddenType()),
+                    ex);
+        }
+
         StructFieldDef.Builder fieldDef =
                 StructFieldDef.newBuilder().setFieldType(typeDef).setIsNullable(isNullable);
 
@@ -151,7 +162,15 @@ public class LHStructProperty {
             return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry);
         }
 
+        if (shouldUseNativeArraySerialization()) {
+            return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry);
+        }
+
         return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry);
+    }
+
+    private boolean shouldUseNativeArraySerialization() {
+        return pd.getPropertyType().isArray() && !byte[].class.equals(pd.getPropertyType());
     }
 
     /// The following methods are used to find annotations on the property, whether they are on the getter, setter, or

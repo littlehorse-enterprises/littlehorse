@@ -52,7 +52,11 @@ public class LHStructPropertyTest {
         StructFieldDef actualStructFieldDef = lhStructProperty.toStructFieldDef();
         StructFieldDef expectedStructFieldDef = StructFieldDef.newBuilder()
                 .setFieldType(TypeDefinition.newBuilder()
-                        .setPrimitiveType(VariableType.JSON_ARR)
+                        .setInlineArrayDef(InlineArrayDef.newBuilder()
+                                .setArrayType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.STR)
+                                        .build())
+                                .build())
                         .build())
                 .build();
 
@@ -133,5 +137,19 @@ public class LHStructPropertyTest {
         assertThat(def.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
         assertThat(def.getArray().getItemsCount()).isEqualTo(2);
         assertThat(def.getArray().getItems(0).getStr()).isEqualTo("a");
+    }
+
+    @Test
+    public void getDefaultValue_returnsNativeArrayWithoutAnnotation() throws Exception {
+        LHStructDefType parent = new LHStructDefType(Library.class, LHTypeAdapterRegistry.empty());
+        PropertyDescriptor pd = new PropertyDescriptor("autoArrayWithDefault", Library.class);
+        LHStructProperty prop = new LHStructProperty(pd, parent);
+
+        Optional<VariableValue> maybe = prop.getDefaultValue(LHTypeAdapterRegistry.empty());
+        VariableValue def = maybe.get();
+
+        assertThat(def.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
+        assertThat(def.getArray().getItemsCount()).isEqualTo(2);
+        assertThat(def.getArray().getItems(0).getStr()).isEqualTo("x");
     }
 }

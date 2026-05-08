@@ -21,7 +21,23 @@ public final class LHArrayType extends LHClassType {
                             + ". Please add brackets to your class to declare an array type, e.g. MyType[] instead of MyType.");
         }
 
-        this.componentType = LHClassType.fromJavaClass(clazz.getComponentType(), typeAdapterRegistry);
+        Class<?> componentClass = clazz.getComponentType();
+
+        if (componentClass.isArray()) {
+            this.componentType = new LHArrayType(componentClass, typeAdapterRegistry);
+        } else {
+            this.componentType = LHClassType.fromJavaClass(componentClass, typeAdapterRegistry);
+        }
+
+        try {
+            LHTypeConstraintValidator.ensureNoJsonPrimitiveTypes(this.componentType.getTypeDefinition());
+        } catch (ForbiddenJsonTypeException ex) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "InlineArrayDef element type %s for Java array %s resolves to forbidden type %s. Within StructDefs, use native equivalents such as StructDefs for nested object types and Java arrays for native LH arrays. You can also opt to use a Type Adapter and map your class to a non-JSON primitive type.",
+                            componentClass.getCanonicalName(), clazz.getCanonicalName(), ex.getForbiddenType()),
+                    ex);
+        }
     }
 
     @Override
