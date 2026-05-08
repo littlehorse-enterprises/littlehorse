@@ -61,7 +61,7 @@ public class LHStructProperty {
             Object val = pd.getReadMethod().invoke(o);
             if (val == null) return null;
 
-            if (shouldUseNativeArraySerialization() && val.getClass().isArray()) {
+            if (isNativeArray() && val.getClass().isArray()) {
                 return LHLibUtil.objToVarValAsNativeArray(val, pd.getPropertyType(), typeAdapterRegistry);
             }
 
