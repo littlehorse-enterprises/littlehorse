@@ -38,8 +38,8 @@ public final class LHArrayType extends LHClassType {
         } catch (ForbiddenJsonTypeException ex) {
             throw new IllegalArgumentException(
                     String.format(
-                            "InlineArrayDef element type %s for Java array %s resolves to forbidden type %s. Within StructDefs, use native equivalents such as StructDefs for nested object types and Java arrays for native LH arrays. You can also opt to use a Type Adapter and map your class to a non-JSON primitive type.",
-                            componentClass.getCanonicalName(), clazz.getCanonicalName(), ex.getForbiddenType()),
+                            "InlineArrayDef element type %s for Java array %s: %s",
+                            componentClass.getCanonicalName(), clazz.getCanonicalName(), ex.getMessage()),
                     ex);
         }
     }

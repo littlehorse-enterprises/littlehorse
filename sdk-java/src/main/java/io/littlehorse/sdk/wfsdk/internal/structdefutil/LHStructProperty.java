@@ -112,10 +112,8 @@ public class LHStructProperty {
         } catch (ForbiddenJsonTypeException ex) {
             throw new IllegalArgumentException(
                     String.format(
-                            "StructDef field [%s] on class %s resolves to forbidden type %s. Within StructDefs, use native equivalents such as StructDefs for nested object types and Java arrays for native LH arrays. You can also opt to use a Type Adapter and map your class to a non-JSON primitive type.",
-                            this.fieldName,
-                            this.parentStructDef.getClassType().getCanonicalName(),
-                            ex.getForbiddenType()),
+                            "Invalid StructDef field [%s] on class %s: %s",
+                            this.fieldName, this.parentStructDef.getClassType().getCanonicalName(), ex.getMessage()),
                     ex);
         }
 
@@ -157,8 +155,6 @@ public class LHStructProperty {
     }
 
     public LHClassType getPropertyType(LHTypeAdapterRegistry typeAdapterRegistry) {
-        LHStructField structField = getAnnotation(LHStructField.class);
-
         if (isNativeArray()) {
             return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry);
         }
