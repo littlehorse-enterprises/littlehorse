@@ -158,9 +158,6 @@ public class LHStructProperty {
 
     public LHClassType getPropertyType(LHTypeAdapterRegistry typeAdapterRegistry) {
         LHStructField structField = getAnnotation(LHStructField.class);
-        if (structField != null && structField.isLHArray()) {
-            return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry);
-        }
 
         if (isNativeArray()) {
             return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry);

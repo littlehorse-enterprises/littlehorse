@@ -126,7 +126,7 @@ public class LHStructPropertyTest {
     }
 
     @Test
-    public void getDefaultValue_returnsNativeArrayWhenAnnotated() throws Exception {
+    public void getDefaultValue_returnsNativeArray() throws Exception {
         LHStructDefType parent = new LHStructDefType(Library.class, LHTypeAdapterRegistry.empty());
         PropertyDescriptor pd = new PropertyDescriptor("lhArrayWithDefault", Library.class);
         LHStructProperty prop = new LHStructProperty(pd, parent);
@@ -137,19 +137,5 @@ public class LHStructPropertyTest {
         assertThat(def.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
         assertThat(def.getArray().getItemsCount()).isEqualTo(2);
         assertThat(def.getArray().getItems(0).getStr()).isEqualTo("a");
-    }
-
-    @Test
-    public void getDefaultValue_returnsNativeArrayWithoutAnnotation() throws Exception {
-        LHStructDefType parent = new LHStructDefType(Library.class, LHTypeAdapterRegistry.empty());
-        PropertyDescriptor pd = new PropertyDescriptor("autoArrayWithDefault", Library.class);
-        LHStructProperty prop = new LHStructProperty(pd, parent);
-
-        Optional<VariableValue> maybe = prop.getDefaultValue(LHTypeAdapterRegistry.empty());
-        VariableValue def = maybe.get();
-
-        assertThat(def.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
-        assertThat(def.getArray().getItemsCount()).isEqualTo(2);
-        assertThat(def.getArray().getItems(0).getStr()).isEqualTo("x");
     }
 }

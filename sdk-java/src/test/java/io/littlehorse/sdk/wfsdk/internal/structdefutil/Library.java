@@ -12,9 +12,6 @@ public class Library {
     public int ignoredField;
     public WfRunId maskedField;
     public String stringWithDefault = "hello";
-    public String[] autoArrayWithDefault = new String[] {"x", "y"};
-
-    @LHStructField(isLHArray = true)
     public String[] lhArrayWithDefault = new String[] {"a", "b"};
 
     public Library() {}
@@ -59,14 +56,6 @@ public class Library {
 
     public void setStringWithDefault(String val) {
         this.stringWithDefault = val;
-    }
-
-    public String[] getAutoArrayWithDefault() {
-        return this.autoArrayWithDefault;
-    }
-
-    public void setAutoArrayWithDefault(String[] val) {
-        this.autoArrayWithDefault = val;
     }
 
     public String[] getLhArrayWithDefault() {
