@@ -3,9 +3,9 @@ package io.littlehorse.server.streams.taskqueue;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
-import java.util.LinkedHashSet;
+import java.util.ArrayDeque;
+import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -30,14 +30,16 @@ public class OneTaskQueue {
     private final Lock lock = new ReentrantLock();
     private final Queue<PollTaskRequestObserver> hungryClients = new LinkedList<>();
     private final String instanceName;
-    private final LinkedHashSet<QueueItem> pendingTasks;
+    private final ArrayDeque<String> pendingTaskPartitions;
+    private final ArrayDeque<String> pendingTaskIds;
 
     public OneTaskQueue(String taskDefName, TaskQueueManager parent, TenantIdModel tenantId) {
         this.taskDefName = taskDefName;
         this.parent = parent;
         this.tenantId = tenantId;
         this.instanceName = parent.getBackend().getInstanceName();
-        this.pendingTasks = new LinkedHashSet<>();
+        this.pendingTaskPartitions = new ArrayDeque<>();
+        this.pendingTaskIds = new ArrayDeque<>();
     }
 
     /**
@@ -97,13 +99,14 @@ public class OneTaskQueue {
 
         PollTaskRequestObserver luckyClient = synchronizedBlock(() -> {
             if (!hungryClients.isEmpty()) {
-                if (!pendingTasks.isEmpty()) {
+                if (!pendingTaskIds.isEmpty()) {
                     throw new RuntimeException("Can't have pending tasks and hungry clients");
                 }
                 return hungryClients.poll();
 
             } else {
-                pendingTasks.add(new QueueItem(taskId, scheduledTask));
+                pendingTaskPartitions.add(taskId.toString().intern());
+                pendingTaskIds.add(scheduledTask.toString());
                 return null;
             }
         });
@@ -121,48 +124,38 @@ public class OneTaskQueue {
      */
     public void onPollRequest(PollTaskRequestObserver requestObserver, RequestExecutionContext requestContext) {
 
-        QueueItem nextItem = synchronizedBlock(() -> {
-            if (pendingTasks.isEmpty()) {
+        String nextItem = synchronizedBlock(() -> {
+            if (pendingTaskIds.isEmpty()) {
                 hungryClients.add(requestObserver);
                 return null;
             }
-            return pendingTasks.removeFirst();
+            pendingTaskPartitions.removeFirst();
+            return pendingTaskIds.removeFirst();
         });
         if (nextItem != null) {
-            parent.itsAMatch(nextItem.taskRunId, requestObserver);
+            parent.itsAMatch(
+                    (TaskRunIdModel) TaskRunIdModel.fromString(nextItem, TaskRunIdModel.class), requestObserver);
         }
     }
 
     public void drainPartition(TaskId partitionToDrain) {
+        String partitionStr = partitionToDrain.toString();
         synchronizedBlock(() -> {
-            pendingTasks.removeIf(queueItem -> queueItem.streamsTaskId.equals(partitionToDrain));
+            Iterator<String> partIt = pendingTaskPartitions.iterator();
+            Iterator<String> idIt = pendingTaskIds.iterator();
+            while (partIt.hasNext()) {
+                String partition = partIt.next();
+                idIt.next();
+                if (partition.equals(partitionStr)) {
+                    partIt.remove();
+                    idIt.remove();
+                }
+            }
         });
     }
 
     public long size() {
-        return pendingTasks.size();
-    }
-
-    private class QueueItem {
-        private final TaskId streamsTaskId;
-        private final TaskRunIdModel taskRunId;
-
-        public QueueItem(TaskId streamsTaskId, TaskRunIdModel taskRunId) {
-            this.streamsTaskId = streamsTaskId;
-            this.taskRunId = taskRunId;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == null || getClass() != o.getClass()) return false;
-            QueueItem queueItem = (QueueItem) o;
-            return Objects.equals(taskRunId, queueItem.taskRunId);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(taskRunId);
-        }
+        return pendingTaskIds.size();
     }
 
     private void synchronizedBlock(Runnable runnable) {
