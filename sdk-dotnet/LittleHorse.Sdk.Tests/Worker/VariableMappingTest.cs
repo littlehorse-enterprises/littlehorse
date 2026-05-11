@@ -412,6 +412,10 @@ public class VariableMappingTest
     {
         var inputVar = new VariableDef();
         inputVar.Type = type;
+        inputVar.TypeDef = new TypeDefinition
+        {
+            PrimitiveType = type
+        };
         TaskDef? taskDef = new TaskDef();
         TaskDefId taskDefId = new TaskDefId();
         taskDef.Id = taskDefId;
