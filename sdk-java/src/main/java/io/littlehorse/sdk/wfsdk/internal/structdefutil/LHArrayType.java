@@ -20,8 +20,28 @@ public final class LHArrayType extends LHClassType {
                     "LHArrayType can only be created from array classes. Provided class: " + clazz.getName()
                             + ". Please add brackets to your class to declare an array type, e.g. MyType[] instead of MyType.");
         }
+        if (byte[].class.equals(clazz)) {
+            throw new IllegalArgumentException(
+                    "byte[] is not supported as an array type in LittleHorse. This type has special handling as a primitive type. If you want an array of multiple bytes items, consider using `byte[][]`.");
+        }
 
-        this.componentType = LHClassType.fromJavaClass(clazz.getComponentType(), typeAdapterRegistry);
+        Class<?> componentClass = clazz.getComponentType();
+
+        if (componentClass.isArray()) {
+            this.componentType = new LHArrayType(componentClass, typeAdapterRegistry);
+        } else {
+            this.componentType = LHClassType.fromJavaClass(componentClass, typeAdapterRegistry);
+        }
+
+        try {
+            LHTypeConstraintValidator.ensureNoJsonPrimitiveTypes(this.componentType.getTypeDefinition());
+        } catch (ForbiddenJsonTypeException ex) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "InlineArrayDef element type %s for Java array %s: %s",
+                            componentClass.getCanonicalName(), clazz.getCanonicalName(), ex.getMessage()),
+                    ex);
+        }
     }
 
     @Override
