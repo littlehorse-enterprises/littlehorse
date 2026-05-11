@@ -308,7 +308,7 @@ func TestGoStructToInlineStructDef_ByteSlice(t *testing.T) {
 func TestGoStructToInlineStructDef_SliceFieldRejected(t *testing.T) {
 	_, err := littlehorse.GoStructToInlineStructDef(StructWithSlice{})
 	assert.NotNil(t, err)
-	assert.Contains(t, err.Error(), "forbidden JSON type for StructDef field: JSON_ARR")
+	assert.Contains(t, err.Error(), "forbidden json type for StructDef field")
 }
 
 func TestGoStructToInlineStructDef_NestedStructWithLHStructDef(t *testing.T) {

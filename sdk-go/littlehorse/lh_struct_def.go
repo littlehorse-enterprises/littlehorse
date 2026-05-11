@@ -175,9 +175,9 @@ func goTypeToStructFieldDef(t reflect.Type) (*lhproto.StructFieldDef, error) {
 		}, nil
 	}
 
-	varType, err := goKindToVariableType(t)
+	varType, err := goKindToStructVariableType(t)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("forbidden json type for StructDef field: %w", err)
 	}
 
 	if varType == lhproto.VariableType_JSON_OBJ || varType == lhproto.VariableType_JSON_ARR {
@@ -196,7 +196,7 @@ func goTypeToStructFieldDef(t reflect.Type) (*lhproto.StructFieldDef, error) {
 	}, nil
 }
 
-func goKindToVariableType(t reflect.Type) (lhproto.VariableType, error) {
+func goKindToStructVariableType(t reflect.Type) (lhproto.VariableType, error) {
 	kind := t.Kind()
 
 	switch kind {
@@ -212,12 +212,12 @@ func goKindToVariableType(t reflect.Type) (lhproto.VariableType, error) {
 		if t.Elem().Kind() == reflect.Uint8 {
 			return lhproto.VariableType_BYTES, nil
 		}
-		return lhproto.VariableType_JSON_ARR, nil
+		return 0, fmt.Errorf("unsupported Go type %s for StructDef field", t.Kind())
 	case reflect.Array:
 		if t.Elem().Kind() == reflect.Uint8 {
 			return lhproto.VariableType_BYTES, nil
 		}
-		return lhproto.VariableType_JSON_ARR, nil
+		return 0, fmt.Errorf("unsupported Go type %s for StructDef field", t.Kind())
 	default:
 		return 0, fmt.Errorf("unsupported Go type %s for StructDef field", t.Kind())
 	}
