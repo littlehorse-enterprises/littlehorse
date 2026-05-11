@@ -1,7 +1,10 @@
 package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.littlehorse.sdk.common.adapter.LHJsonArrAdapter;
+import io.littlehorse.sdk.common.adapter.LHJsonObjAdapter;
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.StructDef;
@@ -157,5 +160,55 @@ public class LHTaskSignatureTest {
                         .getFieldType()
                         .getPrimitiveType())
                 .isEqualTo(VariableType.STR);
+    }
+
+    @Test
+    void shouldRejectJsonObjTypeAdapterForStructDefFieldTypes() {
+        LHTypeAdapterRegistry typeAdapterRegistry =
+                LHTypeAdapterRegistry.from(Map.of(UUID.class, new LHJsonObjAdapter<UUID>() {
+                    @Override
+                    public String toJsonObj(UUID src) {
+                        return "{}";
+                    }
+
+                    @Override
+                    public UUID fromJsonObj(String src) {
+                        return UUID.randomUUID();
+                    }
+
+                    @Override
+                    public Class<UUID> getTypeClass() {
+                        return UUID.class;
+                    }
+                }));
+
+        assertThatThrownBy(() -> new LHStructDefType(UuidHolder.class, typeAdapterRegistry))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+    }
+
+    @Test
+    void shouldRejectJsonArrTypeAdapterForStructDefFieldTypes() {
+        LHTypeAdapterRegistry typeAdapterRegistry =
+                LHTypeAdapterRegistry.from(Map.of(UUID.class, new LHJsonArrAdapter<UUID>() {
+                    @Override
+                    public String toJsonArr(UUID src) {
+                        return "[]";
+                    }
+
+                    @Override
+                    public UUID fromJsonArr(String src) {
+                        return UUID.randomUUID();
+                    }
+
+                    @Override
+                    public Class<UUID> getTypeClass() {
+                        return UUID.class;
+                    }
+                }));
+
+        assertThatThrownBy(() -> new LHStructDefType(UuidHolder.class, typeAdapterRegistry))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Forbidden JSON type: JSON_ARR");
     }
 }
