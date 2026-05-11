@@ -96,8 +96,8 @@ func resolveFieldName(lhName string, field reflect.StructField) string {
 //   - float32, float64 -> DOUBLE
 //   - bool -> BOOL
 //   - []byte -> BYTES
-//   - slices/arrays -> JSON_ARR
 //   - structs with LHStructDef() -> nested StructDef reference
+//   - slices and arrays of the above -> coming soon: LH native arrays
 func GoStructToInlineStructDef(structInstance interface{}) (*lhproto.InlineStructDef, error) {
 	t := reflect.TypeOf(structInstance)
 	if t.Kind() == reflect.Ptr {
@@ -150,9 +150,7 @@ func buildInlineStructDef(t reflect.Type) (*lhproto.InlineStructDef, error) {
 }
 
 func goTypeToStructFieldDef(t reflect.Type) (*lhproto.StructFieldDef, error) {
-	isPtr := false
 	if t.Kind() == reflect.Ptr {
-		isPtr = true
 		t = t.Elem()
 	}
 
@@ -177,9 +175,16 @@ func goTypeToStructFieldDef(t reflect.Type) (*lhproto.StructFieldDef, error) {
 		}, nil
 	}
 
-	varType, err := goKindToVariableType(t, isPtr)
+	varType, err := goKindToVariableType(t)
 	if err != nil {
 		return nil, err
+	}
+
+	if varType == lhproto.VariableType_JSON_OBJ || varType == lhproto.VariableType_JSON_ARR {
+		return nil, fmt.Errorf(
+			"forbidden JSON type for StructDef field: %s",
+			varType.String(),
+		)
 	}
 
 	return &lhproto.StructFieldDef{
@@ -191,7 +196,7 @@ func goTypeToStructFieldDef(t reflect.Type) (*lhproto.StructFieldDef, error) {
 	}, nil
 }
 
-func goKindToVariableType(t reflect.Type, isPtr bool) (lhproto.VariableType, error) {
+func goKindToVariableType(t reflect.Type) (lhproto.VariableType, error) {
 	kind := t.Kind()
 
 	switch kind {
