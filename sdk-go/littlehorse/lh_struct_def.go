@@ -180,13 +180,6 @@ func goTypeToStructFieldDef(t reflect.Type) (*lhproto.StructFieldDef, error) {
 		return nil, fmt.Errorf("forbidden json type for StructDef field: %w", err)
 	}
 
-	if varType == lhproto.VariableType_JSON_OBJ || varType == lhproto.VariableType_JSON_ARR {
-		return nil, fmt.Errorf(
-			"forbidden JSON type for StructDef field: %s",
-			varType.String(),
-		)
-	}
-
 	return &lhproto.StructFieldDef{
 		FieldType: &lhproto.TypeDefinition{
 			DefinedType: &lhproto.TypeDefinition_PrimitiveType{
