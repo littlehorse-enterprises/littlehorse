@@ -537,5 +537,20 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.common.proto.DeleteMetricWindowOrBuilder getDeleteMetricWindowOrBuilder();
 
+  /**
+   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+   * @return Whether the updateCountedTag field is set.
+   */
+  boolean hasUpdateCountedTag();
+  /**
+   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+   * @return The updateCountedTag.
+   */
+  io.littlehorse.common.proto.UpdateCountedTag getUpdateCountedTag();
+  /**
+   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+   */
+  io.littlehorse.common.proto.UpdateCountedTagOrBuilder getUpdateCountedTagOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

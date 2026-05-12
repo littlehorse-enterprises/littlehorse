@@ -39,6 +39,7 @@ enum StoreableType {
     NODE_OUTPUT = 12;
     TIMER_ITERATOR_HINT = 13;
     METRICS_HINT = 14;
+    COUNTED_TAG = 15;
 }
 
 enum GetableClassEnum {

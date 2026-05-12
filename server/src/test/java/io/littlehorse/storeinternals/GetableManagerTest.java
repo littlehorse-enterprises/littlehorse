@@ -36,6 +36,7 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.UpdateCountedTagModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
@@ -290,8 +291,6 @@ public class GetableManagerTest {
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_21.0"));
     }
 
-
-
     private List<RepartitionCommand> remoteTagsCreated() {
         return mockProcessorContext.forwarded().stream()
                 .map(MockProcessorContext.CapturedForward::record)
@@ -299,6 +298,16 @@ public class GetableManagerTest {
                 .map(CommandProcessorOutput::getPayload)
                 .map(lhSerializable -> (RepartitionCommand) lhSerializable)
                 .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof CreateRemoteTag)
+                .toList();
+    }
+
+    private List<RepartitionCommand> remoteCountedTagsCreated() {
+        return mockProcessorContext.forwarded().stream()
+                .map(MockProcessorContext.CapturedForward::record)
+                .map(Record::value)
+                .map(CommandProcessorOutput::getPayload)
+                .map(lhSerializable -> (RepartitionCommand) lhSerializable)
+                .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof UpdateCountedTagModel)
                 .toList();
     }
 
@@ -696,7 +705,7 @@ public class GetableManagerTest {
         getableManager.put(nodeRunModel);
         getableManager.commit();
 
-        List<RepartitionCommand> repartitionCommands = remoteTagsCreated();
+        List<RepartitionCommand> repartitionCommands = remoteCountedTagsCreated();
         assertThat(repartitionCommands).hasSize(3);
 
         List<String> partitionKeys = repartitionCommands.stream()
@@ -709,8 +718,7 @@ public class GetableManagerTest {
         int revision = nodeRunModel.getWfSpecId().getRevision();
 
         assertThat(partitionKeys)
-                .anyMatch(key -> key.contains("wfSpecName_" + wfSpecName)
-                        && !key.contains("majorVersion"))
+                .anyMatch(key -> key.contains("wfSpecName_" + wfSpecName) && !key.contains("majorVersion"))
                 .anyMatch(key -> key.contains("wfSpecName_" + wfSpecName)
                         && key.contains("majorVersion_" + majorVersion)
                         && !key.contains("revision"))

@@ -2,9 +2,11 @@ package io.littlehorse.server.streams.storeinternals;
 
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.UpdateCountedTagModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.storeinternals.index.CachedTag;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -57,8 +59,8 @@ public class TagStorageManager {
     }
 
     private void createTag(Tag tag) {
-        if (tag.isCounted() || tag.isRemote()) {
-            this.sendRepartitionCommandForCreateRemoteTag(tag);
+        if (tag.isCounted()) {
+            this.sendCountedTag(tag);
         } else {
             lhStore.put(tag);
         }
@@ -91,17 +93,20 @@ public class TagStorageManager {
         this.context.forward(out);
     }
 
-    private void sendRepartitionCommandForCreateRemoteTag(Tag tag) {
-        CreateRemoteTag command = new CreateRemoteTag(tag);
-        Headers metadata = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
-        String partitionKey = tag.getPartitionKey();
+    private void sendCountedTag(Tag tag) {
+        UpdateCountedTagModel updateCountedTag = new UpdateCountedTagModel(tag);
+        CommandModel command = new CommandModel(updateCountedTag);
+        LHTimer timer = new LHTimer(command, true);
+        timer.topic = this.lhConfig.getCoreCmdTopicName();
         CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.setPartitionKey(partitionKey);
-        cpo.setTopic(this.lhConfig.getRepartitionTopicName());
-        RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), partitionKey);
-        cpo.setPayload(repartitionCommand);
-        Record<String, CommandProcessorOutput> out =
-                new Record<>(partitionKey, cpo, System.currentTimeMillis(), metadata);
-        this.context.forward(out);
+        cpo.partitionKey = timer.getPartitionKey();
+        cpo.topic = this.lhConfig.getCoreCmdTopicName();
+        cpo.payload = timer;
+        Record<String, CommandProcessorOutput> out = new Record<>(
+                cpo.partitionKey,
+                cpo,
+                System.currentTimeMillis(),
+                HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId()));
+        context.forward(out);
     }
 }

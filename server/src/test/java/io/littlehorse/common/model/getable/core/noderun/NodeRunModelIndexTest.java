@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.core.noderun;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.protobuf.util.Timestamps;
 import io.littlehorse.common.model.AbstractGetableIndexTest;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventNodeRun;
@@ -13,7 +14,6 @@ import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
-import com.google.protobuf.util.Timestamps;
 import org.junit.jupiter.api.Test;
 
 class NodeRunModelIndexTest extends AbstractGetableIndexTest {
@@ -83,9 +83,7 @@ class NodeRunModelIndexTest extends AbstractGetableIndexTest {
         assertThat(tag.getAttributes())
                 .extracting(Attribute::getEscapedKey)
                 .containsExactlyInAnyOrder("status", "extEvtDefName");
-        assertThat(tag.getAttributes())
-                .extracting(Attribute::getEscapedVal)
-                .contains("RUNNING", EXT_EVT_DEF_NAME);
+        assertThat(tag.getAttributes()).extracting(Attribute::getEscapedVal).contains("RUNNING", EXT_EVT_DEF_NAME);
     }
 
     @Test

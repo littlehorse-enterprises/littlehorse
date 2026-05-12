@@ -34,6 +34,7 @@ import io.littlehorse.common.model.corecommand.subcommand.UpdateCorrelationMarke
 import io.littlehorse.common.model.metadatacommand.subcommand.AggregateWindowMetricsModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskWorkerGroupRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.ScheduleWfRunCommandModel;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.UpdateCountedTagModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.Command.CommandCase;
 import io.littlehorse.common.proto.LHStoreType;
@@ -85,6 +86,7 @@ public class CommandModel extends AbstractCommand<Command> {
     private PutCheckpointRequestModel putCheckpoint;
     private AggregateWindowMetricsModel aggregateWindowMetrics;
     private DeleteMetricWindowModel deleteMetricWindow;
+    private UpdateCountedTagModel updateCountedTag;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;
@@ -209,6 +211,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case DELETE_METRIC_WINDOW:
                 out.setDeleteMetricWindow(deleteMetricWindow.toProto());
+                break;
+            case UPDATE_COUNTED_TAG:
+                out.setUpdateCountedTag(updateCountedTag.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -346,6 +351,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 deleteMetricWindow =
                         LHSerializable.fromProto(p.getDeleteMetricWindow(), DeleteMetricWindowModel.class, context);
                 break;
+            case UPDATE_COUNTED_TAG:
+                updateCountedTag =
+                        LHSerializable.fromProto(p.getUpdateCountedTag(), UpdateCountedTagModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -419,6 +428,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return aggregateWindowMetrics;
             case DELETE_METRIC_WINDOW:
                 return deleteMetricWindow;
+            case UPDATE_COUNTED_TAG:
+                return updateCountedTag;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -525,6 +536,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(DeleteMetricWindowModel.class)) {
             type = CommandCase.DELETE_METRIC_WINDOW;
             deleteMetricWindow = (DeleteMetricWindowModel) cmd;
+        } else if (cls.equals(UpdateCountedTagModel.class)) {
+            type = CommandCase.UPDATE_COUNTED_TAG;
+            updateCountedTag = (UpdateCountedTagModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

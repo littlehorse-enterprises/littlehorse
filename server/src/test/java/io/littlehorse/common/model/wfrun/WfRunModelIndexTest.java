@@ -1,5 +1,7 @@
 package io.littlehorse.common.model.wfrun;
 
+import static org.assertj.core.api.Assertions.*;
+
 import io.littlehorse.common.model.AbstractGetableIndexTest;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -9,9 +11,6 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import org.junit.jupiter.api.Test;
-
-
-import static org.assertj.core.api.Assertions.*;
 
 public class WfRunModelIndexTest extends AbstractGetableIndexTest {
 
@@ -50,9 +49,7 @@ public class WfRunModelIndexTest extends AbstractGetableIndexTest {
         assertThat(tag.getAttributes())
                 .extracting(Attribute::getEscapedKey)
                 .containsExactlyInAnyOrder("wfSpecName", "status");
-        assertThat(tag.getAttributes())
-                .extracting(Attribute::getEscapedVal)
-                .contains("test-spec", "RUNNING");
+        assertThat(tag.getAttributes()).extracting(Attribute::getEscapedVal).contains("test-spec", "RUNNING");
     }
 
     @Test
@@ -83,9 +80,7 @@ public class WfRunModelIndexTest extends AbstractGetableIndexTest {
         assertThat(tag.getAttributes())
                 .extracting(Attribute::getEscapedKey)
                 .containsExactlyInAnyOrder("majorVersion", "status");
-        assertThat(tag.getAttributes())
-                .extracting(Attribute::getEscapedVal)
-                .contains("test-spec/00002", "RUNNING");
+        assertThat(tag.getAttributes()).extracting(Attribute::getEscapedVal).contains("test-spec/00002", "RUNNING");
     }
 
     @Test
@@ -147,5 +142,4 @@ public class WfRunModelIndexTest extends AbstractGetableIndexTest {
         Tag parentTag = getTagForKeys(getable, "parentWfRunId");
         assertThat(parentTag).isNull();
     }
-
 }

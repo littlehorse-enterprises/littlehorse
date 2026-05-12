@@ -183,32 +183,33 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
+        GetableIndex<? extends AbstractGetable<?>> specNameIndex = new GetableIndex<>(
+                List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.COUNTED));
+        GetableIndex<? extends AbstractGetable<?>> specNameAndMajorVersionIndex = new GetableIndex<>(
+                List.of(
+                        Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                        Pair.of("majorVersion", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageType.COUNTED));
+
+        GetableIndex<? extends AbstractGetable<?>> specNameAndMajorVersionAndRevisionIndex = new GetableIndex<>(
+                List.of(
+                        Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                        Pair.of("majorVersion", GetableIndex.ValueType.SINGLE),
+                        Pair.of("revision", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageType.COUNTED));
         if (externalEventRun != null && externalEventRun.getExternalEventDefId() != null) {
             GetableIndex<? extends AbstractGetable<?>> externalEventIndex = new GetableIndex<>(
                     List.of(
                             Pair.of("status", GetableIndex.ValueType.SINGLE),
                             Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
                     Optional.of(TagStorageType.LOCAL));
-            GetableIndex<? extends AbstractGetable<?>> specNameIndex = new GetableIndex<>(
-                    List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)),
-                    Optional.of(TagStorageType.COUNTED));
-            GetableIndex<? extends AbstractGetable<?>> specNameAndMajorVersionIndex = new GetableIndex<>(
-                    List.of(
-                        Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
-                        Pair.of("majorVersion", GetableIndex.ValueType.SINGLE)
-                    ),
-                    Optional.of(TagStorageType.COUNTED));
-
-            GetableIndex<? extends AbstractGetable<?>> specNameAndMajorVersionAndRevisionIndex = new GetableIndex<>(
-                    List.of(
-                            Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
-                            Pair.of("majorVersion", GetableIndex.ValueType.SINGLE),
-                            Pair.of("revision", GetableIndex.ValueType.SINGLE)
-                    ),
-                    Optional.of(TagStorageType.COUNTED));
-            return List.of(externalEventIndex, specNameIndex, specNameAndMajorVersionIndex, specNameAndMajorVersionAndRevisionIndex);
+            return List.of(
+                    externalEventIndex,
+                    specNameIndex,
+                    specNameAndMajorVersionIndex,
+                    specNameAndMajorVersionAndRevisionIndex);
         }
-        return List.of();
+        return List.of(specNameIndex, specNameAndMajorVersionIndex, specNameAndMajorVersionAndRevisionIndex);
     }
 
     @Override

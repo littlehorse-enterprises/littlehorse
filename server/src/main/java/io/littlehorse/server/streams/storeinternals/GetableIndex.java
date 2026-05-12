@@ -28,16 +28,13 @@ public class GetableIndex<T extends AbstractGetable<?>> {
     }
 
     public GetableIndex(
-            List<Pair<String, ValueType>> attributes,
-            TagStorageType tagStorageType,
-            Predicate<T> conditional) {
+            List<Pair<String, ValueType>> attributes, TagStorageType tagStorageType, Predicate<T> conditional) {
         this(attributes, tagStorageType, conditional, false);
     }
 
     public GetableIndex(List<Pair<String, ValueType>> attributes, TagStorageType tagStorageType) {
         this(attributes, tagStorageType, null);
     }
-
 
     // Mantained for code compatibility reasons
     // TODO: Remove this method

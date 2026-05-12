@@ -258,11 +258,13 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             List<IndexedField> dynamicIndexedFields = new ArrayList<>();
             for (Pair<String, GetableIndex.ValueType> stringValueTypePair : indexConfiguration.getAttributes()) {
                 if (stringValueTypePair.getValue().equals(GetableIndex.ValueType.SINGLE)) {
-                    IndexedField indexedField = this.getIndexValues(stringValueTypePair.getKey(), Optional.of(tagStorageType))
+                    IndexedField indexedField = this.getIndexValues(
+                                    stringValueTypePair.getKey(), Optional.of(tagStorageType))
                             .get(0);
                     singleIndexedValues.add(indexedField);
                 } else if (stringValueTypePair.getValue().equals(GetableIndex.ValueType.DYNAMIC)) {
-                    dynamicIndexedFields.addAll(this.getIndexValues(stringValueTypePair.getKey(), Optional.of(tagStorageType)));
+                    dynamicIndexedFields.addAll(
+                            this.getIndexValues(stringValueTypePair.getKey(), Optional.of(tagStorageType)));
                 }
             }
 
