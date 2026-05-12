@@ -78,7 +78,7 @@ public class QuotaModel extends ClusterMetadataGetable<Quota> {
                         List.of(
                                 Pair.of("tenantId", GetableIndex.ValueType.SINGLE),
                                 Pair.of("principalId", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL),
+                        TagStorageType.LOCAL,
                         quota -> quota.getId() != null && quota.getId().hasPrincipal()));
     }
 

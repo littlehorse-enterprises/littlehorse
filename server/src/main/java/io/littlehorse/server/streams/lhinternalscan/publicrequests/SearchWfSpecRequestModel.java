@@ -121,8 +121,8 @@ public class SearchWfSpecRequestModel
             for (GetableIndex<? extends AbstractGetable<?>> indexConfiguration :
                     new WfSpecModel().getIndexConfigurations()) {
                 if (indexConfiguration.searchAttributesMatch(attributes)
-                        && indexConfiguration.getTagStorageType().isPresent()) {
-                    return indexConfiguration.getTagStorageType().get();
+                        && indexConfiguration.getTagStorageType() != null) {
+                    return indexConfiguration.getTagStorageType();
                 }
             }
             return null;

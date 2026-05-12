@@ -75,6 +75,7 @@ message AttributePb {
 
 enum TagStorageType {
     LOCAL = 0;
+    COUNTED = 1;
 }
 
 message TagPb {

@@ -11,14 +11,14 @@ import org.apache.commons.lang3.tuple.Pair;
 @Getter
 public class GetableIndex<T extends AbstractGetable<?>> {
 
-    private List<Pair<String, ValueType>> attributes;
-    private Optional<TagStorageType> tagStorageType;
-    private Predicate<T> predicate;
-    private boolean counted;
+    private final List<Pair<String, ValueType>> attributes;
+    private final TagStorageType tagStorageType;
+    private final Predicate<T> predicate;
+    private final boolean counted;
 
     public GetableIndex(
             List<Pair<String, ValueType>> attributes,
-            Optional<TagStorageType> tagStorageType,
+            TagStorageType tagStorageType,
             Predicate<T> conditional,
             boolean counted) {
         this.attributes = attributes;
@@ -29,13 +29,21 @@ public class GetableIndex<T extends AbstractGetable<?>> {
 
     public GetableIndex(
             List<Pair<String, ValueType>> attributes,
-            Optional<TagStorageType> tagStorageType,
+            TagStorageType tagStorageType,
             Predicate<T> conditional) {
         this(attributes, tagStorageType, conditional, false);
     }
 
-    public GetableIndex(List<Pair<String, ValueType>> attributes, Optional<TagStorageType> tagStorageType) {
+    public GetableIndex(List<Pair<String, ValueType>> attributes, TagStorageType tagStorageType) {
         this(attributes, tagStorageType, null);
+    }
+
+
+    // Mantained for code compatibility reasons
+    // TODO: Remove this method
+    @Deprecated
+    public GetableIndex(List<Pair<String, ValueType>> attributes, Optional<TagStorageType> tagStorageType) {
+        this(attributes, tagStorageType.get(), null);
     }
 
     public boolean searchAttributesMatch(List<String> searchAttributes) {

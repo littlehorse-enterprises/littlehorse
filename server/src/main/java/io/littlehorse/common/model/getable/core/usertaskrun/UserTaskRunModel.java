@@ -484,7 +484,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             List<Pair<String, GetableIndex.ValueType>> attributes = index.stream()
                     .map(attrib -> Pair.of(attrib, GetableIndex.ValueType.SINGLE))
                     .toList();
-            out.add(new GetableIndex<UserTaskRunModel>(attributes, Optional.of(TagStorageType.LOCAL), isIndexActive));
+            out.add(new GetableIndex<>(attributes, TagStorageType.LOCAL, isIndexActive));
         }
 
         return out;

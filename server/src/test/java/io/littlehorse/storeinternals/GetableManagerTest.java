@@ -2,6 +2,7 @@ package io.littlehorse.storeinternals;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
@@ -88,14 +89,14 @@ public class GetableManagerTest {
             new MockProcessorContext<>();
     private GetableManager getableManager;
 
-    @Mock
-    private CoreProcessorContext executionContext;
+    private final CoreProcessorContext executionContext = mock();
 
     private AuthorizationContext testContext = new AuthorizationContextImpl(
             new PrincipalIdModel("my-principal-id"), new TenantIdModel(tenantId), List.of(), false);
 
     @BeforeEach
     void setup() {
+        when(executionContext.authorization()).thenReturn(testContext);
         localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
         getableManager =
                 new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext, null);
@@ -288,6 +289,8 @@ public class GetableManagerTest {
                 .anyMatch(key -> key.contains("5/__majorVersion_testWfSpecName/00000__variableName_21.0"))
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_21.0"));
     }
+
+
 
     private List<RepartitionCommand> remoteTagsCreated() {
         return mockProcessorContext.forwarded().stream()
@@ -679,5 +682,40 @@ public class GetableManagerTest {
         assertThat(storedKeys)
                 .anyMatch(key -> key.contains(
                         "myTenant/5/3/__wfSpecName_test-spec-name__status_COMPLETED__parentWfRunId_" + parentWfRunId));
+    }
+
+    @Test
+    void storeNodeRunWithExternalEventShouldForwardCountedTagsAsRepartitionCommands() {
+        String eventName = "counted-event";
+        NodeRunModel nodeRunModel = TestUtil.nodeRun();
+        nodeRunModel.setType(NodeRun.NodeTypeCase.EXTERNAL_EVENT);
+        ExternalEventNodeRunModel extEvtRun =
+                new ExternalEventNodeRunModel(new ExternalEventDefIdModel(eventName), executionContext);
+        nodeRunModel.setExternalEventRun(extEvtRun);
+
+        getableManager.put(nodeRunModel);
+        getableManager.commit();
+
+        List<RepartitionCommand> repartitionCommands = remoteTagsCreated();
+        assertThat(repartitionCommands).hasSize(3);
+
+        List<String> partitionKeys = repartitionCommands.stream()
+                .map(RepartitionCommand::getSubCommand)
+                .map(RepartitionSubCommand::getPartitionKey)
+                .toList();
+
+        String wfSpecName = nodeRunModel.getWfSpecId().getName();
+        int majorVersion = nodeRunModel.getWfSpecId().getMajorVersion();
+        int revision = nodeRunModel.getWfSpecId().getRevision();
+
+        assertThat(partitionKeys)
+                .anyMatch(key -> key.contains("wfSpecName_" + wfSpecName)
+                        && !key.contains("majorVersion"))
+                .anyMatch(key -> key.contains("wfSpecName_" + wfSpecName)
+                        && key.contains("majorVersion_" + majorVersion)
+                        && !key.contains("revision"))
+                .anyMatch(key -> key.contains("wfSpecName_" + wfSpecName)
+                        && key.contains("majorVersion_" + majorVersion)
+                        && key.contains("revision_" + revision));
     }
 }

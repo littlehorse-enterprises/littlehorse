@@ -57,7 +57,7 @@ public class TagStorageManager {
     }
 
     private void createTag(Tag tag) {
-        if (tag.isRemote()) {
+        if (tag.isCounted() || tag.isRemote()) {
             this.sendRepartitionCommandForCreateRemoteTag(tag);
         } else {
             lhStore.put(tag);
