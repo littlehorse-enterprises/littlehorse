@@ -13,10 +13,14 @@ import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class UpdateCountedTagModel extends CoreSubCommand<DeleteMetricWindow> {
 
     private Tag tag;
+    private final static Logger log = LoggerFactory.getLogger(UpdateCountedTagModel.class);
 
     public UpdateCountedTagModel() {}
 
@@ -45,6 +49,7 @@ public class UpdateCountedTagModel extends CoreSubCommand<DeleteMetricWindow> {
         }
         countedTag.increment();
         store.put(countedTag);
+        log.info("updated " + attributeString + " to " + countedTag.getCount());
         return Empty.getDefaultInstance();
     }
 

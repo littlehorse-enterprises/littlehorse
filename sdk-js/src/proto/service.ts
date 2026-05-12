@@ -1850,6 +1850,14 @@ export interface LittleHorseVersion {
   preReleaseIdentifier?: string | undefined;
 }
 
+export interface CountNodeRunRequest {
+  criteria?: { $case: "wfSpecName"; value: string } | undefined;
+}
+
+export interface CountNodeRunResponse {
+  count: number;
+}
+
 function createBaseGetLatestUserTaskDefRequest(): GetLatestUserTaskDefRequest {
   return { name: "" };
 }
@@ -11442,6 +11450,130 @@ export const LittleHorseVersion = {
   },
 };
 
+function createBaseCountNodeRunRequest(): CountNodeRunRequest {
+  return { criteria: undefined };
+}
+
+export const CountNodeRunRequest = {
+  encode(message: CountNodeRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    switch (message.criteria?.$case) {
+      case "wfSpecName":
+        writer.uint32(10).string(message.criteria.value);
+        break;
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CountNodeRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCountNodeRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.criteria = { $case: "wfSpecName", value: reader.string() };
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CountNodeRunRequest {
+    return {
+      criteria: isSet(object.wfSpecName)
+        ? { $case: "wfSpecName", value: globalThis.String(object.wfSpecName) }
+        : undefined,
+    };
+  },
+
+  toJSON(message: CountNodeRunRequest): unknown {
+    const obj: any = {};
+    if (message.criteria?.$case === "wfSpecName") {
+      obj.wfSpecName = message.criteria.value;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
+    return CountNodeRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
+    const message = createBaseCountNodeRunRequest();
+    if (
+      object.criteria?.$case === "wfSpecName" && object.criteria?.value !== undefined && object.criteria?.value !== null
+    ) {
+      message.criteria = { $case: "wfSpecName", value: object.criteria.value };
+    }
+    return message;
+  },
+};
+
+function createBaseCountNodeRunResponse(): CountNodeRunResponse {
+  return { count: 0 };
+}
+
+export const CountNodeRunResponse = {
+  encode(message: CountNodeRunResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.count !== 0) {
+      writer.uint32(8).int64(message.count);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CountNodeRunResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCountNodeRunResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.count = longToNumber(reader.int64() as Long);
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CountNodeRunResponse {
+    return { count: isSet(object.count) ? globalThis.Number(object.count) : 0 };
+  },
+
+  toJSON(message: CountNodeRunResponse): unknown {
+    const obj: any = {};
+    if (message.count !== 0) {
+      obj.count = Math.round(message.count);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<CountNodeRunResponse>): CountNodeRunResponse {
+    return CountNodeRunResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CountNodeRunResponse>): CountNodeRunResponse {
+    const message = createBaseCountNodeRunResponse();
+    message.count = object.count ?? 0;
+    return message;
+  },
+};
+
 export type LittleHorseDefinition = typeof LittleHorseDefinition;
 export const LittleHorseDefinition = {
   name: "LittleHorse",
@@ -12425,6 +12557,14 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    countNodeRun: {
+      name: "CountNodeRun",
+      requestType: CountNodeRunRequest,
+      requestStream: false,
+      responseType: CountNodeRunResponse,
+      responseStream: false,
+      options: {},
+    },
   },
 } as const;
 
@@ -12894,6 +13034,10 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<LittleHorseVersion>>;
+  countNodeRun(
+    request: CountNodeRunRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<CountNodeRunResponse>>;
 }
 
 export interface LittleHorseClient<CallOptionsExt = {}> {
@@ -13371,6 +13515,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<LittleHorseVersion>;
+  countNodeRun(
+    request: DeepPartial<CountNodeRunRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<CountNodeRunResponse>;
 }
 
 function bytesFromBase64(b64: string): Uint8Array {

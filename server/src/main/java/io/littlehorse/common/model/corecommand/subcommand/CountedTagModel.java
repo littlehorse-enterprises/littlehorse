@@ -46,6 +46,10 @@ public class CountedTagModel extends Storeable<CountedTag> {
         return StoreableType.COUNTED_TAG;
     }
 
+    public long getCount() {
+        return count;
+    }
+
     public void increment() {
         count++;
     }

@@ -5,6 +5,7 @@ import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.ScheduledTaskModel;
+import io.littlehorse.common.model.corecommand.subcommand.CountedTagModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
@@ -18,6 +19,7 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.CountNodeRunRequest;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
@@ -274,5 +276,15 @@ public class ReadOnlyGetableManager {
 
     public Optional<TaskId> getSpecificTask() {
         return Optional.ofNullable(specificTask);
+    }
+
+    public long countNodeRun(CountNodeRunRequest request) {
+        String attributeString = Tag.getAttributeString(GetableClassEnum.NODE_RUN, List.of(new Attribute("wfSpecName", request.getWfSpecName())));
+
+        CountedTagModel countedTagModel = store.get(attributeString, CountedTagModel.class);
+        if (countedTagModel == null) {
+            return 0;
+        }
+        return countedTagModel.getCount();
     }
 }

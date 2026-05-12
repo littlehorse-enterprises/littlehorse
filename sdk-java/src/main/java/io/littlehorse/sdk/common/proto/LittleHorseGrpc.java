@@ -2988,6 +2988,37 @@ public final class LittleHorseGrpc {
     return getGetServerVersionMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountNodeRunRequest,
+      io.littlehorse.sdk.common.proto.CountNodeRunResponse> getCountNodeRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "CountNodeRun",
+      requestType = io.littlehorse.sdk.common.proto.CountNodeRunRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.CountNodeRunResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountNodeRunRequest,
+      io.littlehorse.sdk.common.proto.CountNodeRunResponse> getCountNodeRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountNodeRunRequest, io.littlehorse.sdk.common.proto.CountNodeRunResponse> getCountNodeRunMethod;
+    if ((getCountNodeRunMethod = LittleHorseGrpc.getCountNodeRunMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getCountNodeRunMethod = LittleHorseGrpc.getCountNodeRunMethod) == null) {
+          LittleHorseGrpc.getCountNodeRunMethod = getCountNodeRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CountNodeRunRequest, io.littlehorse.sdk.common.proto.CountNodeRunResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CountNodeRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CountNodeRunRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CountNodeRunResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("CountNodeRun"))
+              .build();
+        }
+      }
+    }
+    return getCountNodeRunMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -4069,6 +4100,13 @@ public final class LittleHorseGrpc {
     default void getServerVersion(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.LittleHorseVersion> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetServerVersionMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default void countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CountNodeRunResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCountNodeRunMethod(), responseObserver);
     }
   }
 
@@ -5214,6 +5252,14 @@ public final class LittleHorseGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CountNodeRunResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getCountNodeRunMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -6253,6 +6299,13 @@ public final class LittleHorseGrpc {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
           getChannel(), getGetServerVersionMethod(), getCallOptions(), request);
     }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.CountNodeRunResponse countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getCountNodeRunMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -7278,6 +7331,13 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.LittleHorseVersion getServerVersion(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetServerVersionMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.CountNodeRunResponse countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getCountNodeRunMethod(), getCallOptions(), request);
     }
   }
 
@@ -8400,6 +8460,14 @@ public final class LittleHorseGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.CountNodeRunResponse> countNodeRun(
+        io.littlehorse.sdk.common.proto.CountNodeRunRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getCountNodeRunMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PUT_TASK_DEF = 0;
@@ -8497,7 +8565,8 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_PRINCIPAL = 92;
   private static final int METHODID_WHOAMI = 93;
   private static final int METHODID_GET_SERVER_VERSION = 94;
-  private static final int METHODID_POLL_TASK = 95;
+  private static final int METHODID_COUNT_NODE_RUN = 95;
+  private static final int METHODID_POLL_TASK = 96;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -8895,6 +8964,10 @@ public final class LittleHorseGrpc {
         case METHODID_GET_SERVER_VERSION:
           serviceImpl.getServerVersion((com.google.protobuf.Empty) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.LittleHorseVersion>) responseObserver);
+          break;
+        case METHODID_COUNT_NODE_RUN:
+          serviceImpl.countNodeRun((io.littlehorse.sdk.common.proto.CountNodeRunRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CountNodeRunResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -9589,6 +9662,13 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty,
               io.littlehorse.sdk.common.proto.LittleHorseVersion>(
                 service, METHODID_GET_SERVER_VERSION)))
+        .addMethod(
+          getCountNodeRunMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.CountNodeRunRequest,
+              io.littlehorse.sdk.common.proto.CountNodeRunResponse>(
+                service, METHODID_COUNT_NODE_RUN)))
         .build();
   }
 
@@ -9733,6 +9813,7 @@ public final class LittleHorseGrpc {
               .addMethod(getGetPrincipalMethod())
               .addMethod(getWhoamiMethod())
               .addMethod(getGetServerVersionMethod())
+              .addMethod(getCountNodeRunMethod())
               .build();
         }
       }

@@ -1201,6 +1201,13 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ctx.onCompleted();
     }
 
+    @Override
+    public void countNodeRun(CountNodeRunRequest request, StreamObserver<CountNodeRunResponse> responseObserver) {
+        long count = requestContext().getableManager().countNodeRun(request);
+        responseObserver.onNext(CountNodeRunResponse.newBuilder().setCount(count).build());
+        responseObserver.onCompleted();
+    }
+
     /*
      * Sends a command to Kafka and simultaneously does a waitForProcessing() internal
      * grpc call that asynchronously waits for the command to be processed.

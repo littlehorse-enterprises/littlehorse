@@ -182,11 +182,37 @@ func loadEarliestAndLatestStart(cmd *cobra.Command) (*timestamppb.Timestamp, *ti
 	return earliestStartTime, latestStartTime
 }
 
+var countNodeRunCmd = &cobra.Command{
+	Use:   "nodeRun",
+	Short: "Count NodeRun's by WfSpec name.",
+	Long: `Count the number of NodeRun's matching the given criteria.
+
+Currently supports counting by WfSpec name:
+  lhctl count nodeRun --wfSpecName <wfSpecName>
+`,
+	Run: func(cmd *cobra.Command, args []string) {
+		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
+		if wfSpecName == "" {
+			log.Fatal("Must provide --wfSpecName flag. See 'lhctl count nodeRun --help'")
+		}
+
+		req := &lhproto.CountNodeRunRequest{
+			Criteria: &lhproto.CountNodeRunRequest_WfSpecName{
+				WfSpecName: wfSpecName,
+			},
+		}
+
+		littlehorse.PrintResp(getGlobalClient(cmd).CountNodeRun(requestContext(cmd), req))
+	},
+}
+
 func init() {
 	getCmd.AddCommand(getNodeRunCmd)
 	searchCmd.AddCommand(searchNodeRunCmd)
 	listCmd.AddCommand(listNodeRunCmd)
+	countCmd.AddCommand(countNodeRunCmd)
 
+	countNodeRunCmd.Flags().String("wfSpecName", "", "Name of the WfSpec to count NodeRuns for (required)")
 	searchNodeRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for nodeRuns that started no more than this number of minutes ago")
 	searchNodeRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for nodeRuns that started at least this number of minutes ago")
 	listNodeRunCmd.Flags().Int32("threadRunNumber", -1, "Filter by ThreadRun Number")

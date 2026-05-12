@@ -1073,3 +1073,15 @@ class LittleHorseVersion(_message.Message):
     patch_version: int
     pre_release_identifier: str
     def __init__(self, major_version: _Optional[int] = ..., minor_version: _Optional[int] = ..., patch_version: _Optional[int] = ..., pre_release_identifier: _Optional[str] = ...) -> None: ...
+
+class CountNodeRunRequest(_message.Message):
+    __slots__ = ("wf_spec_name",)
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_name: str
+    def __init__(self, wf_spec_name: _Optional[str] = ...) -> None: ...
+
+class CountNodeRunResponse(_message.Message):
+    __slots__ = ("count",)
+    COUNT_FIELD_NUMBER: _ClassVar[int]
+    count: int
+    def __init__(self, count: _Optional[int] = ...) -> None: ...
