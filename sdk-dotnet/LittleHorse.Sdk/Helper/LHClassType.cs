@@ -31,10 +31,13 @@ namespace LittleHorse.Sdk.Helper
       if (type == null)
       {
         throw new ArgumentNullException(nameof(type), "Type cannot be null.");
-      } else if (Attribute.IsDefined(type, typeof(LHStructDefAttribute)))
+      }
+
+      if (Attribute.IsDefined(type, typeof(LHStructDefAttribute)))
       {
         return new LHStructDefType(type);
       }
+
       return new LHPrimitiveType(type);
     }
 

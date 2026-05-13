@@ -310,6 +310,23 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         return primitiveType == VariableType.JSON_ARR || primitiveType == VariableType.JSON_OBJ;
     }
 
+    public VariableType findForbiddenJsonPrimitiveForStructDef() {
+        if (definedTypeCase == DefinedTypeCase.PRIMITIVE_TYPE) {
+            if (primitiveType == VariableType.JSON_OBJ || primitiveType == VariableType.JSON_ARR) {
+                return primitiveType;
+            }
+            return null;
+        }
+
+        if (definedTypeCase == DefinedTypeCase.INLINE_ARRAY_DEF
+                && inlineArrayDef != null
+                && inlineArrayDef.getArrayType() != null) {
+            return inlineArrayDef.getArrayType().findForbiddenJsonPrimitiveForStructDef();
+        }
+
+        return null;
+    }
+
     /**
      * Gets the nested type in this TypeDefinition according to an LHPath
      * @param lhPath an LHPath to a nested type
