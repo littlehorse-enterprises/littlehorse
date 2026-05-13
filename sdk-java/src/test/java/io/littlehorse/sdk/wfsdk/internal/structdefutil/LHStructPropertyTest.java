@@ -52,7 +52,11 @@ public class LHStructPropertyTest {
         StructFieldDef actualStructFieldDef = lhStructProperty.toStructFieldDef();
         StructFieldDef expectedStructFieldDef = StructFieldDef.newBuilder()
                 .setFieldType(TypeDefinition.newBuilder()
-                        .setPrimitiveType(VariableType.JSON_ARR)
+                        .setInlineArrayDef(InlineArrayDef.newBuilder()
+                                .setArrayType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.STR)
+                                        .build())
+                                .build())
                         .build())
                 .build();
 
@@ -122,7 +126,7 @@ public class LHStructPropertyTest {
     }
 
     @Test
-    public void getDefaultValue_returnsNativeArrayWhenAnnotated() throws Exception {
+    public void getDefaultValue_returnsNativeArray() throws Exception {
         LHStructDefType parent = new LHStructDefType(Library.class, LHTypeAdapterRegistry.empty());
         PropertyDescriptor pd = new PropertyDescriptor("lhArrayWithDefault", Library.class);
         LHStructProperty prop = new LHStructProperty(pd, parent);
