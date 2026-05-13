@@ -1,4 +1,5 @@
 'use client'
+import { routes } from '@/app/routes'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import {
   DropdownMenu,
@@ -41,7 +42,7 @@ export const TenantSelector: FC = () => {
           <DropdownMenuItem
             key={tenant}
             className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-            onClick={() => router.push(`/${tenant}`)}
+            onClick={() => router.push(routes.tenant.root(tenant))}
           >
             {tenant}
           </DropdownMenuItem>

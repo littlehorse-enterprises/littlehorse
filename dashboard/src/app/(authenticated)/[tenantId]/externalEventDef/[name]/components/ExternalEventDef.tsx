@@ -3,6 +3,7 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { routes } from '@/app/routes'
 import { wfRunIdToPath, getVariableValue, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import {
   AlertDialog,
@@ -134,7 +135,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
 
   return (
     <>
-      <Navigation href="/?type=ExternalEventDef" title="Go back to ExternalEventDef" />
+      <Navigation href={routes.search.homeWithType('ExternalEventDef')} title="Go back to ExternalEventDef" />
       <Details spec={spec} />
       <hr className="mt-6" />
       <div className="mt-6">
@@ -206,7 +207,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
                                   <LinkWithTenant
                                     className="py-2 text-blue-500 hover:underline"
                                     target="_blank"
-                                    href={`/wfRun/${wfRunIdToPath(externalEvent.id.wfRunId)}?threadRunNumber=${externalEvent.threadRunNumber}&nodeRunName=${externalEvent.nodeRunPosition}-${spec.id?.name}-EXTERNAL_EVENT`}
+                                    href={`${routes.wfRun.detail(wfRunIdToPath(externalEvent.id.wfRunId))}?threadRunNumber=${externalEvent.threadRunNumber}&nodeRunName=${externalEvent.nodeRunPosition}-${spec.id?.name}-EXTERNAL_EVENT`}
                                   >
                                     {wfRunIdToPath(externalEvent.id.wfRunId)}
                                   </LinkWithTenant>

@@ -2,10 +2,10 @@
 
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { TableWrapper } from '@/app/(authenticated)/[tenantId]/components/tables/TableWrapper'
-import VersionTag from '@/app/(authenticated)/[tenantId]/components/VersionTag'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { WfRunResponse } from '@/app/actions/getWfRun'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
+import { routes } from '@/app/routes'
 import { formatDate, getStatus, getVariableValue, wfRunIdToPath } from '@/app/utils'
 import { computeStartTimeWindow, StartTimeWindow } from '@/app/utils/dateTime'
 import { getTypedVariableValue, getVariableDefType } from '@/app/utils/variables'
@@ -264,7 +264,7 @@ export const WfRuns: FC<WfSpec> = spec => {
                   {sortedRows.map(row => {
                     const w = row.wfRun
                     if (!w.id) return null
-                    const path = `/wfRun/${wfRunIdToPath(w.id)}`
+                    const path = routes.wfRun.detail(wfRunIdToPath(w.id))
                     const entrypointVars = (row.variables ?? []).filter(v => v.id?.threadRunNumber === 0 && v.value)
                     return (
                       <TableRow key={w.id.id} className="hover:bg-muted/50">
@@ -301,7 +301,7 @@ export const WfRuns: FC<WfSpec> = spec => {
                           {w.id.parentWfRunId?.id ? (
                             <LinkWithTenant
                               className="text-sm text-blue-600 hover:underline"
-                              href={`/wfRun/${wfRunIdToPath(w.id.parentWfRunId)}`}
+                              href={routes.wfRun.detail(wfRunIdToPath(w.id.parentWfRunId))}
                             >
                               {w.id.parentWfRunId.id}
                             </LinkWithTenant>
