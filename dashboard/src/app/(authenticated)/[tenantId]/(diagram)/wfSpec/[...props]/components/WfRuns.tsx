@@ -2,6 +2,7 @@
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
+import { routes } from '@/app/routes'
 import { getStatus, wfRunIdToPath } from '@/app/utils'
 import { computeStartTimeWindow, StartTimeWindow } from '@/app/utils/dateTime'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
@@ -84,7 +85,7 @@ export const WfRuns: FC<WfSpec> = spec => {
               {page.results.map(wfRun => {
                 if (!wfRun.wfRun.id) return null
                 return (
-                  <SelectionLink key={wfRun.wfRun.id.id} href={`/wfRun/${wfRunIdToPath(wfRun.wfRun.id)}`}>
+                  <SelectionLink key={wfRun.wfRun.id.id} href={routes.wfRun.detail(wfRunIdToPath(wfRun.wfRun.id))}>
                     <p>{wfRun.wfRun.id.id}</p>
                     <span className={cn('ml-2 rounded px-2', WF_RUN_STATUS[wfRun.wfRun.status].color)}>
                       {`${wfRun.wfRun.status ?? ''}`}

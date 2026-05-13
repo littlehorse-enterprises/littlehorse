@@ -1,6 +1,7 @@
 'use client'
 import { DiagramProvider, NodeInContext } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
+import { routes } from '@/app/routes'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { WfSpec as Spec } from 'littlehorse-client/proto'
 import { LucidePlayCircle } from 'lucide-react'
@@ -28,7 +29,7 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
   }, [spec, setModal, setShowModal])
   return (
     <>
-      <Navigation href="/" title="Go back to WfSpecs" />
+      <Navigation href={routes.appRoot()} title="Go back to WfSpecs" />
       <div className="flex items-center justify-between">
         <Details status={spec.status} id={spec.id} />
         <button className="flex items-center gap-1 rounded-sm bg-blue-500 p-2 px-4 text-white" onClick={onClick}>

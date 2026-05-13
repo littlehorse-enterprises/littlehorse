@@ -1,4 +1,5 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
+import { routes } from '@/app/routes'
 import { ExternalEventNode as ExternalEventNodeProto } from 'littlehorse-client/proto'
 import { LinkIcon } from 'lucide-react'
 import { FC } from 'react'
@@ -14,7 +15,7 @@ export const ExternalEventNode: FC<{ node: ExternalEventNodeProto }> = ({ node }
       <div className="mb-2 flex items-center">
         <p className="flex-grow truncate text-lg font-medium">{externalEventDefId.name}</p>
 
-        <LinkWithTenant href={`/externalEventDef/${externalEventDefId.name}`}>
+        <LinkWithTenant href={routes.externalEventDef.detail(externalEventDefId.name)}>
           <LinkIcon className="ml-1 h-4 w-4 cursor-pointer hover:text-slate-600" />
         </LinkWithTenant>
       </div>

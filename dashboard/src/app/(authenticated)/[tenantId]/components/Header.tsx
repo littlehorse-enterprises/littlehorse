@@ -1,6 +1,7 @@
 'use client'
 
 import { getServerVersion } from '@/app/actions/getServerVersion'
+import { routes } from '@/app/routes'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import LhLogo from '@/littlehorse.svg'
 import { FC } from 'react'
@@ -22,7 +23,7 @@ export const Header: FC = () => {
   return (
     <nav className="mb-4 border-gray-200 bg-black px-8 dark:bg-gray-900">
       <div className="mx-auto flex flex-wrap items-center justify-between py-4">
-        <LinkWithTenant href="/" className="flex items-center space-x-1 rtl:space-x-reverse">
+        <LinkWithTenant href={routes.appRoot()} className="flex items-center space-x-1 rtl:space-x-reverse">
           <LhLogo className="h-8 fill-white" />
           <div className="hidden flex-col gap-0 space-y-[-10px] text-xl font-bold text-white md:flex">
             <span>LITTLE</span>
