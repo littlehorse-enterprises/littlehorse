@@ -213,6 +213,30 @@ public class WorkflowThreadTest
     }
 
     [Fact]
+    public void WfThread_DeclareArray_ShouldCompileWithInlineArrayDef()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            wf.DeclareArray("words", typeof(string));
+        }
+
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        var compiled = workflowThread.Compile();
+
+        Assert.Single(compiled.VariableDefs);
+        Assert.Equal("words", compiled.VariableDefs[0].VarDef.Name);
+        Assert.Equal(
+            TypeDefinition.DefinedTypeOneofCase.InlineArrayDef,
+            compiled.VariableDefs[0].VarDef.TypeDef.DefinedTypeCase);
+        Assert.Equal(
+            VariableType.Str,
+            compiled.VariableDefs[0].VarDef.TypeDef.InlineArrayDef.ArrayType.PrimitiveType);
+    }
+
+    [Fact]
     public void WfThread_InvokingExecuteTasksWithArgs_ShouldBuildSpecWithTaskNodeAndVariablesDefs()
     {
         var workflowName = "TestWorkflow";

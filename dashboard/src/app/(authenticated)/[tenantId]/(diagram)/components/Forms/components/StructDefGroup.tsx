@@ -1,5 +1,5 @@
 import { getStructDef } from '@/app/actions/getStructDef'
-import { getVariableCaseFromType } from '@/app/utils'
+import { getPrimitiveFormDefaultValue, getVariableCaseFromType } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 import { FieldGroup } from '@/components/ui/field'
 import { StructDefId, StructField, VariableType, VariableValue } from 'littlehorse-client/proto'
@@ -54,24 +54,7 @@ const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
   const fieldId = useMemo(() => [STRUCT_FORM_FIELD_PREFIX, ...structPath, fieldName].join('.'), [structPath, fieldName])
   const value = useWatch({ name: fieldId, control })
 
-  const defaultFormValue = useMemo(() => {
-    const union = defaultValue?.value
-    if (!union) return undefined
-
-    switch (union.$case) {
-      case 'bool':
-        return union.value ? 'true' : 'false'
-      case 'int':
-      case 'double':
-        return union.value
-      case 'str':
-      case 'jsonObj':
-      case 'jsonArr':
-        return union.value
-      default:
-        return undefined
-    }
-  }, [defaultValue])
+  const defaultFormValue = useMemo(() => getPrimitiveFormDefaultValue(defaultValue), [defaultValue])
 
   useEffect(() => {
     if (!disabled) {
