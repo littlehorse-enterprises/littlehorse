@@ -1,7 +1,8 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
-import { wfRunIdToPath } from '@/app/utils/wfRun'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
+import { routes } from '@/app/routes'
+import { wfRunIdToPath } from '@/app/utils'
 import { getTypedVariableValue, getVariableDefType } from '@/app/utils/variables'
 import { Button } from '@/components/ui/button'
 import {
@@ -106,7 +107,7 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
                   <div key={`${wfRunIdToPath(variableId.wfRunId)}-${variableId.threadRunNumber}`}>
                     <LinkWithTenant
                       className="py-2 text-blue-500 hover:underline"
-                      href={`/wfRun/${wfRunIdToPath(variableId.wfRunId)}?threadRunNumber=${variableId.threadRunNumber}`}
+                      href={`${routes.wfRun.detail(wfRunIdToPath(variableId.wfRunId))}?threadRunNumber=${variableId.threadRunNumber}`}
                     >
                       {wfRunIdToPath(variableId.wfRunId)}
                     </LinkWithTenant>

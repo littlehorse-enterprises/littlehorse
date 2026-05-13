@@ -1,4 +1,5 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
+import { routes } from '@/app/routes'
 import { TaskNode as TaskNodeProto } from 'littlehorse-client/proto'
 import { LinkIcon } from 'lucide-react'
 import { FC } from 'react'
@@ -15,7 +16,7 @@ export const TaskNode: FC<{ node: TaskNodeProto }> = ({ node }) => {
       <div className="mb-2 flex items-center">
         <p className="flex-grow truncate text-lg font-medium">{getTaskName(node.taskToExecute)}</p>
         {taskToExecute?.$case === 'taskDefId' && (
-          <LinkWithTenant href={`/taskDef/${taskToExecute.value.name}`}>
+          <LinkWithTenant href={routes.taskDef.detail(taskToExecute.value.name)}>
             <LinkIcon className="ml-1 h-4 w-4 cursor-pointer hover:text-slate-600" />
           </LinkWithTenant>
         )}

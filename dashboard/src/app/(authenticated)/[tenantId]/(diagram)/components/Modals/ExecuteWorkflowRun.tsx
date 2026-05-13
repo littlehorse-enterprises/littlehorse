@@ -15,6 +15,7 @@ import { FC, useCallback, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
 import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
+import { routes, withTenant } from '@/app/routes'
 import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
 import { DOT_REPLACEMENT_PATTERN, StructFormContextValue, StructFormProvider } from '../Forms/context/StructFormContext'
 import { FormValues, WfRunForm, WfRunFormSubmitMeta } from '../Forms/WfRunForm'
@@ -114,7 +115,7 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
       if (!wfRun.id) return
       toast.success('Workflow has been executed')
       setShowModal(false)
-      router.push(`/${tenantId}/wfRun/${wfRunIdToPath(wfRun.id)}`)
+      router.push(withTenant(tenantId, routes.wfRun.detail(wfRunIdToPath(wfRun.id))))
     } catch (error: any) {
       if (error.message) {
         const sanitizedErrorMessage = error.message.slice(error.message.indexOf(':') + 1).trim()
