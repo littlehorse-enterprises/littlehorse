@@ -22,6 +22,7 @@ public class BasicExample {
         return new WorkflowImpl("example-basic", wf -> {
             WfRunVariable theName = wf.declareStr("input-name").searchable();
             wf.execute("greet", theName);
+            wf.execute("greet", theName);
         });
     }
 

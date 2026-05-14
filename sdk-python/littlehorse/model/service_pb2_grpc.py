@@ -534,6 +534,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.CountNodeRunRequest.SerializeToString,
                 response_deserializer=service__pb2.Count.FromString,
                 _registered_method=True)
+        self.CountScheduledTaskRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/CountScheduledTaskRun',
+                request_serializer=service__pb2.CountScheduledTaskRunRequest.SerializeToString,
+                response_deserializer=service__pb2.Count.FromString,
+                _registered_method=True)
 
 
 class LittleHorseServicer(object):
@@ -1288,6 +1293,12 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def CountScheduledTaskRun(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_LittleHorseServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1774,6 +1785,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'CountNodeRun': grpc.unary_unary_rpc_method_handler(
                     servicer.CountNodeRun,
                     request_deserializer=service__pb2.CountNodeRunRequest.FromString,
+                    response_serializer=service__pb2.Count.SerializeToString,
+            ),
+            'CountScheduledTaskRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.CountScheduledTaskRun,
+                    request_deserializer=service__pb2.CountScheduledTaskRunRequest.FromString,
                     response_serializer=service__pb2.Count.SerializeToString,
             ),
     }
@@ -4395,6 +4411,33 @@ class LittleHorse(object):
             target,
             '/littlehorse.LittleHorse/CountNodeRun',
             service__pb2.CountNodeRunRequest.SerializeToString,
+            service__pb2.Count.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CountScheduledTaskRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/CountScheduledTaskRun',
+            service__pb2.CountScheduledTaskRunRequest.SerializeToString,
             service__pb2.Count.FromString,
             options,
             channel_credentials,

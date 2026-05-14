@@ -378,6 +378,8 @@ service LittleHorse {
 
   rpc CountNodeRun(CountNodeRunRequest) returns (Count) {}
 
+  rpc CountScheduledTaskRun(CountScheduledTaskRunRequest) returns (Count) {}
+
 }
 // Returns the UserTaskDef with a given name and the highest version number.
 message GetLatestUserTaskDefRequest {
@@ -1774,6 +1776,10 @@ message CountNodeRunRequest {
   optional int32 wf_spec_major_version = 2;
   optional int32 wf_spec_revision = 3;
 
+}
+
+message CountScheduledTaskRunRequest {
+  string task_def_name = 1;
 }
 
 message Count {

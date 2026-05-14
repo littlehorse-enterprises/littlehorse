@@ -13,8 +13,10 @@ public abstract class CountRequest<T extends Message> extends LHSerializable<T> 
 
     protected abstract List<Attribute> countAttributes();
 
+    protected abstract GetableClassEnum getObjectType();
+
     public final InternalCount internalCount() {
-        Tag countedTagToSearch = new Tag(TagStorageType.COUNTED, GetableClassEnum.NODE_RUN, countAttributes());
-        return new InternalCount(GetableClassEnum.NODE_RUN, countedTagToSearch.getAttributeString());
+        Tag countedTagToSearch = new Tag(TagStorageType.COUNTED, getObjectType(), countAttributes());
+        return new InternalCount(getObjectType(), countedTagToSearch.getAttributeString());
     }
 }

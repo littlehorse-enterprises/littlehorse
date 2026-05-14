@@ -1084,6 +1084,12 @@ class CountNodeRunRequest(_message.Message):
     wf_spec_revision: int
     def __init__(self, wf_spec_name: _Optional[str] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ...) -> None: ...
 
+class CountScheduledTaskRunRequest(_message.Message):
+    __slots__ = ("task_def_name",)
+    TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
+    task_def_name: str
+    def __init__(self, task_def_name: _Optional[str] = ...) -> None: ...
+
 class Count(_message.Message):
     __slots__ = ("value",)
     VALUE_FIELD_NUMBER: _ClassVar[int]

@@ -135,11 +135,35 @@ Lists all TaskRun's for a given WfRun Id.
 	},
 }
 
+var countScheduledTaskRunCmd = &cobra.Command{
+	Use:   "scheduledTaskRun",
+	Short: "Count scheduled TaskRun's by TaskDef name.",
+	Long: `Count the number of TaskRun's in TASK_SCHEDULED state for a given TaskDef.
+
+Usage:
+  lhctl count scheduledTaskRun --taskDefName <taskDefName>
+`,
+	Run: func(cmd *cobra.Command, args []string) {
+		taskDefName, _ := cmd.Flags().GetString("taskDefName")
+		if taskDefName == "" {
+			log.Fatal("Must provide --taskDefName flag. See 'lhctl count scheduledTaskRun --help'")
+		}
+
+		req := &lhproto.CountScheduledTaskRunRequest{
+			TaskDefName: taskDefName,
+		}
+
+		littlehorse.PrintResp(getGlobalClient(cmd).CountScheduledTaskRun(requestContext(cmd), req))
+	},
+}
+
 func init() {
 	getCmd.AddCommand(getTaskRunCmd)
 	searchCmd.AddCommand(searchTaskRunCmd)
 	listCmd.AddCommand(listTaskRunCmd)
+	countCmd.AddCommand(countScheduledTaskRunCmd)
 
+	countScheduledTaskRunCmd.Flags().String("taskDefName", "", "Name of the TaskDef to count scheduled TaskRuns for (required)")
 	searchTaskRunCmd.Flags().String("status", "", "Status of TaskRun's to search for.")
 	searchTaskRunCmd.MarkFlagRequired("taskDefName")
 	searchTaskRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for TaskRuns that started no more than this number of minutes ago")

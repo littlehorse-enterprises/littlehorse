@@ -117,6 +117,7 @@ const (
 	LittleHorse_Whoami_FullMethodName                     = "/littlehorse.LittleHorse/Whoami"
 	LittleHorse_GetServerVersion_FullMethodName           = "/littlehorse.LittleHorse/GetServerVersion"
 	LittleHorse_CountNodeRun_FullMethodName               = "/littlehorse.LittleHorse/CountNodeRun"
+	LittleHorse_CountScheduledTaskRun_FullMethodName      = "/littlehorse.LittleHorse/CountScheduledTaskRun"
 )
 
 // LittleHorseClient is the client API for LittleHorse service.
@@ -386,6 +387,7 @@ type LittleHorseClient interface {
 	// Gets the version of the LH Server.
 	GetServerVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*LittleHorseVersion, error)
 	CountNodeRun(ctx context.Context, in *CountNodeRunRequest, opts ...grpc.CallOption) (*Count, error)
+	CountScheduledTaskRun(ctx context.Context, in *CountScheduledTaskRunRequest, opts ...grpc.CallOption) (*Count, error)
 }
 
 type littleHorseClient struct {
@@ -1291,6 +1293,15 @@ func (c *littleHorseClient) CountNodeRun(ctx context.Context, in *CountNodeRunRe
 	return out, nil
 }
 
+func (c *littleHorseClient) CountScheduledTaskRun(ctx context.Context, in *CountScheduledTaskRunRequest, opts ...grpc.CallOption) (*Count, error) {
+	out := new(Count)
+	err := c.cc.Invoke(ctx, LittleHorse_CountScheduledTaskRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LittleHorseServer is the server API for LittleHorse service.
 // All implementations must embed UnimplementedLittleHorseServer
 // for forward compatibility
@@ -1558,6 +1569,7 @@ type LittleHorseServer interface {
 	// Gets the version of the LH Server.
 	GetServerVersion(context.Context, *emptypb.Empty) (*LittleHorseVersion, error)
 	CountNodeRun(context.Context, *CountNodeRunRequest) (*Count, error)
+	CountScheduledTaskRun(context.Context, *CountScheduledTaskRunRequest) (*Count, error)
 	mustEmbedUnimplementedLittleHorseServer()
 }
 
@@ -1855,6 +1867,9 @@ func (UnimplementedLittleHorseServer) GetServerVersion(context.Context, *emptypb
 }
 func (UnimplementedLittleHorseServer) CountNodeRun(context.Context, *CountNodeRunRequest) (*Count, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CountNodeRun not implemented")
+}
+func (UnimplementedLittleHorseServer) CountScheduledTaskRun(context.Context, *CountScheduledTaskRunRequest) (*Count, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CountScheduledTaskRun not implemented")
 }
 func (UnimplementedLittleHorseServer) mustEmbedUnimplementedLittleHorseServer() {}
 
@@ -3623,6 +3638,24 @@ func _LittleHorse_CountNodeRun_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_CountScheduledTaskRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CountScheduledTaskRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).CountScheduledTaskRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_CountScheduledTaskRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).CountScheduledTaskRun(ctx, req.(*CountScheduledTaskRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LittleHorse_ServiceDesc is the grpc.ServiceDesc for LittleHorse service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -4013,6 +4046,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CountNodeRun",
 			Handler:    _LittleHorse_CountNodeRun_Handler,
+		},
+		{
+			MethodName: "CountScheduledTaskRun",
+			Handler:    _LittleHorse_CountScheduledTaskRun_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

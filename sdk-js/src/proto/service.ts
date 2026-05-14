@@ -1856,6 +1856,10 @@ export interface CountNodeRunRequest {
   wfSpecRevision?: number | undefined;
 }
 
+export interface CountScheduledTaskRunRequest {
+  taskDefName: string;
+}
+
 export interface Count {
   value: number;
 }
@@ -11541,6 +11545,63 @@ export const CountNodeRunRequest = {
   },
 };
 
+function createBaseCountScheduledTaskRunRequest(): CountScheduledTaskRunRequest {
+  return { taskDefName: "" };
+}
+
+export const CountScheduledTaskRunRequest = {
+  encode(message: CountScheduledTaskRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.taskDefName !== "") {
+      writer.uint32(10).string(message.taskDefName);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CountScheduledTaskRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCountScheduledTaskRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.taskDefName = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CountScheduledTaskRunRequest {
+    return { taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "" };
+  },
+
+  toJSON(message: CountScheduledTaskRunRequest): unknown {
+    const obj: any = {};
+    if (message.taskDefName !== "") {
+      obj.taskDefName = message.taskDefName;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<CountScheduledTaskRunRequest>): CountScheduledTaskRunRequest {
+    return CountScheduledTaskRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CountScheduledTaskRunRequest>): CountScheduledTaskRunRequest {
+    const message = createBaseCountScheduledTaskRunRequest();
+    message.taskDefName = object.taskDefName ?? "";
+    return message;
+  },
+};
+
 function createBaseCount(): Count {
   return { value: 0 };
 }
@@ -12589,6 +12650,14 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    countScheduledTaskRun: {
+      name: "CountScheduledTaskRun",
+      requestType: CountScheduledTaskRunRequest,
+      requestStream: false,
+      responseType: Count,
+      responseStream: false,
+      options: {},
+    },
   },
 } as const;
 
@@ -13059,6 +13128,10 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   /** Gets the version of the LH Server. */
   getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<LittleHorseVersion>>;
   countNodeRun(request: CountNodeRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Count>>;
+  countScheduledTaskRun(
+    request: CountScheduledTaskRunRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Count>>;
 }
 
 export interface LittleHorseClient<CallOptionsExt = {}> {
@@ -13537,6 +13610,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   /** Gets the version of the LH Server. */
   getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<LittleHorseVersion>;
   countNodeRun(request: DeepPartial<CountNodeRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Count>;
+  countScheduledTaskRun(
+    request: DeepPartial<CountScheduledTaskRunRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Count>;
 }
 
 function bytesFromBase64(b64: string): Uint8Array {

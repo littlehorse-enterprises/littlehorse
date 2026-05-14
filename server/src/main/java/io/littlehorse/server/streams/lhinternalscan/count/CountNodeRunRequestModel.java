@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.lhinternalscan.count;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.CountNodeRunRequest;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
@@ -34,6 +35,11 @@ public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> 
     @Override
     public Class<CountNodeRunRequest> getProtoBaseClass() {
         return CountNodeRunRequest.class;
+    }
+
+    @Override
+    protected GetableClassEnum getObjectType() {
+        return GetableClassEnum.NODE_RUN;
     }
 
     @Override
