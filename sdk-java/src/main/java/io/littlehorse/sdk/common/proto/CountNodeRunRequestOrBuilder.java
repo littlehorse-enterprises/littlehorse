@@ -11,21 +11,41 @@ public interface CountNodeRunRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_spec_name = 1;</code>
+   * <code>optional string wf_spec_name = 1;</code>
    * @return Whether the wfSpecName field is set.
    */
   boolean hasWfSpecName();
   /**
-   * <code>string wf_spec_name = 1;</code>
+   * <code>optional string wf_spec_name = 1;</code>
    * @return The wfSpecName.
    */
   java.lang.String getWfSpecName();
   /**
-   * <code>string wf_spec_name = 1;</code>
+   * <code>optional string wf_spec_name = 1;</code>
    * @return The bytes for wfSpecName.
    */
   com.google.protobuf.ByteString
       getWfSpecNameBytes();
 
-  io.littlehorse.sdk.common.proto.CountNodeRunRequest.CriteriaCase getCriteriaCase();
+  /**
+   * <code>optional int32 wf_spec_major_version = 2;</code>
+   * @return Whether the wfSpecMajorVersion field is set.
+   */
+  boolean hasWfSpecMajorVersion();
+  /**
+   * <code>optional int32 wf_spec_major_version = 2;</code>
+   * @return The wfSpecMajorVersion.
+   */
+  int getWfSpecMajorVersion();
+
+  /**
+   * <code>optional int32 wf_spec_revision = 3;</code>
+   * @return Whether the wfSpecRevision field is set.
+   */
+  boolean hasWfSpecRevision();
+  /**
+   * <code>optional int32 wf_spec_revision = 3;</code>
+   * @return The wfSpecRevision.
+   */
+  int getWfSpecRevision();
 }

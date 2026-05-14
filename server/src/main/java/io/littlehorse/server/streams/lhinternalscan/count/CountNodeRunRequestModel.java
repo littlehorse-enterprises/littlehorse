@@ -5,26 +5,29 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.CountNodeRunRequest;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> {
 
     private String wfSpecName;
-    private CountNodeRunRequest.CriteriaCase criteriaCase;
+    private Integer wfSpecMajorVersion;
+    private Integer wfSpecRevision;
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         CountNodeRunRequest p = (CountNodeRunRequest) proto;
-        wfSpecName = p.getWfSpecName();
-        criteriaCase = p.getCriteriaCase();
+        if (p.hasWfSpecName()) wfSpecName = p.getWfSpecName();
+        if (p.hasWfSpecMajorVersion()) wfSpecMajorVersion = p.getWfSpecMajorVersion();
+        if (p.hasWfSpecRevision()) wfSpecRevision = p.getWfSpecRevision();
     }
 
     @Override
     public CountNodeRunRequest.Builder toProto() {
         CountNodeRunRequest.Builder out = CountNodeRunRequest.newBuilder();
-        if (wfSpecName != null) {
-            out.setWfSpecName(wfSpecName);
-        }
+        if (wfSpecName != null) out.setWfSpecName(wfSpecName);
+        if (wfSpecMajorVersion != null) out.setWfSpecMajorVersion(wfSpecMajorVersion);
+        if (wfSpecRevision != null) out.setWfSpecRevision(wfSpecRevision);
         return out;
     }
 
@@ -35,9 +38,20 @@ public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> 
 
     @Override
     protected List<Attribute> countAttributes() {
-        if (criteriaCase == CountNodeRunRequest.CriteriaCase.WF_SPEC_NAME) {
-            return List.of(new Attribute("wfSpecName", wfSpecName));
+        if (wfSpecName == null) {
+            throw new IllegalArgumentException("wfSpecName is required");
         }
-        throw new IllegalArgumentException("unsupported criteria case " + criteriaCase);
+
+        List<Attribute> attributes = new ArrayList<>();
+        attributes.add(new Attribute("wfSpecName", wfSpecName));
+
+        if (wfSpecMajorVersion != null) {
+            attributes.add(new Attribute("majorVersion", String.valueOf(wfSpecMajorVersion)));
+            if (wfSpecRevision != null) {
+                attributes.add(new Attribute("revision", String.valueOf(wfSpecRevision)));
+            }
+        }
+
+        return attributes;
     }
 }

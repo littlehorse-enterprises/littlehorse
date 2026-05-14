@@ -184,11 +184,13 @@ func loadEarliestAndLatestStart(cmd *cobra.Command) (*timestamppb.Timestamp, *ti
 
 var countNodeRunCmd = &cobra.Command{
 	Use:   "nodeRun",
-	Short: "Count NodeRun's by WfSpec name.",
+	Short: "Count NodeRun's by WfSpec name and optional version.",
 	Long: `Count the number of NodeRun's matching the given criteria.
 
-Currently supports counting by WfSpec name:
+Supports counting by WfSpec name, optionally filtered by major version and revision:
   lhctl count nodeRun --wfSpecName <wfSpecName>
+  lhctl count nodeRun --wfSpecName <wfSpecName> --wfSpecMajorVersion <majorVersion>
+  lhctl count nodeRun --wfSpecName <wfSpecName> --wfSpecMajorVersion <majorVersion> --wfSpecRevision <revision>
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
@@ -197,9 +199,17 @@ Currently supports counting by WfSpec name:
 		}
 
 		req := &lhproto.CountNodeRunRequest{
-			Criteria: &lhproto.CountNodeRunRequest_WfSpecName{
-				WfSpecName: wfSpecName,
-			},
+			WfSpecName: &wfSpecName,
+		}
+
+		majorVersion, _ := cmd.Flags().GetInt32("wfSpecMajorVersion")
+		if cmd.Flags().Changed("wfSpecMajorVersion") {
+			req.WfSpecMajorVersion = &majorVersion
+
+			revision, _ := cmd.Flags().GetInt32("wfSpecRevision")
+			if cmd.Flags().Changed("wfSpecRevision") {
+				req.WfSpecRevision = &revision
+			}
 		}
 
 		littlehorse.PrintResp(getGlobalClient(cmd).CountNodeRun(requestContext(cmd), req))
@@ -213,6 +223,8 @@ func init() {
 	countCmd.AddCommand(countNodeRunCmd)
 
 	countNodeRunCmd.Flags().String("wfSpecName", "", "Name of the WfSpec to count NodeRuns for (required)")
+	countNodeRunCmd.Flags().Int32("wfSpecMajorVersion", 0, "Major version of the WfSpec (optional)")
+	countNodeRunCmd.Flags().Int32("wfSpecRevision", 0, "Revision of the WfSpec (optional, requires --wfSpecMajorVersion)")
 	searchNodeRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for nodeRuns that started no more than this number of minutes ago")
 	searchNodeRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for nodeRuns that started at least this number of minutes ago")
 	listNodeRunCmd.Flags().Int32("threadRunNumber", -1, "Filter by ThreadRun Number")

@@ -1851,7 +1851,9 @@ export interface LittleHorseVersion {
 }
 
 export interface CountNodeRunRequest {
-  criteria?: { $case: "wfSpecName"; value: string } | undefined;
+  wfSpecName?: string | undefined;
+  wfSpecMajorVersion?: number | undefined;
+  wfSpecRevision?: number | undefined;
 }
 
 export interface Count {
@@ -11451,15 +11453,19 @@ export const LittleHorseVersion = {
 };
 
 function createBaseCountNodeRunRequest(): CountNodeRunRequest {
-  return { criteria: undefined };
+  return { wfSpecName: undefined, wfSpecMajorVersion: undefined, wfSpecRevision: undefined };
 }
 
 export const CountNodeRunRequest = {
   encode(message: CountNodeRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    switch (message.criteria?.$case) {
-      case "wfSpecName":
-        writer.uint32(10).string(message.criteria.value);
-        break;
+    if (message.wfSpecName !== undefined) {
+      writer.uint32(10).string(message.wfSpecName);
+    }
+    if (message.wfSpecMajorVersion !== undefined) {
+      writer.uint32(16).int32(message.wfSpecMajorVersion);
+    }
+    if (message.wfSpecRevision !== undefined) {
+      writer.uint32(24).int32(message.wfSpecRevision);
     }
     return writer;
   },
@@ -11476,7 +11482,21 @@ export const CountNodeRunRequest = {
             break;
           }
 
-          message.criteria = { $case: "wfSpecName", value: reader.string() };
+          message.wfSpecName = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.wfSpecMajorVersion = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.wfSpecRevision = reader.int32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -11489,16 +11509,22 @@ export const CountNodeRunRequest = {
 
   fromJSON(object: any): CountNodeRunRequest {
     return {
-      criteria: isSet(object.wfSpecName)
-        ? { $case: "wfSpecName", value: globalThis.String(object.wfSpecName) }
-        : undefined,
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : undefined,
+      wfSpecMajorVersion: isSet(object.wfSpecMajorVersion) ? globalThis.Number(object.wfSpecMajorVersion) : undefined,
+      wfSpecRevision: isSet(object.wfSpecRevision) ? globalThis.Number(object.wfSpecRevision) : undefined,
     };
   },
 
   toJSON(message: CountNodeRunRequest): unknown {
     const obj: any = {};
-    if (message.criteria?.$case === "wfSpecName") {
-      obj.wfSpecName = message.criteria.value;
+    if (message.wfSpecName !== undefined) {
+      obj.wfSpecName = message.wfSpecName;
+    }
+    if (message.wfSpecMajorVersion !== undefined) {
+      obj.wfSpecMajorVersion = Math.round(message.wfSpecMajorVersion);
+    }
+    if (message.wfSpecRevision !== undefined) {
+      obj.wfSpecRevision = Math.round(message.wfSpecRevision);
     }
     return obj;
   },
@@ -11508,11 +11534,9 @@ export const CountNodeRunRequest = {
   },
   fromPartial(object: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
     const message = createBaseCountNodeRunRequest();
-    if (
-      object.criteria?.$case === "wfSpecName" && object.criteria?.value !== undefined && object.criteria?.value !== null
-    ) {
-      message.criteria = { $case: "wfSpecName", value: object.criteria.value };
-    }
+    message.wfSpecName = object.wfSpecName ?? undefined;
+    message.wfSpecMajorVersion = object.wfSpecMajorVersion ?? undefined;
+    message.wfSpecRevision = object.wfSpecRevision ?? undefined;
     return message;
   },
 };
