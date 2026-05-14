@@ -1854,8 +1854,8 @@ export interface CountNodeRunRequest {
   criteria?: { $case: "wfSpecName"; value: string } | undefined;
 }
 
-export interface CountNodeRunResponse {
-  count: number;
+export interface Count {
+  value: number;
 }
 
 function createBaseGetLatestUserTaskDefRequest(): GetLatestUserTaskDefRequest {
@@ -11517,22 +11517,22 @@ export const CountNodeRunRequest = {
   },
 };
 
-function createBaseCountNodeRunResponse(): CountNodeRunResponse {
-  return { count: 0 };
+function createBaseCount(): Count {
+  return { value: 0 };
 }
 
-export const CountNodeRunResponse = {
-  encode(message: CountNodeRunResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.count !== 0) {
-      writer.uint32(8).int64(message.count);
+export const Count = {
+  encode(message: Count, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.value !== 0) {
+      writer.uint32(8).int64(message.value);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CountNodeRunResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): Count {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCountNodeRunResponse();
+    const message = createBaseCount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -11541,7 +11541,7 @@ export const CountNodeRunResponse = {
             break;
           }
 
-          message.count = longToNumber(reader.int64() as Long);
+          message.value = longToNumber(reader.int64() as Long);
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -11552,24 +11552,24 @@ export const CountNodeRunResponse = {
     return message;
   },
 
-  fromJSON(object: any): CountNodeRunResponse {
-    return { count: isSet(object.count) ? globalThis.Number(object.count) : 0 };
+  fromJSON(object: any): Count {
+    return { value: isSet(object.value) ? globalThis.Number(object.value) : 0 };
   },
 
-  toJSON(message: CountNodeRunResponse): unknown {
+  toJSON(message: Count): unknown {
     const obj: any = {};
-    if (message.count !== 0) {
-      obj.count = Math.round(message.count);
+    if (message.value !== 0) {
+      obj.value = Math.round(message.value);
     }
     return obj;
   },
 
-  create(base?: DeepPartial<CountNodeRunResponse>): CountNodeRunResponse {
-    return CountNodeRunResponse.fromPartial(base ?? {});
+  create(base?: DeepPartial<Count>): Count {
+    return Count.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<CountNodeRunResponse>): CountNodeRunResponse {
-    const message = createBaseCountNodeRunResponse();
-    message.count = object.count ?? 0;
+  fromPartial(object: DeepPartial<Count>): Count {
+    const message = createBaseCount();
+    message.value = object.value ?? 0;
     return message;
   },
 };
@@ -12561,7 +12561,7 @@ export const LittleHorseDefinition = {
       name: "CountNodeRun",
       requestType: CountNodeRunRequest,
       requestStream: false,
-      responseType: CountNodeRunResponse,
+      responseType: Count,
       responseStream: false,
       options: {},
     },
@@ -13034,10 +13034,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<LittleHorseVersion>>;
-  countNodeRun(
-    request: CountNodeRunRequest,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<CountNodeRunResponse>>;
+  countNodeRun(request: CountNodeRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Count>>;
 }
 
 export interface LittleHorseClient<CallOptionsExt = {}> {
@@ -13515,10 +13512,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<LittleHorseVersion>;
-  countNodeRun(
-    request: DeepPartial<CountNodeRunRequest>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<CountNodeRunResponse>;
+  countNodeRun(request: DeepPartial<CountNodeRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Count>;
 }
 
 function bytesFromBase64(b64: string): Uint8Array {

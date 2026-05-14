@@ -37,7 +37,7 @@ public final class InternalServer extends com.google.protobuf.GeneratedFile {
     java.lang.String[] descriptorData = {
       "\n\025internal_server.proto\022\013littlehorse\032\033go" +
       "ogle/protobuf/empty.proto\032\027interactive_q" +
-      "uery.proto\032\024workflow_event.proto2\307\003\n\013LHI" +
+      "uery.proto\032\024workflow_event.proto2\234\004\n\013LHI" +
       "nternals\022L\n\tGetObject\022\035.littlehorse.GetO" +
       "bjectRequest\032\036.littlehorse.GetObjectResp" +
       "onse\"\000\022P\n\014InternalScan\022\033.littlehorse.Int" +
@@ -49,8 +49,10 @@ public final class InternalServer extends com.google.protobuf.GeneratedFile {
       "e.InternalGetAdvertisedHostsResponse\"\000\022Z" +
       "\n\016WaitForWfEvent\022*.littlehorse.InternalW" +
       "aitForWfEventRequest\032\032.littlehorse.Workf" +
-      "lowEvent\"\000B\037\n\033io.littlehorse.common.prot" +
-      "oP\001b\006proto3"
+      "lowEvent\"\000\022S\n\rInternalCount\022\034.littlehors" +
+      "e.InternalCountPb\032\".littlehorse.Internal" +
+      "CountResponse\"\000B\037\n\033io.littlehorse.common" +
+      ".protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

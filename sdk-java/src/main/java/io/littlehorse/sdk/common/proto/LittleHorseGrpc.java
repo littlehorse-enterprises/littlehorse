@@ -2989,28 +2989,28 @@ public final class LittleHorseGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountNodeRunRequest,
-      io.littlehorse.sdk.common.proto.CountNodeRunResponse> getCountNodeRunMethod;
+      io.littlehorse.sdk.common.proto.Count> getCountNodeRunMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "CountNodeRun",
       requestType = io.littlehorse.sdk.common.proto.CountNodeRunRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.CountNodeRunResponse.class,
+      responseType = io.littlehorse.sdk.common.proto.Count.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountNodeRunRequest,
-      io.littlehorse.sdk.common.proto.CountNodeRunResponse> getCountNodeRunMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountNodeRunRequest, io.littlehorse.sdk.common.proto.CountNodeRunResponse> getCountNodeRunMethod;
+      io.littlehorse.sdk.common.proto.Count> getCountNodeRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountNodeRunRequest, io.littlehorse.sdk.common.proto.Count> getCountNodeRunMethod;
     if ((getCountNodeRunMethod = LittleHorseGrpc.getCountNodeRunMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
         if ((getCountNodeRunMethod = LittleHorseGrpc.getCountNodeRunMethod) == null) {
           LittleHorseGrpc.getCountNodeRunMethod = getCountNodeRunMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CountNodeRunRequest, io.littlehorse.sdk.common.proto.CountNodeRunResponse>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CountNodeRunRequest, io.littlehorse.sdk.common.proto.Count>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CountNodeRun"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.CountNodeRunRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.CountNodeRunResponse.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.Count.getDefaultInstance()))
               .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("CountNodeRun"))
               .build();
         }
@@ -4105,7 +4105,7 @@ public final class LittleHorseGrpc {
     /**
      */
     default void countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CountNodeRunResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCountNodeRunMethod(), responseObserver);
     }
   }
@@ -5256,7 +5256,7 @@ public final class LittleHorseGrpc {
     /**
      */
     public void countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CountNodeRunResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getCountNodeRunMethod(), getCallOptions()), request, responseObserver);
     }
@@ -6302,7 +6302,7 @@ public final class LittleHorseGrpc {
 
     /**
      */
-    public io.littlehorse.sdk.common.proto.CountNodeRunResponse countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request) throws io.grpc.StatusException {
+    public io.littlehorse.sdk.common.proto.Count countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
           getChannel(), getCountNodeRunMethod(), getCallOptions(), request);
     }
@@ -7335,7 +7335,7 @@ public final class LittleHorseGrpc {
 
     /**
      */
-    public io.littlehorse.sdk.common.proto.CountNodeRunResponse countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request) {
+    public io.littlehorse.sdk.common.proto.Count countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getCountNodeRunMethod(), getCallOptions(), request);
     }
@@ -8463,7 +8463,7 @@ public final class LittleHorseGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.CountNodeRunResponse> countNodeRun(
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Count> countNodeRun(
         io.littlehorse.sdk.common.proto.CountNodeRunRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getCountNodeRunMethod(), getCallOptions()), request);
@@ -8967,7 +8967,7 @@ public final class LittleHorseGrpc {
           break;
         case METHODID_COUNT_NODE_RUN:
           serviceImpl.countNodeRun((io.littlehorse.sdk.common.proto.CountNodeRunRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.CountNodeRunResponse>) responseObserver);
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -9667,7 +9667,7 @@ public final class LittleHorseGrpc {
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               io.littlehorse.sdk.common.proto.CountNodeRunRequest,
-              io.littlehorse.sdk.common.proto.CountNodeRunResponse>(
+              io.littlehorse.sdk.common.proto.Count>(
                 service, METHODID_COUNT_NODE_RUN)))
         .build();
   }

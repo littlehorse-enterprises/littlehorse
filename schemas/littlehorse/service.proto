@@ -376,7 +376,7 @@ service LittleHorse {
   // Gets the version of the LH Server.
   rpc GetServerVersion(google.protobuf.Empty) returns (LittleHorseVersion) {}
 
-  rpc CountNodeRun(CountNodeRunRequest) returns (CountNodeRunResponse) {}
+  rpc CountNodeRun(CountNodeRunRequest) returns (Count) {}
 
 }
 // Returns the UserTaskDef with a given name and the highest version number.
@@ -1776,6 +1776,6 @@ message CountNodeRunRequest {
 
 }
 
-message CountNodeRunResponse {
-  int64 count = 1;
+message Count {
+  int64 value = 1;
 }

@@ -532,7 +532,7 @@ class LittleHorseStub(object):
         self.CountNodeRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/CountNodeRun',
                 request_serializer=service__pb2.CountNodeRunRequest.SerializeToString,
-                response_deserializer=service__pb2.CountNodeRunResponse.FromString,
+                response_deserializer=service__pb2.Count.FromString,
                 _registered_method=True)
 
 
@@ -1774,7 +1774,7 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'CountNodeRun': grpc.unary_unary_rpc_method_handler(
                     servicer.CountNodeRun,
                     request_deserializer=service__pb2.CountNodeRunRequest.FromString,
-                    response_serializer=service__pb2.CountNodeRunResponse.SerializeToString,
+                    response_serializer=service__pb2.Count.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -4395,7 +4395,7 @@ class LittleHorse(object):
             target,
             '/littlehorse.LittleHorse/CountNodeRun',
             service__pb2.CountNodeRunRequest.SerializeToString,
-            service__pb2.CountNodeRunResponse.FromString,
+            service__pb2.Count.FromString,
             options,
             channel_credentials,
             insecure,

@@ -385,7 +385,7 @@ type LittleHorseClient interface {
 	Whoami(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Principal, error)
 	// Gets the version of the LH Server.
 	GetServerVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*LittleHorseVersion, error)
-	CountNodeRun(ctx context.Context, in *CountNodeRunRequest, opts ...grpc.CallOption) (*CountNodeRunResponse, error)
+	CountNodeRun(ctx context.Context, in *CountNodeRunRequest, opts ...grpc.CallOption) (*Count, error)
 }
 
 type littleHorseClient struct {
@@ -1282,8 +1282,8 @@ func (c *littleHorseClient) GetServerVersion(ctx context.Context, in *emptypb.Em
 	return out, nil
 }
 
-func (c *littleHorseClient) CountNodeRun(ctx context.Context, in *CountNodeRunRequest, opts ...grpc.CallOption) (*CountNodeRunResponse, error) {
-	out := new(CountNodeRunResponse)
+func (c *littleHorseClient) CountNodeRun(ctx context.Context, in *CountNodeRunRequest, opts ...grpc.CallOption) (*Count, error) {
+	out := new(Count)
 	err := c.cc.Invoke(ctx, LittleHorse_CountNodeRun_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1557,7 +1557,7 @@ type LittleHorseServer interface {
 	Whoami(context.Context, *emptypb.Empty) (*Principal, error)
 	// Gets the version of the LH Server.
 	GetServerVersion(context.Context, *emptypb.Empty) (*LittleHorseVersion, error)
-	CountNodeRun(context.Context, *CountNodeRunRequest) (*CountNodeRunResponse, error)
+	CountNodeRun(context.Context, *CountNodeRunRequest) (*Count, error)
 	mustEmbedUnimplementedLittleHorseServer()
 }
 
@@ -1853,7 +1853,7 @@ func (UnimplementedLittleHorseServer) Whoami(context.Context, *emptypb.Empty) (*
 func (UnimplementedLittleHorseServer) GetServerVersion(context.Context, *emptypb.Empty) (*LittleHorseVersion, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetServerVersion not implemented")
 }
-func (UnimplementedLittleHorseServer) CountNodeRun(context.Context, *CountNodeRunRequest) (*CountNodeRunResponse, error) {
+func (UnimplementedLittleHorseServer) CountNodeRun(context.Context, *CountNodeRunRequest) (*Count, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CountNodeRun not implemented")
 }
 func (UnimplementedLittleHorseServer) mustEmbedUnimplementedLittleHorseServer() {}

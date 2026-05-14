@@ -6,13 +6,13 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.CountNodeRunResponse}
+ * Protobuf type {@code littlehorse.Count}
  */
 @com.google.protobuf.Generated
-public final class CountNodeRunResponse extends
+public final class Count extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:littlehorse.CountNodeRunResponse)
-    CountNodeRunResponseOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.Count)
+    CountOrBuilder {
 private static final long serialVersionUID = 0L;
   static {
     com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -21,37 +21,37 @@ private static final long serialVersionUID = 0L;
       /* minor= */ 32,
       /* patch= */ 1,
       /* suffix= */ "",
-      CountNodeRunResponse.class.getName());
+      Count.class.getName());
   }
-  // Use CountNodeRunResponse.newBuilder() to construct.
-  private CountNodeRunResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  // Use Count.newBuilder() to construct.
+  private Count(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
-  private CountNodeRunResponse() {
+  private Count() {
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountNodeRunResponse_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_Count_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountNodeRunResponse_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_Count_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.CountNodeRunResponse.class, io.littlehorse.sdk.common.proto.CountNodeRunResponse.Builder.class);
+            io.littlehorse.sdk.common.proto.Count.class, io.littlehorse.sdk.common.proto.Count.Builder.class);
   }
 
-  public static final int COUNT_FIELD_NUMBER = 1;
-  private long count_ = 0L;
+  public static final int VALUE_FIELD_NUMBER = 1;
+  private long value_ = 0L;
   /**
-   * <code>int64 count = 1;</code>
-   * @return The count.
+   * <code>int64 value = 1;</code>
+   * @return The value.
    */
   @java.lang.Override
-  public long getCount() {
-    return count_;
+  public long getValue() {
+    return value_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -68,8 +68,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (count_ != 0L) {
-      output.writeInt64(1, count_);
+    if (value_ != 0L) {
+      output.writeInt64(1, value_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -80,9 +80,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (count_ != 0L) {
+    if (value_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(1, count_);
+        .computeInt64Size(1, value_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -94,13 +94,13 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.CountNodeRunResponse)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.Count)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.CountNodeRunResponse other = (io.littlehorse.sdk.common.proto.CountNodeRunResponse) obj;
+    io.littlehorse.sdk.common.proto.Count other = (io.littlehorse.sdk.common.proto.Count) obj;
 
-    if (getCount()
-        != other.getCount()) return false;
+    if (getValue()
+        != other.getValue()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -112,52 +112,52 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + COUNT_FIELD_NUMBER;
+    hash = (37 * hash) + VALUE_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        getCount());
+        getValue());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.CountNodeRunResponse parseFrom(
+  public static io.littlehorse.sdk.common.proto.Count parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.CountNodeRunResponse parseFrom(
+  public static io.littlehorse.sdk.common.proto.Count parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.CountNodeRunResponse parseFrom(
+  public static io.littlehorse.sdk.common.proto.Count parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.CountNodeRunResponse parseFrom(
+  public static io.littlehorse.sdk.common.proto.Count parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.CountNodeRunResponse parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.Count parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.CountNodeRunResponse parseFrom(
+  public static io.littlehorse.sdk.common.proto.Count parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.CountNodeRunResponse parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.Count parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.CountNodeRunResponse parseFrom(
+  public static io.littlehorse.sdk.common.proto.Count parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -165,26 +165,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.CountNodeRunResponse parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.Count parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.CountNodeRunResponse parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.Count parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.CountNodeRunResponse parseFrom(
+  public static io.littlehorse.sdk.common.proto.Count parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.CountNodeRunResponse parseFrom(
+  public static io.littlehorse.sdk.common.proto.Count parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -197,7 +197,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.CountNodeRunResponse prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.Count prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -213,26 +213,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.CountNodeRunResponse}
+   * Protobuf type {@code littlehorse.Count}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.CountNodeRunResponse)
-      io.littlehorse.sdk.common.proto.CountNodeRunResponseOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.Count)
+      io.littlehorse.sdk.common.proto.CountOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountNodeRunResponse_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_Count_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountNodeRunResponse_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_Count_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.CountNodeRunResponse.class, io.littlehorse.sdk.common.proto.CountNodeRunResponse.Builder.class);
+              io.littlehorse.sdk.common.proto.Count.class, io.littlehorse.sdk.common.proto.Count.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.CountNodeRunResponse.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.Count.newBuilder()
     private Builder() {
 
     }
@@ -246,24 +246,24 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      count_ = 0L;
+      value_ = 0L;
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountNodeRunResponse_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_Count_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.CountNodeRunResponse getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.CountNodeRunResponse.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.Count getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.Count.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.CountNodeRunResponse build() {
-      io.littlehorse.sdk.common.proto.CountNodeRunResponse result = buildPartial();
+    public io.littlehorse.sdk.common.proto.Count build() {
+      io.littlehorse.sdk.common.proto.Count result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -271,34 +271,34 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.CountNodeRunResponse buildPartial() {
-      io.littlehorse.sdk.common.proto.CountNodeRunResponse result = new io.littlehorse.sdk.common.proto.CountNodeRunResponse(this);
+    public io.littlehorse.sdk.common.proto.Count buildPartial() {
+      io.littlehorse.sdk.common.proto.Count result = new io.littlehorse.sdk.common.proto.Count(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.CountNodeRunResponse result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.Count result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.count_ = count_;
+        result.value_ = value_;
       }
     }
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.CountNodeRunResponse) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.CountNodeRunResponse)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.Count) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.Count)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.CountNodeRunResponse other) {
-      if (other == io.littlehorse.sdk.common.proto.CountNodeRunResponse.getDefaultInstance()) return this;
-      if (other.getCount() != 0L) {
-        setCount(other.getCount());
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.Count other) {
+      if (other == io.littlehorse.sdk.common.proto.Count.getDefaultInstance()) return this;
+      if (other.getValue() != 0L) {
+        setValue(other.getValue());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -327,7 +327,7 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 8: {
-              count_ = input.readInt64();
+              value_ = input.readInt64();
               bitField0_ |= 0x00000001;
               break;
             } // case 8
@@ -348,55 +348,55 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private long count_ ;
+    private long value_ ;
     /**
-     * <code>int64 count = 1;</code>
-     * @return The count.
+     * <code>int64 value = 1;</code>
+     * @return The value.
      */
     @java.lang.Override
-    public long getCount() {
-      return count_;
+    public long getValue() {
+      return value_;
     }
     /**
-     * <code>int64 count = 1;</code>
-     * @param value The count to set.
+     * <code>int64 value = 1;</code>
+     * @param value The value to set.
      * @return This builder for chaining.
      */
-    public Builder setCount(long value) {
+    public Builder setValue(long value) {
 
-      count_ = value;
+      value_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>int64 count = 1;</code>
+     * <code>int64 value = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearCount() {
+    public Builder clearValue() {
       bitField0_ = (bitField0_ & ~0x00000001);
-      count_ = 0L;
+      value_ = 0L;
       onChanged();
       return this;
     }
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.CountNodeRunResponse)
+    // @@protoc_insertion_point(builder_scope:littlehorse.Count)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.CountNodeRunResponse)
-  private static final io.littlehorse.sdk.common.proto.CountNodeRunResponse DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.Count)
+  private static final io.littlehorse.sdk.common.proto.Count DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.CountNodeRunResponse();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.Count();
   }
 
-  public static io.littlehorse.sdk.common.proto.CountNodeRunResponse getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.Count getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<CountNodeRunResponse>
-      PARSER = new com.google.protobuf.AbstractParser<CountNodeRunResponse>() {
+  private static final com.google.protobuf.Parser<Count>
+      PARSER = new com.google.protobuf.AbstractParser<Count>() {
     @java.lang.Override
-    public CountNodeRunResponse parsePartialFrom(
+    public Count parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -415,17 +415,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<CountNodeRunResponse> parser() {
+  public static com.google.protobuf.Parser<Count> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<CountNodeRunResponse> getParserForType() {
+  public com.google.protobuf.Parser<Count> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountNodeRunResponse getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.Count getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

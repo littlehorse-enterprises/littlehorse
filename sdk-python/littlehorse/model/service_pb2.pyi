@@ -1080,8 +1080,8 @@ class CountNodeRunRequest(_message.Message):
     wf_spec_name: str
     def __init__(self, wf_spec_name: _Optional[str] = ...) -> None: ...
 
-class CountNodeRunResponse(_message.Message):
-    __slots__ = ("count",)
-    COUNT_FIELD_NUMBER: _ClassVar[int]
-    count: int
-    def __init__(self, count: _Optional[int] = ...) -> None: ...
+class Count(_message.Message):
+    __slots__ = ("value",)
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    value: int
+    def __init__(self, value: _Optional[int] = ...) -> None: ...

@@ -81,6 +81,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestMo
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowEventDefRequestModel;
+import io.littlehorse.common.proto.InternalCountResponse;
 import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.*;
@@ -91,6 +92,9 @@ import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanReply;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
+import io.littlehorse.server.streams.lhinternalscan.count.CountModel;
+import io.littlehorse.server.streams.lhinternalscan.count.CountNodeRunRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.count.CountRequest;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListExternalEventsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListNodeRunsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskMetricsRequestModel;
@@ -1202,10 +1206,19 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    public void countNodeRun(CountNodeRunRequest request, StreamObserver<CountNodeRunResponse> responseObserver) {
-        long count = requestContext().getableManager().countNodeRun(request);
-        responseObserver.onNext(CountNodeRunResponse.newBuilder().setCount(count).build());
+    public void countNodeRun(CountNodeRunRequest request, StreamObserver<Count> responseObserver) {
+        CountNodeRunRequestModel reqModel =
+                LHSerializable.fromProto(request, CountNodeRunRequestModel.class, requestContext());
+        CountModel countNodeRunResponse = handleCount(reqModel);
+        responseObserver.onNext(countNodeRunResponse.toProto().build());
         responseObserver.onCompleted();
+    }
+
+    public <REQ extends CountRequest<?>> CountModel handleCount(REQ request) {
+        InternalCountResponse internalResponse = internalComms.doCount(request.internalCount());
+        CountModel out = new CountModel();
+        out.setCount(internalResponse.getCount());
+        return out;
     }
 
     /*

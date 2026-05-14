@@ -6,13 +6,13 @@
 package io.littlehorse.sdk.common.proto;
 
 @com.google.protobuf.Generated
-public interface CountNodeRunResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.CountNodeRunResponse)
+public interface CountOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.Count)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int64 count = 1;</code>
-   * @return The count.
+   * <code>int64 value = 1;</code>
+   * @return The value.
    */
-  long getCount();
+  long getValue();
 }

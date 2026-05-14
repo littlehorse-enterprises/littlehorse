@@ -167,6 +167,37 @@ public final class LHInternalsGrpc {
     return getWaitForWfEventMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalCountPb,
+      io.littlehorse.common.proto.InternalCountResponse> getInternalCountMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "InternalCount",
+      requestType = io.littlehorse.common.proto.InternalCountPb.class,
+      responseType = io.littlehorse.common.proto.InternalCountResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalCountPb,
+      io.littlehorse.common.proto.InternalCountResponse> getInternalCountMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalCountPb, io.littlehorse.common.proto.InternalCountResponse> getInternalCountMethod;
+    if ((getInternalCountMethod = LHInternalsGrpc.getInternalCountMethod) == null) {
+      synchronized (LHInternalsGrpc.class) {
+        if ((getInternalCountMethod = LHInternalsGrpc.getInternalCountMethod) == null) {
+          LHInternalsGrpc.getInternalCountMethod = getInternalCountMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.InternalCountPb, io.littlehorse.common.proto.InternalCountResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "InternalCount"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.InternalCountPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.InternalCountResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("InternalCount"))
+              .build();
+        }
+      }
+    }
+    return getInternalCountMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -264,6 +295,13 @@ public final class LHInternalsGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEvent> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWaitForWfEventMethod(), responseObserver);
     }
+
+    /**
+     */
+    default void internalCount(io.littlehorse.common.proto.InternalCountPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalCountResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getInternalCountMethod(), responseObserver);
+    }
   }
 
   /**
@@ -332,6 +370,14 @@ public final class LHInternalsGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getWaitForWfEventMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void internalCount(io.littlehorse.common.proto.InternalCountPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalCountResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getInternalCountMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -384,6 +430,13 @@ public final class LHInternalsGrpc {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
           getChannel(), getWaitForWfEventMethod(), getCallOptions(), request);
     }
+
+    /**
+     */
+    public io.littlehorse.common.proto.InternalCountResponse internalCount(io.littlehorse.common.proto.InternalCountPb request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getInternalCountMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -435,6 +488,13 @@ public final class LHInternalsGrpc {
     public io.littlehorse.sdk.common.proto.WorkflowEvent waitForWfEvent(io.littlehorse.common.proto.InternalWaitForWfEventRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getWaitForWfEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.InternalCountResponse internalCount(io.littlehorse.common.proto.InternalCountPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getInternalCountMethod(), getCallOptions(), request);
     }
   }
 
@@ -493,6 +553,14 @@ public final class LHInternalsGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getWaitForWfEventMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.InternalCountResponse> internalCount(
+        io.littlehorse.common.proto.InternalCountPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getInternalCountMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_GET_OBJECT = 0;
@@ -500,6 +568,7 @@ public final class LHInternalsGrpc {
   private static final int METHODID_WAIT_FOR_COMMAND = 2;
   private static final int METHODID_GET_ADVERTISED_HOSTS = 3;
   private static final int METHODID_WAIT_FOR_WF_EVENT = 4;
+  private static final int METHODID_INTERNAL_COUNT = 5;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -537,6 +606,10 @@ public final class LHInternalsGrpc {
         case METHODID_WAIT_FOR_WF_EVENT:
           serviceImpl.waitForWfEvent((io.littlehorse.common.proto.InternalWaitForWfEventRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEvent>) responseObserver);
+          break;
+        case METHODID_INTERNAL_COUNT:
+          serviceImpl.internalCount((io.littlehorse.common.proto.InternalCountPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalCountResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -591,6 +664,13 @@ public final class LHInternalsGrpc {
               io.littlehorse.common.proto.InternalWaitForWfEventRequest,
               io.littlehorse.sdk.common.proto.WorkflowEvent>(
                 service, METHODID_WAIT_FOR_WF_EVENT)))
+        .addMethod(
+          getInternalCountMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.common.proto.InternalCountPb,
+              io.littlehorse.common.proto.InternalCountResponse>(
+                service, METHODID_INTERNAL_COUNT)))
         .build();
   }
 
@@ -644,6 +724,7 @@ public final class LHInternalsGrpc {
               .addMethod(getWaitForCommandMethod())
               .addMethod(getGetAdvertisedHostsMethod())
               .addMethod(getWaitForWfEventMethod())
+              .addMethod(getInternalCountMethod())
               .build();
         }
       }

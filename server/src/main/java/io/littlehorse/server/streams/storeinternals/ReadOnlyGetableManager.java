@@ -279,7 +279,8 @@ public class ReadOnlyGetableManager {
     }
 
     public long countNodeRun(CountNodeRunRequest request) {
-        String attributeString = Tag.getAttributeString(GetableClassEnum.NODE_RUN, List.of(new Attribute("wfSpecName", request.getWfSpecName())));
+        String attributeString = Tag.getAttributeString(
+                GetableClassEnum.NODE_RUN, List.of(new Attribute("wfSpecName", request.getWfSpecName())));
 
         CountedTagModel countedTagModel = store.get(attributeString, CountedTagModel.class);
         if (countedTagModel == null) {
