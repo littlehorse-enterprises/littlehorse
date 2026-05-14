@@ -11,17 +11,20 @@ public interface UpdateCountedTagOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.TagPb tag = 1;</code>
-   * @return Whether the tag field is set.
+   * <code>string attribute_string = 1;</code>
+   * @return The attributeString.
    */
-  boolean hasTag();
+  java.lang.String getAttributeString();
   /**
-   * <code>.littlehorse.TagPb tag = 1;</code>
-   * @return The tag.
+   * <code>string attribute_string = 1;</code>
+   * @return The bytes for attributeString.
    */
-  io.littlehorse.common.proto.TagPb getTag();
+  com.google.protobuf.ByteString
+      getAttributeStringBytes();
+
   /**
-   * <code>.littlehorse.TagPb tag = 1;</code>
+   * <code>bool delete = 2;</code>
+   * @return The delete.
    */
-  io.littlehorse.common.proto.TagPbOrBuilder getTagOrBuilder();
+  boolean getDelete();
 }

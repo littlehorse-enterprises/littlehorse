@@ -385,49 +385,49 @@ public final class CommandOuterClass extends com.google.protobuf.GeneratedFile {
       "\017total_completed\030\t \001(\003\022\025\n\rtotal_errored\030" +
       "\n \001(\003\022\025\n\rtotal_started\030\013 \001(\003\022\027\n\017total_sc" +
       "heduled\030\014 \001(\003\"4\n\021CreateRemoteTagPb\022\037\n\003ta" +
-      "g\030\001 \001(\0132\022.littlehorse.TagPb\"3\n\020UpdateCou" +
-      "ntedTag\022\037\n\003tag\030\001 \001(\0132\022.littlehorse.TagPb" +
-      "\"=\n\021RemoveRemoteTagPb\022\021\n\tstore_key\030\001 \001(\t" +
-      "\022\025\n\rpartition_key\030\002 \001(\t\"\273\001\n\020TaskClaimEve" +
-      "ntPb\022+\n\013task_run_id\030\001 \001(\0132\026.littlehorse." +
-      "TaskRunId\022(\n\004time\030\002 \001(\0132\032.google.protobu" +
-      "f.Timestamp\022\026\n\016task_worker_id\030\003 \001(\t\022 \n\023t" +
-      "ask_worker_version\030\004 \001(\tH\000\210\001\001B\026\n\024_task_w" +
-      "orker_version\"I\n\032ExternalEventNodeTimeou" +
-      "tPb\022+\n\013node_run_id\030\001 \001(\0132\026.littlehorse.N" +
-      "odeRunId\"\261\002\n\031UpdateCorrelationMarkerPb\022\027" +
-      "\n\017correlation_key\030\001 \001(\t\022>\n\025external_even" +
-      "t_def_id\030\002 \001(\0132\037.littlehorse.ExternalEve" +
-      "ntDefId\0220\n\020waiting_node_run\030\003 \001(\0132\026.litt" +
-      "lehorse.NodeRunId\022N\n\006action\030\004 \001(\0162>.litt" +
-      "lehorse.UpdateCorrelationMarkerPb.Correl" +
-      "ationUpdateAction\"9\n\027CorrelationUpdateAc" +
-      "tion\022\r\n\tCORRELATE\020\000\022\017\n\013UNCORRELATE\020\001\"A\n\022" +
-      "SleepNodeMaturedPb\022+\n\013node_run_id\030\001 \001(\0132" +
-      "\026.littlehorse.NodeRunId\"m\n\022TriggeredTask" +
-      "RunPb\022/\n\020task_to_schedule\030\001 \001(\0132\025.little" +
-      "horse.TaskNode\022&\n\006source\030\002 \001(\0132\026.littleh" +
-      "orse.NodeRunId\";\n\025TaskAttemptRetryReady\022" +
-      "\"\n\002id\030\001 \001(\0132\026.littlehorse.TaskRunId\"\364\001\n\030" +
-      "DeadlineReassignUserTask\0229\n\013new_user_id\030" +
-      "\001 \001(\0132\037.littlehorse.VariableAssignmentH\000" +
-      "\210\001\001\022<\n\016new_user_group\030\002 \001(\0132\037.littlehors" +
-      "e.VariableAssignmentH\001\210\001\001\022-\n\tuser_task\030\004" +
-      " \001(\0132\032.littlehorse.UserTaskRunId\022\r\n\005epoc" +
-      "h\030\005 \001(\003B\016\n\014_new_user_idB\021\n\017_new_user_gro" +
-      "up\"\320\002\n\tLHTimerPb\0223\n\017maturation_time\030\001 \001(" +
-      "\0132\032.google.protobuf.Timestamp\022\025\n\rpartiti" +
-      "on_key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007payload\030\004" +
-      " \001(\014\022-\n\ttenant_id\030\005 \001(\0132\025.littlehorse.Te" +
-      "nantIdH\000\210\001\001\0223\n\014principal_id\030\006 \001(\0132\030.litt" +
-      "lehorse.PrincipalIdH\001\210\001\001\022\026\n\tstore_key\030\007 " +
-      "\001(\tH\002\210\001\001\022\033\n\016is_repartition\030\010 \001(\010H\003\210\001\001B\014\n" +
-      "\n_tenant_idB\017\n\r_principal_idB\014\n\n_store_k" +
-      "eyB\021\n\017_is_repartition\"B\n\034DeleteTaskWorke" +
-      "rGroupRequest\022\"\n\002id\030\001 \001(\0132\026.littlehorse." +
-      "TaskDefId\"5\n\nCountedTag\022\030\n\020attribute_str" +
-      "ing\030\001 \001(\t\022\r\n\005count\030\002 \001(\003B\037\n\033io.littlehor" +
-      "se.common.protoP\001b\006proto3"
+      "g\030\001 \001(\0132\022.littlehorse.TagPb\"<\n\020UpdateCou" +
+      "ntedTag\022\030\n\020attribute_string\030\001 \001(\t\022\016\n\006del" +
+      "ete\030\002 \001(\010\"=\n\021RemoveRemoteTagPb\022\021\n\tstore_" +
+      "key\030\001 \001(\t\022\025\n\rpartition_key\030\002 \001(\t\"\273\001\n\020Tas" +
+      "kClaimEventPb\022+\n\013task_run_id\030\001 \001(\0132\026.lit" +
+      "tlehorse.TaskRunId\022(\n\004time\030\002 \001(\0132\032.googl" +
+      "e.protobuf.Timestamp\022\026\n\016task_worker_id\030\003" +
+      " \001(\t\022 \n\023task_worker_version\030\004 \001(\tH\000\210\001\001B\026" +
+      "\n\024_task_worker_version\"I\n\032ExternalEventN" +
+      "odeTimeoutPb\022+\n\013node_run_id\030\001 \001(\0132\026.litt" +
+      "lehorse.NodeRunId\"\261\002\n\031UpdateCorrelationM" +
+      "arkerPb\022\027\n\017correlation_key\030\001 \001(\t\022>\n\025exte" +
+      "rnal_event_def_id\030\002 \001(\0132\037.littlehorse.Ex" +
+      "ternalEventDefId\0220\n\020waiting_node_run\030\003 \001" +
+      "(\0132\026.littlehorse.NodeRunId\022N\n\006action\030\004 \001" +
+      "(\0162>.littlehorse.UpdateCorrelationMarker" +
+      "Pb.CorrelationUpdateAction\"9\n\027Correlatio" +
+      "nUpdateAction\022\r\n\tCORRELATE\020\000\022\017\n\013UNCORREL" +
+      "ATE\020\001\"A\n\022SleepNodeMaturedPb\022+\n\013node_run_" +
+      "id\030\001 \001(\0132\026.littlehorse.NodeRunId\"m\n\022Trig" +
+      "geredTaskRunPb\022/\n\020task_to_schedule\030\001 \001(\013" +
+      "2\025.littlehorse.TaskNode\022&\n\006source\030\002 \001(\0132" +
+      "\026.littlehorse.NodeRunId\";\n\025TaskAttemptRe" +
+      "tryReady\022\"\n\002id\030\001 \001(\0132\026.littlehorse.TaskR" +
+      "unId\"\364\001\n\030DeadlineReassignUserTask\0229\n\013new" +
+      "_user_id\030\001 \001(\0132\037.littlehorse.VariableAss" +
+      "ignmentH\000\210\001\001\022<\n\016new_user_group\030\002 \001(\0132\037.l" +
+      "ittlehorse.VariableAssignmentH\001\210\001\001\022-\n\tus" +
+      "er_task\030\004 \001(\0132\032.littlehorse.UserTaskRunI" +
+      "d\022\r\n\005epoch\030\005 \001(\003B\016\n\014_new_user_idB\021\n\017_new" +
+      "_user_group\"\320\002\n\tLHTimerPb\0223\n\017maturation_" +
+      "time\030\001 \001(\0132\032.google.protobuf.Timestamp\022\025" +
+      "\n\rpartition_key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007" +
+      "payload\030\004 \001(\014\022-\n\ttenant_id\030\005 \001(\0132\025.littl" +
+      "ehorse.TenantIdH\000\210\001\001\0223\n\014principal_id\030\006 \001" +
+      "(\0132\030.littlehorse.PrincipalIdH\001\210\001\001\022\026\n\tsto" +
+      "re_key\030\007 \001(\tH\002\210\001\001\022\033\n\016is_repartition\030\010 \001(" +
+      "\010H\003\210\001\001B\014\n\n_tenant_idB\017\n\r_principal_idB\014\n" +
+      "\n_store_keyB\021\n\017_is_repartition\"B\n\034Delete" +
+      "TaskWorkerGroupRequest\022\"\n\002id\030\001 \001(\0132\026.lit" +
+      "tlehorse.TaskDefId\"5\n\nCountedTag\022\030\n\020attr" +
+      "ibute_string\030\001 \001(\t\022\r\n\005count\030\002 \001(\003B\037\n\033io." +
+      "littlehorse.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -580,7 +580,7 @@ public final class CommandOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_UpdateCountedTag_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_UpdateCountedTag_descriptor,
-        new java.lang.String[] { "Tag", });
+        new java.lang.String[] { "AttributeString", "Delete", });
     internal_static_littlehorse_RemoveRemoteTagPb_descriptor =
       getDescriptor().getMessageTypes().get(19);
     internal_static_littlehorse_RemoveRemoteTagPb_fieldAccessorTable = new

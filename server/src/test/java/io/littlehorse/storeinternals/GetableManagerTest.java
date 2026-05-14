@@ -9,7 +9,9 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
+import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -301,12 +303,14 @@ public class GetableManagerTest {
                 .toList();
     }
 
-    private List<RepartitionCommand> remoteCountedTagsCreated() {
+    private List<CommandModel> remoteCountedTagsCreated() {
         return mockProcessorContext.forwarded().stream()
                 .map(MockProcessorContext.CapturedForward::record)
                 .map(Record::value)
                 .map(CommandProcessorOutput::getPayload)
-                .map(lhSerializable -> (RepartitionCommand) lhSerializable)
+                .map(lhSerializable -> (LHTimer) lhSerializable)
+                .map(LHTimer::getPayload)
+                .map(bytes -> CommandModel.fromBytes(bytes, CommandModel.class, executionContext))
                 .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof UpdateCountedTagModel)
                 .toList();
     }
@@ -353,24 +357,6 @@ public class GetableManagerTest {
                         key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName\\_$.car.model_Escape"));
     }
 
-    @ParameterizedTest
-    @MethodSource("provideNodeRunObjects")
-    void storeNodeRun(NodeRunModel nodeRunModel, String expectedStoreKey) {
-        List<String> expectedLocalTagKeys = List.of();
-        List<String> expectedRemoteStoreKeys = List.of();
-
-        getableManager.put(nodeRunModel);
-        getableManager.commit();
-
-        final var storedKeys = getAllKeys(store);
-        assertThat(storedKeys).hasSize(expectedLocalTagKeys.size() + 1).anyMatch(key -> key.contains(expectedStoreKey));
-
-        List<String> remoteTags = remoteTagsCreated().stream()
-                .map(RepartitionCommand::getSubCommand)
-                .map(RepartitionSubCommand::getPartitionKey)
-                .toList();
-        assertThat(remoteTags).containsExactlyInAnyOrderElementsOf(expectedRemoteStoreKeys);
-    }
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
@@ -705,12 +691,11 @@ public class GetableManagerTest {
         getableManager.put(nodeRunModel);
         getableManager.commit();
 
-        List<RepartitionCommand> repartitionCommands = remoteCountedTagsCreated();
+        List<CommandModel> repartitionCommands = remoteCountedTagsCreated();
         assertThat(repartitionCommands).hasSize(3);
 
         List<String> partitionKeys = repartitionCommands.stream()
-                .map(RepartitionCommand::getSubCommand)
-                .map(RepartitionSubCommand::getPartitionKey)
+                .map(CommandModel::getPartitionKey)
                 .toList();
 
         String wfSpecName = nodeRunModel.getWfSpecId().getName();

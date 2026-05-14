@@ -28,6 +28,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private UpdateCountedTag() {
+    attributeString_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -43,31 +44,54 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.UpdateCountedTag.class, io.littlehorse.common.proto.UpdateCountedTag.Builder.class);
   }
 
-  private int bitField0_;
-  public static final int TAG_FIELD_NUMBER = 1;
-  private io.littlehorse.common.proto.TagPb tag_;
+  public static final int ATTRIBUTE_STRING_FIELD_NUMBER = 1;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object attributeString_ = "";
   /**
-   * <code>.littlehorse.TagPb tag = 1;</code>
-   * @return Whether the tag field is set.
+   * <code>string attribute_string = 1;</code>
+   * @return The attributeString.
    */
   @java.lang.Override
-  public boolean hasTag() {
-    return ((bitField0_ & 0x00000001) != 0);
+  public java.lang.String getAttributeString() {
+    java.lang.Object ref = attributeString_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      attributeString_ = s;
+      return s;
+    }
   }
   /**
-   * <code>.littlehorse.TagPb tag = 1;</code>
-   * @return The tag.
+   * <code>string attribute_string = 1;</code>
+   * @return The bytes for attributeString.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TagPb getTag() {
-    return tag_ == null ? io.littlehorse.common.proto.TagPb.getDefaultInstance() : tag_;
+  public com.google.protobuf.ByteString
+      getAttributeStringBytes() {
+    java.lang.Object ref = attributeString_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      attributeString_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
+
+  public static final int DELETE_FIELD_NUMBER = 2;
+  private boolean delete_ = false;
   /**
-   * <code>.littlehorse.TagPb tag = 1;</code>
+   * <code>bool delete = 2;</code>
+   * @return The delete.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TagPbOrBuilder getTagOrBuilder() {
-    return tag_ == null ? io.littlehorse.common.proto.TagPb.getDefaultInstance() : tag_;
+  public boolean getDelete() {
+    return delete_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -84,8 +108,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(1, getTag());
+    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(attributeString_)) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, attributeString_);
+    }
+    if (delete_ != false) {
+      output.writeBool(2, delete_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -96,9 +123,12 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(attributeString_)) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, attributeString_);
+    }
+    if (delete_ != false) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getTag());
+        .computeBoolSize(2, delete_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -115,11 +145,10 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.UpdateCountedTag other = (io.littlehorse.common.proto.UpdateCountedTag) obj;
 
-    if (hasTag() != other.hasTag()) return false;
-    if (hasTag()) {
-      if (!getTag()
-          .equals(other.getTag())) return false;
-    }
+    if (!getAttributeString()
+        .equals(other.getAttributeString())) return false;
+    if (getDelete()
+        != other.getDelete()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -131,10 +160,11 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasTag()) {
-      hash = (37 * hash) + TAG_FIELD_NUMBER;
-      hash = (53 * hash) + getTag().hashCode();
-    }
+    hash = (37 * hash) + ATTRIBUTE_STRING_FIELD_NUMBER;
+    hash = (53 * hash) + getAttributeString().hashCode();
+    hash = (37 * hash) + DELETE_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getDelete());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -254,29 +284,20 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.common.proto.UpdateCountedTag.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessage
-              .alwaysUseFieldBuilders) {
-        internalGetTagFieldBuilder();
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      tag_ = null;
-      if (tagBuilder_ != null) {
-        tagBuilder_.dispose();
-        tagBuilder_ = null;
-      }
+      attributeString_ = "";
+      delete_ = false;
       return this;
     }
 
@@ -310,14 +331,12 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.common.proto.UpdateCountedTag result) {
       int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.tag_ = tagBuilder_ == null
-            ? tag_
-            : tagBuilder_.build();
-        to_bitField0_ |= 0x00000001;
+        result.attributeString_ = attributeString_;
       }
-      result.bitField0_ |= to_bitField0_;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.delete_ = delete_;
+      }
     }
 
     @java.lang.Override
@@ -332,8 +351,13 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.UpdateCountedTag other) {
       if (other == io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance()) return this;
-      if (other.hasTag()) {
-        mergeTag(other.getTag());
+      if (!other.getAttributeString().isEmpty()) {
+        attributeString_ = other.attributeString_;
+        bitField0_ |= 0x00000001;
+        onChanged();
+      }
+      if (other.getDelete() != false) {
+        setDelete(other.getDelete());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -362,12 +386,15 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              input.readMessage(
-                  internalGetTagFieldBuilder().getBuilder(),
-                  extensionRegistry);
+              attributeString_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 16: {
+              delete_ = input.readBool();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 16
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -385,125 +412,108 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.common.proto.TagPb tag_;
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.common.proto.TagPb, io.littlehorse.common.proto.TagPb.Builder, io.littlehorse.common.proto.TagPbOrBuilder> tagBuilder_;
+    private java.lang.Object attributeString_ = "";
     /**
-     * <code>.littlehorse.TagPb tag = 1;</code>
-     * @return Whether the tag field is set.
+     * <code>string attribute_string = 1;</code>
+     * @return The attributeString.
      */
-    public boolean hasTag() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>.littlehorse.TagPb tag = 1;</code>
-     * @return The tag.
-     */
-    public io.littlehorse.common.proto.TagPb getTag() {
-      if (tagBuilder_ == null) {
-        return tag_ == null ? io.littlehorse.common.proto.TagPb.getDefaultInstance() : tag_;
+    public java.lang.String getAttributeString() {
+      java.lang.Object ref = attributeString_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        attributeString_ = s;
+        return s;
       } else {
-        return tagBuilder_.getMessage();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>.littlehorse.TagPb tag = 1;</code>
+     * <code>string attribute_string = 1;</code>
+     * @return The bytes for attributeString.
      */
-    public Builder setTag(io.littlehorse.common.proto.TagPb value) {
-      if (tagBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        tag_ = value;
+    public com.google.protobuf.ByteString
+        getAttributeStringBytes() {
+      java.lang.Object ref = attributeString_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        attributeString_ = b;
+        return b;
       } else {
-        tagBuilder_.setMessage(value);
+        return (com.google.protobuf.ByteString) ref;
       }
+    }
+    /**
+     * <code>string attribute_string = 1;</code>
+     * @param value The attributeString to set.
+     * @return This builder for chaining.
+     */
+    public Builder setAttributeString(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      attributeString_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.TagPb tag = 1;</code>
+     * <code>string attribute_string = 1;</code>
+     * @return This builder for chaining.
      */
-    public Builder setTag(
-        io.littlehorse.common.proto.TagPb.Builder builderForValue) {
-      if (tagBuilder_ == null) {
-        tag_ = builderForValue.build();
-      } else {
-        tagBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.TagPb tag = 1;</code>
-     */
-    public Builder mergeTag(io.littlehorse.common.proto.TagPb value) {
-      if (tagBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
-          tag_ != null &&
-          tag_ != io.littlehorse.common.proto.TagPb.getDefaultInstance()) {
-          getTagBuilder().mergeFrom(value);
-        } else {
-          tag_ = value;
-        }
-      } else {
-        tagBuilder_.mergeFrom(value);
-      }
-      if (tag_ != null) {
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.TagPb tag = 1;</code>
-     */
-    public Builder clearTag() {
+    public Builder clearAttributeString() {
+      attributeString_ = getDefaultInstance().getAttributeString();
       bitField0_ = (bitField0_ & ~0x00000001);
-      tag_ = null;
-      if (tagBuilder_ != null) {
-        tagBuilder_.dispose();
-        tagBuilder_ = null;
-      }
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.TagPb tag = 1;</code>
+     * <code>string attribute_string = 1;</code>
+     * @param value The bytes for attributeString to set.
+     * @return This builder for chaining.
      */
-    public io.littlehorse.common.proto.TagPb.Builder getTagBuilder() {
+    public Builder setAttributeStringBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      attributeString_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
-      return internalGetTagFieldBuilder().getBuilder();
+      return this;
+    }
+
+    private boolean delete_ ;
+    /**
+     * <code>bool delete = 2;</code>
+     * @return The delete.
+     */
+    @java.lang.Override
+    public boolean getDelete() {
+      return delete_;
     }
     /**
-     * <code>.littlehorse.TagPb tag = 1;</code>
+     * <code>bool delete = 2;</code>
+     * @param value The delete to set.
+     * @return This builder for chaining.
      */
-    public io.littlehorse.common.proto.TagPbOrBuilder getTagOrBuilder() {
-      if (tagBuilder_ != null) {
-        return tagBuilder_.getMessageOrBuilder();
-      } else {
-        return tag_ == null ?
-            io.littlehorse.common.proto.TagPb.getDefaultInstance() : tag_;
-      }
+    public Builder setDelete(boolean value) {
+
+      delete_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
     }
     /**
-     * <code>.littlehorse.TagPb tag = 1;</code>
+     * <code>bool delete = 2;</code>
+     * @return This builder for chaining.
      */
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.common.proto.TagPb, io.littlehorse.common.proto.TagPb.Builder, io.littlehorse.common.proto.TagPbOrBuilder> 
-        internalGetTagFieldBuilder() {
-      if (tagBuilder_ == null) {
-        tagBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.common.proto.TagPb, io.littlehorse.common.proto.TagPb.Builder, io.littlehorse.common.proto.TagPbOrBuilder>(
-                getTag(),
-                getParentForChildren(),
-                isClean());
-        tag_ = null;
-      }
-      return tagBuilder_;
+    public Builder clearDelete() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      delete_ = false;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.UpdateCountedTag)

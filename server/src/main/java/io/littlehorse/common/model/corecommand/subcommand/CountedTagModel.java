@@ -53,4 +53,8 @@ public class CountedTagModel extends Storeable<CountedTag> {
     public void increment() {
         count++;
     }
+
+    public void decrement() {
+        count--;
+    }
 }

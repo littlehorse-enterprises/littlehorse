@@ -70,6 +70,8 @@ public class TagStorageManager {
         if (cachedTag.isRemote()) {
             String attributeString = extractAttributeStringFromStoreKey(cachedTag.getId());
             sendRepartitionCommandForRemoveRemoteTag(cachedTag.getId(), attributeString);
+        } else if (cachedTag.isCounted()) {
+            sendDeleteCountedTag(cachedTag);
         } else {
             lhStore.delete(cachedTag.getId(), StoreableType.TAG);
         }
@@ -94,7 +96,24 @@ public class TagStorageManager {
     }
 
     private void sendCountedTag(Tag tag) {
-        UpdateCountedTagModel updateCountedTag = new UpdateCountedTagModel(tag);
+        UpdateCountedTagModel updateCountedTag = new UpdateCountedTagModel(tag.getAttributeString());
+        CommandModel command = new CommandModel(updateCountedTag);
+        LHTimer timer = new LHTimer(command, true);
+        timer.topic = this.lhConfig.getCoreCmdTopicName();
+        CommandProcessorOutput cpo = new CommandProcessorOutput();
+        cpo.partitionKey = timer.getPartitionKey();
+        cpo.topic = this.lhConfig.getCoreCmdTopicName();
+        cpo.payload = timer;
+        Record<String, CommandProcessorOutput> out = new Record<>(
+                cpo.partitionKey,
+                cpo,
+                System.currentTimeMillis(),
+                HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId()));
+        context.forward(out);
+    }
+
+    private void sendDeleteCountedTag(CachedTag cachedTag) {
+        UpdateCountedTagModel updateCountedTag = new UpdateCountedTagModel(cachedTag.getAttributeString(), true);
         CommandModel command = new CommandModel(updateCountedTag);
         LHTimer timer = new LHTimer(command, true);
         timer.topic = this.lhConfig.getCoreCmdTopicName();
