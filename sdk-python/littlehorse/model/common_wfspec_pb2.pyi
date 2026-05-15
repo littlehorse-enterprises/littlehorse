@@ -1,6 +1,7 @@
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.variable_pb2 as _variable_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
+import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -23,17 +24,7 @@ class VariableMutationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     REMOVE_KEY: _ClassVar[VariableMutationType]
     AND: _ClassVar[VariableMutationType]
     OR: _ClassVar[VariableMutationType]
-
-class Comparator(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = ()
-    LESS_THAN: _ClassVar[Comparator]
-    GREATER_THAN: _ClassVar[Comparator]
-    LESS_THAN_EQ: _ClassVar[Comparator]
-    GREATER_THAN_EQ: _ClassVar[Comparator]
-    EQUALS: _ClassVar[Comparator]
-    NOT_EQUALS: _ClassVar[Comparator]
-    IN: _ClassVar[Comparator]
-    NOT_IN: _ClassVar[Comparator]
+    POW: _ClassVar[VariableMutationType]
 ASSIGN: VariableMutationType
 ADD: VariableMutationType
 EXTEND: VariableMutationType
@@ -45,17 +36,10 @@ REMOVE_INDEX: VariableMutationType
 REMOVE_KEY: VariableMutationType
 AND: VariableMutationType
 OR: VariableMutationType
-LESS_THAN: Comparator
-GREATER_THAN: Comparator
-LESS_THAN_EQ: Comparator
-GREATER_THAN_EQ: Comparator
-EQUALS: Comparator
-NOT_EQUALS: Comparator
-IN: Comparator
-NOT_IN: Comparator
+POW: VariableMutationType
 
 class VariableAssignment(_message.Message):
-    __slots__ = ("json_path", "lh_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "target_type")
+    __slots__ = ("json_path", "lh_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "struct_builder", "size_of", "target_type")
     class FormatString(_message.Message):
         __slots__ = ("format", "args")
         FORMAT_FIELD_NUMBER: _ClassVar[int]
@@ -68,6 +52,11 @@ class VariableAssignment(_message.Message):
         NODE_NAME_FIELD_NUMBER: _ClassVar[int]
         node_name: str
         def __init__(self, node_name: _Optional[str] = ...) -> None: ...
+    class SizeOf(_message.Message):
+        __slots__ = ("operand",)
+        OPERAND_FIELD_NUMBER: _ClassVar[int]
+        operand: VariableAssignment
+        def __init__(self, operand: _Optional[_Union[VariableAssignment, _Mapping]] = ...) -> None: ...
     class Expression(_message.Message):
         __slots__ = ("lhs", "mutation_type", "comparator", "rhs")
         LHS_FIELD_NUMBER: _ClassVar[int]
@@ -76,9 +65,9 @@ class VariableAssignment(_message.Message):
         RHS_FIELD_NUMBER: _ClassVar[int]
         lhs: VariableAssignment
         mutation_type: VariableMutationType
-        comparator: Comparator
+        comparator: _type_definition_pb2.Comparator
         rhs: VariableAssignment
-        def __init__(self, lhs: _Optional[_Union[VariableAssignment, _Mapping]] = ..., mutation_type: _Optional[_Union[VariableMutationType, str]] = ..., comparator: _Optional[_Union[Comparator, str]] = ..., rhs: _Optional[_Union[VariableAssignment, _Mapping]] = ...) -> None: ...
+        def __init__(self, lhs: _Optional[_Union[VariableAssignment, _Mapping]] = ..., mutation_type: _Optional[_Union[VariableMutationType, str]] = ..., comparator: _Optional[_Union[_type_definition_pb2.Comparator, str]] = ..., rhs: _Optional[_Union[VariableAssignment, _Mapping]] = ...) -> None: ...
     JSON_PATH_FIELD_NUMBER: _ClassVar[int]
     LH_PATH_FIELD_NUMBER: _ClassVar[int]
     VARIABLE_NAME_FIELD_NUMBER: _ClassVar[int]
@@ -86,6 +75,8 @@ class VariableAssignment(_message.Message):
     FORMAT_STRING_FIELD_NUMBER: _ClassVar[int]
     NODE_OUTPUT_FIELD_NUMBER: _ClassVar[int]
     EXPRESSION_FIELD_NUMBER: _ClassVar[int]
+    STRUCT_BUILDER_FIELD_NUMBER: _ClassVar[int]
+    SIZE_OF_FIELD_NUMBER: _ClassVar[int]
     TARGET_TYPE_FIELD_NUMBER: _ClassVar[int]
     json_path: str
     lh_path: LHPath
@@ -94,8 +85,39 @@ class VariableAssignment(_message.Message):
     format_string: VariableAssignment.FormatString
     node_output: VariableAssignment.NodeOutputReference
     expression: VariableAssignment.Expression
-    target_type: TypeDefinition
-    def __init__(self, json_path: _Optional[str] = ..., lh_path: _Optional[_Union[LHPath, _Mapping]] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., target_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
+    struct_builder: StructBuilder
+    size_of: VariableAssignment.SizeOf
+    target_type: _type_definition_pb2.TypeDefinition
+    def __init__(self, json_path: _Optional[str] = ..., lh_path: _Optional[_Union[LHPath, _Mapping]] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., struct_builder: _Optional[_Union[StructBuilder, _Mapping]] = ..., size_of: _Optional[_Union[VariableAssignment.SizeOf, _Mapping]] = ..., target_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ...) -> None: ...
+
+class StructBuilder(_message.Message):
+    __slots__ = ("struct_def_id", "value")
+    STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    struct_def_id: _object_id_pb2.StructDefId
+    value: InlineStructBuilder
+    def __init__(self, struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., value: _Optional[_Union[InlineStructBuilder, _Mapping]] = ...) -> None: ...
+
+class InlineStructBuilder(_message.Message):
+    __slots__ = ("fields",)
+    class FieldsEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: InlineStructFieldValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[InlineStructFieldValue, _Mapping]] = ...) -> None: ...
+    FIELDS_FIELD_NUMBER: _ClassVar[int]
+    fields: _containers.MessageMap[str, InlineStructFieldValue]
+    def __init__(self, fields: _Optional[_Mapping[str, InlineStructFieldValue]] = ...) -> None: ...
+
+class InlineStructFieldValue(_message.Message):
+    __slots__ = ("simple_value", "sub_structure")
+    SIMPLE_VALUE_FIELD_NUMBER: _ClassVar[int]
+    SUB_STRUCTURE_FIELD_NUMBER: _ClassVar[int]
+    simple_value: VariableAssignment
+    sub_structure: InlineStructBuilder
+    def __init__(self, simple_value: _Optional[_Union[VariableAssignment, _Mapping]] = ..., sub_structure: _Optional[_Union[InlineStructBuilder, _Mapping]] = ...) -> None: ...
 
 class VariableMutation(_message.Message):
     __slots__ = ("lhs_name", "lhs_json_path", "operation", "rhs_assignment", "literal_value", "node_output")
@@ -131,24 +153,8 @@ class VariableDef(_message.Message):
     name: str
     default_value: _variable_pb2.VariableValue
     masked_value: bool
-    type_def: TypeDefinition
-    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: _Optional[bool] = ..., type_def: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
-
-class TypeDefinition(_message.Message):
-    __slots__ = ("primitive_type", "struct_def_id", "masked")
-    PRIMITIVE_TYPE_FIELD_NUMBER: _ClassVar[int]
-    STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
-    MASKED_FIELD_NUMBER: _ClassVar[int]
-    primitive_type: _common_enums_pb2.VariableType
-    struct_def_id: _object_id_pb2.StructDefId
-    masked: bool
-    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
-
-class ReturnType(_message.Message):
-    __slots__ = ("return_type",)
-    RETURN_TYPE_FIELD_NUMBER: _ClassVar[int]
-    return_type: TypeDefinition
-    def __init__(self, return_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
+    type_def: _type_definition_pb2.TypeDefinition
+    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: _Optional[bool] = ..., type_def: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class UTActionTrigger(_message.Message):
     __slots__ = ("task", "cancel", "reassign", "delay_seconds", "hook")
@@ -227,12 +233,14 @@ class InlineStructDef(_message.Message):
     def __init__(self, fields: _Optional[_Mapping[str, StructFieldDef]] = ...) -> None: ...
 
 class StructFieldDef(_message.Message):
-    __slots__ = ("field_type", "default_value")
+    __slots__ = ("field_type", "default_value", "is_nullable")
     FIELD_TYPE_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
-    field_type: TypeDefinition
+    IS_NULLABLE_FIELD_NUMBER: _ClassVar[int]
+    field_type: _type_definition_pb2.TypeDefinition
     default_value: _variable_pb2.VariableValue
-    def __init__(self, field_type: _Optional[_Union[TypeDefinition, _Mapping]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    is_nullable: bool
+    def __init__(self, field_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., is_nullable: _Optional[bool] = ...) -> None: ...
 
 class LHPath(_message.Message):
     __slots__ = ("path",)

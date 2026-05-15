@@ -1,8 +1,9 @@
 'use client'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
-import { flattenWfRunId, formatDate, wfRunIdToPath } from '@/app/utils'
 import { ThreadType } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
 import { useSelectedThreadError } from '@/app/(authenticated)/[tenantId]/(diagram)/hooks/useSelectedThreadError'
+import { routes } from '@/app/routes'
+import { flattenWfRunId, formatDate, wfRunIdToPath } from '@/app/utils'
 import { WfRun } from 'littlehorse-client/proto'
 import { Expand } from 'lucide-react'
 import { FC, useState } from 'react'
@@ -28,7 +29,7 @@ export const Details: FC<DetailsProps> = ({ selectedThread, ...wfRun }) => {
       {id.parentWfRunId && (
         <div className="flex items-center gap-2">
           Parent WfRun:
-          <LinkWithTenant href={`/wfRun/${wfRunIdToPath(id.parentWfRunId)}`} linkStyle>
+          <LinkWithTenant href={routes.wfRun.detail(wfRunIdToPath(id.parentWfRunId))} linkStyle>
             <p>{id.parentWfRunId.id}</p>
           </LinkWithTenant>
         </div>
@@ -37,7 +38,7 @@ export const Details: FC<DetailsProps> = ({ selectedThread, ...wfRun }) => {
         <div className="flex items-center gap-2">
           WfSpec:
           <LinkWithTenant
-            href={`/wfSpec/${wfSpecId.name}/${wfSpecId.majorVersion}/${wfSpecId.revision}`}
+            href={routes.wfSpec.detailWithRevision(wfSpecId.name, wfSpecId.majorVersion, wfSpecId.revision)}
             className="flex items-center gap-2 text-blue-500 underline"
           >
             {`${wfSpecId.name} ${wfSpecId.majorVersion}.${wfSpecId.revision}`}

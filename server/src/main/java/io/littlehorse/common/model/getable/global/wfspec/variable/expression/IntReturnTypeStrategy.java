@@ -50,6 +50,18 @@ public class IntReturnTypeStrategy implements LHTypeStrategy {
     }
 
     @Override
+    public Optional<TypeDefinitionModel> pow(ReadOnlyMetadataManager manager, LHTypeStrategy other)
+            throws InvalidExpressionException {
+        if (other.isNumeric(manager)) {
+            if (other.getIdentity().getPrimitiveType() == VariableType.INT) {
+                return Optional.of(new TypeDefinitionModel(VariableType.INT));
+            }
+            return Optional.of(new TypeDefinitionModel(VariableType.DOUBLE));
+        }
+        throw new InvalidExpressionException("Cannot exponentiate non-numeric type " + other.toString() + " to an INT");
+    }
+
+    @Override
     public Optional<TypeDefinitionModel> removeIfPresent(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot call REMOVE_IF_PRESENT on an INT");

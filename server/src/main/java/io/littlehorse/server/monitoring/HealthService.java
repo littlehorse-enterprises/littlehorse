@@ -6,7 +6,7 @@ import io.littlehorse.server.monitoring.health.InProgressRestoration;
 import io.littlehorse.server.monitoring.health.ServerHealthState;
 import io.littlehorse.server.monitoring.http.ContentType;
 import io.littlehorse.server.monitoring.http.LHHttpException;
-import io.littlehorse.server.monitoring.http.StatusServer;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.monitoring.metrics.InstanceState;
 import io.littlehorse.server.monitoring.metrics.PrometheusMetricExporter;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -45,14 +45,16 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
     private KafkaStreams timerStreams;
 
     public HealthService(
+            StatusServer statusServer,
             LHServerConfig config,
             KafkaStreams coreStreams,
             KafkaStreams timerStreams,
             TaskQueueManager taskQueueManager,
             MetadataCache metadataCache,
-            BackendInternalComms internalComms) {
+            BackendInternalComms internalComms,
+            CommandProcessorMetrics commandProcessorMetrics) {
         this.prom = new PrometheusMetricExporter(config);
-        this.statusServer = new StatusServer();
+        this.statusServer = statusServer;
 
         this.numberOfPartitionPerTopic = config.partitionsByTopic();
 
@@ -63,7 +65,8 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
                 taskQueueManager,
                 metadataCache,
                 new StandbyMetrics(standbyStores, config.getLHInstanceName()),
-                coreState);
+                coreState,
+                commandProcessorMetrics);
 
         this.coreStreams = coreStreams;
         this.timerStreams = timerStreams;

@@ -249,4 +249,7 @@ message MetricWindowId {
   // Start time of the window.
   google.protobuf.Timestamp window_start = 7;
 
+  // Metric type (workflow, task, or user task)
+  optional MetricWindowType metric_type = 8;
+
 }

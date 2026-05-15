@@ -349,6 +349,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.SearchPrincipalRequest.SerializeToString,
                 response_deserializer=service__pb2.PrincipalIdList.FromString,
                 _registered_method=True)
+        self.SearchQuota = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchQuota',
+                request_serializer=service__pb2.SearchQuotaRequest.SerializeToString,
+                response_deserializer=service__pb2.QuotaIdList.FromString,
+                _registered_method=True)
         self.SearchStructDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/SearchStructDef',
                 request_serializer=service__pb2.SearchStructDefRequest.SerializeToString,
@@ -444,6 +449,11 @@ class LittleHorseStub(object):
                 request_serializer=acls__pb2.DeletePrincipalRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
+        self.DeleteQuota = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteQuota',
+                request_serializer=acls__pb2.DeleteQuotaRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
         self.DeleteScheduledWfRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/DeleteScheduledWfRun',
                 request_serializer=service__pb2.DeleteScheduledWfRunRequest.SerializeToString,
@@ -469,6 +479,16 @@ class LittleHorseStub(object):
                 request_serializer=metrics__pb2.ListWfMetricsRequest.SerializeToString,
                 response_deserializer=metrics__pb2.MetricsList.FromString,
                 _registered_method=True)
+        self.GetMetricWindow = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetMetricWindow',
+                request_serializer=object__id__pb2.MetricWindowId.SerializeToString,
+                response_deserializer=metrics__pb2.MetricWindow.FromString,
+                _registered_method=True)
+        self.SearchWfMetricWindow = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchWfMetricWindow',
+                request_serializer=metrics__pb2.SearchWfMetricWindowRequest.SerializeToString,
+                response_deserializer=metrics__pb2.MetricWindowIdList.FromString,
+                _registered_method=True)
         self.PutTenant = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutTenant',
                 request_serializer=acls__pb2.PutTenantRequest.SerializeToString,
@@ -478,6 +498,16 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/GetTenant',
                 request_serializer=object__id__pb2.TenantId.SerializeToString,
                 response_deserializer=acls__pb2.Tenant.FromString,
+                _registered_method=True)
+        self.PutQuota = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutQuota',
+                request_serializer=acls__pb2.PutQuotaRequest.SerializeToString,
+                response_deserializer=acls__pb2.Quota.FromString,
+                _registered_method=True)
+        self.GetQuota = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetQuota',
+                request_serializer=acls__pb2.QuotaId.SerializeToString,
+                response_deserializer=acls__pb2.Quota.FromString,
                 _registered_method=True)
         self.PutPrincipal = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutPrincipal',
@@ -970,6 +1000,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SearchQuota(self, request, context):
+        """Search for Quotas.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def SearchStructDef(self, request, context):
         """Search for StructDef's
         """
@@ -1128,6 +1165,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DeleteQuota(self, request, context):
+        """Deletes a `Quota`.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def DeleteScheduledWfRun(self, request, context):
         """Deletes a scheduled run and prevents any further associated WfRun from being executed.
         """
@@ -1150,13 +1194,29 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ListTaskMetrics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Lists available metric windows for a given TaskDefId and time range.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListWfMetrics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Lists available metric windows for a given WfSpecId and time range.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetMetricWindow(self, request, context):
+        """Gets a MetricWindow by its ID.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SearchWfMetricWindow(self, request, context):
+        """Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -1170,6 +1230,20 @@ class LittleHorseServicer(object):
 
     def GetTenant(self, request, context):
         """Gets a Tenant from the LH Server.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PutQuota(self, request, context):
+        """Creates or updates a Quota.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetQuota(self, request, context):
+        """Gets a Quota.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1506,6 +1580,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.SearchPrincipalRequest.FromString,
                     response_serializer=service__pb2.PrincipalIdList.SerializeToString,
             ),
+            'SearchQuota': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchQuota,
+                    request_deserializer=service__pb2.SearchQuotaRequest.FromString,
+                    response_serializer=service__pb2.QuotaIdList.SerializeToString,
+            ),
             'SearchStructDef': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchStructDef,
                     request_deserializer=service__pb2.SearchStructDefRequest.FromString,
@@ -1601,6 +1680,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=acls__pb2.DeletePrincipalRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
+            'DeleteQuota': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteQuota,
+                    request_deserializer=acls__pb2.DeleteQuotaRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
             'DeleteScheduledWfRun': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteScheduledWfRun,
                     request_deserializer=service__pb2.DeleteScheduledWfRunRequest.FromString,
@@ -1626,6 +1710,16 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=metrics__pb2.ListWfMetricsRequest.FromString,
                     response_serializer=metrics__pb2.MetricsList.SerializeToString,
             ),
+            'GetMetricWindow': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMetricWindow,
+                    request_deserializer=object__id__pb2.MetricWindowId.FromString,
+                    response_serializer=metrics__pb2.MetricWindow.SerializeToString,
+            ),
+            'SearchWfMetricWindow': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchWfMetricWindow,
+                    request_deserializer=metrics__pb2.SearchWfMetricWindowRequest.FromString,
+                    response_serializer=metrics__pb2.MetricWindowIdList.SerializeToString,
+            ),
             'PutTenant': grpc.unary_unary_rpc_method_handler(
                     servicer.PutTenant,
                     request_deserializer=acls__pb2.PutTenantRequest.FromString,
@@ -1635,6 +1729,16 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.GetTenant,
                     request_deserializer=object__id__pb2.TenantId.FromString,
                     response_serializer=acls__pb2.Tenant.SerializeToString,
+            ),
+            'PutQuota': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutQuota,
+                    request_deserializer=acls__pb2.PutQuotaRequest.FromString,
+                    response_serializer=acls__pb2.Quota.SerializeToString,
+            ),
+            'GetQuota': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetQuota,
+                    request_deserializer=acls__pb2.QuotaId.FromString,
+                    response_serializer=acls__pb2.Quota.SerializeToString,
             ),
             'PutPrincipal': grpc.unary_unary_rpc_method_handler(
                     servicer.PutPrincipal,
@@ -3288,6 +3392,33 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
+    def SearchQuota(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/SearchQuota',
+            service__pb2.SearchQuotaRequest.SerializeToString,
+            service__pb2.QuotaIdList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def SearchStructDef(request,
             target,
             options=(),
@@ -3801,6 +3932,33 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
+    def DeleteQuota(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/DeleteQuota',
+            acls__pb2.DeleteQuotaRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def DeleteScheduledWfRun(request,
             target,
             options=(),
@@ -3936,6 +4094,60 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
+    def GetMetricWindow(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetMetricWindow',
+            object__id__pb2.MetricWindowId.SerializeToString,
+            metrics__pb2.MetricWindow.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SearchWfMetricWindow(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/SearchWfMetricWindow',
+            metrics__pb2.SearchWfMetricWindowRequest.SerializeToString,
+            metrics__pb2.MetricWindowIdList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def PutTenant(request,
             target,
             options=(),
@@ -3979,6 +4191,60 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/GetTenant',
             object__id__pb2.TenantId.SerializeToString,
             acls__pb2.Tenant.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PutQuota(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutQuota',
+            acls__pb2.PutQuotaRequest.SerializeToString,
+            acls__pb2.Quota.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetQuota(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetQuota',
+            acls__pb2.QuotaId.SerializeToString,
+            acls__pb2.Quota.FromString,
             options,
             channel_credentials,
             insecure,

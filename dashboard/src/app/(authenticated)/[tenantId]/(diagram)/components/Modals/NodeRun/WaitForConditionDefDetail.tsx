@@ -1,4 +1,3 @@
-import { NodeRun } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { AccordionNode } from './AccordionContent'
 

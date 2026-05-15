@@ -22,7 +22,7 @@ export const Failures: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
     <div>
       {failures.map((failure, index) => {
         return (
-          <Accordion type="single" collapsible>
+          <Accordion key={`failure-${failure.failureName ?? index}`} type="single" collapsible>
             <AccordionItem value={`action-${index}`}>
               <AccordionTrigger>
                 <div className="ml-2">{failure.failureName}</div>

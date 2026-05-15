@@ -16,7 +16,7 @@ jest.mock('../NodeVariable', () => ({
 }))
 
 jest.mock('../OutputModal', () => ({
-  OutputModal: ({ label, message }: { label: string; message: string }) => <div>OutputModal</div>,
+  OutputModal: (_props: { label: string; message: string }) => <div>OutputModal</div>,
 }))
 
 jest.mock('@/components/ui/dropdown-menu', () => ({
@@ -37,8 +37,8 @@ jest.mock('lucide-react', () => ({
 }))
 
 jest.mock('@/app/utils/struct', () => ({
-  getAttemptOutput: (v: VariableValue | undefined) => `OUT`,
-  getAttemptResult: (v: VariableValue | undefined) => `RES`,
+  getAttemptOutput: (_v: VariableValue | undefined) => `OUT`,
+  getAttemptResult: (_v: VariableValue | undefined) => `RES`,
 }))
 
 describe('Attempts component', () => {

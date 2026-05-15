@@ -6,9 +6,9 @@
 
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
-import { ReturnType } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRunId, WorkflowEventDefId, WorkflowEventId } from "./object_id";
+import { ReturnType } from "./type_definition";
 import { VariableValue } from "./variable";
 
 /**

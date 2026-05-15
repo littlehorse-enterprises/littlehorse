@@ -65,6 +65,7 @@ private static final long serialVersionUID = 0L;
     WF_RUN_ID(9),
     UTC_TIMESTAMP(10),
     STRUCT(11),
+    ARRAY(12),
     VALUE_NOT_SET(0);
     private final int value;
     private ValueCase(int value) {
@@ -92,6 +93,7 @@ private static final long serialVersionUID = 0L;
         case 9: return WF_RUN_ID;
         case 10: return UTC_TIMESTAMP;
         case 11: return STRUCT;
+        case 12: return ARRAY;
         case 0: return VALUE_NOT_SET;
         default: return null;
       }
@@ -546,6 +548,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Struct.getDefaultInstance();
   }
 
+  public static final int ARRAY_FIELD_NUMBER = 12;
+  /**
+   * <pre>
+   * An Array object.
+   * </pre>
+   *
+   * <code>.littlehorse.Array array = 12;</code>
+   * @return Whether the array field is set.
+   */
+  @java.lang.Override
+  public boolean hasArray() {
+    return valueCase_ == 12;
+  }
+  /**
+   * <pre>
+   * An Array object.
+   * </pre>
+   *
+   * <code>.littlehorse.Array array = 12;</code>
+   * @return The array.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.Array getArray() {
+    if (valueCase_ == 12) {
+       return (io.littlehorse.sdk.common.proto.Array) value_;
+    }
+    return io.littlehorse.sdk.common.proto.Array.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * An Array object.
+   * </pre>
+   *
+   * <code>.littlehorse.Array array = 12;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ArrayOrBuilder getArrayOrBuilder() {
+    if (valueCase_ == 12) {
+       return (io.littlehorse.sdk.common.proto.Array) value_;
+    }
+    return io.littlehorse.sdk.common.proto.Array.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -593,6 +638,9 @@ private static final long serialVersionUID = 0L;
     }
     if (valueCase_ == 11) {
       output.writeMessage(11, (io.littlehorse.sdk.common.proto.Struct) value_);
+    }
+    if (valueCase_ == 12) {
+      output.writeMessage(12, (io.littlehorse.sdk.common.proto.Array) value_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -643,6 +691,10 @@ private static final long serialVersionUID = 0L;
     if (valueCase_ == 11) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(11, (io.littlehorse.sdk.common.proto.Struct) value_);
+    }
+    if (valueCase_ == 12) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(12, (io.littlehorse.sdk.common.proto.Array) value_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -702,6 +754,10 @@ private static final long serialVersionUID = 0L;
         if (!getStruct()
             .equals(other.getStruct())) return false;
         break;
+      case 12:
+        if (!getArray()
+            .equals(other.getArray())) return false;
+        break;
       case 0:
       default:
     }
@@ -759,6 +815,10 @@ private static final long serialVersionUID = 0L;
       case 11:
         hash = (37 * hash) + STRUCT_FIELD_NUMBER;
         hash = (53 * hash) + getStruct().hashCode();
+        break;
+      case 12:
+        hash = (37 * hash) + ARRAY_FIELD_NUMBER;
+        hash = (53 * hash) + getArray().hashCode();
         break;
       case 0:
       default:
@@ -909,6 +969,9 @@ private static final long serialVersionUID = 0L;
       if (structBuilder_ != null) {
         structBuilder_.clear();
       }
+      if (arrayBuilder_ != null) {
+        arrayBuilder_.clear();
+      }
       valueCase_ = 0;
       value_ = null;
       return this;
@@ -961,6 +1024,10 @@ private static final long serialVersionUID = 0L;
       if (valueCase_ == 11 &&
           structBuilder_ != null) {
         result.value_ = structBuilder_.build();
+      }
+      if (valueCase_ == 12 &&
+          arrayBuilder_ != null) {
+        result.value_ = arrayBuilder_.build();
       }
     }
 
@@ -1021,6 +1088,10 @@ private static final long serialVersionUID = 0L;
         }
         case STRUCT: {
           mergeStruct(other.getStruct());
+          break;
+        }
+        case ARRAY: {
+          mergeArray(other.getArray());
           break;
         }
         case VALUE_NOT_SET: {
@@ -1112,6 +1183,13 @@ private static final long serialVersionUID = 0L;
               valueCase_ = 11;
               break;
             } // case 90
+            case 98: {
+              input.readMessage(
+                  internalGetArrayFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              valueCase_ = 12;
+              break;
+            } // case 98
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2263,6 +2341,184 @@ private static final long serialVersionUID = 0L;
       valueCase_ = 11;
       onChanged();
       return structBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.Array, io.littlehorse.sdk.common.proto.Array.Builder, io.littlehorse.sdk.common.proto.ArrayOrBuilder> arrayBuilder_;
+    /**
+     * <pre>
+     * An Array object.
+     * </pre>
+     *
+     * <code>.littlehorse.Array array = 12;</code>
+     * @return Whether the array field is set.
+     */
+    @java.lang.Override
+    public boolean hasArray() {
+      return valueCase_ == 12;
+    }
+    /**
+     * <pre>
+     * An Array object.
+     * </pre>
+     *
+     * <code>.littlehorse.Array array = 12;</code>
+     * @return The array.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.Array getArray() {
+      if (arrayBuilder_ == null) {
+        if (valueCase_ == 12) {
+          return (io.littlehorse.sdk.common.proto.Array) value_;
+        }
+        return io.littlehorse.sdk.common.proto.Array.getDefaultInstance();
+      } else {
+        if (valueCase_ == 12) {
+          return arrayBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.Array.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * An Array object.
+     * </pre>
+     *
+     * <code>.littlehorse.Array array = 12;</code>
+     */
+    public Builder setArray(io.littlehorse.sdk.common.proto.Array value) {
+      if (arrayBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        value_ = value;
+        onChanged();
+      } else {
+        arrayBuilder_.setMessage(value);
+      }
+      valueCase_ = 12;
+      return this;
+    }
+    /**
+     * <pre>
+     * An Array object.
+     * </pre>
+     *
+     * <code>.littlehorse.Array array = 12;</code>
+     */
+    public Builder setArray(
+        io.littlehorse.sdk.common.proto.Array.Builder builderForValue) {
+      if (arrayBuilder_ == null) {
+        value_ = builderForValue.build();
+        onChanged();
+      } else {
+        arrayBuilder_.setMessage(builderForValue.build());
+      }
+      valueCase_ = 12;
+      return this;
+    }
+    /**
+     * <pre>
+     * An Array object.
+     * </pre>
+     *
+     * <code>.littlehorse.Array array = 12;</code>
+     */
+    public Builder mergeArray(io.littlehorse.sdk.common.proto.Array value) {
+      if (arrayBuilder_ == null) {
+        if (valueCase_ == 12 &&
+            value_ != io.littlehorse.sdk.common.proto.Array.getDefaultInstance()) {
+          value_ = io.littlehorse.sdk.common.proto.Array.newBuilder((io.littlehorse.sdk.common.proto.Array) value_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          value_ = value;
+        }
+        onChanged();
+      } else {
+        if (valueCase_ == 12) {
+          arrayBuilder_.mergeFrom(value);
+        } else {
+          arrayBuilder_.setMessage(value);
+        }
+      }
+      valueCase_ = 12;
+      return this;
+    }
+    /**
+     * <pre>
+     * An Array object.
+     * </pre>
+     *
+     * <code>.littlehorse.Array array = 12;</code>
+     */
+    public Builder clearArray() {
+      if (arrayBuilder_ == null) {
+        if (valueCase_ == 12) {
+          valueCase_ = 0;
+          value_ = null;
+          onChanged();
+        }
+      } else {
+        if (valueCase_ == 12) {
+          valueCase_ = 0;
+          value_ = null;
+        }
+        arrayBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * An Array object.
+     * </pre>
+     *
+     * <code>.littlehorse.Array array = 12;</code>
+     */
+    public io.littlehorse.sdk.common.proto.Array.Builder getArrayBuilder() {
+      return internalGetArrayFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * An Array object.
+     * </pre>
+     *
+     * <code>.littlehorse.Array array = 12;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ArrayOrBuilder getArrayOrBuilder() {
+      if ((valueCase_ == 12) && (arrayBuilder_ != null)) {
+        return arrayBuilder_.getMessageOrBuilder();
+      } else {
+        if (valueCase_ == 12) {
+          return (io.littlehorse.sdk.common.proto.Array) value_;
+        }
+        return io.littlehorse.sdk.common.proto.Array.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * An Array object.
+     * </pre>
+     *
+     * <code>.littlehorse.Array array = 12;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.Array, io.littlehorse.sdk.common.proto.Array.Builder, io.littlehorse.sdk.common.proto.ArrayOrBuilder> 
+        internalGetArrayFieldBuilder() {
+      if (arrayBuilder_ == null) {
+        if (!(valueCase_ == 12)) {
+          value_ = io.littlehorse.sdk.common.proto.Array.getDefaultInstance();
+        }
+        arrayBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.Array, io.littlehorse.sdk.common.proto.Array.Builder, io.littlehorse.sdk.common.proto.ArrayOrBuilder>(
+                (io.littlehorse.sdk.common.proto.Array) value_,
+                getParentForChildren(),
+                isClean());
+        value_ = null;
+      }
+      valueCase_ = 12;
+      onChanged();
+      return arrayBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.VariableValue)

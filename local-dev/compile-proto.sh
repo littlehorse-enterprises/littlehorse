@@ -10,9 +10,9 @@ docker_run="docker run --user $(id -u):$(id -g) --rm -it -v ${WORK_DIR}:/littleh
 
 # compile protoc
 echo "Compiling docker image 'lh-protoc:$PROTOC_VERSION'"
-docker build -q --tag lh-protoc:$PROTOC_VERSION -f - "${SCRIPT_DIR}" <<EOF
+docker build --tag lh-protoc:$PROTOC_VERSION -f - "${SCRIPT_DIR}" <<EOF
 
-FROM ubuntu:24.04
+FROM python:3-slim
 
 ENV PROTOC_VERSION           32.1
 ENV PROTO_GEN_JAVA           1.75.0
@@ -21,20 +21,35 @@ ENV PROTO_GEN_GO_GRPC        1.3.0
 ENV PROTO_GEN_PYTHON         1.69.0
 ENV PROTO_GEN_JS             1.181.2
 
+ENV GO_VERSION                1.24.2
+ENV NODE_VERSION              22
+
 ENV GOBIN /usr/local/bin
+ENV PATH="/usr/local/go/bin:\${PATH}"
 
 RUN apt update && apt install -y --no-install-recommends \
-  python3 \
   git \
-  pip \
   wget \
   ca-certificates \
   unzip \
-  golang \
-  nodejs \
-  npm && \
+  xz-utils \
+  g++ && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
+
+RUN set -x; \
+  dpkgArch="\$(uname -m)" && \
+  case "\$dpkgArch" in \
+  x86_64) GOARCH='amd64'; NODEARCH='x64';; \
+  aarch64) GOARCH='arm64'; NODEARCH='arm64';; \
+  *) echo >&2 "error: unsupported architecture: \$dpkgArch"; exit 1 ;; \
+  esac && \
+  wget -q https://go.dev/dl/go\${GO_VERSION}.linux-\${GOARCH}.tar.gz -O /tmp/go.tar.gz && \
+  tar -C /usr/local -xzf /tmp/go.tar.gz && \
+  rm /tmp/go.tar.gz && \
+  wget -q https://nodejs.org/dist/v\${NODE_VERSION}.0.0/node-v\${NODE_VERSION}.0.0-linux-\${NODEARCH}.tar.xz -O /tmp/node.tar.xz && \
+  tar -C /usr/local --strip-components=1 -xJf /tmp/node.tar.xz && \
+  rm /tmp/node.tar.xz
 
 RUN set -x; \
   dpkgArch="\$(uname -m)" && \

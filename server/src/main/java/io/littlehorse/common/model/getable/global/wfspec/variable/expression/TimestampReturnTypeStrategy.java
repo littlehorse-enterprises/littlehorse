@@ -38,6 +38,12 @@ public class TimestampReturnTypeStrategy implements LHTypeStrategy {
     }
 
     @Override
+    public Optional<TypeDefinitionModel> pow(ReadOnlyMetadataManager manager, LHTypeStrategy other)
+            throws InvalidExpressionException {
+        throw new InvalidExpressionException("Cannot exponentiate a TIMESTAMP");
+    }
+
+    @Override
     public Optional<TypeDefinitionModel> removeIfPresent(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
         throw new InvalidExpressionException("Cannot call REMOVE_IF_PRESENT on a TIMESTAMP");

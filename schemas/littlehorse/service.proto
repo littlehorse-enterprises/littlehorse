@@ -5,6 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 import "common_wfspec.proto";
+import "type_definition.proto";
 import "common_enums.proto";
 import "object_id.proto";
 import "variable.proto";
@@ -256,6 +257,9 @@ service LittleHorse {
   // Search for Principals
   rpc SearchPrincipal(SearchPrincipalRequest) returns (PrincipalIdList) {}
 
+  // Search for Quotas.
+  rpc SearchQuota(SearchQuotaRequest) returns (QuotaIdList) {}
+
   // Search for StructDef's
   rpc SearchStructDef(SearchStructDefRequest) returns (StructDefIdList) {}
 
@@ -327,6 +331,10 @@ service LittleHorse {
   // is the last remaining `Principal` with admin permissions. Admin permissions are defined
   // as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
   rpc DeletePrincipal(DeletePrincipalRequest) returns (google.protobuf.Empty) {}
+
+  // Deletes a `Quota`.
+  rpc DeleteQuota(DeleteQuotaRequest) returns (google.protobuf.Empty) {}
+
   // Deletes a scheduled run and prevents any further associated WfRun from being executed.
   rpc DeleteScheduledWfRun(DeleteScheduledWfRunRequest) returns (google.protobuf.Empty) {}
 
@@ -335,14 +343,26 @@ service LittleHorse {
   // Returns WfSpec Metrics for a specific WfSpec and a specific time window.
   rpc GetWfSpecMetricsWindow(WfSpecMetricsQueryRequest) returns (WfSpecMetrics) {}
   
+  // Lists available metric windows for a given TaskDefId and time range.
   rpc ListTaskMetrics(ListTaskMetricsRequest) returns (MetricsList) {}
+  // Lists available metric windows for a given WfSpecId and time range.
   rpc ListWfMetrics(ListWfMetricsRequest) returns (MetricsList) {}
+  // Gets a MetricWindow by its ID.
+  rpc GetMetricWindow(MetricWindowId) returns (MetricWindow) {}
+  // Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+  rpc SearchWfMetricWindow(SearchWfMetricWindowRequest) returns (MetricWindowIdList) {}
 
   // Creates a Tenant in the LH Server.
   rpc PutTenant(PutTenantRequest) returns (Tenant) {}
 
   // Gets a Tenant from the LH Server.
   rpc GetTenant(TenantId) returns (Tenant) {}
+
+  // Creates or updates a Quota.
+  rpc PutQuota(PutQuotaRequest) returns (Quota) {}
+
+  // Gets a Quota.
+  rpc GetQuota(QuotaId) returns (Quota) {}
 
   // Creates a Principal.
   rpc PutPrincipal(PutPrincipalRequest) returns (Principal) {}
@@ -1130,6 +1150,30 @@ message SearchPrincipalRequest {
 message PrincipalIdList {
   // The resulting object id's.
   repeated PrincipalId results = 1;
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 2;
+}
+
+// Search for Quotas based on certain criteria.
+message SearchQuotaRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // If set, return only Quotas for this Tenant.
+  optional string tenant_id = 3;
+
+  // If set, return only the Quota for this Principal within the specified Tenant.
+  PrincipalId principal = 4;
+}
+
+// List of Quota Id's
+message QuotaIdList {
+  // The resulting object id's.
+  repeated QuotaId results = 1;
+
   // Bookmark for cursor-based pagination; pass if applicable.
   optional bytes bookmark = 2;
 }

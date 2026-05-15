@@ -1,4 +1,4 @@
-import { Channel, ChannelCredentials, Client, Metadata, createChannel, createClientFactory } from 'nice-grpc'
+import { Channel, Client } from 'nice-grpc'
 import {
   LittleHorseDefinition,
   PollTaskRequest,
@@ -47,29 +47,13 @@ class ServerConnection {
     private readonly clientId: string,
     private readonly taskFunction: TaskFunction,
     private readonly taskWorkerVersion: string | undefined,
-    private readonly tenantId: string | undefined,
-    channelCredentials?: ChannelCredentials,
+    private readonly config: LHConfig,
     private readonly outputSchema?: ZodTypeAny
   ) {
     this.host = host
     this.port = port
-    this.channel = createChannel(`${host}:${port}`, channelCredentials)
-    this.client = createClientFactory()
-      .use((call, options) =>
-        call.next(call.request, {
-          ...options,
-          metadata: this.withMetadata(options.metadata),
-        })
-      )
-      .create(LittleHorseDefinition, this.channel)
-  }
-
-  private withMetadata(metadata?: Metadata): Metadata {
-    let md = Metadata(metadata)
-    if (this.tenantId) {
-      md = md.append('tenantId', this.tenantId)
-    }
-    return md
+    this.channel = config.openChannel(host, port)
+    this.client = config.createClientForChannel(this.channel)
   }
 
   get hostKey(): string {
@@ -346,8 +330,6 @@ export function createTaskWorker(
 ): LHTaskWorker {
   const taskWorkerId = `worker-${taskDefName}-${randomBytes(8).toString('hex')}`
   const bootstrapClient = config.getClient()
-  const channelCredentials = config.getChannelCredentials()
-  const tenantId = config.getTenantId()
   const inputVars = zodToVariableDefs(options.inputVars)
   const outputSchema = options.outputSchema
   const taskWorkerVersion = options.taskWorkerVersion
@@ -390,8 +372,7 @@ export function createTaskWorker(
             taskWorkerId,
             taskFunction,
             taskWorkerVersion,
-            tenantId,
-            channelCredentials,
+            config,
             outputSchema
           )
           conn.start()

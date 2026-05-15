@@ -6,7 +6,9 @@ import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.FormatString;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -40,5 +42,13 @@ public class FormatStringModel extends LHSerializable<FormatString> {
         for (VariableAssignment arg : p.getArgsList()) {
             args.add(VariableAssignmentModel.fromProto(arg, context));
         }
+    }
+
+    public Set<String> getRequiredNodeNames() {
+        Set<String> out = new HashSet<>(format.getRequiredNodeNames());
+        for (VariableAssignmentModel arg : args) {
+            out.addAll(arg.getRequiredNodeNames());
+        }
+        return out;
     }
 }

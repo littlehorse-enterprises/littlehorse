@@ -12,7 +12,6 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ThrowEventNode;
-import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -61,8 +60,8 @@ public class ThrowEventNodeModel extends SubNode<ThrowEventNode> {
     @Override
     public Set<String> getNeededNodeNames() {
         Set<String> out = new HashSet<>();
-        if (content != null && content.getRhsSourceType() == SourceCase.NODE_OUTPUT) {
-            out.add(content.getNodeOutputReference().getNodeName());
+        if (content != null) {
+            out.addAll(content.getRequiredNodeNames());
         }
         return out;
     }

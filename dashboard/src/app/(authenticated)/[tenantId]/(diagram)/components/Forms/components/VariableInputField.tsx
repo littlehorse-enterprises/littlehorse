@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { VariableValue } from 'littlehorse-client/proto'
+import { TimestampPicker } from './TimestampPicker'
 
 interface VariableInputFieldProps {
   contentType: NonNullable<VariableValue['value']>['$case']
@@ -82,6 +83,8 @@ export default function VariableInputField({
           step="0.01"
         />
       )
+    case 'utcTimestamp':
+      return <TimestampPicker value={contentValue} onChange={setContentValue} />
     case 'bytes':
       return (
         <div>

@@ -1,3 +1,4 @@
+import { routes } from '@/app/routes'
 import { wfRunIdToPath } from '@/app/utils/wfRun'
 import { RunChildWfNodeRun as RunChildWfNodeRunProto } from 'littlehorse-client/proto'
 import { FC } from 'react'
@@ -5,9 +6,10 @@ import { InputVariables } from '../Components'
 import { NodeVariable } from '../Components/NodeVariable'
 
 export const ChildWFNodeRun: FC<{ node: RunChildWfNodeRunProto }> = ({ node }) => {
-  const childWfRunLink = node.childWfRunId ? `/wfRun/${wfRunIdToPath(node.childWfRunId)}` : ''
+  const childWfRunLink = node.childWfRunId ? routes.wfRun.detail(wfRunIdToPath(node.childWfRunId)) : ''
   const wfSpecLink =
-    node.wfSpecId && `/wfSpec/${node.wfSpecId.name}/${node.wfSpecId.majorVersion}/${node.wfSpecId.revision}`
+    node.wfSpecId &&
+    routes.wfSpec.detailWithRevision(node.wfSpecId.name, node.wfSpecId.majorVersion, node.wfSpecId.revision)
 
   const inputVars =
     node.inputs && Object.keys(node.inputs).length > 0

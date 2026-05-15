@@ -151,4 +151,8 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
     public boolean canCreateTenants() {
         return globalAcls.allows(ACLResource.ACL_TENANT, ACLAction.WRITE_METADATA);
     }
+
+    public boolean canEditQuotas() {
+        return isAdmin() || globalAcls.allows(ACLResource.ACL_QUOTA, ACLAction.WRITE_METADATA);
+    }
 }

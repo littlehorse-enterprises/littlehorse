@@ -42,6 +42,16 @@ public final class Acls extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_Tenant_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_Quota_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_Quota_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_QuotaId_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_QuotaId_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_ServerACLs_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -76,6 +86,16 @@ public final class Acls extends com.google.protobuf.GeneratedFile {
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_PutTenantRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_PutQuotaRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_PutQuotaRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_DeleteQuotaRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_DeleteQuotaRequest_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -98,7 +118,13 @@ public final class Acls extends com.google.protobuf.GeneratedFile {
       "horse.TenantId\022.\n\ncreated_at\030\002 \001(\0132\032.goo" +
       "gle.protobuf.Timestamp\022@\n\023output_topic_c" +
       "onfig\030\003 \001(\0132\036.littlehorse.OutputTopicCon" +
-      "figH\000\210\001\001B\026\n\024_output_topic_config\"2\n\nServ" +
+      "figH\000\210\001\001B\026\n\024_output_topic_config\"|\n\005Quot" +
+      "a\022 \n\002id\030\001 \001(\0132\024.littlehorse.QuotaId\022.\n\nc" +
+      "reated_at\030\002 \001(\0132\032.google.protobuf.Timest" +
+      "amp\022!\n\031write_requests_per_second\030\003 \001(\005\"p" +
+      "\n\007QuotaId\022%\n\006tenant\030\001 \001(\0132\025.littlehorse." +
+      "TenantId\0220\n\tprincipal\030\002 \001(\0132\030.littlehors" +
+      "e.PrincipalIdH\000\210\001\001B\014\n\n_principal\"2\n\nServ" +
       "erACLs\022$\n\004acls\030\001 \003(\0132\026.littlehorse.Serve" +
       "rACL\"\236\001\n\tServerACL\022+\n\tresources\030\001 \003(\0162\030." +
       "littlehorse.ACLResource\022/\n\017allowed_actio" +
@@ -119,17 +145,22 @@ public final class Acls extends com.google.protobuf.GeneratedFile {
       "ITY_EVENTS\020\000\022\024\n\020NO_ENTITY_EVENTS\020\001\"x\n\020Pu" +
       "tTenantRequest\022\n\n\002id\030\001 \001(\t\022@\n\023output_top" +
       "ic_config\030\002 \001(\0132\036.littlehorse.OutputTopi" +
-      "cConfigH\000\210\001\001B\026\n\024_output_topic_config*\325\001\n" +
-      "\013ACLResource\022\020\n\014ACL_WORKFLOW\020\000\022\014\n\010ACL_TA" +
-      "SK\020\001\022\026\n\022ACL_EXTERNAL_EVENT\020\002\022\021\n\rACL_USER" +
-      "_TASK\020\003\022\021\n\rACL_PRINCIPAL\020\004\022\016\n\nACL_TENANT" +
-      "\020\005\022\025\n\021ACL_ALL_RESOURCES\020\006\022\031\n\025ACL_TASK_WO" +
-      "RKER_GROUP\020\007\022\026\n\022ACL_WORKFLOW_EVENT\020\010\022\016\n\n" +
-      "ACL_STRUCT\020\t*C\n\tACLAction\022\010\n\004READ\020\000\022\007\n\003R" +
-      "UN\020\001\022\022\n\016WRITE_METADATA\020\002\022\017\n\013ALL_ACTIONS\020" +
-      "\003BM\n\037io.littlehorse.sdk.common.protoP\001Z\t" +
-      ".;lhproto\252\002\034LittleHorse.Sdk.Common.Proto" +
-      "b\006proto3"
+      "cConfigH\000\210\001\001B\026\n\024_output_topic_config\"\210\001\n" +
+      "\017PutQuotaRequest\022%\n\006tenant\030\001 \001(\0132\025.littl" +
+      "ehorse.TenantId\022+\n\tprincipal\030\002 \001(\0132\030.lit" +
+      "tlehorse.PrincipalId\022!\n\031write_requests_p" +
+      "er_second\030\003 \001(\005\"6\n\022DeleteQuotaRequest\022 \n" +
+      "\002id\030\001 \001(\0132\024.littlehorse.QuotaId*\344\001\n\013ACLR" +
+      "esource\022\020\n\014ACL_WORKFLOW\020\000\022\014\n\010ACL_TASK\020\001\022" +
+      "\026\n\022ACL_EXTERNAL_EVENT\020\002\022\021\n\rACL_USER_TASK" +
+      "\020\003\022\021\n\rACL_PRINCIPAL\020\004\022\016\n\nACL_TENANT\020\005\022\025\n" +
+      "\021ACL_ALL_RESOURCES\020\006\022\031\n\025ACL_TASK_WORKER_" +
+      "GROUP\020\007\022\026\n\022ACL_WORKFLOW_EVENT\020\010\022\016\n\nACL_S" +
+      "TRUCT\020\t\022\r\n\tACL_QUOTA\020\n*C\n\tACLAction\022\010\n\004R" +
+      "EAD\020\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_METADATA\020\002\022\017\n\013AL" +
+      "L_ACTIONS\020\003BM\n\037io.littlehorse.sdk.common" +
+      ".protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Co" +
+      "mmon.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -155,20 +186,32 @@ public final class Acls extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_Tenant_descriptor,
         new java.lang.String[] { "Id", "CreatedAt", "OutputTopicConfig", });
-    internal_static_littlehorse_ServerACLs_descriptor =
+    internal_static_littlehorse_Quota_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_littlehorse_Quota_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_Quota_descriptor,
+        new java.lang.String[] { "Id", "CreatedAt", "WriteRequestsPerSecond", });
+    internal_static_littlehorse_QuotaId_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_littlehorse_QuotaId_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_QuotaId_descriptor,
+        new java.lang.String[] { "Tenant", "Principal", });
+    internal_static_littlehorse_ServerACLs_descriptor =
+      getDescriptor().getMessageTypes().get(4);
     internal_static_littlehorse_ServerACLs_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ServerACLs_descriptor,
         new java.lang.String[] { "Acls", });
     internal_static_littlehorse_ServerACL_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_littlehorse_ServerACL_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ServerACL_descriptor,
         new java.lang.String[] { "Resources", "AllowedActions", "Name", "Prefix", "ResourceFilter", });
     internal_static_littlehorse_PutPrincipalRequest_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_littlehorse_PutPrincipalRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_PutPrincipalRequest_descriptor,
@@ -180,23 +223,35 @@ public final class Acls extends com.google.protobuf.GeneratedFile {
         internal_static_littlehorse_PutPrincipalRequest_PerTenantAclsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_DeletePrincipalRequest_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_littlehorse_DeletePrincipalRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_DeletePrincipalRequest_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_littlehorse_OutputTopicConfig_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_littlehorse_OutputTopicConfig_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_OutputTopicConfig_descriptor,
         new java.lang.String[] { "DefaultRecordingLevel", });
     internal_static_littlehorse_PutTenantRequest_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_littlehorse_PutTenantRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_PutTenantRequest_descriptor,
         new java.lang.String[] { "Id", "OutputTopicConfig", });
+    internal_static_littlehorse_PutQuotaRequest_descriptor =
+      getDescriptor().getMessageTypes().get(10);
+    internal_static_littlehorse_PutQuotaRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_PutQuotaRequest_descriptor,
+        new java.lang.String[] { "Tenant", "Principal", "WriteRequestsPerSecond", });
+    internal_static_littlehorse_DeleteQuotaRequest_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_littlehorse_DeleteQuotaRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_DeleteQuotaRequest_descriptor,
+        new java.lang.String[] { "Id", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

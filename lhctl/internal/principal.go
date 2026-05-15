@@ -187,6 +187,7 @@ var (
 		"acl_user_task":      lhproto.ACLResource_ACL_USER_TASK,
 		"acl_principal":      lhproto.ACLResource_ACL_PRINCIPAL,
 		"acl_tenant":         lhproto.ACLResource_ACL_TENANT,
+		"acl_quota":          lhproto.ACLResource_ACL_QUOTA,
 		"all":                lhproto.ACLResource_ACL_ALL_RESOURCES,
 	}
 )

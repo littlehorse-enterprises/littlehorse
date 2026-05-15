@@ -65,6 +65,7 @@ enum GetableClassEnum {
     CHECKPOINT = 20;
     INACTIVE_THREAD_RUN = 21;
     METRIC_WINDOW = 22;
+    QUOTA = 23;
 }
 
 message AttributePb {

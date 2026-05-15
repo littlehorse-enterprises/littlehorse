@@ -1,12 +1,17 @@
+import asyncio
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, Optional, cast
+import time
 from authlib.integrations.requests_client import OAuth2Session
 import grpc
+from google.rpc.error_details_pb2 import RetryInfo
+from google.rpc.status_pb2 import Status
 from grpc.aio import ClientCallDetails
 
 from littlehorse.exceptions import OAuthException
 
 TENANT_ID_HEADER = "tenantid"
+STATUS_DETAILS_HEADER = "grpc-status-details-bin"
 
 
 class AccessToken:
@@ -73,11 +78,11 @@ class OAuthCredentialsProvider(grpc.AuthMetadataPlugin):
 
 
 def _call_details_with_tenant(
-    tenant_id: Optional[str], details: Any
+    tenant_id: Optional[str], client_call_details: Any
 ) -> ClientCallDetails:
-    metadata = []
-    if details.metadata is not None:
-        metadata = list(details.metadata)
+    metadata: list[tuple[str, str | bytes]] = []
+    if client_call_details.metadata is not None:
+        metadata = [(entry.key, entry.value) for entry in client_call_details.metadata]
     if tenant_id:
         metadata.append(
             (
@@ -86,12 +91,38 @@ def _call_details_with_tenant(
             )
         )
     return ClientCallDetails(
-        details.method,
-        details.timeout,
-        metadata,
-        details.credentials,
-        details.wait_for_ready,
+        client_call_details.method,
+        client_call_details.timeout,
+        cast(Any, grpc.aio.Metadata(*metadata)),
+        client_call_details.credentials,
+        client_call_details.wait_for_ready,
     )
+
+
+def retry_delay_seconds(error: grpc.RpcError) -> Optional[float]:
+    if error.code() != grpc.StatusCode.RESOURCE_EXHAUSTED:
+        return None
+
+    trailing_metadata = cast(Any, error.trailing_metadata())
+    if trailing_metadata is None:
+        return None
+
+    for entry in trailing_metadata:
+        if entry.key != STATUS_DETAILS_HEADER or not isinstance(entry.value, bytes):
+            continue
+
+        status = Status()
+        status.ParseFromString(entry.value)
+        for detail in status.details:
+            retry_info = RetryInfo()
+            if detail.Unpack(retry_info):
+                delay = retry_info.retry_delay.seconds + (
+                    retry_info.retry_delay.nanos / 1_000_000_000
+                )
+                if delay > 0:
+                    return delay
+
+    return None
 
 
 class MetadataInterceptor(
@@ -101,9 +132,9 @@ class MetadataInterceptor(
         self.tenant_id = tenant_id
 
     def intercept_unary_unary(
-        self, continuation: Any, details: Any, request: Any
+        self, continuation: Any, client_call_details: Any, request: Any
     ) -> Any:
-        new_details = _call_details_with_tenant(self.tenant_id, details)
+        new_details = _call_details_with_tenant(self.tenant_id, client_call_details)
         return continuation(new_details, request)
 
     def intercept_stream_stream(
@@ -113,15 +144,50 @@ class MetadataInterceptor(
         return continuation(new_details, request_iterator)
 
 
+class RetryInterceptor(grpc.UnaryUnaryClientInterceptor):
+    def intercept_unary_unary(
+        self, continuation: Any, client_call_details: Any, request: Any
+    ) -> Any:
+        while True:
+            outcome = continuation(client_call_details, request)
+            if not isinstance(outcome, grpc.RpcError):
+                return outcome
+
+            delay = retry_delay_seconds(outcome)
+            if delay is None:
+                return outcome
+
+            time.sleep(delay)
+
+
 class AsyncUnaryUnaryMetadataInterceptor(grpc.aio.UnaryUnaryClientInterceptor):
     def __init__(self, tenant_id: Optional[str]):
         self.tenant_id = tenant_id
 
     async def intercept_unary_unary(
-        self, continuation: Any, deatils: Any, request: Any
+        self, continuation: Any, client_call_details: Any, request: Any
     ) -> Any:
-        new_details = _call_details_with_tenant(self.tenant_id, deatils)
+        new_details = _call_details_with_tenant(self.tenant_id, client_call_details)
         return await continuation(new_details, request)
+
+
+class AsyncUnaryUnaryRetryInterceptor(grpc.aio.UnaryUnaryClientInterceptor):
+    async def intercept_unary_unary(
+        self, continuation: Any, client_call_details: Any, request: Any
+    ) -> Any:
+        while True:
+            call_or_response = await continuation(client_call_details, request)
+            if not hasattr(call_or_response, "__await__"):
+                return call_or_response
+
+            try:
+                return await call_or_response
+            except grpc.RpcError as error:
+                delay = retry_delay_seconds(error)
+                if delay is None:
+                    raise
+
+                await asyncio.sleep(delay)
 
 
 class AsyncStreamStreamMetadataInterceptor(grpc.aio.StreamStreamClientInterceptor):
@@ -163,4 +229,4 @@ class AsyncUnaryStreamMetadataInterceptor(grpc.aio.UnaryStreamClientInterceptor)
         request: Any,
     ) -> Any:
         new_details = _call_details_with_tenant(self.tenant_id, client_call_details)
-        return await continuation(new_details, client_call_details)
+        return await continuation(new_details, request)

@@ -10,10 +10,7 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
-import io.littlehorse.sdk.worker.internal.util.VariableMapping;
-import java.lang.reflect.Method;
 import java.util.Date;
-import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,17 +30,13 @@ final class RebalanceThreadTest {
             .setId(taskDefId)
             .setCreatedAt(LHLibUtil.fromDate(new Date()))
             .build();
-    private final List<VariableMapping> mappings = List.of();
 
-    private Method workerMethod;
-    private final Object executable = this;
     private final LHConfig config = mock();
     private final long heartbeatIntervalMs = 1L;
     private final PollThreadFactory pollThreadFactory = mock(Answers.RETURNS_DEEP_STUBS);
 
     @BeforeEach
     public void setup() throws Exception {
-        workerMethod = this.getClass().getMethod("myTestWorkerMethod");
         when(config.getWorkerThreads()).thenReturn(1);
         rebalanceThread = new RebalanceThread(
                 bootstrapStub,

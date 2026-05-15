@@ -5,6 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
 import "common_wfspec.proto";
+import "type_definition.proto";
 import "object_id.proto";
 
 option go_package = ".;lhproto";

@@ -52,15 +52,25 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
 
     @Override
     public Optional<String> getPartitionKey() {
-        String parritionKey = getMetricType().name() + "/";
+        String parritionKey = getMetricType().name();
         if (wfSpecId != null) {
-            parritionKey += wfSpecId;
+            parritionKey += "/" + wfSpecId;
         } else if (taskDefId != null) {
-            parritionKey += taskDefId;
+            parritionKey += "/" + taskDefId;
         } else if (userTaskDefId != null) {
-            parritionKey += userTaskDefId;
+            parritionKey += "/" + userTaskDefId;
         }
         return Optional.of(parritionKey);
+    }
+
+    public void markAsTenantMetricId() {
+        clearIds();
+    }
+
+    private void clearIds() {
+        this.wfSpecId = null;
+        this.taskDefId = null;
+        this.userTaskDefId = null;
     }
 
     public String getPartitionMetricStoreKey() {
@@ -99,6 +109,11 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
                 this.metricType = MetricWindowType.USER_TASK_METRIC;
                 break;
             case ID_NOT_SET:
+                if (p.hasMetricType()) {
+                    this.metricType = p.getMetricType();
+                } else {
+                    this.metricType = MetricWindowType.UNRECOGNIZED; // default to workflow metric if not set
+                }
                 break;
         }
 
@@ -126,22 +141,26 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
         if (tenantId != null) {
             out.setTenantId(tenantId.toProto());
         }
+        if (metricType != null) {
+            out.setMetricType(metricType);
+        }
         return out;
     }
 
     @Override
     public String toString() {
-        String idPart;
+        String idPart = "";
         if (wfSpecId != null) {
             idPart = wfSpecId.toString();
         } else if (taskDefId != null) {
             idPart = taskDefId.toString();
         } else if (userTaskDefId != null) {
             idPart = userTaskDefId.toString();
-        } else {
-            idPart = "unknown";
         }
-        return LHUtil.getCompositeId(this.getMetricType().name(), idPart, LHUtil.toLhDbFormat(windowStart));
+        String key = idPart != ""
+                ? LHUtil.getCompositeId(this.getMetricType().name(), idPart, LHUtil.toLhDbFormat(windowStart))
+                : LHUtil.getCompositeId(this.getMetricType().name(), LHUtil.toLhDbFormat(windowStart));
+        return key;
     }
 
     @Override

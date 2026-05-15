@@ -14,6 +14,9 @@ import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.interceptors.RequestBlocker;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
+import io.littlehorse.server.monitoring.http.NettyStatusServer;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
+import io.littlehorse.server.quotas.RequestQuotaManager;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
@@ -63,6 +66,8 @@ public class LHServer {
     private final LHInternalClient lhInternalClient;
     private final AsyncWaiters asyncWaiters = new AsyncWaiters();
     private final RequestBlocker requestBlocker = new RequestBlocker();
+    private final RequestQuotaManager requestQuotaManager;
+    private final CommandProcessorMetrics commandProcessorMetrics = new CommandProcessorMetrics();
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -81,9 +86,8 @@ public class LHServer {
                 overrideStreamsProcessId("timer");
             }
         }
-        //        Topology coreTopology = ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager,
-        // asyncWaiters);
-        Topology coreTopology = new ServerTopologyV2(config, this, metadataCache, taskQueueManager, asyncWaiters);
+        Topology coreTopology = new ServerTopologyV2(
+                config, this, metadataCache, taskQueueManager, asyncWaiters, commandProcessorMetrics);
         this.coreStreams = new KafkaStreams(coreTopology, config.getCoreStreamsConfig());
         coreStreams.setUncaughtExceptionHandler(throwable -> {
             log.error("Uncaught exception for " + throwable.getMessage());
@@ -104,8 +108,15 @@ public class LHServer {
                 config, coreStreams, timerStreams, metadataCache, contextKey, coreStoreProvider, asyncWaiters);
 
         // Health Server Setup
-        this.healthService =
-                new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache, internalComms);
+        this.healthService = new HealthService(
+                new NettyStatusServer(),
+                config,
+                coreStreams,
+                timerStreams,
+                taskQueueManager,
+                metadataCache,
+                internalComms,
+                commandProcessorMetrics);
         this.commandSender = new CommandSender(
                 internalComms,
                 networkThreadpool,
@@ -114,6 +125,7 @@ public class LHServer {
                 config.getStreamsSessionTimeout(),
                 config,
                 internalComms.getAsyncWaiters());
+        this.requestQuotaManager = new RequestQuotaManager(internalComms);
         this.listeners = config.getListeners().stream()
                 .map(s -> this.createListener(s, networkThreadpool))
                 .toList();
@@ -134,6 +146,7 @@ public class LHServer {
                         requestBlocker),
                 contextKey,
                 commandSender,
+                requestQuotaManager,
                 internalComms.getAsyncWaiters(),
                 lhInternalClient);
     }
@@ -183,6 +196,7 @@ public class LHServer {
     }
 
     public void start() throws IOException {
+        healthService.start();
         coreStreams.start();
         if (timerStreams != null) {
             timerStreams.start();
@@ -191,7 +205,6 @@ public class LHServer {
         for (LHServerListener listener : listeners) {
             listener.start();
         }
-        healthService.start();
     }
 
     public void close() {

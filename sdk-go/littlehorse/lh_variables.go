@@ -545,7 +545,8 @@ func ReflectTypeToTypeDef(rt reflect.Type) *lhproto.TypeDefinition {
 			return &lhproto.TypeDefinition{
 				DefinedType: &lhproto.TypeDefinition_StructDefId{
 					StructDefId: &lhproto.StructDefId{
-						Name: structDefName,
+						Name:    structDefName,
+						Version: -1,
 					},
 				},
 			}

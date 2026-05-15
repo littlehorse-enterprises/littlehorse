@@ -1,6 +1,6 @@
 import { cn } from '@/components/utils'
 import { useQuery } from '@tanstack/react-query'
-import { NodeRun, TaskAttempt } from 'littlehorse-client/proto'
+import { TaskAttempt } from 'littlehorse-client/proto'
 import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
 import { FC, Fragment } from 'react'
 

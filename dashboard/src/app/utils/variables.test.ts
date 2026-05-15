@@ -7,6 +7,8 @@ import {
   VariableValue,
 } from 'littlehorse-client/proto'
 import {
+  formatTypeDefinition,
+  getPrimitiveFormDefaultValue,
   getTypedVariableValue,
   getVariable,
   getVariableCaseFromTypeDef,
@@ -363,6 +365,48 @@ describe('getTypedVariableValue', () => {
     const variableValue = getTypedVariableValue('str', 'Hello World')
     expect(variableValue).toStrictEqual({ value: { $case: 'str', value: 'Hello World' } })
   })
+
+  it('should return utcTimestamp as RFC3339 string', async () => {
+    const variableValue = getTypedVariableValue('utcTimestamp', '2024-06-15T14:30:45.123456789Z')
+    expect(variableValue).toStrictEqual({
+      value: { $case: 'utcTimestamp', value: '2024-06-15T14:30:45.123456789Z' },
+    })
+  })
+})
+
+describe('getPrimitiveFormDefaultValue', () => {
+  it('returns undefined when no default is provided', () => {
+    expect(getPrimitiveFormDefaultValue(undefined)).toBeUndefined()
+    expect(getPrimitiveFormDefaultValue({} as VariableValue)).toBeUndefined()
+  })
+
+  it('returns the str value for STR defaults', () => {
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'str', value: 'hello' } })).toEqual('hello')
+  })
+
+  it('preserves empty string defaults', () => {
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'str', value: '' } })).toEqual('')
+  })
+
+  it('returns numeric values for INT/DOUBLE defaults', () => {
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'int', value: '42' as any } })).toEqual('42')
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'double', value: 1.5 } })).toEqual(1.5)
+  })
+
+  it('serializes BOOL defaults as form-friendly strings', () => {
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'bool', value: true } })).toEqual('true')
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'bool', value: false } })).toEqual('false')
+  })
+
+  it('returns the JSON string for JSON_OBJ/JSON_ARR defaults', () => {
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'jsonObj', value: '{"a":1}' } })).toEqual('{"a":1}')
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'jsonArr', value: '[1,2]' } })).toEqual('[1,2]')
+  })
+
+  it('returns undefined for non-primitive cases', () => {
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'bytes', value: Buffer.from('') } as any })).toBeUndefined()
+    expect(getPrimitiveFormDefaultValue({ value: { $case: 'struct', value: {} as any } })).toBeUndefined()
+  })
 })
 
 describe('getVariableDefType', () => {
@@ -426,8 +470,75 @@ describe('getVariableCaseFromTypeDef', () => {
   })
 })
 
+describe('formatTypeDefinition', () => {
+  it('should format primitive type', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'primitiveType',
+        value: VariableType.INT,
+      },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('Integer')
+  })
+
+  it('should format nested arrays recursively', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'inlineArrayDef',
+        value: {
+          arrayType: {
+            definedType: {
+              $case: 'inlineArrayDef',
+              value: {
+                arrayType: {
+                  definedType: {
+                    $case: 'primitiveType',
+                    value: VariableType.INT,
+                  },
+                  masked: false,
+                },
+              },
+            },
+            masked: false,
+          },
+        },
+      },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('Array<Array<Integer>>')
+  })
+
+  it('should format struct type', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'structDefId',
+        value: {
+          name: 'customer',
+          version: 1,
+        },
+      },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('Struct<customer,1>')
+  })
+})
+
 describe('getVariableValue', () => {
   it('should return NULL for empty value', () => {
     expect(getVariableValue({ value: {} } as VariableValue)).toEqual('NULL')
+  })
+
+  it('should render native array ints as JSON numbers', () => {
+    const variableValue = VariableValue.fromJSON({
+      array: {
+        items: [{ int: 1 }, { int: 2 }, { int: 3 }],
+      },
+    })
+
+    expect(getVariableValue(variableValue)).toEqual('[1,2,3]')
   })
 })

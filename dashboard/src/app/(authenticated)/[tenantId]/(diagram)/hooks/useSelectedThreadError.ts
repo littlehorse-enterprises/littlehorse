@@ -9,7 +9,9 @@ export const useSelectedThreadError = (wfRun: WfRun, selectedThread?: ThreadType
   const threadError = useMemo(() => {
     if (!selectedThread) {
       const failedThread = wfRun.threadRuns?.find(tr => tr.errorMessage)
-      return failedThread ? { errorMessage: failedThread.errorMessage!, threadName: failedThread.threadSpecName ?? '' } : undefined
+      return failedThread
+        ? { errorMessage: failedThread.errorMessage!, threadName: failedThread.threadSpecName ?? '' }
+        : undefined
     }
     const threadRun = wfRun.threadRuns?.find(tr => tr.number === selectedThread.number)
     if (!threadRun?.errorMessage) return undefined

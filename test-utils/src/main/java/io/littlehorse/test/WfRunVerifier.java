@@ -15,6 +15,7 @@ import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -31,6 +32,10 @@ public class WfRunVerifier extends AbstractVerifier {
 
     public WfRunVerifier(TestContext context, Workflow workflow, Collection<Arg> workflowArgs) {
         super(context, workflow, workflowArgs);
+    }
+
+    public WfRunVerifier(TestContext context, WfSpec wfSpec, Collection<Arg> workflowArgs) {
+        super(context, wfSpec, workflowArgs);
     }
 
     public WfRunVerifier thenVerifyTaskRun(int threadRunNumber, int nodeRunNumber, Consumer<TaskRun> matcher) {

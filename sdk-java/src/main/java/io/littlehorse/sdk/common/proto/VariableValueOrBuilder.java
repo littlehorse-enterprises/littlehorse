@@ -256,5 +256,32 @@ public interface VariableValueOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.StructOrBuilder getStructOrBuilder();
 
+  /**
+   * <pre>
+   * An Array object.
+   * </pre>
+   *
+   * <code>.littlehorse.Array array = 12;</code>
+   * @return Whether the array field is set.
+   */
+  boolean hasArray();
+  /**
+   * <pre>
+   * An Array object.
+   * </pre>
+   *
+   * <code>.littlehorse.Array array = 12;</code>
+   * @return The array.
+   */
+  io.littlehorse.sdk.common.proto.Array getArray();
+  /**
+   * <pre>
+   * An Array object.
+   * </pre>
+   *
+   * <code>.littlehorse.Array array = 12;</code>
+   */
+  io.littlehorse.sdk.common.proto.ArrayOrBuilder getArrayOrBuilder();
+
   io.littlehorse.sdk.common.proto.VariableValue.ValueCase getValueCase();
 }

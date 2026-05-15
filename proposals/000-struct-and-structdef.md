@@ -6,9 +6,15 @@
       - [Inline Structs](#inline-structs)
       - [`StructDef` Versioning](#structdef-versioning)
     - [Existing Protobuf](#existing-protobuf)
+    - [StructDef Type Constraints](#structdef-type-constraints)
     - [`StructDef` Schema Evolution](#structdef-schema-evolution)
       - [Validating `StructDef` Schema Evolution](#validating-structdef-schema-evolution)
-    - [Interoperability with `JSON_OBJ`](#interoperability-with-json_obj)
+  - [Nullable `StructField` Values](#nullable-structfield-values)
+    - [Design Decision](#design-decision)
+    - [Semantics](#semantics)
+    - [Interoperability with Default Values](#interoperability-with-default-values)
+  - [Interoperability with `JSON_OBJ`](#interoperability-with-json_obj)
+    - [Differentiating LH Arrays from traditional `JSON_ARR`s](#differentiating-lh-arrays-from-traditional-json_arrs)
   - [Client-Side Enhancements](#client-side-enhancements)
     - [Task Workers](#task-workers)
       - [`StructDef` References](#structdef-references)
@@ -49,6 +55,8 @@ We already have strong typing for primitive types (`INT`, `STR`, `DOUBLE`, `BOOL
 
 This proposal proposes to introduce a new type of variable, a `Struct` (with an associated `StructDef` metadata object). The `Struct` is intended to replace the `JSON_ARR` and `JSON_OBJ` fields in the long term, and if we implement it properly (with sufficient support in the SDK-side), ideally we will have equally or even more convenient developer experience while introducing strong typing.
 
+To preserve type-safety guarantees, `JSON_OBJ` and `JSON_ARR` are not supported inside `StructDef` or `InlineArrayDef` field schemas. In `StructDef`s and `InlineArrayDef`s, object-like schemas should use nested `StructDef` references and list-like schemas should use `InlineArrayDef`.
+
 We will deprecate the `JSON_OBJ` and `JSON_ARR` variable types before the `1.0` release and we will remove them with `2.0` (which is not going to happen for at least 2-3 years).
 
 ## Server-Side Changes
@@ -67,51 +75,12 @@ message Struct {
   InlineStruct struct = 2;
 }
 
-// An Array is a list structure containing a single type of data.
+// An Array is a strongly-typed list of values.
 message Array {
-  message StringArray {
-    repeated string items = 1;
-  }
+  repeated VariableValue items = 1;
 
-  message DoubleArray {
-    repeated double items = 1;
-  }
-
-  message BoolArray {
-    repeated bool items = 1;
-  }
-
-  message IntArray {
-    repeated int64 items = 1;
-  }
-
-  message BytesArray {
-    repeated bytes items = 1;
-  }
-
-  message WfRunIdArray {
-    repeated WfRunId items = 1;
-  }
-
-  message StructArray {
-    repeated Struct items = 1;
-  }
-
-  message ArrayArray {
-    repeated Array items = 1;
-  }
-
-  oneof value {
-    StringArray json_obj_arr = 1;
-    StringArray json_arr_arr = 2;
-    DoubleArray double_arr = 3;
-    BoolArray bool_arr = 4;
-    IntArray int_arr = 5;
-    BytesArray bytes_arr = 6;
-    WfRunIdArray wf_run_id_arr = 7;
-    StructArray struct_arr = 8;
-    ArrayArray array_arr = 9;
-  }
+  // Set and validated at VariableValue ingress to prevent unnecessary lookups
+  TypeDefinition element_type = 2;
 }
 
 // An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`.
@@ -143,8 +112,11 @@ message StructFieldDef {
   TypeDefinition field_type = 1;
   
   // The default value of the field, which should match the Field Type. If not
-  // provided, then the field is treated as required.
+  // provided, then the field has no default.
   optional VariableValue default_value = 2;
+
+  // If true, then the field is treated as nullable, and its value may be set to null.
+  bool is_nullable = 3;
 }
 
 // A `StructDef` is a versioned metadata object (tenant-scoped) inside LittleHorse
@@ -276,16 +248,27 @@ message VariableValue {
 }
 ```
 
-The only addition is the `Struct struct = 9;` field.
+The additions are the `Struct struct = 9;` and `Array array = 10;` fields.
 
 Note that the `Variable`, `VariableDef`, `ThreadVarDef`, `ReturnType`, `TaskDef`, `ExternalEventDef`, `WorkflowEventDef`, `UserTaskDef`, and other protobuf structures will **not** need to change. All of the changes will be encapsulated within the `TypeDefinition` and `VariableValue` messages.
+
+### StructDef Type Constraints
+
+To ensure strong typing, the server and SDKs will reject non-primitive schemas that contain JSON primitive types. This will apply to `StructDef`s, `InlineArrayDef`s, and `InlineStructDef`s.
+
+Specifically:
+
+* `StructFieldDef.field_type` must not resolve to `JSON_OBJ` or `JSON_ARR`.
+* This rule applies recursively to nested `InlineArrayDef.array_type` definitions.
+* `PutStructDef` and `ValidateStructDefEvolution` reject invalid schemas with a validation error.
+
+This means `InlineArrayDef` and `StructDef`/`InlineStructDef` are the canonical typed replacement for legacy `JSON_ARR` and `JSON_OBJ` usage within schema definitions.
 
 ### `StructDef` Schema Evolution
 
 At first, we will allow only Fully-Compatible schema changes:
-* Add optional fields
-* Add required fields with a default
-* Remove optional fields.
+* Add fields that have a default value or are nullable
+* Remove fields that have a default value or are nullable
 
 Making a `PutStructDefRequest` with an identical `InlineStructDef` to what already exists will not cause a new Schema to be created. This follows the idempotence pattern already observed with all of our metadata Getables (including `WfSpec`, `UserTaskDef`, `TaskDef`, etc).
 
@@ -296,8 +279,9 @@ enum StructDefCompatibilityType {
   NO_SCHEMA_UPDATES = 0;
 
   // Allowed to make fully compatible (both backward-and-forward compatible)
-  // changes to the `struct_def` in this request.
-  FULLY_COMPATIBLE = 1;
+  // changes to the `struct_def` in this request. Only fields that are nullable
+  // or have a default value may be added.
+  FULLY_COMPATIBLE_SCHEMA_UPDATES = 1;
 }
 
 // Request to create a new `StructDef`.
@@ -384,7 +368,38 @@ service LittleHorse {
 }
 ```
 
-### Interoperability with `JSON_OBJ`
+
+
+## Nullable `StructField` Values
+
+### Design Decision
+
+By default, every `StructField` in a `StructDef` is **non-nullable**: a field's value may not be `null` (i.e. `VALUE_NOT_SET` in the `VariableValue` oneof). This mirrors LittleHorse's recent philosophy of strong-typing and rejecting ambiguity at compile time — the same reason we introduced strong typing for `Struct`s in the first place.
+
+However, there are legitimate real-world use cases where a field value must be allowed to be null (e.g. an optional middle name, an unset expiry date, or a nullable foreign-key reference) and where you don't want a default value either (eg. Strings -> `""`, Integers --> `0`). To support these without compromising the default safety guarantees, we add an `is_nullable` flag to `StructFieldDef`.
+
+### Semantics
+
+**Nullability and default values are orthogonal.** A field being nullable controls whether its _value_ can be `null`. The two axes combine as follows:
+
+| `is_nullable` | No default | Has default |
+|---|---|---|
+| `false` (default) | Must be present; value must be non-null | May be absent (default applies); if present, value must be non-null |
+| `true` | Impossible | May be absent (default applies); If no default set, defaults to null |
+
+### Interoperability with Default Values
+
+The interaction between `is_nullable` and `default_value` follows these rules:
+
+1. **Non-nullable field with a null default value** — rejected at `StructDef` definition time. `PutStructDef` will throw a validation error. It is incoherent to specify `is_nullable = false` while setting a null default value, because any time the default is applied the field would immediately violate its own non-null constraint.
+
+2. **Nullable field with no default value** — the server sets the default value to a `null` `VariableValue` at StructDef definition time
+
+3. **Nullable field with a default value** — the field may be absent (the non-null default applies) or present with either a non-null or a null value.
+
+## Interoperability with `JSON_OBJ`
+
+`JSON_OBJ` and `JSON_ARR` remain available for backwards compatibility and boundary interoperability, but they are legacy dynamic types and are intentionally not allowed in `StructDef` schemas.
 
 Our conversion policy will be that we can convert a `Struct` to a `JSON_OBJ`, but we do not allow converting a `JSON_OBJ` to a `Struct`. For example:
 
@@ -413,6 +428,27 @@ In the past, this only worked if the variable on the ScheduledTask was of the ty
 2. The variable in the ScheduledTask is a Struct that matches.
 
 This means that the SDK will dynamically convert the `VariableValue` into a `Car` whether it is a `STRUCT` or a `JSON_OBJ`.
+
+### Differentiating LH Arrays from traditional `JSON_ARR`s
+
+When trying to serialize and deserialize values in the SDKs, we will define a rule for explicitly differentiating legacy `JSON_ARR` and native LittleHorse `Array`s. This will help us maintain backwards compatibility with old clients using `JSON_ARR`s.
+
+In order to distinguish a LittleHorse `Array` type from a `JSON_ARR` type, users can annotate Task Parameters and Return Types with the `@LHType` method and a new `boolean` field `isLHArray`:
+
+```java
+@LHTaskMethod("task-with-lh-array-param")
+public void taskWithLHArrayParam(@LHType(isLHArray=true) String[] words) {
+
+}
+
+@LHTaskMethod("task-with-lh-array-param")
+@LHType(isLHArray=true)
+public String[] taskWithLHArrayReturnType() {
+
+}
+```
+
+The SDK will still handle legacy TaskDef cases, serializing unmarked Array parameter and return types into `JSON_ARR`s.
 
 ## Client-Side Enhancements
 
@@ -464,10 +500,7 @@ The `LHTaskWorker` should be extended to allow automatically creating a `StructD
 ```java
 @LHStructDef(name = "car")
 class Car {
-    @LHStructField(required = true)
     String make;
-
-    @LHStructField(required = false)
     String model;
 }
 

@@ -348,6 +348,10 @@ public class LHUtil {
         return Date.from(Instant.now().truncatedTo(ChronoUnit.MINUTES));
     }
 
+    public static Date getPreviousWindowDate() {
+        return Date.from(Instant.now().truncatedTo(ChronoUnit.MINUTES).minus(1, ChronoUnit.MINUTES));
+    }
+
     /**
      * Converts a grouped-format storeKey to its legacy format.
      * Returns null if not a grouped-format key.

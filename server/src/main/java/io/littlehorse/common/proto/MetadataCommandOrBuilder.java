@@ -279,5 +279,35 @@ public interface MetadataCommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.DeleteStructDefRequestOrBuilder getDeleteStructDefOrBuilder();
 
+  /**
+   * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+   * @return Whether the putQuota field is set.
+   */
+  boolean hasPutQuota();
+  /**
+   * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+   * @return The putQuota.
+   */
+  io.littlehorse.sdk.common.proto.PutQuotaRequest getPutQuota();
+  /**
+   * <code>.littlehorse.PutQuotaRequest put_quota = 19;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutQuotaRequestOrBuilder getPutQuotaOrBuilder();
+
+  /**
+   * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+   * @return Whether the deleteQuota field is set.
+   */
+  boolean hasDeleteQuota();
+  /**
+   * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+   * @return The deleteQuota.
+   */
+  io.littlehorse.sdk.common.proto.DeleteQuotaRequest getDeleteQuota();
+  /**
+   * <code>.littlehorse.DeleteQuotaRequest delete_quota = 20;</code>
+   */
+  io.littlehorse.sdk.common.proto.DeleteQuotaRequestOrBuilder getDeleteQuotaOrBuilder();
+
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

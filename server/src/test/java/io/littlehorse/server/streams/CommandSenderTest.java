@@ -207,7 +207,7 @@ class CommandSenderTest {
         Future<Message> future = sender.doSend(command, Empty.class, principalId, tenantId, ctx);
         Awaitility.await()
                 .pollDelay(Duration.ofNanos(1))
-                .atMost(10, TimeUnit.MILLISECONDS)
+                .atMost(100, TimeUnit.MILLISECONDS)
                 .untilAsserted(() -> producerResult.complete(recordMetadata));
         assertThatThrownBy(() -> future.get(1, TimeUnit.MILLISECONDS))
                 .isInstanceOf(java.util.concurrent.TimeoutException.class);

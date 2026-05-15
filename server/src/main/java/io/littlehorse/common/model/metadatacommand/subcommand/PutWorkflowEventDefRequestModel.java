@@ -74,7 +74,7 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
     private void validateReferencedStructDefs(MetadataProcessorContext context) {
         contentType.getOutputType().ifPresent(typeDef -> {
             try {
-                typeDef.validateStructDefExists(context.metadataManager());
+                typeDef.validateStructDefExistsAndPinVersion(context.metadataManager());
             } catch (UnknownStructDefException e) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, e.getMessage());
             }

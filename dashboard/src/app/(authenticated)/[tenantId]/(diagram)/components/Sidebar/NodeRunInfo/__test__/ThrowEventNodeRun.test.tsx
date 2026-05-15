@@ -5,7 +5,6 @@ import { ThrowEventNodeRun } from '../ThrowEventNodeRun'
 import { ThrowEventNodeRun as ThrowEventNodeRunProto, WorkflowEvent } from 'littlehorse-client/proto'
 
 import useSWR, { MutatorOptions } from 'swr'
-import { getWorkflowEvent } from '../../../NodeTypes/ThrowEvent/getWorkflowEvent'
 import { ContextProps, useWhoAmI } from '@/contexts/WhoAmIContext'
 
 jest.mock('swr', () => {
@@ -73,8 +72,8 @@ describe('ThrowEventNodeRun', () => {
       data: workflowEvent,
       error: undefined,
       mutate: function <MutationData = unknown>(
-        data?: unknown,
-        opts?: boolean | MutatorOptions<unknown, MutationData> | undefined
+        _data?: unknown,
+        _opts?: boolean | MutatorOptions<unknown, MutationData> | undefined
       ): Promise<unknown> {
         throw new Error('Function not implemented.')
       },

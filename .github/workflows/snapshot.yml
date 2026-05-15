@@ -1,8 +1,10 @@
-name: weekly-snapshot
+name: snapshot
 run-name: Snapshot ${{ github.ref_name }}
 on:
-  schedule:
-    - cron: "0 0 * * 5"
+  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 permissions:
       packages: write
@@ -14,7 +16,7 @@ jobs:
       snapshot-version: ${{ steps.extract.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -36,10 +38,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "corretto"
           java-version: "17"

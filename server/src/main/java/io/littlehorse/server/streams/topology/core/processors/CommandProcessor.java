@@ -12,12 +12,14 @@ import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.AggregateWindowMetricsModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
@@ -67,13 +69,16 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private final PartitionMetricsMemoryStore partitionMetricsMemoryStore;
 
     private final LHProcessingExceptionHandler exceptionHandler;
+    private final CommandProcessorMetrics metrics;
 
     public CommandProcessor(
             LHServerConfig config,
             LHServer server,
             MetadataCache metadataCache,
             TaskQueueManager globalTaskQueueManager,
-            AsyncWaiters asyncWaiters) {
+            AsyncWaiters asyncWaiters,
+            CommandProcessorMetrics metrics) {
+        this.metrics = metrics;
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
@@ -115,6 +120,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 command.getCommandId(),
                 command.getPartitionKey());
         try {
+            metrics.observe(command);
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
 
@@ -262,15 +268,20 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         AggregateWindowMetricsModel aggregate = new AggregateWindowMetricsModel(metric);
         fordwardWindowMetrics(aggregate);
         store.delete(metric);
+        metric.getId().markAsTenantMetricId();
+        fordwardWindowMetrics(aggregate);
         return metric.getId().getWindowStart().getTime();
     }
 
     private void fordwardWindowMetrics(AggregateWindowMetricsModel agregateMetricsSubcomand) {
         CommandModel command = new CommandModel(agregateMetricsSubcomand, new Date());
+        TenantIdModel tenantId =
+                agregateMetricsSubcomand.getMetricWindow().getId().getTenantId();
         LHTimer timer = new LHTimer(command);
         timer.maturationTime = new Date();
-        timer.setRepartition(true);
         timer.topic = this.config.getCoreCmdTopicName();
+        timer.setRepartition(true);
+        timer.setTenantId(tenantId);
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.partitionKey = agregateMetricsSubcomand.getPartitionKey();
         cpo.topic = this.config.getCoreCmdTopicName();
@@ -279,9 +290,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 cpo.partitionKey,
                 cpo,
                 System.currentTimeMillis(),
-                HeadersUtil.metadataHeadersFor(
-                        agregateMetricsSubcomand.getMetricWindow().getId().getTenantId(),
-                        new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
+                HeadersUtil.metadataHeadersFor(tenantId, new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
         this.ctx.forward(out);
     }
 }

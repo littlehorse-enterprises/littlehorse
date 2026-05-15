@@ -1872,6 +1872,37 @@ public final class LittleHorseGrpc {
     return getSearchPrincipalMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchQuotaRequest,
+      io.littlehorse.sdk.common.proto.QuotaIdList> getSearchQuotaMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchQuota",
+      requestType = io.littlehorse.sdk.common.proto.SearchQuotaRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.QuotaIdList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchQuotaRequest,
+      io.littlehorse.sdk.common.proto.QuotaIdList> getSearchQuotaMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchQuotaRequest, io.littlehorse.sdk.common.proto.QuotaIdList> getSearchQuotaMethod;
+    if ((getSearchQuotaMethod = LittleHorseGrpc.getSearchQuotaMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getSearchQuotaMethod = LittleHorseGrpc.getSearchQuotaMethod) == null) {
+          LittleHorseGrpc.getSearchQuotaMethod = getSearchQuotaMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.SearchQuotaRequest, io.littlehorse.sdk.common.proto.QuotaIdList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchQuota"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.SearchQuotaRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.QuotaIdList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("SearchQuota"))
+              .build();
+        }
+      }
+    }
+    return getSearchQuotaMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchStructDefRequest,
       io.littlehorse.sdk.common.proto.StructDefIdList> getSearchStructDefMethod;
 
@@ -2461,6 +2492,37 @@ public final class LittleHorseGrpc {
     return getDeletePrincipalMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteQuotaRequest,
+      com.google.protobuf.Empty> getDeleteQuotaMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeleteQuota",
+      requestType = io.littlehorse.sdk.common.proto.DeleteQuotaRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteQuotaRequest,
+      com.google.protobuf.Empty> getDeleteQuotaMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteQuotaRequest, com.google.protobuf.Empty> getDeleteQuotaMethod;
+    if ((getDeleteQuotaMethod = LittleHorseGrpc.getDeleteQuotaMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getDeleteQuotaMethod = LittleHorseGrpc.getDeleteQuotaMethod) == null) {
+          LittleHorseGrpc.getDeleteQuotaMethod = getDeleteQuotaMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteQuotaRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteQuota"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.DeleteQuotaRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("DeleteQuota"))
+              .build();
+        }
+      }
+    }
+    return getDeleteQuotaMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest,
       com.google.protobuf.Empty> getDeleteScheduledWfRunMethod;
 
@@ -2616,6 +2678,68 @@ public final class LittleHorseGrpc {
     return getListWfMetricsMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.MetricWindowId,
+      io.littlehorse.sdk.common.proto.MetricWindow> getGetMetricWindowMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetMetricWindow",
+      requestType = io.littlehorse.sdk.common.proto.MetricWindowId.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricWindow.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.MetricWindowId,
+      io.littlehorse.sdk.common.proto.MetricWindow> getGetMetricWindowMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.MetricWindowId, io.littlehorse.sdk.common.proto.MetricWindow> getGetMetricWindowMethod;
+    if ((getGetMetricWindowMethod = LittleHorseGrpc.getGetMetricWindowMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetMetricWindowMethod = LittleHorseGrpc.getGetMetricWindowMethod) == null) {
+          LittleHorseGrpc.getGetMetricWindowMethod = getGetMetricWindowMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.MetricWindowId, io.littlehorse.sdk.common.proto.MetricWindow>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetMetricWindow"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricWindowId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricWindow.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetMetricWindow"))
+              .build();
+        }
+      }
+    }
+    return getGetMetricWindowMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest,
+      io.littlehorse.sdk.common.proto.MetricWindowIdList> getSearchWfMetricWindowMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchWfMetricWindow",
+      requestType = io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricWindowIdList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest,
+      io.littlehorse.sdk.common.proto.MetricWindowIdList> getSearchWfMetricWindowMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest, io.littlehorse.sdk.common.proto.MetricWindowIdList> getSearchWfMetricWindowMethod;
+    if ((getSearchWfMetricWindowMethod = LittleHorseGrpc.getSearchWfMetricWindowMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getSearchWfMetricWindowMethod = LittleHorseGrpc.getSearchWfMetricWindowMethod) == null) {
+          LittleHorseGrpc.getSearchWfMetricWindowMethod = getSearchWfMetricWindowMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest, io.littlehorse.sdk.common.proto.MetricWindowIdList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchWfMetricWindow"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricWindowIdList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("SearchWfMetricWindow"))
+              .build();
+        }
+      }
+    }
+    return getSearchWfMetricWindowMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutTenantRequest,
       io.littlehorse.sdk.common.proto.Tenant> getPutTenantMethod;
 
@@ -2676,6 +2800,68 @@ public final class LittleHorseGrpc {
       }
     }
     return getGetTenantMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutQuotaRequest,
+      io.littlehorse.sdk.common.proto.Quota> getPutQuotaMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PutQuota",
+      requestType = io.littlehorse.sdk.common.proto.PutQuotaRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.Quota.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutQuotaRequest,
+      io.littlehorse.sdk.common.proto.Quota> getPutQuotaMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutQuotaRequest, io.littlehorse.sdk.common.proto.Quota> getPutQuotaMethod;
+    if ((getPutQuotaMethod = LittleHorseGrpc.getPutQuotaMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getPutQuotaMethod = LittleHorseGrpc.getPutQuotaMethod) == null) {
+          LittleHorseGrpc.getPutQuotaMethod = getPutQuotaMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutQuotaRequest, io.littlehorse.sdk.common.proto.Quota>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutQuota"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutQuotaRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.Quota.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutQuota"))
+              .build();
+        }
+      }
+    }
+    return getPutQuotaMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.QuotaId,
+      io.littlehorse.sdk.common.proto.Quota> getGetQuotaMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetQuota",
+      requestType = io.littlehorse.sdk.common.proto.QuotaId.class,
+      responseType = io.littlehorse.sdk.common.proto.Quota.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.QuotaId,
+      io.littlehorse.sdk.common.proto.Quota> getGetQuotaMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.QuotaId, io.littlehorse.sdk.common.proto.Quota> getGetQuotaMethod;
+    if ((getGetQuotaMethod = LittleHorseGrpc.getGetQuotaMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetQuotaMethod = LittleHorseGrpc.getGetQuotaMethod) == null) {
+          LittleHorseGrpc.getGetQuotaMethod = getGetQuotaMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.QuotaId, io.littlehorse.sdk.common.proto.Quota>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetQuota"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.QuotaId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.Quota.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetQuota"))
+              .build();
+        }
+      }
+    }
+    return getGetQuotaMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutPrincipalRequest,
@@ -3505,6 +3691,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for Quotas.
+     * </pre>
+     */
+    default void searchQuota(io.littlehorse.sdk.common.proto.SearchQuotaRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.QuotaIdList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchQuotaMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Search for StructDef's
      * </pre>
      */
@@ -3717,6 +3913,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a `Quota`.
+     * </pre>
+     */
+    default void deleteQuota(io.littlehorse.sdk.common.proto.DeleteQuotaRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteQuotaMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Deletes a scheduled run and prevents any further associated WfRun from being executed.
      * </pre>
      */
@@ -3746,6 +3952,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given TaskDefId and time range.
+     * </pre>
      */
     default void listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
@@ -3753,10 +3962,33 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given WfSpecId and time range.
+     * </pre>
      */
     default void listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListWfMetricsMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Gets a MetricWindow by its ID.
+     * </pre>
+     */
+    default void getMetricWindow(io.littlehorse.sdk.common.proto.MetricWindowId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricWindow> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetMetricWindowMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+     * </pre>
+     */
+    default void searchWfMetricWindow(io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricWindowIdList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchWfMetricWindowMethod(), responseObserver);
     }
 
     /**
@@ -3777,6 +4009,26 @@ public final class LittleHorseGrpc {
     default void getTenant(io.littlehorse.sdk.common.proto.TenantId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetTenantMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Creates or updates a Quota.
+     * </pre>
+     */
+    default void putQuota(io.littlehorse.sdk.common.proto.PutQuotaRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Quota> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutQuotaMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Gets a Quota.
+     * </pre>
+     */
+    default void getQuota(io.littlehorse.sdk.common.proto.QuotaId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Quota> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetQuotaMethod(), responseObserver);
     }
 
     /**
@@ -4547,6 +4799,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for Quotas.
+     * </pre>
+     */
+    public void searchQuota(io.littlehorse.sdk.common.proto.SearchQuotaRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.QuotaIdList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchQuotaMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Search for StructDef's
      * </pre>
      */
@@ -4778,6 +5041,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a `Quota`.
+     * </pre>
+     */
+    public void deleteQuota(io.littlehorse.sdk.common.proto.DeleteQuotaRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getDeleteQuotaMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Deletes a scheduled run and prevents any further associated WfRun from being executed.
      * </pre>
      */
@@ -4810,6 +5084,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given TaskDefId and time range.
+     * </pre>
      */
     public void listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
@@ -4818,11 +5095,36 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given WfSpecId and time range.
+     * </pre>
      */
     public void listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getListWfMetricsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Gets a MetricWindow by its ID.
+     * </pre>
+     */
+    public void getMetricWindow(io.littlehorse.sdk.common.proto.MetricWindowId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricWindow> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetMetricWindowMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+     * </pre>
+     */
+    public void searchWfMetricWindow(io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricWindowIdList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchWfMetricWindowMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -4845,6 +5147,28 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetTenantMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Creates or updates a Quota.
+     * </pre>
+     */
+    public void putQuota(io.littlehorse.sdk.common.proto.PutQuotaRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Quota> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPutQuotaMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Gets a Quota.
+     * </pre>
+     */
+    public void getQuota(io.littlehorse.sdk.common.proto.QuotaId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Quota> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetQuotaMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -5548,6 +5872,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for Quotas.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.QuotaIdList searchQuota(io.littlehorse.sdk.common.proto.SearchQuotaRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getSearchQuotaMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Search for StructDef's
      * </pre>
      */
@@ -5762,6 +6096,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a `Quota`.
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteQuota(io.littlehorse.sdk.common.proto.DeleteQuotaRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getDeleteQuotaMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Deletes a scheduled run and prevents any further associated WfRun from being executed.
      * </pre>
      */
@@ -5791,6 +6135,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given TaskDefId and time range.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.MetricsList listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -5798,10 +6145,33 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given WfSpecId and time range.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.MetricsList listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
           getChannel(), getListWfMetricsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a MetricWindow by its ID.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricWindow getMetricWindow(io.littlehorse.sdk.common.proto.MetricWindowId request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getGetMetricWindowMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricWindowIdList searchWfMetricWindow(io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getSearchWfMetricWindowMethod(), getCallOptions(), request);
     }
 
     /**
@@ -5822,6 +6192,26 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.Tenant getTenant(io.littlehorse.sdk.common.proto.TenantId request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
           getChannel(), getGetTenantMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Creates or updates a Quota.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Quota putQuota(io.littlehorse.sdk.common.proto.PutQuotaRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getPutQuotaMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a Quota.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Quota getQuota(io.littlehorse.sdk.common.proto.QuotaId request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getGetQuotaMethod(), getCallOptions(), request);
     }
 
     /**
@@ -6521,6 +6911,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for Quotas.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.QuotaIdList searchQuota(io.littlehorse.sdk.common.proto.SearchQuotaRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchQuotaMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Search for StructDef's
      * </pre>
      */
@@ -6722,6 +7122,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a `Quota`.
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteQuota(io.littlehorse.sdk.common.proto.DeleteQuotaRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteQuotaMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Deletes a scheduled run and prevents any further associated WfRun from being executed.
      * </pre>
      */
@@ -6751,6 +7161,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given TaskDefId and time range.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.MetricsList listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -6758,10 +7171,33 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given WfSpecId and time range.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.MetricsList listWfMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getListWfMetricsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a MetricWindow by its ID.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricWindow getMetricWindow(io.littlehorse.sdk.common.proto.MetricWindowId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetMetricWindowMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricWindowIdList searchWfMetricWindow(io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchWfMetricWindowMethod(), getCallOptions(), request);
     }
 
     /**
@@ -6782,6 +7218,26 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.Tenant getTenant(io.littlehorse.sdk.common.proto.TenantId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetTenantMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Creates or updates a Quota.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Quota putQuota(io.littlehorse.sdk.common.proto.PutQuotaRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutQuotaMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a Quota.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Quota getQuota(io.littlehorse.sdk.common.proto.QuotaId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetQuotaMethod(), getCallOptions(), request);
     }
 
     /**
@@ -7541,6 +7997,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for Quotas.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.QuotaIdList> searchQuota(
+        io.littlehorse.sdk.common.proto.SearchQuotaRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchQuotaMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Search for StructDef's
      * </pre>
      */
@@ -7760,6 +8227,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a `Quota`.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteQuota(
+        io.littlehorse.sdk.common.proto.DeleteQuotaRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDeleteQuotaMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Deletes a scheduled run and prevents any further associated WfRun from being executed.
      * </pre>
      */
@@ -7792,6 +8270,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given TaskDefId and time range.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricsList> listTaskMetrics(
         io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
@@ -7800,11 +8281,36 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Lists available metric windows for a given WfSpecId and time range.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricsList> listWfMetrics(
         io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getListWfMetricsMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a MetricWindow by its ID.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricWindow> getMetricWindow(
+        io.littlehorse.sdk.common.proto.MetricWindowId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetMetricWindowMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricWindowIdList> searchWfMetricWindow(
+        io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchWfMetricWindowMethod(), getCallOptions()), request);
     }
 
     /**
@@ -7827,6 +8333,28 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.TenantId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetTenantMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Creates or updates a Quota.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Quota> putQuota(
+        io.littlehorse.sdk.common.proto.PutQuotaRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPutQuotaMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a Quota.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Quota> getQuota(
+        io.littlehorse.sdk.common.proto.QuotaId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetQuotaMethod(), getCallOptions()), request);
     }
 
     /**
@@ -7934,36 +8462,42 @@ public final class LittleHorseGrpc {
   private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 57;
   private static final int METHODID_SEARCH_TENANT = 58;
   private static final int METHODID_SEARCH_PRINCIPAL = 59;
-  private static final int METHODID_SEARCH_STRUCT_DEF = 60;
-  private static final int METHODID_GET_INACTIVE_THREAD_RUN = 61;
-  private static final int METHODID_REGISTER_TASK_WORKER = 62;
-  private static final int METHODID_REPORT_TASK = 63;
-  private static final int METHODID_PUT_CHECKPOINT = 64;
-  private static final int METHODID_GET_CHECKPOINT = 65;
-  private static final int METHODID_STOP_WF_RUN = 66;
-  private static final int METHODID_RESUME_WF_RUN = 67;
-  private static final int METHODID_RESCUE_THREAD_RUN = 68;
-  private static final int METHODID_DELETE_WF_RUN = 69;
-  private static final int METHODID_DELETE_TASK_DEF = 70;
-  private static final int METHODID_DELETE_STRUCT_DEF = 71;
-  private static final int METHODID_DELETE_WF_SPEC = 72;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 73;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 74;
-  private static final int METHODID_DELETE_CORRELATED_EVENT = 75;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 76;
-  private static final int METHODID_DELETE_PRINCIPAL = 77;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 78;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 79;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 80;
-  private static final int METHODID_LIST_TASK_METRICS = 81;
-  private static final int METHODID_LIST_WF_METRICS = 82;
-  private static final int METHODID_PUT_TENANT = 83;
-  private static final int METHODID_GET_TENANT = 84;
-  private static final int METHODID_PUT_PRINCIPAL = 85;
-  private static final int METHODID_GET_PRINCIPAL = 86;
-  private static final int METHODID_WHOAMI = 87;
-  private static final int METHODID_GET_SERVER_VERSION = 88;
-  private static final int METHODID_POLL_TASK = 89;
+  private static final int METHODID_SEARCH_QUOTA = 60;
+  private static final int METHODID_SEARCH_STRUCT_DEF = 61;
+  private static final int METHODID_GET_INACTIVE_THREAD_RUN = 62;
+  private static final int METHODID_REGISTER_TASK_WORKER = 63;
+  private static final int METHODID_REPORT_TASK = 64;
+  private static final int METHODID_PUT_CHECKPOINT = 65;
+  private static final int METHODID_GET_CHECKPOINT = 66;
+  private static final int METHODID_STOP_WF_RUN = 67;
+  private static final int METHODID_RESUME_WF_RUN = 68;
+  private static final int METHODID_RESCUE_THREAD_RUN = 69;
+  private static final int METHODID_DELETE_WF_RUN = 70;
+  private static final int METHODID_DELETE_TASK_DEF = 71;
+  private static final int METHODID_DELETE_STRUCT_DEF = 72;
+  private static final int METHODID_DELETE_WF_SPEC = 73;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 74;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 75;
+  private static final int METHODID_DELETE_CORRELATED_EVENT = 76;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 77;
+  private static final int METHODID_DELETE_PRINCIPAL = 78;
+  private static final int METHODID_DELETE_QUOTA = 79;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 80;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 81;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 82;
+  private static final int METHODID_LIST_TASK_METRICS = 83;
+  private static final int METHODID_LIST_WF_METRICS = 84;
+  private static final int METHODID_GET_METRIC_WINDOW = 85;
+  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 86;
+  private static final int METHODID_PUT_TENANT = 87;
+  private static final int METHODID_GET_TENANT = 88;
+  private static final int METHODID_PUT_QUOTA = 89;
+  private static final int METHODID_GET_QUOTA = 90;
+  private static final int METHODID_PUT_PRINCIPAL = 91;
+  private static final int METHODID_GET_PRINCIPAL = 92;
+  private static final int METHODID_WHOAMI = 93;
+  private static final int METHODID_GET_SERVER_VERSION = 94;
+  private static final int METHODID_POLL_TASK = 95;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -8222,6 +8756,10 @@ public final class LittleHorseGrpc {
           serviceImpl.searchPrincipal((io.littlehorse.sdk.common.proto.SearchPrincipalRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList>) responseObserver);
           break;
+        case METHODID_SEARCH_QUOTA:
+          serviceImpl.searchQuota((io.littlehorse.sdk.common.proto.SearchQuotaRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.QuotaIdList>) responseObserver);
+          break;
         case METHODID_SEARCH_STRUCT_DEF:
           serviceImpl.searchStructDef((io.littlehorse.sdk.common.proto.SearchStructDefRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDefIdList>) responseObserver);
@@ -8294,6 +8832,10 @@ public final class LittleHorseGrpc {
           serviceImpl.deletePrincipal((io.littlehorse.sdk.common.proto.DeletePrincipalRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
+        case METHODID_DELETE_QUOTA:
+          serviceImpl.deleteQuota((io.littlehorse.sdk.common.proto.DeleteQuotaRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
         case METHODID_DELETE_SCHEDULED_WF_RUN:
           serviceImpl.deleteScheduledWfRun((io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
@@ -8314,6 +8856,14 @@ public final class LittleHorseGrpc {
           serviceImpl.listWfMetrics((io.littlehorse.sdk.common.proto.ListWfMetricsRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList>) responseObserver);
           break;
+        case METHODID_GET_METRIC_WINDOW:
+          serviceImpl.getMetricWindow((io.littlehorse.sdk.common.proto.MetricWindowId) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricWindow>) responseObserver);
+          break;
+        case METHODID_SEARCH_WF_METRIC_WINDOW:
+          serviceImpl.searchWfMetricWindow((io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricWindowIdList>) responseObserver);
+          break;
         case METHODID_PUT_TENANT:
           serviceImpl.putTenant((io.littlehorse.sdk.common.proto.PutTenantRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant>) responseObserver);
@@ -8321,6 +8871,14 @@ public final class LittleHorseGrpc {
         case METHODID_GET_TENANT:
           serviceImpl.getTenant((io.littlehorse.sdk.common.proto.TenantId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant>) responseObserver);
+          break;
+        case METHODID_PUT_QUOTA:
+          serviceImpl.putQuota((io.littlehorse.sdk.common.proto.PutQuotaRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Quota>) responseObserver);
+          break;
+        case METHODID_GET_QUOTA:
+          serviceImpl.getQuota((io.littlehorse.sdk.common.proto.QuotaId) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Quota>) responseObserver);
           break;
         case METHODID_PUT_PRINCIPAL:
           serviceImpl.putPrincipal((io.littlehorse.sdk.common.proto.PutPrincipalRequest) request,
@@ -8780,6 +9338,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.PrincipalIdList>(
                 service, METHODID_SEARCH_PRINCIPAL)))
         .addMethod(
+          getSearchQuotaMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.SearchQuotaRequest,
+              io.littlehorse.sdk.common.proto.QuotaIdList>(
+                service, METHODID_SEARCH_QUOTA)))
+        .addMethod(
           getSearchStructDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -8913,6 +9478,13 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_PRINCIPAL)))
         .addMethod(
+          getDeleteQuotaMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.DeleteQuotaRequest,
+              com.google.protobuf.Empty>(
+                service, METHODID_DELETE_QUOTA)))
+        .addMethod(
           getDeleteScheduledWfRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -8948,6 +9520,20 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.MetricsList>(
                 service, METHODID_LIST_WF_METRICS)))
         .addMethod(
+          getGetMetricWindowMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.MetricWindowId,
+              io.littlehorse.sdk.common.proto.MetricWindow>(
+                service, METHODID_GET_METRIC_WINDOW)))
+        .addMethod(
+          getSearchWfMetricWindowMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest,
+              io.littlehorse.sdk.common.proto.MetricWindowIdList>(
+                service, METHODID_SEARCH_WF_METRIC_WINDOW)))
+        .addMethod(
           getPutTenantMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -8961,6 +9547,20 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.TenantId,
               io.littlehorse.sdk.common.proto.Tenant>(
                 service, METHODID_GET_TENANT)))
+        .addMethod(
+          getPutQuotaMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.PutQuotaRequest,
+              io.littlehorse.sdk.common.proto.Quota>(
+                service, METHODID_PUT_QUOTA)))
+        .addMethod(
+          getGetQuotaMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.QuotaId,
+              io.littlehorse.sdk.common.proto.Quota>(
+                service, METHODID_GET_QUOTA)))
         .addMethod(
           getPutPrincipalMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -9097,6 +9697,7 @@ public final class LittleHorseGrpc {
               .addMethod(getSearchWorkflowEventDefMethod())
               .addMethod(getSearchTenantMethod())
               .addMethod(getSearchPrincipalMethod())
+              .addMethod(getSearchQuotaMethod())
               .addMethod(getSearchStructDefMethod())
               .addMethod(getGetInactiveThreadRunMethod())
               .addMethod(getRegisterTaskWorkerMethod())
@@ -9116,13 +9717,18 @@ public final class LittleHorseGrpc {
               .addMethod(getDeleteCorrelatedEventMethod())
               .addMethod(getDeleteWorkflowEventDefMethod())
               .addMethod(getDeletePrincipalMethod())
+              .addMethod(getDeleteQuotaMethod())
               .addMethod(getDeleteScheduledWfRunMethod())
               .addMethod(getGetTaskDefMetricsWindowMethod())
               .addMethod(getGetWfSpecMetricsWindowMethod())
               .addMethod(getListTaskMetricsMethod())
               .addMethod(getListWfMetricsMethod())
+              .addMethod(getGetMetricWindowMethod())
+              .addMethod(getSearchWfMetricWindowMethod())
               .addMethod(getPutTenantMethod())
               .addMethod(getGetTenantMethod())
+              .addMethod(getPutQuotaMethod())
+              .addMethod(getGetQuotaMethod())
               .addMethod(getPutPrincipalMethod())
               .addMethod(getGetPrincipalMethod())
               .addMethod(getWhoamiMethod())

@@ -39,6 +39,7 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener, C
     public InstanceState(KafkaStreams streams, BackendInternalComms internalComms) {
         this.streams = streams;
         this.internalComms = internalComms;
+        this.currentState = KafkaStreams.State.CREATED;
     }
 
     @Override

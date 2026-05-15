@@ -1,6 +1,5 @@
 package io.littlehorse.server;
 
-import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -44,11 +43,13 @@ class GlobalExceptionHandlerTest {
                 .onHalfClose();
         globalExceptionHandler.interceptCall(serverCall, metadata, next).onHalfClose();
         ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
-        verify(serverCall).close(statusCaptor.capture(), same(metadata));
+        ArgumentCaptor<Metadata> metadataCaptor = ArgumentCaptor.forClass(Metadata.class);
+        verify(serverCall).close(statusCaptor.capture(), metadataCaptor.capture());
         Status actualStatus = statusCaptor.getValue();
         Assertions.assertThat(actualStatus.getCode()).isEqualTo(expectedStatus.getCode());
         Assertions.assertThat(actualStatus.getDescription()).isEqualTo(expectedStatus.getDescription());
         Assertions.assertThat(actualStatus.getCause()).isEqualTo(expectedStatus.getCause());
+        Assertions.assertThat(metadataCaptor.getValue().keys()).isEmpty();
     }
 
     @Test
@@ -56,11 +57,13 @@ class GlobalExceptionHandlerTest {
         doThrow(new NullPointerException("oops!")).when(listener).onHalfClose();
         globalExceptionHandler.interceptCall(serverCall, metadata, next).onHalfClose();
         ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
-        verify(serverCall).close(statusCaptor.capture(), same(metadata));
+        ArgumentCaptor<Metadata> metadataCaptor = ArgumentCaptor.forClass(Metadata.class);
+        verify(serverCall).close(statusCaptor.capture(), metadataCaptor.capture());
         Status actualStatus = statusCaptor.getValue();
         Assertions.assertThat(actualStatus.getCode()).isEqualTo(Status.Code.INTERNAL);
         Assertions.assertThat(actualStatus.getDescription()).isEqualTo(GlobalExceptionHandler.INTERNAL_ERROR_MESSAGE);
         Assertions.assertThat(actualStatus.getCause()).isNull();
+        Assertions.assertThat(metadataCaptor.getValue().keys()).isEmpty();
     }
 
     @Test
@@ -69,11 +72,13 @@ class GlobalExceptionHandlerTest {
         doThrow(invalidStateException).when(listener).onHalfClose();
         globalExceptionHandler.interceptCall(serverCall, metadata, next).onHalfClose();
         ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
-        verify(serverCall).close(statusCaptor.capture(), same(metadata));
+        ArgumentCaptor<Metadata> metadataCaptor = ArgumentCaptor.forClass(Metadata.class);
+        verify(serverCall).close(statusCaptor.capture(), metadataCaptor.capture());
         Status actualStatus = statusCaptor.getValue();
         Assertions.assertThat(actualStatus.getCode()).isEqualTo(Status.Code.UNAVAILABLE);
         Assertions.assertThat(actualStatus.getDescription()).isEqualTo("rebalancing");
         Assertions.assertThat(actualStatus.getCause()).isEqualTo(invalidStateException);
+        Assertions.assertThat(metadataCaptor.getValue().keys()).isEmpty();
     }
 
     @Test
@@ -83,10 +88,12 @@ class GlobalExceptionHandlerTest {
                 .onHalfClose();
         globalExceptionHandler.interceptCall(serverCall, metadata, next).onHalfClose();
         ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
-        verify(serverCall).close(statusCaptor.capture(), same(metadata));
+        ArgumentCaptor<Metadata> metadataCaptor = ArgumentCaptor.forClass(Metadata.class);
+        verify(serverCall).close(statusCaptor.capture(), metadataCaptor.capture());
         Status actualStatus = statusCaptor.getValue();
         Assertions.assertThat(actualStatus.getCode()).isEqualTo(Status.Code.NOT_FOUND);
         Assertions.assertThat(actualStatus.getDescription()).isEqualTo("not found");
         Assertions.assertThat(actualStatus.getCause()).isNull();
+        Assertions.assertThat(metadataCaptor.getValue().keys()).isEmpty();
     }
 }

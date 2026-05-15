@@ -296,6 +296,7 @@ type LHExpression interface {
 	Subtract(other interface{}) LHExpression
 	Multiply(other interface{}) LHExpression
 	Divide(other interface{}) LHExpression
+	Pow(exponent interface{}) LHExpression
 	Extend(other interface{}) LHExpression
 	RemoveIfPresent(other interface{}) LHExpression
 	RemoveIndex_ByInt(index int) LHExpression
@@ -518,6 +519,14 @@ func (w *WfRunVariable) Divide(other interface{}) LHExpression {
 	}
 }
 
+func (w *WfRunVariable) Pow(exponent interface{}) LHExpression {
+	return &lhExpression{
+		lhs:       w,
+		rhs:       exponent,
+		operation: lhproto.VariableMutationType_POW,
+	}
+}
+
 func (w *WfRunVariable) Extend(other interface{}) LHExpression {
 	return &lhExpression{
 		lhs:       w,
@@ -627,8 +636,23 @@ func (t *WorkflowThread) DeclareJsonObj(name string) *WfRunVariable {
 //
 // Unlike ExternalEventDefs, StructDefs are NOT automatically registered by RegisterWfSpec.
 // You must register them manually using RegisterStructDef before calling RegisterWfSpec.
-func (t *WorkflowThread) DeclareStruct(name string, structDefName string) *WfRunVariable {
-	return t.addStructVariable(name, structDefName)
+//
+// This uses the latest version of the given StructDef according to the server.
+func (t *WorkflowThread) DeclareStruct(
+	name string,
+	structDefName string,
+) *WfRunVariable {
+	return t.addStructVariable(name, structDefName, -1)
+}
+
+// DeclareStructWithVersion declares a Struct variable using an explicit
+// StructDef version.
+func (t *WorkflowThread) DeclareStructWithVersion(
+	name string,
+	structDefName string,
+	structDefVersion int,
+) *WfRunVariable {
+	return t.addStructVariable(name, structDefName, int32(structDefVersion))
 }
 
 func (t *WorkflowThread) Complete(result interface{}) {
@@ -684,6 +708,14 @@ func (t *WorkflowThread) Divide(lhs interface{}, rhs interface{}) lhExpression {
 		lhs:       lhs,
 		rhs:       rhs,
 		operation: lhproto.VariableMutationType_DIVIDE,
+	}
+}
+
+func (t *WorkflowThread) Pow(base interface{}, exponent interface{}) lhExpression {
+	return lhExpression{
+		lhs:       base,
+		rhs:       exponent,
+		operation: lhproto.VariableMutationType_POW,
 	}
 }
 

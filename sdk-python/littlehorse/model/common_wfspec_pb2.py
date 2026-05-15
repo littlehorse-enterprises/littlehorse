@@ -25,9 +25,10 @@ _sym_db = _symbol_database.Default()
 import littlehorse.model.common_enums_pb2 as common__enums__pb2
 import littlehorse.model.variable_pb2 as variable__pb2
 import littlehorse.model.object_id_pb2 as object__id__pb2
+import littlehorse.model.type_definition_pb2 as type__definition__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13\x63ommon_wfspec.proto\x12\x0blittlehorse\x1a\x12\x63ommon_enums.proto\x1a\x0evariable.proto\x1a\x0fobject_id.proto\"\xca\x06\n\x12VariableAssignment\x12\x13\n\tjson_path\x18\x01 \x01(\tH\x00\x12&\n\x07lh_path\x18\x08 \x01(\x0b\x32\x13.littlehorse.LHPathH\x00\x12\x17\n\rvariable_name\x18\x02 \x01(\tH\x01\x12\x33\n\rliteral_value\x18\x03 \x01(\x0b\x32\x1a.littlehorse.VariableValueH\x01\x12\x45\n\rformat_string\x18\x04 \x01(\x0b\x32,.littlehorse.VariableAssignment.FormatStringH\x01\x12J\n\x0bnode_output\x18\x05 \x01(\x0b\x32\x33.littlehorse.VariableAssignment.NodeOutputReferenceH\x01\x12@\n\nexpression\x18\x06 \x01(\x0b\x32*.littlehorse.VariableAssignment.ExpressionH\x01\x12\x35\n\x0btarget_type\x18\x07 \x01(\x0b\x32\x1b.littlehorse.TypeDefinitionH\x02\x88\x01\x01\x1an\n\x0c\x46ormatString\x12/\n\x06\x66ormat\x18\x01 \x01(\x0b\x32\x1f.littlehorse.VariableAssignment\x12-\n\x04\x61rgs\x18\x02 \x03(\x0b\x32\x1f.littlehorse.VariableAssignment\x1a(\n\x13NodeOutputReference\x12\x11\n\tnode_name\x18\x01 \x01(\t\x1a\xe0\x01\n\nExpression\x12,\n\x03lhs\x18\x01 \x01(\x0b\x32\x1f.littlehorse.VariableAssignment\x12:\n\rmutation_type\x18\x02 \x01(\x0e\x32!.littlehorse.VariableMutationTypeH\x00\x12-\n\ncomparator\x18\x04 \x01(\x0e\x32\x17.littlehorse.ComparatorH\x00\x12,\n\x03rhs\x18\x03 \x01(\x0b\x32\x1f.littlehorse.VariableAssignmentB\x0b\n\toperationB\x06\n\x04pathB\x08\n\x06sourceB\x0e\n\x0c_target_type\"\xa4\x03\n\x10VariableMutation\x12\x10\n\x08lhs_name\x18\x01 \x01(\t\x12\x1a\n\rlhs_json_path\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x34\n\toperation\x18\x03 \x01(\x0e\x32!.littlehorse.VariableMutationType\x12\x39\n\x0erhs_assignment\x18\x04 \x01(\x0b\x32\x1f.littlehorse.VariableAssignmentH\x00\x12\x33\n\rliteral_value\x18\x05 \x01(\x0b\x32\x1a.littlehorse.VariableValueH\x00\x12\x45\n\x0bnode_output\x18\x06 \x01(\x0b\x32..littlehorse.VariableMutation.NodeOutputSourceH\x00\x1aV\n\x10NodeOutputSource\x12\x12\n\x08jsonpath\x18\n \x01(\tH\x00\x12&\n\x07lh_path\x18\x0b \x01(\x0b\x32\x13.littlehorse.LHPathH\x00\x42\x06\n\x04pathB\x0b\n\trhs_valueB\x10\n\x0e_lhs_json_path\"\x89\x02\n\x0bVariableDef\x12,\n\x04type\x18\x01 \x01(\x0e\x32\x19.littlehorse.VariableTypeH\x00\x88\x01\x01\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x36\n\rdefault_value\x18\x03 \x01(\x0b\x32\x1a.littlehorse.VariableValueH\x01\x88\x01\x01\x12\x19\n\x0cmasked_value\x18\x04 \x01(\x08H\x02\x88\x01\x01\x12\x32\n\x08type_def\x18\x05 \x01(\x0b\x32\x1b.littlehorse.TypeDefinitionH\x03\x88\x01\x01\x42\x07\n\x05_typeB\x10\n\x0e_default_valueB\x0f\n\r_masked_valueB\x0b\n\t_type_def\"\xa4\x01\n\x0eTypeDefinition\x12\x33\n\x0eprimitive_type\x18\x01 \x01(\x0e\x32\x19.littlehorse.VariableTypeH\x00\x12\x31\n\rstruct_def_id\x18\x05 \x01(\x0b\x32\x18.littlehorse.StructDefIdH\x00\x12\x0e\n\x06masked\x18\x04 \x01(\x08\x42\x0e\n\x0c\x64\x65\x66ined_typeJ\x04\x08\x02\x10\x03J\x04\x08\x03\x10\x04\"S\n\nReturnType\x12\x35\n\x0breturn_type\x18\x01 \x01(\x0b\x32\x1b.littlehorse.TypeDefinitionH\x00\x88\x01\x01\x42\x0e\n\x0c_return_type\"\xef\x04\n\x0fUTActionTrigger\x12\x34\n\x04task\x18\x01 \x01(\x0b\x32$.littlehorse.UTActionTrigger.UTATaskH\x00\x12\x38\n\x06\x63\x61ncel\x18\x02 \x01(\x0b\x32&.littlehorse.UTActionTrigger.UTACancelH\x00\x12<\n\x08reassign\x18\x03 \x01(\x0b\x32(.littlehorse.UTActionTrigger.UTAReassignH\x00\x12\x36\n\rdelay_seconds\x18\x05 \x01(\x0b\x32\x1f.littlehorse.VariableAssignment\x12\x31\n\x04hook\x18\x06 \x01(\x0e\x32#.littlehorse.UTActionTrigger.UTHook\x1a\x0b\n\tUTACancel\x1a`\n\x07UTATask\x12#\n\x04task\x18\x01 \x01(\x0b\x32\x15.littlehorse.TaskNode\x12\x30\n\tmutations\x18\x02 \x03(\x0b\x32\x1d.littlehorse.VariableMutation\x1a\x99\x01\n\x0bUTAReassign\x12\x35\n\x07user_id\x18\x01 \x01(\x0b\x32\x1f.littlehorse.VariableAssignmentH\x00\x88\x01\x01\x12\x38\n\nuser_group\x18\x02 \x01(\x0b\x32\x1f.littlehorse.VariableAssignmentH\x01\x88\x01\x01\x42\n\n\x08_user_idB\r\n\x0b_user_group\".\n\x06UTHook\x12\x0e\n\nON_ARRIVAL\x10\x00\x12\x14\n\x10ON_TASK_ASSIGNED\x10\x01\x42\x08\n\x06\x61\x63tion\"c\n\x1d\x45xponentialBackoffRetryPolicy\x12\x18\n\x10\x62\x61se_interval_ms\x18\x01 \x01(\x05\x12\x14\n\x0cmax_delay_ms\x18\x02 \x01(\x03\x12\x12\n\nmultiplier\x18\x03 \x01(\x02\"\xc9\x02\n\x08TaskNode\x12-\n\x0btask_def_id\x18\x01 \x01(\x0b\x32\x16.littlehorse.TaskDefIdH\x00\x12\x37\n\x0c\x64ynamic_task\x18\x06 \x01(\x0b\x32\x1f.littlehorse.VariableAssignmentH\x00\x12\x17\n\x0ftimeout_seconds\x18\x02 \x01(\x05\x12\x0f\n\x07retries\x18\x03 \x01(\x05\x12L\n\x13\x65xponential_backoff\x18\x05 \x01(\x0b\x32*.littlehorse.ExponentialBackoffRetryPolicyH\x01\x88\x01\x01\x12\x32\n\tvariables\x18\x04 \x03(\x0b\x32\x1f.littlehorse.VariableAssignmentB\x11\n\x0ftask_to_executeB\x16\n\x14_exponential_backoff\"\x97\x01\n\x0fInlineStructDef\x12\x38\n\x06\x66ields\x18\x01 \x03(\x0b\x32(.littlehorse.InlineStructDef.FieldsEntry\x1aJ\n\x0b\x46ieldsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12*\n\x05value\x18\x02 \x01(\x0b\x32\x1b.littlehorse.StructFieldDef:\x02\x38\x01\"\x8b\x01\n\x0eStructFieldDef\x12/\n\nfield_type\x18\x01 \x01(\x0b\x32\x1b.littlehorse.TypeDefinition\x12\x36\n\rdefault_value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValueH\x00\x88\x01\x01\x42\x10\n\x0e_default_value\"q\n\x06LHPath\x12*\n\x04path\x18\x01 \x03(\x0b\x32\x1c.littlehorse.LHPath.Selector\x1a;\n\x08Selector\x12\r\n\x03key\x18\x01 \x01(\tH\x00\x12\x0f\n\x05index\x18\x02 \x01(\x05H\x00\x42\x0f\n\rselector_type*\xa9\x01\n\x14VariableMutationType\x12\n\n\x06\x41SSIGN\x10\x00\x12\x07\n\x03\x41\x44\x44\x10\x01\x12\n\n\x06\x45XTEND\x10\x02\x12\x0c\n\x08SUBTRACT\x10\x03\x12\x0c\n\x08MULTIPLY\x10\x04\x12\n\n\x06\x44IVIDE\x10\x05\x12\x15\n\x11REMOVE_IF_PRESENT\x10\x06\x12\x10\n\x0cREMOVE_INDEX\x10\x07\x12\x0e\n\nREMOVE_KEY\x10\x08\x12\x07\n\x03\x41ND\x10\t\x12\x06\n\x02OR\x10\n*\x84\x01\n\nComparator\x12\r\n\tLESS_THAN\x10\x00\x12\x10\n\x0cGREATER_THAN\x10\x01\x12\x10\n\x0cLESS_THAN_EQ\x10\x02\x12\x13\n\x0fGREATER_THAN_EQ\x10\x03\x12\n\n\x06\x45QUALS\x10\x04\x12\x0e\n\nNOT_EQUALS\x10\x05\x12\x06\n\x02IN\x10\x06\x12\n\n\x06NOT_IN\x10\x07\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13\x63ommon_wfspec.proto\x12\x0blittlehorse\x1a\x12\x63ommon_enums.proto\x1a\x0evariable.proto\x1a\x0fobject_id.proto\x1a\x15type_definition.proto\"\xf7\x07\n\x12VariableAssignment\x12\x13\n\tjson_path\x18\x01 \x01(\tH\x00\x12&\n\x07lh_path\x18\x08 \x01(\x0b\x32\x13.littlehorse.LHPathH\x00\x12\x17\n\rvariable_name\x18\x02 \x01(\tH\x01\x12\x33\n\rliteral_value\x18\x03 \x01(\x0b\x32\x1a.littlehorse.VariableValueH\x01\x12\x45\n\rformat_string\x18\x04 \x01(\x0b\x32,.littlehorse.VariableAssignment.FormatStringH\x01\x12J\n\x0bnode_output\x18\x05 \x01(\x0b\x32\x33.littlehorse.VariableAssignment.NodeOutputReferenceH\x01\x12@\n\nexpression\x18\x06 \x01(\x0b\x32*.littlehorse.VariableAssignment.ExpressionH\x01\x12\x34\n\x0estruct_builder\x18\t \x01(\x0b\x32\x1a.littlehorse.StructBuilderH\x01\x12\x39\n\x07size_of\x18\n \x01(\x0b\x32&.littlehorse.VariableAssignment.SizeOfH\x01\x12\x35\n\x0btarget_type\x18\x07 \x01(\x0b\x32\x1b.littlehorse.TypeDefinitionH\x02\x88\x01\x01\x1an\n\x0c\x46ormatString\x12/\n\x06\x66ormat\x18\x01 \x01(\x0b\x32\x1f.littlehorse.VariableAssignment\x12-\n\x04\x61rgs\x18\x02 \x03(\x0b\x32\x1f.littlehorse.VariableAssignment\x1a(\n\x13NodeOutputReference\x12\x11\n\tnode_name\x18\x01 \x01(\t\x1a:\n\x06SizeOf\x12\x30\n\x07operand\x18\x01 \x01(\x0b\x32\x1f.littlehorse.VariableAssignment\x1a\xe0\x01\n\nExpression\x12,\n\x03lhs\x18\x01 \x01(\x0b\x32\x1f.littlehorse.VariableAssignment\x12:\n\rmutation_type\x18\x02 \x01(\x0e\x32!.littlehorse.VariableMutationTypeH\x00\x12-\n\ncomparator\x18\x04 \x01(\x0e\x32\x17.littlehorse.ComparatorH\x00\x12,\n\x03rhs\x18\x03 \x01(\x0b\x32\x1f.littlehorse.VariableAssignmentB\x0b\n\toperationB\x06\n\x04pathB\x08\n\x06sourceB\x0e\n\x0c_target_type\"q\n\rStructBuilder\x12/\n\rstruct_def_id\x18\x01 \x01(\x0b\x32\x18.littlehorse.StructDefId\x12/\n\x05value\x18\x02 \x01(\x0b\x32 .littlehorse.InlineStructBuilder\"\xa7\x01\n\x13InlineStructBuilder\x12<\n\x06\x66ields\x18\x01 \x03(\x0b\x32,.littlehorse.InlineStructBuilder.FieldsEntry\x1aR\n\x0b\x46ieldsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x32\n\x05value\x18\x02 \x01(\x0b\x32#.littlehorse.InlineStructFieldValue:\x02\x38\x01\"\x9c\x01\n\x16InlineStructFieldValue\x12\x37\n\x0csimple_value\x18\x01 \x01(\x0b\x32\x1f.littlehorse.VariableAssignmentH\x00\x12\x39\n\rsub_structure\x18\x02 \x01(\x0b\x32 .littlehorse.InlineStructBuilderH\x00\x42\x0e\n\x0cstruct_value\"\xa4\x03\n\x10VariableMutation\x12\x10\n\x08lhs_name\x18\x01 \x01(\t\x12\x1a\n\rlhs_json_path\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x34\n\toperation\x18\x03 \x01(\x0e\x32!.littlehorse.VariableMutationType\x12\x39\n\x0erhs_assignment\x18\x04 \x01(\x0b\x32\x1f.littlehorse.VariableAssignmentH\x00\x12\x33\n\rliteral_value\x18\x05 \x01(\x0b\x32\x1a.littlehorse.VariableValueH\x00\x12\x45\n\x0bnode_output\x18\x06 \x01(\x0b\x32..littlehorse.VariableMutation.NodeOutputSourceH\x00\x1aV\n\x10NodeOutputSource\x12\x12\n\x08jsonpath\x18\n \x01(\tH\x00\x12&\n\x07lh_path\x18\x0b \x01(\x0b\x32\x13.littlehorse.LHPathH\x00\x42\x06\n\x04pathB\x0b\n\trhs_valueB\x10\n\x0e_lhs_json_path\"\x89\x02\n\x0bVariableDef\x12,\n\x04type\x18\x01 \x01(\x0e\x32\x19.littlehorse.VariableTypeH\x00\x88\x01\x01\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x36\n\rdefault_value\x18\x03 \x01(\x0b\x32\x1a.littlehorse.VariableValueH\x01\x88\x01\x01\x12\x19\n\x0cmasked_value\x18\x04 \x01(\x08H\x02\x88\x01\x01\x12\x32\n\x08type_def\x18\x05 \x01(\x0b\x32\x1b.littlehorse.TypeDefinitionH\x03\x88\x01\x01\x42\x07\n\x05_typeB\x10\n\x0e_default_valueB\x0f\n\r_masked_valueB\x0b\n\t_type_def\"\xef\x04\n\x0fUTActionTrigger\x12\x34\n\x04task\x18\x01 \x01(\x0b\x32$.littlehorse.UTActionTrigger.UTATaskH\x00\x12\x38\n\x06\x63\x61ncel\x18\x02 \x01(\x0b\x32&.littlehorse.UTActionTrigger.UTACancelH\x00\x12<\n\x08reassign\x18\x03 \x01(\x0b\x32(.littlehorse.UTActionTrigger.UTAReassignH\x00\x12\x36\n\rdelay_seconds\x18\x05 \x01(\x0b\x32\x1f.littlehorse.VariableAssignment\x12\x31\n\x04hook\x18\x06 \x01(\x0e\x32#.littlehorse.UTActionTrigger.UTHook\x1a\x0b\n\tUTACancel\x1a`\n\x07UTATask\x12#\n\x04task\x18\x01 \x01(\x0b\x32\x15.littlehorse.TaskNode\x12\x30\n\tmutations\x18\x02 \x03(\x0b\x32\x1d.littlehorse.VariableMutation\x1a\x99\x01\n\x0bUTAReassign\x12\x35\n\x07user_id\x18\x01 \x01(\x0b\x32\x1f.littlehorse.VariableAssignmentH\x00\x88\x01\x01\x12\x38\n\nuser_group\x18\x02 \x01(\x0b\x32\x1f.littlehorse.VariableAssignmentH\x01\x88\x01\x01\x42\n\n\x08_user_idB\r\n\x0b_user_group\".\n\x06UTHook\x12\x0e\n\nON_ARRIVAL\x10\x00\x12\x14\n\x10ON_TASK_ASSIGNED\x10\x01\x42\x08\n\x06\x61\x63tion\"c\n\x1d\x45xponentialBackoffRetryPolicy\x12\x18\n\x10\x62\x61se_interval_ms\x18\x01 \x01(\x05\x12\x14\n\x0cmax_delay_ms\x18\x02 \x01(\x03\x12\x12\n\nmultiplier\x18\x03 \x01(\x02\"\xc9\x02\n\x08TaskNode\x12-\n\x0btask_def_id\x18\x01 \x01(\x0b\x32\x16.littlehorse.TaskDefIdH\x00\x12\x37\n\x0c\x64ynamic_task\x18\x06 \x01(\x0b\x32\x1f.littlehorse.VariableAssignmentH\x00\x12\x17\n\x0ftimeout_seconds\x18\x02 \x01(\x05\x12\x0f\n\x07retries\x18\x03 \x01(\x05\x12L\n\x13\x65xponential_backoff\x18\x05 \x01(\x0b\x32*.littlehorse.ExponentialBackoffRetryPolicyH\x01\x88\x01\x01\x12\x32\n\tvariables\x18\x04 \x03(\x0b\x32\x1f.littlehorse.VariableAssignmentB\x11\n\x0ftask_to_executeB\x16\n\x14_exponential_backoff\"\x97\x01\n\x0fInlineStructDef\x12\x38\n\x06\x66ields\x18\x01 \x03(\x0b\x32(.littlehorse.InlineStructDef.FieldsEntry\x1aJ\n\x0b\x46ieldsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12*\n\x05value\x18\x02 \x01(\x0b\x32\x1b.littlehorse.StructFieldDef:\x02\x38\x01\"\xa0\x01\n\x0eStructFieldDef\x12/\n\nfield_type\x18\x01 \x01(\x0b\x32\x1b.littlehorse.TypeDefinition\x12\x36\n\rdefault_value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValueH\x00\x88\x01\x01\x12\x13\n\x0bis_nullable\x18\x03 \x01(\x08\x42\x10\n\x0e_default_value\"q\n\x06LHPath\x12*\n\x04path\x18\x01 \x03(\x0b\x32\x1c.littlehorse.LHPath.Selector\x1a;\n\x08Selector\x12\r\n\x03key\x18\x01 \x01(\tH\x00\x12\x0f\n\x05index\x18\x02 \x01(\x05H\x00\x42\x0f\n\rselector_type*\xb2\x01\n\x14VariableMutationType\x12\n\n\x06\x41SSIGN\x10\x00\x12\x07\n\x03\x41\x44\x44\x10\x01\x12\n\n\x06\x45XTEND\x10\x02\x12\x0c\n\x08SUBTRACT\x10\x03\x12\x0c\n\x08MULTIPLY\x10\x04\x12\n\n\x06\x44IVIDE\x10\x05\x12\x15\n\x11REMOVE_IF_PRESENT\x10\x06\x12\x10\n\x0cREMOVE_INDEX\x10\x07\x12\x0e\n\nREMOVE_KEY\x10\x08\x12\x07\n\x03\x41ND\x10\t\x12\x06\n\x02OR\x10\n\x12\x07\n\x03POW\x10\x0b\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -35,52 +36,58 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'common_wfspec_pb2', _global
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Proto'
+  _globals['_INLINESTRUCTBUILDER_FIELDSENTRY']._loaded_options = None
+  _globals['_INLINESTRUCTBUILDER_FIELDSENTRY']._serialized_options = b'8\001'
   _globals['_INLINESTRUCTDEF_FIELDSENTRY']._loaded_options = None
   _globals['_INLINESTRUCTDEF_FIELDSENTRY']._serialized_options = b'8\001'
-  _globals['_VARIABLEMUTATIONTYPE']._serialized_start=3348
-  _globals['_VARIABLEMUTATIONTYPE']._serialized_end=3517
-  _globals['_COMPARATOR']._serialized_start=3520
-  _globals['_COMPARATOR']._serialized_end=3652
-  _globals['_VARIABLEASSIGNMENT']._serialized_start=90
-  _globals['_VARIABLEASSIGNMENT']._serialized_end=932
-  _globals['_VARIABLEASSIGNMENT_FORMATSTRING']._serialized_start=519
-  _globals['_VARIABLEASSIGNMENT_FORMATSTRING']._serialized_end=629
-  _globals['_VARIABLEASSIGNMENT_NODEOUTPUTREFERENCE']._serialized_start=631
-  _globals['_VARIABLEASSIGNMENT_NODEOUTPUTREFERENCE']._serialized_end=671
-  _globals['_VARIABLEASSIGNMENT_EXPRESSION']._serialized_start=674
-  _globals['_VARIABLEASSIGNMENT_EXPRESSION']._serialized_end=898
-  _globals['_VARIABLEMUTATION']._serialized_start=935
-  _globals['_VARIABLEMUTATION']._serialized_end=1355
-  _globals['_VARIABLEMUTATION_NODEOUTPUTSOURCE']._serialized_start=1238
-  _globals['_VARIABLEMUTATION_NODEOUTPUTSOURCE']._serialized_end=1324
-  _globals['_VARIABLEDEF']._serialized_start=1358
-  _globals['_VARIABLEDEF']._serialized_end=1623
-  _globals['_TYPEDEFINITION']._serialized_start=1626
-  _globals['_TYPEDEFINITION']._serialized_end=1790
-  _globals['_RETURNTYPE']._serialized_start=1792
-  _globals['_RETURNTYPE']._serialized_end=1875
-  _globals['_UTACTIONTRIGGER']._serialized_start=1878
-  _globals['_UTACTIONTRIGGER']._serialized_end=2501
-  _globals['_UTACTIONTRIGGER_UTACANCEL']._serialized_start=2178
-  _globals['_UTACTIONTRIGGER_UTACANCEL']._serialized_end=2189
-  _globals['_UTACTIONTRIGGER_UTATASK']._serialized_start=2191
-  _globals['_UTACTIONTRIGGER_UTATASK']._serialized_end=2287
-  _globals['_UTACTIONTRIGGER_UTAREASSIGN']._serialized_start=2290
-  _globals['_UTACTIONTRIGGER_UTAREASSIGN']._serialized_end=2443
-  _globals['_UTACTIONTRIGGER_UTHOOK']._serialized_start=2445
-  _globals['_UTACTIONTRIGGER_UTHOOK']._serialized_end=2491
-  _globals['_EXPONENTIALBACKOFFRETRYPOLICY']._serialized_start=2503
-  _globals['_EXPONENTIALBACKOFFRETRYPOLICY']._serialized_end=2602
-  _globals['_TASKNODE']._serialized_start=2605
-  _globals['_TASKNODE']._serialized_end=2934
-  _globals['_INLINESTRUCTDEF']._serialized_start=2937
-  _globals['_INLINESTRUCTDEF']._serialized_end=3088
-  _globals['_INLINESTRUCTDEF_FIELDSENTRY']._serialized_start=3014
-  _globals['_INLINESTRUCTDEF_FIELDSENTRY']._serialized_end=3088
-  _globals['_STRUCTFIELDDEF']._serialized_start=3091
-  _globals['_STRUCTFIELDDEF']._serialized_end=3230
-  _globals['_LHPATH']._serialized_start=3232
-  _globals['_LHPATH']._serialized_end=3345
-  _globals['_LHPATH_SELECTOR']._serialized_start=3286
-  _globals['_LHPATH_SELECTOR']._serialized_end=3345
+  _globals['_VARIABLEMUTATIONTYPE']._serialized_start=3757
+  _globals['_VARIABLEMUTATIONTYPE']._serialized_end=3935
+  _globals['_VARIABLEASSIGNMENT']._serialized_start=113
+  _globals['_VARIABLEASSIGNMENT']._serialized_end=1128
+  _globals['_VARIABLEASSIGNMENT_FORMATSTRING']._serialized_start=655
+  _globals['_VARIABLEASSIGNMENT_FORMATSTRING']._serialized_end=765
+  _globals['_VARIABLEASSIGNMENT_NODEOUTPUTREFERENCE']._serialized_start=767
+  _globals['_VARIABLEASSIGNMENT_NODEOUTPUTREFERENCE']._serialized_end=807
+  _globals['_VARIABLEASSIGNMENT_SIZEOF']._serialized_start=809
+  _globals['_VARIABLEASSIGNMENT_SIZEOF']._serialized_end=867
+  _globals['_VARIABLEASSIGNMENT_EXPRESSION']._serialized_start=870
+  _globals['_VARIABLEASSIGNMENT_EXPRESSION']._serialized_end=1094
+  _globals['_STRUCTBUILDER']._serialized_start=1130
+  _globals['_STRUCTBUILDER']._serialized_end=1243
+  _globals['_INLINESTRUCTBUILDER']._serialized_start=1246
+  _globals['_INLINESTRUCTBUILDER']._serialized_end=1413
+  _globals['_INLINESTRUCTBUILDER_FIELDSENTRY']._serialized_start=1331
+  _globals['_INLINESTRUCTBUILDER_FIELDSENTRY']._serialized_end=1413
+  _globals['_INLINESTRUCTFIELDVALUE']._serialized_start=1416
+  _globals['_INLINESTRUCTFIELDVALUE']._serialized_end=1572
+  _globals['_VARIABLEMUTATION']._serialized_start=1575
+  _globals['_VARIABLEMUTATION']._serialized_end=1995
+  _globals['_VARIABLEMUTATION_NODEOUTPUTSOURCE']._serialized_start=1878
+  _globals['_VARIABLEMUTATION_NODEOUTPUTSOURCE']._serialized_end=1964
+  _globals['_VARIABLEDEF']._serialized_start=1998
+  _globals['_VARIABLEDEF']._serialized_end=2263
+  _globals['_UTACTIONTRIGGER']._serialized_start=2266
+  _globals['_UTACTIONTRIGGER']._serialized_end=2889
+  _globals['_UTACTIONTRIGGER_UTACANCEL']._serialized_start=2566
+  _globals['_UTACTIONTRIGGER_UTACANCEL']._serialized_end=2577
+  _globals['_UTACTIONTRIGGER_UTATASK']._serialized_start=2579
+  _globals['_UTACTIONTRIGGER_UTATASK']._serialized_end=2675
+  _globals['_UTACTIONTRIGGER_UTAREASSIGN']._serialized_start=2678
+  _globals['_UTACTIONTRIGGER_UTAREASSIGN']._serialized_end=2831
+  _globals['_UTACTIONTRIGGER_UTHOOK']._serialized_start=2833
+  _globals['_UTACTIONTRIGGER_UTHOOK']._serialized_end=2879
+  _globals['_EXPONENTIALBACKOFFRETRYPOLICY']._serialized_start=2891
+  _globals['_EXPONENTIALBACKOFFRETRYPOLICY']._serialized_end=2990
+  _globals['_TASKNODE']._serialized_start=2993
+  _globals['_TASKNODE']._serialized_end=3322
+  _globals['_INLINESTRUCTDEF']._serialized_start=3325
+  _globals['_INLINESTRUCTDEF']._serialized_end=3476
+  _globals['_INLINESTRUCTDEF_FIELDSENTRY']._serialized_start=3402
+  _globals['_INLINESTRUCTDEF_FIELDSENTRY']._serialized_end=3476
+  _globals['_STRUCTFIELDDEF']._serialized_start=3479
+  _globals['_STRUCTFIELDDEF']._serialized_end=3639
+  _globals['_LHPATH']._serialized_start=3641
+  _globals['_LHPATH']._serialized_end=3754
+  _globals['_LHPATH_SELECTOR']._serialized_start=3695
+  _globals['_LHPATH_SELECTOR']._serialized_end=3754
 # @@protoc_insertion_point(module_scope)

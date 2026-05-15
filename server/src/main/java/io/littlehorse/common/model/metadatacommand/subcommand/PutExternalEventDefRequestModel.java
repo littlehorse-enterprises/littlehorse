@@ -91,7 +91,7 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
 
         contentType.getOutputType().ifPresent(typeDef -> {
             try {
-                typeDef.validateStructDefExists(context.metadataManager());
+                typeDef.validateStructDefExistsAndPinVersion(context.metadataManager());
             } catch (UnknownStructDefException e) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, e.getMessage());
             }

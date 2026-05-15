@@ -4,7 +4,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
-import java.util.Objects;
+import io.littlehorse.sdk.common.proto.VariableType;
 
 /**
  * LHPrimitiveType is a class that represents a primitive type in the LittleHorse workflow SDK.
@@ -13,15 +13,11 @@ import java.util.Objects;
  */
 public class LHPrimitiveType extends LHClassType {
 
-    private final LHTypeAdapterRegistry typeAdapterRegistry;
-
-    public LHPrimitiveType(Class<?> clazz) {
-        this(clazz, LHTypeAdapterRegistry.empty());
-    }
+    private final VariableType primitiveType;
 
     public LHPrimitiveType(Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) {
-        super(clazz);
-        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
+        super(clazz, typeAdapterRegistry);
+        this.primitiveType = LHLibUtil.javaClassToLHVarType(this.clazz, typeAdapterRegistry);
     }
 
     @Override
@@ -31,8 +27,6 @@ public class LHPrimitiveType extends LHClassType {
 
     @Override
     public TypeDefinition getTypeDefinition() {
-        return TypeDefinition.newBuilder()
-                .setPrimitiveType(LHLibUtil.javaClassToLHVarType(this.clazz, typeAdapterRegistry))
-                .build();
+        return TypeDefinition.newBuilder().setPrimitiveType(this.primitiveType).build();
     }
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { getServerVersion } from '@/app/actions/getServerVersion'
+import { routes } from '@/app/routes'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import LhLogo from '@/littlehorse.svg'
 import { FC } from 'react'
@@ -17,13 +18,12 @@ export const Header: FC = () => {
     async ([_cacheKey, tenantIdForRequest]) => getServerVersion(tenantIdForRequest)
   )
 
-  const serverLabel =
-    serverVersionError !== undefined ? '—' : serverVersion === undefined ? '…' : serverVersion
+  const serverLabel = serverVersionError !== undefined ? '—' : serverVersion === undefined ? '…' : serverVersion
 
   return (
     <nav className="mb-4 border-gray-200 bg-black px-8 dark:bg-gray-900">
       <div className="mx-auto flex flex-wrap items-center justify-between py-4">
-        <LinkWithTenant href="/" className="flex items-center space-x-1 rtl:space-x-reverse">
+        <LinkWithTenant href={routes.appRoot()} className="flex items-center space-x-1 rtl:space-x-reverse">
           <LhLogo className="h-8 fill-white" />
           <div className="hidden flex-col gap-0 space-y-[-10px] text-xl font-bold text-white md:flex">
             <span>LITTLE</span>
@@ -36,9 +36,7 @@ export const Header: FC = () => {
             title="LittleHorse server (GetServerVersion) · dashboard build"
           >
             <span className="text-gray-500">Server</span> {serverLabel}
-            <span className="ml-2 text-xs opacity-70">
-              · UI {process.env.NEXT_PUBLIC_VERSION ?? 'v0.0.0-dev'}
-            </span>
+            <span className="ml-2 text-xs opacity-70">· UI {process.env.NEXT_PUBLIC_VERSION ?? 'v0.0.0-dev'}</span>
           </span>
           <TenantSelector />
           <Principal />

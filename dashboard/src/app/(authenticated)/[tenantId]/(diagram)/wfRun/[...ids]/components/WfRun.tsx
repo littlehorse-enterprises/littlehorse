@@ -3,6 +3,7 @@ import { Diagram } from '@/app/(authenticated)/[tenantId]/(diagram)/components/D
 import { ThreadType } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { getWfRun, WfRunResponse } from '@/app/actions/getWfRun'
+import { routes } from '@/app/routes'
 import { wfRunIdToPath } from '@/app/utils'
 import { Separator } from '@/components/ui/separator'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
@@ -15,15 +16,12 @@ import { Variables } from './Variables'
 export const WfRun: FC<WfRunResponse> = wfRunData => {
   const { tenantId } = useWhoAmI()
   const wfRunId = wfRunData.wfRun.id
+  const swrKey = wfRunId ? `wfRun/${tenantId}/${wfRunIdToPath(wfRunId)}` : null
 
-  if (!wfRunId) {
-    return null
-  }
-
-  const swrKey = `wfRun/${tenantId}/${wfRunIdToPath(wfRunId)}`
-
-  const { data } = useSWR(swrKey, async () => await getWfRun({ wfRunId, tenantId }), { fallbackData: wfRunData })
-  const { wfSpec, wfRun, variables } = data
+  const { data } = useSWR(swrKey, async () => await getWfRun({ wfRunId: wfRunId!, tenantId }), {
+    fallbackData: wfRunData,
+  })
+  const { wfSpec, wfRun, variables } = data ?? wfRunData
 
   const initialThread = useMemo<ThreadType>(() => {
     const tr = wfRun.threadRuns.find(t => t.number === wfRun.greatestThreadrunNumber)
@@ -48,8 +46,13 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
 
   const wfSpecUrl = useMemo(() => {
     const { name, majorVersion, revision } = wfRun.wfSpecId ?? {}
-    return `/wfSpec/${name}/${majorVersion}/${revision}`
+    if (name == null || majorVersion == null || revision == null) return ''
+    return routes.wfSpec.detailWithRevision(name, majorVersion, revision)
   }, [wfRun.wfSpecId])
+
+  if (!wfRunId) {
+    return null
+  }
 
   return (
     <div className="mb-16">

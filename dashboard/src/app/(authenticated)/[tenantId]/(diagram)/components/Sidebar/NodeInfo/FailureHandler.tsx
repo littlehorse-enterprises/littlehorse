@@ -2,7 +2,7 @@ import { FailureHandlerDef } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { useDiagram } from '../../../hooks/useDiagram'
-import { ChevronRight, ScanIcon } from 'lucide-react'
+import { ScanIcon } from 'lucide-react'
 
 export const FailureHandler: FC<{ failureHandlers: FailureHandlerDef[] }> = ({ failureHandlers }) => {
   const { setThread } = useDiagram()

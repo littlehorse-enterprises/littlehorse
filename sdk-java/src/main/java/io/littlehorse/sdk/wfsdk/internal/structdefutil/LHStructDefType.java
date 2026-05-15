@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,17 +27,27 @@ import java.util.stream.Collectors;
 public class LHStructDefType extends LHClassType {
     private List<LHStructDefType> dependencyClasses;
     private InlineStructDef inlineStructDef;
-    private final LHTypeAdapterRegistry typeAdapterRegistry;
 
     private List<LHStructProperty> structProperties;
 
+    /**
+     * Constructor for LHStructDefType that does not take a type adapter registry.
+     *
+     * If you want to use Type Adapters with your StructDef, use {@link #LHStructDefType(Class, LHTypeAdapterRegistry)} instead and provide an explicit type adapter registry.
+     *
+     * @param clazz The Java class representing the StructDef.
+     */
     public LHStructDefType(Class<?> clazz) {
         this(clazz, LHTypeAdapterRegistry.empty());
     }
 
+    /**
+     * Constructor for LHStructDefType.
+     * @param clazz The Java class representing the StructDef.
+     * @param typeAdapterRegistry The type adapter registry to use when generating StructDef definitions from Java classes.
+     */
     public LHStructDefType(Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) {
-        super(clazz);
-        this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
+        super(clazz, typeAdapterRegistry);
 
         if (!clazz.isAnnotationPresent(LHStructDef.class)) {
             throw new IllegalArgumentException(
@@ -63,6 +72,7 @@ public class LHStructDefType extends LHClassType {
         return TypeDefinition.newBuilder()
                 .setStructDefId(StructDefId.newBuilder()
                         .setName(this.getStructDefAnnotation().value())
+                        .setVersion(-1)
                         .build())
                 .build();
     }
@@ -70,7 +80,7 @@ public class LHStructDefType extends LHClassType {
     public StructDefId getStructDefId() {
         String structName = this.getStructDefAnnotation().value();
 
-        return StructDefId.newBuilder().setName(structName).build();
+        return StructDefId.newBuilder().setName(structName).setVersion(-1).build();
     }
 
     private LHStructDef getStructDefAnnotation() {

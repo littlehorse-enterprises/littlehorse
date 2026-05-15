@@ -84,6 +84,26 @@ public class WfRunVariableTest
         Assert.Equal("Value cannot be null. (Parameter 'parent')", exception.Message);
     }
 
+    [Fact]
+    public void WfRunVariable_CreateStructByName_ShouldUseLatestVersionSentinel()
+    {
+        var wfRunVariable = WfRunVariable.CreateStructDefVar("customer", "customer", _parentWfThread);
+
+        Assert.Equal(TypeDefinition.DefinedTypeOneofCase.StructDefId, wfRunVariable.TypeDef.DefinedTypeCase);
+        Assert.Equal("customer", wfRunVariable.TypeDef.StructDefId.Name);
+        Assert.Equal(-1, wfRunVariable.TypeDef.StructDefId.Version);
+    }
+
+    [Fact]
+    public void WfRunVariable_CreateStructByNameAndVersion_ShouldUseProvidedVersion()
+    {
+        var wfRunVariable = WfRunVariable.CreateStructDefVar("customer", "customer", 7, _parentWfThread);
+
+        Assert.Equal(TypeDefinition.DefinedTypeOneofCase.StructDefId, wfRunVariable.TypeDef.DefinedTypeCase);
+        Assert.Equal("customer", wfRunVariable.TypeDef.StructDefId.Name);
+        Assert.Equal(7, wfRunVariable.TypeDef.StructDefId.Version);
+    }
+
     [Theory]
     [InlineData(VariableType.Str)]
     [InlineData(VariableType.Int)]

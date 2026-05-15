@@ -108,7 +108,7 @@ public class StructDefExample {
         // New worker
         List<LHTaskWorker> workers = getTaskWorkers(config);
 
-        registerStructDefs(config.getBlockingStub(), ParkingTicketReport.class, Person.class, Address.class);
+        registerStructDefs(config.getBlockingStub(), ParkingTicketReport.class, Address.class, Person.class);
 
         // Register tasks if they don't exist
         for (LHTaskWorker worker : workers) {
@@ -126,6 +126,11 @@ public class StructDefExample {
     }
 
     public static void runWf(String[] args) throws IOException {
+        if (args.length < 3) {
+            throw new IllegalArgumentException("Usage: <vehicleMake> <vehicleModel> <licensePlateNumber>. "
+                    + "Use a plate starting with 'NOADDR' to demo nullable Person.homeAddress.");
+        }
+
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
         LittleHorseBlockingStub client = config.getBlockingStub();
@@ -140,6 +145,10 @@ public class StructDefExample {
                 new ParkingTicketReport(vehicleMake, vehicleModel, licensePlateNumber, new Date());
 
         System.out.println("Generated parking ticket report from arguments: \n" + parkingTicketReport);
+        if (licensePlateNumber.startsWith("NOADDR")) {
+            System.out.println("Nullable demo: this plate will produce a Person with null homeAddress "
+                    + "(allowed by @LHStructField(isNullable = true)).");
+        }
 
         client.runWf(RunWfRequest.newBuilder()
                 .setWfSpecName("issue-parking-ticket")

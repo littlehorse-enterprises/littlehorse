@@ -252,7 +252,7 @@ public class WorkflowThread
         return wfRunVariable;
     }
 
-    private WfRunVariable AddStructVariable(string name, LHStructDefType structDefType)
+    private WfRunVariable AddStructVariable(string name, LHClassType structDefType)
     {
         CheckIfWorkflowThreadIsActive();
         var lastNode = FindNode(LastNodeName);
@@ -262,7 +262,7 @@ public class WorkflowThread
                 "You cannot add a variable in a given thread after the thread has completed.");
         }
 
-        var wfRunVariable = WfRunVariable.CreateStructDefVar(name, structDefType, this);
+        var wfRunVariable = WfRunVariable.CreateVarFromLHClassType(name, structDefType, this);
         _wfRunVariables.Add(wfRunVariable);
 
         return wfRunVariable;
@@ -527,6 +527,28 @@ public class WorkflowThread
     }
 
     /// <summary>
+    /// Creates a native LittleHorse ARRAY variable in the ThreadSpec.
+    /// </summary>
+    /// <param name="name">It is the name of the variable.</param>
+    /// <param name="elementType">It is the .NET type of each element in the array.</param>
+    /// <returns>The value of WfRunVariable.</returns>
+    public WfRunVariable DeclareArray(string name, Type elementType)
+    {
+        if (elementType == null)
+        {
+            throw new ArgumentNullException(nameof(elementType));
+        }
+
+        if (elementType == typeof(byte))
+        {
+            throw new ArgumentException("byte[] is BYTES in LittleHorse. Use DeclareBytes for BYTES.");
+        }
+
+        var arrayType = elementType.MakeArrayType();
+        return AddStructVariable(name, new LHArrayType(arrayType));
+    }
+
+    /// <summary>
     /// Creates a Struct variable based on a StructDef-annotated class.
     /// </summary>
     /// <param name="name">
@@ -539,6 +561,39 @@ public class WorkflowThread
     public WfRunVariable DeclareStruct(string name, Type structType)
     {
         return AddStructVariable(name, new LHStructDefType(structType));
+    }
+
+    /// <summary>
+    /// Creates a Struct variable based on a StructDef name. Uses latest StructDef version.
+    /// </summary>
+    /// <param name="name">
+    /// It is the name of the variable.
+    /// </param>
+    /// <param name="structDefName">
+    /// It is the name of the StructDef.
+    /// </param>
+    /// <returns>The value of WfRunVariable.</returns>
+    public WfRunVariable DeclareStruct(string name, string structDefName)
+    {
+        return AddStructVariable(name, new LHStructDefId(structDefName));
+    }
+
+    /// <summary>
+    /// Creates a Struct variable based on a StructDef name and version.
+    /// </summary>
+    /// <param name="name">
+    /// It is the name of the variable.
+    /// </param>
+    /// <param name="structDefName">
+    /// It is the name of the StructDef.
+    /// </param>
+    /// <param name="structDefVersion">
+    /// It is the version of the StructDef.
+    /// </param>
+    /// <returns>The value of WfRunVariable.</returns>
+    public WfRunVariable DeclareStruct(string name, string structDefName, int structDefVersion)
+    {
+        return AddStructVariable(name, new LHStructDefId(structDefName, structDefVersion));
     }
 
     

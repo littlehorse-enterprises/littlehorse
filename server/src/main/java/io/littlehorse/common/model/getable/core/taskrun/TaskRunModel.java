@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
@@ -17,6 +18,7 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyM
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.IngressTypeUtils;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
@@ -341,12 +343,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 && returnType.isPresent()
                 && taskRunReport.getOutput() != null) {
             try {
-                if (!returnType.get().isCompatibleWith(taskRunReport.getOutput(), executionContext.metadataManager())) {
-                    taskOutputValidationError =
-                            String.format("Task output is incompatible with declared return type %s", returnType.get());
-                }
-            } catch (LHApiException ex) {
-                taskOutputValidationError = ex.getMessage();
+                IngressTypeUtils.applyExpectedTypeAndValidate(
+                        returnType, taskRunReport.getOutput(), executionContext.metadataManager());
+            } catch (TypeValidationException ex) {
+                taskOutputValidationError = "Task output incompatible with declared return type: " + ex.getMessage();
             }
         }
 

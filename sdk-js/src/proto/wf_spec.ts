@@ -17,19 +17,10 @@ import {
   variableTypeToJSON,
   variableTypeToNumber,
 } from "./common_enums";
-import {
-  Comparator,
-  comparatorFromJSON,
-  comparatorToJSON,
-  comparatorToNumber,
-  TaskNode,
-  UTActionTrigger,
-  VariableAssignment,
-  VariableDef,
-  VariableMutation,
-} from "./common_wfspec";
+import { TaskNode, UTActionTrigger, VariableAssignment, VariableDef, VariableMutation } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { ExternalEventDefId, WfSpecId, WorkflowEventDefId } from "./object_id";
+import { Comparator, comparatorFromJSON, comparatorToJSON, comparatorToNumber } from "./type_definition";
 
 /** Determines the Access Level for a Variable in a ThreadSpec/WfSpec. */
 export enum WfRunVariableAccessLevel {

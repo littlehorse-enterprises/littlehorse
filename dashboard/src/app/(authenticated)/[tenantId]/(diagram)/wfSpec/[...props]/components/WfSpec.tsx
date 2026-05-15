@@ -1,6 +1,7 @@
 'use client'
 import { DiagramProvider, NodeInContext } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
+import { routes } from '@/app/routes'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { WfSpec as Spec } from 'littlehorse-client/proto'
 import { LucidePlayCircle } from 'lucide-react'
@@ -11,6 +12,7 @@ import { Details } from './Details'
 import { ScheduledWfRuns } from './ScheduledWfRuns'
 import { Thread } from './Thread'
 import { WfRuns } from './WfRuns'
+import { WfSpecMetrics } from './metrics'
 
 type WfSpecProps = {
   spec: Spec
@@ -27,7 +29,7 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
   }, [spec, setModal, setShowModal])
   return (
     <>
-      <Navigation href="/" title="Go back to WfSpecs" />
+      <Navigation href={routes.appRoot()} title="Go back to WfSpecs" />
       <div className="flex items-center justify-between">
         <Details status={spec.status} id={spec.id} />
         <button className="flex items-center gap-1 rounded-sm bg-blue-500 p-2 px-4 text-white" onClick={onClick}>
@@ -38,6 +40,11 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
       <DiagramProvider value={{ thread, setThread, selectedNode, setSelectedNode }}>
         <Diagram spec={spec} />
       </DiagramProvider>
+      {spec.id && (
+        <div className="mb-12">
+          <WfSpecMetrics wfSpecId={spec.id} />
+        </div>
+      )}
       {Object.keys(spec.threadSpecs)
         .reverse()
         .map(name => (

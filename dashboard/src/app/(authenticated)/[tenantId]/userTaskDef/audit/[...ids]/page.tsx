@@ -1,6 +1,7 @@
 import { Details } from '@/app/(authenticated)/[tenantId]/components/Details'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { getUserTaskRun } from '@/app/actions/getUserTaskRun'
+import { routes } from '@/app/routes'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ClientError, Status } from 'nice-grpc-common'
@@ -26,7 +27,7 @@ export default async function Page({ params: { ids, tenantId } }: Props) {
           description={{
             wfRunId: (
               <Button variant="link" className="p-0" asChild>
-                <LinkWithTenant href={`/wfRun/${wfRunId}`}>{wfRunId}</LinkWithTenant>
+                <LinkWithTenant href={routes.wfRun.detail(wfRunId)}>{wfRunId}</LinkWithTenant>
               </Button>
             ),
             userTaskRunId: userTaskGuid,

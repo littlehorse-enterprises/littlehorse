@@ -12,7 +12,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LHTaskMethod {
-
     /**
      * Optional TaskDef description to publish when registering this task.
      *

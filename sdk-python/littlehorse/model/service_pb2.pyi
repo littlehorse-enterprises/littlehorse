@@ -3,6 +3,7 @@ import datetime
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 from google.protobuf import empty_pb2 as _empty_pb2
 import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
+import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 import littlehorse.model.variable_pb2 as _variable_pb2
@@ -80,9 +81,9 @@ class PutTaskDefRequest(_message.Message):
     DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
     name: str
     input_vars: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.VariableDef]
-    return_type: _common_wfspec_pb2.ReturnType
+    return_type: _type_definition_pb2.ReturnType
     description: str
-    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., return_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ..., description: _Optional[str] = ...) -> None: ...
+    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., return_type: _Optional[_Union[_type_definition_pb2.ReturnType, _Mapping]] = ..., description: _Optional[str] = ...) -> None: ...
 
 class PutStructDefRequest(_message.Message):
     __slots__ = ("name", "description", "struct_def", "allowed_updates")
@@ -117,8 +118,8 @@ class PutWorkflowEventDefRequest(_message.Message):
     NAME_FIELD_NUMBER: _ClassVar[int]
     CONTENT_TYPE_FIELD_NUMBER: _ClassVar[int]
     name: str
-    content_type: _common_wfspec_pb2.ReturnType
-    def __init__(self, name: _Optional[str] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
+    content_type: _type_definition_pb2.ReturnType
+    def __init__(self, name: _Optional[str] = ..., content_type: _Optional[_Union[_type_definition_pb2.ReturnType, _Mapping]] = ...) -> None: ...
 
 class PutUserTaskDefRequest(_message.Message):
     __slots__ = ("name", "fields", "description")
@@ -138,9 +139,9 @@ class PutExternalEventDefRequest(_message.Message):
     CORRELATED_EVENT_CONFIG_FIELD_NUMBER: _ClassVar[int]
     name: str
     retention_policy: _external_event_pb2.ExternalEventRetentionPolicy
-    content_type: _common_wfspec_pb2.ReturnType
+    content_type: _type_definition_pb2.ReturnType
     correlated_event_config: _external_event_pb2.CorrelatedEventConfig
-    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ..., correlated_event_config: _Optional[_Union[_external_event_pb2.CorrelatedEventConfig, _Mapping]] = ...) -> None: ...
+    def __init__(self, name: _Optional[str] = ..., retention_policy: _Optional[_Union[_external_event_pb2.ExternalEventRetentionPolicy, _Mapping]] = ..., content_type: _Optional[_Union[_type_definition_pb2.ReturnType, _Mapping]] = ..., correlated_event_config: _Optional[_Union[_external_event_pb2.CorrelatedEventConfig, _Mapping]] = ...) -> None: ...
 
 class PutExternalEventRequest(_message.Message):
     __slots__ = ("wf_run_id", "external_event_def_id", "guid", "content", "thread_run_number", "node_run_position")
@@ -609,6 +610,26 @@ class PrincipalIdList(_message.Message):
     results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.PrincipalId]
     bookmark: bytes
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.PrincipalId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
+class SearchQuotaRequest(_message.Message):
+    __slots__ = ("bookmark", "limit", "tenant_id", "principal")
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    TENANT_ID_FIELD_NUMBER: _ClassVar[int]
+    PRINCIPAL_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    tenant_id: str
+    principal: _object_id_pb2.PrincipalId
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., tenant_id: _Optional[str] = ..., principal: _Optional[_Union[_object_id_pb2.PrincipalId, _Mapping]] = ...) -> None: ...
+
+class QuotaIdList(_message.Message):
+    __slots__ = ("results", "bookmark")
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_acls_pb2.QuotaId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_acls_pb2.QuotaId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchExternalEventRequest(_message.Message):
     __slots__ = ("bookmark", "limit", "earliest_start", "latest_start", "external_event_def_id", "is_claimed")

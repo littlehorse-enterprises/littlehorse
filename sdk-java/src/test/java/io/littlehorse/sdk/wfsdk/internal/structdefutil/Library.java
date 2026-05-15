@@ -6,12 +6,13 @@ import io.littlehorse.sdk.worker.LHStructField;
 import io.littlehorse.sdk.worker.LHStructIgnore;
 
 @LHStructDef("library")
-class Library {
+public class Library {
     public String name;
     public String[] books = null;
     public int ignoredField;
     public WfRunId maskedField;
     public String stringWithDefault = "hello";
+    public String[] lhArrayWithDefault = new String[] {"a", "b"};
 
     public Library() {}
 
@@ -55,5 +56,13 @@ class Library {
 
     public void setStringWithDefault(String val) {
         this.stringWithDefault = val;
+    }
+
+    public String[] getLhArrayWithDefault() {
+        return this.lhArrayWithDefault;
+    }
+
+    public void setLhArrayWithDefault(String[] val) {
+        this.lhArrayWithDefault = val;
     }
 }
