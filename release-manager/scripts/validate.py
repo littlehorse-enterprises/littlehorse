@@ -9,7 +9,7 @@ from config import REPO_ROOT, VERSION_FILE
 
 RELEASE_TYPES = ["snapshot", "rc", "major", "minor", "patch"]
 
-SNAPSHOT_RE = re.compile(r"^\d+\.\d+\.\d+-SNAPSHOT$")
+SNAPSHOT_RE = re.compile(r"^\d+\.\d+-SNAPSHOT$")
 RC_RE = re.compile(r"^\d+\.\d+\.\d+-RC\d+$")
 STABLE_RE = re.compile(r"^\d+\.\d+\.\d+$")
 
@@ -114,17 +114,27 @@ def check_gradle_snapshot() -> bool:
     return False
 
 
+def expected_branch_for_snapshot(version: str) -> str:
+    """Return the expected release branch for a snapshot version (e.g. '1.1' for '1.1-SNAPSHOT')."""
+    match = re.match(r"^(\d+\.\d+)-SNAPSHOT$", version)
+    if match:
+        return match.group(1)
+    raise ValueError(f"Cannot derive branch from snapshot version '{version}'")
+
+
 def validate_snapshot(version: str) -> bool:
     ok = True
-    ok = check_version_format(version, SNAPSHOT_RE, "X.Y.Z-SNAPSHOT") and ok
-    branch = get_current_branch()
-    if branch != "master" and branch != expected_branch(version):
-        print(
-            f"ERROR: Snapshots must be on 'master' or '{expected_branch(version)}', "
-            f"but currently on '{branch}'",
-            file=sys.stderr,
-        )
-        ok = False
+    ok = check_version_format(version, SNAPSHOT_RE, "X.Y-SNAPSHOT") and ok
+    if ok:
+        branch = get_current_branch()
+        exp = expected_branch_for_snapshot(version)
+        if branch != "master" and branch != exp:
+            print(
+                f"ERROR: Snapshots must be on 'master' or '{exp}', "
+                f"but currently on '{branch}'",
+                file=sys.stderr,
+            )
+            ok = False
     ok = check_gradle_snapshot() and ok
     return ok
 
