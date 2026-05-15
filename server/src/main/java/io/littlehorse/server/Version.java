@@ -5,8 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Version {
-    private static final Pattern pattern =
-            Pattern.compile("(?<major>0|[1-9]\\d*)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-(?<prerelease>[a-zA-Z0-9]+))?");
+    private static final Pattern pattern = Pattern.compile(
+            "(?<major>0|[1-9]\\d*)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-(?<prerelease>[a-zA-Z0-9]+))?");
     private static final Matcher matcher = pattern.matcher(io.littlehorse.server.ServerVersion.VERSION);
 
     public static LittleHorseVersion getCurrentServerVersion() {

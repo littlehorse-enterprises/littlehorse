@@ -16,8 +16,7 @@ public class VersionTest {
         if (!LittleHorseVersionResponse.hasPatchVersion()) {
             expectedVersion = String.format(
                     "%s.%s",
-                    LittleHorseVersionResponse.getMajorVersion(),
-                    LittleHorseVersionResponse.getMinorVersion());
+                    LittleHorseVersionResponse.getMajorVersion(), LittleHorseVersionResponse.getMinorVersion());
         } else {
             expectedVersion = String.format(
                     "%s.%s.%s",
@@ -29,7 +28,8 @@ public class VersionTest {
         Assertions.assertThat(
                         LittleHorseVersionResponse.getPreReleaseIdentifier().isEmpty()
                                 ? expectedVersion
-                                : String.format("%s-%s", expectedVersion, LittleHorseVersionResponse.getPreReleaseIdentifier()))
+                                : String.format(
+                                        "%s-%s", expectedVersion, LittleHorseVersionResponse.getPreReleaseIdentifier()))
                 .isEqualTo(ServerVersion.VERSION);
     }
 }
