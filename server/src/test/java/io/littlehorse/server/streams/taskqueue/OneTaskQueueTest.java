@@ -7,6 +7,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.storeinternals.InMemoryGetableManager;
@@ -22,7 +23,7 @@ public class OneTaskQueueTest {
     private final String taskName = "my-task";
     private final PollTaskRequestObserver mockClient = mock(Answers.RETURNS_DEEP_STUBS);
     private final ScheduledTaskModel mockTask = mock(Answers.RETURNS_DEEP_STUBS);
-    private final TaskRunIdModel mockTaskRunId = mock(Answers.RETURNS_DEEP_STUBS);
+    private final TaskRunIdModel mockTaskRunId = new TaskRunIdModel(new WfRunIdModel("test"), "1_2");
     private final OneTaskQueue taskQueue =
             new OneTaskQueue(taskName, taskQueueManager, new TenantIdModel(LHConstants.DEFAULT_TENANT));
     private final TaskId streamsTaskId = TaskId.parse("0_2");
