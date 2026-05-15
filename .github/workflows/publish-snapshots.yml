@@ -1,33 +1,32 @@
-name: snapshot
-run-name: Snapshot ${{ github.ref_name }}
+name: publish-snapshots
+run-name: Publish Snapshots (${{ github.ref_name }})
 on:
   workflow_dispatch:
   push:
     branches:
       - master
+      - "[0-9]+.[0-9]+"
 
 permissions:
-      packages: write
-      contents: write
+  packages: write
+  contents: write
 jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      snapshot-version: ${{ steps.gradle_version.outputs.snapshot-version }}
+      snapshot-version: ${{ steps.compute_version.outputs.snapshot-version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: "corretto"
-          java-version: "17"
-      - name: Get Gradle version
-        id: gradle_version
+
+      - name: Compute snapshot version
+        id: compute_version
         run: |
-          ./gradlew clean
-          version=$(./gradlew version | head -n 1)
-          echo "snapshot-version=$version" >> $GITHUB_OUTPUT
+          version=$(grep "^version=" gradle.properties | cut -d= -f2)
+          major_minor=$(echo "$version" | cut -d. -f1-2)
+          snapshot_version="${major_minor}-SNAPSHOT"
+          echo "snapshot-version=$snapshot_version" >> $GITHUB_OUTPUT
+          echo "Computed snapshot version: $snapshot_version"
 
   publish-java-libraries:
     needs: prepare
@@ -41,6 +40,12 @@ jobs:
         with:
           distribution: "corretto"
           java-version: "17"
+
+      - name: Set snapshot version
+        env:
+          VERSION: ${{ needs.prepare.outputs.snapshot-version }}
+        run: sed -i "s/version=.*/version=${VERSION}/g" gradle.properties
+
       - name: Validate snapshot format
         env:
           VERSION: ${{ needs.prepare.outputs.snapshot-version }}
@@ -64,3 +69,9 @@ jobs:
           sdk-java:publishToSonatype
           test-utils:publishToSonatype
           test-utils-container:publishToSonatype
+
+  publish-docker:
+    needs: prepare
+    uses: ./.github/workflows/publish-docker.yml
+    with:
+      tag: ${{ needs.prepare.outputs.snapshot-version }}

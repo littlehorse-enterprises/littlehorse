@@ -57,6 +57,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
             type=ref,event=branch
 
@@ -83,6 +84,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
             type=ref,event=branch
 
@@ -103,6 +105,7 @@ jobs:
             COMMIT=${{ github.sha }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
             type=ref,event=branch
 
@@ -142,6 +145,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
             type=ref,event=branch
 
@@ -189,5 +193,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
             type=ref,event=branch
