@@ -23,12 +23,8 @@ jobs:
           distribution: "corretto"
           java-version: 25
 
-      - name: Dump version
-        if: inputs.tag != ''
-        run: sed -i "s/version=.*/version=${{ inputs.tag }}/g" gradle.properties
-
       - name: Tests and Build
-        run: ./gradlew server:test server:shadowJar server:installDist
+        run: ./gradlew server:test server:shadowJar server:installDist -Pversion=${{ inputs.tag }}
 
       - uses: actions/upload-artifact@v7
         with:
