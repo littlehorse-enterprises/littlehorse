@@ -27,7 +27,7 @@ jobs:
         id: extract
         working-directory: release-manager/scripts
         run: |
-          version=$(python3 extract_version.py)
+          version=$(python3 extract_version.py --snapshot)
           echo "version=$version" >> $GITHUB_OUTPUT
       - name: Validate snapshot
         working-directory: release-manager/scripts
