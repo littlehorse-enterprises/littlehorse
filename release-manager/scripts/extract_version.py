@@ -6,7 +6,7 @@ import subprocess
 import sys
 from typing import Optional
 
-from config import REPO_ROOT, VERSION_FILE
+from config import MAIN_BRANCH, REPO_ROOT, VERSION_FILE
 
 
 def get_current_branch() -> str:
@@ -63,7 +63,7 @@ def extract_version(snapshot: bool = False) -> str:
     """Determine the current version based on branch and tag context."""
     branch = get_current_branch()
 
-    if branch == "master":
+    if branch == MAIN_BRANCH:
         version = get_gradle_version()
         return strip_patch_from_snapshot(version) if snapshot else version
 

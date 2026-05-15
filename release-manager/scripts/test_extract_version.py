@@ -4,6 +4,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 import extract_version
+from config import MAIN_BRANCH
 
 
 def mock_git_result(stdout: str):
@@ -70,22 +71,22 @@ class TestStripPatchFromSnapshot(unittest.TestCase):
 
 class TestExtractVersion(unittest.TestCase):
     @patch("extract_version.get_gradle_version", return_value="1.1.0-SNAPSHOT")
-    @patch("extract_version.get_current_branch", return_value="master")
+    @patch("extract_version.get_current_branch", return_value=MAIN_BRANCH)
     def test_main_returns_full_version_by_default(self, _branch, _gradle):
         self.assertEqual(extract_version.extract_version(), "1.1.0-SNAPSHOT")
 
     @patch("extract_version.get_gradle_version", return_value="1.1.0-SNAPSHOT")
-    @patch("extract_version.get_current_branch", return_value="master")
+    @patch("extract_version.get_current_branch", return_value=MAIN_BRANCH)
     def test_main_strips_patch_with_snapshot_flag(self, _branch, _gradle):
         self.assertEqual(extract_version.extract_version(snapshot=True), "1.1-SNAPSHOT")
 
     @patch("extract_version.get_gradle_version", return_value="2.3.7-SNAPSHOT")
-    @patch("extract_version.get_current_branch", return_value="master")
+    @patch("extract_version.get_current_branch", return_value=MAIN_BRANCH)
     def test_main_strips_nonzero_patch_with_snapshot_flag(self, _branch, _gradle):
         self.assertEqual(extract_version.extract_version(snapshot=True), "2.3-SNAPSHOT")
 
     @patch("extract_version.get_gradle_version", return_value="2.3.7-SNAPSHOT")
-    @patch("extract_version.get_current_branch", return_value="master")
+    @patch("extract_version.get_current_branch", return_value=MAIN_BRANCH)
     def test_main_returns_full_version_without_snapshot_flag(self, _branch, _gradle):
         self.assertEqual(extract_version.extract_version(), "2.3.7-SNAPSHOT")
 
@@ -123,7 +124,7 @@ class TestExtractVersion(unittest.TestCase):
         mock_gradle.assert_not_called()
 
     @patch("extract_version.get_gradle_version", return_value="1.1.0")
-    @patch("extract_version.get_current_branch", return_value="master")
+    @patch("extract_version.get_current_branch", return_value=MAIN_BRANCH)
     def test_stable_version_unchanged_with_snapshot_flag(self, _branch, _gradle):
         self.assertEqual(extract_version.extract_version(snapshot=True), "1.1.0")
 

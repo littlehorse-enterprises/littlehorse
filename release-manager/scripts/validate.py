@@ -5,7 +5,7 @@ import re
 import subprocess
 import sys
 
-from config import REPO_ROOT, VERSION_FILE
+from config import MAIN_BRANCH, REPO_ROOT, VERSION_FILE
 
 RELEASE_TYPES = ["snapshot", "rc", "major", "minor", "patch"]
 
@@ -128,9 +128,9 @@ def validate_snapshot(version: str) -> bool:
     if ok:
         branch = get_current_branch()
         exp = expected_branch_for_snapshot(version)
-        if branch != "master" and branch != exp:
+        if branch != MAIN_BRANCH and branch != exp:
             print(
-                f"ERROR: Snapshots must be on 'master' or '{exp}', "
+                f"ERROR: Snapshots must be on '{MAIN_BRANCH}' or '{exp}', "
                 f"but currently on '{branch}'",
                 file=sys.stderr,
             )
@@ -142,7 +142,7 @@ def validate_snapshot(version: str) -> bool:
 def validate_rc(version: str) -> bool:
     ok = True
     ok = check_version_format(version, RC_RE, "X.Y.Z-RC<N>") and ok
-    ok = check_branch_is_not("master") and ok
+    ok = check_branch_is_not(MAIN_BRANCH) and ok
     if ok:
         ok = check_branch_is(expected_branch(version)) and ok
     return ok
@@ -159,7 +159,7 @@ def validate_major(version: str) -> bool:
                 file=sys.stderr,
             )
             ok = False
-    ok = check_branch_is_not("master") and ok
+    ok = check_branch_is_not(MAIN_BRANCH) and ok
     if ok:
         ok = check_branch_is(expected_branch(version)) and ok
     return ok
@@ -176,7 +176,7 @@ def validate_minor(version: str) -> bool:
                 file=sys.stderr,
             )
             ok = False
-    ok = check_branch_is("master") and ok
+    ok = check_branch_is(MAIN_BRANCH) and ok
     return ok
 
 
@@ -191,7 +191,7 @@ def validate_patch(version: str) -> bool:
                 file=sys.stderr,
             )
             ok = False
-    ok = check_branch_is_not("master") and ok
+    ok = check_branch_is_not(MAIN_BRANCH) and ok
     if ok:
         ok = check_branch_is(expected_branch(version)) and ok
     return ok

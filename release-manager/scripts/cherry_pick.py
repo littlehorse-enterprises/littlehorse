@@ -5,7 +5,7 @@ import re
 import subprocess
 import sys
 
-from config import REPO_ROOT
+from config import MAIN_BRANCH, REPO_ROOT
 
 RELEASE_BRANCH_RE = re.compile(r"^\d+\.\d+$")
 
@@ -21,10 +21,10 @@ def run_git(*args: str) -> subprocess.CompletedProcess:
 
 def check_commit_on_master(commit: str) -> bool:
     """Verify the commit exists on the master branch."""
-    result = run_git("merge-base", "--is-ancestor", commit, "master")
+    result = run_git("merge-base", "--is-ancestor", commit, MAIN_BRANCH)
     if result.returncode != 0:
         print(
-            f"ERROR: Commit '{commit}' is not an ancestor of master",
+            f"ERROR: Commit '{commit}' is not an ancestor of {MAIN_BRANCH}",
             file=sys.stderr,
         )
         return False
