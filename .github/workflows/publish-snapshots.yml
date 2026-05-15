@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - "[0-9]+.[0-9]+"
+      - ci/minor-snapshots
 
 permissions:
   packages: write
@@ -14,19 +15,25 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      snapshot-version: ${{ steps.compute_version.outputs.snapshot-version }}
+      snapshot-version: ${{ steps.extract.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-
-      - name: Compute snapshot version
-        id: compute_version
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Extract version
+        id: extract
+        working-directory: release-manager/scripts
         run: |
-          version=$(grep "^version=" gradle.properties | cut -d= -f2)
-          major_minor=$(echo "$version" | cut -d. -f1-2)
-          snapshot_version="${major_minor}-SNAPSHOT"
-          echo "snapshot-version=$snapshot_version" >> $GITHUB_OUTPUT
-          echo "Computed snapshot version: $snapshot_version"
+          version=$(python3 extract_version.py)
+          echo "version=$version" >> $GITHUB_OUTPUT
+      - name: Validate snapshot
+        working-directory: release-manager/scripts
+        env:
+          VERSION: ${{ steps.extract.outputs.version }}
+        run: python3 validate.py --type snapshot --version "$VERSION"
 
   publish-java-libraries:
     needs: prepare
@@ -40,20 +47,6 @@ jobs:
         with:
           distribution: "corretto"
           java-version: "17"
-
-      - name: Set snapshot version
-        env:
-          VERSION: ${{ needs.prepare.outputs.snapshot-version }}
-        run: sed -i "s/version=.*/version=${VERSION}/g" gradle.properties
-
-      - name: Validate snapshot format
-        env:
-          VERSION: ${{ needs.prepare.outputs.snapshot-version }}
-        run: |
-          if ! printf '%s' "$VERSION" | grep -i -- '-SNAPSHOT$' >/dev/null; then
-              echo "ERROR: version does not end with -SNAPSHOT" >&2
-              exit 1
-          fi
 
       - name: Tests
         run: ./gradlew sdk-java:test test-utils:test test-utils-container:test
