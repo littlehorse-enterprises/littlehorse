@@ -46,7 +46,7 @@ All other manifests (`sdk-python/pyproject.toml`, `sdk-js/package.json`, `sdk-do
 Snapshots are development builds published from the `master` branch. They let consumers test unreleased features without waiting for a formal release.
 
 - **Version format:** `X.Y.Z-SNAPSHOT` (e.g. `1.1.0-SNAPSHOT`).
-- **Trigger:** Automated weekly via the [`weekly-snapshot`](../.github/workflows/weekly-snapshot.yml) GitHub Actions workflow (runs every Friday at midnight UTC), or on-demand(TODO).
+- **Trigger:** Automatically on every push to `master` via the [`snapshot`](../.github/workflows/snapshot.yml) GitHub Actions workflow. Can also be triggered manually via `workflow_dispatch`.
 - **Published to:**
   - **Maven:** Sonatype snapshot repository (`https://central.sonatype.com/repository/maven-snapshots/`).
   - **PyPI:** Not published (snapshots are Maven-only; Python users install from source).
@@ -54,23 +54,7 @@ Snapshots are development builds published from the `master` branch. They let co
   - **Docker:** Optional — images can be tagged `X.Y.Z-SNAPSHOT` or `latest-snapshot`.
 - **No Git tag is created.**
 
-**Automated workflow ([`weekly-snapshot.yml`](../.github/workflows/weekly-snapshot.yml)):**
-
-The GitHub Actions workflow handles the entire snapshot process automatically:
-
-1. **Prepare** — Checks out `master`, reads the version from `gradle.properties`, and validates it ends with `-SNAPSHOT`.
-2. **Test** — Runs `sdk-java`, `test-utils`, and `test-utils-container` test suites.
-3. **Publish** — Publishes Java artifacts to the Sonatype snapshot repository (no staging/close step needed):
-   ```bash
-   ./gradlew sdk-java:publishToSonatype test-utils:publishToSonatype test-utils-container:publishToSonatype
-   ```
-
-**Manual snapshot (if needed):**
-
-```bash
-# Ensure gradle.properties has the -SNAPSHOT suffix, then:
-./gradlew sdk-java:publishToSonatype test-utils:publishToSonatype test-utils-container:publishToSonatype
-```
+The entire process is automated by the [`snapshot.yml`](../.github/workflows/snapshot.yml) GitHub Actions workflow.
 
 ---
 
@@ -111,7 +95,7 @@ Release candidates (RC) are pre-release versions intended for final validation b
 5. **Publish artifacts** (see [Publishing Details](#publishing-details)).
 6. **Validation** — Stakeholders test the RC. If issues are found:
    - Fix them on `master` first.
-   - Cherry-pick the fixes onto the `X.Y` branch using the [`cherry-pick`](../.github/workflows/cherry-pick.yml) workflow.
+   - Cherry-pick the fixes onto the `X.Y` branch using the [`cherry-pick` (TODO)](../.github/workflows/cherry-pick.yml) workflow.
    - Cut `RC<N+1>` from the release branch.
 
 ---
