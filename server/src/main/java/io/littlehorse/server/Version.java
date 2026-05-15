@@ -13,8 +13,11 @@ public class Version {
         if (matcher.matches()) {
             LittleHorseVersion.Builder builder = LittleHorseVersion.newBuilder()
                     .setMajorVersion(Integer.parseInt(matcher.group("major")))
-                    .setMinorVersion(Integer.parseInt(matcher.group("minor")))
-                    .setPatchVersion(Integer.parseInt(matcher.group("patch")));
+                    .setMinorVersion(Integer.parseInt(matcher.group("minor")));
+
+            if (matcher.group("patch") != null) {
+                builder.setPatchVersion(Integer.parseInt(matcher.group("patch")));
+            }
 
             if (matcher.group("prerelease") != null) {
                 builder.setPreReleaseIdentifier(matcher.group("prerelease"));

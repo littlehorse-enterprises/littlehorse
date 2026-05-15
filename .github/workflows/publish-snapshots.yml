@@ -62,6 +62,7 @@ jobs:
           sdk-java:publishToSonatype
           test-utils:publishToSonatype
           test-utils-container:publishToSonatype
+          -Pversion=${{ needs.prepare.outputs.snapshot-version }}
 
   publish-docker:
     needs: prepare
