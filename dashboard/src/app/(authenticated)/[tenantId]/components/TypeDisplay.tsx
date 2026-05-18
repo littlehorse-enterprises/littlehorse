@@ -1,4 +1,5 @@
 import { formatTypeDefinition } from '@/app/utils'
+import { routes } from '@/app/routes'
 import { TypeBadge } from '@/components/ui/badge'
 import { TypeDefinition } from 'littlehorse-client/proto'
 import { FC } from 'react'
@@ -23,7 +24,7 @@ export const TypeDisplay: FC<Props> = ({ definedType }) => {
         <TypeBadge>
           <LinkWithTenant
             className="flex underline"
-            href={`/structDef/${definedType.value.name}/${definedType.value.version}`}
+            href={routes.structDef.detail(definedType.value.name, definedType.value.version)}
           >
             {`Struct<${definedType.value.name},${definedType.value.version}>`}
           </LinkWithTenant>

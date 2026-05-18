@@ -248,6 +248,33 @@ export const getTypedVariableValue = (
 }
 
 /**
+ * Converts a VariableValue (from a `VariableDef.defaultValue`) into the
+ * representation used by primitive form fields in the Execute WfRun form.
+ *
+ * Returns `undefined` for non-primitive cases (struct, array, bytes, wfRunId)
+ * since those need bespoke rendering.
+ */
+export const getPrimitiveFormDefaultValue = (defaultValue?: VariableValue): unknown => {
+  const union = defaultValue?.value
+  if (!union) return undefined
+
+  switch (union.$case) {
+    case 'bool':
+      return union.value ? 'true' : 'false'
+    case 'int':
+    case 'double':
+      return union.value
+    case 'str':
+    case 'jsonObj':
+    case 'jsonArr':
+    case 'utcTimestamp':
+      return union.value
+    default:
+      return undefined
+  }
+}
+
+/**
  * After 0.13.2, the `VariableDef.type` and `VariableDef.maskedValue` fields are deprecated.
  * These fields are replaced with `VariableDef.typeDef`.
  *

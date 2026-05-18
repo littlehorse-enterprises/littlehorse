@@ -1,5 +1,6 @@
 'use client'
 import { SEARCH_ENTITIES, SearchType } from '@/app/constants'
+import { routes } from '@/app/routes'
 import LinkWithTenant from './LinkWithTenant'
 
 import { FC } from 'react'
@@ -20,7 +21,7 @@ export const SearchHeader: FC<Props> = ({ currentType }) => {
           {SEARCH_ENTITIES.map(type => (
             <LinkWithTenant
               key={type}
-              href={`?type=${type}`}
+              href={routes.search.typeQuery(type)}
               className={`block p-2 ${type === currentType ? 'bg-gray-100' : ''}`}
             >
               {type}
