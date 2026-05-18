@@ -9,4 +9,4 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 VERSION_FILE = REPO_ROOT / "gradle.properties"
 
 # Main branch name
-MAIN_BRANCH = "ci/minor-snapshots"
+MAIN_BRANCH = "master"
