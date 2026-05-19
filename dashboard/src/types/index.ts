@@ -1,4 +1,4 @@
-import { ThreadVarDef } from 'littlehorse-client/proto'
+import { ThreadVarDef, TypeDefinition } from 'littlehorse-client/proto'
 import { DefaultSession } from 'next-auth'
 import { FieldValues, UseFormRegister } from 'react-hook-form'
 
@@ -33,6 +33,13 @@ export type WfSpecData = {
 export type TaskDefData = {
   name: string
   createdAt: Date | undefined
+  description?: string
+  inputVarCount: number
+  returnType?: TypeDefinition['definedType']
+  /** null when the server did not return worker group info */
+  connectedWorkers: number | null
+  /** null when queue depth is unavailable on this server */
+  queueDepth: number | null
 }
 
 export type FormFieldProp = {

@@ -2,7 +2,52 @@
 
 import { uniqueInOrder } from '@/app/utils'
 import { TaskDefData } from '@/types'
+import { CountScheduledTaskRunRequest, LittleHorseClient, TaskDefId } from 'littlehorse-client/proto'
+import { ClientError, Status } from 'nice-grpc-common'
 import { lhClient } from '../lhClient'
+
+async function fetchConnectedWorkers(client: LittleHorseClient, name: string): Promise<number | null> {
+  try {
+    const group = await client.getTaskWorkerGroup({ name })
+    return group ? Object.keys(group.taskWorkers).length : 0
+  } catch (error) {
+    if (error instanceof ClientError && error.code === Status.NOT_FOUND) return 0
+    return null
+  }
+}
+
+async function fetchQueueDepth(client: LittleHorseClient, name: string): Promise<number | null> {
+  const request: CountScheduledTaskRunRequest = { taskDefName: name }
+  try {
+    const response = await client.countScheduledTaskRun(request)
+    return Number(response.value)
+  } catch (error) {
+    if (error instanceof ClientError && (error.code === Status.UNIMPLEMENTED || error.code === Status.NOT_FOUND)) {
+      return null
+    }
+    throw error
+  }
+}
+
+async function fetchTaskDefRow(client: LittleHorseClient, name: string): Promise<TaskDefData | null> {
+  const taskDef = await client.getTaskDef({ name })
+  if (!taskDef) return null
+
+  const [connectedWorkers, queueDepth] = await Promise.all([
+    fetchConnectedWorkers(client, name),
+    fetchQueueDepth(client, name),
+  ])
+
+  return {
+    name,
+    createdAt: taskDef.createdAt ? new Date(taskDef.createdAt) : undefined,
+    description: taskDef.description,
+    inputVarCount: taskDef.inputVars.length,
+    returnType: taskDef.returnType?.returnType?.definedType,
+    connectedWorkers,
+    queueDepth,
+  }
+}
 
 export async function getTaskDefs(tenantId: string, taskDefNames: string[]): Promise<TaskDefData[]> {
   const client = await lhClient({ tenantId })
@@ -11,13 +56,8 @@ export async function getTaskDefs(tenantId: string, taskDefNames: string[]): Pro
   const taskDefMap = new Map<string, TaskDefData>()
   await Promise.all(
     uniqueOrdered.map(async name => {
-      const taskDef = await client.getTaskDef({ name })
-      if (!taskDef) return
-
-      taskDefMap.set(name, {
-        name,
-        createdAt: taskDef.createdAt ? new Date(taskDef.createdAt) : undefined,
-      })
+      const row = await fetchTaskDefRow(client, name)
+      if (row) taskDefMap.set(name, row)
     })
   )
 
