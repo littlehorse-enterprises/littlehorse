@@ -36,6 +36,7 @@ javadoc {
 
 spotbugs {
     excludeFilter = file('spotbugs-exclude.xml')
+    baselineFile = file("$rootDir/server-spotbugs-baseline.xml")
 }
 
 tasks.spotbugsMain {
