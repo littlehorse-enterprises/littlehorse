@@ -1,4 +1,5 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
+import { routes } from '@/app/routes'
 import { getVariableCaseFromType, VARIABLE_CASE_LABELS } from '@/app/utils'
 import { AccessLevelBadge, MaskedBadge, OptionalBadge, RequiredBadge, TypeBadge } from '@/components/ui/badge'
 import { FieldLabel } from '@/components/ui/field'
@@ -23,7 +24,7 @@ const FormLabel: FC<FormLabelProps> = ({ label, variableType, structDefId, acces
           <TypeBadge>
             <LinkWithTenant
               className="underline"
-              href={`/structDef/${structDefId.name}/${structDefId.version}`}
+              href={routes.structDef.detail(structDefId.name, structDefId.version)}
             >{`Struct<${structDefId.name},${structDefId.version}>`}</LinkWithTenant>
           </TypeBadge>
         )}

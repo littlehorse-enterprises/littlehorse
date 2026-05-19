@@ -1842,7 +1842,9 @@ export interface LittleHorseVersion {
   /** Server Minor Version */
   minorVersion: number;
   /** Server Patch Version */
-  patchVersion: number;
+  patchVersion?:
+    | number
+    | undefined;
   /**
    * Prerelease Identifier. If this is set, then the server is NOT a production release
    * but rather a release candidate or experimental pre-release.
@@ -11351,7 +11353,7 @@ export const GetLatestWfSpecRequest = {
 };
 
 function createBaseLittleHorseVersion(): LittleHorseVersion {
-  return { majorVersion: 0, minorVersion: 0, patchVersion: 0, preReleaseIdentifier: undefined };
+  return { majorVersion: 0, minorVersion: 0, patchVersion: undefined, preReleaseIdentifier: undefined };
 }
 
 export const LittleHorseVersion = {
@@ -11362,7 +11364,7 @@ export const LittleHorseVersion = {
     if (message.minorVersion !== 0) {
       writer.uint32(16).int32(message.minorVersion);
     }
-    if (message.patchVersion !== 0) {
+    if (message.patchVersion !== undefined) {
       writer.uint32(24).int32(message.patchVersion);
     }
     if (message.preReleaseIdentifier !== undefined) {
@@ -11419,7 +11421,7 @@ export const LittleHorseVersion = {
     return {
       majorVersion: isSet(object.majorVersion) ? globalThis.Number(object.majorVersion) : 0,
       minorVersion: isSet(object.minorVersion) ? globalThis.Number(object.minorVersion) : 0,
-      patchVersion: isSet(object.patchVersion) ? globalThis.Number(object.patchVersion) : 0,
+      patchVersion: isSet(object.patchVersion) ? globalThis.Number(object.patchVersion) : undefined,
       preReleaseIdentifier: isSet(object.preReleaseIdentifier)
         ? globalThis.String(object.preReleaseIdentifier)
         : undefined,
@@ -11434,7 +11436,7 @@ export const LittleHorseVersion = {
     if (message.minorVersion !== 0) {
       obj.minorVersion = Math.round(message.minorVersion);
     }
-    if (message.patchVersion !== 0) {
+    if (message.patchVersion !== undefined) {
       obj.patchVersion = Math.round(message.patchVersion);
     }
     if (message.preReleaseIdentifier !== undefined) {
@@ -11450,7 +11452,7 @@ export const LittleHorseVersion = {
     const message = createBaseLittleHorseVersion();
     message.majorVersion = object.majorVersion ?? 0;
     message.minorVersion = object.minorVersion ?? 0;
-    message.patchVersion = object.patchVersion ?? 0;
+    message.patchVersion = object.patchVersion ?? undefined;
     message.preReleaseIdentifier = object.preReleaseIdentifier ?? undefined;
     return message;
   },

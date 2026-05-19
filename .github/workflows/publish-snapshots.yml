@@ -1,33 +1,38 @@
-name: snapshot
-run-name: Snapshot ${{ github.ref_name }}
+name: publish-snapshots
+run-name: Publish Snapshots (${{ github.ref_name }})
 on:
   workflow_dispatch:
   push:
     branches:
       - master
+      - "[0-9]+.[0-9]+"
 
 permissions:
-      packages: write
-      contents: write
+  packages: write
+  contents: write
 jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      snapshot-version: ${{ steps.gradle_version.outputs.snapshot-version }}
+      snapshot-version: ${{ steps.extract.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Setup Java
-        uses: actions/setup-java@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          distribution: "corretto"
-          java-version: "17"
-      - name: Get Gradle version
-        id: gradle_version
+          python-version: "3.12"
+      - name: Extract version
+        id: extract
+        working-directory: release-manager/scripts
         run: |
-          ./gradlew clean
-          version=$(./gradlew version | head -n 1)
-          echo "snapshot-version=$version" >> $GITHUB_OUTPUT
+          version=$(python3 extract_version.py --snapshot)
+          echo "version=$version" >> $GITHUB_OUTPUT
+      - name: Validate snapshot
+        working-directory: release-manager/scripts
+        env:
+          VERSION: ${{ steps.extract.outputs.version }}
+        run: python3 validate.py --type snapshot --version "$VERSION"
 
   publish-java-libraries:
     needs: prepare
@@ -41,14 +46,6 @@ jobs:
         with:
           distribution: "corretto"
           java-version: "17"
-      - name: Validate snapshot format
-        env:
-          VERSION: ${{ needs.prepare.outputs.snapshot-version }}
-        run: |
-          if ! printf '%s' "$VERSION" | grep -i -- '-SNAPSHOT$' >/dev/null; then
-              echo "ERROR: version does not end with -SNAPSHOT" >&2
-              exit 1
-          fi
 
       - name: Tests
         run: ./gradlew sdk-java:test test-utils:test test-utils-container:test
@@ -64,3 +61,10 @@ jobs:
           sdk-java:publishToSonatype
           test-utils:publishToSonatype
           test-utils-container:publishToSonatype
+          -Pversion=${{ needs.prepare.outputs.snapshot-version }}
+
+  publish-docker:
+    needs: prepare
+    uses: ./.github/workflows/publish-docker.yml
+    with:
+      tag: ${{ needs.prepare.outputs.snapshot-version }}

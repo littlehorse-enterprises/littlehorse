@@ -86,7 +86,19 @@ private static final long serialVersionUID = 0L;
    * Server Patch Version
    * </pre>
    *
-   * <code>int32 patch_version = 3;</code>
+   * <code>optional int32 patch_version = 3;</code>
+   * @return Whether the patchVersion field is set.
+   */
+  @java.lang.Override
+  public boolean hasPatchVersion() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * Server Patch Version
+   * </pre>
+   *
+   * <code>optional int32 patch_version = 3;</code>
    * @return The patchVersion.
    */
   @java.lang.Override
@@ -108,7 +120,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasPreReleaseIdentifier() {
-    return ((bitField0_ & 0x00000001) != 0);
+    return ((bitField0_ & 0x00000002) != 0);
   }
   /**
    * <pre>
@@ -176,10 +188,10 @@ private static final long serialVersionUID = 0L;
     if (minorVersion_ != 0) {
       output.writeInt32(2, minorVersion_);
     }
-    if (patchVersion_ != 0) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       output.writeInt32(3, patchVersion_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 4, preReleaseIdentifier_);
     }
     getUnknownFields().writeTo(output);
@@ -199,11 +211,11 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, minorVersion_);
     }
-    if (patchVersion_ != 0) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(3, patchVersion_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(4, preReleaseIdentifier_);
     }
     size += getUnknownFields().getSerializedSize();
@@ -225,8 +237,11 @@ private static final long serialVersionUID = 0L;
         != other.getMajorVersion()) return false;
     if (getMinorVersion()
         != other.getMinorVersion()) return false;
-    if (getPatchVersion()
-        != other.getPatchVersion()) return false;
+    if (hasPatchVersion() != other.hasPatchVersion()) return false;
+    if (hasPatchVersion()) {
+      if (getPatchVersion()
+          != other.getPatchVersion()) return false;
+    }
     if (hasPreReleaseIdentifier() != other.hasPreReleaseIdentifier()) return false;
     if (hasPreReleaseIdentifier()) {
       if (!getPreReleaseIdentifier()
@@ -247,8 +262,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getMajorVersion();
     hash = (37 * hash) + MINOR_VERSION_FIELD_NUMBER;
     hash = (53 * hash) + getMinorVersion();
-    hash = (37 * hash) + PATCH_VERSION_FIELD_NUMBER;
-    hash = (53 * hash) + getPatchVersion();
+    if (hasPatchVersion()) {
+      hash = (37 * hash) + PATCH_VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + getPatchVersion();
+    }
     if (hasPreReleaseIdentifier()) {
       hash = (37 * hash) + PRE_RELEASE_IDENTIFIER_FIELD_NUMBER;
       hash = (53 * hash) + getPreReleaseIdentifier().hashCode();
@@ -431,13 +448,14 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.minorVersion_ = minorVersion_;
       }
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.patchVersion_ = patchVersion_;
+        to_bitField0_ |= 0x00000001;
       }
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.preReleaseIdentifier_ = preReleaseIdentifier_;
-        to_bitField0_ |= 0x00000001;
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -460,7 +478,7 @@ private static final long serialVersionUID = 0L;
       if (other.getMinorVersion() != 0) {
         setMinorVersion(other.getMinorVersion());
       }
-      if (other.getPatchVersion() != 0) {
+      if (other.hasPatchVersion()) {
         setPatchVersion(other.getPatchVersion());
       }
       if (other.hasPreReleaseIdentifier()) {
@@ -625,7 +643,19 @@ private static final long serialVersionUID = 0L;
      * Server Patch Version
      * </pre>
      *
-     * <code>int32 patch_version = 3;</code>
+     * <code>optional int32 patch_version = 3;</code>
+     * @return Whether the patchVersion field is set.
+     */
+    @java.lang.Override
+    public boolean hasPatchVersion() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <pre>
+     * Server Patch Version
+     * </pre>
+     *
+     * <code>optional int32 patch_version = 3;</code>
      * @return The patchVersion.
      */
     @java.lang.Override
@@ -637,7 +667,7 @@ private static final long serialVersionUID = 0L;
      * Server Patch Version
      * </pre>
      *
-     * <code>int32 patch_version = 3;</code>
+     * <code>optional int32 patch_version = 3;</code>
      * @param value The patchVersion to set.
      * @return This builder for chaining.
      */
@@ -653,7 +683,7 @@ private static final long serialVersionUID = 0L;
      * Server Patch Version
      * </pre>
      *
-     * <code>int32 patch_version = 3;</code>
+     * <code>optional int32 patch_version = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearPatchVersion() {

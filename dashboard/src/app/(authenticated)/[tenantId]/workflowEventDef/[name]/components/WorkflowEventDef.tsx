@@ -2,7 +2,8 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
+import { routes } from '@/app/routes'
 import { localDateTimeToUTCIsoString, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -22,7 +23,7 @@ type Props = {
 export const WorkflowEventDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('global')
   const tenantId = useParams().tenantId as string
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
@@ -43,7 +44,7 @@ export const WorkflowEventDef: FC<Props> = ({ spec }) => {
 
   return (
     <>
-      <Navigation href="/?type=WorkflowEventDef" title="Go back to WorkflowEventDef" />
+      <Navigation href={routes.search.homeWithType('WorkflowEventDef')} title="Go back to WorkflowEventDef" />
       <Details spec={spec} />
       <hr className="mt-6" />
       <div className="mb-4 mt-6 flex items-center justify-between">
@@ -97,7 +98,7 @@ export const WorkflowEventDef: FC<Props> = ({ spec }) => {
                             <LinkWithTenant
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${wfRunIdToPath(workflowEvent.id.wfRunId)}?threadRunNumber=${workflowEvent.nodeRunId?.threadRunNumber}&nodeRunName=${workflowEvent.nodeRunId?.position}-throw-${spec.id?.name}-THROW_EVENT`}
+                              href={`${routes.wfRun.detail(wfRunIdToPath(workflowEvent.id.wfRunId))}?threadRunNumber=${workflowEvent.nodeRunId?.threadRunNumber}&nodeRunName=${workflowEvent.nodeRunId?.position}-throw-${spec.id?.name}-THROW_EVENT`}
                             >
                               {wfRunIdToPath(workflowEvent.id.wfRunId)}
                             </LinkWithTenant>

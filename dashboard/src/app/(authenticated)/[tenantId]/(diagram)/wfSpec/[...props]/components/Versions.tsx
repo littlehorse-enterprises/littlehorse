@@ -1,4 +1,5 @@
 import { VersionSelector } from '@/app/(authenticated)/[tenantId]/components/VersionSelector'
+import { routes } from '@/app/routes'
 import { WfSpecId } from 'littlehorse-client/proto'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useState } from 'react'
@@ -17,7 +18,7 @@ export const Versions: FC<{ wfSpecId?: WfSpecId }> = ({ wfSpecId }) => {
 
   return (
     <VersionSelector
-      path={`/wfSpec/${props[0]}`}
+      path={routes.wfSpec.base(props![0] as string)}
       currentVersion={`${majorVersion}.${revision}`}
       versions={versions}
       loadVersions={loadVersions}

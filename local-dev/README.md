@@ -322,6 +322,15 @@ Note that we follow [Semantic Versioning](https://semver.org) and that `X` is th
 
 While SemVer frowns upon the `v` prefix, we need it because of how Go module releases work. Our pipeline removes the `v` from all generated artifacts (eg. `sdk-java` on maven, `sdk-python` on pypi, our docker images, etc).
 
+### Snapshot Publishing
+
+SNAPSHOT versions are published automatically on every push to `master` and release branches (e.g., `1.1`, `1.2`). The snapshot version is computed from `gradle.properties` by extracting the `major.minor` portion:
+
+- `master` with `version=1.2.0-SNAPSHOT` publishes as `1.2-SNAPSHOT`
+- Branch `1.1` with `version=1.1.1-SNAPSHOT` publishes as `1.1-SNAPSHOT`
+
+This is handled by the `publish-snapshots` workflow, which publishes both Java libraries (to Sonatype) and Docker images (to GHCR).
+
 ## Writing a Pull Request
 
 Here at LittleHorse, we use the [Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/) specification for writing pull request messages.

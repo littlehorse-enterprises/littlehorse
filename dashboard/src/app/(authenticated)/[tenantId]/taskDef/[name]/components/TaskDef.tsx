@@ -3,7 +3,8 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { PaginatedWfSpecList, searchWfSpecs } from '@/app/actions/getWfSpecsByTaskDef'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
+import { routes } from '@/app/routes'
 import { localDateTimeToUTCIsoString, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -30,8 +31,8 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const tenantId = useParams().tenantId as string
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
-  const [wfSpecLimit, setWfSpecLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('taskdef-task-runs')
+  const [wfSpecLimit, setWfSpecLimit] = usePersistedSearchLimit('taskdef-wf-specs')
   const taskDefName = spec.id?.name || ''
 
   const {
@@ -39,7 +40,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
     hasNextPage: wfSpecsHasNextPage,
     fetchNextPage: wfSpecsFetchNextPage,
   } = useInfiniteQuery({
-    queryKey: ['wfSpecs', tenantId, limit, taskDefName],
+    queryKey: ['wfSpecs', tenantId, wfSpecLimit, taskDefName],
     initialPageParam: undefined,
     getNextPageParam: (lastPage: PaginatedWfSpecList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
@@ -71,7 +72,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
 
   return (
     <>
-      <Navigation href="/?type=TaskDef" title="Go back to TaskDefs" />
+      <Navigation href={routes.search.homeWithType('TaskDef')} title="Go back to TaskDefs" />
       <Details spec={spec} />
       <TaskDefSchema spec={spec} />
 
@@ -86,7 +87,9 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                 .flatMap(page => page.results)
                 .map(wfSpec => (
                   <Fragment key={wfSpec.name}>
-                    <SelectionLink href={`/wfSpec/${wfSpec.name}/${wfSpec.majorVersion}.${wfSpec.revision}`}>
+                    <SelectionLink
+                      href={routes.wfSpec.detail(wfSpec.name, `${wfSpec.majorVersion}.${wfSpec.revision}`)}
+                    >
                       <p className="group">{wfSpec.name}</p>
                       <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
                         <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />v{wfSpec.majorVersion}.
@@ -173,7 +176,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                                   <LinkWithTenant
                                     className="py-2 text-blue-500 hover:underline"
                                     target="_blank"
-                                    href={`/wfRun/${wfRunIdToPath(taskRun.id.wfRunId)}?threadRunNumber=${taskRun.source?.taskRunSource?.value.nodeRunId?.threadRunNumber}`}
+                                    href={`${routes.wfRun.detail(wfRunIdToPath(taskRun.id.wfRunId))}?threadRunNumber=${taskRun.source?.taskRunSource?.value.nodeRunId?.threadRunNumber}`}
                                   >
                                     {wfRunIdToPath(taskRun.id.wfRunId)}
                                   </LinkWithTenant>

@@ -1,3 +1,4 @@
+import { routes } from '@/app/routes'
 import { UserTaskDefId } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { SearchResultProps } from '.'
@@ -14,7 +15,7 @@ export const UserTaskDefTable: FC<SearchResultProps> = ({ pages = [] }) => {
   return (
     <div className="py-4">
       {allResults.map(({ name, version }: UserTaskDefId) => (
-        <SelectionLink key={`${name}.${version}`} href={`/userTaskDef/${name}/${version}`}>
+        <SelectionLink key={`${name}.${version}`} href={routes.userTaskDef.detail(name, version)}>
           <p className="group">{name}</p>
           <VersionTag label={`Latest: v${version}`} />
         </SelectionLink>
