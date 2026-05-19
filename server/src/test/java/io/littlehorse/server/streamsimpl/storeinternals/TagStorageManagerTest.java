@@ -76,7 +76,7 @@ public class TagStorageManagerTest {
     void setup() {
         store.init(mockProcessorContext.getStateStoreContext(), store);
         globalMetadaataStore.init(mockProcessorContext.getStateStoreContext(), globalMetadaataStore);
-        tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig, mock());
+        tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, mock());
         tag1.setAttributes(List.of(wfSpecNameAttribute));
         tag2.setAttributes(List.of(wfSpecNameAttribute, statusAttribute));
         tags = List.of(tag1, tag2);

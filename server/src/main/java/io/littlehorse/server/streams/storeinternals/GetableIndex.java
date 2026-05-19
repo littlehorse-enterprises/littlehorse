@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.storeinternals;
 
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.proto.TagStorageType;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -21,7 +22,7 @@ public class GetableIndex<T extends AbstractGetable<?>> {
             TagStorageType tagStorageType,
             Predicate<T> conditional,
             boolean counted) {
-        this.attributes = attributes;
+        this.attributes = Collections.unmodifiableList(attributes);
         this.tagStorageType = tagStorageType;
         this.predicate = conditional;
         this.counted = counted;
