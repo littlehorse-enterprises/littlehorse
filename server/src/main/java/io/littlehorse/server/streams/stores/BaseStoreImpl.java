@@ -31,7 +31,7 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
     public void put(Storeable<?> thing) {
         String key = maybeAddTenantPrefix(thing.getFullStoreKey());
         if (metadataCache != null) {
-            metadataCache.evictCache(key);
+            metadataCache.update(key, null);
         }
         nativeStore.put(key, new Bytes(thing.toBytes()));
     }
@@ -40,14 +40,14 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
     public void delete(String storeKey, StoreableType type) {
         String fullKey = maybeAddTenantPrefix(Storeable.getFullStoreKey(type, storeKey));
         if (metadataCache != null) {
-            metadataCache.evictCache(fullKey);
+            metadataCache.update(fullKey, null);
         }
         nativeStore.delete(fullKey);
 
         String legacyKey = LHUtil.toLegacyFormat(fullKey);
         if (legacyKey != null) {
             if (metadataCache != null) {
-                metadataCache.evictCache(legacyKey);
+                metadataCache.update(legacyKey, null);
             }
             nativeStore.delete(legacyKey);
         }
