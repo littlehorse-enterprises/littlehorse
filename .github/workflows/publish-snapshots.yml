@@ -1,14 +1,15 @@
-name: snapshot
-run-name: Snapshot ${{ github.ref_name }}
+name: publish-snapshots
+run-name: Publish Snapshots (${{ github.ref_name }})
 on:
   workflow_dispatch:
   push:
     branches:
       - master
+      - "[0-9]+.[0-9]+"
 
 permissions:
-      packages: write
-      contents: write
+  packages: write
+  contents: write
 jobs:
   prepare:
     runs-on: ubuntu-latest
@@ -25,7 +26,7 @@ jobs:
         id: extract
         working-directory: release-manager/scripts
         run: |
-          version=$(python3 extract_version.py)
+          version=$(python3 extract_version.py --snapshot)
           echo "version=$version" >> $GITHUB_OUTPUT
       - name: Validate snapshot
         working-directory: release-manager/scripts
@@ -60,3 +61,10 @@ jobs:
           sdk-java:publishToSonatype
           test-utils:publishToSonatype
           test-utils-container:publishToSonatype
+          -Pversion=${{ needs.prepare.outputs.snapshot-version }}
+
+  publish-docker:
+    needs: prepare
+    uses: ./.github/workflows/publish-docker.yml
+    with:
+      tag: ${{ needs.prepare.outputs.snapshot-version }}

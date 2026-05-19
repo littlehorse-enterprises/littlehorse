@@ -35,9 +35,9 @@ The version is defined in a single place:
 
 | File | Field | Example |
 |---|---|---|
-| `gradle.properties` | `version` | `1.1.0-SNAPSHOT` / `1.1.0` |
+| `gradle.properties` | `version` | `1.1.0-SNAPSHOT` |
 
-All other manifests (`sdk-python/pyproject.toml`, `sdk-js/package.json`, `sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj`) have their versions set at publish time by the CI pipeline. The Go SDK version is derived from the Git tag automatically.
+All other manifests (`sdk-python/pyproject.toml`, `sdk-js/package.json`, `sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj`) have their versions set at publish time by the CI pipeline. The Go SDK version is derived from the Git tag automatically. For snapshots, the patch version is stripped at publish time (e.g. `1.1.0-SNAPSHOT` → `1.1-SNAPSHOT`).
 
 ## Release Types
 
@@ -45,16 +45,17 @@ All other manifests (`sdk-python/pyproject.toml`, `sdk-js/package.json`, `sdk-do
 
 Snapshots are development builds published from the `master` branch. They let consumers test unreleased features without waiting for a formal release.
 
-- **Version format:** `X.Y.Z-SNAPSHOT` (e.g. `1.1.0-SNAPSHOT`).
-- **Trigger:** Automatically on every push to `master` via the [`snapshot`](../.github/workflows/snapshot.yml) GitHub Actions workflow. Can also be triggered manually via `workflow_dispatch`.
+- **Version format:** `X.Y-SNAPSHOT` (e.g. `1.1-SNAPSHOT`). The patch version from `gradle.properties` is stripped — only the major and minor components are used.
+  - For example, if `gradle.properties` contains `1.1.7-SNAPSHOT`, the snapshot is published as `1.1-SNAPSHOT`.
+- **Trigger:** Automatically on every push to `master` via the [`publish-snapshots`](../.github/workflows/publish-snapshots.yml) GitHub Actions workflow. Can also be triggered manually via `workflow_dispatch`.
 - **Published to:**
   - **Maven:** Sonatype snapshot repository (`https://central.sonatype.com/repository/maven-snapshots/`).
   - **PyPI:** Not published (snapshots are Maven-only; Python users install from source).
   - **npm:** Not published (snapshot builds are Maven-only).
-  - **Docker:** Optional — images can be tagged `X.Y.Z-SNAPSHOT` or `latest-snapshot`.
+  - **Docker:** Optional — images can be tagged `X.Y-SNAPSHOT` or `latest-snapshot`.
 - **No Git tag is created.**
 
-The entire process is automated by the [`snapshot.yml`](../.github/workflows/snapshot.yml) GitHub Actions workflow.
+The entire process is automated by the [`publish-snapshots.yml`](../.github/workflows/publish-snapshots.yml) GitHub Actions workflow.
 
 ---
 

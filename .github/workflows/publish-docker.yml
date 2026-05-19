@@ -23,12 +23,8 @@ jobs:
           distribution: "corretto"
           java-version: 25
 
-      - name: Dump version
-        if: inputs.tag != ''
-        run: sed -i "s/version=.*/version=${{ inputs.tag }}/g" gradle.properties
-
       - name: Tests and Build
-        run: ./gradlew server:test server:shadowJar server:installDist
+        run: ./gradlew server:test server:shadowJar server:installDist -Pversion=${{ inputs.tag }}
 
       - uses: actions/upload-artifact@v7
         with:
@@ -57,6 +53,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
             type=ref,event=branch
 
@@ -83,6 +80,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
             type=ref,event=branch
 
@@ -103,6 +101,7 @@ jobs:
             COMMIT=${{ github.sha }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
             type=ref,event=branch
 
@@ -142,6 +141,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
             type=ref,event=branch
 
@@ -189,5 +189,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
             type=ref,event=branch
