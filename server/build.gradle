@@ -193,6 +193,7 @@ compileJava {
 }
 
 test {
+    dependsOn spotbugsMain
     useJUnitPlatform()
     filter {
         includeTestsMatching "io.littlehorse.**"
@@ -206,6 +207,7 @@ test {
 }
 
 task e2e(type: Test, dependsOn: [compileJava]){
+    dependsOn spotbugsMain
     systemProperty("api.version", "1.44") // Docker version compatible with {testcontainersVersion}
     useJUnitPlatform {
         excludeTags "slow"
