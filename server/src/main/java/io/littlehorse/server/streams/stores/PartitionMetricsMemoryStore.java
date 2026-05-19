@@ -7,10 +7,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 public class PartitionMetricsMemoryStore {
+
+    public PartitionMetricsMemoryStore() {}
 
     private final Map<String, PartitionMetricWindowModel> metrics = new HashMap<>();
     private final Map<String, PartitionCountedTagModel> countedTags = new HashMap<>();
@@ -19,16 +19,18 @@ public class PartitionMetricsMemoryStore {
         metrics.put(windowMetric.getStoreKey(), windowMetric);
     }
 
-    public void incrementCounted(TenantIdModel tenantId, String tagAttributes) {
-        countedTags
-                .computeIfAbsent(tagAttributes, k -> new PartitionCountedTagModel(tenantId, tagAttributes))
-                .increment();
+    public PartitionCountedTagModel incrementCounted(TenantIdModel tenantId, String tagAttributes) {
+        PartitionCountedTagModel current =
+                countedTags.computeIfAbsent(tagAttributes, k -> new PartitionCountedTagModel(tenantId, tagAttributes));
+        current.increment();
+        return current;
     }
 
-    public void decrementCounted(TenantIdModel tenantId, String tagAttributes) {
-        countedTags
-                .computeIfAbsent(tagAttributes, k -> new PartitionCountedTagModel(tenantId, tagAttributes))
-                .decrement();
+    public PartitionCountedTagModel decrementCounted(TenantIdModel tenantId, String tagAttributes) {
+        PartitionCountedTagModel current =
+                countedTags.computeIfAbsent(tagAttributes, k -> new PartitionCountedTagModel(tenantId, tagAttributes));
+        current.decrement();
+        return current;
     }
 
     public PartitionMetricWindowModel get(String storeKey) {
@@ -43,8 +45,8 @@ public class PartitionMetricsMemoryStore {
         return Collections.unmodifiableMap(countedTags);
     }
 
-    public void evictCountedTag(String key) {
-        countedTags.remove(key);
+    public PartitionCountedTagModel evictCountedTag(String key) {
+        return countedTags.remove(key);
     }
 
     public boolean hasEntries() {

@@ -241,7 +241,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             sendCountedTag(entry.getValue());
             toDelete.add(entry.getKey());
         }
-        toDelete.forEach(partitionMetricsMemoryStore::evictCountedTag);
+        toDelete.stream().map(partitionMetricsMemoryStore::evictCountedTag).forEach(store::delete);
     }
 
     private void sendCountedTag(PartitionCountedTagModel partitionCountedTag) {

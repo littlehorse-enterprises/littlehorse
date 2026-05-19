@@ -2,12 +2,14 @@ package io.littlehorse.server.streams.storeinternals;
 
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.PartitionCountedTagModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.storeinternals.index.CachedTag;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -28,6 +30,7 @@ public class TagStorageManager {
     private final LHServerConfig lhConfig;
     private final AuthorizationContext authContext;
     private final PartitionMetricsMemoryStore partitionMetrics;
+    private final ClusterScopedStore clusterScopedStore;
 
     public TagStorageManager(
             TenantScopedStore lhStore,
@@ -39,6 +42,7 @@ public class TagStorageManager {
         this.lhConfig = lhConfig;
         this.authContext = executionContext.authorization();
         this.partitionMetrics = executionContext.getPartitionMetricsMemoryStore();
+        this.clusterScopedStore = ClusterScopedStore.newInstance(executionContext.nativeCoreStore(), executionContext);
     }
 
     public void store(Collection<Tag> newTags, TagsCache preExistingTags) {
@@ -60,7 +64,9 @@ public class TagStorageManager {
 
     private void createTag(Tag tag) {
         if (tag.isCounted()) {
-            partitionMetrics.incrementCounted(authContext.tenantId(), tag.getAttributeString());
+            PartitionCountedTagModel currentAggregation =
+                    partitionMetrics.incrementCounted(authContext.tenantId(), tag.getAttributeString());
+            clusterScopedStore.put(currentAggregation);
         } else {
             lhStore.put(tag);
         }
@@ -71,7 +77,9 @@ public class TagStorageManager {
             String attributeString = extractAttributeStringFromStoreKey(cachedTag.getId());
             sendRepartitionCommandForRemoveRemoteTag(cachedTag.getId(), attributeString);
         } else if (cachedTag.isCounted()) {
-            partitionMetrics.decrementCounted(authContext.tenantId(), cachedTag.getAttributeString());
+            PartitionCountedTagModel currentAggregation =
+                    partitionMetrics.decrementCounted(authContext.tenantId(), cachedTag.getAttributeString());
+            clusterScopedStore.put(currentAggregation);
         } else {
             lhStore.delete(cachedTag.getId(), StoreableType.TAG);
         }
