@@ -4,7 +4,8 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { TableWrapper } from '@/app/(authenticated)/[tenantId]/components/tables/TableWrapper'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { WfRunResponse } from '@/app/actions/getWfRun'
-import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
+import { TIME_RANGES, TimeRange } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
 import { routes } from '@/app/routes'
 import { formatDate, getStatus, getVariableValue, wfRunIdToPath } from '@/app/utils'
 import { computeStartTimeWindow, StartTimeWindow } from '@/app/utils/dateTime'
@@ -139,7 +140,7 @@ export const WfRuns: FC<WfSpec> = spec => {
   const status = (searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL') as
     | LHStatus
     | 'ALL'
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('global')
   const [window, setWindow] = useState<TimeRange>(TIME_RANGES[0])
   const [sort, setSort] = useState<SortState>(defaultSort)
   const [variableFilter, setVariableFilter] = useState<VariableFilter | null>(null)
