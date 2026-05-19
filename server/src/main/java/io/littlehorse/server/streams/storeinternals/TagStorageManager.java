@@ -2,18 +2,16 @@ package io.littlehorse.server.streams.storeinternals;
 
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.LHTimer;
-import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.UpdateCountedTagModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.storeinternals.index.CachedTag;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
+import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,20 +27,22 @@ public class TagStorageManager {
     private final ProcessorContext<String, CommandProcessorOutput> context;
     private final LHServerConfig lhConfig;
     private final AuthorizationContext authContext;
+    private final PartitionMetricsMemoryStore partitionMetrics;
 
     public TagStorageManager(
             TenantScopedStore lhStore,
             ProcessorContext<String, CommandProcessorOutput> context,
             LHServerConfig lhConfig,
-            ExecutionContext executionContext) {
+            CoreProcessorContext executionContext) {
         this.lhStore = lhStore;
         this.context = context;
         this.lhConfig = lhConfig;
         this.authContext = executionContext.authorization();
+        this.partitionMetrics = executionContext.getPartitionMetricsMemoryStore();
     }
 
     public void store(Collection<Tag> newTags, TagsCache preExistingTags) {
-        List<String> newTagIds = newTags.stream().map(tag -> tag.getStoreKey()).toList();
+        List<String> newTagIds = newTags.stream().map(Tag::getStoreKey).toList();
         List<Tag> tagsToAdd = new ArrayList<>();
         for (Tag newTag : newTags) {
             if (!preExistingTags.contains(newTag)) {
@@ -60,7 +60,7 @@ public class TagStorageManager {
 
     private void createTag(Tag tag) {
         if (tag.isCounted()) {
-            this.sendCountedTag(tag);
+            partitionMetrics.incrementCounted(authContext.tenantId(), tag.getAttributeString());
         } else {
             lhStore.put(tag);
         }
@@ -71,7 +71,7 @@ public class TagStorageManager {
             String attributeString = extractAttributeStringFromStoreKey(cachedTag.getId());
             sendRepartitionCommandForRemoveRemoteTag(cachedTag.getId(), attributeString);
         } else if (cachedTag.isCounted()) {
-            sendDeleteCountedTag(cachedTag);
+            partitionMetrics.decrementCounted(authContext.tenantId(), cachedTag.getAttributeString());
         } else {
             lhStore.delete(cachedTag.getId(), StoreableType.TAG);
         }
@@ -93,39 +93,5 @@ public class TagStorageManager {
         Record<String, CommandProcessorOutput> out =
                 new Record<>(tagAttributeString, cpo, System.currentTimeMillis(), metadata);
         this.context.forward(out);
-    }
-
-    private void sendCountedTag(Tag tag) {
-        UpdateCountedTagModel updateCountedTag = new UpdateCountedTagModel(tag.getAttributeString());
-        CommandModel command = new CommandModel(updateCountedTag);
-        LHTimer timer = new LHTimer(command, true);
-        timer.topic = this.lhConfig.getCoreCmdTopicName();
-        CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.partitionKey = timer.getPartitionKey();
-        cpo.topic = this.lhConfig.getCoreCmdTopicName();
-        cpo.payload = timer;
-        Record<String, CommandProcessorOutput> out = new Record<>(
-                cpo.partitionKey,
-                cpo,
-                System.currentTimeMillis(),
-                HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId()));
-        context.forward(out);
-    }
-
-    private void sendDeleteCountedTag(CachedTag cachedTag) {
-        UpdateCountedTagModel updateCountedTag = new UpdateCountedTagModel(cachedTag.getAttributeString(), true);
-        CommandModel command = new CommandModel(updateCountedTag);
-        LHTimer timer = new LHTimer(command, true);
-        timer.topic = this.lhConfig.getCoreCmdTopicName();
-        CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.partitionKey = timer.getPartitionKey();
-        cpo.topic = this.lhConfig.getCoreCmdTopicName();
-        cpo.payload = timer;
-        Record<String, CommandProcessorOutput> out = new Record<>(
-                cpo.partitionKey,
-                cpo,
-                System.currentTimeMillis(),
-                HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId()));
-        context.forward(out);
     }
 }

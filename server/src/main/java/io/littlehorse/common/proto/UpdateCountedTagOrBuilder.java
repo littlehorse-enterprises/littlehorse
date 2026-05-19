@@ -27,4 +27,10 @@ public interface UpdateCountedTagOrBuilder extends
    * @return The delete.
    */
   boolean getDelete();
+
+  /**
+   * <code>int64 count = 3;</code>
+   * @return The count.
+   */
+  long getCount();
 }

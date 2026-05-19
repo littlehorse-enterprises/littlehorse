@@ -31,7 +31,11 @@ public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
 
     @Override
     public TagsCachePb.CachedTagPb.Builder toProto() {
-        return TagsCachePb.CachedTagPb.newBuilder().setId(id).setIsRemote(isRemote).setAttributeString(attributeString).setIsCounted(isCounted);
+        return TagsCachePb.CachedTagPb.newBuilder()
+                .setId(id)
+                .setIsRemote(isRemote)
+                .setAttributeString(attributeString)
+                .setIsCounted(isCounted);
     }
 
     @Override

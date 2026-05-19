@@ -7,6 +7,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.PartitionCountedTagModel;
 import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -14,6 +15,7 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.AggregateWindowMetricsModel;
+import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.UpdateCountedTagModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
@@ -38,8 +40,11 @@ import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
@@ -230,6 +235,32 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 }
             }
         }
+        List<String> toDelete = new ArrayList<>();
+        for (Map.Entry<String, PartitionCountedTagModel> entry :
+                partitionMetricsMemoryStore.getCountedTags().entrySet()) {
+            sendCountedTag(entry.getValue());
+            toDelete.add(entry.getKey());
+        }
+        toDelete.forEach(partitionMetricsMemoryStore::evictCountedTag);
+    }
+
+    private void sendCountedTag(PartitionCountedTagModel partitionCountedTag) {
+        UpdateCountedTagModel updateCountedTag =
+                new UpdateCountedTagModel(partitionCountedTag.getAttributeString(), partitionCountedTag.getCount());
+        CommandModel command = new CommandModel(updateCountedTag);
+        LHTimer timer = new LHTimer(command, true);
+        timer.topic = config.getCoreCmdTopicName();
+        CommandProcessorOutput cpo = new CommandProcessorOutput();
+        cpo.partitionKey = timer.getPartitionKey();
+        cpo.topic = config.getCoreCmdTopicName();
+        cpo.payload = timer;
+        Record<String, CommandProcessorOutput> out = new Record<>(
+                cpo.partitionKey,
+                cpo,
+                System.currentTimeMillis(),
+                HeadersUtil.metadataHeadersFor(
+                        partitionCountedTag.getTenantId(), new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
+        ctx.forward(out);
     }
 
     private long collectAndSendStoreMetrics(ClusterScopedStore store) {

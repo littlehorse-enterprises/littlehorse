@@ -53,7 +53,7 @@ class NodeRunModelIndexTest extends AbstractGetableIndexTest {
     }
 
     @Test
-    void shouldReturnNoIndexesWhenNotExternalEventNode() {
+    void shouldReturnDefaultIndexesWhenNotExternalEventNode() {
         NodeRun taskNodeProto = NodeRun.newBuilder()
                 .setId(NodeRunId.newBuilder()
                         .setWfRunId(WfRunId.newBuilder().setId("test-wf-run").build())
@@ -72,7 +72,7 @@ class NodeRunModelIndexTest extends AbstractGetableIndexTest {
                 .setTask(TaskNodeRun.newBuilder().build())
                 .build();
         NodeRunModel getable = NodeRunModel.fromProto(taskNodeProto, NodeRunModel.class, null);
-        assertThat(getable.getIndexEntries()).isEmpty();
+        assertThat(getable.getIndexEntries()).hasSize(3);
     }
 
     @Test

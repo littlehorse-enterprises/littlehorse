@@ -40,6 +40,7 @@ enum StoreableType {
     TIMER_ITERATOR_HINT = 13;
     METRICS_HINT = 14;
     COUNTED_TAG = 15;
+    PARTITION_COUNTED_TAG = 16;
 }
 
 enum GetableClassEnum {
@@ -171,4 +172,10 @@ message PartitionMetricWindow {
 
   // Metric name -> aggregated counts/timings.
   map<string, CountAndTiming> metrics = 2;
+}
+
+message PartitionCountedTag {
+  TenantId tenant_id = 1;
+  string attribute_string = 2;
+  int64 count = 3;
 }

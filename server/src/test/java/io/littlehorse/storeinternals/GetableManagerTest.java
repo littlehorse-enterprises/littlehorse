@@ -36,7 +36,6 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
-import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.UpdateCountedTagModel;
 import io.littlehorse.common.util.LHUtil;
@@ -356,7 +355,6 @@ public class GetableManagerTest {
                 .anyMatch(key ->
                         key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName\\_$.car.model_Escape"));
     }
-
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
@@ -694,9 +692,8 @@ public class GetableManagerTest {
         List<CommandModel> repartitionCommands = remoteCountedTagsCreated();
         assertThat(repartitionCommands).hasSize(3);
 
-        List<String> partitionKeys = repartitionCommands.stream()
-                .map(CommandModel::getPartitionKey)
-                .toList();
+        List<String> partitionKeys =
+                repartitionCommands.stream().map(CommandModel::getPartitionKey).toList();
 
         String wfSpecName = nodeRunModel.getWfSpecId().getName();
         int majorVersion = nodeRunModel.getWfSpecId().getMajorVersion();
