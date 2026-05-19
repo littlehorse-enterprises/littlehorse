@@ -53,6 +53,7 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructProperty;
 import io.littlehorse.sdk.worker.LHStructDef;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -568,6 +569,10 @@ public class LHLibUtil {
         LHStructDefType structDefType = (LHStructDefType) lhClassType;
 
         try {
+            if (clazz.isRecord()) {
+                return deserializeStructToRecord(struct, clazz, structDefType, typeAdapterRegistry);
+            }
+
             Object structObject = structDefType.createInstance();
 
             List<LHStructProperty> structProperties = structDefType.getStructProperties();
@@ -598,6 +603,53 @@ public class LHLibUtil {
                 | SecurityException e) {
             throw new LHSerdeException(e, "Failed deserializing Struct into Object");
         }
+    }
+
+    private static Object deserializeStructToRecord(
+            Struct struct,
+            Class<?> clazz,
+            LHStructDefType structDefType,
+            LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException, IntrospectionException, NoSuchMethodException, InvocationTargetException,
+                    InstantiationException, IllegalAccessException {
+        List<LHStructProperty> structProperties = structDefType.getStructProperties();
+        Map<String, LHStructProperty> byPropertyName = new HashMap<>();
+
+        for (LHStructProperty property : structProperties) {
+            byPropertyName.put(property.getPropertyName(), property);
+        }
+
+        RecordComponent[] recordComponents = clazz.getRecordComponents();
+        Class<?>[] canonicalArgTypes = new Class<?>[recordComponents.length];
+        Object[] canonicalArgValues = new Object[recordComponents.length];
+
+        for (int i = 0; i < recordComponents.length; i++) {
+            RecordComponent recordComponent = recordComponents[i];
+            LHStructProperty property = byPropertyName.get(recordComponent.getName());
+
+            if (property == null) {
+                throw new LHSerdeException(
+                        null,
+                        String.format(
+                                "Failed deserializing VariableValue into Struct because no such record component [%s] exists on class [%s]",
+                                recordComponent.getName(), clazz.getName()));
+            }
+
+            String fieldName = property.getFieldName();
+            if (!struct.getStruct().containsFields(fieldName)) {
+                throw new LHSerdeException(
+                        null,
+                        String.format(
+                                "Failed deserializing VariableValue into Struct because no such field [%s] exists on class [%s]",
+                                fieldName, clazz.getName()));
+            }
+
+            VariableValue fieldValue = struct.getStruct().getFieldsMap().get(fieldName).getValue();
+            canonicalArgTypes[i] = recordComponent.getType();
+            canonicalArgValues[i] = property.deserializeValue(fieldValue, typeAdapterRegistry);
+        }
+
+        return clazz.getDeclaredConstructor(canonicalArgTypes).newInstance(canonicalArgValues);
     }
 
     public static VariableValue objToVarVal(Object o) throws LHSerdeException {

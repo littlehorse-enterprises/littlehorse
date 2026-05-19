@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
@@ -99,6 +100,36 @@ public class LHStructDefTypeTest {
         @LHStructField(name = "isPersonAlive")
         public boolean isAlive;
     }
+
+        @LHStructDef("person-record")
+        record PersonRecord(String name, String address) {}
+
+        @LHStructDef("annotated-person-record")
+        record AnnotatedPersonRecord(String name, String ssn) {
+                @Override
+                @LHStructField(name = "fullName", isNullable = true)
+                public String name() {
+                        return name;
+                }
+
+                @Override
+                @LHStructField(masked = true)
+                public String ssn() {
+                        return ssn;
+                }
+        }
+
+        @LHStructDef("record-with-default")
+        record RecordWithDefaultCtor(String greeting) {
+                public RecordWithDefaultCtor() {
+                        this("hello");
+                }
+        }
+
+        @LHStructDef("component-annotated-record")
+        record ComponentAnnotatedRecord(
+                        @LHStructField(name = "displayName", isNullable = true) String name,
+                        @LHStructField(masked = true) String secret) {}
 
     class UnannotatedNestedPojo {
         public String value;
@@ -301,6 +332,91 @@ public class LHStructDefTypeTest {
                 .build();
 
         assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
+    }
+
+    @Test
+    public void getInlineStructDefFromRecordComponents() {
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(PersonRecord.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+
+        InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
+                .putFields(
+                        "name",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .build())
+                .putFields(
+                        "address",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .build())
+                .build();
+
+        assertThat(actualInlineStructDef).isEqualTo(expectedInlineStructDef);
+    }
+
+    @Test
+    public void getInlineStructDefFromRecordAccessorAnnotations() {
+        InlineStructDef actualInlineStructDef = new LHStructDefType(
+                        AnnotatedPersonRecord.class, LHTypeAdapterRegistry.empty())
+                .getInlineStructDef();
+
+        InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
+                .putFields(
+                        "fullName",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .setIsNullable(true)
+                                .build())
+                .putFields(
+                        "ssn",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.STR)
+                                        .setMasked(true))
+                                .build())
+                .build();
+
+        assertThat(actualInlineStructDef).isEqualTo(expectedInlineStructDef);
+    }
+
+    @Test
+    public void getInlineStructDefFromRecordComponentAnnotations() {
+        InlineStructDef actualInlineStructDef = new LHStructDefType(
+                        ComponentAnnotatedRecord.class, LHTypeAdapterRegistry.empty())
+                .getInlineStructDef();
+
+        InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
+                .putFields(
+                        "displayName",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .setIsNullable(true)
+                                .build())
+                .putFields(
+                        "secret",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.STR)
+                                        .setMasked(true))
+                                .build())
+                .build();
+
+        assertThat(actualInlineStructDef).isEqualTo(expectedInlineStructDef);
+    }
+
+    @Test
+    public void getInlineStructDefFromRecordWithNoArgCtorIncludesDefaultValue() {
+        InlineStructDef actualInlineStructDef = new LHStructDefType(
+                        RecordWithDefaultCtor.class, LHTypeAdapterRegistry.empty())
+                .getInlineStructDef();
+
+        StructFieldDef expectedFieldDef = StructFieldDef.newBuilder()
+                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                .setDefaultValue(VariableValue.newBuilder().setStr("hello"))
+                .build();
+
+        assertThat(actualInlineStructDef.getFieldsMap().get("greeting")).isEqualTo(expectedFieldDef);
     }
 
     @Test
