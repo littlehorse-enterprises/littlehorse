@@ -4,6 +4,8 @@ import subprocess
 import unittest
 from unittest.mock import MagicMock, patch
 
+from config import MAIN_BRANCH
+
 import validate
 
 
@@ -64,16 +66,32 @@ class TestParseHelpers(unittest.TestCase):
         self.assertEqual(validate.expected_branch("2.3.1"), "2.3")
         self.assertEqual(validate.expected_branch("0.12.0-SNAPSHOT"), "0.12")
 
+    def test_expected_branch_for_snapshot(self):
+        self.assertEqual(validate.expected_branch_for_snapshot("1.1-SNAPSHOT"), "1.1")
+        self.assertEqual(validate.expected_branch_for_snapshot("0.12-SNAPSHOT"), "0.12")
+        self.assertEqual(validate.expected_branch_for_snapshot("10.20-SNAPSHOT"), "10.20")
+
+    def test_expected_branch_for_snapshot_rejects_invalid(self):
+        with self.assertRaises(ValueError):
+            validate.expected_branch_for_snapshot("1.1.0-SNAPSHOT")
+        with self.assertRaises(ValueError):
+            validate.expected_branch_for_snapshot("1.1.0")
+        with self.assertRaises(ValueError):
+            validate.expected_branch_for_snapshot("not-a-version")
+
 
 class TestVersionFormat(unittest.TestCase):
     def test_snapshot_format_valid(self):
-        self.assertTrue(validate.check_version_format("1.1.0-SNAPSHOT", validate.SNAPSHOT_RE, ""))
+        self.assertTrue(validate.check_version_format("1.1-SNAPSHOT", validate.SNAPSHOT_RE, ""))
 
     def test_snapshot_format_rejects_stable(self):
         self.assertFalse(validate.check_version_format("1.1.0", validate.SNAPSHOT_RE, ""))
 
     def test_snapshot_format_rejects_rc(self):
         self.assertFalse(validate.check_version_format("1.1.0-RC1", validate.SNAPSHOT_RE, ""))
+
+    def test_snapshot_format_rejects_three_component_snapshot(self):
+        self.assertFalse(validate.check_version_format("1.1.0-SNAPSHOT", validate.SNAPSHOT_RE, ""))
 
     def test_rc_format_valid(self):
         self.assertTrue(validate.check_version_format("1.0.0-RC1", validate.RC_RE, ""))
@@ -99,23 +117,23 @@ class TestVersionFormat(unittest.TestCase):
 class TestCheckBranch(unittest.TestCase):
     @patch("validate.subprocess.run")
     def test_branch_is_match(self, mock_run):
-        mock_run.return_value = mock_git_branch("master")
-        self.assertTrue(validate.check_branch_is("master"))
+        mock_run.return_value = mock_git_branch(MAIN_BRANCH)
+        self.assertTrue(validate.check_branch_is(MAIN_BRANCH))
 
     @patch("validate.subprocess.run")
     def test_branch_is_mismatch(self, mock_run):
         mock_run.return_value = mock_git_branch("1.0")
-        self.assertFalse(validate.check_branch_is("master"))
+        self.assertFalse(validate.check_branch_is(MAIN_BRANCH))
 
     @patch("validate.subprocess.run")
     def test_branch_is_not_passes(self, mock_run):
         mock_run.return_value = mock_git_branch("1.0")
-        self.assertTrue(validate.check_branch_is_not("master"))
+        self.assertTrue(validate.check_branch_is_not(MAIN_BRANCH))
 
     @patch("validate.subprocess.run")
     def test_branch_is_not_fails(self, mock_run):
-        mock_run.return_value = mock_git_branch("master")
-        self.assertFalse(validate.check_branch_is_not("master"))
+        mock_run.return_value = mock_git_branch(MAIN_BRANCH)
+        self.assertFalse(validate.check_branch_is_not(MAIN_BRANCH))
 
 
 class TestCheckGitClean(unittest.TestCase):
@@ -163,26 +181,38 @@ class TestValidateSnapshot(unittest.TestCase):
     @patch("validate.check_gradle_snapshot", return_value=True)
     @patch("validate.subprocess.run")
     def test_valid_snapshot_on_main(self, mock_run, _mock_gradle):
-        mock_run.side_effect = git_side_effect("master", clean=True)
-        self.assertTrue(validate.validate_snapshot("1.1.0-SNAPSHOT"))
+        mock_run.side_effect = git_side_effect(MAIN_BRANCH, clean=True)
+        self.assertTrue(validate.validate_snapshot("1.1-SNAPSHOT"))
 
     @patch("validate.check_gradle_snapshot", return_value=True)
     @patch("validate.subprocess.run")
     def test_valid_snapshot_on_release_branch(self, mock_run, _mock_gradle):
         mock_run.side_effect = git_side_effect("2.0", clean=True)
-        self.assertTrue(validate.validate_snapshot("2.0.0-SNAPSHOT"))
+        self.assertTrue(validate.validate_snapshot("2.0-SNAPSHOT"))
 
     @patch("validate.check_gradle_snapshot", return_value=True)
     @patch("validate.subprocess.run")
     def test_snapshot_wrong_branch(self, mock_run, _mock_gradle):
         mock_run.side_effect = git_side_effect("2.0", clean=True)
-        self.assertFalse(validate.validate_snapshot("1.1.0-SNAPSHOT"))
+        self.assertFalse(validate.validate_snapshot("1.1-SNAPSHOT"))
 
     @patch("validate.check_gradle_snapshot", return_value=True)
     @patch("validate.subprocess.run")
     def test_snapshot_bad_format(self, mock_run, _mock_gradle):
-        mock_run.side_effect = git_side_effect("master", clean=True)
+        mock_run.side_effect = git_side_effect(MAIN_BRANCH, clean=True)
         self.assertFalse(validate.validate_snapshot("1.1.0"))
+
+    @patch("validate.check_gradle_snapshot", return_value=True)
+    @patch("validate.subprocess.run")
+    def test_snapshot_rejects_three_component(self, mock_run, _mock_gradle):
+        mock_run.side_effect = git_side_effect(MAIN_BRANCH, clean=True)
+        self.assertFalse(validate.validate_snapshot("1.1.0-SNAPSHOT"))
+
+    @patch("validate.check_gradle_snapshot", return_value=False)
+    @patch("validate.subprocess.run")
+    def test_snapshot_fails_when_gradle_not_snapshot(self, mock_run, _mock_gradle):
+        mock_run.side_effect = git_side_effect(MAIN_BRANCH, clean=True)
+        self.assertFalse(validate.validate_snapshot("1.1-SNAPSHOT"))
 
 
 class TestValidateRC(unittest.TestCase):
@@ -193,7 +223,7 @@ class TestValidateRC(unittest.TestCase):
 
     @patch("validate.subprocess.run")
     def test_rc_on_main_rejected(self, mock_run):
-        mock_run.side_effect = git_side_effect("master", clean=True)
+        mock_run.side_effect = git_side_effect(MAIN_BRANCH, clean=True)
         self.assertFalse(validate.validate_rc("1.0.0-RC1"))
 
     @patch("validate.subprocess.run")
@@ -215,7 +245,7 @@ class TestValidateMajor(unittest.TestCase):
 
     @patch("validate.subprocess.run")
     def test_major_on_main_rejected(self, mock_run):
-        mock_run.side_effect = git_side_effect("master", clean=True)
+        mock_run.side_effect = git_side_effect(MAIN_BRANCH, clean=True)
         self.assertFalse(validate.validate_major("2.0.0"))
 
     @patch("validate.subprocess.run")
@@ -232,7 +262,7 @@ class TestValidateMajor(unittest.TestCase):
 class TestValidateMinor(unittest.TestCase):
     @patch("validate.subprocess.run")
     def test_valid_minor_on_main(self, mock_run):
-        mock_run.side_effect = git_side_effect("master", clean=True)
+        mock_run.side_effect = git_side_effect(MAIN_BRANCH, clean=True)
         self.assertTrue(validate.validate_minor("1.2.0"))
 
     @patch("validate.subprocess.run")
@@ -242,7 +272,7 @@ class TestValidateMinor(unittest.TestCase):
 
     @patch("validate.subprocess.run")
     def test_minor_with_nonzero_patch(self, mock_run):
-        mock_run.side_effect = git_side_effect("master", clean=True)
+        mock_run.side_effect = git_side_effect(MAIN_BRANCH, clean=True)
         self.assertFalse(validate.validate_minor("1.2.3"))
 
 
@@ -254,7 +284,7 @@ class TestValidatePatch(unittest.TestCase):
 
     @patch("validate.subprocess.run")
     def test_patch_on_main_rejected(self, mock_run):
-        mock_run.side_effect = git_side_effect("master", clean=True)
+        mock_run.side_effect = git_side_effect(MAIN_BRANCH, clean=True)
         self.assertFalse(validate.validate_patch("1.0.1"))
 
     @patch("validate.subprocess.run")

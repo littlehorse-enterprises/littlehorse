@@ -25,7 +25,11 @@ var versionCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 		} else {
-			serverVersion := fmt.Sprintf("%d.%d.%d", resp.MajorVersion, resp.MinorVersion, resp.PatchVersion)
+			serverVersion := fmt.Sprintf("%d.%d", resp.MajorVersion, resp.MinorVersion)
+
+			if resp.PatchVersion != nil {
+				serverVersion = fmt.Sprintf("%s.%d", serverVersion, *resp.PatchVersion)
+			}
 
 			if resp.PreReleaseIdentifier != nil {
 				serverVersion = serverVersion + "-" + *resp.PreReleaseIdentifier

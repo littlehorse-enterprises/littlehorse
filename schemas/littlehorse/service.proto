@@ -1758,7 +1758,7 @@ message LittleHorseVersion {
   int32 minor_version = 2;
 
   // Server Patch Version
-  int32 patch_version = 3;
+  optional int32 patch_version = 3;
 
   // Prerelease Identifier. If this is set, then the server is NOT a production release
   // but rather a release candidate or experimental pre-release.
