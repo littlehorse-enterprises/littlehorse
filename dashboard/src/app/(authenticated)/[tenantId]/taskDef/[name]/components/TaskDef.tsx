@@ -21,7 +21,7 @@ import { mutate } from 'swr'
 import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
 import { TaskDefHeader } from './TaskDefHeader'
 import { TaskDefMetrics } from './metrics'
-import { TaskDefOverview } from './TaskDefOverview'
+import { TaskDefConnectedWorkersCard, TaskDefQueueDepthCard } from './TaskDefOverview'
 import { TaskDefWorkers } from './TaskDefWorkers'
 
 type Props = {
@@ -103,10 +103,26 @@ export const TaskDef: FC<Props> = ({ spec }) => {
     <div className="space-y-8 pb-12">
       <Navigation href={routes.search.homeWithType('TaskDef')} title="Go back to TaskDefs" />
 
-      <TaskDefHeader spec={spec} />
-      <hr className="mt-6" />
+      <div className="flex flex-col gap-4">
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={refreshAll}
+            disabled={isRefreshing}
+            className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-60"
+            aria-label="Refresh overview"
+          >
+            <RefreshCwIcon className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
+        </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-[1.2fr_1fr_1fr]">
+          <TaskDefHeader spec={spec} className="h-full" />
+          <TaskDefQueueDepthCard taskDefName={taskDefName} isRefreshing={isRefreshing} />
+          <TaskDefConnectedWorkersCard taskDefName={taskDefName} isRefreshing={isRefreshing} />
+        </div>
+      </div>
 
-      <TaskDefOverview taskDefName={taskDefName} isRefreshing={isRefreshing} onRefresh={refreshAll} />
       <TaskDefWorkers taskDefName={taskDefName} isRefreshing={isRefreshing} onRefresh={refreshAll} />
 
       {spec.id && <TaskDefMetrics taskDefId={spec.id} />}
