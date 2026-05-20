@@ -4,7 +4,6 @@ import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
-import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
@@ -82,25 +81,13 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     }
 
     private <U extends Message, T extends Storeable<U>> T getMetadataObject(String keyToLookFor, Class<T> clazz) {
-        StoredGetable<? extends Message, ? extends MetadataGetable<?>> cachedGetable = metadataCache.get(keyToLookFor);
-        if (cachedGetable != null) {
-            return (T) cachedGetable;
-        } else {
-            if (metadataCache.containsKey(keyToLookFor)) {
-                // we already know that the store does not contain this key
+        return (T) metadataCache.getOrUpdate(keyToLookFor, () -> {
+            GeneratedMessage storedProto = getFromNativeStore(keyToLookFor, clazz);
+            if (storedProto == null) {
                 return null;
             }
-            GeneratedMessage storedProto = getFromNativeStore(keyToLookFor, clazz);
-            if (storedProto != null) {
-                StoredGetable<U, MetadataGetable<U>> storedGetable =
-                        LHSerializable.fromProto(storedProto, StoredGetable.class, executionContext);
-                metadataCache.evictOrUpdate(storedGetable, keyToLookFor);
-                return (T) storedGetable;
-            }
-            // key is not in the store, now we try to cache this missing key
-            metadataCache.updateMissingKey(keyToLookFor);
-        }
-        return null;
+            return LHSerializable.fromProto(storedProto, StoredGetable.class, executionContext);
+        });
     }
 
     @Override
