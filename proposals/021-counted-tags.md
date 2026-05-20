@@ -9,7 +9,7 @@ LittleHorse's existing `Search` RPCs return paginated lists of object IDs matchi
 * How many `NodeRun`s are currently associated with a given `WfSpec`?
 * How many `TaskRun`s are in `TASK_SCHEDULED` state for a specific `TaskDef`?
 
-Answering these questions today requires scanning all matching tags across all partitions, which is expensive and slow. We need a mechanism that maintains **pre-aggregated counts** so that count queries can be answered in constant time.
+Answering these questions today requires scanning all matching tags across all partitions, which requires multiple scan queries. We need a mechanism that maintains **pre-aggregated counts** so that count queries can be answered.
 
 ### Out of Scope
 
@@ -17,39 +17,49 @@ Answering these questions today requires scanning all matching tags across all p
 * **Cross-tenant aggregation** — counts are always scoped to a single tenant.
 
 
-## Current Architecture (Tags)
-
-Today, each `Getable` declares its index configurations via `getIndexConfigurations()` and `getIndexValues()`. When a `Getable` is created or updated, the `TagStorageManager` creates `Tag` entries (secondary index records) in the store. These tags can be:
-
-* **LOCAL** — stored in the same partition as the `Getable`.
-* **REMOTE** — forwarded via the repartition topic to a deterministic partition for cross-partition search.
-
-Both types store one record _per object_, which makes search possible but counting O(n).
-
-
 ## Proposed Solution: `COUNTED` Tag Storage Type
 
-We introduce a third `TagStorageType`: **`COUNTED`**. Instead of storing one record per object, a `COUNTED` tag maintains a single counter that is incremented when an object is created and decremented when an object is deleted or its indexed attributes change.
+We introduce a third `TagStorageType`: **`COUNTED`**. Instead of storing one tag attribute per `Getable`, a `COUNTED` tag attribute maintains a single counter that is incremented when an object matches the attributes and decremented when an object is deleted or its indexed attributes change.
 
 ### User-Facing API
 
-Two new RPCs are exposed:
+For this proposal, two new RPCs are exposed:
 
 ```proto
-rpc CountNodeRun(CountNodeRunRequest) returns (Count) {}
-rpc CountScheduledTaskRun(CountScheduledTaskRunRequest) returns (Count) {}
+  // Counts the number of NodeRun's matching the given criteria. This is an eventually
+  // consistent count maintained via pre-aggregated counters.
+  rpc CountNodeRun(CountNodeRunRequest) returns (Count) {}
 
+  // Counts the number of TaskRun's currently in TASK_SCHEDULED state for a given TaskDef.
+  // Useful for monitoring task queue depth and detecting backpressure on workers. This is
+  // an eventually consistent count maintained via pre-aggregated counters.
+  rpc CountScheduledTaskRun(CountScheduledTaskRunRequest) returns (Count) {}
+
+// Request to count NodeRun's matching specified criteria. All fields are optional filters
+// that progressively narrow the count. Request will be rejected if no fields are set
 message CountNodeRunRequest {
+
+  // Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
   optional string wf_spec_name = 1;
+
+  // Filter by WfSpec major version. Requires wf_spec_name to be set.
   optional int32 wf_spec_major_version = 2;
+
+  // Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
   optional int32 wf_spec_revision = 3;
+
 }
 
+// Request to count the number of TaskRun's currently in TASK_SCHEDULED state for a
+// specific TaskDef. This represents the current queue depth for that task type.
 message CountScheduledTaskRunRequest {
+  // The name of the TaskDef whose scheduled TaskRun's should be counted.
   string task_def_name = 1;
 }
 
+// Response containing an eventually consistent count value.
 message Count {
+  // The count of objects matching the request criteria.
   int64 value = 1;
 }
 ```
@@ -70,6 +80,17 @@ lhctl count nodeRun --wfSpecName my-workflow --wfSpecMajorVersion 2 --wfSpecRevi
 lhctl count scheduledTaskRun --taskDefName my-task
 ```
 
+## Current Architecture (Tags)
+
+Today, each `Getable` declares its index configurations via `getIndexConfigurations()` and `getIndexValues()`. When a `Getable` is created or updated, the `TagStorageManager` creates `Tag` entries (secondary index records) in the store. These tags can be:
+
+* **LOCAL** — stored in the same partition as the `Getable`.
+* **REMOTE** — forwarded via the repartition topic to a deterministic partition for cross-partition search.
+
+Note: the REMOTE type is not currently used in LittleHorse. It was disabled in the past and no longer supported. Future versions of LittleHorse may support REMOTE tags again.
+
+Both types store one record _per object_, which makes search possible but counting O(n).
+
 ### How a Getable Declares a Counted Index
 
 A `Getable` marks an index as counted by specifying `TagStorageType.COUNTED` in its `GetableIndex` configuration:
@@ -87,61 +108,6 @@ The `IndexedField` returned by `getIndexValues()` must also carry `TagStorageTyp
 return List.of(new IndexedField(key, wfSpecId.getName(), TagStorageType.COUNTED));
 ```
 
-### Internal Data Flow
-
-The counting mechanism is designed around Kafka Streams' partitioned processing model:
-
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│  Command Processor (partition N)                                      │
-│                                                                      │
-│  1. Getable created/updated/deleted                                  │
-│  2. TagStorageManager detects COUNTED tag                            │
-│  3. Increment/decrement PartitionCountedTag in memory + local store  │
-│                                                                      │
-│  ┌─────────────────────────────────────┐                             │
-│  │  PartitionMetricsMemoryStore        │                             │
-│  │  (in-memory accumulator per tag)    │                             │
-│  └─────────────────────────────────────┘                             │
-│                                                                      │
-│  4. Punctuator fires periodically                                    │
-│  5. Sends UpdateCountedTag command to core topic (keyed by           │
-│     attribute string → deterministic partition)                       │
-└──────────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌──────────────────────────────────────────────────────────────────────┐
-│  Command Processor (deterministic partition for attribute string)     │
-│                                                                      │
-│  6. Receives UpdateCountedTag                                        │
-│  7. Reads/creates CountedTagModel from store                         │
-│  8. Applies delta to count                                           │
-│  9. Persists updated CountedTagModel                                 │
-└──────────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌──────────────────────────────────────────────────────────────────────┐
-│  Count RPC                                                           │
-│                                                                      │
-│  10. Client calls CountNodeRun / CountScheduledTaskRun               │
-│  11. Server computes attribute string from request                   │
-│  12. Routes to the partition owning that attribute string             │
-│  13. Reads CountedTagModel from store → returns count                │
-└──────────────────────────────────────────────────────────────────────┘
-```
-
-### Key Components
-
-| Component | Responsibility |
-|-----------|---------------|
-| `TagStorageManager` | Detects `COUNTED` tags and increments/decrements the `PartitionCountedTagModel` in memory and local store |
-| `PartitionCountedTagModel` | Per-partition accumulator stored in the cluster-scoped store. Holds `tenantId`, `attributeString`, and a running `count` delta |
-| `PartitionMetricsMemoryStore` | In-memory map that batches counted tag deltas between punctuations |
-| `CommandProcessor` punctuator | Periodically drains the memory store and sends `UpdateCountedTag` commands to the core topic |
-| `UpdateCountedTagModel` | A `CoreSubCommand` that applies the delta to the global `CountedTagModel` on the target partition |
-| `CountedTagModel` | The authoritative counter stored on the deterministic partition, read at query time |
-| `CountRequest<T>` | Abstract base class for count request models; computes the attribute string and routes to the correct partition |
-
 ### Consistency Model
 
 Counted tags provide **eventual consistency**:
@@ -151,6 +117,8 @@ Counted tags provide **eventual consistency**:
 * The count is always converging toward the true value — no deltas are lost because they are persisted to the local store before being forwarded.
 
 ### Handling Rebalances
+
+Counted tags forward their counts to the repartition topic using the same mechanism as Metrics. See proposal 017 (Workflow Metrics) for details on how the `CommandProcessor` handles metrics forwarding and rebalances. The same logic applies to counted tags:
 
 When a partition is reassigned after a rebalance:
 

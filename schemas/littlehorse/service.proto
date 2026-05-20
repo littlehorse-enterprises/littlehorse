@@ -376,8 +376,13 @@ service LittleHorse {
   // Gets the version of the LH Server.
   rpc GetServerVersion(google.protobuf.Empty) returns (LittleHorseVersion) {}
 
+  // Counts the number of NodeRun's matching the given criteria. This is an eventually
+  // consistent count maintained via pre-aggregated counters.
   rpc CountNodeRun(CountNodeRunRequest) returns (Count) {}
 
+  // Counts the number of TaskRun's currently in TASK_SCHEDULED state for a given TaskDef.
+  // Useful for monitoring task queue depth and detecting backpressure on workers. This is
+  // an eventually consistent count maintained via pre-aggregated counters.
   rpc CountScheduledTaskRun(CountScheduledTaskRunRequest) returns (Count) {}
 
 }
@@ -1770,18 +1775,30 @@ message LittleHorseVersion {
 }
 
 
+// Request to count NodeRun's matching specified criteria. All fields are optional filters
+// that progressively narrow the count. Request will be rejected if no fields are set
 message CountNodeRunRequest {
 
+  // Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
   optional string wf_spec_name = 1;
+
+  // Filter by WfSpec major version. Requires wf_spec_name to be set.
   optional int32 wf_spec_major_version = 2;
+
+  // Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
   optional int32 wf_spec_revision = 3;
 
 }
 
+// Request to count the number of TaskRun's currently in TASK_SCHEDULED state for a
+// specific TaskDef. This represents the current queue depth for that task type.
 message CountScheduledTaskRunRequest {
+  // The name of the TaskDef whose scheduled TaskRun's should be counted.
   string task_def_name = 1;
 }
 
+// Response containing an eventually consistent count value.
 message Count {
+  // The count of objects matching the request criteria.
   int64 value = 1;
 }
