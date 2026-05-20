@@ -10,7 +10,6 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.Processor;
@@ -23,9 +22,6 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
 
     private KeyValueStore<String, Bytes> store;
     private final MetadataCache metadataCache;
-    String patternString = "(\\w+)/(\\w+)/(\\w.+)";
-
-    Pattern pattern = Pattern.compile(patternString);
 
     public MetadataGlobalStoreProcessor(MetadataCache metadataCache) {
         this.metadataCache = metadataCache;
@@ -56,11 +52,11 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
             if (value != null) {
                 store.put(key, value);
                 maybeDeserializeStoredGetable(value).ifPresent(metadataGetableStoredGetable -> {
-                    metadataCache.updateCache(key, metadataGetableStoredGetable);
+                    metadataCache.update(key, metadataGetableStoredGetable);
                 });
             } else {
                 store.delete(key);
-                metadataCache.updateMissingKey(key);
+                metadataCache.update(key, null);
             }
         } catch (Exception e) {
             log.error("unable to parse metadata object");
