@@ -21,13 +21,15 @@ public class MetadataCache extends LHCache<String, StoredGetable<? extends Messa
                     return null;
                 }
                 result = valueSupplier.get();
-                if (result == null) {
-                    evictCache(key);
-                } else {
-                    super.updateCache(key, result);
-                }
+                super.updateCache(key, result);
             }
             return result;
+        }
+    }
+
+    public void evict(String key) {
+        synchronized (key.intern()) {
+            super.evictCache(key);
         }
     }
 
