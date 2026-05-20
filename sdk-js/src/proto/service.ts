@@ -1842,14 +1842,26 @@ export interface LittleHorseVersion {
   /** Server Minor Version */
   minorVersion: number;
   /** Server Patch Version */
-  patchVersion?:
-    | number
-    | undefined;
+  patchVersion: number;
   /**
    * Prerelease Identifier. If this is set, then the server is NOT a production release
    * but rather a release candidate or experimental pre-release.
    */
   preReleaseIdentifier?: string | undefined;
+}
+
+export interface CountNodeRunRequest {
+  wfSpecName?: string | undefined;
+  wfSpecMajorVersion?: number | undefined;
+  wfSpecRevision?: number | undefined;
+}
+
+export interface CountScheduledTaskRunRequest {
+  taskDefName: string;
+}
+
+export interface Count {
+  value: number;
 }
 
 function createBaseGetLatestUserTaskDefRequest(): GetLatestUserTaskDefRequest {
@@ -11339,7 +11351,7 @@ export const GetLatestWfSpecRequest = {
 };
 
 function createBaseLittleHorseVersion(): LittleHorseVersion {
-  return { majorVersion: 0, minorVersion: 0, patchVersion: undefined, preReleaseIdentifier: undefined };
+  return { majorVersion: 0, minorVersion: 0, patchVersion: 0, preReleaseIdentifier: undefined };
 }
 
 export const LittleHorseVersion = {
@@ -11350,7 +11362,7 @@ export const LittleHorseVersion = {
     if (message.minorVersion !== 0) {
       writer.uint32(16).int32(message.minorVersion);
     }
-    if (message.patchVersion !== undefined) {
+    if (message.patchVersion !== 0) {
       writer.uint32(24).int32(message.patchVersion);
     }
     if (message.preReleaseIdentifier !== undefined) {
@@ -11407,7 +11419,7 @@ export const LittleHorseVersion = {
     return {
       majorVersion: isSet(object.majorVersion) ? globalThis.Number(object.majorVersion) : 0,
       minorVersion: isSet(object.minorVersion) ? globalThis.Number(object.minorVersion) : 0,
-      patchVersion: isSet(object.patchVersion) ? globalThis.Number(object.patchVersion) : undefined,
+      patchVersion: isSet(object.patchVersion) ? globalThis.Number(object.patchVersion) : 0,
       preReleaseIdentifier: isSet(object.preReleaseIdentifier)
         ? globalThis.String(object.preReleaseIdentifier)
         : undefined,
@@ -11422,7 +11434,7 @@ export const LittleHorseVersion = {
     if (message.minorVersion !== 0) {
       obj.minorVersion = Math.round(message.minorVersion);
     }
-    if (message.patchVersion !== undefined) {
+    if (message.patchVersion !== 0) {
       obj.patchVersion = Math.round(message.patchVersion);
     }
     if (message.preReleaseIdentifier !== undefined) {
@@ -11438,8 +11450,211 @@ export const LittleHorseVersion = {
     const message = createBaseLittleHorseVersion();
     message.majorVersion = object.majorVersion ?? 0;
     message.minorVersion = object.minorVersion ?? 0;
-    message.patchVersion = object.patchVersion ?? undefined;
+    message.patchVersion = object.patchVersion ?? 0;
     message.preReleaseIdentifier = object.preReleaseIdentifier ?? undefined;
+    return message;
+  },
+};
+
+function createBaseCountNodeRunRequest(): CountNodeRunRequest {
+  return { wfSpecName: undefined, wfSpecMajorVersion: undefined, wfSpecRevision: undefined };
+}
+
+export const CountNodeRunRequest = {
+  encode(message: CountNodeRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecName !== undefined) {
+      writer.uint32(10).string(message.wfSpecName);
+    }
+    if (message.wfSpecMajorVersion !== undefined) {
+      writer.uint32(16).int32(message.wfSpecMajorVersion);
+    }
+    if (message.wfSpecRevision !== undefined) {
+      writer.uint32(24).int32(message.wfSpecRevision);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CountNodeRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCountNodeRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfSpecName = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.wfSpecMajorVersion = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.wfSpecRevision = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CountNodeRunRequest {
+    return {
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : undefined,
+      wfSpecMajorVersion: isSet(object.wfSpecMajorVersion) ? globalThis.Number(object.wfSpecMajorVersion) : undefined,
+      wfSpecRevision: isSet(object.wfSpecRevision) ? globalThis.Number(object.wfSpecRevision) : undefined,
+    };
+  },
+
+  toJSON(message: CountNodeRunRequest): unknown {
+    const obj: any = {};
+    if (message.wfSpecName !== undefined) {
+      obj.wfSpecName = message.wfSpecName;
+    }
+    if (message.wfSpecMajorVersion !== undefined) {
+      obj.wfSpecMajorVersion = Math.round(message.wfSpecMajorVersion);
+    }
+    if (message.wfSpecRevision !== undefined) {
+      obj.wfSpecRevision = Math.round(message.wfSpecRevision);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
+    return CountNodeRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
+    const message = createBaseCountNodeRunRequest();
+    message.wfSpecName = object.wfSpecName ?? undefined;
+    message.wfSpecMajorVersion = object.wfSpecMajorVersion ?? undefined;
+    message.wfSpecRevision = object.wfSpecRevision ?? undefined;
+    return message;
+  },
+};
+
+function createBaseCountScheduledTaskRunRequest(): CountScheduledTaskRunRequest {
+  return { taskDefName: "" };
+}
+
+export const CountScheduledTaskRunRequest = {
+  encode(message: CountScheduledTaskRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.taskDefName !== "") {
+      writer.uint32(10).string(message.taskDefName);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CountScheduledTaskRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCountScheduledTaskRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.taskDefName = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CountScheduledTaskRunRequest {
+    return { taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "" };
+  },
+
+  toJSON(message: CountScheduledTaskRunRequest): unknown {
+    const obj: any = {};
+    if (message.taskDefName !== "") {
+      obj.taskDefName = message.taskDefName;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<CountScheduledTaskRunRequest>): CountScheduledTaskRunRequest {
+    return CountScheduledTaskRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CountScheduledTaskRunRequest>): CountScheduledTaskRunRequest {
+    const message = createBaseCountScheduledTaskRunRequest();
+    message.taskDefName = object.taskDefName ?? "";
+    return message;
+  },
+};
+
+function createBaseCount(): Count {
+  return { value: 0 };
+}
+
+export const Count = {
+  encode(message: Count, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.value !== 0) {
+      writer.uint32(8).int64(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Count {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCount();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.value = longToNumber(reader.int64() as Long);
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Count {
+    return { value: isSet(object.value) ? globalThis.Number(object.value) : 0 };
+  },
+
+  toJSON(message: Count): unknown {
+    const obj: any = {};
+    if (message.value !== 0) {
+      obj.value = Math.round(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<Count>): Count {
+    return Count.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Count>): Count {
+    const message = createBaseCount();
+    message.value = object.value ?? 0;
     return message;
   },
 };
@@ -12427,6 +12642,22 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    countNodeRun: {
+      name: "CountNodeRun",
+      requestType: CountNodeRunRequest,
+      requestStream: false,
+      responseType: Count,
+      responseStream: false,
+      options: {},
+    },
+    countScheduledTaskRun: {
+      name: "CountScheduledTaskRun",
+      requestType: CountScheduledTaskRunRequest,
+      requestStream: false,
+      responseType: Count,
+      responseStream: false,
+      options: {},
+    },
   },
 } as const;
 
@@ -12896,6 +13127,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<LittleHorseVersion>>;
+  countNodeRun(request: CountNodeRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Count>>;
+  countScheduledTaskRun(
+    request: CountScheduledTaskRunRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Count>>;
 }
 
 export interface LittleHorseClient<CallOptionsExt = {}> {
@@ -13373,6 +13609,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<LittleHorseVersion>;
+  countNodeRun(request: DeepPartial<CountNodeRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Count>;
+  countScheduledTaskRun(
+    request: DeepPartial<CountScheduledTaskRunRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Count>;
 }
 
 function bytesFromBase64(b64: string): Uint8Array {

@@ -3,16 +3,17 @@ import { DiagramProvider, NodeInContext } from '@/app/(authenticated)/[tenantId]
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { routes } from '@/app/routes'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Separator } from '@/components/ui/separator'
 import { WfSpec as Spec } from 'littlehorse-client/proto'
 import { LucidePlayCircle } from 'lucide-react'
 import { FC, useCallback, useState } from 'react'
 import { Diagram } from '../../../components/Diagram'
 import { useModal } from '../../../hooks/useModal'
-import { Details } from './Details'
 import { ScheduledWfRuns } from './ScheduledWfRuns'
-import { Thread } from './Thread'
+import { ThreadsSection } from './ThreadsSection'
 import { WfRuns } from './WfRuns'
 import { WfSpecMetrics } from './metrics'
+import { WfSpecMetadata } from './WfSpecMetadata'
 
 type WfSpecProps = {
   spec: Spec
@@ -27,16 +28,22 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
     setModal({ type: 'workflowRun', data: { ...spec } })
     setShowModal(true)
   }, [spec, setModal, setShowModal])
+
+  const executeButton = (
+    <button
+      type="button"
+      className="flex items-center gap-1 rounded-sm bg-blue-500 p-2 px-4 text-white hover:bg-blue-600"
+      onClick={onClick}
+    >
+      <LucidePlayCircle size={18} />
+      Execute
+    </button>
+  )
+
   return (
     <>
       <Navigation href={routes.appRoot()} title="Go back to WfSpecs" />
-      <div className="flex items-center justify-between">
-        <Details status={spec.status} id={spec.id} />
-        <button className="flex items-center gap-1 rounded-sm bg-blue-500 p-2 px-4 text-white" onClick={onClick}>
-          <LucidePlayCircle size={18} />
-          Execute
-        </button>
-      </div>
+      <WfSpecMetadata spec={spec} actions={executeButton} />
       <DiagramProvider value={{ thread, setThread, selectedNode, setSelectedNode }}>
         <Diagram spec={spec} />
       </DiagramProvider>
@@ -45,24 +52,24 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
           <WfSpecMetrics wfSpecId={spec.id} />
         </div>
       )}
-      {Object.keys(spec.threadSpecs)
-        .reverse()
-        .map(name => (
-          <Thread key={name} name={name} spec={spec.threadSpecs[name]} />
-        ))}
+      <ThreadsSection spec={spec} />
 
-      <Tabs defaultValue="runs">
-        <TabsList>
-          <TabsTrigger value="runs">WfRuns</TabsTrigger>
-          <TabsTrigger value="schedule">ScheduledWfRuns</TabsTrigger>
-        </TabsList>
-        <TabsContent value="runs">
-          <WfRuns {...spec} />
-        </TabsContent>
-        <TabsContent value="schedule">
-          <ScheduledWfRuns {...spec} />
-        </TabsContent>
-      </Tabs>
+      <section className="mb-8">
+        <h2 className="text-sm font-medium text-muted-foreground">Workflow runs</h2>
+        <Separator className="mt-2" />
+        <Tabs defaultValue="runs" className="mt-4">
+          <TabsList>
+            <TabsTrigger value="runs">WfRuns</TabsTrigger>
+            <TabsTrigger value="schedule">ScheduledWfRuns</TabsTrigger>
+          </TabsList>
+          <TabsContent value="runs">
+            <WfRuns {...spec} />
+          </TabsContent>
+          <TabsContent value="schedule">
+            <ScheduledWfRuns {...spec} />
+          </TabsContent>
+        </Tabs>
+      </section>
     </>
   )
 }

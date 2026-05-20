@@ -326,7 +326,7 @@ service LittleHorse {
 
   // Deletes a WorkflowEventDef.
   rpc DeleteWorkflowEventDef(DeleteWorkflowEventDefRequest) returns (google.protobuf.Empty) {}
-  
+
   // Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
   // is the last remaining `Principal` with admin permissions. Admin permissions are defined
   // as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
@@ -342,7 +342,7 @@ service LittleHorse {
   rpc GetTaskDefMetricsWindow(TaskDefMetricsQueryRequest) returns (TaskDefMetrics) {}
   // Returns WfSpec Metrics for a specific WfSpec and a specific time window.
   rpc GetWfSpecMetricsWindow(WfSpecMetricsQueryRequest) returns (WfSpecMetrics) {}
-  
+
   // Lists available metric windows for a given TaskDefId and time range.
   rpc ListTaskMetrics(ListTaskMetricsRequest) returns (MetricsList) {}
   // Lists available metric windows for a given WfSpecId and time range.
@@ -375,6 +375,10 @@ service LittleHorse {
 
   // Gets the version of the LH Server.
   rpc GetServerVersion(google.protobuf.Empty) returns (LittleHorseVersion) {}
+
+  rpc CountNodeRun(CountNodeRunRequest) returns (Count) {}
+
+  rpc CountScheduledTaskRun(CountScheduledTaskRunRequest) returns (Count) {}
 
 }
 // Returns the UserTaskDef with a given name and the highest version number.
@@ -458,7 +462,7 @@ message PutStructDefRequest {
   //
   // Then the request will be accepted or rejected based on the value of the
   // allowed_update_types.
-  StructDefCompatibilityType allowed_updates = 4;  
+  StructDefCompatibilityType allowed_updates = 4;
 }
 
 // Request to validate the evolution of an existing StructDef to a new StructDef
@@ -1763,4 +1767,21 @@ message LittleHorseVersion {
   // Prerelease Identifier. If this is set, then the server is NOT a production release
   // but rather a release candidate or experimental pre-release.
   optional string pre_release_identifier = 4;
+}
+
+
+message CountNodeRunRequest {
+
+  optional string wf_spec_name = 1;
+  optional int32 wf_spec_major_version = 2;
+  optional int32 wf_spec_revision = 3;
+
+}
+
+message CountScheduledTaskRunRequest {
+  string task_def_name = 1;
+}
+
+message Count {
+  int64 value = 1;
 }
