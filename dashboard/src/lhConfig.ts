@@ -9,15 +9,9 @@ const CONFIG = {
   clientKey: process.env.LHC_CLIENT_KEY,
 }
 
-const config = LHConfig.from(CONFIG)
-
 export const getClient = ({ tenantId, accessToken }: { tenantId?: string; accessToken?: string }) => {
-  const config = LHConfig.from({
+  return LHConfig.from({
     ...CONFIG,
     tenantId,
-  })
-
-  return config.getClient(accessToken)
+  }).getClient(accessToken)
 }
-
-export default config
