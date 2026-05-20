@@ -65,6 +65,21 @@ class MetadataCacheTest {
     }
 
     @Test
+    void getOrUpdateShouldCacheNullWhenSupplierReturnsNull() {
+        Supplier<StoredGetable<? extends Message, ? extends MetadataGetable<?>>> supplier = mockSupplier(null);
+
+        StoredGetable<?, ?> result = cache.getOrUpdate("my-key", supplier);
+
+        assertThat(result).isNull();
+        verify(supplier, times(1)).get();
+
+        // Second call should not invoke the supplier again (null is cached)
+        Supplier<StoredGetable<? extends Message, ? extends MetadataGetable<?>>> secondSupplier = mockSupplier(null);
+        cache.getOrUpdate("my-key", secondSupplier);
+        verify(secondSupplier, times(0)).get();
+    }
+
+    @Test
     void evictShouldRemoveKeyFromCache() {
         StoredGetable<?, ?> storedGetable = mockStoredGetable();
         cache.update("my-key", (StoredGetable) storedGetable);
@@ -123,10 +138,8 @@ class MetadataCacheTest {
         doneLatch.await(5, TimeUnit.SECONDS);
         executor.shutdown();
 
-        // The supplier should only be called once because getOrUpdate caches the result
-        // Note: due to the bug in getOrUpdate (it calls updateCache with null instead of result),
-        // the supplier may be called multiple times. This test documents the actual behavior.
-        assertThat(supplierCallCount.get()).isGreaterThanOrEqualTo(1);
+        // computeIfAbsent guarantees the supplier is called at most once per key
+        assertThat(supplierCallCount.get()).isEqualTo(1);
     }
 
     @Test
@@ -163,11 +176,16 @@ class MetadataCacheTest {
         cache.getOrUpdate("key1", () -> (StoredGetable) value1);
         cache.getOrUpdate("key2", () -> (StoredGetable) value2);
 
-        Supplier<StoredGetable<? extends Message, ? extends MetadataGetable<?>>> noOpSupplier = mockSupplier(null);
-
-        // Note: getOrUpdate has a bug where it caches null instead of the supplier result,
-        // so subsequent calls may still invoke the supplier. This test verifies the keys are independent.
         assertThat(cache.size()).isEqualTo(2);
+
+        // Verify each key returns its own value without invoking the supplier again
+        Supplier<StoredGetable<? extends Message, ? extends MetadataGetable<?>>> noOpSupplier = mockSupplier(null);
+        StoredGetable<?, ?> result1 = cache.getOrUpdate("key1", noOpSupplier);
+        StoredGetable<?, ?> result2 = cache.getOrUpdate("key2", noOpSupplier);
+
+        assertThat(result1).isEqualTo(value1);
+        assertThat(result2).isEqualTo(value2);
+        verify(noOpSupplier, times(0)).get();
     }
 
     @SuppressWarnings("unchecked")

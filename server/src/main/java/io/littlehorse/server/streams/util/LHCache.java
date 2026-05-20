@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.util;
 
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 public class LHCache<K, V> {
 
@@ -14,6 +15,11 @@ public class LHCache<K, V> {
 
     protected final boolean containsKey(K key) {
         return cache.containsKey(key);
+    }
+
+    protected final V computeIfAbsent(K key, Supplier<V> valueSupplier) {
+        Optional<V> result = cache.computeIfAbsent(key, k -> Optional.ofNullable(valueSupplier.get()));
+        return result.orElse(null);
     }
 
     protected final void updateCache(K key, V value) {

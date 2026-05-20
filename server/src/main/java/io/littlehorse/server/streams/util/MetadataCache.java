@@ -13,29 +13,14 @@ public class MetadataCache extends LHCache<String, StoredGetable<? extends Messa
 
     public StoredGetable<? extends Message, ? extends MetadataGetable<?>> getOrUpdate(
             String key, Supplier<StoredGetable<? extends Message, ? extends MetadataGetable<?>>> valueSupplier) {
-        synchronized (key.intern()) {
-            StoredGetable<? extends Message, ? extends MetadataGetable<?>> result = super.get(key);
-            if (result == null) {
-                if (super.containsKey(key)) {
-                    // we already know that the store does not contain this key
-                    return null;
-                }
-                result = valueSupplier.get();
-                super.updateCache(key, result);
-            }
-            return result;
-        }
+        return super.computeIfAbsent(key, valueSupplier);
     }
 
     public void evict(String key) {
-        synchronized (key.intern()) {
-            super.evictCache(key);
-        }
+        super.evictCache(key);
     }
 
     public void update(String key, StoredGetable<? extends Message, ? extends MetadataGetable<?>> value) {
-        synchronized (key.intern()) {
-            super.updateCache(key, value);
-        }
+        super.updateCache(key, value);
     }
 }
