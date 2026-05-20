@@ -2,7 +2,6 @@
 
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
-import { CountScheduledTaskRunRequest } from 'littlehorse-client/proto'
 import { ClientError, Status } from 'nice-grpc-common'
 
 type Props = WithTenant & { taskDefName: string }
@@ -13,7 +12,11 @@ export type QueueDepthResult =
 
 export const countScheduledTaskRun = async ({ tenantId, taskDefName }: Props): Promise<QueueDepthResult> => {
   const client = await lhClient({ tenantId })
-  const request: CountScheduledTaskRunRequest = { taskDefName }
+  if (typeof client.countScheduledTaskRun !== 'function') {
+    return { status: 'unavailable', message: 'Queue depth is not available on this server version.' }
+  }
+
+  const request = { taskDefName }
   try {
     const response = await client.countScheduledTaskRun(request)
     return { status: 'ok', count: Number(response.value) }
