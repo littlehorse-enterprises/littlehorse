@@ -102,8 +102,7 @@ message BookmarkPb { // Used for paginated responses
 
 message InternalCountPb {
     GetableClassEnum object_type = 1;
-    string partition_key = 3;
-    string tenant_id = 4;
+    string partition_key = 2;
 }
 
 message InternalCountResponse {

@@ -15,22 +15,12 @@ public class GetableIndex<T extends AbstractGetable<?>> {
     private final List<Pair<String, ValueType>> attributes;
     private final TagStorageType tagStorageType;
     private final Predicate<T> predicate;
-    private final boolean counted;
-
-    public GetableIndex(
-            List<Pair<String, ValueType>> attributes,
-            TagStorageType tagStorageType,
-            Predicate<T> conditional,
-            boolean counted) {
-        this.attributes = Collections.unmodifiableList(attributes);
-        this.tagStorageType = tagStorageType;
-        this.predicate = conditional;
-        this.counted = counted;
-    }
 
     public GetableIndex(
             List<Pair<String, ValueType>> attributes, TagStorageType tagStorageType, Predicate<T> conditional) {
-        this(attributes, tagStorageType, conditional, false);
+        this.attributes = Collections.unmodifiableList(attributes);
+        this.tagStorageType = tagStorageType;
+        this.predicate = conditional;
     }
 
     public GetableIndex(List<Pair<String, ValueType>> attributes, TagStorageType tagStorageType) {

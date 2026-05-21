@@ -30,7 +30,6 @@ private static final long serialVersionUID = 0L;
   private InternalCountPb() {
     objectType_ = 0;
     partitionKey_ = "";
-    tenantId_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -64,11 +63,11 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.common.proto.GetableClassEnum.UNRECOGNIZED : result;
   }
 
-  public static final int PARTITION_KEY_FIELD_NUMBER = 3;
+  public static final int PARTITION_KEY_FIELD_NUMBER = 2;
   @SuppressWarnings("serial")
   private volatile java.lang.Object partitionKey_ = "";
   /**
-   * <code>string partition_key = 3;</code>
+   * <code>string partition_key = 2;</code>
    * @return The partitionKey.
    */
   @java.lang.Override
@@ -85,7 +84,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string partition_key = 3;</code>
+   * <code>string partition_key = 2;</code>
    * @return The bytes for partitionKey.
    */
   @java.lang.Override
@@ -97,45 +96,6 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       partitionKey_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int TENANT_ID_FIELD_NUMBER = 4;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object tenantId_ = "";
-  /**
-   * <code>string tenant_id = 4;</code>
-   * @return The tenantId.
-   */
-  @java.lang.Override
-  public java.lang.String getTenantId() {
-    java.lang.Object ref = tenantId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      tenantId_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string tenant_id = 4;</code>
-   * @return The bytes for tenantId.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getTenantIdBytes() {
-    java.lang.Object ref = tenantId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      tenantId_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -160,10 +120,7 @@ private static final long serialVersionUID = 0L;
       output.writeEnum(1, objectType_);
     }
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(partitionKey_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 3, partitionKey_);
-    }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(tenantId_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 4, tenantId_);
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, partitionKey_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -179,10 +136,7 @@ private static final long serialVersionUID = 0L;
         .computeEnumSize(1, objectType_);
     }
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(partitionKey_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, partitionKey_);
-    }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(tenantId_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, tenantId_);
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, partitionKey_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -202,8 +156,6 @@ private static final long serialVersionUID = 0L;
     if (objectType_ != other.objectType_) return false;
     if (!getPartitionKey()
         .equals(other.getPartitionKey())) return false;
-    if (!getTenantId()
-        .equals(other.getTenantId())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -219,8 +171,6 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + objectType_;
     hash = (37 * hash) + PARTITION_KEY_FIELD_NUMBER;
     hash = (53 * hash) + getPartitionKey().hashCode();
-    hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getTenantId().hashCode();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -354,7 +304,6 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       objectType_ = 0;
       partitionKey_ = "";
-      tenantId_ = "";
       return this;
     }
 
@@ -394,9 +343,6 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.partitionKey_ = partitionKey_;
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.tenantId_ = tenantId_;
-      }
     }
 
     @java.lang.Override
@@ -417,11 +363,6 @@ private static final long serialVersionUID = 0L;
       if (!other.getPartitionKey().isEmpty()) {
         partitionKey_ = other.partitionKey_;
         bitField0_ |= 0x00000002;
-        onChanged();
-      }
-      if (!other.getTenantId().isEmpty()) {
-        tenantId_ = other.tenantId_;
-        bitField0_ |= 0x00000004;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -455,16 +396,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 8
-            case 26: {
+            case 18: {
               partitionKey_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000002;
               break;
-            } // case 26
-            case 34: {
-              tenantId_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 34
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -535,7 +471,7 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object partitionKey_ = "";
     /**
-     * <code>string partition_key = 3;</code>
+     * <code>string partition_key = 2;</code>
      * @return The partitionKey.
      */
     public java.lang.String getPartitionKey() {
@@ -551,7 +487,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string partition_key = 3;</code>
+     * <code>string partition_key = 2;</code>
      * @return The bytes for partitionKey.
      */
     public com.google.protobuf.ByteString
@@ -568,7 +504,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string partition_key = 3;</code>
+     * <code>string partition_key = 2;</code>
      * @param value The partitionKey to set.
      * @return This builder for chaining.
      */
@@ -581,7 +517,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string partition_key = 3;</code>
+     * <code>string partition_key = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearPartitionKey() {
@@ -591,7 +527,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string partition_key = 3;</code>
+     * <code>string partition_key = 2;</code>
      * @param value The bytes for partitionKey to set.
      * @return This builder for chaining.
      */
@@ -601,78 +537,6 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       partitionKey_ = value;
       bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object tenantId_ = "";
-    /**
-     * <code>string tenant_id = 4;</code>
-     * @return The tenantId.
-     */
-    public java.lang.String getTenantId() {
-      java.lang.Object ref = tenantId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        tenantId_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string tenant_id = 4;</code>
-     * @return The bytes for tenantId.
-     */
-    public com.google.protobuf.ByteString
-        getTenantIdBytes() {
-      java.lang.Object ref = tenantId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        tenantId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string tenant_id = 4;</code>
-     * @param value The tenantId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTenantId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      tenantId_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string tenant_id = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTenantId() {
-      tenantId_ = getDefaultInstance().getTenantId();
-      bitField0_ = (bitField0_ & ~0x00000004);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string tenant_id = 4;</code>
-     * @param value The bytes for tenantId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTenantIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      tenantId_ = value;
-      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }

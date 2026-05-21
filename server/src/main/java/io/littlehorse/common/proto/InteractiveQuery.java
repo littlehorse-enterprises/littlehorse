@@ -177,15 +177,14 @@ public final class InteractiveQuery extends com.google.protobuf.GeneratedFile {
       "\024completed_partitions\030\002 \003(\005\032]\n\031InProgres" +
       "sPartitionsEntry\022\013\n\003key\030\001 \001(\005\022/\n\005value\030\002" +
       " \001(\0132 .littlehorse.PartitionBookmarkPb:\002" +
-      "8\001\"o\n\017InternalCountPb\0222\n\013object_type\030\001 \001" +
+      "8\001\"\\\n\017InternalCountPb\0222\n\013object_type\030\001 \001" +
       "(\0162\035.littlehorse.GetableClassEnum\022\025\n\rpar" +
-      "tition_key\030\003 \001(\t\022\021\n\ttenant_id\030\004 \001(\t\"&\n\025I" +
-      "nternalCountResponse\022\r\n\005count\030\001 \001(\003\"X\n\035I" +
-      "nternalWaitForWfEventRequest\0227\n\007request\030" +
-      "\001 \001(\0132&.littlehorse.AwaitWorkflowEventRe" +
-      "quest*-\n\020ScanResultTypePb\022\r\n\tOBJECT_ID\020\000" +
-      "\022\n\n\006OBJECT\020\001B\037\n\033io.littlehorse.common.pr" +
-      "otoP\001b\006proto3"
+      "tition_key\030\002 \001(\t\"&\n\025InternalCountRespons" +
+      "e\022\r\n\005count\030\001 \001(\003\"X\n\035InternalWaitForWfEve" +
+      "ntRequest\0227\n\007request\030\001 \001(\0132&.littlehorse" +
+      ".AwaitWorkflowEventRequest*-\n\020ScanResult" +
+      "TypePb\022\r\n\tOBJECT_ID\020\000\022\n\n\006OBJECT\020\001B\037\n\033io." +
+      "littlehorse.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -290,7 +289,7 @@ public final class InteractiveQuery extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_InternalCountPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_InternalCountPb_descriptor,
-        new java.lang.String[] { "ObjectType", "PartitionKey", "TenantId", });
+        new java.lang.String[] { "ObjectType", "PartitionKey", });
     internal_static_littlehorse_InternalCountResponse_descriptor =
       getDescriptor().getMessageTypes().get(11);
     internal_static_littlehorse_InternalCountResponse_fieldAccessorTable = new

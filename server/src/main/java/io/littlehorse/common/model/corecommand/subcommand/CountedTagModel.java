@@ -9,25 +9,25 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class CountedTagModel extends Storeable<CountedTag> {
 
-    private String attibuteString;
+    private String attributeString;
     private long count;
 
     public CountedTagModel() {}
 
-    public CountedTagModel(String attibuteString) {
-        this.attibuteString = attibuteString;
+    public CountedTagModel(String attributeString) {
+        this.attributeString = attributeString;
         this.count = 0L;
     }
 
     @Override
     public CountedTag.Builder toProto() {
-        return CountedTag.newBuilder().setAttributeString(attibuteString).setCount(count);
+        return CountedTag.newBuilder().setAttributeString(attributeString).setCount(count);
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         CountedTag countedTag = (CountedTag) proto;
-        attibuteString = countedTag.getAttributeString();
+        attributeString = countedTag.getAttributeString();
         count = countedTag.getCount();
     }
 
@@ -38,7 +38,7 @@ public class CountedTagModel extends Storeable<CountedTag> {
 
     @Override
     public String getStoreKey() {
-        return attibuteString;
+        return attributeString;
     }
 
     @Override

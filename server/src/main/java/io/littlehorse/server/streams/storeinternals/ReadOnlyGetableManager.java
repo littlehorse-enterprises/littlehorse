@@ -278,14 +278,4 @@ public class ReadOnlyGetableManager {
         return Optional.ofNullable(specificTask);
     }
 
-    public long countNodeRun(CountNodeRunRequest request) {
-        String attributeString = Tag.getAttributeString(
-                GetableClassEnum.NODE_RUN, List.of(new Attribute("wfSpecName", request.getWfSpecName())));
-
-        CountedTagModel countedTagModel = store.get(attributeString, CountedTagModel.class);
-        if (countedTagModel == null) {
-            return 0;
-        }
-        return countedTagModel.getCount();
-    }
 }

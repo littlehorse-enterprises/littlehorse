@@ -165,18 +165,18 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
         List<GetableIndex<? extends AbstractGetable<?>>> indexes = new ArrayList<>();
         indexes.add(new GetableIndex<>(
-                List.of(Pair.of("taskDefName", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.LOCAL)));
+                List.of(Pair.of("taskDefName", GetableIndex.ValueType.SINGLE)), TagStorageType.LOCAL));
         indexes.add(new GetableIndex<>(
                 List.of(
                         Pair.of("taskDefName", GetableIndex.ValueType.SINGLE),
                         Pair.of("status", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageType.LOCAL)));
+                TagStorageType.LOCAL));
         if (status == TaskStatus.TASK_SCHEDULED) {
             indexes.add(new GetableIndex<>(
                     List.of(
                             Pair.of("scheduled", GetableIndex.ValueType.SINGLE),
                             Pair.of("taskDefName", GetableIndex.ValueType.SINGLE)),
-                    Optional.of(TagStorageType.COUNTED)));
+                    TagStorageType.COUNTED));
         }
         // NOTE: we're not indexing just based on status because we don't want
         // to have too many reads/writes in RocksDB as those are expensive.

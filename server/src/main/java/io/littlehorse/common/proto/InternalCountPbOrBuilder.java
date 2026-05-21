@@ -22,26 +22,14 @@ public interface InternalCountPbOrBuilder extends
   io.littlehorse.common.proto.GetableClassEnum getObjectType();
 
   /**
-   * <code>string partition_key = 3;</code>
+   * <code>string partition_key = 2;</code>
    * @return The partitionKey.
    */
   java.lang.String getPartitionKey();
   /**
-   * <code>string partition_key = 3;</code>
+   * <code>string partition_key = 2;</code>
    * @return The bytes for partitionKey.
    */
   com.google.protobuf.ByteString
       getPartitionKeyBytes();
-
-  /**
-   * <code>string tenant_id = 4;</code>
-   * @return The tenantId.
-   */
-  java.lang.String getTenantId();
-  /**
-   * <code>string tenant_id = 4;</code>
-   * @return The bytes for tenantId.
-   */
-  com.google.protobuf.ByteString
-      getTenantIdBytes();
 }

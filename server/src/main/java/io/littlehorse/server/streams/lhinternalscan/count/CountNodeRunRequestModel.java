@@ -1,6 +1,8 @@
 package io.littlehorse.server.streams.lhinternalscan.count;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.CountNodeRunRequest;
@@ -45,7 +47,7 @@ public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> 
     @Override
     protected List<Attribute> countAttributes() {
         if (wfSpecName == null) {
-            throw new IllegalArgumentException("wfSpecName is required");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "wfSpecName is required");
         }
 
         List<Attribute> attributes = new ArrayList<>();
