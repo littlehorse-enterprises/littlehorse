@@ -1775,12 +1775,11 @@ message LittleHorseVersion {
 }
 
 
-// Request to count NodeRun's matching specified criteria. All fields are optional filters
-// that progressively narrow the count. Request will be rejected if no fields are set
+// Request to count NodeRun's matching specified criteria.
 message CountNodeRunRequest {
 
   // Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
-  optional string wf_spec_name = 1;
+  string wf_spec_name = 1;
 
   // Filter by WfSpec major version. Requires wf_spec_name to be set.
   optional int32 wf_spec_major_version = 2;

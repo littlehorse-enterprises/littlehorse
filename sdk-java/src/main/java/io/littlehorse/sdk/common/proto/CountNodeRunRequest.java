@@ -7,8 +7,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Request to count NodeRun's matching specified criteria. All fields are optional filters
- * that progressively narrow the count. Request will be rejected if no fields are set
+ * Request to count NodeRun's matching specified criteria.
  * </pre>
  *
  * Protobuf type {@code littlehorse.CountNodeRunRequest}
@@ -58,19 +57,7 @@ private static final long serialVersionUID = 0L;
    * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
    * </pre>
    *
-   * <code>optional string wf_spec_name = 1;</code>
-   * @return Whether the wfSpecName field is set.
-   */
-  @java.lang.Override
-  public boolean hasWfSpecName() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <pre>
-   * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
-   * </pre>
-   *
-   * <code>optional string wf_spec_name = 1;</code>
+   * <code>string wf_spec_name = 1;</code>
    * @return The wfSpecName.
    */
   @java.lang.Override
@@ -91,7 +78,7 @@ private static final long serialVersionUID = 0L;
    * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
    * </pre>
    *
-   * <code>optional string wf_spec_name = 1;</code>
+   * <code>string wf_spec_name = 1;</code>
    * @return The bytes for wfSpecName.
    */
   @java.lang.Override
@@ -121,7 +108,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasWfSpecMajorVersion() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000001) != 0);
   }
   /**
    * <pre>
@@ -148,7 +135,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasWfSpecRevision() {
-    return ((bitField0_ & 0x00000004) != 0);
+    return ((bitField0_ & 0x00000002) != 0);
   }
   /**
    * <pre>
@@ -177,13 +164,13 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(wfSpecName_)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 1, wfSpecName_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       output.writeInt32(2, wfSpecMajorVersion_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       output.writeInt32(3, wfSpecRevision_);
     }
     getUnknownFields().writeTo(output);
@@ -195,14 +182,14 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(wfSpecName_)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(1, wfSpecName_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, wfSpecMajorVersion_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(3, wfSpecRevision_);
     }
@@ -221,11 +208,8 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.CountNodeRunRequest other = (io.littlehorse.sdk.common.proto.CountNodeRunRequest) obj;
 
-    if (hasWfSpecName() != other.hasWfSpecName()) return false;
-    if (hasWfSpecName()) {
-      if (!getWfSpecName()
-          .equals(other.getWfSpecName())) return false;
-    }
+    if (!getWfSpecName()
+        .equals(other.getWfSpecName())) return false;
     if (hasWfSpecMajorVersion() != other.hasWfSpecMajorVersion()) return false;
     if (hasWfSpecMajorVersion()) {
       if (getWfSpecMajorVersion()
@@ -247,10 +231,8 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasWfSpecName()) {
-      hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getWfSpecName().hashCode();
-    }
+    hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getWfSpecName().hashCode();
     if (hasWfSpecMajorVersion()) {
       hash = (37 * hash) + WF_SPEC_MAJOR_VERSION_FIELD_NUMBER;
       hash = (53 * hash) + getWfSpecMajorVersion();
@@ -358,8 +340,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Request to count NodeRun's matching specified criteria. All fields are optional filters
-   * that progressively narrow the count. Request will be rejected if no fields are set
+   * Request to count NodeRun's matching specified criteria.
    * </pre>
    *
    * Protobuf type {@code littlehorse.CountNodeRunRequest}
@@ -431,18 +412,17 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.CountNodeRunRequest result) {
       int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.wfSpecName_ = wfSpecName_;
-        to_bitField0_ |= 0x00000001;
       }
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.wfSpecMajorVersion_ = wfSpecMajorVersion_;
-        to_bitField0_ |= 0x00000002;
+        to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.wfSpecRevision_ = wfSpecRevision_;
-        to_bitField0_ |= 0x00000004;
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -459,7 +439,7 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.CountNodeRunRequest other) {
       if (other == io.littlehorse.sdk.common.proto.CountNodeRunRequest.getDefaultInstance()) return this;
-      if (other.hasWfSpecName()) {
+      if (!other.getWfSpecName().isEmpty()) {
         wfSpecName_ = other.wfSpecName_;
         bitField0_ |= 0x00000001;
         onChanged();
@@ -534,18 +514,7 @@ private static final long serialVersionUID = 0L;
      * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
      * </pre>
      *
-     * <code>optional string wf_spec_name = 1;</code>
-     * @return Whether the wfSpecName field is set.
-     */
-    public boolean hasWfSpecName() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <pre>
-     * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
-     * </pre>
-     *
-     * <code>optional string wf_spec_name = 1;</code>
+     * <code>string wf_spec_name = 1;</code>
      * @return The wfSpecName.
      */
     public java.lang.String getWfSpecName() {
@@ -565,7 +534,7 @@ private static final long serialVersionUID = 0L;
      * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
      * </pre>
      *
-     * <code>optional string wf_spec_name = 1;</code>
+     * <code>string wf_spec_name = 1;</code>
      * @return The bytes for wfSpecName.
      */
     public com.google.protobuf.ByteString
@@ -586,7 +555,7 @@ private static final long serialVersionUID = 0L;
      * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
      * </pre>
      *
-     * <code>optional string wf_spec_name = 1;</code>
+     * <code>string wf_spec_name = 1;</code>
      * @param value The wfSpecName to set.
      * @return This builder for chaining.
      */
@@ -603,7 +572,7 @@ private static final long serialVersionUID = 0L;
      * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
      * </pre>
      *
-     * <code>optional string wf_spec_name = 1;</code>
+     * <code>string wf_spec_name = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearWfSpecName() {
@@ -617,7 +586,7 @@ private static final long serialVersionUID = 0L;
      * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
      * </pre>
      *
-     * <code>optional string wf_spec_name = 1;</code>
+     * <code>string wf_spec_name = 1;</code>
      * @param value The bytes for wfSpecName to set.
      * @return This builder for chaining.
      */

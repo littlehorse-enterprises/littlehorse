@@ -15,16 +15,7 @@ public interface CountNodeRunRequestOrBuilder extends
    * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
    * </pre>
    *
-   * <code>optional string wf_spec_name = 1;</code>
-   * @return Whether the wfSpecName field is set.
-   */
-  boolean hasWfSpecName();
-  /**
-   * <pre>
-   * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
-   * </pre>
-   *
-   * <code>optional string wf_spec_name = 1;</code>
+   * <code>string wf_spec_name = 1;</code>
    * @return The wfSpecName.
    */
   java.lang.String getWfSpecName();
@@ -33,7 +24,7 @@ public interface CountNodeRunRequestOrBuilder extends
    * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
    * </pre>
    *
-   * <code>optional string wf_spec_name = 1;</code>
+   * <code>string wf_spec_name = 1;</code>
    * @return The bytes for wfSpecName.
    */
   com.google.protobuf.ByteString
