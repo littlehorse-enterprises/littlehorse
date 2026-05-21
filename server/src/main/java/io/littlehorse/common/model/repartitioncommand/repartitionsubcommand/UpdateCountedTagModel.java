@@ -23,10 +23,6 @@ public class UpdateCountedTagModel extends CoreSubCommand<UpdateCountedTag> {
     public UpdateCountedTagModel() {}
 
     public UpdateCountedTagModel(String attributeString, long count) {
-        this(attributeString, false, count);
-    }
-
-    public UpdateCountedTagModel(String attributeString, boolean delete, long count) {
         this.attributeString = attributeString;
         this.count = count;
     }

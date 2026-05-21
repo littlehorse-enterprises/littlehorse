@@ -28,7 +28,7 @@ public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> 
     @Override
     public CountNodeRunRequest.Builder toProto() {
         CountNodeRunRequest.Builder out = CountNodeRunRequest.newBuilder();
-        if (wfSpecName != null) out.setWfSpecName(wfSpecName);
+        out.setWfSpecName(wfSpecName);
         if (wfSpecMajorVersion != null) out.setWfSpecMajorVersion(wfSpecMajorVersion);
         if (wfSpecRevision != null) out.setWfSpecRevision(wfSpecRevision);
         return out;

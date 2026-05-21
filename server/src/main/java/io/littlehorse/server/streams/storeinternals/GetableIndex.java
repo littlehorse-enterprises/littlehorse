@@ -31,7 +31,7 @@ public class GetableIndex<T extends AbstractGetable<?>> {
     // TODO: Remove this method
     @Deprecated
     public GetableIndex(List<Pair<String, ValueType>> attributes, Optional<TagStorageType> tagStorageType) {
-        this(attributes, tagStorageType.get(), null);
+        this(attributes, tagStorageType.orElse(null), null);
     }
 
     public boolean searchAttributesMatch(List<String> searchAttributes) {
