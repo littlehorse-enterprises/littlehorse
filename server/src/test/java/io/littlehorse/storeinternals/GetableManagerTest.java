@@ -9,9 +9,8 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.CoreGetable;
-import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.PartitionCountedTagModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
-import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -37,7 +36,6 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.UpdateCountedTagModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
@@ -45,9 +43,11 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -92,6 +92,7 @@ public class GetableManagerTest {
     private GetableManager getableManager;
 
     private final CoreProcessorContext executionContext = mock();
+    private final PartitionMetricsMemoryStore partitionMetricsMemoryStore = new PartitionMetricsMemoryStore();
 
     private AuthorizationContext testContext = new AuthorizationContextImpl(
             new PrincipalIdModel("my-principal-id"), new TenantIdModel(tenantId), List.of(), false);
@@ -99,6 +100,8 @@ public class GetableManagerTest {
     @BeforeEach
     void setup() {
         when(executionContext.authorization()).thenReturn(testContext);
+        when(executionContext.nativeCoreStore()).thenReturn(store);
+        when(executionContext.getPartitionMetricsMemoryStore()).thenReturn(partitionMetricsMemoryStore);
         localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
         getableManager =
                 new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext, null);
@@ -302,16 +305,8 @@ public class GetableManagerTest {
                 .toList();
     }
 
-    private List<CommandModel> remoteCountedTagsCreated() {
-        return mockProcessorContext.forwarded().stream()
-                .map(MockProcessorContext.CapturedForward::record)
-                .map(Record::value)
-                .map(CommandProcessorOutput::getPayload)
-                .map(lhSerializable -> (LHTimer) lhSerializable)
-                .map(LHTimer::getPayload)
-                .map(bytes -> CommandModel.fromBytes(bytes, CommandModel.class, executionContext))
-                .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof UpdateCountedTagModel)
-                .toList();
+    private Collection<PartitionCountedTagModel> remoteCountedTagsCreated() {
+        return partitionMetricsMemoryStore.getCountedTags().values();
     }
 
     @Test
@@ -480,7 +475,7 @@ public class GetableManagerTest {
         });
         return Stream.of(
                 Arguments.of(wfRunModel, 6),
-                Arguments.of(taskRun, 2),
+                Arguments.of(taskRun, 3),
                 Arguments.of(variable, 3),
                 Arguments.of(externalEvent, 4));
     }
@@ -603,7 +598,7 @@ public class GetableManagerTest {
         getableManager.commit();
 
         List<String> storedKeys = getAllKeys(store);
-        assertThat(storedKeys).hasSize(2);
+        assertThat(storedKeys).hasSize(5);
         assertThat(storedKeys).anyMatch(key -> key.contains("myTenant/0/wrg/0000000/0/4/1/0"));
         assertThat(storedKeys)
                 .anyMatch(key -> key.contains("myTenant/5/4/__status_RUNNING__extEvtDefName_" + eventName));
@@ -689,17 +684,18 @@ public class GetableManagerTest {
         getableManager.put(nodeRunModel);
         getableManager.commit();
 
-        List<CommandModel> repartitionCommands = remoteCountedTagsCreated();
+        Collection<PartitionCountedTagModel> repartitionCommands = remoteCountedTagsCreated();
         assertThat(repartitionCommands).hasSize(3);
 
-        List<String> partitionKeys =
-                repartitionCommands.stream().map(CommandModel::getPartitionKey).toList();
+        List<String> attributeStrings = repartitionCommands.stream()
+                .map(PartitionCountedTagModel::getAttributeString)
+                .toList();
 
         String wfSpecName = nodeRunModel.getWfSpecId().getName();
         int majorVersion = nodeRunModel.getWfSpecId().getMajorVersion();
         int revision = nodeRunModel.getWfSpecId().getRevision();
 
-        assertThat(partitionKeys)
+        assertThat(attributeStrings)
                 .anyMatch(key -> key.contains("wfSpecName_" + wfSpecName) && !key.contains("majorVersion"))
                 .anyMatch(key -> key.contains("wfSpecName_" + wfSpecName)
                         && key.contains("majorVersion_" + majorVersion)

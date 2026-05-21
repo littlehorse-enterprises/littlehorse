@@ -23,9 +23,7 @@ public class CountTaskRunRequestModel extends CountRequest<CountTaskRunRequest> 
 
     @Override
     public CountTaskRunRequest.Builder toProto() {
-        return CountTaskRunRequest.newBuilder()
-                .setTaskDefName(taskDefName)
-                .setStatus(status);
+        return CountTaskRunRequest.newBuilder().setTaskDefName(taskDefName).setStatus(status);
     }
 
     @Override
