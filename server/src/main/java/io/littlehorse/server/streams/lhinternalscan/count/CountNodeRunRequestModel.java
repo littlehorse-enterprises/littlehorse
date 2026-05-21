@@ -51,8 +51,7 @@ public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> 
         }
 
         if (wfSpecRevision != null && wfSpecMajorVersion == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT,
-                    "wfSpecRevision requires wfSpecMajorVersion to be set");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "wfSpecRevision requires wfSpecMajorVersion to be set");
         }
 
         List<Attribute> attributes = new ArrayList<>();
