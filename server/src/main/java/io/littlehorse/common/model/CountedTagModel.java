@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.corecommand.subcommand;
+package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.Storeable;
@@ -50,19 +50,7 @@ public class CountedTagModel extends Storeable<CountedTag> {
         return count;
     }
 
-    public void increment() {
-        count++;
-    }
-
     public void increment(long increment) {
         count += increment;
-    }
-
-    public void decrement() {
-        count--;
-    }
-
-    public void decrement(long decrement) {
-        count -= decrement;
     }
 }

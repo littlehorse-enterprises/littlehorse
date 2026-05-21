@@ -44,8 +44,8 @@ public class CountTaskRunRequestModel extends CountRequest<CountTaskRunRequest> 
             throw new LHApiException(Status.INVALID_ARGUMENT, "taskDefName is required");
         }
         if (status != TaskStatus.TASK_SCHEDULED) {
-            throw new LHApiException(Status.INVALID_ARGUMENT,
-                    "Only TASK_SCHEDULED status is currently supported for counting TaskRuns");
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Only TASK_SCHEDULED status is currently supported for counting TaskRuns");
         }
         return List.of(
                 new Attribute("scheduled", TaskStatus.TASK_SCHEDULED.toString()),
