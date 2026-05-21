@@ -34,7 +34,7 @@ import io.littlehorse.common.model.corecommand.subcommand.UpdateCorrelationMarke
 import io.littlehorse.common.model.metadatacommand.subcommand.AggregateWindowMetricsModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskWorkerGroupRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.ScheduleWfRunCommandModel;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.UpdateCountedTagModel;
+import io.littlehorse.common.model.corecommand.subcommand.UpdateCountedTagModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.Command.CommandCase;
 import io.littlehorse.common.proto.LHStoreType;

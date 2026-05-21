@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.repartitioncommand.repartitionsubcommand;
+package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;

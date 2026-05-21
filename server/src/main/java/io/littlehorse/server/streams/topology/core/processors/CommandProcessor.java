@@ -15,7 +15,7 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.AggregateWindowMetricsModel;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.UpdateCountedTagModel;
+import io.littlehorse.common.model.corecommand.subcommand.UpdateCountedTagModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
