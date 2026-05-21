@@ -18,4 +18,3 @@ For information about how to count a specific resource, consult:
 func init() {
 	rootCmd.AddCommand(countCmd)
 }
-
