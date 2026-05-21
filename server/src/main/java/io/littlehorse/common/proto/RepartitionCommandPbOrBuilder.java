@@ -102,20 +102,5 @@ public interface RepartitionCommandPbOrBuilder extends
    */
   io.littlehorse.common.proto.AggregateTaskMetricsOrBuilder getAggregateTaskMetricsOrBuilder();
 
-  /**
-   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-   * @return Whether the updateCountedTag field is set.
-   */
-  boolean hasUpdateCountedTag();
-  /**
-   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-   * @return The updateCountedTag.
-   */
-  io.littlehorse.common.proto.UpdateCountedTag getUpdateCountedTag();
-  /**
-   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-   */
-  io.littlehorse.common.proto.UpdateCountedTagOrBuilder getUpdateCountedTagOrBuilder();
-
   io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase getRepartitionCommandCase();
 }

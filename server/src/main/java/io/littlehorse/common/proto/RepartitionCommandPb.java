@@ -59,7 +59,6 @@ private static final long serialVersionUID = 0L;
     REMOVE_REMOTE_TAG(6),
     AGGREGATE_WF_METRICS(7),
     AGGREGATE_TASK_METRICS(8),
-    UPDATE_COUNTED_TAG(9),
     REPARTITIONCOMMAND_NOT_SET(0);
     private final int value;
     private RepartitionCommandCase(int value) {
@@ -81,7 +80,6 @@ private static final long serialVersionUID = 0L;
         case 6: return REMOVE_REMOTE_TAG;
         case 7: return AGGREGATE_WF_METRICS;
         case 8: return AGGREGATE_TASK_METRICS;
-        case 9: return UPDATE_COUNTED_TAG;
         case 0: return REPARTITIONCOMMAND_NOT_SET;
         default: return null;
       }
@@ -294,37 +292,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.AggregateTaskMetrics.getDefaultInstance();
   }
 
-  public static final int UPDATE_COUNTED_TAG_FIELD_NUMBER = 9;
-  /**
-   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-   * @return Whether the updateCountedTag field is set.
-   */
-  @java.lang.Override
-  public boolean hasUpdateCountedTag() {
-    return repartitionCommandCase_ == 9;
-  }
-  /**
-   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-   * @return The updateCountedTag.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.UpdateCountedTag getUpdateCountedTag() {
-    if (repartitionCommandCase_ == 9) {
-       return (io.littlehorse.common.proto.UpdateCountedTag) repartitionCommand_;
-    }
-    return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
-  }
-  /**
-   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.UpdateCountedTagOrBuilder getUpdateCountedTagOrBuilder() {
-    if (repartitionCommandCase_ == 9) {
-       return (io.littlehorse.common.proto.UpdateCountedTag) repartitionCommand_;
-    }
-    return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -357,9 +324,6 @@ private static final long serialVersionUID = 0L;
     if (repartitionCommandCase_ == 8) {
       output.writeMessage(8, (io.littlehorse.common.proto.AggregateTaskMetrics) repartitionCommand_);
     }
-    if (repartitionCommandCase_ == 9) {
-      output.writeMessage(9, (io.littlehorse.common.proto.UpdateCountedTag) repartitionCommand_);
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -391,10 +355,6 @@ private static final long serialVersionUID = 0L;
     if (repartitionCommandCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, (io.littlehorse.common.proto.AggregateTaskMetrics) repartitionCommand_);
-    }
-    if (repartitionCommandCase_ == 9) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, (io.littlehorse.common.proto.UpdateCountedTag) repartitionCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -439,10 +399,6 @@ private static final long serialVersionUID = 0L;
         if (!getAggregateTaskMetrics()
             .equals(other.getAggregateTaskMetrics())) return false;
         break;
-      case 9:
-        if (!getUpdateCountedTag()
-            .equals(other.getUpdateCountedTag())) return false;
-        break;
       case 0:
       default:
     }
@@ -481,10 +437,6 @@ private static final long serialVersionUID = 0L;
       case 8:
         hash = (37 * hash) + AGGREGATE_TASK_METRICS_FIELD_NUMBER;
         hash = (53 * hash) + getAggregateTaskMetrics().hashCode();
-        break;
-      case 9:
-        hash = (37 * hash) + UPDATE_COUNTED_TAG_FIELD_NUMBER;
-        hash = (53 * hash) + getUpdateCountedTag().hashCode();
         break;
       case 0:
       default:
@@ -648,9 +600,6 @@ private static final long serialVersionUID = 0L;
       if (aggregateTaskMetricsBuilder_ != null) {
         aggregateTaskMetricsBuilder_.clear();
       }
-      if (updateCountedTagBuilder_ != null) {
-        updateCountedTagBuilder_.clear();
-      }
       repartitionCommandCase_ = 0;
       repartitionCommand_ = null;
       return this;
@@ -720,10 +669,6 @@ private static final long serialVersionUID = 0L;
           aggregateTaskMetricsBuilder_ != null) {
         result.repartitionCommand_ = aggregateTaskMetricsBuilder_.build();
       }
-      if (repartitionCommandCase_ == 9 &&
-          updateCountedTagBuilder_ != null) {
-        result.repartitionCommand_ = updateCountedTagBuilder_.build();
-      }
     }
 
     @java.lang.Override
@@ -761,10 +706,6 @@ private static final long serialVersionUID = 0L;
         }
         case AGGREGATE_TASK_METRICS: {
           mergeAggregateTaskMetrics(other.getAggregateTaskMetrics());
-          break;
-        }
-        case UPDATE_COUNTED_TAG: {
-          mergeUpdateCountedTag(other.getUpdateCountedTag());
           break;
         }
         case REPARTITIONCOMMAND_NOT_SET: {
@@ -837,13 +778,6 @@ private static final long serialVersionUID = 0L;
               repartitionCommandCase_ = 8;
               break;
             } // case 66
-            case 74: {
-              input.readMessage(
-                  internalGetUpdateCountedTagFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              repartitionCommandCase_ = 9;
-              break;
-            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1642,148 +1576,6 @@ private static final long serialVersionUID = 0L;
       repartitionCommandCase_ = 8;
       onChanged();
       return aggregateTaskMetricsBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.common.proto.UpdateCountedTag, io.littlehorse.common.proto.UpdateCountedTag.Builder, io.littlehorse.common.proto.UpdateCountedTagOrBuilder> updateCountedTagBuilder_;
-    /**
-     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-     * @return Whether the updateCountedTag field is set.
-     */
-    @java.lang.Override
-    public boolean hasUpdateCountedTag() {
-      return repartitionCommandCase_ == 9;
-    }
-    /**
-     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-     * @return The updateCountedTag.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.UpdateCountedTag getUpdateCountedTag() {
-      if (updateCountedTagBuilder_ == null) {
-        if (repartitionCommandCase_ == 9) {
-          return (io.littlehorse.common.proto.UpdateCountedTag) repartitionCommand_;
-        }
-        return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
-      } else {
-        if (repartitionCommandCase_ == 9) {
-          return updateCountedTagBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-     */
-    public Builder setUpdateCountedTag(io.littlehorse.common.proto.UpdateCountedTag value) {
-      if (updateCountedTagBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        repartitionCommand_ = value;
-        onChanged();
-      } else {
-        updateCountedTagBuilder_.setMessage(value);
-      }
-      repartitionCommandCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-     */
-    public Builder setUpdateCountedTag(
-        io.littlehorse.common.proto.UpdateCountedTag.Builder builderForValue) {
-      if (updateCountedTagBuilder_ == null) {
-        repartitionCommand_ = builderForValue.build();
-        onChanged();
-      } else {
-        updateCountedTagBuilder_.setMessage(builderForValue.build());
-      }
-      repartitionCommandCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-     */
-    public Builder mergeUpdateCountedTag(io.littlehorse.common.proto.UpdateCountedTag value) {
-      if (updateCountedTagBuilder_ == null) {
-        if (repartitionCommandCase_ == 9 &&
-            repartitionCommand_ != io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance()) {
-          repartitionCommand_ = io.littlehorse.common.proto.UpdateCountedTag.newBuilder((io.littlehorse.common.proto.UpdateCountedTag) repartitionCommand_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          repartitionCommand_ = value;
-        }
-        onChanged();
-      } else {
-        if (repartitionCommandCase_ == 9) {
-          updateCountedTagBuilder_.mergeFrom(value);
-        } else {
-          updateCountedTagBuilder_.setMessage(value);
-        }
-      }
-      repartitionCommandCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-     */
-    public Builder clearUpdateCountedTag() {
-      if (updateCountedTagBuilder_ == null) {
-        if (repartitionCommandCase_ == 9) {
-          repartitionCommandCase_ = 0;
-          repartitionCommand_ = null;
-          onChanged();
-        }
-      } else {
-        if (repartitionCommandCase_ == 9) {
-          repartitionCommandCase_ = 0;
-          repartitionCommand_ = null;
-        }
-        updateCountedTagBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-     */
-    public io.littlehorse.common.proto.UpdateCountedTag.Builder getUpdateCountedTagBuilder() {
-      return internalGetUpdateCountedTagFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.UpdateCountedTagOrBuilder getUpdateCountedTagOrBuilder() {
-      if ((repartitionCommandCase_ == 9) && (updateCountedTagBuilder_ != null)) {
-        return updateCountedTagBuilder_.getMessageOrBuilder();
-      } else {
-        if (repartitionCommandCase_ == 9) {
-          return (io.littlehorse.common.proto.UpdateCountedTag) repartitionCommand_;
-        }
-        return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 9;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.common.proto.UpdateCountedTag, io.littlehorse.common.proto.UpdateCountedTag.Builder, io.littlehorse.common.proto.UpdateCountedTagOrBuilder> 
-        internalGetUpdateCountedTagFieldBuilder() {
-      if (updateCountedTagBuilder_ == null) {
-        if (!(repartitionCommandCase_ == 9)) {
-          repartitionCommand_ = io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
-        }
-        updateCountedTagBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.common.proto.UpdateCountedTag, io.littlehorse.common.proto.UpdateCountedTag.Builder, io.littlehorse.common.proto.UpdateCountedTagOrBuilder>(
-                (io.littlehorse.common.proto.UpdateCountedTag) repartitionCommand_,
-                getParentForChildren(),
-                isClean());
-        repartitionCommand_ = null;
-      }
-      repartitionCommandCase_ = 9;
-      onChanged();
-      return updateCountedTagBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.RepartitionCommandPb)
