@@ -6,9 +6,9 @@
 
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
-import { InlineStructDef } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { StructDefId } from "./object_id";
+import { InlineStructDef } from "./type_definition";
 
 /**
  * A `StructDef` is a versioned metadata object (tenant-scoped) inside LittleHorse

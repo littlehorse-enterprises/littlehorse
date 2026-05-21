@@ -19,8 +19,8 @@ import {
 import { ExponentialBackoffRetryPolicy } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { CheckpointId, NodeRunId, TaskDefId, TaskRunId, WfSpecId } from "./object_id";
+import { VariableValue } from "./type_definition";
 import { UserTaskTriggerReference } from "./user_tasks";
-import { VariableValue } from "./variable";
 
 /** A TaskRun resents a single instance of a TaskDef being executed. */
 export interface TaskRun {

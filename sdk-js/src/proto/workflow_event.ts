@@ -8,8 +8,7 @@
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRunId, WorkflowEventDefId, WorkflowEventId } from "./object_id";
-import { ReturnType } from "./type_definition";
-import { VariableValue } from "./variable";
+import { ReturnType, VariableValue } from "./type_definition";
 
 /**
  * A WorkflowEvent represents a "Thing That Happened" *INSIDE* a WfRun. It is DIFFERENT from

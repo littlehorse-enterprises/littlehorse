@@ -9,7 +9,7 @@ import _m0 from "protobufjs/minimal";
 import { LHStatus, lHStatusFromJSON, lHStatusToJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { ExternalEventId, NodeRunId, WfRunId, WfSpecId } from "./object_id";
-import { VariableValue } from "./variable";
+import { VariableValue } from "./type_definition";
 
 /** The type of a ThreadRUn. */
 export enum ThreadType {
