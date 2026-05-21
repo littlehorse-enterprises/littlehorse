@@ -1,6 +1,8 @@
 package io.littlehorse.server.streams.lhinternalscan.count;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.CountTaskRunRequest;
@@ -39,10 +41,10 @@ public class CountTaskRunRequestModel extends CountRequest<CountTaskRunRequest> 
     @Override
     protected List<Attribute> countAttributes() {
         if (taskDefName == null || taskDefName.isEmpty()) {
-            throw new IllegalArgumentException("taskDefName is required");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "taskDefName is required");
         }
         if (status != TaskStatus.TASK_SCHEDULED) {
-            throw new IllegalArgumentException(
+            throw new LHApiException(Status.INVALID_ARGUMENT,
                     "Only TASK_SCHEDULED status is currently supported for counting TaskRuns");
         }
         return List.of(

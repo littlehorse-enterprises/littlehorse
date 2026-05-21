@@ -23,13 +23,7 @@ public interface UpdateCountedTagOrBuilder extends
       getAttributeStringBytes();
 
   /**
-   * <code>bool delete = 2;</code>
-   * @return The delete.
-   */
-  boolean getDelete();
-
-  /**
-   * <code>int64 count = 3;</code>
+   * <code>int64 count = 2;</code>
    * @return The count.
    */
   long getCount();

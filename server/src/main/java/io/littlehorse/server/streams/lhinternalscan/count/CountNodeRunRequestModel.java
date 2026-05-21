@@ -20,7 +20,7 @@ public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         CountNodeRunRequest p = (CountNodeRunRequest) proto;
-        if (p.hasWfSpecName()) wfSpecName = p.getWfSpecName();
+        wfSpecName = p.getWfSpecName();
         if (p.hasWfSpecMajorVersion()) wfSpecMajorVersion = p.getWfSpecMajorVersion();
         if (p.hasWfSpecRevision()) wfSpecRevision = p.getWfSpecRevision();
     }

@@ -261,8 +261,7 @@ message CreateRemoteTagPb {
 
 message UpdateCountedTag {
   string attribute_string = 1;
-  bool delete = 2;
-  int64 count = 3;
+  int64 count = 2;
 }
 
 message RemoveRemoteTagPb {

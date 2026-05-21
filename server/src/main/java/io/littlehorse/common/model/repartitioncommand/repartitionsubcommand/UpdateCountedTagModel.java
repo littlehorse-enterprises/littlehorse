@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 public class UpdateCountedTagModel extends CoreSubCommand<UpdateCountedTag> {
 
     private String attributeString;
-    private boolean delete;
     private long count;
 
     private static final Logger log = LoggerFactory.getLogger(UpdateCountedTagModel.class);
@@ -29,7 +28,6 @@ public class UpdateCountedTagModel extends CoreSubCommand<UpdateCountedTag> {
 
     public UpdateCountedTagModel(String attributeString, boolean delete, long count) {
         this.attributeString = attributeString;
-        this.delete = delete;
         this.count = count;
     }
 
@@ -37,7 +35,6 @@ public class UpdateCountedTagModel extends CoreSubCommand<UpdateCountedTag> {
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         UpdateCountedTag updateCountedTagPb = (UpdateCountedTag) proto;
         this.attributeString = updateCountedTagPb.getAttributeString();
-        this.delete = updateCountedTagPb.getDelete();
         this.count = updateCountedTagPb.getCount();
     }
 
@@ -45,7 +42,6 @@ public class UpdateCountedTagModel extends CoreSubCommand<UpdateCountedTag> {
     public UpdateCountedTag.Builder toProto() {
         return UpdateCountedTag.newBuilder()
                 .setAttributeString(this.attributeString)
-                .setDelete(this.delete)
                 .setCount(this.count);
     }
 
@@ -56,11 +52,7 @@ public class UpdateCountedTagModel extends CoreSubCommand<UpdateCountedTag> {
         if (countedTag == null) {
             countedTag = new CountedTagModel(attributeString);
         }
-        if (delete) {
-            countedTag.decrement(count);
-        } else {
-            countedTag.increment(count);
-        }
+        countedTag.increment(count);
         store.put(countedTag);
         return Empty.getDefaultInstance();
     }

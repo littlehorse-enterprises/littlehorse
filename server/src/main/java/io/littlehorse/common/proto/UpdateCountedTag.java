@@ -83,21 +83,10 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int DELETE_FIELD_NUMBER = 2;
-  private boolean delete_ = false;
-  /**
-   * <code>bool delete = 2;</code>
-   * @return The delete.
-   */
-  @java.lang.Override
-  public boolean getDelete() {
-    return delete_;
-  }
-
-  public static final int COUNT_FIELD_NUMBER = 3;
+  public static final int COUNT_FIELD_NUMBER = 2;
   private long count_ = 0L;
   /**
-   * <code>int64 count = 3;</code>
+   * <code>int64 count = 2;</code>
    * @return The count.
    */
   @java.lang.Override
@@ -122,11 +111,8 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(attributeString_)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 1, attributeString_);
     }
-    if (delete_ != false) {
-      output.writeBool(2, delete_);
-    }
     if (count_ != 0L) {
-      output.writeInt64(3, count_);
+      output.writeInt64(2, count_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -140,13 +126,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(attributeString_)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(1, attributeString_);
     }
-    if (delete_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(2, delete_);
-    }
     if (count_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(3, count_);
+        .computeInt64Size(2, count_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -165,8 +147,6 @@ private static final long serialVersionUID = 0L;
 
     if (!getAttributeString()
         .equals(other.getAttributeString())) return false;
-    if (getDelete()
-        != other.getDelete()) return false;
     if (getCount()
         != other.getCount()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -182,9 +162,6 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + ATTRIBUTE_STRING_FIELD_NUMBER;
     hash = (53 * hash) + getAttributeString().hashCode();
-    hash = (37 * hash) + DELETE_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getDelete());
     hash = (37 * hash) + COUNT_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getCount());
@@ -320,7 +297,6 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       attributeString_ = "";
-      delete_ = false;
       count_ = 0L;
       return this;
     }
@@ -359,9 +335,6 @@ private static final long serialVersionUID = 0L;
         result.attributeString_ = attributeString_;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.delete_ = delete_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.count_ = count_;
       }
     }
@@ -382,9 +355,6 @@ private static final long serialVersionUID = 0L;
         attributeString_ = other.attributeString_;
         bitField0_ |= 0x00000001;
         onChanged();
-      }
-      if (other.getDelete() != false) {
-        setDelete(other.getDelete());
       }
       if (other.getCount() != 0L) {
         setCount(other.getCount());
@@ -421,15 +391,10 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 16: {
-              delete_ = input.readBool();
+              count_ = input.readInt64();
               bitField0_ |= 0x00000002;
               break;
             } // case 16
-            case 24: {
-              count_ = input.readInt64();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -519,41 +484,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private boolean delete_ ;
-    /**
-     * <code>bool delete = 2;</code>
-     * @return The delete.
-     */
-    @java.lang.Override
-    public boolean getDelete() {
-      return delete_;
-    }
-    /**
-     * <code>bool delete = 2;</code>
-     * @param value The delete to set.
-     * @return This builder for chaining.
-     */
-    public Builder setDelete(boolean value) {
-
-      delete_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>bool delete = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearDelete() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      delete_ = false;
-      onChanged();
-      return this;
-    }
-
     private long count_ ;
     /**
-     * <code>int64 count = 3;</code>
+     * <code>int64 count = 2;</code>
      * @return The count.
      */
     @java.lang.Override
@@ -561,23 +494,23 @@ private static final long serialVersionUID = 0L;
       return count_;
     }
     /**
-     * <code>int64 count = 3;</code>
+     * <code>int64 count = 2;</code>
      * @param value The count to set.
      * @return This builder for chaining.
      */
     public Builder setCount(long value) {
 
       count_ = value;
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>int64 count = 3;</code>
+     * <code>int64 count = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearCount() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000002);
       count_ = 0L;
       onChanged();
       return this;
