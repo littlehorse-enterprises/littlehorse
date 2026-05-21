@@ -30,13 +30,13 @@ For this proposal, two new RPCs are exposed:
   // consistent count maintained via pre-aggregated counters.
   rpc CountNodeRun(CountNodeRunRequest) returns (Count) {}
 
-  // Counts the number of TaskRun's currently in TASK_SCHEDULED state for a given TaskDef.
+  // Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
   // Useful for monitoring task queue depth and detecting backpressure on workers. This is
   // an eventually consistent count maintained via pre-aggregated counters.
-  rpc CountScheduledTaskRun(CountScheduledTaskRunRequest) returns (Count) {}
+  rpc CountTaskRun(CountTaskRunRequest) returns (Count) {}
 
 // Request to count NodeRun's matching specified criteria. All fields are optional filters
-// that progressively narrow the count. Request will be rejected if no fields are set
+// that progressively narrow the count. Request will be rejected if no fields are set.
 message CountNodeRunRequest {
 
   // Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
@@ -50,11 +50,16 @@ message CountNodeRunRequest {
 
 }
 
-// Request to count the number of TaskRun's currently in TASK_SCHEDULED state for a
-// specific TaskDef. This represents the current queue depth for that task type.
-message CountScheduledTaskRunRequest {
-  // The name of the TaskDef whose scheduled TaskRun's should be counted.
+// Request to count TaskRun's matching the given criteria for a specific TaskDef.
+// The task_def_name is required. The status filter narrows the count to TaskRun's
+// in a specific state. Initially, only TASK_SCHEDULED is supported as a counted status.
+message CountTaskRunRequest {
+  // The name of the TaskDef whose TaskRun's should be counted.
   string task_def_name = 1;
+
+  // Filter by TaskRun status. Required. Initially only TASK_SCHEDULED is supported;
+  // the server will reject requests with unsupported status values.
+  TaskStatus status = 2;
 }
 
 // Response containing an eventually consistent count value.
@@ -77,7 +82,7 @@ lhctl count nodeRun --wfSpecName my-workflow --wfSpecMajorVersion 2
 lhctl count nodeRun --wfSpecName my-workflow --wfSpecMajorVersion 2 --wfSpecRevision 1
 
 # Count TaskRuns in TASK_SCHEDULED state
-lhctl count scheduledTaskRun --taskDefName my-task
+lhctl count taskRun my-task --status TASK_SCHEDULED
 ```
 
 ## Current Architecture (Tags)
@@ -148,7 +153,7 @@ To add a count query for a new entity type:
 | `NodeRunModel` | `wfSpecName` | Count all NodeRuns for a WfSpec |
 | `NodeRunModel` | `wfSpecName` + `wfSpecMajorVersion` | Count NodeRuns for a major version |
 | `NodeRunModel` | `wfSpecName` + `wfSpecMajorVersion` + `wfSpecRevision` | Count NodeRuns for a specific revision |
-| `TaskRunModel` | `taskDefName` (status=TASK_SCHEDULED) | Count queued tasks per TaskDef |
+| `TaskRunModel` | `taskDefName` + `status` (TASK_SCHEDULED) | Count queued tasks per TaskDef |
 
 
 ## Future Work
