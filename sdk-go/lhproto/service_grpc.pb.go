@@ -117,7 +117,7 @@ const (
 	LittleHorse_Whoami_FullMethodName                     = "/littlehorse.LittleHorse/Whoami"
 	LittleHorse_GetServerVersion_FullMethodName           = "/littlehorse.LittleHorse/GetServerVersion"
 	LittleHorse_CountNodeRun_FullMethodName               = "/littlehorse.LittleHorse/CountNodeRun"
-	LittleHorse_CountScheduledTaskRun_FullMethodName      = "/littlehorse.LittleHorse/CountScheduledTaskRun"
+	LittleHorse_CountTaskRun_FullMethodName               = "/littlehorse.LittleHorse/CountTaskRun"
 )
 
 // LittleHorseClient is the client API for LittleHorse service.
@@ -386,8 +386,13 @@ type LittleHorseClient interface {
 	Whoami(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Principal, error)
 	// Gets the version of the LH Server.
 	GetServerVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*LittleHorseVersion, error)
+	// Counts the number of NodeRun's matching the given criteria. This is an eventually
+	// consistent count maintained via pre-aggregated counters.
 	CountNodeRun(ctx context.Context, in *CountNodeRunRequest, opts ...grpc.CallOption) (*Count, error)
-	CountScheduledTaskRun(ctx context.Context, in *CountScheduledTaskRunRequest, opts ...grpc.CallOption) (*Count, error)
+	// Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+	// Useful for monitoring task queue depth and detecting backpressure on workers. This is
+	// an eventually consistent count maintained via pre-aggregated counters.
+	CountTaskRun(ctx context.Context, in *CountTaskRunRequest, opts ...grpc.CallOption) (*Count, error)
 }
 
 type littleHorseClient struct {
@@ -1293,9 +1298,9 @@ func (c *littleHorseClient) CountNodeRun(ctx context.Context, in *CountNodeRunRe
 	return out, nil
 }
 
-func (c *littleHorseClient) CountScheduledTaskRun(ctx context.Context, in *CountScheduledTaskRunRequest, opts ...grpc.CallOption) (*Count, error) {
+func (c *littleHorseClient) CountTaskRun(ctx context.Context, in *CountTaskRunRequest, opts ...grpc.CallOption) (*Count, error) {
 	out := new(Count)
-	err := c.cc.Invoke(ctx, LittleHorse_CountScheduledTaskRun_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, LittleHorse_CountTaskRun_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1568,8 +1573,13 @@ type LittleHorseServer interface {
 	Whoami(context.Context, *emptypb.Empty) (*Principal, error)
 	// Gets the version of the LH Server.
 	GetServerVersion(context.Context, *emptypb.Empty) (*LittleHorseVersion, error)
+	// Counts the number of NodeRun's matching the given criteria. This is an eventually
+	// consistent count maintained via pre-aggregated counters.
 	CountNodeRun(context.Context, *CountNodeRunRequest) (*Count, error)
-	CountScheduledTaskRun(context.Context, *CountScheduledTaskRunRequest) (*Count, error)
+	// Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+	// Useful for monitoring task queue depth and detecting backpressure on workers. This is
+	// an eventually consistent count maintained via pre-aggregated counters.
+	CountTaskRun(context.Context, *CountTaskRunRequest) (*Count, error)
 	mustEmbedUnimplementedLittleHorseServer()
 }
 
@@ -1868,8 +1878,8 @@ func (UnimplementedLittleHorseServer) GetServerVersion(context.Context, *emptypb
 func (UnimplementedLittleHorseServer) CountNodeRun(context.Context, *CountNodeRunRequest) (*Count, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CountNodeRun not implemented")
 }
-func (UnimplementedLittleHorseServer) CountScheduledTaskRun(context.Context, *CountScheduledTaskRunRequest) (*Count, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CountScheduledTaskRun not implemented")
+func (UnimplementedLittleHorseServer) CountTaskRun(context.Context, *CountTaskRunRequest) (*Count, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CountTaskRun not implemented")
 }
 func (UnimplementedLittleHorseServer) mustEmbedUnimplementedLittleHorseServer() {}
 
@@ -3638,20 +3648,20 @@ func _LittleHorse_CountNodeRun_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LittleHorse_CountScheduledTaskRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CountScheduledTaskRunRequest)
+func _LittleHorse_CountTaskRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CountTaskRunRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LittleHorseServer).CountScheduledTaskRun(ctx, in)
+		return srv.(LittleHorseServer).CountTaskRun(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LittleHorse_CountScheduledTaskRun_FullMethodName,
+		FullMethod: LittleHorse_CountTaskRun_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LittleHorseServer).CountScheduledTaskRun(ctx, req.(*CountScheduledTaskRunRequest))
+		return srv.(LittleHorseServer).CountTaskRun(ctx, req.(*CountTaskRunRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -4048,8 +4058,8 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_CountNodeRun_Handler,
 		},
 		{
-			MethodName: "CountScheduledTaskRun",
-			Handler:    _LittleHorse_CountScheduledTaskRun_Handler,
+			MethodName: "CountTaskRun",
+			Handler:    _LittleHorse_CountTaskRun_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

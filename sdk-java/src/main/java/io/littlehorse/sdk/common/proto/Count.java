@@ -6,6 +6,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Response containing an eventually consistent count value.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.Count}
  */
 @com.google.protobuf.Generated
@@ -46,6 +50,10 @@ private static final long serialVersionUID = 0L;
   public static final int VALUE_FIELD_NUMBER = 1;
   private long value_ = 0L;
   /**
+   * <pre>
+   * The count of objects matching the request criteria.
+   * </pre>
+   *
    * <code>int64 value = 1;</code>
    * @return The value.
    */
@@ -213,6 +221,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Response containing an eventually consistent count value.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.Count}
    */
   public static final class Builder extends
@@ -350,6 +362,10 @@ private static final long serialVersionUID = 0L;
 
     private long value_ ;
     /**
+     * <pre>
+     * The count of objects matching the request criteria.
+     * </pre>
+     *
      * <code>int64 value = 1;</code>
      * @return The value.
      */
@@ -358,6 +374,10 @@ private static final long serialVersionUID = 0L;
       return value_;
     }
     /**
+     * <pre>
+     * The count of objects matching the request criteria.
+     * </pre>
+     *
      * <code>int64 value = 1;</code>
      * @param value The value to set.
      * @return This builder for chaining.
@@ -370,6 +390,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The count of objects matching the request criteria.
+     * </pre>
+     *
      * <code>int64 value = 1;</code>
      * @return This builder for chaining.
      */

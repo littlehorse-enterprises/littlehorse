@@ -534,9 +534,9 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.CountNodeRunRequest.SerializeToString,
                 response_deserializer=service__pb2.Count.FromString,
                 _registered_method=True)
-        self.CountScheduledTaskRun = channel.unary_unary(
-                '/littlehorse.LittleHorse/CountScheduledTaskRun',
-                request_serializer=service__pb2.CountScheduledTaskRunRequest.SerializeToString,
+        self.CountTaskRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/CountTaskRun',
+                request_serializer=service__pb2.CountTaskRunRequest.SerializeToString,
                 response_deserializer=service__pb2.Count.FromString,
                 _registered_method=True)
 
@@ -1288,13 +1288,18 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def CountNodeRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Counts the number of NodeRun's matching the given criteria. This is an eventually
+        consistent count maintained via pre-aggregated counters.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def CountScheduledTaskRun(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+    def CountTaskRun(self, request, context):
+        """Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+        Useful for monitoring task queue depth and detecting backpressure on workers. This is
+        an eventually consistent count maintained via pre-aggregated counters.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -1787,9 +1792,9 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.CountNodeRunRequest.FromString,
                     response_serializer=service__pb2.Count.SerializeToString,
             ),
-            'CountScheduledTaskRun': grpc.unary_unary_rpc_method_handler(
-                    servicer.CountScheduledTaskRun,
-                    request_deserializer=service__pb2.CountScheduledTaskRunRequest.FromString,
+            'CountTaskRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.CountTaskRun,
+                    request_deserializer=service__pb2.CountTaskRunRequest.FromString,
                     response_serializer=service__pb2.Count.SerializeToString,
             ),
     }
@@ -4423,7 +4428,7 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
-    def CountScheduledTaskRun(request,
+    def CountTaskRun(request,
             target,
             options=(),
             channel_credentials=None,
@@ -4436,8 +4441,8 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/littlehorse.LittleHorse/CountScheduledTaskRun',
-            service__pb2.CountScheduledTaskRunRequest.SerializeToString,
+            '/littlehorse.LittleHorse/CountTaskRun',
+            service__pb2.CountTaskRunRequest.SerializeToString,
             service__pb2.Count.FromString,
             options,
             channel_credentials,

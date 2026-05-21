@@ -6,6 +6,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Request to count NodeRun's matching specified criteria. All fields are optional filters
+ * that progressively narrow the count. Request will be rejected if no fields are set
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.CountNodeRunRequest}
  */
 @com.google.protobuf.Generated
@@ -49,6 +54,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object wfSpecName_ = "";
   /**
+   * <pre>
+   * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+   * </pre>
+   *
    * <code>optional string wf_spec_name = 1;</code>
    * @return Whether the wfSpecName field is set.
    */
@@ -57,6 +66,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+   * </pre>
+   *
    * <code>optional string wf_spec_name = 1;</code>
    * @return The wfSpecName.
    */
@@ -74,6 +87,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+   * </pre>
+   *
    * <code>optional string wf_spec_name = 1;</code>
    * @return The bytes for wfSpecName.
    */
@@ -95,6 +112,10 @@ private static final long serialVersionUID = 0L;
   public static final int WF_SPEC_MAJOR_VERSION_FIELD_NUMBER = 2;
   private int wfSpecMajorVersion_ = 0;
   /**
+   * <pre>
+   * Filter by WfSpec major version. Requires wf_spec_name to be set.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_major_version = 2;</code>
    * @return Whether the wfSpecMajorVersion field is set.
    */
@@ -103,6 +124,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Filter by WfSpec major version. Requires wf_spec_name to be set.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_major_version = 2;</code>
    * @return The wfSpecMajorVersion.
    */
@@ -114,6 +139,10 @@ private static final long serialVersionUID = 0L;
   public static final int WF_SPEC_REVISION_FIELD_NUMBER = 3;
   private int wfSpecRevision_ = 0;
   /**
+   * <pre>
+   * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_revision = 3;</code>
    * @return Whether the wfSpecRevision field is set.
    */
@@ -122,6 +151,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
+   * <pre>
+   * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_revision = 3;</code>
    * @return The wfSpecRevision.
    */
@@ -324,6 +357,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Request to count NodeRun's matching specified criteria. All fields are optional filters
+   * that progressively narrow the count. Request will be rejected if no fields are set
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.CountNodeRunRequest}
    */
   public static final class Builder extends
@@ -492,6 +530,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object wfSpecName_ = "";
     /**
+     * <pre>
+     * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+     * </pre>
+     *
      * <code>optional string wf_spec_name = 1;</code>
      * @return Whether the wfSpecName field is set.
      */
@@ -499,6 +541,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+     * </pre>
+     *
      * <code>optional string wf_spec_name = 1;</code>
      * @return The wfSpecName.
      */
@@ -515,6 +561,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+     * </pre>
+     *
      * <code>optional string wf_spec_name = 1;</code>
      * @return The bytes for wfSpecName.
      */
@@ -532,6 +582,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+     * </pre>
+     *
      * <code>optional string wf_spec_name = 1;</code>
      * @param value The wfSpecName to set.
      * @return This builder for chaining.
@@ -545,6 +599,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+     * </pre>
+     *
      * <code>optional string wf_spec_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -555,6 +613,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+     * </pre>
+     *
      * <code>optional string wf_spec_name = 1;</code>
      * @param value The bytes for wfSpecName to set.
      * @return This builder for chaining.
@@ -571,6 +633,10 @@ private static final long serialVersionUID = 0L;
 
     private int wfSpecMajorVersion_ ;
     /**
+     * <pre>
+     * Filter by WfSpec major version. Requires wf_spec_name to be set.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_major_version = 2;</code>
      * @return Whether the wfSpecMajorVersion field is set.
      */
@@ -579,6 +645,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Filter by WfSpec major version. Requires wf_spec_name to be set.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_major_version = 2;</code>
      * @return The wfSpecMajorVersion.
      */
@@ -587,6 +657,10 @@ private static final long serialVersionUID = 0L;
       return wfSpecMajorVersion_;
     }
     /**
+     * <pre>
+     * Filter by WfSpec major version. Requires wf_spec_name to be set.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_major_version = 2;</code>
      * @param value The wfSpecMajorVersion to set.
      * @return This builder for chaining.
@@ -599,6 +673,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Filter by WfSpec major version. Requires wf_spec_name to be set.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_major_version = 2;</code>
      * @return This builder for chaining.
      */
@@ -611,6 +689,10 @@ private static final long serialVersionUID = 0L;
 
     private int wfSpecRevision_ ;
     /**
+     * <pre>
+     * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_revision = 3;</code>
      * @return Whether the wfSpecRevision field is set.
      */
@@ -619,6 +701,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_revision = 3;</code>
      * @return The wfSpecRevision.
      */
@@ -627,6 +713,10 @@ private static final long serialVersionUID = 0L;
       return wfSpecRevision_;
     }
     /**
+     * <pre>
+     * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_revision = 3;</code>
      * @param value The wfSpecRevision to set.
      * @return This builder for chaining.
@@ -639,6 +729,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+     * </pre>
+     *
      * <code>optional int32 wf_spec_revision = 3;</code>
      * @return This builder for chaining.
      */

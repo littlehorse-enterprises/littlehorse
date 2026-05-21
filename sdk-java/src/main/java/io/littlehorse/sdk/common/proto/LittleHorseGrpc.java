@@ -3019,35 +3019,35 @@ public final class LittleHorseGrpc {
     return getCountNodeRunMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest,
-      io.littlehorse.sdk.common.proto.Count> getCountScheduledTaskRunMethod;
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountTaskRunRequest,
+      io.littlehorse.sdk.common.proto.Count> getCountTaskRunMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "CountScheduledTaskRun",
-      requestType = io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest.class,
+      fullMethodName = SERVICE_NAME + '/' + "CountTaskRun",
+      requestType = io.littlehorse.sdk.common.proto.CountTaskRunRequest.class,
       responseType = io.littlehorse.sdk.common.proto.Count.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest,
-      io.littlehorse.sdk.common.proto.Count> getCountScheduledTaskRunMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest, io.littlehorse.sdk.common.proto.Count> getCountScheduledTaskRunMethod;
-    if ((getCountScheduledTaskRunMethod = LittleHorseGrpc.getCountScheduledTaskRunMethod) == null) {
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountTaskRunRequest,
+      io.littlehorse.sdk.common.proto.Count> getCountTaskRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountTaskRunRequest, io.littlehorse.sdk.common.proto.Count> getCountTaskRunMethod;
+    if ((getCountTaskRunMethod = LittleHorseGrpc.getCountTaskRunMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
-        if ((getCountScheduledTaskRunMethod = LittleHorseGrpc.getCountScheduledTaskRunMethod) == null) {
-          LittleHorseGrpc.getCountScheduledTaskRunMethod = getCountScheduledTaskRunMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest, io.littlehorse.sdk.common.proto.Count>newBuilder()
+        if ((getCountTaskRunMethod = LittleHorseGrpc.getCountTaskRunMethod) == null) {
+          LittleHorseGrpc.getCountTaskRunMethod = getCountTaskRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CountTaskRunRequest, io.littlehorse.sdk.common.proto.Count>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CountScheduledTaskRun"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CountTaskRun"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.CountTaskRunRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.Count.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("CountScheduledTaskRun"))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("CountTaskRun"))
               .build();
         }
       }
     }
-    return getCountScheduledTaskRunMethod;
+    return getCountTaskRunMethod;
   }
 
   /**
@@ -4134,6 +4134,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Counts the number of NodeRun's matching the given criteria. This is an eventually
+     * consistent count maintained via pre-aggregated counters.
+     * </pre>
      */
     default void countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count> responseObserver) {
@@ -4141,10 +4145,15 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+     * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+     * an eventually consistent count maintained via pre-aggregated counters.
+     * </pre>
      */
-    default void countScheduledTaskRun(io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest request,
+    default void countTaskRun(io.littlehorse.sdk.common.proto.CountTaskRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCountScheduledTaskRunMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCountTaskRunMethod(), responseObserver);
     }
   }
 
@@ -5292,6 +5301,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Counts the number of NodeRun's matching the given criteria. This is an eventually
+     * consistent count maintained via pre-aggregated counters.
+     * </pre>
      */
     public void countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count> responseObserver) {
@@ -5300,11 +5313,16 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+     * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+     * an eventually consistent count maintained via pre-aggregated counters.
+     * </pre>
      */
-    public void countScheduledTaskRun(io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest request,
+    public void countTaskRun(io.littlehorse.sdk.common.proto.CountTaskRunRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getCountScheduledTaskRunMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getCountTaskRunMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -6347,6 +6365,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Counts the number of NodeRun's matching the given criteria. This is an eventually
+     * consistent count maintained via pre-aggregated counters.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.Count countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -6354,10 +6376,15 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+     * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+     * an eventually consistent count maintained via pre-aggregated counters.
+     * </pre>
      */
-    public io.littlehorse.sdk.common.proto.Count countScheduledTaskRun(io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest request) throws io.grpc.StatusException {
+    public io.littlehorse.sdk.common.proto.Count countTaskRun(io.littlehorse.sdk.common.proto.CountTaskRunRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
-          getChannel(), getCountScheduledTaskRunMethod(), getCallOptions(), request);
+          getChannel(), getCountTaskRunMethod(), getCallOptions(), request);
     }
   }
 
@@ -7387,6 +7414,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Counts the number of NodeRun's matching the given criteria. This is an eventually
+     * consistent count maintained via pre-aggregated counters.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.Count countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -7394,10 +7425,15 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+     * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+     * an eventually consistent count maintained via pre-aggregated counters.
+     * </pre>
      */
-    public io.littlehorse.sdk.common.proto.Count countScheduledTaskRun(io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest request) {
+    public io.littlehorse.sdk.common.proto.Count countTaskRun(io.littlehorse.sdk.common.proto.CountTaskRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getCountScheduledTaskRunMethod(), getCallOptions(), request);
+          getChannel(), getCountTaskRunMethod(), getCallOptions(), request);
     }
   }
 
@@ -8522,6 +8558,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Counts the number of NodeRun's matching the given criteria. This is an eventually
+     * consistent count maintained via pre-aggregated counters.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Count> countNodeRun(
         io.littlehorse.sdk.common.proto.CountNodeRunRequest request) {
@@ -8530,11 +8570,16 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+     * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+     * an eventually consistent count maintained via pre-aggregated counters.
+     * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Count> countScheduledTaskRun(
-        io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Count> countTaskRun(
+        io.littlehorse.sdk.common.proto.CountTaskRunRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getCountScheduledTaskRunMethod(), getCallOptions()), request);
+          getChannel().newCall(getCountTaskRunMethod(), getCallOptions()), request);
     }
   }
 
@@ -8634,7 +8679,7 @@ public final class LittleHorseGrpc {
   private static final int METHODID_WHOAMI = 93;
   private static final int METHODID_GET_SERVER_VERSION = 94;
   private static final int METHODID_COUNT_NODE_RUN = 95;
-  private static final int METHODID_COUNT_SCHEDULED_TASK_RUN = 96;
+  private static final int METHODID_COUNT_TASK_RUN = 96;
   private static final int METHODID_POLL_TASK = 97;
 
   private static final class MethodHandlers<Req, Resp> implements
@@ -9038,8 +9083,8 @@ public final class LittleHorseGrpc {
           serviceImpl.countNodeRun((io.littlehorse.sdk.common.proto.CountNodeRunRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count>) responseObserver);
           break;
-        case METHODID_COUNT_SCHEDULED_TASK_RUN:
-          serviceImpl.countScheduledTaskRun((io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest) request,
+        case METHODID_COUNT_TASK_RUN:
+          serviceImpl.countTaskRun((io.littlehorse.sdk.common.proto.CountTaskRunRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count>) responseObserver);
           break;
         default:
@@ -9743,12 +9788,12 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.Count>(
                 service, METHODID_COUNT_NODE_RUN)))
         .addMethod(
-          getCountScheduledTaskRunMethod(),
+          getCountTaskRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest,
+              io.littlehorse.sdk.common.proto.CountTaskRunRequest,
               io.littlehorse.sdk.common.proto.Count>(
-                service, METHODID_COUNT_SCHEDULED_TASK_RUN)))
+                service, METHODID_COUNT_TASK_RUN)))
         .build();
   }
 
@@ -9894,7 +9939,7 @@ public final class LittleHorseGrpc {
               .addMethod(getWhoamiMethod())
               .addMethod(getGetServerVersionMethod())
               .addMethod(getCountNodeRunMethod())
-              .addMethod(getCountScheduledTaskRunMethod())
+              .addMethod(getCountTaskRunMethod())
               .build();
         }
       }

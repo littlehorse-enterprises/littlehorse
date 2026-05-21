@@ -95,7 +95,7 @@ import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.count.CountModel;
 import io.littlehorse.server.streams.lhinternalscan.count.CountNodeRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.count.CountRequest;
-import io.littlehorse.server.streams.lhinternalscan.count.CountScheduledTaskRunRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.count.CountTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListExternalEventsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListNodeRunsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskMetricsRequestModel;
@@ -1216,9 +1216,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    public void countScheduledTaskRun(CountScheduledTaskRunRequest request, StreamObserver<Count> responseObserver) {
-        CountScheduledTaskRunRequestModel reqModel =
-                LHSerializable.fromProto(request, CountScheduledTaskRunRequestModel.class, requestContext());
+    public void countTaskRun(CountTaskRunRequest request, StreamObserver<Count> responseObserver) {
+        CountTaskRunRequestModel reqModel =
+                LHSerializable.fromProto(request, CountTaskRunRequestModel.class, requestContext());
         CountModel countResponse = handleCount(reqModel);
         responseObserver.onNext(countResponse.toProto().build());
         responseObserver.onCompleted();

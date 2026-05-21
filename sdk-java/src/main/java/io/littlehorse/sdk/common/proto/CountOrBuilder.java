@@ -11,6 +11,10 @@ public interface CountOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The count of objects matching the request criteria.
+   * </pre>
+   *
    * <code>int64 value = 1;</code>
    * @return The value.
    */

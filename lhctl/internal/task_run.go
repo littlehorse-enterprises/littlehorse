@@ -135,25 +135,36 @@ Lists all TaskRun's for a given WfRun Id.
 	},
 }
 
-var countScheduledTaskRunCmd = &cobra.Command{
-	Use:   "scheduledTaskRun",
-	Short: "Count scheduled TaskRun's by TaskDef name.",
-	Long: `Count the number of TaskRun's in TASK_SCHEDULED state for a given TaskDef.
+var countTaskRunCmd = &cobra.Command{
+	Use:   "taskRun <taskDefName>",
+	Short: "Count TaskRun's by TaskDef name and status.",
+	Long: `Count the number of TaskRun's matching the given criteria for a specific TaskDef.
 
 Usage:
-  lhctl count scheduledTaskRun --taskDefName <taskDefName>
+  lhctl count taskRun <taskDefName> --status <status>
+
+Currently only TASK_SCHEDULED status is supported.
 `,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		taskDefName, _ := cmd.Flags().GetString("taskDefName")
-		if taskDefName == "" {
-			log.Fatal("Must provide --taskDefName flag. See 'lhctl count scheduledTaskRun --help'")
+		taskDefName := args[0]
+
+		statusStr, _ := cmd.Flags().GetString("status")
+		if statusStr == "" {
+			log.Fatal("Must provide --status flag. See 'lhctl count taskRun --help'")
 		}
 
-		req := &lhproto.CountScheduledTaskRunRequest{
+		statusVal, ok := lhproto.TaskStatus_value[statusStr]
+		if !ok {
+			log.Fatal("Invalid status value. Must be a valid TaskStatus enum (e.g., TASK_SCHEDULED)")
+		}
+
+		req := &lhproto.CountTaskRunRequest{
 			TaskDefName: taskDefName,
+			Status:      lhproto.TaskStatus(statusVal),
 		}
 
-		littlehorse.PrintResp(getGlobalClient(cmd).CountScheduledTaskRun(requestContext(cmd), req))
+		littlehorse.PrintResp(getGlobalClient(cmd).CountTaskRun(requestContext(cmd), req))
 	},
 }
 
@@ -161,9 +172,9 @@ func init() {
 	getCmd.AddCommand(getTaskRunCmd)
 	searchCmd.AddCommand(searchTaskRunCmd)
 	listCmd.AddCommand(listTaskRunCmd)
-	countCmd.AddCommand(countScheduledTaskRunCmd)
+	countCmd.AddCommand(countTaskRunCmd)
 
-	countScheduledTaskRunCmd.Flags().String("taskDefName", "", "Name of the TaskDef to count scheduled TaskRuns for (required)")
+	countTaskRunCmd.Flags().String("status", "", "Status of TaskRun's to count (required). Currently only TASK_SCHEDULED is supported.")
 	searchTaskRunCmd.Flags().String("status", "", "Status of TaskRun's to search for.")
 	searchTaskRunCmd.MarkFlagRequired("taskDefName")
 	searchTaskRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for TaskRuns that started no more than this number of minutes ago")

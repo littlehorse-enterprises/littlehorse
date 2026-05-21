@@ -11,16 +11,28 @@ public interface CountNodeRunRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+   * </pre>
+   *
    * <code>optional string wf_spec_name = 1;</code>
    * @return Whether the wfSpecName field is set.
    */
   boolean hasWfSpecName();
   /**
+   * <pre>
+   * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+   * </pre>
+   *
    * <code>optional string wf_spec_name = 1;</code>
    * @return The wfSpecName.
    */
   java.lang.String getWfSpecName();
   /**
+   * <pre>
+   * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+   * </pre>
+   *
    * <code>optional string wf_spec_name = 1;</code>
    * @return The bytes for wfSpecName.
    */
@@ -28,22 +40,38 @@ public interface CountNodeRunRequestOrBuilder extends
       getWfSpecNameBytes();
 
   /**
+   * <pre>
+   * Filter by WfSpec major version. Requires wf_spec_name to be set.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_major_version = 2;</code>
    * @return Whether the wfSpecMajorVersion field is set.
    */
   boolean hasWfSpecMajorVersion();
   /**
+   * <pre>
+   * Filter by WfSpec major version. Requires wf_spec_name to be set.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_major_version = 2;</code>
    * @return The wfSpecMajorVersion.
    */
   int getWfSpecMajorVersion();
 
   /**
+   * <pre>
+   * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_revision = 3;</code>
    * @return Whether the wfSpecRevision field is set.
    */
   boolean hasWfSpecRevision();
   /**
+   * <pre>
+   * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+   * </pre>
+   *
    * <code>optional int32 wf_spec_revision = 3;</code>
    * @return The wfSpecRevision.
    */

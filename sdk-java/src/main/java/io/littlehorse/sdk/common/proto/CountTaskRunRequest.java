@@ -6,13 +6,19 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.CountScheduledTaskRunRequest}
+ * <pre>
+ * Request to count TaskRun's matching the given criteria for a specific TaskDef.
+ * The task_def_name is required. The status filter narrows the count to TaskRun's
+ * in a specific state. Initially, only TASK_SCHEDULED is supported as a counted status.
+ * </pre>
+ *
+ * Protobuf type {@code littlehorse.CountTaskRunRequest}
  */
 @com.google.protobuf.Generated
-public final class CountScheduledTaskRunRequest extends
+public final class CountTaskRunRequest extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:littlehorse.CountScheduledTaskRunRequest)
-    CountScheduledTaskRunRequestOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.CountTaskRunRequest)
+    CountTaskRunRequestOrBuilder {
 private static final long serialVersionUID = 0L;
   static {
     com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -21,33 +27,38 @@ private static final long serialVersionUID = 0L;
       /* minor= */ 32,
       /* patch= */ 1,
       /* suffix= */ "",
-      CountScheduledTaskRunRequest.class.getName());
+      CountTaskRunRequest.class.getName());
   }
-  // Use CountScheduledTaskRunRequest.newBuilder() to construct.
-  private CountScheduledTaskRunRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  // Use CountTaskRunRequest.newBuilder() to construct.
+  private CountTaskRunRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
-  private CountScheduledTaskRunRequest() {
+  private CountTaskRunRequest() {
     taskDefName_ = "";
+    status_ = 0;
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountScheduledTaskRunRequest_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountTaskRunRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountScheduledTaskRunRequest_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountTaskRunRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest.class, io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest.Builder.class);
+            io.littlehorse.sdk.common.proto.CountTaskRunRequest.class, io.littlehorse.sdk.common.proto.CountTaskRunRequest.Builder.class);
   }
 
   public static final int TASK_DEF_NAME_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private volatile java.lang.Object taskDefName_ = "";
   /**
+   * <pre>
+   * The name of the TaskDef whose TaskRun's should be counted.
+   * </pre>
+   *
    * <code>string task_def_name = 1;</code>
    * @return The taskDefName.
    */
@@ -65,6 +76,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the TaskDef whose TaskRun's should be counted.
+   * </pre>
+   *
    * <code>string task_def_name = 1;</code>
    * @return The bytes for taskDefName.
    */
@@ -81,6 +96,34 @@ private static final long serialVersionUID = 0L;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
+  }
+
+  public static final int STATUS_FIELD_NUMBER = 2;
+  private int status_ = 0;
+  /**
+   * <pre>
+   * Filter by TaskRun status. Required. Initially only TASK_SCHEDULED is supported;
+   * the server will reject requests with unsupported status values.
+   * </pre>
+   *
+   * <code>.littlehorse.TaskStatus status = 2;</code>
+   * @return The enum numeric value on the wire for status.
+   */
+  @java.lang.Override public int getStatusValue() {
+    return status_;
+  }
+  /**
+   * <pre>
+   * Filter by TaskRun status. Required. Initially only TASK_SCHEDULED is supported;
+   * the server will reject requests with unsupported status values.
+   * </pre>
+   *
+   * <code>.littlehorse.TaskStatus status = 2;</code>
+   * @return The status.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.TaskStatus getStatus() {
+    io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(status_);
+    return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -100,6 +143,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(taskDefName_)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 1, taskDefName_);
     }
+    if (status_ != io.littlehorse.sdk.common.proto.TaskStatus.TASK_SCHEDULED.getNumber()) {
+      output.writeEnum(2, status_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -112,6 +158,10 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(taskDefName_)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(1, taskDefName_);
     }
+    if (status_ != io.littlehorse.sdk.common.proto.TaskStatus.TASK_SCHEDULED.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(2, status_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -122,13 +172,14 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.CountTaskRunRequest)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest other = (io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest) obj;
+    io.littlehorse.sdk.common.proto.CountTaskRunRequest other = (io.littlehorse.sdk.common.proto.CountTaskRunRequest) obj;
 
     if (!getTaskDefName()
         .equals(other.getTaskDefName())) return false;
+    if (status_ != other.status_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -142,49 +193,51 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getTaskDefName().hashCode();
+    hash = (37 * hash) + STATUS_FIELD_NUMBER;
+    hash = (53 * hash) + status_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.CountTaskRunRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.CountTaskRunRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.CountTaskRunRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.CountTaskRunRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.CountTaskRunRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.CountTaskRunRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.CountTaskRunRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.CountTaskRunRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -192,26 +245,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.CountTaskRunRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.CountTaskRunRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.CountTaskRunRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.CountTaskRunRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -224,7 +277,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.CountTaskRunRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -240,26 +293,32 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.CountScheduledTaskRunRequest}
+   * <pre>
+   * Request to count TaskRun's matching the given criteria for a specific TaskDef.
+   * The task_def_name is required. The status filter narrows the count to TaskRun's
+   * in a specific state. Initially, only TASK_SCHEDULED is supported as a counted status.
+   * </pre>
+   *
+   * Protobuf type {@code littlehorse.CountTaskRunRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.CountScheduledTaskRunRequest)
-      io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.CountTaskRunRequest)
+      io.littlehorse.sdk.common.proto.CountTaskRunRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountScheduledTaskRunRequest_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountTaskRunRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountScheduledTaskRunRequest_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountTaskRunRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest.class, io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest.Builder.class);
+              io.littlehorse.sdk.common.proto.CountTaskRunRequest.class, io.littlehorse.sdk.common.proto.CountTaskRunRequest.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.CountTaskRunRequest.newBuilder()
     private Builder() {
 
     }
@@ -274,23 +333,24 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       taskDefName_ = "";
+      status_ = 0;
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountScheduledTaskRunRequest_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountTaskRunRequest_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.CountTaskRunRequest getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.CountTaskRunRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest build() {
-      io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest result = buildPartial();
+    public io.littlehorse.sdk.common.proto.CountTaskRunRequest build() {
+      io.littlehorse.sdk.common.proto.CountTaskRunRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -298,36 +358,42 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest buildPartial() {
-      io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest result = new io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest(this);
+    public io.littlehorse.sdk.common.proto.CountTaskRunRequest buildPartial() {
+      io.littlehorse.sdk.common.proto.CountTaskRunRequest result = new io.littlehorse.sdk.common.proto.CountTaskRunRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.CountTaskRunRequest result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.taskDefName_ = taskDefName_;
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.status_ = status_;
       }
     }
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.CountTaskRunRequest) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.CountTaskRunRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest other) {
-      if (other == io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.CountTaskRunRequest other) {
+      if (other == io.littlehorse.sdk.common.proto.CountTaskRunRequest.getDefaultInstance()) return this;
       if (!other.getTaskDefName().isEmpty()) {
         taskDefName_ = other.taskDefName_;
         bitField0_ |= 0x00000001;
         onChanged();
+      }
+      if (other.status_ != 0) {
+        setStatusValue(other.getStatusValue());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -360,6 +426,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 16: {
+              status_ = input.readEnum();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 16
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -379,6 +450,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object taskDefName_ = "";
     /**
+     * <pre>
+     * The name of the TaskDef whose TaskRun's should be counted.
+     * </pre>
+     *
      * <code>string task_def_name = 1;</code>
      * @return The taskDefName.
      */
@@ -395,6 +470,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the TaskDef whose TaskRun's should be counted.
+     * </pre>
+     *
      * <code>string task_def_name = 1;</code>
      * @return The bytes for taskDefName.
      */
@@ -412,6 +491,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the TaskDef whose TaskRun's should be counted.
+     * </pre>
+     *
      * <code>string task_def_name = 1;</code>
      * @param value The taskDefName to set.
      * @return This builder for chaining.
@@ -425,6 +508,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the TaskDef whose TaskRun's should be counted.
+     * </pre>
+     *
      * <code>string task_def_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -435,6 +522,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the TaskDef whose TaskRun's should be counted.
+     * </pre>
+     *
      * <code>string task_def_name = 1;</code>
      * @param value The bytes for taskDefName to set.
      * @return This builder for chaining.
@@ -449,23 +540,99 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.CountScheduledTaskRunRequest)
+    private int status_ = 0;
+    /**
+     * <pre>
+     * Filter by TaskRun status. Required. Initially only TASK_SCHEDULED is supported;
+     * the server will reject requests with unsupported status values.
+     * </pre>
+     *
+     * <code>.littlehorse.TaskStatus status = 2;</code>
+     * @return The enum numeric value on the wire for status.
+     */
+    @java.lang.Override public int getStatusValue() {
+      return status_;
+    }
+    /**
+     * <pre>
+     * Filter by TaskRun status. Required. Initially only TASK_SCHEDULED is supported;
+     * the server will reject requests with unsupported status values.
+     * </pre>
+     *
+     * <code>.littlehorse.TaskStatus status = 2;</code>
+     * @param value The enum numeric value on the wire for status to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStatusValue(int value) {
+      status_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Filter by TaskRun status. Required. Initially only TASK_SCHEDULED is supported;
+     * the server will reject requests with unsupported status values.
+     * </pre>
+     *
+     * <code>.littlehorse.TaskStatus status = 2;</code>
+     * @return The status.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.TaskStatus getStatus() {
+      io.littlehorse.sdk.common.proto.TaskStatus result = io.littlehorse.sdk.common.proto.TaskStatus.forNumber(status_);
+      return result == null ? io.littlehorse.sdk.common.proto.TaskStatus.UNRECOGNIZED : result;
+    }
+    /**
+     * <pre>
+     * Filter by TaskRun status. Required. Initially only TASK_SCHEDULED is supported;
+     * the server will reject requests with unsupported status values.
+     * </pre>
+     *
+     * <code>.littlehorse.TaskStatus status = 2;</code>
+     * @param value The status to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStatus(io.littlehorse.sdk.common.proto.TaskStatus value) {
+      if (value == null) { throw new NullPointerException(); }
+      bitField0_ |= 0x00000002;
+      status_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Filter by TaskRun status. Required. Initially only TASK_SCHEDULED is supported;
+     * the server will reject requests with unsupported status values.
+     * </pre>
+     *
+     * <code>.littlehorse.TaskStatus status = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearStatus() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      status_ = 0;
+      onChanged();
+      return this;
+    }
+
+    // @@protoc_insertion_point(builder_scope:littlehorse.CountTaskRunRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.CountScheduledTaskRunRequest)
-  private static final io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.CountTaskRunRequest)
+  private static final io.littlehorse.sdk.common.proto.CountTaskRunRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.CountTaskRunRequest();
   }
 
-  public static io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.CountTaskRunRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<CountScheduledTaskRunRequest>
-      PARSER = new com.google.protobuf.AbstractParser<CountScheduledTaskRunRequest>() {
+  private static final com.google.protobuf.Parser<CountTaskRunRequest>
+      PARSER = new com.google.protobuf.AbstractParser<CountTaskRunRequest>() {
     @java.lang.Override
-    public CountScheduledTaskRunRequest parsePartialFrom(
+    public CountTaskRunRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -484,17 +651,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<CountScheduledTaskRunRequest> parser() {
+  public static com.google.protobuf.Parser<CountTaskRunRequest> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<CountScheduledTaskRunRequest> getParserForType() {
+  public com.google.protobuf.Parser<CountTaskRunRequest> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.CountScheduledTaskRunRequest getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.CountTaskRunRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 
