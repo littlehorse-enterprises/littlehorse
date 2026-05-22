@@ -21,6 +21,7 @@ import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -61,7 +62,7 @@ public class TenantAdministrationTest {
                     Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+    private final MockProcessorContext<String, Forwardable> mockProcessorContext =
             new MockProcessorContext<>();
 
     private MetadataProcessor metadataProcessor;

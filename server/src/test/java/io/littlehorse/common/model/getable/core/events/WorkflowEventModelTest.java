@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.UUID;
 import org.apache.kafka.common.header.Headers;
@@ -18,7 +19,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class WorkflowEventModelTest {
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
+    private final MockProcessorContext<String, Forwardable> mockProcessor = new MockProcessorContext<>();
     private final Command dummyCommand = buildCommand();
     private final Headers metadata = HeadersUtil.metadataHeadersFor("my-tenant", "my-principal");
 

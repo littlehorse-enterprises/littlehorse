@@ -20,6 +20,7 @@ import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +34,7 @@ import org.junit.jupiter.api.Test;
 
 public class WfRunModelTest {
 
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+    private final MockProcessorContext<String, Forwardable> mockProcessorContext =
             new MockProcessorContext<>();
     private final TenantIdModel tenantId = new TenantIdModel("test-tenant");
     private final Headers metadata = HeadersUtil.metadataHeadersFor(tenantId.getId(), "test-principal");

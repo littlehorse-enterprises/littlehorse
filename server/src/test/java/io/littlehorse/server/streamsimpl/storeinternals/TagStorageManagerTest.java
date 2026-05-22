@@ -18,6 +18,8 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
 import java.util.Set;
+
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -55,7 +57,7 @@ public class TagStorageManagerTest {
     private TenantScopedStore localStore =
             TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), mock(Answers.RETURNS_DEEP_STUBS));
 
-    final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
+    final MockProcessorContext<String, Forwardable> mockProcessorContext = new MockProcessorContext<>();
 
     @InjectMocks
     private TagStorageManager tagStorageManager;

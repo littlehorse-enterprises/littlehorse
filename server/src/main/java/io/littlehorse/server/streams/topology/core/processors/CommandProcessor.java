@@ -5,19 +5,25 @@ import static com.google.protobuf.util.Timestamps.toMillis;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteMetricWindowModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.AggregateWindowMetricsModel;
 import io.littlehorse.common.proto.Command;
+import io.littlehorse.common.proto.DeleteMetricWindow;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.MetricWindowId;
 import io.littlehorse.sdk.common.proto.Tenant;
+import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.ServerTopology;
@@ -34,6 +40,7 @@ import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreCommandException;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -52,9 +59,9 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
-public class CommandProcessor implements Processor<String, Command, String, CommandProcessorOutput> {
+public class CommandProcessor implements Processor<String, Command, String, Forwardable> {
 
-    protected ProcessorContext<String, CommandProcessorOutput> ctx;
+    protected ProcessorContext<String, Forwardable> ctx;
     private final LHServerConfig config;
     private final LHServer server;
     private final MetadataCache metadataCache;
@@ -89,7 +96,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     @Override
-    public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
+    public void init(final ProcessorContext<String, Forwardable> ctx) {
         log.info("Starting the init() process on partition {}", ctx.taskId().partition());
         this.ctx = ctx;
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
@@ -108,6 +115,16 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     @Override
     public void process(final Record<String, Command> commandRecord) {
         exceptionHandler.tryRun(() -> processHelper(commandRecord));
+        CommandProcessorOutput cpo = new CommandProcessorOutput();
+        DeleteMetricWindow hey = DeleteMetricWindow.newBuilder().setId(MetricWindowId.newBuilder().setWfSpecId(WfSpecId.newBuilder().setName("hey").build()).build()).build();
+        DeleteMetricWindowModel model = LHSerializable.fromProto(hey, DeleteMetricWindowModel.class, new BackgroundContext());
+        cpo.payload = new LHTimer(new CommandModel(model), 2);
+        Record<String, CommandProcessorOutput> out = new Record<>(
+                "",
+                cpo,
+                System.currentTimeMillis(),
+                HeadersUtil.metadataHeadersFor(new TenantIdModel(LHConstants.DEFAULT_TENANT), new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
+        ctx.forward(out);
     }
 
     private void processHelper(final Record<String, Command> commandRecord) {

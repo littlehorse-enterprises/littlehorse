@@ -11,6 +11,7 @@ import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.RocksConfigSetter;
 import io.littlehorse.sdk.common.config.ConfigBase;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
+import io.littlehorse.server.LHDefaultPartitioner;
 import io.littlehorse.server.auth.AuthorizationProtocol;
 import io.littlehorse.server.auth.OAuthConfig;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
@@ -1025,6 +1026,7 @@ public class LHServerConfig extends ConfigBase {
         props.put("metrics.recording.level", getServerMetricLevel());
         props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), getStreamsSessionTimeout());
         props.put(StreamsConfig.producerPrefix(ProducerConfig.MAX_REQUEST_SIZE_CONFIG), getProducerMaxRequestSize());
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.PARTITIONER_CLASS_CONFIG), LHDefaultPartitioner.class.getName());
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
         props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);

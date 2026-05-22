@@ -16,6 +16,7 @@ import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
 import java.util.UUID;
@@ -32,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class WorkflowEventRunTest {
 
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
+    private final MockProcessorContext<String, Forwardable> mockProcessor = new MockProcessorContext<>();
     private final Headers metadata =
             HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL);
     private final Command dummyCommand = buildCommand();

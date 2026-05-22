@@ -27,6 +27,7 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -84,7 +85,7 @@ public class PutWfSpecRequestModelTest {
     Headers defaultHeaders = HeadersUtil.metadataHeadersFor(
             new TenantIdModel(LHConstants.DEFAULT_TENANT), new PrincipalIdModel("my-principal-id"));
 
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+    private final MockProcessorContext<String, Forwardable> mockProcessorContext =
             new MockProcessorContext<>();
     private TenantScopedStore defaultStore =
             TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(DEFAULT_TENANT_ID), executionContext);

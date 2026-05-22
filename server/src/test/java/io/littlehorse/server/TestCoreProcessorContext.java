@@ -14,6 +14,7 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.Getter;
@@ -44,7 +45,7 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
             Command currentCommand,
             Headers recordMetadata,
             LHServerConfig config,
-            ProcessorContext<String, CommandProcessorOutput> processorContext,
+            ProcessorContext<String, Forwardable> processorContext,
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
             LHServer server,
@@ -79,7 +80,7 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
     public static TestCoreProcessorContext create(
             Command currentCommand,
             Headers recordMetadata,
-            MockProcessorContext<String, CommandProcessorOutput> processorContext) {
+            MockProcessorContext<String, Forwardable> processorContext) {
         LHServerConfig lhConfig = Mockito.mock();
         TaskQueueManager globalTaskQueueManager = Mockito.mock();
         MetadataCache metadataCache = new MetadataCache();

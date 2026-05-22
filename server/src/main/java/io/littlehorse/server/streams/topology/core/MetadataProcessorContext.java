@@ -30,7 +30,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 
 public class MetadataProcessorContext implements ExecutionContext {
 
-    private final ProcessorContext<String, CommandProcessorOutput> processorContext;
+    private final ProcessorContext<String, Forwardable> processorContext;
     private final MetadataCache metadataCache;
     private final AuthorizationContext authContext;
     private MetadataManager metadataManager;
@@ -39,7 +39,7 @@ public class MetadataProcessorContext implements ExecutionContext {
 
     public MetadataProcessorContext(
             Headers recordMetadata,
-            ProcessorContext<String, CommandProcessorOutput> processorContext,
+            ProcessorContext<String, Forwardable> processorContext,
             MetadataCache metadataCache,
             LHServerConfig lhConfig,
             MetadataCommand currentCommand) {

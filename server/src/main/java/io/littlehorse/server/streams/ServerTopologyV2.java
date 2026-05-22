@@ -6,6 +6,7 @@ import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.util.serde.ProtobufDeserializer;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.PartitionRecord;
 import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.store.BoundedBytesSerde;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -55,15 +56,16 @@ public class ServerTopologyV2 extends Topology {
     public static final String GLOBAL_METADATA_SOURCE_NAME = ServerTopology.GLOBAL_METADATA_SOURCE;
     public static final String GLOBAL_METADATA_PROCESSOR_NAME = ServerTopology.GLOBAL_METADATA_PROCESSOR;
 
-    private final ProcessorSupplier<String, Command, String, CommandProcessorOutput> commandProcessorSupplier;
-    private final ProcessorSupplier<String, CommandProcessorOutput, String, Forwardable> routerProcessorSupplier;
-    private final ProcessorSupplier<String, CommandProcessorOutput, String, Forwardable> routerProcessor2Supplier;
+    private final ProcessorSupplier<String, Command, String, Forwardable> commandProcessorSupplier;
+    private final ProcessorSupplier<String, Forwardable, String, Forwardable> routerProcessorSupplier;
+    private final ProcessorSupplier<String, Forwardable, String, Forwardable> routerProcessor2Supplier;
     private final ProcessorSupplier<String, LHTimer, String, Object> routerProcessorTimer2Supplier;
     private final ProcessorSupplier<String, LHTimer, String, Object> timerProcessorSupplier;
-    private final ProcessorSupplier<String, Command, String, CommandProcessorOutput> timerCommandProcessorSupplier;
+    private final ProcessorSupplier<String, PartitionRecord, String, PartitionRecord> partitionProcessorSupplier;
+    private final ProcessorSupplier<String, Command, String, Forwardable> timerCommandProcessorSupplier;
     private final ProcessorSupplier<String, Forwardable, String, Forwardable> passthroughRepartitionProcessor;
     private final ProcessorSupplier<String, LHTimer, String, Object> timerWithoutForwardProcessorSupplier;
-    private final ProcessorSupplier<String, MetadataCommand, String, CommandProcessorOutput> metadataProcessorSupplier;
+    private final ProcessorSupplier<String, MetadataCommand, String, Forwardable> metadataProcessorSupplier;
     private final String coreCommandTopic;
     private final String repartitionTopic;
     private final String metadataTopic;
@@ -96,9 +98,10 @@ public class ServerTopologyV2 extends Topology {
         this.commandProcessorSupplier = () -> new CommandProcessor(
                 config, server, metadataCache, globalTaskQueueManager, asyncWaiters, commandProcessorMetrics);
         this.routerProcessorSupplier = () -> ProcessorOutputRouter.createCommandProcessorRouter(
-                TIMER_PROCESSOR_NAME, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR);
+                TIMER_PROCESSOR_NAME, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR, "partition");
         this.routerProcessor2Supplier = () -> ProcessorOutputRouter.createCommandProcessorRouter(
-                TIMER_WITHOUT_FORWARD_PROCESSOR_NAME, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR);
+                TIMER_WITHOUT_FORWARD_PROCESSOR_NAME, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR, "partition");
+        this.partitionProcessorSupplier = ProcessorOutputRouter::createPartitionRecordRouter;
         this.routerProcessorTimer2Supplier = ProcessorOutputRouter::createTimerProcessorRouter;
         this.timerProcessorSupplier = () -> new TimerCoreProcessor(true);
         this.passthroughRepartitionProcessor = ProcessorOutputRouter::createPassthroughRepartitionRouter;
@@ -151,6 +154,7 @@ public class ServerTopologyV2 extends Topology {
         serverTopology.addProcessor(COMMAND_PROCESSOR_NAME, commandProcessorSupplier, CORE_COMMAND_SOURCE_NAME);
         serverTopology.addProcessor(ROUTER_PROCESSOR_NAME, routerProcessorSupplier, COMMAND_PROCESSOR_NAME);
         serverTopology.addProcessor(TIMER_PROCESSOR_NAME, timerProcessorSupplier, ROUTER_PROCESSOR_NAME);
+        serverTopology.addProcessor("partition", partitionProcessorSupplier, ROUTER_PROCESSOR_NAME);
         serverTopology.addProcessor(
                 TIMER_PROCESSOR_ROUTER_PROCESSOR_NAME, routerProcessorTimer2Supplier, TIMER_PROCESSOR_NAME);
         serverTopology.addProcessor(

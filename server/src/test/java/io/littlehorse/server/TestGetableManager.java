@@ -7,18 +7,19 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 public class TestGetableManager extends GetableManager {
     private final TenantScopedStore coreStore;
-    private final ProcessorContext<String, CommandProcessorOutput> ctx;
+    private final ProcessorContext<String, Forwardable> ctx;
     private final LHServerConfig config;
     private final CommandModel currentCommand;
     private final ExecutionContext executionContext;
 
     public TestGetableManager(
             TenantScopedStore coreStore,
-            ProcessorContext<String, CommandProcessorOutput> ctx,
+            ProcessorContext<String, Forwardable> ctx,
             LHServerConfig config,
             CommandModel currentCommand,
             CoreProcessorContext executionContext) {

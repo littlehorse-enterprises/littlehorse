@@ -30,6 +30,7 @@ public class LHTimer extends Storeable<LHTimerPb> implements Forwardable {
     private PrincipalIdModel principalId;
     private String storeKeyInternal;
     private boolean isRepartition;
+    private int partition;
 
     public LHTimer() {}
 
@@ -46,6 +47,17 @@ public class LHTimer extends Storeable<LHTimerPb> implements Forwardable {
         isRepartition = false;
         principalId = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
         tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
+    }
+
+    public LHTimer(CommandModel command, int partition) {
+        this.topic = "test-topic";
+        this.tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
+        this.partition = partition;
+        this.maturationTime = command.getTime();
+        payload = command.toProto().build().toByteArray();
+        partitionKey = command.getPartitionKey();
+        isRepartition = false;
+        principalId = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
     }
 
     public LHTimer(CommandModel command, boolean isRepartition) {

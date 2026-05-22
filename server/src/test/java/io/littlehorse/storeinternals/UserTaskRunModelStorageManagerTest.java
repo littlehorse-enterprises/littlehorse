@@ -24,6 +24,8 @@ import java.util.Spliterators;
 import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -53,7 +55,7 @@ public class UserTaskRunModelStorageManagerTest {
 
     private String tenantId = "myTenant";
 
-    final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
+    final MockProcessorContext<String, Forwardable> mockProcessorContext = new MockProcessorContext<>();
     private GetableManager getableManager;
     private String wfRunId = "1234567890";
 
@@ -103,6 +105,7 @@ public class UserTaskRunModelStorageManagerTest {
         return mockProcessorContext.forwarded().stream()
                 .map(MockProcessorContext.CapturedForward::record)
                 .map(Record::value)
+                .map(f -> (CommandProcessorOutput) f)
                 .map(CommandProcessorOutput::getPayload)
                 .map(lhSerializable -> (RepartitionCommand) lhSerializable)
                 .map(RepartitionCommand::getSubCommand)

@@ -24,6 +24,7 @@ import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
 import io.littlehorse.server.streams.topology.core.MetadataCommandException;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
@@ -44,14 +45,14 @@ import org.apache.kafka.streams.state.KeyValueStore;
  * such as WfSpec/TaskDef/ExternalEventDef/UserTaskDef.
  */
 @Slf4j
-public class MetadataProcessor implements Processor<String, MetadataCommand, String, CommandProcessorOutput> {
+public class MetadataProcessor implements Processor<String, MetadataCommand, String, Forwardable> {
 
     private final LHServerConfig config;
     private final LHServer server;
     private final MetadataCache metadataCache;
     private final LHProcessingExceptionHandler exceptionHandler;
 
-    private ProcessorContext<String, CommandProcessorOutput> streamsContext;
+    private ProcessorContext<String, Forwardable> streamsContext;
     private KeyValueStore<String, Bytes> metadataStore;
     private final AsyncWaiters asyncWaiters;
     private final CommandProcessorMetrics metrics;
@@ -70,7 +71,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         this.metrics = metrics;
     }
 
-    public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
+    public void init(final ProcessorContext<String, Forwardable> ctx) {
         this.streamsContext = ctx;
         this.metadataStore = ctx.getStateStore(ServerTopology.METADATA_STORE);
 

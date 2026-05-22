@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +28,7 @@ public class DeleteWfRunRequestModelTest {
     private final String wfRunId = UUID.randomUUID().toString();
     private final WfRunModel wfRun = TestUtil.wfRun(wfRunId);
     private final Command command = commandProto();
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
+    private final MockProcessorContext<String, Forwardable> mockProcessor = new MockProcessorContext<>();
     private final TestCoreProcessorContext testProcessorContext = TestCoreProcessorContext.create(
             command,
             HeadersUtil.metadataHeadersFor(

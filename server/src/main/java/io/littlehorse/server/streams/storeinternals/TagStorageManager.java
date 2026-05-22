@@ -12,6 +12,7 @@ import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,13 +25,13 @@ import org.apache.kafka.streams.processor.api.Record;
 public class TagStorageManager {
 
     private final TenantScopedStore lhStore;
-    private final ProcessorContext<String, CommandProcessorOutput> context;
+    private final ProcessorContext<String, Forwardable> context;
     private final LHServerConfig lhConfig;
     private final AuthorizationContext authContext;
 
     public TagStorageManager(
             TenantScopedStore lhStore,
-            ProcessorContext<String, CommandProcessorOutput> context,
+            ProcessorContext<String, Forwardable> context,
             LHServerConfig lhConfig,
             ExecutionContext executionContext) {
         this.lhStore = lhStore;

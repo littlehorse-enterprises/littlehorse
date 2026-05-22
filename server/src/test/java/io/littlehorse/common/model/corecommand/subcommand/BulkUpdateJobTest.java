@@ -18,6 +18,7 @@ import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.topology.core.processors.CommandProcessor;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -46,7 +47,7 @@ public class BulkUpdateJobTest {
     private final CommandProcessor processor =
             new CommandProcessor(lhConfig, server, metadataCache, queueManager, asyncWaiters, metrics);
     private final Command command = commandProto();
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
+    private final MockProcessorContext<String, Forwardable> mockProcessor = new MockProcessorContext<>();
     private final TestCoreProcessorContext testProcessorContext = TestCoreProcessorContext.create(
             command,
             HeadersUtil.metadataHeadersFor(

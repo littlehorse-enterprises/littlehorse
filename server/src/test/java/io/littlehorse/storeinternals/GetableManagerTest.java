@@ -52,6 +52,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
+
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -84,7 +86,7 @@ public class GetableManagerTest {
 
     private TenantScopedStore localStoreWrapper;
 
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+    private final MockProcessorContext<String, Forwardable> mockProcessorContext =
             new MockProcessorContext<>();
     private GetableManager getableManager;
 
@@ -293,6 +295,7 @@ public class GetableManagerTest {
         return mockProcessorContext.forwarded().stream()
                 .map(MockProcessorContext.CapturedForward::record)
                 .map(Record::value)
+                .map(f -> (CommandProcessorOutput) f)
                 .map(CommandProcessorOutput::getPayload)
                 .map(lhSerializable -> (RepartitionCommand) lhSerializable)
                 .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof CreateRemoteTag)

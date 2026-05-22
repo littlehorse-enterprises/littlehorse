@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.common.proto.Command;
+import io.littlehorse.server.PartitionRecord;
 import io.littlehorse.server.streams.ServerTopologyV2;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.Forwardable;
@@ -32,10 +33,14 @@ public class ProcessorOutputRouter<KIn, VIn, KOut, VOut> implements Processor<KI
         processor.accept(context, record);
     }
 
-    public static ProcessorOutputRouter<String, CommandProcessorOutput, String, Forwardable>
-            createCommandProcessorRouter(String timerProcessorName, String outputTopicProcessorName) {
+    public static ProcessorOutputRouter<String, PartitionRecord, String, PartitionRecord> createPartitionRecordRouter() {
+        return new ProcessorOutputRouter<>(ProcessorContext::forward);
+    }
+
+    public static ProcessorOutputRouter<String, Forwardable, String, Forwardable>
+            createCommandProcessorRouter(String timerProcessorName, String outputTopicProcessorName, String partitionProcessorName) {
         return new ProcessorOutputRouter<>((c, s) -> ProcessorOutputRouter.processCommandProcessorOutput(
-                c, s, timerProcessorName, outputTopicProcessorName));
+                c, s, timerProcessorName, outputTopicProcessorName, partitionProcessorName));
     }
 
     public static ProcessorOutputRouter<String, Forwardable, String, Forwardable> createPassthroughRepartitionRouter() {
@@ -48,19 +53,30 @@ public class ProcessorOutputRouter<KIn, VIn, KOut, VOut> implements Processor<KI
 
     private static void processCommandProcessorOutput(
             ProcessorContext<String, Forwardable> context,
-            Record<String, CommandProcessorOutput> record,
+            Record<String, Forwardable> record,
             String timerProcessorName,
-            String outputTopicProcessorName) {
-        CommandProcessorOutput processorOutput = record.value();
-        LHSerializable<?> payload = processorOutput.getPayload();
-        if (payload instanceof LHTimer) {
-            Record<String, LHTimer> timerRecord = record.withValue((LHTimer) payload);
-            context.forward(timerRecord, timerProcessorName);
-        } else if (payload instanceof OutputTopicRecordModel) {
-            context.forward(record, outputTopicProcessorName);
-        } else {
-            throw new IllegalArgumentException("Unknown payload type: " + payload.getClass());
+            String outputTopicProcessorName,
+            String partitionProcessorName) {
+        Forwardable processorOutput = record.value();
+        if (processorOutput instanceof CommandProcessorOutput command) {
+            LHSerializable<?> payload = command.getPayload();
+            if (payload instanceof LHTimer) {
+                Record<String, LHTimer> timerRecord = record.withValue((LHTimer) payload);
+                if (timerRecord.value().getPartition() > 0 ) {
+                    System.out.println("Forwarding repartitioned timer for partition: " + timerRecord.value().getPartition() + " to: " + timerProcessorName + "");
+                    context.forward(timerRecord, timerProcessorName);
+                } else {
+                    context.forward(timerRecord, timerProcessorName);
+                }
+            } else if (payload instanceof OutputTopicRecordModel) {
+                context.forward(record, outputTopicProcessorName);
+            } else {
+                throw new IllegalArgumentException("Unknown payload type: " + payload.getClass());
+            }
+        } else if (processorOutput instanceof PartitionRecord) {
+            context.forward(record, partitionProcessorName);
         }
+
     }
 
     private static void processTimerProcessorOutput(

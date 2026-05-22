@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 public class ThreadRunModelTest {
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
+    private final MockProcessorContext<String, Forwardable> mockProcessor = new MockProcessorContext<>();
     private final Headers metadata = HeadersUtil.metadataHeadersFor("my-tenant", "my-principal");
     private final Command dummyCommand = buildCommand();
     private final TestCoreProcessorContext testProcessorContext =

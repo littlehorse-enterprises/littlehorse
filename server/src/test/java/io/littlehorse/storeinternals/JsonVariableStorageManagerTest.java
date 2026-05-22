@@ -32,6 +32,8 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -60,7 +62,7 @@ public class JsonVariableStorageManagerTest {
 
     private String tenantId = LHConstants.DEFAULT_TENANT;
 
-    final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
+    final MockProcessorContext<String, Forwardable> mockProcessorContext = new MockProcessorContext<>();
     private GetableManager getableManager;
     private static Gson gson = new GsonBuilder()
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)

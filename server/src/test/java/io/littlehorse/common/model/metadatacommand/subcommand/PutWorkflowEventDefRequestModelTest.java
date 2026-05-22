@@ -19,6 +19,7 @@ import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -53,7 +54,7 @@ public class PutWorkflowEventDefRequestModelTest {
             .build();
     private ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+    private final MockProcessorContext<String, Forwardable> mockProcessorContext =
             new MockProcessorContext<>();
 
     @Mock

@@ -56,7 +56,7 @@ public class CoreProcessorContext implements ExecutionContext {
     private final LHServerConfig config;
 
     private final AuthorizationContext authContext;
-    private final ProcessorContext<String, CommandProcessorOutput> processorContext;
+    private final ProcessorContext<String, Forwardable> processorContext;
     private final MetadataCache metadataCache;
     private LHTaskManager currentTaskManager;
     private CorrelationMarkerManager correlationManager;
@@ -80,7 +80,7 @@ public class CoreProcessorContext implements ExecutionContext {
             Command currentCommand,
             Headers recordHeaders,
             LHServerConfig config,
-            ProcessorContext<String, CommandProcessorOutput> processorContext,
+            ProcessorContext<String, Forwardable> processorContext,
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
             LHServer server,

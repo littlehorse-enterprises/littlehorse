@@ -27,6 +27,7 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.lang.reflect.Field;
@@ -75,7 +76,7 @@ public class CommandProcessorTest {
 
     private final TenantScopedStore defaultStore = TenantScopedStore.newInstance(
             nativeInMemoryStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), executionContext);
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+    private final MockProcessorContext<String, Forwardable> mockProcessorContext =
             new MockProcessorContext<>();
 
     private TestCoreProcessorContext tenantProcessorContext;
@@ -139,12 +140,12 @@ public class CommandProcessorTest {
         mockProcessorContext.scheduledPunctuators().get(0).getPunctuator().punctuate(System.currentTimeMillis());
 
         assertThat(mockProcessorContext.forwarded()).hasSize(2);
-        Record<? extends String, ? extends CommandProcessorOutput> forwardedRecord =
+        Record<? extends String, ? extends Forwardable> forwardedRecord =
                 mockProcessorContext.forwarded().get(1).record();
         assertThat(HeadersUtil.tenantIdFromMetadata(forwardedRecord.headers()).getId())
                 .isEqualTo(tenantId.getId());
 
-        CommandProcessorOutput output = forwardedRecord.value();
+        CommandProcessorOutput output = (CommandProcessorOutput) forwardedRecord.value();
         assertThat(output.partitionKey)
                 .isEqualTo(metricWindow.getId().getPartitionKey().orElseThrow());
         assertThat(output.topic).isEqualTo("core-cmd");

@@ -19,6 +19,8 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.*;
+
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
@@ -33,7 +35,7 @@ public class GetableManager extends ReadOnlyGetableManager {
 
     public GetableManager(
             final TenantScopedStore store,
-            final ProcessorContext<String, CommandProcessorOutput> streamsContext,
+            final ProcessorContext<String, Forwardable> streamsContext,
             final LHServerConfig config,
             final CommandModel command,
             final CoreProcessorContext executionContext,

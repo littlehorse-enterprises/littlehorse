@@ -34,7 +34,7 @@ public class LHTaskManager {
     private final String commandTopicName;
     private final AuthorizationContext authContext;
 
-    private final ProcessorContext<String, CommandProcessorOutput> processorContext;
+    private final ProcessorContext<String, Forwardable> processorContext;
     private final TaskQueueManager taskQueueManager;
     private final TenantScopedStore coreStore;
 
@@ -44,7 +44,7 @@ public class LHTaskManager {
             String timerTopicName,
             String commandTopicName,
             AuthorizationContext authContext,
-            ProcessorContext<String, CommandProcessorOutput> processorContext,
+            ProcessorContext<String, Forwardable> processorContext,
             TaskQueueManager taskQueueManager,
             TenantScopedStore coreStore) {
         this.timerTopicName = timerTopicName;
