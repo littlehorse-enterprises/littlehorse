@@ -12,59 +12,57 @@ public interface CountNodeRunRequestOrBuilder extends
 
   /**
    * <pre>
-   * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+   * Filter by WfSpec attributes.
    * </pre>
    *
-   * <code>string wf_spec_name = 1;</code>
-   * @return The wfSpecName.
+   * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
+   * @return Whether the wfSpecFilter field is set.
    */
-  java.lang.String getWfSpecName();
+  boolean hasWfSpecFilter();
   /**
    * <pre>
-   * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+   * Filter by WfSpec attributes.
    * </pre>
    *
-   * <code>string wf_spec_name = 1;</code>
-   * @return The bytes for wfSpecName.
+   * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
+   * @return The wfSpecFilter.
    */
-  com.google.protobuf.ByteString
-      getWfSpecNameBytes();
+  io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter getWfSpecFilter();
+  /**
+   * <pre>
+   * Filter by WfSpec attributes.
+   * </pre>
+   *
+   * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilterOrBuilder getWfSpecFilterOrBuilder();
 
   /**
    * <pre>
-   * Filter by WfSpec major version. Requires wf_spec_name to be set.
+   * Count all NodeRun's in the tenant.
    * </pre>
    *
-   * <code>optional int32 wf_spec_major_version = 2;</code>
-   * @return Whether the wfSpecMajorVersion field is set.
+   * <code>.google.protobuf.Empty no_filter = 2;</code>
+   * @return Whether the noFilter field is set.
    */
-  boolean hasWfSpecMajorVersion();
+  boolean hasNoFilter();
   /**
    * <pre>
-   * Filter by WfSpec major version. Requires wf_spec_name to be set.
+   * Count all NodeRun's in the tenant.
    * </pre>
    *
-   * <code>optional int32 wf_spec_major_version = 2;</code>
-   * @return The wfSpecMajorVersion.
+   * <code>.google.protobuf.Empty no_filter = 2;</code>
+   * @return The noFilter.
    */
-  int getWfSpecMajorVersion();
+  com.google.protobuf.Empty getNoFilter();
+  /**
+   * <pre>
+   * Count all NodeRun's in the tenant.
+   * </pre>
+   *
+   * <code>.google.protobuf.Empty no_filter = 2;</code>
+   */
+  com.google.protobuf.EmptyOrBuilder getNoFilterOrBuilder();
 
-  /**
-   * <pre>
-   * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
-   * </pre>
-   *
-   * <code>optional int32 wf_spec_revision = 3;</code>
-   * @return Whether the wfSpecRevision field is set.
-   */
-  boolean hasWfSpecRevision();
-  /**
-   * <pre>
-   * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
-   * </pre>
-   *
-   * <code>optional int32 wf_spec_revision = 3;</code>
-   * @return The wfSpecRevision.
-   */
-  int getWfSpecRevision();
+  io.littlehorse.sdk.common.proto.CountNodeRunRequest.FilterCase getFilterCase();
 }

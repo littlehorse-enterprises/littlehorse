@@ -1852,9 +1852,17 @@ export interface LittleHorseVersion {
   preReleaseIdentifier?: string | undefined;
 }
 
-/** Request to count NodeRun's matching specified criteria. */
+/** Request to count NodeRun's matching specified criteria. Exactly one filter must be set. */
 export interface CountNodeRunRequest {
-  /** Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted. */
+  filter?:
+    | { $case: "wfSpecFilter"; value: CountNodeRunRequest_WfSpecFilter }
+    | { $case: "noFilter"; value: Empty }
+    | undefined;
+}
+
+/** Filter NodeRun counts by WfSpec name, and optionally by major version and revision. */
+export interface CountNodeRunRequest_WfSpecFilter {
+  /** Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted. */
   wfSpecName: string;
   /** Filter by WfSpec major version. Requires wf_spec_name to be set. */
   wfSpecMajorVersion?:
@@ -11478,11 +11486,102 @@ export const LittleHorseVersion = {
 };
 
 function createBaseCountNodeRunRequest(): CountNodeRunRequest {
-  return { wfSpecName: "", wfSpecMajorVersion: undefined, wfSpecRevision: undefined };
+  return { filter: undefined };
 }
 
 export const CountNodeRunRequest = {
   encode(message: CountNodeRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    switch (message.filter?.$case) {
+      case "wfSpecFilter":
+        CountNodeRunRequest_WfSpecFilter.encode(message.filter.value, writer.uint32(10).fork()).ldelim();
+        break;
+      case "noFilter":
+        Empty.encode(message.filter.value, writer.uint32(18).fork()).ldelim();
+        break;
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CountNodeRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCountNodeRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.filter = {
+            $case: "wfSpecFilter",
+            value: CountNodeRunRequest_WfSpecFilter.decode(reader, reader.uint32()),
+          };
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.filter = { $case: "noFilter", value: Empty.decode(reader, reader.uint32()) };
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CountNodeRunRequest {
+    return {
+      filter: isSet(object.wfSpecFilter)
+        ? { $case: "wfSpecFilter", value: CountNodeRunRequest_WfSpecFilter.fromJSON(object.wfSpecFilter) }
+        : isSet(object.noFilter)
+        ? { $case: "noFilter", value: Empty.fromJSON(object.noFilter) }
+        : undefined,
+    };
+  },
+
+  toJSON(message: CountNodeRunRequest): unknown {
+    const obj: any = {};
+    if (message.filter?.$case === "wfSpecFilter") {
+      obj.wfSpecFilter = CountNodeRunRequest_WfSpecFilter.toJSON(message.filter.value);
+    }
+    if (message.filter?.$case === "noFilter") {
+      obj.noFilter = Empty.toJSON(message.filter.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
+    return CountNodeRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
+    const message = createBaseCountNodeRunRequest();
+    if (
+      object.filter?.$case === "wfSpecFilter" && object.filter?.value !== undefined && object.filter?.value !== null
+    ) {
+      message.filter = {
+        $case: "wfSpecFilter",
+        value: CountNodeRunRequest_WfSpecFilter.fromPartial(object.filter.value),
+      };
+    }
+    if (object.filter?.$case === "noFilter" && object.filter?.value !== undefined && object.filter?.value !== null) {
+      message.filter = { $case: "noFilter", value: Empty.fromPartial(object.filter.value) };
+    }
+    return message;
+  },
+};
+
+function createBaseCountNodeRunRequest_WfSpecFilter(): CountNodeRunRequest_WfSpecFilter {
+  return { wfSpecName: "", wfSpecMajorVersion: undefined, wfSpecRevision: undefined };
+}
+
+export const CountNodeRunRequest_WfSpecFilter = {
+  encode(message: CountNodeRunRequest_WfSpecFilter, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.wfSpecName !== "") {
       writer.uint32(10).string(message.wfSpecName);
     }
@@ -11495,10 +11594,10 @@ export const CountNodeRunRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CountNodeRunRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CountNodeRunRequest_WfSpecFilter {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCountNodeRunRequest();
+    const message = createBaseCountNodeRunRequest_WfSpecFilter();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -11532,7 +11631,7 @@ export const CountNodeRunRequest = {
     return message;
   },
 
-  fromJSON(object: any): CountNodeRunRequest {
+  fromJSON(object: any): CountNodeRunRequest_WfSpecFilter {
     return {
       wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
       wfSpecMajorVersion: isSet(object.wfSpecMajorVersion) ? globalThis.Number(object.wfSpecMajorVersion) : undefined,
@@ -11540,7 +11639,7 @@ export const CountNodeRunRequest = {
     };
   },
 
-  toJSON(message: CountNodeRunRequest): unknown {
+  toJSON(message: CountNodeRunRequest_WfSpecFilter): unknown {
     const obj: any = {};
     if (message.wfSpecName !== "") {
       obj.wfSpecName = message.wfSpecName;
@@ -11554,11 +11653,11 @@ export const CountNodeRunRequest = {
     return obj;
   },
 
-  create(base?: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
-    return CountNodeRunRequest.fromPartial(base ?? {});
+  create(base?: DeepPartial<CountNodeRunRequest_WfSpecFilter>): CountNodeRunRequest_WfSpecFilter {
+    return CountNodeRunRequest_WfSpecFilter.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
-    const message = createBaseCountNodeRunRequest();
+  fromPartial(object: DeepPartial<CountNodeRunRequest_WfSpecFilter>): CountNodeRunRequest_WfSpecFilter {
+    const message = createBaseCountNodeRunRequest_WfSpecFilter();
     message.wfSpecName = object.wfSpecName ?? "";
     message.wfSpecMajorVersion = object.wfSpecMajorVersion ?? undefined;
     message.wfSpecRevision = object.wfSpecRevision ?? undefined;

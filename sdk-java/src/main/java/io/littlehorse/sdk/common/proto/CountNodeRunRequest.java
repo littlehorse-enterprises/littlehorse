@@ -7,7 +7,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Request to count NodeRun's matching specified criteria.
+ * Request to count NodeRun's matching specified criteria. Exactly one filter must be set.
  * </pre>
  *
  * Protobuf type {@code littlehorse.CountNodeRunRequest}
@@ -32,7 +32,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private CountNodeRunRequest() {
-    wfSpecName_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -48,106 +47,951 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.CountNodeRunRequest.class, io.littlehorse.sdk.common.proto.CountNodeRunRequest.Builder.class);
   }
 
-  private int bitField0_;
-  public static final int WF_SPEC_NAME_FIELD_NUMBER = 1;
+  public interface WfSpecFilterOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.CountNodeRunRequest.WfSpecFilter)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted.
+     * </pre>
+     *
+     * <code>string wf_spec_name = 1;</code>
+     * @return The wfSpecName.
+     */
+    java.lang.String getWfSpecName();
+    /**
+     * <pre>
+     * Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted.
+     * </pre>
+     *
+     * <code>string wf_spec_name = 1;</code>
+     * @return The bytes for wfSpecName.
+     */
+    com.google.protobuf.ByteString
+        getWfSpecNameBytes();
+
+    /**
+     * <pre>
+     * Filter by WfSpec major version. Requires wf_spec_name to be set.
+     * </pre>
+     *
+     * <code>optional int32 wf_spec_major_version = 2;</code>
+     * @return Whether the wfSpecMajorVersion field is set.
+     */
+    boolean hasWfSpecMajorVersion();
+    /**
+     * <pre>
+     * Filter by WfSpec major version. Requires wf_spec_name to be set.
+     * </pre>
+     *
+     * <code>optional int32 wf_spec_major_version = 2;</code>
+     * @return The wfSpecMajorVersion.
+     */
+    int getWfSpecMajorVersion();
+
+    /**
+     * <pre>
+     * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+     * </pre>
+     *
+     * <code>optional int32 wf_spec_revision = 3;</code>
+     * @return Whether the wfSpecRevision field is set.
+     */
+    boolean hasWfSpecRevision();
+    /**
+     * <pre>
+     * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+     * </pre>
+     *
+     * <code>optional int32 wf_spec_revision = 3;</code>
+     * @return The wfSpecRevision.
+     */
+    int getWfSpecRevision();
+  }
+  /**
+   * <pre>
+   * Filter NodeRun counts by WfSpec name, and optionally by major version and revision.
+   * </pre>
+   *
+   * Protobuf type {@code littlehorse.CountNodeRunRequest.WfSpecFilter}
+   */
+  public static final class WfSpecFilter extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:littlehorse.CountNodeRunRequest.WfSpecFilter)
+      WfSpecFilterOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 32,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        WfSpecFilter.class.getName());
+    }
+    // Use WfSpecFilter.newBuilder() to construct.
+    private WfSpecFilter(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private WfSpecFilter() {
+      wfSpecName_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountNodeRunRequest_WfSpecFilter_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountNodeRunRequest_WfSpecFilter_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.class, io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int WF_SPEC_NAME_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object wfSpecName_ = "";
+    /**
+     * <pre>
+     * Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted.
+     * </pre>
+     *
+     * <code>string wf_spec_name = 1;</code>
+     * @return The wfSpecName.
+     */
+    @java.lang.Override
+    public java.lang.String getWfSpecName() {
+      java.lang.Object ref = wfSpecName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        wfSpecName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted.
+     * </pre>
+     *
+     * <code>string wf_spec_name = 1;</code>
+     * @return The bytes for wfSpecName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getWfSpecNameBytes() {
+      java.lang.Object ref = wfSpecName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        wfSpecName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int WF_SPEC_MAJOR_VERSION_FIELD_NUMBER = 2;
+    private int wfSpecMajorVersion_ = 0;
+    /**
+     * <pre>
+     * Filter by WfSpec major version. Requires wf_spec_name to be set.
+     * </pre>
+     *
+     * <code>optional int32 wf_spec_major_version = 2;</code>
+     * @return Whether the wfSpecMajorVersion field is set.
+     */
+    @java.lang.Override
+    public boolean hasWfSpecMajorVersion() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * Filter by WfSpec major version. Requires wf_spec_name to be set.
+     * </pre>
+     *
+     * <code>optional int32 wf_spec_major_version = 2;</code>
+     * @return The wfSpecMajorVersion.
+     */
+    @java.lang.Override
+    public int getWfSpecMajorVersion() {
+      return wfSpecMajorVersion_;
+    }
+
+    public static final int WF_SPEC_REVISION_FIELD_NUMBER = 3;
+    private int wfSpecRevision_ = 0;
+    /**
+     * <pre>
+     * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+     * </pre>
+     *
+     * <code>optional int32 wf_spec_revision = 3;</code>
+     * @return Whether the wfSpecRevision field is set.
+     */
+    @java.lang.Override
+    public boolean hasWfSpecRevision() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+     * </pre>
+     *
+     * <code>optional int32 wf_spec_revision = 3;</code>
+     * @return The wfSpecRevision.
+     */
+    @java.lang.Override
+    public int getWfSpecRevision() {
+      return wfSpecRevision_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(wfSpecName_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, wfSpecName_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeInt32(2, wfSpecMajorVersion_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeInt32(3, wfSpecRevision_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(wfSpecName_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, wfSpecName_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, wfSpecMajorVersion_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, wfSpecRevision_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter other = (io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter) obj;
+
+      if (!getWfSpecName()
+          .equals(other.getWfSpecName())) return false;
+      if (hasWfSpecMajorVersion() != other.hasWfSpecMajorVersion()) return false;
+      if (hasWfSpecMajorVersion()) {
+        if (getWfSpecMajorVersion()
+            != other.getWfSpecMajorVersion()) return false;
+      }
+      if (hasWfSpecRevision() != other.hasWfSpecRevision()) return false;
+      if (hasWfSpecRevision()) {
+        if (getWfSpecRevision()
+            != other.getWfSpecRevision()) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getWfSpecName().hashCode();
+      if (hasWfSpecMajorVersion()) {
+        hash = (37 * hash) + WF_SPEC_MAJOR_VERSION_FIELD_NUMBER;
+        hash = (53 * hash) + getWfSpecMajorVersion();
+      }
+      if (hasWfSpecRevision()) {
+        hash = (37 * hash) + WF_SPEC_REVISION_FIELD_NUMBER;
+        hash = (53 * hash) + getWfSpecRevision();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Filter NodeRun counts by WfSpec name, and optionally by major version and revision.
+     * </pre>
+     *
+     * Protobuf type {@code littlehorse.CountNodeRunRequest.WfSpecFilter}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.CountNodeRunRequest.WfSpecFilter)
+        io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilterOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountNodeRunRequest_WfSpecFilter_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountNodeRunRequest_WfSpecFilter_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.class, io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.Builder.class);
+      }
+
+      // Construct using io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        wfSpecName_ = "";
+        wfSpecMajorVersion_ = 0;
+        wfSpecRevision_ = 0;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_CountNodeRunRequest_WfSpecFilter_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter build() {
+        io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter buildPartial() {
+        io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter result = new io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.wfSpecName_ = wfSpecName_;
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.wfSpecMajorVersion_ = wfSpecMajorVersion_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.wfSpecRevision_ = wfSpecRevision_;
+          to_bitField0_ |= 0x00000002;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter other) {
+        if (other == io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.getDefaultInstance()) return this;
+        if (!other.getWfSpecName().isEmpty()) {
+          wfSpecName_ = other.wfSpecName_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.hasWfSpecMajorVersion()) {
+          setWfSpecMajorVersion(other.getWfSpecMajorVersion());
+        }
+        if (other.hasWfSpecRevision()) {
+          setWfSpecRevision(other.getWfSpecRevision());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                wfSpecName_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                wfSpecMajorVersion_ = input.readInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                wfSpecRevision_ = input.readInt32();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object wfSpecName_ = "";
+      /**
+       * <pre>
+       * Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted.
+       * </pre>
+       *
+       * <code>string wf_spec_name = 1;</code>
+       * @return The wfSpecName.
+       */
+      public java.lang.String getWfSpecName() {
+        java.lang.Object ref = wfSpecName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          wfSpecName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted.
+       * </pre>
+       *
+       * <code>string wf_spec_name = 1;</code>
+       * @return The bytes for wfSpecName.
+       */
+      public com.google.protobuf.ByteString
+          getWfSpecNameBytes() {
+        java.lang.Object ref = wfSpecName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          wfSpecName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted.
+       * </pre>
+       *
+       * <code>string wf_spec_name = 1;</code>
+       * @param value The wfSpecName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWfSpecName(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        wfSpecName_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted.
+       * </pre>
+       *
+       * <code>string wf_spec_name = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWfSpecName() {
+        wfSpecName_ = getDefaultInstance().getWfSpecName();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted.
+       * </pre>
+       *
+       * <code>string wf_spec_name = 1;</code>
+       * @param value The bytes for wfSpecName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWfSpecNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        wfSpecName_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private int wfSpecMajorVersion_ ;
+      /**
+       * <pre>
+       * Filter by WfSpec major version. Requires wf_spec_name to be set.
+       * </pre>
+       *
+       * <code>optional int32 wf_spec_major_version = 2;</code>
+       * @return Whether the wfSpecMajorVersion field is set.
+       */
+      @java.lang.Override
+      public boolean hasWfSpecMajorVersion() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <pre>
+       * Filter by WfSpec major version. Requires wf_spec_name to be set.
+       * </pre>
+       *
+       * <code>optional int32 wf_spec_major_version = 2;</code>
+       * @return The wfSpecMajorVersion.
+       */
+      @java.lang.Override
+      public int getWfSpecMajorVersion() {
+        return wfSpecMajorVersion_;
+      }
+      /**
+       * <pre>
+       * Filter by WfSpec major version. Requires wf_spec_name to be set.
+       * </pre>
+       *
+       * <code>optional int32 wf_spec_major_version = 2;</code>
+       * @param value The wfSpecMajorVersion to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWfSpecMajorVersion(int value) {
+
+        wfSpecMajorVersion_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Filter by WfSpec major version. Requires wf_spec_name to be set.
+       * </pre>
+       *
+       * <code>optional int32 wf_spec_major_version = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWfSpecMajorVersion() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        wfSpecMajorVersion_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int wfSpecRevision_ ;
+      /**
+       * <pre>
+       * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+       * </pre>
+       *
+       * <code>optional int32 wf_spec_revision = 3;</code>
+       * @return Whether the wfSpecRevision field is set.
+       */
+      @java.lang.Override
+      public boolean hasWfSpecRevision() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <pre>
+       * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+       * </pre>
+       *
+       * <code>optional int32 wf_spec_revision = 3;</code>
+       * @return The wfSpecRevision.
+       */
+      @java.lang.Override
+      public int getWfSpecRevision() {
+        return wfSpecRevision_;
+      }
+      /**
+       * <pre>
+       * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+       * </pre>
+       *
+       * <code>optional int32 wf_spec_revision = 3;</code>
+       * @param value The wfSpecRevision to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWfSpecRevision(int value) {
+
+        wfSpecRevision_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+       * </pre>
+       *
+       * <code>optional int32 wf_spec_revision = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWfSpecRevision() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        wfSpecRevision_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.CountNodeRunRequest.WfSpecFilter)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.CountNodeRunRequest.WfSpecFilter)
+    private static final io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter();
+    }
+
+    public static io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<WfSpecFilter>
+        PARSER = new com.google.protobuf.AbstractParser<WfSpecFilter>() {
+      @java.lang.Override
+      public WfSpecFilter parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<WfSpecFilter> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<WfSpecFilter> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  private int filterCase_ = 0;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object wfSpecName_ = "";
-  /**
-   * <pre>
-   * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
-   * </pre>
-   *
-   * <code>string wf_spec_name = 1;</code>
-   * @return The wfSpecName.
-   */
-  @java.lang.Override
-  public java.lang.String getWfSpecName() {
-    java.lang.Object ref = wfSpecName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      wfSpecName_ = s;
-      return s;
+  private java.lang.Object filter_;
+  public enum FilterCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    WF_SPEC_FILTER(1),
+    NO_FILTER(2),
+    FILTER_NOT_SET(0);
+    private final int value;
+    private FilterCase(int value) {
+      this.value = value;
     }
-  }
-  /**
-   * <pre>
-   * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
-   * </pre>
-   *
-   * <code>string wf_spec_name = 1;</code>
-   * @return The bytes for wfSpecName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getWfSpecNameBytes() {
-    java.lang.Object ref = wfSpecName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      wfSpecName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static FilterCase valueOf(int value) {
+      return forNumber(value);
     }
+
+    public static FilterCase forNumber(int value) {
+      switch (value) {
+        case 1: return WF_SPEC_FILTER;
+        case 2: return NO_FILTER;
+        case 0: return FILTER_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public FilterCase
+  getFilterCase() {
+    return FilterCase.forNumber(
+        filterCase_);
   }
 
-  public static final int WF_SPEC_MAJOR_VERSION_FIELD_NUMBER = 2;
-  private int wfSpecMajorVersion_ = 0;
+  public static final int WF_SPEC_FILTER_FIELD_NUMBER = 1;
   /**
    * <pre>
-   * Filter by WfSpec major version. Requires wf_spec_name to be set.
+   * Filter by WfSpec attributes.
    * </pre>
    *
-   * <code>optional int32 wf_spec_major_version = 2;</code>
-   * @return Whether the wfSpecMajorVersion field is set.
+   * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
+   * @return Whether the wfSpecFilter field is set.
    */
   @java.lang.Override
-  public boolean hasWfSpecMajorVersion() {
-    return ((bitField0_ & 0x00000001) != 0);
+  public boolean hasWfSpecFilter() {
+    return filterCase_ == 1;
   }
   /**
    * <pre>
-   * Filter by WfSpec major version. Requires wf_spec_name to be set.
+   * Filter by WfSpec attributes.
    * </pre>
    *
-   * <code>optional int32 wf_spec_major_version = 2;</code>
-   * @return The wfSpecMajorVersion.
+   * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
+   * @return The wfSpecFilter.
    */
   @java.lang.Override
-  public int getWfSpecMajorVersion() {
-    return wfSpecMajorVersion_;
+  public io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter getWfSpecFilter() {
+    if (filterCase_ == 1) {
+       return (io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter) filter_;
+    }
+    return io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Filter by WfSpec attributes.
+   * </pre>
+   *
+   * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilterOrBuilder getWfSpecFilterOrBuilder() {
+    if (filterCase_ == 1) {
+       return (io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter) filter_;
+    }
+    return io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.getDefaultInstance();
   }
 
-  public static final int WF_SPEC_REVISION_FIELD_NUMBER = 3;
-  private int wfSpecRevision_ = 0;
+  public static final int NO_FILTER_FIELD_NUMBER = 2;
   /**
    * <pre>
-   * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+   * Count all NodeRun's in the tenant.
    * </pre>
    *
-   * <code>optional int32 wf_spec_revision = 3;</code>
-   * @return Whether the wfSpecRevision field is set.
+   * <code>.google.protobuf.Empty no_filter = 2;</code>
+   * @return Whether the noFilter field is set.
    */
   @java.lang.Override
-  public boolean hasWfSpecRevision() {
-    return ((bitField0_ & 0x00000002) != 0);
+  public boolean hasNoFilter() {
+    return filterCase_ == 2;
   }
   /**
    * <pre>
-   * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+   * Count all NodeRun's in the tenant.
    * </pre>
    *
-   * <code>optional int32 wf_spec_revision = 3;</code>
-   * @return The wfSpecRevision.
+   * <code>.google.protobuf.Empty no_filter = 2;</code>
+   * @return The noFilter.
    */
   @java.lang.Override
-  public int getWfSpecRevision() {
-    return wfSpecRevision_;
+  public com.google.protobuf.Empty getNoFilter() {
+    if (filterCase_ == 2) {
+       return (com.google.protobuf.Empty) filter_;
+    }
+    return com.google.protobuf.Empty.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Count all NodeRun's in the tenant.
+   * </pre>
+   *
+   * <code>.google.protobuf.Empty no_filter = 2;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.EmptyOrBuilder getNoFilterOrBuilder() {
+    if (filterCase_ == 2) {
+       return (com.google.protobuf.Empty) filter_;
+    }
+    return com.google.protobuf.Empty.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -164,14 +1008,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(wfSpecName_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 1, wfSpecName_);
+    if (filterCase_ == 1) {
+      output.writeMessage(1, (io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter) filter_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeInt32(2, wfSpecMajorVersion_);
-    }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeInt32(3, wfSpecRevision_);
+    if (filterCase_ == 2) {
+      output.writeMessage(2, (com.google.protobuf.Empty) filter_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -182,16 +1023,13 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(wfSpecName_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, wfSpecName_);
-    }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (filterCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, wfSpecMajorVersion_);
+        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter) filter_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (filterCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, wfSpecRevision_);
+        .computeMessageSize(2, (com.google.protobuf.Empty) filter_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -208,17 +1046,18 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.CountNodeRunRequest other = (io.littlehorse.sdk.common.proto.CountNodeRunRequest) obj;
 
-    if (!getWfSpecName()
-        .equals(other.getWfSpecName())) return false;
-    if (hasWfSpecMajorVersion() != other.hasWfSpecMajorVersion()) return false;
-    if (hasWfSpecMajorVersion()) {
-      if (getWfSpecMajorVersion()
-          != other.getWfSpecMajorVersion()) return false;
-    }
-    if (hasWfSpecRevision() != other.hasWfSpecRevision()) return false;
-    if (hasWfSpecRevision()) {
-      if (getWfSpecRevision()
-          != other.getWfSpecRevision()) return false;
+    if (!getFilterCase().equals(other.getFilterCase())) return false;
+    switch (filterCase_) {
+      case 1:
+        if (!getWfSpecFilter()
+            .equals(other.getWfSpecFilter())) return false;
+        break;
+      case 2:
+        if (!getNoFilter()
+            .equals(other.getNoFilter())) return false;
+        break;
+      case 0:
+      default:
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -231,15 +1070,17 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getWfSpecName().hashCode();
-    if (hasWfSpecMajorVersion()) {
-      hash = (37 * hash) + WF_SPEC_MAJOR_VERSION_FIELD_NUMBER;
-      hash = (53 * hash) + getWfSpecMajorVersion();
-    }
-    if (hasWfSpecRevision()) {
-      hash = (37 * hash) + WF_SPEC_REVISION_FIELD_NUMBER;
-      hash = (53 * hash) + getWfSpecRevision();
+    switch (filterCase_) {
+      case 1:
+        hash = (37 * hash) + WF_SPEC_FILTER_FIELD_NUMBER;
+        hash = (53 * hash) + getWfSpecFilter().hashCode();
+        break;
+      case 2:
+        hash = (37 * hash) + NO_FILTER_FIELD_NUMBER;
+        hash = (53 * hash) + getNoFilter().hashCode();
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -340,7 +1181,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Request to count NodeRun's matching specified criteria.
+   * Request to count NodeRun's matching specified criteria. Exactly one filter must be set.
    * </pre>
    *
    * Protobuf type {@code littlehorse.CountNodeRunRequest}
@@ -376,9 +1217,14 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      wfSpecName_ = "";
-      wfSpecMajorVersion_ = 0;
-      wfSpecRevision_ = 0;
+      if (wfSpecFilterBuilder_ != null) {
+        wfSpecFilterBuilder_.clear();
+      }
+      if (noFilterBuilder_ != null) {
+        noFilterBuilder_.clear();
+      }
+      filterCase_ = 0;
+      filter_ = null;
       return this;
     }
 
@@ -406,25 +1252,26 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.CountNodeRunRequest buildPartial() {
       io.littlehorse.sdk.common.proto.CountNodeRunRequest result = new io.littlehorse.sdk.common.proto.CountNodeRunRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.CountNodeRunRequest result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.wfSpecName_ = wfSpecName_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.CountNodeRunRequest result) {
+      result.filterCase_ = filterCase_;
+      result.filter_ = this.filter_;
+      if (filterCase_ == 1 &&
+          wfSpecFilterBuilder_ != null) {
+        result.filter_ = wfSpecFilterBuilder_.build();
       }
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.wfSpecMajorVersion_ = wfSpecMajorVersion_;
-        to_bitField0_ |= 0x00000001;
+      if (filterCase_ == 2 &&
+          noFilterBuilder_ != null) {
+        result.filter_ = noFilterBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.wfSpecRevision_ = wfSpecRevision_;
-        to_bitField0_ |= 0x00000002;
-      }
-      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -439,16 +1286,18 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.CountNodeRunRequest other) {
       if (other == io.littlehorse.sdk.common.proto.CountNodeRunRequest.getDefaultInstance()) return this;
-      if (!other.getWfSpecName().isEmpty()) {
-        wfSpecName_ = other.wfSpecName_;
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
-      if (other.hasWfSpecMajorVersion()) {
-        setWfSpecMajorVersion(other.getWfSpecMajorVersion());
-      }
-      if (other.hasWfSpecRevision()) {
-        setWfSpecRevision(other.getWfSpecRevision());
+      switch (other.getFilterCase()) {
+        case WF_SPEC_FILTER: {
+          mergeWfSpecFilter(other.getWfSpecFilter());
+          break;
+        }
+        case NO_FILTER: {
+          mergeNoFilter(other.getNoFilter());
+          break;
+        }
+        case FILTER_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -477,20 +1326,19 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              wfSpecName_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
+              input.readMessage(
+                  internalGetWfSpecFilterFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              filterCase_ = 1;
               break;
             } // case 10
-            case 16: {
-              wfSpecMajorVersion_ = input.readInt32();
-              bitField0_ |= 0x00000002;
+            case 18: {
+              input.readMessage(
+                  internalGetNoFilterFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              filterCase_ = 2;
               break;
-            } // case 16
-            case 24: {
-              wfSpecRevision_ = input.readInt32();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -506,210 +1354,377 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int filterCase_ = 0;
+    private java.lang.Object filter_;
+    public FilterCase
+        getFilterCase() {
+      return FilterCase.forNumber(
+          filterCase_);
+    }
+
+    public Builder clearFilter() {
+      filterCase_ = 0;
+      filter_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
-    private java.lang.Object wfSpecName_ = "";
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter, io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.Builder, io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilterOrBuilder> wfSpecFilterBuilder_;
     /**
      * <pre>
-     * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+     * Filter by WfSpec attributes.
      * </pre>
      *
-     * <code>string wf_spec_name = 1;</code>
-     * @return The wfSpecName.
+     * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
+     * @return Whether the wfSpecFilter field is set.
      */
-    public java.lang.String getWfSpecName() {
-      java.lang.Object ref = wfSpecName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        wfSpecName_ = s;
-        return s;
+    @java.lang.Override
+    public boolean hasWfSpecFilter() {
+      return filterCase_ == 1;
+    }
+    /**
+     * <pre>
+     * Filter by WfSpec attributes.
+     * </pre>
+     *
+     * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
+     * @return The wfSpecFilter.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter getWfSpecFilter() {
+      if (wfSpecFilterBuilder_ == null) {
+        if (filterCase_ == 1) {
+          return (io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter) filter_;
+        }
+        return io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.getDefaultInstance();
       } else {
-        return (java.lang.String) ref;
+        if (filterCase_ == 1) {
+          return wfSpecFilterBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.getDefaultInstance();
       }
     }
     /**
      * <pre>
-     * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+     * Filter by WfSpec attributes.
      * </pre>
      *
-     * <code>string wf_spec_name = 1;</code>
-     * @return The bytes for wfSpecName.
+     * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getWfSpecNameBytes() {
-      java.lang.Object ref = wfSpecName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        wfSpecName_ = b;
-        return b;
+    public Builder setWfSpecFilter(io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter value) {
+      if (wfSpecFilterBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        filter_ = value;
+        onChanged();
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        wfSpecFilterBuilder_.setMessage(value);
+      }
+      filterCase_ = 1;
+      return this;
+    }
+    /**
+     * <pre>
+     * Filter by WfSpec attributes.
+     * </pre>
+     *
+     * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
+     */
+    public Builder setWfSpecFilter(
+        io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.Builder builderForValue) {
+      if (wfSpecFilterBuilder_ == null) {
+        filter_ = builderForValue.build();
+        onChanged();
+      } else {
+        wfSpecFilterBuilder_.setMessage(builderForValue.build());
+      }
+      filterCase_ = 1;
+      return this;
+    }
+    /**
+     * <pre>
+     * Filter by WfSpec attributes.
+     * </pre>
+     *
+     * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
+     */
+    public Builder mergeWfSpecFilter(io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter value) {
+      if (wfSpecFilterBuilder_ == null) {
+        if (filterCase_ == 1 &&
+            filter_ != io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.getDefaultInstance()) {
+          filter_ = io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.newBuilder((io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter) filter_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          filter_ = value;
+        }
+        onChanged();
+      } else {
+        if (filterCase_ == 1) {
+          wfSpecFilterBuilder_.mergeFrom(value);
+        } else {
+          wfSpecFilterBuilder_.setMessage(value);
+        }
+      }
+      filterCase_ = 1;
+      return this;
+    }
+    /**
+     * <pre>
+     * Filter by WfSpec attributes.
+     * </pre>
+     *
+     * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
+     */
+    public Builder clearWfSpecFilter() {
+      if (wfSpecFilterBuilder_ == null) {
+        if (filterCase_ == 1) {
+          filterCase_ = 0;
+          filter_ = null;
+          onChanged();
+        }
+      } else {
+        if (filterCase_ == 1) {
+          filterCase_ = 0;
+          filter_ = null;
+        }
+        wfSpecFilterBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Filter by WfSpec attributes.
+     * </pre>
+     *
+     * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
+     */
+    public io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.Builder getWfSpecFilterBuilder() {
+      return internalGetWfSpecFilterFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Filter by WfSpec attributes.
+     * </pre>
+     *
+     * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilterOrBuilder getWfSpecFilterOrBuilder() {
+      if ((filterCase_ == 1) && (wfSpecFilterBuilder_ != null)) {
+        return wfSpecFilterBuilder_.getMessageOrBuilder();
+      } else {
+        if (filterCase_ == 1) {
+          return (io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter) filter_;
+        }
+        return io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.getDefaultInstance();
       }
     }
     /**
      * <pre>
-     * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+     * Filter by WfSpec attributes.
      * </pre>
      *
-     * <code>string wf_spec_name = 1;</code>
-     * @param value The wfSpecName to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1;</code>
      */
-    public Builder setWfSpecName(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      wfSpecName_ = value;
-      bitField0_ |= 0x00000001;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter, io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.Builder, io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilterOrBuilder> 
+        internalGetWfSpecFilterFieldBuilder() {
+      if (wfSpecFilterBuilder_ == null) {
+        if (!(filterCase_ == 1)) {
+          filter_ = io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.getDefaultInstance();
+        }
+        wfSpecFilterBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter, io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.Builder, io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilterOrBuilder>(
+                (io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter) filter_,
+                getParentForChildren(),
+                isClean());
+        filter_ = null;
+      }
+      filterCase_ = 1;
       onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
-     * </pre>
-     *
-     * <code>string wf_spec_name = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearWfSpecName() {
-      wfSpecName_ = getDefaultInstance().getWfSpecName();
-      bitField0_ = (bitField0_ & ~0x00000001);
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
-     * </pre>
-     *
-     * <code>string wf_spec_name = 1;</code>
-     * @param value The bytes for wfSpecName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfSpecNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      wfSpecName_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
+      return wfSpecFilterBuilder_;
     }
 
-    private int wfSpecMajorVersion_ ;
+    private com.google.protobuf.SingleFieldBuilder<
+        com.google.protobuf.Empty, com.google.protobuf.Empty.Builder, com.google.protobuf.EmptyOrBuilder> noFilterBuilder_;
     /**
      * <pre>
-     * Filter by WfSpec major version. Requires wf_spec_name to be set.
+     * Count all NodeRun's in the tenant.
      * </pre>
      *
-     * <code>optional int32 wf_spec_major_version = 2;</code>
-     * @return Whether the wfSpecMajorVersion field is set.
+     * <code>.google.protobuf.Empty no_filter = 2;</code>
+     * @return Whether the noFilter field is set.
      */
     @java.lang.Override
-    public boolean hasWfSpecMajorVersion() {
-      return ((bitField0_ & 0x00000002) != 0);
+    public boolean hasNoFilter() {
+      return filterCase_ == 2;
     }
     /**
      * <pre>
-     * Filter by WfSpec major version. Requires wf_spec_name to be set.
+     * Count all NodeRun's in the tenant.
      * </pre>
      *
-     * <code>optional int32 wf_spec_major_version = 2;</code>
-     * @return The wfSpecMajorVersion.
+     * <code>.google.protobuf.Empty no_filter = 2;</code>
+     * @return The noFilter.
      */
     @java.lang.Override
-    public int getWfSpecMajorVersion() {
-      return wfSpecMajorVersion_;
+    public com.google.protobuf.Empty getNoFilter() {
+      if (noFilterBuilder_ == null) {
+        if (filterCase_ == 2) {
+          return (com.google.protobuf.Empty) filter_;
+        }
+        return com.google.protobuf.Empty.getDefaultInstance();
+      } else {
+        if (filterCase_ == 2) {
+          return noFilterBuilder_.getMessage();
+        }
+        return com.google.protobuf.Empty.getDefaultInstance();
+      }
     }
     /**
      * <pre>
-     * Filter by WfSpec major version. Requires wf_spec_name to be set.
+     * Count all NodeRun's in the tenant.
      * </pre>
      *
-     * <code>optional int32 wf_spec_major_version = 2;</code>
-     * @param value The wfSpecMajorVersion to set.
-     * @return This builder for chaining.
+     * <code>.google.protobuf.Empty no_filter = 2;</code>
      */
-    public Builder setWfSpecMajorVersion(int value) {
-
-      wfSpecMajorVersion_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
+    public Builder setNoFilter(com.google.protobuf.Empty value) {
+      if (noFilterBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        filter_ = value;
+        onChanged();
+      } else {
+        noFilterBuilder_.setMessage(value);
+      }
+      filterCase_ = 2;
       return this;
     }
     /**
      * <pre>
-     * Filter by WfSpec major version. Requires wf_spec_name to be set.
+     * Count all NodeRun's in the tenant.
      * </pre>
      *
-     * <code>optional int32 wf_spec_major_version = 2;</code>
-     * @return This builder for chaining.
+     * <code>.google.protobuf.Empty no_filter = 2;</code>
      */
-    public Builder clearWfSpecMajorVersion() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      wfSpecMajorVersion_ = 0;
-      onChanged();
+    public Builder setNoFilter(
+        com.google.protobuf.Empty.Builder builderForValue) {
+      if (noFilterBuilder_ == null) {
+        filter_ = builderForValue.build();
+        onChanged();
+      } else {
+        noFilterBuilder_.setMessage(builderForValue.build());
+      }
+      filterCase_ = 2;
       return this;
     }
-
-    private int wfSpecRevision_ ;
     /**
      * <pre>
-     * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+     * Count all NodeRun's in the tenant.
      * </pre>
      *
-     * <code>optional int32 wf_spec_revision = 3;</code>
-     * @return Whether the wfSpecRevision field is set.
+     * <code>.google.protobuf.Empty no_filter = 2;</code>
+     */
+    public Builder mergeNoFilter(com.google.protobuf.Empty value) {
+      if (noFilterBuilder_ == null) {
+        if (filterCase_ == 2 &&
+            filter_ != com.google.protobuf.Empty.getDefaultInstance()) {
+          filter_ = com.google.protobuf.Empty.newBuilder((com.google.protobuf.Empty) filter_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          filter_ = value;
+        }
+        onChanged();
+      } else {
+        if (filterCase_ == 2) {
+          noFilterBuilder_.mergeFrom(value);
+        } else {
+          noFilterBuilder_.setMessage(value);
+        }
+      }
+      filterCase_ = 2;
+      return this;
+    }
+    /**
+     * <pre>
+     * Count all NodeRun's in the tenant.
+     * </pre>
+     *
+     * <code>.google.protobuf.Empty no_filter = 2;</code>
+     */
+    public Builder clearNoFilter() {
+      if (noFilterBuilder_ == null) {
+        if (filterCase_ == 2) {
+          filterCase_ = 0;
+          filter_ = null;
+          onChanged();
+        }
+      } else {
+        if (filterCase_ == 2) {
+          filterCase_ = 0;
+          filter_ = null;
+        }
+        noFilterBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Count all NodeRun's in the tenant.
+     * </pre>
+     *
+     * <code>.google.protobuf.Empty no_filter = 2;</code>
+     */
+    public com.google.protobuf.Empty.Builder getNoFilterBuilder() {
+      return internalGetNoFilterFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Count all NodeRun's in the tenant.
+     * </pre>
+     *
+     * <code>.google.protobuf.Empty no_filter = 2;</code>
      */
     @java.lang.Override
-    public boolean hasWfSpecRevision() {
-      return ((bitField0_ & 0x00000004) != 0);
+    public com.google.protobuf.EmptyOrBuilder getNoFilterOrBuilder() {
+      if ((filterCase_ == 2) && (noFilterBuilder_ != null)) {
+        return noFilterBuilder_.getMessageOrBuilder();
+      } else {
+        if (filterCase_ == 2) {
+          return (com.google.protobuf.Empty) filter_;
+        }
+        return com.google.protobuf.Empty.getDefaultInstance();
+      }
     }
     /**
      * <pre>
-     * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+     * Count all NodeRun's in the tenant.
      * </pre>
      *
-     * <code>optional int32 wf_spec_revision = 3;</code>
-     * @return The wfSpecRevision.
+     * <code>.google.protobuf.Empty no_filter = 2;</code>
      */
-    @java.lang.Override
-    public int getWfSpecRevision() {
-      return wfSpecRevision_;
-    }
-    /**
-     * <pre>
-     * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
-     * </pre>
-     *
-     * <code>optional int32 wf_spec_revision = 3;</code>
-     * @param value The wfSpecRevision to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfSpecRevision(int value) {
-
-      wfSpecRevision_ = value;
-      bitField0_ |= 0x00000004;
+    private com.google.protobuf.SingleFieldBuilder<
+        com.google.protobuf.Empty, com.google.protobuf.Empty.Builder, com.google.protobuf.EmptyOrBuilder> 
+        internalGetNoFilterFieldBuilder() {
+      if (noFilterBuilder_ == null) {
+        if (!(filterCase_ == 2)) {
+          filter_ = com.google.protobuf.Empty.getDefaultInstance();
+        }
+        noFilterBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            com.google.protobuf.Empty, com.google.protobuf.Empty.Builder, com.google.protobuf.EmptyOrBuilder>(
+                (com.google.protobuf.Empty) filter_,
+                getParentForChildren(),
+                isClean());
+        filter_ = null;
+      }
+      filterCase_ = 2;
       onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
-     * </pre>
-     *
-     * <code>optional int32 wf_spec_revision = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearWfSpecRevision() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      wfSpecRevision_ = 0;
-      onChanged();
-      return this;
+      return noFilterBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.CountNodeRunRequest)

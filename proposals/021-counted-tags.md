@@ -35,18 +35,28 @@ For this proposal, two new RPCs are exposed:
   // an eventually consistent count maintained via pre-aggregated counters.
   rpc CountTaskRun(CountTaskRunRequest) returns (Count) {}
 
-// Request to count NodeRun's matching specified criteria.
+// Request to count NodeRun's matching specified criteria. Exactly one filter must be set.
 message CountNodeRunRequest {
 
-  // Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
-  string wf_spec_name = 1;
+  oneof filter {
+    // Filter by WfSpec attributes.
+    WfSpecFilter wf_spec_filter = 1;
 
-  // Filter by WfSpec major version. Requires wf_spec_name to be set.
-  optional int32 wf_spec_major_version = 2;
+    // Count all NodeRun's in the tenant.
+    google.protobuf.Empty no_filter = 2;
+  }
 
-  // Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
-  optional int32 wf_spec_revision = 3;
+  // Filter NodeRun counts by WfSpec name, and optionally by major version and revision.
+  message WfSpecFilter {
+    // Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted.
+    string wf_spec_name = 1;
 
+    // Filter by WfSpec major version. Requires wf_spec_name to be set.
+    optional int32 wf_spec_major_version = 2;
+
+    // Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+    optional int32 wf_spec_revision = 3;
+  }
 }
 
 // Request to count TaskRun's matching the given criteria for a specific TaskDef.
@@ -71,6 +81,9 @@ message Count {
 From the CLI:
 
 ```bash
+# Count all NodeRuns in the tenant
+lhctl count nodeRun --all
+
 # Count all NodeRuns for a WfSpec
 lhctl count nodeRun --wfSpecName my-workflow
 
@@ -149,6 +162,7 @@ To add a count query for a new entity type:
 
 | Getable | Attribute(s) | Use Case |
 |---------|-------------|----------|
+| `NodeRunModel` | _(none)_ | Count all NodeRuns in the tenant |
 | `NodeRunModel` | `wfSpecName` | Count all NodeRuns for a WfSpec |
 | `NodeRunModel` | `wfSpecName` + `wfSpecMajorVersion` | Count NodeRuns for a major version |
 | `NodeRunModel` | `wfSpecName` + `wfSpecMajorVersion` + `wfSpecRevision` | Count NodeRuns for a specific revision |
