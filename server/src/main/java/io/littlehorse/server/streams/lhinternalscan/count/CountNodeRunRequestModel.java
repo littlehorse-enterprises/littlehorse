@@ -17,11 +17,13 @@ public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> 
     private String wfSpecName;
     private Integer wfSpecMajorVersion;
     private Integer wfSpecRevision;
+    private CountNodeRunRequest.FilterCase filterCase;
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         CountNodeRunRequest p = (CountNodeRunRequest) proto;
-        if (p.getFilterCase() == CountNodeRunRequest.FilterCase.WF_SPEC_FILTER) {
+        this.filterCase = p.getFilterCase();
+        if (filterCase == CountNodeRunRequest.FilterCase.WF_SPEC_FILTER) {
             WfSpecFilter filter = p.getWfSpecFilter();
             wfSpecName = filter.getWfSpecName();
             if (filter.hasWfSpecMajorVersion()) wfSpecMajorVersion = filter.getWfSpecMajorVersion();
@@ -53,7 +55,7 @@ public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> 
 
     @Override
     protected List<Attribute> countAttributes() {
-        if (wfSpecName == null) {
+        if (filterCase == CountNodeRunRequest.FilterCase.FILTER_NOT_SET) {
             return List.of(new Attribute("all", "all"));
         }
 
