@@ -88,6 +88,7 @@ private static final long serialVersionUID = 0L;
     PUT_CHECKPOINT(34),
     AGGREGATE_WINDOW_METRICS(35),
     DELETE_METRIC_WINDOW(36),
+    UPDATE_COUNTED_TAG(37),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -138,6 +139,7 @@ private static final long serialVersionUID = 0L;
         case 34: return PUT_CHECKPOINT;
         case 35: return AGGREGATE_WINDOW_METRICS;
         case 36: return DELETE_METRIC_WINDOW;
+        case 37: return UPDATE_COUNTED_TAG;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -1249,6 +1251,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance();
   }
 
+  public static final int UPDATE_COUNTED_TAG_FIELD_NUMBER = 37;
+  /**
+   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+   * @return Whether the updateCountedTag field is set.
+   */
+  @java.lang.Override
+  public boolean hasUpdateCountedTag() {
+    return commandCase_ == 37;
+  }
+  /**
+   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+   * @return The updateCountedTag.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.UpdateCountedTag getUpdateCountedTag() {
+    if (commandCase_ == 37) {
+       return (io.littlehorse.common.proto.UpdateCountedTag) command_;
+    }
+    return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.UpdateCountedTagOrBuilder getUpdateCountedTagOrBuilder() {
+    if (commandCase_ == 37) {
+       return (io.littlehorse.common.proto.UpdateCountedTag) command_;
+    }
+    return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1367,6 +1400,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 36) {
       output.writeMessage(36, (io.littlehorse.common.proto.DeleteMetricWindow) command_);
+    }
+    if (commandCase_ == 37) {
+      output.writeMessage(37, (io.littlehorse.common.proto.UpdateCountedTag) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1515,6 +1551,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 36) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(36, (io.littlehorse.common.proto.DeleteMetricWindow) command_);
+    }
+    if (commandCase_ == 37) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(37, (io.littlehorse.common.proto.UpdateCountedTag) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1675,6 +1715,10 @@ private static final long serialVersionUID = 0L;
         if (!getDeleteMetricWindow()
             .equals(other.getDeleteMetricWindow())) return false;
         break;
+      case 37:
+        if (!getUpdateCountedTag()
+            .equals(other.getUpdateCountedTag())) return false;
+        break;
       case 0:
       default:
     }
@@ -1829,6 +1873,10 @@ private static final long serialVersionUID = 0L;
       case 36:
         hash = (37 * hash) + DELETE_METRIC_WINDOW_FIELD_NUMBER;
         hash = (53 * hash) + getDeleteMetricWindow().hashCode();
+        break;
+      case 37:
+        hash = (37 * hash) + UPDATE_COUNTED_TAG_FIELD_NUMBER;
+        hash = (53 * hash) + getUpdateCountedTag().hashCode();
         break;
       case 0:
       default:
@@ -2080,6 +2128,9 @@ private static final long serialVersionUID = 0L;
       if (deleteMetricWindowBuilder_ != null) {
         deleteMetricWindowBuilder_.clear();
       }
+      if (updateCountedTagBuilder_ != null) {
+        updateCountedTagBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -2270,6 +2321,10 @@ private static final long serialVersionUID = 0L;
           deleteMetricWindowBuilder_ != null) {
         result.command_ = deleteMetricWindowBuilder_.build();
       }
+      if (commandCase_ == 37 &&
+          updateCountedTagBuilder_ != null) {
+        result.command_ = updateCountedTagBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -2423,6 +2478,10 @@ private static final long serialVersionUID = 0L;
         }
         case DELETE_METRIC_WINDOW: {
           mergeDeleteMetricWindow(other.getDeleteMetricWindow());
+          break;
+        }
+        case UPDATE_COUNTED_TAG: {
+          mergeUpdateCountedTag(other.getUpdateCountedTag());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2698,6 +2757,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 36;
               break;
             } // case 290
+            case 298: {
+              input.readMessage(
+                  internalGetUpdateCountedTagFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 37;
+              break;
+            } // case 298
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -7615,6 +7681,148 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 36;
       onChanged();
       return deleteMetricWindowBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.UpdateCountedTag, io.littlehorse.common.proto.UpdateCountedTag.Builder, io.littlehorse.common.proto.UpdateCountedTagOrBuilder> updateCountedTagBuilder_;
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     * @return Whether the updateCountedTag field is set.
+     */
+    @java.lang.Override
+    public boolean hasUpdateCountedTag() {
+      return commandCase_ == 37;
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     * @return The updateCountedTag.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.UpdateCountedTag getUpdateCountedTag() {
+      if (updateCountedTagBuilder_ == null) {
+        if (commandCase_ == 37) {
+          return (io.littlehorse.common.proto.UpdateCountedTag) command_;
+        }
+        return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
+      } else {
+        if (commandCase_ == 37) {
+          return updateCountedTagBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    public Builder setUpdateCountedTag(io.littlehorse.common.proto.UpdateCountedTag value) {
+      if (updateCountedTagBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        updateCountedTagBuilder_.setMessage(value);
+      }
+      commandCase_ = 37;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    public Builder setUpdateCountedTag(
+        io.littlehorse.common.proto.UpdateCountedTag.Builder builderForValue) {
+      if (updateCountedTagBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        updateCountedTagBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 37;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    public Builder mergeUpdateCountedTag(io.littlehorse.common.proto.UpdateCountedTag value) {
+      if (updateCountedTagBuilder_ == null) {
+        if (commandCase_ == 37 &&
+            command_ != io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.UpdateCountedTag.newBuilder((io.littlehorse.common.proto.UpdateCountedTag) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 37) {
+          updateCountedTagBuilder_.mergeFrom(value);
+        } else {
+          updateCountedTagBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 37;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    public Builder clearUpdateCountedTag() {
+      if (updateCountedTagBuilder_ == null) {
+        if (commandCase_ == 37) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 37) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        updateCountedTagBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    public io.littlehorse.common.proto.UpdateCountedTag.Builder getUpdateCountedTagBuilder() {
+      return internalGetUpdateCountedTagFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.UpdateCountedTagOrBuilder getUpdateCountedTagOrBuilder() {
+      if ((commandCase_ == 37) && (updateCountedTagBuilder_ != null)) {
+        return updateCountedTagBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 37) {
+          return (io.littlehorse.common.proto.UpdateCountedTag) command_;
+        }
+        return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.UpdateCountedTag, io.littlehorse.common.proto.UpdateCountedTag.Builder, io.littlehorse.common.proto.UpdateCountedTagOrBuilder> 
+        internalGetUpdateCountedTagFieldBuilder() {
+      if (updateCountedTagBuilder_ == null) {
+        if (!(commandCase_ == 37)) {
+          command_ = io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
+        }
+        updateCountedTagBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.common.proto.UpdateCountedTag, io.littlehorse.common.proto.UpdateCountedTag.Builder, io.littlehorse.common.proto.UpdateCountedTagOrBuilder>(
+                (io.littlehorse.common.proto.UpdateCountedTag) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 37;
+      onChanged();
+      return updateCountedTagBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.Command)

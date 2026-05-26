@@ -90,6 +90,10 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.TIMER_ITERATOR_HINT;
             case "LHTimer":
                 return StoreableType.LH_TIMER;
+            case "CountedTagModel":
+                return StoreableType.COUNTED_TAG;
+            case "PartitionCountedTagModel":
+                return StoreableType.PARTITION_COUNTED_TAG;
         }
         throw new IllegalArgumentException("Unrecognized Storeable class: " + cls);
     }
