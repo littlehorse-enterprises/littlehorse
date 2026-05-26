@@ -37,32 +37,5 @@ public interface CountNodeRunRequestOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilterOrBuilder getWfSpecFilterOrBuilder();
 
-  /**
-   * <pre>
-   * Count all NodeRun's in the tenant.
-   * </pre>
-   *
-   * <code>.google.protobuf.Empty no_filter = 2;</code>
-   * @return Whether the noFilter field is set.
-   */
-  boolean hasNoFilter();
-  /**
-   * <pre>
-   * Count all NodeRun's in the tenant.
-   * </pre>
-   *
-   * <code>.google.protobuf.Empty no_filter = 2;</code>
-   * @return The noFilter.
-   */
-  com.google.protobuf.Empty getNoFilter();
-  /**
-   * <pre>
-   * Count all NodeRun's in the tenant.
-   * </pre>
-   *
-   * <code>.google.protobuf.Empty no_filter = 2;</code>
-   */
-  com.google.protobuf.EmptyOrBuilder getNoFilterOrBuilder();
-
   io.littlehorse.sdk.common.proto.CountNodeRunRequest.FilterCase getFilterCase();
 }

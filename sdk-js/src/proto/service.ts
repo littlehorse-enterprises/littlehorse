@@ -1852,12 +1852,12 @@ export interface LittleHorseVersion {
   preReleaseIdentifier?: string | undefined;
 }
 
-/** Request to count NodeRun's matching specified criteria. Exactly one filter must be set. */
+/**
+ * Request to count NodeRun's matching specified criteria. If no filter is set,
+ * the total count of all NodeRun's in the tenant is returned.
+ */
 export interface CountNodeRunRequest {
-  filter?:
-    | { $case: "wfSpecFilter"; value: CountNodeRunRequest_WfSpecFilter }
-    | { $case: "noFilter"; value: Empty }
-    | undefined;
+  filter?: { $case: "wfSpecFilter"; value: CountNodeRunRequest_WfSpecFilter } | undefined;
 }
 
 /** Filter NodeRun counts by WfSpec name, and optionally by major version and revision. */
@@ -11495,9 +11495,6 @@ export const CountNodeRunRequest = {
       case "wfSpecFilter":
         CountNodeRunRequest_WfSpecFilter.encode(message.filter.value, writer.uint32(10).fork()).ldelim();
         break;
-      case "noFilter":
-        Empty.encode(message.filter.value, writer.uint32(18).fork()).ldelim();
-        break;
     }
     return writer;
   },
@@ -11519,13 +11516,6 @@ export const CountNodeRunRequest = {
             value: CountNodeRunRequest_WfSpecFilter.decode(reader, reader.uint32()),
           };
           continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.filter = { $case: "noFilter", value: Empty.decode(reader, reader.uint32()) };
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -11539,8 +11529,6 @@ export const CountNodeRunRequest = {
     return {
       filter: isSet(object.wfSpecFilter)
         ? { $case: "wfSpecFilter", value: CountNodeRunRequest_WfSpecFilter.fromJSON(object.wfSpecFilter) }
-        : isSet(object.noFilter)
-        ? { $case: "noFilter", value: Empty.fromJSON(object.noFilter) }
         : undefined,
     };
   },
@@ -11549,9 +11537,6 @@ export const CountNodeRunRequest = {
     const obj: any = {};
     if (message.filter?.$case === "wfSpecFilter") {
       obj.wfSpecFilter = CountNodeRunRequest_WfSpecFilter.toJSON(message.filter.value);
-    }
-    if (message.filter?.$case === "noFilter") {
-      obj.noFilter = Empty.toJSON(message.filter.value);
     }
     return obj;
   },
@@ -11568,9 +11553,6 @@ export const CountNodeRunRequest = {
         $case: "wfSpecFilter",
         value: CountNodeRunRequest_WfSpecFilter.fromPartial(object.filter.value),
       };
-    }
-    if (object.filter?.$case === "noFilter" && object.filter?.value !== undefined && object.filter?.value !== null) {
-      message.filter = { $case: "noFilter", value: Empty.fromPartial(object.filter.value) };
     }
     return message;
   },

@@ -1,6 +1,5 @@
 package io.littlehorse.server.streams.lhinternalscan.count;
 
-import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -15,7 +14,6 @@ import java.util.List;
 
 public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> {
 
-    private CountNodeRunRequest.FilterCase filterCase;
     private String wfSpecName;
     private Integer wfSpecMajorVersion;
     private Integer wfSpecRevision;
@@ -23,34 +21,22 @@ public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         CountNodeRunRequest p = (CountNodeRunRequest) proto;
-        this.filterCase = p.getFilterCase();
-        switch (filterCase) {
-            case NO_FILTER -> {
-                // No fields to extract
-            }
-            case WF_SPEC_FILTER -> {
-                WfSpecFilter filter = p.getWfSpecFilter();
-                wfSpecName = filter.getWfSpecName();
-                if (filter.hasWfSpecMajorVersion()) wfSpecMajorVersion = filter.getWfSpecMajorVersion();
-                if (filter.hasWfSpecRevision()) wfSpecRevision = filter.getWfSpecRevision();
-            }
-            case FILTER_NOT_SET -> throw new LHSerdeException("CountNodeRunRequest must have a filter set");
+        if (p.getFilterCase() == CountNodeRunRequest.FilterCase.WF_SPEC_FILTER) {
+            WfSpecFilter filter = p.getWfSpecFilter();
+            wfSpecName = filter.getWfSpecName();
+            if (filter.hasWfSpecMajorVersion()) wfSpecMajorVersion = filter.getWfSpecMajorVersion();
+            if (filter.hasWfSpecRevision()) wfSpecRevision = filter.getWfSpecRevision();
         }
     }
 
     @Override
     public CountNodeRunRequest.Builder toProto() {
         CountNodeRunRequest.Builder out = CountNodeRunRequest.newBuilder();
-        switch (filterCase) {
-            case NO_FILTER -> out.setNoFilter(Empty.getDefaultInstance());
-            case WF_SPEC_FILTER -> {
-                WfSpecFilter.Builder filter = WfSpecFilter.newBuilder().setWfSpecName(wfSpecName);
-                if (wfSpecMajorVersion != null) filter.setWfSpecMajorVersion(wfSpecMajorVersion);
-                if (wfSpecRevision != null) filter.setWfSpecRevision(wfSpecRevision);
-                out.setWfSpecFilter(filter);
-            }
-            case FILTER_NOT_SET ->
-                throw new LHApiException(Status.INVALID_ARGUMENT, "CountNodeRunRequest must have a filter set");
+        if (wfSpecName != null) {
+            WfSpecFilter.Builder filter = WfSpecFilter.newBuilder().setWfSpecName(wfSpecName);
+            if (wfSpecMajorVersion != null) filter.setWfSpecMajorVersion(wfSpecMajorVersion);
+            if (wfSpecRevision != null) filter.setWfSpecRevision(wfSpecRevision);
+            out.setWfSpecFilter(filter);
         }
         return out;
     }
@@ -67,7 +53,7 @@ public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> 
 
     @Override
     protected List<Attribute> countAttributes() {
-        if (filterCase == CountNodeRunRequest.FilterCase.NO_FILTER) {
+        if (wfSpecName == null) {
             return List.of(new Attribute("all", "all"));
         }
 

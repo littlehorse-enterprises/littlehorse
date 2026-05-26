@@ -7,7 +7,8 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Request to count NodeRun's matching specified criteria. Exactly one filter must be set.
+ * Request to count NodeRun's matching specified criteria. If no filter is set,
+ * the total count of all NodeRun's in the tenant is returned.
  * </pre>
  *
  * Protobuf type {@code littlehorse.CountNodeRunRequest}
@@ -873,7 +874,6 @@ private static final long serialVersionUID = 0L;
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     WF_SPEC_FILTER(1),
-    NO_FILTER(2),
     FILTER_NOT_SET(0);
     private final int value;
     private FilterCase(int value) {
@@ -892,7 +892,6 @@ private static final long serialVersionUID = 0L;
     public static FilterCase forNumber(int value) {
       switch (value) {
         case 1: return WF_SPEC_FILTER;
-        case 2: return NO_FILTER;
         case 0: return FILTER_NOT_SET;
         default: return null;
       }
@@ -951,49 +950,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter.getDefaultInstance();
   }
 
-  public static final int NO_FILTER_FIELD_NUMBER = 2;
-  /**
-   * <pre>
-   * Count all NodeRun's in the tenant.
-   * </pre>
-   *
-   * <code>.google.protobuf.Empty no_filter = 2;</code>
-   * @return Whether the noFilter field is set.
-   */
-  @java.lang.Override
-  public boolean hasNoFilter() {
-    return filterCase_ == 2;
-  }
-  /**
-   * <pre>
-   * Count all NodeRun's in the tenant.
-   * </pre>
-   *
-   * <code>.google.protobuf.Empty no_filter = 2;</code>
-   * @return The noFilter.
-   */
-  @java.lang.Override
-  public com.google.protobuf.Empty getNoFilter() {
-    if (filterCase_ == 2) {
-       return (com.google.protobuf.Empty) filter_;
-    }
-    return com.google.protobuf.Empty.getDefaultInstance();
-  }
-  /**
-   * <pre>
-   * Count all NodeRun's in the tenant.
-   * </pre>
-   *
-   * <code>.google.protobuf.Empty no_filter = 2;</code>
-   */
-  @java.lang.Override
-  public com.google.protobuf.EmptyOrBuilder getNoFilterOrBuilder() {
-    if (filterCase_ == 2) {
-       return (com.google.protobuf.Empty) filter_;
-    }
-    return com.google.protobuf.Empty.getDefaultInstance();
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1011,9 +967,6 @@ private static final long serialVersionUID = 0L;
     if (filterCase_ == 1) {
       output.writeMessage(1, (io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter) filter_);
     }
-    if (filterCase_ == 2) {
-      output.writeMessage(2, (com.google.protobuf.Empty) filter_);
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -1026,10 +979,6 @@ private static final long serialVersionUID = 0L;
     if (filterCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, (io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter) filter_);
-    }
-    if (filterCase_ == 2) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, (com.google.protobuf.Empty) filter_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1052,10 +1001,6 @@ private static final long serialVersionUID = 0L;
         if (!getWfSpecFilter()
             .equals(other.getWfSpecFilter())) return false;
         break;
-      case 2:
-        if (!getNoFilter()
-            .equals(other.getNoFilter())) return false;
-        break;
       case 0:
       default:
     }
@@ -1074,10 +1019,6 @@ private static final long serialVersionUID = 0L;
       case 1:
         hash = (37 * hash) + WF_SPEC_FILTER_FIELD_NUMBER;
         hash = (53 * hash) + getWfSpecFilter().hashCode();
-        break;
-      case 2:
-        hash = (37 * hash) + NO_FILTER_FIELD_NUMBER;
-        hash = (53 * hash) + getNoFilter().hashCode();
         break;
       case 0:
       default:
@@ -1181,7 +1122,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Request to count NodeRun's matching specified criteria. Exactly one filter must be set.
+   * Request to count NodeRun's matching specified criteria. If no filter is set,
+   * the total count of all NodeRun's in the tenant is returned.
    * </pre>
    *
    * Protobuf type {@code littlehorse.CountNodeRunRequest}
@@ -1219,9 +1161,6 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       if (wfSpecFilterBuilder_ != null) {
         wfSpecFilterBuilder_.clear();
-      }
-      if (noFilterBuilder_ != null) {
-        noFilterBuilder_.clear();
       }
       filterCase_ = 0;
       filter_ = null;
@@ -1268,10 +1207,6 @@ private static final long serialVersionUID = 0L;
           wfSpecFilterBuilder_ != null) {
         result.filter_ = wfSpecFilterBuilder_.build();
       }
-      if (filterCase_ == 2 &&
-          noFilterBuilder_ != null) {
-        result.filter_ = noFilterBuilder_.build();
-      }
     }
 
     @java.lang.Override
@@ -1289,10 +1224,6 @@ private static final long serialVersionUID = 0L;
       switch (other.getFilterCase()) {
         case WF_SPEC_FILTER: {
           mergeWfSpecFilter(other.getWfSpecFilter());
-          break;
-        }
-        case NO_FILTER: {
-          mergeNoFilter(other.getNoFilter());
           break;
         }
         case FILTER_NOT_SET: {
@@ -1332,13 +1263,6 @@ private static final long serialVersionUID = 0L;
               filterCase_ = 1;
               break;
             } // case 10
-            case 18: {
-              input.readMessage(
-                  internalGetNoFilterFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              filterCase_ = 2;
-              break;
-            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1547,184 +1471,6 @@ private static final long serialVersionUID = 0L;
       filterCase_ = 1;
       onChanged();
       return wfSpecFilterBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilder<
-        com.google.protobuf.Empty, com.google.protobuf.Empty.Builder, com.google.protobuf.EmptyOrBuilder> noFilterBuilder_;
-    /**
-     * <pre>
-     * Count all NodeRun's in the tenant.
-     * </pre>
-     *
-     * <code>.google.protobuf.Empty no_filter = 2;</code>
-     * @return Whether the noFilter field is set.
-     */
-    @java.lang.Override
-    public boolean hasNoFilter() {
-      return filterCase_ == 2;
-    }
-    /**
-     * <pre>
-     * Count all NodeRun's in the tenant.
-     * </pre>
-     *
-     * <code>.google.protobuf.Empty no_filter = 2;</code>
-     * @return The noFilter.
-     */
-    @java.lang.Override
-    public com.google.protobuf.Empty getNoFilter() {
-      if (noFilterBuilder_ == null) {
-        if (filterCase_ == 2) {
-          return (com.google.protobuf.Empty) filter_;
-        }
-        return com.google.protobuf.Empty.getDefaultInstance();
-      } else {
-        if (filterCase_ == 2) {
-          return noFilterBuilder_.getMessage();
-        }
-        return com.google.protobuf.Empty.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * Count all NodeRun's in the tenant.
-     * </pre>
-     *
-     * <code>.google.protobuf.Empty no_filter = 2;</code>
-     */
-    public Builder setNoFilter(com.google.protobuf.Empty value) {
-      if (noFilterBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        filter_ = value;
-        onChanged();
-      } else {
-        noFilterBuilder_.setMessage(value);
-      }
-      filterCase_ = 2;
-      return this;
-    }
-    /**
-     * <pre>
-     * Count all NodeRun's in the tenant.
-     * </pre>
-     *
-     * <code>.google.protobuf.Empty no_filter = 2;</code>
-     */
-    public Builder setNoFilter(
-        com.google.protobuf.Empty.Builder builderForValue) {
-      if (noFilterBuilder_ == null) {
-        filter_ = builderForValue.build();
-        onChanged();
-      } else {
-        noFilterBuilder_.setMessage(builderForValue.build());
-      }
-      filterCase_ = 2;
-      return this;
-    }
-    /**
-     * <pre>
-     * Count all NodeRun's in the tenant.
-     * </pre>
-     *
-     * <code>.google.protobuf.Empty no_filter = 2;</code>
-     */
-    public Builder mergeNoFilter(com.google.protobuf.Empty value) {
-      if (noFilterBuilder_ == null) {
-        if (filterCase_ == 2 &&
-            filter_ != com.google.protobuf.Empty.getDefaultInstance()) {
-          filter_ = com.google.protobuf.Empty.newBuilder((com.google.protobuf.Empty) filter_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          filter_ = value;
-        }
-        onChanged();
-      } else {
-        if (filterCase_ == 2) {
-          noFilterBuilder_.mergeFrom(value);
-        } else {
-          noFilterBuilder_.setMessage(value);
-        }
-      }
-      filterCase_ = 2;
-      return this;
-    }
-    /**
-     * <pre>
-     * Count all NodeRun's in the tenant.
-     * </pre>
-     *
-     * <code>.google.protobuf.Empty no_filter = 2;</code>
-     */
-    public Builder clearNoFilter() {
-      if (noFilterBuilder_ == null) {
-        if (filterCase_ == 2) {
-          filterCase_ = 0;
-          filter_ = null;
-          onChanged();
-        }
-      } else {
-        if (filterCase_ == 2) {
-          filterCase_ = 0;
-          filter_ = null;
-        }
-        noFilterBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * Count all NodeRun's in the tenant.
-     * </pre>
-     *
-     * <code>.google.protobuf.Empty no_filter = 2;</code>
-     */
-    public com.google.protobuf.Empty.Builder getNoFilterBuilder() {
-      return internalGetNoFilterFieldBuilder().getBuilder();
-    }
-    /**
-     * <pre>
-     * Count all NodeRun's in the tenant.
-     * </pre>
-     *
-     * <code>.google.protobuf.Empty no_filter = 2;</code>
-     */
-    @java.lang.Override
-    public com.google.protobuf.EmptyOrBuilder getNoFilterOrBuilder() {
-      if ((filterCase_ == 2) && (noFilterBuilder_ != null)) {
-        return noFilterBuilder_.getMessageOrBuilder();
-      } else {
-        if (filterCase_ == 2) {
-          return (com.google.protobuf.Empty) filter_;
-        }
-        return com.google.protobuf.Empty.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * Count all NodeRun's in the tenant.
-     * </pre>
-     *
-     * <code>.google.protobuf.Empty no_filter = 2;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        com.google.protobuf.Empty, com.google.protobuf.Empty.Builder, com.google.protobuf.EmptyOrBuilder> 
-        internalGetNoFilterFieldBuilder() {
-      if (noFilterBuilder_ == null) {
-        if (!(filterCase_ == 2)) {
-          filter_ = com.google.protobuf.Empty.getDefaultInstance();
-        }
-        noFilterBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            com.google.protobuf.Empty, com.google.protobuf.Empty.Builder, com.google.protobuf.EmptyOrBuilder>(
-                (com.google.protobuf.Empty) filter_,
-                getParentForChildren(),
-                isClean());
-        filter_ = null;
-      }
-      filterCase_ = 2;
-      onChanged();
-      return noFilterBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.CountNodeRunRequest)

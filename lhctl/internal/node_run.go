@@ -11,7 +11,6 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -207,9 +206,7 @@ Use --all to count all NodeRun's in the tenant, or --wfSpecName to filter by WfS
 
 		req := &lhproto.CountNodeRunRequest{}
 
-		if allFlag {
-			req.Filter = &lhproto.CountNodeRunRequest_NoFilter{NoFilter: &emptypb.Empty{}}
-		} else {
+		if !allFlag {
 			filter := &lhproto.CountNodeRunRequest_WfSpecFilter{
 				WfSpecName: wfSpecName,
 			}

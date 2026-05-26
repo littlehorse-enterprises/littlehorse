@@ -35,15 +35,13 @@ For this proposal, two new RPCs are exposed:
   // an eventually consistent count maintained via pre-aggregated counters.
   rpc CountTaskRun(CountTaskRunRequest) returns (Count) {}
 
-// Request to count NodeRun's matching specified criteria. Exactly one filter must be set.
+// Request to count NodeRun's matching specified criteria. If no filter is set,
+// the total count of all NodeRun's in the tenant is returned.
 message CountNodeRunRequest {
 
   oneof filter {
     // Filter by WfSpec attributes.
     WfSpecFilter wf_spec_filter = 1;
-
-    // Count all NodeRun's in the tenant.
-    google.protobuf.Empty no_filter = 2;
   }
 
   // Filter NodeRun counts by WfSpec name, and optionally by major version and revision.
