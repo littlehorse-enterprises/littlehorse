@@ -1,6 +1,6 @@
 'use client'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
-import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
+import { Breadcrumb } from '@/app/(authenticated)/[tenantId]/components/Breadcrumb'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
 import { PaginatedWfSpecList, searchWfSpecs } from '@/app/actions/getWfSpecsByTaskDef'
@@ -19,7 +19,7 @@ import { useParams } from 'next/navigation'
 import { FC, Fragment, useCallback, useState } from 'react'
 import { mutate } from 'swr'
 import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
-import { TaskDefHeader } from './TaskDefHeader'
+import { TaskDefMetadata } from './TaskDefMetadata'
 import { TaskDefMetrics } from './metrics'
 import { TaskDefConnectedWorkersCard, TaskDefQueueDepthCard } from './TaskDefOverview'
 import { TaskDefWorkers } from './TaskDefWorkers'
@@ -101,10 +101,16 @@ export const TaskDef: FC<Props> = ({ spec }) => {
 
   return (
     <div className="space-y-8 pb-12">
-      <Navigation href={routes.search.homeWithType('TaskDef')} title="Go back to TaskDefs" />
+      <Breadcrumb
+        items={[
+          { label: 'TaskDefs', href: routes.search.homeWithType('TaskDef') },
+          { label: taskDefName },
+        ]}
+      />
 
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-end">
+      <TaskDefMetadata
+        spec={spec}
+        actions={
           <button
             type="button"
             onClick={refreshAll}
@@ -115,12 +121,12 @@ export const TaskDef: FC<Props> = ({ spec }) => {
             <RefreshCwIcon className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
             Refresh
           </button>
-        </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-[1.2fr_1fr_1fr]">
-          <TaskDefHeader spec={spec} className="h-full" />
-          <TaskDefQueueDepthCard taskDefName={taskDefName} isRefreshing={isRefreshing} />
-          <TaskDefConnectedWorkersCard taskDefName={taskDefName} isRefreshing={isRefreshing} />
-        </div>
+        }
+      />
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <TaskDefQueueDepthCard taskDefName={taskDefName} isRefreshing={isRefreshing} />
+        <TaskDefConnectedWorkersCard taskDefName={taskDefName} isRefreshing={isRefreshing} />
       </div>
 
       <TaskDefWorkers taskDefName={taskDefName} isRefreshing={isRefreshing} onRefresh={refreshAll} />
