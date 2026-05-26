@@ -1,6 +1,6 @@
 'use client'
+import { Breadcrumb } from '@/app/(authenticated)/[tenantId]/components/Breadcrumb'
 import { DiagramProvider, NodeInContext } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
-import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { routes } from '@/app/routes'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
@@ -42,7 +42,12 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
 
   return (
     <>
-      <Navigation href={routes.appRoot()} title="Go back to WfSpecs" />
+      <Breadcrumb
+        items={[
+          { label: 'WfSpecs', href: routes.appRoot() },
+          { label: spec.id?.name ?? '' },
+        ]}
+      />
       <WfSpecMetadata spec={spec} actions={executeButton} />
       <DiagramProvider value={{ thread, setThread, selectedNode, setSelectedNode }}>
         <Diagram spec={spec} />
