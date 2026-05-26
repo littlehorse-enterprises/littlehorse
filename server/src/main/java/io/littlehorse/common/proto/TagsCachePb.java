@@ -61,18 +61,6 @@ private static final long serialVersionUID = 0L;
         getIdBytes();
 
     /**
-     * <code>string attribute_string = 4;</code>
-     * @return The attributeString.
-     */
-    java.lang.String getAttributeString();
-    /**
-     * <code>string attribute_string = 4;</code>
-     * @return The bytes for attributeString.
-     */
-    com.google.protobuf.ByteString
-        getAttributeStringBytes();
-
-    /**
      * <code>bool is_remote = 2;</code>
      * @return The isRemote.
      */
@@ -107,7 +95,6 @@ private static final long serialVersionUID = 0L;
     }
     private CachedTagPb() {
       id_ = "";
-      attributeString_ = "";
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -162,45 +149,6 @@ private static final long serialVersionUID = 0L;
       }
     }
 
-    public static final int ATTRIBUTE_STRING_FIELD_NUMBER = 4;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object attributeString_ = "";
-    /**
-     * <code>string attribute_string = 4;</code>
-     * @return The attributeString.
-     */
-    @java.lang.Override
-    public java.lang.String getAttributeString() {
-      java.lang.Object ref = attributeString_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        attributeString_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string attribute_string = 4;</code>
-     * @return The bytes for attributeString.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getAttributeStringBytes() {
-      java.lang.Object ref = attributeString_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        attributeString_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
     public static final int IS_REMOTE_FIELD_NUMBER = 2;
     private boolean isRemote_ = false;
     /**
@@ -246,9 +194,6 @@ private static final long serialVersionUID = 0L;
       if (isCounted_ != false) {
         output.writeBool(3, isCounted_);
       }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(attributeString_)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 4, attributeString_);
-      }
       getUnknownFields().writeTo(output);
     }
 
@@ -269,9 +214,6 @@ private static final long serialVersionUID = 0L;
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(3, isCounted_);
       }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(attributeString_)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, attributeString_);
-      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -289,8 +231,6 @@ private static final long serialVersionUID = 0L;
 
       if (!getId()
           .equals(other.getId())) return false;
-      if (!getAttributeString()
-          .equals(other.getAttributeString())) return false;
       if (getIsRemote()
           != other.getIsRemote()) return false;
       if (getIsCounted()
@@ -308,8 +248,6 @@ private static final long serialVersionUID = 0L;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId().hashCode();
-      hash = (37 * hash) + ATTRIBUTE_STRING_FIELD_NUMBER;
-      hash = (53 * hash) + getAttributeString().hashCode();
       hash = (37 * hash) + IS_REMOTE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getIsRemote());
@@ -448,7 +386,6 @@ private static final long serialVersionUID = 0L;
         super.clear();
         bitField0_ = 0;
         id_ = "";
-        attributeString_ = "";
         isRemote_ = false;
         isCounted_ = false;
         return this;
@@ -488,12 +425,9 @@ private static final long serialVersionUID = 0L;
           result.id_ = id_;
         }
         if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.attributeString_ = attributeString_;
-        }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
           result.isRemote_ = isRemote_;
         }
-        if (((from_bitField0_ & 0x00000008) != 0)) {
+        if (((from_bitField0_ & 0x00000004) != 0)) {
           result.isCounted_ = isCounted_;
         }
       }
@@ -513,11 +447,6 @@ private static final long serialVersionUID = 0L;
         if (!other.getId().isEmpty()) {
           id_ = other.id_;
           bitField0_ |= 0x00000001;
-          onChanged();
-        }
-        if (!other.getAttributeString().isEmpty()) {
-          attributeString_ = other.attributeString_;
-          bitField0_ |= 0x00000002;
           onChanged();
         }
         if (other.getIsRemote() != false) {
@@ -559,19 +488,14 @@ private static final long serialVersionUID = 0L;
               } // case 10
               case 16: {
                 isRemote_ = input.readBool();
-                bitField0_ |= 0x00000004;
+                bitField0_ |= 0x00000002;
                 break;
               } // case 16
               case 24: {
                 isCounted_ = input.readBool();
-                bitField0_ |= 0x00000008;
+                bitField0_ |= 0x00000004;
                 break;
               } // case 24
-              case 34: {
-                attributeString_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 34
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -661,78 +585,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
 
-      private java.lang.Object attributeString_ = "";
-      /**
-       * <code>string attribute_string = 4;</code>
-       * @return The attributeString.
-       */
-      public java.lang.String getAttributeString() {
-        java.lang.Object ref = attributeString_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          attributeString_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string attribute_string = 4;</code>
-       * @return The bytes for attributeString.
-       */
-      public com.google.protobuf.ByteString
-          getAttributeStringBytes() {
-        java.lang.Object ref = attributeString_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          attributeString_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string attribute_string = 4;</code>
-       * @param value The attributeString to set.
-       * @return This builder for chaining.
-       */
-      public Builder setAttributeString(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        attributeString_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string attribute_string = 4;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearAttributeString() {
-        attributeString_ = getDefaultInstance().getAttributeString();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string attribute_string = 4;</code>
-       * @param value The bytes for attributeString to set.
-       * @return This builder for chaining.
-       */
-      public Builder setAttributeStringBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        attributeString_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-
       private boolean isRemote_ ;
       /**
        * <code>bool is_remote = 2;</code>
@@ -750,7 +602,7 @@ private static final long serialVersionUID = 0L;
       public Builder setIsRemote(boolean value) {
 
         isRemote_ = value;
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
@@ -759,7 +611,7 @@ private static final long serialVersionUID = 0L;
        * @return This builder for chaining.
        */
       public Builder clearIsRemote() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         isRemote_ = false;
         onChanged();
         return this;
@@ -782,7 +634,7 @@ private static final long serialVersionUID = 0L;
       public Builder setIsCounted(boolean value) {
 
         isCounted_ = value;
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
@@ -791,7 +643,7 @@ private static final long serialVersionUID = 0L;
        * @return This builder for chaining.
        */
       public Builder clearIsCounted() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000004);
         isCounted_ = false;
         onChanged();
         return this;

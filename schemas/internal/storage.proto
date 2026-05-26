@@ -115,7 +115,6 @@ message WfRunStoredInventory {
 message TagsCachePb {
     message CachedTagPb {
         string id = 1;
-        string attribute_string = 4;
         bool is_remote = 2;
         bool is_counted = 3;
     }
