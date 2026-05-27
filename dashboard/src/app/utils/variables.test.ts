@@ -14,6 +14,7 @@ import {
   getVariableCaseFromTypeDef,
   getVariableDefType,
   getVariableValue,
+  type VariableDisplayContext,
 } from './variables'
 
 describe('getVariable', () => {
@@ -45,6 +46,33 @@ describe('getVariable', () => {
       },
     }
     expect(getVariable(variable)).toEqual('true')
+  })
+
+  it('should return nodeOutput node name without runtime context', () => {
+    const variable: VariableAssignment = {
+      source: {
+        $case: 'nodeOutput',
+        value: { nodeName: '1-greet-TASK' },
+      },
+    }
+    expect(getVariable(variable)).toEqual('1-greet-TASK')
+  })
+
+  it('should return resolved nodeOutput value when runtime context is provided', () => {
+    const variable: VariableAssignment = {
+      source: {
+        $case: 'nodeOutput',
+        value: { nodeName: '1-greet-TASK' },
+      },
+    }
+    const context: VariableDisplayContext = {
+      nodeOutputValues: {
+        '1-greet-TASK': {
+          value: { $case: 'str', value: 'hello there, Obi-Wan' },
+        },
+      },
+    }
+    expect(getVariable(variable, 0, context)).toEqual('hello there, Obi-Wan')
   })
 
   it('should return variableName', () => {

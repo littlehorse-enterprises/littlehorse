@@ -1,7 +1,8 @@
 import ELK from 'elkjs/lib/elk.bundled.js'
 import { NodeRun } from 'littlehorse-client/proto'
-import { FC, useCallback, useEffect } from 'react'
+import { FC, useCallback, useEffect, useRef } from 'react'
 import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport } from 'reactflow'
+import { isBranchEdgeReached } from './EdgeTypes/edgeConditionDisplay'
 
 const elk = new ELK()
 
@@ -10,7 +11,8 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
   const edges = useStore(store => store.edges)
   const setNodes = useStore(store => store.setNodes)
   const setEdges = useStore(store => store.setEdges)
-  const { fitView, setViewport } = useReactFlow()
+  const { fitView, setViewport, getEdges, getNodes } = useReactFlow()
+  const layoutGenerationRef = useRef(0)
 
   useOnViewportChange({
     onChange: useCallback(
@@ -23,6 +25,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
 
   const onLoad = useCallback(
     async (nodes: Node[], edges: Edge[]) => {
+      const layoutGeneration = ++layoutGenerationRef.current
       const elkGraph = {
         id: 'root',
         layoutOptions: {
@@ -57,10 +60,14 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
 
       try {
         const laidOutGraph = await elk.layout(elkGraph)
+        if (layoutGeneration !== layoutGenerationRef.current) return
+
         const hasCycles = nodes.some(node => node.type === 'cycle')
         // Layout the original workflow nodes
+        const currentNodes = getNodes()
         const laidOutNodes = nodes.map(node => {
           const elkNode = laidOutGraph.children?.find(n => n.id === node.id)
+          const currentNode = currentNodes.find(n => n.id === node.id)
           const nodeRunsList = nodeRuns
             ?.filter(nodeRun => nodeRun.nodeName === node.id)
             .sort((a, b) => {
@@ -83,7 +90,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
           }
           return {
             ...node,
-            data: { ...node.data, fade, nodeRunsList },
+            data: { ...node.data, ...(currentNode?.data ?? {}), fade, nodeRunsList },
             position: {
               x: elkNode?.x ?? 0,
               y: elkNode?.y ?? 0,
@@ -92,8 +99,21 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
           }
         })
         setNodes(laidOutNodes)
-        setEdges(edges)
+        // Preserve latest edge data (e.g. runtime nodeOutputValues) — ELK only moves nodes.
+        const currentEdges = getEdges()
+        setEdges(
+          currentEdges.map(current => {
+            const layoutEdge = edges.find(edge => edge.id === current.id)
+            const branchFade =
+              current.data?.branchLabel != null
+                ? !isBranchEdgeReached(current.target, nodeRuns)
+                : current.data?.fade
+            const data = { ...current.data, fade: branchFade }
+            return layoutEdge ? { ...layoutEdge, data } : { ...current, data }
+          })
+        )
         setTimeout(() => {
+          if (layoutGeneration !== layoutGenerationRef.current) return
           const saved = sessionStorage.getItem(viewportKey)
           if (saved) {
             try {
@@ -109,7 +129,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
         console.error('ELK layout error:', error)
       }
     },
-    [fitView, setViewport, viewportKey, nodeRuns, setNodes, setEdges]
+    [fitView, getEdges, getNodes, setViewport, viewportKey, nodeRuns, setNodes, setEdges]
   )
 
   useEffect(() => {

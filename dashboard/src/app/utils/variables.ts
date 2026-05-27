@@ -62,30 +62,73 @@ export const VARIABLE_CASE_LABELS: Record<NonNullable<VariableValue['value']>['$
   array: 'Array',
 }
 
+export type VariableDisplayContext = {
+  /** Resolved TaskRun (or other node) outputs keyed by WfSpec node name. */
+  nodeOutputValues?: Record<string, VariableValue | undefined>
+}
+
+const applyAssignmentPath = (value: VariableValue, path?: VariableAssignment['path']): string => {
+  if (!path) return getVariableValue(value)
+
+  if (path.$case === 'jsonPath') {
+    const raw = getVariableValue(value)
+    try {
+      const parsed = JSON.parse(raw) as unknown
+      const segments = path.value.replace(/^\$\.?/, '').split('.').filter(Boolean)
+      let current: unknown = parsed
+      for (const segment of segments) {
+        if (current == null || typeof current !== 'object') return raw
+        current = (current as Record<string, unknown>)[segment]
+      }
+      return current == null ? raw : String(current)
+    } catch {
+      return raw
+    }
+  }
+
+  if (path.$case === 'lhPath') {
+    return `${getVariableValue(value)}.${lhPathToString(path.value)}`
+  }
+
+  return getVariableValue(value)
+}
+
 /**
  * Retrieves the value of a variable based on its assignment and source.
  * Handles different types of variable sources including expressions, format strings, literals, node outputs, and variable names.
  *
+ * When `context.nodeOutputValues` is provided (WfRun diagram), node-output references show the
+ * runtime value from the completed TaskRun instead of the static node name.
+ *
  * @param variable - The variable assignment to retrieve the value from.
  * @param depth - The current depth in nested expressions (default is 0).
+ * @param context - Optional runtime resolution data for WfRun views.
  * @returns The formatted string representation of the variable value.
  */
-export const getVariable = (variable: VariableAssignment, depth = 0): string => {
+export const getVariable = (
+  variable: VariableAssignment,
+  depth = 0,
+  context?: VariableDisplayContext
+): string => {
   if (!variable || !variable.source) return ''
 
   switch (variable.source.$case) {
     case 'expression':
-      return formatVariableExpression(variable.source, depth)
+      return formatVariableExpression(variable.source, depth, context)
     case 'formatString':
-      return getValueFromFormatString(variable.source)
+      return getValueFromFormatString(variable.source, context)
     case 'literalValue':
       return getVariableValue(variable.source.value)
-    case 'nodeOutput':
-      return variable.source.value.nodeName
+    case 'nodeOutput': {
+      const nodeName = variable.source.value.nodeName
+      const runtime = context?.nodeOutputValues?.[nodeName]
+      if (runtime) return applyAssignmentPath(runtime, variable.path)
+      return nodeName
+    }
     case 'variableName':
       return getValueFromVariableName(variable.source, variable.path)
     case 'sizeOf':
-      return `${getVariable(variable.source.value.operand!, depth + 1)}.size()`
+      return `${getVariable(variable.source.value.operand!, depth + 1, context)}.size()`
     default:
       return ''
   }
@@ -343,11 +386,12 @@ const getValueFromVariableName = (
   return `{${value}}`
 }
 
-const getValueFromFormatString = ({
-  value,
-}: Extract<VariableAssignment['source'], { $case: 'formatString' }>): string => {
-  const template = getVariable(value.format!)
-  const args = value.args.map(getVariable)
+const getValueFromFormatString = (
+  { value }: Extract<VariableAssignment['source'], { $case: 'formatString' }>,
+  context?: VariableDisplayContext
+): string => {
+  const template = getVariable(value.format!, 0, context)
+  const args = value.args.map(arg => getVariable(arg, 0, context))
 
   return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
 }
@@ -381,7 +425,8 @@ const getExpressionSymbol = (expression: VariableMutationType): string => {
 
 const formatVariableExpression = (
   { value }: Extract<VariableAssignment['source'], { $case: 'expression' }>,
-  depth = 0
+  depth = 0,
+  context?: VariableDisplayContext
 ): string => {
   const { lhs, rhs, operation } = value
   if (!operation) return ''
@@ -402,7 +447,7 @@ const formatVariableExpression = (
   }
 
   const result = useDotNotation
-    ? `${getVariable(lhs!, depth + 1)}.${symbol}(${getVariable(rhs!, depth + 1)})`
-    : `${getVariable(lhs!, depth + 1)} ${symbol} ${getVariable(rhs!, depth + 1)}`
+    ? `${getVariable(lhs!, depth + 1, context)}.${symbol}(${getVariable(rhs!, depth + 1, context)})`
+    : `${getVariable(lhs!, depth + 1, context)} ${symbol} ${getVariable(rhs!, depth + 1, context)}`
   return depth > 0 ? `(${result})` : result
 }

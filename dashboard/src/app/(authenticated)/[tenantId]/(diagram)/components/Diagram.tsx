@@ -25,6 +25,7 @@ import 'reactflow/dist/base.css'
 import { DiagramProvider, NodeInContext, ThreadType } from '../context'
 import edgeTypes from './EdgeTypes'
 import { extractEdges } from './EdgeTypes/extractEdges'
+import { isBranchEdgeReached } from './EdgeTypes/edgeConditionDisplay'
 import { LayoutManager } from './LayoutManager'
 import nodeTypes from './NodeTypes'
 import { extractNodes, getCycleNodes } from './NodeTypes/extractNodes'
@@ -85,20 +86,48 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
     return threadSpec
   }, [spec, thread.name])
 
-  const [edges, setEdges] = useEdgesState(extractEdges(threadSpec))
-  const [nodes, setNodes] = useNodesState(extractNodes(threadSpec))
+  const nodeOutputValues = useMemo(() => {
+    if (!wfRun) return undefined
+    return wfRun.threadRuns.find(tr => tr.number === thread.number)?.nodeOutputValues
+  }, [thread.number, wfRun])
 
   const threadNodeRuns = useMemo(() => {
     if (!wfRun) return
     return wfRun.threadRuns.find(tr => tr.number === thread.number)?.nodeRuns
   }, [thread.number, wfRun])
 
+  const edgesWithRuntimeData = useMemo(
+    () =>
+      extractEdges(threadSpec).map(edge => ({
+        ...edge,
+        data: {
+          ...edge.data,
+          nodeOutputValues,
+          fade:
+            edge.data?.branchLabel != null
+              ? !isBranchEdgeReached(edge.target, threadNodeRuns)
+              : undefined,
+        },
+      })),
+    [threadSpec, nodeOutputValues, threadNodeRuns]
+  )
+
+  const nodesWithRuntimeData = useMemo(
+    () =>
+      extractNodes(threadSpec).map(node => ({
+        ...node,
+        data: { ...node.data, nodeOutputValues },
+      })),
+    [threadSpec, nodeOutputValues]
+  )
+
+  const [edges, setEdges] = useEdgesState(edgesWithRuntimeData)
+  const [nodes, setNodes] = useNodesState(nodesWithRuntimeData)
+
   useLayoutEffect(() => {
-    const nodes = extractNodes(threadSpec)
-    const edges = extractEdges(threadSpec)
-    setNodes(nodes)
-    setEdges(edges)
-  }, [thread.name, setNodes, setEdges])
+    setNodes(nodesWithRuntimeData)
+    setEdges(edgesWithRuntimeData)
+  }, [thread.name, threadSpec, nodesWithRuntimeData, edgesWithRuntimeData, setNodes, setEdges])
 
   useEffect(() => {
     onThreadChange?.(thread)

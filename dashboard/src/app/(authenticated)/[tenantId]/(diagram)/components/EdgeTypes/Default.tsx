@@ -2,10 +2,16 @@ import React, { type FC, useCallback } from 'react'
 import { getSmoothStepPath, EdgeLabelRenderer, BaseEdge, type EdgeProps, Position } from 'reactflow'
 import { CircleAlertIcon } from 'lucide-react'
 import { useModal } from '../../hooks/useModal'
-import { Edge as EdgeProto } from 'littlehorse-client/proto'
-import { EdgeConditionLabel } from './EdgeConditionLabel'
+import { Edge as EdgeProto, VariableValue } from 'littlehorse-client/proto'
+import { EdgeBranchLabel, EdgeConditionLabel } from './EdgeConditionLabel'
 
-type EdgeData = EdgeProto & { isElseEdge?: boolean }
+export type EdgeData = EdgeProto & {
+  isElseEdge?: boolean
+  conditionOnSourceNode?: boolean
+  branchLabel?: 'true' | 'false'
+  fade?: boolean
+  nodeOutputValues?: Record<string, VariableValue>
+}
 
 const CustomEdge: FC<EdgeProps<EdgeData>> = ({
   id,
@@ -49,20 +55,15 @@ const CustomEdge: FC<EdgeProps<EdgeData>> = ({
         >
           <div onClick={onClick} className="flex cursor-pointer flex-col items-center">
             {(data?.variableMutations?.length ?? 0) > 0 && <CircleAlertIcon size={16} className={`fill-gray-200`} />}
-            {data?.edgeCondition ? (
-              <div
-                className="flex items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-gray-600"
-                style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}
-              >
-                <EdgeConditionLabel edge={data} />
-              </div>
+            {data?.branchLabel ? (
+              <EdgeBranchLabel branch={data.branchLabel} fade={data.fade} />
             ) : (
-              data?.isElseEdge && (
+              data?.edgeCondition && (
                 <div
-                  className="flex items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-gray-600"
-                  style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}
+                  className="inline-flex w-max max-w-xs"
+                  style={{ transform: 'scale(0.88)', transformOrigin: 'center' }}
                 >
-                  <span className="text-[10px] text-gray-600">else</span>
+                  <EdgeConditionLabel edge={data} />
                 </div>
               )
             )}
