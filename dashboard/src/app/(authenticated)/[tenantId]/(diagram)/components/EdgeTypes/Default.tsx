@@ -1,11 +1,15 @@
-import React, { type FC, useCallback } from 'react'
+import React, { type FC, useCallback, useMemo } from 'react'
 import { getSmoothStepPath, EdgeLabelRenderer, BaseEdge, type EdgeProps, Position } from 'reactflow'
 import { CircleAlertIcon } from 'lucide-react'
 import { useModal } from '../../hooks/useModal'
 import { Edge as EdgeProto } from 'littlehorse-client/proto'
 import { EdgeConditionLabel } from './EdgeConditionLabel'
 
-type EdgeData = EdgeProto & { isElseEdge?: boolean }
+type EdgeData = EdgeProto & {
+  isElseEdge?: boolean
+  layoutPath?: string
+  layoutLabelPoint?: { x: number; y: number }
+}
 
 const CustomEdge: FC<EdgeProps<EdgeData>> = ({
   id,
@@ -13,21 +17,28 @@ const CustomEdge: FC<EdgeProps<EdgeData>> = ({
   sourceY,
   targetX,
   targetY,
-  sourcePosition = Position.Bottom,
-  targetPosition = Position.Top,
+  sourcePosition = Position.Right,
+  targetPosition = Position.Left,
   data,
   style,
   ...rest
 }) => {
-  const [edgePath, labelX, labelY] = getSmoothStepPath({
-    sourceX,
-    sourceY,
-    sourcePosition,
-    targetX,
-    targetY,
-    targetPosition,
-    borderRadius: 0,
-  })
+  const fallback = useMemo(
+    () =>
+      getSmoothStepPath({
+        sourceX,
+        sourceY,
+        sourcePosition,
+        targetX,
+        targetY,
+        targetPosition,
+        borderRadius: 0,
+      }),
+    [sourcePosition, sourceX, sourceY, targetPosition, targetX, targetY]
+  )
+
+  const path = data?.layoutPath || fallback[0]
+  const labelPoint = data?.layoutLabelPoint ?? { x: fallback[1], y: fallback[2] }
 
   const { setModal, setShowModal } = useModal()
   const onClick = useCallback(() => {
@@ -38,12 +49,12 @@ const CustomEdge: FC<EdgeProps<EdgeData>> = ({
 
   return (
     <>
-      <BaseEdge id={id} path={edgePath} style={style} {...rest} />
+      <BaseEdge id={id} path={path} style={style} {...rest} />
       <EdgeLabelRenderer>
         <div
           style={{
             position: 'absolute',
-            transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+            transform: `translate(-50%, -50%) translate(${labelPoint.x}px,${labelPoint.y}px)`,
             pointerEvents: 'all',
           }}
         >

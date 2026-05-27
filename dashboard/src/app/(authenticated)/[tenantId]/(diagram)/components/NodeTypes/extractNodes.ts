@@ -1,13 +1,23 @@
 import { Node as NodeProto, ThreadSpec } from 'littlehorse-client/proto'
 import { Node, NodeProps } from 'reactflow'
+import { computeNodeHandleCounts } from '../../layout/nodeHandles'
 
 export const extractNodes = (spec: ThreadSpec): Node<NodeProto, NodeType>[] => {
+  const handleCounts = computeNodeHandleCounts(spec)
+
   return Object.entries(spec.nodes).map(([id, node]) => {
     const nodeType = node.node!
+    const counts = handleCounts.get(id) ?? { sourceCount: 1, targetCount: 1 }
+
     return {
       id,
       type: nodeType.$case,
-      data: { ...node, ...nodeType.value },
+      data: {
+        ...node,
+        ...nodeType.value,
+        sourceHandleCount: counts.sourceCount,
+        targetHandleCount: counts.targetCount,
+      },
       position: { x: 0, y: 0 },
     }
   })
