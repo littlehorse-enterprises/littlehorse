@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import io.littlehorse.sdk.common.proto.Count;
 import io.littlehorse.sdk.common.proto.CountNodeRunRequest;
+import io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -101,16 +102,17 @@ public class CountNodeRunTest {
 
     @Test
     public void shouldCountAllNodeRunsByWfSpecName() {
-        Count count = client.countNodeRun(
-                CountNodeRunRequest.newBuilder().setWfSpecName(WF_SPEC_NAME).build());
+        Count count = client.countNodeRun(CountNodeRunRequest.newBuilder()
+                .setWfSpecFilter(WfSpecFilter.newBuilder().setWfSpecName(WF_SPEC_NAME))
+                .build());
 
         // 3 versions * RUNS_PER_VERSION runs * nodesPerRun nodes
         int expectedTotal = 3 * RUNS_PER_VERSION * nodesPerRun;
         assertThat(count.getValue()).isEqualTo(expectedTotal);
 
         Count countMajor0 = client.countNodeRun(CountNodeRunRequest.newBuilder()
-                .setWfSpecName(WF_SPEC_NAME)
-                .setWfSpecMajorVersion(0)
+                .setWfSpecFilter(
+                        WfSpecFilter.newBuilder().setWfSpecName(WF_SPEC_NAME).setWfSpecMajorVersion(0))
                 .build());
 
         // Major version 0 has 2 revisions (0/0 and 0/1), each with RUNS_PER_VERSION runs
@@ -118,8 +120,8 @@ public class CountNodeRunTest {
         assertThat(countMajor0.getValue()).isEqualTo(expectedMajor0);
 
         Count countMajor1 = client.countNodeRun(CountNodeRunRequest.newBuilder()
-                .setWfSpecName(WF_SPEC_NAME)
-                .setWfSpecMajorVersion(1)
+                .setWfSpecFilter(
+                        WfSpecFilter.newBuilder().setWfSpecName(WF_SPEC_NAME).setWfSpecMajorVersion(1))
                 .build());
 
         // Major version 1 has 1 revision (1/0) with RUNS_PER_VERSION runs
@@ -127,27 +129,30 @@ public class CountNodeRunTest {
         assertThat(countMajor1.getValue()).isEqualTo(expectedMajor1);
 
         Count countRev0 = client.countNodeRun(CountNodeRunRequest.newBuilder()
-                .setWfSpecName(WF_SPEC_NAME)
-                .setWfSpecMajorVersion(0)
-                .setWfSpecRevision(0)
+                .setWfSpecFilter(WfSpecFilter.newBuilder()
+                        .setWfSpecName(WF_SPEC_NAME)
+                        .setWfSpecMajorVersion(0)
+                        .setWfSpecRevision(0))
                 .build());
 
         int expectedRev0 = RUNS_PER_VERSION * nodesPerRun;
         assertThat(countRev0.getValue()).isEqualTo(expectedRev0);
 
         Count countRev1 = client.countNodeRun(CountNodeRunRequest.newBuilder()
-                .setWfSpecName(WF_SPEC_NAME)
-                .setWfSpecMajorVersion(0)
-                .setWfSpecRevision(1)
+                .setWfSpecFilter(WfSpecFilter.newBuilder()
+                        .setWfSpecName(WF_SPEC_NAME)
+                        .setWfSpecMajorVersion(0)
+                        .setWfSpecRevision(1))
                 .build());
 
         int expectedRev1 = RUNS_PER_VERSION * nodesPerRun;
         assertThat(countRev1.getValue()).isEqualTo(expectedRev1);
 
         Count countMajor1Rev0 = client.countNodeRun(CountNodeRunRequest.newBuilder()
-                .setWfSpecName(WF_SPEC_NAME)
-                .setWfSpecMajorVersion(1)
-                .setWfSpecRevision(0)
+                .setWfSpecFilter(WfSpecFilter.newBuilder()
+                        .setWfSpecName(WF_SPEC_NAME)
+                        .setWfSpecMajorVersion(1)
+                        .setWfSpecRevision(0))
                 .build());
 
         int expectedMajor1Rev0 = RUNS_PER_VERSION * nodesPerRun;
