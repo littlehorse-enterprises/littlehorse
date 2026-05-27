@@ -161,4 +161,8 @@ public class Tag extends Storeable<TagPb> {
     public GetableClassEnum getObjectType() {
         return objectType;
     }
+
+    public boolean isCounted() {
+        return tagType == TagStorageType.COUNTED;
+    }
 }
