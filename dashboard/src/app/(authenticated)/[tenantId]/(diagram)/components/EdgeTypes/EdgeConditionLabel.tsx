@@ -72,7 +72,11 @@ const RuntimeComparisonCard: FC<{
   displayContext?: VariableDisplayContext
 }> = ({ leftOperand, rightOperand, comparator, displayContext }) => {
   const nodeName = getNodeOutputNodeName(leftOperand) ?? ''
-  const actualValue = getOperandDisplayText(leftOperand, displayContext)
+  const actualValue = hasResolvedNodeOutput(leftOperand, displayContext)
+    ? getOperandDisplayText(leftOperand, displayContext)
+    : nodeName
+      ? formatNodeOutputSourceLabel(nodeName)
+      : getOperandDisplayText(leftOperand, displayContext)
   const expectedValue = rightOperand ? getOperandDisplayText(rightOperand, displayContext) : ''
   const opLabel = getComparatorLabel(comparator)
   const opSymbol = getComparatorSymbol(comparator)
@@ -173,7 +177,7 @@ const ComparisonLabel: FC<{
   comparator?: Comparator
   displayContext?: VariableDisplayContext
 }> = ({ leftOperand, rightOperand, operatorSymbol, comparator, displayContext }) => {
-  if (leftOperand != null && comparator != null && hasResolvedNodeOutput(leftOperand, displayContext)) {
+  if (leftOperand != null && comparator != null) {
     return (
       <RuntimeComparisonCard
         leftOperand={leftOperand}

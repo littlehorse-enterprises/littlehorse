@@ -90,7 +90,11 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
           }
           return {
             ...node,
-            data: { ...node.data, ...(currentNode?.data ?? {}), fade, nodeRunsList },
+            data: {
+              ...(currentNode?.data ?? node.data),
+              fade,
+              nodeRunsList,
+            },
             position: {
               x: elkNode?.x ?? 0,
               y: elkNode?.y ?? 0,
@@ -108,7 +112,15 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
               current.data?.branchLabel != null
                 ? !isBranchEdgeReached(current.target, nodeRuns)
                 : current.data?.fade
-            const data = { ...current.data, fade: branchFade }
+            const data = {
+              ...(layoutEdge?.data ?? {}),
+              ...current.data,
+              fade: branchFade,
+              nodeOutputValues: current.data?.nodeOutputValues ?? layoutEdge?.data?.nodeOutputValues,
+              branchLabel: current.data?.branchLabel ?? layoutEdge?.data?.branchLabel,
+              conditionOnSourceNode:
+                current.data?.conditionOnSourceNode ?? layoutEdge?.data?.conditionOnSourceNode,
+            }
             return layoutEdge ? { ...layoutEdge, data } : { ...current, data }
           })
         )
