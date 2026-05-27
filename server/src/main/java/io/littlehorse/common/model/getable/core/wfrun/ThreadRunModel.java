@@ -1,6 +1,15 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import com.google.protobuf.Message;
+
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.exceptions.LHVarSubError;
@@ -25,7 +34,11 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.InterruptedMode
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ParentHaltedModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingFailureHandlerHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingInterruptHaltReasonModel;
+import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
+import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.InterruptDefModel;
@@ -43,6 +56,7 @@ import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.InlineStructFieldValue.StructValueCase;
@@ -59,13 +73,6 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -216,7 +223,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public ThreadSpecModel getThreadSpec() {
         if (threadSpecModel == null) {
-            threadSpecModel = wfRun.getWfSpec().threadSpecs.get(threadSpecName);
+            threadSpecModel = executionContext.service().getWfSpec(wfSpecId).threadSpecs.get(threadSpecName);
         }
         return threadSpecModel;
     }
@@ -1034,6 +1041,110 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             }
         }
         throw new LHVarSubError(null, "Specified node " + nodeName + " does not have any previous runs.");
+    }
+
+    public boolean maybeMigrate(WorkflowMigrationPlanIdModel workflowMigrationPlanId) {
+        WorkflowMigrationPlanModel plan = executionContext.metadataManager().get(workflowMigrationPlanId);
+        if (plan == null) {
+            return false;
+        }
+
+        ThreadMigrationPlanModel threadMigration = plan.getThreadMigrations().get(threadSpecName);
+        if (threadMigration == null) {
+            return false;
+        }
+
+        String currentNodeName = getCurrentNodeRun().getNodeName();
+        if (!currentNodeName.equals(threadMigration.getOldNodeName())) {
+            return false;
+        }
+
+        try {
+            migrateThread(plan, threadMigration);
+            return true;
+        } catch (NodeFailureException exn) {
+            respondToNodeFailure(exn);
+            return true;
+        }
+    }
+
+    private void migrateThread(WorkflowMigrationPlanModel plan, ThreadMigrationPlanModel threadMigration)
+            throws NodeFailureException {
+        String oldThreadName = threadSpecName;
+
+        // Halt the current NodeRun to leave an audit trail showing it was migrated from.
+        // All three eligible migration source types (ExternalEvent, UserTask, Sleep) halt cleanly.
+        NodeRunModel oldNR = getCurrentNodeRun();
+        oldNR.maybeHalt(processorContext);
+        putNodeRun(oldNR);
+
+        threadSpecName = threadMigration.getNewThreadName();
+        threadSpecModel = null; // invalidate cached ThreadSpec
+
+        wfSpecId = new WfSpecIdModel(
+                plan.getOldWfSpecId().getName(), plan.getMajorVersion(), plan.getRevision());
+        createVarsForMigratedThread();
+        applyMigrationVariables(oldThreadName);
+
+        WfSpecModel newWfSpec = executionContext.service().getWfSpec(wfSpecId);
+        NodeModel newNode =
+                newWfSpec.threadSpecs.get(threadSpecName).nodes.get(threadMigration.getNewNodeName());
+
+        activateNode(newNode);
+        
+    }
+
+    private void createVarsForMigratedThread() {
+        ThreadSpecModel threadSpec = getThreadSpec();
+        for (ThreadVarDefModel threadVarDef : threadSpec.getVariableDefs()) {
+            if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
+                // Inherited vars are resolved from parent scope and are not stored locally.
+                continue;
+            }
+
+            VariableDefModel varDef = threadVarDef.getVarDef();
+            String varName = varDef.getName();
+
+            VariableModel existing =
+                    processorContext.getableManager().get(new VariableIdModel(wfRun.getId(), this.number, varName));
+            if (existing != null) {
+                // Preserve any pre-existing value for vars already present on this thread.
+                continue;
+            }
+
+            VariableValueModel value = varDef.getDefaultValue();
+            if (value == null) {
+                value = new VariableValueModel();
+            }
+
+            VariableModel variable = new VariableModel(
+                    varName, value, wfRun.getId(), this.number, threadSpec.getWfSpec(), varDef.isMaskedValue());
+            processorContext.getableManager().put(variable);
+        }
+    }
+
+    private void applyMigrationVariables(String oldThreadName) throws NodeFailureException {
+        Map<String, MigrationVarsModel> migrationVarsByThread = wfRun.getMigrationVarsByThread();
+        if (migrationVarsByThread == null) {
+            return;
+        }
+
+        MigrationVarsModel migrationVars = migrationVarsByThread.get(oldThreadName);
+        if (migrationVars == null) {
+            return;
+        }
+
+        for (Map.Entry<String, VariableAssignmentModel> entry :
+                migrationVars.getVarAssignmentByVarName().entrySet()) {
+            try {
+                VariableValueModel migrationVariableValue = assignVariable(entry.getValue());
+                mutateVariable(entry.getKey(), migrationVariableValue);
+            } catch (LHVarSubError exn) {
+                throw new NodeFailureException(new FailureModel(
+                        "Failed applying migration variable '%s': %s".formatted(entry.getKey(), exn.getMessage()),
+                        LHErrorType.VAR_SUB_ERROR.toString()));
+            }
+        }
     }
 
     /**

@@ -66,6 +66,7 @@ enum GetableClassEnum {
     INACTIVE_THREAD_RUN = 21;
     METRIC_WINDOW = 22;
     QUOTA = 23;
+    WORKFLOW_MIGRATION_PLAN = 24;
 }
 
 message AttributePb {

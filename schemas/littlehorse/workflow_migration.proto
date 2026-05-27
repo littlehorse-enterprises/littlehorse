@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "object_id.proto";
+import "common_wfspec.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+
+message WorkflowMigrationPlan{
+    // The id of the migration plann
+    WorkflowMigrationPlanId workflow_migration_plan_id= 1;
+
+    // Time WorkflowMigrationPlan was created
+    google.protobuf.Timestamp created_at = 2;
+
+    // Map that represent old threadSpec name -> How to migrate that threadspec
+    map<string, ThreadMigrationPlan> thread_migrations = 3;
+        
+    // Source wfSpec
+    WfSpecId old_wfSpec = 4;
+
+    // major_version and revision of the destination specs 
+    int32 major_version = 5;
+    int32 revision = 6;
+}
+
+
+message ThreadMigrationPlan {
+    
+    // Name of thread in new wfSpec that thread wants 
+    // to migrate to 
+    string new_thread_name = 1;
+
+    // Name of node in old thread to migrate from
+    string from_node = 2;
+
+    // name of node to migrate to within new spec
+    string to_node = 3;
+
+    // list of required variables that muse either be
+    // updated or inserted at runtime when migration is called
+    repeated string required_variables = 4;
+
+}
+
+message MigrationVars {
+  map<string, VariableAssignment>  var_assignment_by_var_name = 1;
+}

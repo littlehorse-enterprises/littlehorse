@@ -1438,6 +1438,99 @@ public final class LittleHorseGrpc {
     return getSearchWfRunMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest,
+      io.littlehorse.sdk.common.proto.WorkflowMigrationPlan> getPutWorkflowMigrationPlanMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PutWorkflowMigrationPlan",
+      requestType = io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.WorkflowMigrationPlan.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest,
+      io.littlehorse.sdk.common.proto.WorkflowMigrationPlan> getPutWorkflowMigrationPlanMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.WorkflowMigrationPlan> getPutWorkflowMigrationPlanMethod;
+    if ((getPutWorkflowMigrationPlanMethod = LittleHorseGrpc.getPutWorkflowMigrationPlanMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getPutWorkflowMigrationPlanMethod = LittleHorseGrpc.getPutWorkflowMigrationPlanMethod) == null) {
+          LittleHorseGrpc.getPutWorkflowMigrationPlanMethod = getPutWorkflowMigrationPlanMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.WorkflowMigrationPlan>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutWorkflowMigrationPlan"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.WorkflowMigrationPlan.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutWorkflowMigrationPlan"))
+              .build();
+        }
+      }
+    }
+    return getPutWorkflowMigrationPlanMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest,
+      com.google.protobuf.Empty> getDeleteWorkflowMigrationPlanMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeleteWorkflowMigrationPlan",
+      requestType = io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest,
+      com.google.protobuf.Empty> getDeleteWorkflowMigrationPlanMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest, com.google.protobuf.Empty> getDeleteWorkflowMigrationPlanMethod;
+    if ((getDeleteWorkflowMigrationPlanMethod = LittleHorseGrpc.getDeleteWorkflowMigrationPlanMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getDeleteWorkflowMigrationPlanMethod = LittleHorseGrpc.getDeleteWorkflowMigrationPlanMethod) == null) {
+          LittleHorseGrpc.getDeleteWorkflowMigrationPlanMethod = getDeleteWorkflowMigrationPlanMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteWorkflowMigrationPlan"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("DeleteWorkflowMigrationPlan"))
+              .build();
+        }
+      }
+    }
+    return getDeleteWorkflowMigrationPlanMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest,
+      io.littlehorse.sdk.common.proto.WfRun> getApplyWorkflowMigrationPlanMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ApplyWorkflowMigrationPlan",
+      requestType = io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.WfRun.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest,
+      io.littlehorse.sdk.common.proto.WfRun> getApplyWorkflowMigrationPlanMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.WfRun> getApplyWorkflowMigrationPlanMethod;
+    if ((getApplyWorkflowMigrationPlanMethod = LittleHorseGrpc.getApplyWorkflowMigrationPlanMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getApplyWorkflowMigrationPlanMethod = LittleHorseGrpc.getApplyWorkflowMigrationPlanMethod) == null) {
+          LittleHorseGrpc.getApplyWorkflowMigrationPlanMethod = getApplyWorkflowMigrationPlanMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.WfRun>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ApplyWorkflowMigrationPlan"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.WfRun.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ApplyWorkflowMigrationPlan"))
+              .build();
+        }
+      }
+    }
+    return getApplyWorkflowMigrationPlanMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest,
       io.littlehorse.sdk.common.proto.CorrelatedEventIdList> getSearchCorrelatedEventMethod;
 
@@ -3546,6 +3639,33 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Register a workflow migration plan with lh server
+     * </pre>
+     */
+    default void putWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowMigrationPlan> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutWorkflowMigrationPlanMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Deletes Workflow Migration Plan Metadata object from the server
+     * </pre>
+     */
+    default void deleteWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteWorkflowMigrationPlanMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default void applyWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRun> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getApplyWorkflowMigrationPlanMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
      * events that may be orphaned.
      * </pre>
@@ -4640,6 +4760,36 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Register a workflow migration plan with lh server
+     * </pre>
+     */
+    public void putWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowMigrationPlan> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPutWorkflowMigrationPlanMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Deletes Workflow Migration Plan Metadata object from the server
+     * </pre>
+     */
+    public void deleteWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getDeleteWorkflowMigrationPlanMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void applyWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRun> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getApplyWorkflowMigrationPlanMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
      * events that may be orphaned.
      * </pre>
@@ -5727,6 +5877,33 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Register a workflow migration plan with lh server
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowMigrationPlan putWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getPutWorkflowMigrationPlanMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes Workflow Migration Plan Metadata object from the server
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getDeleteWorkflowMigrationPlanMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.WfRun applyWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getApplyWorkflowMigrationPlanMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
      * events that may be orphaned.
      * </pre>
@@ -6762,6 +6939,33 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.WfRunIdList searchWfRun(io.littlehorse.sdk.common.proto.SearchWfRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getSearchWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Register a workflow migration plan with lh server
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowMigrationPlan putWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutWorkflowMigrationPlanMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes Workflow Migration Plan Metadata object from the server
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteWorkflowMigrationPlanMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.WfRun applyWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getApplyWorkflowMigrationPlanMethod(), getCallOptions(), request);
     }
 
     /**
@@ -7838,6 +8042,36 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Register a workflow migration plan with lh server
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WorkflowMigrationPlan> putWorkflowMigrationPlan(
+        io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPutWorkflowMigrationPlanMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes Workflow Migration Plan Metadata object from the server
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteWorkflowMigrationPlan(
+        io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDeleteWorkflowMigrationPlanMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfRun> applyWorkflowMigrationPlan(
+        io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getApplyWorkflowMigrationPlanMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
      * events that may be orphaned.
      * </pre>
@@ -8448,56 +8682,59 @@ public final class LittleHorseGrpc {
   private static final int METHODID_LIST_EXTERNAL_EVENTS = 43;
   private static final int METHODID_LIST_WORKFLOW_EVENTS = 44;
   private static final int METHODID_SEARCH_WF_RUN = 45;
-  private static final int METHODID_SEARCH_CORRELATED_EVENT = 46;
-  private static final int METHODID_SEARCH_NODE_RUN = 47;
-  private static final int METHODID_SEARCH_TASK_RUN = 48;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 49;
-  private static final int METHODID_SEARCH_VARIABLE = 50;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 51;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 52;
-  private static final int METHODID_SEARCH_TASK_DEF = 53;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 54;
-  private static final int METHODID_SEARCH_WF_SPEC = 55;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 56;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 57;
-  private static final int METHODID_SEARCH_TENANT = 58;
-  private static final int METHODID_SEARCH_PRINCIPAL = 59;
-  private static final int METHODID_SEARCH_QUOTA = 60;
-  private static final int METHODID_SEARCH_STRUCT_DEF = 61;
-  private static final int METHODID_GET_INACTIVE_THREAD_RUN = 62;
-  private static final int METHODID_REGISTER_TASK_WORKER = 63;
-  private static final int METHODID_REPORT_TASK = 64;
-  private static final int METHODID_PUT_CHECKPOINT = 65;
-  private static final int METHODID_GET_CHECKPOINT = 66;
-  private static final int METHODID_STOP_WF_RUN = 67;
-  private static final int METHODID_RESUME_WF_RUN = 68;
-  private static final int METHODID_RESCUE_THREAD_RUN = 69;
-  private static final int METHODID_DELETE_WF_RUN = 70;
-  private static final int METHODID_DELETE_TASK_DEF = 71;
-  private static final int METHODID_DELETE_STRUCT_DEF = 72;
-  private static final int METHODID_DELETE_WF_SPEC = 73;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 74;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 75;
-  private static final int METHODID_DELETE_CORRELATED_EVENT = 76;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 77;
-  private static final int METHODID_DELETE_PRINCIPAL = 78;
-  private static final int METHODID_DELETE_QUOTA = 79;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 80;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 81;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 82;
-  private static final int METHODID_LIST_TASK_METRICS = 83;
-  private static final int METHODID_LIST_WF_METRICS = 84;
-  private static final int METHODID_GET_METRIC_WINDOW = 85;
-  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 86;
-  private static final int METHODID_PUT_TENANT = 87;
-  private static final int METHODID_GET_TENANT = 88;
-  private static final int METHODID_PUT_QUOTA = 89;
-  private static final int METHODID_GET_QUOTA = 90;
-  private static final int METHODID_PUT_PRINCIPAL = 91;
-  private static final int METHODID_GET_PRINCIPAL = 92;
-  private static final int METHODID_WHOAMI = 93;
-  private static final int METHODID_GET_SERVER_VERSION = 94;
-  private static final int METHODID_POLL_TASK = 95;
+  private static final int METHODID_PUT_WORKFLOW_MIGRATION_PLAN = 46;
+  private static final int METHODID_DELETE_WORKFLOW_MIGRATION_PLAN = 47;
+  private static final int METHODID_APPLY_WORKFLOW_MIGRATION_PLAN = 48;
+  private static final int METHODID_SEARCH_CORRELATED_EVENT = 49;
+  private static final int METHODID_SEARCH_NODE_RUN = 50;
+  private static final int METHODID_SEARCH_TASK_RUN = 51;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 52;
+  private static final int METHODID_SEARCH_VARIABLE = 53;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 54;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 55;
+  private static final int METHODID_SEARCH_TASK_DEF = 56;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 57;
+  private static final int METHODID_SEARCH_WF_SPEC = 58;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 59;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 60;
+  private static final int METHODID_SEARCH_TENANT = 61;
+  private static final int METHODID_SEARCH_PRINCIPAL = 62;
+  private static final int METHODID_SEARCH_QUOTA = 63;
+  private static final int METHODID_SEARCH_STRUCT_DEF = 64;
+  private static final int METHODID_GET_INACTIVE_THREAD_RUN = 65;
+  private static final int METHODID_REGISTER_TASK_WORKER = 66;
+  private static final int METHODID_REPORT_TASK = 67;
+  private static final int METHODID_PUT_CHECKPOINT = 68;
+  private static final int METHODID_GET_CHECKPOINT = 69;
+  private static final int METHODID_STOP_WF_RUN = 70;
+  private static final int METHODID_RESUME_WF_RUN = 71;
+  private static final int METHODID_RESCUE_THREAD_RUN = 72;
+  private static final int METHODID_DELETE_WF_RUN = 73;
+  private static final int METHODID_DELETE_TASK_DEF = 74;
+  private static final int METHODID_DELETE_STRUCT_DEF = 75;
+  private static final int METHODID_DELETE_WF_SPEC = 76;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 77;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 78;
+  private static final int METHODID_DELETE_CORRELATED_EVENT = 79;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 80;
+  private static final int METHODID_DELETE_PRINCIPAL = 81;
+  private static final int METHODID_DELETE_QUOTA = 82;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 83;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 84;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 85;
+  private static final int METHODID_LIST_TASK_METRICS = 86;
+  private static final int METHODID_LIST_WF_METRICS = 87;
+  private static final int METHODID_GET_METRIC_WINDOW = 88;
+  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 89;
+  private static final int METHODID_PUT_TENANT = 90;
+  private static final int METHODID_GET_TENANT = 91;
+  private static final int METHODID_PUT_QUOTA = 92;
+  private static final int METHODID_GET_QUOTA = 93;
+  private static final int METHODID_PUT_PRINCIPAL = 94;
+  private static final int METHODID_GET_PRINCIPAL = 95;
+  private static final int METHODID_WHOAMI = 96;
+  private static final int METHODID_GET_SERVER_VERSION = 97;
+  private static final int METHODID_POLL_TASK = 98;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -8699,6 +8936,18 @@ public final class LittleHorseGrpc {
         case METHODID_SEARCH_WF_RUN:
           serviceImpl.searchWfRun((io.littlehorse.sdk.common.proto.SearchWfRunRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRunIdList>) responseObserver);
+          break;
+        case METHODID_PUT_WORKFLOW_MIGRATION_PLAN:
+          serviceImpl.putWorkflowMigrationPlan((io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowMigrationPlan>) responseObserver);
+          break;
+        case METHODID_DELETE_WORKFLOW_MIGRATION_PLAN:
+          serviceImpl.deleteWorkflowMigrationPlan((io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_APPLY_WORKFLOW_MIGRATION_PLAN:
+          serviceImpl.applyWorkflowMigrationPlan((io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRun>) responseObserver);
           break;
         case METHODID_SEARCH_CORRELATED_EVENT:
           serviceImpl.searchCorrelatedEvent((io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest) request,
@@ -9240,6 +9489,27 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.WfRunIdList>(
                 service, METHODID_SEARCH_WF_RUN)))
         .addMethod(
+          getPutWorkflowMigrationPlanMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest,
+              io.littlehorse.sdk.common.proto.WorkflowMigrationPlan>(
+                service, METHODID_PUT_WORKFLOW_MIGRATION_PLAN)))
+        .addMethod(
+          getDeleteWorkflowMigrationPlanMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest,
+              com.google.protobuf.Empty>(
+                service, METHODID_DELETE_WORKFLOW_MIGRATION_PLAN)))
+        .addMethod(
+          getApplyWorkflowMigrationPlanMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest,
+              io.littlehorse.sdk.common.proto.WfRun>(
+                service, METHODID_APPLY_WORKFLOW_MIGRATION_PLAN)))
+        .addMethod(
           getSearchCorrelatedEventMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -9683,6 +9953,9 @@ public final class LittleHorseGrpc {
               .addMethod(getListExternalEventsMethod())
               .addMethod(getListWorkflowEventsMethod())
               .addMethod(getSearchWfRunMethod())
+              .addMethod(getPutWorkflowMigrationPlanMethod())
+              .addMethod(getDeleteWorkflowMigrationPlanMethod())
+              .addMethod(getApplyWorkflowMigrationPlanMethod())
               .addMethod(getSearchCorrelatedEventMethod())
               .addMethod(getSearchNodeRunMethod())
               .addMethod(getSearchTaskRunMethod())

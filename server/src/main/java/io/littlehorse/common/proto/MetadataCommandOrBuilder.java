@@ -309,5 +309,20 @@ public interface MetadataCommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.DeleteQuotaRequestOrBuilder getDeleteQuotaOrBuilder();
 
+  /**
+   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+   * @return Whether the putWorkflowMigrationPlan field is set.
+   */
+  boolean hasPutWorkflowMigrationPlan();
+  /**
+   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+   * @return The putWorkflowMigrationPlan.
+   */
+  io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest getPutWorkflowMigrationPlan();
+  /**
+   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequestOrBuilder getPutWorkflowMigrationPlanOrBuilder();
+
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

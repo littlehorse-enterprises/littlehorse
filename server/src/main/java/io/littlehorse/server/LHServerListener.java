@@ -81,6 +81,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestMo
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowMigrationPlanRequestModel;
 import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.*;
@@ -558,6 +559,13 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putWfSpec(PutWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         PutWfSpecRequestModel reqModel = LHSerializable.fromProto(req, PutWfSpecRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    public void putWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest req, StreamObserver<WorkflowMigrationPlan> ctx) {
+        PutWorkflowMigrationPlanRequestModel reqModel = LHSerializable.fromProto(req, PutWorkflowMigrationPlanRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, WorkflowMigrationPlan.class);
     }
 
     @Override

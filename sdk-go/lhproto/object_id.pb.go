@@ -1449,6 +1449,53 @@ func (*MetricWindowId_TaskDefId) isMetricWindowId_Id() {}
 
 func (*MetricWindowId_UserTaskDefId) isMetricWindowId_Id() {}
 
+type WorkflowMigrationPlanId struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (x *WorkflowMigrationPlanId) Reset() {
+	*x = WorkflowMigrationPlanId{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_object_id_proto_msgTypes[23]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WorkflowMigrationPlanId) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WorkflowMigrationPlanId) ProtoMessage() {}
+
+func (x *WorkflowMigrationPlanId) ProtoReflect() protoreflect.Message {
+	mi := &file_object_id_proto_msgTypes[23]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WorkflowMigrationPlanId.ProtoReflect.Descriptor instead.
+func (*WorkflowMigrationPlanId) Descriptor() ([]byte, []int) {
+	return file_object_id_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *WorkflowMigrationPlanId) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
 var File_object_id_proto protoreflect.FileDescriptor
 
 var file_object_id_proto_rawDesc = []byte{
@@ -1621,12 +1668,15 @@ var file_object_id_proto_rawDesc = []byte{
 	0x79, 0x70, 0x65, 0x48, 0x02, 0x52, 0x0a, 0x6d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x54, 0x79, 0x70,
 	0x65, 0x88, 0x01, 0x01, 0x42, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x42, 0x0c, 0x0a, 0x0a, 0x5f, 0x74,
 	0x65, 0x6e, 0x61, 0x6e, 0x74, 0x5f, 0x69, 0x64, 0x42, 0x0e, 0x0a, 0x0c, 0x5f, 0x6d, 0x65, 0x74,
-	0x72, 0x69, 0x63, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c,
-	0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63,
-	0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e,
-	0x3b, 0x6c, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c,
-	0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f,
-	0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x69, 0x63, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x22, 0x2d, 0x0a, 0x17, 0x57, 0x6f, 0x72, 0x6b,
+	0x66, 0x6c, 0x6f, 0x77, 0x4d, 0x69, 0x67, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x6c, 0x61,
+	0x6e, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69,
+	0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f,
+	0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b,
+	0x6c, 0x68, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65,
+	0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
+	0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1641,34 +1691,35 @@ func file_object_id_proto_rawDescGZIP() []byte {
 	return file_object_id_proto_rawDescData
 }
 
-var file_object_id_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
+var file_object_id_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
 var file_object_id_proto_goTypes = []interface{}{
-	(*WfSpecId)(nil),              // 0: littlehorse.WfSpecId
-	(*TaskDefId)(nil),             // 1: littlehorse.TaskDefId
-	(*StructDefId)(nil),           // 2: littlehorse.StructDefId
-	(*ExternalEventDefId)(nil),    // 3: littlehorse.ExternalEventDefId
-	(*UserTaskDefId)(nil),         // 4: littlehorse.UserTaskDefId
-	(*WorkflowEventDefId)(nil),    // 5: littlehorse.WorkflowEventDefId
-	(*TaskWorkerGroupId)(nil),     // 6: littlehorse.TaskWorkerGroupId
-	(*VariableId)(nil),            // 7: littlehorse.VariableId
-	(*ExternalEventId)(nil),       // 8: littlehorse.ExternalEventId
-	(*CorrelatedEventId)(nil),     // 9: littlehorse.CorrelatedEventId
-	(*WfRunId)(nil),               // 10: littlehorse.WfRunId
-	(*NodeRunId)(nil),             // 11: littlehorse.NodeRunId
-	(*WorkflowEventId)(nil),       // 12: littlehorse.WorkflowEventId
-	(*TaskRunId)(nil),             // 13: littlehorse.TaskRunId
-	(*CheckpointId)(nil),          // 14: littlehorse.CheckpointId
-	(*UserTaskRunId)(nil),         // 15: littlehorse.UserTaskRunId
-	(*TaskDefMetricsId)(nil),      // 16: littlehorse.TaskDefMetricsId
-	(*WfSpecMetricsId)(nil),       // 17: littlehorse.WfSpecMetricsId
-	(*PrincipalId)(nil),           // 18: littlehorse.PrincipalId
-	(*TenantId)(nil),              // 19: littlehorse.TenantId
-	(*ScheduledWfRunId)(nil),      // 20: littlehorse.ScheduledWfRunId
-	(*InactiveThreadRunId)(nil),   // 21: littlehorse.InactiveThreadRunId
-	(*MetricWindowId)(nil),        // 22: littlehorse.MetricWindowId
-	(*timestamppb.Timestamp)(nil), // 23: google.protobuf.Timestamp
-	(MetricsWindowLength)(0),      // 24: littlehorse.MetricsWindowLength
-	(MetricWindowType)(0),         // 25: littlehorse.MetricWindowType
+	(*WfSpecId)(nil),                // 0: littlehorse.WfSpecId
+	(*TaskDefId)(nil),               // 1: littlehorse.TaskDefId
+	(*StructDefId)(nil),             // 2: littlehorse.StructDefId
+	(*ExternalEventDefId)(nil),      // 3: littlehorse.ExternalEventDefId
+	(*UserTaskDefId)(nil),           // 4: littlehorse.UserTaskDefId
+	(*WorkflowEventDefId)(nil),      // 5: littlehorse.WorkflowEventDefId
+	(*TaskWorkerGroupId)(nil),       // 6: littlehorse.TaskWorkerGroupId
+	(*VariableId)(nil),              // 7: littlehorse.VariableId
+	(*ExternalEventId)(nil),         // 8: littlehorse.ExternalEventId
+	(*CorrelatedEventId)(nil),       // 9: littlehorse.CorrelatedEventId
+	(*WfRunId)(nil),                 // 10: littlehorse.WfRunId
+	(*NodeRunId)(nil),               // 11: littlehorse.NodeRunId
+	(*WorkflowEventId)(nil),         // 12: littlehorse.WorkflowEventId
+	(*TaskRunId)(nil),               // 13: littlehorse.TaskRunId
+	(*CheckpointId)(nil),            // 14: littlehorse.CheckpointId
+	(*UserTaskRunId)(nil),           // 15: littlehorse.UserTaskRunId
+	(*TaskDefMetricsId)(nil),        // 16: littlehorse.TaskDefMetricsId
+	(*WfSpecMetricsId)(nil),         // 17: littlehorse.WfSpecMetricsId
+	(*PrincipalId)(nil),             // 18: littlehorse.PrincipalId
+	(*TenantId)(nil),                // 19: littlehorse.TenantId
+	(*ScheduledWfRunId)(nil),        // 20: littlehorse.ScheduledWfRunId
+	(*InactiveThreadRunId)(nil),     // 21: littlehorse.InactiveThreadRunId
+	(*MetricWindowId)(nil),          // 22: littlehorse.MetricWindowId
+	(*WorkflowMigrationPlanId)(nil), // 23: littlehorse.WorkflowMigrationPlanId
+	(*timestamppb.Timestamp)(nil),   // 24: google.protobuf.Timestamp
+	(MetricsWindowLength)(0),        // 25: littlehorse.MetricsWindowLength
+	(MetricWindowType)(0),           // 26: littlehorse.MetricWindowType
 }
 var file_object_id_proto_depIdxs = []int32{
 	1,  // 0: littlehorse.TaskWorkerGroupId.task_def_id:type_name -> littlehorse.TaskDefId
@@ -1683,19 +1734,19 @@ var file_object_id_proto_depIdxs = []int32{
 	10, // 9: littlehorse.TaskRunId.wf_run_id:type_name -> littlehorse.WfRunId
 	13, // 10: littlehorse.CheckpointId.task_run:type_name -> littlehorse.TaskRunId
 	10, // 11: littlehorse.UserTaskRunId.wf_run_id:type_name -> littlehorse.WfRunId
-	23, // 12: littlehorse.TaskDefMetricsId.window_start:type_name -> google.protobuf.Timestamp
-	24, // 13: littlehorse.TaskDefMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
+	24, // 12: littlehorse.TaskDefMetricsId.window_start:type_name -> google.protobuf.Timestamp
+	25, // 13: littlehorse.TaskDefMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
 	1,  // 14: littlehorse.TaskDefMetricsId.task_def_id:type_name -> littlehorse.TaskDefId
-	23, // 15: littlehorse.WfSpecMetricsId.window_start:type_name -> google.protobuf.Timestamp
-	24, // 16: littlehorse.WfSpecMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
+	24, // 15: littlehorse.WfSpecMetricsId.window_start:type_name -> google.protobuf.Timestamp
+	25, // 16: littlehorse.WfSpecMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
 	0,  // 17: littlehorse.WfSpecMetricsId.wf_spec_id:type_name -> littlehorse.WfSpecId
 	10, // 18: littlehorse.InactiveThreadRunId.wf_run_id:type_name -> littlehorse.WfRunId
 	0,  // 19: littlehorse.MetricWindowId.wf_spec_id:type_name -> littlehorse.WfSpecId
 	1,  // 20: littlehorse.MetricWindowId.task_def_id:type_name -> littlehorse.TaskDefId
 	4,  // 21: littlehorse.MetricWindowId.user_task_def_id:type_name -> littlehorse.UserTaskDefId
 	19, // 22: littlehorse.MetricWindowId.tenant_id:type_name -> littlehorse.TenantId
-	23, // 23: littlehorse.MetricWindowId.window_start:type_name -> google.protobuf.Timestamp
-	25, // 24: littlehorse.MetricWindowId.metric_type:type_name -> littlehorse.MetricWindowType
+	24, // 23: littlehorse.MetricWindowId.window_start:type_name -> google.protobuf.Timestamp
+	26, // 24: littlehorse.MetricWindowId.metric_type:type_name -> littlehorse.MetricWindowType
 	25, // [25:25] is the sub-list for method output_type
 	25, // [25:25] is the sub-list for method input_type
 	25, // [25:25] is the sub-list for extension type_name
@@ -1986,6 +2037,18 @@ func file_object_id_proto_init() {
 				return nil
 			}
 		}
+		file_object_id_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*WorkflowMigrationPlanId); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_object_id_proto_msgTypes[10].OneofWrappers = []interface{}{}
 	file_object_id_proto_msgTypes[22].OneofWrappers = []interface{}{
@@ -1999,7 +2062,7 @@ func file_object_id_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_object_id_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   23,
+			NumMessages:   24,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -74,6 +74,7 @@ import {
   WfSpecId,
   WorkflowEventDefId,
   WorkflowEventId,
+  WorkflowMigrationPlanId,
 } from "./object_id";
 import { ScheduledWfRun } from "./scheduled_wf_run";
 import { StructDef } from "./struct_def";
@@ -106,6 +107,7 @@ import {
   WorkflowRetentionPolicy,
 } from "./wf_spec";
 import { WorkflowEvent, WorkflowEventDef } from "./workflow_event";
+import { MigrationVars, ThreadMigrationPlan, WorkflowMigrationPlan } from "./workflow_migration";
 
 /**
  * This enum controls the behavior of a PutWfSpecRequest when a WfSpec with the same
@@ -584,6 +586,34 @@ export interface ScheduleWfRequest {
 export interface ScheduleWfRequest_VariablesEntry {
   key: string;
   value: VariableValue | undefined;
+}
+
+export interface PutWorkflowMigrationPlanRequest {
+  name: string;
+  oldWfSpec: WfSpecId | undefined;
+  majorVersion: number;
+  revision: number;
+  threadMigrations: { [key: string]: ThreadMigrationPlan };
+}
+
+export interface PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry {
+  key: string;
+  value: ThreadMigrationPlan | undefined;
+}
+
+export interface DeleteWorkflowMigrationPlanRequest {
+  id: WorkflowMigrationPlanId | undefined;
+}
+
+export interface ApplyWorkflowMigrationPlanRequest {
+  id: WorkflowMigrationPlanId | undefined;
+  wfRunId: WfRunId | undefined;
+  migrationVarsByThread: { [key: string]: MigrationVars };
+}
+
+export interface ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry {
+  key: string;
+  value: MigrationVars | undefined;
 }
 
 /**
@@ -4124,6 +4154,497 @@ export const ScheduleWfRequest_VariablesEntry = {
     message.key = object.key ?? "";
     message.value = (object.value !== undefined && object.value !== null)
       ? VariableValue.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBasePutWorkflowMigrationPlanRequest(): PutWorkflowMigrationPlanRequest {
+  return { name: "", oldWfSpec: undefined, majorVersion: 0, revision: 0, threadMigrations: {} };
+}
+
+export const PutWorkflowMigrationPlanRequest = {
+  encode(message: PutWorkflowMigrationPlanRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.oldWfSpec !== undefined) {
+      WfSpecId.encode(message.oldWfSpec, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.majorVersion !== 0) {
+      writer.uint32(24).int32(message.majorVersion);
+    }
+    if (message.revision !== 0) {
+      writer.uint32(32).int32(message.revision);
+    }
+    Object.entries(message.threadMigrations).forEach(([key, value]) => {
+      PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry.encode({ key: key as any, value }, writer.uint32(42).fork())
+        .ldelim();
+    });
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutWorkflowMigrationPlanRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutWorkflowMigrationPlanRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.oldWfSpec = WfSpecId.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.majorVersion = reader.int32();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.revision = reader.int32();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          const entry5 = PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry.decode(reader, reader.uint32());
+          if (entry5.value !== undefined) {
+            message.threadMigrations[entry5.key] = entry5.value;
+          }
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PutWorkflowMigrationPlanRequest {
+    return {
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      oldWfSpec: isSet(object.oldWfSpec) ? WfSpecId.fromJSON(object.oldWfSpec) : undefined,
+      majorVersion: isSet(object.majorVersion) ? globalThis.Number(object.majorVersion) : 0,
+      revision: isSet(object.revision) ? globalThis.Number(object.revision) : 0,
+      threadMigrations: isObject(object.threadMigrations)
+        ? Object.entries(object.threadMigrations).reduce<{ [key: string]: ThreadMigrationPlan }>(
+          (acc, [key, value]) => {
+            acc[key] = ThreadMigrationPlan.fromJSON(value);
+            return acc;
+          },
+          {},
+        )
+        : {},
+    };
+  },
+
+  toJSON(message: PutWorkflowMigrationPlanRequest): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.oldWfSpec !== undefined) {
+      obj.oldWfSpec = WfSpecId.toJSON(message.oldWfSpec);
+    }
+    if (message.majorVersion !== 0) {
+      obj.majorVersion = Math.round(message.majorVersion);
+    }
+    if (message.revision !== 0) {
+      obj.revision = Math.round(message.revision);
+    }
+    if (message.threadMigrations) {
+      const entries = Object.entries(message.threadMigrations);
+      if (entries.length > 0) {
+        obj.threadMigrations = {};
+        entries.forEach(([k, v]) => {
+          obj.threadMigrations[k] = ThreadMigrationPlan.toJSON(v);
+        });
+      }
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<PutWorkflowMigrationPlanRequest>): PutWorkflowMigrationPlanRequest {
+    return PutWorkflowMigrationPlanRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutWorkflowMigrationPlanRequest>): PutWorkflowMigrationPlanRequest {
+    const message = createBasePutWorkflowMigrationPlanRequest();
+    message.name = object.name ?? "";
+    message.oldWfSpec = (object.oldWfSpec !== undefined && object.oldWfSpec !== null)
+      ? WfSpecId.fromPartial(object.oldWfSpec)
+      : undefined;
+    message.majorVersion = object.majorVersion ?? 0;
+    message.revision = object.revision ?? 0;
+    message.threadMigrations = Object.entries(object.threadMigrations ?? {}).reduce<
+      { [key: string]: ThreadMigrationPlan }
+    >((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = ThreadMigrationPlan.fromPartial(value);
+      }
+      return acc;
+    }, {});
+    return message;
+  },
+};
+
+function createBasePutWorkflowMigrationPlanRequest_ThreadMigrationsEntry(): PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry {
+  return { key: "", value: undefined };
+}
+
+export const PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry = {
+  encode(
+    message: PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      ThreadMigrationPlan.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutWorkflowMigrationPlanRequest_ThreadMigrationsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = ThreadMigrationPlan.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? ThreadMigrationPlan.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = ThreadMigrationPlan.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(
+    base?: DeepPartial<PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry>,
+  ): PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry {
+    return PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry.fromPartial(base ?? {});
+  },
+  fromPartial(
+    object: DeepPartial<PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry>,
+  ): PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry {
+    const message = createBasePutWorkflowMigrationPlanRequest_ThreadMigrationsEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? ThreadMigrationPlan.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseDeleteWorkflowMigrationPlanRequest(): DeleteWorkflowMigrationPlanRequest {
+  return { id: undefined };
+}
+
+export const DeleteWorkflowMigrationPlanRequest = {
+  encode(message: DeleteWorkflowMigrationPlanRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      WorkflowMigrationPlanId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteWorkflowMigrationPlanRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteWorkflowMigrationPlanRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = WorkflowMigrationPlanId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DeleteWorkflowMigrationPlanRequest {
+    return { id: isSet(object.id) ? WorkflowMigrationPlanId.fromJSON(object.id) : undefined };
+  },
+
+  toJSON(message: DeleteWorkflowMigrationPlanRequest): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = WorkflowMigrationPlanId.toJSON(message.id);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<DeleteWorkflowMigrationPlanRequest>): DeleteWorkflowMigrationPlanRequest {
+    return DeleteWorkflowMigrationPlanRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteWorkflowMigrationPlanRequest>): DeleteWorkflowMigrationPlanRequest {
+    const message = createBaseDeleteWorkflowMigrationPlanRequest();
+    message.id = (object.id !== undefined && object.id !== null)
+      ? WorkflowMigrationPlanId.fromPartial(object.id)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseApplyWorkflowMigrationPlanRequest(): ApplyWorkflowMigrationPlanRequest {
+  return { id: undefined, wfRunId: undefined, migrationVarsByThread: {} };
+}
+
+export const ApplyWorkflowMigrationPlanRequest = {
+  encode(message: ApplyWorkflowMigrationPlanRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      WorkflowMigrationPlanId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(18).fork()).ldelim();
+    }
+    Object.entries(message.migrationVarsByThread).forEach(([key, value]) => {
+      ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry.encode(
+        { key: key as any, value },
+        writer.uint32(26).fork(),
+      ).ldelim();
+    });
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ApplyWorkflowMigrationPlanRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseApplyWorkflowMigrationPlanRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = WorkflowMigrationPlanId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          const entry3 = ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry.decode(reader, reader.uint32());
+          if (entry3.value !== undefined) {
+            message.migrationVarsByThread[entry3.key] = entry3.value;
+          }
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ApplyWorkflowMigrationPlanRequest {
+    return {
+      id: isSet(object.id) ? WorkflowMigrationPlanId.fromJSON(object.id) : undefined,
+      wfRunId: isSet(object.wfRunId) ? WfRunId.fromJSON(object.wfRunId) : undefined,
+      migrationVarsByThread: isObject(object.migrationVarsByThread)
+        ? Object.entries(object.migrationVarsByThread).reduce<{ [key: string]: MigrationVars }>((acc, [key, value]) => {
+          acc[key] = MigrationVars.fromJSON(value);
+          return acc;
+        }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: ApplyWorkflowMigrationPlanRequest): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = WorkflowMigrationPlanId.toJSON(message.id);
+    }
+    if (message.wfRunId !== undefined) {
+      obj.wfRunId = WfRunId.toJSON(message.wfRunId);
+    }
+    if (message.migrationVarsByThread) {
+      const entries = Object.entries(message.migrationVarsByThread);
+      if (entries.length > 0) {
+        obj.migrationVarsByThread = {};
+        entries.forEach(([k, v]) => {
+          obj.migrationVarsByThread[k] = MigrationVars.toJSON(v);
+        });
+      }
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ApplyWorkflowMigrationPlanRequest>): ApplyWorkflowMigrationPlanRequest {
+    return ApplyWorkflowMigrationPlanRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ApplyWorkflowMigrationPlanRequest>): ApplyWorkflowMigrationPlanRequest {
+    const message = createBaseApplyWorkflowMigrationPlanRequest();
+    message.id = (object.id !== undefined && object.id !== null)
+      ? WorkflowMigrationPlanId.fromPartial(object.id)
+      : undefined;
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
+    message.migrationVarsByThread = Object.entries(object.migrationVarsByThread ?? {}).reduce<
+      { [key: string]: MigrationVars }
+    >((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = MigrationVars.fromPartial(value);
+      }
+      return acc;
+    }, {});
+    return message;
+  },
+};
+
+function createBaseApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry(): ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry {
+  return { key: "", value: undefined };
+}
+
+export const ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry = {
+  encode(
+    message: ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      MigrationVars.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = MigrationVars.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? MigrationVars.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = MigrationVars.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(
+    base?: DeepPartial<ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry>,
+  ): ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry {
+    return ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry.fromPartial(base ?? {});
+  },
+  fromPartial(
+    object: DeepPartial<ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry>,
+  ): ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry {
+    const message = createBaseApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? MigrationVars.fromPartial(object.value)
       : undefined;
     return message;
   },
@@ -11927,6 +12448,32 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Register a workflow migration plan with lh server */
+    putWorkflowMigrationPlan: {
+      name: "PutWorkflowMigrationPlan",
+      requestType: PutWorkflowMigrationPlanRequest,
+      requestStream: false,
+      responseType: WorkflowMigrationPlan,
+      responseStream: false,
+      options: {},
+    },
+    /** Deletes Workflow Migration Plan Metadata object from the server */
+    deleteWorkflowMigrationPlan: {
+      name: "DeleteWorkflowMigrationPlan",
+      requestType: DeleteWorkflowMigrationPlanRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
+    applyWorkflowMigrationPlan: {
+      name: "ApplyWorkflowMigrationPlan",
+      requestType: ApplyWorkflowMigrationPlanRequest,
+      requestStream: false,
+      responseType: WfRun,
+      responseStream: false,
+      options: {},
+    },
     /**
      * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
      * events that may be orphaned.
@@ -12665,6 +13212,20 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
    */
   searchWfRun(request: SearchWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfRunIdList>>;
+  /** Register a workflow migration plan with lh server */
+  putWorkflowMigrationPlan(
+    request: PutWorkflowMigrationPlanRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WorkflowMigrationPlan>>;
+  /** Deletes Workflow Migration Plan Metadata object from the server */
+  deleteWorkflowMigrationPlan(
+    request: DeleteWorkflowMigrationPlanRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  applyWorkflowMigrationPlan(
+    request: ApplyWorkflowMigrationPlanRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WfRun>>;
   /**
    * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
    * events that may be orphaned.
@@ -13136,6 +13697,20 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
    */
   searchWfRun(request: DeepPartial<SearchWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<WfRunIdList>;
+  /** Register a workflow migration plan with lh server */
+  putWorkflowMigrationPlan(
+    request: DeepPartial<PutWorkflowMigrationPlanRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WorkflowMigrationPlan>;
+  /** Deletes Workflow Migration Plan Metadata object from the server */
+  deleteWorkflowMigrationPlan(
+    request: DeepPartial<DeleteWorkflowMigrationPlanRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  applyWorkflowMigrationPlan(
+    request: DeepPartial<ApplyWorkflowMigrationPlanRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WfRun>;
   /**
    * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
    * events that may be orphaned.

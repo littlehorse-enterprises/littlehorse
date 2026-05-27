@@ -109,6 +109,7 @@ message MetadataCommand {
         DeleteStructDefRequest delete_struct_def = 18;
         PutQuotaRequest put_quota = 19;
         DeleteQuotaRequest delete_quota = 20;
+        PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;
     }
 }
 
