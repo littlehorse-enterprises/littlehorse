@@ -2,7 +2,8 @@
   "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "declaration": false,
+    "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
     "preserveConstEnums": true,
     "isolatedModules": false, // turn this off unless needed
