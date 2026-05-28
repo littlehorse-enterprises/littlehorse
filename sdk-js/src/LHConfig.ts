@@ -54,9 +54,7 @@ export class LHConfig {
     this.caCert = mergedConfig.LHC_CA_CERT
     this.clientCert = mergedConfig.LHC_CLIENT_CERT
     this.clientKey = mergedConfig.LHC_CLIENT_KEY
-    this.resourceExhaustedRetryEnabled = isResourceExhaustedRetryEnabled(
-      mergedConfig.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY
-    )
+    this.resourceExhaustedRetryEnabled = isResourceExhaustedRetryEnabled(mergedConfig.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY)
 
     if (this.protocol === 'TLS') {
       const rootCa = this.caCert ? readFileSync(this.caCert) : undefined
@@ -104,10 +102,7 @@ export class LHConfig {
     return createChannel(`${host}:${port}`, this.channelCredentials)
   }
 
-  public createClientForChannel(
-    channel: Channel,
-    accessToken?: string
-  ): Client<typeof LittleHorseDefinition> {
+  public createClientForChannel(channel: Channel, accessToken?: string): Client<typeof LittleHorseDefinition> {
     const factory = createClientFactory()
     if (this.resourceExhaustedRetryEnabled) {
       factory.use(createResourceExhaustedRetryMiddleware())
