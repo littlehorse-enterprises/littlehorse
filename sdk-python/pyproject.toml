@@ -24,7 +24,7 @@ dependencies = [
     "googleapis-common-protos>=1.63.0",
     # other utilities
     "jproperties>=2.1,<2.2",
-    "authlib==1.6.9",
+    "authlib==1.6.12",
     "requests>=2.32,<2.34"
 ]
 
