@@ -45,7 +45,10 @@
     "typescript": "5.3.3"
   },
   "dependencies": {
+    "long": "^5.2.3",
     "nice-grpc": "^2.1.12",
+    "nice-grpc-common": "^2.0.2",
+    "protobufjs": "^7.2.4",
     "zod": "^4.3.6"
   },
   "peerDependencies": {
