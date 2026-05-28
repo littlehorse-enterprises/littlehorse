@@ -42,7 +42,7 @@
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
     "ts-proto": "^1.181.2",
-    "typescript": "^5.3.3"
+    "typescript": "5.3.3"
   },
   "dependencies": {
     "nice-grpc": "^2.1.12",
