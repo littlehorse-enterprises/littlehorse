@@ -24,6 +24,7 @@
   "files": [
     "/dist"
   ],
+  "packageManager": "pnpm@10.19.0",
   "scripts": {
     "build": "tsc",
     "test": "jest",

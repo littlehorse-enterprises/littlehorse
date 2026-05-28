@@ -12,7 +12,7 @@
     "lint:eslint:fix": "eslint . --fix",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "preinstall": "cd ../sdk-js && npm i && npm run build"
+    "preinstall": "cd ../sdk-js && pnpm install && pnpm run build"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
