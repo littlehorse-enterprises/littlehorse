@@ -9,8 +9,10 @@ import io.grpc.Grpc;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptor;
+import io.grpc.ServerInterceptors;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.protobuf.services.ProtoReflectionServiceV1;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
@@ -234,12 +236,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                         listenerConfig.getPort(), listenerConfig.getCredentials())
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
-                .addService(this)
+                .addService(ServerInterceptors.intercept(this.bindService(), interceptors))
+                .addService(ProtoReflectionServiceV1.newInstance())
                 .executor(networkThreads);
 
-        for (ServerInterceptor interceptor : interceptors) {
-            builder.intercept(interceptor);
-        }
         builder.intercept(new GlobalExceptionHandler());
         this.grpcListener = builder.build();
         this.commandSender = commandSender;
