@@ -199,7 +199,7 @@ Supports counting by WfSpec name, optionally filtered by major version and revis
 		}
 
 		req := &lhproto.CountNodeRunRequest{
-			WfSpecName: &wfSpecName,
+			WfSpecName: wfSpecName,
 		}
 
 		majorVersion, _ := cmd.Flags().GetInt32("wfSpecMajorVersion")
