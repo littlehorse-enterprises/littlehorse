@@ -1075,14 +1075,19 @@ class LittleHorseVersion(_message.Message):
     def __init__(self, major_version: _Optional[int] = ..., minor_version: _Optional[int] = ..., patch_version: _Optional[int] = ..., pre_release_identifier: _Optional[str] = ...) -> None: ...
 
 class CountNodeRunRequest(_message.Message):
-    __slots__ = ("wf_spec_name", "wf_spec_major_version", "wf_spec_revision")
-    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
-    WF_SPEC_REVISION_FIELD_NUMBER: _ClassVar[int]
-    wf_spec_name: str
-    wf_spec_major_version: int
-    wf_spec_revision: int
-    def __init__(self, wf_spec_name: _Optional[str] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ...) -> None: ...
+    __slots__ = ("wf_spec_filter",)
+    class WfSpecFilter(_message.Message):
+        __slots__ = ("wf_spec_name", "wf_spec_major_version", "wf_spec_revision")
+        WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+        WF_SPEC_MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+        WF_SPEC_REVISION_FIELD_NUMBER: _ClassVar[int]
+        wf_spec_name: str
+        wf_spec_major_version: int
+        wf_spec_revision: int
+        def __init__(self, wf_spec_name: _Optional[str] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ...) -> None: ...
+    WF_SPEC_FILTER_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_filter: CountNodeRunRequest.WfSpecFilter
+    def __init__(self, wf_spec_filter: _Optional[_Union[CountNodeRunRequest.WfSpecFilter, _Mapping]] = ...) -> None: ...
 
 class CountTaskRunRequest(_message.Message):
     __slots__ = ("task_def_name", "status")

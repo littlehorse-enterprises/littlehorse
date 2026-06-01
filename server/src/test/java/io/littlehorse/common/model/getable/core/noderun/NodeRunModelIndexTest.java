@@ -72,7 +72,7 @@ class NodeRunModelIndexTest extends AbstractGetableIndexTest {
                 .setTask(TaskNodeRun.newBuilder().build())
                 .build();
         NodeRunModel getable = NodeRunModel.fromProto(taskNodeProto, NodeRunModel.class, null);
-        assertThat(getable.getIndexEntries()).hasSize(3);
+        assertThat(getable.getIndexEntries()).hasSize(4);
     }
 
     @Test

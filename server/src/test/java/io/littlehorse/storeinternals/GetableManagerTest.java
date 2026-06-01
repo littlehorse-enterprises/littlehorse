@@ -598,7 +598,7 @@ public class GetableManagerTest {
         getableManager.commit();
 
         List<String> storedKeys = getAllKeys(store);
-        assertThat(storedKeys).hasSize(5);
+        assertThat(storedKeys).hasSize(6);
         assertThat(storedKeys).anyMatch(key -> key.contains("myTenant/0/wrg/0000000/0/4/1/0"));
         assertThat(storedKeys)
                 .anyMatch(key -> key.contains("myTenant/5/4/__status_RUNNING__extEvtDefName_" + eventName));
@@ -685,7 +685,7 @@ public class GetableManagerTest {
         getableManager.commit();
 
         Collection<PartitionCountedTagModel> repartitionCommands = remoteCountedTagsCreated();
-        assertThat(repartitionCommands).hasSize(3);
+        assertThat(repartitionCommands).hasSize(4);
 
         List<String> attributeStrings = repartitionCommands.stream()
                 .map(PartitionCountedTagModel::getAttributeString)
