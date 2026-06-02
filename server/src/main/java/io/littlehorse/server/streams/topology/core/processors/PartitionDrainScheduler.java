@@ -5,6 +5,7 @@ import static com.google.protobuf.util.Timestamps.toMillis;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.PartitionCountedTagModel;
 import io.littlehorse.common.model.PartitionMetricWindowModel;
@@ -13,6 +14,7 @@ import io.littlehorse.common.model.corecommand.subcommand.UpdateCountedTagModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.AggregateWindowMetricsModel;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.storeinternals.MetricsHintModel;
@@ -107,6 +109,11 @@ class PartitionDrainScheduler {
 
     private long catchUpFromStore(ClusterScopedStore store) {
         collectionSource = MetricsCollectionSource.MEMORY;
+
+        // Catch up counted tags first (forward and delete all persisted deltas)
+        catchUpCountedTags(store);
+
+        // Then catch up metric windows (resumable with hint)
         MetricsHintModel hint = store.get(MetricsHintModel.METRICS_HINT_KEY, MetricsHintModel.class);
         if (hint == null || hint.getLastProcessedTimestamp() == null) {
             return this.serverStartWindowTime;
@@ -136,6 +143,20 @@ class PartitionDrainScheduler {
             }
         }
         return lastSeenWindowTime;
+    }
+
+    private void catchUpCountedTags(ClusterScopedStore store) {
+        String prefix = Storeable.getSubstorePrefix(StoreableType.PARTITION_COUNTED_TAG);
+        try (LHKeyValueIterator<PartitionCountedTagModel> iter =
+                store.prefixScan(prefix, PartitionCountedTagModel.class)) {
+            while (iter.hasNext()) {
+                PartitionCountedTagModel tag = iter.next().getValue();
+                if (tag != null) {
+                    forwardCountedTag(tag);
+                    store.delete(tag);
+                }
+            }
+        }
     }
 
     private long forwardMetricWindow(ClusterScopedStore store, PartitionMetricWindowModel metric) {
