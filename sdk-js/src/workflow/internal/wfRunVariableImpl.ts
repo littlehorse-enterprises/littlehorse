@@ -1,6 +1,7 @@
 import type { VariableType } from '../../proto/common_enums'
 import { VariableType as VT } from '../../proto/common_enums'
-import type { LHPath_Selector, TypeDefinition, VariableAssignment, VariableDef } from '../../proto/common_wfspec'
+import type { LHPath_Selector, VariableAssignment, VariableDef } from '../../proto/common_wfspec'
+import type { TypeDefinition } from '../../proto/type_definition'
 import { VariableMutationType } from '../../proto/common_wfspec'
 import type { StructDefId } from '../../proto/object_id'
 import type { VariableValue } from '../../proto/variable'
@@ -115,6 +116,10 @@ export class WfRunVariableImpl implements WfRunVariable {
 
   divide(other: WorkflowRhs): LHExpressionImpl {
     return new LHExpressionImpl(this, VariableMutationType.DIVIDE, other)
+  }
+
+  pow(other: WorkflowRhs): LHExpressionImpl {
+    return new LHExpressionImpl(this, VariableMutationType.POW, other)
   }
 
   assign(rhs: WorkflowRhs): void {

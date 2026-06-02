@@ -26,6 +26,10 @@ export class LHExpressionImpl implements LHExpression {
     return new LHExpressionImpl(this, VariableMutationType.DIVIDE, other)
   }
 
+  pow(other: WorkflowRhs): LHExpression {
+    return new LHExpressionImpl(this, VariableMutationType.POW, other)
+  }
+
   toAssignment(assign: (r: WorkflowRhs) => VariableAssignment): VariableAssignment {
     return {
       path: undefined,

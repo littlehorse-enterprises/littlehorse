@@ -70,4 +70,8 @@ export class NodeOutputImpl implements NodeOutput {
   divide(other: WorkflowRhs): LHExpressionImpl {
     return new LHExpressionImpl(this, VariableMutationType.DIVIDE, other)
   }
+
+  pow(other: WorkflowRhs): LHExpressionImpl {
+    return new LHExpressionImpl(this, VariableMutationType.POW, other)
+  }
 }

@@ -5,4 +5,5 @@ export interface LHExpression {
   subtract(other: WorkflowRhs): LHExpression
   multiply(other: WorkflowRhs): LHExpression
   divide(other: WorkflowRhs): LHExpression
+  pow(other: WorkflowRhs): LHExpression
 }
