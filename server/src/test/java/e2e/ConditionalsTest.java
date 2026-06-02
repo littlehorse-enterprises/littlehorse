@@ -10,10 +10,10 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +26,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 @LHTest
+@WithStructDefs({Car.class})
 public class ConditionalsTest {
     private LittleHorseBlockingStub client;
 
@@ -77,6 +78,7 @@ public class ConditionalsTest {
     private WorkflowVerifier workflowVerifier;
 
     @Nested
+    @WithStructDefs({Car.class})
     class Equals {
         @ParameterizedTest
         @MethodSource("provideEqualsWorkflowSuccessArguments")
@@ -123,8 +125,6 @@ public class ConditionalsTest {
         @ParameterizedTest
         @MethodSource("provideStructEqualsWorkflowSuccessArguments")
         void shouldCompleteStructEqualsWorkflowWithConditionals(Car car1, Car car2, boolean expectedOutput) {
-            client.putStructDef(new LHStructDefType(Car.class).toPutStructDefRequest());
-
             workflowVerifier
                     .prepareRun(workflowStructEquals, Arg.of("struct-a", car1), Arg.of("struct-b", car2))
                     .waitForStatus(LHStatus.COMPLETED)

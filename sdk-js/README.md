@@ -9,6 +9,16 @@ For documentation on how to use this library, please go to [the LittleHorse webs
 npm install littlehorse-client
 ```
 
+## Development
+
+This project uses [pnpm](https://pnpm.io/) 10.19.0 as its package manager.
+
+```bash
+pnpm install
+pnpm run build
+pnpm run test
+```
+
 ## Usage
 
 ### With Properties File

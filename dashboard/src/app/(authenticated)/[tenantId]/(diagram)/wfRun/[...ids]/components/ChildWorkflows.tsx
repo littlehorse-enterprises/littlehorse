@@ -2,7 +2,9 @@
 
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
-import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
+import { TIME_RANGES, TimeRange } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
+import { routes } from '@/app/routes'
 import { getStatus, wfRunIdToPath } from '@/app/utils'
 import { computeStartTimeWindow, StartTimeWindow } from '@/app/utils/dateTime'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -25,7 +27,7 @@ export const ChildWorkflows: FC<{ parentWfRunId: WfRunId; spec: WfSpec }> = ({ p
   const status = (searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL') as
     | LHStatus
     | 'ALL'
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('global')
   const [window, setWindow] = useState<TimeRange>(TIME_RANGES[0])
 
   const startTime = useMemo(() => computeStartTimeWindow(window), [window])
@@ -83,7 +85,7 @@ export const ChildWorkflows: FC<{ parentWfRunId: WfRunId; spec: WfSpec }> = ({ p
                   {page.results.map(wfRun => {
                     if (!wfRun.wfRun.id) return null
                     return (
-                      <SelectionLink key={wfRun.wfRun.id.id} href={`/wfRun/${wfRunIdToPath(wfRun.wfRun.id)}`}>
+                      <SelectionLink key={wfRun.wfRun.id.id} href={routes.wfRun.detail(wfRunIdToPath(wfRun.wfRun.id))}>
                         <p>{wfRun.wfRun.id.id}</p>
                         <span className={cn('ml-2 rounded px-2', WF_RUN_STATUS[wfRun.wfRun.status].backgroundColor)}>
                           {`${wfRun.wfRun.status ?? ''}`}

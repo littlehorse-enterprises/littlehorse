@@ -6,9 +6,10 @@
 
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
-import { ReturnType, VariableDef } from "./common_wfspec";
+import { VariableDef } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { TaskDefId } from "./object_id";
+import { ReturnType } from "./type_definition";
 
 /** A TaskDef defines a blueprint for a TaskRun that can be dispatched to Task Workers. */
 export interface TaskDef {

@@ -1,4 +1,5 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
+import { routes } from '@/app/routes'
 import { RunChildWfNode, VariableAssignment as VariableAssignmentProto } from 'littlehorse-client/proto'
 import { LinkIcon } from 'lucide-react'
 import { FC } from 'react'
@@ -10,7 +11,9 @@ export const ChildWFNode: FC<{ node: RunChildWfNode }> = ({ node }) => {
   const wfSpecName = wfSpec?.$case === 'wfSpecName' ? wfSpec.value : wfSpec?.$case === 'wfSpecVar' ? 'variable' : '—'
 
   const wfSpecLink =
-    wfSpecName && wfSpecName !== 'variable' && wfSpecName !== '—' ? `/wfSpec/${wfSpecName}/${majorVersion}.0` : null
+    wfSpecName && wfSpecName !== 'variable' && wfSpecName !== '—'
+      ? routes.wfSpec.detail(wfSpecName, `${majorVersion}.0`)
+      : null
 
   return (
     <div className="flex max-w-full flex-1 flex-col gap-2">

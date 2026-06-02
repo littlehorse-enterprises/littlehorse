@@ -5,10 +5,12 @@ from typing import Optional, Union, Any
 from grpc import CallCredentials, Channel, ChannelCredentials
 import grpc
 from jproperties import Properties
-from littlehorse.auth import (
+from littlehorse.client_interceptors import (
     OAuthCredentialsProvider,
     MetadataInterceptor,
+    RetryInterceptor,
     AsyncUnaryUnaryMetadataInterceptor,
+    AsyncUnaryUnaryRetryInterceptor,
     AsyncStreamStreamMetadataInterceptor,
     AsyncStreamUnaryMetadataInterceptor,
     AsyncUnaryStreamMetadataInterceptor,
@@ -37,6 +39,7 @@ TASK_WORKER_ID = "LHW_TASK_WORKER_ID"
 TASK_WORKER_VERSION = "LHW_TASK_WORKER_VERSION"
 GRPC_KEEPALIVE_TIME_MS = "LHC_GRPC_KEEPALIVE_TIME_MS"
 GRPC_KEEPALIVE_TIMEOUT_MS = "LHC_GRPC_KEEPALIVE_TIMEOUT_MS"
+GRPC_RESOURCE_EXHAUSTED_RETRY = "LHC_GRPC_RESOURCE_EXHAUSTED_RETRY"
 
 
 class ChannelId:
@@ -47,9 +50,7 @@ class ChannelId:
 
     def __eq__(self, __value: object) -> bool:
         return (
-            hasattr(__value, "server")
-            and hasattr(__value, "is_async")
-            and hasattr(__value, "name")
+            isinstance(__value, ChannelId)
             and self.server == __value.server
             and self.is_async == __value.is_async
             and self.name == __value.name
@@ -275,6 +276,18 @@ class LHConfig:
         return int(self.get_or_set_default(GRPC_KEEPALIVE_TIMEOUT_MS, "5000"))
 
     @property
+    def grpc_resource_exhausted_retry(self) -> bool:
+        """Returns whether transparent RESOURCE_EXHAUSTED retries are enabled.
+
+        Returns:
+            bool: True when retry interceptors should be installed. Default True.
+        """
+        return (
+            self.get_or_set_default(GRPC_RESOURCE_EXHAUSTED_RETRY, "true").lower()
+            != "false"
+        )
+
+    @property
     def num_worker_threads(self) -> int:
         """Returns the number of worker threads to run.
 
@@ -316,9 +329,9 @@ class LHConfig:
         ]
 
         def create_channel(
-            target: Optional[str], options: Any, secure_channel: bool
+            target: str, options: Any, secure_channel: bool
         ) -> Channel:
-            credentials = []
+            credentials: Optional[ChannelCredentials] = None
             if not self.is_secure():
                 self._log.warning("Establishing insecure channel at %s", server)
             elif self.has_authentication():
@@ -338,7 +351,10 @@ class LHConfig:
                 AsyncStreamUnaryMetadataInterceptor(self.tenant_id),
                 AsyncUnaryStreamMetadataInterceptor(self.tenant_id),
             ]
+            if self.grpc_resource_exhausted_retry:
+                async_interceptors.insert(0, AsyncUnaryUnaryRetryInterceptor())
             if async_channel and secure_channel:
+                assert credentials is not None
                 return grpc.aio.secure_channel(
                     target,
                     credentials,
@@ -352,14 +368,21 @@ class LHConfig:
                     interceptors=async_interceptors,
                 )
             elif secure_channel:
+                assert credentials is not None
+                interceptors = [MetadataInterceptor(self.tenant_id)]
+                if self.grpc_resource_exhausted_retry:
+                    interceptors.insert(0, RetryInterceptor())
                 return grpc.intercept_channel(
                     grpc.secure_channel(target, credentials, options=channel_args),
-                    MetadataInterceptor(self.tenant_id),
+                    *interceptors,
                 )
             else:
+                interceptors = [MetadataInterceptor(self.tenant_id)]
+                if self.grpc_resource_exhausted_retry:
+                    interceptors.insert(0, RetryInterceptor())
                 return grpc.intercept_channel(
                     grpc.insecure_channel(target, options=channel_args),
-                    MetadataInterceptor(self.tenant_id),
+                    *interceptors,
                 )
 
         def get_ssl_config() -> ChannelCredentials:

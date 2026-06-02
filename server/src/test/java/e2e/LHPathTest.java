@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import e2e.Struct.Person;
 import e2e.Struct.PersonPojo;
+import e2e.Struct.PhoneNumbers;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -12,10 +13,10 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@WithStructDefs({Person.class})
 public class LHPathTest {
     @LHWorkflow("lh-path-structs")
     private Workflow lhPathStructsWf;
@@ -35,12 +37,10 @@ public class LHPathTest {
 
     @Test
     public void shouldPerformGetOnStruct() {
-        client.putStructDef(new LHStructDefType(Person.class).toPutStructDefRequest());
-
         Person person = new Person(
                 "Obi-Wan Kenobi",
-                List.of("Yoda", "Anakin Skywalker"),
-                Map.of("home", "111-222-3344", "work", "555-667-7788"));
+                new String[] {"Yoda", "Anakin Skywalker"},
+                new PhoneNumbers("111-222-3344", "555-667-7788"));
 
         verifier.prepareRun(lhPathStructsWf, Arg.of("person", person))
                 .waitForStatus(LHStatus.COMPLETED)
@@ -55,11 +55,9 @@ public class LHPathTest {
 
     @Test
     void shouldFailGetOnStructWithInvalidField() {
-        client.putStructDef(new LHStructDefType(Person.class).toPutStructDefRequest());
-
         Workflow invalid = Workflow.newWorkflow("fail-get-on-struct", wf -> {
             WfRunVariable person = wf.declareStruct("person", Person.class);
-            wf.execute("greet", person.get("age"));
+            wf.execute("greet-lh-path", person.get("age"));
         });
 
         Assertions.assertThatThrownBy(() -> {
@@ -81,7 +79,7 @@ public class LHPathTest {
             WfRunVariable personStruct =
                     wf.declareStruct("person", Person.class).required();
 
-            wf.execute("greet", personStruct.get("name"));
+            wf.execute("greet-lh-path", personStruct.get("name"));
             wf.execute("lookup-friend", personStruct.get("friends").get(0));
             wf.execute("call-phone", personStruct.get("phoneNumbers").get("home"));
         });
@@ -110,13 +108,13 @@ public class LHPathTest {
         return new WorkflowImpl("lh-path-json-obj", wf -> {
             WfRunVariable personJsonObj = wf.declareJsonObj("person").required();
 
-            wf.execute("greet", personJsonObj.get("name"));
+            wf.execute("greet-lh-path", personJsonObj.get("name"));
             wf.execute("lookup-friend", personJsonObj.get("friends").get(0));
             wf.execute("call-phone", personJsonObj.get("phoneNumbers").get("home"));
         });
     }
 
-    @LHTaskMethod("greet")
+    @LHTaskMethod("greet-lh-path")
     public String greet(String name) {
         return "Greetings " + name;
     }

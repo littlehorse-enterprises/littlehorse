@@ -1,5 +1,6 @@
 'use client'
-import { SEARCH_DEFAULT_LIMIT, SEARCH_ENTITIES, SearchType } from '@/app/constants'
+import { SEARCH_ENTITIES, SearchType } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
 import { RefreshCwIcon, SearchIcon } from 'lucide-react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -72,7 +73,7 @@ export const Search: FC = () => {
   const [prefix, setPrefix] = useState<string | undefined>()
   const searchParams = useSearchParams()
   const type = getType(searchParams.get('type'))
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('global')
   const [sortBy, setSortBy] = useState<SortBy>(null)
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc')
   const tenantId = useParams().tenantId as string
@@ -92,17 +93,13 @@ export const Search: FC = () => {
 
   const searchPlaceholder = useMemo(() => `Search ${type}s...`, [type])
 
-  const showSearchInput = type === 'WfSpec' || type === 'TaskDef'
-
   return (
     <div className="flex flex-col space-y-4">
       <SearchHeader currentType={type} />
 
-      {showSearchInput && (
-        <div className="mb-4">
-          <SearchInput prefix={prefix} setPrefix={setPrefix} placeholder={searchPlaceholder} />
-        </div>
-      )}
+      <div className="mb-4">
+        <SearchInput prefix={prefix} setPrefix={setPrefix} placeholder={searchPlaceholder} />
+      </div>
 
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">

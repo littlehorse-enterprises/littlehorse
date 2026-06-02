@@ -72,7 +72,7 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.SCHEDULED_TASK;
             case "TaskMetricUpdateModel":
                 return StoreableType.TASK_METRIC_UPDATE;
-            case "PartitionMetricsModel":
+            case "PartitionMetricWindowModel":
                 return StoreableType.PARTITION_METRICS;
             case "InitializationLogModel":
                 return StoreableType.INITIALIZATION_LOG;
@@ -82,12 +82,18 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.CORRELATION_MARKER;
             case "TaskQueueHintModel":
                 return StoreableType.TASK_QUEUE_HINT;
+            case "MetricsHintModel":
+                return StoreableType.METRICS_HINT;
             case "NodeOutputModel":
                 return StoreableType.NODE_OUTPUT;
             case "TimerIteratorHintModel":
                 return StoreableType.TIMER_ITERATOR_HINT;
             case "LHTimer":
                 return StoreableType.LH_TIMER;
+            case "CountedTagModel":
+                return StoreableType.COUNTED_TAG;
+            case "PartitionCountedTagModel":
+                return StoreableType.PARTITION_COUNTED_TAG;
         }
         throw new IllegalArgumentException("Unrecognized Storeable class: " + cls);
     }

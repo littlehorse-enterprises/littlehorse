@@ -101,9 +101,9 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         return getVarValFromThreadInTxn(this.lhsName, thread, txnCache);
     }
 
-    private VariableValueModel getVarValFromThreadInTxn(
+    private static VariableValueModel getVarValFromThreadInTxn(
             String varName, ThreadRunModel thread, Map<String, VariableValueModel> txnCache) throws LHVarSubError {
-        VariableValueModel result = txnCache.get(this.lhsName);
+        VariableValueModel result = txnCache.get(varName);
         if (result == null) {
             VariableModel rawVariable = thread.getVariable(varName);
             if (rawVariable == null) {
@@ -209,6 +209,14 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             }
 
             if (operation == VariableMutationType.ASSIGN) {
+                if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT
+                        && rhsRhsAssignment.getRhsSourceType()
+                                == io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase.STRUCT_BUILDER) {
+                    rhsRhsAssignment
+                            .getStructBuilder()
+                            .validateAgainst(lhsType, source, manager, threadSpec.getWfSpec(), threadSpec.getName());
+                }
+
                 if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT && rhsRhsAssignment.getTargetType() != null) {
                     // Step 1: Validate the explicit cast (original type -> cast target)
                     Optional<TypeDefinitionModel> sourceTypeOpt =

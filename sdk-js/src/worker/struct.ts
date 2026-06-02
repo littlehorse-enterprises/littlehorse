@@ -27,7 +27,8 @@
  */
 
 import { VariableType } from '../proto/common_enums'
-import { VariableDef, TypeDefinition, StructFieldDef } from '../proto/common_wfspec'
+import { VariableDef, StructFieldDef } from '../proto/common_wfspec'
+import { TypeDefinition } from '../proto/type_definition'
 import { PutStructDefRequest, StructDefCompatibilityType } from '../proto/service'
 import { VariableValue, StructField } from '../proto/variable'
 import { toVariableValue } from '../utils/variableValueConvert'
@@ -201,7 +202,10 @@ export function buildPutStructDefRequest(
   const structDefFields: { [key: string]: StructFieldDef } = {}
 
   for (const [fieldName, field] of Object.entries(schema.fields)) {
-    structDefFields[fieldName] = { fieldType: fieldDefToTypeDef(field) }
+    structDefFields[fieldName] = {
+      fieldType: fieldDefToTypeDef(field),
+      isNullable: false,
+    }
   }
 
   return {

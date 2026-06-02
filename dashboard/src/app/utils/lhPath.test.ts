@@ -1,4 +1,4 @@
-import { LHPath, LHPath_Selector } from 'littlehorse-client/proto'
+import { LHPath } from 'littlehorse-client/proto'
 import { lhPathToString } from './lhPath'
 
 describe('lhPathToString', () => {

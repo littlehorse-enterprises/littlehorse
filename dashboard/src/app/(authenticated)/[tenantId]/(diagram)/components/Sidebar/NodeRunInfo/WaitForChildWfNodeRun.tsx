@@ -1,10 +1,11 @@
+import { routes } from '@/app/routes'
 import { wfRunIdToPath } from '@/app/utils/wfRun'
 import { WaitForChildWfNodeRun as WaitForChildWfNodeRunProto } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { NodeVariable } from '../Components/NodeVariable'
 
 export const WaitForChildWfNodeRun: FC<{ node: WaitForChildWfNodeRunProto }> = ({ node }) => {
-  const childWfRunLink = node.childWfRunId ? `/wfRun/${wfRunIdToPath(node.childWfRunId)}` : ''
+  const childWfRunLink = node.childWfRunId ? routes.wfRun.detail(wfRunIdToPath(node.childWfRunId)) : ''
 
   return (
     <div className="ml-1 flex max-w-full flex-1 flex-col">

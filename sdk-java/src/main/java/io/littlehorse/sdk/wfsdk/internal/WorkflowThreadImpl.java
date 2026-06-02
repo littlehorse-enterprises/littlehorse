@@ -46,6 +46,7 @@ import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.InterruptHandler;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.LHFormatString;
+import io.littlehorse.sdk.wfsdk.LHStructBuilder;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedChildWf;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -55,6 +56,8 @@ import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -314,6 +317,21 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
+    public LHStructBuilder buildStruct(String structDefName) {
+        return new LHStructBuilderImpl(this, structDefName);
+    }
+
+    @Override
+    public LHStructBuilder buildStruct(String structDefName, int version) {
+        return new LHStructBuilderImpl(this, structDefName, version);
+    }
+
+    @Override
+    public InlineLHStructBuilderImpl buildInlineStruct() {
+        return new InlineLHStructBuilderImpl(this);
+    }
+
+    @Override
     public TaskNodeOutputImpl execute(String taskName, Serializable... args) {
         checkIfIsActive();
         parent.addTaskDefName(taskName);
@@ -349,6 +367,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
             node.putInputs(input.getKey(), assignVariable(input.getValue()));
         }
         String nodeName = addNode("run-" + wfSpecName, NodeCase.RUN_CHILD_WF, node.build());
+        parent.addChildWfSpecName(wfSpecName);
         return new SpawnedChildWfImpl(nodeName, this);
     }
 
@@ -457,6 +476,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
+    public LHExpression pow(Serializable base, Serializable exponent) {
+        return new LHExpressionImpl(base, VariableMutationType.POW, exponent);
+    }
+
+    @Override
     public LHExpression subtract(Serializable lhs, Serializable rhs) {
         return new LHExpressionImpl(lhs, VariableMutationType.SUBTRACT, rhs);
     }
@@ -491,7 +515,23 @@ final class WorkflowThreadImpl implements WorkflowThread {
     private WfRunVariableImpl addStructVariable(String name, LHStructDefType clazz) {
         checkIfIsActive();
 
-        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createStructDefVar(name, clazz, this);
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createVarFromLHClassType(name, clazz, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
+    }
+
+    private WfRunVariableImpl addStructVariable(String name, LHStructDefId clazz) {
+        checkIfIsActive();
+
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createVarFromLHClassType(name, clazz, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
+    }
+
+    private WfRunVariableImpl addArrayVariable(String name, LHArrayType clazz) {
+        checkIfIsActive();
+
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createVarFromLHClassType(name, clazz, this);
         wfRunVariables.add(wfRunVariable);
         return wfRunVariable;
     }
@@ -541,11 +581,21 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return addStructVariable(name, new LHStructDefType(clazz, parent.getTypeAdapterRegistry()));
     }
 
-    // TODO: Complete Arrays implementation
-    // @Override
-    // public WfRunVariable declareArray(String name, Class<?> elementType) {
-    //     return addArrayVariable(name, new LHArrayDefType(elementType));
-    // }
+    @Override
+    public WfRunVariable declareStruct(String name, String structDefName) {
+        return addStructVariable(name, new LHStructDefId(structDefName));
+    }
+
+    @Override
+    public WfRunVariable declareStruct(String name, String structDefName, int structDefVersion) {
+        return addStructVariable(name, new LHStructDefId(structDefName, structDefVersion));
+    }
+
+    @Override
+    public WfRunVariable declareArray(String name, Class<?> elementType) {
+        Class<?> arrayType = java.lang.reflect.Array.newInstance(elementType, 0).getClass();
+        return addArrayVariable(name, new LHArrayType(arrayType, parent.getTypeAdapterRegistry()));
+    }
 
     @Override
     public WorkflowIfStatement doIf(LHExpression condition, IfElseBody ifBody) {

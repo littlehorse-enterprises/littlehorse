@@ -57,8 +57,8 @@ The LittleHorse repository contains the following components:
 This repository requires the following system dependencies:
 
 - `java`
-    - [sdk-java](sdk-java): Java 11
-    - [server](server): Java 21
+    - [sdk-java](sdk-java): Java 17
+    - [server](server): Java 25
 - `gradle`, preferably version 8 or later.
 - `docker` and `docker-compose-plugin`.
 - `go`, `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc` and `protoc-gen-grpc-java`.
@@ -243,7 +243,7 @@ lhctl put principal <your principal name> --acl "acl_workflow:read" --tenantId <
 ./local-dev/issue-certificates.sh
 ```
 
-5. Ensure you have the following configuration settings in your LittleHorse server `/local-dev/mlts.config` file:
+5. Ensure you have the following configuration settings in your LittleHorse server `local-dev/configs/mtls.config` file:
 ```
 LHS_LISTENERS=MTLS:2023
 LHS_LISTENERS_PROTOCOL_MAP=MTLS:MTLS
@@ -321,6 +321,15 @@ git push --follow-tag
 Note that we follow [Semantic Versioning](https://semver.org) and that `X` is the major version, `Y` is the minor version, and `Z` is the patch.
 
 While SemVer frowns upon the `v` prefix, we need it because of how Go module releases work. Our pipeline removes the `v` from all generated artifacts (eg. `sdk-java` on maven, `sdk-python` on pypi, our docker images, etc).
+
+### Snapshot Publishing
+
+SNAPSHOT versions are published automatically on every push to `master` and release branches (e.g., `1.1`, `1.2`). The snapshot version is computed from `gradle.properties` by extracting the `major.minor` portion:
+
+- `master` with `version=1.2.0-SNAPSHOT` publishes as `1.2-SNAPSHOT`
+- Branch `1.1` with `version=1.1.1-SNAPSHOT` publishes as `1.1-SNAPSHOT`
+
+This is handled by the `publish-snapshots` workflow, which publishes both Java libraries (to Sonatype) and Docker images (to GHCR).
 
 ## Writing a Pull Request
 

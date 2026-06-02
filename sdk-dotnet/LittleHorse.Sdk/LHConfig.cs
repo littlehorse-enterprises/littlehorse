@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+using Grpc.Core;
+using Grpc.Core.Interceptors;
 using Grpc.Net.Client;
 using LittleHorse.Sdk.Authentication;
 using LittleHorse.Sdk.Utils;
@@ -20,7 +21,7 @@ namespace LittleHorse.Sdk {
 
         private LHInputVariables _inputVariables;
 
-        private Dictionary<string, GrpcChannel?> _createdChannels;
+        private Dictionary<string, GrpcChannel> _createdChannels;
         
         private OAuthConfig? _oAuthConfig;
         private OAuthClient? _oAuthClient;
@@ -38,7 +39,7 @@ namespace LittleHorse.Sdk {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
             _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
             _inputVariables = new LHInputVariables();
-            _createdChannels = new Dictionary<string, GrpcChannel?>();
+            _createdChannels = new Dictionary<string, GrpcChannel>();
         }
         
         /// <summary>
@@ -53,7 +54,7 @@ namespace LittleHorse.Sdk {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
             _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
             _inputVariables = new LHInputVariables(configOptionsFilePath);
-            _createdChannels = new Dictionary<string, GrpcChannel?>();
+            _createdChannels = new Dictionary<string, GrpcChannel>();
         }
         
         /// <summary>
@@ -67,7 +68,7 @@ namespace LittleHorse.Sdk {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
             _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
             _inputVariables = new LHInputVariables(configArgs);
-            _createdChannels = new Dictionary<string, GrpcChannel?>();
+            _createdChannels = new Dictionary<string, GrpcChannel>();
         }
 
         /// <summary>
@@ -104,6 +105,8 @@ namespace LittleHorse.Sdk {
         /// Retrieves the TenantId from the configuration properties.
         /// </summary>
         public string? TenantId => _inputVariables.LHC_TENANT_ID;
+
+        internal bool ResourceExhaustedRetryEnabled => _inputVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY;
 
         /// <summary>
         /// Retrieves the Bootstrap protocol from the configuration properties.
@@ -174,6 +177,11 @@ namespace LittleHorse.Sdk {
                 _logger?.LogInformation("Establishing connection to: " + channelKey);
                 channel = CreateChannel(host, port);
                 _createdChannels.Add(channelKey, channel);
+            }
+
+            if (ResourceExhaustedRetryEnabled)
+            {
+                return new LittleHorseClient(channel.Intercept(new ResourceExhaustedRetryInterceptor()));
             }
 
             return new LittleHorseClient(channel);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using LittleHorse.Sdk.Common.Proto;
@@ -230,7 +231,148 @@ public class LHTaskSignatureTest
 
         Assert.Equal(TASK_DEF_DESCRIPTION, taskSignature.TaskDefDescription);
     }
-    
+
+    // ──────────────────────────────────────────────────────────────
+    // LH Array parameter tests (mirrors LHTaskParameterTest.java)
+    // ──────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void TaskSignature_WithNativeArrayParam_ShouldProduceInlineArrayDef()
+    {
+        var taskSignature = new LHTaskSignature<TestWorker>("native-arr-param", new TestWorker());
+
+        var expectedVariableDef = new VariableDef
+        {
+            Name = "words",
+            TypeDef = new TypeDefinition
+            {
+                InlineArrayDef = new InlineArrayDef
+                {
+                    ArrayType = new TypeDefinition { PrimitiveType = VariableType.Str }
+                }
+            }
+        };
+
+        Assert.Single(taskSignature.VariableDefs);
+        Assert.Equal(expectedVariableDef, taskSignature.VariableDefs[0]);
+    }
+
+    [Fact]
+    public void TaskSignature_WithNativeArrayListParam_ShouldProduceInlineArrayDef()
+    {
+        var taskSignature = new LHTaskSignature<TestWorker>("native-arr-list-param", new TestWorker());
+
+        var expectedVariableDef = new VariableDef
+        {
+            Name = "words",
+            TypeDef = new TypeDefinition
+            {
+                InlineArrayDef = new InlineArrayDef
+                {
+                    ArrayType = new TypeDefinition { PrimitiveType = VariableType.Str }
+                }
+            }
+        };
+
+        Assert.Single(taskSignature.VariableDefs);
+        Assert.Equal(expectedVariableDef, taskSignature.VariableDefs[0]);
+    }
+
+    [Fact]
+    public void TaskSignature_WithJsonArrayParam_ShouldProducePrimitiveJsonArr()
+    {
+        var taskSignature = new LHTaskSignature<TestWorker>("json-arr-param", new TestWorker());
+
+        var expectedVariableDef = new VariableDef
+        {
+            Name = "words",
+            TypeDef = new TypeDefinition { PrimitiveType = VariableType.JsonArr }
+        };
+
+        Assert.Single(taskSignature.VariableDefs);
+        Assert.Equal(expectedVariableDef, taskSignature.VariableDefs[0]);
+    }
+
+    [Fact]
+    public void TaskSignature_WithIsLHArrayOnNonArrayParam_ShouldThrow()
+    {
+        var exception = Assert.Throws<LHTaskSchemaMismatchException>(
+            () => new LHTaskSignature<TestWorker>("non-array-lh-array-param", new TestWorker()));
+
+        Assert.Contains("@LHType(isLHArray = true) can only be used on array or IList<T> parameters", exception.Message);
+    }
+
+    [Fact]
+    public void TaskSignature_WithIsLHArrayOnBytesParam_ShouldThrow()
+    {
+        var exception = Assert.Throws<LHTaskSchemaMismatchException>(
+            () => new LHTaskSignature<TestWorker>("bytes-lh-array-param", new TestWorker()));
+
+        Assert.Contains("Cannot use @LHType(isLHArray = true) with byte[]", exception.Message);
+    }
+
+    [Fact]
+    public void TaskSignature_WithIsLHArrayAndJsonObjElementParam_ShouldThrow()
+    {
+        // UnannotatedPoco resolves to JSON_OBJ — forbidden inside a native LH Array.
+        Assert.Throws<ArgumentException>(
+            () => new LHTaskSignature<TestWorker>("invalid-native-arr-jsonobj-param", new TestWorker()));
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // LH Array return type tests (mirrors LHTaskReturnTypeTest.java)
+    // ──────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void TaskSignature_WithNativeArrayReturnType_ShouldProduceInlineArrayDef()
+    {
+        var taskSignature = new LHTaskSignature<TestWorker>("native-arr-return", new TestWorker());
+
+        var expectedReturnType = new ReturnType
+        {
+            ReturnType_ = new TypeDefinition
+            {
+                InlineArrayDef = new InlineArrayDef
+                {
+                    ArrayType = new TypeDefinition { PrimitiveType = VariableType.Str }
+                }
+            }
+        };
+
+        Assert.Equal(expectedReturnType, taskSignature.ReturnType);
+    }
+
+    [Fact]
+    public void TaskSignature_WithJsonArrayReturnType_ShouldProducePrimitiveJsonArr()
+    {
+        var taskSignature = new LHTaskSignature<TestWorker>("json-arr-return", new TestWorker());
+
+        var expectedReturnType = new ReturnType
+        {
+            ReturnType_ = new TypeDefinition { PrimitiveType = VariableType.JsonArr }
+        };
+
+        Assert.Equal(expectedReturnType, taskSignature.ReturnType);
+    }
+
+    [Fact]
+    public void TaskSignature_WithIsLHArrayOnNonArrayReturnType_ShouldThrow()
+    {
+        var exception = Assert.Throws<LHTaskSchemaMismatchException>(
+            () => new LHTaskSignature<TestWorker>("non-array-lh-array-return", new TestWorker()));
+
+        Assert.Contains("@LHType(isLHArray = true) can only be used on array or IList<T> return types", exception.Message);
+    }
+
+    [Fact]
+    public void TaskSignature_WithIsLHArrayOnBytesReturnType_ShouldThrow()
+    {
+        var exception = Assert.Throws<LHTaskSchemaMismatchException>(
+            () => new LHTaskSignature<TestWorker>("bytes-lh-array-return", new TestWorker()));
+
+        Assert.Contains("Cannot use @LHType(isLHArray = true) with byte[]", exception.Message);
+    }
+
     class TestWorker
     {
         [LHTaskMethod(TASK_DEF_NAME_ADD)]
@@ -298,5 +440,74 @@ public class LHTaskSignatureTest
         {
             return Task.FromResult($"Output value: {account_number}");
         }
+
+        [LHTaskMethod("native-arr-param")]
+        public Task NativeArrayParam([LHType(masked: false, isLHArray: true)] string[] words)
+        {
+            return Task.CompletedTask;
+        }
+
+        [LHTaskMethod("native-arr-list-param")]
+        public Task NativeArrayListParam([LHType(masked: false, isLHArray: true)] List<string> words)
+        {
+            return Task.CompletedTask;
+        }
+
+        [LHTaskMethod("json-arr-param")]
+        public Task JsonArrayParam(string[] words)
+        {
+            return Task.CompletedTask;
+        }
+
+        [LHTaskMethod("native-arr-return")]
+        [LHType(masked: false, isLHArray: true)]
+        public Task<string[]> NativeArrayReturn()
+        {
+            return Task.FromResult(new string[] { "a" });
+        }
+
+        [LHTaskMethod("json-arr-return")]
+        public Task<string[]> JsonArrayReturn()
+        {
+            return Task.FromResult(new string[] { "a" });
+        }
+
+        [LHTaskMethod("non-array-lh-array-param")]
+        public Task NonArrayLhArrayParam([LHType(masked: false, isLHArray: true)] string word)
+        {
+            return Task.CompletedTask;
+        }
+
+        [LHTaskMethod("non-array-lh-array-return")]
+        [LHType(masked: false, isLHArray: true)]
+        public Task<string> NonArrayLhArrayReturn()
+        {
+            return Task.FromResult("word");
+        }
+
+        [LHTaskMethod("bytes-lh-array-param")]
+        public Task BytesLhArrayParam([LHType(masked: false, isLHArray: true)] byte[] data)
+        {
+            return Task.CompletedTask;
+        }
+
+        [LHTaskMethod("bytes-lh-array-return")]
+        [LHType(masked: false, isLHArray: true)]
+        public Task<byte[]> BytesLhArrayReturn()
+        {
+            return Task.FromResult(new byte[] { 1 });
+        }
+
+        [LHTaskMethod("invalid-native-arr-jsonobj-param")]
+        public Task InvalidNativeArrayJsonObjParam([LHType(masked: false, isLHArray: true)] UnannotatedPoco[] items)
+        {
+            return Task.CompletedTask;
+        }
+    }
+
+    // A plain class with no [LHStructDef] — resolves to JSON_OBJ, forbidden in native arrays.
+    private class UnannotatedPoco
+    {
+        public string? Name { get; set; }
     }
 }

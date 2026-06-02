@@ -2,6 +2,7 @@ package io.littlehorse.test;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
@@ -10,6 +11,7 @@ import io.littlehorse.sdk.common.proto.OutputTopicConfig;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
@@ -24,9 +26,11 @@ import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.awaitility.Awaitility;
@@ -117,7 +121,9 @@ public class LHExtension
         ExtensionContext.Store store = getStore(context);
         TestContext testContext = getTestContext(context);
         maybeCreateTenantAndPrincipal(testContext);
+
         try {
+            registerStructDefs(testInstance.getClass(), testContext);
             startWorkersFromDeclaredTaskMethods(testInstance, testContext, store);
             testContext.registerUserTaskSchemas(testInstance);
             registerExternalEventDefinitions(testInstance, testContext);
@@ -134,6 +140,11 @@ public class LHExtension
             throws IllegalAccessException {
         List<PutWorkflowEventDefRequest> workflowEvents = testContext.discoverWorkflowEvents(testInstance);
         workflowEvents.forEach(testContext::registerWorkflowEventDef);
+    }
+
+    private static void registerStructDefs(Class<?> testClass, TestContext testContext) throws IllegalAccessException {
+        Set<LHStructDefType> structDefRequests = scanStructDefsSetup(testClass);
+        structDefRequests.forEach(testContext::registerStructDef);
     }
 
     private static void registerExternalEventDefinitions(Object testInstance, TestContext testContext) {
@@ -167,6 +178,21 @@ public class LHExtension
                 return true;
             });
         }
+    }
+
+    private static Set<LHStructDefType> scanStructDefsSetup(AnnotatedElement instanceClass) {
+        LHTypeAdapterRegistry typeAdapterRegistry = LHTypeAdapterRegistry.empty();
+        if (instanceClass.isAnnotationPresent(WithStructDefs.class)) {
+            return List.of(instanceClass.getAnnotation(WithStructDefs.class).value()).stream()
+                    .map(clazz -> new LHStructDefType(clazz, typeAdapterRegistry))
+                    .flatMap(structDef -> {
+                        List<LHStructDefType> out = new ArrayList<>(structDef.getDependencyClasses());
+                        out.add(structDef);
+                        return out.stream();
+                    })
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+        }
+        return Set.of();
     }
 
     private WithWorkers[] scanWorkersSetup(AnnotatedElement instanceClass) {

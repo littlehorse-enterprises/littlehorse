@@ -163,6 +163,15 @@ public class TaskNodeModel extends SubNode<TaskNode> {
                             ctx.metadataManager(),
                             node.getThreadSpec().getWfSpec(),
                             node.getThreadSpec().getName());
+                    if (assn.getRhsSourceType() == SourceCase.STRUCT_BUILDER) {
+                        assn.getStructBuilder()
+                                .validateAgainst(
+                                        taskDefVar.getTypeDef(),
+                                        node,
+                                        ctx.metadataManager(),
+                                        node.getThreadSpec().getWfSpec(),
+                                        node.getThreadSpec().getName());
+                    }
                     VariableType sourceVariableType = sourceVariableTypeOpt
                             .map(TypeDefinitionModel::getPrimitiveType)
                             .orElse(null);
@@ -245,12 +254,10 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     public Set<String> getNeededNodeNames() {
         Set<String> out = new HashSet<>();
         for (VariableAssignmentModel assignment : variables) {
-            if (assignment.getRhsSourceType() == SourceCase.NODE_OUTPUT) {
-                out.add(assignment.getNodeOutputReference().getNodeName());
-            }
+            out.addAll(assignment.getRequiredNodeNames());
         }
-        if (dynamicTask != null && dynamicTask.getRhsSourceType() == SourceCase.NODE_OUTPUT) {
-            out.add(dynamicTask.getNodeOutputReference().getNodeName());
+        if (dynamicTask != null) {
+            out.addAll(dynamicTask.getRequiredNodeNames());
         }
         return out;
     }

@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.global.wfspec;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -65,10 +66,15 @@ public class ReturnTypeModel extends LHSerializable<ReturnType> {
     /**
      * Returns true if the provided value's type is compatible with this ReturnType without casting.
      */
-    public boolean isCompatibleWith(VariableValueModel value, ReadOnlyMetadataManager metadataManager) {
-        if (returnType != null) {
-            return returnType.isCompatibleWith(value, metadataManager);
+    public void validateCompatibility(VariableValueModel value, ReadOnlyMetadataManager metadataManager)
+            throws TypeValidationException {
+        if (returnType == null) {
+            if (!value.isEmpty()) {
+                throw new TypeValidationException("Expected void return type, but value is not empty.");
+            }
+            return;
         }
-        return value.isEmpty();
+
+        returnType.validateCompatibility(value, metadataManager);
     }
 }

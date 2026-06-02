@@ -24,6 +24,7 @@ namespace LittleHorse.Sdk
         internal string? LHC_OAUTH_CLIENT_SECRET { get; }
         internal string? LHC_OAUTH_ACCESS_TOKEN_URL { get; }
         internal string? LHC_TENANT_ID { get; }
+        internal bool LHC_GRPC_RESOURCE_EXHAUSTED_RETRY { get; } = true;
         internal int LHW_NUM_WORKER_THREADS { get; } = 8;
         internal string LHW_TASK_WORKER_VERSION { get; } = string.Empty;
 
@@ -60,6 +61,9 @@ namespace LittleHorse.Sdk
             var oauthAccessTokenUrl = Environment.GetEnvironmentVariable("LHC_OAUTH_ACCESS_TOKEN_URL");
             if (!string.IsNullOrEmpty(oauthAccessTokenUrl))
                 LHC_OAUTH_ACCESS_TOKEN_URL = oauthAccessTokenUrl;
+            var resourceExhaustedRetry = Environment.GetEnvironmentVariable("LHC_GRPC_RESOURCE_EXHAUSTED_RETRY");
+            if (!string.IsNullOrEmpty(resourceExhaustedRetry))
+                LHC_GRPC_RESOURCE_EXHAUSTED_RETRY = bool.Parse(resourceExhaustedRetry);
             var numberWorkerThreads = Environment.GetEnvironmentVariable("LHW_NUM_WORKER_THREADS");
             if (!string.IsNullOrEmpty(numberWorkerThreads))
                 LHW_NUM_WORKER_THREADS = int.Parse(numberWorkerThreads);
@@ -107,6 +111,9 @@ namespace LittleHorse.Sdk
             var oauthAccessTokenUrl = properties["LHC_OAUTH_ACCESS_TOKEN_URL"];
             if (!string.IsNullOrEmpty(oauthAccessTokenUrl))
                 LHC_OAUTH_ACCESS_TOKEN_URL = oauthAccessTokenUrl;
+            var resourceExhaustedRetry = properties["LHC_GRPC_RESOURCE_EXHAUSTED_RETRY"];
+            if (!string.IsNullOrEmpty(resourceExhaustedRetry))
+                LHC_GRPC_RESOURCE_EXHAUSTED_RETRY = bool.Parse(resourceExhaustedRetry);
             var numberWorkerThreads = properties["LHW_NUM_WORKER_THREADS"];
             if (!string.IsNullOrEmpty(numberWorkerThreads))
                 LHW_NUM_WORKER_THREADS = int.Parse(numberWorkerThreads);
@@ -151,6 +158,10 @@ namespace LittleHorse.Sdk
                 configArguments!, "LHC_OAUTH_ACCESS_TOKEN_URL");
             if (!string.IsNullOrEmpty(oauthAccessTokenUrl))
                 LHC_OAUTH_ACCESS_TOKEN_URL = oauthAccessTokenUrl;
+            var resourceExhaustedRetry = GetValueIfKeyIsPresent(
+                configArguments!, "LHC_GRPC_RESOURCE_EXHAUSTED_RETRY");
+            if (!string.IsNullOrEmpty(resourceExhaustedRetry))
+                LHC_GRPC_RESOURCE_EXHAUSTED_RETRY = bool.Parse(resourceExhaustedRetry);
             var numberWorkerThreads = GetValueIfKeyIsPresent(configArguments!, "LHW_NUM_WORKER_THREADS");
             if (!string.IsNullOrEmpty(numberWorkerThreads))
                 LHW_NUM_WORKER_THREADS = int.Parse(numberWorkerThreads);

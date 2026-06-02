@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHValidationException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
+import io.littlehorse.common.model.getable.core.variable.ArrayModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -70,12 +71,28 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
     public void arrive(Date time, CoreProcessorContext processorContext) throws NodeFailureException {
         StartMultipleThreadsNodeModel node = getNode().getStartMultipleThreadsNode();
         try {
-            VariableValueModel iterable =
-                    nodeRun.getThreadRun().assignVariable(node.getIterable()).asArr();
-            for (Object threadInput : iterable.getJsonArrVal()) {
-                VariableValueModel iterInput =
-                        LHSerializable.fromProto(LHLibUtil.objToVarVal(threadInput), VariableValueModel.class, context);
+            VariableValueModel iterableVar = nodeRun.getThreadRun().assignVariable(node.getIterable());
 
+            // Support both LH native ARRAY and JSON_ARR
+            List<VariableValueModel> iterItems = new ArrayList<>();
+            if (iterableVar.getValueType() == VariableValue.ValueCase.ARRAY) {
+                ArrayModel arr = iterableVar.asArray().getArray();
+                if (arr.getItems() != null) {
+                    iterItems.addAll(arr.getItems());
+                }
+            } else if (iterableVar.getValueType() == VariableValue.ValueCase.JSON_ARR) {
+                VariableValueModel jsonArr = iterableVar.asArr();
+                if (jsonArr.getJsonArrVal() != null) {
+                    iterItems.addAll(jsonArr.getJsonArrVal().stream()
+                            .map(item -> LHSerializable.fromProto(
+                                    LHLibUtil.objToVarVal(item), VariableValueModel.class, context))
+                            .toList());
+                }
+            } else {
+                throw new LHVarSubError(null, "Iterable must be ARRAY or JSON_ARR, got " + iterableVar.getValueType());
+            }
+
+            for (VariableValueModel iterInput : iterItems) {
                 // Construct input variables
                 Map<String, VariableValueModel> inputs = new HashMap<>();
 

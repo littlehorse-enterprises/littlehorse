@@ -48,6 +48,14 @@ Set python version:
 poetry env use python3.9
 ```
 
+## Worker shutdown on Windows
+
+`littlehorse.start(...)` installs shutdown hooks for `SIGTERM` and `SIGINT`.
+On runtimes that do not support `asyncio` signal handlers (for example, Windows
+event loops), the SDK falls back to `signal.signal(...)` when available. If a
+signal cannot be registered in the current runtime/thread, startup still
+continues and workers can be stopped by calling `worker.stop()`.
+
 ## Types Map
 
 Task arguments type reference:

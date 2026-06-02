@@ -108,8 +108,8 @@ describe('UserTaskRunNode', () => {
       data: nodeTask,
       error: undefined,
       mutate: function <MutationData = unknown>(
-        data?: unknown,
-        opts?: boolean | MutatorOptions<unknown, MutationData> | undefined
+        _data?: unknown,
+        _opts?: boolean | MutatorOptions<unknown, MutationData> | undefined
       ): Promise<unknown> {
         throw new Error('Function not implemented.')
       },

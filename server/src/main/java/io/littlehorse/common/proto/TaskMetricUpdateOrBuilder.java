@@ -11,89 +11,153 @@ public interface TaskMetricUpdateOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * TaskDef this update is for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
   boolean hasTaskDefId();
   /**
+   * <pre>
+   * TaskDef this update is for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
   io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
   /**
+   * <pre>
+   * TaskDef this update is for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 
   /**
+   * <pre>
+   * Start of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
+   * <pre>
+   * Start of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
+   * <pre>
+   * Start of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 
   /**
+   * <pre>
+   * Window length.
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength type = 3;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
+   * <pre>
+   * Window length.
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength type = 3;</code>
    * @return The type.
    */
   io.littlehorse.sdk.common.proto.MetricsWindowLength getType();
 
   /**
+   * <pre>
+   * Number of entries in this window.
+   * </pre>
+   *
    * <code>int64 num_entries = 4;</code>
    * @return The numEntries.
    */
   long getNumEntries();
 
   /**
+   * <pre>
+   * Max time from schedule to start.
+   * </pre>
+   *
    * <code>int64 schedule_to_start_max = 5;</code>
    * @return The scheduleToStartMax.
    */
   long getScheduleToStartMax();
 
   /**
+   * <pre>
+   * Total time from schedule to start.
+   * </pre>
+   *
    * <code>int64 schedule_to_start_total = 6;</code>
    * @return The scheduleToStartTotal.
    */
   long getScheduleToStartTotal();
 
   /**
+   * <pre>
+   * Max time from start to complete.
+   * </pre>
+   *
    * <code>int64 start_to_complete_max = 7;</code>
    * @return The startToCompleteMax.
    */
   long getStartToCompleteMax();
 
   /**
+   * <pre>
+   * Total time from start to complete.
+   * </pre>
+   *
    * <code>int64 start_to_complete_total = 8;</code>
    * @return The startToCompleteTotal.
    */
   long getStartToCompleteTotal();
 
   /**
+   * <pre>
+   * Number completed.
+   * </pre>
+   *
    * <code>int64 total_completed = 9;</code>
    * @return The totalCompleted.
    */
   long getTotalCompleted();
 
   /**
+   * <pre>
+   * Number errored.
+   * </pre>
+   *
    * <code>int64 total_errored = 10;</code>
    * @return The totalErrored.
    */
   long getTotalErrored();
 
   /**
+   * <pre>
+   * Number started.
+   * </pre>
+   *
    * <code>int64 total_started = 11;</code>
    * @return The totalStarted.
    */

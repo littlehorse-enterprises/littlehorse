@@ -70,9 +70,9 @@ public enum ACLResource
   ACL_TENANT(5),
   /**
    * <pre>
-   * Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant`
-   * resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since
-   * those are cluster-scoped resources.
+   * Refers to all resources. In the `global_acls` field, this includes `Principal`, `Tenant`, and
+   * `Quota` resources. In the `per_tenant_acls` field, this does not include `Principal`, `Tenant`,
+   * or `Quota` since those are cluster-scoped resources.
    * </pre>
    *
    * <code>ACL_ALL_RESOURCES = 6;</code>
@@ -102,6 +102,15 @@ public enum ACLResource
    * <code>ACL_STRUCT = 9;</code>
    */
   ACL_STRUCT(9),
+  /**
+   * <pre>
+   * Refers to the `Quota` resource. The `ACL_QUOTA` permission is only valid in the
+   * `global_acls` field of the `Principal` because `Quota` is a cluster-scoped resource.
+   * </pre>
+   *
+   * <code>ACL_QUOTA = 10;</code>
+   */
+  ACL_QUOTA(10),
   UNRECOGNIZED(-1),
   ;
 
@@ -169,9 +178,9 @@ public enum ACLResource
   public static final int ACL_TENANT_VALUE = 5;
   /**
    * <pre>
-   * Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant`
-   * resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since
-   * those are cluster-scoped resources.
+   * Refers to all resources. In the `global_acls` field, this includes `Principal`, `Tenant`, and
+   * `Quota` resources. In the `per_tenant_acls` field, this does not include `Principal`, `Tenant`,
+   * or `Quota` since those are cluster-scoped resources.
    * </pre>
    *
    * <code>ACL_ALL_RESOURCES = 6;</code>
@@ -201,6 +210,15 @@ public enum ACLResource
    * <code>ACL_STRUCT = 9;</code>
    */
   public static final int ACL_STRUCT_VALUE = 9;
+  /**
+   * <pre>
+   * Refers to the `Quota` resource. The `ACL_QUOTA` permission is only valid in the
+   * `global_acls` field of the `Principal` because `Quota` is a cluster-scoped resource.
+   * </pre>
+   *
+   * <code>ACL_QUOTA = 10;</code>
+   */
+  public static final int ACL_QUOTA_VALUE = 10;
 
 
   public final int getNumber() {
@@ -237,6 +255,7 @@ public enum ACLResource
       case 7: return ACL_TASK_WORKER_GROUP;
       case 8: return ACL_WORKFLOW_EVENT;
       case 9: return ACL_STRUCT;
+      case 10: return ACL_QUOTA;
       default: return null;
     }
   }

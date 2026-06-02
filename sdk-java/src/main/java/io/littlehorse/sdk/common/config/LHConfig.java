@@ -2,6 +2,7 @@ package io.littlehorse.sdk.common.config;
 
 import io.grpc.CallCredentials;
 import io.grpc.Channel;
+import io.grpc.ClientInterceptors;
 import io.grpc.CompositeCallCredentials;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannelBuilder;
@@ -12,6 +13,7 @@ import io.littlehorse.sdk.common.auth.OAuthClient;
 import io.littlehorse.sdk.common.auth.OAuthConfig;
 import io.littlehorse.sdk.common.auth.OAuthCredentialsProvider;
 import io.littlehorse.sdk.common.auth.TenantMetadataProvider;
+import io.littlehorse.sdk.common.config.retryinterceptor.ResourceExhaustedRetryInterceptor;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -40,10 +42,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LHConfig extends ConfigBase {
 
+    private static final ResourceExhaustedRetryInterceptor RESOURCE_EXHAUSTED_RETRY_INTERCEPTOR =
+            new ResourceExhaustedRetryInterceptor();
+
     enum ConfigKeys {
         LHC_API_HOST,
         LHC_API_PORT,
         LHC_API_PROTOCOL,
+        LHC_GRPC_RESOURCE_EXHAUSTED_RETRY,
         LHC_TENANT_ID,
         LHC_CLIENT_CERT,
         LHC_CLIENT_KEY,
@@ -67,6 +73,9 @@ public class LHConfig extends ConfigBase {
 
     /** The bootstrap protocol for the LH Server. */
     public static final String API_PROTOCOL_KEY = ConfigKeys.LHC_API_PROTOCOL.name();
+
+    /** Enables transparent retries for RESOURCE_EXHAUSTED unary gRPC calls. */
+    public static final String GRPC_RESOURCE_EXHAUSTED_RETRY_KEY = ConfigKeys.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY.name();
 
     /** The Client Id. */
     public static final String TASK_WORKER_ID_KEY = ConfigKeys.LHW_TASK_WORKER_ID.name();
@@ -495,6 +504,9 @@ public class LHConfig extends ConfigBase {
                 .keepAliveWithoutCalls(true);
 
         Channel out = builder.build();
+        if (shouldRetryOnResourceExhausted()) {
+            out = ClientInterceptors.intercept(out, RESOURCE_EXHAUSTED_RETRY_INTERCEPTOR);
+        }
         createdChannels.put(hostKey, out);
         return out;
     }
@@ -533,6 +545,15 @@ public class LHConfig extends ConfigBase {
      */
     public long getKeepaliveTimeoutMs() {
         return Long.valueOf(getOrSetDefault(GRPC_KEEPALIVE_TIMEOUT_MS_KEY, "5000"));
+    }
+
+    /**
+     * Returns whether RESOURCE_EXHAUSTED unary gRPC calls should be transparently retried.
+     *
+     * @return true when the retry interceptor is enabled
+     */
+    public boolean shouldRetryOnResourceExhausted() {
+        return Boolean.parseBoolean(getOrSetDefault(GRPC_RESOURCE_EXHAUSTED_RETRY_KEY, "true"));
     }
 
     /**

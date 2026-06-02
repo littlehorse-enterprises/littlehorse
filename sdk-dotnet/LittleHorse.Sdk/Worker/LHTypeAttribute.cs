@@ -21,6 +21,11 @@
         /// An optional name associated with the attribute.
         /// </summary>
         public string Name { get; }
+
+        /// <summary>
+        /// Indicates whether arrays/lists should be treated as native LittleHorse ARRAY.
+        /// </summary>
+        public bool IsLHArray { get; }
         
         /// <summary>
         /// Constructor of the attribute.
@@ -30,6 +35,7 @@
         {
             Masked = masked;
             Name = string.Empty;
+            IsLHArray = false;
         }
         
         /// <summary>
@@ -41,6 +47,32 @@
         {
             Masked = masked;
             Name = name;
+            IsLHArray = false;
+        }
+
+        /// <summary>
+        /// Constructor of the attribute.
+        /// </summary>
+        /// <param name="masked">A bool input that makes a method response or an input param be masked.</param>
+        /// <param name="isLHArray">Whether arrays/lists should use native LittleHorse ARRAY encoding.</param>
+        public LHTypeAttribute(bool masked, bool isLHArray)
+        {
+            Masked = masked;
+            Name = string.Empty;
+            IsLHArray = isLHArray;
+        }
+
+        /// <summary>
+        /// Constructor of the attribute.
+        /// </summary>
+        /// <param name="masked">A bool input that makes a method response or an input param be masked.</param>
+        /// <param name="name">The name of the masked field.</param>
+        /// <param name="isLHArray">Whether arrays/lists should use native LittleHorse ARRAY encoding.</param>
+        public LHTypeAttribute(bool masked, string name, bool isLHArray)
+        {
+            Masked = masked;
+            Name = name;
+            IsLHArray = isLHArray;
         }
     }
 }

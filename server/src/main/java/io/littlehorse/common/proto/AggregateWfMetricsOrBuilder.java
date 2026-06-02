@@ -11,54 +11,98 @@ public interface AggregateWfMetricsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * WfSpec this aggregate is for.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
+   * <pre>
+   * WfSpec this aggregate is for.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
+   * <pre>
+   * WfSpec this aggregate is for.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
+   * <pre>
+   * Tenant for this aggregate.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 2;</code>
    * @return Whether the tenantId field is set.
    */
   boolean hasTenantId();
   /**
+   * <pre>
+   * Tenant for this aggregate.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 2;</code>
    * @return The tenantId.
    */
   io.littlehorse.sdk.common.proto.TenantId getTenantId();
   /**
+   * <pre>
+   * Tenant for this aggregate.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder();
 
   /**
+   * <pre>
+   * List of workflow metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   java.util.List<io.littlehorse.common.proto.WfMetricUpdate> 
       getMetricUpdatesList();
   /**
+   * <pre>
+   * List of workflow metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   io.littlehorse.common.proto.WfMetricUpdate getMetricUpdates(int index);
   /**
+   * <pre>
+   * List of workflow metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   int getMetricUpdatesCount();
   /**
+   * <pre>
+   * List of workflow metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   java.util.List<? extends io.littlehorse.common.proto.WfMetricUpdateOrBuilder> 
       getMetricUpdatesOrBuilderList();
   /**
+   * <pre>
+   * List of workflow metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   io.littlehorse.common.proto.WfMetricUpdateOrBuilder getMetricUpdatesOrBuilder(

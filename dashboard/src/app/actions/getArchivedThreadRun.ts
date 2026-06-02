@@ -21,7 +21,7 @@ export const getArchivedThreadRun = async ({
       threadRunNumber,
     })
     return archivedThreadRun
-  } catch (error) {
+  } catch (_error) {
     // ThreadRun might not be archived or might not exist
     return undefined
   }

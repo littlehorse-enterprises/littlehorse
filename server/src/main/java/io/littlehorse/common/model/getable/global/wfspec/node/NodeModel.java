@@ -33,7 +33,6 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
-import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
@@ -324,8 +323,8 @@ public class NodeModel extends LHSerializable<Node> {
         for (EdgeModel edge : outgoingEdges) {
             for (VariableMutationModel mutation : edge.getVariableMutations()) {
                 VariableAssignmentModel assignment = mutation.getRhsRhsAssignment();
-                if (assignment != null && assignment.getRhsSourceType() == SourceCase.NODE_OUTPUT) {
-                    out.add(assignment.getNodeOutputReference().getNodeName());
+                if (assignment != null) {
+                    out.addAll(assignment.getRequiredNodeNames());
                 }
             }
         }

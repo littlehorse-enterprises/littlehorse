@@ -52,6 +52,10 @@ private static final long serialVersionUID = 0L;
   public static final int WF_SPEC_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
   /**
+   * <pre>
+   * WfSpec this aggregate is for.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return Whether the wfSpecId field is set.
    */
@@ -60,6 +64,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * WfSpec this aggregate is for.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return The wfSpecId.
    */
@@ -68,6 +76,10 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
   }
   /**
+   * <pre>
+   * WfSpec this aggregate is for.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    */
   @java.lang.Override
@@ -78,6 +90,10 @@ private static final long serialVersionUID = 0L;
   public static final int TENANT_ID_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.TenantId tenantId_;
   /**
+   * <pre>
+   * Tenant for this aggregate.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 2;</code>
    * @return Whether the tenantId field is set.
    */
@@ -86,6 +102,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Tenant for this aggregate.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 2;</code>
    * @return The tenantId.
    */
@@ -94,6 +114,10 @@ private static final long serialVersionUID = 0L;
     return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
   }
   /**
+   * <pre>
+   * Tenant for this aggregate.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 2;</code>
    */
   @java.lang.Override
@@ -105,6 +129,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.common.proto.WfMetricUpdate> metricUpdates_;
   /**
+   * <pre>
+   * List of workflow metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
@@ -112,6 +140,10 @@ private static final long serialVersionUID = 0L;
     return metricUpdates_;
   }
   /**
+   * <pre>
+   * List of workflow metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
@@ -120,6 +152,10 @@ private static final long serialVersionUID = 0L;
     return metricUpdates_;
   }
   /**
+   * <pre>
+   * List of workflow metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
@@ -127,6 +163,10 @@ private static final long serialVersionUID = 0L;
     return metricUpdates_.size();
   }
   /**
+   * <pre>
+   * List of workflow metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
@@ -134,6 +174,10 @@ private static final long serialVersionUID = 0L;
     return metricUpdates_.get(index);
   }
   /**
+   * <pre>
+   * List of workflow metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
    */
   @java.lang.Override
@@ -576,6 +620,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
     /**
+     * <pre>
+     * WfSpec this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      * @return Whether the wfSpecId field is set.
      */
@@ -583,6 +631,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * WfSpec this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      * @return The wfSpecId.
      */
@@ -594,6 +646,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * WfSpec this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -610,6 +666,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfSpec this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder setWfSpecId(
@@ -624,6 +684,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfSpec this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -645,6 +709,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfSpec this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public Builder clearWfSpecId() {
@@ -658,6 +726,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * WfSpec this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
@@ -666,6 +738,10 @@ private static final long serialVersionUID = 0L;
       return internalGetWfSpecIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * WfSpec this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
@@ -677,6 +753,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * WfSpec this aggregate is for.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -697,6 +777,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> tenantIdBuilder_;
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      * @return Whether the tenantId field is set.
      */
@@ -704,6 +788,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      * @return The tenantId.
      */
@@ -715,6 +803,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public Builder setTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
@@ -731,6 +823,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public Builder setTenantId(
@@ -745,6 +841,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public Builder mergeTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
@@ -766,6 +866,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public Builder clearTenantId() {
@@ -779,6 +883,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.TenantId.Builder getTenantIdBuilder() {
@@ -787,6 +895,10 @@ private static final long serialVersionUID = 0L;
       return internalGetTenantIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder() {
@@ -798,6 +910,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Tenant for this aggregate.
+     * </pre>
+     *
      * <code>.littlehorse.TenantId tenant_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -827,6 +943,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.WfMetricUpdate, io.littlehorse.common.proto.WfMetricUpdate.Builder, io.littlehorse.common.proto.WfMetricUpdateOrBuilder> metricUpdatesBuilder_;
 
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public java.util.List<io.littlehorse.common.proto.WfMetricUpdate> getMetricUpdatesList() {
@@ -837,6 +957,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public int getMetricUpdatesCount() {
@@ -847,6 +971,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public io.littlehorse.common.proto.WfMetricUpdate getMetricUpdates(int index) {
@@ -857,6 +985,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public Builder setMetricUpdates(
@@ -874,6 +1006,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public Builder setMetricUpdates(
@@ -888,6 +1024,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public Builder addMetricUpdates(io.littlehorse.common.proto.WfMetricUpdate value) {
@@ -904,6 +1044,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public Builder addMetricUpdates(
@@ -921,6 +1065,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public Builder addMetricUpdates(
@@ -935,6 +1083,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public Builder addMetricUpdates(
@@ -949,6 +1101,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public Builder addAllMetricUpdates(
@@ -964,6 +1120,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public Builder clearMetricUpdates() {
@@ -977,6 +1137,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public Builder removeMetricUpdates(int index) {
@@ -990,6 +1154,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public io.littlehorse.common.proto.WfMetricUpdate.Builder getMetricUpdatesBuilder(
@@ -997,6 +1165,10 @@ private static final long serialVersionUID = 0L;
       return internalGetMetricUpdatesFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public io.littlehorse.common.proto.WfMetricUpdateOrBuilder getMetricUpdatesOrBuilder(
@@ -1007,6 +1179,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public java.util.List<? extends io.littlehorse.common.proto.WfMetricUpdateOrBuilder> 
@@ -1018,6 +1194,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public io.littlehorse.common.proto.WfMetricUpdate.Builder addMetricUpdatesBuilder() {
@@ -1025,6 +1205,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.common.proto.WfMetricUpdate.getDefaultInstance());
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public io.littlehorse.common.proto.WfMetricUpdate.Builder addMetricUpdatesBuilder(
@@ -1033,6 +1217,10 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.common.proto.WfMetricUpdate.getDefaultInstance());
     }
     /**
+     * <pre>
+     * List of workflow metric updates.
+     * </pre>
+     *
      * <code>repeated .littlehorse.WfMetricUpdate metric_updates = 3;</code>
      */
     public java.util.List<io.littlehorse.common.proto.WfMetricUpdate.Builder> 

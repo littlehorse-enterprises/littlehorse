@@ -2,7 +2,8 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
+import { routes } from '@/app/routes'
 import { wfRunIdToPath, getVariableValue, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import {
   AlertDialog,
@@ -46,12 +47,12 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const [isClaimed, setIsClaimed] = useState<boolean>(true)
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('eedef-external-events')
 
   // Correlated Events state
   const [correlatedCreatedAfter, setCorrelatedCreatedAfter] = useState('')
   const [correlatedCreatedBefore, setCorrelatedCreatedBefore] = useState('')
-  const [correlatedLimit, setCorrelatedLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [correlatedLimit, setCorrelatedLimit] = usePersistedSearchLimit('eedef-correlated-events')
   const [hasExternalEvents, setHasExternalEvents] = useState<boolean>(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -134,7 +135,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
 
   return (
     <>
-      <Navigation href="/?type=ExternalEventDef" title="Go back to ExternalEventDef" />
+      <Navigation href={routes.search.homeWithType('ExternalEventDef')} title="Go back to ExternalEventDef" />
       <Details spec={spec} />
       <hr className="mt-6" />
       <div className="mt-6">
@@ -206,7 +207,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
                                   <LinkWithTenant
                                     className="py-2 text-blue-500 hover:underline"
                                     target="_blank"
-                                    href={`/wfRun/${wfRunIdToPath(externalEvent.id.wfRunId)}?threadRunNumber=${externalEvent.threadRunNumber}&nodeRunName=${externalEvent.nodeRunPosition}-${spec.id?.name}-EXTERNAL_EVENT`}
+                                    href={`${routes.wfRun.detail(wfRunIdToPath(externalEvent.id.wfRunId))}?threadRunNumber=${externalEvent.threadRunNumber}&nodeRunName=${externalEvent.nodeRunPosition}-${spec.id?.name}-EXTERNAL_EVENT`}
                                   >
                                     {wfRunIdToPath(externalEvent.id.wfRunId)}
                                   </LinkWithTenant>
@@ -337,8 +338,8 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
                                       <AlertDialogHeader>
                                         <AlertDialogTitle>Delete Correlated Event</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                          Are you sure you want to delete the correlated event with key "
-                                          {correlatedEvent.id?.key}"?
+                                          Are you sure you want to delete the correlated event with key &apos;
+                                          {correlatedEvent.id?.key}&apos;?
                                         </AlertDialogDescription>
                                       </AlertDialogHeader>
                                       <AlertDialogFooter>

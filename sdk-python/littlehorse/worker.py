@@ -3,6 +3,7 @@ from enum import Enum
 import asyncio
 from datetime import datetime
 import functools
+from types import FrameType
 from inspect import Parameter, signature, iscoroutinefunction
 import logging
 import signal
@@ -821,7 +822,10 @@ def _to_variable_def(param: inspect.Parameter) -> VariableDef:
         return VariableDef(
             name=lh_type.name,
             type_def=TypeDefinition(
-                struct_def_id=StructDefId(name=get_struct_def_name(raw_type)),
+                struct_def_id=StructDefId(
+                    name=get_struct_def_name(raw_type),
+                    version=-1,
+                ),
                 masked=lh_type.masked,
             ),
         )
@@ -860,7 +864,10 @@ def _return_to_lh_schema(return_type: type) -> Optional[ReturnType]:
     if isinstance(raw_return, type) and is_lh_struct(raw_return):
         return ReturnType(
             return_type=TypeDefinition(
-                struct_def_id=StructDefId(name=get_struct_def_name(raw_return)),
+                struct_def_id=StructDefId(
+                    name=get_struct_def_name(raw_return),
+                    version=-1,
+                ),
                 masked=lh_type.masked if lh_type else False,
             )
         )
@@ -887,7 +894,19 @@ def shutdown_hook(*workers: LHTaskWorker) -> None:
     loop = asyncio.get_running_loop()
 
     for sig in (signal.SIGTERM, signal.SIGINT):
-        loop.add_signal_handler(sig, functools.partial(stop_workers, *workers))
+        stop_callback = functools.partial(stop_workers, *workers)
+        try:
+            loop.add_signal_handler(sig, stop_callback)
+        except NotImplementedError:
+
+            def _stop_handler(_sig: int, _frame: FrameType | None) -> None:
+                stop_callback()
+
+            try:
+                signal.signal(sig, _stop_handler)
+            except (ValueError, OSError):
+                # Signal registration is unavailable in this runtime/thread.
+                pass
 
 
 async def start(*workers: LHTaskWorker) -> None:

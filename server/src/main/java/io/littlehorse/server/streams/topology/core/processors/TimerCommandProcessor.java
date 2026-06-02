@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.topology.core.processors;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -16,8 +17,9 @@ public class TimerCommandProcessor extends CommandProcessor {
             LHServer server,
             MetadataCache metadataCache,
             TaskQueueManager globalTaskQueueManager,
-            AsyncWaiters asyncWaiters) {
-        super(config, server, metadataCache, globalTaskQueueManager, asyncWaiters);
+            AsyncWaiters asyncWaiters,
+            CommandProcessorMetrics metrics) {
+        super(config, server, metadataCache, globalTaskQueueManager, asyncWaiters, metrics);
     }
 
     @Override

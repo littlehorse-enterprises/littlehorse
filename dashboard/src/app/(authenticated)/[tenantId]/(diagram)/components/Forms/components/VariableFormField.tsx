@@ -1,8 +1,9 @@
-import { ThreadVarDef, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
+import { ThreadVarDef, VariableType, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import FormField from './FormField'
 import FormLabel from './FormLabel'
 import { StructDefGroup } from './StructDefGroup'
+import { TimestampVariableField } from './TimestampVariableField'
 import { VariableTypeToFieldComponent } from './VariableTypeToFieldComponent'
 
 interface VariableFormFieldProps {
@@ -25,6 +26,18 @@ export const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
         label={name}
         accessLevel={variable.accessLevel}
         required={variable.required}
+        masked={varDef.typeDef?.masked}
+      />
+    )
+  }
+
+  if (definedType.$case === 'primitiveType' && definedType.value === VariableType.TIMESTAMP) {
+    return (
+      <TimestampVariableField
+        label={name}
+        id={name}
+        protoRequired={variable.required}
+        accessLevel={variable.accessLevel}
         masked={varDef.typeDef?.masked}
       />
     )

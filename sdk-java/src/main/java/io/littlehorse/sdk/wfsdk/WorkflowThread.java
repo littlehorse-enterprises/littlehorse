@@ -134,6 +134,29 @@ public interface WorkflowThread {
     LHFormatString format(String format, Serializable... args);
 
     /**
+     * Creates a builder for a Struct value with the specified StructDef name.
+     * Uses the latest version of the StructDef.
+     * @param structDefName the StructDef name
+     * @return a Struct builder
+     */
+    LHStructBuilder buildStruct(String structDefName);
+
+    /**
+     * Creates a builder for a Struct value with the specified StructDef name and version.
+     * @param structDefName the StructDef name
+     * @param version the concrete StructDef version
+     * @return a Struct builder
+     */
+    LHStructBuilder buildStruct(String structDefName, int version);
+
+    /**
+     * Creates a builder for a nested inline Struct value. An {@link InlineLHStructBuilder}
+     * can only be used as a field value inside another builder.
+     * @return an inline Struct builder
+     */
+    InlineLHStructBuilder buildInlineStruct();
+
+    /**
      * Creates a variable of type INT in the ThreadSpec.
      * @param name is the name of the variable.
      * @return a WfRunVariable.
@@ -198,13 +221,33 @@ public interface WorkflowThread {
     WfRunVariable declareStruct(String name, Class<?> clazz);
 
     /**
-     * Creates an Array based on a Java class parameter.
+     * Creates a Struct variable based on your StructDef name. Uses latest version of the StructDef.
+     *
+     * To supply a specific StructDef version number, use {@link WorkflowThread#declareStruct(String, String, int)} and provide the version number as the third parameter.
+     *
      * @param name is the name of the variable.
-     * @param elementType is the Java class matching the type of elements stored in your Array.
+     * @param structDefName is the name of the StructDef.
      * @return a WfRunVariable.
      */
-    // TODO: Complete Array's implementation
-    // WfRunVariable declareArray(String name, Class<?> elementType);
+    WfRunVariable declareStruct(String name, String structDefName);
+
+    /**
+     * Creates a Struct variable based on your StructDef name and version.
+     * @param name is the name of the variable.
+     * @param structDefName is the name of the StructDef.
+     * @param structDefVersion is the version of the StructDef.
+     *
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareStruct(String name, String structDefName, int structDefVersion);
+
+    /**
+     * Creates an Array variable based on your elementType parameter.
+     * @param name is the name of the variable.
+     * @param elementType is the class type of the elements in the array.
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareArray(String name, Class<?> elementType);
 
     /**
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.
@@ -610,6 +653,16 @@ public interface WorkflowThread {
      * @return an LHExpression representing the result of the division.
      */
     LHExpression divide(Serializable lhs, Serializable rhs);
+
+    /**
+     * Returns an expression that can be passed into a variable assignment/mutation or a TaskRun. The
+     * expression is given by raising the base to the power of the exponent. This method does not result
+     * in any modifications being made to a variable; it only returns a value calculated inline.
+     * @param base is the left hand side of the expression, which is used as the base for the exponentiation.
+     * @param exponent is the right hand side of the expression, which is used as the exponent for the base.
+     * @return an LHExpression representing the result of the exponentiation.
+     */
+    LHExpression pow(Serializable base, Serializable exponent);
 
     /**
      * Returns an expression that can be passed into a variable assignment/mutation or a TaskRun. The

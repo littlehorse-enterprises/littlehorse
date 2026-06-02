@@ -8,7 +8,8 @@ import {
 } from '@/app/(authenticated)/[tenantId]/userTaskDef/[...props]/actions/searchUserTaskRun'
 
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
+import { routes } from '@/app/routes'
 import { localDateTimeToUTCIsoString, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -40,7 +41,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const tenantId = useParams().tenantId as string
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('global')
   const [userIdToSearchFor] = useDebounce(userId, DEBOUNCE_DELAY)
   const [userGroupToSearchFor] = useDebounce(userGroup, DEBOUNCE_DELAY)
 
@@ -76,7 +77,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
 
   return (
     <>
-      <Navigation href="/?type=UserTaskDef" title="Go back to UserTaskDefs" />
+      <Navigation href={routes.search.homeWithType('UserTaskDef')} title="Go back to UserTaskDefs" />
       <Details id={spec} />
       <Fields fields={spec.fields} />
       <hr className="mt-6" />
@@ -166,7 +167,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                             <LinkWithTenant
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${wfRunIdToPath(userTaskRun.id.wfRunId)}?threadRunNumber=${userTaskRun.nodeRunId?.threadRunNumber}&nodeRunName=${nodeRun.nodeName}`}
+                              href={`${routes.wfRun.detail(wfRunIdToPath(userTaskRun.id.wfRunId))}?threadRunNumber=${userTaskRun.nodeRunId?.threadRunNumber}&nodeRunName=${nodeRun.nodeName}`}
                             >
                               {wfRunIdToPath(userTaskRun.id.wfRunId)}
                             </LinkWithTenant>
@@ -182,7 +183,10 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                           <TableCell>
                             <Button asChild>
                               <LinkWithTenant
-                                href={`/userTaskDef/audit/${userTaskRun.id?.wfRunId?.id}/${userTaskRun.id?.userTaskGuid}`}
+                                href={routes.userTaskDef.audit(
+                                  userTaskRun.id?.wfRunId?.id ?? '',
+                                  userTaskRun.id?.userTaskGuid ?? ''
+                                )}
                               >
                                 View Audit Log
                               </LinkWithTenant>

@@ -5,6 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
@@ -12,6 +13,7 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.IngressTypeUtils;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
@@ -83,11 +85,14 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         // just use the Chulla Vida strategy.
         if (eed.getReturnType().isPresent()) {
             ReturnTypeModel type = eed.getReturnType().get();
-            if (!type.isCompatibleWith(content, executionContext.metadataManager())) {
+            try {
+                IngressTypeUtils.applyExpectedTypeAndValidate(
+                        type.getOutputType(), content, executionContext.metadataManager());
+            } catch (TypeValidationException ex) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
-                        "Invalid type of content for event. Check the return type of ExternalEventDef "
-                                + eed.getName());
+                        "Invalid type of content for event. Check the return type of ExternalEventDef " + eed.getName()
+                                + ": " + ex.getMessage());
             }
         }
 

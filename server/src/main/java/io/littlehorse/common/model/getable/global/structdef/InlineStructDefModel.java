@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.global.structdef;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.model.getable.core.variable.InlineStructModel;
 import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
@@ -57,6 +58,16 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
             }
 
             try {
+                // Ensure any STRUCT_DEF_ID referenced in the field's type exists and is pinned to the concrete latest
+                // version
+                if (field.getValue().getFieldType() != null) {
+                    try {
+                        field.getValue().getFieldType().validateStructDefExistsAndPinVersion(metadataManager);
+                    } catch (UnknownStructDefException e) {
+                        throw new StructDefValidationException(e, e.getMessage());
+                    }
+                }
+
                 field.getValue().validate(metadataManager);
             } catch (StructDefValidationException e) {
                 throw new StructDefValidationException(
@@ -88,7 +99,18 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
         }
     }
 
-    public void validateAgainst(InlineStructModel inlineStruct, ReadOnlyMetadataManager metadataManager)
+    /**
+     * Superset-compatible validation: value may contain extra fields that are not
+     * present in this StructDef. Required fields from the StructDef are still enforced.
+     * Use this for runtime ingestion where clients may send newer fields than the
+     * pinned schema.
+     *
+     * @param inlineStruct The InlineStruct to validate.
+     * @param metadataManager Read-only metadata manager used to resolve nested struct types.
+     * @throws StructValidationException if the payload is missing required fields or
+     *                                   contains fields incompatible with the StructDef.
+     */
+    public void validateAgainstSuperset(InlineStructModel inlineStruct, ReadOnlyMetadataManager metadataManager)
             throws StructValidationException {
         for (Entry<String, StructFieldDefModel> entry : this.fields.entrySet()) {
             // If InlineStruct is missing required field...
@@ -106,16 +128,6 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
                     throw new StructValidationException(
                             String.format("Field '%s' is invalid: %s", fieldName, e.getMessage()));
                 }
-            }
-        }
-
-        for (Entry<String, StructFieldModel> entry : inlineStruct.getFields().entrySet()) {
-            // If InlineStruct has extra fields...
-            String fieldName = entry.getKey();
-
-            if (!this.fields.containsKey(fieldName)) {
-                throw new StructValidationException(
-                        "Struct does not match StructDef, includes unrecognized field %s".formatted(fieldName));
             }
         }
     }

@@ -114,6 +114,20 @@ public class LHConfigTest {
     }
 
     @Test
+    void shouldEnableResourceExhaustedRetryByDefault() {
+        LHConfig defaultConfig = new LHConfig(Map.of());
+
+        assertThat(defaultConfig.shouldRetryOnResourceExhausted()).isTrue();
+    }
+
+    @Test
+    void shouldAllowDisablingResourceExhaustedRetry() {
+        LHConfig config = new LHConfig(Map.of(LHConfig.GRPC_RESOURCE_EXHAUSTED_RETRY_KEY, "false"));
+
+        assertThat(config.shouldRetryOnResourceExhausted()).isFalse();
+    }
+
+    @Test
     @SetEnvironmentVariable(key = LHW_TASK_WORKER_VERSION, value = EXPECTED_VERSION)
     void shouldReadEnvWithBuilder() {
         LHConfig lhConfig = LHConfig.newBuilder().loadFromEnvVariables().build();

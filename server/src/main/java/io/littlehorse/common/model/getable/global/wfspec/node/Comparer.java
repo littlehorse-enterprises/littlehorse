@@ -1,12 +1,14 @@
 package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.core.variable.ArrayModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.TypeDefinition;
-import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Comparer {
 
     public static int compare(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
@@ -25,32 +27,36 @@ public class Comparer {
     }
 
     public static boolean contains(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
-        // Can only do for Str, Arr, and Obj
+        try {
+            // Can only do for Str, Arr, and Obj
+            if (left.getValueType() == ValueCase.STR) {
+                String rStr = right.asStr().getStrVal();
 
-        // TODO: Decide how to support StructDefs
-        if (left.getTypeDefinition().getDefinedTypeCase() != TypeDefinition.DefinedTypeCase.PRIMITIVE_TYPE) {
-            throw new LHVarSubError(null, "Can't perform contains on " + left.getTypeDefinition());
-        }
+                return left.asStr().getStrVal().contains(rStr);
+            } else if (left.getValueType() == ValueCase.JSON_ARR) {
+                Object rObj = right.getVal();
+                List<Object> lhs = left.asArr().getJsonArrVal();
 
-        if (left.getTypeDefinition().getPrimitiveType() == VariableType.STR) {
-            String rStr = right.asStr().getStrVal();
-
-            return left.asStr().getStrVal().contains(rStr);
-        } else if (left.getTypeDefinition().getPrimitiveType() == VariableType.JSON_ARR) {
-            Object rObj = right.getVal();
-            List<Object> lhs = left.asArr().getJsonArrVal();
-
-            for (Object o : lhs) {
-                if (LHUtil.deepEquals(o, rObj)) {
-                    return true;
+                for (Object o : lhs) {
+                    if (LHUtil.deepEquals(o, rObj)) {
+                        return true;
+                    }
                 }
+                return false;
+            } else if (left.getValueType() == ValueCase.JSON_OBJ) {
+                return left.asObj().getJsonObjVal().containsKey(right.asStr().getStrVal());
+            } else if (left.getValueType() == ValueCase.ARRAY) {
+                ArrayModel leftArray = left.getArray();
+                for (VariableValueModel item : leftArray.getItems()) {
+                    if (item.equals(right)) return true;
+                }
+                return false;
+            } else {
+                throw new LHVarSubError(null, "Can't do CONTAINS on " + left.getValueType());
             }
-            return false;
-        } else if (left.getTypeDefinition().getPrimitiveType() == VariableType.JSON_OBJ) {
-            return left.asObj().getJsonObjVal().containsKey(right.asStr().getStrVal());
-        } else {
-            throw new LHVarSubError(
-                    null, "Can't do CONTAINS on " + left.getTypeDefinition().getPrimitiveType());
+        } catch (Exception ex) {
+            log.error("Error while evaluating CONTAINS with left={} right={}", left, right, ex);
+            throw new LHVarSubError(ex, "Failed evaluating CONTAINS");
         }
     }
 }

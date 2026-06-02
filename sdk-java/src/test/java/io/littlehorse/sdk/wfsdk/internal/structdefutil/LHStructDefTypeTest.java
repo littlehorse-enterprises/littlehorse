@@ -1,8 +1,10 @@
 package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
@@ -98,9 +100,25 @@ public class LHStructDefTypeTest {
         public boolean isAlive;
     }
 
+    class UnannotatedNestedPojo {
+        public String value;
+    }
+
+    @LHStructDef("invalid-json-obj-holder")
+    @Getter
+    class InvalidJsonObjHolder {
+        public UnannotatedNestedPojo nestedPojo;
+    }
+
+    @LHStructDef("invalid-json-arr-holder")
+    @Getter
+    class InvalidJsonArrHolder {
+        public java.util.List<String> names;
+    }
+
     @Test
     public void getEmptyInlineStructDefWhenClassDoesNotHaveGettersOrSetters() {
-        LHStructDefType authorClassType = new LHStructDefType(AuthorFieldsOnly.class);
+        LHStructDefType authorClassType = new LHStructDefType(AuthorFieldsOnly.class, LHTypeAdapterRegistry.empty());
         InlineStructDef actualInlineStructDef = authorClassType.getInlineStructDef();
 
         assertThat(actualInlineStructDef.toString()).isBlank();
@@ -108,7 +126,7 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefWithPrimitiveFields() {
-        LHStructDefType authorClassType = new LHStructDefType(Author.class);
+        LHStructDefType authorClassType = new LHStructDefType(Author.class, LHTypeAdapterRegistry.empty());
         InlineStructDef actualInlineStructDef = authorClassType.getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
@@ -148,7 +166,8 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefWithFieldReferenceToAnotherStructDef() {
-        InlineStructDef actualInlineStructDef = new LHStructDefType(Book.class).getInlineStructDef();
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(Book.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "title",
@@ -164,7 +183,9 @@ public class LHStructDefTypeTest {
                         "author",
                         StructFieldDef.newBuilder()
                                 .setFieldType(TypeDefinition.newBuilder()
-                                        .setStructDefId(StructDefId.newBuilder().setName("author")))
+                                        .setStructDefId(StructDefId.newBuilder()
+                                                .setName("author")
+                                                .setVersion(-1)))
                                 .build())
                 .build();
 
@@ -173,7 +194,8 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefIgnoresFieldsWithLHStructIgnore() {
-        InlineStructDef actualInlineStructDef = new LHStructDefType(Library.class).getInlineStructDef();
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(Library.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "name",
@@ -184,7 +206,14 @@ public class LHStructDefTypeTest {
                         "books",
                         StructFieldDef.newBuilder()
                                 .setFieldType(TypeDefinition.newBuilder()
-                                        .setPrimitiveType(VariableType.JSON_ARR)
+                                        .setInlineArrayDef(InlineArrayDef.newBuilder()
+                                                .setArrayType(TypeDefinition.newBuilder()
+                                                        .setStructDefId(StructDefId.newBuilder()
+                                                                .setName("book")
+                                                                .setVersion(-1)
+                                                                .build())
+                                                        .build())
+                                                .build())
                                         .build())
                                 .build())
                 .build();
@@ -194,7 +223,8 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefMarksFieldsAsMasked() {
-        InlineStructDef actualInlineStructDef = new LHStructDefType(MaskedValueDemo.class).getInlineStructDef();
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(MaskedValueDemo.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "maskedValue",
@@ -210,7 +240,8 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefUsesAnnotatedFieldName() {
-        InlineStructDef actualInlineStructDef = new LHStructDefType(NamedFieldDemo.class).getInlineStructDef();
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(NamedFieldDemo.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "customFieldName",
@@ -224,7 +255,8 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefUsesLHStructFieldAnnotationOnClassFields() {
-        InlineStructDef actualInlineStructDef = new LHStructDefType(FieldAnnotationDemo.class).getInlineStructDef();
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(FieldAnnotationDemo.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "secret",
@@ -245,8 +277,9 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefResolvesBooleanIsPrefixFieldAnnotations() {
-        InlineStructDef actualInlineStructDef =
-                new LHStructDefType(BooleanFieldAnnotationDemo.class).getInlineStructDef();
+        InlineStructDef actualInlineStructDef = new LHStructDefType(
+                        BooleanFieldAnnotationDemo.class, LHTypeAdapterRegistry.empty())
+                .getInlineStructDef();
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
                         "isPersonAlive",
@@ -264,9 +297,23 @@ public class LHStructDefTypeTest {
 
         TypeDefinition actualTypeDefinition = structDefType.getTypeDefinition();
         TypeDefinition expectedTypeDefinition = TypeDefinition.newBuilder()
-                .setStructDefId(StructDefId.newBuilder().setName("author"))
+                .setStructDefId(StructDefId.newBuilder().setName("author").setVersion(-1))
                 .build();
 
         assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
+    }
+
+    @Test
+    public void shouldRejectStructDefFieldResolvingToJsonObj() {
+        assertThatThrownBy(() -> new LHStructDefType(InvalidJsonObjHolder.class, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+    }
+
+    @Test
+    public void shouldRejectStructDefFieldResolvingToJsonArr() {
+        assertThatThrownBy(() -> new LHStructDefType(InvalidJsonArrHolder.class, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Forbidden JSON type: JSON_ARR");
     }
 }

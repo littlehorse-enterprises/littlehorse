@@ -8,7 +8,17 @@
 import Long from "long";
 import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
-import { DeletePrincipalRequest, Principal, PutPrincipalRequest, PutTenantRequest, Tenant } from "./acls";
+import {
+  DeletePrincipalRequest,
+  DeleteQuotaRequest,
+  Principal,
+  PutPrincipalRequest,
+  PutQuotaRequest,
+  PutTenantRequest,
+  Quota,
+  QuotaId,
+  Tenant,
+} from "./acls";
 import {
   LHStatus,
   lHStatusFromJSON,
@@ -23,7 +33,7 @@ import {
   taskStatusToJSON,
   taskStatusToNumber,
 } from "./common_enums";
-import { InlineStructDef, ReturnType, VariableDef } from "./common_wfspec";
+import { InlineStructDef, VariableDef } from "./common_wfspec";
 import {
   CorrelatedEvent,
   CorrelatedEventConfig,
@@ -33,6 +43,14 @@ import {
 } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
+import {
+  ListTaskMetricsRequest,
+  ListWfMetricsRequest,
+  MetricsList,
+  MetricWindow,
+  MetricWindowIdList,
+  SearchWfMetricWindowRequest,
+} from "./metrics";
 import { NodeRun } from "./node_run";
 import {
   CheckpointId,
@@ -40,6 +58,7 @@ import {
   ExternalEventDefId,
   ExternalEventId,
   InactiveThreadRunId,
+  MetricWindowId,
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
@@ -60,6 +79,7 @@ import { ScheduledWfRun } from "./scheduled_wf_run";
 import { StructDef } from "./struct_def";
 import { TaskDef } from "./task_def";
 import { Checkpoint, LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } from "./task_run";
+import { ReturnType } from "./type_definition";
 import {
   AssignUserTaskRunRequest,
   CancelUserTaskRunRequest,
@@ -1077,6 +1097,32 @@ export interface PrincipalIdList {
   bookmark?: Buffer | undefined;
 }
 
+/** Search for Quotas based on certain criteria. */
+export interface SearchQuotaRequest {
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?:
+    | number
+    | undefined;
+  /** If set, return only Quotas for this Tenant. */
+  tenantId?:
+    | string
+    | undefined;
+  /** If set, return only the Quota for this Principal within the specified Tenant. */
+  principal: PrincipalId | undefined;
+}
+
+/** List of Quota Id's */
+export interface QuotaIdList {
+  /** The resulting object id's. */
+  results: QuotaId[];
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?: Buffer | undefined;
+}
+
 /**
  * Search for ExternalEvents based on certain criteria.
  *
@@ -1586,43 +1632,6 @@ export interface TaskDefMetricsQueryRequest {
   taskDefName?: string | undefined;
 }
 
-/** Query to retrieve TaskDef Metrics over a period of time. */
-export interface ListTaskMetricsRequest {
-  /** TaskDef id for whichwe retrieve metrics. */
-  taskDefId:
-    | TaskDefId
-    | undefined;
-  /**
-   * This parameter is a timestamp that is used to determine the *last* window returned. The
-   * server will then return `num_windows` worth of data from before this timestamp.
-   */
-  lastWindowStart:
-    | string
-    | undefined;
-  /** Window size */
-  windowLength: MetricsWindowLength;
-  /** Number of windows to retrieve. */
-  numWindows: number;
-  /** Bookmark for cursor-based pagination; pass if applicable. */
-  bookmark?:
-    | Buffer
-    | undefined;
-  /** Maximum results to return in one request. */
-  limit?: number | undefined;
-}
-
-/** A list of TaskDef Metrics WIndows */
-export interface ListTaskMetricsResponse {
-  /** List of TaskDef Metrics Windows */
-  results: TaskDefMetrics[];
-  /**
-   * The bookmark can be used for cursor-based pagination. If it is null, the server
-   * has returned all results. If it is set, you can pass it into your next request
-   * to resume searching where your previous request left off.
-   */
-  bookmark?: Buffer | undefined;
-}
-
 /** Query to retrieve a specific WfSpec Metrics Window. */
 export interface WfSpecMetricsQueryRequest {
   /** WfSpecId of metrics to get. */
@@ -1638,31 +1647,6 @@ export interface WfSpecMetricsQueryRequest {
     | undefined;
   /** The window size */
   windowLength: MetricsWindowLength;
-}
-
-/** Query to retrieve WfSpec Metrics over a period of time. */
-export interface ListWfMetricsRequest {
-  /** WfSpecId of metrics to get. */
-  wfSpecId:
-    | WfSpecId
-    | undefined;
-  /**
-   * This parameter is a timestamp that is used to determine the *last* window returned. The
-   * server will then return `num_windows` worth of data from before this timestamp.
-   */
-  lastWindowStart:
-    | string
-    | undefined;
-  /** The window size */
-  windowLength: MetricsWindowLength;
-  /** Number of windows to retrieve */
-  numWindows: number;
-  /** Bookmark for cursor-based pagination; pass if applicable. */
-  bookmark?:
-    | Buffer
-    | undefined;
-  /** Maximum results to return in one request. */
-  limit?: number | undefined;
 }
 
 /** A list of WfSpec Metrics Windows */
@@ -1858,12 +1842,55 @@ export interface LittleHorseVersion {
   /** Server Minor Version */
   minorVersion: number;
   /** Server Patch Version */
-  patchVersion: number;
+  patchVersion?:
+    | number
+    | undefined;
   /**
    * Prerelease Identifier. If this is set, then the server is NOT a production release
    * but rather a release candidate or experimental pre-release.
    */
   preReleaseIdentifier?: string | undefined;
+}
+
+/**
+ * Request to count NodeRun's matching specified criteria. If no filter is set,
+ * the total count of all NodeRun's in the tenant is returned.
+ */
+export interface CountNodeRunRequest {
+  filter?: { $case: "wfSpecFilter"; value: CountNodeRunRequest_WfSpecFilter } | undefined;
+}
+
+/** Filter NodeRun counts by WfSpec name, and optionally by major version and revision. */
+export interface CountNodeRunRequest_WfSpecFilter {
+  /** Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted. */
+  wfSpecName: string;
+  /** Filter by WfSpec major version. Requires wf_spec_name to be set. */
+  wfSpecMajorVersion?:
+    | number
+    | undefined;
+  /** Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set. */
+  wfSpecRevision?: number | undefined;
+}
+
+/**
+ * Request to count TaskRun's matching the given criteria for a specific TaskDef.
+ * The task_def_name is required. The status filter narrows the count to TaskRun's
+ * in a specific state. Initially, only TASK_SCHEDULED is supported as a counted status.
+ */
+export interface CountTaskRunRequest {
+  /** The name of the TaskDef whose TaskRun's should be counted. */
+  taskDefName: string;
+  /**
+   * Filter by TaskRun status. Required. Initially only TASK_SCHEDULED is supported;
+   * the server will reject requests with unsupported status values.
+   */
+  status: TaskStatus;
+}
+
+/** Response containing an eventually consistent count value. */
+export interface Count {
+  /** The count of objects matching the request criteria. */
+  value: number;
 }
 
 function createBaseGetLatestUserTaskDefRequest(): GetLatestUserTaskDefRequest {
@@ -7231,6 +7258,186 @@ export const PrincipalIdList = {
   },
 };
 
+function createBaseSearchQuotaRequest(): SearchQuotaRequest {
+  return { bookmark: undefined, limit: undefined, tenantId: undefined, principal: undefined };
+}
+
+export const SearchQuotaRequest = {
+  encode(message: SearchQuotaRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.bookmark !== undefined) {
+      writer.uint32(10).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(16).int32(message.limit);
+    }
+    if (message.tenantId !== undefined) {
+      writer.uint32(26).string(message.tenantId);
+    }
+    if (message.principal !== undefined) {
+      PrincipalId.encode(message.principal, writer.uint32(34).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchQuotaRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchQuotaRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.tenantId = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.principal = PrincipalId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchQuotaRequest {
+    return {
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+      tenantId: isSet(object.tenantId) ? globalThis.String(object.tenantId) : undefined,
+      principal: isSet(object.principal) ? PrincipalId.fromJSON(object.principal) : undefined,
+    };
+  },
+
+  toJSON(message: SearchQuotaRequest): unknown {
+    const obj: any = {};
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.tenantId !== undefined) {
+      obj.tenantId = message.tenantId;
+    }
+    if (message.principal !== undefined) {
+      obj.principal = PrincipalId.toJSON(message.principal);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<SearchQuotaRequest>): SearchQuotaRequest {
+    return SearchQuotaRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SearchQuotaRequest>): SearchQuotaRequest {
+    const message = createBaseSearchQuotaRequest();
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
+    message.tenantId = object.tenantId ?? undefined;
+    message.principal = (object.principal !== undefined && object.principal !== null)
+      ? PrincipalId.fromPartial(object.principal)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQuotaIdList(): QuotaIdList {
+  return { results: [], bookmark: undefined };
+}
+
+export const QuotaIdList = {
+  encode(message: QuotaIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      QuotaId.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuotaIdList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuotaIdList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(QuotaId.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuotaIdList {
+    return {
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => QuotaId.fromJSON(e)) : [],
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+    };
+  },
+
+  toJSON(message: QuotaIdList): unknown {
+    const obj: any = {};
+    if (message.results?.length) {
+      obj.results = message.results.map((e) => QuotaId.toJSON(e));
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuotaIdList>): QuotaIdList {
+    return QuotaIdList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QuotaIdList>): QuotaIdList {
+    const message = createBaseQuotaIdList();
+    message.results = object.results?.map((e) => QuotaId.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
+    return message;
+  },
+};
+
 function createBaseSearchExternalEventRequest(): SearchExternalEventRequest {
   return {
     bookmark: undefined,
@@ -9697,227 +9904,6 @@ export const TaskDefMetricsQueryRequest = {
   },
 };
 
-function createBaseListTaskMetricsRequest(): ListTaskMetricsRequest {
-  return {
-    taskDefId: undefined,
-    lastWindowStart: undefined,
-    windowLength: MetricsWindowLength.MINUTES_5,
-    numWindows: 0,
-    bookmark: undefined,
-    limit: undefined,
-  };
-}
-
-export const ListTaskMetricsRequest = {
-  encode(message: ListTaskMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.taskDefId !== undefined) {
-      TaskDefId.encode(message.taskDefId, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.lastWindowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.lastWindowStart), writer.uint32(18).fork()).ldelim();
-    }
-    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      writer.uint32(24).int32(metricsWindowLengthToNumber(message.windowLength));
-    }
-    if (message.numWindows !== 0) {
-      writer.uint32(32).int32(message.numWindows);
-    }
-    if (message.bookmark !== undefined) {
-      writer.uint32(42).bytes(message.bookmark);
-    }
-    if (message.limit !== undefined) {
-      writer.uint32(48).int32(message.limit);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ListTaskMetricsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListTaskMetricsRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.taskDefId = TaskDefId.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.lastWindowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.windowLength = metricsWindowLengthFromJSON(reader.int32());
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.numWindows = reader.int32();
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.bookmark = reader.bytes() as Buffer;
-          continue;
-        case 6:
-          if (tag !== 48) {
-            break;
-          }
-
-          message.limit = reader.int32();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ListTaskMetricsRequest {
-    return {
-      taskDefId: isSet(object.taskDefId) ? TaskDefId.fromJSON(object.taskDefId) : undefined,
-      lastWindowStart: isSet(object.lastWindowStart) ? globalThis.String(object.lastWindowStart) : undefined,
-      windowLength: isSet(object.windowLength)
-        ? metricsWindowLengthFromJSON(object.windowLength)
-        : MetricsWindowLength.MINUTES_5,
-      numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
-      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
-      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
-    };
-  },
-
-  toJSON(message: ListTaskMetricsRequest): unknown {
-    const obj: any = {};
-    if (message.taskDefId !== undefined) {
-      obj.taskDefId = TaskDefId.toJSON(message.taskDefId);
-    }
-    if (message.lastWindowStart !== undefined) {
-      obj.lastWindowStart = message.lastWindowStart;
-    }
-    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      obj.windowLength = metricsWindowLengthToJSON(message.windowLength);
-    }
-    if (message.numWindows !== 0) {
-      obj.numWindows = Math.round(message.numWindows);
-    }
-    if (message.bookmark !== undefined) {
-      obj.bookmark = base64FromBytes(message.bookmark);
-    }
-    if (message.limit !== undefined) {
-      obj.limit = Math.round(message.limit);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<ListTaskMetricsRequest>): ListTaskMetricsRequest {
-    return ListTaskMetricsRequest.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ListTaskMetricsRequest>): ListTaskMetricsRequest {
-    const message = createBaseListTaskMetricsRequest();
-    message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
-      ? TaskDefId.fromPartial(object.taskDefId)
-      : undefined;
-    message.lastWindowStart = object.lastWindowStart ?? undefined;
-    message.windowLength = object.windowLength ?? MetricsWindowLength.MINUTES_5;
-    message.numWindows = object.numWindows ?? 0;
-    message.bookmark = object.bookmark ?? undefined;
-    message.limit = object.limit ?? undefined;
-    return message;
-  },
-};
-
-function createBaseListTaskMetricsResponse(): ListTaskMetricsResponse {
-  return { results: [], bookmark: undefined };
-}
-
-export const ListTaskMetricsResponse = {
-  encode(message: ListTaskMetricsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.results) {
-      TaskDefMetrics.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.bookmark !== undefined) {
-      writer.uint32(18).bytes(message.bookmark);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ListTaskMetricsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListTaskMetricsResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.results.push(TaskDefMetrics.decode(reader, reader.uint32()));
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.bookmark = reader.bytes() as Buffer;
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ListTaskMetricsResponse {
-    return {
-      results: globalThis.Array.isArray(object?.results)
-        ? object.results.map((e: any) => TaskDefMetrics.fromJSON(e))
-        : [],
-      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
-    };
-  },
-
-  toJSON(message: ListTaskMetricsResponse): unknown {
-    const obj: any = {};
-    if (message.results?.length) {
-      obj.results = message.results.map((e) => TaskDefMetrics.toJSON(e));
-    }
-    if (message.bookmark !== undefined) {
-      obj.bookmark = base64FromBytes(message.bookmark);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<ListTaskMetricsResponse>): ListTaskMetricsResponse {
-    return ListTaskMetricsResponse.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ListTaskMetricsResponse>): ListTaskMetricsResponse {
-    const message = createBaseListTaskMetricsResponse();
-    message.results = object.results?.map((e) => TaskDefMetrics.fromPartial(e)) || [];
-    message.bookmark = object.bookmark ?? undefined;
-    return message;
-  },
-};
-
 function createBaseWfSpecMetricsQueryRequest(): WfSpecMetricsQueryRequest {
   return { wfSpecId: undefined, windowStart: undefined, windowLength: MetricsWindowLength.MINUTES_5 };
 }
@@ -10007,151 +9993,6 @@ export const WfSpecMetricsQueryRequest = {
       : undefined;
     message.windowStart = object.windowStart ?? undefined;
     message.windowLength = object.windowLength ?? MetricsWindowLength.MINUTES_5;
-    return message;
-  },
-};
-
-function createBaseListWfMetricsRequest(): ListWfMetricsRequest {
-  return {
-    wfSpecId: undefined,
-    lastWindowStart: undefined,
-    windowLength: MetricsWindowLength.MINUTES_5,
-    numWindows: 0,
-    bookmark: undefined,
-    limit: undefined,
-  };
-}
-
-export const ListWfMetricsRequest = {
-  encode(message: ListWfMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfSpecId !== undefined) {
-      WfSpecId.encode(message.wfSpecId, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.lastWindowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.lastWindowStart), writer.uint32(18).fork()).ldelim();
-    }
-    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      writer.uint32(24).int32(metricsWindowLengthToNumber(message.windowLength));
-    }
-    if (message.numWindows !== 0) {
-      writer.uint32(32).int32(message.numWindows);
-    }
-    if (message.bookmark !== undefined) {
-      writer.uint32(42).bytes(message.bookmark);
-    }
-    if (message.limit !== undefined) {
-      writer.uint32(48).int32(message.limit);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ListWfMetricsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListWfMetricsRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.lastWindowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.windowLength = metricsWindowLengthFromJSON(reader.int32());
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.numWindows = reader.int32();
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.bookmark = reader.bytes() as Buffer;
-          continue;
-        case 6:
-          if (tag !== 48) {
-            break;
-          }
-
-          message.limit = reader.int32();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ListWfMetricsRequest {
-    return {
-      wfSpecId: isSet(object.wfSpecId) ? WfSpecId.fromJSON(object.wfSpecId) : undefined,
-      lastWindowStart: isSet(object.lastWindowStart) ? globalThis.String(object.lastWindowStart) : undefined,
-      windowLength: isSet(object.windowLength)
-        ? metricsWindowLengthFromJSON(object.windowLength)
-        : MetricsWindowLength.MINUTES_5,
-      numWindows: isSet(object.numWindows) ? globalThis.Number(object.numWindows) : 0,
-      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
-      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
-    };
-  },
-
-  toJSON(message: ListWfMetricsRequest): unknown {
-    const obj: any = {};
-    if (message.wfSpecId !== undefined) {
-      obj.wfSpecId = WfSpecId.toJSON(message.wfSpecId);
-    }
-    if (message.lastWindowStart !== undefined) {
-      obj.lastWindowStart = message.lastWindowStart;
-    }
-    if (message.windowLength !== MetricsWindowLength.MINUTES_5) {
-      obj.windowLength = metricsWindowLengthToJSON(message.windowLength);
-    }
-    if (message.numWindows !== 0) {
-      obj.numWindows = Math.round(message.numWindows);
-    }
-    if (message.bookmark !== undefined) {
-      obj.bookmark = base64FromBytes(message.bookmark);
-    }
-    if (message.limit !== undefined) {
-      obj.limit = Math.round(message.limit);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<ListWfMetricsRequest>): ListWfMetricsRequest {
-    return ListWfMetricsRequest.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ListWfMetricsRequest>): ListWfMetricsRequest {
-    const message = createBaseListWfMetricsRequest();
-    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
-      ? WfSpecId.fromPartial(object.wfSpecId)
-      : undefined;
-    message.lastWindowStart = object.lastWindowStart ?? undefined;
-    message.windowLength = object.windowLength ?? MetricsWindowLength.MINUTES_5;
-    message.numWindows = object.numWindows ?? 0;
-    message.bookmark = object.bookmark ?? undefined;
-    message.limit = object.limit ?? undefined;
     return message;
   },
 };
@@ -11539,7 +11380,7 @@ export const GetLatestWfSpecRequest = {
 };
 
 function createBaseLittleHorseVersion(): LittleHorseVersion {
-  return { majorVersion: 0, minorVersion: 0, patchVersion: 0, preReleaseIdentifier: undefined };
+  return { majorVersion: 0, minorVersion: 0, patchVersion: undefined, preReleaseIdentifier: undefined };
 }
 
 export const LittleHorseVersion = {
@@ -11550,7 +11391,7 @@ export const LittleHorseVersion = {
     if (message.minorVersion !== 0) {
       writer.uint32(16).int32(message.minorVersion);
     }
-    if (message.patchVersion !== 0) {
+    if (message.patchVersion !== undefined) {
       writer.uint32(24).int32(message.patchVersion);
     }
     if (message.preReleaseIdentifier !== undefined) {
@@ -11607,7 +11448,7 @@ export const LittleHorseVersion = {
     return {
       majorVersion: isSet(object.majorVersion) ? globalThis.Number(object.majorVersion) : 0,
       minorVersion: isSet(object.minorVersion) ? globalThis.Number(object.minorVersion) : 0,
-      patchVersion: isSet(object.patchVersion) ? globalThis.Number(object.patchVersion) : 0,
+      patchVersion: isSet(object.patchVersion) ? globalThis.Number(object.patchVersion) : undefined,
       preReleaseIdentifier: isSet(object.preReleaseIdentifier)
         ? globalThis.String(object.preReleaseIdentifier)
         : undefined,
@@ -11622,7 +11463,7 @@ export const LittleHorseVersion = {
     if (message.minorVersion !== 0) {
       obj.minorVersion = Math.round(message.minorVersion);
     }
-    if (message.patchVersion !== 0) {
+    if (message.patchVersion !== undefined) {
       obj.patchVersion = Math.round(message.patchVersion);
     }
     if (message.preReleaseIdentifier !== undefined) {
@@ -11638,8 +11479,301 @@ export const LittleHorseVersion = {
     const message = createBaseLittleHorseVersion();
     message.majorVersion = object.majorVersion ?? 0;
     message.minorVersion = object.minorVersion ?? 0;
-    message.patchVersion = object.patchVersion ?? 0;
+    message.patchVersion = object.patchVersion ?? undefined;
     message.preReleaseIdentifier = object.preReleaseIdentifier ?? undefined;
+    return message;
+  },
+};
+
+function createBaseCountNodeRunRequest(): CountNodeRunRequest {
+  return { filter: undefined };
+}
+
+export const CountNodeRunRequest = {
+  encode(message: CountNodeRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    switch (message.filter?.$case) {
+      case "wfSpecFilter":
+        CountNodeRunRequest_WfSpecFilter.encode(message.filter.value, writer.uint32(10).fork()).ldelim();
+        break;
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CountNodeRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCountNodeRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.filter = {
+            $case: "wfSpecFilter",
+            value: CountNodeRunRequest_WfSpecFilter.decode(reader, reader.uint32()),
+          };
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CountNodeRunRequest {
+    return {
+      filter: isSet(object.wfSpecFilter)
+        ? { $case: "wfSpecFilter", value: CountNodeRunRequest_WfSpecFilter.fromJSON(object.wfSpecFilter) }
+        : undefined,
+    };
+  },
+
+  toJSON(message: CountNodeRunRequest): unknown {
+    const obj: any = {};
+    if (message.filter?.$case === "wfSpecFilter") {
+      obj.wfSpecFilter = CountNodeRunRequest_WfSpecFilter.toJSON(message.filter.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
+    return CountNodeRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
+    const message = createBaseCountNodeRunRequest();
+    if (
+      object.filter?.$case === "wfSpecFilter" && object.filter?.value !== undefined && object.filter?.value !== null
+    ) {
+      message.filter = {
+        $case: "wfSpecFilter",
+        value: CountNodeRunRequest_WfSpecFilter.fromPartial(object.filter.value),
+      };
+    }
+    return message;
+  },
+};
+
+function createBaseCountNodeRunRequest_WfSpecFilter(): CountNodeRunRequest_WfSpecFilter {
+  return { wfSpecName: "", wfSpecMajorVersion: undefined, wfSpecRevision: undefined };
+}
+
+export const CountNodeRunRequest_WfSpecFilter = {
+  encode(message: CountNodeRunRequest_WfSpecFilter, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecName !== "") {
+      writer.uint32(10).string(message.wfSpecName);
+    }
+    if (message.wfSpecMajorVersion !== undefined) {
+      writer.uint32(16).int32(message.wfSpecMajorVersion);
+    }
+    if (message.wfSpecRevision !== undefined) {
+      writer.uint32(24).int32(message.wfSpecRevision);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CountNodeRunRequest_WfSpecFilter {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCountNodeRunRequest_WfSpecFilter();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfSpecName = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.wfSpecMajorVersion = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.wfSpecRevision = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CountNodeRunRequest_WfSpecFilter {
+    return {
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
+      wfSpecMajorVersion: isSet(object.wfSpecMajorVersion) ? globalThis.Number(object.wfSpecMajorVersion) : undefined,
+      wfSpecRevision: isSet(object.wfSpecRevision) ? globalThis.Number(object.wfSpecRevision) : undefined,
+    };
+  },
+
+  toJSON(message: CountNodeRunRequest_WfSpecFilter): unknown {
+    const obj: any = {};
+    if (message.wfSpecName !== "") {
+      obj.wfSpecName = message.wfSpecName;
+    }
+    if (message.wfSpecMajorVersion !== undefined) {
+      obj.wfSpecMajorVersion = Math.round(message.wfSpecMajorVersion);
+    }
+    if (message.wfSpecRevision !== undefined) {
+      obj.wfSpecRevision = Math.round(message.wfSpecRevision);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<CountNodeRunRequest_WfSpecFilter>): CountNodeRunRequest_WfSpecFilter {
+    return CountNodeRunRequest_WfSpecFilter.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CountNodeRunRequest_WfSpecFilter>): CountNodeRunRequest_WfSpecFilter {
+    const message = createBaseCountNodeRunRequest_WfSpecFilter();
+    message.wfSpecName = object.wfSpecName ?? "";
+    message.wfSpecMajorVersion = object.wfSpecMajorVersion ?? undefined;
+    message.wfSpecRevision = object.wfSpecRevision ?? undefined;
+    return message;
+  },
+};
+
+function createBaseCountTaskRunRequest(): CountTaskRunRequest {
+  return { taskDefName: "", status: TaskStatus.TASK_SCHEDULED };
+}
+
+export const CountTaskRunRequest = {
+  encode(message: CountTaskRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.taskDefName !== "") {
+      writer.uint32(10).string(message.taskDefName);
+    }
+    if (message.status !== TaskStatus.TASK_SCHEDULED) {
+      writer.uint32(16).int32(taskStatusToNumber(message.status));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CountTaskRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCountTaskRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.taskDefName = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.status = taskStatusFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CountTaskRunRequest {
+    return {
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      status: isSet(object.status) ? taskStatusFromJSON(object.status) : TaskStatus.TASK_SCHEDULED,
+    };
+  },
+
+  toJSON(message: CountTaskRunRequest): unknown {
+    const obj: any = {};
+    if (message.taskDefName !== "") {
+      obj.taskDefName = message.taskDefName;
+    }
+    if (message.status !== TaskStatus.TASK_SCHEDULED) {
+      obj.status = taskStatusToJSON(message.status);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<CountTaskRunRequest>): CountTaskRunRequest {
+    return CountTaskRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CountTaskRunRequest>): CountTaskRunRequest {
+    const message = createBaseCountTaskRunRequest();
+    message.taskDefName = object.taskDefName ?? "";
+    message.status = object.status ?? TaskStatus.TASK_SCHEDULED;
+    return message;
+  },
+};
+
+function createBaseCount(): Count {
+  return { value: 0 };
+}
+
+export const Count = {
+  encode(message: Count, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.value !== 0) {
+      writer.uint32(8).int64(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Count {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCount();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.value = longToNumber(reader.int64() as Long);
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Count {
+    return { value: isSet(object.value) ? globalThis.Number(object.value) : 0 };
+  },
+
+  toJSON(message: Count): unknown {
+    const obj: any = {};
+    if (message.value !== 0) {
+      obj.value = Math.round(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<Count>): Count {
+    return Count.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Count>): Count {
+    const message = createBaseCount();
+    message.value = object.value ?? 0;
     return message;
   },
 };
@@ -12266,6 +12400,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Search for Quotas. */
+    searchQuota: {
+      name: "SearchQuota",
+      requestType: SearchQuotaRequest,
+      requestStream: false,
+      responseType: QuotaIdList,
+      responseStream: false,
+      options: {},
+    },
     /** Search for StructDef's */
     searchStructDef: {
       name: "SearchStructDef",
@@ -12474,6 +12617,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Deletes a `Quota`. */
+    deleteQuota: {
+      name: "DeleteQuota",
+      requestType: DeleteQuotaRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
     /** Deletes a scheduled run and prevents any further associated WfRun from being executed. */
     deleteScheduledWfRun: {
       name: "DeleteScheduledWfRun",
@@ -12501,21 +12653,39 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Returns a list of TaskDef Metrics Windows. */
-    listTaskDefMetrics: {
-      name: "ListTaskDefMetrics",
+    /** Lists available metric windows for a given TaskDefId and time range. */
+    listTaskMetrics: {
+      name: "ListTaskMetrics",
       requestType: ListTaskMetricsRequest,
       requestStream: false,
-      responseType: ListTaskMetricsResponse,
+      responseType: MetricsList,
       responseStream: false,
       options: {},
     },
-    /** Returns a list of WfSpec Metrics Windows. */
-    listWfSpecMetrics: {
-      name: "ListWfSpecMetrics",
+    /** Lists available metric windows for a given WfSpecId and time range. */
+    listWfMetrics: {
+      name: "ListWfMetrics",
       requestType: ListWfMetricsRequest,
       requestStream: false,
-      responseType: ListWfMetricsResponse,
+      responseType: MetricsList,
+      responseStream: false,
+      options: {},
+    },
+    /** Gets a MetricWindow by its ID. */
+    getMetricWindow: {
+      name: "GetMetricWindow",
+      requestType: MetricWindowId,
+      requestStream: false,
+      responseType: MetricWindow,
+      responseStream: false,
+      options: {},
+    },
+    /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
+    searchWfMetricWindow: {
+      name: "SearchWfMetricWindow",
+      requestType: SearchWfMetricWindowRequest,
+      requestStream: false,
+      responseType: MetricWindowIdList,
       responseStream: false,
       options: {},
     },
@@ -12534,6 +12704,24 @@ export const LittleHorseDefinition = {
       requestType: TenantId,
       requestStream: false,
       responseType: Tenant,
+      responseStream: false,
+      options: {},
+    },
+    /** Creates or updates a Quota. */
+    putQuota: {
+      name: "PutQuota",
+      requestType: PutQuotaRequest,
+      requestStream: false,
+      responseType: Quota,
+      responseStream: false,
+      options: {},
+    },
+    /** Gets a Quota. */
+    getQuota: {
+      name: "GetQuota",
+      requestType: QuotaId,
+      requestStream: false,
+      responseType: Quota,
       responseStream: false,
       options: {},
     },
@@ -12570,6 +12758,31 @@ export const LittleHorseDefinition = {
       requestType: Empty,
       requestStream: false,
       responseType: LittleHorseVersion,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * Counts the number of NodeRun's matching the given criteria. This is an eventually
+     * consistent count maintained via pre-aggregated counters.
+     */
+    countNodeRun: {
+      name: "CountNodeRun",
+      requestType: CountNodeRunRequest,
+      requestStream: false,
+      responseType: Count,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+     * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+     * an eventually consistent count maintained via pre-aggregated counters.
+     */
+    countTaskRun: {
+      name: "CountTaskRun",
+      requestType: CountTaskRunRequest,
+      requestStream: false,
+      responseType: Count,
       responseStream: false,
       options: {},
     },
@@ -12888,6 +13101,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: SearchPrincipalRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<PrincipalIdList>>;
+  /** Search for Quotas. */
+  searchQuota(request: SearchQuotaRequest, context: CallContext & CallContextExt): Promise<DeepPartial<QuotaIdList>>;
   /** Search for StructDef's */
   searchStructDef(
     request: SearchStructDefRequest,
@@ -12990,6 +13205,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
    */
   deletePrincipal(request: DeletePrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
+  /** Deletes a `Quota`. */
+  deleteQuota(request: DeleteQuotaRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a scheduled run and prevents any further associated WfRun from being executed. */
   deleteScheduledWfRun(
     request: DeleteScheduledWfRunRequest,
@@ -13005,20 +13222,31 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: WfSpecMetricsQueryRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<WfSpecMetrics>>;
-  /** Returns a list of TaskDef Metrics Windows. */
-  listTaskDefMetrics(
+  /** Lists available metric windows for a given TaskDefId and time range. */
+  listTaskMetrics(
     request: ListTaskMetricsRequest,
     context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ListTaskMetricsResponse>>;
-  /** Returns a list of WfSpec Metrics Windows. */
-  listWfSpecMetrics(
+  ): Promise<DeepPartial<MetricsList>>;
+  /** Lists available metric windows for a given WfSpecId and time range. */
+  listWfMetrics(
     request: ListWfMetricsRequest,
     context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ListWfMetricsResponse>>;
+  ): Promise<DeepPartial<MetricsList>>;
+  /** Gets a MetricWindow by its ID. */
+  getMetricWindow(request: MetricWindowId, context: CallContext & CallContextExt): Promise<DeepPartial<MetricWindow>>;
+  /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
+  searchWfMetricWindow(
+    request: SearchWfMetricWindowRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<MetricWindowIdList>>;
   /** Creates a Tenant in the LH Server. */
   putTenant(request: PutTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
   /** Gets a Tenant from the LH Server. */
   getTenant(request: TenantId, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
+  /** Creates or updates a Quota. */
+  putQuota(request: PutQuotaRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Quota>>;
+  /** Gets a Quota. */
+  getQuota(request: QuotaId, context: CallContext & CallContextExt): Promise<DeepPartial<Quota>>;
   /** Creates a Principal. */
   putPrincipal(request: PutPrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Gets a Principal. */
@@ -13027,6 +13255,17 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<LittleHorseVersion>>;
+  /**
+   * Counts the number of NodeRun's matching the given criteria. This is an eventually
+   * consistent count maintained via pre-aggregated counters.
+   */
+  countNodeRun(request: CountNodeRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Count>>;
+  /**
+   * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+   * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+   * an eventually consistent count maintained via pre-aggregated counters.
+   */
+  countTaskRun(request: CountTaskRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Count>>;
 }
 
 export interface LittleHorseClient<CallOptionsExt = {}> {
@@ -13350,6 +13589,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchPrincipalRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<PrincipalIdList>;
+  /** Search for Quotas. */
+  searchQuota(request: DeepPartial<SearchQuotaRequest>, options?: CallOptions & CallOptionsExt): Promise<QuotaIdList>;
   /** Search for StructDef's */
   searchStructDef(
     request: DeepPartial<SearchStructDefRequest>,
@@ -13452,6 +13693,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
    */
   deletePrincipal(request: DeepPartial<DeletePrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
+  /** Deletes a `Quota`. */
+  deleteQuota(request: DeepPartial<DeleteQuotaRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a scheduled run and prevents any further associated WfRun from being executed. */
   deleteScheduledWfRun(
     request: DeepPartial<DeleteScheduledWfRunRequest>,
@@ -13467,20 +13710,31 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<WfSpecMetricsQueryRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<WfSpecMetrics>;
-  /** Returns a list of TaskDef Metrics Windows. */
-  listTaskDefMetrics(
+  /** Lists available metric windows for a given TaskDefId and time range. */
+  listTaskMetrics(
     request: DeepPartial<ListTaskMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
-  ): Promise<ListTaskMetricsResponse>;
-  /** Returns a list of WfSpec Metrics Windows. */
-  listWfSpecMetrics(
+  ): Promise<MetricsList>;
+  /** Lists available metric windows for a given WfSpecId and time range. */
+  listWfMetrics(
     request: DeepPartial<ListWfMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
-  ): Promise<ListWfMetricsResponse>;
+  ): Promise<MetricsList>;
+  /** Gets a MetricWindow by its ID. */
+  getMetricWindow(request: DeepPartial<MetricWindowId>, options?: CallOptions & CallOptionsExt): Promise<MetricWindow>;
+  /** Searches workflow metric windows by WfSpec name and optional time range; returns IDs. */
+  searchWfMetricWindow(
+    request: DeepPartial<SearchWfMetricWindowRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<MetricWindowIdList>;
   /** Creates a Tenant in the LH Server. */
   putTenant(request: DeepPartial<PutTenantRequest>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
   /** Gets a Tenant from the LH Server. */
   getTenant(request: DeepPartial<TenantId>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
+  /** Creates or updates a Quota. */
+  putQuota(request: DeepPartial<PutQuotaRequest>, options?: CallOptions & CallOptionsExt): Promise<Quota>;
+  /** Gets a Quota. */
+  getQuota(request: DeepPartial<QuotaId>, options?: CallOptions & CallOptionsExt): Promise<Quota>;
   /** Creates a Principal. */
   putPrincipal(request: DeepPartial<PutPrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Gets a Principal. */
@@ -13489,6 +13743,17 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<LittleHorseVersion>;
+  /**
+   * Counts the number of NodeRun's matching the given criteria. This is an eventually
+   * consistent count maintained via pre-aggregated counters.
+   */
+  countNodeRun(request: DeepPartial<CountNodeRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Count>;
+  /**
+   * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+   * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+   * an eventually consistent count maintained via pre-aggregated counters.
+   */
+  countTaskRun(request: DeepPartial<CountTaskRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Count>;
 }
 
 function bytesFromBase64(b64: string): Uint8Array {

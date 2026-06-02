@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.Struct;
@@ -58,8 +59,9 @@ public class StructModelMaskingTest {
         ReadOnlyMetadataManager metadataManager = mock(ReadOnlyMetadataManager.class);
         when(metadataManager.getLastFromPrefix(anyString(), eq(StructDefModel.class)))
                 .thenReturn(structDef);
+        when(metadataManager.get(any(StructDefIdModel.class))).thenReturn(structDef);
 
-        assertDoesNotThrow(() -> structModel.validateAgainstStructDefId(metadataManager));
+        assertDoesNotThrow(() -> structModel.validateAgainstStructDefId(structModel.getStructDefId(), metadataManager));
 
         Struct outputProto = structModel.toProto().build();
         assertThat(outputProto.getStruct().getFieldsMap().get("secretCode").getMasked())
@@ -94,8 +96,9 @@ public class StructModelMaskingTest {
         ReadOnlyMetadataManager metadataManager = mock(ReadOnlyMetadataManager.class);
         when(metadataManager.getLastFromPrefix(anyString(), eq(StructDefModel.class)))
                 .thenReturn(structDef);
+        when(metadataManager.get(any(StructDefIdModel.class))).thenReturn(structDef);
 
-        assertThatThrownBy(() -> structModel.validateAgainstStructDefId(metadataManager))
+        assertThatThrownBy(() -> structModel.validateAgainstStructDefId(structModel.getStructDefId(), metadataManager))
                 .isInstanceOf(StructValidationException.class);
 
         Struct outputProto = structModel.toProto().build();

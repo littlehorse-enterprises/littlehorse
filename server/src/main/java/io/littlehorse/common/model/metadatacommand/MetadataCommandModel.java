@@ -6,6 +6,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteQuotaRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
@@ -13,6 +14,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecReques
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutQuotaRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutStructDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
@@ -51,6 +53,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private PutPrincipalRequestModel putPrincipal;
     private DeletePrincipalRequestModel deletePrincipal;
     private PutTenantRequestModel putTenant;
+    private PutQuotaRequestModel putQuota;
+    private DeleteQuotaRequestModel deleteQuota;
     private PutWorkflowEventDefRequestModel putWorkflowEventDef;
     private DeleteStructDefRequestModel deleteStructDef;
 
@@ -125,6 +129,12 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case DELETE_STRUCT_DEF:
                 out.setDeleteStructDef(deleteStructDef.toProto());
                 break;
+            case PUT_QUOTA:
+                out.setPutQuota(putQuota.toProto());
+                break;
+            case DELETE_QUOTA:
+                out.setDeleteQuota(deleteQuota.toProto());
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -195,6 +205,12 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 deleteStructDef =
                         LHSerializable.fromProto(p.getDeleteStructDef(), DeleteStructDefRequestModel.class, context);
                 break;
+            case PUT_QUOTA:
+                putQuota = LHSerializable.fromProto(p.getPutQuota(), PutQuotaRequestModel.class, context);
+                break;
+            case DELETE_QUOTA:
+                deleteQuota = LHSerializable.fromProto(p.getDeleteQuota(), DeleteQuotaRequestModel.class, context);
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -232,6 +248,10 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return putWorkflowEventDef;
             case DELETE_STRUCT_DEF:
                 return deleteStructDef;
+            case PUT_QUOTA:
+                return putQuota;
+            case DELETE_QUOTA:
+                return deleteQuota;
             case METADATACOMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -284,6 +304,12 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(DeleteStructDefRequestModel.class)) {
             type = MetadataCommandCase.DELETE_STRUCT_DEF;
             deleteStructDef = (DeleteStructDefRequestModel) cmd;
+        } else if (cls.equals(PutQuotaRequestModel.class)) {
+            type = MetadataCommandCase.PUT_QUOTA;
+            putQuota = (PutQuotaRequestModel) cmd;
+        } else if (cls.equals(DeleteQuotaRequestModel.class)) {
+            type = MetadataCommandCase.DELETE_QUOTA;
+            deleteQuota = (DeleteQuotaRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

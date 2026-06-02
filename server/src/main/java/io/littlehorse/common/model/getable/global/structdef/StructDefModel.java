@@ -58,12 +58,20 @@ public class StructDefModel extends MetadataGetable<StructDef> {
         return out;
     }
 
-    public void validateAgainst(StructModel struct, ReadOnlyMetadataManager metadataManager)
+    /**
+     * Superset-compatible validation: value may contain extra fields.
+     *
+     * @param struct The StructModel to validate.
+     * @param metadataManager Read-only metadata manager used to resolve nested struct types.
+     * @throws StructValidationException if the payload is missing required fields or
+     *                                   contains incompatible fields.
+     */
+    public void validateAgainstSuperset(StructModel struct, ReadOnlyMetadataManager metadataManager)
             throws StructValidationException {
         InlineStructDefModel inlineStructDef = this.structDef;
         InlineStructModel inlineStruct = struct.getInlineStruct();
 
-        inlineStructDef.validateAgainst(inlineStruct, metadataManager);
+        inlineStructDef.validateAgainstSuperset(inlineStruct, metadataManager);
     }
 
     @Override

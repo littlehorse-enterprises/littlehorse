@@ -48,6 +48,10 @@ private static final long serialVersionUID = 0L;
   public static final int TASK_DEF_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
   /**
+   * <pre>
+   * TaskDef this update is for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
@@ -56,6 +60,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * TaskDef this update is for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
@@ -64,6 +72,10 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
   }
   /**
+   * <pre>
+   * TaskDef this update is for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   @java.lang.Override
@@ -74,6 +86,10 @@ private static final long serialVersionUID = 0L;
   public static final int WINDOW_START_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp windowStart_;
   /**
+   * <pre>
+   * Start of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return Whether the windowStart field is set.
    */
@@ -82,6 +98,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Start of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return The windowStart.
    */
@@ -90,6 +110,10 @@ private static final long serialVersionUID = 0L;
     return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
   }
   /**
+   * <pre>
+   * Start of the window.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    */
   @java.lang.Override
@@ -100,6 +124,10 @@ private static final long serialVersionUID = 0L;
   public static final int TYPE_FIELD_NUMBER = 3;
   private int type_ = 0;
   /**
+   * <pre>
+   * Window length.
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength type = 3;</code>
    * @return The enum numeric value on the wire for type.
    */
@@ -107,6 +135,10 @@ private static final long serialVersionUID = 0L;
     return type_;
   }
   /**
+   * <pre>
+   * Window length.
+   * </pre>
+   *
    * <code>.littlehorse.MetricsWindowLength type = 3;</code>
    * @return The type.
    */
@@ -118,6 +150,10 @@ private static final long serialVersionUID = 0L;
   public static final int NUM_ENTRIES_FIELD_NUMBER = 4;
   private long numEntries_ = 0L;
   /**
+   * <pre>
+   * Number of entries in this window.
+   * </pre>
+   *
    * <code>int64 num_entries = 4;</code>
    * @return The numEntries.
    */
@@ -129,6 +165,10 @@ private static final long serialVersionUID = 0L;
   public static final int SCHEDULE_TO_START_MAX_FIELD_NUMBER = 5;
   private long scheduleToStartMax_ = 0L;
   /**
+   * <pre>
+   * Max time from schedule to start.
+   * </pre>
+   *
    * <code>int64 schedule_to_start_max = 5;</code>
    * @return The scheduleToStartMax.
    */
@@ -140,6 +180,10 @@ private static final long serialVersionUID = 0L;
   public static final int SCHEDULE_TO_START_TOTAL_FIELD_NUMBER = 6;
   private long scheduleToStartTotal_ = 0L;
   /**
+   * <pre>
+   * Total time from schedule to start.
+   * </pre>
+   *
    * <code>int64 schedule_to_start_total = 6;</code>
    * @return The scheduleToStartTotal.
    */
@@ -151,6 +195,10 @@ private static final long serialVersionUID = 0L;
   public static final int START_TO_COMPLETE_MAX_FIELD_NUMBER = 7;
   private long startToCompleteMax_ = 0L;
   /**
+   * <pre>
+   * Max time from start to complete.
+   * </pre>
+   *
    * <code>int64 start_to_complete_max = 7;</code>
    * @return The startToCompleteMax.
    */
@@ -162,6 +210,10 @@ private static final long serialVersionUID = 0L;
   public static final int START_TO_COMPLETE_TOTAL_FIELD_NUMBER = 8;
   private long startToCompleteTotal_ = 0L;
   /**
+   * <pre>
+   * Total time from start to complete.
+   * </pre>
+   *
    * <code>int64 start_to_complete_total = 8;</code>
    * @return The startToCompleteTotal.
    */
@@ -173,6 +225,10 @@ private static final long serialVersionUID = 0L;
   public static final int TOTAL_COMPLETED_FIELD_NUMBER = 9;
   private long totalCompleted_ = 0L;
   /**
+   * <pre>
+   * Number completed.
+   * </pre>
+   *
    * <code>int64 total_completed = 9;</code>
    * @return The totalCompleted.
    */
@@ -184,6 +240,10 @@ private static final long serialVersionUID = 0L;
   public static final int TOTAL_ERRORED_FIELD_NUMBER = 10;
   private long totalErrored_ = 0L;
   /**
+   * <pre>
+   * Number errored.
+   * </pre>
+   *
    * <code>int64 total_errored = 10;</code>
    * @return The totalErrored.
    */
@@ -195,6 +255,10 @@ private static final long serialVersionUID = 0L;
   public static final int TOTAL_STARTED_FIELD_NUMBER = 11;
   private long totalStarted_ = 0L;
   /**
+   * <pre>
+   * Number started.
+   * </pre>
+   *
    * <code>int64 total_started = 11;</code>
    * @return The totalStarted.
    */
@@ -809,6 +873,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> taskDefIdBuilder_;
     /**
+     * <pre>
+     * TaskDef this update is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      * @return Whether the taskDefId field is set.
      */
@@ -816,6 +884,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * TaskDef this update is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      * @return The taskDefId.
      */
@@ -827,6 +899,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * TaskDef this update is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder setTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -843,6 +919,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TaskDef this update is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder setTaskDefId(
@@ -857,6 +937,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TaskDef this update is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder mergeTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -878,6 +962,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TaskDef this update is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder clearTaskDefId() {
@@ -891,6 +979,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TaskDef this update is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefId.Builder getTaskDefIdBuilder() {
@@ -899,6 +991,10 @@ private static final long serialVersionUID = 0L;
       return internalGetTaskDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * TaskDef this update is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
@@ -910,6 +1006,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * TaskDef this update is for.
+     * </pre>
+     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -930,6 +1030,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> windowStartBuilder_;
     /**
+     * <pre>
+     * Start of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      * @return Whether the windowStart field is set.
      */
@@ -937,6 +1041,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Start of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      * @return The windowStart.
      */
@@ -948,6 +1056,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Start of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder setWindowStart(com.google.protobuf.Timestamp value) {
@@ -964,6 +1076,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Start of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder setWindowStart(
@@ -978,6 +1094,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Start of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder mergeWindowStart(com.google.protobuf.Timestamp value) {
@@ -999,6 +1119,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Start of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public Builder clearWindowStart() {
@@ -1012,6 +1136,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Start of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getWindowStartBuilder() {
@@ -1020,6 +1148,10 @@ private static final long serialVersionUID = 0L;
       return internalGetWindowStartFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Start of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
@@ -1031,6 +1163,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Start of the window.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp window_start = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -1049,6 +1185,10 @@ private static final long serialVersionUID = 0L;
 
     private int type_ = 0;
     /**
+     * <pre>
+     * Window length.
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength type = 3;</code>
      * @return The enum numeric value on the wire for type.
      */
@@ -1056,6 +1196,10 @@ private static final long serialVersionUID = 0L;
       return type_;
     }
     /**
+     * <pre>
+     * Window length.
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength type = 3;</code>
      * @param value The enum numeric value on the wire for type to set.
      * @return This builder for chaining.
@@ -1067,6 +1211,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Window length.
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength type = 3;</code>
      * @return The type.
      */
@@ -1076,6 +1224,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.MetricsWindowLength.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * Window length.
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength type = 3;</code>
      * @param value The type to set.
      * @return This builder for chaining.
@@ -1088,6 +1240,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Window length.
+     * </pre>
+     *
      * <code>.littlehorse.MetricsWindowLength type = 3;</code>
      * @return This builder for chaining.
      */
@@ -1100,6 +1256,10 @@ private static final long serialVersionUID = 0L;
 
     private long numEntries_ ;
     /**
+     * <pre>
+     * Number of entries in this window.
+     * </pre>
+     *
      * <code>int64 num_entries = 4;</code>
      * @return The numEntries.
      */
@@ -1108,6 +1268,10 @@ private static final long serialVersionUID = 0L;
       return numEntries_;
     }
     /**
+     * <pre>
+     * Number of entries in this window.
+     * </pre>
+     *
      * <code>int64 num_entries = 4;</code>
      * @param value The numEntries to set.
      * @return This builder for chaining.
@@ -1120,6 +1284,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Number of entries in this window.
+     * </pre>
+     *
      * <code>int64 num_entries = 4;</code>
      * @return This builder for chaining.
      */
@@ -1132,6 +1300,10 @@ private static final long serialVersionUID = 0L;
 
     private long scheduleToStartMax_ ;
     /**
+     * <pre>
+     * Max time from schedule to start.
+     * </pre>
+     *
      * <code>int64 schedule_to_start_max = 5;</code>
      * @return The scheduleToStartMax.
      */
@@ -1140,6 +1312,10 @@ private static final long serialVersionUID = 0L;
       return scheduleToStartMax_;
     }
     /**
+     * <pre>
+     * Max time from schedule to start.
+     * </pre>
+     *
      * <code>int64 schedule_to_start_max = 5;</code>
      * @param value The scheduleToStartMax to set.
      * @return This builder for chaining.
@@ -1152,6 +1328,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Max time from schedule to start.
+     * </pre>
+     *
      * <code>int64 schedule_to_start_max = 5;</code>
      * @return This builder for chaining.
      */
@@ -1164,6 +1344,10 @@ private static final long serialVersionUID = 0L;
 
     private long scheduleToStartTotal_ ;
     /**
+     * <pre>
+     * Total time from schedule to start.
+     * </pre>
+     *
      * <code>int64 schedule_to_start_total = 6;</code>
      * @return The scheduleToStartTotal.
      */
@@ -1172,6 +1356,10 @@ private static final long serialVersionUID = 0L;
       return scheduleToStartTotal_;
     }
     /**
+     * <pre>
+     * Total time from schedule to start.
+     * </pre>
+     *
      * <code>int64 schedule_to_start_total = 6;</code>
      * @param value The scheduleToStartTotal to set.
      * @return This builder for chaining.
@@ -1184,6 +1372,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Total time from schedule to start.
+     * </pre>
+     *
      * <code>int64 schedule_to_start_total = 6;</code>
      * @return This builder for chaining.
      */
@@ -1196,6 +1388,10 @@ private static final long serialVersionUID = 0L;
 
     private long startToCompleteMax_ ;
     /**
+     * <pre>
+     * Max time from start to complete.
+     * </pre>
+     *
      * <code>int64 start_to_complete_max = 7;</code>
      * @return The startToCompleteMax.
      */
@@ -1204,6 +1400,10 @@ private static final long serialVersionUID = 0L;
       return startToCompleteMax_;
     }
     /**
+     * <pre>
+     * Max time from start to complete.
+     * </pre>
+     *
      * <code>int64 start_to_complete_max = 7;</code>
      * @param value The startToCompleteMax to set.
      * @return This builder for chaining.
@@ -1216,6 +1416,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Max time from start to complete.
+     * </pre>
+     *
      * <code>int64 start_to_complete_max = 7;</code>
      * @return This builder for chaining.
      */
@@ -1228,6 +1432,10 @@ private static final long serialVersionUID = 0L;
 
     private long startToCompleteTotal_ ;
     /**
+     * <pre>
+     * Total time from start to complete.
+     * </pre>
+     *
      * <code>int64 start_to_complete_total = 8;</code>
      * @return The startToCompleteTotal.
      */
@@ -1236,6 +1444,10 @@ private static final long serialVersionUID = 0L;
       return startToCompleteTotal_;
     }
     /**
+     * <pre>
+     * Total time from start to complete.
+     * </pre>
+     *
      * <code>int64 start_to_complete_total = 8;</code>
      * @param value The startToCompleteTotal to set.
      * @return This builder for chaining.
@@ -1248,6 +1460,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Total time from start to complete.
+     * </pre>
+     *
      * <code>int64 start_to_complete_total = 8;</code>
      * @return This builder for chaining.
      */
@@ -1260,6 +1476,10 @@ private static final long serialVersionUID = 0L;
 
     private long totalCompleted_ ;
     /**
+     * <pre>
+     * Number completed.
+     * </pre>
+     *
      * <code>int64 total_completed = 9;</code>
      * @return The totalCompleted.
      */
@@ -1268,6 +1488,10 @@ private static final long serialVersionUID = 0L;
       return totalCompleted_;
     }
     /**
+     * <pre>
+     * Number completed.
+     * </pre>
+     *
      * <code>int64 total_completed = 9;</code>
      * @param value The totalCompleted to set.
      * @return This builder for chaining.
@@ -1280,6 +1504,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Number completed.
+     * </pre>
+     *
      * <code>int64 total_completed = 9;</code>
      * @return This builder for chaining.
      */
@@ -1292,6 +1520,10 @@ private static final long serialVersionUID = 0L;
 
     private long totalErrored_ ;
     /**
+     * <pre>
+     * Number errored.
+     * </pre>
+     *
      * <code>int64 total_errored = 10;</code>
      * @return The totalErrored.
      */
@@ -1300,6 +1532,10 @@ private static final long serialVersionUID = 0L;
       return totalErrored_;
     }
     /**
+     * <pre>
+     * Number errored.
+     * </pre>
+     *
      * <code>int64 total_errored = 10;</code>
      * @param value The totalErrored to set.
      * @return This builder for chaining.
@@ -1312,6 +1548,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Number errored.
+     * </pre>
+     *
      * <code>int64 total_errored = 10;</code>
      * @return This builder for chaining.
      */
@@ -1324,6 +1564,10 @@ private static final long serialVersionUID = 0L;
 
     private long totalStarted_ ;
     /**
+     * <pre>
+     * Number started.
+     * </pre>
+     *
      * <code>int64 total_started = 11;</code>
      * @return The totalStarted.
      */
@@ -1332,6 +1576,10 @@ private static final long serialVersionUID = 0L;
       return totalStarted_;
     }
     /**
+     * <pre>
+     * Number started.
+     * </pre>
+     *
      * <code>int64 total_started = 11;</code>
      * @param value The totalStarted to set.
      * @return This builder for chaining.
@@ -1344,6 +1592,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Number started.
+     * </pre>
+     *
      * <code>int64 total_started = 11;</code>
      * @return This builder for chaining.
      */

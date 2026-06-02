@@ -23,6 +23,7 @@ class ACLResource(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     ACL_TASK_WORKER_GROUP: _ClassVar[ACLResource]
     ACL_WORKFLOW_EVENT: _ClassVar[ACLResource]
     ACL_STRUCT: _ClassVar[ACLResource]
+    ACL_QUOTA: _ClassVar[ACLResource]
 
 class ACLAction(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
@@ -40,6 +41,7 @@ ACL_ALL_RESOURCES: ACLResource
 ACL_TASK_WORKER_GROUP: ACLResource
 ACL_WORKFLOW_EVENT: ACLResource
 ACL_STRUCT: ACLResource
+ACL_QUOTA: ACLResource
 READ: ACLAction
 RUN: ACLAction
 WRITE_METADATA: ACLAction
@@ -73,6 +75,24 @@ class Tenant(_message.Message):
     created_at: _timestamp_pb2.Timestamp
     output_topic_config: OutputTopicConfig
     def __init__(self, id: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., output_topic_config: _Optional[_Union[OutputTopicConfig, _Mapping]] = ...) -> None: ...
+
+class Quota(_message.Message):
+    __slots__ = ("id", "created_at", "write_requests_per_second")
+    ID_FIELD_NUMBER: _ClassVar[int]
+    CREATED_AT_FIELD_NUMBER: _ClassVar[int]
+    WRITE_REQUESTS_PER_SECOND_FIELD_NUMBER: _ClassVar[int]
+    id: QuotaId
+    created_at: _timestamp_pb2.Timestamp
+    write_requests_per_second: int
+    def __init__(self, id: _Optional[_Union[QuotaId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., write_requests_per_second: _Optional[int] = ...) -> None: ...
+
+class QuotaId(_message.Message):
+    __slots__ = ("tenant", "principal")
+    TENANT_FIELD_NUMBER: _ClassVar[int]
+    PRINCIPAL_FIELD_NUMBER: _ClassVar[int]
+    tenant: _object_id_pb2.TenantId
+    principal: _object_id_pb2.PrincipalId
+    def __init__(self, tenant: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ..., principal: _Optional[_Union[_object_id_pb2.PrincipalId, _Mapping]] = ...) -> None: ...
 
 class ServerACLs(_message.Message):
     __slots__ = ("acls",)
@@ -136,3 +156,19 @@ class PutTenantRequest(_message.Message):
     id: str
     output_topic_config: OutputTopicConfig
     def __init__(self, id: _Optional[str] = ..., output_topic_config: _Optional[_Union[OutputTopicConfig, _Mapping]] = ...) -> None: ...
+
+class PutQuotaRequest(_message.Message):
+    __slots__ = ("tenant", "principal", "write_requests_per_second")
+    TENANT_FIELD_NUMBER: _ClassVar[int]
+    PRINCIPAL_FIELD_NUMBER: _ClassVar[int]
+    WRITE_REQUESTS_PER_SECOND_FIELD_NUMBER: _ClassVar[int]
+    tenant: _object_id_pb2.TenantId
+    principal: _object_id_pb2.PrincipalId
+    write_requests_per_second: int
+    def __init__(self, tenant: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ..., principal: _Optional[_Union[_object_id_pb2.PrincipalId, _Mapping]] = ..., write_requests_per_second: _Optional[int] = ...) -> None: ...
+
+class DeleteQuotaRequest(_message.Message):
+    __slots__ = ("id",)
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: QuotaId
+    def __init__(self, id: _Optional[_Union[QuotaId, _Mapping]] = ...) -> None: ...

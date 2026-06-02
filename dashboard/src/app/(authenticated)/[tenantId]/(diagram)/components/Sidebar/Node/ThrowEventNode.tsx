@@ -1,4 +1,5 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
+import { routes } from '@/app/routes'
 import { ThrowEventNode as ThrowEventNodeProto } from 'littlehorse-client/proto'
 import { LinkIcon } from 'lucide-react'
 import { FC } from 'react'
@@ -15,7 +16,7 @@ export const ThrowEventNode: FC<{ node: ThrowEventNodeProto }> = ({ node }) => {
       <small className="node-title">ThrowEvent</small>
       <div className="mb-2 flex items-center">
         <p className="flex-grow truncate text-lg font-medium">{eventDefId.name}</p>
-        <LinkWithTenant href={`/workflowEventDef/${eventDefId.name}`}>
+        <LinkWithTenant href={routes.workflowEventDef.detail(eventDefId.name)}>
           <LinkIcon className="ml-1 h-4 w-4 cursor-pointer hover:text-slate-600" />
         </LinkWithTenant>
       </div>

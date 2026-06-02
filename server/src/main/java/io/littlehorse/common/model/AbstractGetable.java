@@ -6,6 +6,7 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.CheckpointModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -16,6 +17,7 @@ import io.littlehorse.common.model.getable.core.wfrun.InactiveThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
+import io.littlehorse.common.model.getable.global.acl.QuotaModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
@@ -28,8 +30,10 @@ import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.QuotaIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
@@ -105,6 +109,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.PRINCIPAL;
         } else if (cls.equals(TenantModel.class)) {
             return GetableClassEnum.TENANT;
+        } else if (cls.equals(QuotaModel.class)) {
+            return GetableClassEnum.QUOTA;
         } else if (cls.equals(WorkflowEventDefModel.class)) {
             return GetableClassEnum.WORKFLOW_EVENT_DEF;
         } else if (cls.equals(WorkflowEventModel.class)) {
@@ -115,6 +121,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.CORRELATED_EVENT;
         } else if (cls.equals(CheckpointModel.class)) {
             return GetableClassEnum.CHECKPOINT;
+        } else if (cls.equals(MetricWindowModel.class)) {
+            return GetableClassEnum.METRIC_WINDOW;
         } else if (cls.equals(InactiveThreadRunModel.class)) {
             return GetableClassEnum.INACTIVE_THREAD_RUN;
         } else {
@@ -156,6 +164,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return PrincipalModel.class;
             case TENANT:
                 return TenantModel.class;
+            case QUOTA:
+                return QuotaModel.class;
             case WORKFLOW_EVENT_DEF:
                 return WorkflowEventDefModel.class;
             case WORKFLOW_EVENT:
@@ -166,6 +176,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CorrelatedEventModel.class;
             case CHECKPOINT:
                 return CheckpointModel.class;
+            case METRIC_WINDOW:
+                return MetricWindowModel.class;
             case INACTIVE_THREAD_RUN:
                 return InactiveThreadRunModel.class;
             case UNRECOGNIZED:
@@ -208,6 +220,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return PrincipalIdModel.class;
             case TENANT:
                 return TenantIdModel.class;
+            case QUOTA:
+                return QuotaIdModel.class;
             case WORKFLOW_EVENT_DEF:
                 return WorkflowEventDefIdModel.class;
             case WORKFLOW_EVENT:
@@ -218,6 +232,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return CorrelatedEventIdModel.class;
             case CHECKPOINT:
                 return CheckpointIdModel.class;
+            case METRIC_WINDOW:
+                return MetricWindowIdModel.class;
             case INACTIVE_THREAD_RUN:
                 return InactiveThreadRunIdModel.class;
             case UNRECOGNIZED:
@@ -237,16 +253,18 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             if (!indexConfiguration.isActiveOn(this)) {
                 continue;
             }
-            Optional<TagStorageType> tagStorageType = indexConfiguration.getTagStorageType();
+            TagStorageType tagStorageType = indexConfiguration.getTagStorageType();
             List<IndexedField> singleIndexedValues = new ArrayList<>();
             List<IndexedField> dynamicIndexedFields = new ArrayList<>();
             for (Pair<String, GetableIndex.ValueType> stringValueTypePair : indexConfiguration.getAttributes()) {
                 if (stringValueTypePair.getValue().equals(GetableIndex.ValueType.SINGLE)) {
-                    IndexedField indexedField = this.getIndexValues(stringValueTypePair.getKey(), tagStorageType)
+                    IndexedField indexedField = this.getIndexValues(
+                                    stringValueTypePair.getKey(), Optional.of(tagStorageType))
                             .get(0);
                     singleIndexedValues.add(indexedField);
                 } else if (stringValueTypePair.getValue().equals(GetableIndex.ValueType.DYNAMIC)) {
-                    dynamicIndexedFields.addAll(this.getIndexValues(stringValueTypePair.getKey(), tagStorageType));
+                    dynamicIndexedFields.addAll(
+                            this.getIndexValues(stringValueTypePair.getKey(), Optional.of(tagStorageType)));
                 }
             }
 
@@ -266,7 +284,7 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                             }
                         })
                         .toList();
-                out.add(new Tag(this, TagStorageType.LOCAL, pairs));
+                out.add(new Tag(this, indexConfiguration.getTagStorageType(), pairs));
             }
         }
         return out;

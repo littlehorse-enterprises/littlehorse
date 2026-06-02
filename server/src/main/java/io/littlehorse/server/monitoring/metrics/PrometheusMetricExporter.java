@@ -46,7 +46,8 @@ public class PrometheusMetricExporter implements Closeable {
             TaskQueueManager taskQueueManager,
             MetadataCache metadataCache,
             StandbyMetrics standbyMetrics,
-            InstanceState coreState) {
+            InstanceState coreState,
+            CommandProcessorMetrics commandProcessorMetrics) {
 
         this.kafkaStreamsMeters = new ArrayList<>();
         kafkaStreamsMeters.add(new KafkaStreamsMetrics(coreStreams, Tags.of("topology", "core")));
@@ -63,6 +64,7 @@ public class PrometheusMetricExporter implements Closeable {
 
         standbyMetrics.bindTo(prometheusRegistry);
         coreState.bindTo(prometheusRegistry);
+        commandProcessorMetrics.bindTo(prometheusRegistry);
 
         taskQueueManagerMetrics = new TaskQueueManagerMetrics(taskQueueManager);
         taskQueueManagerMetrics.bindTo(prometheusRegistry);

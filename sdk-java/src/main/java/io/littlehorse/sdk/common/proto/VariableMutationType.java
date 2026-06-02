@@ -33,7 +33,7 @@ public enum VariableMutationType
   ADD(1),
   /**
    * <pre>
-   * Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR)
+   * Append the RHS to the LHS (valid if the LHS is a STR, JSON_ARR, or ARRAY)
    * </pre>
    *
    * <code>EXTEND = 2;</code>
@@ -65,7 +65,7 @@ public enum VariableMutationType
   DIVIDE(5),
   /**
    * <pre>
-   * Remove any occurrences of RHS from LHS (LHS must be JSON_ARR)
+   * Remove any occurrences of RHS from LHS (LHS must be JSON_ARR or ARRAY)
    * </pre>
    *
    * <code>REMOVE_IF_PRESENT = 6;</code>
@@ -73,7 +73,7 @@ public enum VariableMutationType
   REMOVE_IF_PRESENT(6),
   /**
    * <pre>
-   * Remove item at index RHS from LHS (LHS must be JSON_ARR)
+   * Remove item at index RHS from LHS (LHS must be JSON_ARR or ARRAY)
    * </pre>
    *
    * <code>REMOVE_INDEX = 7;</code>
@@ -103,6 +103,14 @@ public enum VariableMutationType
    * <code>OR = 10;</code>
    */
   OR(10),
+  /**
+   * <pre>
+   * Raise the LHS to the power of the RHS (both must be INT or DOUBLE)
+   * </pre>
+   *
+   * <code>POW = 11;</code>
+   */
+  POW(11),
   UNRECOGNIZED(-1),
   ;
 
@@ -133,7 +141,7 @@ public enum VariableMutationType
   public static final int ADD_VALUE = 1;
   /**
    * <pre>
-   * Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR)
+   * Append the RHS to the LHS (valid if the LHS is a STR, JSON_ARR, or ARRAY)
    * </pre>
    *
    * <code>EXTEND = 2;</code>
@@ -165,7 +173,7 @@ public enum VariableMutationType
   public static final int DIVIDE_VALUE = 5;
   /**
    * <pre>
-   * Remove any occurrences of RHS from LHS (LHS must be JSON_ARR)
+   * Remove any occurrences of RHS from LHS (LHS must be JSON_ARR or ARRAY)
    * </pre>
    *
    * <code>REMOVE_IF_PRESENT = 6;</code>
@@ -173,7 +181,7 @@ public enum VariableMutationType
   public static final int REMOVE_IF_PRESENT_VALUE = 6;
   /**
    * <pre>
-   * Remove item at index RHS from LHS (LHS must be JSON_ARR)
+   * Remove item at index RHS from LHS (LHS must be JSON_ARR or ARRAY)
    * </pre>
    *
    * <code>REMOVE_INDEX = 7;</code>
@@ -203,6 +211,14 @@ public enum VariableMutationType
    * <code>OR = 10;</code>
    */
   public static final int OR_VALUE = 10;
+  /**
+   * <pre>
+   * Raise the LHS to the power of the RHS (both must be INT or DOUBLE)
+   * </pre>
+   *
+   * <code>POW = 11;</code>
+   */
+  public static final int POW_VALUE = 11;
 
 
   public final int getNumber() {
@@ -240,6 +256,7 @@ public enum VariableMutationType
       case 8: return REMOVE_KEY;
       case 9: return AND;
       case 10: return OR;
+      case 11: return POW;
       default: return null;
     }
   }

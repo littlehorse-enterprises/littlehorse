@@ -12,16 +12,24 @@ public class VersionTest {
 
         LittleHorseVersion LittleHorseVersionResponse = Version.getCurrentServerVersion();
 
-        String version = String.format(
-                "%s.%s.%s",
-                LittleHorseVersionResponse.getMajorVersion(),
-                LittleHorseVersionResponse.getMinorVersion(),
-                LittleHorseVersionResponse.getPatchVersion());
+        final String expectedVersion;
+        if (!LittleHorseVersionResponse.hasPatchVersion()) {
+            expectedVersion = String.format(
+                    "%s.%s",
+                    LittleHorseVersionResponse.getMajorVersion(), LittleHorseVersionResponse.getMinorVersion());
+        } else {
+            expectedVersion = String.format(
+                    "%s.%s.%s",
+                    LittleHorseVersionResponse.getMajorVersion(),
+                    LittleHorseVersionResponse.getMinorVersion(),
+                    LittleHorseVersionResponse.getPatchVersion());
+        }
 
         Assertions.assertThat(
                         LittleHorseVersionResponse.getPreReleaseIdentifier().isEmpty()
-                                ? version
-                                : String.format("%s-%s", version, LittleHorseVersionResponse.getPreReleaseIdentifier()))
+                                ? expectedVersion
+                                : String.format(
+                                        "%s-%s", expectedVersion, LittleHorseVersionResponse.getPreReleaseIdentifier()))
                 .isEqualTo(ServerVersion.VERSION);
     }
 }

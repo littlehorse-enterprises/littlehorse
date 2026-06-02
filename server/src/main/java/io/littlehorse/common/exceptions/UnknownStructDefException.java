@@ -5,8 +5,10 @@ package io.littlehorse.common.exceptions;
  * Callers must catch this and translate it into an appropriate API or validation exception.
  */
 public class UnknownStructDefException extends LHException {
-
-    public UnknownStructDefException(String structDefName) {
-        super(null, "Refers to non-existent StructDef %s".formatted(structDefName));
+    public UnknownStructDefException(String structDefName, Integer version) {
+        super(
+                null,
+                "Refers to non-existent StructDef %s".formatted(structDefName, version)
+                        + (version != null ? " with version %d".formatted(version) : ""));
     }
 }

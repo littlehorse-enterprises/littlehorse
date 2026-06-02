@@ -6,39 +6,56 @@ import { WfSpecId, WfSpecIdList } from 'littlehorse-client/proto'
 
 type Props = { prefix?: string; limit?: number } & WithBookmark
 
-const genericSearch = async <P, R>(props: P, fn: (props: P) => Promise<R>): Promise<R> => {
-  return fn(props)
-}
-
 type SearchProps = { type: SearchType } & Props & WithTenant
 
 export const search = async ({ type, tenantId, bookmark, limit, prefix }: SearchProps): Promise<SearchResponse> => {
   const client = await lhClient({ tenantId })
-  const request = {
-    prefix,
-    bookmark: bookmarkFrom(bookmark),
-    limit: limit || SEARCH_DEFAULT_LIMIT,
-  }
+  const bookmarkBuf = bookmarkFrom(bookmark)
+  const lim = limit || SEARCH_DEFAULT_LIMIT
 
   let results
   switch (type) {
     case 'StructDef':
-      results = await genericSearch(request, client.searchStructDef)
+      results = await client.searchStructDef({
+        bookmark: bookmarkBuf,
+        limit: lim,
+        structDefCriteria: prefix ? { $case: 'prefix', value: prefix } : undefined,
+      })
       break
     case 'TaskDef':
-      results = await genericSearch(request, client.searchTaskDef)
+      results = await client.searchTaskDef({
+        bookmark: bookmarkBuf,
+        limit: lim,
+        prefix,
+      })
       break
     case 'UserTaskDef':
-      results = await genericSearch(request, client.searchUserTaskDef)
+      results = await client.searchUserTaskDef({
+        bookmark: bookmarkBuf,
+        limit: lim,
+        userTaskDefCriteria: prefix ? { $case: 'prefix', value: prefix } : undefined,
+      })
       break
     case 'ExternalEventDef':
-      results = await genericSearch(request, client.searchExternalEventDef)
+      results = await client.searchExternalEventDef({
+        bookmark: bookmarkBuf,
+        limit: lim,
+        prefix,
+      })
       break
     case 'WorkflowEventDef':
-      results = await genericSearch(request, client.searchWorkflowEventDef)
+      results = await client.searchWorkflowEventDef({
+        bookmark: bookmarkBuf,
+        limit: lim,
+        prefix,
+      })
       break
     default:
-      results = await genericSearch(request, client.searchWfSpec)
+      results = await client.searchWfSpec({
+        bookmark: bookmarkBuf,
+        limit: lim,
+        wfSpecCriteria: prefix ? { $case: 'prefix', value: prefix } : undefined,
+      })
       break
   }
 

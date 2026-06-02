@@ -13,7 +13,7 @@ import { DoneEvent } from './DoneEvent'
 export const Events = ({ events }: { events: UserTaskEvent[] }) => {
   const sortedEvents = [...events].sort((a, b) => getEventTime(b) - getEventTime(a))
 
-  const renderEvent = (userTask: UserTaskEvent, index: number) => {
+  const renderEvent = (userTask: UserTaskEvent) => {
     const { event, time } = userTask
     switch (event?.$case) {
       case 'taskExecuted':
@@ -49,7 +49,7 @@ export const Events = ({ events }: { events: UserTaskEvent[] }) => {
             isLast={index === sortedEvents.length - 1}
           >
             <div className="w-full" key={index}>
-              {renderEvent(event, index)}
+              {renderEvent(event)}
             </div>
           </TimeLineEvent>
         ))}

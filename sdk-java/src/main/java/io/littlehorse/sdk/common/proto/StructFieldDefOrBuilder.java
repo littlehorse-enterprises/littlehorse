@@ -66,4 +66,14 @@ public interface StructFieldDefOrBuilder extends
    * <code>optional .littlehorse.VariableValue default_value = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder();
+
+  /**
+   * <pre>
+   * If true, then the field is treated as nullable, and its value may be set to null.
+   * </pre>
+   *
+   * <code>bool is_nullable = 3;</code>
+   * @return The isNullable.
+   */
+  boolean getIsNullable();
 }

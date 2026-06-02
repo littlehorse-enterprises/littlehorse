@@ -5,6 +5,8 @@ const CONFIG = {
   apiPort: process.env.LHC_API_PORT || '2023',
   protocol: process.env.LHC_API_PROTOCOL || 'PLAINTEXT',
   caCert: process.env.LHC_CA_CERT,
+  clientCert: process.env.LHC_CLIENT_CERT,
+  clientKey: process.env.LHC_CLIENT_KEY,
 }
 
 const config = LHConfig.from(CONFIG)

@@ -12,6 +12,7 @@ import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunReq
 import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteCorrelatedEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteExternalEventRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteMetricWindowModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.InternalDeleteWfRunRequestModel;
@@ -30,6 +31,8 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.model.corecommand.subcommand.UpdateCorrelationMarkerModel;
+import io.littlehorse.common.model.corecommand.subcommand.UpdateCountedTagModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.AggregateWindowMetricsModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskWorkerGroupRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.ScheduleWfRunCommandModel;
 import io.littlehorse.common.proto.Command;
@@ -81,6 +84,9 @@ public class CommandModel extends AbstractCommand<Command> {
     private UpdateCorrelationMarkerModel updateCorrellationMarker;
     private DeleteCorrelatedEventRequestModel deleteCorrelatedEvent;
     private PutCheckpointRequestModel putCheckpoint;
+    private AggregateWindowMetricsModel aggregateWindowMetrics;
+    private DeleteMetricWindowModel deleteMetricWindow;
+    private UpdateCountedTagModel updateCountedTag;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;
@@ -199,6 +205,15 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case PUT_CHECKPOINT:
                 out.setPutCheckpoint(putCheckpoint.toProto());
+                break;
+            case AGGREGATE_WINDOW_METRICS:
+                out.setAggregateWindowMetrics(aggregateWindowMetrics.toProto());
+                break;
+            case DELETE_METRIC_WINDOW:
+                out.setDeleteMetricWindow(deleteMetricWindow.toProto());
+                break;
+            case UPDATE_COUNTED_TAG:
+                out.setUpdateCountedTag(updateCountedTag.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -328,6 +343,18 @@ public class CommandModel extends AbstractCommand<Command> {
                 putCheckpoint =
                         LHSerializable.fromProto(p.getPutCheckpoint(), PutCheckpointRequestModel.class, context);
                 break;
+            case AGGREGATE_WINDOW_METRICS:
+                aggregateWindowMetrics = LHSerializable.fromProto(
+                        p.getAggregateWindowMetrics(), AggregateWindowMetricsModel.class, context);
+                break;
+            case DELETE_METRIC_WINDOW:
+                deleteMetricWindow =
+                        LHSerializable.fromProto(p.getDeleteMetricWindow(), DeleteMetricWindowModel.class, context);
+                break;
+            case UPDATE_COUNTED_TAG:
+                updateCountedTag =
+                        LHSerializable.fromProto(p.getUpdateCountedTag(), UpdateCountedTagModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -397,6 +424,12 @@ public class CommandModel extends AbstractCommand<Command> {
                 return deleteCorrelatedEvent;
             case PUT_CHECKPOINT:
                 return putCheckpoint;
+            case AGGREGATE_WINDOW_METRICS:
+                return aggregateWindowMetrics;
+            case DELETE_METRIC_WINDOW:
+                return deleteMetricWindow;
+            case UPDATE_COUNTED_TAG:
+                return updateCountedTag;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -497,6 +530,15 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(PutCheckpointRequestModel.class)) {
             type = CommandCase.PUT_CHECKPOINT;
             putCheckpoint = (PutCheckpointRequestModel) cmd;
+        } else if (cls.equals(AggregateWindowMetricsModel.class)) {
+            type = CommandCase.AGGREGATE_WINDOW_METRICS;
+            aggregateWindowMetrics = (AggregateWindowMetricsModel) cmd;
+        } else if (cls.equals(DeleteMetricWindowModel.class)) {
+            type = CommandCase.DELETE_METRIC_WINDOW;
+            deleteMetricWindow = (DeleteMetricWindowModel) cmd;
+        } else if (cls.equals(UpdateCountedTagModel.class)) {
+            type = CommandCase.UPDATE_COUNTED_TAG;
+            updateCountedTag = (UpdateCountedTagModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

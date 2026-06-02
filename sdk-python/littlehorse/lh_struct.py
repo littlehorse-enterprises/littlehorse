@@ -254,10 +254,10 @@ def _capitalize_segment(segment: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Python type -> LH TypeDefinition mapping
+# Struct-only Python type -> LH TypeDefinition mapping
 # ---------------------------------------------------------------------------
 
-_PYTHON_TYPE_TO_LH_VARIABLE_TYPE: dict[type, VariableType] = {
+_STRUCT_PYTHON_TYPE_TO_LH_VARIABLE_TYPE: dict[type, VariableType] = {
     str: VariableType.STR,
     int: VariableType.INT,
     float: VariableType.DOUBLE,
@@ -265,19 +265,20 @@ _PYTHON_TYPE_TO_LH_VARIABLE_TYPE: dict[type, VariableType] = {
     bytes: VariableType.BYTES,
     datetime.datetime: VariableType.TIMESTAMP,
     WfRunId: VariableType.WF_RUN_ID,
-    dict: VariableType.JSON_OBJ,
-    list: VariableType.JSON_ARR,
 }
 
 
-def _python_type_to_type_definition(
+def _struct_python_type_to_type_definition(
     python_type: type,
 ) -> TypeDefinition:
-    """Map a Python type annotation to a ``TypeDefinition`` protobuf.
+    """Map a StructDef field annotation to a ``TypeDefinition`` protobuf.
+
+    This helper is intentionally struct-scoped. It is only used by
+    ``@lh_struct_def`` introspection and should not be reused as a general
+    SDK type mapper.
 
     Handles:
     - Primitive types (str, int, float, bool, bytes, datetime, WfRunId)
-    - dict / list → JSON_OBJ / JSON_ARR
     - ``@lh_struct_def``-decorated classes → StructDefId reference
     - ``Annotated[...]`` wrappers (peels them off)
     """
@@ -300,18 +301,39 @@ def _python_type_to_type_definition(
     # Check for struct
     if isinstance(python_type, type) and is_lh_struct(python_type):
         return TypeDefinition(
-            struct_def_id=StructDefId(name=get_struct_def_name(python_type)),
+            struct_def_id=StructDefId(
+                name=get_struct_def_name(python_type),
+                version=-1,
+            ),
             masked=masked,
         )
 
     # Check for generic dict/list
     if origin is dict:
-        return TypeDefinition(primitive_type=VariableType.JSON_OBJ, masked=masked)
+        raise TypeError(
+            "Forbidden JSON type: JSON_OBJ. Within StructDefs, use "
+            "@lh_struct_def classes for nested object types."
+        )
     if origin is list:
-        return TypeDefinition(primitive_type=VariableType.JSON_ARR, masked=masked)
+        raise TypeError(
+            "Forbidden JSON type: JSON_ARR. JSON array fields are not supported "
+            "in sdk-python StructDefs."
+        )
+
+    # Check for non-generic dict/list
+    if python_type is dict:
+        raise TypeError(
+            "Forbidden JSON type: JSON_OBJ. Within StructDefs, use "
+            "@lh_struct_def classes for nested object types."
+        )
+    if python_type is list:
+        raise TypeError(
+            "Forbidden JSON type: JSON_ARR. JSON array fields are not supported "
+            "in sdk-python StructDefs."
+        )
 
     # Primitive types
-    lh_type = _PYTHON_TYPE_TO_LH_VARIABLE_TYPE.get(python_type)
+    lh_type = _STRUCT_PYTHON_TYPE_TO_LH_VARIABLE_TYPE.get(python_type)
     if lh_type is not None:
         return TypeDefinition(primitive_type=lh_type, masked=masked)
 
@@ -324,7 +346,10 @@ def _python_type_to_type_definition(
 
 
 class _StructProperty:
-    """Represents one field of a ``@lh_struct_def``-decorated class."""
+    """Represents one field of a ``@lh_struct_def``-decorated class.
+
+    This utility is for StructDef schema extraction only.
+    """
 
     __slots__ = (
         "python_name",
@@ -364,7 +389,7 @@ class _StructProperty:
                         self.field_name = arg.name
 
         self.python_type = inner_type
-        self.type_def = _python_type_to_type_definition(raw_type)
+        self.type_def = _struct_python_type_to_type_definition(raw_type)
         if self.masked:
             self.type_def = TypeDefinition(
                 primitive_type=(
@@ -399,7 +424,10 @@ _SENTINEL = object()
 
 
 def _get_struct_properties(cls: type) -> list[_StructProperty]:
-    """Return the list of ``_StructProperty`` for an ``@lh_struct_def`` class."""
+    """Return struct-scoped ``_StructProperty`` metadata for a class.
+
+    This is used by StructDef build/serialization utilities in this module.
+    """
     if not is_lh_struct(cls):
         raise TypeError(f"{cls.__name__} is not decorated with @lh_struct_def")
 
@@ -494,7 +522,7 @@ def serialize_to_struct(obj: Any) -> Struct:
         inline.fields[prop.field_name].CopyFrom(StructField(value=field_val))
 
     return Struct(
-        struct_def_id=StructDefId(name=info.name),
+        struct_def_id=StructDefId(name=info.name, version=-1),
         struct=inline,
     )
 

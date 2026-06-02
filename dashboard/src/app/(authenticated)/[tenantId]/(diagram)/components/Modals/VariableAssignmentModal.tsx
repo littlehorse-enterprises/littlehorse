@@ -8,8 +8,8 @@ import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
 
 export const VariableAssignmentModal: FC<Modal<VariableAssignment>> = ({ data }) => {
-  if (!data.source) return null
   const { showModal, setShowModal } = useModal()
+  if (!data.source) return null
   const variable = getVariable(data)
 
   return (

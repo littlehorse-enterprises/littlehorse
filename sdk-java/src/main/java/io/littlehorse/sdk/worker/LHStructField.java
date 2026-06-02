@@ -27,4 +27,11 @@ public @interface LHStructField {
      * @return whether or not the type value should be masked.
      */
     boolean masked() default false;
+
+    /**
+     * OPTIONAL: Indicates that this field is nullable, meaning its value may be set to null.
+     *
+     * @return whether or not this field is nullable.
+     */
+    boolean isNullable() default false;
 }

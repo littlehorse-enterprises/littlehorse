@@ -5,12 +5,16 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
+import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.nodeoutput.NodeOutputModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.variable.InlineStructModel;
+import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
+import io.littlehorse.common.model.getable.core.variable.StructModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureBeingHandledModel;
@@ -21,22 +25,27 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.InterruptedMode
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ParentHaltedModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingFailureHandlerHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingInterruptHaltReasonModel;
+import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.InterruptDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.InlineStructBuilderModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.InlineStructFieldValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.InlineStructFieldValue.StructValueCase;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
@@ -49,6 +58,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,7 +97,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     private VariableValueModel output;
 
     public ThreadType type;
-
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
     private CoreProcessorContext processorContext;
@@ -655,6 +664,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         if (haltReasons.isEmpty()) {
             log.debug("Thread {} is alive again!", number);
+            var previousStatus = status;
             if (getCurrentNodeRun().getLatestFailure().isEmpty()) {
                 setStatus(LHStatus.RUNNING);
                 getCurrentNodeRun().unHalt();
@@ -663,6 +673,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             } else {
                 setStatus(getCurrentNodeRun().getLatestFailure().get().getStatus());
             }
+            PartitionMetricWindowModel.trackWorkflow(
+                    processorContext, wfSpecId, previousStatus, status, startTime, endTime);
             return true;
         }
         return false;
@@ -881,6 +893,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 ExpressionModel expression = assn.getExpression();
                 val = expression.evaluate(this, varAssn -> assignVariable(varAssn, txnCache));
                 break;
+            case SIZE_OF:
+                val = assignVariable(assn.getSizeOf().getOperand(), txnCache).sizeOf();
+                break;
+            case STRUCT_BUILDER:
+                val = buildStructValue(assn, txnCache);
+                break;
             case SOURCE_NOT_SET:
                 // This should have been caught by the WfSpecModel#validate()
                 throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");
@@ -898,6 +916,59 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         val = assn.applyCast(val);
         return val;
+    }
+
+    private VariableValueModel buildStructValue(VariableAssignmentModel assn, Map<String, VariableValueModel> txnCache)
+            throws LHVarSubError {
+        StructModel struct = new StructModel();
+        struct.setStructDefId(assn.getStructBuilder().getStructDefId());
+        struct.setInlineStruct(buildInlineStructValue(
+                assn.getStructBuilder().getValue(), assn.getStructBuilder().getStructDefId(), txnCache));
+        return new VariableValueModel(struct);
+    }
+
+    private InlineStructModel buildInlineStructValue(
+            InlineStructBuilderModel builder, StructDefIdModel structDefId, Map<String, VariableValueModel> txnCache)
+            throws LHVarSubError {
+        InlineStructModel inlineStruct = new InlineStructModel();
+        Map<String, StructFieldModel> fields = new HashMap<>();
+
+        Map<String, StructFieldDefModel> fieldDefs = new WfService(processorContext.metadataManager())
+                .getStructDef(structDefId)
+                .getStructDef()
+                .getFields();
+
+        for (Map.Entry<String, InlineStructFieldValueModel> entry :
+                builder.getFields().entrySet()) {
+            String fieldName = entry.getKey();
+            InlineStructFieldValueModel fieldValue = entry.getValue();
+            StructFieldModel structField = new StructFieldModel();
+
+            if (fieldValue.getStructValueCase() == StructValueCase.SIMPLE_VALUE) {
+                structField.setValue(assignVariable(fieldValue.getSimpleValue(), txnCache));
+            } else if (fieldValue.getStructValueCase() == StructValueCase.SUB_STRUCTURE) {
+                io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel nestedType =
+                        fieldDefs.get(fieldName).getFieldType();
+                if (nestedType.getStructDefId() == null) {
+                    throw new LHVarSubError(null, "Field '" + fieldName + "' is not a struct field");
+                }
+                StructModel nestedStruct = new StructModel();
+                nestedStruct.setStructDefId(nestedType.getStructDefId());
+                nestedStruct.setInlineStruct(
+                        buildInlineStructValue(fieldValue.getSubStructure(), nestedType.getStructDefId(), txnCache));
+                structField.setValue(new VariableValueModel(nestedStruct));
+            } else {
+                throw new LHVarSubError(null, "Field '" + fieldName + "' is missing a value");
+            }
+
+            if (fieldDefs.containsKey(fieldName)) {
+                structField.setMasked(fieldDefs.get(fieldName).getFieldType().isMasked());
+            }
+            fields.put(fieldName, structField);
+        }
+
+        inlineStruct.setFields(fields);
+        return inlineStruct;
     }
 
     public void putNodeRun(NodeRunModel nr) {

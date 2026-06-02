@@ -4,10 +4,12 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.failure.LHTaskErrorModel;
@@ -16,6 +18,7 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyM
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.IngressTypeUtils;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
@@ -160,22 +163,28 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return List.of(
-                new GetableIndex<>(
-                        List.of(Pair.of("taskDefName", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)),
-                new GetableIndex<>(
-                        List.of(
-                                Pair.of("taskDefName", GetableIndex.ValueType.SINGLE),
-                                Pair.of("status", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL))
-                // NOTE: we're not indexing just based on status because we don't want
-                // to have too many reads/writes in RocksDB as those are expensive.
-                //
-                // Additionally, we could index based on the number of retries, so that
-                // we can find all TaskRun's that have been retried. But that maybe can
-                // be in the 0.1.1 release, not 0.1.0
-                );
+        List<GetableIndex<? extends AbstractGetable<?>>> indexes = new ArrayList<>();
+        indexes.add(new GetableIndex<>(
+                List.of(Pair.of("taskDefName", GetableIndex.ValueType.SINGLE)), TagStorageType.LOCAL));
+        indexes.add(new GetableIndex<>(
+                List.of(
+                        Pair.of("taskDefName", GetableIndex.ValueType.SINGLE),
+                        Pair.of("status", GetableIndex.ValueType.SINGLE)),
+                TagStorageType.LOCAL));
+        if (status == TaskStatus.TASK_SCHEDULED) {
+            indexes.add(new GetableIndex<>(
+                    List.of(
+                            Pair.of("scheduled", GetableIndex.ValueType.SINGLE),
+                            Pair.of("taskDefName", GetableIndex.ValueType.SINGLE)),
+                    TagStorageType.COUNTED));
+        }
+        // NOTE: we're not indexing just based on status because we don't want
+        // to have too many reads/writes in RocksDB as those are expensive.
+        //
+        // Additionally, we could index based on the number of retries, so that
+        // we can find all TaskRun's that have been retried. But that maybe can
+        // be in the 0.1.1 release, not 0.1.0
+        return indexes;
     }
 
     @Override
@@ -186,6 +195,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             }
             case "status" -> {
                 return List.of(new IndexedField(key, this.status.toString(), TagStorageType.LOCAL));
+            }
+            case "scheduled" -> {
+                return List.of(new IndexedField(key, TaskStatus.TASK_SCHEDULED, TagStorageType.COUNTED));
             }
         }
         log.warn("Received unknown key for TaskRun Index: {}", key);
@@ -257,6 +269,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
     }
 
     public void onTaskAttemptStarted(TaskClaimEventModel se) {
+        TaskAttemptModel attempt = getLatestAttempt();
+        Date scheduleTime = attempt.getScheduleTime();
+
         transitionTo(TaskStatus.TASK_RUNNING);
 
         // create a timer to mark the task is timeout if it does not finish
@@ -264,11 +279,18 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
 
         // Now that that's out of the way, we can mark the TaskRun as running.
         // Also we need to save the task worker version and client id.
-        TaskAttemptModel attempt = getLatestAttempt();
         attempt.setTaskWorkerId(se.getTaskWorkerId());
         attempt.setTaskWorkerVersion(se.getTaskWorkerVersion());
         attempt.setStartTime(se.getTime());
         attempt.setStatus(TaskStatus.TASK_RUNNING);
+
+        PartitionMetricWindowModel.trackTaskAttempt(
+                processorContext,
+                taskDefId,
+                TaskStatus.TASK_SCHEDULED,
+                TaskStatus.TASK_RUNNING,
+                scheduleTime,
+                se.getTime());
     }
 
     public void sendUpdatedTimeoutTimerCommand(CoreProcessorContext context) {
@@ -330,12 +352,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 && returnType.isPresent()
                 && taskRunReport.getOutput() != null) {
             try {
-                if (!returnType.get().isCompatibleWith(taskRunReport.getOutput(), executionContext.metadataManager())) {
-                    taskOutputValidationError =
-                            String.format("Task output is incompatible with declared return type %s", returnType.get());
-                }
-            } catch (LHApiException ex) {
-                taskOutputValidationError = ex.getMessage();
+                IngressTypeUtils.applyExpectedTypeAndValidate(
+                        returnType, taskRunReport.getOutput(), executionContext.metadataManager());
+            } catch (TypeValidationException ex) {
+                taskOutputValidationError = "Task output incompatible with declared return type: " + ex.getMessage();
             }
         }
 
@@ -357,7 +377,6 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             if (taskRunReport.getException() != null) {
                 attempt.setOutput(taskRunReport.getException().getContent());
             }
-
             if (taskRunReport.getStatus() == TaskStatus.TASK_SUCCESS) {
                 // Tell the WfRun that the TaskRun is done.
                 transitionTo(TaskStatus.TASK_SUCCESS);
@@ -367,6 +386,14 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 transitionTo(taskRunReport.getStatus());
             }
         }
+
+        PartitionMetricWindowModel.trackTaskAttempt(
+                processorContext,
+                taskDefId,
+                TaskStatus.TASK_RUNNING,
+                attempt.getStatus(),
+                attempt.getStartTime(),
+                attempt.getEndTime());
 
         // The WfRun may need to advance.
         processorContext.getableManager().get(getWfRunId()).advance(taskRunReport.getTime());
@@ -394,6 +421,14 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
 
         attempt.setStatus(TaskStatus.TASK_SCHEDULED);
         attempt.setScheduleTime(new Date());
+
+        PartitionMetricWindowModel.trackTaskAttempt(
+                processorContext,
+                taskDefId,
+                TaskStatus.TASK_PENDING,
+                TaskStatus.TASK_SCHEDULED,
+                attempt.getPendingTime(),
+                attempt.getScheduleTime());
 
         ScheduledTaskModel scheduledTask = new ScheduledTaskModel();
         scheduledTask.setVariables(inputVariables);
@@ -446,5 +481,22 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
                 .getableUpdates()
                 .dispatch(GetableUpdates.create(
                         taskDefId, processorContext.authorization().tenantId(), previousStatus, newStatus));
+
+        if (isTerminalStatus(newStatus)) {
+            Date endTime = getLatestAttempt() != null ? getLatestAttempt().getEndTime() : null;
+            PartitionMetricWindowModel.trackTaskRun(processorContext, taskDefId, newStatus, scheduledAt, endTime);
+        }
+    }
+
+    private static boolean isTerminalStatus(TaskStatus status) {
+        return switch (status) {
+            case TASK_SUCCESS,
+                    TASK_FAILED,
+                    TASK_EXCEPTION,
+                    TASK_TIMEOUT,
+                    TASK_OUTPUT_SERDE_ERROR,
+                    TASK_INPUT_VAR_SUB_ERROR -> true;
+            default -> false;
+        };
     }
 }

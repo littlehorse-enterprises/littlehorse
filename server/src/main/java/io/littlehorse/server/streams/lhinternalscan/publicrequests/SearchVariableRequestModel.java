@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -162,13 +163,14 @@ public class SearchVariableRequestModel
                 throw new LHApiException(Status.INVALID_ARGUMENT, "Provided variable has no index");
             }
 
-            // ONLY do this check if the Variable is a PRIMITIVE type.
-            // TODO: Extend this when implementing Struct and StructDef.
             TypeDefinitionModel varType = varDef.getVarDef().getTypeDef();
-            if (isTypeSearchable(varType) && !varType.isCompatibleWith(value, null)) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        "Specified Variable has type " + varDef.getVarDef().getTypeDef());
+            if (isTypeSearchable(varType)) {
+                try {
+                    varType.validateCompatibility(value, null);
+                } catch (TypeValidationException e) {
+                    throw new LHApiException(
+                            Status.INVALID_ARGUMENT, "Invalid value for variable " + varName + ": " + e.getMessage());
+                }
             }
         }
 

@@ -71,6 +71,17 @@ namespace LittleHorse.Sdk.Helper
       {
         object? val = _pd.GetValue(o);
         if (val == null) return null;
+
+        if (val is System.Array && val is not byte[])
+        {
+          return LHMappingHelper.ObjectToVariableValueAsNativeArray(val, _pd.PropertyType);
+        }
+
+        if (val is System.Collections.IList)
+        {
+          return LHMappingHelper.ObjectToVariableValueAsNativeArray(val, _pd.PropertyType);
+        }
+
         return LHMappingHelper.ObjectToVariableValue(val);
       }
       catch (Exception ex)
@@ -159,6 +170,18 @@ namespace LittleHorse.Sdk.Helper
     /// </summary>
     public LHClassType GetPropertyType()
     {
+      Type propertyType = _pd.PropertyType;
+
+      if (propertyType.IsArray && propertyType != typeof(byte[]))
+      {
+        return new LHArrayType(propertyType);
+      }
+
+      if (LHMappingHelper.TryGetListElementType(propertyType, out Type elementType))
+      {
+        return new LHArrayType(elementType.MakeArrayType());
+      }
+
       return LHClassType.FromType(_pd.PropertyType);
     }
 

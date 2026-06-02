@@ -1,33 +1,25 @@
-import { Struct, TaskAttempt, VariableValue } from 'littlehorse-client/proto'
-import { getVariableValue } from './variables'
+import { Array, Struct, TaskAttempt, VariableValue } from 'littlehorse-client/proto'
+import { getVariableValue, variableValueToJSON } from './variables'
 
 export const structToJSONString = (struct: Struct): string => {
-  return JSON.stringify(structToJSONObject(struct))
-}
-
-const structToJSONObject = (struct: Struct): Object => {
-  // TODO: Frontend team should refactor this as they see fit
-  let structObject: { [key: string]: Object } = {}
-
-  if (struct.struct == null) return '{}'
-
-  for (const entry of Object.entries(struct.struct.fields)) {
-    if (entry[1].value?.value?.$case == 'struct') {
-      structObject[entry[0]] = structToJSONObject(entry[1].value?.value?.value)
-    } else if (entry[1].value) {
-      structObject[entry[0]] = getVariableValue(entry[1].value)
-    }
-  }
-  return structObject
+  return JSON.stringify(variableValueToJSON(VariableValue.fromJSON({ struct })))
 }
 
 export const structFromJSONString = (jsonStr: string): Struct => {
   return Struct.fromJSON(jsonStr)
 }
 
+export const arrayToJSONString = (array: Array): string => {
+  return JSON.stringify(variableValueToJSON(VariableValue.fromJSON({ array })))
+}
+
+export const arrayFromJSONString = (jsonStr: string): Array => {
+  return Array.fromJSON(jsonStr)
+}
+
 export const getAttemptOutput = (output: VariableValue | undefined): string => {
   if (!output?.value?.value) return 'No Output'
-  return String(getVariableValue(output))
+  return getVariableValue(output)
 }
 
 export const getAttemptResult = (result: Partial<TaskAttempt>['result']): string => {

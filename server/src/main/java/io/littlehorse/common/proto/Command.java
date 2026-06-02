@@ -86,6 +86,9 @@ private static final long serialVersionUID = 0L;
     EDIT_USER_TASK_RUN_COMMENT(32),
     DELETE_USER_TASK_RUN_COMMENT(33),
     PUT_CHECKPOINT(34),
+    AGGREGATE_WINDOW_METRICS(35),
+    DELETE_METRIC_WINDOW(36),
+    UPDATE_COUNTED_TAG(37),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -134,6 +137,9 @@ private static final long serialVersionUID = 0L;
         case 32: return EDIT_USER_TASK_RUN_COMMENT;
         case 33: return DELETE_USER_TASK_RUN_COMMENT;
         case 34: return PUT_CHECKPOINT;
+        case 35: return AGGREGATE_WINDOW_METRICS;
+        case 36: return DELETE_METRIC_WINDOW;
+        case 37: return UPDATE_COUNTED_TAG;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -1183,6 +1189,99 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.PutCheckpointRequest.getDefaultInstance();
   }
 
+  public static final int AGGREGATE_WINDOW_METRICS_FIELD_NUMBER = 35;
+  /**
+   * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+   * @return Whether the aggregateWindowMetrics field is set.
+   */
+  @java.lang.Override
+  public boolean hasAggregateWindowMetrics() {
+    return commandCase_ == 35;
+  }
+  /**
+   * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+   * @return The aggregateWindowMetrics.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.AggregateWindowMetrics getAggregateWindowMetrics() {
+    if (commandCase_ == 35) {
+       return (io.littlehorse.common.proto.AggregateWindowMetrics) command_;
+    }
+    return io.littlehorse.common.proto.AggregateWindowMetrics.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.AggregateWindowMetricsOrBuilder getAggregateWindowMetricsOrBuilder() {
+    if (commandCase_ == 35) {
+       return (io.littlehorse.common.proto.AggregateWindowMetrics) command_;
+    }
+    return io.littlehorse.common.proto.AggregateWindowMetrics.getDefaultInstance();
+  }
+
+  public static final int DELETE_METRIC_WINDOW_FIELD_NUMBER = 36;
+  /**
+   * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+   * @return Whether the deleteMetricWindow field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeleteMetricWindow() {
+    return commandCase_ == 36;
+  }
+  /**
+   * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+   * @return The deleteMetricWindow.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeleteMetricWindow getDeleteMetricWindow() {
+    if (commandCase_ == 36) {
+       return (io.littlehorse.common.proto.DeleteMetricWindow) command_;
+    }
+    return io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeleteMetricWindowOrBuilder getDeleteMetricWindowOrBuilder() {
+    if (commandCase_ == 36) {
+       return (io.littlehorse.common.proto.DeleteMetricWindow) command_;
+    }
+    return io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance();
+  }
+
+  public static final int UPDATE_COUNTED_TAG_FIELD_NUMBER = 37;
+  /**
+   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+   * @return Whether the updateCountedTag field is set.
+   */
+  @java.lang.Override
+  public boolean hasUpdateCountedTag() {
+    return commandCase_ == 37;
+  }
+  /**
+   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+   * @return The updateCountedTag.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.UpdateCountedTag getUpdateCountedTag() {
+    if (commandCase_ == 37) {
+       return (io.littlehorse.common.proto.UpdateCountedTag) command_;
+    }
+    return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.UpdateCountedTagOrBuilder getUpdateCountedTagOrBuilder() {
+    if (commandCase_ == 37) {
+       return (io.littlehorse.common.proto.UpdateCountedTag) command_;
+    }
+    return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1295,6 +1394,15 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 34) {
       output.writeMessage(34, (io.littlehorse.sdk.common.proto.PutCheckpointRequest) command_);
+    }
+    if (commandCase_ == 35) {
+      output.writeMessage(35, (io.littlehorse.common.proto.AggregateWindowMetrics) command_);
+    }
+    if (commandCase_ == 36) {
+      output.writeMessage(36, (io.littlehorse.common.proto.DeleteMetricWindow) command_);
+    }
+    if (commandCase_ == 37) {
+      output.writeMessage(37, (io.littlehorse.common.proto.UpdateCountedTag) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1435,6 +1543,18 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 34) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(34, (io.littlehorse.sdk.common.proto.PutCheckpointRequest) command_);
+    }
+    if (commandCase_ == 35) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(35, (io.littlehorse.common.proto.AggregateWindowMetrics) command_);
+    }
+    if (commandCase_ == 36) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(36, (io.littlehorse.common.proto.DeleteMetricWindow) command_);
+    }
+    if (commandCase_ == 37) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(37, (io.littlehorse.common.proto.UpdateCountedTag) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1587,6 +1707,18 @@ private static final long serialVersionUID = 0L;
         if (!getPutCheckpoint()
             .equals(other.getPutCheckpoint())) return false;
         break;
+      case 35:
+        if (!getAggregateWindowMetrics()
+            .equals(other.getAggregateWindowMetrics())) return false;
+        break;
+      case 36:
+        if (!getDeleteMetricWindow()
+            .equals(other.getDeleteMetricWindow())) return false;
+        break;
+      case 37:
+        if (!getUpdateCountedTag()
+            .equals(other.getUpdateCountedTag())) return false;
+        break;
       case 0:
       default:
     }
@@ -1733,6 +1865,18 @@ private static final long serialVersionUID = 0L;
       case 34:
         hash = (37 * hash) + PUT_CHECKPOINT_FIELD_NUMBER;
         hash = (53 * hash) + getPutCheckpoint().hashCode();
+        break;
+      case 35:
+        hash = (37 * hash) + AGGREGATE_WINDOW_METRICS_FIELD_NUMBER;
+        hash = (53 * hash) + getAggregateWindowMetrics().hashCode();
+        break;
+      case 36:
+        hash = (37 * hash) + DELETE_METRIC_WINDOW_FIELD_NUMBER;
+        hash = (53 * hash) + getDeleteMetricWindow().hashCode();
+        break;
+      case 37:
+        hash = (37 * hash) + UPDATE_COUNTED_TAG_FIELD_NUMBER;
+        hash = (53 * hash) + getUpdateCountedTag().hashCode();
         break;
       case 0:
       default:
@@ -1978,6 +2122,15 @@ private static final long serialVersionUID = 0L;
       if (putCheckpointBuilder_ != null) {
         putCheckpointBuilder_.clear();
       }
+      if (aggregateWindowMetricsBuilder_ != null) {
+        aggregateWindowMetricsBuilder_.clear();
+      }
+      if (deleteMetricWindowBuilder_ != null) {
+        deleteMetricWindowBuilder_.clear();
+      }
+      if (updateCountedTagBuilder_ != null) {
+        updateCountedTagBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -2160,6 +2313,18 @@ private static final long serialVersionUID = 0L;
           putCheckpointBuilder_ != null) {
         result.command_ = putCheckpointBuilder_.build();
       }
+      if (commandCase_ == 35 &&
+          aggregateWindowMetricsBuilder_ != null) {
+        result.command_ = aggregateWindowMetricsBuilder_.build();
+      }
+      if (commandCase_ == 36 &&
+          deleteMetricWindowBuilder_ != null) {
+        result.command_ = deleteMetricWindowBuilder_.build();
+      }
+      if (commandCase_ == 37 &&
+          updateCountedTagBuilder_ != null) {
+        result.command_ = updateCountedTagBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -2305,6 +2470,18 @@ private static final long serialVersionUID = 0L;
         }
         case PUT_CHECKPOINT: {
           mergePutCheckpoint(other.getPutCheckpoint());
+          break;
+        }
+        case AGGREGATE_WINDOW_METRICS: {
+          mergeAggregateWindowMetrics(other.getAggregateWindowMetrics());
+          break;
+        }
+        case DELETE_METRIC_WINDOW: {
+          mergeDeleteMetricWindow(other.getDeleteMetricWindow());
+          break;
+        }
+        case UPDATE_COUNTED_TAG: {
+          mergeUpdateCountedTag(other.getUpdateCountedTag());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2566,6 +2743,27 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 34;
               break;
             } // case 274
+            case 282: {
+              input.readMessage(
+                  internalGetAggregateWindowMetricsFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 35;
+              break;
+            } // case 282
+            case 290: {
+              input.readMessage(
+                  internalGetDeleteMetricWindowFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 36;
+              break;
+            } // case 290
+            case 298: {
+              input.readMessage(
+                  internalGetUpdateCountedTagFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 37;
+              break;
+            } // case 298
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -7199,6 +7397,432 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 34;
       onChanged();
       return putCheckpointBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.AggregateWindowMetrics, io.littlehorse.common.proto.AggregateWindowMetrics.Builder, io.littlehorse.common.proto.AggregateWindowMetricsOrBuilder> aggregateWindowMetricsBuilder_;
+    /**
+     * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+     * @return Whether the aggregateWindowMetrics field is set.
+     */
+    @java.lang.Override
+    public boolean hasAggregateWindowMetrics() {
+      return commandCase_ == 35;
+    }
+    /**
+     * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+     * @return The aggregateWindowMetrics.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.AggregateWindowMetrics getAggregateWindowMetrics() {
+      if (aggregateWindowMetricsBuilder_ == null) {
+        if (commandCase_ == 35) {
+          return (io.littlehorse.common.proto.AggregateWindowMetrics) command_;
+        }
+        return io.littlehorse.common.proto.AggregateWindowMetrics.getDefaultInstance();
+      } else {
+        if (commandCase_ == 35) {
+          return aggregateWindowMetricsBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.AggregateWindowMetrics.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+     */
+    public Builder setAggregateWindowMetrics(io.littlehorse.common.proto.AggregateWindowMetrics value) {
+      if (aggregateWindowMetricsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        aggregateWindowMetricsBuilder_.setMessage(value);
+      }
+      commandCase_ = 35;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+     */
+    public Builder setAggregateWindowMetrics(
+        io.littlehorse.common.proto.AggregateWindowMetrics.Builder builderForValue) {
+      if (aggregateWindowMetricsBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        aggregateWindowMetricsBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 35;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+     */
+    public Builder mergeAggregateWindowMetrics(io.littlehorse.common.proto.AggregateWindowMetrics value) {
+      if (aggregateWindowMetricsBuilder_ == null) {
+        if (commandCase_ == 35 &&
+            command_ != io.littlehorse.common.proto.AggregateWindowMetrics.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.AggregateWindowMetrics.newBuilder((io.littlehorse.common.proto.AggregateWindowMetrics) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 35) {
+          aggregateWindowMetricsBuilder_.mergeFrom(value);
+        } else {
+          aggregateWindowMetricsBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 35;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+     */
+    public Builder clearAggregateWindowMetrics() {
+      if (aggregateWindowMetricsBuilder_ == null) {
+        if (commandCase_ == 35) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 35) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        aggregateWindowMetricsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+     */
+    public io.littlehorse.common.proto.AggregateWindowMetrics.Builder getAggregateWindowMetricsBuilder() {
+      return internalGetAggregateWindowMetricsFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.AggregateWindowMetricsOrBuilder getAggregateWindowMetricsOrBuilder() {
+      if ((commandCase_ == 35) && (aggregateWindowMetricsBuilder_ != null)) {
+        return aggregateWindowMetricsBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 35) {
+          return (io.littlehorse.common.proto.AggregateWindowMetrics) command_;
+        }
+        return io.littlehorse.common.proto.AggregateWindowMetrics.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.AggregateWindowMetrics aggregate_window_metrics = 35;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.AggregateWindowMetrics, io.littlehorse.common.proto.AggregateWindowMetrics.Builder, io.littlehorse.common.proto.AggregateWindowMetricsOrBuilder> 
+        internalGetAggregateWindowMetricsFieldBuilder() {
+      if (aggregateWindowMetricsBuilder_ == null) {
+        if (!(commandCase_ == 35)) {
+          command_ = io.littlehorse.common.proto.AggregateWindowMetrics.getDefaultInstance();
+        }
+        aggregateWindowMetricsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.common.proto.AggregateWindowMetrics, io.littlehorse.common.proto.AggregateWindowMetrics.Builder, io.littlehorse.common.proto.AggregateWindowMetricsOrBuilder>(
+                (io.littlehorse.common.proto.AggregateWindowMetrics) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 35;
+      onChanged();
+      return aggregateWindowMetricsBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.DeleteMetricWindow, io.littlehorse.common.proto.DeleteMetricWindow.Builder, io.littlehorse.common.proto.DeleteMetricWindowOrBuilder> deleteMetricWindowBuilder_;
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     * @return Whether the deleteMetricWindow field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeleteMetricWindow() {
+      return commandCase_ == 36;
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     * @return The deleteMetricWindow.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeleteMetricWindow getDeleteMetricWindow() {
+      if (deleteMetricWindowBuilder_ == null) {
+        if (commandCase_ == 36) {
+          return (io.littlehorse.common.proto.DeleteMetricWindow) command_;
+        }
+        return io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance();
+      } else {
+        if (commandCase_ == 36) {
+          return deleteMetricWindowBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    public Builder setDeleteMetricWindow(io.littlehorse.common.proto.DeleteMetricWindow value) {
+      if (deleteMetricWindowBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        deleteMetricWindowBuilder_.setMessage(value);
+      }
+      commandCase_ = 36;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    public Builder setDeleteMetricWindow(
+        io.littlehorse.common.proto.DeleteMetricWindow.Builder builderForValue) {
+      if (deleteMetricWindowBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        deleteMetricWindowBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 36;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    public Builder mergeDeleteMetricWindow(io.littlehorse.common.proto.DeleteMetricWindow value) {
+      if (deleteMetricWindowBuilder_ == null) {
+        if (commandCase_ == 36 &&
+            command_ != io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.DeleteMetricWindow.newBuilder((io.littlehorse.common.proto.DeleteMetricWindow) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 36) {
+          deleteMetricWindowBuilder_.mergeFrom(value);
+        } else {
+          deleteMetricWindowBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 36;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    public Builder clearDeleteMetricWindow() {
+      if (deleteMetricWindowBuilder_ == null) {
+        if (commandCase_ == 36) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 36) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        deleteMetricWindowBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    public io.littlehorse.common.proto.DeleteMetricWindow.Builder getDeleteMetricWindowBuilder() {
+      return internalGetDeleteMetricWindowFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeleteMetricWindowOrBuilder getDeleteMetricWindowOrBuilder() {
+      if ((commandCase_ == 36) && (deleteMetricWindowBuilder_ != null)) {
+        return deleteMetricWindowBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 36) {
+          return (io.littlehorse.common.proto.DeleteMetricWindow) command_;
+        }
+        return io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteMetricWindow delete_metric_window = 36;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.DeleteMetricWindow, io.littlehorse.common.proto.DeleteMetricWindow.Builder, io.littlehorse.common.proto.DeleteMetricWindowOrBuilder> 
+        internalGetDeleteMetricWindowFieldBuilder() {
+      if (deleteMetricWindowBuilder_ == null) {
+        if (!(commandCase_ == 36)) {
+          command_ = io.littlehorse.common.proto.DeleteMetricWindow.getDefaultInstance();
+        }
+        deleteMetricWindowBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.common.proto.DeleteMetricWindow, io.littlehorse.common.proto.DeleteMetricWindow.Builder, io.littlehorse.common.proto.DeleteMetricWindowOrBuilder>(
+                (io.littlehorse.common.proto.DeleteMetricWindow) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 36;
+      onChanged();
+      return deleteMetricWindowBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.UpdateCountedTag, io.littlehorse.common.proto.UpdateCountedTag.Builder, io.littlehorse.common.proto.UpdateCountedTagOrBuilder> updateCountedTagBuilder_;
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     * @return Whether the updateCountedTag field is set.
+     */
+    @java.lang.Override
+    public boolean hasUpdateCountedTag() {
+      return commandCase_ == 37;
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     * @return The updateCountedTag.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.UpdateCountedTag getUpdateCountedTag() {
+      if (updateCountedTagBuilder_ == null) {
+        if (commandCase_ == 37) {
+          return (io.littlehorse.common.proto.UpdateCountedTag) command_;
+        }
+        return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
+      } else {
+        if (commandCase_ == 37) {
+          return updateCountedTagBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    public Builder setUpdateCountedTag(io.littlehorse.common.proto.UpdateCountedTag value) {
+      if (updateCountedTagBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        updateCountedTagBuilder_.setMessage(value);
+      }
+      commandCase_ = 37;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    public Builder setUpdateCountedTag(
+        io.littlehorse.common.proto.UpdateCountedTag.Builder builderForValue) {
+      if (updateCountedTagBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        updateCountedTagBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 37;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    public Builder mergeUpdateCountedTag(io.littlehorse.common.proto.UpdateCountedTag value) {
+      if (updateCountedTagBuilder_ == null) {
+        if (commandCase_ == 37 &&
+            command_ != io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.UpdateCountedTag.newBuilder((io.littlehorse.common.proto.UpdateCountedTag) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 37) {
+          updateCountedTagBuilder_.mergeFrom(value);
+        } else {
+          updateCountedTagBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 37;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    public Builder clearUpdateCountedTag() {
+      if (updateCountedTagBuilder_ == null) {
+        if (commandCase_ == 37) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 37) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        updateCountedTagBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    public io.littlehorse.common.proto.UpdateCountedTag.Builder getUpdateCountedTagBuilder() {
+      return internalGetUpdateCountedTagFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.UpdateCountedTagOrBuilder getUpdateCountedTagOrBuilder() {
+      if ((commandCase_ == 37) && (updateCountedTagBuilder_ != null)) {
+        return updateCountedTagBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 37) {
+          return (io.littlehorse.common.proto.UpdateCountedTag) command_;
+        }
+        return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.UpdateCountedTag, io.littlehorse.common.proto.UpdateCountedTag.Builder, io.littlehorse.common.proto.UpdateCountedTagOrBuilder> 
+        internalGetUpdateCountedTagFieldBuilder() {
+      if (updateCountedTagBuilder_ == null) {
+        if (!(commandCase_ == 37)) {
+          command_ = io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
+        }
+        updateCountedTagBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.common.proto.UpdateCountedTag, io.littlehorse.common.proto.UpdateCountedTag.Builder, io.littlehorse.common.proto.UpdateCountedTagOrBuilder>(
+                (io.littlehorse.common.proto.UpdateCountedTag) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 37;
+      onChanged();
+      return updateCountedTagBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.Command)

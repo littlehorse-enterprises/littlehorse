@@ -9,6 +9,13 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToJSON, variableTypeToNumber } from "./common_enums";
 import { StructDefId, TaskDefId } from "./object_id";
+import {
+  Comparator,
+  comparatorFromJSON,
+  comparatorToJSON,
+  comparatorToNumber,
+  TypeDefinition,
+} from "./type_definition";
 import { VariableValue } from "./variable";
 
 /** Enumerates the available operations to mutate a variable in a WfRun. */
@@ -17,7 +24,7 @@ export enum VariableMutationType {
   ASSIGN = "ASSIGN",
   /** ADD - Add the RHS to the LHS. */
   ADD = "ADD",
-  /** EXTEND - Append the RHS to the LHS (valid if the LHS is a STR or JSON_ARR) */
+  /** EXTEND - Append the RHS to the LHS (valid if the LHS is a STR, JSON_ARR, or ARRAY) */
   EXTEND = "EXTEND",
   /** SUBTRACT - Subtract the RHS from the LHS (both must be INT or DOUBLE) */
   SUBTRACT = "SUBTRACT",
@@ -25,9 +32,9 @@ export enum VariableMutationType {
   MULTIPLY = "MULTIPLY",
   /** DIVIDE - Divide the LHS by the RHS (both must be INT or DOUBLE) */
   DIVIDE = "DIVIDE",
-  /** REMOVE_IF_PRESENT - Remove any occurrences of RHS from LHS (LHS must be JSON_ARR) */
+  /** REMOVE_IF_PRESENT - Remove any occurrences of RHS from LHS (LHS must be JSON_ARR or ARRAY) */
   REMOVE_IF_PRESENT = "REMOVE_IF_PRESENT",
-  /** REMOVE_INDEX - Remove item at index RHS from LHS (LHS must be JSON_ARR) */
+  /** REMOVE_INDEX - Remove item at index RHS from LHS (LHS must be JSON_ARR or ARRAY) */
   REMOVE_INDEX = "REMOVE_INDEX",
   /** REMOVE_KEY - Remove the key specified by RHS from the LHS (LHS must be JSON_OBJ) */
   REMOVE_KEY = "REMOVE_KEY",
@@ -35,6 +42,8 @@ export enum VariableMutationType {
   AND = "AND",
   /** OR - Logical OR operation. Combines two boolean values; result is true if either LHS or RHS is true. */
   OR = "OR",
+  /** POW - Raise the LHS to the power of the RHS (both must be INT or DOUBLE) */
+  POW = "POW",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -73,6 +82,9 @@ export function variableMutationTypeFromJSON(object: any): VariableMutationType 
     case 10:
     case "OR":
       return VariableMutationType.OR;
+    case 11:
+    case "POW":
+      return VariableMutationType.POW;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -104,6 +116,8 @@ export function variableMutationTypeToJSON(object: VariableMutationType): string
       return "AND";
     case VariableMutationType.OR:
       return "OR";
+    case VariableMutationType.POW:
+      return "POW";
     case VariableMutationType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -134,121 +148,9 @@ export function variableMutationTypeToNumber(object: VariableMutationType): numb
       return 9;
     case VariableMutationType.OR:
       return 10;
+    case VariableMutationType.POW:
+      return 11;
     case VariableMutationType.UNRECOGNIZED:
-    default:
-      return -1;
-  }
-}
-
-/** Operator for comparing two values to create a boolean expression. */
-export enum Comparator {
-  /** LESS_THAN - Equivalent to `<`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
-  LESS_THAN = "LESS_THAN",
-  /** GREATER_THAN - Equivalent to `>`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
-  GREATER_THAN = "GREATER_THAN",
-  /** LESS_THAN_EQ - Equivalent to `<=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
-  LESS_THAN_EQ = "LESS_THAN_EQ",
-  /** GREATER_THAN_EQ - Equivalent to `>=`. Only valid for primitive types (no JSON_OBJ or JSON_ARR). */
-  GREATER_THAN_EQ = "GREATER_THAN_EQ",
-  /**
-   * EQUALS - This is valid for any variable type, and is similar to .equals() in Java.
-   *
-   * One note: if the RHS is a different type from the LHS, then LittleHorse will
-   * try to cast the RHS to the same type as the LHS. If the cast fails, then the
-   * ThreadRun fails with a VAR_SUB_ERROR.
-   */
-  EQUALS = "EQUALS",
-  /** NOT_EQUALS - This is the inverse of `EQUALS` */
-  NOT_EQUALS = "NOT_EQUALS",
-  /**
-   * IN - Only valid if the RHS is a JSON_OBJ or JSON_ARR. Valid for any type on the LHS.
-   *
-   * For the JSON_OBJ type, this returns true if the LHS is equal to a *KEY* in the
-   * RHS. For the JSON_ARR type, it returns true if one of the elements of the RHS
-   * is equal to the LHS.
-   */
-  IN = "IN",
-  /** NOT_IN - The inverse of IN. */
-  NOT_IN = "NOT_IN",
-  UNRECOGNIZED = "UNRECOGNIZED",
-}
-
-export function comparatorFromJSON(object: any): Comparator {
-  switch (object) {
-    case 0:
-    case "LESS_THAN":
-      return Comparator.LESS_THAN;
-    case 1:
-    case "GREATER_THAN":
-      return Comparator.GREATER_THAN;
-    case 2:
-    case "LESS_THAN_EQ":
-      return Comparator.LESS_THAN_EQ;
-    case 3:
-    case "GREATER_THAN_EQ":
-      return Comparator.GREATER_THAN_EQ;
-    case 4:
-    case "EQUALS":
-      return Comparator.EQUALS;
-    case 5:
-    case "NOT_EQUALS":
-      return Comparator.NOT_EQUALS;
-    case 6:
-    case "IN":
-      return Comparator.IN;
-    case 7:
-    case "NOT_IN":
-      return Comparator.NOT_IN;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return Comparator.UNRECOGNIZED;
-  }
-}
-
-export function comparatorToJSON(object: Comparator): string {
-  switch (object) {
-    case Comparator.LESS_THAN:
-      return "LESS_THAN";
-    case Comparator.GREATER_THAN:
-      return "GREATER_THAN";
-    case Comparator.LESS_THAN_EQ:
-      return "LESS_THAN_EQ";
-    case Comparator.GREATER_THAN_EQ:
-      return "GREATER_THAN_EQ";
-    case Comparator.EQUALS:
-      return "EQUALS";
-    case Comparator.NOT_EQUALS:
-      return "NOT_EQUALS";
-    case Comparator.IN:
-      return "IN";
-    case Comparator.NOT_IN:
-      return "NOT_IN";
-    case Comparator.UNRECOGNIZED:
-    default:
-      return "UNRECOGNIZED";
-  }
-}
-
-export function comparatorToNumber(object: Comparator): number {
-  switch (object) {
-    case Comparator.LESS_THAN:
-      return 0;
-    case Comparator.GREATER_THAN:
-      return 1;
-    case Comparator.LESS_THAN_EQ:
-      return 2;
-    case Comparator.GREATER_THAN_EQ:
-      return 3;
-    case Comparator.EQUALS:
-      return 4;
-    case Comparator.NOT_EQUALS:
-      return 5;
-    case Comparator.IN:
-      return 6;
-    case Comparator.NOT_IN:
-      return 7;
-    case Comparator.UNRECOGNIZED:
     default:
       return -1;
   }
@@ -271,6 +173,8 @@ export interface VariableAssignment {
     | { $case: "formatString"; value: VariableAssignment_FormatString }
     | { $case: "nodeOutput"; value: VariableAssignment_NodeOutputReference }
     | { $case: "expression"; value: VariableAssignment_Expression }
+    | { $case: "structBuilder"; value: StructBuilder }
+    | { $case: "sizeOf"; value: VariableAssignment_SizeOf }
     | undefined;
   /**
    * If specified, the resolved value will be cast to this type before being used.
@@ -305,6 +209,12 @@ export interface VariableAssignment_NodeOutputReference {
   nodeName: string;
 }
 
+/** A SizeOf operation evaluates to the number of elements in a STR, JSON_ARR, or ARRAY value. */
+export interface VariableAssignment_SizeOf {
+  /** The value whose size should be resolved. */
+  operand: VariableAssignment | undefined;
+}
+
 /** An Expression allows you to combine multiple values into one. */
 export interface VariableAssignment_Expression {
   /** The left-hand-side of the expression. */
@@ -315,6 +225,34 @@ export interface VariableAssignment_Expression {
     | undefined;
   /** The right-hand-side of the expression. */
   rhs: VariableAssignment | undefined;
+}
+
+/** Builds a Struct using data available in the context of this ThreadRun. */
+export interface StructBuilder {
+  /** The ID of the StructDef we're building. If the version is -1, it uses the latest. */
+  structDefId:
+    | StructDefId
+    | undefined;
+  /** Determines the content of the InlineStruct. */
+  value: InlineStructBuilder | undefined;
+}
+
+/** Builds an InlineStruct from values available to a ThreadRun. */
+export interface InlineStructBuilder {
+  /** Determines the values for each field in the resulting InlineStruct. */
+  fields: { [key: string]: InlineStructFieldValue };
+}
+
+export interface InlineStructBuilder_FieldsEntry {
+  key: string;
+  value: InlineStructFieldValue | undefined;
+}
+
+export interface InlineStructFieldValue {
+  structValue?: { $case: "simpleValue"; value: VariableAssignment } | {
+    $case: "subStructure";
+    value: InlineStructBuilder;
+  } | undefined;
 }
 
 /**
@@ -387,31 +325,6 @@ export interface VariableDef {
    * (i.e. it will be no longer `optional`).
    */
   typeDef?: TypeDefinition | undefined;
-}
-
-/**
- * Defines the type of a value in LittleHorse. Can be used for Task Parameters,
- * Task return types, External Event types, ThreadSpec variables, etc.
- */
-export interface TypeDefinition {
-  definedType?:
-    | { $case: "primitiveType"; value: VariableType }
-    | { $case: "structDefId"; value: StructDefId }
-    | undefined;
-  /** Set to true if values of this type contain sensitive information and must be masked. */
-  masked: boolean;
-}
-
-/**
- * Utility used among metadata objects to define their output type. For example, used in
- * TaskDef and ExternalEventDef to represent the output.
- */
-export interface ReturnType {
-  /**
-   * The type of the output. If it is not present, it is interpred as the output type
-   * being void: the TaskRun output/ExternalEvent/WorkflowEvent is always empty / NULL.
-   */
-  returnType?: TypeDefinition | undefined;
 }
 
 /**
@@ -607,7 +520,11 @@ export interface StructFieldDef {
    * The default value of the field, which should match the Field Type. If not
    * provided, then the field is treated as required.
    */
-  defaultValue?: VariableValue | undefined;
+  defaultValue?:
+    | VariableValue
+    | undefined;
+  /** If true, then the field is treated as nullable, and its value may be set to null. */
+  isNullable: boolean;
 }
 
 /** A path of repeated Selectors resolving to a nested field in an object. */
@@ -649,6 +566,12 @@ export const VariableAssignment = {
         break;
       case "expression":
         VariableAssignment_Expression.encode(message.source.value, writer.uint32(50).fork()).ldelim();
+        break;
+      case "structBuilder":
+        StructBuilder.encode(message.source.value, writer.uint32(74).fork()).ldelim();
+        break;
+      case "sizeOf":
+        VariableAssignment_SizeOf.encode(message.source.value, writer.uint32(82).fork()).ldelim();
         break;
     }
     if (message.targetType !== undefined) {
@@ -722,6 +645,20 @@ export const VariableAssignment = {
             value: VariableAssignment_Expression.decode(reader, reader.uint32()),
           };
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.source = { $case: "structBuilder", value: StructBuilder.decode(reader, reader.uint32()) };
+          continue;
+        case 10:
+          if (tag !== 82) {
+            break;
+          }
+
+          message.source = { $case: "sizeOf", value: VariableAssignment_SizeOf.decode(reader, reader.uint32()) };
+          continue;
         case 7:
           if (tag !== 58) {
             break;
@@ -755,6 +692,10 @@ export const VariableAssignment = {
         ? { $case: "nodeOutput", value: VariableAssignment_NodeOutputReference.fromJSON(object.nodeOutput) }
         : isSet(object.expression)
         ? { $case: "expression", value: VariableAssignment_Expression.fromJSON(object.expression) }
+        : isSet(object.structBuilder)
+        ? { $case: "structBuilder", value: StructBuilder.fromJSON(object.structBuilder) }
+        : isSet(object.sizeOf)
+        ? { $case: "sizeOf", value: VariableAssignment_SizeOf.fromJSON(object.sizeOf) }
         : undefined,
       targetType: isSet(object.targetType) ? TypeDefinition.fromJSON(object.targetType) : undefined,
     };
@@ -782,6 +723,12 @@ export const VariableAssignment = {
     }
     if (message.source?.$case === "expression") {
       obj.expression = VariableAssignment_Expression.toJSON(message.source.value);
+    }
+    if (message.source?.$case === "structBuilder") {
+      obj.structBuilder = StructBuilder.toJSON(message.source.value);
+    }
+    if (message.source?.$case === "sizeOf") {
+      obj.sizeOf = VariableAssignment_SizeOf.toJSON(message.source.value);
     }
     if (message.targetType !== undefined) {
       obj.targetType = TypeDefinition.toJSON(message.targetType);
@@ -826,6 +773,14 @@ export const VariableAssignment = {
     }
     if (object.source?.$case === "expression" && object.source?.value !== undefined && object.source?.value !== null) {
       message.source = { $case: "expression", value: VariableAssignment_Expression.fromPartial(object.source.value) };
+    }
+    if (
+      object.source?.$case === "structBuilder" && object.source?.value !== undefined && object.source?.value !== null
+    ) {
+      message.source = { $case: "structBuilder", value: StructBuilder.fromPartial(object.source.value) };
+    }
+    if (object.source?.$case === "sizeOf" && object.source?.value !== undefined && object.source?.value !== null) {
+      message.source = { $case: "sizeOf", value: VariableAssignment_SizeOf.fromPartial(object.source.value) };
     }
     message.targetType = (object.targetType !== undefined && object.targetType !== null)
       ? TypeDefinition.fromPartial(object.targetType)
@@ -967,6 +922,65 @@ export const VariableAssignment_NodeOutputReference = {
   },
 };
 
+function createBaseVariableAssignment_SizeOf(): VariableAssignment_SizeOf {
+  return { operand: undefined };
+}
+
+export const VariableAssignment_SizeOf = {
+  encode(message: VariableAssignment_SizeOf, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.operand !== undefined) {
+      VariableAssignment.encode(message.operand, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): VariableAssignment_SizeOf {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseVariableAssignment_SizeOf();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.operand = VariableAssignment.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): VariableAssignment_SizeOf {
+    return { operand: isSet(object.operand) ? VariableAssignment.fromJSON(object.operand) : undefined };
+  },
+
+  toJSON(message: VariableAssignment_SizeOf): unknown {
+    const obj: any = {};
+    if (message.operand !== undefined) {
+      obj.operand = VariableAssignment.toJSON(message.operand);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<VariableAssignment_SizeOf>): VariableAssignment_SizeOf {
+    return VariableAssignment_SizeOf.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<VariableAssignment_SizeOf>): VariableAssignment_SizeOf {
+    const message = createBaseVariableAssignment_SizeOf();
+    message.operand = (object.operand !== undefined && object.operand !== null)
+      ? VariableAssignment.fromPartial(object.operand)
+      : undefined;
+    return message;
+  },
+};
+
 function createBaseVariableAssignment_Expression(): VariableAssignment_Expression {
   return { lhs: undefined, operation: undefined, rhs: undefined };
 }
@@ -1088,6 +1102,332 @@ export const VariableAssignment_Expression = {
     message.rhs = (object.rhs !== undefined && object.rhs !== null)
       ? VariableAssignment.fromPartial(object.rhs)
       : undefined;
+    return message;
+  },
+};
+
+function createBaseStructBuilder(): StructBuilder {
+  return { structDefId: undefined, value: undefined };
+}
+
+export const StructBuilder = {
+  encode(message: StructBuilder, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.structDefId !== undefined) {
+      StructDefId.encode(message.structDefId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.value !== undefined) {
+      InlineStructBuilder.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): StructBuilder {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStructBuilder();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.structDefId = StructDefId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = InlineStructBuilder.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): StructBuilder {
+    return {
+      structDefId: isSet(object.structDefId) ? StructDefId.fromJSON(object.structDefId) : undefined,
+      value: isSet(object.value) ? InlineStructBuilder.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: StructBuilder): unknown {
+    const obj: any = {};
+    if (message.structDefId !== undefined) {
+      obj.structDefId = StructDefId.toJSON(message.structDefId);
+    }
+    if (message.value !== undefined) {
+      obj.value = InlineStructBuilder.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<StructBuilder>): StructBuilder {
+    return StructBuilder.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<StructBuilder>): StructBuilder {
+    const message = createBaseStructBuilder();
+    message.structDefId = (object.structDefId !== undefined && object.structDefId !== null)
+      ? StructDefId.fromPartial(object.structDefId)
+      : undefined;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? InlineStructBuilder.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseInlineStructBuilder(): InlineStructBuilder {
+  return { fields: {} };
+}
+
+export const InlineStructBuilder = {
+  encode(message: InlineStructBuilder, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    Object.entries(message.fields).forEach(([key, value]) => {
+      InlineStructBuilder_FieldsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
+    });
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InlineStructBuilder {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInlineStructBuilder();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          const entry1 = InlineStructBuilder_FieldsEntry.decode(reader, reader.uint32());
+          if (entry1.value !== undefined) {
+            message.fields[entry1.key] = entry1.value;
+          }
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InlineStructBuilder {
+    return {
+      fields: isObject(object.fields)
+        ? Object.entries(object.fields).reduce<{ [key: string]: InlineStructFieldValue }>((acc, [key, value]) => {
+          acc[key] = InlineStructFieldValue.fromJSON(value);
+          return acc;
+        }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: InlineStructBuilder): unknown {
+    const obj: any = {};
+    if (message.fields) {
+      const entries = Object.entries(message.fields);
+      if (entries.length > 0) {
+        obj.fields = {};
+        entries.forEach(([k, v]) => {
+          obj.fields[k] = InlineStructFieldValue.toJSON(v);
+        });
+      }
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<InlineStructBuilder>): InlineStructBuilder {
+    return InlineStructBuilder.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InlineStructBuilder>): InlineStructBuilder {
+    const message = createBaseInlineStructBuilder();
+    message.fields = Object.entries(object.fields ?? {}).reduce<{ [key: string]: InlineStructFieldValue }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = InlineStructFieldValue.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    return message;
+  },
+};
+
+function createBaseInlineStructBuilder_FieldsEntry(): InlineStructBuilder_FieldsEntry {
+  return { key: "", value: undefined };
+}
+
+export const InlineStructBuilder_FieldsEntry = {
+  encode(message: InlineStructBuilder_FieldsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      InlineStructFieldValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InlineStructBuilder_FieldsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInlineStructBuilder_FieldsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = InlineStructFieldValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InlineStructBuilder_FieldsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? InlineStructFieldValue.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: InlineStructBuilder_FieldsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = InlineStructFieldValue.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<InlineStructBuilder_FieldsEntry>): InlineStructBuilder_FieldsEntry {
+    return InlineStructBuilder_FieldsEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InlineStructBuilder_FieldsEntry>): InlineStructBuilder_FieldsEntry {
+    const message = createBaseInlineStructBuilder_FieldsEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? InlineStructFieldValue.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseInlineStructFieldValue(): InlineStructFieldValue {
+  return { structValue: undefined };
+}
+
+export const InlineStructFieldValue = {
+  encode(message: InlineStructFieldValue, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    switch (message.structValue?.$case) {
+      case "simpleValue":
+        VariableAssignment.encode(message.structValue.value, writer.uint32(10).fork()).ldelim();
+        break;
+      case "subStructure":
+        InlineStructBuilder.encode(message.structValue.value, writer.uint32(18).fork()).ldelim();
+        break;
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InlineStructFieldValue {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInlineStructFieldValue();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.structValue = { $case: "simpleValue", value: VariableAssignment.decode(reader, reader.uint32()) };
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.structValue = { $case: "subStructure", value: InlineStructBuilder.decode(reader, reader.uint32()) };
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InlineStructFieldValue {
+    return {
+      structValue: isSet(object.simpleValue)
+        ? { $case: "simpleValue", value: VariableAssignment.fromJSON(object.simpleValue) }
+        : isSet(object.subStructure)
+        ? { $case: "subStructure", value: InlineStructBuilder.fromJSON(object.subStructure) }
+        : undefined,
+    };
+  },
+
+  toJSON(message: InlineStructFieldValue): unknown {
+    const obj: any = {};
+    if (message.structValue?.$case === "simpleValue") {
+      obj.simpleValue = VariableAssignment.toJSON(message.structValue.value);
+    }
+    if (message.structValue?.$case === "subStructure") {
+      obj.subStructure = InlineStructBuilder.toJSON(message.structValue.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<InlineStructFieldValue>): InlineStructFieldValue {
+    return InlineStructFieldValue.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InlineStructFieldValue>): InlineStructFieldValue {
+    const message = createBaseInlineStructFieldValue();
+    if (
+      object.structValue?.$case === "simpleValue" &&
+      object.structValue?.value !== undefined &&
+      object.structValue?.value !== null
+    ) {
+      message.structValue = { $case: "simpleValue", value: VariableAssignment.fromPartial(object.structValue.value) };
+    }
+    if (
+      object.structValue?.$case === "subStructure" &&
+      object.structValue?.value !== undefined &&
+      object.structValue?.value !== null
+    ) {
+      message.structValue = { $case: "subStructure", value: InlineStructBuilder.fromPartial(object.structValue.value) };
+    }
     return message;
   },
 };
@@ -1455,171 +1795,6 @@ export const VariableDef = {
     message.maskedValue = object.maskedValue ?? undefined;
     message.typeDef = (object.typeDef !== undefined && object.typeDef !== null)
       ? TypeDefinition.fromPartial(object.typeDef)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseTypeDefinition(): TypeDefinition {
-  return { definedType: undefined, masked: false };
-}
-
-export const TypeDefinition = {
-  encode(message: TypeDefinition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    switch (message.definedType?.$case) {
-      case "primitiveType":
-        writer.uint32(8).int32(variableTypeToNumber(message.definedType.value));
-        break;
-      case "structDefId":
-        StructDefId.encode(message.definedType.value, writer.uint32(42).fork()).ldelim();
-        break;
-    }
-    if (message.masked !== false) {
-      writer.uint32(32).bool(message.masked);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): TypeDefinition {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseTypeDefinition();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 8) {
-            break;
-          }
-
-          message.definedType = { $case: "primitiveType", value: variableTypeFromJSON(reader.int32()) };
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.definedType = { $case: "structDefId", value: StructDefId.decode(reader, reader.uint32()) };
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.masked = reader.bool();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): TypeDefinition {
-    return {
-      definedType: isSet(object.primitiveType)
-        ? { $case: "primitiveType", value: variableTypeFromJSON(object.primitiveType) }
-        : isSet(object.structDefId)
-        ? { $case: "structDefId", value: StructDefId.fromJSON(object.structDefId) }
-        : undefined,
-      masked: isSet(object.masked) ? globalThis.Boolean(object.masked) : false,
-    };
-  },
-
-  toJSON(message: TypeDefinition): unknown {
-    const obj: any = {};
-    if (message.definedType?.$case === "primitiveType") {
-      obj.primitiveType = variableTypeToJSON(message.definedType.value);
-    }
-    if (message.definedType?.$case === "structDefId") {
-      obj.structDefId = StructDefId.toJSON(message.definedType.value);
-    }
-    if (message.masked !== false) {
-      obj.masked = message.masked;
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<TypeDefinition>): TypeDefinition {
-    return TypeDefinition.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<TypeDefinition>): TypeDefinition {
-    const message = createBaseTypeDefinition();
-    if (
-      object.definedType?.$case === "primitiveType" &&
-      object.definedType?.value !== undefined &&
-      object.definedType?.value !== null
-    ) {
-      message.definedType = { $case: "primitiveType", value: object.definedType.value };
-    }
-    if (
-      object.definedType?.$case === "structDefId" &&
-      object.definedType?.value !== undefined &&
-      object.definedType?.value !== null
-    ) {
-      message.definedType = { $case: "structDefId", value: StructDefId.fromPartial(object.definedType.value) };
-    }
-    message.masked = object.masked ?? false;
-    return message;
-  },
-};
-
-function createBaseReturnType(): ReturnType {
-  return { returnType: undefined };
-}
-
-export const ReturnType = {
-  encode(message: ReturnType, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.returnType !== undefined) {
-      TypeDefinition.encode(message.returnType, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ReturnType {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseReturnType();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.returnType = TypeDefinition.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ReturnType {
-    return { returnType: isSet(object.returnType) ? TypeDefinition.fromJSON(object.returnType) : undefined };
-  },
-
-  toJSON(message: ReturnType): unknown {
-    const obj: any = {};
-    if (message.returnType !== undefined) {
-      obj.returnType = TypeDefinition.toJSON(message.returnType);
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<ReturnType>): ReturnType {
-    return ReturnType.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ReturnType>): ReturnType {
-    const message = createBaseReturnType();
-    message.returnType = (object.returnType !== undefined && object.returnType !== null)
-      ? TypeDefinition.fromPartial(object.returnType)
       : undefined;
     return message;
   },
@@ -2362,7 +2537,7 @@ export const InlineStructDef_FieldsEntry = {
 };
 
 function createBaseStructFieldDef(): StructFieldDef {
-  return { fieldType: undefined, defaultValue: undefined };
+  return { fieldType: undefined, defaultValue: undefined, isNullable: false };
 }
 
 export const StructFieldDef = {
@@ -2372,6 +2547,9 @@ export const StructFieldDef = {
     }
     if (message.defaultValue !== undefined) {
       VariableValue.encode(message.defaultValue, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.isNullable !== false) {
+      writer.uint32(24).bool(message.isNullable);
     }
     return writer;
   },
@@ -2397,6 +2575,13 @@ export const StructFieldDef = {
 
           message.defaultValue = VariableValue.decode(reader, reader.uint32());
           continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isNullable = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2410,6 +2595,7 @@ export const StructFieldDef = {
     return {
       fieldType: isSet(object.fieldType) ? TypeDefinition.fromJSON(object.fieldType) : undefined,
       defaultValue: isSet(object.defaultValue) ? VariableValue.fromJSON(object.defaultValue) : undefined,
+      isNullable: isSet(object.isNullable) ? globalThis.Boolean(object.isNullable) : false,
     };
   },
 
@@ -2420,6 +2606,9 @@ export const StructFieldDef = {
     }
     if (message.defaultValue !== undefined) {
       obj.defaultValue = VariableValue.toJSON(message.defaultValue);
+    }
+    if (message.isNullable !== false) {
+      obj.isNullable = message.isNullable;
     }
     return obj;
   },
@@ -2435,6 +2624,7 @@ export const StructFieldDef = {
     message.defaultValue = (object.defaultValue !== undefined && object.defaultValue !== null)
       ? VariableValue.fromPartial(object.defaultValue)
       : undefined;
+    message.isNullable = object.isNullable ?? false;
     return message;
   },
 };

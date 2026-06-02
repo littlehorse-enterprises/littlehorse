@@ -7,6 +7,7 @@ import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.util.TaskDefUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
@@ -21,12 +22,15 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
+import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.LHTaskMethodHandle;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
+import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.Map;
 import java.util.UUID;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -37,25 +41,51 @@ public class TaskDefLifecycleTest {
     private LittleHorseBlockingStub client;
     private LHConfig config;
 
+    private Method getMethodFor(Class<?> clazz, String taskDefName) {
+        return java.util.Arrays.stream(clazz.getMethods())
+                .filter(method -> method.isAnnotationPresent(LHTaskMethod.class))
+                .filter(method ->
+                        method.getAnnotation(LHTaskMethod.class).value().equals(taskDefName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No @LHTaskMethod found for taskDef " + taskDefName));
+    }
+
     @Test
     void shouldBeIdempotent() {
-        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet", "greet");
-        TaskDefBuilder taskCopy = new TaskDefBuilder(new TaskWorker(), "greet", "greet");
-        TaskDef original = client.putTaskDef(task.toPutTaskDefRequest());
-        TaskDef copy = client.putTaskDef(taskCopy.toPutTaskDefRequest());
+        Method taskMethod = getMethodFor(TaskWorker.class, "greet");
+        PutTaskDefRequest task = new LHTaskSignature(
+                        LHTaskMethodHandle.fromLHTaskMethod(taskMethod, Map.of()),
+                        LHTypeAdapterRegistry.empty(),
+                        Map.of())
+                .toPutTaskDefRequest();
+        PutTaskDefRequest taskCopy = new LHTaskSignature(
+                        LHTaskMethodHandle.fromLHTaskMethod(taskMethod, Map.of()),
+                        LHTypeAdapterRegistry.empty(),
+                        Map.of())
+                .toPutTaskDefRequest();
+        TaskDef original = client.putTaskDef(task);
+        TaskDef copy = client.putTaskDef(taskCopy);
         assertThat(TaskDefUtil.equals(TaskDefModel.fromProto(original, null), TaskDefModel.fromProto(copy, null)))
                 .isTrue();
     }
 
     @Test
     void shouldThrowAlreadyExistWhenTaskDefDifferent() {
-        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet-with-update", "greet-with-update");
-        client.putTaskDef(task.toPutTaskDefRequest());
+        Method taskMethod = getMethodFor(TaskWorker.class, "greet-with-update");
+        client.putTaskDef(new LHTaskSignature(
+                        LHTaskMethodHandle.fromLHTaskMethod(taskMethod, Map.of()),
+                        LHTypeAdapterRegistry.empty(),
+                        Map.of())
+                .toPutTaskDefRequest());
 
-        TaskDefBuilder taskUpdated =
-                new TaskDefBuilder(new TaskWorkerUpdated(), "greet-with-update", "greet-with-update");
+        Method taskMethodUpdated = getMethodFor(TaskWorkerUpdated.class, "greet-with-update");
+        PutTaskDefRequest taskUpdated = new LHTaskSignature(
+                        LHTaskMethodHandle.fromLHTaskMethod(taskMethodUpdated, Map.of()),
+                        LHTypeAdapterRegistry.empty(),
+                        Map.of())
+                .toPutTaskDefRequest();
 
-        assertThatThrownBy(() -> client.putTaskDef(taskUpdated.toPutTaskDefRequest()))
+        assertThatThrownBy(() -> client.putTaskDef(taskUpdated))
                 .isInstanceOf(StatusRuntimeException.class)
                 .hasMessage("ALREADY_EXISTS: TaskDef [greet-with-update] already exists and is immutable.");
     }

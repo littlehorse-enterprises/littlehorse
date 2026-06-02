@@ -1,4 +1,5 @@
 import { getTaskDefs } from '@/app/actions/getTaskDefs'
+import { routes } from '@/app/routes'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { TaskDefData } from '@/types'
 import { TaskDefId } from 'littlehorse-client/proto'
@@ -72,7 +73,7 @@ export const TaskDefTable: FC<TaskDefTableProps> = ({
             <TableRow key={taskDef.name} className="hover:bg-gray-50">
               <TableCell>
                 <LinkWithTenant
-                  href={`/taskDef/${taskDef.name}`}
+                  href={routes.taskDef.detail(taskDef.name)}
                   className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
                 >
                   {taskDef.name}

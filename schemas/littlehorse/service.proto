@@ -5,6 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 import "common_wfspec.proto";
+import "type_definition.proto";
 import "common_enums.proto";
 import "object_id.proto";
 import "variable.proto";
@@ -19,6 +20,7 @@ import "struct_def.proto";
 import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
+import "metrics.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -255,6 +257,9 @@ service LittleHorse {
   // Search for Principals
   rpc SearchPrincipal(SearchPrincipalRequest) returns (PrincipalIdList) {}
 
+  // Search for Quotas.
+  rpc SearchQuota(SearchQuotaRequest) returns (QuotaIdList) {}
+
   // Search for StructDef's
   rpc SearchStructDef(SearchStructDefRequest) returns (StructDefIdList) {}
 
@@ -326,6 +331,10 @@ service LittleHorse {
   // is the last remaining `Principal` with admin permissions. Admin permissions are defined
   // as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
   rpc DeletePrincipal(DeletePrincipalRequest) returns (google.protobuf.Empty) {}
+
+  // Deletes a `Quota`.
+  rpc DeleteQuota(DeleteQuotaRequest) returns (google.protobuf.Empty) {}
+
   // Deletes a scheduled run and prevents any further associated WfRun from being executed.
   rpc DeleteScheduledWfRun(DeleteScheduledWfRunRequest) returns (google.protobuf.Empty) {}
 
@@ -333,16 +342,27 @@ service LittleHorse {
   rpc GetTaskDefMetricsWindow(TaskDefMetricsQueryRequest) returns (TaskDefMetrics) {}
   // Returns WfSpec Metrics for a specific WfSpec and a specific time window.
   rpc GetWfSpecMetricsWindow(WfSpecMetricsQueryRequest) returns (WfSpecMetrics) {}
-  // Returns a list of TaskDef Metrics Windows.
-  rpc ListTaskDefMetrics(ListTaskMetricsRequest) returns (ListTaskMetricsResponse) {}
-  // Returns a list of WfSpec Metrics Windows.
-  rpc ListWfSpecMetrics(ListWfMetricsRequest) returns (ListWfMetricsResponse) {}
+  
+  // Lists available metric windows for a given TaskDefId and time range.
+  rpc ListTaskMetrics(ListTaskMetricsRequest) returns (MetricsList) {}
+  // Lists available metric windows for a given WfSpecId and time range.
+  rpc ListWfMetrics(ListWfMetricsRequest) returns (MetricsList) {}
+  // Gets a MetricWindow by its ID.
+  rpc GetMetricWindow(MetricWindowId) returns (MetricWindow) {}
+  // Searches workflow metric windows by WfSpec name and optional time range; returns IDs.
+  rpc SearchWfMetricWindow(SearchWfMetricWindowRequest) returns (MetricWindowIdList) {}
 
   // Creates a Tenant in the LH Server.
   rpc PutTenant(PutTenantRequest) returns (Tenant) {}
 
   // Gets a Tenant from the LH Server.
   rpc GetTenant(TenantId) returns (Tenant) {}
+
+  // Creates or updates a Quota.
+  rpc PutQuota(PutQuotaRequest) returns (Quota) {}
+
+  // Gets a Quota.
+  rpc GetQuota(QuotaId) returns (Quota) {}
 
   // Creates a Principal.
   rpc PutPrincipal(PutPrincipalRequest) returns (Principal) {}
@@ -355,6 +375,16 @@ service LittleHorse {
 
   // Gets the version of the LH Server.
   rpc GetServerVersion(google.protobuf.Empty) returns (LittleHorseVersion) {}
+
+  // Counts the number of NodeRun's matching the given criteria. This is an eventually
+  // consistent count maintained via pre-aggregated counters.
+  rpc CountNodeRun(CountNodeRunRequest) returns (Count) {}
+
+  // Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+  // Useful for monitoring task queue depth and detecting backpressure on workers. This is
+  // an eventually consistent count maintained via pre-aggregated counters.
+  rpc CountTaskRun(CountTaskRunRequest) returns (Count) {}
+
 }
 // Returns the UserTaskDef with a given name and the highest version number.
 message GetLatestUserTaskDefRequest {
@@ -1133,6 +1163,30 @@ message PrincipalIdList {
   optional bytes bookmark = 2;
 }
 
+// Search for Quotas based on certain criteria.
+message SearchQuotaRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // If set, return only Quotas for this Tenant.
+  optional string tenant_id = 3;
+
+  // If set, return only the Quota for this Principal within the specified Tenant.
+  PrincipalId principal = 4;
+}
+
+// List of Quota Id's
+message QuotaIdList {
+  // The resulting object id's.
+  repeated QuotaId results = 1;
+
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 2;
+}
+
 // Search for ExternalEvents based on certain criteria.
 //
 // Required field ExternalEventDefId specifies which ExternalEventDef
@@ -1527,36 +1581,7 @@ message TaskDefMetricsQueryRequest {
   optional string task_def_name = 3;
 }
 
-// Query to retrieve TaskDef Metrics over a period of time.
-message ListTaskMetricsRequest {
-  // TaskDef id for whichwe retrieve metrics.
-  TaskDefId task_def_id = 1;
 
-  // This parameter is a timestamp that is used to determine the *last* window returned. The
-  // server will then return `num_windows` worth of data from before this timestamp.
-  google.protobuf.Timestamp last_window_start = 2;
-  // Window size
-  MetricsWindowLength window_length = 3;
-  // Number of windows to retrieve.
-  int32 num_windows = 4;
-
-  // Bookmark for cursor-based pagination; pass if applicable.
-  optional bytes bookmark = 5;
-
-  // Maximum results to return in one request.
-  optional int32 limit = 6;
-}
-
-// A list of TaskDef Metrics WIndows
-message ListTaskMetricsResponse {
-  // List of TaskDef Metrics Windows
-  repeated TaskDefMetrics results = 1;
-
-  // The bookmark can be used for cursor-based pagination. If it is null, the server
-  // has returned all results. If it is set, you can pass it into your next request
-  // to resume searching where your previous request left off.
-  optional bytes bookmark = 2;
-}
 
 // Query to retrieve a specific WfSpec Metrics Window.
 message WfSpecMetricsQueryRequest {
@@ -1569,27 +1594,6 @@ message WfSpecMetricsQueryRequest {
 
   // The window size
   MetricsWindowLength window_length = 3;
-}
-
-// Query to retrieve WfSpec Metrics over a period of time.
-message ListWfMetricsRequest {
-  // WfSpecId of metrics to get.
-  WfSpecId wf_spec_id = 1;
-
-  // This parameter is a timestamp that is used to determine the *last* window returned. The
-  // server will then return `num_windows` worth of data from before this timestamp.
-  google.protobuf.Timestamp last_window_start = 2;
-
-  // The window size
-  MetricsWindowLength window_length = 3;
-  // Number of windows to retrieve
-  int32 num_windows = 4;
-
-  // Bookmark for cursor-based pagination; pass if applicable.
-  optional bytes bookmark = 5;
-
-  // Maximum results to return in one request.
-  optional int32 limit = 6;
 }
 
 // A list of WfSpec Metrics Windows
@@ -1763,9 +1767,50 @@ message LittleHorseVersion {
   int32 minor_version = 2;
 
   // Server Patch Version
-  int32 patch_version = 3;
+  optional int32 patch_version = 3;
 
   // Prerelease Identifier. If this is set, then the server is NOT a production release
   // but rather a release candidate or experimental pre-release.
   optional string pre_release_identifier = 4;
+}
+
+
+// Request to count NodeRun's matching specified criteria. If no filter is set,
+// the total count of all NodeRun's in the tenant is returned.
+message CountNodeRunRequest {
+
+  oneof filter {
+    // Filter by WfSpec attributes.
+    WfSpecFilter wf_spec_filter = 1;
+  }
+
+  // Filter NodeRun counts by WfSpec name, and optionally by major version and revision.
+  message WfSpecFilter {
+    // Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted.
+    string wf_spec_name = 1;
+
+    // Filter by WfSpec major version. Requires wf_spec_name to be set.
+    optional int32 wf_spec_major_version = 2;
+
+    // Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set.
+    optional int32 wf_spec_revision = 3;
+  }
+}
+
+// Request to count TaskRun's matching the given criteria for a specific TaskDef.
+// The task_def_name is required. The status filter narrows the count to TaskRun's
+// in a specific state. Initially, only TASK_SCHEDULED is supported as a counted status.
+message CountTaskRunRequest {
+  // The name of the TaskDef whose TaskRun's should be counted.
+  string task_def_name = 1;
+
+  // Filter by TaskRun status. Required. Initially only TASK_SCHEDULED is supported;
+  // the server will reject requests with unsupported status values.
+  TaskStatus status = 2;
+}
+
+// Response containing an eventually consistent count value.
+message Count {
+  // The count of objects matching the request criteria.
+  int64 value = 1;
 }

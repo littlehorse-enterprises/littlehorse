@@ -27,7 +27,7 @@ namespace LittleHorse.Sdk.Worker
 
             VariableDef input = taskDef.InputVars[position];
 
-            ValidateType(input.Type, _type, _name);
+            ValidateType(input.TypeDef, _type, _name);
         }
 
         internal object? Assign(ScheduledTask taskInstance, LHWorkerContext workerContext)
@@ -50,45 +50,27 @@ namespace LittleHorse.Sdk.Worker
             }
         }
         
-        private void ValidateType(VariableType taskDefInputType, Type paramType, string? paramName)
+        private void ValidateType(TypeDefinition taskDefInputType, Type paramType, string? paramName)
         {
             string errorMsg = string.Empty;
 
-            switch (taskDefInputType)
+            switch (taskDefInputType.DefinedTypeCase)
             {
-                case VariableType.Int:
-                    if (!LHMappingHelper.IsInt(paramType))
+                case TypeDefinition.DefinedTypeOneofCase.PrimitiveType:
+                    errorMsg = ValidatePrimitiveType(taskDefInputType.PrimitiveType, paramType);
+                    break;
+                case TypeDefinition.DefinedTypeOneofCase.InlineArrayDef:
+                    if (!(paramType.IsArray || LHMappingHelper.TryGetListElementType(paramType, out _)))
                     {
-                        errorMsg = $"TaskDef provides INT, func accepts {paramType.Name}";
+                        errorMsg = $"TaskDef provides ARRAY, func accepts {paramType.Name}";
                     }
                     break;
-                case VariableType.Double:
-                    if (!LHMappingHelper.IsFloat(paramType))
+                case TypeDefinition.DefinedTypeOneofCase.StructDefId:
+                    if (!Attribute.IsDefined(paramType, typeof(LHStructDefAttribute))
+                        && paramType != typeof(Common.Proto.Struct))
                     {
-                        errorMsg = $"TaskDef provides DOUBLE, func accepts {paramType.Name}";
+                        errorMsg = $"TaskDef provides STRUCT, func accepts {paramType.Name}";
                     }
-                    break;
-                case VariableType.Str:
-                    if (!paramType.IsAssignableFrom(typeof(string)))
-                    {
-                        errorMsg = $"TaskDef provides STRING, func accepts {paramType.Name}";
-                    }
-                    break;
-                case VariableType.Bool:
-                    if (!paramType.IsAssignableFrom(typeof(bool)))
-                    {
-                        errorMsg = $"TaskDef provides BOOL, func accepts {paramType.Name}";
-                    }
-                    break;
-                case VariableType.Bytes:
-                    if (!paramType.IsAssignableFrom(typeof(byte[])))
-                    {
-                        errorMsg = $"TaskDef provides BYTES, func accepts {paramType.Name}";
-                    }
-                    break;
-                case VariableType.JsonArr:
-                case VariableType.JsonObj:
-                    _logger?.LogInformation($"It will use Newtonsoft to deserialize Json string into {paramType.Name}");
                     break;
                 default:
                     throw new Exception("Not possible");
@@ -99,6 +81,54 @@ namespace LittleHorse.Sdk.Worker
                 errorMsg = $"Invalid assignment for var {paramName}: {errorMsg}";
                 throw new LHTaskSchemaMismatchException(errorMsg);
             }
+        }
+
+        private string ValidatePrimitiveType(VariableType primitiveType, Type paramType)
+        {
+            switch (primitiveType)
+            {
+                case VariableType.Int:
+                    if (!LHMappingHelper.IsInt(paramType))
+                    {
+                        return $"TaskDef provides INT, func accepts {paramType.Name}";
+                    }
+
+                    break;
+                case VariableType.Double:
+                    if (!LHMappingHelper.IsFloat(paramType))
+                    {
+                        return $"TaskDef provides DOUBLE, func accepts {paramType.Name}";
+                    }
+
+                    break;
+                case VariableType.Str:
+                    if (!paramType.IsAssignableFrom(typeof(string)))
+                    {
+                        return $"TaskDef provides STRING, func accepts {paramType.Name}";
+                    }
+
+                    break;
+                case VariableType.Bool:
+                    if (!paramType.IsAssignableFrom(typeof(bool)))
+                    {
+                        return $"TaskDef provides BOOL, func accepts {paramType.Name}";
+                    }
+
+                    break;
+                case VariableType.Bytes:
+                    if (!paramType.IsAssignableFrom(typeof(byte[])))
+                    {
+                        return $"TaskDef provides BYTES, func accepts {paramType.Name}";
+                    }
+
+                    break;
+                case VariableType.JsonArr:
+                case VariableType.JsonObj:
+                    _logger?.LogInformation($"It will use Newtonsoft to deserialize Json string into {paramType.Name}");
+                    break;
+            }
+
+            return string.Empty;
         }
     }
 }

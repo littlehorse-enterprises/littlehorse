@@ -11,54 +11,98 @@ public interface AggregateTaskMetricsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * TaskDef this aggregate is for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
   boolean hasTaskDefId();
   /**
+   * <pre>
+   * TaskDef this aggregate is for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
   io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
   /**
+   * <pre>
+   * TaskDef this aggregate is for.
+   * </pre>
+   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
 
   /**
+   * <pre>
+   * Tenant for this aggregate.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 2;</code>
    * @return Whether the tenantId field is set.
    */
   boolean hasTenantId();
   /**
+   * <pre>
+   * Tenant for this aggregate.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 2;</code>
    * @return The tenantId.
    */
   io.littlehorse.sdk.common.proto.TenantId getTenantId();
   /**
+   * <pre>
+   * Tenant for this aggregate.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId tenant_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder();
 
   /**
+   * <pre>
+   * List of task metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
    */
   java.util.List<io.littlehorse.common.proto.TaskMetricUpdate> 
       getMetricUpdatesList();
   /**
+   * <pre>
+   * List of task metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
    */
   io.littlehorse.common.proto.TaskMetricUpdate getMetricUpdates(int index);
   /**
+   * <pre>
+   * List of task metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
    */
   int getMetricUpdatesCount();
   /**
+   * <pre>
+   * List of task metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
    */
   java.util.List<? extends io.littlehorse.common.proto.TaskMetricUpdateOrBuilder> 
       getMetricUpdatesOrBuilderList();
   /**
+   * <pre>
+   * List of task metric updates.
+   * </pre>
+   *
    * <code>repeated .littlehorse.TaskMetricUpdate metric_updates = 3;</code>
    */
   io.littlehorse.common.proto.TaskMetricUpdateOrBuilder getMetricUpdatesOrBuilder(

@@ -19,4 +19,6 @@ service LHInternals {
     rpc GetAdvertisedHosts(google.protobuf.Empty) returns (InternalGetAdvertisedHostsResponse) {}
 
     rpc WaitForWfEvent(InternalWaitForWfEventRequest) returns (WorkflowEvent) {}
+
+    rpc InternalCount(InternalCountPb) returns (InternalCountResponse) {}
 }

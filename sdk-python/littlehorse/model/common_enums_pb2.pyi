@@ -61,6 +61,13 @@ class LHErrorType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     VAR_ERROR: _ClassVar[LHErrorType]
     TASK_ERROR: _ClassVar[LHErrorType]
     INTERNAL_ERROR: _ClassVar[LHErrorType]
+
+class MetricWindowType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = ()
+    WORKFLOW_METRIC: _ClassVar[MetricWindowType]
+    TASK_METRIC: _ClassVar[MetricWindowType]
+    USER_TASK_METRIC: _ClassVar[MetricWindowType]
+    NODE_METRIC: _ClassVar[MetricWindowType]
 STARTING: LHStatus
 RUNNING: LHStatus
 COMPLETED: LHStatus
@@ -101,3 +108,7 @@ TASK_FAILURE: LHErrorType
 VAR_ERROR: LHErrorType
 TASK_ERROR: LHErrorType
 INTERNAL_ERROR: LHErrorType
+WORKFLOW_METRIC: MetricWindowType
+TASK_METRIC: MetricWindowType
+USER_TASK_METRIC: MetricWindowType
+NODE_METRIC: MetricWindowType

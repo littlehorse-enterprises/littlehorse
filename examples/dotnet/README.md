@@ -28,6 +28,7 @@ Use another terminal for `lhctl run ...` commands.
 
 ## .NET Example Index
 
+- [`ArraysExample/`](./ArraysExample/README.md): Native LH Array producer/consumer workflow.
 - [`AwaitWorkflowEventExample/`](./AwaitWorkflowEventExample/README.md): Wait for workflow events.
 - [`BasicExample/`](./BasicExample/README.md): Minimal hello-world workflow.
 - [`CheckpointTasksExample/`](./CheckpointTasksExample/README.md): Checkpoint tasks.

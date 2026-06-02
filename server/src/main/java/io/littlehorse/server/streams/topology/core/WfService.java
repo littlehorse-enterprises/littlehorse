@@ -86,7 +86,7 @@ public class WfService {
         Supplier<StructDefModel> findStructDef = () -> {
             final StructDefModel storedResult;
 
-            if (version != null) {
+            if (version != null && version != -1) {
                 storedResult = metadataManager.get(new StructDefIdModel(name, version));
             } else {
                 storedResult =

@@ -23,23 +23,27 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 
 ## Accepted Proposals
 
-| #  | Title                                                                 |Author(s)    |GitHub Issue #|
-|:--:|:----------------------------------------------------------------------|-------------|--------------|
-| 000 | [`Struct` and `StructDef`](./000-struct-and-structdef.md) |Colt McNealy and Jacob Snarr |[#880](https://github.com/littlehorse-enterprises/littlehorse/issues/880)|
-| 001 | [The Output Topic](./001-output-topic.md) | Colt McNealy | [#1304](https://github.com/littlehorse-enterprises/littlehorse/issues/1304) |
-| 002 | [Moving Towards Strong Typing](./002-move-to-strong-typing.md) | Colt McNealy | [#1543](https://github.com/littlehorse-enterprises/littlehorse/issues/1543) |
-| 003 | [Native `RunWf` Nodes](./003-run-wf-node.md) | Colt McNealy | [#589](https://github.com/littlehorse-enterprises/littlehorse/issues/589) |
-| 004 | [Comments on `UserTaskRun`s](./004-add-user-task-comments.md) | Jake Rose and Karla Carvajal | [#1376](https://github.com/littlehorse-enterprises/littlehorse/issues/1376) |
-| 005 | [Correlated `ExternalEvent`s](./005-correlated-events.md) | Colt McNealy | [#1579](https://github.com/littlehorse-enterprises/littlehorse/issues/1579) |
-| 006 | [`UserTaskEvent` Completed](./006-add-user-task-event-completed.md) | Jake Rose | [#904](https://github.com/littlehorse-enterprises/littlehorse/issues/904) |
-| 007 | [`ExternalEvent`s `wfspec` and `wfRun` validations](./007-extending-external-event-validations.md) | Jake Rose | [#588](https://github.com/littlehorse-enterprises/littlehorse/issues/588) |
-| 008 | [Type casting](./008-type-casting.md) | Christian Caicedo | [#1543](https://github.com/littlehorse-enterprises/littlehorse/issues/1543)|
-| 009 | [Checkpointed Tasks](./009-checkpointed-task-run.md) | Colt McNealy | [#1765](https://github.com/littlehorse-enterprises/littlehorse/issues/1765) |
-| 010 | [New Store Prefix](./010-new-store-prefix-format.md) | Colt McNealy & Christian Caicedo | [#1842](https://github.com/littlehorse-enterprises/littlehorse/pull/1842) |
-| 011 | [Type-Safe `StructPath`s](./011-type-safe-structpaths.md) | Jacob Snarr | [#1884](https://github.com/littlehorse-enterprises/littlehorse/issues/1884) |
-| 012 | [`ThreadRun` Archival](./012-archive-thread-run.md) | Jacob Snarr | [#2038](https://github.com/littlehorse-enterprises/littlehorse/issues/2038) |
-| 013 | [Wait For One Of Many Threads](./013-wait-for-one-of.md) | Colt McNealy | [#2037](https://github.com/littlehorse-enterprises/littlehorse/issues/2037) |
-| 014 | [Conditions Refactor](./014-conditions-refactor.md) | Colt McNealy | [#1458](https://github.com/littlehorse-enterprises/littlehorse/issues/1458) |
-| 015 | [Dynamic Child Workflows](./015-run-child-workflow-dynamically.md) | Eduwer Camacaro | N/A |
-| 016 | [Java `LHTaskWorker` Support Generic Structs](./016-java-structdef-placeholder-resolution.md) | Colt McNealy | [#2132](https://github.com/littlehorse-enterprises/littlehorse/pull/2132) |
-| 017 | [TypeScript WfSpec minimal API](./017-typescript-wfspec-minimal-api.md) | Hazim Arafa | [#2162](https://github.com/littlehorse-enterprises/littlehorse/pull/2132) |
+|  #  | Title                                                                                              | Author(s)                        |GitHub Issue #|
+|:---:|:---------------------------------------------------------------------------------------------------|----------------------------------|--------------|
+| 000 | [`Struct` and `StructDef`](./000-struct-and-structdef.md)                                          | Colt McNealy and Jacob Snarr     |[#880](https://github.com/littlehorse-enterprises/littlehorse/issues/880)|
+| 001 | [The Output Topic](./001-output-topic.md)                                                          | Colt McNealy                     | [#1304](https://github.com/littlehorse-enterprises/littlehorse/issues/1304) |
+| 002 | [Moving Towards Strong Typing](./002-move-to-strong-typing.md)                                     | Colt McNealy                     | [#1543](https://github.com/littlehorse-enterprises/littlehorse/issues/1543) |
+| 003 | [Native `RunWf` Nodes](./003-run-wf-node.md)                                                       | Colt McNealy                     | [#589](https://github.com/littlehorse-enterprises/littlehorse/issues/589) |
+| 004 | [Comments on `UserTaskRun`s](./004-add-user-task-comments.md)                                      | Jake Rose and Karla Carvajal     | [#1376](https://github.com/littlehorse-enterprises/littlehorse/issues/1376) |
+| 005 | [Correlated `ExternalEvent`s](./005-correlated-events.md)                                          | Colt McNealy                     | [#1579](https://github.com/littlehorse-enterprises/littlehorse/issues/1579) |
+| 006 | [`UserTaskEvent` Completed](./006-add-user-task-event-completed.md)                                | Jake Rose                        | [#904](https://github.com/littlehorse-enterprises/littlehorse/issues/904) |
+| 007 | [`ExternalEvent`s `wfspec` and `wfRun` validations](./007-extending-external-event-validations.md) | Jake Rose                        | [#588](https://github.com/littlehorse-enterprises/littlehorse/issues/588) |
+| 008 | [Type casting](./008-type-casting.md)                                                              | Christian Caicedo                | [#1543](https://github.com/littlehorse-enterprises/littlehorse/issues/1543)|
+| 009 | [Checkpointed Tasks](./009-checkpointed-task-run.md)                                               | Colt McNealy                     | [#1765](https://github.com/littlehorse-enterprises/littlehorse/issues/1765) |
+| 010 | [New Store Prefix](./010-new-store-prefix-format.md)                                               | Colt McNealy & Christian Caicedo | [#1842](https://github.com/littlehorse-enterprises/littlehorse/pull/1842) |
+| 011 | [Type-Safe `StructPath`s](./011-type-safe-structpaths.md)                                          | Jacob Snarr                      | [#1884](https://github.com/littlehorse-enterprises/littlehorse/issues/1884) |
+| 012 | [`ThreadRun` Archival](./012-archive-thread-run.md)                                                | Jacob Snarr                      | [#2038](https://github.com/littlehorse-enterprises/littlehorse/issues/2038) |
+| 013 | [Wait For One Of Many Threads](./013-wait-for-one-of.md)                                           | Colt McNealy                     | [#2037](https://github.com/littlehorse-enterprises/littlehorse/issues/2037) |
+| 014 | [Conditions Refactor](./014-conditions-refactor.md)                                                | Colt McNealy                     | [#1458](https://github.com/littlehorse-enterprises/littlehorse/issues/1458) |
+| 015 | [Dynamic Child Workflows](./015-run-child-workflow-dynamically.md)                                 | Eduwer Camacaro                  | N/A |
+| 016 | [Java `LHTaskWorker` Support Generic Structs](./016-java-structdef-placeholder-resolution.md)      | Colt McNealy                     | [#2132](https://github.com/littlehorse-enterprises/littlehorse/pull/2132) |
+| 017 | [Workflow Metrics](./017-workflow-metrics.md)                                                      | Christian Caicedo                | N/A |
+| 018 | [TypeScript WfSpec minimal API](./018-typescript-wfspec-minimal-api.md)                            | Hazim Arafa                      | [#2162](https://github.com/littlehorse-enterprises/littlehorse/pull/2132) |
+| 019 | [Buildling `Struct`s Inside `WfSpec`](./019-struct-field-assignment-in-wfspec.md)                  | Colt McNealy                     | #2219 |
+| 020 | [Quotas](./019-quotas.md)                                                                          | Colt McNealy                     | TODO |
+| 021 | [Counted Tags](./021-counted-tags.md)                                                              | Eduwer Camacaro                  | TODO |

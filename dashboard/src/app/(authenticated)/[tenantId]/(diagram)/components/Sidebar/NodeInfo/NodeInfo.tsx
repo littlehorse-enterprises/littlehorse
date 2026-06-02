@@ -11,7 +11,7 @@ export const NodeInfo: FC = () => {
     return null
   }
 
-  const { type, id, data } = selectedNode
+  const { id, data } = selectedNode
   const { failureHandlers } = data
   return (
     <div className="flex max-w-full flex-1 flex-col">

@@ -35,6 +35,8 @@ public interface LHTypeStrategy {
                 return removeKey(manager, other);
             case EXTEND:
                 return extend(manager, other);
+            case POW:
+                return pow(manager, other);
             case AND:
             case OR:
                 return Optional.of(new TypeDefinitionModel(VariableType.BOOL));
@@ -77,6 +79,9 @@ public interface LHTypeStrategy {
             throws InvalidExpressionException;
 
     Optional<TypeDefinitionModel> removeIndex(ReadOnlyMetadataManager manager, LHTypeStrategy other)
+            throws InvalidExpressionException;
+
+    Optional<TypeDefinitionModel> pow(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException;
 
     Optional<TypeDefinitionModel> extend(ReadOnlyMetadataManager manager, LHTypeStrategy other)

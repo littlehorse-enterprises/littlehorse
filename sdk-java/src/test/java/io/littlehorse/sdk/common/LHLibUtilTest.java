@@ -1,7 +1,10 @@
 package io.littlehorse.sdk.common;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.StructDefId;
@@ -11,6 +14,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.LHStructField;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -311,6 +315,42 @@ public class LHLibUtilTest {
         Assertions.assertThat(wrappedValue.getStruct().getStruct()).isEqualTo(inlineStruct);
     }
 
+    @Test
+    void shouldSerializeArrayAsNativeLHArrayWhenRequested() {
+        Long[] numbers = new Long[] {1L, 2L, 3L};
+
+        VariableValue val = LHLibUtil.objToVarValAsNativeArray(numbers, Long[].class, LHTypeAdapterRegistry.empty());
+
+        Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
+        Assertions.assertThat(val.getArray().getItemsCount()).isEqualTo(3);
+        Assertions.assertThat(val.getArray().getItems(0).getInt()).isEqualTo(1L);
+        Assertions.assertThat(val.getArray().getItems(1).getInt()).isEqualTo(2L);
+        Assertions.assertThat(val.getArray().getItems(2).getInt()).isEqualTo(3L);
+    }
+
+    @Test
+    void shouldFailNativeArraySerializationForNonArrayDeclaredType() {
+        Long[] numbers = new Long[] {1L};
+
+        Assertions.assertThatThrownBy(
+                        () -> LHLibUtil.objToVarValAsNativeArray(numbers, Long.class, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(io.littlehorse.sdk.common.exception.LHSerdeException.class)
+                .hasMessageContaining("must be a Java array type");
+    }
+
+    @Test
+    void shouldDeserializeNativeLHArrayToJavaArray() {
+        VariableValue nativeArray = VariableValue.newBuilder()
+                .setArray(Array.newBuilder()
+                        .addItems(VariableValue.newBuilder().setInt(7L))
+                        .addItems(VariableValue.newBuilder().setInt(9L)))
+                .build();
+
+        Object out = LHLibUtil.varValToObj(nativeArray, Long[].class, LHTypeAdapterRegistry.empty());
+
+        Assertions.assertThat((Long[]) out).containsExactly(7L, 9L);
+    }
+
     private Book getTestBook() {
         String title = "Frankenstein";
         int soldUnits = 3000000;
@@ -372,5 +412,58 @@ public class LHLibUtilTest {
         public void setName(String name) {
             this.name = name;
         }
+    }
+
+    @LHStructDef("nullable-field-struct")
+    public static class NullableFieldStruct {
+        // Below annotation doesn't do anything in this test but serves as documentation for the intent
+        // of the field.
+        @LHStructField(isNullable = true)
+        private String nullableField;
+
+        public String getNullableField() {
+            return nullableField;
+        }
+
+        public void setNullableField(String nullableField) {
+            this.nullableField = nullableField;
+        }
+    }
+
+    @Test
+    void shouldSerializeNullFieldAsValueNotSet() {
+        NullableFieldStruct pojo = new NullableFieldStruct();
+        pojo.setNullableField(null);
+
+        Struct struct = LHLibUtil.serializeToStruct(pojo);
+
+        VariableValue nullableFieldVal =
+                struct.getStruct().getFieldsMap().get("nullableField").getValue();
+
+        Assertions.assertThat(nullableFieldVal.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
+    }
+
+    @Test
+    void shouldDeserializeValueNotSetFieldAsNullOnPojo() {
+        // Build a Struct where 'nullableField' is present but null VALUE_NOT_SET
+        VariableValue structVal = VariableValue.newBuilder()
+                .setStruct(Struct.newBuilder()
+                        .setStructDefId(StructDefId.newBuilder()
+                                .setName("nullable-field-struct")
+                                .build())
+                        .setStruct(InlineStruct.newBuilder()
+                                .putFields(
+                                        "nullableField",
+                                        StructField.newBuilder()
+                                                .setValue(VariableValue.newBuilder()
+                                                        .build()) // VALUE_NOT_SET
+                                                .build())
+                                .build())
+                        .build())
+                .build();
+
+        NullableFieldStruct pojo = (NullableFieldStruct) LHLibUtil.varValToObj(structVal, NullableFieldStruct.class);
+
+        assertThat(pojo.getNullableField()).isNull();
     }
 }

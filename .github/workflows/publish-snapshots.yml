@@ -1,0 +1,70 @@
+name: publish-snapshots
+run-name: Publish Snapshots (${{ github.ref_name }})
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - "[0-9]+.[0-9]+"
+
+permissions:
+  packages: write
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      snapshot-version: ${{ steps.extract.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Extract version
+        id: extract
+        working-directory: release-manager/scripts
+        run: |
+          version=$(python3 extract_version.py --snapshot)
+          echo "version=$version" >> $GITHUB_OUTPUT
+      - name: Validate snapshot
+        working-directory: release-manager/scripts
+        env:
+          VERSION: ${{ steps.extract.outputs.version }}
+        run: python3 validate.py --type snapshot --version "$VERSION"
+
+  publish-java-libraries:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: "corretto"
+          java-version: "17"
+
+      - name: Tests
+        run: ./gradlew sdk-java:test test-utils:test test-utils-container:test
+
+      - name: Publish Snapshot
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSSRH_PASSWORD }}
+        run: >
+          ./gradlew
+          sdk-java:publishToSonatype
+          test-utils:publishToSonatype
+          test-utils-container:publishToSonatype
+          -Pversion=${{ needs.prepare.outputs.snapshot-version }}
+
+  publish-docker:
+    needs: prepare
+    uses: ./.github/workflows/publish-docker.yml
+    with:
+      tag: ${{ needs.prepare.outputs.snapshot-version }}

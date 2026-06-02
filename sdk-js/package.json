@@ -34,6 +34,7 @@
   "files": [
     "/dist"
   ],
+  "packageManager": "pnpm@10.19.0",
   "scripts": {
     "build": "tsc",
     "test": "jest",
@@ -51,10 +52,13 @@
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
     "ts-proto": "^1.181.2",
-    "typescript": "^5.3.3"
+    "typescript": "5.3.3"
   },
   "dependencies": {
+    "long": "^5.2.3",
     "nice-grpc": "^2.1.12",
+    "nice-grpc-common": "^2.0.2",
+    "protobufjs": "^7.2.4",
     "zod": "^4.3.6"
   },
   "peerDependencies": {

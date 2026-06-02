@@ -16,6 +16,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.util.TypeCastingUtils;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.PathCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
@@ -46,6 +47,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     private FormatStringModel formatString;
     private NodeOutputReferenceModel nodeOutputReference;
     private ExpressionModel expression;
+    private StructBuilderModel structBuilder;
+    private SizeOfModel sizeOf;
     private TypeDefinitionModel targetType;
 
     public Class<VariableAssignment> getProtoBaseClass() {
@@ -87,6 +90,12 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             case EXPRESSION:
                 expression = LHSerializable.fromProto(p.getExpression(), ExpressionModel.class, context);
                 break;
+            case STRUCT_BUILDER:
+                structBuilder = StructBuilderModel.fromProto(p.getStructBuilder(), context);
+                break;
+            case SIZE_OF:
+                sizeOf = LHSerializable.fromProto(p.getSizeOf(), SizeOfModel.class, context);
+                break;
             case SOURCE_NOT_SET:
                 // nothing to do;
         }
@@ -123,6 +132,12 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             case EXPRESSION:
                 out.setExpression(expression.toProto());
                 break;
+            case STRUCT_BUILDER:
+                out.setStructBuilder(structBuilder.toProto());
+                break;
+            case SIZE_OF:
+                out.setSizeOf(sizeOf.toProto());
+                break;
             case SOURCE_NOT_SET:
                 // not possible.
         }
@@ -146,6 +161,29 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             for (VariableAssignmentModel arg : formatString.getArgs()) {
                 out.addAll(arg.getRequiredWfRunVarNames());
             }
+        } else if (rhsSourceType == SourceCase.STRUCT_BUILDER) {
+            out.addAll(structBuilder.getRequiredWfRunVarNames());
+        }
+        return out;
+    }
+
+    public Set<String> getRequiredNodeNames() {
+        Set<String> out = new HashSet<>();
+        if (rhsSourceType == SourceCase.NODE_OUTPUT) {
+            out.add(nodeOutputReference.getNodeName());
+        } else if (rhsSourceType == SourceCase.FORMAT_STRING) {
+            out.addAll(formatString.getFormat().getRequiredNodeNames());
+            for (VariableAssignmentModel arg : formatString.getArgs()) {
+                out.addAll(arg.getRequiredNodeNames());
+            }
+        } else if (rhsSourceType == SourceCase.EXPRESSION) {
+            out.addAll(expression.getLhs().getRequiredNodeNames());
+            out.addAll(expression.getRhs().getRequiredNodeNames());
+        } else if (rhsSourceType == SourceCase.STRUCT_BUILDER) {
+            out.addAll(structBuilder.getRequiredNodeNames());
+        }
+        if (rhsSourceType == SourceCase.SIZE_OF) {
+            out.addAll(sizeOf.getOperand().getRequiredWfRunVarNames());
         }
         return out;
     }
@@ -183,6 +221,12 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // TODO (#1124): look at the node to determine if the output of the node
                 // can be a given type.
                 return true;
+            case STRUCT_BUILDER:
+                baseType = structBuilder.getTypeDefinition();
+                break;
+            case SIZE_OF:
+                baseType = new TypeDefinitionModel(VariableType.INT);
+                break;
             case SOURCE_NOT_SET:
                 // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
                 // protobuf that does not set the source type. Instead of throwing an IllegalStateException
@@ -271,6 +315,19 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                     typeDef = expressionTypeDef.get();
                 }
                 break;
+            case STRUCT_BUILDER:
+                typeDef = structBuilder.getTypeDefinition();
+                break;
+            case SIZE_OF:
+                Optional<TypeDefinitionModel> sizeOperandType =
+                        sizeOf.getOperand().getSourceType(manager, wfSpec, threadSpecName);
+
+                if (sizeOperandType.isPresent() && !isValidSizeOfOperand(sizeOperandType.get())) {
+                    throw new InvalidExpressionException("size() only supports STR, ARRAY or JSON_ARR operands");
+                }
+
+                typeDef = new TypeDefinitionModel(VariableType.INT);
+                break;
             case SOURCE_NOT_SET:
                 // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
                 // protobuf that does not set the source type. Instead of throwing an IllegalStateException
@@ -297,6 +354,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             throws InvalidEdgeException, InvalidExpressionException {
         if (expression != null) {
             expression.validate(source, manager, threadSpec);
+        } else if (structBuilder != null) {
+            structBuilder.validate(source, manager, threadSpec);
         } else {
             Optional<TypeDefinitionModel> sourceType = getSourceType(manager, threadSpec.wfSpec, threadSpec.getName());
             if (sourceType.isEmpty()
@@ -319,7 +378,23 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         if (expression != null) {
             out.addAll(expression.getLhs().getRequiredVariableNames());
             out.addAll(expression.getRhs().getRequiredVariableNames());
+        } else if (rhsSourceType == SourceCase.VARIABLE_NAME) {
+            out.add(variableName);
+        } else if (rhsSourceType == SourceCase.SIZE_OF) {
+            out.addAll(sizeOf.getOperand().getRequiredVariableNames());
+        } else if (structBuilder != null) {
+            out.addAll(structBuilder.getRequiredVariableNames());
         }
         return out;
+    }
+
+    private boolean isValidSizeOfOperand(TypeDefinitionModel operandType) {
+        if (operandType.getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF) {
+            return true;
+        }
+
+        return operandType.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
+                && (operandType.getPrimitiveType() == VariableType.JSON_ARR
+                        || operandType.getPrimitiveType() == VariableType.STR);
     }
 }

@@ -194,6 +194,9 @@ class LHExpression:
     def divide(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.DIVIDE, other)
 
+    def pow(self, exponent: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.POW, exponent)
+
     def extend(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.EXTEND, other)
 
@@ -263,6 +266,9 @@ class CastExpression:
 
     def divide(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.DIVIDE, other)
+
+    def pow(self, exponent: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.POW, exponent)
 
     def extend(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.EXTEND, other)
@@ -459,6 +465,9 @@ class NodeOutput(LHExpression):
     def divide(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.DIVIDE, other)
 
+    def pow(self, exponent: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.POW, exponent)
+
     def extend(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.EXTEND, other)
 
@@ -556,6 +565,7 @@ class WfRunVariable:
             Union[WfRunVariableAccessLevel, str]
         ] = WfRunVariableAccessLevel.PRIVATE_VAR,
         struct_def_name: Optional[str] = None,
+        struct_def_version: int = -1,
     ) -> None:
         """Defines a Variable in the ThreadSpec and returns a handle to it.
 
@@ -568,6 +578,7 @@ class WfRunVariable:
             default_value (Any, optional): A default value. Defaults to None.
             access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable. Defaults to PRIVATE_VAR.
             struct_def_name (str, optional): The StructDef name, when this variable is a Struct.
+            struct_def_version (int): The StructDef version. Defaults to -1 (latest).
 
         Returns:
             WfRunVariable: A handle to the created WfRunVariable.
@@ -596,6 +607,7 @@ class WfRunVariable:
         self._json_indexes: List[JsonIndex] = []
         self._access_level = access_level
         self._struct_def_name: Optional[str] = struct_def_name
+        self._struct_def_version: int = struct_def_version
 
         if default_value is not None:
             self._set_default(default_value)
@@ -643,6 +655,7 @@ class WfRunVariable:
             self.parent,
             variable_type=self.type,
             struct_def_name=self._struct_def_name,
+            struct_def_version=self._struct_def_version,
         )
         out.default_value = self.default_value
         out.json_path = json_path
@@ -671,6 +684,7 @@ class WfRunVariable:
             self.parent,
             variable_type=self.type,
             struct_def_name=self._struct_def_name,
+            struct_def_version=self._struct_def_version,
         )
         out._lh_path = list(self._lh_path)
         out._masked = self._masked
@@ -794,7 +808,10 @@ class WfRunVariable:
         """
         if self._struct_def_name is not None:
             type_def = TypeDefinition(
-                struct_def_id=StructDefId(name=self._struct_def_name),
+                struct_def_id=StructDefId(
+                    name=self._struct_def_name,
+                    version=self._struct_def_version,
+                ),
                 masked=self._masked,
             )
         else:
@@ -861,6 +878,9 @@ class WfRunVariable:
 
     def divide(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.DIVIDE, other)
+
+    def pow(self, exponent: Any) -> LHExpression:
+        return LHExpression(self, VariableMutationType.POW, exponent)
 
     def extend(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.EXTEND, other)
@@ -1764,6 +1784,9 @@ class WorkflowThread:
     def divide(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.DIVIDE, rhs)
 
+    def pow(self, base: Any, exponent: Any) -> LHExpression:
+        return LHExpression(base, VariableMutationType.POW, exponent)
+
     def subtract(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.SUBTRACT, rhs)
 
@@ -1820,6 +1843,7 @@ class WorkflowThread:
         self,
         name: str,
         struct_def: Union[str, type],
+        struct_def_version: int = -1,
     ) -> WfRunVariable:
         """Declares a Struct variable in the ThreadSpec.
 
@@ -1827,6 +1851,7 @@ class WorkflowThread:
             name (str): The name of the variable.
             struct_def (Union[str, type]): Either the StructDef name as a string,
                 or a class decorated with ``@lh_struct_def``.
+            struct_def_version (int): The StructDef version to use. Defaults to -1 (latest).
 
         Returns:
             WfRunVariable: A handle to the created WfRunVariable.
@@ -1840,7 +1865,11 @@ class WorkflowThread:
                 )
             struct_def_name = get_struct_def_name(struct_def)
 
-        return self.add_variable(name, struct_def_name=struct_def_name)
+        return self.add_variable(
+            name,
+            struct_def_name=struct_def_name,
+            struct_def_version=struct_def_version,
+        )
 
     def handle_any_failure(
         self, node: NodeOutput, initializer: "ThreadInitializer"
@@ -2340,6 +2369,7 @@ class WorkflowThread:
         access_level: Optional[Union[WfRunVariableAccessLevel, str]] = PRIVATE_VAR,
         default_value: Any = None,
         struct_def_name: Optional[str] = None,
+        struct_def_version: int = -1,
     ) -> WfRunVariable:
         """Defines a Variable in the ThreadSpec and returns a handle to it.
 
@@ -2351,6 +2381,7 @@ class WorkflowThread:
             access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable.
             default_value (Any, optional): A default value. Defaults to None.
             struct_def_name (str, optional): The StructDef name, for struct variables.
+            struct_def_version (int): The StructDef version. Defaults to -1 (latest).
 
         Returns:
             WfRunVariable: A handle to the created WfRunVariable.
@@ -2373,6 +2404,7 @@ class WorkflowThread:
             default_value=default_value,
             access_level=access_level,
             struct_def_name=struct_def_name,
+            struct_def_version=struct_def_version,
         )
         self._wf_run_variables.append(new_var)
         return new_var

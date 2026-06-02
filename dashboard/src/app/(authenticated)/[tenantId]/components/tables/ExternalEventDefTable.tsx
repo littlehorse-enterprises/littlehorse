@@ -1,3 +1,4 @@
+import { routes } from '@/app/routes'
 import { ExternalEventDefId } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { SearchResultProps } from '.'
@@ -13,7 +14,7 @@ export const ExternalEventDefTable: FC<SearchResultProps> = ({ pages = [] }) => 
   return (
     <div className="py-4">
       {allResults.map(({ name }: ExternalEventDefId) => (
-        <SelectionLink key={name} href={`/externalEventDef/${name}`}>
+        <SelectionLink key={name} href={routes.externalEventDef.detail(name)}>
           <p className="group">{name}</p>
         </SelectionLink>
       ))}
