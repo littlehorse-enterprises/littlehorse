@@ -6,6 +6,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.CountNodeRunRequest;
+import io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
@@ -16,21 +17,29 @@ public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> 
     private String wfSpecName;
     private Integer wfSpecMajorVersion;
     private Integer wfSpecRevision;
+    private CountNodeRunRequest.FilterCase filterCase;
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         CountNodeRunRequest p = (CountNodeRunRequest) proto;
-        wfSpecName = p.getWfSpecName();
-        if (p.hasWfSpecMajorVersion()) wfSpecMajorVersion = p.getWfSpecMajorVersion();
-        if (p.hasWfSpecRevision()) wfSpecRevision = p.getWfSpecRevision();
+        this.filterCase = p.getFilterCase();
+        if (filterCase == CountNodeRunRequest.FilterCase.WF_SPEC_FILTER) {
+            WfSpecFilter filter = p.getWfSpecFilter();
+            wfSpecName = filter.getWfSpecName();
+            if (filter.hasWfSpecMajorVersion()) wfSpecMajorVersion = filter.getWfSpecMajorVersion();
+            if (filter.hasWfSpecRevision()) wfSpecRevision = filter.getWfSpecRevision();
+        }
     }
 
     @Override
     public CountNodeRunRequest.Builder toProto() {
         CountNodeRunRequest.Builder out = CountNodeRunRequest.newBuilder();
-        out.setWfSpecName(wfSpecName);
-        if (wfSpecMajorVersion != null) out.setWfSpecMajorVersion(wfSpecMajorVersion);
-        if (wfSpecRevision != null) out.setWfSpecRevision(wfSpecRevision);
+        if (wfSpecName != null) {
+            WfSpecFilter.Builder filter = WfSpecFilter.newBuilder().setWfSpecName(wfSpecName);
+            if (wfSpecMajorVersion != null) filter.setWfSpecMajorVersion(wfSpecMajorVersion);
+            if (wfSpecRevision != null) filter.setWfSpecRevision(wfSpecRevision);
+            out.setWfSpecFilter(filter);
+        }
         return out;
     }
 
@@ -46,8 +55,8 @@ public class CountNodeRunRequestModel extends CountRequest<CountNodeRunRequest> 
 
     @Override
     protected List<Attribute> countAttributes() {
-        if (wfSpecName == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "wfSpecName is required");
+        if (filterCase == CountNodeRunRequest.FilterCase.FILTER_NOT_SET) {
+            return List.of(new Attribute("all", "all"));
         }
 
         if (wfSpecRevision != null && wfSpecMajorVersion == null) {
