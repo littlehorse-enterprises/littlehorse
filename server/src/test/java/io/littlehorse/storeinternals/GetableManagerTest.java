@@ -106,7 +106,7 @@ public class GetableManagerTest {
         when(executionContext.getPartitionMetricsMemoryStore()).thenReturn(partitionMetricsMemoryStore);
         localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
         getableManager =
-                new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext, null);
+                new GetableManager(localStoreWrapper, mockProcessorContext, mock(), executionContext, null);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 

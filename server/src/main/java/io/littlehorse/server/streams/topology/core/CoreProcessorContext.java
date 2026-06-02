@@ -218,7 +218,6 @@ public class CoreProcessorContext implements ExecutionContext {
         storageManager = new GetableManager(
                 coreStore,
                 processorContext,
-                config,
                 currentCommand,
                 this,
                 metadataManager.get(tenantId).getOutputTopicConfig());

@@ -43,7 +43,7 @@ public class InMemoryGetableManager extends GetableManager {
     private final Map<String, ScheduledTaskModel> scheduledTasks = new ConcurrentHashMap<>();
 
     public InMemoryGetableManager(CoreProcessorContext executionContext) {
-        super(null, null, null, null, executionContext, null);
+        super(null, null, null, executionContext, null);
     }
 
     @Override

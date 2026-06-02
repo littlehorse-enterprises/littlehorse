@@ -12,30 +12,25 @@ import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.Forwardable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import io.littlehorse.server.streams.topology.core.Forwardable;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 public class TagStorageManager {
 
     private final TenantScopedStore lhStore;
-    private final ProcessorContext<String, CommandProcessorOutput> context;
     private final ProcessorContext<String, Forwardable> context;
-    private final LHServerConfig lhConfig;
     private final AuthorizationContext authContext;
     private final PartitionMetricsMemoryStore partitionMetrics;
     private final ClusterScopedStore clusterScopedStore;
 
     public TagStorageManager(
             TenantScopedStore lhStore,
-            ProcessorContext<String, CommandProcessorOutput> context,
-            CoreProcessorContext executionContext) {
             ProcessorContext<String, Forwardable> context,
-            LHServerConfig lhConfig,
-            ExecutionContext executionContext) {
+            CoreProcessorContext executionContext) {
         this.lhStore = lhStore;
         this.context = context;
         this.authContext = executionContext.authorization();

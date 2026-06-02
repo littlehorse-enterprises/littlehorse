@@ -36,7 +36,6 @@ public class GetableManager extends ReadOnlyGetableManager {
     public GetableManager(
             final TenantScopedStore store,
             final ProcessorContext<String, Forwardable> streamsContext,
-            final LHServerConfig config,
             final CommandModel command,
             final CoreProcessorContext executionContext,
             final OutputTopicConfigModel outputTopicConfig) {
