@@ -43,7 +43,7 @@ public class GetableManager extends ReadOnlyGetableManager {
         super(store);
         this.store = store;
         this.command = command;
-        this.tagStorageManager = new TagStorageManager(this.store, streamsContext, config, executionContext);
+        this.tagStorageManager = new TagStorageManager(this.store, streamsContext, executionContext);
         this.ctx = executionContext;
         this.outputTopicConfig = outputTopicConfig;
     }

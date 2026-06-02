@@ -65,6 +65,12 @@ private static final long serialVersionUID = 0L;
      * @return The isRemote.
      */
     boolean getIsRemote();
+
+    /**
+     * <code>bool is_counted = 3;</code>
+     * @return The isCounted.
+     */
+    boolean getIsCounted();
   }
   /**
    * Protobuf type {@code littlehorse.TagsCachePb.CachedTagPb}
@@ -154,6 +160,17 @@ private static final long serialVersionUID = 0L;
       return isRemote_;
     }
 
+    public static final int IS_COUNTED_FIELD_NUMBER = 3;
+    private boolean isCounted_ = false;
+    /**
+     * <code>bool is_counted = 3;</code>
+     * @return The isCounted.
+     */
+    @java.lang.Override
+    public boolean getIsCounted() {
+      return isCounted_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -174,6 +191,9 @@ private static final long serialVersionUID = 0L;
       if (isRemote_ != false) {
         output.writeBool(2, isRemote_);
       }
+      if (isCounted_ != false) {
+        output.writeBool(3, isCounted_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -189,6 +209,10 @@ private static final long serialVersionUID = 0L;
       if (isRemote_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(2, isRemote_);
+      }
+      if (isCounted_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, isCounted_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -209,6 +233,8 @@ private static final long serialVersionUID = 0L;
           .equals(other.getId())) return false;
       if (getIsRemote()
           != other.getIsRemote()) return false;
+      if (getIsCounted()
+          != other.getIsCounted()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -225,6 +251,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + IS_REMOTE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getIsRemote());
+      hash = (37 * hash) + IS_COUNTED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsCounted());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -358,6 +387,7 @@ private static final long serialVersionUID = 0L;
         bitField0_ = 0;
         id_ = "";
         isRemote_ = false;
+        isCounted_ = false;
         return this;
       }
 
@@ -397,6 +427,9 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.isRemote_ = isRemote_;
         }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.isCounted_ = isCounted_;
+        }
       }
 
       @java.lang.Override
@@ -418,6 +451,9 @@ private static final long serialVersionUID = 0L;
         }
         if (other.getIsRemote() != false) {
           setIsRemote(other.getIsRemote());
+        }
+        if (other.getIsCounted() != false) {
+          setIsCounted(other.getIsCounted());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -455,6 +491,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000002;
                 break;
               } // case 16
+              case 24: {
+                isCounted_ = input.readBool();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -572,6 +613,38 @@ private static final long serialVersionUID = 0L;
       public Builder clearIsRemote() {
         bitField0_ = (bitField0_ & ~0x00000002);
         isRemote_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean isCounted_ ;
+      /**
+       * <code>bool is_counted = 3;</code>
+       * @return The isCounted.
+       */
+      @java.lang.Override
+      public boolean getIsCounted() {
+        return isCounted_;
+      }
+      /**
+       * <code>bool is_counted = 3;</code>
+       * @param value The isCounted to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIsCounted(boolean value) {
+
+        isCounted_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool is_counted = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearIsCounted() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        isCounted_ = false;
         onChanged();
         return this;
       }

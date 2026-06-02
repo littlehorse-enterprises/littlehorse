@@ -163,22 +163,28 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return List.of(
-                new GetableIndex<>(
-                        List.of(Pair.of("taskDefName", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)),
-                new GetableIndex<>(
-                        List.of(
-                                Pair.of("taskDefName", GetableIndex.ValueType.SINGLE),
-                                Pair.of("status", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL))
-                // NOTE: we're not indexing just based on status because we don't want
-                // to have too many reads/writes in RocksDB as those are expensive.
-                //
-                // Additionally, we could index based on the number of retries, so that
-                // we can find all TaskRun's that have been retried. But that maybe can
-                // be in the 0.1.1 release, not 0.1.0
-                );
+        List<GetableIndex<? extends AbstractGetable<?>>> indexes = new ArrayList<>();
+        indexes.add(new GetableIndex<>(
+                List.of(Pair.of("taskDefName", GetableIndex.ValueType.SINGLE)), TagStorageType.LOCAL));
+        indexes.add(new GetableIndex<>(
+                List.of(
+                        Pair.of("taskDefName", GetableIndex.ValueType.SINGLE),
+                        Pair.of("status", GetableIndex.ValueType.SINGLE)),
+                TagStorageType.LOCAL));
+        if (status == TaskStatus.TASK_SCHEDULED) {
+            indexes.add(new GetableIndex<>(
+                    List.of(
+                            Pair.of("scheduled", GetableIndex.ValueType.SINGLE),
+                            Pair.of("taskDefName", GetableIndex.ValueType.SINGLE)),
+                    TagStorageType.COUNTED));
+        }
+        // NOTE: we're not indexing just based on status because we don't want
+        // to have too many reads/writes in RocksDB as those are expensive.
+        //
+        // Additionally, we could index based on the number of retries, so that
+        // we can find all TaskRun's that have been retried. But that maybe can
+        // be in the 0.1.1 release, not 0.1.0
+        return indexes;
     }
 
     @Override
@@ -189,6 +195,9 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             }
             case "status" -> {
                 return List.of(new IndexedField(key, this.status.toString(), TagStorageType.LOCAL));
+            }
+            case "scheduled" -> {
+                return List.of(new IndexedField(key, TaskStatus.TASK_SCHEDULED, TagStorageType.COUNTED));
             }
         }
         log.warn("Received unknown key for TaskRun Index: {}", key);

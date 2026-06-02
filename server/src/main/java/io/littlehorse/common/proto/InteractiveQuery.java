@@ -102,6 +102,16 @@ public final class InteractiveQuery extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_BookmarkPb_InProgressPartitionsEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_InternalCountPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_InternalCountPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_InternalCountResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_InternalCountResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_InternalWaitForWfEventRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -167,11 +177,14 @@ public final class InteractiveQuery extends com.google.protobuf.GeneratedFile {
       "\024completed_partitions\030\002 \003(\005\032]\n\031InProgres" +
       "sPartitionsEntry\022\013\n\003key\030\001 \001(\005\022/\n\005value\030\002" +
       " \001(\0132 .littlehorse.PartitionBookmarkPb:\002" +
-      "8\001\"X\n\035InternalWaitForWfEventRequest\0227\n\007r" +
-      "equest\030\001 \001(\0132&.littlehorse.AwaitWorkflow" +
-      "EventRequest*-\n\020ScanResultTypePb\022\r\n\tOBJE" +
-      "CT_ID\020\000\022\n\n\006OBJECT\020\001B\037\n\033io.littlehorse.co" +
-      "mmon.protoP\001b\006proto3"
+      "8\001\"\\\n\017InternalCountPb\0222\n\013object_type\030\001 \001" +
+      "(\0162\035.littlehorse.GetableClassEnum\022\025\n\rpar" +
+      "tition_key\030\002 \001(\t\"&\n\025InternalCountRespons" +
+      "e\022\r\n\005count\030\001 \001(\003\"X\n\035InternalWaitForWfEve" +
+      "ntRequest\0227\n\007request\030\001 \001(\0132&.littlehorse" +
+      ".AwaitWorkflowEventRequest*-\n\020ScanResult" +
+      "TypePb\022\r\n\tOBJECT_ID\020\000\022\n\n\006OBJECT\020\001B\037\n\033io." +
+      "littlehorse.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -271,8 +284,20 @@ public final class InteractiveQuery extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_BookmarkPb_InProgressPartitionsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    internal_static_littlehorse_InternalWaitForWfEventRequest_descriptor =
+    internal_static_littlehorse_InternalCountPb_descriptor =
       getDescriptor().getMessageTypes().get(10);
+    internal_static_littlehorse_InternalCountPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_InternalCountPb_descriptor,
+        new java.lang.String[] { "ObjectType", "PartitionKey", });
+    internal_static_littlehorse_InternalCountResponse_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_littlehorse_InternalCountResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_InternalCountResponse_descriptor,
+        new java.lang.String[] { "Count", });
+    internal_static_littlehorse_InternalWaitForWfEventRequest_descriptor =
+      getDescriptor().getMessageTypes().get(12);
     internal_static_littlehorse_InternalWaitForWfEventRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_InternalWaitForWfEventRequest_descriptor,
