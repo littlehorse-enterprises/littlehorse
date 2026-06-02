@@ -2,12 +2,13 @@ package io.littlehorse.server.streams.storeinternals;
 
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.model.PartitionCountedTagModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.storeinternals.index.CachedTag;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
-import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
+import io.littlehorse.server.streams.stores.PartitionAccumulator;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -21,7 +22,7 @@ public class TagStorageManager {
     private final TenantScopedStore lhStore;
     private final ProcessorContext<String, CommandProcessorOutput> context;
     private final AuthorizationContext authContext;
-    private final PartitionMetricsMemoryStore partitionMetrics;
+    private final PartitionAccumulator<PartitionCountedTagModel> countedTags;
     private final ClusterScopedStore clusterScopedStore;
 
     public TagStorageManager(
@@ -31,7 +32,7 @@ public class TagStorageManager {
         this.lhStore = lhStore;
         this.context = context;
         this.authContext = executionContext.authorization();
-        this.partitionMetrics = executionContext.getPartitionMetricsMemoryStore();
+        this.countedTags = executionContext.getCountedTagsAccumulator();
         this.clusterScopedStore = ClusterScopedStore.newInstance(executionContext.nativeCoreStore(), executionContext);
     }
 
@@ -55,7 +56,7 @@ public class TagStorageManager {
     private void createTag(Tag tag) {
         if (tag.isCounted()) {
             PartitionCountedTagModel currentAggregation =
-                    partitionMetrics.incrementCounted(authContext.tenantId(), tag.getAttributeString());
+                    incrementCounted(authContext.tenantId(), tag.getAttributeString());
             clusterScopedStore.put(currentAggregation);
         } else {
             lhStore.put(tag);
@@ -65,10 +66,36 @@ public class TagStorageManager {
     private void removeTag(CachedTag cachedTag) {
         if (cachedTag.isCounted()) {
             PartitionCountedTagModel currentAggregation =
-                    partitionMetrics.decrementCounted(authContext.tenantId(), cachedTag.getAttributeString());
+                    decrementCounted(authContext.tenantId(), cachedTag.getAttributeString());
             clusterScopedStore.put(currentAggregation);
         } else {
             lhStore.delete(cachedTag.getId(), StoreableType.TAG);
         }
+    }
+
+    private PartitionCountedTagModel incrementCounted(TenantIdModel tenantId, String tagAttributes) {
+        PartitionCountedTagModel current = getOrCreateCountedTag(tenantId, tagAttributes);
+        current.increment();
+        countedTags.put(current);
+        return current;
+    }
+
+    private PartitionCountedTagModel decrementCounted(TenantIdModel tenantId, String tagAttributes) {
+        PartitionCountedTagModel current = getOrCreateCountedTag(tenantId, tagAttributes);
+        current.decrement();
+        countedTags.put(current);
+        return current;
+    }
+
+    private PartitionCountedTagModel getOrCreateCountedTag(TenantIdModel tenantId, String tagAttributes) {
+        PartitionCountedTagModel current = countedTags.get(tagAttributes);
+        if (current == null) {
+            String storeKey = new PartitionCountedTagModel(tenantId, tagAttributes).getStoreKey();
+            current = clusterScopedStore.get(storeKey, PartitionCountedTagModel.class);
+        }
+        if (current == null) {
+            current = new PartitionCountedTagModel(tenantId, tagAttributes);
+        }
+        return current;
     }
 }

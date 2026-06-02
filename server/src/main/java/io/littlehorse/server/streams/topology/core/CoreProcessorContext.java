@@ -5,6 +5,8 @@ import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.PartitionCountedTagModel;
+import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
@@ -26,8 +28,10 @@ import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.EventCorrelationMarkerModel;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.storeinternals.PartitionMetricsCollector;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
-import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.stores.PartitionAccumulator;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -74,7 +78,9 @@ public class CoreProcessorContext implements ExecutionContext {
     private GetableUpdates getableUpdates;
     private MetricsUpdater metricsAggregator;
     private final TenantIdModel tenantId;
-    private final PartitionMetricsMemoryStore partitionMetricsMemoryStore;
+    private final PartitionAccumulator<PartitionMetricWindowModel> metricWindows;
+    private final PartitionAccumulator<PartitionCountedTagModel> countedTags;
+    private PartitionMetricsCollector metricsCollector;
 
     public CoreProcessorContext(
             Command currentCommand,
@@ -84,7 +90,8 @@ public class CoreProcessorContext implements ExecutionContext {
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
             LHServer server,
-            PartitionMetricsMemoryStore partitionMetricsMemoryStore) {
+            PartitionAccumulator<PartitionMetricWindowModel> metricWindows,
+            PartitionAccumulator<PartitionCountedTagModel> countedTags) {
 
         this.processorContext = processorContext;
         this.metadataCache = metadataCache;
@@ -102,15 +109,27 @@ public class CoreProcessorContext implements ExecutionContext {
         this.recordMetadata = recordHeaders;
         this.server = server;
         this.coreStore = TenantScopedStore.newInstance(nativeCoreStore(), tenantId, this);
-        this.partitionMetricsMemoryStore = partitionMetricsMemoryStore;
+        this.metricWindows = metricWindows;
+        this.countedTags = countedTags;
 
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
         this.eventsToThrow = new ArrayList<>();
     }
 
-    public PartitionMetricsMemoryStore getPartitionMetricsMemoryStore() {
-        return partitionMetricsMemoryStore;
+    public PartitionAccumulator<PartitionCountedTagModel> getCountedTagsAccumulator() {
+        return countedTags;
+    }
+
+    /**
+     * Returns a lazily-initialized metrics collector for the current tenant.
+     */
+    public PartitionMetricsCollector metricsCollector() {
+        if (metricsCollector == null) {
+            ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(nativeCoreStore(), this);
+            metricsCollector = new PartitionMetricsCollector(clusterStore, metricWindows, tenantId);
+        }
+        return metricsCollector;
     }
 
     /**
