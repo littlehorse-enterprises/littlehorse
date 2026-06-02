@@ -9,7 +9,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
-import io.littlehorse.server.streams.stores.PartitionAccumulator;
+import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
 import java.util.Date;
 
 /**
@@ -20,12 +20,12 @@ import java.util.Date;
 public class PartitionMetricsCollector {
 
     private final ClusterScopedStore store;
-    private final PartitionAccumulator<PartitionMetricWindowModel> accumulator;
+    private final PartitionLocalBuffer<PartitionMetricWindowModel> accumulator;
     private final TenantIdModel tenantId;
 
     public PartitionMetricsCollector(
             ClusterScopedStore store,
-            PartitionAccumulator<PartitionMetricWindowModel> accumulator,
+            PartitionLocalBuffer<PartitionMetricWindowModel> accumulator,
             TenantIdModel tenantId) {
         this.store = store;
         this.accumulator = accumulator;

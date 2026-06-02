@@ -19,7 +19,7 @@ import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.TaskQueueHintModel;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
-import io.littlehorse.server.streams.stores.PartitionAccumulator;
+import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
@@ -54,9 +54,9 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private boolean partitionIsClaimed;
     private final AsyncWaiters asyncWaiters;
 
-    private final PartitionAccumulator<PartitionMetricWindowModel> metricWindows;
-    private final PartitionAccumulator<PartitionCountedTagModel> countedTags;
-    private PartitionMetricsFlusher metricsFlusher;
+    private final PartitionLocalBuffer<PartitionMetricWindowModel> metricWindows;
+    private final PartitionLocalBuffer<PartitionCountedTagModel> countedTags;
+    private PartitionDrainScheduler partitionDrain;
 
     private final LHProcessingExceptionHandler exceptionHandler;
     private final CommandProcessorMetrics metrics;
@@ -75,8 +75,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.globalTaskQueueManager = globalTaskQueueManager;
         this.exceptionHandler = new LHProcessingExceptionHandler(server, asyncWaiters);
         this.asyncWaiters = asyncWaiters;
-        this.metricWindows = new PartitionAccumulator<>();
-        this.countedTags = new PartitionAccumulator<>();
+        this.metricWindows = new PartitionLocalBuffer<>();
+        this.countedTags = new PartitionLocalBuffer<>();
     }
 
     @Override
@@ -85,7 +85,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.ctx = ctx;
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
-        this.metricsFlusher = new PartitionMetricsFlusher(metricWindows, countedTags, config, ctx);
+        this.partitionDrain = new PartitionDrainScheduler(metricWindows, countedTags, config, ctx);
         onPartitionClaimed();
         ctx.schedule(
                 LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL,
@@ -187,7 +187,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     @Override
     public void close() {
         if (partitionIsClaimed) {
-            this.metricsFlusher.reset();
+            this.partitionDrain.reset();
         }
         this.partitionIsClaimed = false;
         server.drainPartitionTaskQueue(ctx.taskId());
@@ -196,6 +196,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void collectPartitionMetrics(long timestamp) {
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
-        metricsFlusher.punctuate(clusterScopedStore);
+        partitionDrain.punctuate(clusterScopedStore);
     }
 }

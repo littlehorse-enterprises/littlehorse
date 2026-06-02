@@ -22,7 +22,7 @@ import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
-import io.littlehorse.server.streams.stores.PartitionAccumulator;
+import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -105,8 +105,8 @@ public class CommandProcessorTest {
                 tenantProcessorContext.getGlobalTaskQueueManager(),
                 tenantProcessorContext.getMetadataCache(),
                 tenantProcessorContext.getServer(),
-                new PartitionAccumulator<>(),
-                new PartitionAccumulator<>());
+                new PartitionLocalBuffer<>(),
+                new PartitionLocalBuffer<>());
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(
                 mockProcessorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), executionContext);
         NodeRunModel nodeRun = TestUtil.nodeRun();
@@ -162,8 +162,8 @@ public class CommandProcessorTest {
     }
 
     @SuppressWarnings("unchecked")
-    private PartitionAccumulator<PartitionMetricWindowModel> getMetricWindows() throws Exception {
-        return (PartitionAccumulator<PartitionMetricWindowModel>) getField(commandProcessor, "metricWindows");
+    private PartitionLocalBuffer<PartitionMetricWindowModel> getMetricWindows() throws Exception {
+        return (PartitionLocalBuffer<PartitionMetricWindowModel>) getField(commandProcessor, "metricWindows");
     }
 
     private Object getField(Object target, String fieldName) throws Exception {

@@ -10,12 +10,19 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 /**
- * Generic in-memory buffer for partition-local accumulators. Items are keyed by their
- * {@link Storeable#getStoreKey()} and can be drained based on a predicate or all at once.
+ * A single-threaded, partition-local write-through buffer for {@link Storeable} items.
  *
- * @param <T> the type of storeable item being accumulated
+ * <p>Items written here are expected to also be persisted to the underlying store by the caller.
+ * The buffer serves as a read cache (avoiding store lookups for recently-written items) and as a
+ * dirty-set tracker for the {@code PartitionDrainScheduler}, which periodically drains items
+ * ready for downstream delivery.
+ *
+ * <p><b>Thread safety:</b> This class is NOT thread-safe. It must only be accessed from the
+ * Kafka Streams {@code CommandProcessor} that owns the instance of this class.
+ *
+ * @param <T> the type of storeable item being buffered
  */
-public class PartitionAccumulator<T extends Storeable<?>> {
+public class PartitionLocalBuffer<T extends Storeable<?>> {
 
     private final Map<String, T> items = new HashMap<>();
 

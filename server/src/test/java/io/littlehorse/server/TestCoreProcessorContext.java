@@ -11,7 +11,7 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
-import io.littlehorse.server.streams.stores.PartitionAccumulator;
+import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -39,7 +39,7 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
     private final ClusterScopedStore clusterMetadataStore;
     private final Headers recordMetadata;
     private final LHServer server;
-    private final PartitionAccumulator<PartitionMetricWindowModel> metricWindows;
+    private final PartitionLocalBuffer<PartitionMetricWindowModel> metricWindows;
     private GetableManager getableManager;
 
     public TestCoreProcessorContext(
@@ -50,8 +50,8 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
             LHServer server,
-            PartitionAccumulator<PartitionMetricWindowModel> metricWindows,
-            PartitionAccumulator<PartitionCountedTagModel> countedTags) {
+            PartitionLocalBuffer<PartitionMetricWindowModel> metricWindows,
+            PartitionLocalBuffer<PartitionCountedTagModel> countedTags) {
         super(
                 currentCommand,
                 recordMetadata,
@@ -88,8 +88,8 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
         TaskQueueManager globalTaskQueueManager = Mockito.mock();
         MetadataCache metadataCache = new MetadataCache();
         LHServer server = Mockito.mock();
-        PartitionAccumulator<PartitionMetricWindowModel> metricWindows = new PartitionAccumulator<>();
-        PartitionAccumulator<PartitionCountedTagModel> countedTags = new PartitionAccumulator<>();
+        PartitionLocalBuffer<PartitionMetricWindowModel> metricWindows = new PartitionLocalBuffer<>();
+        PartitionLocalBuffer<PartitionCountedTagModel> countedTags = new PartitionLocalBuffer<>();
         KeyValueStore<String, Bytes> nativeMetadataStore = Mockito.spy(Stores.keyValueStoreBuilder(
                         Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
                 .withLoggingDisabled()

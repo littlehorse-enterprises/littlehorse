@@ -31,7 +31,7 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.PartitionMetricsCollector;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
-import io.littlehorse.server.streams.stores.PartitionAccumulator;
+import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -78,8 +78,8 @@ public class CoreProcessorContext implements ExecutionContext {
     private GetableUpdates getableUpdates;
     private MetricsUpdater metricsAggregator;
     private final TenantIdModel tenantId;
-    private final PartitionAccumulator<PartitionMetricWindowModel> metricWindows;
-    private final PartitionAccumulator<PartitionCountedTagModel> countedTags;
+    private final PartitionLocalBuffer<PartitionMetricWindowModel> metricWindows;
+    private final PartitionLocalBuffer<PartitionCountedTagModel> countedTags;
     private PartitionMetricsCollector metricsCollector;
 
     public CoreProcessorContext(
@@ -90,8 +90,8 @@ public class CoreProcessorContext implements ExecutionContext {
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
             LHServer server,
-            PartitionAccumulator<PartitionMetricWindowModel> metricWindows,
-            PartitionAccumulator<PartitionCountedTagModel> countedTags) {
+            PartitionLocalBuffer<PartitionMetricWindowModel> metricWindows,
+            PartitionLocalBuffer<PartitionCountedTagModel> countedTags) {
 
         this.processorContext = processorContext;
         this.metadataCache = metadataCache;
@@ -117,7 +117,7 @@ public class CoreProcessorContext implements ExecutionContext {
         this.eventsToThrow = new ArrayList<>();
     }
 
-    public PartitionAccumulator<PartitionCountedTagModel> getCountedTagsAccumulator() {
+    public PartitionLocalBuffer<PartitionCountedTagModel> getCountedTagsAccumulator() {
         return countedTags;
     }
 

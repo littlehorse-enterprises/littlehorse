@@ -43,7 +43,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
-import io.littlehorse.server.streams.stores.PartitionAccumulator;
+import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -92,7 +92,7 @@ public class GetableManagerTest {
     private GetableManager getableManager;
 
     private final CoreProcessorContext executionContext = mock();
-    private final PartitionAccumulator<PartitionCountedTagModel> countedTags = new PartitionAccumulator<>();
+    private final PartitionLocalBuffer<PartitionCountedTagModel> countedTags = new PartitionLocalBuffer<>();
 
     private AuthorizationContext testContext = new AuthorizationContextImpl(
             new PrincipalIdModel("my-principal-id"), new TenantIdModel(tenantId), List.of(), false);

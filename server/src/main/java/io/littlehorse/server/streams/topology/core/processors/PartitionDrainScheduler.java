@@ -17,7 +17,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.storeinternals.MetricsHintModel;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
-import io.littlehorse.server.streams.stores.PartitionAccumulator;
+import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
@@ -32,19 +32,19 @@ import org.apache.kafka.streams.processor.api.Record;
  * catch-up scan after startup.
  */
 @Slf4j
-class PartitionMetricsFlusher {
+class PartitionDrainScheduler {
 
-    private final PartitionAccumulator<PartitionMetricWindowModel> metricWindows;
-    private final PartitionAccumulator<PartitionCountedTagModel> countedTags;
+    private final PartitionLocalBuffer<PartitionMetricWindowModel> metricWindows;
+    private final PartitionLocalBuffer<PartitionCountedTagModel> countedTags;
     private final LHServerConfig config;
     private final ProcessorContext<String, CommandProcessorOutput> ctx;
 
     private MetricsCollectionSource collectionSource;
     private final long serverStartWindowTime;
 
-    PartitionMetricsFlusher(
-            PartitionAccumulator<PartitionMetricWindowModel> metricWindows,
-            PartitionAccumulator<PartitionCountedTagModel> countedTags,
+    PartitionDrainScheduler(
+            PartitionLocalBuffer<PartitionMetricWindowModel> metricWindows,
+            PartitionLocalBuffer<PartitionCountedTagModel> countedTags,
             LHServerConfig config,
             ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.metricWindows = metricWindows;
