@@ -1,6 +1,8 @@
 export { LHMisconfigurationException } from './exceptions'
+export type { InlineLHStructBuilder } from './inlineLHStructBuilder'
 export type { LHExpression } from './lhExpression'
 export type { LHFormatString } from './lhFormatString'
+export type { LHStructBuilder } from './lhStructBuilder'
 export type { NodeOutput } from './nodeOutput'
 export type { TaskNodeOutput } from './taskNodeOutput'
 export type { ThreadFunc } from './threadFunc'

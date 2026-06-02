@@ -3,6 +3,7 @@ import { toVariableValue } from '../../utils/variableValueConvert'
 import type { WorkflowRhs } from '../workflowRhs'
 import { LHExpressionImpl } from './lhExpressionImpl'
 import { LHFormatStringImpl } from './lhFormatStringImpl'
+import { LHStructBuilderImpl } from './lhStructBuilderImpl'
 import { NodeOutputImpl } from './nodeOutputImpl'
 import { WfRunVariableImpl } from './wfRunVariableImpl'
 
@@ -25,6 +26,13 @@ export function assignVariable(rhs: WorkflowRhs, assign: (r: WorkflowRhs) => Var
   }
   if (rhs instanceof LHExpressionImpl) {
     return rhs.toAssignment(assign)
+  }
+  if (rhs instanceof LHStructBuilderImpl) {
+    return {
+      path: undefined,
+      source: { $case: 'structBuilder', value: rhs.toProto() },
+      targetType: undefined,
+    }
   }
   return {
     path: undefined,

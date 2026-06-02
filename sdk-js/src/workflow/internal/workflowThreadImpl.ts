@@ -1,6 +1,7 @@
 import type { VariableType } from '../../proto/common_enums'
 import { VariableType as VT } from '../../proto/common_enums'
 import type { TaskNode, VariableAssignment, VariableMutation } from '../../proto/common_wfspec'
+import type { TypeDefinition } from '../../proto/type_definition'
 import { VariableMutationType } from '../../proto/common_wfspec'
 import type { TaskDefId } from '../../proto/object_id'
 import type { VariableValue } from '../../proto/variable'
@@ -8,13 +9,17 @@ import type { Edge, ExitNode, Node } from '../../proto/wf_spec'
 import { ThreadSpec } from '../../proto/wf_spec'
 import { toVariableValue } from '../../utils/variableValueConvert'
 import { LHMisconfigurationException } from '../exceptions'
+import type { InlineLHStructBuilder } from '../inlineLHStructBuilder'
 import type { LHFormatString } from '../lhFormatString'
+import type { LHStructBuilder } from '../lhStructBuilder'
 import type { TaskNodeOutput } from '../taskNodeOutput'
 import type { WfRunVariable } from '../wfRunVariable'
 import type { WorkflowRhs } from '../workflowRhs'
 import type { WorkflowThread } from '../workflowThread'
 import { assignVariable } from './builderUtil'
+import { InlineLHStructBuilderImpl } from './inlineLHStructBuilderImpl'
 import { LHFormatStringImpl } from './lhFormatStringImpl'
+import { LHStructBuilderImpl } from './lhStructBuilderImpl'
 import { TaskNodeOutputImpl } from './taskNodeOutputImpl'
 import { WfRunVariableImpl, primitiveTypeDef, structTypeDef } from './wfRunVariableImpl'
 
@@ -76,6 +81,36 @@ export class WorkflowThreadImpl implements WorkflowThread {
     const v = new WfRunVariableImpl(name, structTypeDef(structDefName), undefined, this)
     this.wfRunVariables.push(v)
     return v
+  }
+
+  declareArray(name: string, elementType: import('../../proto/common_enums').VariableType): WfRunVariable {
+    this.assertActive()
+    this.registerVariableName(name)
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'inlineArrayDef',
+        value: {
+          arrayType: {
+            definedType: { $case: 'primitiveType', value: elementType },
+            masked: false,
+          },
+        },
+      },
+      masked: false,
+    }
+    const v = new WfRunVariableImpl(name, typeDef, undefined, this)
+    this.wfRunVariables.push(v)
+    return v
+  }
+
+  buildStruct(structDefName: string): LHStructBuilder {
+    this.assertActive()
+    return new LHStructBuilderImpl(this, structDefName)
+  }
+
+  buildInlineStruct(): InlineLHStructBuilder {
+    this.assertActive()
+    return new InlineLHStructBuilderImpl(this)
   }
 
   declareJsonObj(name: string, defaultValue?: WorkflowRhs): WfRunVariable {
