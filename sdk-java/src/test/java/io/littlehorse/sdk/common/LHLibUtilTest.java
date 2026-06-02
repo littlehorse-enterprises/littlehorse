@@ -472,8 +472,8 @@ public class LHLibUtilTest {
         PersonRecordStruct original = new PersonRecordStruct("Leia", "Alderaan");
 
         VariableValue serialized = LHLibUtil.objToVarVal(original, LHTypeAdapterRegistry.empty());
-        PersonRecordStruct deserialized = (PersonRecordStruct)
-                LHLibUtil.varValToObj(serialized, PersonRecordStruct.class, LHTypeAdapterRegistry.empty());
+        PersonRecordStruct deserialized =
+                (PersonRecordStruct) LHLibUtil.varValToObj(serialized, PersonRecordStruct.class, LHTypeAdapterRegistry.empty());
 
         assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
         assertThat(deserialized).isEqualTo(original);

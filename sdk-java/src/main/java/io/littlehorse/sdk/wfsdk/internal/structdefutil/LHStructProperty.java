@@ -234,7 +234,8 @@ public class LHStructProperty {
         fieldNames.add(propertyName);
 
         if (getPropertyTypeClass() == boolean.class || getPropertyTypeClass() == Boolean.class) {
-            fieldNames.add("is" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1));
+            fieldNames.add("is" + Character.toUpperCase(propertyName.charAt(0))
+                    + propertyName.substring(1));
         }
 
         return fieldNames;

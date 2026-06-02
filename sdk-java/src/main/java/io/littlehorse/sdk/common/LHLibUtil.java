@@ -606,7 +606,10 @@ public class LHLibUtil {
     }
 
     private static Object deserializeStructToRecord(
-            Struct struct, Class<?> clazz, LHStructDefType structDefType, LHTypeAdapterRegistry typeAdapterRegistry)
+            Struct struct,
+            Class<?> clazz,
+            LHStructDefType structDefType,
+            LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException, IntrospectionException, NoSuchMethodException, InvocationTargetException,
                     InstantiationException, IllegalAccessException {
         List<LHStructProperty> structProperties = structDefType.getStructProperties();
@@ -641,8 +644,7 @@ public class LHLibUtil {
                                 fieldName, clazz.getName()));
             }
 
-            VariableValue fieldValue =
-                    struct.getStruct().getFieldsMap().get(fieldName).getValue();
+            VariableValue fieldValue = struct.getStruct().getFieldsMap().get(fieldName).getValue();
             canonicalArgTypes[i] = recordComponent.getType();
             canonicalArgValues[i] = property.deserializeValue(fieldValue, typeAdapterRegistry);
         }

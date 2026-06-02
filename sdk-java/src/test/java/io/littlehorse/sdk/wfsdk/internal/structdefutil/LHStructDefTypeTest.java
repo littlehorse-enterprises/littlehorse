@@ -101,35 +101,35 @@ public class LHStructDefTypeTest {
         public boolean isAlive;
     }
 
-    @LHStructDef("person-record")
-    record PersonRecord(String name, String address) {}
+        @LHStructDef("person-record")
+        record PersonRecord(String name, String address) {}
 
-    @LHStructDef("annotated-person-record")
-    record AnnotatedPersonRecord(String name, String ssn) {
-        @Override
-        @LHStructField(name = "fullName", isNullable = true)
-        public String name() {
-            return name;
+        @LHStructDef("annotated-person-record")
+        record AnnotatedPersonRecord(String name, String ssn) {
+                @Override
+                @LHStructField(name = "fullName", isNullable = true)
+                public String name() {
+                        return name;
+                }
+
+                @Override
+                @LHStructField(masked = true)
+                public String ssn() {
+                        return ssn;
+                }
         }
 
-        @Override
-        @LHStructField(masked = true)
-        public String ssn() {
-            return ssn;
+        @LHStructDef("record-with-default")
+        record RecordWithDefaultCtor(String greeting) {
+                public RecordWithDefaultCtor() {
+                        this("hello");
+                }
         }
-    }
 
-    @LHStructDef("record-with-default")
-    record RecordWithDefaultCtor(String greeting) {
-        public RecordWithDefaultCtor() {
-            this("hello");
-        }
-    }
-
-    @LHStructDef("component-annotated-record")
-    record ComponentAnnotatedRecord(
-            @LHStructField(name = "displayName", isNullable = true) String name,
-            @LHStructField(masked = true) String secret) {}
+        @LHStructDef("component-annotated-record")
+        record ComponentAnnotatedRecord(
+                        @LHStructField(name = "displayName", isNullable = true) String name,
+                        @LHStructField(masked = true) String secret) {}
 
     class UnannotatedNestedPojo {
         public String value;
@@ -357,8 +357,9 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefFromRecordAccessorAnnotations() {
-        InlineStructDef actualInlineStructDef =
-                new LHStructDefType(AnnotatedPersonRecord.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+        InlineStructDef actualInlineStructDef = new LHStructDefType(
+                        AnnotatedPersonRecord.class, LHTypeAdapterRegistry.empty())
+                .getInlineStructDef();
 
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
@@ -381,8 +382,9 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefFromRecordComponentAnnotations() {
-        InlineStructDef actualInlineStructDef =
-                new LHStructDefType(ComponentAnnotatedRecord.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+        InlineStructDef actualInlineStructDef = new LHStructDefType(
+                        ComponentAnnotatedRecord.class, LHTypeAdapterRegistry.empty())
+                .getInlineStructDef();
 
         InlineStructDef expectedInlineStructDef = InlineStructDef.newBuilder()
                 .putFields(
@@ -405,8 +407,9 @@ public class LHStructDefTypeTest {
 
     @Test
     public void getInlineStructDefFromRecordWithNoArgCtorIncludesDefaultValue() {
-        InlineStructDef actualInlineStructDef =
-                new LHStructDefType(RecordWithDefaultCtor.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+        InlineStructDef actualInlineStructDef = new LHStructDefType(
+                        RecordWithDefaultCtor.class, LHTypeAdapterRegistry.empty())
+                .getInlineStructDef();
 
         StructFieldDef expectedFieldDef = StructFieldDef.newBuilder()
                 .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
