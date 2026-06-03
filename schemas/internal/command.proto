@@ -55,7 +55,8 @@ message Command {
         PutCheckpointRequest put_checkpoint = 34;
         AggregateWindowMetrics aggregate_window_metrics = 35;
         DeleteMetricWindow delete_metric_window = 36;
-        ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 37;
+        UpdateCountedTag update_counted_tag = 37;
+        ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;
     }
 }
 
@@ -259,6 +260,11 @@ message CreateRemoteTagPb {
     TagPb tag = 1;
 }
 
+message UpdateCountedTag {
+  string attribute_string = 1;
+  int64 count = 2;
+}
+
 message RemoveRemoteTagPb {
     string store_key = 1;
     string partition_key = 2;
@@ -332,4 +338,9 @@ message LHTimerPb {
 
 message DeleteTaskWorkerGroupRequest {
     TaskDefId id = 1;
+}
+
+message CountedTag {
+  string attribute_string = 1;
+  int64 count = 2;
 }

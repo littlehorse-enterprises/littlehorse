@@ -100,6 +100,15 @@ message BookmarkPb { // Used for paginated responses
     repeated int32 completed_partitions = 2;
 }
 
+message InternalCountPb {
+    GetableClassEnum object_type = 1;
+    string partition_key = 2;
+}
+
+message InternalCountResponse {
+    int64 count = 1;
+}
+
 message InternalWaitForWfEventRequest {
     // For now, we just pass the raw input from the external server. That's all we need to know.
     AwaitWorkflowEventRequest request = 1;

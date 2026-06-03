@@ -551,6 +551,26 @@ public final class Service extends com.google.protobuf.GeneratedFile {
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_LittleHorseVersion_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_CountNodeRunRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_CountNodeRunRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_CountNodeRunRequest_WfSpecFilter_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_CountNodeRunRequest_WfSpecFilter_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_CountTaskRunRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_CountTaskRunRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_Count_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_Count_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1851,6 +1871,30 @@ public final class Service extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_LittleHorseVersion_descriptor,
         new java.lang.String[] { "MajorVersion", "MinorVersion", "PatchVersion", "PreReleaseIdentifier", });
+    internal_static_littlehorse_CountNodeRunRequest_descriptor =
+      getDescriptor().getMessageTypes().get(96);
+    internal_static_littlehorse_CountNodeRunRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_CountNodeRunRequest_descriptor,
+        new java.lang.String[] { "WfSpecFilter", "Filter", });
+    internal_static_littlehorse_CountNodeRunRequest_WfSpecFilter_descriptor =
+      internal_static_littlehorse_CountNodeRunRequest_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_CountNodeRunRequest_WfSpecFilter_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_CountNodeRunRequest_WfSpecFilter_descriptor,
+        new java.lang.String[] { "WfSpecName", "WfSpecMajorVersion", "WfSpecRevision", });
+    internal_static_littlehorse_CountTaskRunRequest_descriptor =
+      getDescriptor().getMessageTypes().get(97);
+    internal_static_littlehorse_CountTaskRunRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_CountTaskRunRequest_descriptor,
+        new java.lang.String[] { "TaskDefName", "Status", });
+    internal_static_littlehorse_Count_descriptor =
+      getDescriptor().getMessageTypes().get(98);
+    internal_static_littlehorse_Count_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_Count_descriptor,
+        new java.lang.String[] { "Value", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
     com.google.protobuf.EmptyProto.getDescriptor();

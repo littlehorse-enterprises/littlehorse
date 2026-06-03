@@ -31,6 +31,7 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.model.corecommand.subcommand.UpdateCorrelationMarkerModel;
+import io.littlehorse.common.model.corecommand.subcommand.UpdateCountedTagModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.AggregateWindowMetricsModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskWorkerGroupRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.ScheduleWfRunCommandModel;
@@ -85,6 +86,7 @@ public class CommandModel extends AbstractCommand<Command> {
     private PutCheckpointRequestModel putCheckpoint;
     private AggregateWindowMetricsModel aggregateWindowMetrics;
     private DeleteMetricWindowModel deleteMetricWindow;
+    private UpdateCountedTagModel updateCountedTag;
     private ApplyWorkflowMigrationRequestModel applyWorkflowMigrationPlan;
 
     public Class<Command> getProtoBaseClass() {
@@ -213,6 +215,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case APPLY_WORKFLOW_MIGRATION_PLAN:
                 out.setApplyWorkflowMigrationPlan(applyWorkflowMigrationPlan.toProto());
+                break;
+            case UPDATE_COUNTED_TAG:
+                out.setUpdateCountedTag(updateCountedTag.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -350,6 +355,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 deleteMetricWindow =
                         LHSerializable.fromProto(p.getDeleteMetricWindow(), DeleteMetricWindowModel.class, context);
                 break;
+            case UPDATE_COUNTED_TAG:
+                updateCountedTag =
+                        LHSerializable.fromProto(p.getUpdateCountedTag(), UpdateCountedTagModel.class, context);
+                break;
             case APPLY_WORKFLOW_MIGRATION_PLAN:
                 applyWorkflowMigrationPlan = LHSerializable.fromProto(
                         p.getApplyWorkflowMigrationPlan(), ApplyWorkflowMigrationRequestModel.class, context);
@@ -427,6 +436,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return aggregateWindowMetrics;
             case DELETE_METRIC_WINDOW:
                 return deleteMetricWindow;
+            case UPDATE_COUNTED_TAG:
+                return updateCountedTag;
             case APPLY_WORKFLOW_MIGRATION_PLAN:
                 return applyWorkflowMigrationPlan;
             case COMMAND_NOT_SET:
@@ -535,6 +546,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(DeleteMetricWindowModel.class)) {
             type = CommandCase.DELETE_METRIC_WINDOW;
             deleteMetricWindow = (DeleteMetricWindowModel) cmd;
+        } else if (cls.equals(UpdateCountedTagModel.class)) {
+            type = CommandCase.UPDATE_COUNTED_TAG;
+            updateCountedTag = (UpdateCountedTagModel) cmd;
         } else if (cls.equals(ApplyWorkflowMigrationRequestModel.class)) {
             type = CommandCase.APPLY_WORKFLOW_MIGRATION_PLAN;
             applyWorkflowMigrationPlan = (ApplyWorkflowMigrationRequestModel) cmd;

@@ -144,13 +144,13 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
                         List.of(
                                 Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE),
                                 Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
-                        Optional.empty(),
+                        TagStorageType.LOCAL,
                         variable -> ((VariableModel) variable).isIndexable()),
                 new GetableIndex<>(
                         List.of(
                                 Pair.of("majorVersion", GetableIndex.ValueType.SINGLE),
                                 Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
-                        Optional.empty(),
+                        TagStorageType.LOCAL,
                         variable -> ((VariableModel) variable).isIndexable()),
 
                 // with workflow name only
@@ -158,7 +158,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
                         List.of(
                                 Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
                                 Pair.of("variable", GetableIndex.ValueType.DYNAMIC)),
-                        Optional.empty(),
+                        TagStorageType.LOCAL,
                         variable -> ((VariableModel) variable).isIndexable()));
     }
 

@@ -39,6 +39,8 @@ enum StoreableType {
     NODE_OUTPUT = 12;
     TIMER_ITERATOR_HINT = 13;
     METRICS_HINT = 14;
+    COUNTED_TAG = 15;
+    PARTITION_COUNTED_TAG = 16;
 }
 
 enum GetableClassEnum {
@@ -76,6 +78,7 @@ message AttributePb {
 
 enum TagStorageType {
     LOCAL = 0;
+    COUNTED = 1;
 }
 
 message TagPb {
@@ -114,6 +117,7 @@ message TagsCachePb {
     message CachedTagPb {
         string id = 1;
         bool is_remote = 2;
+        bool is_counted = 3;
     }
     repeated CachedTagPb cached_tags = 1;
 }
@@ -168,4 +172,10 @@ message PartitionMetricWindow {
 
   // Metric name -> aggregated counts/timings.
   map<string, CountAndTiming> metrics = 2;
+}
+
+message PartitionCountedTag {
+  TenantId tenant_id = 1;
+  string attribute_string = 2;
+  int64 count = 3;
 }

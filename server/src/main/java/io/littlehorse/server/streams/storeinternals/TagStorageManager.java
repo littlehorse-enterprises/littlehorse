@@ -1,46 +1,42 @@
 package io.littlehorse.server.streams.storeinternals;
 
 import io.littlehorse.common.AuthorizationContext;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
+import io.littlehorse.common.model.PartitionCountedTagModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.storeinternals.index.CachedTag;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.util.HeadersUtil;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
-import org.apache.kafka.streams.processor.api.Record;
 
 public class TagStorageManager {
 
     private final TenantScopedStore lhStore;
     private final ProcessorContext<String, CommandProcessorOutput> context;
-    private final LHServerConfig lhConfig;
     private final AuthorizationContext authContext;
+    private final PartitionMetricsMemoryStore partitionMetrics;
+    private final ClusterScopedStore clusterScopedStore;
 
     public TagStorageManager(
             TenantScopedStore lhStore,
             ProcessorContext<String, CommandProcessorOutput> context,
-            LHServerConfig lhConfig,
-            ExecutionContext executionContext) {
+            CoreProcessorContext executionContext) {
         this.lhStore = lhStore;
         this.context = context;
-        this.lhConfig = lhConfig;
         this.authContext = executionContext.authorization();
+        this.partitionMetrics = executionContext.getPartitionMetricsMemoryStore();
+        this.clusterScopedStore = ClusterScopedStore.newInstance(executionContext.nativeCoreStore(), executionContext);
     }
 
     public void store(Collection<Tag> newTags, TagsCache preExistingTags) {
-        List<String> newTagIds = newTags.stream().map(tag -> tag.getStoreKey()).toList();
+        List<String> newTagIds = newTags.stream().map(Tag::getStoreKey).toList();
         List<Tag> tagsToAdd = new ArrayList<>();
         for (Tag newTag : newTags) {
             if (!preExistingTags.contains(newTag)) {
@@ -57,51 +53,22 @@ public class TagStorageManager {
     }
 
     private void createTag(Tag tag) {
-        if (tag.isRemote()) {
-            this.sendRepartitionCommandForCreateRemoteTag(tag);
+        if (tag.isCounted()) {
+            PartitionCountedTagModel currentAggregation =
+                    partitionMetrics.incrementCounted(authContext.tenantId(), tag.getAttributeString());
+            clusterScopedStore.put(currentAggregation);
         } else {
             lhStore.put(tag);
         }
     }
 
     private void removeTag(CachedTag cachedTag) {
-        if (cachedTag.isRemote()) {
-            String attributeString = extractAttributeStringFromStoreKey(cachedTag.getId());
-            sendRepartitionCommandForRemoveRemoteTag(cachedTag.getId(), attributeString);
+        if (cachedTag.isCounted()) {
+            PartitionCountedTagModel currentAggregation =
+                    partitionMetrics.decrementCounted(authContext.tenantId(), cachedTag.getAttributeString());
+            clusterScopedStore.put(currentAggregation);
         } else {
             lhStore.delete(cachedTag.getId(), StoreableType.TAG);
         }
-    }
-
-    private String extractAttributeStringFromStoreKey(String tagStoreKey) {
-        String[] splittedStoreKey = tagStoreKey.split("/");
-        return splittedStoreKey[0] + "/" + splittedStoreKey[1];
-    }
-
-    private void sendRepartitionCommandForRemoveRemoteTag(String tagStoreKey, String tagAttributeString) {
-        RemoveRemoteTag command = new RemoveRemoteTag(tagStoreKey, tagAttributeString);
-        Headers metadata = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
-        RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), tagStoreKey);
-        CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.partitionKey = tagAttributeString;
-        cpo.topic = this.lhConfig.getRepartitionTopicName();
-        cpo.payload = repartitionCommand;
-        Record<String, CommandProcessorOutput> out =
-                new Record<>(tagAttributeString, cpo, System.currentTimeMillis(), metadata);
-        this.context.forward(out);
-    }
-
-    private void sendRepartitionCommandForCreateRemoteTag(Tag tag) {
-        CreateRemoteTag command = new CreateRemoteTag(tag);
-        Headers metadata = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
-        String partitionKey = tag.getPartitionKey();
-        CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.setPartitionKey(partitionKey);
-        cpo.setTopic(this.lhConfig.getRepartitionTopicName());
-        RepartitionCommand repartitionCommand = new RepartitionCommand(command, new Date(), partitionKey);
-        cpo.setPayload(repartitionCommand);
-        Record<String, CommandProcessorOutput> out =
-                new Record<>(partitionKey, cpo, System.currentTimeMillis(), metadata);
-        this.context.forward(out);
     }
 }
