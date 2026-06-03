@@ -20,9 +20,11 @@ public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan
     private String oldNodeName;
     private String newNodeName;
     private List<String> requiredVariables;
+    private List<String> dependencies;
 
     public ThreadMigrationPlanModel() {
         requiredVariables = new ArrayList<>();
+        dependencies = new ArrayList<>();
     }
 
     @Override
@@ -31,7 +33,8 @@ public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan
                 .setNewThreadName(newThreadName)
                 .setFromNode(oldNodeName)
                 .setToNode(newNodeName)
-                .addAllRequiredVariables(requiredVariables);
+                .addAllRequiredVariables(requiredVariables)
+                .addAllDependencies(dependencies);
     }
 
     @Override
@@ -41,6 +44,7 @@ public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan
         oldNodeName = p.getFromNode();
         newNodeName = p.getToNode();
         requiredVariables = new ArrayList<>(p.getRequiredVariablesList());
+        dependencies = new ArrayList<>(p.getDependenciesList());
     }
 
     @Override

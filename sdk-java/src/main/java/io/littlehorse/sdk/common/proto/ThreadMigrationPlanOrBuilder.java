@@ -116,4 +116,29 @@ public interface ThreadMigrationPlanOrBuilder extends
    */
   com.google.protobuf.ByteString
       getRequiredVariablesBytes(int index);
+
+  /**
+   * <code>repeated string dependencies = 5;</code>
+   * @return A list containing the dependencies.
+   */
+  java.util.List<java.lang.String>
+      getDependenciesList();
+  /**
+   * <code>repeated string dependencies = 5;</code>
+   * @return The count of dependencies.
+   */
+  int getDependenciesCount();
+  /**
+   * <code>repeated string dependencies = 5;</code>
+   * @param index The index of the element to return.
+   * @return The dependencies at the given index.
+   */
+  java.lang.String getDependencies(int index);
+  /**
+   * <code>repeated string dependencies = 5;</code>
+   * @param index The index of the value to return.
+   * @return The bytes of the dependencies at the given index.
+   */
+  com.google.protobuf.ByteString
+      getDependenciesBytes(int index);
 }

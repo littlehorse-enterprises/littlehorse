@@ -1,10 +1,10 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
 import java.util.Date;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.protobuf.Message;
 
@@ -12,18 +12,19 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunIterator;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
-import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
-import io.littlehorse.common.model.corecommand.CoreSubCommand;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
 import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest;
-import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.MigrationVars;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -55,7 +56,7 @@ public class ApplyWorkflowMigrationRequestModel extends CoreSubCommand<ApplyWork
         }
 
         validateSourceThreadsAreMigratable(wfRun, migrationPlan);
-        validateVarsProvided(migrationPlan);
+        validateMigrationNodes(wfRun, migrationPlan);
         wfRun.setMigrationVarsByThread(migrationVarsByThread);
         wfRun.setWorkflowMigrationPlanId(id);
         wfRun.advance(new Date());
@@ -63,46 +64,17 @@ public class ApplyWorkflowMigrationRequestModel extends CoreSubCommand<ApplyWork
     }
 
 
-    private void validateVarsProvided(WorkflowMigrationPlanModel migrationPlan) {
-        for (Map.Entry<String, ThreadMigrationPlanModel> entry :
-                migrationPlan.getThreadMigrations().entrySet()) {
-            String threadName = entry.getKey();
-            ThreadMigrationPlanModel threadPlan = entry.getValue();
-
-            MigrationVarsModel providedVars = migrationVarsByThread.get(threadName);
-
-            for (String requiredVar : threadPlan.getRequiredVariables()) {
-                if (providedVars == null
-                        || !providedVars.getVarAssignmentByVarName().containsKey(requiredVar)) {
-                    throw new LHApiException(
-                            Status.INVALID_ARGUMENT,
-                            "Thread '%s' requires variable '%s' but it was not provided"
-                                    .formatted(threadName, requiredVar));
-                }
-            }
-        }
-    }
+ 
 
     private void validateSourceThreadsAreMigratable(WfRunModel wfRun, WorkflowMigrationPlanModel migrationPlan) {
-        List<String> terminatedSourceThreads = new ArrayList<>();
+        Set<String> sourceThreadSpecs = migrationPlan.getThreadMigrations().keySet();
+        Set<String> terminatedSourceThreads = new HashSet<>();
 
-        for (String sourceThreadSpec : migrationPlan.getThreadMigrations().keySet()) {
-            boolean hasTerminatedThread = false;
-
-            ThreadRunIterator threadRunIterator = wfRun.getThreadRunIterator();
-            while (threadRunIterator.hasNext()) {
-                ThreadRunModel threadRun = threadRunIterator.next();
-                if (!isNormalThreadType(threadRun.getType())) {
-                    continue;
-                }
-
-                if (sourceThreadSpec.equals(threadRun.getThreadSpecName()) && threadRun.isTerminated()) {
-                    hasTerminatedThread = true;
-                }
-            }
-
-            if (hasTerminatedThread) {
-                terminatedSourceThreads.add(sourceThreadSpec);
+        ThreadRunIterator threadRunIterator = wfRun.getThreadRunIterator();
+        while (threadRunIterator.hasNext()) {
+            ThreadRunModel threadRun = threadRunIterator.next();
+            if (threadRun.isTerminated() && sourceThreadSpecs.contains(threadRun.getThreadSpecName())) {
+                terminatedSourceThreads.add(threadRun.getThreadSpecName());
             }
         }
 
@@ -114,9 +86,41 @@ public class ApplyWorkflowMigrationRequestModel extends CoreSubCommand<ApplyWork
         }
     }
 
-    private boolean isNormalThreadType(ThreadType threadType) {
-        return threadType == ThreadType.ENTRYPOINT || threadType == ThreadType.CHILD;
+    private void validateMigrationNodes(WfRunModel wfRun, WorkflowMigrationPlanModel wfMigrationPlan) {
+        ThreadRunIterator threadRunIterator = wfRun.getThreadRunIterator();
+        while (threadRunIterator.hasNext()) {
+            ThreadRunModel threadRun = threadRunIterator.next();
+
+            // Skip inactive/terminated threads and threads not covered by this migration
+            if (threadRun.isInactive() || threadRun.isTerminated()) continue;
+            if (!wfMigrationPlan.getThreadMigrations().containsKey(threadRun.getThreadSpecName())) continue;
+
+            NodeModel currentNode = threadRun.getCurrentNode();
+            ThreadMigrationPlanModel threadMigrationPlan = wfMigrationPlan.getThreadMigrations().get(threadRun.getThreadSpecName());
+
+            if (threadMigrationPlan.getOldNodeName().equals(currentNode.getName())) {
+                // Thread is at the migration node — it must be long-running to be migratable
+                if (!currentNode.isLongRunning()) {
+                    throw new LHApiException(Status.FAILED_PRECONDITION,
+                            "Thread " + threadRun.getThreadSpecName() + " can not migrate from node "
+                                    + currentNode.getName() + " since the nodeRun was already activated");
+                }
+            } else {
+                // Thread is not yet at the migration node — check the migration node hasn't already been executed.
+                // Note: this validation only covers paths that lead through the migration node; if the thread
+                // hasn't reached it yet via a different path, we still could miss it.
+                try {
+                    threadRun.getMostRecentNodeRun(threadMigrationPlan.getOldNodeName());
+                    throw new LHApiException(Status.FAILED_PRECONDITION,
+                            "The node " + threadMigrationPlan.getOldNodeName() + " in thread "
+                                    + threadRun.getThreadSpecName() + " can not be migrated since it has already been completed");
+                } catch (LHVarSubError ex) {
+                    // Node hasn't been executed yet — this is expected
+                }
+            }
+        }
     }
+
 
     @Override
     public String getPartitionKey() {

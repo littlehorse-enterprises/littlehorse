@@ -47,6 +47,8 @@ message ThreadMigrationPlan {
     // updated or inserted at runtime when migration is called
     repeated string required_variables = 4;
 
+    repeated string dependencies = 5;
+
 }
 
 message MigrationVars {

@@ -578,16 +578,19 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
             for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
                 ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
-                if (workflowMigrationPlanId != null) {
-                    thread.maybeMigrate(workflowMigrationPlanId);
+                if(workflowMigrationPlanId != null && thread.isMigrating(workflowMigrationPlanId)){
+                    statusChanged = thread.advance(time, workflowMigrationPlanId) || statusChanged;
                     maybeDoneMigration();
+                }else{
+                    statusChanged = thread.advance(time, null) || statusChanged;
                 }
-                statusChanged = thread.advance(time) || statusChanged;
             }
         }
 
         archiveCompletedThreadRuns(false);
     }
+
+    
 
     // Migration is complete when each ThreadMigrationPlan destination thread has materialized at least once.
     private void maybeDoneMigration() {
@@ -597,48 +600,37 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
         WorkflowMigrationPlanModel workflowMigrationPlan = executionContext.metadataManager().get(workflowMigrationPlanId);
         if (workflowMigrationPlan == null) {
-            workflowMigrationPlanId = null;
-            migrationVarsByThread.clear();
             return;
         }
 
-        // Check if every thread 
+        WfSpecIdModel newWfSpecId = new WfSpecIdModel(
+                workflowMigrationPlan.getOldWfSpecId().getName(),
+                workflowMigrationPlan.getMajorVersion(),
+                workflowMigrationPlan.getRevision());
+
+        // Check if every newThreadSpec has a threadRun that has actually migrated to the new WfSpec
         for (ThreadMigrationPlanModel threadMigrationPlan : workflowMigrationPlan.getThreadMigrations().values()) {
-            if (!hasDestinationThreadSpec(threadMigrationPlan.getNewThreadName())) {
+            if (!hasDestinationThreadSpec(threadMigrationPlan.getNewThreadName(), newWfSpecId)) {
                 return;
             }
-        }
-
-        WfSpecIdModel destinationWfSpecId =
-                new WfSpecIdModel(wfSpecId.getName(), workflowMigrationPlan.getMajorVersion(), workflowMigrationPlan.getRevision());
-
-        if (!destinationWfSpecId.equals(wfSpecId)) {
-            oldWfSpecVersions.add(wfSpecId);
-            wfSpecId = destinationWfSpecId;
-            wfSpec = null;
         }
 
         workflowMigrationPlanId = null;
         migrationVarsByThread.clear();
     }
 
-    private boolean hasDestinationThreadSpec(String destinationThreadSpecName) {
+    private boolean hasDestinationThreadSpec(String destinationThreadSpecName, WfSpecIdModel newWfSpecId) {
         ThreadRunIterator iterator = getThreadRunIterator();
         while (iterator.hasNext()) {
             ThreadRunModel threadRun = iterator.next();
-            if (!isNormalThreadType(threadRun.getType())) {
-                continue;
-            }
-            if (destinationThreadSpecName.equals(threadRun.getThreadSpecName())) {
+            if (destinationThreadSpecName.equals(threadRun.getThreadSpecName())
+                    && newWfSpecId.equals(threadRun.getWfSpecId())) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isNormalThreadType(ThreadType threadType) {
-        return threadType == ThreadType.ENTRYPOINT || threadType == ThreadType.CHILD;
-    }
 
     private boolean shouldForceArchiveCompletedThreadRuns() {
         int threshold = (this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()

@@ -537,5 +537,20 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.common.proto.DeleteMetricWindowOrBuilder getDeleteMetricWindowOrBuilder();
 
+  /**
+   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 37;</code>
+   * @return Whether the applyWorkflowMigrationPlan field is set.
+   */
+  boolean hasApplyWorkflowMigrationPlan();
+  /**
+   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 37;</code>
+   * @return The applyWorkflowMigrationPlan.
+   */
+  io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest getApplyWorkflowMigrationPlan();
+  /**
+   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 37;</code>
+   */
+  io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequestOrBuilder getApplyWorkflowMigrationPlanOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

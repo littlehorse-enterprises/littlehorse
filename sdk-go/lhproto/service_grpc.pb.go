@@ -67,6 +67,7 @@ const (
 	LittleHorse_ListWorkflowEvents_FullMethodName          = "/littlehorse.LittleHorse/ListWorkflowEvents"
 	LittleHorse_SearchWfRun_FullMethodName                 = "/littlehorse.LittleHorse/SearchWfRun"
 	LittleHorse_PutWorkflowMigrationPlan_FullMethodName    = "/littlehorse.LittleHorse/PutWorkflowMigrationPlan"
+	LittleHorse_GetWorkflowMigrationPlan_FullMethodName    = "/littlehorse.LittleHorse/GetWorkflowMigrationPlan"
 	LittleHorse_DeleteWorkflowMigrationPlan_FullMethodName = "/littlehorse.LittleHorse/DeleteWorkflowMigrationPlan"
 	LittleHorse_ApplyWorkflowMigrationPlan_FullMethodName  = "/littlehorse.LittleHorse/ApplyWorkflowMigrationPlan"
 	LittleHorse_SearchCorrelatedEvent_FullMethodName       = "/littlehorse.LittleHorse/SearchCorrelatedEvent"
@@ -259,6 +260,8 @@ type LittleHorseClient interface {
 	SearchWfRun(ctx context.Context, in *SearchWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error)
 	// Register a workflow migration plan with lh server
 	PutWorkflowMigrationPlan(ctx context.Context, in *PutWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WorkflowMigrationPlan, error)
+	// Get a workflow migration plan by ID
+	GetWorkflowMigrationPlan(ctx context.Context, in *WorkflowMigrationPlanId, opts ...grpc.CallOption) (*WorkflowMigrationPlan, error)
 	// Deletes Workflow Migration Plan Metadata object from the server
 	DeleteWorkflowMigrationPlan(ctx context.Context, in *DeleteWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ApplyWorkflowMigrationPlan(ctx context.Context, in *ApplyWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WfRun, error)
@@ -819,6 +822,15 @@ func (c *littleHorseClient) SearchWfRun(ctx context.Context, in *SearchWfRunRequ
 func (c *littleHorseClient) PutWorkflowMigrationPlan(ctx context.Context, in *PutWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WorkflowMigrationPlan, error) {
 	out := new(WorkflowMigrationPlan)
 	err := c.cc.Invoke(ctx, LittleHorse_PutWorkflowMigrationPlan_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetWorkflowMigrationPlan(ctx context.Context, in *WorkflowMigrationPlanId, opts ...grpc.CallOption) (*WorkflowMigrationPlan, error) {
+	out := new(WorkflowMigrationPlan)
+	err := c.cc.Invoke(ctx, LittleHorse_GetWorkflowMigrationPlan_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1453,6 +1465,8 @@ type LittleHorseServer interface {
 	SearchWfRun(context.Context, *SearchWfRunRequest) (*WfRunIdList, error)
 	// Register a workflow migration plan with lh server
 	PutWorkflowMigrationPlan(context.Context, *PutWorkflowMigrationPlanRequest) (*WorkflowMigrationPlan, error)
+	// Get a workflow migration plan by ID
+	GetWorkflowMigrationPlan(context.Context, *WorkflowMigrationPlanId) (*WorkflowMigrationPlan, error)
 	// Deletes Workflow Migration Plan Metadata object from the server
 	DeleteWorkflowMigrationPlan(context.Context, *DeleteWorkflowMigrationPlanRequest) (*emptypb.Empty, error)
 	ApplyWorkflowMigrationPlan(context.Context, *ApplyWorkflowMigrationPlanRequest) (*WfRun, error)
@@ -1733,6 +1747,9 @@ func (UnimplementedLittleHorseServer) SearchWfRun(context.Context, *SearchWfRunR
 }
 func (UnimplementedLittleHorseServer) PutWorkflowMigrationPlan(context.Context, *PutWorkflowMigrationPlanRequest) (*WorkflowMigrationPlan, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutWorkflowMigrationPlan not implemented")
+}
+func (UnimplementedLittleHorseServer) GetWorkflowMigrationPlan(context.Context, *WorkflowMigrationPlanId) (*WorkflowMigrationPlan, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWorkflowMigrationPlan not implemented")
 }
 func (UnimplementedLittleHorseServer) DeleteWorkflowMigrationPlan(context.Context, *DeleteWorkflowMigrationPlanRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteWorkflowMigrationPlan not implemented")
@@ -2745,6 +2762,24 @@ func _LittleHorse_PutWorkflowMigrationPlan_Handler(srv interface{}, ctx context.
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).PutWorkflowMigrationPlan(ctx, req.(*PutWorkflowMigrationPlanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetWorkflowMigrationPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WorkflowMigrationPlanId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetWorkflowMigrationPlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetWorkflowMigrationPlan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetWorkflowMigrationPlan(ctx, req.(*WorkflowMigrationPlanId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3887,6 +3922,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PutWorkflowMigrationPlan",
 			Handler:    _LittleHorse_PutWorkflowMigrationPlan_Handler,
+		},
+		{
+			MethodName: "GetWorkflowMigrationPlan",
+			Handler:    _LittleHorse_GetWorkflowMigrationPlan_Handler,
 		},
 		{
 			MethodName: "DeleteWorkflowMigrationPlan",

@@ -50,6 +50,7 @@ export interface ThreadMigrationPlan {
    * updated or inserted at runtime when migration is called
    */
   requiredVariables: string[];
+  dependencies: string[];
 }
 
 export interface MigrationVars {
@@ -312,7 +313,7 @@ export const WorkflowMigrationPlan_ThreadMigrationsEntry = {
 };
 
 function createBaseThreadMigrationPlan(): ThreadMigrationPlan {
-  return { newThreadName: "", fromNode: "", toNode: "", requiredVariables: [] };
+  return { newThreadName: "", fromNode: "", toNode: "", requiredVariables: [], dependencies: [] };
 }
 
 export const ThreadMigrationPlan = {
@@ -328,6 +329,9 @@ export const ThreadMigrationPlan = {
     }
     for (const v of message.requiredVariables) {
       writer.uint32(34).string(v!);
+    }
+    for (const v of message.dependencies) {
+      writer.uint32(42).string(v!);
     }
     return writer;
   },
@@ -367,6 +371,13 @@ export const ThreadMigrationPlan = {
 
           message.requiredVariables.push(reader.string());
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.dependencies.push(reader.string());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -383,6 +394,9 @@ export const ThreadMigrationPlan = {
       toNode: isSet(object.toNode) ? globalThis.String(object.toNode) : "",
       requiredVariables: globalThis.Array.isArray(object?.requiredVariables)
         ? object.requiredVariables.map((e: any) => globalThis.String(e))
+        : [],
+      dependencies: globalThis.Array.isArray(object?.dependencies)
+        ? object.dependencies.map((e: any) => globalThis.String(e))
         : [],
     };
   },
@@ -401,6 +415,9 @@ export const ThreadMigrationPlan = {
     if (message.requiredVariables?.length) {
       obj.requiredVariables = message.requiredVariables;
     }
+    if (message.dependencies?.length) {
+      obj.dependencies = message.dependencies;
+    }
     return obj;
   },
 
@@ -413,6 +430,7 @@ export const ThreadMigrationPlan = {
     message.fromNode = object.fromNode ?? "";
     message.toNode = object.toNode ?? "";
     message.requiredVariables = object.requiredVariables?.map((e) => e) || [];
+    message.dependencies = object.dependencies?.map((e) => e) || [];
     return message;
   },
 };

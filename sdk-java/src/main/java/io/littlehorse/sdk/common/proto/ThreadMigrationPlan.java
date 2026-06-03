@@ -33,6 +33,8 @@ private static final long serialVersionUID = 0L;
     toNode_ = "";
     requiredVariables_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
+    dependencies_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -248,6 +250,43 @@ private static final long serialVersionUID = 0L;
     return requiredVariables_.getByteString(index);
   }
 
+  public static final int DEPENDENCIES_FIELD_NUMBER = 5;
+  @SuppressWarnings("serial")
+  private com.google.protobuf.LazyStringArrayList dependencies_ =
+      com.google.protobuf.LazyStringArrayList.emptyList();
+  /**
+   * <code>repeated string dependencies = 5;</code>
+   * @return A list containing the dependencies.
+   */
+  public com.google.protobuf.ProtocolStringList
+      getDependenciesList() {
+    return dependencies_;
+  }
+  /**
+   * <code>repeated string dependencies = 5;</code>
+   * @return The count of dependencies.
+   */
+  public int getDependenciesCount() {
+    return dependencies_.size();
+  }
+  /**
+   * <code>repeated string dependencies = 5;</code>
+   * @param index The index of the element to return.
+   * @return The dependencies at the given index.
+   */
+  public java.lang.String getDependencies(int index) {
+    return dependencies_.get(index);
+  }
+  /**
+   * <code>repeated string dependencies = 5;</code>
+   * @param index The index of the value to return.
+   * @return The bytes of the dependencies at the given index.
+   */
+  public com.google.protobuf.ByteString
+      getDependenciesBytes(int index) {
+    return dependencies_.getByteString(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -273,6 +312,9 @@ private static final long serialVersionUID = 0L;
     }
     for (int i = 0; i < requiredVariables_.size(); i++) {
       com.google.protobuf.GeneratedMessage.writeString(output, 4, requiredVariables_.getRaw(i));
+    }
+    for (int i = 0; i < dependencies_.size(); i++) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 5, dependencies_.getRaw(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -300,6 +342,14 @@ private static final long serialVersionUID = 0L;
       size += dataSize;
       size += 1 * getRequiredVariablesList().size();
     }
+    {
+      int dataSize = 0;
+      for (int i = 0; i < dependencies_.size(); i++) {
+        dataSize += computeStringSizeNoTag(dependencies_.getRaw(i));
+      }
+      size += dataSize;
+      size += 1 * getDependenciesList().size();
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -323,6 +373,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getToNode())) return false;
     if (!getRequiredVariablesList()
         .equals(other.getRequiredVariablesList())) return false;
+    if (!getDependenciesList()
+        .equals(other.getDependenciesList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -343,6 +395,10 @@ private static final long serialVersionUID = 0L;
     if (getRequiredVariablesCount() > 0) {
       hash = (37 * hash) + REQUIRED_VARIABLES_FIELD_NUMBER;
       hash = (53 * hash) + getRequiredVariablesList().hashCode();
+    }
+    if (getDependenciesCount() > 0) {
+      hash = (37 * hash) + DEPENDENCIES_FIELD_NUMBER;
+      hash = (53 * hash) + getDependenciesList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -480,6 +536,8 @@ private static final long serialVersionUID = 0L;
       toNode_ = "";
       requiredVariables_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
+      dependencies_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
       return this;
     }
 
@@ -526,6 +584,10 @@ private static final long serialVersionUID = 0L;
         requiredVariables_.makeImmutable();
         result.requiredVariables_ = requiredVariables_;
       }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        dependencies_.makeImmutable();
+        result.dependencies_ = dependencies_;
+      }
     }
 
     @java.lang.Override
@@ -562,6 +624,16 @@ private static final long serialVersionUID = 0L;
         } else {
           ensureRequiredVariablesIsMutable();
           requiredVariables_.addAll(other.requiredVariables_);
+        }
+        onChanged();
+      }
+      if (!other.dependencies_.isEmpty()) {
+        if (dependencies_.isEmpty()) {
+          dependencies_ = other.dependencies_;
+          bitField0_ |= 0x00000010;
+        } else {
+          ensureDependenciesIsMutable();
+          dependencies_.addAll(other.dependencies_);
         }
         onChanged();
       }
@@ -612,6 +684,12 @@ private static final long serialVersionUID = 0L;
               requiredVariables_.add(s);
               break;
             } // case 34
+            case 42: {
+              java.lang.String s = input.readStringRequireUtf8();
+              ensureDependenciesIsMutable();
+              dependencies_.add(s);
+              break;
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1062,6 +1140,117 @@ private static final long serialVersionUID = 0L;
       ensureRequiredVariablesIsMutable();
       requiredVariables_.add(value);
       bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+
+    private com.google.protobuf.LazyStringArrayList dependencies_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    private void ensureDependenciesIsMutable() {
+      if (!dependencies_.isModifiable()) {
+        dependencies_ = new com.google.protobuf.LazyStringArrayList(dependencies_);
+      }
+      bitField0_ |= 0x00000010;
+    }
+    /**
+     * <code>repeated string dependencies = 5;</code>
+     * @return A list containing the dependencies.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getDependenciesList() {
+      dependencies_.makeImmutable();
+      return dependencies_;
+    }
+    /**
+     * <code>repeated string dependencies = 5;</code>
+     * @return The count of dependencies.
+     */
+    public int getDependenciesCount() {
+      return dependencies_.size();
+    }
+    /**
+     * <code>repeated string dependencies = 5;</code>
+     * @param index The index of the element to return.
+     * @return The dependencies at the given index.
+     */
+    public java.lang.String getDependencies(int index) {
+      return dependencies_.get(index);
+    }
+    /**
+     * <code>repeated string dependencies = 5;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the dependencies at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getDependenciesBytes(int index) {
+      return dependencies_.getByteString(index);
+    }
+    /**
+     * <code>repeated string dependencies = 5;</code>
+     * @param index The index to set the value at.
+     * @param value The dependencies to set.
+     * @return This builder for chaining.
+     */
+    public Builder setDependencies(
+        int index, java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      ensureDependenciesIsMutable();
+      dependencies_.set(index, value);
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string dependencies = 5;</code>
+     * @param value The dependencies to add.
+     * @return This builder for chaining.
+     */
+    public Builder addDependencies(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      ensureDependenciesIsMutable();
+      dependencies_.add(value);
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string dependencies = 5;</code>
+     * @param values The dependencies to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllDependencies(
+        java.lang.Iterable<java.lang.String> values) {
+      ensureDependenciesIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, dependencies_);
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string dependencies = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearDependencies() {
+      dependencies_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+      bitField0_ = (bitField0_ & ~0x00000010);;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string dependencies = 5;</code>
+     * @param value The bytes of the dependencies to add.
+     * @return This builder for chaining.
+     */
+    public Builder addDependenciesBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      ensureDependenciesIsMutable();
+      dependencies_.add(value);
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }

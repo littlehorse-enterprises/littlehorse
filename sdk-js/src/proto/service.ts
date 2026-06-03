@@ -12457,6 +12457,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Get a workflow migration plan by ID */
+    getWorkflowMigrationPlan: {
+      name: "GetWorkflowMigrationPlan",
+      requestType: WorkflowMigrationPlanId,
+      requestStream: false,
+      responseType: WorkflowMigrationPlan,
+      responseStream: false,
+      options: {},
+    },
     /** Deletes Workflow Migration Plan Metadata object from the server */
     deleteWorkflowMigrationPlan: {
       name: "DeleteWorkflowMigrationPlan",
@@ -13217,6 +13226,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: PutWorkflowMigrationPlanRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<WorkflowMigrationPlan>>;
+  /** Get a workflow migration plan by ID */
+  getWorkflowMigrationPlan(
+    request: WorkflowMigrationPlanId,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WorkflowMigrationPlan>>;
   /** Deletes Workflow Migration Plan Metadata object from the server */
   deleteWorkflowMigrationPlan(
     request: DeleteWorkflowMigrationPlanRequest,
@@ -13700,6 +13714,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   /** Register a workflow migration plan with lh server */
   putWorkflowMigrationPlan(
     request: DeepPartial<PutWorkflowMigrationPlanRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WorkflowMigrationPlan>;
+  /** Get a workflow migration plan by ID */
+  getWorkflowMigrationPlan(
+    request: DeepPartial<WorkflowMigrationPlanId>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<WorkflowMigrationPlan>;
   /** Deletes Workflow Migration Plan Metadata object from the server */

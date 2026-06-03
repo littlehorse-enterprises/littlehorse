@@ -55,6 +55,7 @@ message Command {
         PutCheckpointRequest put_checkpoint = 34;
         AggregateWindowMetrics aggregate_window_metrics = 35;
         DeleteMetricWindow delete_metric_window = 36;
+        ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 37;
     }
 }
 

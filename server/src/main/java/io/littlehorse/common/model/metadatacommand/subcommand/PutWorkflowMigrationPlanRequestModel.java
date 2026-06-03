@@ -4,12 +4,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import com.google.protobuf.Message;
 
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -17,16 +19,12 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest;
 import io.littlehorse.sdk.common.proto.ThreadMigrationPlan;
-import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import io.littlehorse.server.streams.topology.core.WfService;
-
-import java.util.Set;
 
 public class PutWorkflowMigrationPlanRequestModel extends MetadataSubCommand<PutWorkflowMigrationPlanRequest> {
     private String name;
@@ -56,6 +54,7 @@ public class PutWorkflowMigrationPlanRequestModel extends MetadataSubCommand<Put
         }
 
         validateThreadMigrations(oldWfSpec, newWfSpec);
+        validateMigrationVars(newWfSpec, oldWfSpec);
         WorkflowMigrationPlanIdModel id = new WorkflowMigrationPlanIdModel(name);
         WorkflowMigrationPlanModel plan = new WorkflowMigrationPlanModel(
                 id, new Date(), threadMigrations, oldWfSpecId, majorVersion, revision);
@@ -64,13 +63,7 @@ public class PutWorkflowMigrationPlanRequestModel extends MetadataSubCommand<Put
         return plan.toProto().build();
     }
 
-    private static final Set<NodeCase> LONG_RUNNING_NODE_TYPES = Set.of(
-            NodeCase.EXTERNAL_EVENT,
-            NodeCase.USER_TASK,
-            NodeCase.SLEEP,
-            NodeCase.WAIT_FOR_THREADS,
-            NodeCase.WAIT_FOR_CONDITION,
-            NodeCase.WAIT_FOR_CHILD_WF);
+  
 
     private void validateThreadMigrations(WfSpecModel oldWfSpec, WfSpecModel newWfSpec) {
         if (threadMigrations == null || threadMigrations.isEmpty()) {
@@ -98,12 +91,13 @@ public class PutWorkflowMigrationPlanRequestModel extends MetadataSubCommand<Put
                                 .formatted(oldThreadName, migration.getOldNodeName()));
             }
 
-            // Validate from_node is a long-running node type
-            if (!LONG_RUNNING_NODE_TYPES.contains(fromNode.type)) {
+
+            // Validate new thread exists
+            ThreadSpecModel newThread = newWfSpec.threadSpecs.get(migration.getNewThreadName());
+            if (newThread == null) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
-                        "Node %s on threadSpec %s is not a long-running node type. Migration is only supported from EXTERNAL_EVENT, USER_TASK, SLEEP, WAIT_FOR_THREADS, WAIT_FOR_CONDITION, or WAIT_FOR_CHILD_WF nodes"
-                                .formatted(migration.getOldNodeName(), oldThreadName));
+                        "Destination WfSpec has no threadSpec %s".formatted(migration.getNewThreadName()));
             }
 
             // Validate entrypoint threads only migrate to entrypoint threads,
@@ -123,20 +117,54 @@ public class PutWorkflowMigrationPlanRequestModel extends MetadataSubCommand<Put
                                 .formatted(oldThreadName, migration.getNewThreadName()));
             }
 
-            // Validate new thread exists
-            ThreadSpecModel newThread = newWfSpec.threadSpecs.get(migration.getNewThreadName());
-            if (newThread == null) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        "Destination WfSpec has no threadSpec %s".formatted(migration.getNewThreadName()));
-            }
-
             // Validate new to_node exists
             if (newThread.nodes.get(migration.getNewNodeName()) == null) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
                         "ThreadSpec %s on destination WfSpec does not have node %s"
                                 .formatted(migration.getNewThreadName(), migration.getNewNodeName()));
+            }
+
+        }
+    }
+
+    private void validateMigrationVars(WfSpecModel newWfSpec, WfSpecModel oldWfSpec) {
+        for (Map.Entry<String, ThreadMigrationPlanModel> e : threadMigrations.entrySet()) {
+            String oldThreadName = e.getKey();
+            ThreadMigrationPlanModel migration = e.getValue();
+            ThreadSpecModel oldThreadSpec = oldWfSpec.getThreadSpecs().get(oldThreadName);
+            ThreadSpecModel newThreadSpec = newWfSpec.getThreadSpecs().get(migration.getNewThreadName());
+
+            for (String var : migration.getRequiredVariables()) {
+                boolean isVarInScopeOfOld = oldThreadSpec.isVarInScope(var);
+                boolean isVarInScopeOfNew = newThreadSpec.isVarInScope(var);
+
+                if (!isVarInScopeOfOld && !isVarInScopeOfNew) {
+                    throw new LHApiException(Status.NOT_FOUND,
+                        "The variable '" + var + "' is listed as a required migration variable, but is not in the scope of source thread '" + oldThreadName + "' or destination thread '" + newThreadSpec.getName() + "'");
+                }
+
+                if (isVarInScopeOfOld && !isVarInScopeOfNew) {
+                    throw new LHApiException(Status.FAILED_PRECONDITION,
+                        "The variable '" + var + "' is in scope on source thread '" + oldThreadName + "' but is not accessible in destination thread '" + newThreadSpec.getName() + "'");
+                }
+
+                if (!isVarInScopeOfOld && isVarInScopeOfNew) {
+                    // Var exists in new spec but not old — the thread that owns it in the new spec
+                    // must exist before this thread migrates. Record it as a dependency (by new name).
+                    String ownerThreadName = newWfSpec.getVarToThreadSpecMap().get(var);
+                    if (!ownerThreadName.equals(newThreadSpec.getName())) {
+                        boolean ownerIsInPlan = threadMigrations.values().stream()
+                                .anyMatch(m -> ownerThreadName.equals(m.getNewThreadName()));
+                        if (!ownerIsInPlan) {
+                            throw new LHApiException(Status.FAILED_PRECONDITION,
+                                "The variable '" + var + "' is required by the migration but the thread that defines it ('" + ownerThreadName + "') is not included in this migration plan");
+                        }
+                        if (!migration.getDependencies().contains(ownerThreadName)) {
+                            migration.getDependencies().add(ownerThreadName);
+                        }
+                    }
+                }
             }
         }
     }

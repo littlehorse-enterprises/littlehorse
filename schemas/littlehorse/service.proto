@@ -214,6 +214,9 @@ service LittleHorse {
   // Register a workflow migration plan with lh server
   rpc PutWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest) returns (WorkflowMigrationPlan) {}
 
+  // Get a workflow migration plan by ID
+  rpc GetWorkflowMigrationPlan(WorkflowMigrationPlanId) returns (WorkflowMigrationPlan) {}
+
   // Deletes Workflow Migration Plan Metadata object from the server
   rpc DeleteWorkflowMigrationPlan(DeleteWorkflowMigrationPlanRequest) returns (google.protobuf.Empty) {}
 
