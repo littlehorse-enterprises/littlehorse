@@ -538,21 +538,6 @@ public interface CommandOrBuilder extends
   io.littlehorse.common.proto.DeleteMetricWindowOrBuilder getDeleteMetricWindowOrBuilder();
 
   /**
-<<<<<<< HEAD
-   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 37;</code>
-   * @return Whether the applyWorkflowMigrationPlan field is set.
-   */
-  boolean hasApplyWorkflowMigrationPlan();
-  /**
-   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 37;</code>
-   * @return The applyWorkflowMigrationPlan.
-   */
-  io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest getApplyWorkflowMigrationPlan();
-  /**
-   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 37;</code>
-   */
-  io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequestOrBuilder getApplyWorkflowMigrationPlanOrBuilder();
-=======
    * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
    * @return Whether the updateCountedTag field is set.
    */
@@ -566,7 +551,21 @@ public interface CommandOrBuilder extends
    * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
    */
   io.littlehorse.common.proto.UpdateCountedTagOrBuilder getUpdateCountedTagOrBuilder();
->>>>>>> origin/master
+
+  /**
+   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+   * @return Whether the applyWorkflowMigrationPlan field is set.
+   */
+  boolean hasApplyWorkflowMigrationPlan();
+  /**
+   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+   * @return The applyWorkflowMigrationPlan.
+   */
+  io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest getApplyWorkflowMigrationPlan();
+  /**
+   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+   */
+  io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequestOrBuilder getApplyWorkflowMigrationPlanOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

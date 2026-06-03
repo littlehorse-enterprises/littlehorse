@@ -8999,7 +8999,9 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_PRINCIPAL = 96;
   private static final int METHODID_WHOAMI = 97;
   private static final int METHODID_GET_SERVER_VERSION = 98;
-  private static final int METHODID_POLL_TASK = 99;
+  private static final int METHODID_COUNT_NODE_RUN = 99;
+  private static final int METHODID_COUNT_TASK_RUN = 100;
+  private static final int METHODID_POLL_TASK = 101;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
