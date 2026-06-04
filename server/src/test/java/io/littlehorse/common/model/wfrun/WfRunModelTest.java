@@ -115,7 +115,7 @@ public class WfRunModelTest {
                 wfSpecId);
 
         PartitionMetricWindowModel storedMetrics =
-                testContext.getPartitionMetricsMemoryStore().get(metricKey);
+                testContext.getMetricWindows().get(metricKey);
 
         assertThat(storedMetrics).isNotNull();
         assertThat(storedMetrics.getMetrics()).isNotEmpty();

@@ -26,8 +26,8 @@ import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.storeinternals.PartitionMetricsCollector;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
-import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
@@ -52,7 +52,7 @@ public class TaskRunModelTest {
     public void setup() {
         when(processorContext.authorization()).thenReturn(mock(AuthorizationContext.class));
         when(processorContext.authorization().tenantId()).thenReturn(new TenantIdModel(tenantId));
-        when(processorContext.getPartitionMetricsMemoryStore()).thenReturn(new PartitionMetricsMemoryStore());
+        when(processorContext.metricsCollector()).thenReturn(mock(PartitionMetricsCollector.class));
         when(processorContext.nativeCoreStore()).thenReturn(mockStore);
         when(processorContext.getTaskManager()).thenReturn(taskManager);
         when(processorContext.getableUpdates()).thenReturn(mock(GetableUpdates.class));
@@ -114,7 +114,7 @@ public class TaskRunModelTest {
         when(taskProcessorContext.getableUpdates()).thenReturn(getableUpdates);
         when(taskProcessorContext.authorization()).thenReturn(mock(AuthorizationContext.class));
         when(taskProcessorContext.authorization().tenantId()).thenReturn(new TenantIdModel("tenant-a"));
-        when(taskProcessorContext.getPartitionMetricsMemoryStore()).thenReturn(new PartitionMetricsMemoryStore());
+        when(taskProcessorContext.metricsCollector()).thenReturn(mock(PartitionMetricsCollector.class));
         when(taskProcessorContext.nativeCoreStore()).thenReturn(mockStore);
         taskRun.setProcessorContext(taskProcessorContext);
 
