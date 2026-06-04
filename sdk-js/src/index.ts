@@ -6,6 +6,7 @@ export {
   buildPutStructDefRequest,
   buildStructVariableDef,
   createTaskWorker,
+  defineTask,
   getStructDependencies,
   getStructName,
   isLHStruct,
@@ -15,7 +16,7 @@ export {
   zodToTypeDef,
   zodToVariableDefs,
 } from './worker'
-export type { LHTaskWorker, LHTaskWorkerOptions, TaskFunction } from './worker'
+export type { LHTaskMethod, LHTaskWorker, LHTaskWorkerOptions, TaskFunction } from './worker'
 export { LHMisconfigurationException, Workflow } from './workflow'
 export type {
   LHExpression,

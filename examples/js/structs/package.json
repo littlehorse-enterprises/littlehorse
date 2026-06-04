@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "npx tsc",
-    "start": "npx tsc && node dist/index.js",
-    "run-wf": "npx tsc && node dist/run-wf.js"
+    "build": "tsc",
+    "start": "tsc && node dist/index.js",
+    "run-wf": "tsc && node dist/run-wf.js"
   },
   "dependencies": {
     "littlehorse-client": "file:../../../sdk-js",

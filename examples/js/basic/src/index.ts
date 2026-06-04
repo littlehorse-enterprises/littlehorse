@@ -1,4 +1,4 @@
-import { LHConfig, createTaskWorker, WorkerContext, Workflow } from 'littlehorse-client'
+import { LHConfig, createTaskWorker, defineTask, WorkerContext, Workflow } from 'littlehorse-client'
 import { z } from 'zod'
 
 function basicWorkflow() {
@@ -15,13 +15,15 @@ async function greet(name: string, ctx: WorkerContext): Promise<string> {
   return msg
 }
 
+const greetTask = defineTask(greet, {
+  inputVars: { name: z.string() },
+})
+
 async function main() {
   const config = LHConfig.from({})
   const client = config.getClient()
 
-  const worker = createTaskWorker(greet, 'greet', config, {
-    inputVars: { name: z.string() },
-  })
+  const worker = createTaskWorker(greetTask, 'greet', config)
 
   if (!(await worker.doesTaskDefExist())) {
     console.log('TaskDef "greet" not found, registering...')

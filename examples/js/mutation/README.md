@@ -5,8 +5,8 @@ In this example you will see how to mutate variables.
 Let's run the example in `src/index.ts`
 
 ```
-npm install
-npm start
+pnpm install
+pnpm start
 ```
 
 In another terminal, use `lhctl` to run the workflow:
@@ -22,8 +22,8 @@ lhctl run example-mutation name Eduwer
 Or:
 
 ```
-npm run run-wf -- Peter
-npm run run-wf -- Eduwer
+pnpm run run-wf -- Peter
+pnpm run run-wf -- Eduwer
 ```
 
 In addition, you can check the result with:

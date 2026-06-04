@@ -7,7 +7,7 @@ JavaScript/TypeScript examples for LittleHorse workflow features.
 - Running LittleHorse server (see [`../README.md`](../README.md)).
 - `lhctl` installed and configured.
 - Node.js 18+.
-- npm (run `npm install` inside each example directory).
+- pnpm (run `pnpm install` inside each example directory).
 
 Verify server connectivity:
 
@@ -17,13 +17,13 @@ lhctl whoami
 
 ## Running JavaScript examples
 
-From an example directory (after `npm install`):
+From an example directory (after `pnpm install`):
 
 ```bash
-npm start
+pnpm start
 ```
 
-Most examples start a long-lived worker process. Keep that command running and use another terminal for `npm run run-wf` or `lhctl run ...` (see each example’s README).
+Most examples start a long-lived worker process. Keep that command running and use another terminal for `pnpm run run-wf` or `lhctl run ...` (see each example's README).
 
 ## JavaScript Example Index
 

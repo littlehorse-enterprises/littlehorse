@@ -20,12 +20,12 @@ See how StructDefs are registered before the workflow is put to the server.
 
 Let's run the application in `src/index.ts` to:
 
-* Register your `StructDef`s
-* Register your `TaskDef`s
+- Register your `StructDef`s
+- Register your `TaskDef`s
 
 ```
-npm install
-npm start
+pnpm install
+pnpm start
 ```
 
 In another terminal, call the following command to verify that the `Person` StructDef was created on the server:
@@ -39,10 +39,10 @@ lhctl get structdef person 0
 
 ### Running a workflow
 
-Keep `npm start` running. In a separate terminal, pass make, model, and license plate into the workflow input struct:
+Keep `pnpm start` running. In a separate terminal, pass make, model, and license plate into the workflow input struct:
 
 ```
-npm run run-wf -- Toyota Camry ABC123
+pnpm run run-wf -- Toyota Camry ABC123
 ```
 
 You can check the results of this workflow run using `lhctl`:

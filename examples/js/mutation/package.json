@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "npx tsx src/index.ts",
-    "run-wf": "npx tsx src/run-wf.ts"
+    "start": "tsx src/index.ts",
+    "run-wf": "tsx src/run-wf.ts"
   },
   "dependencies": {
     "littlehorse-client": "file:../../../sdk-js",

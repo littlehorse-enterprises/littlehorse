@@ -8,8 +8,8 @@ This is a simple example, which does two things:
 Let's run the example in `src/index.ts`
 
 ```sh
-npm install
-npm start
+pnpm install
+pnpm start
 ```
 
 In another terminal, use `lhctl` to run the workflow:
@@ -22,7 +22,7 @@ lhctl run example-expressions quantity 1 price 0.8 taxes 12
 Or:
 
 ```sh
-npm run run-wf -- 1 0.8 12
+pnpm run run-wf -- 1 0.8 12
 ```
 
 In addition, you can check the result with:

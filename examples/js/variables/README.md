@@ -37,8 +37,8 @@ This workflow demonstrates the flow of data between tasks and the handling of di
 ### Start workers
 
 ```
-npm install
-npm start
+pnpm install
+pnpm start
 ```
 
 ### Run workflow
@@ -52,6 +52,6 @@ lhctl run example-variables input-text 'this is a very long text' add-length fal
 Or use the helper script (defaults: `hello`, `add-length` true, `user-id` 42):
 
 ```
-npm run run-wf
-npm run run-wf -- "custom text" false 99
+pnpm run run-wf
+pnpm run run-wf -- "custom text" false 99
 ```

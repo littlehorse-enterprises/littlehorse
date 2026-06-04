@@ -1,5 +1,5 @@
-export { createTaskWorker, LHTaskException } from './lhTaskWorker'
-export type { LHTaskWorker, TaskFunction, LHTaskWorkerOptions } from './lhTaskWorker'
+export { createTaskWorker, defineTask, LHTaskException } from './lhTaskWorker'
+export type { LHTaskMethod, LHTaskWorker, TaskFunction, LHTaskWorkerOptions } from './lhTaskWorker'
 export { WorkerContext } from './workerContext'
 export {
   lhStruct,

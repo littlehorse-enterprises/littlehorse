@@ -6,8 +6,8 @@ More information about json-path at https://github.com/json-path/JsonPath.
 Let's run the example in `src/index.ts`
 
 ```
-npm install
-npm start
+pnpm install
+pnpm start
 ```
 
 In another terminal, use `lhctl` to run the workflow:
@@ -19,8 +19,8 @@ lhctl run example-json person '{"name": "Obi-Wan", "car": {"brand": "Ford", "mod
 Or:
 
 ```
-npm run run-wf
-npm run run-wf -- '{"name":"Obi-Wan","car":{"brand":"Ford","model":"Escape"}}'
+pnpm run run-wf
+pnpm run run-wf -- '{"name":"Obi-Wan","car":{"brand":"Ford","model":"Escape"}}'
 ```
 
 In addition, you can check the result with:

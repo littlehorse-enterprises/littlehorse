@@ -6,8 +6,8 @@ See the task implementation in `src/index.ts`.
 Let's run the example in `src/index.ts`
 
 ```
-npm install
-npm start
+pnpm install
+pnpm start
 ```
 
 In another terminal, use `lhctl` to run the workflow:
@@ -21,8 +21,8 @@ lhctl run example-worker-context request-time $(date +%s%3N)
 Or:
 
 ```
-npm run run-wf
-npm run run-wf -- 1730000000000
+pnpm run run-wf
+pnpm run run-wf -- 1730000000000
 ```
 
 In addition, you can check the result with:

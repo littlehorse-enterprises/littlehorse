@@ -8,8 +8,8 @@ This is a simple example, which does two things:
 Let's run the example in `src/index.ts`
 
 ```bash
-npm install
-npm start
+pnpm install
+pnpm start
 ```
 
 In another terminal, use `lhctl` to run the workflow:
@@ -28,8 +28,8 @@ lhctl run example-basic foo bar
 Or use the helper script (defaults the name if omitted):
 
 ```bash
-npm run run-wf
-npm run run-wf -- Obi-Wan
+pnpm run run-wf
+pnpm run run-wf -- Obi-Wan
 ```
 
 In addition, you can check the result with:
