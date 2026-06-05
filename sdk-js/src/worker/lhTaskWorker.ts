@@ -14,7 +14,7 @@ import { TaskStatus, LHErrorType } from '../proto/common_enums'
 import { LHConfig } from '../LHConfig'
 import { WorkerContext } from './workerContext'
 import { extractTaskArgs, toVariableValue } from '../utils/variableValueConvert'
-import { toStructVariableValue, getStructName, zodToVariableDefs } from './zodSchema'
+import { toStructVariableValue, getStructName, zodToTypeDef, zodToVariableDefs } from './zodSchema'
 import { randomBytes } from 'crypto'
 import { type ZodTypeAny } from 'zod'
 
@@ -261,7 +261,8 @@ export interface LHTaskWorkerOptions {
   /**
    * When the task function returns a struct, provide the Zod schema
    * (created with `lhStruct()`) here so the worker can serialize the
-   * return value as a Struct-typed VariableValue.
+   * return value as a Struct-typed VariableValue. The schema also defines
+   * the TaskDef return type registered with the server.
    *
    * ```ts
    * const worker = createTaskWorker(myFn, 'my-task', config, {
@@ -360,6 +361,7 @@ export function createTaskWorker(
   const bootstrapClient = config.getClient()
   const inputVars = zodToVariableDefs(taskOptions.inputVars)
   const outputSchema = taskOptions.outputSchema
+  const returnType = outputSchema ? { returnType: zodToTypeDef(outputSchema) } : undefined
   const taskWorkerVersion = taskOptions.taskWorkerVersion
   const connections = new Map<string, ServerConnection>()
   let running = false
@@ -438,6 +440,7 @@ export function createTaskWorker(
         const result = await bootstrapClient.putTaskDef({
           name: taskDefName,
           inputVars,
+          returnType,
         })
         console.log(`[LHTaskWorker] Registered TaskDef: ${result.id?.name}`)
       } catch (err: any) {

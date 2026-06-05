@@ -17,6 +17,7 @@ async function greet(name: string, ctx: WorkerContext): Promise<string> {
 
 const greetTask = defineTask(greet, {
   inputVars: { name: z.string() },
+  outputSchema: z.string(),
 })
 
 async function main() {
