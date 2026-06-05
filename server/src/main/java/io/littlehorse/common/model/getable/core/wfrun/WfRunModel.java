@@ -13,7 +13,6 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
-import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.InternalDeleteWfRunRequestModel;
@@ -779,8 +778,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 processorContext.getTaskManager().scheduleTimer(timer);
             }
         }
-        PartitionMetricWindowModel.trackWorkflow(
-                processorContext, wfSpecId, previousStatus, status, startTime, endTime);
+        processorContext.metricsCollector().trackWorkflow(wfSpecId, previousStatus, status, startTime, endTime);
     }
 
     private boolean isTerminated() {

@@ -6,19 +6,12 @@ import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.core.metrics.CountAndTimingModel;
 import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
-import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.PartitionMetricWindow;
 import io.littlehorse.common.proto.StoreableType;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.CountAndTiming;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskStatus;
-import io.littlehorse.server.streams.stores.ClusterScopedStore;
-import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
-import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
@@ -126,71 +119,6 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
                     default -> MetricWindowModel.TASKRUN_CREATED_TO_ERROR;
                 };
         incrementCountAndLatency(metricKey, latencyMs);
-    }
-
-    public static void trackTaskAttempt(
-            CoreProcessorContext processorContext,
-            TaskDefIdModel taskDefId,
-            TaskStatus previousStatus,
-            TaskStatus newStatus,
-            Date phaseStart,
-            Date phaseEnd) {
-        TenantIdModel tenantId = processorContext.authorization().tenantId();
-        MetricWindowIdModel id = new MetricWindowIdModel(tenantId, taskDefId, LHUtil.getCurrentWindowDate());
-        PartitionMetricWindowModel metricWindow = getOrcreateMetricWindow(processorContext, id);
-        metricWindow.incrementTaskAttemptCount(previousStatus, newStatus, phaseStart, phaseEnd);
-        storeMetricWindow(processorContext, metricWindow);
-    }
-
-    public static void trackTaskRun(
-            CoreProcessorContext processorContext,
-            TaskDefIdModel taskDefId,
-            TaskStatus terminalStatus,
-            Date createdAt,
-            Date endTime) {
-        TenantIdModel tenantId = processorContext.authorization().tenantId();
-        MetricWindowIdModel id = new MetricWindowIdModel(tenantId, taskDefId, LHUtil.getCurrentWindowDate());
-        PartitionMetricWindowModel metricWindow = getOrcreateMetricWindow(processorContext, id);
-        metricWindow.incrementTaskRunCount(terminalStatus, createdAt, endTime);
-        storeMetricWindow(processorContext, metricWindow);
-    }
-
-    public static void trackWorkflow(
-            CoreProcessorContext processorContext,
-            WfSpecIdModel wfSpecId,
-            LHStatus previousStatus,
-            LHStatus newStatus,
-            Date startTime,
-            Date endTime) {
-        TenantIdModel tenantId = processorContext.authorization().tenantId();
-        MetricWindowIdModel id = new MetricWindowIdModel(tenantId, wfSpecId, LHUtil.getCurrentWindowDate());
-        PartitionMetricWindowModel metricWindow = getOrcreateMetricWindow(processorContext, id);
-        metricWindow.incrementWfCount(previousStatus, newStatus, startTime, endTime);
-        storeMetricWindow(processorContext, metricWindow);
-    }
-
-    private static void storeMetricWindow(
-            CoreProcessorContext processorContext, PartitionMetricWindowModel metricWindow) {
-        ClusterScopedStore clusterScopedStore =
-                ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
-        PartitionMetricsMemoryStore memoryStore = processorContext.getPartitionMetricsMemoryStore();
-        clusterScopedStore.put(metricWindow);
-        memoryStore.put(metricWindow);
-    }
-
-    private static PartitionMetricWindowModel getOrcreateMetricWindow(
-            CoreProcessorContext processorContext, MetricWindowIdModel id) {
-        PartitionMetricsMemoryStore memoryStore = processorContext.getPartitionMetricsMemoryStore();
-        PartitionMetricWindowModel metricWindow = memoryStore.get(id.getPartitionMetricStoreKey());
-        if (metricWindow == null) {
-            ClusterScopedStore clusterScopedStore =
-                    ClusterScopedStore.newInstance(processorContext.nativeCoreStore(), processorContext);
-            metricWindow = clusterScopedStore.get(id.getPartitionMetricStoreKey(), PartitionMetricWindowModel.class);
-        }
-        if (metricWindow == null) {
-            metricWindow = new PartitionMetricWindowModel(id);
-        }
-        return metricWindow;
     }
 
     @Override
