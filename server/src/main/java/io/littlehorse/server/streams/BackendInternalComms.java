@@ -21,6 +21,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
+import io.littlehorse.common.model.CountedTagModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
@@ -31,6 +32,8 @@ import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetObjectRequest;
 import io.littlehorse.common.proto.GetObjectResponse;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.InternalCountPb;
+import io.littlehorse.common.proto.InternalCountResponse;
 import io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse;
 import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
@@ -56,6 +59,7 @@ import io.littlehorse.server.GlobalExceptionHandler;
 import io.littlehorse.server.auth.internalport.InternalAuthorizer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
+import io.littlehorse.server.streams.lhinternalscan.InternalCount;
 import io.littlehorse.server.streams.lhinternalscan.InternalScan;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
@@ -518,6 +522,14 @@ public class BackendInternalComms implements Closeable {
             ctx.onNext(reply);
             ctx.onCompleted();
         }
+
+        @Override
+        public void internalCount(InternalCountPb req, StreamObserver<InternalCountResponse> observer) {
+            InternalCount count = LHSerializable.fromProto(req, InternalCount.class, executionContext());
+            InternalCountResponse reply = doCount(count);
+            observer.onNext(reply);
+            observer.onCompleted();
+        }
     }
 
     /*
@@ -545,6 +557,30 @@ public class BackendInternalComms implements Closeable {
         } catch (StatusRuntimeException ex) {
             throw new LHApiException(ex.getStatus(), ex.getMessage());
         }
+    }
+
+    public InternalCountResponse doCount(InternalCount count) {
+        HostInfo correctHost = getHostForKey(ServerTopologyV2.CORE_STORE_NAME, count.getPartitionKey());
+        if (correctHost.equals(thisHost)) {
+            return countLocally(
+                    count,
+                    lookupPartitionKey(ServerTopologyV2.CORE_STORE_NAME, count.getPartitionKey())
+                            .partition());
+        } else {
+            return getInternalClient(correctHost).internalCount(count.toProto().build());
+        }
+    }
+
+    private InternalCountResponse countLocally(InternalCount count, int partition) {
+        ReadOnlyTenantScopedStore store = getStore(partition, ServerTopologyV2.CORE_STORE_NAME);
+        CountedTagModel countedTag = store.get(count.getPartitionKey(), CountedTagModel.class);
+        InternalCountResponse.Builder out = InternalCountResponse.newBuilder();
+        if (countedTag != null) {
+            out.setCount(countedTag.getCount());
+        } else {
+            out.setCount(0L);
+        }
+        return out.build();
     }
 
     // TODO: Remove this in part-2 of the #556 refactor
@@ -689,7 +725,7 @@ public class BackendInternalComms implements Closeable {
 
     private InternalScanResponse objectIdPrefixScan(InternalScan search) throws StatusRuntimeException {
         HostInfo correctHost = getHostForKey(search.storeName, search.partitionKey);
-        if (getHostForKey(search.storeName, search.partitionKey).equals(thisHost)) {
+        if (correctHost.equals(thisHost)) {
             return objectIdPrefixScanOnThisHost(search);
         } else {
             return getInternalClient(correctHost).internalScan(search.toProto().build());

@@ -4,10 +4,10 @@ import { lhClient } from '@/app/lhClient'
 import type { LittleHorseVersion } from 'littlehorse-client/proto'
 
 function formatLittleHorseVersion(littleHorseVersion: LittleHorseVersion): string {
-  const semverCore = `${littleHorseVersion.majorVersion}.${littleHorseVersion.minorVersion}.${littleHorseVersion.patchVersion}`
-  return littleHorseVersion.preReleaseIdentifier
-    ? `${semverCore}-${littleHorseVersion.preReleaseIdentifier}`
-    : semverCore
+  const parts = [littleHorseVersion.majorVersion, littleHorseVersion.minorVersion, littleHorseVersion.patchVersion]
+    .filter(part => part != null)
+    .join('.')
+  return littleHorseVersion.preReleaseIdentifier ? `${parts}-${littleHorseVersion.preReleaseIdentifier}` : parts
 }
 
 export async function getServerVersion(tenantId: string): Promise<string> {

@@ -12,7 +12,7 @@
     "lint:eslint:fix": "eslint . --fix",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "preinstall": "cd ../sdk-js && npm i && npm run build"
+    "preinstall": "cd ../sdk-js && pnpm install && pnpm run build"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
@@ -48,7 +48,7 @@
     "date-fns": "^4.1.0",
     "elkjs": "^0.11.0",
     "eslint": "^9.23.0",
-    "littlehorse-client": "file://../sdk-js",
+    "littlehorse-client": "link:../sdk-js",
     "lucide-react": "^0.519.0",
     "next": "^14.2.4",
     "next-auth": "^4.24.7",
@@ -65,6 +65,7 @@
     "tailwindcss-animate": "^1.0.7",
     "use-debounce": "^10.0.0"
   },
+  "packageManager": "pnpm@10.19.0",
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
     "@testing-library/jest-dom": "^6.4.5",

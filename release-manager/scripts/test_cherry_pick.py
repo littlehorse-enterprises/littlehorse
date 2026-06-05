@@ -4,6 +4,7 @@ import unittest
 from unittest.mock import MagicMock, patch, call
 
 import cherry_pick
+from config import MAIN_BRANCH
 
 
 def mock_result(returncode: int = 0, stdout: str = "", stderr: str = ""):
@@ -20,7 +21,7 @@ class TestCheckReleaseBranchFormat(unittest.TestCase):
         self.assertTrue(cherry_pick.check_release_branch_format("12.34"))
 
     def test_rejects_master(self):
-        self.assertFalse(cherry_pick.check_release_branch_format("master"))
+        self.assertFalse(cherry_pick.check_release_branch_format(MAIN_BRANCH))
 
     def test_rejects_three_parts(self):
         self.assertFalse(cherry_pick.check_release_branch_format("1.0.0"))
@@ -34,7 +35,7 @@ class TestCheckCommitOnMaster(unittest.TestCase):
     def test_commit_is_ancestor(self, mock_git):
         mock_git.return_value = mock_result(returncode=0)
         self.assertTrue(cherry_pick.check_commit_on_master("abc123"))
-        mock_git.assert_called_once_with("merge-base", "--is-ancestor", "abc123", "master")
+        mock_git.assert_called_once_with("merge-base", "--is-ancestor", "abc123", MAIN_BRANCH)
 
     @patch("cherry_pick.run_git")
     def test_commit_not_ancestor(self, mock_git):

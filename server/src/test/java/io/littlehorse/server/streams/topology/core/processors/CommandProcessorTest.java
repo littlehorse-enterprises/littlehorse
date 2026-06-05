@@ -22,7 +22,7 @@ import io.littlehorse.server.TestCoreProcessorContext;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
-import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
+import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -105,7 +105,8 @@ public class CommandProcessorTest {
                 tenantProcessorContext.getGlobalTaskQueueManager(),
                 tenantProcessorContext.getMetadataCache(),
                 tenantProcessorContext.getServer(),
-                tenantProcessorContext.getPartitionMetricsMemoryStore());
+                new PartitionLocalBuffer<>(),
+                new PartitionLocalBuffer<>());
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(
                 mockProcessorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), executionContext);
         NodeRunModel nodeRun = TestUtil.nodeRun();
@@ -128,14 +129,18 @@ public class CommandProcessorTest {
     void shouldForwardMetricsTimerWithTenantInTimerAndHeaders() throws Exception {
         when(config.getCoreCmdTopicName()).thenReturn("core-cmd");
         commandProcessor.init(mockProcessorContext);
-        setField(commandProcessor, "shouldUseMetricsHint", false);
 
         TenantIdModel tenantId = new TenantIdModel("metrics-tenant");
         PartitionMetricWindowModel metricWindow = new PartitionMetricWindowModel(
                 new MetricWindowIdModel(tenantId, new WfSpecIdModel("my-wf", 1, 0), new Date(0)));
         metricWindow.incrementCount("started");
-        getPartitionMetricsMemoryStore().put(metricWindow);
+        getMetricWindows().put(metricWindow);
 
+        // Force the flusher into MEMORY mode by triggering a first punctuation (catch-up with empty store)
+        mockProcessorContext.scheduledPunctuators().get(0).getPunctuator().punctuate(System.currentTimeMillis());
+        mockProcessorContext.resetForwards();
+
+        // Now punctuate again — this time it reads from memory
         mockProcessorContext.scheduledPunctuators().get(0).getPunctuator().punctuate(System.currentTimeMillis());
 
         assertThat(mockProcessorContext.forwarded()).hasSize(2);
@@ -156,8 +161,9 @@ public class CommandProcessorTest {
         assertThat(timer.topic).isEqualTo("core-cmd");
     }
 
-    private PartitionMetricsMemoryStore getPartitionMetricsMemoryStore() throws Exception {
-        return (PartitionMetricsMemoryStore) getField(commandProcessor, "partitionMetricsMemoryStore");
+    @SuppressWarnings("unchecked")
+    private PartitionLocalBuffer<PartitionMetricWindowModel> getMetricWindows() throws Exception {
+        return (PartitionLocalBuffer<PartitionMetricWindowModel>) getField(commandProcessor, "metricWindows");
     }
 
     private Object getField(Object target, String fieldName) throws Exception {

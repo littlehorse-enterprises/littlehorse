@@ -35,7 +35,16 @@ public interface LittleHorseVersionOrBuilder extends
    * Server Patch Version
    * </pre>
    *
-   * <code>int32 patch_version = 3;</code>
+   * <code>optional int32 patch_version = 3;</code>
+   * @return Whether the patchVersion field is set.
+   */
+  boolean hasPatchVersion();
+  /**
+   * <pre>
+   * Server Patch Version
+   * </pre>
+   *
+   * <code>optional int32 patch_version = 3;</code>
    * @return The patchVersion.
    */
   int getPatchVersion();

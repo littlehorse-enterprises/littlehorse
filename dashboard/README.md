@@ -29,6 +29,12 @@
 nvm use
 ```
 
+This project uses [pnpm](https://pnpm.io/) as the package manager. Install pnpm 10.19.0 globally if you don't have it:
+
+```shell
+npm install -g pnpm@10.19.0
+```
+
 ## Environment Variables
 
 If running the app without Docker, you need to fill in the environment variables in the `.env` file inside `apps/web`. The `.env` file in the root folder is not being read by the app.
@@ -54,8 +60,8 @@ Create a copy of `.env-sample` as `.env-local` and modify it accordingly to your
 Then simply run
 
 ```shell
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 The application will start with watch mode on [http://localhost:3000](http://localhost:3000)
@@ -87,7 +93,7 @@ LHC_API_PORT=2023
 
 The Dashboard docker image is under `docker/dashboard`, in order to run it please do the following:
 
-1. Go under the `dashboard` directory, execute: `npm install`
+1. Go under the `dashboard` directory, execute: `pnpm install`
 
 2. Build the docker image
 
@@ -219,13 +225,13 @@ We are using ESLint as the linter for project. Given that we have a mono-repo st
 You can run the linter by:
 
 ```
-npm run lint
+pnpm run lint
 ```
 
 If you wanna ESLint to try to fix the issues automatically, run:
 
 ```
-npm run lint:fix
+pnpm run lint:fix
 ```
 
 ### Configuring your IDE to have Linter Live Feedback
@@ -272,13 +278,13 @@ Jest is being used as the testing framework, any file that has the pattern `*.te
 To run the tests please execute:
 
 ```
-npm run test
+pnpm run test
 ```
 
 If you wanna watch your tests while developing execute:
 
 ```
-npm run test --watch
+pnpm run test --watch
 ```
 
 ### Environment variables

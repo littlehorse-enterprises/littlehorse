@@ -5,6 +5,7 @@ on:
   push:
     branches-ignore:
       - "master"
+      - "[0-9]+.[0-9]+"
     paths:
       - .github/workflows/branch.yml
       - docker/dashboard/**
@@ -82,6 +83,11 @@ jobs:
         with:
           node-version: 24
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.19.0
+
       - name: Update Dashboard Version
         working-directory: ./dashboard
         run: |
@@ -92,8 +98,8 @@ jobs:
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
-          npm ci
-          npm run build
+          pnpm install
+          pnpm run build
 
       - name: Build and Publish
         uses: littlehorse-enterprises/publish-image@v1
@@ -116,6 +122,11 @@ jobs:
         with:
           node-version: 24
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.19.0
+
       - name: Update Dashboard Version
         working-directory: ./dashboard
         run: |
@@ -126,8 +137,8 @@ jobs:
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
-          npm ci
-          npm run build
+          pnpm install
+          pnpm run build
 
       - name: Download Server dist artifact
         uses: actions/download-artifact@v8

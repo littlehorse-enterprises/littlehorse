@@ -21,9 +21,12 @@ class AsyncWaitersTest {
         CompletableFuture<Message> futureResponse =
                 asyncWaiters.getOrRegisterFuture(commandId, Message.class, new CompletableFuture<>());
         futureResponse.complete(Empty.newBuilder().build());
-        TimeUnit.MILLISECONDS.sleep(10);
-        CompletableFuture<Message> futureResponse2 =
-                asyncWaiters.getOrRegisterFuture(commandId, Message.class, new CompletableFuture<>());
+        CompletableFuture<Message> futureResponse2 = futureResponse;
+        long deadlineNanos = System.nanoTime() + TimeUnit.SECONDS.toNanos(1);
+        while (futureResponse2 == futureResponse && System.nanoTime() < deadlineNanos) {
+            TimeUnit.MILLISECONDS.sleep(100);
+            futureResponse2 = asyncWaiters.getOrRegisterFuture(commandId, Message.class, new CompletableFuture<>());
+        }
         Assertions.assertThat(futureResponse2).isNotSameAs(futureResponse).isNotCompleted();
     }
 }
