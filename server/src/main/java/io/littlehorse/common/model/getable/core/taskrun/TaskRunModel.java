@@ -291,13 +291,15 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
 
     public void sendUpdatedTimeoutTimerCommand(CoreProcessorContext context) {
         ReportTaskRunModel taskResult = new ReportTaskRunModel();
+        int latestAttemptNumber = attempts.size() - 1;
+        taskResult.setAttemptNumber(Math.max(latestAttemptNumber, 0));
         taskResult.setTaskRunId(id);
         taskResult.setTime(new Date(System.currentTimeMillis() + (1000 * timeoutSeconds)));
         taskResult.setStatus(TaskStatus.TASK_TIMEOUT);
         taskResult.setTotalCheckpoints(totalCheckpoints);
         CommandModel timerCommand = new CommandModel(taskResult, taskResult.getTime());
         LHTimer timer = new LHTimer(timerCommand);
-        processorContext.getTaskManager().scheduleTimer(timer);
+        context.getTaskManager().scheduleTimer(timer);
     }
 
     public void observeNewCheckpointAndUpdateTimeouts(CoreProcessorContext context) {
