@@ -28,13 +28,13 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
     private BulkJobIdModel id;
     private Date createdAt;
     private BulkJobStatus status;
-    private BulkDeleteWfRun bulkDeleteWfRun;
+    private BulkDeleteWfRunModel bulkDeleteWfRun;
     private long totalItems;
     private long processedItems;
 
     public BulkJobModel() {}
 
-    public BulkJobModel(BulkJobIdModel id, BulkDeleteWfRun bulkDeleteWfRun) {
+    public BulkJobModel(BulkJobIdModel id, BulkDeleteWfRunModel bulkDeleteWfRun) {
         this.id = id;
         this.createdAt = new Date();
         this.status = BulkJobStatus.BULK_JOB_RUNNING;
@@ -53,7 +53,7 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
         processedItems = p.getProcessedItems();
 
         if (p.hasBulkDeleteWfRun()) {
-            bulkDeleteWfRun = p.getBulkDeleteWfRun();
+            bulkDeleteWfRun = LHSerializable.fromProto(p.getBulkDeleteWfRun(), BulkDeleteWfRunModel.class, context);
         }
     }
 
@@ -67,9 +67,8 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
                 .setProcessedItems(processedItems);
 
         if (bulkDeleteWfRun != null) {
-            out.setBulkDeleteWfRun(bulkDeleteWfRun);
+            out.setBulkDeleteWfRun(bulkDeleteWfRun.toProto());
         }
-
         return out;
     }
 

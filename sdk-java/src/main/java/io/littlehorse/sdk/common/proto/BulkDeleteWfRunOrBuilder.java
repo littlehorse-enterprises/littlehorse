@@ -89,26 +89,26 @@ public interface BulkDeleteWfRunOrBuilder extends
    * If set, only delete WfRun's with this status.
    * </pre>
    *
-   * <code>optional .littlehorse.LHStatus status = 4;</code>
-   * @return Whether the status field is set.
+   * <code>optional .littlehorse.LHStatus wf_run_status = 4;</code>
+   * @return Whether the wfRunStatus field is set.
    */
-  boolean hasStatus();
+  boolean hasWfRunStatus();
   /**
    * <pre>
    * If set, only delete WfRun's with this status.
    * </pre>
    *
-   * <code>optional .littlehorse.LHStatus status = 4;</code>
-   * @return The enum numeric value on the wire for status.
+   * <code>optional .littlehorse.LHStatus wf_run_status = 4;</code>
+   * @return The enum numeric value on the wire for wfRunStatus.
    */
-  int getStatusValue();
+  int getWfRunStatusValue();
   /**
    * <pre>
    * If set, only delete WfRun's with this status.
    * </pre>
    *
-   * <code>optional .littlehorse.LHStatus status = 4;</code>
-   * @return The status.
+   * <code>optional .littlehorse.LHStatus wf_run_status = 4;</code>
+   * @return The wfRunStatus.
    */
-  io.littlehorse.sdk.common.proto.LHStatus getStatus();
+  io.littlehorse.sdk.common.proto.LHStatus getWfRunStatus();
 }

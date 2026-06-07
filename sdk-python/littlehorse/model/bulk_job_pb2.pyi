@@ -49,16 +49,16 @@ class BulkJobShard(_message.Message):
     def __init__(self, bulk_job_id: _Optional[_Union[_object_id_pb2.BulkJobId, _Mapping]] = ..., partition: _Optional[int] = ..., status: _Optional[_Union[BulkJobStatus, str]] = ..., processed_items: _Optional[int] = ...) -> None: ...
 
 class BulkDeleteWfRun(_message.Message):
-    __slots__ = ("wf_spec_name", "earliest_start", "latest_start", "status")
+    __slots__ = ("wf_spec_name", "earliest_start", "latest_start", "wf_run_status")
     WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
     EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
     LATEST_START_FIELD_NUMBER: _ClassVar[int]
-    STATUS_FIELD_NUMBER: _ClassVar[int]
+    WF_RUN_STATUS_FIELD_NUMBER: _ClassVar[int]
     wf_spec_name: str
     earliest_start: _timestamp_pb2.Timestamp
     latest_start: _timestamp_pb2.Timestamp
-    status: _common_enums_pb2.LHStatus
-    def __init__(self, wf_spec_name: _Optional[str] = ..., earliest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ...) -> None: ...
+    wf_run_status: _common_enums_pb2.LHStatus
+    def __init__(self, wf_spec_name: _Optional[str] = ..., earliest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., wf_run_status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ...) -> None: ...
 
 class CreateBulkJobRequest(_message.Message):
     __slots__ = ("id", "bulk_delete_wf_run")

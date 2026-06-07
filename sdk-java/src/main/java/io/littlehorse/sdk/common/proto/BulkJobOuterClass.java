@@ -72,21 +72,21 @@ public final class BulkJobOuterClass extends com.google.protobuf.GeneratedFile {
       "\001\n\014BulkJobShard\022+\n\013bulk_job_id\030\001 \001(\0132\026.l" +
       "ittlehorse.BulkJobId\022\021\n\tpartition\030\002 \001(\005\022" +
       "*\n\006status\030\003 \001(\0162\032.littlehorse.BulkJobSta" +
-      "tus\022\027\n\017processed_items\030\004 \001(\003\"\304\001\n\017BulkDel" +
+      "tus\022\027\n\017processed_items\030\004 \001(\003\"\322\001\n\017BulkDel" +
       "eteWfRun\022\024\n\014wf_spec_name\030\001 \001(\t\0222\n\016earlie" +
       "st_start\030\002 \001(\0132\032.google.protobuf.Timesta" +
       "mp\0220\n\014latest_start\030\003 \001(\0132\032.google.protob" +
-      "uf.Timestamp\022*\n\006status\030\004 \001(\0162\025.littlehor" +
-      "se.LHStatusH\000\210\001\001B\t\n\007_status\"w\n\024CreateBul" +
-      "kJobRequest\022\017\n\002id\030\001 \001(\tH\001\210\001\001\022:\n\022bulk_del" +
-      "ete_wf_run\030\n \001(\0132\034.littlehorse.BulkDelet" +
-      "eWfRunH\000B\013\n\toperationB\005\n\003_id\"7\n\021GetBulkJ" +
-      "obRequest\022\"\n\002id\030\001 \001(\0132\026.littlehorse.Bulk" +
-      "JobId*R\n\rBulkJobStatus\022\024\n\020BULK_JOB_RUNNI" +
-      "NG\020\000\022\026\n\022BULK_JOB_COMPLETED\020\001\022\023\n\017BULK_JOB" +
-      "_FAILED\020\002BM\n\037io.littlehorse.sdk.common.p" +
-      "rotoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Comm" +
-      "on.Protob\006proto3"
+      "uf.Timestamp\0221\n\rwf_run_status\030\004 \001(\0162\025.li" +
+      "ttlehorse.LHStatusH\000\210\001\001B\020\n\016_wf_run_statu" +
+      "s\"w\n\024CreateBulkJobRequest\022\017\n\002id\030\001 \001(\tH\001\210" +
+      "\001\001\022:\n\022bulk_delete_wf_run\030\n \001(\0132\034.littleh" +
+      "orse.BulkDeleteWfRunH\000B\013\n\toperationB\005\n\003_" +
+      "id\"7\n\021GetBulkJobRequest\022\"\n\002id\030\001 \001(\0132\026.li" +
+      "ttlehorse.BulkJobId*R\n\rBulkJobStatus\022\024\n\020" +
+      "BULK_JOB_RUNNING\020\000\022\026\n\022BULK_JOB_COMPLETED" +
+      "\020\001\022\023\n\017BULK_JOB_FAILED\020\002BM\n\037io.littlehors" +
+      "e.sdk.common.protoP\001Z\t.;lhproto\252\002\034Little" +
+      "Horse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -112,7 +112,7 @@ public final class BulkJobOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_BulkDeleteWfRun_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_BulkDeleteWfRun_descriptor,
-        new java.lang.String[] { "WfSpecName", "EarliestStart", "LatestStart", "Status", });
+        new java.lang.String[] { "WfSpecName", "EarliestStart", "LatestStart", "WfRunStatus", });
     internal_static_littlehorse_CreateBulkJobRequest_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_littlehorse_CreateBulkJobRequest_fieldAccessorTable = new

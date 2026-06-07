@@ -120,7 +120,7 @@ export interface BulkDeleteWfRun {
     | string
     | undefined;
   /** If set, only delete WfRun's with this status. */
-  status?: LHStatus | undefined;
+  wfRunStatus?: LHStatus | undefined;
 }
 
 /** Request to create a BulkJob. */
@@ -394,7 +394,7 @@ export const BulkJobShard = {
 };
 
 function createBaseBulkDeleteWfRun(): BulkDeleteWfRun {
-  return { wfSpecName: "", earliestStart: undefined, latestStart: undefined, status: undefined };
+  return { wfSpecName: "", earliestStart: undefined, latestStart: undefined, wfRunStatus: undefined };
 }
 
 export const BulkDeleteWfRun = {
@@ -408,8 +408,8 @@ export const BulkDeleteWfRun = {
     if (message.latestStart !== undefined) {
       Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(26).fork()).ldelim();
     }
-    if (message.status !== undefined) {
-      writer.uint32(32).int32(lHStatusToNumber(message.status));
+    if (message.wfRunStatus !== undefined) {
+      writer.uint32(32).int32(lHStatusToNumber(message.wfRunStatus));
     }
     return writer;
   },
@@ -447,7 +447,7 @@ export const BulkDeleteWfRun = {
             break;
           }
 
-          message.status = lHStatusFromJSON(reader.int32());
+          message.wfRunStatus = lHStatusFromJSON(reader.int32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -463,7 +463,7 @@ export const BulkDeleteWfRun = {
       wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
       earliestStart: isSet(object.earliestStart) ? globalThis.String(object.earliestStart) : undefined,
       latestStart: isSet(object.latestStart) ? globalThis.String(object.latestStart) : undefined,
-      status: isSet(object.status) ? lHStatusFromJSON(object.status) : undefined,
+      wfRunStatus: isSet(object.wfRunStatus) ? lHStatusFromJSON(object.wfRunStatus) : undefined,
     };
   },
 
@@ -478,8 +478,8 @@ export const BulkDeleteWfRun = {
     if (message.latestStart !== undefined) {
       obj.latestStart = message.latestStart;
     }
-    if (message.status !== undefined) {
-      obj.status = lHStatusToJSON(message.status);
+    if (message.wfRunStatus !== undefined) {
+      obj.wfRunStatus = lHStatusToJSON(message.wfRunStatus);
     }
     return obj;
   },
@@ -492,7 +492,7 @@ export const BulkDeleteWfRun = {
     message.wfSpecName = object.wfSpecName ?? "";
     message.earliestStart = object.earliestStart ?? undefined;
     message.latestStart = object.latestStart ?? undefined;
-    message.status = object.status ?? undefined;
+    message.wfRunStatus = object.wfRunStatus ?? undefined;
     return message;
   },
 };

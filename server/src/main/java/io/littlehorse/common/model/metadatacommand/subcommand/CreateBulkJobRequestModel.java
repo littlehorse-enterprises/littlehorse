@@ -2,6 +2,7 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.global.bulkjob.BulkDeleteWfRunModel;
 import io.littlehorse.common.model.getable.global.bulkjob.BulkJobModel;
 import io.littlehorse.common.model.getable.objectId.BulkJobIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
@@ -21,7 +22,7 @@ import lombok.Setter;
 public class CreateBulkJobRequestModel extends MetadataSubCommand<CreateBulkJobRequest> {
 
     private String id;
-    private BulkDeleteWfRun bulkDeleteWfRun;
+    private BulkDeleteWfRunModel bulkDeleteWfRun;
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
@@ -30,7 +31,7 @@ public class CreateBulkJobRequestModel extends MetadataSubCommand<CreateBulkJobR
             id = p.getId();
         }
         if (p.hasBulkDeleteWfRun()) {
-            bulkDeleteWfRun = p.getBulkDeleteWfRun();
+            bulkDeleteWfRun = LHSerializable.fromProto(p.getBulkDeleteWfRun(), BulkDeleteWfRunModel.class, context);
         }
     }
 
@@ -41,7 +42,7 @@ public class CreateBulkJobRequestModel extends MetadataSubCommand<CreateBulkJobR
             builder.setId(id);
         }
         if (bulkDeleteWfRun != null) {
-            builder.setBulkDeleteWfRun(bulkDeleteWfRun);
+            builder.setBulkDeleteWfRun(bulkDeleteWfRun.toProto());
         }
         return builder;
     }

@@ -75,7 +75,7 @@ message BulkDeleteWfRun {
   google.protobuf.Timestamp latest_start = 3;
 
   // If set, only delete WfRun's with this status.
-  optional LHStatus status = 4;
+  optional LHStatus wf_run_status = 4;
 }
 
 // Request to create a BulkJob.

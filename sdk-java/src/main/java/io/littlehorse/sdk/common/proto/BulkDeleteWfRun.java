@@ -33,7 +33,7 @@ private static final long serialVersionUID = 0L;
   }
   private BulkDeleteWfRun() {
     wfSpecName_ = "";
-    status_ = 0;
+    wfRunStatus_ = 0;
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -173,17 +173,17 @@ private static final long serialVersionUID = 0L;
     return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
   }
 
-  public static final int STATUS_FIELD_NUMBER = 4;
-  private int status_ = 0;
+  public static final int WF_RUN_STATUS_FIELD_NUMBER = 4;
+  private int wfRunStatus_ = 0;
   /**
    * <pre>
    * If set, only delete WfRun's with this status.
    * </pre>
    *
-   * <code>optional .littlehorse.LHStatus status = 4;</code>
-   * @return Whether the status field is set.
+   * <code>optional .littlehorse.LHStatus wf_run_status = 4;</code>
+   * @return Whether the wfRunStatus field is set.
    */
-  @java.lang.Override public boolean hasStatus() {
+  @java.lang.Override public boolean hasWfRunStatus() {
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
@@ -191,22 +191,22 @@ private static final long serialVersionUID = 0L;
    * If set, only delete WfRun's with this status.
    * </pre>
    *
-   * <code>optional .littlehorse.LHStatus status = 4;</code>
-   * @return The enum numeric value on the wire for status.
+   * <code>optional .littlehorse.LHStatus wf_run_status = 4;</code>
+   * @return The enum numeric value on the wire for wfRunStatus.
    */
-  @java.lang.Override public int getStatusValue() {
-    return status_;
+  @java.lang.Override public int getWfRunStatusValue() {
+    return wfRunStatus_;
   }
   /**
    * <pre>
    * If set, only delete WfRun's with this status.
    * </pre>
    *
-   * <code>optional .littlehorse.LHStatus status = 4;</code>
-   * @return The status.
+   * <code>optional .littlehorse.LHStatus wf_run_status = 4;</code>
+   * @return The wfRunStatus.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.LHStatus getStatus() {
-    io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(status_);
+  @java.lang.Override public io.littlehorse.sdk.common.proto.LHStatus getWfRunStatus() {
+    io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(wfRunStatus_);
     return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
   }
 
@@ -234,7 +234,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(3, getLatestStart());
     }
     if (((bitField0_ & 0x00000004) != 0)) {
-      output.writeEnum(4, status_);
+      output.writeEnum(4, wfRunStatus_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -258,7 +258,7 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(4, status_);
+        .computeEnumSize(4, wfRunStatus_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -287,9 +287,9 @@ private static final long serialVersionUID = 0L;
       if (!getLatestStart()
           .equals(other.getLatestStart())) return false;
     }
-    if (hasStatus() != other.hasStatus()) return false;
-    if (hasStatus()) {
-      if (status_ != other.status_) return false;
+    if (hasWfRunStatus() != other.hasWfRunStatus()) return false;
+    if (hasWfRunStatus()) {
+      if (wfRunStatus_ != other.wfRunStatus_) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -312,9 +312,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LATEST_START_FIELD_NUMBER;
       hash = (53 * hash) + getLatestStart().hashCode();
     }
-    if (hasStatus()) {
-      hash = (37 * hash) + STATUS_FIELD_NUMBER;
-      hash = (53 * hash) + status_;
+    if (hasWfRunStatus()) {
+      hash = (37 * hash) + WF_RUN_STATUS_FIELD_NUMBER;
+      hash = (53 * hash) + wfRunStatus_;
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -469,7 +469,7 @@ private static final long serialVersionUID = 0L;
         latestStartBuilder_.dispose();
         latestStartBuilder_ = null;
       }
-      status_ = 0;
+      wfRunStatus_ = 0;
       return this;
     }
 
@@ -520,7 +520,7 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000002;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.status_ = status_;
+        result.wfRunStatus_ = wfRunStatus_;
         to_bitField0_ |= 0x00000004;
       }
       result.bitField0_ |= to_bitField0_;
@@ -549,8 +549,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasLatestStart()) {
         mergeLatestStart(other.getLatestStart());
       }
-      if (other.hasStatus()) {
-        setStatusValue(other.getStatusValue());
+      if (other.hasWfRunStatus()) {
+        setWfRunStatusValue(other.getWfRunStatusValue());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -598,7 +598,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 26
             case 32: {
-              status_ = input.readEnum();
+              wfRunStatus_ = input.readEnum();
               bitField0_ |= 0x00000008;
               break;
             } // case 32
@@ -1025,16 +1025,16 @@ private static final long serialVersionUID = 0L;
       return latestStartBuilder_;
     }
 
-    private int status_ = 0;
+    private int wfRunStatus_ = 0;
     /**
      * <pre>
      * If set, only delete WfRun's with this status.
      * </pre>
      *
-     * <code>optional .littlehorse.LHStatus status = 4;</code>
-     * @return Whether the status field is set.
+     * <code>optional .littlehorse.LHStatus wf_run_status = 4;</code>
+     * @return Whether the wfRunStatus field is set.
      */
-    @java.lang.Override public boolean hasStatus() {
+    @java.lang.Override public boolean hasWfRunStatus() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
@@ -1042,23 +1042,23 @@ private static final long serialVersionUID = 0L;
      * If set, only delete WfRun's with this status.
      * </pre>
      *
-     * <code>optional .littlehorse.LHStatus status = 4;</code>
-     * @return The enum numeric value on the wire for status.
+     * <code>optional .littlehorse.LHStatus wf_run_status = 4;</code>
+     * @return The enum numeric value on the wire for wfRunStatus.
      */
-    @java.lang.Override public int getStatusValue() {
-      return status_;
+    @java.lang.Override public int getWfRunStatusValue() {
+      return wfRunStatus_;
     }
     /**
      * <pre>
      * If set, only delete WfRun's with this status.
      * </pre>
      *
-     * <code>optional .littlehorse.LHStatus status = 4;</code>
-     * @param value The enum numeric value on the wire for status to set.
+     * <code>optional .littlehorse.LHStatus wf_run_status = 4;</code>
+     * @param value The enum numeric value on the wire for wfRunStatus to set.
      * @return This builder for chaining.
      */
-    public Builder setStatusValue(int value) {
-      status_ = value;
+    public Builder setWfRunStatusValue(int value) {
+      wfRunStatus_ = value;
       bitField0_ |= 0x00000008;
       onChanged();
       return this;
@@ -1068,12 +1068,12 @@ private static final long serialVersionUID = 0L;
      * If set, only delete WfRun's with this status.
      * </pre>
      *
-     * <code>optional .littlehorse.LHStatus status = 4;</code>
-     * @return The status.
+     * <code>optional .littlehorse.LHStatus wf_run_status = 4;</code>
+     * @return The wfRunStatus.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.LHStatus getStatus() {
-      io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(status_);
+    public io.littlehorse.sdk.common.proto.LHStatus getWfRunStatus() {
+      io.littlehorse.sdk.common.proto.LHStatus result = io.littlehorse.sdk.common.proto.LHStatus.forNumber(wfRunStatus_);
       return result == null ? io.littlehorse.sdk.common.proto.LHStatus.UNRECOGNIZED : result;
     }
     /**
@@ -1081,14 +1081,14 @@ private static final long serialVersionUID = 0L;
      * If set, only delete WfRun's with this status.
      * </pre>
      *
-     * <code>optional .littlehorse.LHStatus status = 4;</code>
-     * @param value The status to set.
+     * <code>optional .littlehorse.LHStatus wf_run_status = 4;</code>
+     * @param value The wfRunStatus to set.
      * @return This builder for chaining.
      */
-    public Builder setStatus(io.littlehorse.sdk.common.proto.LHStatus value) {
+    public Builder setWfRunStatus(io.littlehorse.sdk.common.proto.LHStatus value) {
       if (value == null) { throw new NullPointerException(); }
       bitField0_ |= 0x00000008;
-      status_ = value.getNumber();
+      wfRunStatus_ = value.getNumber();
       onChanged();
       return this;
     }
@@ -1097,12 +1097,12 @@ private static final long serialVersionUID = 0L;
      * If set, only delete WfRun's with this status.
      * </pre>
      *
-     * <code>optional .littlehorse.LHStatus status = 4;</code>
+     * <code>optional .littlehorse.LHStatus wf_run_status = 4;</code>
      * @return This builder for chaining.
      */
-    public Builder clearStatus() {
+    public Builder clearWfRunStatus() {
       bitField0_ = (bitField0_ & ~0x00000008);
-      status_ = 0;
+      wfRunStatus_ = 0;
       onChanged();
       return this;
     }
