@@ -84,5 +84,20 @@ public interface BulkUpdateJobOrBuilder extends
    */
   io.littlehorse.common.proto.NoOpJobOrBuilder getNoOpOrBuilder();
 
+  /**
+   * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+   * @return Whether the bulkDeleteWfRun field is set.
+   */
+  boolean hasBulkDeleteWfRun();
+  /**
+   * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+   * @return The bulkDeleteWfRun.
+   */
+  io.littlehorse.common.proto.BulkDeleteWfRunJob getBulkDeleteWfRun();
+  /**
+   * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+   */
+  io.littlehorse.common.proto.BulkDeleteWfRunJobOrBuilder getBulkDeleteWfRunOrBuilder();
+
   io.littlehorse.common.proto.BulkUpdateJob.JobCase getJobCase();
 }

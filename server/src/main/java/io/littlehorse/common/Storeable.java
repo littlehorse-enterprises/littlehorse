@@ -94,6 +94,8 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.COUNTED_TAG;
             case "PartitionCountedTagModel":
                 return StoreableType.PARTITION_COUNTED_TAG;
+            case "BulkJobShardCursorModel":
+                return StoreableType.BULK_JOB_SHARD_CURSOR;
         }
         throw new IllegalArgumentException("Unrecognized Storeable class: " + cls);
     }

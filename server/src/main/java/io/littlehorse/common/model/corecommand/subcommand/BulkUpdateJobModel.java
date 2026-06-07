@@ -8,6 +8,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
+import io.littlehorse.common.model.corecommand.subcommand.job.BulkDeleteWfRunJobModel;
 import io.littlehorse.common.model.corecommand.subcommand.job.BulkJob;
 import io.littlehorse.common.model.corecommand.subcommand.job.NoOpJobModel;
 import io.littlehorse.common.proto.BulkUpdateJob;
@@ -28,6 +29,7 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
     private String resumeFromKey;
     private BulkJob job;
     private NoOpJobModel noOpJob;
+    private BulkDeleteWfRunJobModel bulkDeleteWfRunJob;
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
@@ -45,6 +47,11 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
                 this.noOpJob = LHSerializable.fromProto(jobProto.getNoOp(), NoOpJobModel.class, context);
                 yield noOpJob;
             }
+            case BULK_DELETE_WF_RUN -> {
+                this.bulkDeleteWfRunJob = LHSerializable.fromProto(
+                        jobProto.getBulkDeleteWfRun(), BulkDeleteWfRunJobModel.class, context);
+                yield bulkDeleteWfRunJob;
+            }
             default -> throw new IllegalArgumentException("%s not supported yet".formatted(jobProto.getJobCase()));
         };
     }
@@ -60,6 +67,9 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
         }
         if (this.noOpJob != null) {
             builder.setNoOp(noOpJob.toProto());
+        }
+        if (this.bulkDeleteWfRunJob != null) {
+            builder.setBulkDeleteWfRun(bulkDeleteWfRunJob.toProto());
         }
         return builder;
     }

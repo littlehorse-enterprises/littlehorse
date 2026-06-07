@@ -54,6 +54,7 @@ private static final long serialVersionUID = 0L;
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     NO_OP(6),
+    BULK_DELETE_WF_RUN(7),
     JOB_NOT_SET(0);
     private final int value;
     private JobCase(int value) {
@@ -72,6 +73,7 @@ private static final long serialVersionUID = 0L;
     public static JobCase forNumber(int value) {
       switch (value) {
         case 6: return NO_OP;
+        case 7: return BULK_DELETE_WF_RUN;
         case 0: return JOB_NOT_SET;
         default: return null;
       }
@@ -266,6 +268,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.NoOpJob.getDefaultInstance();
   }
 
+  public static final int BULK_DELETE_WF_RUN_FIELD_NUMBER = 7;
+  /**
+   * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+   * @return Whether the bulkDeleteWfRun field is set.
+   */
+  @java.lang.Override
+  public boolean hasBulkDeleteWfRun() {
+    return jobCase_ == 7;
+  }
+  /**
+   * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+   * @return The bulkDeleteWfRun.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.BulkDeleteWfRunJob getBulkDeleteWfRun() {
+    if (jobCase_ == 7) {
+       return (io.littlehorse.common.proto.BulkDeleteWfRunJob) job_;
+    }
+    return io.littlehorse.common.proto.BulkDeleteWfRunJob.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.BulkDeleteWfRunJobOrBuilder getBulkDeleteWfRunOrBuilder() {
+    if (jobCase_ == 7) {
+       return (io.littlehorse.common.proto.BulkDeleteWfRunJob) job_;
+    }
+    return io.littlehorse.common.proto.BulkDeleteWfRunJob.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -295,6 +328,9 @@ private static final long serialVersionUID = 0L;
     if (jobCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.common.proto.NoOpJob) job_);
     }
+    if (jobCase_ == 7) {
+      output.writeMessage(7, (io.littlehorse.common.proto.BulkDeleteWfRunJob) job_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -320,6 +356,10 @@ private static final long serialVersionUID = 0L;
     if (jobCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (io.littlehorse.common.proto.NoOpJob) job_);
+    }
+    if (jobCase_ == 7) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, (io.littlehorse.common.proto.BulkDeleteWfRunJob) job_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -353,6 +393,10 @@ private static final long serialVersionUID = 0L;
         if (!getNoOp()
             .equals(other.getNoOp())) return false;
         break;
+      case 7:
+        if (!getBulkDeleteWfRun()
+            .equals(other.getBulkDeleteWfRun())) return false;
+        break;
       case 0:
       default:
     }
@@ -381,6 +425,10 @@ private static final long serialVersionUID = 0L;
       case 6:
         hash = (37 * hash) + NO_OP_FIELD_NUMBER;
         hash = (53 * hash) + getNoOp().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + BULK_DELETE_WF_RUN_FIELD_NUMBER;
+        hash = (53 * hash) + getBulkDeleteWfRun().hashCode();
         break;
       case 0:
       default:
@@ -523,6 +571,9 @@ private static final long serialVersionUID = 0L;
       if (noOpBuilder_ != null) {
         noOpBuilder_.clear();
       }
+      if (bulkDeleteWfRunBuilder_ != null) {
+        bulkDeleteWfRunBuilder_.clear();
+      }
       jobCase_ = 0;
       job_ = null;
       return this;
@@ -583,6 +634,10 @@ private static final long serialVersionUID = 0L;
           noOpBuilder_ != null) {
         result.job_ = noOpBuilder_.build();
       }
+      if (jobCase_ == 7 &&
+          bulkDeleteWfRunBuilder_ != null) {
+        result.job_ = bulkDeleteWfRunBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -618,6 +673,10 @@ private static final long serialVersionUID = 0L;
       switch (other.getJobCase()) {
         case NO_OP: {
           mergeNoOp(other.getNoOp());
+          break;
+        }
+        case BULK_DELETE_WF_RUN: {
+          mergeBulkDeleteWfRun(other.getBulkDeleteWfRun());
           break;
         }
         case JOB_NOT_SET: {
@@ -677,6 +736,13 @@ private static final long serialVersionUID = 0L;
               jobCase_ = 6;
               break;
             } // case 50
+            case 58: {
+              input.readMessage(
+                  internalGetBulkDeleteWfRunFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              jobCase_ = 7;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1128,6 +1194,148 @@ private static final long serialVersionUID = 0L;
       jobCase_ = 6;
       onChanged();
       return noOpBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.BulkDeleteWfRunJob, io.littlehorse.common.proto.BulkDeleteWfRunJob.Builder, io.littlehorse.common.proto.BulkDeleteWfRunJobOrBuilder> bulkDeleteWfRunBuilder_;
+    /**
+     * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+     * @return Whether the bulkDeleteWfRun field is set.
+     */
+    @java.lang.Override
+    public boolean hasBulkDeleteWfRun() {
+      return jobCase_ == 7;
+    }
+    /**
+     * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+     * @return The bulkDeleteWfRun.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.BulkDeleteWfRunJob getBulkDeleteWfRun() {
+      if (bulkDeleteWfRunBuilder_ == null) {
+        if (jobCase_ == 7) {
+          return (io.littlehorse.common.proto.BulkDeleteWfRunJob) job_;
+        }
+        return io.littlehorse.common.proto.BulkDeleteWfRunJob.getDefaultInstance();
+      } else {
+        if (jobCase_ == 7) {
+          return bulkDeleteWfRunBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.BulkDeleteWfRunJob.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+     */
+    public Builder setBulkDeleteWfRun(io.littlehorse.common.proto.BulkDeleteWfRunJob value) {
+      if (bulkDeleteWfRunBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        job_ = value;
+        onChanged();
+      } else {
+        bulkDeleteWfRunBuilder_.setMessage(value);
+      }
+      jobCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+     */
+    public Builder setBulkDeleteWfRun(
+        io.littlehorse.common.proto.BulkDeleteWfRunJob.Builder builderForValue) {
+      if (bulkDeleteWfRunBuilder_ == null) {
+        job_ = builderForValue.build();
+        onChanged();
+      } else {
+        bulkDeleteWfRunBuilder_.setMessage(builderForValue.build());
+      }
+      jobCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+     */
+    public Builder mergeBulkDeleteWfRun(io.littlehorse.common.proto.BulkDeleteWfRunJob value) {
+      if (bulkDeleteWfRunBuilder_ == null) {
+        if (jobCase_ == 7 &&
+            job_ != io.littlehorse.common.proto.BulkDeleteWfRunJob.getDefaultInstance()) {
+          job_ = io.littlehorse.common.proto.BulkDeleteWfRunJob.newBuilder((io.littlehorse.common.proto.BulkDeleteWfRunJob) job_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          job_ = value;
+        }
+        onChanged();
+      } else {
+        if (jobCase_ == 7) {
+          bulkDeleteWfRunBuilder_.mergeFrom(value);
+        } else {
+          bulkDeleteWfRunBuilder_.setMessage(value);
+        }
+      }
+      jobCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+     */
+    public Builder clearBulkDeleteWfRun() {
+      if (bulkDeleteWfRunBuilder_ == null) {
+        if (jobCase_ == 7) {
+          jobCase_ = 0;
+          job_ = null;
+          onChanged();
+        }
+      } else {
+        if (jobCase_ == 7) {
+          jobCase_ = 0;
+          job_ = null;
+        }
+        bulkDeleteWfRunBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+     */
+    public io.littlehorse.common.proto.BulkDeleteWfRunJob.Builder getBulkDeleteWfRunBuilder() {
+      return internalGetBulkDeleteWfRunFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.BulkDeleteWfRunJobOrBuilder getBulkDeleteWfRunOrBuilder() {
+      if ((jobCase_ == 7) && (bulkDeleteWfRunBuilder_ != null)) {
+        return bulkDeleteWfRunBuilder_.getMessageOrBuilder();
+      } else {
+        if (jobCase_ == 7) {
+          return (io.littlehorse.common.proto.BulkDeleteWfRunJob) job_;
+        }
+        return io.littlehorse.common.proto.BulkDeleteWfRunJob.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.BulkDeleteWfRunJob bulk_delete_wf_run = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.BulkDeleteWfRunJob, io.littlehorse.common.proto.BulkDeleteWfRunJob.Builder, io.littlehorse.common.proto.BulkDeleteWfRunJobOrBuilder> 
+        internalGetBulkDeleteWfRunFieldBuilder() {
+      if (bulkDeleteWfRunBuilder_ == null) {
+        if (!(jobCase_ == 7)) {
+          job_ = io.littlehorse.common.proto.BulkDeleteWfRunJob.getDefaultInstance();
+        }
+        bulkDeleteWfRunBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.common.proto.BulkDeleteWfRunJob, io.littlehorse.common.proto.BulkDeleteWfRunJob.Builder, io.littlehorse.common.proto.BulkDeleteWfRunJobOrBuilder>(
+                (io.littlehorse.common.proto.BulkDeleteWfRunJob) job_,
+                getParentForChildren(),
+                isClean());
+        job_ = null;
+      }
+      jobCase_ = 7;
+      onChanged();
+      return bulkDeleteWfRunBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.BulkUpdateJob)

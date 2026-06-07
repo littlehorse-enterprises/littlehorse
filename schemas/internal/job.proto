@@ -4,6 +4,9 @@ package littlehorse;
 option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
+import "object_id.proto";
+import "bulk_job.proto";
+
 message BulkUpdateJob {
   int32 partition = 1;
   string start_key = 2;
@@ -13,9 +16,35 @@ message BulkUpdateJob {
 
   oneof job {
     NoOpJob no_op = 6;
+    BulkDeleteWfRunJob bulk_delete_wf_run = 7;
   }
 }
 
 message NoOpJob {
   // Will be removed in the future when we add an actual job
+}
+
+// Internal job for bulk deleting WfRun's. Used by the BulkJobShard punctuator.
+message BulkDeleteWfRunJob {
+  // The BulkJob this deletion belongs to.
+  BulkJobId bulk_job_id = 1;
+
+  // The criteria for which WfRun's to delete.
+  BulkDeleteWfRun criteria = 2;
+}
+
+// Internal storeable that tracks the range scan cursor for a BulkJobShard.
+// Not exposed via the public API.
+message BulkJobShardCursor {
+  // The BulkJob this cursor belongs to.
+  BulkJobId bulk_job_id = 1;
+
+  // The partition this cursor is operating on.
+  int32 partition = 2;
+
+  // The last iterated key in the range scan. Empty means scan hasn't started yet.
+  string last_key = 3;
+
+  // Whether the scan has completed for this shard.
+  bool scan_completed = 4;
 }

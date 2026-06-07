@@ -2554,6 +2554,68 @@ public final class LittleHorseGrpc {
     return getDeleteScheduledWfRunMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CreateBulkJobRequest,
+      io.littlehorse.sdk.common.proto.BulkJob> getCreateBulkJobMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "CreateBulkJob",
+      requestType = io.littlehorse.sdk.common.proto.CreateBulkJobRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.BulkJob.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CreateBulkJobRequest,
+      io.littlehorse.sdk.common.proto.BulkJob> getCreateBulkJobMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CreateBulkJobRequest, io.littlehorse.sdk.common.proto.BulkJob> getCreateBulkJobMethod;
+    if ((getCreateBulkJobMethod = LittleHorseGrpc.getCreateBulkJobMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getCreateBulkJobMethod = LittleHorseGrpc.getCreateBulkJobMethod) == null) {
+          LittleHorseGrpc.getCreateBulkJobMethod = getCreateBulkJobMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CreateBulkJobRequest, io.littlehorse.sdk.common.proto.BulkJob>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CreateBulkJob"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CreateBulkJobRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.BulkJob.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("CreateBulkJob"))
+              .build();
+        }
+      }
+    }
+    return getCreateBulkJobMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.GetBulkJobRequest,
+      io.littlehorse.sdk.common.proto.BulkJob> getGetBulkJobMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetBulkJob",
+      requestType = io.littlehorse.sdk.common.proto.GetBulkJobRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.BulkJob.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.GetBulkJobRequest,
+      io.littlehorse.sdk.common.proto.BulkJob> getGetBulkJobMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.GetBulkJobRequest, io.littlehorse.sdk.common.proto.BulkJob> getGetBulkJobMethod;
+    if ((getGetBulkJobMethod = LittleHorseGrpc.getGetBulkJobMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetBulkJobMethod = LittleHorseGrpc.getGetBulkJobMethod) == null) {
+          LittleHorseGrpc.getGetBulkJobMethod = getGetBulkJobMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.GetBulkJobRequest, io.littlehorse.sdk.common.proto.BulkJob>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetBulkJob"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.GetBulkJobRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.BulkJob.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetBulkJob"))
+              .build();
+        }
+      }
+    }
+    return getGetBulkJobMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest,
       io.littlehorse.sdk.common.proto.TaskDefMetrics> getGetTaskDefMetricsWindowMethod;
 
@@ -3995,6 +4057,26 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Creates a BulkJob for performing large-scale background operations.
+     * </pre>
+     */
+    default void createBulkJob(io.littlehorse.sdk.common.proto.CreateBulkJobRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.BulkJob> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCreateBulkJobMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Gets the status of a BulkJob.
+     * </pre>
+     */
+    default void getBulkJob(io.littlehorse.sdk.common.proto.GetBulkJobRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.BulkJob> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetBulkJobMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
      */
@@ -5148,6 +5230,28 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Creates a BulkJob for performing large-scale background operations.
+     * </pre>
+     */
+    public void createBulkJob(io.littlehorse.sdk.common.proto.CreateBulkJobRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.BulkJob> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getCreateBulkJobMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Gets the status of a BulkJob.
+     * </pre>
+     */
+    public void getBulkJob(io.littlehorse.sdk.common.proto.GetBulkJobRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.BulkJob> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetBulkJobMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
      */
@@ -6226,6 +6330,26 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Creates a BulkJob for performing large-scale background operations.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.BulkJob createBulkJob(io.littlehorse.sdk.common.proto.CreateBulkJobRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getCreateBulkJobMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets the status of a BulkJob.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.BulkJob getBulkJob(io.littlehorse.sdk.common.proto.GetBulkJobRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getGetBulkJobMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
      */
@@ -7271,6 +7395,26 @@ public final class LittleHorseGrpc {
     public com.google.protobuf.Empty deleteScheduledWfRun(io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteScheduledWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a BulkJob for performing large-scale background operations.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.BulkJob createBulkJob(io.littlehorse.sdk.common.proto.CreateBulkJobRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getCreateBulkJobMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets the status of a BulkJob.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.BulkJob getBulkJob(io.littlehorse.sdk.common.proto.GetBulkJobRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetBulkJobMethod(), getCallOptions(), request);
     }
 
     /**
@@ -8405,6 +8549,28 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Creates a BulkJob for performing large-scale background operations.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.BulkJob> createBulkJob(
+        io.littlehorse.sdk.common.proto.CreateBulkJobRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getCreateBulkJobMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Gets the status of a BulkJob.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.BulkJob> getBulkJob(
+        io.littlehorse.sdk.common.proto.GetBulkJobRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetBulkJobMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
      */
@@ -8664,23 +8830,25 @@ public final class LittleHorseGrpc {
   private static final int METHODID_DELETE_PRINCIPAL = 78;
   private static final int METHODID_DELETE_QUOTA = 79;
   private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 80;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 81;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 82;
-  private static final int METHODID_LIST_TASK_METRICS = 83;
-  private static final int METHODID_LIST_WF_METRICS = 84;
-  private static final int METHODID_GET_METRIC_WINDOW = 85;
-  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 86;
-  private static final int METHODID_PUT_TENANT = 87;
-  private static final int METHODID_GET_TENANT = 88;
-  private static final int METHODID_PUT_QUOTA = 89;
-  private static final int METHODID_GET_QUOTA = 90;
-  private static final int METHODID_PUT_PRINCIPAL = 91;
-  private static final int METHODID_GET_PRINCIPAL = 92;
-  private static final int METHODID_WHOAMI = 93;
-  private static final int METHODID_GET_SERVER_VERSION = 94;
-  private static final int METHODID_COUNT_NODE_RUN = 95;
-  private static final int METHODID_COUNT_TASK_RUN = 96;
-  private static final int METHODID_POLL_TASK = 97;
+  private static final int METHODID_CREATE_BULK_JOB = 81;
+  private static final int METHODID_GET_BULK_JOB = 82;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 83;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 84;
+  private static final int METHODID_LIST_TASK_METRICS = 85;
+  private static final int METHODID_LIST_WF_METRICS = 86;
+  private static final int METHODID_GET_METRIC_WINDOW = 87;
+  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 88;
+  private static final int METHODID_PUT_TENANT = 89;
+  private static final int METHODID_GET_TENANT = 90;
+  private static final int METHODID_PUT_QUOTA = 91;
+  private static final int METHODID_GET_QUOTA = 92;
+  private static final int METHODID_PUT_PRINCIPAL = 93;
+  private static final int METHODID_GET_PRINCIPAL = 94;
+  private static final int METHODID_WHOAMI = 95;
+  private static final int METHODID_GET_SERVER_VERSION = 96;
+  private static final int METHODID_COUNT_NODE_RUN = 97;
+  private static final int METHODID_COUNT_TASK_RUN = 98;
+  private static final int METHODID_POLL_TASK = 99;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -9022,6 +9190,14 @@ public final class LittleHorseGrpc {
         case METHODID_DELETE_SCHEDULED_WF_RUN:
           serviceImpl.deleteScheduledWfRun((io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_CREATE_BULK_JOB:
+          serviceImpl.createBulkJob((io.littlehorse.sdk.common.proto.CreateBulkJobRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.BulkJob>) responseObserver);
+          break;
+        case METHODID_GET_BULK_JOB:
+          serviceImpl.getBulkJob((io.littlehorse.sdk.common.proto.GetBulkJobRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.BulkJob>) responseObserver);
           break;
         case METHODID_GET_TASK_DEF_METRICS_WINDOW:
           serviceImpl.getTaskDefMetricsWindow((io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest) request,
@@ -9683,6 +9859,20 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_SCHEDULED_WF_RUN)))
         .addMethod(
+          getCreateBulkJobMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.CreateBulkJobRequest,
+              io.littlehorse.sdk.common.proto.BulkJob>(
+                service, METHODID_CREATE_BULK_JOB)))
+        .addMethod(
+          getGetBulkJobMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.GetBulkJobRequest,
+              io.littlehorse.sdk.common.proto.BulkJob>(
+                service, METHODID_GET_BULK_JOB)))
+        .addMethod(
           getGetTaskDefMetricsWindowMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -9924,6 +10114,8 @@ public final class LittleHorseGrpc {
               .addMethod(getDeletePrincipalMethod())
               .addMethod(getDeleteQuotaMethod())
               .addMethod(getDeleteScheduledWfRunMethod())
+              .addMethod(getCreateBulkJobMethod())
+              .addMethod(getGetBulkJobMethod())
               .addMethod(getGetTaskDefMetricsWindowMethod())
               .addMethod(getGetWfSpecMetricsWindowMethod())
               .addMethod(getListTaskMetricsMethod())

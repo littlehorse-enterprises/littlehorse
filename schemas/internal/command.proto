@@ -14,6 +14,7 @@ import "variable.proto";
 import "storage.proto";
 import "acls.proto";
 import "job.proto";
+import "bulk_job.proto";
 
 
 // This is the schema of everything that flows through the Central Command topic.
@@ -110,6 +111,7 @@ message MetadataCommand {
         DeleteStructDefRequest delete_struct_def = 18;
         PutQuotaRequest put_quota = 19;
         DeleteQuotaRequest delete_quota = 20;
+        CreateBulkJobRequest create_bulk_job = 21;
     }
 }
 

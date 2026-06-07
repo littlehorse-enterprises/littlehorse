@@ -23,6 +23,9 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.*;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
+import io.littlehorse.common.model.getable.global.bulkjob.BulkJobModel;
+import io.littlehorse.common.model.getable.objectId.BulkJobIdModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.CreateBulkJobRequestModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.metrics.MetricWindowModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -429,6 +432,26 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         PutStructDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutStructDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, StructDef.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    public void createBulkJob(CreateBulkJobRequest req, StreamObserver<BulkJob> ctx) {
+        CreateBulkJobRequestModel reqModel =
+                LHSerializable.fromProto(req, CreateBulkJobRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, BulkJob.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getBulkJob(GetBulkJobRequest req, StreamObserver<BulkJob> ctx) {
+        BulkJobIdModel idModel = LHSerializable.fromProto(req.getId(), BulkJobIdModel.class, requestContext());
+        BulkJobModel bulkJob = requestContext().metadataManager().get(idModel);
+        if (bulkJob == null) {
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find BulkJob %s".formatted(idModel.toString()));
+        }
+        ctx.onNext(bulkJob.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override
@@ -999,14 +1022,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ctx.onCompleted();
     }
 
-    @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
-    public void searchWfMetricWindow(SearchWfMetricWindowRequest req, StreamObserver<MetricWindowIdList> ctx) {
-        handleScan(
-                SearchWfMetricWindowRequestModel.fromProto(req, requestContext()),
-                ctx,
-                SearchWfMetricWindowReply.class);
-    }
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)

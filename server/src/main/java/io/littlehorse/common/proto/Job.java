@@ -36,6 +36,16 @@ public final class Job extends com.google.protobuf.GeneratedFile {
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_NoOpJob_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_BulkDeleteWfRunJob_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_BulkDeleteWfRunJob_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_BulkJobShardCursor_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_BulkJobShardCursor_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -45,31 +55,55 @@ public final class Job extends com.google.protobuf.GeneratedFile {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\tjob.proto\022\013littlehorse\"\246\001\n\rBulkUpdateJ" +
-      "ob\022\021\n\tpartition\030\001 \001(\005\022\021\n\tstart_key\030\002 \001(\t" +
-      "\022\017\n\007end_key\030\003 \001(\t\022\034\n\017resume_from_key\030\005 \001" +
-      "(\tH\001\210\001\001\022%\n\005no_op\030\006 \001(\0132\024.littlehorse.NoO" +
-      "pJobH\000B\005\n\003jobB\022\n\020_resume_from_key\"\t\n\007NoO" +
-      "pJobB\037\n\033io.littlehorse.common.protoP\001b\006p" +
-      "roto3"
+      "\n\tjob.proto\022\013littlehorse\032\017object_id.prot" +
+      "o\032\016bulk_job.proto\"\345\001\n\rBulkUpdateJob\022\021\n\tp" +
+      "artition\030\001 \001(\005\022\021\n\tstart_key\030\002 \001(\t\022\017\n\007end" +
+      "_key\030\003 \001(\t\022\034\n\017resume_from_key\030\005 \001(\tH\001\210\001\001" +
+      "\022%\n\005no_op\030\006 \001(\0132\024.littlehorse.NoOpJobH\000\022" +
+      "=\n\022bulk_delete_wf_run\030\007 \001(\0132\037.littlehors" +
+      "e.BulkDeleteWfRunJobH\000B\005\n\003jobB\022\n\020_resume" +
+      "_from_key\"\t\n\007NoOpJob\"q\n\022BulkDeleteWfRunJ" +
+      "ob\022+\n\013bulk_job_id\030\001 \001(\0132\026.littlehorse.Bu" +
+      "lkJobId\022.\n\010criteria\030\002 \001(\0132\034.littlehorse." +
+      "BulkDeleteWfRun\"~\n\022BulkJobShardCursor\022+\n" +
+      "\013bulk_job_id\030\001 \001(\0132\026.littlehorse.BulkJob" +
+      "Id\022\021\n\tpartition\030\002 \001(\005\022\020\n\010last_key\030\003 \001(\t\022" +
+      "\026\n\016scan_completed\030\004 \001(\010B\037\n\033io.littlehors" +
+      "e.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
+          io.littlehorse.sdk.common.proto.BulkJobOuterClass.getDescriptor(),
         });
     internal_static_littlehorse_BulkUpdateJob_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_littlehorse_BulkUpdateJob_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_BulkUpdateJob_descriptor,
-        new java.lang.String[] { "Partition", "StartKey", "EndKey", "ResumeFromKey", "NoOp", "Job", });
+        new java.lang.String[] { "Partition", "StartKey", "EndKey", "ResumeFromKey", "NoOp", "BulkDeleteWfRun", "Job", });
     internal_static_littlehorse_NoOpJob_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_NoOpJob_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_NoOpJob_descriptor,
         new java.lang.String[] { });
+    internal_static_littlehorse_BulkDeleteWfRunJob_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_littlehorse_BulkDeleteWfRunJob_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_BulkDeleteWfRunJob_descriptor,
+        new java.lang.String[] { "BulkJobId", "Criteria", });
+    internal_static_littlehorse_BulkJobShardCursor_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_littlehorse_BulkJobShardCursor_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_BulkJobShardCursor_descriptor,
+        new java.lang.String[] { "BulkJobId", "Partition", "LastKey", "ScanCompleted", });
     descriptor.resolveAllFeaturesImmutable();
+    io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
+    io.littlehorse.sdk.common.proto.BulkJobOuterClass.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)
