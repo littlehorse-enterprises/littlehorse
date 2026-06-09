@@ -43,7 +43,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
-import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
+import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -92,7 +92,7 @@ public class GetableManagerTest {
     private GetableManager getableManager;
 
     private final CoreProcessorContext executionContext = mock();
-    private final PartitionMetricsMemoryStore partitionMetricsMemoryStore = new PartitionMetricsMemoryStore();
+    private final PartitionLocalBuffer<PartitionCountedTagModel> countedTags = new PartitionLocalBuffer<>();
 
     private AuthorizationContext testContext = new AuthorizationContextImpl(
             new PrincipalIdModel("my-principal-id"), new TenantIdModel(tenantId), List.of(), false);
@@ -101,7 +101,7 @@ public class GetableManagerTest {
     void setup() {
         when(executionContext.authorization()).thenReturn(testContext);
         when(executionContext.nativeCoreStore()).thenReturn(store);
-        when(executionContext.getPartitionMetricsMemoryStore()).thenReturn(partitionMetricsMemoryStore);
+        when(executionContext.getCountedTagsAccumulator()).thenReturn(countedTags);
         localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
         getableManager =
                 new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext, null);
@@ -306,7 +306,7 @@ public class GetableManagerTest {
     }
 
     private Collection<PartitionCountedTagModel> remoteCountedTagsCreated() {
-        return partitionMetricsMemoryStore.getCountedTags().values();
+        return countedTags.values();
     }
 
     @Test
@@ -598,7 +598,7 @@ public class GetableManagerTest {
         getableManager.commit();
 
         List<String> storedKeys = getAllKeys(store);
-        assertThat(storedKeys).hasSize(5);
+        assertThat(storedKeys).hasSize(6);
         assertThat(storedKeys).anyMatch(key -> key.contains("myTenant/0/wrg/0000000/0/4/1/0"));
         assertThat(storedKeys)
                 .anyMatch(key -> key.contains("myTenant/5/4/__status_RUNNING__extEvtDefName_" + eventName));
@@ -685,7 +685,7 @@ public class GetableManagerTest {
         getableManager.commit();
 
         Collection<PartitionCountedTagModel> repartitionCommands = remoteCountedTagsCreated();
-        assertThat(repartitionCommands).hasSize(3);
+        assertThat(repartitionCommands).hasSize(4);
 
         List<String> attributeStrings = repartitionCommands.stream()
                 .map(PartitionCountedTagModel::getAttributeString)

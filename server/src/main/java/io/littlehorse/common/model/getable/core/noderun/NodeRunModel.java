@@ -183,6 +183,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
+        GetableIndex<? extends AbstractGetable<?>> allNodeRunsIndex =
+                new GetableIndex<>(List.of(Pair.of("all", GetableIndex.ValueType.SINGLE)), TagStorageType.COUNTED);
         GetableIndex<? extends AbstractGetable<?>> specNameIndex = new GetableIndex<>(
                 List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)), TagStorageType.COUNTED);
         GetableIndex<? extends AbstractGetable<?>> specNameAndMajorVersionIndex = new GetableIndex<>(
@@ -205,11 +207,13 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                     TagStorageType.LOCAL);
             return List.of(
                     externalEventIndex,
+                    allNodeRunsIndex,
                     specNameIndex,
                     specNameAndMajorVersionIndex,
                     specNameAndMajorVersionAndRevisionIndex);
         }
-        return List.of(specNameIndex, specNameAndMajorVersionIndex, specNameAndMajorVersionAndRevisionIndex);
+        return List.of(
+                allNodeRunsIndex, specNameIndex, specNameAndMajorVersionIndex, specNameAndMajorVersionAndRevisionIndex);
     }
 
     @Override
@@ -233,6 +237,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             }
             case "revision" -> {
                 return List.of(new IndexedField(key, wfSpecId.getRevision(), TagStorageType.COUNTED));
+            }
+            case "all" -> {
+                return List.of(new IndexedField(key, "all", TagStorageType.COUNTED));
             }
         }
         log.warn("Tried to get value for unknown index field {}", key);
