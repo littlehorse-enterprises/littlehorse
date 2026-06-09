@@ -19,15 +19,15 @@ import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { FC, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
-import ReactFlow, { Controls, useEdgesState, useNodesState, type Viewport } from 'reactflow'
+import { FC, ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import ReactFlow, { Controls, Node as RFNode, useEdgesState, useNodesState, type Viewport } from 'reactflow'
 import 'reactflow/dist/base.css'
 import { DiagramProvider, NodeInContext, ThreadType } from '../context'
 import edgeTypes from './EdgeTypes'
 import { extractEdges } from './EdgeTypes/extractEdges'
 import { LayoutManager } from './LayoutManager'
 import nodeTypes from './NodeTypes'
-import { extractNodes, getCycleNodes } from './NodeTypes/extractNodes'
+import { extractNodes, getCycleNodes, getNodeAfterEntrypoint } from './NodeTypes/extractNodes'
 import { Sidebar } from './Sidebar'
 import { ThreadPanel } from './ThreadPanel'
 
@@ -35,6 +35,7 @@ type Props = {
   wfRun?: Omit<WfRun, 'threadRuns'> & { threadRuns: ThreadRunWithNodeRuns[] }
   spec: WfSpec
   onThreadChange?: (thread: ThreadType) => void
+  headerActions?: ReactNode
 }
 const threadFromUrl = (
   wfRun: Props['wfRun'],
@@ -57,7 +58,7 @@ const threadFromUrl = (
   }
 }
 
-export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
+export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions }) => {
   const { tenantId } = useWhoAmI()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -85,20 +86,59 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
     return threadSpec
   }, [spec, thread.name])
 
-  const [edges, setEdges] = useEdgesState(extractEdges(threadSpec))
-  const [nodes, setNodes] = useNodesState(extractNodes(threadSpec))
+  const [edges, setEdges, onEdgesChange] = useEdgesState(extractEdges(threadSpec))
+  const [nodes, setNodes, onNodesChange] = useNodesState(extractNodes(threadSpec))
 
   const threadNodeRuns = useMemo(() => {
     if (!wfRun) return
     return wfRun.threadRuns.find(tr => tr.number === thread.number)?.nodeRuns
   }, [thread.number, wfRun])
 
+  const lastAppliedThread = useRef<string | null>(null)
+
+  const applyDefaultSelection = useCallback(
+    (laidOutNodes: RFNode[]) => {
+      if (wfRun) return
+
+      const defaultNodeId = getNodeAfterEntrypoint(threadSpec)
+      if (!defaultNodeId) {
+        setNode(undefined)
+        return
+      }
+
+      const target = laidOutNodes.find(n => n.id === defaultNodeId)
+      if (!target) return
+
+      lastAppliedThread.current = thread.name
+      setNodes(laidOutNodes.map(n => ({ ...n, selected: n.id === defaultNodeId })))
+      setNode(target as NodeInContext)
+    },
+    [wfRun, threadSpec, thread.name, setNodes]
+  )
+
   useLayoutEffect(() => {
-    const nodes = extractNodes(threadSpec)
-    const edges = extractEdges(threadSpec)
-    setNodes(nodes)
-    setEdges(edges)
-  }, [thread.name, setNodes, setEdges])
+    lastAppliedThread.current = null
+    const extractedNodes = extractNodes(threadSpec)
+    const extractedEdges = extractEdges(threadSpec)
+
+    if (!wfRun) {
+      const defaultNodeId = getNodeAfterEntrypoint(threadSpec)
+      if (defaultNodeId) {
+        const target = extractedNodes.find(n => n.id === defaultNodeId)
+        if (target) {
+          lastAppliedThread.current = thread.name
+          setNode(target as NodeInContext)
+          setNodes(extractedNodes.map(n => ({ ...n, selected: n.id === defaultNodeId })))
+          setEdges(extractedEdges)
+          return
+        }
+      }
+    }
+
+    setNode(undefined)
+    setNodes(extractedNodes)
+    setEdges(extractedEdges)
+  }, [thread.name, threadSpec, setNodes, setEdges, wfRun])
 
   useEffect(() => {
     onThreadChange?.(thread)
@@ -123,57 +163,62 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
           : ''
   return (
     <DiagramProvider value={{ thread, setThread, selectedNode: node, setSelectedNode: setNode, wfRun }}>
-      <div className="flex justify-between gap-3">
-        <ThreadPanel spec={spec} wfRun={wfRun} />
-        {wfRun && (
-          <div>
-            <AlertDialog>
-              {wfRun.status === LHStatus.RUNNING && (
-                <AlertDialogTrigger asChild>
-                  <Button variant="destructive" className="flex items-center gap-2 font-bold">
-                    STOP <StopCircleIcon />
-                  </Button>
-                </AlertDialogTrigger>
-              )}
-              {wfRun.status === LHStatus.HALTED && (
-                <AlertDialogTrigger asChild>
-                  <Button className="flex items-center gap-2 bg-green-500 font-bold hover:bg-green-600">
-                    RESUME <PlayCircleIcon />
-                  </Button>
-                </AlertDialogTrigger>
-              )}
-              {wfRun.status === LHStatus.ERROR && (
-                <AlertDialogTrigger asChild>
-                  <Button className="flex items-center gap-2 bg-yellow-500 font-bold hover:bg-yellow-600">
-                    RESCUE <RotateCcwIcon />
-                  </Button>
-                </AlertDialogTrigger>
-              )}
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>{`Confirm ${verb}`}</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    {`Are you sure you want to ${verb.toLowerCase()} this workflow run?`}
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={async () => {
-                      if (wfRun.status === LHStatus.RUNNING) {
-                        await stopWfRun(tenantId, wfRun.id!)
-                      } else if (wfRun.status === LHStatus.HALTED) {
-                        await resumeWfRun(tenantId, wfRun.id!)
-                      } else if (wfRun.status === LHStatus.ERROR) {
-                        await rescueWfRun(tenantId, wfRun.id!)
-                      }
-                    }}
-                  >
-                    Confirm
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <ThreadPanel spec={spec} wfRun={wfRun} />
+        </div>
+        {(headerActions || wfRun) && (
+          <div className="flex shrink-0 items-center gap-2">
+            {headerActions}
+            {wfRun && (
+              <AlertDialog>
+                {wfRun.status === LHStatus.RUNNING && (
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" className="flex items-center gap-2 font-bold">
+                      STOP <StopCircleIcon />
+                    </Button>
+                  </AlertDialogTrigger>
+                )}
+                {wfRun.status === LHStatus.HALTED && (
+                  <AlertDialogTrigger asChild>
+                    <Button className="flex items-center gap-2 bg-green-500 font-bold hover:bg-green-600">
+                      RESUME <PlayCircleIcon />
+                    </Button>
+                  </AlertDialogTrigger>
+                )}
+                {wfRun.status === LHStatus.ERROR && (
+                  <AlertDialogTrigger asChild>
+                    <Button className="flex items-center gap-2 bg-yellow-500 font-bold hover:bg-yellow-600">
+                      RESCUE <RotateCcwIcon />
+                    </Button>
+                  </AlertDialogTrigger>
+                )}
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{`Confirm ${verb}`}</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      {`Are you sure you want to ${verb.toLowerCase()} this workflow run?`}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={async () => {
+                        if (wfRun.status === LHStatus.RUNNING) {
+                          await stopWfRun(tenantId, wfRun.id!)
+                        } else if (wfRun.status === LHStatus.HALTED) {
+                          await resumeWfRun(tenantId, wfRun.id!)
+                        } else if (wfRun.status === LHStatus.ERROR) {
+                          await rescueWfRun(tenantId, wfRun.id!)
+                        }
+                      }}
+                    >
+                      Confirm
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </div>
         )}
       </div>
@@ -182,6 +227,8 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
           <ReactFlow
             nodes={nodes}
             edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
             nodesConnectable={false}
             nodesDraggable={false}
             elementsSelectable
@@ -194,7 +241,12 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
           >
             <Controls />
           </ReactFlow>
-          <LayoutManager nodeRuns={threadNodeRuns} viewportKey={viewportKey} />
+          <LayoutManager
+            nodeRuns={threadNodeRuns}
+            viewportKey={viewportKey}
+            setNodes={setNodes}
+            onLayoutComplete={applyDefaultSelection}
+          />
         </div>
         <Sidebar showNodeRun={wfRun !== undefined} />
       </div>

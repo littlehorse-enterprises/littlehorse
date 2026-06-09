@@ -111,6 +111,16 @@ export const getCycleNodes = (threadSpec: ThreadSpec) => {
   })
   return threadSpec
 }
+
+export const getNodeAfterEntrypoint = (threadSpec: ThreadSpec): string | undefined => {
+  for (const node of Object.values(threadSpec.nodes)) {
+    if (node.node?.$case === 'entrypoint') {
+      return node.outgoingEdges[0]?.sinkNodeName
+    }
+  }
+  return undefined
+}
+
 export type NodeRunTypeList = Exclude<
   NodeType,
   'ENTRYPOINT' | 'NOP' | 'EXIT' | 'UNKNOWN_NODE_TYPE' | 'START_MULTIPLE_THREADS'

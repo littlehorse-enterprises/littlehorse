@@ -5,10 +5,14 @@ import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport 
 
 const elk = new ELK()
 
-export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = ({ nodeRuns, viewportKey }) => {
+export const LayoutManager: FC<{
+  nodeRuns?: NodeRun[]
+  viewportKey: string
+  setNodes: (nodes: Node[] | ((nodes: Node[]) => Node[])) => void
+  onLayoutComplete?: (nodes: Node[]) => void
+}> = ({ nodeRuns, viewportKey, setNodes, onLayoutComplete }) => {
   const nodes = useStore(store => store.getNodes())
   const edges = useStore(store => store.edges)
-  const setNodes = useStore(store => store.setNodes)
   const setEdges = useStore(store => store.setEdges)
   const { fitView, setViewport } = useReactFlow()
 
@@ -93,6 +97,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
         })
         setNodes(laidOutNodes)
         setEdges(edges)
+        onLayoutComplete?.(laidOutNodes)
         setTimeout(() => {
           const saved = sessionStorage.getItem(viewportKey)
           if (saved) {
@@ -109,7 +114,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
         console.error('ELK layout error:', error)
       }
     },
-    [fitView, setViewport, viewportKey, nodeRuns, setNodes, setEdges]
+    [fitView, setViewport, viewportKey, nodeRuns, setNodes, setEdges, onLayoutComplete]
   )
 
   useEffect(() => {
