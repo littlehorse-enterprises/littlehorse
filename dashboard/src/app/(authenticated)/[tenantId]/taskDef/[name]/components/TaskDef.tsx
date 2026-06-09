@@ -4,7 +4,7 @@ import { Breadcrumb } from '@/app/(authenticated)/[tenantId]/components/Breadcru
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
 import { PaginatedWfSpecList, searchWfSpecs } from '@/app/actions/getWfSpecsByTaskDef'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
 import { routes } from '@/app/routes'
 import { localDateTimeToUTCIsoString, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -33,8 +33,8 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const tenantId = useParams().tenantId as string
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
-  const [wfSpecLimit, setWfSpecLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('taskdef-task-runs')
+  const [wfSpecLimit, setWfSpecLimit] = usePersistedSearchLimit('taskdef-wf-specs')
   const [isRefreshing, setIsRefreshing] = useState(false)
   const queryClient = useQueryClient()
   const taskDefName = spec.id?.name || ''
@@ -44,7 +44,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
     hasNextPage: wfSpecsHasNextPage,
     fetchNextPage: wfSpecsFetchNextPage,
   } = useInfiniteQuery({
-    queryKey: ['wfSpecs', tenantId, limit, taskDefName],
+    queryKey: ['wfSpecs', tenantId, wfSpecLimit, taskDefName],
     initialPageParam: undefined,
     getNextPageParam: (lastPage: PaginatedWfSpecList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
@@ -83,7 +83,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         queryClient.refetchQueries({
           queryKey: ['taskRun', selectedStatus, tenantId, limit, createdAfter, createdBefore, taskDefName],
         }),
-        queryClient.refetchQueries({ queryKey: ['wfSpecs', tenantId, limit, taskDefName] }),
+        queryClient.refetchQueries({ queryKey: ['wfSpecs', tenantId, wfSpecLimit, taskDefName] }),
         mutate(key => Array.isArray(key) && key[0] === 'taskMetrics' && key[1] === taskDefName),
       ])
     } finally {
@@ -95,6 +95,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
     taskDefName,
     selectedStatus,
     limit,
+    wfSpecLimit,
     createdAfter,
     createdBefore,
   ])
@@ -163,12 +164,14 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                       <Separator />
                     </Fragment>
                   ))}
-                <SearchFooter
-                  currentLimit={wfSpecLimit}
-                  setLimit={setWfSpecLimit}
-                  hasNextPage={wfSpecsHasNextPage}
-                  fetchNextPage={wfSpecsFetchNextPage}
-                />
+                <div className="mt-6">
+                  <SearchFooter
+                    currentLimit={wfSpecLimit}
+                    setLimit={setWfSpecLimit}
+                    hasNextPage={wfSpecsHasNextPage}
+                    fetchNextPage={wfSpecsFetchNextPage}
+                  />
+                </div>
               </div>
             ) : (
               <div className="flex min-h-[120px] items-center justify-center">

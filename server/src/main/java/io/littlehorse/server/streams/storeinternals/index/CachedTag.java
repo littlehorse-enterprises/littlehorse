@@ -15,24 +15,24 @@ public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
 
     private String id;
     private boolean isRemote;
+    private boolean isCounted;
 
     public CachedTag() {}
-
-    public CachedTag(String id, boolean isRemote) {
-        this.id = id;
-        this.isRemote = isRemote;
-    }
 
     public CachedTag(Tag tag) {
         this.id = tag.getStoreKey();
 
         // When we re-enable remote tags, this will be more complex.
         this.isRemote = tag.isRemote();
+        this.isCounted = tag.isCounted();
     }
 
     @Override
     public TagsCachePb.CachedTagPb.Builder toProto() {
-        return TagsCachePb.CachedTagPb.newBuilder().setId(id).setIsRemote(isRemote);
+        return TagsCachePb.CachedTagPb.newBuilder()
+                .setId(id)
+                .setIsRemote(isRemote)
+                .setIsCounted(isCounted);
     }
 
     @Override
@@ -40,12 +40,18 @@ public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
         TagsCachePb.CachedTagPb cachedTagPb = (TagsCachePb.CachedTagPb) proto;
         this.id = cachedTagPb.getId();
         this.isRemote = cachedTagPb.getIsRemote();
+        this.isCounted = cachedTagPb.getIsCounted();
     }
 
     public static CachedTag fromProto(TagsCachePb.CachedTagPb proto, ExecutionContext context) {
         CachedTag out = new CachedTag();
         out.initFrom(proto, context);
         return out;
+    }
+
+    public String getAttributeString() {
+        String[] splittedStoreKey = id.split("/");
+        return splittedStoreKey[0] + "/" + splittedStoreKey[1];
     }
 
     @Override

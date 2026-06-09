@@ -1,22 +1,15 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
-import static com.google.protobuf.util.Timestamps.fromMillis;
-import static com.google.protobuf.util.Timestamps.toMillis;
-
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.PartitionCountedTagModel;
 import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
-import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.common.model.metadatacommand.subcommand.AggregateWindowMetricsModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
@@ -24,10 +17,9 @@ import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
-import io.littlehorse.server.streams.storeinternals.MetricsHintModel;
 import io.littlehorse.server.streams.storeinternals.TaskQueueHintModel;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
-import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
+import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
@@ -36,10 +28,7 @@ import io.littlehorse.server.streams.topology.core.CoreCommandException;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
 import io.littlehorse.server.streams.util.AsyncWaiters;
-import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
@@ -63,10 +52,11 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     protected KeyValueStore<String, Bytes> nativeStore;
     protected KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
-    private boolean shouldUseMetricsHint;
-    private long serverStartWindowTime;
     private final AsyncWaiters asyncWaiters;
-    private final PartitionMetricsMemoryStore partitionMetricsMemoryStore;
+
+    private final PartitionLocalBuffer<PartitionMetricWindowModel> metricWindows;
+    private final PartitionLocalBuffer<PartitionCountedTagModel> countedTags;
+    private PartitionDrainScheduler partitionDrain;
 
     private final LHProcessingExceptionHandler exceptionHandler;
     private final CommandProcessorMetrics metrics;
@@ -85,7 +75,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.globalTaskQueueManager = globalTaskQueueManager;
         this.exceptionHandler = new LHProcessingExceptionHandler(server, asyncWaiters);
         this.asyncWaiters = asyncWaiters;
-        this.partitionMetricsMemoryStore = new PartitionMetricsMemoryStore();
+        this.metricWindows = new PartitionLocalBuffer<>();
+        this.countedTags = new PartitionLocalBuffer<>();
     }
 
     @Override
@@ -94,8 +85,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.ctx = ctx;
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
-        this.shouldUseMetricsHint = true;
-        this.serverStartWindowTime = LHUtil.getCurrentWindowDate().getTime() - 1;
+        this.partitionDrain = new PartitionDrainScheduler(metricWindows, countedTags, config, ctx);
         onPartitionClaimed();
         ctx.schedule(
                 LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL,
@@ -147,7 +137,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 globalTaskQueueManager,
                 metadataCache,
                 server,
-                partitionMetricsMemoryStore);
+                metricWindows,
+                countedTags);
     }
 
     public void onPartitionClaimed() {
@@ -195,102 +186,16 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     @Override
     public void close() {
+        if (partitionIsClaimed) {
+            this.partitionDrain.reset();
+        }
         this.partitionIsClaimed = false;
-        this.shouldUseMetricsHint = true;
         server.drainPartitionTaskQueue(ctx.taskId());
     }
 
     private void collectPartitionMetrics(long timestamp) {
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
-        long lastWindowTime = LHUtil.getCurrentWindowDate().getTime() - (2 * 60 * 1000L);
-        if (shouldUseMetricsHint) {
-            lastWindowTime = collectAndSendStoreMetrics(clusterScopedStore);
-        } else {
-            collectAndSendMemoryMetrics(clusterScopedStore);
-        }
-        clusterScopedStore.put(new MetricsHintModel(fromMillis(lastWindowTime)));
-    }
-
-    private void collectAndSendMemoryMetrics(ClusterScopedStore store) {
-        if (!partitionMetricsMemoryStore.hasEntries()) {
-            return;
-        }
-        long startTime = System.currentTimeMillis();
-        Date currentWindow = LHUtil.getCurrentWindowDate();
-        Iterator<PartitionMetricWindowModel> iterator =
-                partitionMetricsMemoryStore.values().iterator();
-        while (iterator.hasNext()) {
-            PartitionMetricWindowModel metric = iterator.next();
-            if (metric.getId().getWindowStart().before(currentWindow)) {
-                forwardAndDeleteFromStore(store, metric);
-                iterator.remove();
-                if (System.currentTimeMillis() - startTime > LHConstants.MAX_MS_PER_PARTITION_METRICS_PUNCTUATION) {
-                    break;
-                }
-            }
-        }
-    }
-
-    private long collectAndSendStoreMetrics(ClusterScopedStore store) {
-        shouldUseMetricsHint = false;
-        MetricsHintModel hint = store.get(MetricsHintModel.METRICS_HINT_KEY, MetricsHintModel.class);
-        if (hint == null || hint.getLastProcessedTimestamp() == null) {
-            return this.serverStartWindowTime;
-        }
-
-        long lastSeenWindowTime = toMillis(hint.getLastProcessedTimestamp());
-        String startPrefix = LHConstants.PARTITION_METRICS_KEY + "/" + lastSeenWindowTime;
-        String endPrefix = LHConstants.PARTITION_METRICS_KEY + "/" + serverStartWindowTime;
-        long startTime = System.currentTimeMillis();
-        try (LHKeyValueIterator<PartitionMetricWindowModel> iter =
-                store.range(startPrefix, endPrefix, PartitionMetricWindowModel.class)) {
-            while (iter.hasNext()) {
-                PartitionMetricWindowModel windowMetrics = iter.next().getValue();
-                if (windowMetrics != null) {
-                    lastSeenWindowTime = forwardAndDeleteFromStore(store, windowMetrics);
-                    if (System.currentTimeMillis() - startTime > LHConstants.MAX_MS_PER_PARTITION_METRICS_PUNCTUATION) {
-                        shouldUseMetricsHint = true;
-                        log.warn(
-                                "Hint will be used for next punctuation  from: {} to: {} elapsedTime: {} ms",
-                                new Date(lastSeenWindowTime),
-                                new Date(serverStartWindowTime),
-                                System.currentTimeMillis() - startTime);
-                        return lastSeenWindowTime;
-                    }
-                }
-            }
-        }
-        return lastSeenWindowTime;
-    }
-
-    private long forwardAndDeleteFromStore(ClusterScopedStore store, PartitionMetricWindowModel metric) {
-        AggregateWindowMetricsModel aggregate = new AggregateWindowMetricsModel(metric);
-        fordwardWindowMetrics(aggregate);
-        store.delete(metric);
-        metric.getId().markAsTenantMetricId();
-        fordwardWindowMetrics(aggregate);
-        return metric.getId().getWindowStart().getTime();
-    }
-
-    private void fordwardWindowMetrics(AggregateWindowMetricsModel agregateMetricsSubcomand) {
-        CommandModel command = new CommandModel(agregateMetricsSubcomand, new Date());
-        TenantIdModel tenantId =
-                agregateMetricsSubcomand.getMetricWindow().getId().getTenantId();
-        LHTimer timer = new LHTimer(command);
-        timer.maturationTime = new Date();
-        timer.topic = this.config.getCoreCmdTopicName();
-        timer.setRepartition(true);
-        timer.setTenantId(tenantId);
-        CommandProcessorOutput cpo = new CommandProcessorOutput();
-        cpo.partitionKey = agregateMetricsSubcomand.getPartitionKey();
-        cpo.topic = this.config.getCoreCmdTopicName();
-        cpo.payload = timer;
-        Record<String, CommandProcessorOutput> out = new Record<>(
-                cpo.partitionKey,
-                cpo,
-                System.currentTimeMillis(),
-                HeadersUtil.metadataHeadersFor(tenantId, new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
-        this.ctx.forward(out);
+        partitionDrain.punctuate(clusterScopedStore);
     }
 }

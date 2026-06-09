@@ -49,7 +49,7 @@ public class MetadataGlobalStoreProcessorTest {
         String fullKey = tenantId + "/" + wfSpec.getFullStoreKey();
         Bytes valueBytes = Bytes.wrap(wfSpec.toBytes());
         metadataProcessor.process(new Record<>(fullKey, valueBytes, 0L));
-        assertThat(metadataCache.get(fullKey)).isNotNull();
+        assertThat(metadataCache.getOrUpdate(fullKey, () -> null)).isNotNull();
         verify(mockStore).put(eq(fullKey), any());
     }
 
@@ -59,7 +59,7 @@ public class MetadataGlobalStoreProcessorTest {
         String fullKey = tenantId + "/" + taskDef.getFullStoreKey();
         Bytes valueBytes = Bytes.wrap(taskDef.toBytes());
         metadataProcessor.process(new Record<>(fullKey, valueBytes, 0L));
-        assertThat(metadataCache.get(fullKey)).isNotNull();
+        assertThat(metadataCache.getOrUpdate(fullKey, () -> null)).isNotNull();
         verify(mockStore).put(eq(fullKey), any());
     }
 
@@ -69,7 +69,7 @@ public class MetadataGlobalStoreProcessorTest {
         String fullKey = tenant.getFullStoreKey();
         Bytes valueBytes = Bytes.wrap(tenant.toBytes());
         metadataProcessor.process(new Record<>(fullKey, valueBytes, 0L));
-        assertThat(metadataCache.get(fullKey)).isNotNull();
+        assertThat(metadataCache.getOrUpdate(fullKey, () -> null)).isNotNull();
         verify(mockStore).put(eq(fullKey), any());
     }
 
@@ -81,7 +81,7 @@ public class MetadataGlobalStoreProcessorTest {
         metadataProcessor.process(new Record<>(fullKey, valueBytes, 0L));
         // delete the value
         metadataProcessor.process(new Record<>(fullKey, null, 0L));
-        assertThat(metadataCache.get(fullKey)).isNull();
+        assertThat(metadataCache.getOrUpdate(fullKey, () -> null)).isNull();
         verify(mockStore).delete(fullKey);
     }
 
@@ -91,7 +91,7 @@ public class MetadataGlobalStoreProcessorTest {
         String fullKey = tenantId + "/" + wfRun.getObjectId().getStoreableKey();
         Bytes valueBytes = Bytes.wrap(wfRun.toBytes());
         metadataProcessor.process(new Record<>(fullKey, valueBytes, 0L));
-        assertThat(metadataCache.get(fullKey)).isNull();
+        assertThat(metadataCache.getOrUpdate(fullKey, () -> null)).isNull();
         verify(mockStore, atMostOnce()).put(eq(fullKey), any());
     }
 }

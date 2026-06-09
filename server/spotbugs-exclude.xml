@@ -2,6 +2,14 @@
 <FindBugsFilter>
     <!-- Exclude all generated protobuf code -->
     <Match>
+        <!-- This is a common bug pattern that flags when a class exposes its internal representation,
+            which is often the case with Littlehorse Context classes
+            EI_EXPOSE_REP = May expose internal representation by returning reference to mutable object
+            EI_EXPOSE_REP2 = May expose internal representation by incorporating reference to mutable object
+        -->
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
         <Package name="~io\.littlehorse\.sdk\.common\.proto.*"/>
     </Match>
     <Match>
