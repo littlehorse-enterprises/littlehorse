@@ -2,7 +2,7 @@
 
 import { uniqueInOrder } from '@/app/utils'
 import { TaskDefData } from '@/types'
-import { LittleHorseClient, TaskDefId } from 'littlehorse-client/proto'
+import { LittleHorseClient, TaskDefId, TaskStatus } from 'littlehorse-client/proto'
 import { ClientError, Status } from 'nice-grpc-common'
 import { lhClient } from '../lhClient'
 
@@ -17,13 +17,13 @@ async function fetchConnectedWorkers(client: LittleHorseClient, name: string): P
 }
 
 async function fetchQueueDepth(client: LittleHorseClient, name: string): Promise<number | null> {
-  if (typeof client.countScheduledTaskRun !== 'function') {
+  if (typeof client.countTaskRun !== 'function') {
     return null
   }
 
-  const request = { taskDefName: name }
+  const request = { taskDefName: name, status: TaskStatus.TASK_SCHEDULED }
   try {
-    const response = await client.countScheduledTaskRun(request)
+    const response = await client.countTaskRun(request)
     return Number(response.value)
   } catch (error) {
     if (error instanceof ClientError && (error.code === Status.UNIMPLEMENTED || error.code === Status.NOT_FOUND)) {

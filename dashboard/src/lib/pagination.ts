@@ -13,7 +13,7 @@ export function getVisiblePageNumbers(currentPage: number, totalPages: number): 
     if (i >= 1 && i <= totalPages) pages.add(i)
   }
 
-  const sorted = [...pages].sort((a, b) => a - b)
+  const sorted = Array.from(pages).sort((a, b) => a - b)
   const result: PageItem[] = []
   let previous = 0
 
