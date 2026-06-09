@@ -1842,7 +1842,9 @@ export interface LittleHorseVersion {
   /** Server Minor Version */
   minorVersion: number;
   /** Server Patch Version */
-  patchVersion: number;
+  patchVersion?:
+    | number
+    | undefined;
   /**
    * Prerelease Identifier. If this is set, then the server is NOT a production release
    * but rather a release candidate or experimental pre-release.
@@ -1850,17 +1852,44 @@ export interface LittleHorseVersion {
   preReleaseIdentifier?: string | undefined;
 }
 
+/**
+ * Request to count NodeRun's matching specified criteria. If no filter is set,
+ * the total count of all NodeRun's in the tenant is returned.
+ */
 export interface CountNodeRunRequest {
-  wfSpecName?: string | undefined;
-  wfSpecMajorVersion?: number | undefined;
+  filter?: { $case: "wfSpecFilter"; value: CountNodeRunRequest_WfSpecFilter } | undefined;
+}
+
+/** Filter NodeRun counts by WfSpec name, and optionally by major version and revision. */
+export interface CountNodeRunRequest_WfSpecFilter {
+  /** Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted. */
+  wfSpecName: string;
+  /** Filter by WfSpec major version. Requires wf_spec_name to be set. */
+  wfSpecMajorVersion?:
+    | number
+    | undefined;
+  /** Filter by WfSpec revision. Requires both wf_spec_name and wf_spec_major_version to be set. */
   wfSpecRevision?: number | undefined;
 }
 
-export interface CountScheduledTaskRunRequest {
+/**
+ * Request to count TaskRun's matching the given criteria for a specific TaskDef.
+ * The task_def_name is required. The status filter narrows the count to TaskRun's
+ * in a specific state. Initially, only TASK_SCHEDULED is supported as a counted status.
+ */
+export interface CountTaskRunRequest {
+  /** The name of the TaskDef whose TaskRun's should be counted. */
   taskDefName: string;
+  /**
+   * Filter by TaskRun status. Required. Initially only TASK_SCHEDULED is supported;
+   * the server will reject requests with unsupported status values.
+   */
+  status: TaskStatus;
 }
 
+/** Response containing an eventually consistent count value. */
 export interface Count {
+  /** The count of objects matching the request criteria. */
   value: number;
 }
 
@@ -11351,7 +11380,7 @@ export const GetLatestWfSpecRequest = {
 };
 
 function createBaseLittleHorseVersion(): LittleHorseVersion {
-  return { majorVersion: 0, minorVersion: 0, patchVersion: 0, preReleaseIdentifier: undefined };
+  return { majorVersion: 0, minorVersion: 0, patchVersion: undefined, preReleaseIdentifier: undefined };
 }
 
 export const LittleHorseVersion = {
@@ -11362,7 +11391,7 @@ export const LittleHorseVersion = {
     if (message.minorVersion !== 0) {
       writer.uint32(16).int32(message.minorVersion);
     }
-    if (message.patchVersion !== 0) {
+    if (message.patchVersion !== undefined) {
       writer.uint32(24).int32(message.patchVersion);
     }
     if (message.preReleaseIdentifier !== undefined) {
@@ -11419,7 +11448,7 @@ export const LittleHorseVersion = {
     return {
       majorVersion: isSet(object.majorVersion) ? globalThis.Number(object.majorVersion) : 0,
       minorVersion: isSet(object.minorVersion) ? globalThis.Number(object.minorVersion) : 0,
-      patchVersion: isSet(object.patchVersion) ? globalThis.Number(object.patchVersion) : 0,
+      patchVersion: isSet(object.patchVersion) ? globalThis.Number(object.patchVersion) : undefined,
       preReleaseIdentifier: isSet(object.preReleaseIdentifier)
         ? globalThis.String(object.preReleaseIdentifier)
         : undefined,
@@ -11434,7 +11463,7 @@ export const LittleHorseVersion = {
     if (message.minorVersion !== 0) {
       obj.minorVersion = Math.round(message.minorVersion);
     }
-    if (message.patchVersion !== 0) {
+    if (message.patchVersion !== undefined) {
       obj.patchVersion = Math.round(message.patchVersion);
     }
     if (message.preReleaseIdentifier !== undefined) {
@@ -11450,19 +11479,92 @@ export const LittleHorseVersion = {
     const message = createBaseLittleHorseVersion();
     message.majorVersion = object.majorVersion ?? 0;
     message.minorVersion = object.minorVersion ?? 0;
-    message.patchVersion = object.patchVersion ?? 0;
+    message.patchVersion = object.patchVersion ?? undefined;
     message.preReleaseIdentifier = object.preReleaseIdentifier ?? undefined;
     return message;
   },
 };
 
 function createBaseCountNodeRunRequest(): CountNodeRunRequest {
-  return { wfSpecName: undefined, wfSpecMajorVersion: undefined, wfSpecRevision: undefined };
+  return { filter: undefined };
 }
 
 export const CountNodeRunRequest = {
   encode(message: CountNodeRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.wfSpecName !== undefined) {
+    switch (message.filter?.$case) {
+      case "wfSpecFilter":
+        CountNodeRunRequest_WfSpecFilter.encode(message.filter.value, writer.uint32(10).fork()).ldelim();
+        break;
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CountNodeRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCountNodeRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.filter = {
+            $case: "wfSpecFilter",
+            value: CountNodeRunRequest_WfSpecFilter.decode(reader, reader.uint32()),
+          };
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CountNodeRunRequest {
+    return {
+      filter: isSet(object.wfSpecFilter)
+        ? { $case: "wfSpecFilter", value: CountNodeRunRequest_WfSpecFilter.fromJSON(object.wfSpecFilter) }
+        : undefined,
+    };
+  },
+
+  toJSON(message: CountNodeRunRequest): unknown {
+    const obj: any = {};
+    if (message.filter?.$case === "wfSpecFilter") {
+      obj.wfSpecFilter = CountNodeRunRequest_WfSpecFilter.toJSON(message.filter.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
+    return CountNodeRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
+    const message = createBaseCountNodeRunRequest();
+    if (
+      object.filter?.$case === "wfSpecFilter" && object.filter?.value !== undefined && object.filter?.value !== null
+    ) {
+      message.filter = {
+        $case: "wfSpecFilter",
+        value: CountNodeRunRequest_WfSpecFilter.fromPartial(object.filter.value),
+      };
+    }
+    return message;
+  },
+};
+
+function createBaseCountNodeRunRequest_WfSpecFilter(): CountNodeRunRequest_WfSpecFilter {
+  return { wfSpecName: "", wfSpecMajorVersion: undefined, wfSpecRevision: undefined };
+}
+
+export const CountNodeRunRequest_WfSpecFilter = {
+  encode(message: CountNodeRunRequest_WfSpecFilter, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecName !== "") {
       writer.uint32(10).string(message.wfSpecName);
     }
     if (message.wfSpecMajorVersion !== undefined) {
@@ -11474,10 +11576,10 @@ export const CountNodeRunRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CountNodeRunRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CountNodeRunRequest_WfSpecFilter {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCountNodeRunRequest();
+    const message = createBaseCountNodeRunRequest_WfSpecFilter();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -11511,17 +11613,17 @@ export const CountNodeRunRequest = {
     return message;
   },
 
-  fromJSON(object: any): CountNodeRunRequest {
+  fromJSON(object: any): CountNodeRunRequest_WfSpecFilter {
     return {
-      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : undefined,
+      wfSpecName: isSet(object.wfSpecName) ? globalThis.String(object.wfSpecName) : "",
       wfSpecMajorVersion: isSet(object.wfSpecMajorVersion) ? globalThis.Number(object.wfSpecMajorVersion) : undefined,
       wfSpecRevision: isSet(object.wfSpecRevision) ? globalThis.Number(object.wfSpecRevision) : undefined,
     };
   },
 
-  toJSON(message: CountNodeRunRequest): unknown {
+  toJSON(message: CountNodeRunRequest_WfSpecFilter): unknown {
     const obj: any = {};
-    if (message.wfSpecName !== undefined) {
+    if (message.wfSpecName !== "") {
       obj.wfSpecName = message.wfSpecName;
     }
     if (message.wfSpecMajorVersion !== undefined) {
@@ -11533,34 +11635,37 @@ export const CountNodeRunRequest = {
     return obj;
   },
 
-  create(base?: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
-    return CountNodeRunRequest.fromPartial(base ?? {});
+  create(base?: DeepPartial<CountNodeRunRequest_WfSpecFilter>): CountNodeRunRequest_WfSpecFilter {
+    return CountNodeRunRequest_WfSpecFilter.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<CountNodeRunRequest>): CountNodeRunRequest {
-    const message = createBaseCountNodeRunRequest();
-    message.wfSpecName = object.wfSpecName ?? undefined;
+  fromPartial(object: DeepPartial<CountNodeRunRequest_WfSpecFilter>): CountNodeRunRequest_WfSpecFilter {
+    const message = createBaseCountNodeRunRequest_WfSpecFilter();
+    message.wfSpecName = object.wfSpecName ?? "";
     message.wfSpecMajorVersion = object.wfSpecMajorVersion ?? undefined;
     message.wfSpecRevision = object.wfSpecRevision ?? undefined;
     return message;
   },
 };
 
-function createBaseCountScheduledTaskRunRequest(): CountScheduledTaskRunRequest {
-  return { taskDefName: "" };
+function createBaseCountTaskRunRequest(): CountTaskRunRequest {
+  return { taskDefName: "", status: TaskStatus.TASK_SCHEDULED };
 }
 
-export const CountScheduledTaskRunRequest = {
-  encode(message: CountScheduledTaskRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const CountTaskRunRequest = {
+  encode(message: CountTaskRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.taskDefName !== "") {
       writer.uint32(10).string(message.taskDefName);
+    }
+    if (message.status !== TaskStatus.TASK_SCHEDULED) {
+      writer.uint32(16).int32(taskStatusToNumber(message.status));
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CountScheduledTaskRunRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CountTaskRunRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCountScheduledTaskRunRequest();
+    const message = createBaseCountTaskRunRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -11571,6 +11676,13 @@ export const CountScheduledTaskRunRequest = {
 
           message.taskDefName = reader.string();
           continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.status = taskStatusFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -11580,24 +11692,31 @@ export const CountScheduledTaskRunRequest = {
     return message;
   },
 
-  fromJSON(object: any): CountScheduledTaskRunRequest {
-    return { taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "" };
+  fromJSON(object: any): CountTaskRunRequest {
+    return {
+      taskDefName: isSet(object.taskDefName) ? globalThis.String(object.taskDefName) : "",
+      status: isSet(object.status) ? taskStatusFromJSON(object.status) : TaskStatus.TASK_SCHEDULED,
+    };
   },
 
-  toJSON(message: CountScheduledTaskRunRequest): unknown {
+  toJSON(message: CountTaskRunRequest): unknown {
     const obj: any = {};
     if (message.taskDefName !== "") {
       obj.taskDefName = message.taskDefName;
     }
+    if (message.status !== TaskStatus.TASK_SCHEDULED) {
+      obj.status = taskStatusToJSON(message.status);
+    }
     return obj;
   },
 
-  create(base?: DeepPartial<CountScheduledTaskRunRequest>): CountScheduledTaskRunRequest {
-    return CountScheduledTaskRunRequest.fromPartial(base ?? {});
+  create(base?: DeepPartial<CountTaskRunRequest>): CountTaskRunRequest {
+    return CountTaskRunRequest.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<CountScheduledTaskRunRequest>): CountScheduledTaskRunRequest {
-    const message = createBaseCountScheduledTaskRunRequest();
+  fromPartial(object: DeepPartial<CountTaskRunRequest>): CountTaskRunRequest {
+    const message = createBaseCountTaskRunRequest();
     message.taskDefName = object.taskDefName ?? "";
+    message.status = object.status ?? TaskStatus.TASK_SCHEDULED;
     return message;
   },
 };
@@ -12642,6 +12761,10 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /**
+     * Counts the number of NodeRun's matching the given criteria. This is an eventually
+     * consistent count maintained via pre-aggregated counters.
+     */
     countNodeRun: {
       name: "CountNodeRun",
       requestType: CountNodeRunRequest,
@@ -12650,9 +12773,14 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    countScheduledTaskRun: {
-      name: "CountScheduledTaskRun",
-      requestType: CountScheduledTaskRunRequest,
+    /**
+     * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+     * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+     * an eventually consistent count maintained via pre-aggregated counters.
+     */
+    countTaskRun: {
+      name: "CountTaskRun",
+      requestType: CountTaskRunRequest,
       requestStream: false,
       responseType: Count,
       responseStream: false,
@@ -13127,11 +13255,17 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<LittleHorseVersion>>;
+  /**
+   * Counts the number of NodeRun's matching the given criteria. This is an eventually
+   * consistent count maintained via pre-aggregated counters.
+   */
   countNodeRun(request: CountNodeRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Count>>;
-  countScheduledTaskRun(
-    request: CountScheduledTaskRunRequest,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Count>>;
+  /**
+   * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+   * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+   * an eventually consistent count maintained via pre-aggregated counters.
+   */
+  countTaskRun(request: CountTaskRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Count>>;
 }
 
 export interface LittleHorseClient<CallOptionsExt = {}> {
@@ -13609,11 +13743,17 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<LittleHorseVersion>;
+  /**
+   * Counts the number of NodeRun's matching the given criteria. This is an eventually
+   * consistent count maintained via pre-aggregated counters.
+   */
   countNodeRun(request: DeepPartial<CountNodeRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Count>;
-  countScheduledTaskRun(
-    request: DeepPartial<CountScheduledTaskRunRequest>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Count>;
+  /**
+   * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+   * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+   * an eventually consistent count maintained via pre-aggregated counters.
+   */
+  countTaskRun(request: DeepPartial<CountTaskRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Count>;
 }
 
 function bytesFromBase64(b64: string): Uint8Array {

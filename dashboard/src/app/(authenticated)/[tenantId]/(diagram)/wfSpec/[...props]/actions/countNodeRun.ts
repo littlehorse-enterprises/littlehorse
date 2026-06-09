@@ -12,9 +12,14 @@ export type NodeRunCountResult = { status: 'ok'; count: number } | { status: 'un
 export const countNodeRun = async ({ tenantId, wfSpecId }: Props): Promise<NodeRunCountResult> => {
   const client = await lhClient({ tenantId })
   const request: CountNodeRunRequest = {
-    wfSpecName: wfSpecId.name,
-    wfSpecMajorVersion: wfSpecId.majorVersion,
-    wfSpecRevision: wfSpecId.revision,
+    filter: {
+      $case: 'wfSpecFilter',
+      value: {
+        wfSpecName: wfSpecId.name,
+        wfSpecMajorVersion: wfSpecId.majorVersion,
+        wfSpecRevision: wfSpecId.revision,
+      },
+    },
   }
   try {
     const response = await client.countNodeRun(request)
