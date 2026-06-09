@@ -14,7 +14,6 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
-import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
@@ -698,8 +697,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             } else {
                 setStatus(getCurrentNodeRun().getLatestFailure().get().getStatus());
             }
-            PartitionMetricWindowModel.trackWorkflow(
-                    processorContext, wfSpecId, previousStatus, status, startTime, endTime);
+            processorContext.metricsCollector().trackWorkflow(wfSpecId, previousStatus, status, startTime, endTime);
             return true;
         }
         return false;
