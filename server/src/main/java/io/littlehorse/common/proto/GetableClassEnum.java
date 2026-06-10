@@ -107,6 +107,10 @@ public enum GetableClassEnum
    * <code>QUOTA = 23;</code>
    */
   QUOTA(23),
+  /**
+   * <code>WORKFLOW_MIGRATION_PLAN = 24;</code>
+   */
+  WORKFLOW_MIGRATION_PLAN(24),
   UNRECOGNIZED(-1),
   ;
 
@@ -215,6 +219,10 @@ public enum GetableClassEnum
    * <code>QUOTA = 23;</code>
    */
   public static final int QUOTA_VALUE = 23;
+  /**
+   * <code>WORKFLOW_MIGRATION_PLAN = 24;</code>
+   */
+  public static final int WORKFLOW_MIGRATION_PLAN_VALUE = 24;
 
 
   public final int getNumber() {
@@ -265,6 +273,7 @@ public enum GetableClassEnum
       case 21: return INACTIVE_THREAD_RUN;
       case 22: return METRIC_WINDOW;
       case 23: return QUOTA;
+      case 24: return WORKFLOW_MIGRATION_PLAN;
       default: return null;
     }
   }

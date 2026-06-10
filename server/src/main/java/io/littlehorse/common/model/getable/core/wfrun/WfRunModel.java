@@ -1,6 +1,20 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.protobuf.Message;
+
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
@@ -26,17 +40,22 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureBeingHandle
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.PendingFailureHandlerModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel;
+import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
+import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.MigrationVars;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.PendingFailureHandler;
@@ -54,21 +73,10 @@ import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 @Setter
@@ -99,6 +107,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     public List<PendingFailureHandlerModel> pendingFailures = new ArrayList<>();
     private ParentTriggerReferenceModel parentTrigger;
     private ExecutionContext executionContext;
+    private WorkflowMigrationPlanIdModel workflowMigrationPlanId;
+    private Map<String, MigrationVarsModel> migrationVarsByThread = new HashMap<>();
 
     // Not in proto
     private int numAdvancesInThisCommand = 0;
@@ -267,6 +277,16 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         if (proto.hasParentTrigger()) {
             parentTrigger = ParentTriggerReferenceModel.fromProto(proto.getParentTrigger(), context);
         }
+        if (proto.hasWorkflowMigrationPlanId()) {
+            workflowMigrationPlanId = LHSerializable.fromProto(
+                    proto.getWorkflowMigrationPlanId(), WorkflowMigrationPlanIdModel.class, context);
+        }
+        migrationVarsByThread = new HashMap<>();
+        for (Map.Entry<String, MigrationVars> entry : proto.getMigrationVariablesMap().entrySet()) {
+            migrationVarsByThread.put(
+                    entry.getKey(),
+                    LHSerializable.fromProto(entry.getValue(), MigrationVarsModel.class, context));
+        }
         this.executionContext = context;
         this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
     }
@@ -328,6 +348,12 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         }
         if (parentTrigger != null) {
             out.setParentTrigger(parentTrigger.toProto());
+        }
+        if (workflowMigrationPlanId != null) {
+            out.setWorkflowMigrationPlanId(workflowMigrationPlanId.toProto().build());
+        }
+        for (Map.Entry<String, MigrationVarsModel> entry : migrationVarsByThread.entrySet()) {
+            out.putMigrationVariables(entry.getKey(), entry.getValue().toProto().build());
         }
 
         return out;
@@ -551,12 +577,59 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
             for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
                 ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
-                statusChanged = thread.advance(time) || statusChanged;
+                if(workflowMigrationPlanId != null && thread.isMigrating(workflowMigrationPlanId)){
+                    statusChanged = thread.advance(time, workflowMigrationPlanId) || statusChanged;
+                    maybeDoneMigration();
+                }else{
+                    statusChanged = thread.advance(time, null) || statusChanged;
+                }
             }
         }
 
         archiveCompletedThreadRuns(false);
     }
+
+    
+
+    // Migration is complete when each ThreadMigrationPlan destination thread has materialized at least once.
+    private void maybeDoneMigration() {
+        if (workflowMigrationPlanId == null) {
+            return;
+        }
+
+        WorkflowMigrationPlanModel workflowMigrationPlan = executionContext.metadataManager().get(workflowMigrationPlanId);
+        if (workflowMigrationPlan == null) {
+            return;
+        }
+
+        WfSpecIdModel newWfSpecId = new WfSpecIdModel(
+                workflowMigrationPlan.getOldWfSpecId().getName(),
+                workflowMigrationPlan.getMajorVersion(),
+                workflowMigrationPlan.getRevision());
+
+        // Check if every newThreadSpec has a threadRun that has actually migrated to the new WfSpec
+        for (ThreadMigrationPlanModel threadMigrationPlan : workflowMigrationPlan.getThreadMigrations().values()) {
+            if (!hasDestinationThreadSpec(threadMigrationPlan.getNewThreadName(), newWfSpecId)) {
+                return;
+            }
+        }
+
+        workflowMigrationPlanId = null;
+        migrationVarsByThread.clear();
+    }
+
+    private boolean hasDestinationThreadSpec(String destinationThreadSpecName, WfSpecIdModel newWfSpecId) {
+        ThreadRunIterator iterator = getThreadRunIterator();
+        while (iterator.hasNext()) {
+            ThreadRunModel threadRun = iterator.next();
+            if (destinationThreadSpecName.equals(threadRun.getThreadSpecName())
+                    && newWfSpecId.equals(threadRun.getWfSpecId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private boolean shouldForceArchiveCompletedThreadRuns() {
         int threshold = (this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()

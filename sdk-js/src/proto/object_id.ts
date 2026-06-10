@@ -292,6 +292,10 @@ export interface MetricWindowId {
   metricType?: MetricWindowType | undefined;
 }
 
+export interface WorkflowMigrationPlanId {
+  name: string;
+}
+
 function createBaseWfSpecId(): WfSpecId {
   return { name: "", majorVersion: 0, revision: 0 };
 }
@@ -2090,6 +2094,63 @@ export const MetricWindowId = {
       : undefined;
     message.windowStart = object.windowStart ?? undefined;
     message.metricType = object.metricType ?? undefined;
+    return message;
+  },
+};
+
+function createBaseWorkflowMigrationPlanId(): WorkflowMigrationPlanId {
+  return { name: "" };
+}
+
+export const WorkflowMigrationPlanId = {
+  encode(message: WorkflowMigrationPlanId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WorkflowMigrationPlanId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkflowMigrationPlanId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WorkflowMigrationPlanId {
+    return { name: isSet(object.name) ? globalThis.String(object.name) : "" };
+  },
+
+  toJSON(message: WorkflowMigrationPlanId): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<WorkflowMigrationPlanId>): WorkflowMigrationPlanId {
+    return WorkflowMigrationPlanId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WorkflowMigrationPlanId>): WorkflowMigrationPlanId {
+    const message = createBaseWorkflowMigrationPlanId();
+    message.name = object.name ?? "";
     return message;
   },
 };

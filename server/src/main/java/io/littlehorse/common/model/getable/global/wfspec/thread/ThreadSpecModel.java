@@ -1,6 +1,19 @@
 package io.littlehorse.common.model.getable.global.wfspec.thread;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.protobuf.Message;
+
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.exceptions.validation.InvalidInterruptDefException;
@@ -11,6 +24,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
@@ -27,19 +41,9 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 @Setter
@@ -216,9 +220,29 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
             if (node.type == NodeCase.START_THREAD) {
                 out.add(node.startThreadNode.threadSpecName);
             }
+            if(node.type == NodeCase.START_MULTIPLE_THREADS){
+                out.add(node.getStartMultipleThreadsNode().getThreadSpecName());
+            }
+            for(FailureHandlerDefModel failureHandler: node.getFailureHandlers()){
+                out.add(failureHandler.getHandlerSpecName());
+            }
         }
-        // TODO: Add interrupts here.
+
+        for(InterruptDefModel interrupt: interruptDefs){
+            out.add(interrupt.getHandlerSpecName());
+        }   
+
         return out;
+    }
+
+    public Set<String> getAllDescendants(){
+        Set<String> descendants  = new HashSet<>();
+        for(String childName: getChildThreadNames()){
+            descendants.add(childName);
+            descendants.addAll(wfSpec.getThreadSpecs().get(childName).getAllDescendants());
+        }
+        return descendants;
+        
     }
 
     private ThreadVarDefModel getVd(String name) {
@@ -522,5 +546,16 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         ThreadSpecModel out = new ThreadSpecModel();
         out.initFrom(p, context);
         return out;
+    }
+
+    public boolean isVarInScope(String varName) {
+        Map<String, String> varToThreadSpec = wfSpec.getVarToThreadSpecMap();
+        if (!varToThreadSpec.containsKey(varName)) {
+            return false;
+        }
+        String ownerThreadName = varToThreadSpec.get(varName);
+        // In scope if this thread owns the variable, or if this thread is a descendant of the owner
+        if (ownerThreadName.equals(this.name)) return true;
+        return wfSpec.getThreadSpecs().get(ownerThreadName).getAllDescendants().contains(this.name);
     }
 }

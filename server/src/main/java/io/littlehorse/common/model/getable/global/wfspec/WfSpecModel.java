@@ -1,6 +1,20 @@
 package io.littlehorse.common.model.getable.global.wfspec;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.protobuf.Message;
+
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.UnknownStructDefException;
@@ -37,19 +51,8 @@ import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
@@ -213,7 +216,12 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
             }
         }
     }
-
+    public Map<String, String> getVarToThreadSpecMap(){
+        if(!initializedVarToThreadSpec){
+            initializeVarToThreadSpec();
+        }
+        return Map.copyOf(varToThreadSpec);
+    }
     public Pair<String, ThreadVarDefModel> lookupVarDef(String name) {
         if (!initializedVarToThreadSpec) {
             initializeVarToThreadSpec();

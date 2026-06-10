@@ -62,6 +62,8 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
@@ -82,6 +84,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequ
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowEventDefRequestModel;
 import io.littlehorse.common.proto.InternalCountResponse;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowMigrationPlanRequestModel;
 import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.*;
@@ -563,6 +566,32 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putWfSpec(PutWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         PutWfSpecRequestModel reqModel = LHSerializable.fromProto(req, PutWfSpecRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getWorkflowMigrationPlan(WorkflowMigrationPlanId req, StreamObserver<WorkflowMigrationPlan> ctx) {
+        WorkflowMigrationPlanIdModel id = LHSerializable.fromProto(req, WorkflowMigrationPlanIdModel.class, requestContext());
+        WorkflowMigrationPlanModel plan = requestContext()
+                .metadataManager()
+                .getOrThrow(id, () -> new LHApiException(Status.NOT_FOUND, "Couldn't find specified WorkflowMigrationPlan"));
+        ctx.onNext(plan.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    public void putWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest req, StreamObserver<WorkflowMigrationPlan> ctx) {
+        PutWorkflowMigrationPlanRequestModel reqModel = LHSerializable.fromProto(req, PutWorkflowMigrationPlanRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, WorkflowMigrationPlan.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
+    public void applyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest req, StreamObserver<WfRun> ctx) {
+        ApplyWorkflowMigrationRequestModel reqModel =
+                LHSerializable.fromProto(req, ApplyWorkflowMigrationRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), ctx, WfRun.class);
     }
 
     @Override
